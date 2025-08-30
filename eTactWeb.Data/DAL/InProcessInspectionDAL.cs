@@ -285,6 +285,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@InspectedBy", model.InspectedBy));//not
                 SqlParams.Add(new SqlParameter("@RevNo", model.RevNo));
                 SqlParams.Add(new SqlParameter("@Material", model.Material ?? ""));
+                SqlParams.Add(new SqlParameter("@FML", model.FML ?? ""));
 
                 SqlParams.Add(new SqlParameter("@dt", GIGrid));
 				_ResponseResult = await _IDataLogic.ExecuteDataTable("SPInprocessInpection", SqlParams);
@@ -531,6 +532,7 @@ namespace eTactWeb.Data.DAL
                 model.InspectedBy = Convert.ToInt32(DS.Tables[0].Rows[0]["InspectedBy"].ToString());
                 model.RevNo = int.TryParse(DS.Tables[0].Rows[0]["RevNo"].ToString(), out int revNo) ? revNo : 0;
                 model.Material = DS.Tables[0].Rows[0]["Material"]?.ToString() ?? string.Empty;
+                model.FML = DS.Tables[0].Rows[0]["FML"]?.ToString() ?? string.Empty;
 
                 model.Attachment1 = DS.Tables[0].Rows[0]["Attachment1"].ToString();
                 model.Attachment2 = DS.Tables[0].Rows[0]["Attachment2"].ToString();

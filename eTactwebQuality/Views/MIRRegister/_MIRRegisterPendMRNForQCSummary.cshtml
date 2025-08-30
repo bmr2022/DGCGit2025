@@ -59,6 +59,8 @@
         <tbody id="divStockRegisterBody">
             @{
                 var @Cntr = 0;
+                int srNoStart = (Model.PageNumber - 1) * Model.PageSize;
+                int srNo = srNoStart + 1;
                 if (Model.MIRRegisterDetail == null)
                 {
                             <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
@@ -77,8 +79,8 @@
                                     </span>
                                 </a>
                                             </td>
-                        
-                                            <th>@Cntr</th>
+
+                            <th>@srNo</th>
                             <td>@item.NoOfMRN</td>
                             <td>@item.MRNITEM</td>
                             <td>@item.NoOfQC</td>
@@ -91,6 +93,7 @@
 
 
                         </tr>
+                        srNo++;
                     }
                 }
             }

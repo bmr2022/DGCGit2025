@@ -1,0 +1,221 @@
+﻿@model eTactWeb.DOM.Models.AssetsNdToolCategoryMasterModel
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+
+
+
+<div class="card bg-gradient mb-3 rounded shadow-lg">
+    <form asp-action="AssetsNdToolCategoryMaster"
+          asp-route-id="@Model.AssetsCateogryId"
+          asp-route-mode="@Model.Mode"
+          method="post" class="form-horizontal">
+
+        <!-- Header -->
+        <div class="card border-light bg-gradient rounded shadow-lg">
+            <div class="card-header card-headerBG text-light justify-content-center bg-gradient">
+                <h4>
+                    Assets & Tool Category Master
+                    <span class="d-flex float-end" style="margin-top:-2px;">
+                        <a asp-action="AssetsNdToolCategoryMasterDashboard" asp-controller="AssetsNdToolCategoryMaster"
+                           class="btn btn-sm btn-outline-light bg-gradient">
+                            <i class="fa-solid fa-grip fa-fw fa-lg fa-beat"></i> Dashboard
+                        </a>
+
+                        <div class="row justify-content-between g-2">
+                            <div class="col-auto">
+                                <a href="#" class="btn btn-primary btn-sm" onclick="history.back();">
+                                    <i class="fa fa-chevron-circle-left fa-fw fa-lg"></i> BACK
+                                </a>
+                            </div>
+                            @if (Model.Mode != "V")
+                            {
+                                <div class="col-auto">
+                                    <button type="reset" class="btn btn-secondary btn-sm">
+                                        <i class="fa fa-refresh fa-fw fa-lg"></i> REFRESH
+                                    </button>
+                                </div>
+                                @if (Model.Mode == "U")
+                                {
+                                    <div class="col-auto">
+                                        <button type="submit" class="btn btn-sm btn-outline-light bg-gradient submitBTN">
+                                            <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                            UPDATE
+                                        </button>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="col-auto">
+                                        <button type="submit" class="btn btn-primary btn-sm">
+                                            <i class="fa-solid fa-chevron-circle-right"></i> SUBMIT
+                                        </button>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </span>
+                </h4>
+            </div>
+        </div>
+
+        <!-- Accordion -->
+        <div class="accordion shadow-lg" id="AssetsAccordion">
+
+            <!-- Basic Details -->
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="basicDetailsHeader">
+                    <button class="accordion-button text-light pnl1BG bg-gradient" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#basicDetailsBody"
+                            aria-expanded="true" aria-controls="basicDetailsBody">
+                        <strong><i class="fa fa-fw fa-book fa-lg"></i> Basic Details</strong>
+                    </button>
+                </h2>
+                <div id="basicDetailsBody" class="accordion-collapse collapse show pnl1 bg-gradient"
+                     aria-labelledby="basicDetailsHeader">
+                    <div class="accordion-body">
+                        <div class="row g-3">
+                            <input type="hidden" value="@Model.Mode" asp-for="Mode" />
+                            <div class="col-lg-4 col-md-6">
+                                <label asp-for="AssetsCateogryId" class="form-label">Category Id</label>
+                                <input asp-for="AssetsCateogryId" class="form-control form-control-sm"  readonly />
+                            </div>
+                            <div class="col-lg-4 col-md-6">
+                                <label asp-for="AsstesToolInstrument" class="form-label">Tool/Instrument</label>
+                                <input asp-for="AsstesToolInstrument" class="form-control" />
+                            </div>
+                            
+                            <div class="col-lg-4 col-md-6">
+                                <label asp-for="AssetsCategoryCode" class="form-label">Category Code</label>
+                                <input asp-for="AssetsCategoryCode" class="form-control"  readonly />
+                            </div>
+                          
+                            <div class="col-lg-4 col-md-6">
+                                <label asp-for="AssetsCategoryName" class="form-label">Category Name</label>
+                                <input asp-for="AssetsCategoryName" class="form-control" />
+                            </div>
+
+                            <div class="col-lg-4 col-md-6">
+                                <label asp-for="AssetsMainCateogryId" class="form-label">Main Category Id</label>
+                                <select asp-for="AssetsMainCateogryId" class="form-control">
+                                    <option value="">-- Select Assets Category --</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-4 col-md-6">
+                                <label asp-for="ToolMaincategoryId" class="form-label">Tool Main Category Id</label>
+                                <select asp-for="ToolMaincategoryId" class="form-control">
+                                    <option value="">-- Select Tool Category --</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Other Details -->
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="otherDetailsHeader">
+                    <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#otherDetailsBody"
+                            aria-expanded="false" aria-controls="otherDetailsBody">
+                        <strong><i class="fa fa-fw fa-book fa-lg"></i> Other Details</strong>
+                    </button>
+                </h2>
+                <div id="otherDetailsBody" class="accordion-collapse collapse pnl4 bg-gradient"
+                     aria-labelledby="otherDetailsHeader">
+                    <div class="accordion-body">
+                        <div class="row g-3">
+                            <div class="col-lg-4 col-md-6">
+                                <label asp-for="EntryByMachineName" class="form-label">Entry By Machine</label>
+                                <input asp-for="EntryByMachineName" class="form-control" value="@Environment.MachineName" />
+                            </div>
+                            <div class="col-lg-4 col-md-6">
+                                <label asp-for="ActualEntryBy" class="form-label">Created By</label>
+                                <input asp-for="ActualEntryBy" class="form-control" />
+                            </div>
+                            <div class="col-lg-4 col-md-6">
+                                <label asp-for="ActualEntryDate" class="form-label">Created On</label>
+                                <input asp-for="ActualEntryDate" class="form-control" type="date" />
+                            </div>
+                            <div class="col-lg-4 col-md-6">
+                                <label asp-for="LastUpdationDate" class="form-label">Last Updated On</label>
+                                <input asp-for="LastUpdationDate" class="form-control" type="date" />
+                            </div>
+                            <div class="col-lg-4 col-md-6">
+                                <label asp-for="LastUpdatedBy" class="form-label">Last Updated By</label>
+                                <input asp-for="LastUpdatedBy" class="form-control" />
+                            </div>
+                            <input type="hidden" asp-for="Mode" />
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </form>
+</div>
+
+@section Scripts {
+    @if (Model.Mode == "V")
+    {
+        <script>
+            $(document).ready(function () {
+                $("form :input").prop("disabled", true); // disable all inputs
+            });
+        </script>
+    }
+    <script>
+        $(document).ready(function () {
+            var message = '@TempData["Message"]';
+            var error = '@TempData["Error"]';
+
+            if (message) {
+                alert(message);
+            }
+
+            if (error) {
+                alert(error);
+            }
+        });
+        // Go back to the previous page
+        function PressBack() {
+            window.history.back();
+        }
+
+        // Reload current page (refresh form)
+        function RefreshPage() {
+            location.reload(); // reloads the same page
+        }
+
+        $(document).ready(function () {
+            GetFormRights();
+        });
+
+        function GetFormRights() {
+            $.ajax({
+                url: "@Url.Action("GetFormRights")",
+                type: "POST",
+                async: false,
+                success: function (data) {
+                    // Same logic as StoreMaster
+                    // you can keep identical code, just ensure grid IDs and partials are aligned
+                }
+            });
+        }
+
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script><script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.19.1/jquery.validate.min.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/mvc/5.2.3/jquery.validate.unobtrusive.min.js"></script>
+
+}

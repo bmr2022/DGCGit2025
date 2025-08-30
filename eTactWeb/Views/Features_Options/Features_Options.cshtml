@@ -221,6 +221,13 @@
                                             <option value="N">No</option>
                                         </select>
                                     </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:350px;">
+                                        <label asp-for="PONotAllowedWithoutPartCodePartyWiseDefinition" class="form-label">PO Not Allowed Without PartCode PartyWise Definition</label>
+                                        <select class="form-control" asp-for="PONotAllowedWithoutPartCodePartyWiseDefinition" style="width:250px;">
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
                                     
 
                                 </div>
@@ -1322,6 +1329,7 @@
             $('#PurchaseBill').select2();
             $('#AccSaleBillManualTaxAlloweed').select2();
             $('#salebillShowItemBatchFIFOBased').select2();
+            $('#PONotAllowedWithoutPartCodePartyWiseDefinition').select2();
 
             const fieldsToRemoveRules = [
                 'FlagSelectUpdate', 'Module', 'AutoGen_PartCode', 'DuplicateItemName', 'Allow_PO_Print', 'Po_File_Name',
@@ -1360,7 +1368,7 @@
                 'AccAllowtochangeDocumentinPurchaseBill', 'AccPasswordToChangeDocumentinPurchaseBill',
                 'AccAllowtochangeInvoiceNoDateinPurchaseBill','AccPasswordToAllowManualTax','AccSaleBillManualTaxAllowed',
                 'AccAllowBackdateVoucherEntry', 'AccBackdateVoucherEntryPassword', 'AccAllowToChangeVoucherDateInPurchBill', 'AccSaleBillManualTaxAlloweed',
-                'AccPurchaseVoucherPrintoutFilename', 'AccPurchaseBillInvoicePrintoutFilename', 'FIFOBasedBatchInventoryInJobWorkIss', 'PurchaseBill', 'salebillShowItemBatchFIFOBased'
+                'AccPurchaseVoucherPrintoutFilename', 'AccPurchaseBillInvoicePrintoutFilename', 'FIFOBasedBatchInventoryInJobWorkIss', 'PurchaseBill', 'salebillShowItemBatchFIFOBased', 'PONotAllowedWithoutPartCodePartyWiseDefinition'
             ];
 
             fieldsToRemoveRules.forEach(field => {

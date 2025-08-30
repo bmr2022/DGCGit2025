@@ -14,7 +14,7 @@
 
 <div class="card bg-gradient mb-3 border-light shadow-lg">
 	<form asp-action="InProcessInspection" asp-controller="InProcessInspection" method="post" autocomplete="on" class="form-horizontal">
-		<div class="card-header card-headerBG text-light bg-gradient">
+		
 			<div class="card-header card-headerBG text-light justify-content-center bg-gradient">
 				<h5>
 					<strong>InProcess Inspection</strong>
@@ -104,15 +104,15 @@
 											
 										</select>
 									</div>
-									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:90px;">
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12"@*  style="width:180px;" *@>
 										<label asp-for="SlipNo" class="form-label">Slip No</label>
 										<input asp-for="SlipNo" class="form-control" />
 									</div>
-									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12"@*  style="width:130px;" *@>
 										<label asp-for="RevNo" class="form-label">Rev No</label>
 										<input asp-for="RevNo" class="form-control" />
 									</div>
-									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:90px;">
+									<div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12"@*  style="width:100px;" *@>
 										<label asp-for="RevDate" class="form-label">Rev Date</label>
 										<input asp-for="RevDate" class="form-control" />
 									</div>
@@ -153,25 +153,25 @@
 										</select>
 									</div>
 									
-									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:90px;">
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" @* style="width:90px;" *@>
 										<label asp-for="ProjectNo" class="form-label">Project No</label>
 										<input asp-for="ProjectNo" class="form-control"  />
 									</div>
-									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:90px;">
+									<div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12" @* style="width:90px;" *@>
 										<label asp-for="ProjectDate" class="form-label">Project Date</label>
 										<input asp-for="ProjectDate" class="form-control" />
 									</div>
 
 									
-									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:150px;">
+									<div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12"@*  style="width:150px;" *@>
 										<label asp-for="InspTimeFrom" class="form-label"> Insp Time From</label>
 										<input asp-for="InspTimeFrom" class="form-control" type="time"  value="@DateTime.Now.ToString("HH:mm")" />
 									</div>
-									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
+									<div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12"@*  style="width:130px;" *@>
 										<label asp-for="InspTimeTo" class="form-label">Insp Time To</label>
 										<input asp-for="InspTimeTo" class="form-control" type="time"  value="@DateTime.Now.ToString("HH:mm")" />
 									</div>
-									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
+									<div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12" @* style="width:130px;" *@>
 										<label asp-for="SampleSize" class="form-label">Sample Size</label>
 										<input asp-for="SampleSize" class="form-control"
 											   id="SampleSize"
@@ -194,29 +194,30 @@
 										<label asp-for="Material" class="form-label"> Material</label>
 										<input asp-for="Material" class="form-control" />
 									</div>
-									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:90px;">
+									<div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12"@*  style="width:90px;" *@>
 										<label asp-for="NoOfCavity" class="form-label">No Of Cavity</label>
 										<input asp-for="NoOfCavity" class="form-control"  />
 									</div>
-									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:120px;">
-										<input type="hidden" asp-for="MachineId" />
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" @* style="width:120px;" *@>
+									
 										<label asp-for="MachineNo" class="form-label"> Machine No</label>
-										<select class="form-control" asp-for="MachineNo" style="width:110px;">
+										<select class="form-control" asp-for="MachineNo">
 											<option value="">-Select-</option>
 											@if (Model.Mode == "U" || Model.Mode == "V")
 											{
 												<option value="@Model.MachineNo" selected>@Model.MachineNo</option>
 											}
 										</select>
+										<input type="hidden" asp-for="MachineId" />
 									</div>
-									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:90px;">
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" @* style="width:90px;" *@>
 										<label asp-for="LotNo" class="form-label">Lot No</label>
 										<input asp-for="LotNo" class="form-control"  />
 									</div>
-									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:90px;">
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12"@*  style="width:90px;" *@>
 										<label asp-for="Shift" class="form-label"> Shift</label>
 										<input type="hidden" asp-for="ShiftID" />
-										<select class="form-control" asp-for="Shift" style="width:80px;">
+										<select class="form-control" asp-for="Shift">
 											<option value="">-Select-</option>
 											@if (Model.Mode == "U" || Model.Mode == "V")
 											{
@@ -226,12 +227,12 @@
 									</div>
 								
 
-									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
+									<div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12" @* style="width:130px;" *@>
 										<label class="form-label">Process Time</label>
 										<input asp-for=Time id="Time" name="Time" type="time" class="form-control" value="@DateTime.Now.ToString("HH:mm")" />
 									</div>
 
-									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
+									<div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12" @* style="width:130px;" *@>
 										<label asp-for="Date" class="form-label">Process Date</label>
 										<input asp-for="Date" class="form-control" />
 									</div>
@@ -271,9 +272,17 @@
 											<label asp-for="ProdQty" class="form-label">Prod Qty</label>
 											<input asp-for="ProdQty" class="form-control" />
 										</div>
-									
-									
-									
+									<div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12"@*  style="width:90px;" *@>
+									<label asp-for="FML" class="form-label"> FML</label>
+										<select class="form-control" asp-for="FML" style="width:80px;">
+											<option value="">-Select-</option>
+											<option value="First">First</option>
+											<option value="Middle">Middle</option>
+											<option value="Last">Last</option>
+										</select>
+									</div>
+
+								
 									
 									@* <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
 										<label asp-for="SelectedInspections" class="control-label">Inspection List</label>
@@ -282,34 +291,40 @@
 												asp-items="@(new SelectList(Model.InspectionOptions, "Key", "Text"))">
 										</select>
 									</div> *@
-									<div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-top:22px;width:280px;">
+									<div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-top:22px;width:280px;" >
 										<select id="Inspection" class="form-select" multiple
 												asp-for="SelectedInspections"
 												asp-items="@(new SelectList(Model.InspectionOptions, "Key", "Text", Model.SelectedInspections))">
 										</select>
 
 									</div>
-									<div class="col-md-2 mt-1 mb-1" style="width:190px;">
+								
+									<div class="col-md-2 mt-1 mb-1">
 										<label  class="form-label">Search</label>
 										<input type="text" class="form-control" id="search-box" placeholder="Search..." style="background-color:#FFFACD;margine-top:22px;">
-									</div>
-									
-
-									<div class="col-md-10" style="width:130px;margine-top:24px;">
-										<button type="button" id="GridButton" class="GridButton btn btn-sm btn-outline-danger mt-1 mb-1">
-											<i class="fa-duotone fa-angle-double-down fa-fw fa-lg"></i> ADD TO GRID
-										</button>
 									</div>
 								</div>
 								<div class="progress my-2 mb-3" style="height: 4px;">
 									<div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
 								</div>
-								<h2 class="accordion-header" id="H_SAGrid">
-									<button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
-										<strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>InProcess Inspection Grid</strong>
+							
+
+								<h2 class="accordion-header d-flex align-items-center justify-content-between" id="H_SAGrid">
+									<button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button"
+											data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+										<strong class="text-uppercase">
+											<i class="fa-solid fa-table-list fa-lg fa-fw pr-2 fa-fade" style="--fa-animation-duration:2s; --fa-fade-opacity:0.6;"></i>
+											InProcess Inspection Grid
+										</strong>
 									</button>
+									<button type="button" id="GridButton"
+											class="btn btn-sm btn-outline-danger ms-2">
+										<i class="fa-duotone fa-angle-double-down fa-fw fa-lg"></i>
+										ADD TO GRID
+									</button>
+									
 								</h2>
-								
+
 								<div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradientn show" aria-labelledby="H_SAGrid">
 									<div class="accordion-body">
 										<div class="card-body" id="divPendingMRP">
@@ -351,7 +366,7 @@
 
 
 				</div>
-							<div class="accordion-item">
+				<div class="accordion-item">
 								<h2 class="accordion-header" id="OtherGrid">
 										<button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#OtherGridDetail" aria-expanded="true" aria-controls="OtherGridDetail">
 										<strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Other Detail</strong>
@@ -509,7 +524,7 @@
 						</div>
 					</div>
 				</div>
-	      </div>
+	      
 	</form>
 </div>
 

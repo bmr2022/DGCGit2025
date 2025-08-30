@@ -317,9 +317,9 @@
         //         //window.location.replace(linkurl);
         //     }
         // }
-        function confirmdelete(entryId, yearCode, entryDate, actualEntryBy) {
+        function confirmdelete(entryId, yearCode, entryDate, machineName) {
             if (confirm("Are you sure you want to delete this entry?")) {
-                var url = '/AssetsMaster/DeleteByID?EntryId=' + entryId + '&YearCode=' + yearCode + '&EntryDate=' + entryDate + '&ActualEntryBy=' + actualEntryBy;
+                var url = '/ToolMoldMaster/DeleteByID?EntryId=' + entryId + '&YearCode=' + yearCode + '&EntryDate=' + entryDate + '&MachineName=' + machineName;
 
 
                 window.location.href = url;

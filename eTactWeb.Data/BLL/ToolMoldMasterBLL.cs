@@ -67,5 +67,13 @@ namespace eTactWeb.Data.BLL
         {
             return await _ToolMoldMasterDAL.GetDashboardDetailData(FromDate, ToDate, ToolName);
         }
+        public async Task<ResponseResult> DeleteByID(int EntryId, int YearCode, string EntryDate, string MachineName)
+        {
+            return await _ToolMoldMasterDAL.DeleteByID(EntryId, YearCode, EntryDate, MachineName);
+        }
+        public async Task<ToolMoldMasterModel> GetViewByID(int ID, int YC)
+        {
+            return await _ToolMoldMasterDAL.GetViewByID(ID, YC);
+        }
     }
 }

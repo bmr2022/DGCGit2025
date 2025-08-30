@@ -409,5 +409,135 @@ namespace eTactWeb.Data.DAL
             }
             return model;
         }
+        public async Task<ResponseResult> DeleteByID(int EntryId, int YearCode, string EntryDate, string MachineName)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "DELETE"));
+                SqlParams.Add(new SqlParameter("@ToolEntryId", EntryId));
+                SqlParams.Add(new SqlParameter("@toolyear", YearCode));
+                SqlParams.Add(new SqlParameter("@ActualEntryDate", EntryDate));
+                SqlParams.Add(new SqlParameter("@EntryByMachine", MachineName));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpPPCToolsMaster", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+        public async Task<ToolMoldMasterModel> GetViewByID(int ToolEntryId, int Toolyear)
+        {
+            var model = new ToolMoldMasterModel();
+            try
+            {
+                var SqlParams = new List<dynamic>
+        {
+            new SqlParameter("@flag", "VIEWBYID"),
+            new SqlParameter("@ToolEntryId", ToolEntryId),
+            new SqlParameter("@toolyear", Toolyear)
+        };
+
+                var _ResponseResult = await _IDataLogic.ExecuteDataSet("AccSpPPCToolsMaster", SqlParams);
+
+                if (_ResponseResult.Result != null && _ResponseResult.StatusCode == HttpStatusCode.OK && _ResponseResult.StatusText == "Success")
+                {
+                    PrepareView(_ResponseResult.Result, ref model);
+                }
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return model;
+        }
+
+        private static ToolMoldMasterModel PrepareView(DataSet DS, ref ToolMoldMasterModel? model)
+        {
+            try
+            {
+                DS.Tables[0].TableName = "ToolMoldMaster";
+                var row = DS.Tables[0].Rows[0];
+
+                model.ToolEntryId = Convert.ToInt32(row["ToolEntryId"]);
+                model.AccountCode = Convert.ToInt32(row["AccountCode"]);
+                model.EntryDate = row["EntryDate"].ToString();
+                model.ToolOrMold = row["ToolOrMold"].ToString();
+                model.ToolCode = row["ToolCode"].ToString();
+                model.ToolName = row["ToolName"].ToString();
+                model.ItemCode = Convert.ToInt32(row["ItemCode"].ToString());
+                model.ToolCateogryId = Convert.ToInt32(row["ToolCateogryId"]);
+                model.ConsiderAsFixedAssets = row["ConsiderAsFixedAssets"].ToString();
+                model.ConsiderInInvetory = row["ConsiderInInvetory"].ToString();
+                model.ParentAccountCode = Convert.ToInt32(row["ParentAccountCode"]);
+                model.MainGroup = row["MainGroup"].ToString();
+                model.SubGroup = row["SubGroup"].ToString();
+                model.UnderGroup = row["UnderGroup"].ToString();
+                model.SubSubGroup = Convert.ToInt32(row["SubSubGroup"].ToString());
+                model.CostCenterId = Convert.ToInt32(row["CostCenterId"]);
+                model.Fiscalyear = Convert.ToInt32(row["toolyear"]);
+                model.VendoreAccountCode = Convert.ToInt32(row["VendoreAccountCode"]);
+                model.PONO = row["PONO"].ToString();
+                model.PODate = row["PODate"].ToString();
+                model.POYear = Convert.ToInt32(row["POYear"]);
+                model.InvoiceNo = row["InvoiceNo"].ToString();
+                model.InvoiceDate = row["InvoiceDate"].ToString();
+                model.InvoiceYearCode = Convert.ToInt32(row["InvoiceYearCode"]);
+                model.NetBookValue = Convert.ToDecimal(row["NetBookValue"]);
+                model.PurchaseValue = Convert.ToDecimal(row["PurchaseValue"]);
+                model.ResidualValue = Convert.ToDecimal(row["ResidualValue"]);
+                model.DepreciationMethod = row["DepreciationMethod"].ToString();
+                model.DepreciationRate = Convert.ToDecimal(row["DepreciationRate"]);
+                model.DepriciationAmt = Convert.ToDecimal(row["DepriciationAmt"]);
+                model.CountryOfOrigin = row["CountryOfOrigin"].ToString();
+                model.FirstAqusitionOn = row["FirstAqusitionOn"].ToString();
+                model.OriginalValue = Convert.ToDecimal(row["OriginalValue"]);
+                model.CapatalizationDate = row["CapatalizationDate"].ToString();
+                model.BarCode = row["BarCode"].ToString();
+                model.SerialNo = row["SerialNo"].ToString();
+                model.LocationOfInsallation = row["LocationOfInsallation"].ToString();
+                model.ForDepartmentId = Convert.ToInt32(row["ForDepartmentId"]);
+                model.ExpectedLife = Convert.ToInt32(row["ExpectedLife"]);
+                model.CalibrationRequired = row["CalibrationRequired"].ToString();
+                model.CalibrationFrequencyInMonth = Convert.ToInt32(row["CalibrationFrequencyInMonth"]);
+                model.LastCalibrationDate = row["LastCalibrationDate"].ToString();
+                model.NextCalibrationDate = row["NextCalibrationDate"].ToString();
+                model.CalibrationAgencyId = Convert.ToInt32(row["CalibrationAgencyId"]);
+                model.LastCalibrationCertificateNo = row["LastCalibrationCertificateNo"].ToString();
+                model.CalibrationResultPassFail = row["CalibrationResultPassFail"].ToString();
+                model.TolrenceRange = row["TolrenceRange"].ToString();
+                model.CalibrationRemark = row["CalibrationRemark"].ToString();
+                model.Technician = row["Technician"].ToString();
+                model.TechnicialcontactNo = row["TechnicialcontactNo"].ToString();
+                model.TechEmployeeName = row["TechEmployeeName"].ToString();
+                model.CustoidianEmpId = Convert.ToInt32(row["CustoidianEmpId"]);
+                model.InsuranceCompany = row["InsuranceCompany"].ToString();
+                model.InsuredAmount = Convert.ToDecimal(row["InsuredAmount"]);
+                model.InsuranceDetail = row["InsuranceDetail"].ToString();
+                model.CC = row["CC"].ToString();
+                model.UID = row["UID"].ToString();
+                model.ActualEntryBy = Convert.ToInt32(row["ActualEntryBy"]);
+                model.ActualEntryDate = row["ActualEntryDate"].ToString();
+                model.LastupdatedBy = Convert.ToInt32(row["LastupdatedBy"]);
+                model.LastUpdatedDate = row["LastUpdatedDate"].ToString();
+                model.EntryByMachine = row["EntryByMachine"].ToString();
+
+
+                return model;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }

@@ -1995,8 +1995,14 @@
                 }
             });
         }
-
+            var EditEachItem = false;
         function EditItemRows(SeqNo) {
+                  var RowCount = $('#divSaleScheduleGrid tr').length;
+                        if (EditEachItem) {
+                            $.notify('Cannot Edit item while AddtoGrid  Existing Item!!!', "error");
+                                   $('#editItemGrid-' + RowCount).prop("disabled", true);
+                        }
+                        else {
             var itemCode = $('#ItemCode-' + SeqNo).val();
             var partcode = $('#ItemCode-' + SeqNo).data('partcode');
             var itemName = $('#ItemCode-' + SeqNo).data('itemname');
@@ -2010,6 +2016,7 @@
                     $('.PartCode').append('<option value="' + itemCode + '">' + partcode + '</option>');
                     var obj = $.parseJSON(data);
                     if (obj != null) {
+                                 EditEachItem = true;
                         $('.PartCode').val(obj[0].ItemCode).trigger("change");
                         $('.ItemCode').val(obj[0].ItemCode).trigger("change");
                         //$('#ItemCode').text(obj[0].ItemName);
@@ -2046,6 +2053,7 @@
                     $.notify(response.responseText, "error");
                 }
             });
+            }
         }
 
         function ChangAltQty() {
@@ -3585,7 +3593,7 @@
 
         $('.addItemBtn').click(function (e) {
             e.preventDefault();
-             
+                   EditEachItem = false;
             if (!ValidateSSGrid()) return;
             var SchData = {
                 "ItemCode": parseInt($('#ItemCode').val()),

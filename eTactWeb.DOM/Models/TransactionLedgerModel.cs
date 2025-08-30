@@ -47,6 +47,7 @@ namespace eTactWeb.DOM.Models
         public string VCHEMark { get; set; }
         public string VchNo { get; set; }
         public string MOnthFullName { get; set; }
+        public int MonthNo {  get; set; }
         public decimal TotalDr { get; set; }
         public decimal TotalCr { get; set; }
         public decimal ClosingAmt { get; set; }

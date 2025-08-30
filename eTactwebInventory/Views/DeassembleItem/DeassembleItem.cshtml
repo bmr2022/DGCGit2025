@@ -1422,10 +1422,10 @@
         var EditEachItem = false;
         var EditDeleteBatchValidation = false;
         function EditItemRows(SeqNo) {
-            var RowCount = $('#divISTGrid tr').length;
+                    var RowCount = $('#divISTGrid tr').length;
             if (EditEachItem) {
                 $.notify('Cannot Edit item while AddtoGrid  Existing Item!!!', "error");
-                $('#editButton-' + RowCount).prop("disabled", true);
+                        $('#editItemGrid-' + RowCount).prop("disabled", true);
             }
             else {
                 $.ajax({

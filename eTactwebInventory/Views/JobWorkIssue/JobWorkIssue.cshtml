@@ -900,6 +900,10 @@
                 $.notify('Vendor name is mandatory...!', "error");
                 return false;
             }
+            if ($('#ChallanDate').val() != ($('#EntryDate').val())) {
+                $.notify('ChallanDate And EntryDate Must Be Same ...!', "error");
+                return false;
+            }
              
             var itemGridRowCount = $('#divJobWorkGrid tr td').length;
             if (itemGridRowCount <= 1) {
@@ -1352,17 +1356,13 @@ $('#btnClose').click(function () {
                     "Dec": "12"
                 };
 
-
                 var formattedDate1 = dateParts1[0] + "/" + monthNames[dateParts1[1]] + "/" + dateParts1[2];
                 var dateParts2 = finToDate.split("/");
 
                 var formattedDate2 = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
 
-                 
-                $('#EntryDate,#ChallanDate').datepicker("option", "minDate", parseDateToFormat(formattedDate1));
-                $('#EntryDate,#ChallanDate').datepicker("option", "maxDate", parseDateToFormat(formattedDate2));
-                //console.log(formattedDate1);
-                //console.log(formattedDate2);
+                $('#EntryDate,#ChallanDate').datepicker("option", "minDate", formattedDate1);
+                $('#EntryDate,#ChallanDate').datepicker("option", "maxDate", formattedDate2);
             }
             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
 
@@ -1379,16 +1379,43 @@ $('#btnClose').click(function () {
                     }
                 }
 
-                var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
-                var ChallanDt = parseDateToFormat($('#ChallanDate').val().split(" ")[0]);
+                var EntryDate = ($('#EntryDate').val());
+                var ChallanDt = ($('#ChallanDate').val());
 
                 /* monika */
-                $('#EntryDate').datepicker("setDate", EntryDate);
+               /*  $('#EntryDate').datepicker("setDate", EntryDate);
                 $('#ChallanDate').datepicker("setDate", ChallanDt);
-
-               /*  $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
-                $('#ChallanDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", ChallanDt); */
+ */
+                $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
+                $('#ChallanDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", ChallanDt);
                 /* --------------- */
+
+                var finFromDate = $('#FinFromDate').val();
+                var finToDate = $('#FinToDate').val();
+
+                var dateParts1 = finFromDate.split("/");
+                var monthNames = {
+                    "Jan": "01",
+                    "Feb": "02",
+                    "Mar": "03",
+                    "Apr": "04",
+                    "May": "05",
+                    "Jun": "06",
+                    "Jul": "07",
+                    "Aug": "08",
+                    "Sep": "09",
+                    "Oct": "10",
+                    "Nov": "11",
+                    "Dec": "12"
+                };
+
+                var formattedDate1 = dateParts1[0] + "/" + monthNames[dateParts1[1]] + "/" + dateParts1[2];
+                var dateParts2 = finToDate.split("/");
+
+                var formattedDate2 = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
+
+                $('#EntryDate,#ChallanDate').datepicker("option", "minDate", formattedDate1);
+                $('#EntryDate,#ChallanDate').datepicker("option", "maxDate", formattedDate2);
             }
             else {
                 $('#EntryDate,#ChallanDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
@@ -1507,6 +1534,10 @@ $('#btnClose').click(function () {
             showAllControls();
         });
 
+        $("#ChallanDate").on("change", function () {
+            let challanVal = $(this).val();
+            $("#EntryDate").val(challanVal);
+        });
 
         var currentSearchColumn = null;
 
@@ -1941,9 +1972,9 @@ $('#btnClose').click(function () {
                         VendJwAllowToSelectBatchNo = obj.Result.Table[0].VendJwAllowToSelectBatchNo;
                         console.log(allowOption);
                         if (allowOption == 'Y') {
-                            //$('#EntryDate').prop("readonly", false);
+                            //$('#EntryDate').prop("readonly", true);
                             $('#EntryDate').css('color', 'rgb(248 255 178)'); // feature option
-                            // $('#ChallanDate').prop("readonly", false);
+                            // $('#ChallanDate').prop("readonly", true);
                             $('#ChallanDate').css('color', 'rgb(248 255 178)'); // feature option
                         }
                         else {
@@ -2556,7 +2587,8 @@ $('#btnClose').click(function () {
                     ItemCode: $('#ItemCode').val(),
                     TransDate: $('#ChallanDate').val(),
                     YearCode: $('#YearCode').val(),
-                    BatchNo: $('#BatchNo').val()
+                    
+                    BatchNo: $('#BatchNo option:selected').text().trim()
                 },
                 dataType: "json",
                 async: false,
@@ -2635,7 +2667,7 @@ $('#btnClose').click(function () {
                     ItemCode: $('#ItemCode').val(),
                     TransDate: $('#ChallanDate').val(),
                     YearCode: $('#YearCode').val(),
-                    BatchNo: $('#BatchNo').val()
+                    BatchNo: $('#BatchNo option:selected').text().trim()
                 },
                 dataType: "json",
                 async: false,
@@ -2777,7 +2809,7 @@ $('#btnClose').click(function () {
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("GetItemRate")",
-                data: { ItemCode: $('#ItemCode').val(), TillDate: $('#ChallanDate').val(), YearCode: $('#YearCode').val(), BatchNo: $('#BatchNo').val(), UniqueBatchNo: $('#UniqueBatchNo').val() },
+                data: { ItemCode: $('#ItemCode').val(), TillDate: $('#ChallanDate').val(), YearCode: $('#YearCode').val(), BatchNo: $('#BatchNo option:selected').text().trim(), UniqueBatchNo: $('#UniqueBatchNo option:selected').text().trim() },
                 dataType: "json",
                 async: false,
                 success: function (result, status, error) {
@@ -2843,7 +2875,7 @@ $('#btnClose').click(function () {
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("GetStockQty")",
-                data: { ItemCode: $('#ItemCode').val(), StoreId: $('#StoreId').val(), TillDate: $('#ChallanDate').val(), BatchNo: $('#BatchNo').val(), UniqueBatchNo: $('#UniqueBatchNo').val() },
+                data: { ItemCode: $('#ItemCode').val(), StoreId: $('#StoreId').val(), TillDate: $('#ChallanDate').val(), BatchNo: $('#BatchNo option:selected').text().trim(), UniqueBatchNo: $('#UniqueBatchNo option:selected').text().trim() },
                 dataType: "json",
                 async: false,
                 success: function (result, status, error) {
@@ -2880,7 +2912,7 @@ $('#btnClose').click(function () {
             $.ajax({
                 type: "POST",
                 url: '@Url.Action("GetBatchNumber","NRGP")',
-                data: { StoreId: $('#StoreId').val(), StoreName: $('#StoreId').find(':selected').text(), ItemCode: $('#ItemCode').val(), TransDate: $('#ChallanDate').val(), YearCode: $('#YearCode').val(), BatchNo: $('#BatchNo').val() },
+                data: { StoreId: $('#StoreId').val(), StoreName: $('#StoreId').find(':selected').text(), ItemCode: $('#ItemCode').val(), TransDate: $('#ChallanDate').val(), YearCode: $('#YearCode').val(), BatchNo: $('#BatchNo option:selected').text().trim() },
                 dataType: "json",
                 async: false,
                 success: function (result, status, error) {
@@ -3017,12 +3049,12 @@ $('#btnClose').click(function () {
 
                     itemBatchArray.push({
                         "itemcode": parseInt($('#ItemCode').val()),
-                        "batchno": $('#BatchNo').val(),
-                        "uniqueBatchNo": $('#UniqueBatchNo').val()
+                        "batchno": $('#BatchNo option:selected').text().trim(),
+                        "uniqueBatchNo": $('#UniqueBatchNo option:selected').text().trim()
                     });
                     BatchUniqueUpd.push({
                         "itemcode": parseInt($('#ItemCode').val()),
-                        "batchno": $('#BatchNo').val(),
+                        "batchno": $('#BatchNo option:selected').text().trim(),
                         "seqBatch": SeqForBatch
                     });
                     //console.log(2);
@@ -3956,7 +3988,7 @@ $('#btnClose').click(function () {
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("GetPrevQty")",
-                data: { "EntryId": $('#EntryId').val(), "YearCode": $('#YearCode').val(), "ItemCode": $('#ItemCode').val(), "BatchNo": $('#BatchNo').val(), "uniqueBatchno": $('#UniqueBatchNo').val() },
+                data: { "EntryId": $('#EntryId').val(), "YearCode": $('#YearCode').val(), "ItemCode": $('#ItemCode').val(), "BatchNo": $('#BatchNo option:selected').text().trim(), "uniqueBatchno": $('#UniqueBatchNo option:selected').text().trim() },
                 dataType: "json",
                 async: false,
                 success: function (result, status, error) {
