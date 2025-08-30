@@ -534,6 +534,34 @@ namespace eTactWeb.Controllers
                         // return View("Error", Result);
                         return View(model);
                     }
+                    if (Result.StatusText == "TransDate" || Result.StatusCode == HttpStatusCode.InternalServerError)
+                    {
+                        ViewBag.isSuccess = false;
+                        var input = "";
+                        if (Result?.Result != null)
+                        {
+                            if (Result.Result is string str)
+                            {
+                                input = str;
+                            }
+                            else
+                            {
+                                input = JsonConvert.SerializeObject(Result.Result);
+                            }
+
+                            TempData["ErrorMessage"] = input;
+                        }
+                        else
+                        {
+                            TempData["500"] = "500";
+                        }
+
+
+                        _logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
+                        //model.IsError = "true";
+                        //return View("Error", Result);
+                    }
+
                     HttpContext.Session.SetString("SaleInvoice", JsonConvert.SerializeObject(model));
                 }
                 return Json(new { status = "Success" });
