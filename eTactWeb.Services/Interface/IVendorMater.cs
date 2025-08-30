@@ -1,0 +1,17 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using eTactWeb.DOM.Models;
+using static eTactWeb.DOM.Models.Common;
+
+namespace eTactWeb.Services.Interface
+{
+    public interface IVendorMater
+    {
+        Task<ResponseResult> FillEntryId();
+        Task<ResponseResult> FillVendorList(string isShowAll);
+        Task<ResponseResult> SaveVendorUser(VendorUserModel model);
+    }
+}
