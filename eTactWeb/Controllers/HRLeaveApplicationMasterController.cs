@@ -340,8 +340,8 @@ namespace eTactWeb.Controllers
                 GIGrid.Columns.Add("EmpId", typeof(int));
                 GIGrid.Columns.Add("SeqNo", typeof(int));
                 GIGrid.Columns.Add("LeaveEntryId", typeof(int));
-                GIGrid.Columns.Add("FromDate", typeof(string));
-                GIGrid.Columns.Add("ToDate", typeof(string));
+                GIGrid.Columns.Add("FromDate", typeof(DateTime));
+                GIGrid.Columns.Add("ToDate", typeof(DateTime));
                 GIGrid.Columns.Add("Duration", typeof(float));
                 GIGrid.Columns.Add("BalanceLeaveMonthly", typeof(float));
                 GIGrid.Columns.Add("BalanceLeaveYearly", typeof(float));
@@ -359,8 +359,8 @@ namespace eTactWeb.Controllers
                             Item.EmpId==0?0:Item.EmpId,
                     Item.SeqNo==0?0:Item.SeqNo,
                     Item.LeaveEntryId == null ? 0 : Item.LeaveEntryId,
-                    Item.FromDate == null ? "" : Item.FromDate,
-                    Item.ToDate == null ? "" : Item.ToDate,
+                    Item.FromDate == null ? "" : DateTime.Parse(Item.FromDate),
+                    Item.ToDate == null ? "" : DateTime.Parse(Item.ToDate),
                     Item.Duration == 0 ? 0:Item.Duration,
                     Item.BalanceLeaveMonthly == 0 ? 0 :Item.BalanceLeaveMonthly,
                     Item.BalanceLeaveYearly== 0 ? 0 : Item.BalanceLeaveYearly,

@@ -279,6 +279,7 @@ namespace eTactWeb
             services.TryAddTransient<IMachineMaster, MachineMasterBLL>();
             services.TryAddTransient<IMRNRegister, MRNRegisterBLL>();
             services.TryAddScoped<ICustomerDiscountCategory, CustomerDiscountCategoryBLL>();
+            services.TryAddScoped<IAssetsNdToolCategoryMaster, AssetsNdToolCategoryMasterBLL>();
             services.TryAddTransient<IMIRRegister, MIRRegisterBLL>();
             services.TryAddTransient<ICreditNote, CreditNoteBLL>();
             services.TryAddTransient<IBankReconciliation, BankReconciliationBLL>();
@@ -288,6 +289,7 @@ namespace eTactWeb
             services.TryAddSingleton<ConnectionStringService>();
             services.AddScoped<UserContextService>();
             services.TryAddTransient<ICustSaleNewRate , CustSaleNewRateBLL>();
+            services.TryAddTransient<IVendorMater , VendorUserBLL>();
         }
     }
 }

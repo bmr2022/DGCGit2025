@@ -17,8 +17,8 @@ namespace eTactWeb.DOM.Models
         public string? ApplicationNo { get; set; }
         public string? ApplicationDate { get; set; }
         public int? EmpId { get; set; }
-        public string? EmpName { get; set; }
-        public string? EmpCode { get; set; }
+        public string  EmpName { get; set; }
+        public string EmpCode { get; set; }
         public string? MobileNo { get; set; }
         public string? PhoneNo { get; set; }
         public int? desigEntryId { get; set; }
@@ -59,9 +59,9 @@ namespace eTactWeb.DOM.Models
         public string? LeaveName { get; set; }
         public string? FromDate { get; set; }
         public string? ToDate { get; set; }
-        public decimal Duration { get; set; }
+        public decimal? Duration { get; set; }
         public decimal? BalanceLeaveMonthly { get; set; }
-        public decimal BalanceLeaveYearly { get; set; }
+        public decimal? BalanceLeaveYearly { get; set; }
         public decimal? MaxLeaveInMonth { get; set; }
         public string? Canceled { get; set; }
         public string? Approved { get; set; }
@@ -87,7 +87,7 @@ namespace eTactWeb.DOM.Models
         public int DeptId { get; set; }
         public string? Department { get; set; }
         public int ShiftId { get; set; }
-        public string? Shift { get; set; }
+        public string  Shift { get; set; }
         public decimal? TotalYearlyLeave { get; set; }
         public decimal? TotalMonthlyLeave { get; set; }
 

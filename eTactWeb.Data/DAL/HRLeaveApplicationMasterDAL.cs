@@ -156,6 +156,8 @@ namespace eTactWeb.Data.DAL
                 if (model.Mode == "U" || model.Mode == "V")
                 {
                     SqlParams.Add(new SqlParameter("@Flag", "UPDATE"));
+                    SqlParams.Add(new SqlParameter("@Updatedby", model.UpdatedBy));
+                    SqlParams.Add(new SqlParameter("@LastUPdatedBy", DateTime.Parse(model.LastUPdatedDate).ToString("dd/MMM/yyyy")));
                 }
                 else
                 {
@@ -165,9 +167,11 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@LeaveAppEntryId", model.LeaveAppEntryId));
                 SqlParams.Add(new SqlParameter("@LeaveAppYearCode", model.LeaveAppYearCode));
                 SqlParams.Add(new SqlParameter("@BranchCC", model.BranchCC));
-                SqlParams.Add(new SqlParameter("@LeaveAppEntryDate", DateTime.Parse(model.LeaveAppEntryDate).ToString("dd/MMM/yyyy")));
+                SqlParams.Add(new SqlParameter("@LeaveAppEntryDate", DateTime.Parse(model.LeaveAppEntryDate)));
+              //  SqlParams.Add(new SqlParameter("@LeaveAppEntryDate", DateTime.Parse(model.LeaveAppEntryDate).ToString("dd/MMM/yyyy")));
                 SqlParams.Add(new SqlParameter("@ApplicationNo", model.ApplicationNo));
-                SqlParams.Add(new SqlParameter("@ApplicationDate", DateTime.Parse(model.ApplicationDate).ToString("dd/MMM/yyyy")));
+            //    SqlParams.Add(new SqlParameter("@ApplicationDate", DateTime.Parse(model.ApplicationDate).ToString("dd/MMM/yyyy")));
+                SqlParams.Add(new SqlParameter("@ApplicationDate", DateTime.Parse(model.ApplicationDate)));
                 SqlParams.Add(new SqlParameter("@EmpId", model.EmpId));
                 SqlParams.Add(new SqlParameter("@MobileNo", model.MobileNo));
                 SqlParams.Add(new SqlParameter("@PhoneNo", model.PhoneNo));
@@ -184,11 +188,10 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@BalanceAdvanceAmt", model.BalanceAdvanceAmt));
                 SqlParams.Add(new SqlParameter("@DepartHeadApprovedBy", model.DepartHeadApprovedBy));
                 SqlParams.Add(new SqlParameter("@HRApprovedBy", model.HRApprovedBy));
-                SqlParams.Add(new SqlParameter("@DepartAppdate", DateTime.Parse(model.DepartAppdate).ToString("dd/MMM/yyyy")));
-                SqlParams.Add(new SqlParameter("@HRAppDate", DateTime.Parse(model.HRAppDate).ToString("dd/MMM/yyyy")));
+                SqlParams.Add(new SqlParameter("@DepartAppdate", DateTime.Parse(model.DepartAppdate)));
+                SqlParams.Add(new SqlParameter("@HRAppDate", DateTime.Parse(model.HRAppDate)));
                 SqlParams.Add(new SqlParameter("@ActualEntryBy", model.ActualEntryBy));
-                SqlParams.Add(new SqlParameter("@Updatedby", model.UpdatedBy));
-                SqlParams.Add(new SqlParameter("@LastUPdatedBy", DateTime.Parse(model.LastUPdatedDate).ToString("dd/MMM/yyyy")));
+               
                 SqlParams.Add(new SqlParameter("@Canceled", model.Canceled));
                 SqlParams.Add(new SqlParameter("@Approved", model.Approved));
 
@@ -236,8 +239,8 @@ namespace eTactWeb.Data.DAL
                         CommandType = CommandType.StoredProcedure
                     };
                     oCmd.Parameters.AddWithValue("@Flag", "DASHBOARD");
-                    oCmd.Parameters.AddWithValue("@Fromdate", FromDate);
-                    oCmd.Parameters.AddWithValue("@todate", ToDate);
+                    oCmd.Parameters.AddWithValue("@Fromdate", Convert.ToDateTime(FromDate));
+                    oCmd.Parameters.AddWithValue("@todate", Convert.ToDateTime(ToDate));
                     oCmd.Parameters.AddWithValue("@ReportType", ReportType);
 
 

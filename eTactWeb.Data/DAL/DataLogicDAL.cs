@@ -20,9 +20,9 @@ namespace eTactWeb.Data.DAL
         {
             _connectionStringHelper = connectionStringHelper;
             //configuration = config;
-            //DBConnectionString = configuration.GetConnectionString("eTactDB");
-            
-            DBConnectionString = _connectionStringHelper.GetConnectionStringForCompany();
+            DBConnectionString = configuration.GetConnectionString("eTactDB");
+
+            //DBConnectionString = _connectionStringHelper.GetConnectionStringForCompany();
         }
 
         public string? GetDBConnection => DBConnectionString;
