@@ -1,0 +1,375 @@
+﻿@model eTactWeb.DOM.Models.VendorUserModel
+
+@{
+	ViewData["Title"] = "Vendor User";
+	Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+@*<div class="d-flex align-items-center p-3 my-2 text-white rounded shadow-sm bg-gradient" style="background-color:darkcyan;">
+    <div class="lh-1">
+    <h3 class="h3 mb-0 text-white lh-1">Account Master</h3>
+    </div>
+    </div>*@
+<form asp-action="ControlPlan" enctype="multipart/form-data" asp-controller="ControlPlan" autocomplete="off" class="form-horizontal" asp-antiforgery=false>
+	<div class="card rounded shadow-lg">
+		<div class="card-header card-headerBG text-light justify-content-center bg-gradient">
+			<h4>
+				Vendor
+				<span class="d-flex float-end" style="margin-top:-2px;">
+					<a asp-action="ControlPlanDashBoard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+						<i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
+						Dashboard
+					</a>
+					<div class="row justify-content-between g-2">
+						<div class="col-auto">
+							@*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
+							<a href="#" class=" btn btn-primary btn-sm" onclick="back();">
+								<i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+
+								BACK
+							</a>
+						</div>
+						@if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+						{
+							<div class="col-auto">
+								@*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+								<a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+									@* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+									<i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+									REFRESH
+								</a>
+							</div>
+							@if (Model.Mode == "U")
+							{
+								@*Model.Mode = "U";*@
+								<div class="col-auto">
+									@* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+									<input type="hidden" id="Mode" name="Mode" asp-for="Mode" value="U" />
+									<button type="submit" class="btn btn-sm btn-outline-light bg-gradient submitBTN" id="updateBtnHeader">
+										<i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+										UPDATE
+									</button>
+								</div>
+							}
+							else
+							{
+								<div class="col-auto">
+									@*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
+									<button type="submit" class="btn btn-primary btn-sm submitBTN" id="submitBTN">
+										<i class="fa-solid fa-chevron-circle-right fa-fw fa-lg"></i>
+										SUBMIT
+									</button>
+								</div>
+							}
+						}
+					</div>
+				</span>
+			</h4>
+		</div>
+		<div class="card-body bg-light">
+			<div class="accordion shadow-lg" id="accordionAccountMaster">
+				<div class="accordion-item">
+					<h2 class="accordion-header" id="B_ItemCategoryDetail">
+						<button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_AccountDetail" aria-expanded="true" aria-controls="B_AccountDetail">
+							<strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>ControlPlan</strong>
+
+						</button>
+					</h2>
+					<div id="B_AccountDetail" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_AccountDetail">
+						<div class="accordion-body">
+							<input type="hidden" asp-for="FinFromDate" value="@Model.FinFromDate" />
+							<input type="hidden" asp-for="FinToDate" value="@Model.FinToDate" />
+							@* <input asp-for="EntryByMachine" type="hidden" class="form-control" value="@Environment.MachineName" />
+                            <input asp-for="Mode" type="hidden" class="form-control" value="@Model.Mode" />
+                            <input type="hidden" asp-for="SeqNo" value="0" />
+                            <input asp-for="CntPlanEntryDate" type="hidden" class="form-control" value="@Model.CntPlanEntryDate" />
+                            <input asp-for="CntPlanYearCode" type="hidden" class="form-control" value="@Model.CntPlanYearCode" />
+                            <input asp-for="CC" type="hidden" class="form-control" value="@Model.CC" />
+                            <input asp-for="ActualEntryDate" type="hidden" class="form-control" value="@Model.ActualEntryDate" />
+                             <input asp-for="ActualEntryBy" type="hidden" class="form-control" value="@Model.ActualEntryBy" />*@
+							<div class="row g-3">
+								<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:70px;">
+									<label asp-for="UserEntryId" class="form-label">Entry Id</label>
+									<input asp-for="UserEntryId" class="form-control" readonly />
+								</div>
+								<div class="col-xl-3 col-lg-4 col-md-4 col-sm-6 col-xs-12">
+									<label asp-for="AccountCode" class="form-label">Account Name</label>
+									<input class="form-check-input" type="checkbox" id="isShowAllAccountCode" />
+									<select asp-for="AccountCode" class="form-control">
+										<option value="">-Select-</option>
+									</select>
+								</div>
+								<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:90px;">
+									<label asp-for="UserId" class="form-label">User Id</label>
+									<input asp-for="UserId" class="form-control" />
+								</div>
+
+								<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:70px;">
+									<label asp-for="Password" class="form-label">Password</label>
+									<input asp-for="Password" class="form-control" />
+								</div>
+								<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:90px;">
+									<label asp-for="Active" class="form-label" style="color:red">Active</label>
+									<select asp-for="Active" class="form-control">
+										<option value="Y">True</option>
+										<option value="N">False</option>
+									</select>
+								</div>
+								<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+									<label asp-for="AllowToDelete" class="form-label" style="color:red">AllowTodelete</label>
+									<select asp-for="AllowToDelete" class="form-control">
+										<option value="Y">Yes</option>
+										<option value="N">No</option>
+									</select>
+								</div>
+								<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+									<label asp-for="AllowToUpdate" class="form-label" style="color:red">AllowtoUpdate</label>
+									<select asp-for="AllowToUpdate" class="form-control">
+										<option value="Y">Yes</option>
+										<option value="N">No</option>
+									</select>
+								</div>
+								<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+									<label asp-for="RightsForReport" class="form-label" style="color:red">RightsForReport</label>
+									<select asp-for="RightsForReport" class="form-control">
+										<option value="Y">Yes</option>
+										<option value="N">No</option>
+									</select>
+								</div>
+								<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+									<label asp-for="RightsForPurchaseModule" class="form-label" style="color:red">RightsForPurchaseModule</label>
+									<select asp-for="RightsForPurchaseModule" class="form-control">
+										<option value="Y">Yes</option>
+										<option value="N">No</option>
+									</select>
+								</div>
+								<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+									<label asp-for="RightsForQCModule" class="form-label" style="color:red">RightsForQCmodule</label>
+									<select asp-for="RightsForQCModule" class="form-control">
+										<option value="Y">Yes</option>
+										<option value="N">No</option>
+									</select>
+								</div>
+								<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+									<label asp-for="RightsForAccountModule" class="form-label" style="color:red">RightsforAccountModule</label>
+									<select asp-for="RightsForAccountModule" class="form-control">
+										<option value="Y">Yes</option>
+										<option value="N">No</option>
+									</select>
+								</div>
+								<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+									<label asp-for="AdminUser" class="form-label" style="color:red">AdminUser</label>
+									<select asp-for="AdminUser" class="form-control">
+										<option value="Y">Yes</option>
+										<option value="N">No</option>
+									</select>
+								</div>
+
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="accordion-item">
+					<h2 class="accordion-header" id="HPanel2">
+						<button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#ODGrid" aria-expanded="false" aria-controls="ODGrid">
+							<strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Other Detail</strong>
+						</button>
+					</h2>
+					<div id="ODGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+						<div class="accordion-body">
+							<div class="row g-2 gx-3" id="_ItemGrid">
+
+								<div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+									<label asp-for="ActualEntryByName" class="form-label">Actual Entered By</label>
+									<input type="hidden" asp-for="ActualEntryBy" class="form-control" readonly />
+									<input asp-for="ActualEntryByName" class="form-control" readonly />
+								</div>
+								<div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+									<label asp-for="ActualEntryDate" class="form-label">ActualEntryDate</label>
+									<input asp-for="ActualEntryDate" class="form-control" value="@Model.ActualEntryDate" readonly />
+								</div>
+								<div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+									<label asp-for="BranchName" class="form-label">Branch</label>
+									<input asp-for="BranchName" class="form-control" value="@Model.BranchName" readonly />
+								</div>
+								<div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+									<label asp-for="EntryByMachineName" class="form-label">Machine Name</label>
+									<input asp-for="EntryByMachineName" class="form-control" value="@Environment.MachineName" readonly />
+								</div>
+
+								<div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+									<label asp-for="UpdatedByName" class="form-label">Updated By</label>
+									<input type="hidden" asp-for="LastUpdatedBy" class="form-control" readonly />
+									<input asp-for="UpdatedByName" class="form-control" readonly />
+								</div>
+								<div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+									<label asp-for="LastUpdationDate" class="form-label">Updated Date</label>
+									<input asp-for="LastUpdationDate" class="form-control" readonly />
+								</div>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="card-footer p-3">
+			<div class="row justify-content-between g-2">
+
+				<div class="card border-light bg-gradient rounded shadow-lg">
+					<div class="card-header card-headerBG text-light justify-content-center bg-gradient">
+						<h4>
+							@ViewData["Title"]
+							<span class="d-flex float-end" style="margin-top:-2px;">
+								<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+									<i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
+									Dashboard
+								</a>
+								<div class="row justify-content-between g-2">
+									<div class="col-auto">
+										@*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
+										<a href="#" class=" btn btn-primary btn-sm" onclick="back();">
+											<i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+
+											BACK
+										</a>
+									</div>
+									@if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+									{
+										<div class="col-auto">
+											@*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+											<a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+												@* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+												<i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+												REFRESH
+											</a>
+										</div>
+										@if (Model.Mode == "U")
+										{
+											@*Model.Mode = "U";*@
+											<div class="col-auto">
+												@* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+												<button type="submit" class="btn btn-sm btn-outline-light bg-gradient submitBTN" id="updateBtnFooter">
+													<i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+													UPDATE
+												</button>
+											</div>
+										}
+
+										else
+										{
+											<div class="col-auto">
+												@*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
+												<button type="submit" class="btn btn-primary btn-sm submitBTN" id="submitBTN">
+													<i class="fa-solid fa-chevron-circle-right fa-fw fa-lg"></i>
+													SUBMIT
+												</button>
+											</div>
+										}
+									}
+								</div>
+							</span>
+						</h4>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+
+
+@section Scripts {
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+	<script>
+		$(document).ready(function () {
+			debugger
+			FillEntryID();
+			FillVendorList('N');
+			GetServerDate();
+			$('#UserEntryId').rules("remove", "required");
+			$('#AccountCode').rules("remove", "required");
+			$('#UserId').rules("remove", "required");
+			$('#Password').rules("remove", "required");
+			$('#Active').rules("remove", "required");
+			$('#AllowToDelete').rules("remove", "required");
+			$('#AllowToUpdate').rules("remove", "required");
+			$('#RightsForReport').rules("remove", "required");
+			$('#RightsForPurchaseModule').rules("remove", "required");
+			$('#RightsForQCModule').rules("remove", "required");
+			$('#RightsForAccountModule').rules("remove", "required");
+			$('#AdminUser').rules("remove", "required");
+			$('#ActualEntryByName').rules("remove", "required");
+			$('#BranchName').rules("remove", "required");
+			$('#EntryByMachineName').rules("remove", "required");
+			$('#LastUpdationDate').rules("remove", "required");
+		});
+
+		function FillEntryID() {
+			$.ajax({
+				url: '@Url.Action("FillEntryId", "VendorUser")',
+				type: 'POST',
+				success: function (data, status, xhr) {
+					var obj = $.parseJSON(data);
+					if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
+						$('#UserEntryId').val(obj.Result[0].UserEntryId || 0);
+					}
+				},
+				error: function (xhr, status, error) {
+					console.log('Failed to load Entry Id.');
+				}
+			});
+		}
+
+		$('#isShowAllAccountCode').change(function () {
+		 var isShowAll =  $('#isShowAllAccountCode').is(':checked') ? "Y" : "N";
+		   FillVendorList(isShowAll);
+		});
+
+		function FillVendorList(isShowAll) {
+			$.ajax({
+				url: '@Url.Action("FillVendorList", "VendorUser")',
+				type: 'POST',
+				data: {
+					isShowAll : isShowAll
+				},
+				// async: false,
+				success: function (data, status, xhr) {
+					var obj = $.parseJSON(data);
+					if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
+						$('#AccountCode').append('<option value="">--Select--</option>');
+						$.each(obj.Result, function (index, Val) {
+							$('#AccountCode').append('<option value="' + Val.Account_code + '">' + Val.Account_name + '</option>');
+						});
+					}
+				},
+				error: function (xhr, status, error) {
+					console.log('Failed to load Entry Id.');
+				}
+			});
+		}
+
+			 function GetServerDate() {
+				$.ajax({
+					type: "GET",
+					url: "@Url.Action("GetServerDate", "WorkOrder")",
+					success: function (result, status, error) {
+						debugger
+						var FinFromDate = parseDateToFormat($('#FinFromDate').val().split(" ")[0]);
+						var FinToDate = parseDateToFormat($('#FinToDate').val().split(" ")[0]);
+
+						$('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+						$('#ActualEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+						$('#LastUpdationDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+						$('#EntryDate').datepicker('option', 'minDate', FinFromDate);
+						$('#EntryDate').datepicker('option', 'maxDate', FinToDate);
+					}
+				});
+			}
+	</script>
+	@* 	<script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script> *@
+
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
+}

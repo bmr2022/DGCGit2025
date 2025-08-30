@@ -20,6 +20,97 @@ namespace eTactWeb.Data.DAL
         private IDataReader? Reader;
         private readonly ConnectionStringService _connectionStringService;
         //public static decimal BatchStockQty { get; private set; }
+
+        public async Task<ResponseResult> GetItemGroup()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+
+                SqlParams.Add(new SqlParameter("@Flag", "GetItemGroup"));
+
+
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_GetDropDownList", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+
+
+
+
+        public async Task<IssueNRGPModel> selectMultipleItem(int Group_Code, int StoreID, int YearCode,string ChallanDate,string PartCode)
+        {
+            var resultList = new IssueNRGPModel();
+            DataSet oDataSet = new DataSet();
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(DBConnectionString))
+                {
+                    SqlCommand command = new SqlCommand("SP_IssueNRGP", connection)
+                    {
+                        CommandType = CommandType.StoredProcedure
+                    };
+                    ;
+
+                    command.Parameters.AddWithValue("@Flag", "selectMultipleItem");
+                    command.Parameters.AddWithValue("@GroupCode", Group_Code);
+                    command.Parameters.AddWithValue("@YearCode", YearCode);
+                    command.Parameters.AddWithValue("@Storeid", StoreID);
+                    command.Parameters.AddWithValue("@ChallanDate",ParseFormattedDate(ChallanDate));
+                    command.Parameters.AddWithValue("@PartCode", PartCode);
+
+                    await connection.OpenAsync();
+
+                    using (SqlDataAdapter dataAdapter = new SqlDataAdapter(command))
+                    {
+                        dataAdapter.Fill(oDataSet);
+                    }
+                }
+
+                if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                {
+                    resultList.IssueNRGPDetailGrid = (from DataRow row in oDataSet.Tables[0].Rows
+                                                 select new IssueNRGPDetail
+                                                 {
+                                                     ItemCode = row["ItemCode"] == DBNull.Value ? 0 : Convert.ToInt32(row["ItemCode"]),
+                                                     //AccountCode = row["AccountCode"] == DBNull.Value ? 0 : Convert.ToInt32(row["AccountCode"]), 
+                                                     PartCode = row["partcode"] == DBNull.Value ? string.Empty : row["partcode"].ToString(),
+                                                     ItemName = row["Item_Name"] == DBNull.Value ? string.Empty : row["Item_Name"].ToString(),
+                                                     //AccountName = row["Account_Name"] == DBNull.Value ? string.Empty : row["Account_Name"].ToString(),
+                                                     BatchNo = row["BatchNo"] == DBNull.Value ? string.Empty : row["BatchNo"].ToString(),
+                                                     uniquebatchno = row["UniqueBatchNo"] == DBNull.Value ? string.Empty : row["UniqueBatchNo"].ToString(),
+
+                                                     //DiscCategoryName = row["DiscCategoryName"] == DBNull.Value ? string.Empty : row["DiscCategoryName"].ToString(),
+                                                     unit = row["UNIT"] == DBNull.Value ? string.Empty : row["UNIT"].ToString(),
+                                                     HSNNo = row["HsnNo"] == DBNull.Value ? 0 : Convert.ToInt32(row["HsnNo"]),
+                                                    PurchasePrice = row["PurchasePrice"] == DBNull.Value ? 0 : Convert.ToSingle(row["PurchasePrice"]),
+                                                    BatchStock = row["STOCK"] == DBNull.Value ? 0 : Convert.ToSingle(row["STOCK"]),
+                                                    Qty = row["STOCK"] == DBNull.Value ? 0 : Convert.ToSingle(row["STOCK"]),
+
+
+                                                 }).ToList();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error fetching data.", ex);
+            }
+
+            return resultList;
+        }
+
+
         public async Task<ResponseResult> GetReportName()
         {
             var _ResponseResult = new ResponseResult();

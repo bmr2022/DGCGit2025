@@ -190,6 +190,16 @@ namespace eTactWeb.Controllers
             return View(model);
         }
 
+        public async Task<JsonResult> GetItemGroup()
+        {
+            var JSON = await _IIssueNRGP.GetItemGroup();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+      
+
+
+
         public IActionResult SendReport(string emailTo = "", int EntryId = 0, int YearCode = 0, string Type = "",string CC1="",string CC2="",string CC3="",string Challanno="")
         {
             string my_connection_string;
@@ -912,6 +922,16 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+
+        public async Task<IActionResult> selectMultipleItem(int Group_Code, int StoreID, int YearCode,string ChallanDate,string PartCode)
+        {
+            var model = new IssueNRGPModel();
+            model = await _IIssueNRGP.selectMultipleItem(Group_Code, StoreID, YearCode, ChallanDate, PartCode);
+
+
+            return PartialView("_NRGPShowAllItemGrid", model);
+
+        }
         public async Task<JsonResult> GetBatchInventory()
         {
             var JSON = await _IIssueNRGP.GetBatchInventory();
@@ -930,6 +950,74 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+
+
+        public IActionResult AddMultipleItemDetail(List<IssueNRGPDetail> model)
+        {
+            try
+            {
+                var MainModel = new IssueNRGPModel();
+                var StockGrid = new List<IssueNRGPDetail>();
+                var StockAdjustGrid = new List<IssueNRGPDetail>();
+
+                var SeqNo = 1;
+                foreach (var item in model)
+                {
+                    string modelJson = HttpContext.Session.GetString("KeyIssueNRGPGrid");
+                    IList<IssueNRGPDetail> ItemDetail = new List<IssueNRGPDetail>();
+                    if (!string.IsNullOrEmpty(modelJson))
+                    {
+                        ItemDetail = JsonConvert.DeserializeObject<List<IssueNRGPDetail>>(modelJson);
+                    }
+
+                    //_MemoryCache.TryGetValue("ItemList", out List<SaleBillDetail> ItemDetail);
+
+
+                    if (model != null)
+                    {
+                        if (ItemDetail == null)
+                        {
+                            item.SeqNo = SeqNo++;
+                            item.SEQNo = SeqNo++;
+                            StockGrid.Add(item);
+                        }
+                        else
+                        {
+
+
+                            if (ItemDetail.Where(x => x.ItemCode == item.ItemCode && x.BatchNo == item.BatchNo && x.uniquebatchno == item.uniquebatchno).Any())
+                            {
+                                return StatusCode(207, "Duplicate");
+                            }
+
+
+                            item.SeqNo = ItemDetail.Count + 1;
+                            item.SEQNo = ItemDetail.Count + 1;
+                            StockGrid = ItemDetail.Where(x => x != null).ToList();
+                            StockAdjustGrid.AddRange(StockGrid);
+                            StockGrid.Add(item);
+                        }
+                        MainModel.IssueNRGPDetailGrid = StockGrid;
+
+
+                        HttpContext.Session.SetString("KeyIssueNRGPGrid", JsonConvert.SerializeObject(MainModel.IssueNRGPDetailGrid));
+                        HttpContext.Session.SetString("IssueNRGP", JsonConvert.SerializeObject(MainModel));
+                    }
+                    else
+                    {
+                        ModelState.TryAddModelError("Error", "Schedule List Cannot Be Empty...!");
+                    }
+                }
+
+
+                return PartialView("_IssueNRGPGrid", MainModel);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
 
         public IActionResult AddIssueNRGPDetail(IssueNRGPDetail model)
         {

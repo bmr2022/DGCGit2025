@@ -12,6 +12,7 @@ else
     {
         <input type="hidden" id="ItemCode-@item.SeqNo" data-ItemGrid="@item.ItemCode" />
         <tr class="small" style="white-space:nowrap" id="MIRRowGrid-@item.SeqNo">
+            <td>@item.SeqNo</td>
             <td style="white-space:nowrap;">
                 
                     <a class="table-link link-primary" id="BtnEdit-@item.SeqNo" onclick="EditItemRowFromGrid(@item.SeqNo)">

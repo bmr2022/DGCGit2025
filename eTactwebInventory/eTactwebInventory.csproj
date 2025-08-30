@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Views\NRGP\_NRGPShowAllItemGrid1.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="ClosedXML" Version="0.104.2" />
     <PackageReference Include="EPPlus" Version="6.1.0" />
     <PackageReference Include="FastReport.OpenSource" Version="2023.2.25" />
@@ -32,6 +36,10 @@
     <Content Update="Views\MaterialReceipt\MRNDashboard.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Views\NRGP\_NRGPShowAllItemGrid1.cshtml" />
   </ItemGroup>
 
 </Project>

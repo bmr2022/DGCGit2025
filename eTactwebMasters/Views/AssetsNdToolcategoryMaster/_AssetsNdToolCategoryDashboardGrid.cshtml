@@ -1,0 +1,109 @@
+﻿@model List<eTactWeb.DOM.Models.AssetsNdToolCategoryMasterModel>
+
+@if (Model != null && Model.Count > 0)
+{
+    <div class="table-responsive">
+        <table class=" table table-hover table-bordered table-striped TbCss text-nowrap mb-0">
+            <thead class="bg-gradient card-headerBG text-light">
+                <tr>
+                    <th>#</th>
+                    <th style="width:120px;">Actions</th>
+                    <th>Category Code</th>
+                    <th>Category Name</th>
+                    <th>Instrument</th>
+                    <th>Description</th>
+                    <th>Main Category Id</th>
+                    <th>Tool Main Category Id</th>
+                    <th>Entry By Machine</th>
+                    <th>Actual Entry By</th>
+                    <th>Actual Entry Date</th>
+                    <th>Last Updated By</th>
+                    <th>Last Updated Date</th>
+                    <th>Updated By Employee</th>
+                    <th>Actual Entry Employee</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Select((value, index) => new { value, index }))
+                {
+                    <tr>
+                        <td>@(item.index + 1)</td>
+                        <td>
+                            <div class="d-flex gap-2">
+                                <!-- View -->
+                                <div id="viewCursorDiv-@item.index">
+                                    <a asp-controller="AssetsNdToolCategoryMaster"
+                                       asp-action="AssetsNdToolCategoryMaster"
+                                       asp-route-id="@item.value.AssetsCateogryId"
+                                       asp-route-categoryName="@item.value.AssetsCategoryName"
+                                       asp-route-mode="V"
+                                       class="table-link "
+                                       title="View">
+                                        <span class="fa-stack">
+                                            <i class="fa fa-square fa-stack-2x text-success"></i>
+                                            <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </a>
+                                </div>
+
+                                <!-- Edit -->
+                                <div id="editCursorDiv-@item.index">
+                                    <a asp-controller="AssetsNdToolCategoryMaster"
+                                       asp-action="AssetsNdToolCategoryMaster"
+                                       asp-route-id="@item.value.AssetsCateogryId"
+                                       asp-route-categoryName="@item.value.AssetsCategoryName"
+                                       asp-route-mode="U"
+                                       class="table-link "
+                                       title="Edit">
+                                        <span class="fa-stack">
+                                            <i class="fa fa-square fa-stack-2x text-primary"></i>
+                                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </a>
+                                </div>
+
+                                <!-- Delete -->
+                                <div id="deleteCursorDiv-@item.index">
+                                    <a href="javascript:void(0);"
+                                       data-id="@item.value.AssetsCateogryId"
+                                       data-name="@item.value.AssetsCategoryName"
+                                       onclick="confirmDelete(this)"
+                                       class="table-link"
+                                       title="Delete">
+                                        <span class="fa-stack">
+                                            <i class="fa fa-square fa-stack-2x text-danger"></i>
+                                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </a>
+                                </div>
+                            </div>
+                        </td>
+
+
+                        <td>@item.value.AssetsCategoryCode</td>
+                        <td>@item.value.AssetsCategoryName</td>
+                        <td>@item.value.AsstesToolInstrument</td>
+                        <td>@item.value.Otherdetail</td>
+                        <td>@item.value.AssetsMainCateogryId</td>
+                        <td>@item.value.ToolMaincategoryId</td>
+                        <td>@item.value.EntryByMachineName</td>
+                        <td>@item.value.ActualEntryBy</td>
+                        <td>@item.value.ActualEntryDate?.ToString("dd-MMM-yyyy")</td>
+                        <td>@item.value.LastUpdatedBy</td>
+                        <td>@item.value.LastUpdationDate?.ToString("dd-MMM-yyyy")</td>
+                        <td>@item.value.UpdatedByEmp</td>
+                        <td>@item.value.ActualEntryEmp</td>
+                        
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <div class="alert alert-warning text-center">
+        No records found.
+    </div>
+}
+<center><strong>TOTAL ROWS : <span id="totalRows">@((Model != null) ? Model.Count() : 0)</span></strong></center>
