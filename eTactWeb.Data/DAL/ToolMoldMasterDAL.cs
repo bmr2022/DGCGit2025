@@ -216,7 +216,8 @@ namespace eTactWeb.Data.DAL
 				sqlParams.Add(new SqlParameter("@UnderGroup", model.UnderGroup));
 				sqlParams.Add(new SqlParameter("@SubSubGroup", model.SubSubGroup));
 				sqlParams.Add(new SqlParameter("@CostCenterId", model.CostCenterId));
-				sqlParams.Add(new SqlParameter("@toolyear", model.Fiscalyear));
+				sqlParams.Add(new SqlParameter("@toolyear", model.YearCode));
+				sqlParams.Add(new SqlParameter("@Fiscalyear", model.Fiscalyear));
 				sqlParams.Add(new SqlParameter("@VendoreAccountCode", model.VendoreAccountCode));
 				sqlParams.Add(new SqlParameter("@PONO", model.PONO));
 				sqlParams.Add(new SqlParameter("@PODate", poDate));
@@ -339,7 +340,8 @@ namespace eTactWeb.Data.DAL
                                                   UnderGroup = dr["UnderGroup"] != DBNull.Value ? Convert.ToString(dr["UnderGroup"]) : "",
                                                   SubSubGroup = dr["SubSubGroup"] != DBNull.Value ? Convert.ToInt32(dr["SubSubGroup"]) : 0,
                                                   CostCenterId = dr["CostCenterId"] != DBNull.Value ? Convert.ToInt32(dr["CostCenterId"]) : 0,
-                                                  Fiscalyear = dr["ToolYear"] != DBNull.Value ? Convert.ToInt32(dr["ToolYear"]) : 0,
+                                                  YearCode = dr["ToolYear"] != DBNull.Value ? Convert.ToInt32(dr["ToolYear"]) : 0,
+                                                  Fiscalyear = dr["Fiscalyear"] != DBNull.Value ? Convert.ToInt32(dr["Fiscalyear"]) : 0,
                                                   VendoreAccountCode = dr["VendoreAccountCode"] != DBNull.Value ? Convert.ToInt32(dr["VendoreAccountCode"]) : 0,
                                                   VendoreAccountName = dr["VendorName"] != DBNull.Value ? Convert.ToString(dr["VendorName"]) : "",
                                                   CostCenterName = dr["CostCenterName"] != DBNull.Value ? Convert.ToString(dr["CostCenterName"]) : "",
@@ -368,8 +370,8 @@ namespace eTactWeb.Data.DAL
                                                   CalibrationFrequencyInMonth = dr["CalibrationFrequencyInMonth"] != DBNull.Value ? Convert.ToInt32(dr["CalibrationFrequencyInMonth"]) : 0,
                                                   LastCalibrationDate = dr["LastCalibrationDate"] != DBNull.Value ? Convert.ToString(dr["LastCalibrationDate"]) : "",
                                                   NextCalibrationDate = dr["NextCalibrationDate"] != DBNull.Value ? Convert.ToString(dr["NextCalibrationDate"]) : "",
-                                                  CalibrationAgencyId = dr["CalibrationAgencyId"] != DBNull.Value ? Convert.ToInt32(dr["CalibrationAgencyId"]) : 0,
                                                   LastCalibrationCertificateNo = dr["LastCalibrationCertificateNo"] != DBNull.Value ? Convert.ToString(dr["LastCalibrationCertificateNo"]) : "",
+                                                  CalibrationAgencyId = dr["CalibrationAgencyId"] != DBNull.Value ? Convert.ToString(dr["CalibrationAgencyId"]) : "",
                                                   CalibrationResultPassFail = dr["CalibrationResultPassFail"] != DBNull.Value ? Convert.ToString(dr["CalibrationResultPassFail"]) : "",
                                                   TolrenceRange = dr["TolrenceRange"] != DBNull.Value ? Convert.ToString(dr["TolrenceRange"]) : "",
                                                   CalibrationRemark = dr["CalibrationRemark"] != DBNull.Value ? Convert.ToString(dr["CalibrationRemark"]) : "",
@@ -470,6 +472,7 @@ namespace eTactWeb.Data.DAL
 
                 model.ToolEntryId = Convert.ToInt32(row["ToolEntryId"]);
                 model.AccountCode = Convert.ToInt32(row["AccountCode"]);
+                model.Fiscalyear = Convert.ToInt32(row["Fiscalyear"]);
                 model.EntryDate = row["EntryDate"].ToString();
                 model.ToolOrMold = row["ToolOrMold"].ToString();
                 model.ToolCode = row["ToolCode"].ToString();
@@ -511,7 +514,7 @@ namespace eTactWeb.Data.DAL
                 model.CalibrationFrequencyInMonth = Convert.ToInt32(row["CalibrationFrequencyInMonth"]);
                 model.LastCalibrationDate = row["LastCalibrationDate"].ToString();
                 model.NextCalibrationDate = row["NextCalibrationDate"].ToString();
-                model.CalibrationAgencyId = Convert.ToInt32(row["CalibrationAgencyId"]);
+                model.CalibrationAgencyId = row["CalibrationAgencyId"].ToString();
                 model.LastCalibrationCertificateNo = row["LastCalibrationCertificateNo"].ToString();
                 model.CalibrationResultPassFail = row["CalibrationResultPassFail"].ToString();
                 model.TolrenceRange = row["TolrenceRange"].ToString();

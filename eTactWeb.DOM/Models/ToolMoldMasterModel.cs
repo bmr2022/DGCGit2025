@@ -46,7 +46,7 @@ namespace eTactWeb.DOM.Models
 
 		// Depreciation Detail
 		public string DepreciationMethod { get; set; }
-		public decimal DepreciationRate { get; set; }
+		public decimal? DepreciationRate { get; set; }
 		public decimal DepriciationAmt { get; set; }
 
 		public string CountryOfOrigin { get; set; }
@@ -69,7 +69,7 @@ namespace eTactWeb.DOM.Models
 		public int CalibrationFrequencyInMonth { get; set; }
 		public string LastCalibrationDate { get; set; }
 		public string NextCalibrationDate { get; set; }
-		public int? CalibrationAgencyId { get; set; }
+		public string? CalibrationAgencyId { get; set; }
 		public string LastCalibrationCertificateNo { get; set; }
 		public string CalibrationResultPassFail { get; set; }
 		public string TolrenceRange { get; set; }
