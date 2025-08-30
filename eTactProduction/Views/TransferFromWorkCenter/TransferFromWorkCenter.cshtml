@@ -1635,8 +1635,8 @@
                     // ✅ Store used batch
                     itemBatchArray.push({
                         "itemcode": parseInt($('#ItemCode').val()),
-                        "batchno": $('#BatchNo').val(),
-                        "uniqueBatchNo": $('#UniqueBatchNo').val()
+                        "batchno": $('#BatchNo option:selected').text().trim(),
+                        "uniqueBatchNo": $('#UniqueBatchNo option:selected').text().trim()
                     });
 
                     // ✅ Disable current used batch
@@ -1929,7 +1929,7 @@
             $.ajax({
                 type: "POST",
                 url: '@Url.Action("GetBatchNumber")',
-                data: { ItemCode: $('#ItemName').val(), YearCode: $('#TransferMatYearCode').val(), WcId: $('#IssueFromWc').val(), TransDate: dateValue, BatchNo: $('#BatchNo').val() },
+                data: { ItemCode: $('#ItemName').val(), YearCode: $('#TransferMatYearCode').val(), WcId: $('#IssueFromWc').val(), TransDate: dateValue, BatchNo: $('#BatchNo option:selected').text().trim() },
                 dataType: "json",
                 async: false,
                 success: function (result, status, error) {
@@ -1980,7 +1980,7 @@
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("GetWorkCenterQty")",
-                data: { ItemCode: $('#ItemName').val(), WcId: $('#IssueFromWc').val(), TillDate: formattedDate, BatchNo: $('#BatchNo').val(), UniqueBatchNo: $('#UniqueBatchNo').val() },
+                data: { ItemCode: $('#ItemName').val(), WcId: $('#IssueFromWc').val(), TillDate: formattedDate, BatchNo: $('#BatchNo option:selected').text().trim(), UniqueBatchNo: $('#UniqueBatchNo option:selected').text().trim() },
                 dataType: "json",
                 async: false,
                 success: function (result, status, error) {
