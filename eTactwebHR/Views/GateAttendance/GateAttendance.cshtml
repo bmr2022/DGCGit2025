@@ -88,7 +88,6 @@
                 </span>
             </h5>
         </div>
-
         <div class="card-body bg-light pt-0">
             <div class="accordion shadow-lg">
                 <div class="accordion-item">
@@ -223,33 +222,11 @@
 @section Scripts
 {
     <script>
-        function PressBack() {
-            // sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());
-            // sessionStorage.setItem('ToDateBack', $('#ToDateBack').val());
-            // sessionStorage.setItem('DashboardTypeBack', $('#DashboardTypeBack').val());
-            // sessionStorage.setItem('TypeITEMSERVASSETSBack', $('#TypeITEMSERVASSETSBack').val());
-            // sessionStorage.setItem('DocumentTypeBack', $('#DocumentTypeBack').val());
-            // sessionStorage.setItem('VendorNameBack', $('#VendorNameBack').val());
-            // sessionStorage.setItem('PurchVouchNoBack', $('#PurchVouchNoBack').val());
-            // sessionStorage.setItem('InvoiceNoBack', $('#InvoiceNoBack').val());
-            // sessionStorage.setItem('PartCodeBack', $('#PartCodeBack').val());
-            // sessionStorage.setItem('ItemNameBack', $('#ItemNameBack').val());
-            // sessionStorage.setItem('HSNNoBack', $('#HSNNoBack').val());
-            // sessionStorage.setItem('GlobalSearchBack', $('#GlobalSearchBack').val());
-
-            window.history.back();
-        }
-        var actualRate = 0;
-
         $(function () {
             $('#EntryByMachineName').val($('#machineName').text());
             $('.DH').fadeOut();
             if ('@Model.Mode' != '' && parseInt('@Model.ID') != 0) {
-                GetTaxPartItem();
-                $('#lblItemNetAmount').text($('#ItemNetAmount').val());
-                if ($('#POType').val() == "OPEN") {
-                    $('#Qty,#AltQty').val('0').prop('disabled', true).attr('readonly', 'readonly');
-                }
+
             }
             else {
                 window.setInterval(function () {
@@ -260,15 +237,51 @@
                     $('#EntryTime').val(time);
                 }, 1000);
             }
-            // AutoComplete('VGateAttendanceMain', 'ModeOFTransport', 'ModeOFTransport', null);
-            // AutoComplete('VGateAttendanceMain', 'DeliverySch', 'DeliverySch', null);
-            // AutoComplete('VGateAttendanceMain', 'PackingChg', 'PackingChg', null);
-            // AutoComplete('VGateAttendanceMain', 'DeliveryTerms', 'DeliveryTerms', null);
-            // AutoComplete('VGateAttendanceMain', 'PackingTYpe', 'PackingTYpe', null);
-            // AutoComplete('VGateAttendanceMain', 'PaymentTerms', 'PaymentTerms', null);
-
         });
+        $(document).ready(function () {
+            GetFormRights();
+            //LockedFinancialYear(); //use to disable submit when not in fianancial year
 
+            //for date
+            var finFromDate = $('#FinFromDate').val();
+            var finToDate = $('#FinToDate').val();
+
+            var dateParts1 = finFromDate.split("/");
+            var monthNames = {
+                "Jan": "01",
+                "Feb": "02",
+                "Mar": "03",
+                "Apr": "04",
+                "May": "05",
+                "Jun": "06",
+                "Jul": "07",
+                "Aug": "08",
+                "Sep": "09",
+                "Oct": "10",
+                "Nov": "11",
+                "Dec": "12"
+            };
+            var formattedDate1 = dateParts1[0] + "/" + monthNames[dateParts1[1]] + "/" + dateParts1[2];
+            var dateParts2 = finToDate.split("/");
+
+            var formattedDate2 = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
+            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                var strEmpAttDate = $('#strEmpAttDate').val().split("-").join("/");
+                strEmpAttDate = parseDateToFormat(strEmpAttDate.split(" ")[0]);
+                $('#strEmpAttDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", strEmpAttDate);
+            }
+            else {
+                $('#strEmpAttDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", 'now');
+                var today = new (Date);
+                $("#strEmpAttDate").datepicker({
+                    dateFormat: 'dd/mm/yy',
+                    minDate: today,
+                });
+                $('#strEmpAttDate').datepicker("option", "maxDate", (formattedDate2 > today) ? today : formattedDate2);
+            }
+            DayorMonthChange();
+            $('#EmployeeCode').select2();
+        });
         $(document).on('keyup', '.form-control', function (e) {
             var keyCode = e.keyCode || e.which;
             if (keyCode == 9) {
@@ -285,7 +298,6 @@
                 }
             }
         });
-
 
         var tabIndx = 0;
         $(":focusable").each(function () {
@@ -314,17 +326,19 @@
             var $column = $(this).parent().closest("th");
             var colno = $(this).data('columnno');
             var currentOrder = $(this).data('sortorder');
+            var $table = $(this).parent().closest("table");
+            var tableid = tableid[0]?.id;
 
             $('.sortCol').css('color', 'white');
             if (currentOrder === 'asc') {
-                sortTable(colno, false);
+                sortTable(colno, false, tableid);
                 $(this).data('sortorder', 'desc');
                 $(this).css('color', 'yellow'); // Visual indication of descending order
                 //$(this).css('font-size', 'larger'); // Visual indication of descending order
                 $(this).find('i:first').removeClass('fa-arrow-up');
                 $(this).find('i:first').addClass('fa-arrow-down');
             } else {
-                sortTable(colno, true);
+                sortTable(colno, true, tableid);
                 $(this).data('sortorder', 'asc');
                 $(this).css('color', 'yellow');
                 // $(this).css('font-size', 'larger'); // Visual indication of ascending order
@@ -333,9 +347,9 @@
             }
         });
 
-        function sortTable(columnIndex, ascending) {
-            var table = $('#poTable');
-            var rows = table.find('#divPOItemList > tr').toArray();
+        function sortTable(columnIndex, ascending, tableid) {
+            var table = $('#' + tableid);
+            var rows = table.find('tbody > tr').toArray();
             rows.sort(function (a, b) {
                 var aValue = $(a).find('td').eq(columnIndex).text();
                 var bValue = $(b).find('td').eq(columnIndex).text();
@@ -360,7 +374,7 @@
                 }
             });
             $.each(rows, function (index, row) {
-                table.children('#divPOItemList').append(row);
+                table.children('tbody').append(row);
             });
         }
 
@@ -369,7 +383,7 @@
         });
 
         function ValidateForm(){
-        
+
         }
 
         $('form').submit(function (event) {
@@ -384,11 +398,6 @@
                 var url = form.attr('action'); //get submit url [replace url here if desired]
                 $("form :input").prop("disabled", false);
             }
-        });
-
-        $('#PODate').on('keydown', function (e) {
-            e.preventDefault();
-            return false;
         });
 
         function copyToClipboardForDropdown(element) {
@@ -443,23 +452,69 @@
         function copyToClipboardForDropdown(element) {
             var $temp = $("<input>");
             $("body").append($temp);
-            ;
             $temp.val($(element).find(":selected").text()).select();
             document.execCommand("copy");
             $temp.remove();
         }
-    </script>
 
-    <script type="text/javascript">
         $(document).on('keypress', ':input:not(textarea):not([type=button])', function (e) {
             if (e.which == 13) e.preventDefault();
         });
     </script>
-            function DayorMonthChange() { 
-                console.log(this);
+
+    <script type="text/javascript">
+        function DayorMonthChange(e) {
+           var obj = $('#DayOrMonthType :selected').val();
+           //obj = (obj != null && obj != undefined && obj != "") ? obj : $('#DayOrMonthType :selected').text();
+           if (obj != null && obj.toLowerCase() == "daily") {
+               $('.dvEmpAttDate').show();
+               $('.dvEmpAttMonth').hide();
+               $('#strEmpAttMonth').select(0);
+           }
+           else if (obj != null && obj.toLowerCase() == "monthly"){
+               $('.dvEmpAttMonth').show();
+               $('.dvEmpAttDate').hide();
+               $('#strEmpAttDate').select(0);
+           }
+           else {
+               $('.dvEmpAttDate').show();
+               $('.dvEmpAttMonth').hide();
+               $('#strEmpAttMonth').select(0);
+           }
+        }
+
+        function EmpAttDateOnChange() {
+            let dateStr = document.getElementById("strEmpAttDate").value;
+            if (dateStr) {
+                let date = new Date(dateStr);
+                // Day name
+                let options = { weekday: 'long' }; // e.g. Monday
+                let dayName = date.toLocaleDateString('en-US', options);
+                // Year
+                let year = date.getFullYear();
+                console.log("Day:", dayName, "Year:", year);
+                // Example: show in labels
+                document.getElementById("dayName").innerText = dayName;
+                document.getElementById("yearVal").innerText = year;
             }
-    <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
+        }
+    </script>
+
 }
+<!-- jQuery FIRST -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Then Select2 -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+<!-- Then other plugins that depend on jQuery -->
+<script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.13/jquery.validate.unobtrusive.min.js"></script>
 
 <style>
     #poTable {
