@@ -150,307 +150,312 @@
     <script>
 
         $(document).ready(function () {
+            debugger
             var hiddenCols = {};
-            console.log("Ready");
+            console.log("TrialBalance Ready");
+
             $('#BackButton').hide();
-            FillLedgerName();
+
+            // Fill dropdowns
+            FillGroupList();
             FillParentGroupList();
             FillAccountList();
+
+            // Restore last state from HistoryStack
+            let history = JSON.parse(sessionStorage.getItem('HistoryStack')) || [];
+            let trialParentCode = sessionStorage.getItem('TrialParentCode');
+            let trialAccountName = sessionStorage.getItem('TrailAccountName');
+            let trialReportType = sessionStorage.getItem('TrailReportType');
+
+            if (history.length > 0) {
+                let lastStep = history[history.length - 1];
+                const action = lastStep.action;
+                const params = lastStep.params;
+
+                switch (action) {
+                    case 'TrailDetail':
+                        $('#TrailBalanceGroupName').val(params.groupCode).trigger("change");
+                        $('#ReportType').val("TRAILDETAIL").trigger('change');
+                        break;
+                    case 'TrailParent':
+                        $('#TrailBalanceGroupName').val(params.groupCode).trigger("change");
+                        $('#ParentGroupName').val(params.parentCode).trigger("change");
+                        $('#ReportType').val("TRAILDETAIL").trigger('change');
+                        break;
+                    case 'TrailAccount':
+                        $('#ParentGroupName').val(params.parentCode).trigger("change");
+                        $('#AccountName').val(params.accountName).trigger("change");
+                        $('#ReportType').val("MonthlySummary").trigger('change');
+                        break;
+                }
+
+                $('#BackButton').show();
+            } else if (trialReportType || trialParentCode || trialAccountName) {
+                if (trialReportType) $('#ReportType').val(trialReportType).trigger('change');
+                if (trialParentCode) $('#ParentGroupName').val(trialParentCode).trigger('change');
+                if (trialAccountName) $('#AccountName').val(trialAccountName).trigger('change');
+                $('#BackButton').show();
+            }
+
+            sessionStorage.removeItem('TrialParentCode');
+            sessionStorage.removeItem('TrailAccountName');
+            sessionStorage.removeItem('TrailReportType');
+
+            // Hidden columns toggling
             $('.toggle-col').on('click', function () {
                 var $th = $(this).closest('th');
-                var colIndex = $th.index() + 1; // correct nth-child
-
+                var colIndex = $th.index() + 1;
                 var $icon = $(this).find('i');
-
                 const isVisible = !$('table tr th:nth-child(' + colIndex + ')').hasClass('hidden-column');
-
                 if (isVisible) {
                     $('table tr').each(function () {
                         $(this).find('th:nth-child(' + colIndex + '), td:nth-child(' + colIndex + ')').addClass('hidden-column');
                     });
                     $icon.removeClass('fa-eye-slash').addClass('fa-eye');
                     hiddenCols[colIndex] = $th.text().trim();
-                    updateHiddenColPanel();
                 } else {
                     $('table tr').each(function () {
                         $(this).find('th:nth-child(' + colIndex + '), td:nth-child(' + colIndex + ')').removeClass('hidden-column');
                     });
                     $icon.removeClass('fa-eye').addClass('fa-eye-slash');
                     delete hiddenCols[colIndex];
-                    updateHiddenColPanel();
                 }
+                updateHiddenColPanel();
             });
+            $('#toggle-hidden-cols-btn').on('click', function () { $('#hidden-cols-panel').toggle(); });
 
-            $('#toggle-hidden-cols-btn').on('click', function () {
-                $('#hidden-cols-panel').toggle();
-            });
+            // Report Fields Loader
             function loadReportFields(reportType) {
                 let html = '';
-
                 if (reportType === "TRAILDETAIL") {
-                    html = `
-                                                      <div class="d-flex flex-wrap">
-                                                        <!-- First Line (7 Inputs) -->
-                                                        <div class="col-md-2" style="width:120px;">
-                                                            <label class="form-label">Total Dr Amt</label>
-                                                            <input id="totDr" class="form-control" readonly />
-                                                        </div>
-                                                        <div class="col-md-2" style="width:120px; margin-left:10px;">
-                                                            <label class="form-label">Total Cr Amt</label>
-                                                            <input id="totCr" class="form-control" readonly />
-                                                        </div>
-                                                        <div class="col-md-2" style="width:120px; margin-left:10px;">
-                                                            <label class="form-label">Total Opening</label>
-                                                            <input id="totOpening" class="form-control" readonly />
-                                                        </div>
-                                                        <div class="col-md-2" style="width:120px; margin-left:10px;">
-                                                            <label class="form-label">Total CurrDr</label>
-                                                            <input id="totCurrDr" class="form-control" readonly />
-                                                        </div>
-                                                        <div class="col-md-2" style="width:120px; margin-left:10px;">
-                                                            <label class="form-label">Total CurrCr </label>
-                                                            <input id="totCurrCr" class="form-control" readonly />
-                                                        </div>
-                                                        <div class="col-md-2" style="width:120px; margin-left:10px;">
-                                                            <label class="form-label">Total Net Amt</label>
-                                                            <input id="totNetAmt" class="form-control" readonly />
-                                                        </div>
-                                                        <div class="col-md-2" style="width:120px; margin-left:10px;">
-                                                            <label class="form-label">Total GroupOpn Dr</label>
-                                                            <input id="totGroupOpnDr" class="form-control" readonly />
-                                                        </div>
-
-                                                         <div class="col-md-2" style="width:120px;margin-left:10px;">
-                                                            <label class="form-label">Total GroupOpn Cr</label>
-                                                            <input id="totGroupOpnCr" class="form-control" readonly />
-                                                        </div>
-                                                                 <div class="col-md-2" style="width:160px; margin-left:10px;">
-                                                                    <label class="form-label">Total Group Opening</label>
-                                                                    <input id="totGroupOpening" class="form-control" readonly />
-                                                                </div>
-                                                        <!-- Second Line (Remaining Inputs) -->
-                                                        <div class="w-100"></div> <!-- Forces next row -->
-
-
-                                                        <div class="col-md-2" style="width:120px; margin-left:10px;">
-                                                            <label class="form-label">Total GroupCurr Dr</label>
-                                                            <input id="totGroupCurrDrAmt" class="form-control" readonly />
-                                                        </div>
-                                                        <div class="col-md-2" style="width:120px; margin-left:10px;">
-                                                            <label class="form-label">Total GroupCurr Cr</label>
-                                                            <input id="totGroupCurrCrAmt" class="form-control" readonly />
-                                                        </div>
-                                                        <div class="col-md-2" style="width:120px; margin-left:10px;">
-                                                            <label class="form-label">Total Group NetAmt</label>
-                                                            <input id="totGroupNetAmt" class="form-control" readonly />
-                                                        </div>
-                                                    </div>
-
-                                                `;
+                    html = `<!-- TRAILDETAIL HTML INPUTS HERE -->`;
                 } else if (reportType === "TRAILSUMMARY") {
-                    html = `
-                                                    <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12 ms-2" id="opnStkDiv" style="width:120px;">
-                                                        <label class="form-label">Total Dr Amt</label>
-                                                        <input id="totDr" class="form-control" readonly />
-                                                    </div>
-                                                    <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px;margin-left:10px;">
-                                                        <label class="form-label">Total Cr Amt</label>
-                                                        <input id="totCr" class="form-control" readonly />
-                                                    </div>
-                                                    <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px;margin-left:10px;">
-                                                        <label class="form-label">Total Opening</label>
-                                                        <input id="totOpening" class="form-control" readonly />
-                                                    </div>
-                                                    <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px;margin-left:10px;">
-                                                        <label class="form-label">Total CurrDr</label>
-                                                        <input id="totCurrDr" class="form-control" readonly />
-                                                    </div>
-                                                    <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px;margin-left:10px;">
-                                                        <label class="form-label">Total CurrCr </label>
-                                                        <input id="totCurrCr" class="form-control" readonly />
-                                                    </div>
-                                                    <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px;margin-left:10px;">
-                                                        <label class="form-label">Total NetCurr Amt</label>
-                                                        <input id="totNetCurrentAmt" class="form-control" readonly />
-                                                    </div>
-                                                    <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px;margin-left:10px;">
-                                                        <label class="form-label">Total Net Amt</label>
-                                                        <input id="totNetAmt" class="form-control" readonly />
-                                                    </div>
-                                                    <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px;margin-left:10px;">
-                                                        <label class="form-label">Total CurrDRTotal </label>
-                                                                <input id="totCurrDRTotal" class="form-control" readonly />
-                                                    </div>
-                                                    <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px;margin-left:10px;">
-                                                                <label class="form-label">Total CurrCRTotal</label>
-                                                                <input id="totCurrCRTotal" class="form-control" readonly />
-                                                    </div>
-                                                `;
+                    html = `<!-- TRAILSUMMARY HTML INPUTS HERE -->`;
                 }
-
                 $("#reportFields").html(html);
             }
-
-            // Trigger when ReportType changes
             $("#ReportType").change(function () {
                 let reportType = $(this).val();
                 loadReportFields(reportType);
+                updateButtonTitle();
             });
-
-            // Load initial report type if set
             loadReportFields($("#ReportType").val());
 
-            // GetServerDate();
-            // $(".bold-row").each(function () {
-            //
-            //     $(this).css({ "font-weight": "bold", "font-size": "16px" });
-            //     $(this).find("input").css("color", "green");
-            // });
-
+            // Bold rows styling
             $(".bold-row").each(function () {
-                ;
                 $(this).css({ "font-weight": "bold", "font-size": "16px", "color": "green" });
-
-                // Change text color inside input fields
                 $(this).find("input").css("color", "green");
             });
 
             function updateButtonTitle() {
-
                 let reportType = $("#ReportType").val();
                 let newTitle = (reportType === "TRAILSUMMARY") ? "Trail Balance Summary" : "Trail Balance Detail";
-
                 $("#dynamicText").text(newTitle);
             }
-
-            function FillLedgerName() {
-
-                var FromDate = $('#FromDate').val();
-                var ToDate = $('#ToDate').val();
-                $.ajax({
-                    url: '@Url.Action("FillGroupList", "TrailBalance")',
-                    type: 'GET',
-                    async: false,
-                    data: { "FromDate": FromDate, "ToDate": ToDate },
-                    success: function (response, status, error) {
-
-                        var TrailBalanceGroupName = $('#TrailBalanceGroupName');
-                        var obj = $.parseJSON(response);
-                        TrailBalanceGroupName.empty();
-                        TrailBalanceGroupName.append('<option value="">--Select--</option>');
-
-                        $.each(obj.Result, function (index, ledger) {
-                            TrailBalanceGroupName.append('<option value="' + ledger.Account_Code + '">' + ledger.account_name + '</option>');
-                        });
-
-                    },
-                    error: function (xhr, status, error) {
-                        alert('Failed to load groups.');
-                    }
-                });
-            }
-
-            function FillParentGroupList() {
-
-                var FromDate = $('#FromDate').val();
-                var ToDate = $('#ToDate').val();
-                var GroupCode = $('#TrailBalanceGroupName').val();
-                if (GroupCode == "") {
-                    GroupCode = null;
-                }
-                $.ajax({
-                    url: '@Url.Action("FillParentGroupList", "TrailBalance")',
-                    type: 'GET',
-                    async: false,
-                    data: { "FromDate": FromDate, "ToDate": ToDate, "GroupCode": GroupCode },
-                    success: function (response, status, error) {
-
-                        var ParentGroupName = $('#ParentGroupName');
-                        var obj = $.parseJSON(response);
-                        ParentGroupName.empty();
-                        ParentGroupName.append('<option value="">--Select--</option>');
-
-                        $.each(obj.Result, function (index, ledger) {
-                            ParentGroupName.append('<option value="' + ledger.Account_Code + '">' + ledger.ParentGroupName + '</option>');
-                        });
-
-                    },
-                    error: function (xhr, status, error) {
-                        alert('Failed to load groups.');
-                    }
-                });
-            }
-
-            function FillAccountList() {
-
-                var FromDate = $('#FromDate').val();
-                var ToDate = $('#ToDate').val();
-                var GroupCode = $('#TrailBalanceGroupName').val();
-                var ParentGroupCode = $('#ParentGroupName').val();
-                 if (GroupCode == "") {
-                    GroupCode = null;
-                }
-                if (ParentGroupCode == "") {
-                    ParentGroupCode = null;
-                }
-                $.ajax({
-                    url: '@Url.Action("FillAccountList", "TrailBalance")',
-                    type: 'GET',
-                    async: false,
-                    data: { "FromDate": FromDate, "ToDate": ToDate, "GroupCode": GroupCode, "ParentGroupCode": ParentGroupCode },
-                    success: function (response, status, error) {
-
-                        var AccountName = $('#AccountName');
-                        var obj = $.parseJSON(response);
-                        AccountName.empty();
-                        AccountName.append('<option value="">--Select--</option>');
-
-                        $.each(obj.Result, function (index, ledger) {
-                            AccountName.append('<option value="' + ledger.Account_Code + '">' + ledger.AccountName + '</option>');
-                        });
-
-                    },
-                    error: function (xhr, status, error) {
-                        alert('Failed to load groups.');
-                    }
-                });
-            }
-
-            // Update title on page load
             updateButtonTitle();
 
-            // Update title when dropdown selection changes
-            $("#ReportType").change(updateButtonTitle);
+            // Initialize datepickers
             var currentDate = new Date();
             var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-            $('#totalRows').text($('#divStockRegisterBody tr').length);
             $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatDate1(firstDayOfMonth));
             $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+
             $('#ReportType').select2();
             $('#TrailBalanceGroupName').select2();
             $('#ParentGroupName').select2();
             $('#AccountName').select2();
 
-            GetTrailBalanceDetailsData();
+            $('#totalRows').text($('#divStockRegisterBody tr').length);
 
+            GetTrailBalanceDetailsData();
         });
+
+        function FillGroupList() {
+
+            var FromDate = $('#FromDate').val();
+            var ToDate = $('#ToDate').val();
+            $.ajax({
+                url: '@Url.Action("FillGroupList", "TrailBalance")',
+                type: 'GET',
+                async: false,
+                data: { "FromDate": FromDate, "ToDate": ToDate },
+                success: function (response, status, error) {
+
+                    var TrailBalanceGroupName = $('#TrailBalanceGroupName');
+                    var obj = $.parseJSON(response);
+                    TrailBalanceGroupName.empty();
+                    TrailBalanceGroupName.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, ledger) {
+                        TrailBalanceGroupName.append('<option value="' + ledger.Account_Code + '">' + ledger.GroupName + '</option>');
+                    });
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+
+        function FillParentGroupList() {
+
+            var FromDate = $('#FromDate').val();
+            var ToDate = $('#ToDate').val();
+            var GroupCode = $('#TrailBalanceGroupName').val();
+            if (GroupCode == "") {
+                GroupCode = null;
+            }
+            $.ajax({
+                url: '@Url.Action("FillParentGroupList", "TrailBalance")',
+                type: 'GET',
+                async: false,
+                data: { "FromDate": FromDate, "ToDate": ToDate, "GroupCode": GroupCode },
+                success: function (response, status, error) {
+
+                    var ParentGroupName = $('#ParentGroupName');
+                    var obj = $.parseJSON(response);
+                    ParentGroupName.empty();
+                    ParentGroupName.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, ledger) {
+                        ParentGroupName.append('<option value="' + ledger.Account_Code + '">' + ledger.ParentGroupName + '</option>');
+                    });
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+
+        function FillAccountList() {
+
+            var FromDate = $('#FromDate').val();
+            var ToDate = $('#ToDate').val();
+            var GroupCode = $('#TrailBalanceGroupName').val();
+            var ParentGroupCode = $('#ParentGroupName').val();
+            if (GroupCode == "") {
+                GroupCode = null;
+            }
+            if (ParentGroupCode == "") {
+                ParentGroupCode = null;
+            }
+            $.ajax({
+                url: '@Url.Action("FillAccountList", "TrailBalance")',
+                type: 'GET',
+                async: false,
+                data: { "FromDate": FromDate, "ToDate": ToDate, "GroupCode": GroupCode, "ParentGroupCode": ParentGroupCode },
+                success: function (response, status, error) {
+
+                    var AccountName = $('#AccountName');
+                    var obj = $.parseJSON(response);
+                    AccountName.empty();
+                    AccountName.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, ledger) {
+                        AccountName.append('<option value="' + ledger.Account_Code + '">' + ledger.AccountName + '</option>');
+                    });
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+
+        $("#TrailBalanceGroupName").change(function () {
+            FillParentGroupList();
+        });
+
+        $("#ParentGroupName").change(function () {
+            FillAccountList();
+        });
+
+        function GetDetailByGroupName(cntr) {
+            let groupCode = $("#TrailBalanceGroupCode-" + cntr).val();
+            saveHistory('TrailDetail', { groupCode });
+
+            $('#TrailBalanceGroupName').val(groupCode).trigger('change');
+            $('#ReportType').val("TRAILDETAIL").trigger('change');
+        }
 
         function GetDataByParentGroupName(cntr) {
             let groupCode = $("#TrailBalanceGroupCode-" + cntr).val();
             let parentCode = $("#ParentAccountCode-" + cntr).val();
+            saveHistory('TrailParent', { groupCode, parentCode });
+
+            $('#TrailBalanceGroupName').val(groupCode).trigger("change");
+            $('#ParentGroupName').val(parentCode).trigger("change");
+            $('#ReportType').val("TRAILDETAIL").trigger("change");
+        }
+
+        function GetDataByAccountName(cntr) {
+            let parentCode = $("#ParentAccountCode-" + cntr).val();
             let accountName = $("#AccountName-" + cntr).val();
 
-            $('#BackButton').show();
+            saveHistory('TrailAccount', { parentCode, accountName });
 
-            let reportType = $('#ReportType').val();
-                $('#ReportType').val("Payable Outstanding").trigger("change");
+            sessionStorage.setItem('ParentCode', parentCode);
+            sessionStorage.setItem('AccountName', accountName);
+            sessionStorage.setItem('ReportType', "MonthlySummary");
+            window.location.href = '/TransactionLedger/Index';
+        }
+
+        function saveHistory(action, params = {}) {
+            // Load existing history or create empty
+            let history = JSON.parse(sessionStorage.getItem('HistoryStack')) || [];
+
+            // Push new action
+            history.push({ action, params });
+
+            // Save back
+            sessionStorage.setItem('HistoryStack', JSON.stringify(history));
+
+            // Show back button
+            $('#BackButton').show();
         }
 
         function PressBack() {
-            $('#ReportType').val('TRAILSUMMARY').trigger('change');
-            $('#BackButton').hide(); // Hide back button
-            $('#TrailBalanceGroupCode').val(null);
-            GetTrailBalanceDetailsData();
+            debugger
+            let history = JSON.parse(sessionStorage.getItem('HistoryStack')) || [];
+
+            if (history.length === 0) {
+                $('#BackButton').hide();
+                return;
+            }
+
+            // get last state
+            let prevState = history.pop();
+            sessionStorage.setItem('HistoryStack', JSON.stringify(history));
+
+            const action = prevState.action;
+            const params = prevState.params;
+
+            switch (action) {
+                case 'TrailDetail':
+                    $('#TrailBalanceGroupName').val(params.groupCode).trigger("change");
+                    $('#ReportType').val("TRAILDETAIL").trigger("change");
+                    break;
+
+                case 'TrailParent':
+                    $('#TrailBalanceGroupName').val(params.groupCode).trigger("change");
+                    $('#ParentGroupName').val(params.parentCode).trigger("change");
+                    $('#ReportType').val("TRAILDETAIL").trigger("change");
+                    break;
+
+                case 'TrailAccount':
+                    // Going back to TransactionLedger
+                    sessionStorage.setItem('ParentCode', params.parentCode);
+                    sessionStorage.setItem('AccountName', params.accountName);
+                    sessionStorage.setItem('ReportType', "MonthlySummary");
+                    window.location.href = '/TransactionLedger/Index';
+                    break;
+            }
+
+            // hide button if no more history
+            if (history.length === 0) {
+                $('#BackButton').hide();
+            }
         }
 
         function selection(CurrentRow) {
@@ -501,13 +506,13 @@
         }
 
         function GetTrailBalanceDetailsData() {
-
-            //var reportType = $('#ReportType').val();
             var FromDate = $('#FromDate').val();
             var ToDate = $('#ToDate').val();
             var EntryByMachine = $('#EntryByMachine').val();
             var ReportType = $('#ReportType').val();
-            var TrailBalanceGroupCode = $('#TrailBalanceGroupCode').val();
+            var TrailBalanceGroupCode = $('#TrailBalanceGroupName option:selected').val();
+            var ParentAccountCode = $('#ParentGroupName option:selected').val();
+
             $.ajax({
                 type: 'POST',
                 url: "@Url.Action("GetTrailBalanceDetailsData", "TrailBalance")",
@@ -516,17 +521,30 @@
                     ToDate: ToDate,
                     EntryByMachine: EntryByMachine,
                     ReportType: ReportType,
-                    TrailBalanceGroupCode: TrailBalanceGroupCode
+                    TrailBalanceGroupCode: TrailBalanceGroupCode,
+                    ParentAccountCode: ParentAccountCode
                 },
                 success: function (response) {
                     $('#divStockMainRegister').html(response);
 
+                    // 🔹 Re-apply hidden columns after reload
+                    $.each(hiddenCols, function (colIndex, colName) {
+                        $('#divStockMainRegister table tr').each(function () {
+                            $(this).find('th:nth-child(' + colIndex + '), td:nth-child(' + colIndex + ')')
+                                .addClass('hidden-column');
+                        });
+                        // update icon
+                        $('#divStockMainRegister table tr th:nth-child(' + colIndex + ') .toggle-col i')
+                            .removeClass('fa-eye-slash').addClass('fa-eye');
+                    });
+
+                    // 🔹 Update row count
                     var totalRows = $('#divStockMainRegister tr').length;
                     $('#totalRows').text(totalRows);
                     countAllTotal();
                 },
                 error: function (xhr, status, error) {
-                    console.error("Error fetching BOM tree data:", error);
+                    console.error("Error fetching Trail Balance data:", error);
                 }
             });
         }
@@ -703,17 +721,6 @@
             currentSearchColumn = $(this).data('columnno');
             $("#search-box").val('').trigger('keyup'); // Reset search box and trigger the search
         });
-
-        function GetDetailByGroupName(td) {
-            // find hidden input inside the clicked td
-            let accountCode = $(td).find("input[type=hidden]").val();
-            let ledgerDescription = $(td).text().trim();
-
-            $('#TrailBalanceGroupCode').val(accountCode);
-            $('#ReportType').val("TRAILDETAIL").trigger('change');
-            $('#BackButton').show();
-            GetTrailBalanceDetailsData();
-        }
 
         function DeleteRow(i) {
 

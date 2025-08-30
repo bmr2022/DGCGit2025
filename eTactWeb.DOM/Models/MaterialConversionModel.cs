@@ -83,15 +83,18 @@ namespace eTactWeb.DOM.Models
         public string PlanNo { get; set; }
         public int PlanYearCode { get; set; }
         public string PlanDate { get; set; }
-        public string ProdSchNo { get; set; }
+        public int ProdSchNo { get; set; }
         public int ProdSchYearCode { get; set; }
         public string ProdSchDatetime { get; set; }
         public decimal OrigItemRate { get; set; }
         public IList<MaterialConversionModel> MaterialConversionGrid { get; set; }
 
-        //DashBoard
-        public string FromDate { get; set; }
-        public string ToDate { get; set; }
+		//DashBoard
+
+		public string FromDate { get; set; }
+		public string ToDate { get; set; }
+		public string? FinFromDate { get; set; }
+        public string? FinToDate { get; set; }
         public string Searchbox { get; set; }
         public string ReportType { get; set; }
 

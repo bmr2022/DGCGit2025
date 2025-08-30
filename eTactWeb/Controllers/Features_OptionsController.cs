@@ -56,7 +56,7 @@ namespace eTactWeb.Controllers
         string AccAllowtochangeDocumentinPurchaseBill,string ProdAllowMultiplePlanInProdSchOrNot,
 string AccPasswordToChangeDocumentinPurchaseBill,string IndentReportName,string AccAllowtochangeDocumnetinPurchaseBill,
 string AccAllowtochangeInvoiceNoDateinPurchaseBill,
-string AccPasswordToAllowManualTax,
+string AccPasswordToAllowManualTax,string PONotAllowedWithoutPartCodePartyWiseDefinition,
 string AccSaleBillManualTaxAllowed,
 string AccAllowBackdateVoucherEntry,
 string AccBackdateVoucherEntryPassword,
@@ -185,6 +185,7 @@ string AccPurchaseBillInvoicePrintoutFilename,string FIFOBasedBatchInventoryInJo
                 MainModel.IssueChaallanTaxIsMandatory = IssueChaallanTaxIsMandatory;
                 MainModel.AccAllowtochangeDocumnetinPurchaseBill = AccAllowtochangeDocumnetinPurchaseBill;
                 MainModel.salebillShowItemBatchFIFOBased = salebillShowItemBatchFIFOBased;
+                MainModel.PONotAllowedWithoutPartCodePartyWiseDefinition = PONotAllowedWithoutPartCodePartyWiseDefinition;
 
 
 

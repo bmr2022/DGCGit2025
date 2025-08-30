@@ -63,16 +63,16 @@ namespace eTactWeb.Data.DAL
                     sqlParams.Add(new SqlParameter("@MatConvEntryId", model.EntryId));
                     sqlParams.Add(new SqlParameter("@YearCode", model.OpeningYearCode));
                     sqlParams.Add(new SqlParameter("@MatConvSlipNo", model.SlipNo));
-                    sqlParams.Add(new SqlParameter("@MatConvSlipDate", model.SlipDate));
+                    sqlParams.Add(new SqlParameter("@MatConvSlipDate",CommonFunc.ParseFormattedDate( model.SlipDate)));
                     sqlParams.Add(new SqlParameter("@StoreWorkcenter", model.IssueToStoreWC));
                     sqlParams.Add(new SqlParameter("@Remarks", model.Remarks));
                     sqlParams.Add(new SqlParameter("@ApprovedBy", model.ApprovedBy));
                     sqlParams.Add(new SqlParameter("@Uid", model.Uid));
                     sqlParams.Add(new SqlParameter("@cc", model.cc));
                     sqlParams.Add(new SqlParameter("@ActualEntryByEmpid", model.ActualEntryByEmpid));
-                    sqlParams.Add(new SqlParameter("@ActualEntryDate", model.ActualEntryDate));
+                    sqlParams.Add(new SqlParameter("@ActualEntryDate",CommonFunc.ParseFormattedDate( model.ActualEntryDate)));
                     sqlParams.Add(new SqlParameter("@UpdatedByEmpId", model.UpdatedByEmpId));
-                    sqlParams.Add(new SqlParameter("@UpdationDate", model.UpdationDate));
+                    sqlParams.Add(new SqlParameter("@UpdationDate",CommonFunc.ParseFormattedDate( model.UpdationDate)));
                     sqlParams.Add(new SqlParameter("@EntryByMachine", model.EntryByMachine));
 
                     sqlParams.Add(new SqlParameter("@dt", GIGrid));
@@ -83,7 +83,7 @@ namespace eTactWeb.Data.DAL
                     sqlParams.Add(new SqlParameter("@MatConvEntryId", model.EntryId));
                     sqlParams.Add(new SqlParameter("@YearCode", model.OpeningYearCode));
                     sqlParams.Add(new SqlParameter("@MatConvSlipNo", model.SlipNo));
-                    sqlParams.Add(new SqlParameter("@MatConvSlipDate", model.SlipDate));
+                    sqlParams.Add(new SqlParameter("@MatConvSlipDate",CommonFunc.ParseFormattedDate( model.SlipDate)));
                     sqlParams.Add(new SqlParameter("@StoreWorkcenter", model.IssueToStoreWC));
                     sqlParams.Add(new SqlParameter("@Remarks", model.Remarks));
                     sqlParams.Add(new SqlParameter("@ApprovedBy", model.ApprovedBy));
@@ -470,7 +470,7 @@ namespace eTactWeb.Data.DAL
                             PlanNo = row["PlanNo"].ToString(),
                             PlanYearCode = Convert.ToInt32(row["PlanYearCode"].ToString()),
                             PlanDate = row["PlanDate"] != DBNull.Value ? Convert.ToDateTime(row["PlanDate"]).ToString("dd/MMM/yyyy") : string.Empty,
-                            ProdSchNo = row["ProdSchNo"].ToString(),
+                            ProdSchNo = Convert.ToInt32(row["ProdSchNo"].ToString()),
                             ProdSchYearCode = Convert.ToInt32(row["ProdSchYearCode"].ToString()),
                             ProdSchDatetime = row["ProdSchDatetime"] != DBNull.Value ? Convert.ToDateTime(row["ProdSchDatetime"]).ToString("dd/MMM/yyyy") : string.Empty,
 

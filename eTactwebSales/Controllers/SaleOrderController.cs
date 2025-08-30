@@ -18,6 +18,7 @@ using System.Net;
 using System.Data;
 using System.Globalization;
 using System.Reflection;
+using FastReport.Web;
 
 namespace eTactWeb.Controllers;
 
@@ -30,8 +31,10 @@ public class SaleOrderController : Controller
 	private readonly ILogger _logger;
 	private readonly IMemoryCache _MemoryCache;
 	private readonly IItemMaster itemMaster;
+    public WebReport webReport;
 
-	public SaleOrderController(ILogger<SaleOrderController> logger, IDataLogic iDataLogic, ISaleOrder iSaleOrder, ITaxModule iTaxModule, IMemoryCache iMemoryCache, IWebHostEnvironment iWebHostEnvironment, IItemMaster itemMaster, EncryptDecrypt encryptDecrypt, LoggerInfo loggerInfo)
+
+    public SaleOrderController(ILogger<SaleOrderController> logger, IDataLogic iDataLogic, ISaleOrder iSaleOrder, ITaxModule iTaxModule, IMemoryCache iMemoryCache, IWebHostEnvironment iWebHostEnvironment, IItemMaster itemMaster, EncryptDecrypt encryptDecrypt, LoggerInfo loggerInfo, IConfiguration configuration)
 	{
 		_logger = logger;
 		_IDataLogic = iDataLogic;
@@ -42,14 +45,48 @@ public class SaleOrderController : Controller
 		this.itemMaster = itemMaster;
 		_EncryptDecrypt = encryptDecrypt;
 		LoggerInfo = loggerInfo;
-	}
+        _iconfiguration = configuration;
+    }
 
 	private EncryptDecrypt _EncryptDecrypt { get; }
 	private IWebHostEnvironment _IWebHostEnvironment { get; }
     public IMemoryCache IMemoryCache { get; }
+    private readonly IConfiguration _iconfiguration;
     private LoggerInfo LoggerInfo { get; }
 
-	public PartialViewResult AddSchedule(DeliverySchedule model)
+
+    public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string SONO = "", string ShowOnlyAmendItem = "", int AmmNo = 0)
+    {
+
+        string my_connection_string;
+        string contentRootPath = _IWebHostEnvironment.ContentRootPath;
+        string webRootPath = _IWebHostEnvironment.WebRootPath;
+        webReport = new WebReport();
+        
+        ViewBag.EntryId = EntryId;
+        ViewBag.YearCode = YearCode;
+        ViewBag.SONO = SONO;
+        ViewBag.ShowOnlyAmendItem = ShowOnlyAmendItem;
+        ViewBag.AmmNo = AmmNo;
+        
+        
+            webReport.Report.Load(webRootPath + "\\SOReport.frx"); // default report
+
+        
+        
+        webReport.Report.SetParameterValue("entryparam", EntryId);
+        webReport.Report.SetParameterValue("yearparam", YearCode);
+        webReport.Report.SetParameterValue("ShowOnlyAmendItemparam", ShowOnlyAmendItem);
+        webReport.Report.SetParameterValue("AmmNo", AmmNo);
+        my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+        webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+        webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
+        webReport.Report.SetParameterValue("MyParameter", my_connection_string);
+        webReport.Report.Refresh();
+        return View(webReport);
+    }
+
+    public PartialViewResult AddSchedule(DeliverySchedule model)
 	{
 		var MainModel = new SaleOrderModel();
 		var ScheduleList = new List<DeliverySchedule>();
@@ -1041,7 +1078,7 @@ public class SaleOrderController : Controller
 	[HttpPost]
 	//[ValidateAntiForgeryToken]
 	[Route("{controller}/Index")]
-	public async Task<ActionResult> OrderDetail(SaleOrderModel model)
+	public async Task<ActionResult> OrderDetail(SaleOrderModel model,string ShouldPrint)
 	{
 		try
 		{
@@ -1187,7 +1224,17 @@ public class SaleOrderController : Controller
 							}
 							else
 							{
-                                return RedirectToAction("OrderDetail", new { ID = 0, YC = 0, Mode = "" });
+                                if (ShouldPrint == "true")
+                                {
+                                    return Json(new
+                                    {
+                                        status = "Success",
+                                        entryId = model.EntryID,
+                                        yearCode = model.YearCode
+                                    });
+                                }
+                                return Json(new { status = "Success" });
+                                //return RedirectToAction("OrderDetail", new { ID = 0, YC = 0, Mode = "" });
                             }
 
                         }
@@ -1342,12 +1389,14 @@ public class SaleOrderController : Controller
 					{
 						ViewBag.isSuccess = true;
 						TempData["200"] = "200";
-					}
+                       
+                    }
 					if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
 					{
 						ViewBag.isSuccess = true;
 						TempData["202"] = "202";
-					}
+                        
+                    }
 					return RedirectToAction(nameof(SOAmendmentList));
 				}
 				else

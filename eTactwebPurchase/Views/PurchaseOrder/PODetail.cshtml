@@ -623,7 +623,7 @@
 				$('#IN1').trigger("change");
 			}
 
-			if ($('#Mode').val() == "U" || $('#Mode').val() == "V"||$('#Mode').val() == "C") {
+			if ($('#Mode').val() == "U" || $('#Mode').val() == "V"||$('#Mode').val() == "C" ||$('#Mode').val() == "PAU" ) {
 				// PendingIndentDetail(true);
 				//FillItems();
 				// alert("inside edit");
@@ -945,7 +945,7 @@
 			//'@Model.isPONo' === 'False' ? $('#PONo').prop('disabled', true) : $('#PONo').prop('disabled', false);
 			$('#divPOItemList tr td:first-child').text() == 'NO DATA ADDED' ? $('.Schedule').fadeOut() : $('.Schedule').fadeIn();
 
-			if ($('#Mode').val() == "PAU" || $('#Mode').val() == "POA") {
+			if ($('#Mode').val() == "POA") {
 				if ($('#POType').val() == 'Open') {
 					$('#POQty').prop("disabled", true);
 				}
@@ -960,7 +960,7 @@
 			} else {
 				//donothing
 			}
-			if ($('#Mode').val() != "U" && $('#Mode').val() != 'POA' && $('#Mode').val() != 'PAU') {
+			if ($('#Mode').val() != "U" && $('#Mode').val() != 'POA') {
 				if ($('#Mode').val() == "V") {
 					var rowCount = $('#divPOItemList tr').length;
 					var columnCount = $('#divPOItemList tr td').length;
@@ -1197,7 +1197,7 @@ formData.append("Mode", $('#Mode').val());
 							$('#ShipTo').append('<option value="' + val.AccountCode + '">' + val.AccountName + '</option>');
 						});
 
-						if ($('#Mode').val() == "U" || $('#Mode').val() == "V" || $('#Mode').val() == "POA") {
+						if ($('#Mode').val() == "U" || $('#Mode').val() == "V" || $('#Mode').val() == "POA"||$('#Mode').val() == "PAU" ) {
 							var shipTo = @Html.Raw(Json.Serialize(Model.ShipTo));
 							$('#ShipTo').val(shipTo).trigger('change.select2');
 						}
@@ -2665,7 +2665,7 @@ formData.append("Mode", $('#Mode').val());
 						$('#AccountCode').append('<option value="' + val.Account_Code + '" data-gstregister="' + val.GSTRegistered + '" data-state="' + val.State + '">' + val.Account_Name + '</option>');
 						//$('#VendorAddress').val('');
 					});
-					if ($('#Mode').val() == "U" || $('#Mode').val() == "V" || $('#Mode').val() == "POA" || $('#Mode').val() == "C") {
+					if ($('#Mode').val() == "U" || $('#Mode').val() == "V" || $('#Mode').val() == "POA"||$('#Mode').val() == "PAU"  || $('#Mode').val() == "C") {
 						var accountCode = @Html.Raw(Json.Serialize(Model.AccountCode));
 						$('#AccountCode').val(accountCode).trigger('change.select2');
 					} else {
@@ -3274,6 +3274,7 @@ formData.append("Mode", $('#Mode').val());
 
 
 		$('.ItemBtn').click(function () {
+						EditEachItem = false;
 			// $("#PartCode").next(".select2-container").find(".select2-selection").focus();
 			// $('#PartCode').css("border", "1px solid black");
 			$("#PartCodeText").focus();
@@ -3322,7 +3323,7 @@ formData.append("Mode", $('#Mode').val());
 					RemoveErrorCls('Rate');
 				}
 			}
-			if (($('#Mode').val() == 'POA' || $('#Mode').val() == 'PAU') && @Model.ID > 0) {
+			if (($('#Mode').val() == 'POA' ) && @Model.ID > 0) {
 				if (!$('#AmendmentReason').val()) {
 					AddErrorCls('AmendmentReason');
 					$.notify('AmendmentReason is required...!', "error");
@@ -3477,8 +3478,14 @@ formData.append("Mode", $('#Mode').val());
 		});
 
 		var isEditAllowed = "false";
+				  var EditEachItem = false;
 		async function EditItemRow(SeqNo) {
-
+							  var RowCount = $('#divPOItemList tr').length;
+						if (EditEachItem) {
+							$.notify('Cannot Edit item while AddtoGrid  Existing Item!!!', "error");
+								 $('#editButton-' + RowCount).prop("disabled", true);
+						}
+						else {
 			var PartCode = $('#PartCode').val();
 			$.ajax({
 				url: '@Url.Action("EditItemRow")',
@@ -3486,7 +3493,7 @@ formData.append("Mode", $('#Mode').val());
 				data: { PartCode: PartCode, SeqNo: SeqNo },
 				async: false,
 				success: await function (data, status, xhr) {
-
+						
 					if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
 						$.notify("If Same Tax Exists, Item Cannot Be Edited...!", "warning");
 					}
@@ -3500,6 +3507,7 @@ formData.append("Mode", $('#Mode').val());
 						else {
 
 							if (obj != null && obj.length == 1) {
+											  EditEachItem = true;
 								// $('#PartCode').val(obj[0].PartCode).trigger('change');
 								// $('#ItemCode').val(obj[0].ItemCode).trigger('change');
 									$('#PartCode').val(obj[0].PartCode);
@@ -3552,6 +3560,7 @@ formData.append("Mode", $('#Mode').val());
 					$.notify(response.responseText, "error");
 				}
 			});
+			}
 		}
 
 		$('#AccountCode').change(function () {

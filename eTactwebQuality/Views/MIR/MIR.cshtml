@@ -380,6 +380,7 @@
                                         <table class="table table-hover table-bordered">
                                             <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap;position:static;" id="ItemListStyle">
                                                 <tr>
+                                                    <th>Seq No</th>
                                                     <th>Action</th>
                                                     <th>Part Code</th>
                                                     <th>Item Name</th>
@@ -1302,9 +1303,14 @@
                 },
             });
         }
-
+            var EditEachItem = false;
         function EditItemRowFromGrid(SeqNo) {
-             
+                                 var RowCount = $('#divMIRModuleGrid tr').length;
+            if (EditEachItem) {
+                $.notify('Cannot Edit item while AddtoGrid  Existing Item!!!', "error");
+                        $('#BtnEdit-' + RowCount).prop("disabled", true);
+            }
+            else {
             $.ajax({
                 url: '@Url.Action("EditItemRow")',
                 type: "POST",
@@ -1315,6 +1321,7 @@
                     var obj = $.parseJSON(data);
                     DeleteItemRowFromGrid(SeqNo);
                     if (obj != null && obj.length == 1) {
+                           EditEachItem = true;
                         var html = '';
                         $('#divMIRGrid').empty();
                         var i = 1;
@@ -1351,7 +1358,7 @@
                 }
             });
         }
-
+        }
         function ReUploadFile() {
 
             $('#ReUpload').is(':checked') == true ? $('.ReUploadFile').fadeIn() : ($('.ReUploadFile').fadeOut());
@@ -1889,6 +1896,7 @@
         var imageArray = [];
 
         function Add2Grid() {
+              EditEachItem = false;
 
             var rowCount = $('#divMIRGrid tr').length;
             if (rowCount == 0) {

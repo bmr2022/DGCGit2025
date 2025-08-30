@@ -385,7 +385,6 @@
 
                                         </ul>
                                     </li>
-
                                     <li>
                                         <a class="dropdown-item" href="#"> WeekOff Master &raquo; </a>
                                         <ul class="submenu dropdown-menu">
@@ -810,30 +809,34 @@
                                     </li>
                                 </ul>
                             </li>
-
                             <li>
-                                <a class="dropdown-item" id="ToolMoldMaster" href="#">Plant & Maintenance &raquo;</a>
+
+                                <a class="dropdown-item" id="Account Master" href="#">Plant & Maintenance &raquo;</a>
 
                                 <ul class="submenu dropdown-menu">
                                     <li>
-                                        <a class="dropdown-item" asp-action="ToolMoldMaster" asp-route-ID="0" asp-controller="ToolMoldMaster" id="ToolMoldMaster">
-                                            <i class="fa fa-book fa-fw fa-lg" aria-hidden="true"></i> Tool/Mold Master
-                                        </a>
+                                        <a class="dropdown-item" id="ToolMoldMaster" href="#">Plant & Maintenance &raquo;</a>
+
+                                        <ul class="submenu dropdown-menu">
+                                            <li>
+                                                <a class="dropdown-item" asp-action="ToolMoldMaster" asp-route-ID="0" asp-controller="ToolMoldMaster" id="ToolMoldMaster">
+                                                    <i class="fa fa-book fa-fw fa-lg" aria-hidden="true"></i> Tool/Mold Master
+                                                </a>
 
 
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item ToolMoldMaster" asp-action="ToolMoldMasterDashboard" asp-controller="ToolMoldMaster">
+                                                    <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
+                                                </a>
+                                                <input class="userRightsPermission" type="hidden" value="PartCode Party Wise" />
+
+                                            </li>
+                                        </ul>
                                     </li>
-                                    <li>
-                                        <a class="dropdown-item ToolMoldMaster" asp-action="ToolMoldMasterDashboard" asp-controller="ToolMoldMaster">
-                                            <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
-                                        </a>
-                                        <input class="userRightsPermission" type="hidden" value="PartCode Party Wise" />
+                                </ul>  
 
-                                    </li>
-                                </ul>
                             </li>
-
-
-
                             <li><hr class="dropdown-divider"></li>
                             <li>
                                 <a class="dropdown-item" href="#">Bom &raquo;</a>
@@ -980,7 +983,6 @@
 
                         </ul>
                     </li>
-
                     <li>
                         @*//1 *@
                         <a class="dropdown-item" id="ControlPlan" href="#">Qc &raquo;</a>
@@ -1088,7 +1090,6 @@
 
                     </li>
                 </ul>
-                </li>
                 <li class="nav-item dropdown">
                     <a href="#" class="nav-link NavText dropdown-toggle" data-bs-toggle="dropdown">Sales & Mkt</a>
                     <ul class="dropdown-menu">
@@ -2410,6 +2411,29 @@
 
 
 
+                    </ul>
+                </li>
+
+                @*start HR Module*@
+                <li class="nav-item dropdown">
+                    <a class="nav-link NavText dropdown-toggle" href="#" data-bs-toggle="dropdown">HR</a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="dropdown-item" href="#">Gate Attendance &raquo; </a>
+                            <ul class="submenu dropdown-menu">
+                                <li>
+                                    <a class="dropdown-item" asp-action="GateAttendance" asp-route-ID="0" asp-controller="GateAttendance" id="GateAttendance">
+                                        <i class="fa fa-file-lines fa-fw fa-lg" aria-hidden="true"></i> Gate Attendance
+                                    </a>
+                                </li>
+                                @* <li>
+                                                <a class="dropdown-item GateAttendance" asp-action="DashBoard" asp-controller="GateAttendance">
+                                                    <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
+                                                </a>
+                                            </li> *@
+                                <input class="userRightsPermission" type="hidden" value="HR Gate Attendance" />
+                            </ul>
+                        </li>
                     </ul>
                 </li>
 

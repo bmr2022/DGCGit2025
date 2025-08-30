@@ -33,6 +33,7 @@ namespace eTactWeb.DOM.Models
 
 		// Vendor detail
 		public int VendoreAccountCode { get; set; }
+		public string VendoreAccountName { get; set; }
 		public string PONO { get; set; }
 		public string PODate { get; set; }
 		public int POYear { get; set; }
@@ -94,6 +95,9 @@ namespace eTactWeb.DOM.Models
 		public string LastUpdatedbyEmpName { get; set; }
 		public string EntryByMachine { get; set; }
 		public string Mode { get; set; }
-		public IList<string> ToolMoldGrid { get; set; }
+		public string FromDate { get; set; }
+		public string ToDate { get; set; }
+		public string Searchbox { get; set; }
+		public IList<ToolMoldMasterModel> ToolMoldGrid { get; set; }
 	}
 }

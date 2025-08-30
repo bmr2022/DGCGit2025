@@ -185,9 +185,11 @@
                         foreach (var item in Model.DPBDashboard)
                         {
                             Cntr = Cntr + 1;
-                            <tr id="approvedRow-@Cntr"
-                                class="@( !string.IsNullOrEmpty(@item.AgainstVoucherNo) ? "highlight-row" : "" )">
-
+                                    <tr id="approvedRow-@Cntr"
+                                style="@( !string.IsNullOrWhiteSpace(item.AgainstVoucherNo)
+        ? "color: rgb(13, 202, 240);"
+        : "" )">
+                           
 
                                 <td class="FWB">
                                     @srNo
@@ -197,6 +199,14 @@
                                 </td>
                                 <td style="text-align:center;white-space: nowrap;">
                                     <div id="container">
+                                        <div id="printData-@Cntr">
+                                            <a class="table-link link-dark" target="_blank" asp-action="PrintReport" asp-route-EntryId="@item.EntryID" asp-route-YearCode="@item.YearCode">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa-solid fa-print fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                        </div>
                                         <div id="viewCursorDiv-@Cntr">
                                             <a class="table-link link-success" asp-action="DirectPurchaseBill" asp-route-Mode="V" asp-route-ID="@item.EntryID" asp-route-YearCode="@item.YearCode" onclick="BackButtonData(event,'@item.EntryID','@item.YearCode');">
                                                 <span class="fa-stack">

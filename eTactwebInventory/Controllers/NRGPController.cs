@@ -136,6 +136,8 @@ namespace eTactWeb.Controllers
                 model.Mode = Mode;
                 model.YearCode = YC;
                 model.EntryTime = model.EntryTime;
+                model.FinFromDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString("FromDate"));
+                model.FinToDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString("ToDate"));
                 model = await BindModel(model);
 
                 model.ID = ID;
@@ -651,6 +653,7 @@ namespace eTactWeb.Controllers
                             var input = "";
                             if (Result != null)
                             {
+                              
                                 input = Result.Result.ToString();
                                 int index = input.IndexOf("#ERROR_MESSAGE");
 
@@ -663,6 +666,33 @@ namespace eTactWeb.Controllers
                                 {
                                     TempData["500"] = "500";
                                 }
+                            }
+                            else
+                            {
+                                TempData["500"] = "500";
+                            }
+
+
+                            _logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
+                            //model.IsError = "true";
+                            //return View("Error", Result);
+                        }
+                        if (Result.StatusText == "TransDate" || Result.StatusCode == HttpStatusCode.InternalServerError)
+                        {
+                            ViewBag.isSuccess = false;
+                            var input = "";
+                            if (Result?.Result != null)
+                            {
+                                if (Result.Result is string str)
+                                {
+                                    input = str;
+                                }
+                                else
+                                {
+                                    input = JsonConvert.SerializeObject(Result.Result);
+                                }
+
+                                TempData["ErrorMessage"] = input;
                             }
                             else
                             {

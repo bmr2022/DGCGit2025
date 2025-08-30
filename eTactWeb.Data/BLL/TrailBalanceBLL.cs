@@ -22,9 +22,9 @@ namespace eTactWeb.Data.BLL
             _TrailBalanceDAL = new TrailBalanceDAL(config, dataLogicDAL, connectionStringService);
             _DataLogicDAL = dataLogicDAL;
         }
-        public async Task<TrailBalanceModel> GetTrailBalanceDetailsData(string FromDate, string ToDate, int? TrailBalanceGroupCode, string ReportType)
+        public async Task<TrailBalanceModel> GetTrailBalanceDetailsData(string FromDate, string ToDate, int? TrailBalanceGroupCode, int? ParentAccountCode, string ReportType)
         {
-            return await _TrailBalanceDAL.GetTrailBalanceDetailsData(FromDate, ToDate, TrailBalanceGroupCode, ReportType);
+            return await _TrailBalanceDAL.GetTrailBalanceDetailsData(FromDate, ToDate, TrailBalanceGroupCode,ParentAccountCode, ReportType);
         }
         public async Task<ResponseResult> FillGroupList(string FromDate, string ToDate)
         {

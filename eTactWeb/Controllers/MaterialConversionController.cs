@@ -1,6 +1,8 @@
 ﻿using eTactWeb.Data.Common;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
+using FastReport.Web;
+using FastReport;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
@@ -27,13 +29,36 @@ namespace eTactWeb.Controllers
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
         }
+        public IActionResult PrintReport(int EntryId , int YC , string SlipNo )
+        {
+            string my_connection_string;
+            string contentRootPath = _IWebHostEnvironment.ContentRootPath;
+            string webRootPath = _IWebHostEnvironment.WebRootPath;
+            var webReport = new WebReport();
+            webReport.Report.Clear();
+
+            webReport.Report.Dispose();
+            webReport.Report = new Report();
+
+            webReport.Report.Load(webRootPath + "\\MaterialConversionReport.frx"); // default report
+
+            webReport.Report.SetParameterValue("EntryIdparam", EntryId);
+            webReport.Report.SetParameterValue("YearCodeparam", YC);
+            webReport.Report.SetParameterValue("SlipNoparam", SlipNo);
+            my_connection_string =  iconfiguration.GetConnectionString("eTactDB");
+            webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+            webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
+            webReport.Report.SetParameterValue("MyParameter", my_connection_string);
+            webReport.Report.Refresh();
+            return View(webReport);
+        }
         [Route("{controller}/Index")]
         public async Task<ActionResult> MaterialConversion(int ID,int YC,string Mode,string SlipNo,
             int StoreId, int  AltStoreId, int OrginalWCID, int AltWCID, int ActualEntryByEmpid, int UpdatedByEmpId, int PlanYearCode, int ProdSchYearCode,
         decimal OriginalQty, decimal AltOriginalQty, decimal AltStock, decimal BatchStock, decimal TotalStock, decimal OrigItemRate,
         string  StoreName, string OriginalItemCode, string OriginalPartCode, string OriginalItemName, string Unit, string WorkCenterName, string AltStoreName, string AltWorkCenterName, string AltPartCode, string AltItemName, string AltUnit, string BatchNo,
         string UniqueBatchNo, string Remark, string EntryByMachine, string PlanNo, string PlanDate,
-        string ProdSchNo, string ProdSchDatetime, string ActualEntryDate, string UpdationDate,string FromDate,string ToDate)
+        int ProdSchNo, string ProdSchDatetime, string ActualEntryDate, string UpdationDate,string FromDate,string ToDate)
         {
             var MainModel = new MaterialConversionModel();
 
@@ -44,8 +69,10 @@ namespace eTactWeb.Controllers
             MainModel.ApprovedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
             MainModel.ApprovedByEmpName = HttpContext.Session.GetString("EmpName");
             MainModel.cc = HttpContext.Session.GetString("Branch");
-            HttpContext.Session.Remove("KeyMaterialConversionGrid");
-            if (!string.IsNullOrEmpty(Mode) && ID > 0 && Mode == "U")
+			MainModel.FinFromDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString("FromDate"));
+			MainModel.FinToDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString("ToDate"));
+			HttpContext.Session.Remove("KeyMaterialConversionGrid");
+            if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "U" || Mode == "V"))
             {
                 MainModel = await _IMaterialConversion.GetViewByID(ID, YC,FromDate,ToDate).ConfigureAwait(false);
                 MainModel.Mode = Mode; // Set Mode to Update
@@ -97,7 +124,9 @@ namespace eTactWeb.Controllers
                     MainModel.ActualEntryByEmpid = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
                     MainModel.ActualEntryDate = DateTime.Today.ToString("MM/dd/yyyy").Replace("-", "/");
                     MainModel.cc = HttpContext.Session.GetString("Branch");
-                }
+					MainModel.FinFromDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString("FromDate"));
+					MainModel.FinToDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString("ToDate"));
+				}
 
                 string serializedGrid = JsonConvert.SerializeObject(MainModel.MaterialConversionGrid);
                 HttpContext.Session.SetString("KeyMaterialConversionGrid", serializedGrid);
@@ -161,11 +190,14 @@ namespace eTactWeb.Controllers
                         ViewBag.isSuccess = true;
                         TempData["200"] = "200";
                         HttpContext.Session.Remove("KeyMaterialConversionGrid");
+                        return RedirectToAction(nameof(MaterialConversionDashBoard));
                     }
                     else if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
                     {
                         ViewBag.isSuccess = true;
                         TempData["202"] = "202";
+                        HttpContext.Session.Remove("KeyMaterialConversionGrid");
+                        return RedirectToAction(nameof(MaterialConversionDashBoard));
                     }
                     else if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
                     {
@@ -173,6 +205,36 @@ namespace eTactWeb.Controllers
                         TempData["500"] = "500";
                         _logger.LogError($"\n \n ********** LogError ********** \n {JsonConvert.SerializeObject(Result)}\n \n");
                         return View("Error", Result);
+
+                    }
+                   else if (Result.StatusText == "TransDate" || Result.StatusCode == HttpStatusCode.InternalServerError)
+                    {
+                        ViewBag.isSuccess = false;
+                        var input = "";
+                        if (Result?.Result != null)
+                        {
+                            if (Result.Result is string str)
+                            {
+                                input = str;
+                            }
+                            else
+                            {
+                                input = JsonConvert.SerializeObject(Result.Result);
+                            }
+
+                            TempData["ErrorMessage"] = input;
+                        }
+                        else
+                        {
+                            TempData["500"] = "500";
+                        }
+
+
+                        _logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
+                        //model.IsError = "true";
+                        //return View("Error", Result);
+                        HttpContext.Session.Remove("KeyMaterialConversionGrid");
+                        return RedirectToAction(nameof(MaterialConversionDashBoard));
                     }
                 }
 

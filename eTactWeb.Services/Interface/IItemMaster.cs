@@ -42,6 +42,7 @@ namespace eTactWeb.Services.Interface
 
         Task<ResponseResult> SaveData(ItemMasterModel model);
         Task<ResponseResult> SaveMultipleItemData(DataTable ItemDetailGrid);
+        Task<ResponseResult> UpdateMultipleItemDataFromExcel(DataTable ItemDetailGrid,string flag);
         Task<ResponseResult> UpdateMultipleItemData(DataTable ItemDetailGrid);
         Task<ResponseResult> UpdateSelectedItemData(DataTable ItemDetailGrid,string flag);
 

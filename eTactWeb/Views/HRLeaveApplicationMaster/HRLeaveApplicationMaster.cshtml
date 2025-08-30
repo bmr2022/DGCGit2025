@@ -7,7 +7,7 @@
 }
 
 <div class="card bg-gradient mb-3 border-light shadow-lg">
-    <form asp-action="HRLeaveApplicationMaster" autocomplete="off" class="form-horizontal">
+    <form asp-action="HRLeaveApplicationMaster" method="post" autocomplete="off" class="form-horizontal">
         <div class="card-header card-headerBG text-light bg-gradient">
             <h5>
                 <strong>Leave Application Master</strong>
@@ -463,20 +463,57 @@
 
 @section Scripts {
     <script>
-
+              
         var AccountStateCode = 0;
-        $('#submitBTN').click(function (e) {
-             ;
+        // $('#submitBTN').click(function (e) {
+                        
+
+        //     e.preventDefault();
+        //          $('#B_DetailGrid').removeClass('show');
+
+        // // Also reset the accordion button so it looks collapsed
+        // $('#H_DetailGrid .accordion-button').addClass('collapsed');
+        //                if ($('#DivDetailGrid tr td').length <= 1) {
+        //                 $.notify(' Grid Should Have Atleast 1 Item...!', "error");
+        //             }
+           
+      
+        //     $("form").submit();
+        // });
+          
+        $(function () {
+
+          function closeDetailAccordion() {
+            var $item = $('#accordionItemCategory');
+            $item.find('.accordion-collapse.show').removeClass('show');
+
+            $item.find('.accordion-button')
+                 .addClass('collapsed')
+                 .attr('aria-expanded', 'false');
+
+          }
+
+          $(document).on('click', '#submitBTN, #UpdateButton', function (e) {
             e.preventDefault();
 
-            $("form").submit();
+            if ($('#DivDetailGrid tr td').length <= 1) {
+              $.notify(' Grid Should Have Atleast 1 Item...!', "error");
+              return;
+            }
+
+            closeDetailAccordion();
+
+            var form = this.closest('form');
+            if (form) form.submit(); // native submit to avoid re-triggering click handler
+          });
+
+          $(document).on('submit', 'form[asp-action="HRLeaveApplicationMaster"]', function () {
+            closeDetailAccordion();
+          });
         });
 
         $('.numbers').on('input', function () {
-            // Remove non-numeric characters except for decimal point
             $(this).val($(this).val().replace(/[^0-9.]/g, ''));
-
-            // Prevent negative values
             if ($(this).val() < 0) {
                 $(this).val('');
             }
@@ -560,7 +597,7 @@
                 $('#ApplicationDate').datepicker({ dateFormat: 'dd/mm/yy' });
                 $('#LastUPdatedDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
             }
-
+                     
             $(document).on('select2:select', '#EmpName,#EmpCode', function (e) {
 
                 var cntId = e.target.id;

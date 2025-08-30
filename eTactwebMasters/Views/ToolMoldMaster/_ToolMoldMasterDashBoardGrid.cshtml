@@ -1,0 +1,358 @@
+﻿@model eTactWeb.DOM.Models.ToolMoldMasterModel;
+@using Microsoft.AspNetCore.Http
+@using System.Reflection.PortableExecutable
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    var YearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("YearCode"));
+}
+
+<table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0" id="ISTDashboard">
+    <thead class="bg-gradient card-headerBG text-light">
+        <tr>
+            <th>Sr#</th>
+            <th>Action</th>
+
+            <th data-columnno="1" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Tool Entry Id
+            </th>
+            <th data-columnno="3" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Entry Date
+            </th>
+            <th data-columnno="4" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Tool / Mold
+            </th>
+            <th data-columnno="5" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Tool Code
+            </th>
+            <th data-columnno="6" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Tool Name
+            </th>
+           
+            <th data-columnno="8" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> ItemName
+            </th>
+            <th data-columnno="9" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Consider As Fixed Assets
+            </th>
+            <th data-columnno="10" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Consider In Inventory
+            </th>
+        
+            <th data-columnno="12" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Parent Account Name
+            </th>
+            <th data-columnno="13" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Main Group
+            </th>
+            <th data-columnno="14" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Sub Group
+            </th>
+            <th data-columnno="15" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Under Group
+            </th>
+            <th data-columnno="16" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Sub Sub Group
+            </th>
+            <th data-columnno="17" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Cost Center Name
+            </th>
+            <th data-columnno="18" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Tool Year
+            </th>
+           
+            <th data-columnno="20" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Vendor Name
+            </th>
+            <th data-columnno="21" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> PONO
+            </th>
+            <th data-columnno="22" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> PO Date
+            </th>
+            <th data-columnno="23" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> PO Year
+            </th>
+            <th data-columnno="24" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Invoice No
+            </th>
+            <th data-columnno="25" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Invoice Date
+            </th>
+            <th data-columnno="26" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Invoice Year Code
+            </th>
+            <th data-columnno="27" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Net Book Value
+            </th>
+            <th data-columnno="28" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Purchase Value
+            </th>
+            <th data-columnno="29" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Residual Value
+            </th>
+            <th data-columnno="30" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Depreciation Method
+            </th>
+            <th data-columnno="31" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Depreciation Rate
+            </th>
+            <th data-columnno="32" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Depriciation Amt
+            </th>
+            <th data-columnno="33" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Country Of Origin
+            </th>
+            <th data-columnno="34" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> First Aqusition On
+            </th>
+            <th data-columnno="35" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Original Value
+            </th>
+            <th data-columnno="36" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Capatalization Date
+            </th>
+            <th data-columnno="37" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Bar Code
+            </th>
+            <th data-columnno="38" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Serial No
+            </th>
+            <th data-columnno="39" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Location Of Insallation
+            </th>
+            <th data-columnno="40" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>  Department Name
+            </th>
+            <th data-columnno="41" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Expected Life
+            </th>
+            <th data-columnno="42" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Calibration Required
+            </th>
+            <th data-columnno="43" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Calibration Frequency In Month
+            </th>
+            <th data-columnno="44" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Last Calibration Date
+            </th>
+            <th data-columnno="45" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Next Calibration Date
+            </th>
+            <th data-columnno="46" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Calibration Agency Id
+            </th>
+            <th data-columnno="47" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Last Calibration Certificate No
+            </th>
+            <th data-columnno="48" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Calibration Result Pass Fail
+            </th>
+            <th data-columnno="49" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Tolrence Range
+            </th>
+            <th data-columnno="50" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Calibration Remark
+            </th>
+            <th data-columnno="51" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Technician
+            </th>
+            <th data-columnno="52" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Technicial contact No
+            </th>
+            <th data-columnno="53" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Tech Employee Name
+            </th>
+            <th data-columnno="54" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Custodian Emp Id
+            </th>
+            <th data-columnno="55" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Insurance Company
+            </th>
+            <th data-columnno="56" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Insured Amount
+            </th>
+            <th data-columnno="57" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Insurance Detail
+            </th>
+            <th data-columnno="58" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> CC
+            </th>
+           
+        
+            <th data-columnno="61" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Actual Entry Date
+            </th>
+     
+            <th data-columnno="63" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Last Updated Date
+            </th>
+            <th data-columnno="64" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Updated By 
+            </th>
+            <th data-columnno="65" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Entry By Machine
+            </th>
+            <th data-columnno="66" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Custodian Employee
+            </th>
+            <th data-columnno="67" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Actual Entry By
+            </th>
+
+        </tr>
+    </thead>
+    <tbody id="DashboardGrid">
+        @{
+            var @Cntr = 0;
+            if (Model.ToolMoldGrid == null || Model.ToolMoldGrid.Count == 0)
+            {
+                <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+            }
+            else
+            {
+                foreach (var item in Model.ToolMoldGrid)
+                {
+                    Cntr = Cntr + 1;
+                    <tr onclick="selection(this)">
+                        <th>@Cntr</th>
+                        <td style="text-align:center;white-space: nowrap;">
+                            <div id="container">
+
+                                <div id="viewCursorDiv-@Cntr">
+                                    <a class="table-link link-success" asp-action="ToolMoldMaster" asp-route-Mode="V" asp-route-ID="@item.ToolEntryId" asp-route-YC="@YearCode" onclick="BackButtonData(event,'@item.ToolEntryId','@item.YearCode');"
+                                       asp-route-ToolEntryId="@item.ToolEntryId" asp-route-AccountCode="@item.AccountCode" asp-route-EntryDate="@item.EntryDate" asp-route-ToolOrMold="@item.ToolOrMold" asp-route-ToolCode="@item.ToolCode" asp-route-ToolName="@item.ToolName" asp-route-ItemCode="@item.ItemCode" asp-route-ItemName="@item.ItemName" asp-route-toolyear="@item.Fiscalyear" asp-route-ToolCateogryId="@item.ToolCateogryId" asp-route-ConsiderAsFixedAssets="@item.ConsiderAsFixedAssets" asp-route-ConsiderInInvetory="@item.ConsiderInInvetory" asp-route-ParentAccountCode="@item.ParentAccountCode" asp-route-ParentAccountName="@item.ParentAccountName" asp-route-MainGroup="@item.MainGroup"
+                                       asp-route-SubGroup="@item.SubGroup" asp-route-UnderGroup="@item.UnderGroup" asp-route-SubSubGroup="@item.SubSubGroup" asp-route-CostCenterId="@item.CostCenterId" asp-route-ToolYear="@item.Fiscalyear" asp-route-VendoreAccountCode="@item.VendoreAccountCode" asp-route-VendorName="@item.VendoreAccountName" asp-route-PONO="@item.PONO" asp-route-PODate="@item.PODate" asp-route-POYear="@item.POYear" asp-route-InvoiceNo="@item.InvoiceNo" asp-route-InvoiceDate="@item.InvoiceDate" asp-route-InvoiceYearCode="@item.InvoiceYearCode" asp-route-SubSubGroup="@item.SubSubGroup"
+                                       asp-route-NetBookValue="@item.NetBookValue" asp-route-PurchaseValue="@item.PurchaseValue" asp-route-ResidualValue="@item.ResidualValue" asp-route-DepreciationMethod="@item.DepreciationMethod" asp-route-DepreciationRate="@item.DepreciationRate" asp-route-DepriciationAmt="@item.DepriciationAmt" asp-route-CountryOfOrigin="@item.CountryOfOrigin" asp-route-FirstAqusitionOn="@item.FirstAqusitionOn" asp-route-OriginalValue="@item.OriginalValue" asp-route-CapatalizationDate="@item.CapatalizationDate" asp-route-BarCode="@item.BarCode" asp-route-SerialNo="@item.SerialNo"
+                                       asp-route-LocationOfInsallation="@item.LocationOfInsallation" asp-route-ForDepartmentId="@item.ForDepartmentId" asp-route-ExpectedLife="@item.ExpectedLife" asp-route-CalibrationRequired="@item.CalibrationRequired" asp-route-CalibrationFrequencyInMonth="@item.CalibrationFrequencyInMonth" asp-route-LastCalibrationDate="@item.LastCalibrationDate" asp-route-NextCalibrationDate="@item.NextCalibrationDate" asp-route-CalibrationAgencyId="@item.CalibrationAgencyId" asp-route-LastCalibrationCertificateNo="@item.LastCalibrationCertificateNo" asp-route-CalibrationResultPassFail="@item.CalibrationResultPassFail" asp-route-TolrenceRange="@item.TolrenceRange" asp-route-CalibrationRemark="@item.CalibrationRemark"
+                                       asp-route-Technician="@item.Technician" asp-route-TechnicialcontactNo="@item.TechnicialcontactNo" asp-route-TechEmployeeName="@item.TechEmployeeName" asp-route-CustoidianEmpId="@item.CustoidianEmpId" asp-route-InsuranceCompany="@item.InsuranceCompany" asp-route-InsuredAmount="@item.InsuredAmount" asp-route-InsuranceDetail="@item.InsuranceDetail" asp-route-CC="@item.CC" asp-route-UID="@item.UID" asp-route-ActualEntryBy="@item.ActualEntryBy" asp-route-ActualEntryDate="@item.ActualEntryDate" asp-route-LastupdatedBy="@item.LastupdatedBy" asp-route-LastUpdatedDate="@item.LastUpdatedDate" asp-route-UpdatedByEmployee="@item.LastUpdatedbyEmpName" asp-route-EntryByMachine="@item.EntryByMachine" asp-route-CustodiaEmployee="@item.CustoidianEmpName" asp-route-ActualEntryByEmployee="@item.ActualEntryByEmpName">
+                                        <span class="fa-stack">
+                                            <i class="fa fa-square fa-stack-2x"></i>
+                                            <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </a>
+                                </div>
+                                <div id="editCursorDiv-@Cntr">
+
+                                    <a class="table-link link-primary" asp-action="ToolMoldMaster" onclick="confirmEdit(event)" asp-route-Mode="U" asp-route-ID="@item.ToolEntryId" asp-route-YC="@YearCode" asp-route-FromDate="@item.FromDate"
+                                       asp-route-ToDate="@item.ToDate"
+                                       asp-route-ToolEntryId="@item.ToolEntryId" asp-route-AccountCode="@item.AccountCode" asp-route-EntryDate="@item.EntryDate" asp-route-ToolOrMold="@item.ToolOrMold" asp-route-ToolCode="@item.ToolCode" asp-route-ToolName="@item.ToolName" asp-route-ItemCode="@item.ItemCode" asp-route-ToolCateogryId="@item.ToolCateogryId" asp-route-ConsiderAsFixedAssets="@item.ConsiderAsFixedAssets" asp-route-ConsiderInInvetory="@item.ConsiderInInvetory" asp-route-ParentAccountCode="@item.ParentAccountCode" asp-route-ParentAccountName="@item.ParentAccountName" asp-route-MainGroup="@item.MainGroup"
+                                       asp-route-SubGroup="@item.SubGroup" asp-route-UnderGroup="@item.UnderGroup" asp-route-SubSubGroup="@item.SubSubGroup" asp-route-CostCenterId="@item.CostCenterId" asp-route-ToolYear="@item.Fiscalyear" asp-route-VendoreAccountCode="@item.VendoreAccountCode" asp-route-VendorName="@item.VendoreAccountName" asp-route-PONO="@item.PONO" asp-route-PODate="@item.PODate" asp-route-POYear="@item.POYear" asp-route-InvoiceNo="@item.InvoiceNo" asp-route-InvoiceDate="@item.InvoiceDate" asp-route-InvoiceYearCode="@item.InvoiceYearCode"
+                                       asp-route-NetBookValue="@item.NetBookValue" asp-route-PurchaseValue="@item.PurchaseValue" asp-route-ResidualValue="@item.ResidualValue" asp-route-DepreciationMethod="@item.DepreciationMethod" asp-route-DepreciationRate="@item.DepreciationRate" asp-route-DepriciationAmt="@item.DepriciationAmt" asp-route-CountryOfOrigin="@item.CountryOfOrigin" asp-route-FirstAqusitionOn="@item.FirstAqusitionOn" asp-route-OriginalValue="@item.OriginalValue" asp-route-CapatalizationDate="@item.CapatalizationDate" asp-route-BarCode="@item.BarCode" asp-route-SerialNo="@item.SerialNo"
+                                       asp-route-LocationOfInsallation="@item.LocationOfInsallation" asp-route-ForDepartmentId="@item.ForDepartmentId" asp-route-ExpectedLife="@item.ExpectedLife" asp-route-CalibrationRequired="@item.CalibrationRequired" asp-route-CalibrationFrequencyInMonth="@item.CalibrationFrequencyInMonth" asp-route-LastCalibrationDate="@item.LastCalibrationDate" asp-route-NextCalibrationDate="@item.NextCalibrationDate" asp-route-CalibrationAgencyId="@item.CalibrationAgencyId" asp-route-LastCalibrationCertificateNo="@item.LastCalibrationCertificateNo" asp-route-CalibrationResultPassFail="@item.CalibrationResultPassFail" asp-route-TolrenceRange="@item.TolrenceRange" asp-route-CalibrationRemark="@item.CalibrationRemark"
+                                       asp-route-Technician="@item.Technician" asp-route-TechnicialcontactNo="@item.TechnicialcontactNo" asp-route-TechEmployeeName="@item.TechEmployeeName" asp-route-CustoidianEmpId="@item.CustoidianEmpId" asp-route-InsuranceCompany="@item.InsuranceCompany" asp-route-InsuredAmount="@item.InsuredAmount" asp-route-InsuranceDetail="@item.InsuranceDetail" asp-route-CC="@item.CC" asp-route-UID="@item.UID" asp-route-ActualEntryBy="@item.ActualEntryBy" asp-route-ActualEntryDate="@item.ActualEntryDate" asp-route-LastupdatedBy="@item.LastupdatedBy" asp-route-LastUpdatedDate="@item.LastUpdatedDate" asp-route-UpdatedByEmployee="@item.LastUpdatedbyEmpName" asp-route-EntryByMachine="@item.EntryByMachine" asp-route-CustodiaEmployee="@item.CustoidianEmpName" asp-route-ActualEntryByEmployee="@item.ActualEntryByEmpName">
+                                        <span class="fa-stack">
+                                            <i class="fa fa-square fa-stack-2x"></i>
+                                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </a>
+                                </div>
+
+                                <div id="deleteCursorDiv-@Cntr">
+                                    <a class="table-link link-danger"
+                                       href="javascript:void(0);"
+                                       onclick="confirmdelete('@item.ToolEntryId', '@YearCode', '@item.EntryDate', '@item.EntryByMachine')">
+                                        <span class="fa-stack">
+                                            <i class="fa fa-square fa-stack-2x"></i>
+                                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </a>
+                                </div>
+
+
+                            </div>
+                        </td>
+
+                        <td>@item.ToolEntryId</td>
+                        <td>@item.EntryDate?.ToString().Split(' ')[0]</td>
+                        <td>@item.ToolOrMold</td>
+                        <td>@item.ToolCode</td>
+                        <td>@item.ToolName</td>
+                        <td>@item.ItemName</td>
+                        <td>@item.ConsiderAsFixedAssets</td>
+                        <td>@item.ConsiderInInvetory</td>
+
+                        <td>@item.ParentAccountName</td>
+                        <td>@item.MainGroup</td>
+                        <td>@item.SubGroup</td>
+                        <td>@item.UnderGroup</td>
+                        <td>@item.SubSubGroup</td>
+                        <td>@item.CostCenterName</td>
+                        <td>@item.Fiscalyear</td>
+                        <td>@item.VendoreAccountName</td>
+
+                        <td>@item.PONO</td>
+                        <td>@item.PODate?.ToString().Split(' ')[0]</td>
+                        <td>@item.POYear</td>
+                        <td>@item.InvoiceNo</td>
+                        <td>@item.InvoiceDate?.ToString().Split(' ')[0]</td>
+                        <td>@item.InvoiceYearCode</td>
+                        <td>@item.NetBookValue</td>
+                        <td>@item.PurchaseValue</td>
+                        <td>@item.ResidualValue</td>
+                        <td>@item.DepreciationMethod</td>
+                        <td>@item.DepreciationRate</td>
+                        <td>@item.DepriciationAmt</td>
+
+                        <td>@item.CountryOfOrigin</td>
+                        <td>@item.FirstAqusitionOn?.ToString().Split(' ')[0]</td>
+                        <td>@item.OriginalValue</td>
+                        <td>@item.CapatalizationDate?.ToString().Split(' ')[0]</td>
+                        <td>@item.BarCode</td>
+                        <td>@item.SerialNo</td>
+                        <td>@item.LocationOfInsallation</td>
+                        <td>@item.ForDepartmentId</td>
+                        <td>@item.ExpectedLife</td>
+                        <td>@item.CalibrationRequired</td>
+
+                        <td>@item.CalibrationFrequencyInMonth</td>
+                        <td>@item.LastCalibrationDate?.ToString().Split(' ')[0]</td>
+                        <td>@item.NextCalibrationDate?.ToString().Split(' ')[0]</td>
+                        <td>@item.CalibrationAgencyId</td>
+                        <td>@item.LastCalibrationCertificateNo</td>
+                        <td>@item.CalibrationResultPassFail</td>
+                        <td>@item.TolrenceRange</td>
+                        <td>@item.CalibrationRemark</td>
+                        <td>@item.Technician</td>
+                        <td>@item.TechnicialcontactNo</td>
+                        <td>@item.TechEmployeeName</td>
+                        <td>@item.CustoidianEmpId</td>
+
+                        <td>@item.InsuranceCompany</td>
+                        <td>@item.InsuredAmount</td>
+                        <td>@item.InsuranceDetail</td>
+                        <td>@item.CC</td>
+                        
+                        
+                        <td>@item.ActualEntryDate?.ToString().Split(' ')[0]</td>
+                      
+                        <td>@item.LastUpdatedDate?.ToString().Split(' ')[0]</td>
+                        <td>@item.LastUpdatedbyEmpName</td>
+                        <td>@item.EntryByMachine</td>
+                        <td>@item.CustoidianEmpName</td>
+                        <td>@item.ActualEntryByEmpName</td>
+
+
+
+                    </tr>
+                }
+            }
+        }
+    </tbody>
+</table>
+<center><strong>TOTAL ROWS : <span id="totalRows"></span></strong></center>
+
+
+<style>
+    #container {
+        display: flex;
+    }
+
+        #container > div {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+    #DashboardGrid {
+        background-color: blanchedalmond;
+    }
+</style>

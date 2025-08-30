@@ -374,8 +374,7 @@
                                     </table>
                                     <center><lable>total rows:</lable><input type="text" id="TotalRows" /></center>
                                 </div>
-                                <center><strong>TOTAL ROWS : <span id="totalRows"></span></strong></center>
-
+                                <center><strong>TOTAL ROWS : <span id="totalRows"></span></strong>   <strong>Total Bill Qty: <span id="totalBillQty">0</span></strong></center>
                             </div>
                             @*<div class=" col-4 col-auto">
                             <div class="row justify-content-around">
@@ -678,6 +677,12 @@
                     function updateRowCount() {
                         var rowCount = $('#divMRNGrid tr').length;
                 $('#totalRows').text(rowCount);
+                          var totalBillQty = 0;
+            $('#divMRNGrid input[id^="BillQty"]').each(function () {
+                var val = parseFloat($(this).val()) || 0;
+                totalBillQty += val;
+            });
+            $('#totalBillQty').text(totalBillQty);
             }
 
             updateRowCount(); 

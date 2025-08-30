@@ -34,6 +34,7 @@ namespace eTactWeb.DOM.Models
         public string? MRNDate { get; set; }
         public int MRNYearCode { get; set; }
         public string ProdDate { get; set; }
+        public string? FML { get; set; }
         public int ProdYearCode { get; set; }
         public decimal MRNQty { get; set; }
         public decimal ProdQty { get; set; }
