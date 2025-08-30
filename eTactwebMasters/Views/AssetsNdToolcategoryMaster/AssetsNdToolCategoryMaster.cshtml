@@ -33,7 +33,7 @@
                             @if (Model.Mode != "V")
                             {
                                 <div class="col-auto">
-                                    <button type="reset" class="btn btn-secondary btn-sm">
+                                    <button type="reset" class="btn btn-secondary btn-sm" onclick="Refresh()">
                                         <i class="fa fa-refresh fa-fw fa-lg"></i> REFRESH
                                     </button>
                                 </div>
@@ -193,25 +193,13 @@
         }
 
         // Reload current page (refresh form)
-        function RefreshPage() {
-            location.reload(); // reloads the same page
+        function Refresh() {
+            document.querySelector("form").reset();
         }
 
-        $(document).ready(function () {
-            GetFormRights();
-        });
+       
 
-        function GetFormRights() {
-            $.ajax({
-                url: "@Url.Action("GetFormRights")",
-                type: "POST",
-                async: false,
-                success: function (data) {
-                    // Same logic as StoreMaster
-                    // you can keep identical code, just ensure grid IDs and partials are aligned
-                }
-            });
-        }
+       
 
     </script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script><script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

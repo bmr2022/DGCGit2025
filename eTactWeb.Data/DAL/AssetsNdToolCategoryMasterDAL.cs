@@ -168,25 +168,29 @@ namespace eTactWeb.Data.DAL
 
             if (response.Result is DataTable dt && dt.Rows.Count > 0)
             {
-                var row = dt.Rows[0];
-                return new AssetsNdToolCategoryMasterModel
+                var row = dt.AsEnumerable()
+                .FirstOrDefault(r => Convert.ToInt64(r["AssetsCateogryId"]) == id);
+                if (row != null)
                 {
-                    AssetsCateogryId = row["AssetsCateogryId"] != DBNull.Value ? Convert.ToInt64(row["AssetsCateogryId"]) : 0,
-                    AsstesToolInstrument = row["AsstesToolInstrument"]?.ToString(),
-                    AssetsCategoryName = row["AssetsCategoryName"]?.ToString(),
-                    AssetsCategoryCode = row["AssetsCategoryCode"]?.ToString(),
-                    Otherdetail = row["Otherdetail"]?.ToString(),
-                    AssetsMainCateogryId = row["AssetsMainCateogryId"] != DBNull.Value ? Convert.ToInt32(row["AssetsMainCateogryId"]) : 0,
-                    ToolMaincategoryId = row["ToolMaincategoryId"] != DBNull.Value ? Convert.ToInt32(row["ToolMaincategoryId"]) : 0,
-                    EntryByMachineName = row["EntryByMachineName"]?.ToString(),
-                    ActualEntryBy = row["ActualEntryBy"] != DBNull.Value ? Convert.ToInt32(row["ActualEntryBy"]) : 0,
-                    ActualEntryEmp = row["ActualEntryEmp"]?.ToString(),
-                    ActualEntryDate = row["ActualEntryDate"] != DBNull.Value ? Convert.ToDateTime(row["ActualEntryDate"]) : (DateTime?)null,
-                    LastUpdationDate = row["LastUpdationdate"] != DBNull.Value ? Convert.ToDateTime(row["LastUpdationdate"]) : (DateTime?)null,
-                    LastUpdatedBy = row["LastUpdatedBy"] != DBNull.Value ? Convert.ToInt32(row["LastUpdatedBy"]) : (int?)null,
-                    UpdatedByEmp = row["UpdatedByEmp"]?.ToString()
-                };
+                    return new AssetsNdToolCategoryMasterModel
+                    {
+                        AssetsCateogryId = row["AssetsCateogryId"] != DBNull.Value ? Convert.ToInt64(row["AssetsCateogryId"]) : 0,
+                        AsstesToolInstrument = row["AsstesToolInstrument"]?.ToString(),
+                        AssetsCategoryName = row["AssetsCategoryName"]?.ToString(),
+                        AssetsCategoryCode = row["AssetsCategoryCode"]?.ToString(),
+                        Otherdetail = row["Otherdetail"]?.ToString(),
+                        AssetsMainCateogryId = row["AssetsMainCateogryId"] != DBNull.Value ? Convert.ToInt32(row["AssetsMainCateogryId"]) : 0,
+                        ToolMaincategoryId = row["ToolMaincategoryId"] != DBNull.Value ? Convert.ToInt32(row["ToolMaincategoryId"]) : 0,
+                        EntryByMachineName = row["EntryByMachineName"]?.ToString(),
+                        ActualEntryBy = row["ActualEntryBy"] != DBNull.Value ? Convert.ToInt32(row["ActualEntryBy"]) : 0,
+                        ActualEntryEmp = row["ActualEntryEmp"]?.ToString(),
+                        ActualEntryDate = row["ActualEntryDate"] != DBNull.Value ? Convert.ToDateTime(row["ActualEntryDate"]) : (DateTime?)null,
+                        LastUpdationDate = row["LastUpdationdate"] != DBNull.Value ? Convert.ToDateTime(row["LastUpdationdate"]) : (DateTime?)null,
+                        LastUpdatedBy = row["LastUpdatedBy"] != DBNull.Value ? Convert.ToInt32(row["LastUpdatedBy"]) : (int?)null,
+                        UpdatedByEmp = row["UpdatedByEmp"]?.ToString()
+                    };
 
+                }
             }
 
             return null;
