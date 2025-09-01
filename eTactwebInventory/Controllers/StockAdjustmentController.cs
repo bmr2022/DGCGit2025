@@ -741,11 +741,11 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> FillCurrentBatchINStore(int ItemCode, int YearCode, string StoreName, string batchno = "")
+        public async Task<JsonResult> FillCurrentBatchINStore(int ItemCode, int YearCode, string TransDate, string StoreName, string batchno = "")
         {
             var FinStartDate = HttpContext.Session.GetString("FromDate");
-            var TrDate = HttpContext.Session.GetString("ToDate");
-            //var TrDate = ParseFormattedDate(TransDate);
+            //var TrDate = HttpContext.Session.GetString("ToDate");
+            var TrDate = ParseFormattedDate(TransDate);
             var JSON = await IStockAdjust.FillCurrentBatchINStore(ItemCode, YearCode, FinStartDate, TrDate, StoreName, batchno);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);

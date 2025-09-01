@@ -45,6 +45,6 @@ namespace eTactWeb.Services.Interface
         public Task<DataSet> BindAllDropDowns(string Flag);
 
         Task<ResponseResult> GetItemGroup();
-        Task<IssueNRGPModel> selectMultipleItem(int Group_Code, int StoreID, int YearCode,string ChallanDate,string PartCode);
+        Task<IssueNRGPModel> selectMultipleItem(string GroupName, int StoreID,string FromDate,string ToDate, string PartCode);
     }
 }

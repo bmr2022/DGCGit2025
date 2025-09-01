@@ -1,6 +1,6 @@
 ﻿@model eTactWeb.DOM.Models.AccDepriciationCalculationdetailModel;
 @{
-    var Cntr = 1;
+    var Cntr = 0;
 }
 @if (Model.AccDepriciationCalculationdetailGrid == null)
 {
@@ -15,13 +15,8 @@ else
         Cntr = Cntr + 1;
         <tr class="small" style="white-space:nowrap">
             <td style="white-space:nowrap;">
-                <a class="table-link link-primary" style="border:none;" id="editButton-@item.SeqNo" onclick="EditItemRows(@item.SeqNo);">
-                    <span class="fa-stack">
-                        <i class="fa fa-square fa-stack-2x"></i>
-                        <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-                    </span>
-                </a>
-                <a class="table-link link-danger" onclick="DeleteItemRow(@item.SeqNo);">
+               
+                <a class="table-link link-danger" onclick="DeleteItemRow(@item.AssetsEntryId);">
                     <span class="fa-stack">
                         <i class="fa fa-square fa-stack-2x"></i>
                         <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
@@ -31,17 +26,30 @@ else
 
             <td id="SeqNo-@Cntr">@Cntr</td>
             <td>@item.AssetsName</td>
+            <td>@item.DepreciationMethod</td>
+            <td>
+                <input type="text"
+                       name="DepreciationRate"
+                       value="@item.DepreciationRate"
+                       class="form-control" />
+            </td>
+
+            <td>
+                <input type="text"
+                       name="AfterDepriciationNetValue"
+                       value="@item.AfterDepriciationNetValue"
+                       class="form-control" />
+            </td>
+            <td>@item.PreviousYearValue</td>
+            <td>@item.OriginalNetBookValue</td>
             <td>@item.AccountName</td>
             <td>@item.MainGroup</td>
             <td>@item.ParentAccountName</td>
             <td>@item.SubGroup</td>
             <td>@item.UnderGroup</td>
             <td>@item.SubSubGroup</td>
-            <td>@item.OriginalNetBookValue</td>
-            <td>@item.PreviousYearValue</td>
-            <td>@item.DepreciationMethod</td>
-            <td>@item.DepreciationRate</td>
-            <td>@item.AfterDepriciationNetValue</td>
+           
+            
             <td>@item.RemainingUseFullLifeInYear</td>
         </tr>
     }

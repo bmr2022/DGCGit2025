@@ -923,10 +923,11 @@ namespace eTactWeb.Controllers
             return Json(JsonString);
         }
 
-        public async Task<IActionResult> selectMultipleItem(int Group_Code, int StoreID, int YearCode,string ChallanDate,string PartCode)
+        public async Task<IActionResult> selectMultipleItem(string GroupName, int StoreID, string ToDate, string PartCode)
         {
             var model = new IssueNRGPModel();
-            model = await _IIssueNRGP.selectMultipleItem(Group_Code, StoreID, YearCode, ChallanDate, PartCode);
+         var FromDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString("FromDate"));
+            model = await _IIssueNRGP.selectMultipleItem( GroupName,  StoreID,  FromDate,  ToDate,  PartCode);
 
 
             return PartialView("_NRGPShowAllItemGrid", model);
@@ -1041,7 +1042,7 @@ namespace eTactWeb.Controllers
                     {
                         if (GridDetail == null)
                         {
-                            //model.SEQNo = 1;
+                            model.SEQNo = 1;
                             model.ItemNetAmount = decimal.Parse(IssueNGrid.Sum(x => x.Amount).ToString("#.#0"));
                             IssueNGrid.Add(model);
                         }
@@ -1053,7 +1054,7 @@ namespace eTactWeb.Controllers
                             }
                             else
                             {
-                                //model.SEQNo = GridDetail.Count + 1;
+                                model.SEQNo = GridDetail.Count + 1;
                                 model.ItemNetAmount = decimal.Round(IssueNGrid.Sum(x => x.Amount), 2);
                                 IssueNGrid = GridDetail.Where(x => x != null).ToList();
                                 NRGPGrid.AddRange(IssueNrgpGrid);
@@ -1092,7 +1093,7 @@ namespace eTactWeb.Controllers
                     {
                         if (GridDetail == null)
                         {
-                            //model.SEQNo = 1;
+                            model.SEQNo = 1;
                             model.ItemNetAmount = decimal.Parse(IssueNGrid.Sum(x => x.Amount).ToString("#.#0"));
                             IssueNGrid.Add(model);
                         }
@@ -1104,7 +1105,7 @@ namespace eTactWeb.Controllers
                             }
                             else
                             {
-                                //model.SEQNo = GridDetail.Count + 1;
+                                model.SEQNo = GridDetail.Count + 1;
                                 model.ItemNetAmount = decimal.Round(IssueNGrid.Sum(x => x.Amount), 2);
                                 IssueNGrid = GridDetail.Where(x => x != null).ToList();
                                 NRGPGrid.AddRange(IssueNGrid);
@@ -1209,7 +1210,7 @@ namespace eTactWeb.Controllers
                 foreach (IssueNRGPDetail item in IssueNRGPGrid)
                 {
                     Indx++;
-                    //  item.SEQNo = Indx;
+                     item.SEQNo = Indx;
                 }
                 model.NetAmount = IssueNRGPGrid.Sum(x => (float)x.Amount);
                 model.ItemNetAmount = IssueNRGPGrid.Sum(x => (decimal)x.Amount);

@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static eTactWeb.DOM.Models.Common;
 
 namespace eTactWeb.Data.BLL
 {
@@ -21,9 +22,13 @@ namespace eTactWeb.Data.BLL
 			_AccDepriciationCalculationdetailDAL = new AccDepriciationCalculationdetailDAL(config, dataLogicDAL, connectionStringService);
 			_DataLogicDAL = dataLogicDAL;
 		}
-		public async Task<AccDepriciationCalculationdetailModel> GetAssets()
+		public async Task<AccDepriciationCalculationdetailModel> GetAssets(int DepriciationYearCode)
 		{
-			return await _AccDepriciationCalculationdetailDAL.GetAssets();
+			return await _AccDepriciationCalculationdetailDAL.GetAssets(DepriciationYearCode);
+		}
+		public async Task<ResponseResult> SaveDepriciationCalculationdetail(AccDepriciationCalculationdetailModel model, DataTable GIGrid)
+		{
+			return await _AccDepriciationCalculationdetailDAL.SaveDepriciationCalculationdetail(model, GIGrid);
 		}
 	}
 }
