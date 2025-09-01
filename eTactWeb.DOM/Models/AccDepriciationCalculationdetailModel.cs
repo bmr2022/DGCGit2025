@@ -30,7 +30,7 @@ namespace eTactWeb.DOM.Models
 		public string  AssetsName { get; set; }
 		public int AccountCode { get; set; }
 		public string AccountName { get; set; }
-		public string ItemCode { get; set; }
+		public int ItemCode { get; set; }
 		public string MainGroup { get; set; }
 		public int MainGroupCode { get; set; }
 		public int ParentAccountCode { get; set; }
