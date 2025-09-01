@@ -1,4 +1,5 @@
-﻿using eTactWeb.DOM.Models;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.DOM.Models;
 using eTactWeb.DOM.Models.Master;
 using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Hosting;
@@ -23,6 +24,8 @@ namespace eTactWeb.Controllers
             _IVendorMater = iVendorMater;
         }
 
+        // databasename and servername,vendempname
+
         [Route("{controller}/Index")]
         [HttpGet]
         public async Task<ActionResult> VendorUser(int ID, string Mode)
@@ -39,9 +42,13 @@ namespace eTactWeb.Controllers
 
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && Mode == "U")
             {
-                //MainModel = await _IMachineMaster.GetViewByID().ConfigureAwait(false);
-                //MainModel.Mode = Mode; // Set Mode to Update
-                //MainModel.ID = ID;
+                MainModel = await _IVendorMater.GetViewByID(ID,Mode).ConfigureAwait(false);
+                MainModel.Mode = Mode; // Set Mode to Update
+                MainModel.ID = ID;
+
+                MainModel.LastUpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+                MainModel.UpdatedByName = HttpContext.Session.GetString("EmpName");
+
                 //MainModel.MachineId = MachineId;
                 //MainModel.MachGroupId = MachGroupId;
                 //MainModel.WorkCenterId = WorkCenterId;
@@ -95,15 +102,15 @@ namespace eTactWeb.Controllers
                     {
                         ViewBag.isSuccess = true;
                         TempData["200"] = "200";
-                        var modelSuccess = new ProductionScheduleModel();
-                        return RedirectToAction("ProductionSchedule", modelSuccess);
+                        var modelSuccess = new VendorUserModel();
+                        return RedirectToAction("VendorUser", modelSuccess);
                     }
                     if (Result.StatusText == "Updated" && Result.StatusCode == HttpStatusCode.Accepted)
                     {
                         ViewBag.isSuccess = true;
                         TempData["202"] = "202";
-                        var modelUpdate = new ProductionScheduleModel();
-                        return RedirectToAction("ProductionSchedule", modelUpdate);
+                        var modelUpdate = new VendorUserModel();
+                        return RedirectToAction("VendorUser", modelUpdate);
                     }
                     if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
                     {
@@ -130,21 +137,8 @@ namespace eTactWeb.Controllers
                         }
 
                         _logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
-                        string psGrid = HttpContext.Session.GetString("KeyProductionScheduleGrid");
-                        List<ProductionScheduleDetail> PSGridDetails = new List<ProductionScheduleDetail>();
-                        if (!string.IsNullOrEmpty(psGrid))
-                        {
-                            PSGridDetails = JsonConvert.DeserializeObject<List<ProductionScheduleDetail>>(psGrid);
-                        }
-                        ModelState.Clear();
+                        
                         return View(model);
-                    }
-
-                    string modelJson = HttpContext.Session.GetString("KeyProductionScheduleGrid");
-                    List<ProductionScheduleDetail> PSDetail = new List<ProductionScheduleDetail>();
-                    if (!string.IsNullOrEmpty(modelJson))
-                    {
-                        PSDetail = JsonConvert.DeserializeObject<List<ProductionScheduleDetail>>(modelJson);
                     }
 
                     ModelState.Clear();
@@ -182,5 +176,78 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+        
+        public async Task<JsonResult> CheckUserDuplication(int userId)
+        {
+            var JSON = await _IVendorMater.CheckUserDuplication(userId);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
+        public async Task<IActionResult> VUDashboard()
+        {
+            try
+            {
+                var model = new VendorUserDashboard();
+
+                var Result = await _IVendorMater.GetDashboardData().ConfigureAwait(true);
+                if (Result != null)
+                {
+                    var _List = new List<TextValue>();
+                    DataSet DS = Result.Result;
+                    if (DS != null)
+                    {
+                        var DT = DS.Tables[0].DefaultView.ToTable(true, "UserEntryId", "AccountCode", "AccountName", "UserId", "Password", "Active", "AllowTodelete", "AllowtoUpdate"
+                                , "rightsForReport", "RightsForPurchaseModule", "RightsForQCmodule", "RightsforAccountModule"
+                                 , "AdminUser", "ourServerName", "databaseName", "BranchName", "ActualEntryBy", "ActualEntryDate", "SaleBillPrefix", "VendorEmpName"
+                                 , "LastUpdationdate", "EntryByMachineName", "ActualEntryBYName", "UpdatedByName", "LastUpdatedBy");
+
+                        model.VendorUserDashboards = CommonFunc.DataTableToList<VendorUserDashboard>(DT, "VendorUserDashboard");
+                    }
+                }
+                //model.FinFromDate = ParseFormattedDate(fromDate);
+                //model.FinToDate = ParseFormattedDate(toDate);
+                //model.PartCode = partCode;
+                //model.ItemName = itemName;
+                //model.AccountName = accountName;
+                //model.ProdSchNo = prodSchNo;
+                //model.WONo = wono;
+                //model.SummaryDetail = summaryDetail;
+                //model.SearchBox = searchBox;
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
+        public async Task<IActionResult> DeleteByID(int userEntryId, int accountCode,int userId, string entryByMachineName, int actualEntryBy, string actualEntryDate)
+        {
+            var Result = await _IVendorMater.DeleteByID(userEntryId,accountCode,userId,entryByMachineName,actualEntryBy,actualEntryDate).ConfigureAwait(false);
+
+            if (Result.StatusText == "Success" || Result.StatusText == "deleted" || Result.StatusCode == HttpStatusCode.Gone)
+            {
+                ViewBag.isSuccess = true;
+                TempData["410"] = "410";
+            }
+            else if (Result.StatusText == "Error" || Result.StatusCode == HttpStatusCode.Accepted)
+            {
+                ViewBag.isSuccess = true;
+                //  TempData["423"] = "423";
+                TempData["DeleteMessage"] = Result.StatusText;
+
+            }
+            else
+            {
+                ViewBag.isSuccess = false;
+                TempData["500"] = "500";
+
+            }
+
+            return RedirectToAction("VUDashboard");
+        }
+
     }
 }

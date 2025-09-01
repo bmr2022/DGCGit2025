@@ -1,0 +1,121 @@
+﻿@model eTactWeb.DOM.Models.VendorUserDashboard
+@using Microsoft.AspNetCore.Http
+@using System.Reflection.PortableExecutable
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+	var yearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("YearCode"));
+}
+
+<div class="table-responsive" style="max-height:350px;">
+	<table class="table table-hover table-bordered TbCss text-nowrap mb-0" id="VUDashboard">
+		<thead class="bg-gradient card-headerBG text-light " id="dashPOThead">
+			<tr>
+				<th>Sr#</th>
+				<th>Action</th>
+				<th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> UserEntryId </th>
+				<th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> AccountName </th>
+				<th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> SaleBillPrefix </th>
+				<th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> VendorEmpName </th>
+				<th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> UserId </th>
+				<th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Password </th>
+				<th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Active </th>
+				<th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> AllowToDelete </th>
+				<th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> AllowToUpdate </th>
+				<th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> RightsForReport </th>
+				<th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> RightsForPurchaseModule </th>
+				<th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> RightsForQCModule </th>
+				<th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> RightsForAccountModule </th>
+				<th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> AdminUser </th>
+				<th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> OurServerName </th>
+				<th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> DatabaseName </th>
+				<th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> BranchName </th>
+				<th data-columnno="18" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> ActualEntryBy </th>
+				<th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> ActualEntryByName </th>
+				<th data-columnno="20" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> ActualEntryDate </th>
+				<th data-columnno="21" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> LastUpdatedBy </th>
+				<th data-columnno="22" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> UpdatedByName </th>
+				<th data-columnno="23" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> LastUpdationDate </th>
+				<th data-columnno="24" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> EntryByMachineName </th>
+			</tr>
+		</thead>
+		<tbody id="VUDashboardGrid">
+			@{
+				var @Cntr = 0;
+				if (Model.VendorUserDashboards == null || Model.VendorUserDashboards.Count == 0)
+				{
+					<tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+				}
+				else
+				{
+					foreach (var item in Model.VendorUserDashboards)
+					{
+
+						Cntr = Cntr + 1;
+						<tr id="vendorUserDashboardRow-@Cntr">
+							<th>@Cntr</th>
+							<td style="text-align:center;white-space: nowrap;">
+								<div id="container">
+									<div class="d-flex">
+										<div id="viewCursorDiv-@Cntr">
+											<a class="table-link link-success" asp-action="VendorUser" asp-route-Mode="V" asp-route-ID="@item.UserEntryId">
+												<span class="fa-stack">
+													<i class="fa fa-square fa-stack-2x"></i>
+													<i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+												</span>
+											</a>
+										</div>
+										<div id="editCursorDiv-@Cntr">
+											<a class="table-link link-primary" asp-action="VendorUser" asp-route-Mode="U" asp-route-ID="@item.UserEntryId">
+												<span class="fa-stack">
+													<i class="fa fa-square fa-stack-2x"></i>
+													<i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+												</span>
+											</a>
+										</div>
+										<div id="deleteCursorDiv-@Cntr">
+											<a class="table-link link-danger" onclick="confirmDelete(event)" asp-action="DeleteByID" asp-route-userEntryId="@item.UserEntryId" asp-route-accountCode="@item.AccountCode" asp-route-userId = "@item.UserId" asp-route-entryByMachineName="@item.EntryByMachineName" asp-route-actualEntryBy="@item.ActualEntryBy" asp-route-actualEntryDate="@item.ActualEntryDate">
+												<span class="fa-stack">
+													<i class="fa fa-square fa-stack-2x"></i>
+													<i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+												</span>
+											</a>
+										</div>
+									</div>
+								</div>
+							</td>
+
+							<td>@item.UserEntryId </td>
+							<td>@item.AccountName </td>
+							<td>@item.SaleBillPrefix </td>
+							<td>@item.VendorEmpName </td>
+							<td>@item.UserId </td>
+							<td>@item.Password </td>
+							<td>@item.Active </td>
+							<td>@item.AllowToDelete </td>
+							<td>@item.AllowToUpdate </td>
+							<td>@item.RightsForReport </td>
+							<td>@item.RightsForPurchaseModule </td>
+							<td>@item.RightsForQCModule </td>
+							<td>@item.RightsForAccountModule </td>
+							<td>@item.AdminUser </td>
+							<td>@item.OurServerName </td>
+							<td>@item.DatabaseName </td>
+							<td>@item.BranchName </td>
+							<td>@item.ActualEntryBy </td>
+							<td>@item.ActualEntryByName </td>
+							<td>@(item.ActualEntryDate == null ? string.Empty : item.ActualEntryDate.Split("")[0]) </td>
+							<td>@item.LastUpdatedBy </td>
+							<td>@item.UpdatedByName </td>
+							<td>@(item.LastUpdationDate == null ? string.Empty : item.LastUpdationDate.Split(" ")[0]) </td>
+							<td>@item.EntryByMachineName </td>
+						</tr>
+					}
+				}
+			}
+		</tbody>
+	</table>
+</div>
+
+<style>
+
+</style>

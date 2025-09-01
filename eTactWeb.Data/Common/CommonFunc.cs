@@ -1559,6 +1559,24 @@ public static class CommonFunc
                         typeProperty.PropertyInfo.SetValue(obj, safeValue, null);
                     }
                 }
+                else if (Tbname == "VendorUserDashboard" || table.TableName == "VendorUserDashboard")
+                {
+                    if (typeProperty.PropertyInfo.Name != "VendorUserDashboards" && typeProperty.PropertyInfo.Name != "FinFromDate" && typeProperty.PropertyInfo.Name != "FinToDate"
+                        && typeProperty.PropertyInfo.Name != "FinToDate" && typeProperty.PropertyInfo.Name != "Active"
+                                && typeProperty.PropertyInfo.Name != "CreatedBy"
+                                && typeProperty.PropertyInfo.Name != "CreatedOn"
+                                && typeProperty.PropertyInfo.Name != "EID"
+                                && typeProperty.PropertyInfo.Name != "ID"
+                                && typeProperty.PropertyInfo.Name != "Mode"
+                                && typeProperty.PropertyInfo.Name != "TxPageName"
+                                && typeProperty.PropertyInfo.Name != "UpdatedBy" && typeProperty.PropertyInfo.Name != "ConfirmPassword"
+                                && typeProperty.PropertyInfo.Name != "UpdatedOn")
+                    {
+                        object value = row[typeProperty.PropertyInfo.Name];
+                        object? safeValue = value == null || DBNull.Value.Equals(value) ? null : Convert.ChangeType(value, typeProperty.Type);
+                        typeProperty.PropertyInfo.SetValue(obj, safeValue, null);
+                    }
+                }
                 else if (Tbname == "SaleBillSummTable")
                 {
                     if (typeProperty.PropertyInfo.Name != "SummaryDetail" && typeProperty.PropertyInfo.Name != "saleBillDashboard" && typeProperty.PropertyInfo.Name != "StateCode"
