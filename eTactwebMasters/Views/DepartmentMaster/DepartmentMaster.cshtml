@@ -204,13 +204,13 @@
             // }
 
 
-            FillDeptType();
+            
             if ($("#DeptName").val() == "") {
                 $.notify("Department Name Can not be Blanck", "error");
             }
             var Entry_Date = parseDateToFormat($('#Entry_Date').val().split(" ")[0]);
             $('#Entry_Date').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", Entry_Date);
-
+            FillDeptType();
             //     FillStoreType();
             // if ($("#Store_Name").val() == "") {
             //     $.notify("StoreName Can not be Blanck", "error");

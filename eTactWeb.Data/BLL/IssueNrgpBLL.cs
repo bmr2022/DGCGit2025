@@ -35,9 +35,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _IssueNRGPDAL.GetReportName();
         }
-        public async Task<IssueNRGPModel> selectMultipleItem(int Group_Code, int StoreID, int YearCode,string ChallnDate,string PartCode)
+        public async Task<IssueNRGPModel> selectMultipleItem(string GroupName, int StoreID, string FromDate, string ToDate, string PartCode)
         {
-            return await _IssueNRGPDAL.selectMultipleItem(Group_Code, StoreID, YearCode,ChallnDate,PartCode);
+            return await _IssueNRGPDAL.selectMultipleItem( GroupName,  StoreID,  FromDate,  ToDate,  PartCode);
         }
         public async Task<ResponseResult> FillEntryandChallanNo(int YearCode, string RGPNRGP)
         {

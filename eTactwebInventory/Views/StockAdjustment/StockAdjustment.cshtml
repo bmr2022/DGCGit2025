@@ -1657,6 +1657,7 @@
         function FillCurrentBatchINStore() {
             var ItemCode = $('#ItemCode').val();
             var YearCode = $('#YearCode').val();
+            var TransDate = $('#StockAdjustmentDate').val();
             var StoreName = $('#Storeid').find(':selected').text();
             var batchno = "";
             if ($('#batchno').prop('selectedIndex') != 0) {
@@ -1664,7 +1665,7 @@
             }
             $.ajax({
                 type: "GET",
-                data: { "ItemCode": ItemCode, "YearCode": YearCode, "StoreName": StoreName },
+                data: { "ItemCode": ItemCode, "YearCode": YearCode, "StoreName": StoreName, "TransDate": TransDate },
                 url: "@Url.Action("FillCurrentBatchINStore")",
                 dataType: "json",
                 success: function (result, status, error) {

@@ -32,9 +32,25 @@ namespace eTactWeb.Data.BLL
         {
             return await _vendorUserDAL.FillVendorList(isShowAll);
         }
+        public async Task<ResponseResult> CheckUserDuplication(int userId)
+        {
+            return await _vendorUserDAL.CheckUserDuplication(userId);
+        }
         public async Task<ResponseResult> SaveVendorUser(VendorUserModel model)
         {
             return await _vendorUserDAL.SaveVendorUser(model);
+        }
+        public async Task<VendorUserModel> GetViewByID(int ID,string mode)
+        {
+            return await _vendorUserDAL.GetViewByID(ID,mode);
+        }
+        public async Task<ResponseResult> DeleteByID(int userEntryId, int accountCode,int userId, string entryByMachineName, int actualEntryBy, string actualEntryDate)
+        {
+            return await _vendorUserDAL.DeleteByID(userEntryId,accountCode,userId,entryByMachineName,actualEntryBy,actualEntryDate);
+        }
+        public async Task<ResponseResult> GetDashboardData()
+        {
+            return await _vendorUserDAL.GetDashboardData();
         }
     }
 }

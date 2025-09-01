@@ -47,7 +47,7 @@ namespace eTactWeb.Data.DAL
 
 
 
-        public async Task<IssueNRGPModel> selectMultipleItem(int Group_Code, int StoreID, int YearCode,string ChallanDate,string PartCode)
+        public async Task<IssueNRGPModel> selectMultipleItem(string GroupName, int StoreID, string FromDate, string ToDate, string PartCode)
         {
             var resultList = new IssueNRGPModel();
             DataSet oDataSet = new DataSet();
@@ -56,17 +56,19 @@ namespace eTactWeb.Data.DAL
             {
                 using (SqlConnection connection = new SqlConnection(DBConnectionString))
                 {
-                    SqlCommand command = new SqlCommand("SP_IssueNRGP", connection)
+                    SqlCommand command = new SqlCommand("SPReportSTockRegister", connection)
                     {
                         CommandType = CommandType.StoredProcedure
                     };
                     ;
 
-                    command.Parameters.AddWithValue("@Flag", "selectMultipleItem");
-                    command.Parameters.AddWithValue("@GroupCode", Group_Code);
-                    command.Parameters.AddWithValue("@YearCode", YearCode);
+                    command.Parameters.AddWithValue("@Flag", "BATCHWISESTOCKSUMMARY");
+                    command.Parameters.AddWithValue("@reportcallingfrom", "BatchWiseStockOnChallan");
+                    command.Parameters.AddWithValue("@GroupName", GroupName);
+                   
                     command.Parameters.AddWithValue("@Storeid", StoreID);
-                    command.Parameters.AddWithValue("@ChallanDate",ParseFormattedDate(ChallanDate));
+                    command.Parameters.AddWithValue("@ToDate", ParseFormattedDate(ToDate));
+                    command.Parameters.AddWithValue("@FromDate", ParseFormattedDate(FromDate));
                     command.Parameters.AddWithValue("@PartCode", PartCode);
 
                     await connection.OpenAsync();
@@ -82,20 +84,22 @@ namespace eTactWeb.Data.DAL
                     resultList.IssueNRGPDetailGrid = (from DataRow row in oDataSet.Tables[0].Rows
                                                  select new IssueNRGPDetail
                                                  {
-                                                     ItemCode = row["ItemCode"] == DBNull.Value ? 0 : Convert.ToInt32(row["ItemCode"]),
-                                                     //AccountCode = row["AccountCode"] == DBNull.Value ? 0 : Convert.ToInt32(row["AccountCode"]), 
-                                                     PartCode = row["partcode"] == DBNull.Value ? string.Empty : row["partcode"].ToString(),
-                                                     ItemName = row["Item_Name"] == DBNull.Value ? string.Empty : row["Item_Name"].ToString(),
-                                                     //AccountName = row["Account_Name"] == DBNull.Value ? string.Empty : row["Account_Name"].ToString(),
-                                                     BatchNo = row["BatchNo"] == DBNull.Value ? string.Empty : row["BatchNo"].ToString(),
-                                                     uniquebatchno = row["UniqueBatchNo"] == DBNull.Value ? string.Empty : row["UniqueBatchNo"].ToString(),
+                                                     ItemCode = row["item_code"] == DBNull.Value ? 0 : Convert.ToInt32(row["item_code"]),
+                                                    
+                                                     PartCode = row["PartCode"] == DBNull.Value ? string.Empty : row["PartCode"].ToString(),
+                                                     ItemName = row["ItemName"] == DBNull.Value ? string.Empty : row["ItemName"].ToString(),
+                                                     
+                                                     BatchNo = row["batchno"] == DBNull.Value ? string.Empty : row["batchno"].ToString(),
+                                                     uniquebatchno = row["uniquebatchno"] == DBNull.Value ? string.Empty : row["uniquebatchno"].ToString(),
 
-                                                     //DiscCategoryName = row["DiscCategoryName"] == DBNull.Value ? string.Empty : row["DiscCategoryName"].ToString(),
-                                                     unit = row["UNIT"] == DBNull.Value ? string.Empty : row["UNIT"].ToString(),
-                                                     HSNNo = row["HsnNo"] == DBNull.Value ? 0 : Convert.ToInt32(row["HsnNo"]),
-                                                    PurchasePrice = row["PurchasePrice"] == DBNull.Value ? 0 : Convert.ToSingle(row["PurchasePrice"]),
-                                                    BatchStock = row["STOCK"] == DBNull.Value ? 0 : Convert.ToSingle(row["STOCK"]),
-                                                    Qty = row["STOCK"] == DBNull.Value ? 0 : Convert.ToSingle(row["STOCK"]),
+                                                   
+                                                     unit = row["unit"] == DBNull.Value ? string.Empty : row["unit"].ToString(),
+                                                     AltUnit = row["AltUnit"] == DBNull.Value ? string.Empty : row["AltUnit"].ToString(),
+                                                     HSNNo = row["HSNNO"] == DBNull.Value ? 0 : Convert.ToInt32(row["HSNNO"]),
+                                                    PurchasePrice = row["purchasePrice"] == DBNull.Value ? 0 : Convert.ToSingle(row["purchasePrice"]),
+                                                    BatchStock = row["BatchStock"] == DBNull.Value ? 0 : Convert.ToSingle(row["BatchStock"]),
+                                                     TotalStock = row["TotalStock"] == DBNull.Value ? 0 : Convert.ToSingle(row["TotalStock"]),
+                                                    Qty = row["BatchStock"] == DBNull.Value ? 0 : Convert.ToSingle(row["BatchStock"]),
 
 
                                                  }).ToList();

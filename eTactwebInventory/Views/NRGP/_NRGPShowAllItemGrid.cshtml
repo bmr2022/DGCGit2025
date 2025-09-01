@@ -14,12 +14,19 @@
             Cntr = Cntr + 1;
             <tr>
                 <td>@Cntr</td>
-                <td><input type="checkbox" class="MBCheckbox" id="MBCheckbox-@Cntr" /></td>
+                <td style="white-space:nowrap;">
+                    <a class="table-link link-danger" onclick="DeleteModelRow(this)">
+                        <span class="fa-stack">
+                           
+                            <i class="fa-solid fa-trash fa-stack-1x"></i>
+                        </span>
+                    </a>
+                <input type="checkbox" class="MBCheckbox" id="MBCheckbox-@Cntr" onchange="CalculateAmountForMalti(@Cntr)" /></td>
                 <td style="background-color: #e09ef0;"><input type="text" id="PartCode-@Cntr" value="@item.PartCode" readonly></input><input id="ItemCode-@Cntr" type="hidden" value="@item.ItemCode" /></td>
                 <td><input type="text" id="ItemName-@Cntr" value="@item.ItemName" readonly></td>
 
-                <td><input id="Qty-@Cntr" type="number" style="width:70px;background-color:lightpink" value="@item.Qty" /></td>
-                <td><input type="number" id="Rate-@Cntr" style="width:70px" value="@item.Rate" ></td>
+                <td><input id="Qty-@Cntr" type="number" style="width:70px;background-color:lightpink" value="@item.Qty" onkeyup="CalculateOnlyAmountForMalti(@Cntr)" /></td>
+                <td><input type="number" id="Rate-@Cntr" style="width:70px" value="@item.Rate" onkeyup="CalculateOnlyAmountForMalti(@Cntr)"></td>
                 <td><input type="number" id="Amount-@Cntr" style="width:70px" value="@item.Amount"  readonly /></td>
                
                 <td><input type="number" style="width:70px" id="TotalStock-@Cntr" value="@item.TotalStock" readonly></td>
