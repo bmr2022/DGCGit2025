@@ -21,6 +21,8 @@
         <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
             <input type="hidden" asp-for="FinFromDate" />
             <input type="hidden" asp-for="FinToDate" />
+            <input type="hidden" asp-for="NFromDate" />
+            <input type="hidden" asp-for="NToDate" />
             <label asp-for="GateAttEntryId" class="form-label">Entry ID</label>
             <input asp-for="GateAttEntryId" class="form-control" readonly />
         </div>
@@ -49,7 +51,6 @@
         <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
             <label asp-for="DayOrMonthType" class="form-label">Day or Month</label>
             <select asp-for="DayOrMonthType" class="form-select" tabindex="6" asp-items="@(new SelectList(Model.DayOrMonthTypeList,"Value","Text"))" onchange="DayorMonthChange()">
-                <option value="0" selected>-Select-</option>
             </select>
         </div>
         <div class="dvEmpAttDate col-xxl-1 col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
@@ -61,6 +62,10 @@
             <select asp-for="strEmpAttMonth" class="form-select" tabindex="6" asp-items="@(new SelectList(Model.strEmpAttMonthList,"Value","Text"))">
                 <option value="0" selected>-Select-</option>
             </select>
+        </div>
+        <div class="dvGateAttEntryDay col-xxl-1 col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="GateAttEntryDay" class="form-label">Attendance Month</label>
+            <input asp-for="GateAttEntryDay" class="form-control" tabindex="6" style="background-color:lightblue;" readonly/>
         </div>
         <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-xs-12">
             <label asp-for="EmployeeCode" class="form-label">Employee Name*</label>

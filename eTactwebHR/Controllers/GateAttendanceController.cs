@@ -58,6 +58,10 @@ namespace eTactwebHR.Controllers
             MainModel.GateAttYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
             MainModel.GateAttEntryDate = CommonFunc.ParseFormattedDate(DateTime.Now.ToString("dd/MM/yyyy"));
             MainModel.strEmpAttDate = CommonFunc.ParseFormattedDate(DateTime.Now.ToString("dd/MM/yyyy"));
+            DateTime fromDate = new DateTime(MainModel.GateAttYearCode, 1, 1);
+            DateTime toDate = new DateTime(MainModel.GateAttYearCode, 12, 31);
+            MainModel.NFromDate = CommonFunc.ParseFormattedDate(fromDate.ToString("dd/MM/yyyy"));
+            MainModel.NToDate = CommonFunc.ParseFormattedDate(toDate.ToString("dd/MM/yyyy"));
             MainModel.FinFromDate = HttpContext.Session.GetString("FromDate");
             MainModel.FinToDate = HttpContext.Session.GetString("ToDate");
             MainModel.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
