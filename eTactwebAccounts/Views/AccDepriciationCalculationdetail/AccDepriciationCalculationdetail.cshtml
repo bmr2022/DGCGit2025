@@ -116,7 +116,7 @@
 								<div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
 									<div class="accordion-body">
 										<div class="row g-2 gx-3" id="_ItemGrid">
-											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
+											@* <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
 												<label asp-for="AssetsName" class="form-label">Assets Name</label>
 												<input type="hidden" asp-for="AssetsEntryId" />
 												<select class="form-select" asp-for="AssetsName" style="width:130px;"readonly>
@@ -186,7 +186,7 @@
 													<i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
 												</button>
 
-											</div>
+											</div> *@
 											<div class="row">
 											</div>
 											<div class="progress my-2 mb-3" style="height: 4px;">
@@ -200,17 +200,18 @@
 																<th>Action</th>
 																<th>Seq No</th>
 																<th>Assets Name</th>
+																<th>Depreciation Method</th>
+																<th>Depreciation Rate</th>
+																<th>After Depreciation Net Value</th>
+																<th>Previous Year Value</th>
+																<th>Original NetBook Value</th>
 																<th>Account Name</th>
 																<th>Main Group</th>
 																<th>Parent Account Name</th>
 																<th>Sub Group</th>
 																<th>Under Group</th>
 																<th>Sub Sub Group</th>
-																<th>Original NetBook Value</th>
-																<th>Previous Year Value</th>
-																<th>Depreciation Method</th>
-																<th>Depreciation Rate</th>
-																<th>After Depreciation Net Value</th>
+																
 																<th>Remaining Useful Life (In Year)</th>
 
 															</tr>
@@ -249,17 +250,17 @@
 												</select>
 											</div>
 
-											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
 												<label asp-for="CarryForwarded" class="form-label">Carry Forwarded</label>
-												<select class="form-select" asp-for="CarryForwarded">
+												<select class="form-select" asp-for="CarryForwarded" style="width:190px;">
 													<option value="">-Select-</option>
 													<option value="Y">Yes</option>
 													<option value="N">No</option>
 												</select>
 											</div>
-											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
 												<label asp-for="BlockedEntry" class="form-label">Blocked Entry</label>
-												<select class="form-select" asp-for="BlockedEntry">
+												<select class="form-select" asp-for="BlockedEntry" style="width:190px;">
 													<option value="">-Select-</option>
 													<option value="Y">Yes</option>
 													<option value="N">No</option>
@@ -426,9 +427,11 @@
 		});
 
 		$("#btnShowAssets").click(function () {
+			var yearCode = $("#DepriciationYearCode").val();
 			$.ajax({
 				url: '/AccDepriciationCalculationdetail/GetAssets',
-				type: 'GET',
+				type: 'POST',
+				data: { DepriciationYearCode: yearCode },
 				success: function (result) {
 					$("#divDepriciationCalculationdetailGrid").html(result);
 				},
@@ -437,6 +440,99 @@
 				}
 			});
 		});
+		$(document).on("keydown", "#itemtable input", function (e) {
+			let colIndex = $(this).closest("td").index(); // current column
+			let $rows = $("#itemtable tbody tr"); // all rows
+			let $currentRow = $(this).closest("tr");
+			let rowIndex = $rows.index($currentRow);
+
+			if (e.key === "ArrowDown") {
+				e.preventDefault();
+				let $nextRow = $rows.eq(rowIndex + 1);
+				$nextRow.find("td").eq(colIndex).find("input").focus();
+			}
+			else if (e.key === "ArrowUp") {
+				e.preventDefault();
+				let $prevRow = $rows.eq(rowIndex - 1);
+				$prevRow.find("td").eq(colIndex).find("input").focus();
+			}
+		});
+
+		function EditItemRows(SeqNo) {
+			debugger
+			var RowCount = $('#divDepriciationCalculationdetailGrid tr').length;
+			if (EditEachItem) {
+				$.notify('Cannot Edit item while AddtoGrid  Existing Item!!!', "error");
+				$('#editButton-' + RowCount).prop("disabled", true);
+			}
+			else {
+				$.ajax({
+					url: '/AccDepriciationCalculationdetail/EditItemRows',
+					type: "POST",
+					data: { SeqNo: SeqNo, Mode: "U" },
+					success: function (data) {
+
+						var obj = $.parseJSON(data);
+						if (obj != null) {
+							EditEachItem = true;
+							$('#AssetsName').val(data.AssetsName).trigger("change");
+							$('#AccountName').val(data.AccountName).trigger("change");
+							$('#MainGroup').val(data.MainGroup).trigger("change");
+							$('#ParentAccountName').val(data.ParentAccountName).trigger("change");
+							$('#SubGroup').val(data.SubGroup).trigger("change");
+							$('#UnderGroup').val(data.UnderGroup).trigger("change");
+							$('#SubSubGroup').val(data.SubSubGroup).trigger("change");
+							$('#OriginalNetBookValue').val(data.OriginalNetBookValue);
+							$('#PreviousYearValue').val(data.PreviousYearValue);
+							$('#DepreciationMethod').val(data.DepreciationMethod);
+							$('#DepreciationRate').val(data.DepreciationRate);
+							$('#AfterDepriciationNetValue').val(data.AfterDepriciationNetValue);
+							$('#RemainingUseFullLifeInYear').val(data.RemainingUseFullLifeInYear);
+
+							$('#SeqNo').val(data.SeqNo);
+							$('#Mode').val("U");
+
+
+
+							var rowCount = $('#divDepriciationCalculationdetailGrid tr').length;
+							for (var i = 1; i <= rowCount + 1; i++) {
+								$('#editItemGrid-' + i).css("pointer-events", "none");
+								$('#editItemGrid-' + i).css("cursor", "not-allowed");
+							}
+
+							DeleteItemRow(SeqNo);
+						}
+					},
+					error: function (response) {
+						$.notify(response.responseText, "error");
+					},
+					failure: function (response) {
+						$.notify(response.responseText, "error");
+					}
+				});
+			}
+		}
+		async function DeleteItemRow(SeqNo) {
+			debugger
+			$.ajax({
+				url: '@Url.Action("DeleteItemRow")',
+				type: "POST",
+				data: { "SeqNo": SeqNo, Mode: "U" },
+				success: await function (data, status, xhr) {
+					$('#divDepriciationCalculationdetailGrid').html(data);
+					$.notify("Process deleted from Grid", "info");
+					EditEachItem = false;
+				},
+				error: function (response, status, xhr) {
+
+					$.notify("Cannot delete item that exists in Tax Grid!!!", "error");
+				},
+				failure: function (response, status, xhr) {
+					alert(response.responseText);
+					$.notify(response.responseText, "error");
+				}
+			});
+		}
 		$(function () {
 			$('#SaleDiscount, #PurchaseDiscount').on('input', function () {
 				let value = $(this).val();
@@ -502,7 +598,7 @@
 
 			var formattedDate = day + '/' + month + '/' + year;
 
-			$('#EntryDate,#LastupDationDate,#ActualEntryDate')
+			$('#DepriciationDate,#LastupDationDate,#ActualEntryDate')
 				.datepicker({ dateFormat: 'dd/M/yy' })
 				.val(formattedDate);
 		}
@@ -756,70 +852,7 @@
 			});
 		});
 
-		function EditItemRows(SeqNo) {
-			var RowCount = $('#divPartyItemGroupDiscountGrid tr').length;
-			if (EditEachItem) {
-				$.notify('Cannot Edit item while AddtoGrid  Existing Item!!!', "error");
-				$('#editButton-' + RowCount).prop("disabled", true);
-			}
-			else {
-				$.ajax({
-					url: '/PartyItemGroupDiscount/EditItemRows',
-					type: "POST",
-					data: { SeqNo: SeqNo, Mode: "U" },
-					success: function (data) {
-
-						var obj = $.parseJSON(data);
-						if (obj != null) {
-							EditEachItem = true;
-							$('#GroupCode').val(obj[0].GroupCode).trigger("change");
-							$('#GroupName').val(obj[0].GroupCode).trigger("change");
-							$('#SaleDiscount').val(obj[0].SaleDiscount).trigger("change");
-							$('#PurchaseDiscount').val(obj[0].PurchaseDiscount).trigger("change");
-							$('#SeqNo').val(obj[0].SeqNo);
-							$('#Mode').val('U');
-
-
-
-							var rowCount = $('#divPartyItemGroupDiscountGrid tr').length;
-							for (var i = 1; i <= rowCount + 1; i++) {
-								$('#editItemGrid-' + i).css("pointer-events", "none");
-								$('#editItemGrid-' + i).css("cursor", "not-allowed");
-							}
-
-							DeleteItemRow(SeqNo);
-						}
-					},
-					error: function (response) {
-						$.notify(response.responseText, "error");
-					},
-					failure: function (response) {
-						$.notify(response.responseText, "error");
-					}
-				});
-			}
-		}
-		async function DeleteItemRow(SeqNo) {
-
-			$.ajax({
-				url: '@Url.Action("DeleteItemRow")',
-				type: "POST",
-				data: { "SeqNo": SeqNo, Mode: "U" },
-				success: await function (data, status, xhr) {
-					$('#divPartyItemGroupDiscountGrid').html(data);
-					$.notify("Process deleted from Grid", "info");
-					EditEachItem = false;
-				},
-				error: function (response, status, xhr) {
-
-					$.notify("Cannot delete item that exists in Tax Grid!!!", "error");
-				},
-				failure: function (response, status, xhr) {
-					alert(response.responseText);
-					$.notify(response.responseText, "error");
-				}
-			});
-		}
+		
 		function GetFormRights() {
 			$.ajax({
 				url: "@Url.Action("GetFormRights")",

@@ -295,46 +295,46 @@ namespace eTactWeb.Controllers
 				throw;
 			}
 		}
-		public async Task<JsonResult> EditItemRows(int SeqNo)
-		 {
-			var MainModel = new PartyItemGroupDiscountModel();
-			string jsonString = HttpContext.Session.GetString("KeyPartyItemGroupDiscountGrid");
-			IList<PartyItemGroupDiscountModel> GridDetail = new List<PartyItemGroupDiscountModel>();
+			public async Task<JsonResult> EditItemRows(int SeqNo)
+			 {
+				var MainModel = new PartyItemGroupDiscountModel();
+				string jsonString = HttpContext.Session.GetString("KeyPartyItemGroupDiscountGrid");
+				IList<PartyItemGroupDiscountModel> GridDetail = new List<PartyItemGroupDiscountModel>();
 
-			if (!string.IsNullOrEmpty(jsonString))
-			{
-				GridDetail = JsonConvert.DeserializeObject<List<PartyItemGroupDiscountModel>>(jsonString);
+				if (!string.IsNullOrEmpty(jsonString))
+				{
+					GridDetail = JsonConvert.DeserializeObject<List<PartyItemGroupDiscountModel>>(jsonString);
+				}
+
+				var result = GridDetail.Where(x => x.SeqNo == SeqNo).ToList();
+				string JsonString = JsonConvert.SerializeObject(result);
+				return Json(JsonString);
 			}
 
-			var result = GridDetail.Where(x => x.SeqNo == SeqNo).ToList();
-			string JsonString = JsonConvert.SerializeObject(result);
-			return Json(JsonString);
-		}
 
-
-		public IActionResult DeleteItemRow(int SeqNo)
-		{
-			var MainModel = new PartyItemGroupDiscountModel();
-			string jsonString = HttpContext.Session.GetString("KeyPartyItemGroupDiscountGrid");
-			IList<PartyItemGroupDiscountModel> ControlPlanDetail = new List<PartyItemGroupDiscountModel>();
-
-			if (!string.IsNullOrEmpty(jsonString))
+			public IActionResult DeleteItemRow(int SeqNo)
 			{
-				ControlPlanDetail = JsonConvert.DeserializeObject<List<PartyItemGroupDiscountModel>>(jsonString);
+				var MainModel = new PartyItemGroupDiscountModel();
+				string jsonString = HttpContext.Session.GetString("KeyPartyItemGroupDiscountGrid");
+				IList<PartyItemGroupDiscountModel> ControlPlanDetail = new List<PartyItemGroupDiscountModel>();
+
+				if (!string.IsNullOrEmpty(jsonString))
+				{
+					ControlPlanDetail = JsonConvert.DeserializeObject<List<PartyItemGroupDiscountModel>>(jsonString);
+				}
+
+				if (ControlPlanDetail != null && ControlPlanDetail.Count > 0)
+				{
+					var itemToRemove = ControlPlanDetail.FirstOrDefault(x => x.SeqNo == SeqNo);
+					if (itemToRemove != null)
+						ControlPlanDetail.Remove(itemToRemove);
+
+					MainModel.PartyItemGroupDiscountGrid = ControlPlanDetail.OrderBy(x => x.SeqNo).ToList();
+					HttpContext.Session.SetString("KeyPartyItemGroupDiscountGrid", JsonConvert.SerializeObject(MainModel.PartyItemGroupDiscountGrid));
+				}
+
+				return PartialView("_PartyItemGroupDiscountGrid", MainModel);
 			}
-
-			if (ControlPlanDetail != null && ControlPlanDetail.Count > 0)
-			{
-				var itemToRemove = ControlPlanDetail.FirstOrDefault(x => x.SeqNo == SeqNo);
-				if (itemToRemove != null)
-					ControlPlanDetail.Remove(itemToRemove);
-
-				MainModel.PartyItemGroupDiscountGrid = ControlPlanDetail.OrderBy(x => x.SeqNo).ToList();
-				HttpContext.Session.SetString("KeyPartyItemGroupDiscountGrid", JsonConvert.SerializeObject(MainModel.PartyItemGroupDiscountGrid));
-			}
-
-			return PartialView("_PartyItemGroupDiscountGrid", MainModel);
-		}
         public async Task<IActionResult> PartyItemGroupDiscountDashBoard(string ReportType, string FromDate, string ToDate)
         {
             var model = new PartyItemGroupDiscountModel();
