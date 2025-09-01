@@ -2857,7 +2857,7 @@ formData.append("Mode", $('#Mode').val());
 				Amount = OC === 'Close' ? POQty * Rate : Amount;
 			}
 			if (UnitRate == "AltUnit") {
-						const AltQty = $('#AltQty').val() == "0" || $('#AltQty').val() === "" ? 0 : parseFloat($('#AltQty').val());
+												const AltQty = $('#AltPOQty').val() == "0" || $('#AltPOQty').val() === "" ? 0 : parseFloat($('#AltPOQty').val());
 				Amount = OC === 'Close' ? AltQty * Rate : Amount;
 			}
 
