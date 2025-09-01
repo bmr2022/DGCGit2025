@@ -7,10 +7,10 @@ using static eTactWeb.Data.Common.CommonFunc;
 using static eTactWeb.DOM.Models.Common;
 using System.Net;
 using System.Data;
-using DocumentFormat.OpenXml.Bibliography;
+//using DocumentFormat.OpenXml.Bibliography;
 using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
 
-namespace eTactwebMasters.Controllers
+namespace eTactwebToolAndMaintance.Controllers
 {
 	public class ToolMoldMasterController : Controller
 	{
@@ -31,7 +31,7 @@ namespace eTactwebMasters.Controllers
 		[Route("{controller}/Index")]
 		public async Task<ActionResult> ToolMoldMaster(int ID, int YC, string Mode,
 
-             int ToolEntryId, int AccountCode, string? EntryDate, string ToolOrMold, string ToolCode, string ToolName, int ItemCode, int ToolCateogryId,string ItemName,int toolyear,
+             int ToolEntryId, int AccountCode, string? EntryDate, string ToolOrMold, string ToolCode, string ToolName, int ItemCode, int ToolCateogryId,string ItemName,int Fiscalyear,
     string ConsiderAsFixedAssets, string ConsiderInInvetory, int ParentAccountCode, string ParentAccountName, string MainGroup, string SubGroup, string UnderGroup, int SubSubGroup, int CostCenterId, int ToolYear, int VendoreAccountCode, string VendorName, string PONO, string? PODate, int POYear, string InvoiceNo, string? InvoiceDate, int InvoiceYearCode, decimal NetBookValue, decimal PurchaseValue, decimal ResidualValue, string DepreciationMethod, decimal DepreciationRate, decimal DepriciationAmt, string CountryOfOrigin, string? FirstAqusitionOn, decimal OriginalValue, string? CapatalizationDate,
     string BarCode, string SerialNo, string LocationOfInsallation, int ForDepartmentId, int ExpectedLife, string CalibrationRequired, int CalibrationFrequencyInMonth, string? LastCalibrationDate, string? NextCalibrationDate, int CalibrationAgencyId, string LastCalibrationCertificateNo, string CalibrationResultPassFail, string TolrenceRange, string CalibrationRemark, string Technician, string TechnicialcontactNo, string TechEmployeeName, int CustoidianEmpId, string InsuranceCompany, decimal InsuredAmount, string InsuranceDetail, string CC, string UID, int ActualEntryBy, string? ActualEntryDate,
     int LastupdatedBy, string? LastUpdatedDate, string UpdatedByEmployee, string EntryByMachine, string CustodiaEmployee, string ActualEntryByEmployee
@@ -42,6 +42,7 @@ namespace eTactwebMasters.Controllers
 			MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
 			MainModel.ActualEntryBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
 			MainModel.ActualEntryByEmpName = HttpContext.Session.GetString("EmpName");
+			MainModel.LastUpdatedbyEmpName = HttpContext.Session.GetString("EmpName");
 			MainModel.CC = HttpContext.Session.GetString("Branch");
 			MainModel.LastupdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
             MainModel.ConsiderInInvetory = "No";
@@ -59,6 +60,7 @@ namespace eTactwebMasters.Controllers
                 MainModel.ToolName = ToolName;
                 MainModel.ItemCode = ItemCode;
                 MainModel.ItemName = ItemName;
+                MainModel.InvoiceDate = InvoiceDate;
                 MainModel.ToolCateogryId = ToolCateogryId;
                 MainModel.ConsiderAsFixedAssets = ConsiderAsFixedAssets;
                 MainModel.ConsiderInInvetory = ConsiderInInvetory;
@@ -69,7 +71,7 @@ namespace eTactwebMasters.Controllers
                 MainModel.UnderGroup = UnderGroup;
                 MainModel.SubSubGroup = SubSubGroup;
                 MainModel.CostCenterId = CostCenterId;
-                MainModel.Fiscalyear = toolyear;
+                MainModel.Fiscalyear = Fiscalyear;
                 MainModel.VendoreAccountCode = VendoreAccountCode;
                 MainModel.BarCode = BarCode;
                 MainModel.SerialNo = SerialNo;

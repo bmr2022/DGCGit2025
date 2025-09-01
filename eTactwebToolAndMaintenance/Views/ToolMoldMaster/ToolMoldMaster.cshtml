@@ -94,7 +94,7 @@
 									</div>
 									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:120px;">
 										<label asp-for="ToolCode" class="form-label">Tool Code</label>
-										<input asp-for="ToolCode" class="form-control" />
+										<input asp-for="ToolCode" class="form-control" readonly/>
 									</div>
 									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:220px;">
 										<label asp-for="ToolName" class="form-label" style="color:red;">Tool Name*</label>
@@ -106,7 +106,8 @@
 										
 										<select class="form-select" asp-for="ToolOrMold">
 											<option value="">-Select-</option>
-											<option value="ToolMold">ToolMold</option>
+											<option value="Tool">Tool</option>
+											<option value="Mold">Mold</option>
 											<option value="Equipment">Equipment</option>
 											<option value="Instrument">Instrument</option>
 										</select>
@@ -118,7 +119,7 @@
 											<option value="">-Select-</option>
 										</select>
 									</div>
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:190px;">
 										<label asp-for="ConsiderAsFixedAssets" class="form-label" style="color:red;">Consider As Fixed Assets</label>
 										<select class="form-select" asp-for="ConsiderAsFixedAssets">
 											<option value="">-Select-</option>
@@ -201,7 +202,7 @@
 											</div>
 											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
 												<label asp-for="PODate" class="form-label">PO Date</label>
-												<input asp-for="PODate" class="form-control" />
+												<input asp-for="PODate" class="form-control" readonly	/>
 											</div>
 											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
 												<label asp-for="InvoiceNo" class="form-label">Invoice No</label>
@@ -213,7 +214,7 @@
 											</div>
 											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
 												<label asp-for="InvoiceDate" class="form-label">Invoice Date</label>
-												<input asp-for="InvoiceDate" class="form-control" />
+												<input asp-for="InvoiceDate" class="form-control" readonly/>
 											</div>
 
 											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
@@ -278,7 +279,7 @@
 											</div>
 											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
 												<label asp-for="CapatalizationDate" class="form-label">Capatalization Date</label>
-												<input asp-for="CapatalizationDate" class="form-control" />
+												<input asp-for="CapatalizationDate" class="form-control" readonly/>
 											</div>
 
 										</div>
@@ -335,7 +336,7 @@
 													</select>
 												</div>
 												<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:160px;">
-													<label asp-for="ExpectedLife" class="form-label">Expected Life</label>
+													<label asp-for="ExpectedLife" class="form-label">Expected Life(In Month)</label>
 													<input asp-for="ExpectedLife" class="form-control" />
 												</div>
 												
@@ -364,17 +365,17 @@
 														</select>
 													</div>
 										    
-														<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 calibrationFields" style="width:250px;">
+													<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 calibrationFields" style="width:250px;">
 														<label asp-for="CalibrationFrequencyInMonth" class="form-label">Calibration Frequency In Month</label>
 														<input asp-for="CalibrationFrequencyInMonth" class="form-control" />
 													</div>
 														<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 calibrationFields" style="width:140px;">
                                                         <label asp-for="LastCalibrationDate" class="form-label">Last Calibration Date</label>
-                                                        <input asp-for="LastCalibrationDate" class="form-control" />
+                                                        <input asp-for="LastCalibrationDate" class="form-control" readonly/>
 													</div>
 													<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 calibrationFields" style="width:180px;">
                                                         <label asp-for="NextCalibrationDate" class="form-label">Next Calibration Date</label>
-                                                        <input asp-for="NextCalibrationDate" class="form-control" />
+                                                        <input asp-for="NextCalibrationDate" class="form-control" readonly/>
 													</div>
 														<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 calibrationFields" style="width:180px;">
 														<label asp-for="CalibrationAgencyId" class="form-label">Calibration Agency Id</label>
@@ -456,18 +457,10 @@
 														<input asp-for="CC " class="form-control" value="@Model.CC" readonly />
 													</div>
 
-													<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
-														<label asp-for="LastupdatedBy" class="form-label">UID</label>
-															<input asp-for="LastupdatedBy" class="form-control" readonly />
-													</div>
-											
-
-
-												
-
+													
 												<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
 													<label asp-for="ActualEntryBy" class="form-label">ActualEntryBy</label>
-														<input asp-for="ActualEntryBy " class="form-control" readonly />
+														<input asp-for="ActualEntryByEmpName " class="form-control" readonly />
 												</div>
 												<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
 													<label asp-for="ActualEntryDate" class="form-label">ActualEntryDate</label>
@@ -565,19 +558,22 @@
 	<script>
 		$(document).ready(function () {
 			//GetFormRights();
+			setFormattedDate($('#Mode').val());
 			if ($('#Mode').val() !== "U" && $('#Mode').val() !== "V") {
-				setFormattedDate();
+				
 				FillEntryID();
 				TotalNoOfRows();
 
 			}
+			//setFormattedDate($('#Mode').val());
 			FillItemName();
 			FillCostCenterName();
 			FillDepartmentName();
 			FillParentAccountName();
 			FillCategoryName();
 			FillCustoidianEmpName();
-			 
+			var allDateFields = '#LastupDationDate,#ActualEntryDate,#EntryDate,#LastCalibrationDate,#FirstAqusitionOn,#CapatalizationDate,#PODate,#InvoiceDate,#NextCalibrationDate';
+			$(allDateFields).datepicker({ dateFormat: 'dd/M/yy' });
 			var mode = "@Model.Mode";                     
 			var consider = "@Model.ConsiderAsFixedAssets";
 
@@ -739,6 +735,7 @@
 			$('#GridButton').click(function (e) {
 				setFormattedDate();
 			});
+			
 			$(document).on("keydown", function (e) {
 				if (e.key === "Enter") {
 					e.preventDefault();
@@ -747,14 +744,80 @@
 			});
 			$('.submitBTN').click(function (e) {
 				e.preventDefault();
+				let calibrationRequired = $("#CalibrationRequired").val();
+				let isValid = true;
 
-				console.log("SubmitButton Click - Validation passed");
-				$('form').submit();
+				if (calibrationRequired === "Yes") {
+					$(".calibrationFields input").each(function () {
+						if ($(this).val().trim() === "") {
+							$.notify($(this).prev("label").text() + " is required", "error");
+							$(this).focus();
+							isValid = false;
+							return false; // break loop
+						}
+					});
+				}
+
+				if (isValid) {
+					console.log("SubmitButton Click - Validation passed");
+					$('form').submit();
+				}
+				// console.log("SubmitButton Click - Validation passed");
+				// $('form').submit();
 			});
 
 
 
 		})
+		function parseCustomDate(dateStr) {
+			// Expected format: 30/Aug/2025
+			let parts = dateStr.split('/');
+			if (parts.length !== 3) return null;
+
+			let day = parseInt(parts[0]);
+			let monthStr = parts[1];
+			let year = parseInt(parts[2]);
+
+			// Map month short names
+			let monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+			let month = monthNames.indexOf(monthStr);
+
+			if (month === -1 || isNaN(day) || isNaN(year)) return null;
+
+			return new Date(year, month, day);
+		}
+		$("#NextCalibrationDate").datepicker({
+			dateFormat: 'dd/M/yy',
+			beforeShow: function () {
+				return false; 
+			}
+		}).prop("readonly", true);
+		function formatCustomDate(date) {
+			let day = String(date.getDate()).padStart(2, '0');
+			let monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+			let month = monthNames[date.getMonth()];
+			let year = date.getFullYear();
+			return `${day}/${month}/${year}`;
+		}
+
+		function calculateNextCalibrationDate() {
+			let freq = parseInt($("#CalibrationFrequencyInMonth").val());
+			let lastDateStr = $("#LastCalibrationDate").val();
+
+			let lastDate = parseCustomDate(lastDateStr);
+
+			if (!isNaN(freq) && lastDate) {
+				lastDate.setMonth(lastDate.getMonth() + freq);
+				$("#NextCalibrationDate").val(formatCustomDate(lastDate));
+			} else {
+				$("#NextCalibrationDate").val("");
+			}
+		}
+
+		$("#CalibrationFrequencyInMonth, #LastCalibrationDate").on("change keyup", function () {
+			calculateNextCalibrationDate();
+		});
+
 		$('#InsuredAmount').on('input', function () {
 			var purchaseVal = parseFloat($('#PurchaseValue').val()) || 0;
 			var insuredVal = parseFloat($(this).val()) || 0;
@@ -769,6 +832,15 @@
 			var purchaseVal = $(this).val();
 			$('#OriginalValue').val(purchaseVal);
 			$('#NetBookValue').val(purchaseVal);
+		});
+		$('#NetBookValue').on('input', function () {
+			var purchaseVal = parseFloat($('#PurchaseValue').val()) || 0;
+			var netBookVal = parseFloat($(this).val()) || 0;
+
+			if (netBookVal > purchaseVal) {
+				alert("Net Book Value cannot be more than Purchase Value.");
+				$(this).val(purchaseVal); 
+			}
 		});
 		function toggleFixedAssetFields() {
 			if ($("#ConsiderAsFixedAssets").val() === "Yes") {
@@ -909,12 +981,22 @@
 			var monthStr = parts[1];
 			var year = parseInt(parts[2], 10);
 
-			var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-			var month = monthNames.indexOf(monthStr);
+			var month;
+			var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+				"Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-			if (month < 0) return null;
+			if (isNaN(monthStr)) {
+				// Case: Month as text → "Aug"
+				month = monthNames.indexOf(monthStr);
+			} else {
+				// Case: Month as number → "08"
+				month = parseInt(monthStr, 10) - 1;
+			}
+
+			if (month < 0 || month > 11) return null;
 			return new Date(year, month, day);
 		}
+
 
 
 		// $('#InvoiceDate').on('change', function () {
@@ -938,7 +1020,55 @@
 
 		// });
 		
-		function setFormattedDate() {
+		// function setFormattedDate() {
+		// 	var today = new Date();
+		// 	var day = ('0' + today.getDate()).slice(-2);
+		// 	var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+		// 	var month = monthNames[today.getMonth()];
+		// 	var year = today.getFullYear();
+
+		// 	var formattedDate = day + '/' + month + '/' + year;
+
+		// 	$('#LastupDationDate,#ActualEntryDate,#EntryDate,#LastCalibrationDate')
+		// 		.datepicker({ dateFormat: 'dd/M/yy' })
+		// 		.val(formattedDate);
+
+		// 	$('#FirstAqusitionOn,#CapatalizationDate')
+		// 		.datepicker({
+		// 			dateFormat: 'dd/M/yy',
+		// 			maxDate: 0
+		// 		})
+		// 		.val(formattedDate);
+		// 	$('#PODate').datepicker({
+		// 		dateFormat: 'dd/M/yy',
+		// 		maxDate: 0,
+		// 		onSelect: updateInvoiceMinDate
+		// 	}).datepicker('setDate', today);
+
+
+		// 	$('#InvoiceDate').datepicker({
+		// 		dateFormat: 'dd/M/yy',
+		// 		maxDate: 0
+		// 	}).datepicker('setDate', today);
+
+
+		// 	updateInvoiceMinDate();
+
+		// 	function updateInvoiceMinDate() {
+		// 		var poDate = $('#PODate').datepicker('getDate');
+		// 		$('#InvoiceDate').datepicker('option', 'minDate', poDate || null);
+
+
+		// 		var invDate = $('#InvoiceDate').datepicker('getDate');
+		// 		if (poDate && invDate && invDate < poDate) {
+		// 			$('#InvoiceDate').datepicker('setDate', poDate);
+		// 		}
+		// 	}
+
+
+		// 	$('#PODate').on('change', updateInvoiceMinDate);
+		// }
+		function setFormattedDate(isUpdateMode) {
 			var today = new Date();
 			var day = ('0' + today.getDate()).slice(-2);
 			var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -947,28 +1077,37 @@
 
 			var formattedDate = day + '/' + month + '/' + year;
 
-			$('#LastupDationDate,#ActualEntryDate,#EntryDate,#LastCalibrationDate,#NextCalibrationDate')
-				.datepicker({ dateFormat: 'dd/M/yy' })
-				.val(formattedDate);
+			// Common fields (no future date allowed)
+			$('#LastupDationDate,#ActualEntryDate,#EntryDate')
+				.datepicker({ dateFormat: 'dd/M/yy', maxDate: 0 });
 
-			$('#FirstAqusitionOn,#CapatalizationDate')
+			// Acquisition / capitalization
+			$('#FirstAqusitionOn,#CapatalizationDate,#LastCalibrationDate')
 				.datepicker({
 					dateFormat: 'dd/M/yy',
 					maxDate: 0
-				})
-				.val(formattedDate);
+				});
+
+			
 			$('#PODate').datepicker({
 				dateFormat: 'dd/M/yy',
 				maxDate: 0,
 				onSelect: updateInvoiceMinDate
-			}).datepicker('setDate', today);
+			});
 
-
+			
 			$('#InvoiceDate').datepicker({
 				dateFormat: 'dd/M/yy',
 				maxDate: 0
-			}).datepicker('setDate', today);
+			});
 
+			// 🚨 Only set default values if NOT in update mode
+			if (isUpdateMode=="") {
+				$('#LastupDationDate,#ActualEntryDate,#EntryDate,#LastCalibrationDate').val(formattedDate);
+				$('#FirstAqusitionOn,#CapatalizationDate').val(formattedDate);
+				$('#PODate').datepicker('setDate', today);
+				$('#InvoiceDate').datepicker('setDate', today);
+			}
 
 			updateInvoiceMinDate();
 
@@ -976,16 +1115,15 @@
 				var poDate = $('#PODate').datepicker('getDate');
 				$('#InvoiceDate').datepicker('option', 'minDate', poDate || null);
 
-
 				var invDate = $('#InvoiceDate').datepicker('getDate');
 				if (poDate && invDate && invDate < poDate) {
 					$('#InvoiceDate').datepicker('setDate', poDate);
 				}
 			}
 
-
 			$('#PODate').on('change', updateInvoiceMinDate);
 		}
+
 
 		function FillCategoryName() {
 			$.ajax({

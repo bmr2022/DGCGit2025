@@ -268,6 +268,11 @@
                                         <option value="0">-Select-</option>
                                     </select>
                                 </div>
+                                <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12" style="width:12%">
+                                    <button type="button" id="ShowAllItem" onclick="AddMultipleItems()" class=" btn btn-sm btn-outline-success mt-3">
+                                        <i class="bi bi-list"></i>ShowAllItem
+                                    </button>
+                                </div>
 
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <div class="form-check form-switch d-flex justify-content-center mt-2">
@@ -713,6 +718,118 @@
         </div>
     </div>
 </div>
+
+
+
+<div class="modal fade" style="display:none" id="AddMultiplrItemModel" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document" ">
+        <div class="modal-content">
+            <div class="modal-header">
+                
+            <label>GroupName</label>
+                <select class="form-select"  id="Group_Code" style="width:170px">
+                    <option value="0">-Select Group-</option>
+                </select>
+               
+               <label>StoreName</label>
+                <select class="form-select" id="MultiStoreid" style="width:170px">
+                    <option value="0">-Select Store-</option>
+                </select>
+                <label>ProcessName</label>
+                <select class="form-select" id="ProcessID" style="width:170px">
+                    <option value="0">-Select Process-</option>
+                </select>
+
+                <input type="text" id="SearchPartCode" style="width:170px" placeholder="partcode">
+               
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row g-2 gx-3">
+
+                            <div class="card-body text-center overflow-auto pb-0   ">
+                                <div class="d-flex align-items-center mb-2">
+                                    <button class="btn btn-sm btn-outline-warning mb-2" type="button" id="CheckAll" style="display: flex; align-items: center;">
+                                        <i class="fa fa-check-square" aria-hidden="true"></i>
+                                        <span style="margin-left: 5px;">Ch/UnCh All</span>
+                                    </button>
+                                    <div class="col-md-2 me-3" style="margin-left:50px">
+                                        <input type="text" class="form-control" id="search-box1" placeholder="Search..." style="background-color:#FFFACD;">
+                                    </div>
+                                    <button class="btn btn-sm btn-outline-success mb-2" type="button" onclick="ShowItemsData()" style="display: flex; align-items: center;">
+                                        <i class="fa fa-eye" aria-hidden="true"></i>
+                                        <span style="margin-left: 5px;">Show</span>
+                                    </button>
+                                </div>
+                                <div class="table-responsive" style="max-height:350px;">
+                                    <table class="table table-hover table-bordered table-striped mb-0">
+                                        <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+                                            <tr>
+                                                <th>Sr#</th>
+                                                <th>Action</th>
+                                                <th>Part Code</th>
+                                               <th>Item Name</th>
+                                                <th>Qty</th>
+                                                <th>Rate</th>
+                                                <th>Amount</th>
+                                               
+                                                <th>TotalStock</th>
+                                                <th>Lot Stock</th>
+                                                <th>Batch No</th>
+                                                <th>Unique Batch No</th>
+
+                                                <th>Unit</th>
+                                                <th>HSNNO</th>
+                                                <th>PurchasePrice</th>
+
+
+                                            </tr>
+                                        </thead>
+                                        <tbody id="MultiItemBody">
+                                            <partial name="_NRGPShowAllItemGrid" />
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="progress my-2" style="height: 4px;">
+                        <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <div class="row g-2 gx-3">
+                        <div class="col-12 text-center">
+                            <strong>Total No Of Items : <span id="lblTotalNoOfItems1"></span></strong>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="GridMultiItemBtn btn btn-sm btn-outline-success me-2">
+                        <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
+                    </button>
+
+                    <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
 @section Scripts {
 <script>
             $('#submitBTN').click(function (e) {
@@ -1473,6 +1590,272 @@
                
             });
 
+        $('#CheckAll').click(function () {
+
+            var RowCount = $('#MultiItemBody tr').length;
+            var TotalNoOfRows = 0;
+            for (var i = 1; i <= RowCount; i++) {
+                var checkbox = $('#MBCheckbox-' + i);
+                checkbox.prop("checked", !checkbox.prop("checked"));
+                CalculateAmountForMalti(i);
+                if ($('#MBCheckbox-' + i).prop("checked")) {
+                    TotalNoOfRows++;
+                }
+            }
+            $('#lblTotalNoOfItems').text(TotalNoOfRows);
+        });
+
+        $("#search-box1").on("keyup", function () {
+
+            var value = $(this).val().toLowerCase();
+            $("#MultiItemBody tr").filter(function () {
+                if (currentSearchColumn !== null) {
+                    // var columnText = $(this).find('input').eq(currentSearchColumn).text().toLowerCase();
+                    var columnValue = $(this)
+                        .find('td')
+                        .eq(currentSearchColumn)
+                        .find('input')
+                        .val()
+                        .toLowerCase();
+                    $(this).toggle(columnText.indexOf(value) > -1);
+                } else {
+                    // $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                    var rowText = $(this)
+                        .find('input')
+                        .map(function () {
+                            return $(this).val();
+                        })
+                        .get()
+                        .join(" ")
+                        .toLowerCase();
+
+                    $(this).toggle(rowText.indexOf(value) > -1);
+                }
+            });
+        });
+
+
+        function AddMultipleItems() {
+            $('#AddMultiplrItemModel').modal('show');
+            $('#MultiItemBody').empty();
+            GetMultiItemGroup();
+          
+            FillStore();
+            FillProcess();
+        }
+        $('#MultiStoreid, #Group_Code').change(function () {
+            $('#MultiItemBody').empty();
+        });
+
+
+
+        function GetMultiItemGroup() {
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetItemGroup")",
+                dataType: "json",
+                async: false,
+
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#Group_Code').empty();
+                            $('#Group_Code').append('<option value="0"  selected>-Select-</option>');
+
+
+                            $.each(obj.Result, function (index, val) {
+                                $('#Group_Code').append('<option value="' + val.Group_name + '">' + val.Group_name + '</option>');
+                            });
+
+                        }
+                    }
+                }
+            });
+        }
+
+
+       
+
+        function FillStore() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetStoreList")",
+                dataType: "json",
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        $('#MultiStoreid').empty();
+                        $('#MultiStoreid').append('<option value="0">-Select-</option>');
+                        if (obj.StatusCode != 500) {
+                            $.each(obj.Result, function (index, val) {
+                                $('#MultiStoreid').append("<option value=" + val.entryid + ">" + val.store_name + "</option>");
+                            });
+
+                           
+                        }
+                    }
+                }
+            });
+        }
+
+        function FillProcess() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetProcessList")",
+                dataType: "json",
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        $('#ProcessID').empty();
+                        $('#ProcessID').append('<option value="0">-Select-</option>');
+                        if (obj.StatusCode != 500) {
+                            $.each(obj.Result, function (index, val) {
+                                $('#ProcessID').append("<option value=" + val.EntryID + ">" + val.StageDescription + "</option>");
+                            });
+
+
+                        }
+                    }
+                }
+            });
+        }
+
+        function ShowItemsData() {
+
+
+            
+            var GroupName = $('#Group_Code').val();
+            var StoreID = $('#MultiStoreid').val();
+          
+            var ToDate = $('#ChallanDate').val();
+            var PartCode = $('#SearchPartCode').val();
+
+            $.ajax({
+                type: 'POST',
+                url: "@Url.Action("selectMultipleItem")",
+                data: {
+                    GroupName: GroupName,
+                    StoreID: StoreID,
+                    
+                    ToDate: ToDate,
+                    PartCode:PartCode
+
+
+                },
+                success: function (response) {
+                    // Clear the existing items in the table body
+                    $('#MultiItemBody').empty(); // Clear existing items
+                    $('#MultiItemBody').html(response);
+
+                    var totalRows = $('#MultiItemBody tr').length;
+                    $('#lblTotalNoOfItems1').text(totalRows);
+
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching BOM tree data:", error);
+                }
+            });
+           
+        }
+
+        function DeleteModelRow(el) {
+            // Find the row containing the clicked delete link
+            var row = $(el).closest("tr");
+            row.remove();
+
+            // Reset counter (first column)
+            $("#MultiItemBody tr").each(function (index) {
+                $(this).find("td:first").text(index + 1);
+            });
+        }
+
+        function CalculateAmountForMalti(i) {
+
+            if ($('#MBCheckbox-' + i).prop("checked")) {
+                GetMultiItemRate(i);
+            const Rate = $('#Rate-' + i).val() === "0" || $('#Rate-' + i).val() === "" ? 0 : parseFloat($('#Rate-' + i).val());
+          
+            const Qty = $('#Qty-' + i).val() == "0" || $('#Qty-' + i).val() == "" ? 0 : parseFloat($('#Qty-' + i).val());
+            Amount = Qty * Rate;
+
+
+           
+            $('#Amount-' + i).val(Amount.toFixed(6));
+                /* FillTotalStockForGroupWiseItem(i); */
+              
+
+            }
+
+        }
+
+        function CalculateOnlyAmountForMalti(i) {
+
+            if ($('#MBCheckbox-' + i).prop("checked")) {
+               
+                const Rate = $('#Rate-' + i).val() === "0" || $('#Rate-' + i).val() === "" ? 0 : parseFloat($('#Rate-' + i).val());
+
+                const Qty = $('#Qty-' + i).val() == "0" || $('#Qty-' + i).val() == "" ? 0 : parseFloat($('#Qty-' + i).val());
+                Amount = Qty * Rate;
+
+
+
+                $('#Amount-' + i).val(Amount.toFixed(6));
+                /* FillTotalStockForGroupWiseItem(i); */
+
+
+            }
+
+        }
+
+
+       /*  function FillTotalStockForGroupWiseItem(i) {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetStoreTotalStock", "NRGP")",
+                data: { ItemCode: $('#ItemCode-' + i).val(), StoreId: $('#MultiStoreid').val(), TillDate: $('#ChallanDate').val() },
+                dataType: "json",
+                async: false,
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        $('#TotalStock-' + i).val(obj.Result[0].STOCK);
+                    }
+                }
+            });
+        } */
+
+        function GetMultiItemRate(i) {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetItemRate")",
+                data: { ItemCode: $('#ItemCode-'+i).val(), TillDate: $('#ChallanDate').val(), YearCode: $('#YearCode').val(), BatchNo: $('#BatchNo-'+i).val(), UniqueBatchNo: $('#uniquebatchno-'+i).val(), accountcode: $('#AccountCode').val() },
+                dataType: "json",
+                async: false,
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.Result[0] == undefined) {
+                            $('#Rate-'+i).prop("readonly", false);
+                        }
+                        else {
+                            $('#Rate-'+i).val(obj.Result[0].Rate);
+
+                            if (parseInt(obj.Result[0].Rate) == 0) {
+                                $('#Rate-'+i).prop("readonly", false);
+                            }
+                        }
+
+                    }
+                }
+            });
+        }
+
+        
+
 
             document.addEventListener('keydown', function (event) {
                 if (event.key === 'Enter') {
@@ -1583,6 +1966,21 @@
 
             };
 
+            $("#SearchPartCode").autocomplete({
+                source: partCodeSource,
+                 appendTo: "#AddMultiplrItemModel" ,
+                select: function (event, ui) {
+                    $("#SearchPartCode").val(ui.item.value).data("itemcode", ui.item.itemCode);
+                   
+                    return false;
+                },
+                focus: function (event, ui) {
+                    $("#SearchPartCode").val(ui.item.value);
+                    return false;
+                },
+                minLength: 2
+            });
+
             // Autocomplete for PartCodeText
             $("#PartCodeText").autocomplete({
                 source: partCodeSource,
@@ -1603,6 +2001,8 @@
                 },
                 minLength: 2
             });
+
+
 
             // Autocomplete for ItemNameText
             $("#ItemNameText").autocomplete({
@@ -2807,9 +3207,185 @@
                     }
                 });
             });
+        var itemBatchArray = [];
 
-            var itemBatchArray = [];
+        $('.GridMultiItemBtn').click(function (e) {
+            e.preventDefault();
+            var CheckboxArr = [];
+            var RowCount = $('#MultiItemBody tr').length;
 
+            for (var i = 1; i <= RowCount; i++) {
+                if ($('#MBCheckbox-' + i).prop("checked")) {
+                    CheckboxArr.push(i);
+                    /* CalculateAmountForMalti(i); */
+                }
+            }
+
+            if (CheckboxArr.length === 0) {
+                $.notify('Please select any item.', 'error');
+            } else {
+
+
+                var RowCount = $('#MultiItemBody tr').length;
+                for (var i = 1; i <= RowCount; i++) {
+                    if ($('#MBCheckbox-' + i).prop("checked")) {
+                        if ($('#Qty-' + i).val() == 0) {
+                            $.notify('Please enter quantity for ' + $('#PartCode-' + i).val(), 'error');
+                            return;
+                        }
+                        if (parseFloat($('#Qty-' + i).val()) > parseFloat($('#BatchStock-' + i).val())) {
+                            $.notify('Please enter Valid quantity for ' + $('#PartCode-' + i).val(), 'error');
+                            return;
+                        }
+                        if (parseFloat($('#Qty-' + i).val()) > parseFloat($('#TotalStock-' + i).val())) {
+                            $.notify('Please enter Valid quantity for ' + $('#PartCode-' + i).val(), 'error');
+                            return;
+                        }
+                        if ($('#Rate-' + i).val() == 0) {
+                            $.notify('Please enter rate for ' + $('#PartCode-' + i).val(), 'error');
+                            return;
+                        }
+                        if ($('#Unit-' + i).val() == '') {
+                            $.notify('Please select unit for ' + $('#PartCode-' + i).val(), 'error');
+                            return;
+                        }
+                        if ($('#HSNNo-' + i).val() == '') {
+                            $.notify('Please enter HSN for ' + $('#PartCode-' + i).val(), 'error');
+                            return;
+                        }
+                        if ($('#Amount-' + i).val() == '') {
+                            $.notify('amount can not be 0 ' + $('#PartCode-' + i).val(), 'error');
+                            return;
+                        }
+
+
+
+
+                    }
+                }
+                var ArrMultiBatch = [];
+                for (var i = 1; i <= RowCount; i++) {
+                    if ($('#MBCheckbox-' + i).prop("checked")) {
+
+                        ArrMultiBatch.push({
+                            "ItemCode": parseInt($('#ItemCode-'+i).val()),
+                            "PartCode": $('#PartCode-'+i).val(),
+                            "ItemName": $('#ItemName-'+i).val(),
+                            "HSNNo": $('#HSNNo-'+i).val(),
+                            "Qty": $('#Qty-'+i).val(),
+                            "unit": $('#unit-'+i).val(),
+                            "Rate": $('#Rate-'+i).val(),
+                            "Amount": $('#Amount-'+i).val(),
+                            "PurchasePrice": $('#PurchasePrice-'+i).val(),
+                            "ProcessId": $('#ProcessID').val(),
+                            "ProcessName": $('#ProcessID option:selected').text().trim(),
+                            "Storeid": $('#MultiStoreid').val(),
+                            "StoreName": $('#MultiStoreid option:selected').text().trim(),
+                            "BatchNo": $('#BatchNo-'+i).val(),
+                            "uniquebatchno": $('#uniquebatchno-' + i).val(),
+                            /* "BatchNo": $('#BatchNo option:selected').text().trim(),
+                            "uniquebatchno": $('#uniquebatchno option:selected').text().trim(), */
+                            "TotalStock": parseFloat($('#TotalStock-'+i).val()),
+                            "BatchStock": $('#BatchStock-'+i).val(),
+                            "AltQty": $('#AltQty-'+i).val(),
+                            "AltUnit": $('#AltUnit-'+i).val(),
+                            "discper": $('#discper').val(),
+                            "disamt": $('#disamt').val() == "NaN" ? 0 : $('#disamt').val(),
+                            "ToLimit": $('#ToLimit').val(),
+                            "Remark": $('#Remark').val(),
+                            "PONO": $('#PONO').val(),
+                            "POYearCode": $('#POYearCode').val(),
+                            "PODate": $('#PODate').val(),
+                            "POAmendementNo": $('#POAmendementNo').val(),
+                            "AgainstChallanEntryId": $('#AgainstChallanEntryId').val(),
+                            "AgainstChallanNo": $('#AgainstChallanNo').val(),
+                            "AgainstChallanYearCode": $('#AgainstChallanYearCode').val(),
+                            "BatchWise": $('#BatchWise').val(),
+                            "Stockable": $('#Stockable').val(),
+                            "ItemSize": $('#ItemSize').val(),
+                            "ItemColor": $('#ItemColor').val(),
+                            "ItemModel": $('#ItemModel').val(),
+                            "Closed": $('#Closed').val(),
+                            "PendQty": $('#PendQty').val(),
+                            "PendAltQty": $('#PendAltQty').val(),
+                            "RemarkDetail": $('#RemarkDetail').val(),
+                            "Purpose": $('#Purpose').val(),
+                            "Mode": $('#Mode').val()
+                            
+                        });
+                    }
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("AddMultipleItemDetail")',
+                    data: { "model": ArrMultiBatch },
+                    statusCode: {
+                        207: function () {
+                            $.notify('Duplicate Item...!', "info");
+                        }
+                    },
+                    success: function (data, status, xhr) {
+                        if (xhr.status == 200 && xhr.responseText == data) {
+                            $('#RoundOff').prop('selectedIndex', 0);
+                            if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
+                                $.notify('Duplicate Item Not Allowed.', "info");
+                                $('.ItemBtn').html('<span role="status"><i class="fa-duotone fa-angle-double-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
+                            }
+                            else if (xhr.status == 205 && (xhr.responseText.indexOf('Reset') || xhr.statusText.indexOf('Reset'))) {
+                                $.notify('Adding Item Not Allowed, Please Clear Tax Detail...!!!', "info");
+                            }
+                            else {
+                                $('#divIssueNRGPGrid').html(data);
+                                $('#AddMultiplrItemModel').modal('hide');
+                                $.notify('Item Added To Grid', "success");
+                                //GetAmtAfterDiscount();
+                                ClearGrid();
+                                $('.AF :input').val('');
+                                $('.AF').fadeOut();
+
+
+                                var rowCount = $('#divIssueNRGPGrid tr').length;
+                                var Seqno = $('#SeqNo-' + rowCount).val();
+                              /*   itemBatchArray.push({
+                                    "SeqNo": parseInt(Seqno),
+                                    "itemcode": itemCodee,
+                                    "batchno": batchNoo,
+                                    "uniquebatchno": uniquebatchnoo
+                                }); */
+                                //for (var i = 1; i <= rowCount + 1; i++) {
+                                //    $('#editButton-' + i).prop("disabled", false);
+                                //}
+                                // ClearItem();
+                                $('#PartCode').focus();
+
+                                TotalNetAmount();
+
+                            }
+
+                            BasicTotal();
+
+                        }
+
+
+                        
+                    },
+                    error: function (result, status, xhr) {
+                        $.notify('Something Went Wrong, Please Try Again.', "error");
+                    }
+                }).done(function () {
+
+                    console.log(3);
+                    GetTxPartItem();
+                });
+            }
+        });
+
+
+
+
+
+         
             $('.GridButton').click(function (e) {
                 e.preventDefault();
 
@@ -3475,7 +4051,7 @@
                 }
             }
 
-            function DeleteItemRow(SeqNo) {
+            function DeleteItemRow(SeqNo,ItemCode,Batchno) {
 
                 var IC = $('#GridIC-' + SeqNo).val();
                 var BatchNo = $('#GridBatchNo-' + SeqNo).text();
@@ -3495,7 +4071,7 @@
                     $.ajax({
                         url: '@Url.Action("DeleteItemRow")',
                         type: "POST",
-                        data: { "SeqNo": SeqNo, "Mode": $('#Mode').val() },
+                        data: { "SeqNo": SeqNo,"ItemCode":ItemCode,"Batchno":Batchno, "Mode": $('#Mode').val() },
                         async: false,
                         success: function (data, status, xhr) {
                             console.log(data);
@@ -3621,10 +4197,10 @@
 
                                     //$('#Remark').val(obj[0].RecScrapItemName);
 
-                                       /*  GetBatchStock();
-                                        GetTotalStockQty(); */
+                                         GetBatchStock();
+                                        /* GetTotalStockQty();  */
                                     GetPrevQty();
-                                    $('#BatchStock').val(QtyVal + BatchStock);
+                                    /* $('#BatchStock').val(QtyVal + BatchStock); */
                                     //SetminQty();
                                     var rowCount = $('#divIssueNRGPGrid tr').length;
                                     for (var i = 1; i <= rowCount + 1; i++) {

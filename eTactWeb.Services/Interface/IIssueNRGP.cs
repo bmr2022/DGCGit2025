@@ -43,5 +43,8 @@ namespace eTactWeb.Services.Interface
         public Task<ResponseResult> CheckGateEntry(int ID, int YC);
         public Task<ResponseResult> SaveIssueNRGP(IssueNRGPModel model, DataTable INGrid, DataTable TaxDetailDT);
         public Task<DataSet> BindAllDropDowns(string Flag);
+
+        Task<ResponseResult> GetItemGroup();
+        Task<IssueNRGPModel> selectMultipleItem(string GroupName, int StoreID,string FromDate,string ToDate, string PartCode);
     }
 }

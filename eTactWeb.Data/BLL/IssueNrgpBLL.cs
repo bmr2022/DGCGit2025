@@ -21,6 +21,12 @@ namespace eTactWeb.Data.BLL
             _DataLogicDAL = iDataLogic;
             _IssueNRGPDAL = new IssueNrgpDAL(configuration, iDataLogic,connectionStringService);
         }
+        public async Task<ResponseResult> GetItemGroup()
+        {
+            return await _IssueNRGPDAL.GetItemGroup();
+        }
+
+        
         public async Task<ResponseResult> GetFormRights(int userID)
         {
             return await _IssueNRGPDAL.GetFormRights(userID);
@@ -28,6 +34,10 @@ namespace eTactWeb.Data.BLL
         public async Task<ResponseResult> GetReportName()
         {
             return await _IssueNRGPDAL.GetReportName();
+        }
+        public async Task<IssueNRGPModel> selectMultipleItem(string GroupName, int StoreID, string FromDate, string ToDate, string PartCode)
+        {
+            return await _IssueNRGPDAL.selectMultipleItem( GroupName,  StoreID,  FromDate,  ToDate,  PartCode);
         }
         public async Task<ResponseResult> FillEntryandChallanNo(int YearCode, string RGPNRGP)
         {

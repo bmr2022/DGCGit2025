@@ -210,6 +210,7 @@ namespace eTactWeb
             services.TryAddScoped<ISalepersonWiseRateMaster,SalepersonWiseRateMasterBLL>();
             services.TryAddScoped<IToolMoldMaster,ToolMoldMasterBLL>();
             services.TryAddScoped<IGateAttendance, GateAttendanceBLL>();
+            services.TryAddScoped<IAccDepriciationCalculationdetail, AccDepriciationCalculationdetailBLL>();
 
 
             services.TryAddTransient<ISaleSchedule, SaleScheduleBLL>();
