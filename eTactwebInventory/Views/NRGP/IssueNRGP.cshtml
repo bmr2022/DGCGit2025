@@ -3233,11 +3233,11 @@
                             $.notify('Please enter quantity for ' + $('#PartCode-' + i).val(), 'error');
                             return;
                         }
-                        if ($('#Qty-' + i).val() > $('#BatchStock-' + i).val()) {
+                        if (parseFloat($('#Qty-' + i).val()) > parseFloat($('#BatchStock-' + i).val())) {
                             $.notify('Please enter Valid quantity for ' + $('#PartCode-' + i).val(), 'error');
                             return;
                         }
-                        if ($('#Qty-' + i).val() > $('#TotalStock-' + i).val()) {
+                        if (parseFloat($('#Qty-' + i).val()) > parseFloat($('#TotalStock-' + i).val())) {
                             $.notify('Please enter Valid quantity for ' + $('#PartCode-' + i).val(), 'error');
                             return;
                         }
