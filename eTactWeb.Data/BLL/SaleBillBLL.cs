@@ -26,9 +26,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _SaleBillDAL.GetFormRights(ID);
         }
-        public async Task<SaleBillModel> ShowGroupWiseItems(int Group_Code, int AccountCode, int storeid)
+        public async Task<SaleBillModel> ShowGroupWiseItems(int Group_Code, int AccountCode, int storeid, string GroupName, string ToDate, string FromDate, string PartCode)
         {
-            return await _SaleBillDAL.ShowGroupWiseItems(Group_Code, AccountCode,storeid);
+            return await _SaleBillDAL.ShowGroupWiseItems( Group_Code,  AccountCode,  storeid,  GroupName,  ToDate,  FromDate,  PartCode);
         }
         public async Task<ResponseResult> GetReportName()
         {

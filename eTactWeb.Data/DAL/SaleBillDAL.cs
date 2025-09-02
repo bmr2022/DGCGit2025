@@ -75,7 +75,7 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
-        public async Task<SaleBillModel> ShowGroupWiseItems(int Group_Code, int AccountCode, int storeid)
+        public async Task<SaleBillModel> ShowGroupWiseItems(int Group_Code, int AccountCode, int storeid, string GroupName, string ToDate, string FromDate, string PartCode)
         {
             var resultList = new SaleBillModel();
             DataSet oDataSet = new DataSet();
@@ -84,16 +84,22 @@ namespace eTactWeb.Data.DAL
             {
                 using (SqlConnection connection = new SqlConnection(DBConnectionString))
                 {
-                    SqlCommand command = new SqlCommand("SP_SaleBillMainDetail", connection)
+                    SqlCommand command = new SqlCommand("SPReportSTockRegister", connection)
                     {
                         CommandType = CommandType.StoredProcedure
                     };
                     ;
 
-                    command.Parameters.AddWithValue("@Flag", "ShowGroupWiseItems");
+                    command.Parameters.AddWithValue("@Flag", "BATCHWISESTOCKSUMMARY");
+                    command.Parameters.AddWithValue("@reportcallingfrom", "BatchWiseStockOnSaleBill");
                     command.Parameters.AddWithValue("@Group_Code", Group_Code);
                     command.Parameters.AddWithValue("@AccountCode", AccountCode);
                     command.Parameters.AddWithValue("@Storeid", storeid);
+                    command.Parameters.AddWithValue("@GroupName", GroupName);
+                    command.Parameters.AddWithValue("@ToDate", CommonFunc.ParseFormattedDate(ToDate));
+                    command.Parameters.AddWithValue("@FromDate", CommonFunc.ParseFormattedDate(FromDate));
+                    command.Parameters.AddWithValue("@PartCode", PartCode);
+                  
 
                     await connection.OpenAsync();
 
@@ -108,19 +114,22 @@ namespace eTactWeb.Data.DAL
                     resultList.ItemDetailGrid = (from DataRow row in oDataSet.Tables[0].Rows
                                                  select new SaleBillDetail
                                                  {
-                                                     ItemCode = row["Item_Code"] == DBNull.Value ? 0 : Convert.ToInt32(row["Item_Code"]),
-                                                     //AccountCode = row["AccountCode"] == DBNull.Value ? 0 : Convert.ToInt32(row["AccountCode"]), 
-                                                     PartCode = row["Partcode"] == DBNull.Value ? string.Empty : row["Partcode"].ToString(),
-                                                     ItemName = row["Item_Name"] == DBNull.Value ? string.Empty : row["Item_Name"].ToString(),
-                                                     //AccountName = row["Account_Name"] == DBNull.Value ? string.Empty : row["Account_Name"].ToString(),
-                                                     Batchno = row["BatchNo"] == DBNull.Value ? string.Empty : row["BatchNo"].ToString(),
-                                                     Uniquebatchno = row["UniqueBatchNo"] == DBNull.Value ? string.Empty : row["UniqueBatchNo"].ToString(),
+                                                     ItemCode = row["item_code"] == DBNull.Value ? 0 : Convert.ToInt32(row["item_code"]),
+                                                     
+                                                     PartCode = row["PartCode"] == DBNull.Value ? string.Empty : row["PartCode"].ToString(),
+                                                     ItemName = row["ItemName"] == DBNull.Value ? string.Empty : row["ItemName"].ToString(),
+                                                     
+                                                     Batchno = row["batchno"] == DBNull.Value ? string.Empty : row["batchno"].ToString(),
+                                                     Uniquebatchno = row["uniquebatchno"] == DBNull.Value ? string.Empty : row["uniquebatchno"].ToString(),
 
-                                                     //DiscCategoryName = row["DiscCategoryName"] == DBNull.Value ? string.Empty : row["DiscCategoryName"].ToString(),
-                                                     Unit = row["Unit"] == DBNull.Value ? string.Empty : row["Unit"].ToString(),
-                                                     HSNNo = row["HsnNo"] == DBNull.Value ? 0 : Convert.ToInt32(row["HsnNo"]),
+
+                                                     
+                                                     Unit = row["unit"] == DBNull.Value ? string.Empty : row["unit"].ToString(),
+                                                     HSNNo = row["HSNNO"] == DBNull.Value ? 0 : Convert.ToInt32(row["HSNNO"]),
                                                      Rate = row["Rate"] == DBNull.Value ? 0 : Convert.ToSingle(row["Rate"]),
                                                      DiscountPer = row["SaleDiscount"] == DBNull.Value ? 0 : Convert.ToSingle(row["SaleDiscount"]),
+                                                    LotStock = row["BatchStock"] == DBNull.Value ? 0 : Convert.ToSingle(row["BatchStock"]),
+                                                    TotalStock = row["TotalStock"] == DBNull.Value ? 0 : Convert.ToSingle(row["TotalStock"]),
 
 
                                                  }).ToList();
