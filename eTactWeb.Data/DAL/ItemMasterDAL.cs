@@ -773,7 +773,7 @@ namespace eTactWeb.Data.DAL
                         model.PurchasePrice = Convert.ToDecimal(dr["PurchasePrice"]);
                         model.CostPrice = Convert.ToDecimal(dr["CostPrice"]);
                         model.WastagePercent = Convert.ToDecimal(dr["WastagePercent"]);
-                        model.WtSingleItem = Convert.ToDecimal(dr["WtSingleItem"]);
+                        model.WtSingleItem = Convert.ToDouble(dr["WtSingleItem"]);
                         model.NoOfPcs = Convert.ToDecimal(dr["NoOfPcs"]);
                         model.QcReq = dr["QcReq"].ToString();
                         model.ItemType = Convert.ToInt32(dr["ItemType"]);
