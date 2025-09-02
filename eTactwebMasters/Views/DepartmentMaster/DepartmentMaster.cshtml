@@ -199,6 +199,7 @@
             GetFormRights();
             $('#DeptType').rules("remove", "required");
             $('#DeptType').select2();
+              FillDeptType();
             // if ($('#SaleBillNo').val() === "") { // Assuming an input field for Center Name
             //     $.notify("SaleBill Nunmber is required.", "warn");
             // }
@@ -210,7 +211,7 @@
             }
             var Entry_Date = parseDateToFormat($('#Entry_Date').val().split(" ")[0]);
             $('#Entry_Date').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", Entry_Date);
-            FillDeptType();
+          
             //     FillStoreType();
             // if ($("#Store_Name").val() == "") {
             //     $.notify("StoreName Can not be Blanck", "error");
@@ -251,7 +252,7 @@
                     $.notify(errMsg, { position: "top center", className: "error" });
                 }
             });
-            calculateSumAndSetValues();
+         
         }
 
         if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {

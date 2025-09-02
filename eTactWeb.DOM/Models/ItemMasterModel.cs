@@ -204,9 +204,10 @@ namespace eTactWeb.DOM.Models
         public decimal WastagePercent { get; set; }
         public string? WipStockable { get; set; }
 
-        [Column(TypeName = "decimal(10, 4)")]
-        public decimal WtSingleItem { get; set; }
-
+        //[Column(TypeName = "decimal(10, 4)")]
+        //public decimal WtSingleItem { get; set; }
+        [Column(TypeName = "float")]
+        public double WtSingleItem { get; set; }
         public int YearCode { get; set; }
         public int YearlyConsumedQty { get; set; }
 
