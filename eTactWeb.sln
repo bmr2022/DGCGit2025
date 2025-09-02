@@ -39,6 +39,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eTactwebPPAP", "eTactwebPPAP\eTactwebPPAP.csproj", "{29992F8C-D697-4349-8E3D-A6D93227FFFD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eTactwebToolAndMaintance", "eTactwebToolAndMaintenance\eTactwebToolAndMaintance.csproj", "{578D1140-9BB5-4C8C-8485-F57D0BA3EB55}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -93,6 +97,14 @@ Global
 		{3712CADF-2D32-F887-D3D8-48D52AA2D00B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3712CADF-2D32-F887-D3D8-48D52AA2D00B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3712CADF-2D32-F887-D3D8-48D52AA2D00B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{29992F8C-D697-4349-8E3D-A6D93227FFFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{29992F8C-D697-4349-8E3D-A6D93227FFFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{29992F8C-D697-4349-8E3D-A6D93227FFFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{29992F8C-D697-4349-8E3D-A6D93227FFFD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{578D1140-9BB5-4C8C-8485-F57D0BA3EB55}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{578D1140-9BB5-4C8C-8485-F57D0BA3EB55}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{578D1140-9BB5-4C8C-8485-F57D0BA3EB55}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{578D1140-9BB5-4C8C-8485-F57D0BA3EB55}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

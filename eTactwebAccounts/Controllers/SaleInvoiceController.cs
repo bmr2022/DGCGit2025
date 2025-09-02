@@ -62,10 +62,12 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<IActionResult> ShowGroupWiseItems(int Group_Code, int AccountCode, int storeid)
+        public async Task<IActionResult> ShowGroupWiseItems(int Group_Code, int AccountCode, int storeid, string GroupName, string ToDate, string PartCode)
         {
+            var FromDate = HttpContext.Session.GetString("FromDate");
+
             var model = new SaleBillModel();
-            model = await _SaleBill.ShowGroupWiseItems(Group_Code, AccountCode,storeid);
+            model = await _SaleBill.ShowGroupWiseItems( Group_Code,  AccountCode,  storeid,  GroupName,  ToDate,  FromDate,  PartCode);
 
 
             return PartialView("_SaleBillGroupWiseItems", model);

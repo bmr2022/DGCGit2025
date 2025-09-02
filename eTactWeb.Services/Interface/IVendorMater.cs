@@ -12,6 +12,10 @@ namespace eTactWeb.Services.Interface
     {
         Task<ResponseResult> FillEntryId();
         Task<ResponseResult> FillVendorList(string isShowAll);
+        Task<ResponseResult> CheckUserDuplication(int userId);
         Task<ResponseResult> SaveVendorUser(VendorUserModel model);
+        Task<VendorUserModel> GetViewByID(int ID,string mode);
+        Task<ResponseResult> DeleteByID(int userEntryId, int accountCode,int userId, string entryByMachineName, int actualEntryBy, string actualEntryDate);
+        Task<ResponseResult> GetDashboardData();
     }
 }

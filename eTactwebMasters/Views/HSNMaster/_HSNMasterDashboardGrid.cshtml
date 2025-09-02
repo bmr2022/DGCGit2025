@@ -1,0 +1,140 @@
+﻿@model IEnumerable<eTactWeb.DOM.Models.HSNMasterModel>
+<div class="table-responsive">
+    <table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0" id="gateDashboardtable">
+        <thead class="bg-gradient card-headerBG text-light">
+            <tr>
+                <th style="width:50px;">Sr No</th>
+                <th style="width:150px;">Actions</th>
+                <th style="width:120px;">HSN ENtry Id</th>
+                <th>HSNNo</th>
+                <th>HSNTypeItemServ</th>
+               
+
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                var index = 1;
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@index</td>
+                        <td>
+                            <div class="d-flex gap-2">
+                                <!-- View -->
+                                <div id="viewCursorDiv-@index">
+                                    <a asp-controller="HSNMaster"
+                                       asp-action="HSNMaster"
+                                       asp-route-id="@item.HSNEntryID"
+                                       asp-route-mode="V"
+                                       class="table-link "
+                                       title="View">
+                                        <span class="fa-stack">
+                                            <i class="fa fa-square fa-stack-2x text-success"></i>
+                                            <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </a>
+                                </div>
+
+                                <!-- Edit -->
+                                <div id="editCursorDiv-@index">
+                                    <a asp-controller="HSNMaster"
+                                       asp-action="HSNMaster"
+                                       asp-route-id="@item.HSNEntryID"
+                                       asp-route-mode="U"
+                                       class="table-link "
+                                       title="Edit">
+                                        <span class="fa-stack">
+                                            <i class="fa fa-square fa-stack-2x text-primary"></i>
+                                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </a>
+                                </div>
+
+                                <!-- Delete -->
+                                <div id="deleteCursorDiv-@index">
+                                    <a href="javascript:void(0);"
+                                       data-id="@item.HSNEntryID"
+                                       onclick="confirmDelete(this)"
+                                       class="table-link"
+                                       title="Delete">
+                                        <span class="fa-stack">
+                                            <i class="fa fa-square fa-stack-2x text-danger"></i>
+                                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </a>
+                                </div>
+                            </div>
+                        </td>
+
+                        <td>@item.HSNEntryID</td>
+                        <td>@item.HSNNo</td>
+                        <td>@item.HSNTypeItemServ</td>
+                       
+
+
+                    </tr>
+                    index++;
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="4" class="text-center text-muted">No records found</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<center><strong>TOTAL ROWS : <span id="totalRows">@((Model != null) ? Model.Count() : 0)</span></strong></center>
+
+
+
+<style>
+    #container {
+        display: flex;
+    }
+
+        #container > div {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+    #GateDataTable {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #dashGateThead th {
+        background-color: #127387;
+        position: sticky;
+        top: -2px;
+        z-index: 1;
+    }
+
+    .sort-icon {
+        padding: 5px;
+        margin: 5px;
+        vertical-align: top;
+    }
+
+    .ascCol {
+        font-size: 15px;
+        vertical-align: bottom;
+    }
+
+    .descCol {
+        font-size: 15px;
+        vertical-align: super;
+    }
+
+    table {
+        width: 100%; /* Ensure table fills the container width */
+    }
+
+    th, td {
+        white-space: nowrap; /* Prevent content from wrapping */
+    }
+</style>

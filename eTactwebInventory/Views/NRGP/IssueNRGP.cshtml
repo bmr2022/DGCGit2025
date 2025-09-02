@@ -1594,10 +1594,10 @@
 
             var RowCount = $('#MultiItemBody tr').length;
             var TotalNoOfRows = 0;
-            for (var i = 0; i <= RowCount; i++) {
+            for (var i = 1; i <= RowCount; i++) {
                 var checkbox = $('#MBCheckbox-' + i);
                 checkbox.prop("checked", !checkbox.prop("checked"));
-
+                CalculateAmountForMalti(i);
                 if ($('#MBCheckbox-' + i).prop("checked")) {
                     TotalNoOfRows++;
                 }
@@ -1663,11 +1663,11 @@
                         var obj = $.parseJSON(result);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                             $('#Group_Code').empty();
-                            $('#Group_Code').append('<option value="0"  selected>-Select-</option>');
+                            $('#Group_Code').append('<option value=""  selected>-Select-</option>');
 
 
                             $.each(obj.Result, function (index, val) {
-                                $('#Group_Code').append('<option value="' + val.Group_Code + '">' + val.Group_name + '</option>');
+                                $('#Group_Code').append('<option value="' + val.Group_name + '">' + val.Group_name + '</option>');
                             });
 
                         }
@@ -1727,20 +1727,20 @@
 
 
             
-            var Group_Code = $('#Group_Code').val();
+            var GroupName = $('#Group_Code').val();
             var StoreID = $('#MultiStoreid').val();
-            var YearCode = $('#YearCode').val();
-            var ChallanDate = $('#ChallanDate').val();
+          
+            var ToDate = $('#ChallanDate').val();
             var PartCode = $('#SearchPartCode').val();
 
             $.ajax({
                 type: 'POST',
                 url: "@Url.Action("selectMultipleItem")",
                 data: {
-                    Group_Code: Group_Code,
+                    GroupName: GroupName,
                     StoreID: StoreID,
-                    YearCode: YearCode,
-                    ChallanDate:ChallanDate,
+                    
+                    ToDate: ToDate,
                     PartCode:PartCode
 
 
@@ -1761,6 +1761,17 @@
            
         }
 
+        function DeleteModelRow(el) {
+            // Find the row containing the clicked delete link
+            var row = $(el).closest("tr");
+            row.remove();
+
+            // Reset counter (first column)
+            $("#MultiItemBody tr").each(function (index) {
+                $(this).find("td:first").text(index + 1);
+            });
+        }
+
         function CalculateAmountForMalti(i) {
 
             if ($('#MBCheckbox-' + i).prop("checked")) {
@@ -1773,14 +1784,34 @@
 
            
             $('#Amount-' + i).val(Amount.toFixed(6));
-                FillTotalStockForGroupWiseItem(i);
+                /* FillTotalStockForGroupWiseItem(i); */
               
 
             }
 
         }
 
-        function FillTotalStockForGroupWiseItem(i) {
+        function CalculateOnlyAmountForMalti(i) {
+
+            if ($('#MBCheckbox-' + i).prop("checked")) {
+               
+                const Rate = $('#Rate-' + i).val() === "0" || $('#Rate-' + i).val() === "" ? 0 : parseFloat($('#Rate-' + i).val());
+
+                const Qty = $('#Qty-' + i).val() == "0" || $('#Qty-' + i).val() == "" ? 0 : parseFloat($('#Qty-' + i).val());
+                Amount = Qty * Rate;
+
+
+
+                $('#Amount-' + i).val(Amount.toFixed(6));
+                /* FillTotalStockForGroupWiseItem(i); */
+
+
+            }
+
+        }
+
+
+       /*  function FillTotalStockForGroupWiseItem(i) {
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("GetStoreTotalStock", "NRGP")",
@@ -1794,7 +1825,7 @@
                     }
                 }
             });
-        }
+        } */
 
         function GetMultiItemRate(i) {
             $.ajax({
@@ -3186,7 +3217,7 @@
             for (var i = 1; i <= RowCount; i++) {
                 if ($('#MBCheckbox-' + i).prop("checked")) {
                     CheckboxArr.push(i);
-                    CalculateAmountForMalti(i);
+                    /* CalculateAmountForMalti(i); */
                 }
             }
 
@@ -3202,11 +3233,11 @@
                             $.notify('Please enter quantity for ' + $('#PartCode-' + i).val(), 'error');
                             return;
                         }
-                        if ($('#Qty-' + i).val() > $('#BatchStock-' + i).val()) {
+                        if (parseFloat($('#Qty-' + i).val()) > parseFloat($('#BatchStock-' + i).val())) {
                             $.notify('Please enter Valid quantity for ' + $('#PartCode-' + i).val(), 'error');
                             return;
                         }
-                        if ($('#Qty-' + i).val() > $('#TotalStock-' + i).val()) {
+                        if (parseFloat($('#Qty-' + i).val()) > parseFloat($('#TotalStock-' + i).val())) {
                             $.notify('Please enter Valid quantity for ' + $('#PartCode-' + i).val(), 'error');
                             return;
                         }
@@ -4020,7 +4051,7 @@
                 }
             }
 
-            function DeleteItemRow(SeqNo) {
+            function DeleteItemRow(SeqNo,ItemCode,Batchno) {
 
                 var IC = $('#GridIC-' + SeqNo).val();
                 var BatchNo = $('#GridBatchNo-' + SeqNo).text();
@@ -4040,7 +4071,7 @@
                     $.ajax({
                         url: '@Url.Action("DeleteItemRow")',
                         type: "POST",
-                        data: { "SeqNo": SeqNo, "Mode": $('#Mode').val() },
+                        data: { "SeqNo": SeqNo,"ItemCode":ItemCode,"Batchno":Batchno, "Mode": $('#Mode').val() },
                         async: false,
                         success: function (data, status, xhr) {
                             console.log(data);
@@ -4166,10 +4197,10 @@
 
                                     //$('#Remark').val(obj[0].RecScrapItemName);
 
-                                       /*  GetBatchStock();
-                                        GetTotalStockQty(); */
+                                         GetBatchStock();
+                                        /* GetTotalStockQty();  */
                                     GetPrevQty();
-                                    $('#BatchStock').val(QtyVal + BatchStock);
+                                    /* $('#BatchStock').val(QtyVal + BatchStock); */
                                     //SetminQty();
                                     var rowCount = $('#divIssueNRGPGrid tr').length;
                                     for (var i = 1; i <= rowCount + 1; i++) {
