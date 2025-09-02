@@ -219,7 +219,7 @@
     <script>
 
         $(document).ready(function () {
-             
+            debugger
             console.log("TransactionLedger Ready");
 
             var currentDate = new Date();
@@ -240,9 +240,9 @@
             let reportType = sessionStorage.getItem('ReportType');
             let parentCode = sessionStorage.getItem('ParentCode');
 
-            if (reportType) $('#ReportType').val(reportType).trigger('change');
             if (parentCode) $('#ParentLedgerName').val(parentCode).trigger('change');
             if (accountName) $('#LedgerName').val(accountName).trigger('change');
+            if (reportType) $('#ReportType').val(reportType).trigger('change');
 
             if (reportType || parentCode || accountName) $('#BackButton').show();
             else $('#BackButton').hide();
@@ -329,6 +329,7 @@
 
         // Save history for TrialBalance drill-down
         function saveHistory(action, params = {}) {
+            debugger
             let history = JSON.parse(sessionStorage.getItem('HistoryStack')) || [];
             history.push({ action, params });
             sessionStorage.setItem('HistoryStack', JSON.stringify(history));
@@ -352,11 +353,11 @@
             });
 
             $('#ReportType').val('TransactionLedgerSummary').trigger('change');
-            GetTransactionLedgerMonthlySummaryDetailsData();
+            GetDetailsData();
         }
 
         function PressBack() {
-             
+            debugger
             let history = JSON.parse(sessionStorage.getItem('HistoryStack')) || [];
 
             if (history.length === 0) {
