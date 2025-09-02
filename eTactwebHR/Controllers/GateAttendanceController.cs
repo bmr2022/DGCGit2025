@@ -18,6 +18,7 @@ using System.Drawing.Drawing2D;
 using System.Runtime.Caching;
 using eTactwebHR.Models;
 using System.Xml.Linq;
+using System.Threading.Tasks;
 
 namespace eTactwebHR.Controllers
 {
@@ -76,9 +77,9 @@ namespace eTactwebHR.Controllers
                 MainModel.Mode = Mode;
                 MainModel.ID = ID;
                 MainModel.GateAttYearCode = YearCode;
-                MainModel = await BindModels(MainModel).ConfigureAwait(false);
                 MainModel.FinFromDate = HttpContext.Session.GetString("FromDate");
                 MainModel.FinToDate = HttpContext.Session.GetString("ToDate");
+                MainModel = await BindModels(MainModel).ConfigureAwait(false);
                 string serializedGrid = JsonConvert.SerializeObject(MainModel);
                 HttpContext.Session.SetString("GateAttendance", serializedGrid);
                 //var taxGrid = MainModel.TaxDetailGridd == null ? new List<TaxModel>() : MainModel.TaxDetailGridd;
@@ -133,6 +134,14 @@ namespace eTactwebHR.Controllers
             model.DeptList = await IDataLogic.GetDropDownList("FILLDepartment", "HRSPGateAttendanceMainDetail");
             model.DesignationList = await IDataLogic.GetDropDownList("FILLDocumentList", "HRSPGateAttendanceMainDetail");
             return model;
+        }
+        public async Task<IActionResult> LoadAttendanceGrid(string DayOrMonthType, DateTime Attdate)
+        {
+            // Get list from DB based on date
+            //var list = new List<GateAttendanceModel>();
+            var list = await IGateAttendance.GetManualAttendance(DayOrMonthType, Attdate).ConfigureAwait(false);
+
+            return PartialView("_GateAttendanceGrid", list);
         }
         public string GetEmpByMachineName()
         {

@@ -1,12 +1,15 @@
-﻿using System;
+﻿using eTactWeb.DOM.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading.Tasks;   
+using static eTactWeb.DOM.Models.Common;
 
 namespace eTactWeb.Services.Interface
 {
-    public class IGateAttendance
+    public interface IGateAttendance
     {
+        Task<GateAttendanceModel> GetManualAttendance(string DayOrMonthType, DateTime Attdate);
     }
 }

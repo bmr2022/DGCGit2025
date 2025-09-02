@@ -119,7 +119,9 @@
                                 <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12" style="margin-top:10px;margin-left: calc(90% - 100px);">
                                     <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
                                 </div>
-                                <partial name="_GateManualAttendance" />
+                                <div id="attendanceItemGrid">
+                                    <partial name="_GateManualAttendance" />
+                                </div>
                             </div>
                             <div class="progress my-3 mb-3" style="height: 4px;">
                                 <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
@@ -133,12 +135,6 @@
                         </div>
                     </div>
                 </div>
-                @* <div class="accordion-item">
-                    <partial name="_DrCrTable" />
-                </div>
-                <div class="accordion-item">
-                    @await Html.PartialAsync("_AdjustmentGrid", Model.adjustmentModel)
-                </div> *@
             </div>
         </div>
         <div class="card-header card-headerBG text-light bg-gradient">
@@ -509,6 +505,31 @@
                 console.log("Day:", dayName, "Year:", year);
                 $('#GateAttEntryDay').val(dayName);
             }
+        }
+
+        function ShowManualAttandance() {
+            var date = $("#strEmpAttDate").val();
+            var DayOrMonthType = $("#DayOrMonthType").val();
+            if (!DayOrMonthType) {
+                alert("Please select a Day or Month.");
+                return;
+            }
+            // if (!date) {
+            //     alert("Please select a date first.");
+            //     return;
+            // }
+
+            $.ajax({
+                url: '/GateAttendance/LoadAttendanceGrid',
+                type: 'GET',
+                data: { DayOrMonthType: DayOrMonthType, Attdate: date },
+                success: function (result) {
+                    $("#attendanceItemGrid").html(result);
+                },
+                error: function () {
+                    alert("Error loading attendance grid.");
+                }
+            });
         }
     </script>
 
