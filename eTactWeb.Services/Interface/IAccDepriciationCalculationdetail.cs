@@ -11,6 +11,9 @@ namespace eTactWeb.Services.Interface
     public interface IAccDepriciationCalculationdetail
     {
 		Task<AccDepriciationCalculationdetailModel> GetAssets(int DepriciationYearCode);
+		Task<ResponseResult> FillEntryID(string EntryDate,int YearCode);
 		Task<ResponseResult> SaveDepriciationCalculationdetail(AccDepriciationCalculationdetailModel model, DataTable GIGrid);
-	}
+        Task<ResponseResult> GetDashboardData(AccDepriciationCalculationdetailModel model);
+        Task<AccDepriciationCalculationdetailModel> GetDashboardDetailData(string FromDate, string ToDate, string ReportType);
+    }
 }

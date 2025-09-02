@@ -31,6 +31,7 @@ namespace eTactWeb.DOM.Models
 		public int AccountCode { get; set; }
 		public string AccountName { get; set; }
 		public int ItemCode { get; set; }
+		public string ItemName { get; set; }
 		public string MainGroup { get; set; }
 		public int MainGroupCode { get; set; }
 		public int ParentAccountCode { get; set; }
@@ -46,6 +47,10 @@ namespace eTactWeb.DOM.Models
 		public decimal RemainingUseFullLifeInYear { get; set; }
 		public string CarryForwarded { get; set; }
 		public int SeqNo { get; set; }
+		public string FromDate { get; set; }
+		public string ToDate { get; set; }
+		public string ReportType { get; set; }
+		public string Searchbox { get; set; }
 
 		public IList<AccDepriciationCalculationdetailModel> AccDepriciationCalculationdetailGrid { get; set; }
 	}

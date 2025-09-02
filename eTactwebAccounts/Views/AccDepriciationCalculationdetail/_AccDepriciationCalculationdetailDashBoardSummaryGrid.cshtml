@@ -1,0 +1,192 @@
+﻿@model eTactWeb.DOM.Models.AccDepriciationCalculationdetailModel
+@using Microsoft.AspNetCore.Http
+@using System.Reflection.PortableExecutable
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    var YearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("YearCode"));
+}
+
+<table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0" id="ISTDashboard">
+    <thead class="bg-gradient card-headerBG text-light">
+        <tr>
+            <th>Sr#</th>
+            <th>Action</th>
+
+            <th data-columnno="0" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon">
+                    <i class="fa" aria-hidden="true"></i>
+                </span> Entry Date
+            </th>
+
+            <th data-columnno="1" data-sortorder="asc" class="sortCol">
+                <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Slip No
+            </th>
+
+            <th data-columnno="2" data-sortorder="asc" class="sortCol">
+                <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span> CC
+            </th>
+
+            <th data-columnno="3" data-sortorder="asc" class="sortCol">
+                <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Actual Entry By
+            </th>
+
+
+            <th data-columnno="5" data-sortorder="asc" class="sortCol">
+                <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Actual Entry Date
+            </th>
+
+
+            <th data-columnno="7" data-sortorder="asc" class="sortCol">
+                <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Updated By
+            </th>
+
+            <th data-columnno="8" data-sortorder="asc" class="sortCol">
+                <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Last Updated Date
+            </th>
+
+            <th data-columnno="9" data-sortorder="asc" class="sortCol">
+                <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Machine
+            </th>
+
+            
+
+            <th data-columnno="11" data-sortorder="asc" class="sortCol">
+                <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Year Code
+            </th>
+
+            <th data-columnno="12" data-sortorder="asc" class="sortCol">
+                <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Financial Year
+            </th>
+
+         
+
+            <th data-columnno="14" data-sortorder="asc" class="sortCol">
+                <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Balance Sheet Closed
+            </th>
+
+            <th data-columnno="15" data-sortorder="asc" class="sortCol">
+                <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Carry Forwarded
+            </th>
+
+            <th data-columnno="16" data-sortorder="asc" class="sortCol">
+                <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Blocked Entry
+            </th>
+
+        </tr>
+    </thead>
+    <tbody id="DashboardGrid">
+        @{
+            var @Cntr = 0;
+            if (Model.AccDepriciationCalculationdetailGrid == null || Model.AccDepriciationCalculationdetailGrid.Count == 0)
+            {
+                <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+            }
+            else
+            {
+                foreach (var item in Model.AccDepriciationCalculationdetailGrid)
+                {
+                    Cntr = Cntr + 1;
+                    <tr onclick="selection(this)">
+                        <th>@Cntr</th>
+                        <td style="text-align:center;white-space: nowrap;">
+                            <div id="container">
+
+                                <div id="viewCursorDiv-@Cntr">
+                                    <a class="table-link link-success" asp-action="PartyItemGroupDiscount" asp-route-Mode="V" asp-route-ID="@item.DepriciationEntryId" asp-route-YC="@YearCode" onclick="BackButtonData(event,'@item.DepriciationEntryId','@item.DepriciationYearCode');"
+                                       asp-route-DepriciationDate="@(item.DepriciationDate == null ? string.Empty : item.DepriciationDate.Split(" ")[0])"
+                                       asp-route-DepriciationSlipNo="@item.DepriciationSlipNo"
+                                       asp-route-CC="@item.CC"
+                                       asp-route-ActualEntryByEmpName="@item.ActualEntryByEmpName"
+                                       asp-route-ActualEntryBy="@item.ActualEntryBy"
+                                       asp-route-ActualEntryDate="@(item.ActualEntryDate == null ? string.Empty : item.ActualEntryDate.Split(" ")[0])"
+                                       asp-route-LastUpdatedByEmpName="@item.LastUpdatedByEmpName"
+                                       asp-route-LastUpdatedDate="@(item.LastUpdatedDate == null ? string.Empty : item.LastUpdatedDate.Split(" ")[0])"
+                                       asp-route-EntryByMachine="@item.EntryByMachine"
+                                       asp-route-DepriciationYearCode="@item.DepriciationYearCode"
+                                       asp-route-ForClosingOfFinancialYear="@item.ForClosingOfFinancialYear"
+                                       asp-route-UID="@item.UID"
+                                       asp-route-BalanceSheetClosed="@item.BalanceSheetClosed"
+                                       asp-route-CarryForwarded="@item.CarryForwarded"
+                                       asp-route-BlockedEntry="@item.BlockedEntry">
+                                        <span class="fa-stack">
+                                            <i class="fa fa-square fa-stack-2x"></i>
+                                            <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </a>
+                                </div>
+                                <div id="editCursorDiv-@Cntr">
+
+                                    <a class="table-link link-primary" asp-action="PartyItemGroupDiscount" onclick="confirmEdit(event)" asp-route-Mode="U" asp-route-ID="@item.DepriciationEntryId" asp-route-YC="@YearCode"
+                                       asp-route-DepriciationDate="@(item.DepriciationDate == null ? string.Empty : item.DepriciationDate.Split(" ")[0])"
+                                       asp-route-DepriciationSlipNo="@item.DepriciationSlipNo"
+                                       asp-route-CC="@item.CC"
+                                       asp-route-ActualEntryByEmpName="@item.ActualEntryByEmpName"
+                                       asp-route-ActualEntryBy="@item.ActualEntryBy"
+                                       asp-route-ActualEntryDate="@(item.ActualEntryDate == null ? string.Empty : item.ActualEntryDate.Split(" ")[0])"
+                                       asp-route-LastUpdatedByEmpName="@item.LastUpdatedByEmpName"
+                                       asp-route-LastUpdatedDate="@(item.LastUpdatedDate == null ? string.Empty : item.LastUpdatedDate.Split(" ")[0])"
+                                       asp-route-EntryByMachine="@item.EntryByMachine"
+                                       asp-route-DepriciationYearCode="@item.DepriciationYearCode"
+                                       asp-route-ForClosingOfFinancialYear="@item.ForClosingOfFinancialYear"
+                                       asp-route-UID="@item.UID"
+                                       asp-route-BalanceSheetClosed="@item.BalanceSheetClosed"
+                                       asp-route-CarryForwarded="@item.CarryForwarded"
+                                       asp-route-BlockedEntry="@item.BlockedEntry">
+                                        <span class="fa-stack">
+                                            <i class="fa fa-square fa-stack-2x"></i>
+                                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </a>
+                                </div>
+                                <div id="deleteCursorDiv-@Cntr">
+                                    <a class="table-link link-danger" asp-action="DeleteByID" asp-route-EntryId="@item.DepriciationEntryId" asp-route-AccountCode="@item.AccountCode" asp-route-EntryDate="@item.DepriciationDate">
+                                        <span class="fa-stack">
+                                            <i class="fa fa-square fa-stack-2x"></i>
+                                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </a>
+                                </div>
+
+
+                            </div>
+                        </td>
+                        <td>@(item.DepriciationDate == null ? string.Empty : item.DepriciationDate.Split(" ")[0])</td>
+                        <td>@item.DepriciationSlipNo</td>
+                        <td>@item.CC</td>
+                        <td>@item.ActualEntryByEmpName</td>  
+                        <td>@item.ActualEntryBy</td>
+                        <td>@(item.ActualEntryDate == null ? string.Empty : item.ActualEntryDate.Split(" ")[0])</td>
+                        <td>@item.LastUpdatedByEmpName</td>    
+                        <td>@(item.LastUpdatedDate == null ? string.Empty : item.LastUpdatedDate.Split(" ")[0])</td>
+                        <td>@item.EntryByMachine</td>
+                        <td>@item.DepriciationYearCode</td>
+                        <td>@item.ForClosingOfFinancialYear</td>
+                        <td>@item.UID</td>
+                        <td>@item.BalanceSheetClosed</td>
+                        <td>@item.CarryForwarded</td>
+                        <td>@item.BlockedEntry</td>
+
+
+                    </tr>
+                }
+            }
+        }
+    </tbody>
+</table>
+<center><strong>TOTAL ROWS : <span id="totalRows"></span></strong></center>
+
+
+<style>
+    #container {
+        display: flex;
+    }
+
+        #container > div {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+    #DashboardGrid {
+        background-color: blanchedalmond;
+    }
+</style>
