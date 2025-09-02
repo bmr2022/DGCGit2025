@@ -48,9 +48,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _vendorUserDAL.DeleteByID(userEntryId,accountCode,userId,entryByMachineName,actualEntryBy,actualEntryDate);
         }
-        public async Task<ResponseResult> GetDashboardData()
+        public async Task<ResponseResult> GetDashboardData(string accountName = "", int? userId = null)
         {
-            return await _vendorUserDAL.GetDashboardData();
+            return await _vendorUserDAL.GetDashboardData(accountName, userId);
         }
     }
 }

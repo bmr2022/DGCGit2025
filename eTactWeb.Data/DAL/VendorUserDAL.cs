@@ -254,7 +254,7 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
-        internal async Task<ResponseResult> GetDashboardData()
+        internal async Task<ResponseResult> GetDashboardData(string accountName = "", int? userId = null)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -262,6 +262,8 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 //DateTime FromDate1 = DateTime.ParseExact(FromDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
                 SqlParams.Add(new SqlParameter("@Flag", "Dashboard"));
+                SqlParams.Add(new SqlParameter("@accountName", accountName));
+                SqlParams.Add(new SqlParameter("@UserId", userId));
          
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("VPSpUserMasterForVendorPortal", SqlParams);
             }
