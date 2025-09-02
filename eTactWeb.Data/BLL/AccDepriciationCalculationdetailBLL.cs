@@ -30,5 +30,17 @@ namespace eTactWeb.Data.BLL
 		{
 			return await _AccDepriciationCalculationdetailDAL.SaveDepriciationCalculationdetail(model, GIGrid);
 		}
-	}
+		public async Task<ResponseResult> FillEntryID(string EntryDate, int YearCode)
+		{
+			return await _AccDepriciationCalculationdetailDAL.FillEntryID(EntryDate,YearCode);
+		}
+        public async Task<ResponseResult> GetDashboardData(AccDepriciationCalculationdetailModel model)
+        {
+            return await _AccDepriciationCalculationdetailDAL.GetDashboardData(model);
+        }
+        public async Task<AccDepriciationCalculationdetailModel> GetDashboardDetailData(string FromDate, string ToDate, string ReportType)
+        {
+            return await _AccDepriciationCalculationdetailDAL.GetDashboardDetailData(FromDate, ToDate, ReportType);
+        }
+    }
 }

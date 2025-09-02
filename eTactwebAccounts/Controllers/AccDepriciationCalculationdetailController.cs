@@ -34,6 +34,7 @@ namespace eTactwebAccounts.Controllers
 			MainModel.DepriciationYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
 
 			MainModel.ActualEntryBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+			MainModel.ForClosingOfFinancialYear = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
 			
 			MainModel.ActualEntryByEmpName = HttpContext.Session.GetString("EmpName");
 			MainModel.CC = HttpContext.Session.GetString("Branch");
@@ -80,7 +81,8 @@ namespace eTactwebAccounts.Controllers
 
 				// Now use this list to build DataTable
 				model.ActualEntryBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
-				var GIGrid = GetDetailTable(DepriciationCalculationdetail);
+				model.ForClosingOfFinancialYear = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+				var GIGrid = GetDetailTable(DepriciationCalculationdetail,  model.DepriciationEntryId,model.DepriciationYearCode,model.ForClosingOfFinancialYear);
 				var Result = await _IAccDepriciationCalculationdetail.SaveDepriciationCalculationdetail(model, GIGrid);
 
 				if (Result != null)
@@ -119,7 +121,9 @@ namespace eTactwebAccounts.Controllers
 				return View("Error", ResponseResult);
 			}
 		}
-		private static DataTable GetDetailTable(IList<AccDepriciationCalculationdetailModel> DetailList)
+		private static DataTable GetDetailTable(IList<AccDepriciationCalculationdetailModel> DetailList, long depriciationEntryId,
+										long depriciationYearCode,
+										long forClosingOfFinancialYear)
 		{
 			try
 			{
@@ -143,15 +147,16 @@ namespace eTactwebAccounts.Controllers
 				GIGrid.Columns.Add("AfterDepriciationNetValue", typeof(decimal));
 				GIGrid.Columns.Add("RemainingUseFullLifeInYear", typeof(decimal));
 				GIGrid.Columns.Add("CarryForwarded", typeof(string));
+				long seq = 1;
 				foreach (var item in DetailList)
 				{
 					GIGrid.Rows.Add(
 						new object[]
 						{
-					item.SeqNo,
-		item.DepriciationEntryId,
-		item.DepriciationYearCode,
-		item.ForClosingOfFinancialYear,
+					seq++,
+	    depriciationEntryId,
+        depriciationYearCode,
+        forClosingOfFinancialYear,
 		item.AssetsEntryId,
 		item.AccountCode,
 		item.ItemCode,
@@ -210,5 +215,65 @@ namespace eTactwebAccounts.Controllers
 
 			return PartialView("_AccDepriciationCalculationdetailGrid", MainModel);
 		}
-	}
+		public async Task<JsonResult> FillEntryID(string EntryDate, int YearCode)
+		{
+			var JSON = await _IAccDepriciationCalculationdetail.FillEntryID(EntryDate, YearCode);
+			string JsonString = JsonConvert.SerializeObject(JSON);
+			return Json(JsonString);
+		}
+        public async Task<IActionResult> AccDepriciationCalculationdetailDashBoard(string ReportType, string FromDate, string ToDate)
+        {
+            var model = new AccDepriciationCalculationdetailModel();
+            var yearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+            DateTime now = DateTime.Now;
+            DateTime firstDayOfMonth = new DateTime(yearCode, now.Month, 1);
+            Dictionary<int, string> monthNames = new Dictionary<int, string>
+            {
+                {1, "Jan"}, {2, "Feb"}, {3, "Mar"}, {4, "Apr"}, {5, "May"}, {6, "Jun"},
+                {7, "Jul"}, {8, "Aug"}, {9, "Sep"}, {10, "Oct"}, {11, "Nov"}, {12, "Dec"}
+            };
+
+            model.FromDate = $"{firstDayOfMonth.Day}/{monthNames[firstDayOfMonth.Month]}/{firstDayOfMonth.Year}";
+            model.ToDate = $"{now.Day}/{monthNames[now.Month]}/{now.Year}";
+            //DateTime now = DateTime.Now;
+            //DateTime firstDayOfMonth = new DateTime(yearCode, now.Month, 1);
+            //model.FromDate = new DateTime(yearCode, now.Month, 1).ToString("dd/MM/yyyy").Replace("-", "/");
+            //model.ToDate = new DateTime(yearCode + 1, 3, 31).ToString("dd/MM/yyyy").Replace("-", "/");
+            model.ActualEntryBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            model.ReportType = "SUMMARY";
+            var Result = await _IAccDepriciationCalculationdetail.GetDashboardData(model);
+
+            if (Result.Result != null)
+            {
+                var _List = new List<TextValue>();
+                DataSet DS = Result.Result;
+                if (DS != null && DS.Tables.Count > 0)
+                {
+                    var dt = DS.Tables[0];
+                    model.AccDepriciationCalculationdetailGrid = CommonFunc.DataTableToList<AccDepriciationCalculationdetailModel>(dt, "DepriciationCalculationdetailDashBoard");
+                }
+
+            }
+
+            return View(model);
+        }
+        public async Task<IActionResult> GetDetailData(string FromDate, string ToDate, string ReportType)
+        {
+            //model.Mode = "Search";
+            var model = new AccDepriciationCalculationdetailModel();
+            model = await _IAccDepriciationCalculationdetail.GetDashboardDetailData(FromDate, ToDate, ReportType);
+            if (ReportType == "SUMMARY")
+            {
+                return PartialView("_AccDepriciationCalculationdetailDashBoardSummaryGrid", model);
+            }
+            if (ReportType == "DETAIL")
+            {
+                return PartialView("_AccDepriciationCalculationdetailDashBoardDetailGrid", model);
+            }
+
+
+            return null;
+
+        }
+    }
 }

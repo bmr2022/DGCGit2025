@@ -889,42 +889,45 @@
 
                 var allItems = sheetData.map(row => ({
                     SeqNo: 0,
-                    Mode: "",
-                    CntPlanEntryDate: row.CntPlanEntryDate || null,
+                    Mode: row.Mode ? row.Mode.toString() : "",
+                    CntPlanEntryDate: row.CntPlanEntryDate ? row.CntPlanEntryDate.toString() : "",
                     CntPlanEntryId: row.CntPlanEntryId || 0,
                     CntPlanYearCode: row.CntPlanYearCode || 0,
-                    Characteristic: row.Characteristic || "",
-                    EvalutionMeasurmentTechnique: row.EvalutionMeasurmentTechnique || "",
-                    SpecificationFrom: row.SpecificationFrom || "",
-                    Operator: row.Operator || "",
-                    SpecificationTo: row.SpecificationTo || "",
-                    FrequencyofTesting: row.FrequencyofTesting || "",
-                    InspectionBy: row.InspectionBy || "",
-                    ControlMethod: row.ControlMethod || "",
-                    RejectionPlan: row.RejectionPlan || "",
-                    Remarks: row.Remarks || "",
-                    ItemimagePath: row.ItemimagePath || "",
-                    DrawingNo: row.DrawingNo || "",
-                    DrawingNoImagePath: row.DrawingNoImagePath || "",
-                    ImageURL: row.ImageURL || "",
-                    Control_PlanNo: row.Control_PlanNo || "",
-                    RevNo: row.RevNo || "",
-                    ForInOutInprocess: row.ForInOutInprocess || "",
+                    Characteristic: row.Characteristic ? row.Characteristic.toString() : "",
+                    EvalutionMeasurmentTechnique: row.EvalutionMeasurmentTechnique ? row.EvalutionMeasurmentTechnique.toString() : "",
+                    SpecificationFrom: row.SpecificationFrom ? row.SpecificationFrom.toString() : "",
+                    Operator: row.Operator ? row.Operator.toString() : "",
+                    SpecificationTo: row.SpecificationTo ? row.SpecificationTo.toString() : "",
+                    FrequencyofTesting: row.FrequencyofTesting ? row.FrequencyofTesting.toString() : "",
+                    InspectionBy: row.InspectionBy ? row.InspectionBy.toString() : "",
+                    ControlMethod: row.ControlMethod ? row.ControlMethod.toString() : "",
+                    RejectionPlan: row.RejectionPlan ? row.RejectionPlan.toString() : "",
+                    Remarks: row.Remarks ? row.Remarks.toString() : "",
+                    ItemimagePath: row.ItemimagePath ? row.ItemimagePath.toString() : "",
+                    DrawingNo: row.DrawingNo ? row.DrawingNo.toString() : "",
+                    DrawingNoImagePath: row.DrawingNoImagePath ? row.DrawingNoImagePath.toString() : "",
+                    ImageURL: row.ImageURL ? row.ImageURL.toString() : "",
+                    Control_PlanNo: row.Control_PlanNo ? row.Control_PlanNo.toString() : "",
+                    RevNo: row.RevNo ? row.RevNo.toString() : "",
+                    ForInOutInprocess: row.ForInOutInprocess ? row.ForInOutInprocess.toString() : "",
                     ItemCode: row.ItemCode || 0,
-                    PartCode: row.PartCode || "",
-                    ItemName: row.ItemName || "",
+                    PartCode: row.PartCode ? row.PartCode.toString() : "",
+                    ItemName: row.ItemName ? row.ItemName.toString() : "",
                     AccountCode: row.AccountCode || 0,
                     EngApprovedBy: row.EngApprovedBy || 0,
                     ApprovedBy: row.ApprovedBy || 0,
                     UId: row.UId || 0,
-                    EntryByMachine: row.EntryByMachine || "",
+                    EntryByMachine: row.EntryByMachine ? row.EntryByMachine.toString() : "",
                     ActualEntryBy: row.ActualEntryBy || 0,
-                    ActualEntryByName: row.ActualEntryByName || "",
-                    ActualEntryDate: row.ActualEntryDate || null,
+                    ActualEntryByName: row.ActualEntryByName ? row.ActualEntryByName.toString() : "",
+                    ActualEntryDate: row.ActualEntryDate ? row.ActualEntryDate.toString() : null,
                     LastUpdatedBy: row.LastUpdatedBy || 0,
-                    LastUpdatedByName: row.LastUpdatedByName || "",
-                    LastUpdationDate: row.LastUpdationDate || null,
-                    CC: row.CC || null
+                    LastUpdatedByName: row.LastUpdatedByName ? row.LastUpdatedByName.toString() : "",
+                    LastUpdationDate: row.LastUpdationDate ? row.LastUpdationDate.toString() : null,
+                    CC: row.CC ? row.CC.toString() : null,
+                    UploadImage: null,      // handled separately if needed
+                    ItemImage: null,        // handled separately if needed
+                    ItemImageURL: row.ItemImageURL ? row.ItemImageURL.toString() : null
                 }));
 
                 console.log("Sending data to server:", JSON.stringify(allItems));
@@ -1416,7 +1419,7 @@
                     $.notify(errMsg, { position: "top center", className: "error" });
                 }
             });
-            calculateSumAndSetValues();
+            // calculateSumAndSetValues();
         }
 
         function AutoComplete(ID) {
