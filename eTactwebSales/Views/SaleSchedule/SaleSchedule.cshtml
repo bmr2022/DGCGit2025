@@ -1049,7 +1049,7 @@
                     $('input[name="SaleSchGrid"][value="Month"]').prop('checked', true);
                 }
              
-                $('input[type="radio"]').change();
+             
                 hiddenSchDate = formateDashDateToSlashDate(hiddenSchDate.split(" ")[0]);
                 hiddenSchEffTillDate = formateDashDateToSlashDate(hiddenSchEffTillDate.split(" ")[0]);
 
@@ -1058,8 +1058,8 @@
                       $("#SchEffTillDate").datepicker("setDate", (SchEffTillDate.split(" ")[0]));
                   /*   $('#ScheduleDate').datepicker("option", "minDate", new Date(SchEffFromDate));
                     $('#ScheduleDate').datepicker("option", "maxDate", new Date(SchEffTillDate)); */
-                    $('#SchEffFromDate,#SchEffTillDate').datepicker("option", "minDate", parseDateToFormat(SoDate));
-                    $('#SchEffFromDate,#SchEffTillDate').datepicker("option", "maxDate", parseDateToFormat(SOCloseDate));
+                  /*   $('#SchEffFromDate,#SchEffTillDate').datepicker("option", "minDate", parseDateToFormat(SoDate));
+                    $('#SchEffFromDate,#SchEffTillDate').datepicker("option", "maxDate", parseDateToFormat(SOCloseDate)); */
                 }
 
                 var SOCloseDate = "@Model.SOCloseDate";
@@ -1074,7 +1074,7 @@
                 $("#SODate").datepicker("setDate", parseDateToFormat(SoDate));
                 /* //$('#SchEffTillDate').datepicker("option", "minDate", new Date(SoDate));
                 //$('#SchEffTillDate').datepicker("option", "maxDate", new Date(SoCloseDate)); */
-
+                     $('input[type="radio"]').change();
             } else {
 
                 $("#SchEffFromDate").datepicker("setDate", ($('#SchEffFromDate').val()));
@@ -1712,32 +1712,33 @@
                 const selectedValue = $(this).val();
                 $('#ManualMonthSplit').val(selectedValue)
                 if (selectedValue == "Manual") {
-                    $('#Manual').val("")
-                    $('.ManualEntryImportbody').fadeIn();
-                    $('.SplitScheduleBody').fadeOut();
-                    $('.MonthlyEntrybody').fadeOut();
-                    $('.ManualEntryGrid').fadeIn();
-                    $('.clearGrid').fadeIn();
-                    GetSOItem(parseInt($('#AccountCode').val()), $('#SONO').val(), $('#SOYearCode').val());
-                    var SchDate = $.datepicker.parseDate('dd/mm/yy', $('#SchEffFromDate').val());
-                    /* var OneMonthDate = new Date(SchDate.setMonth(SchDate.getMonth() + 1));
-                    $('#SchEffTillDate').val($('#SchEffFromDate').val()).datepicker("option", "minDate", parseDateToFormat(OneMonthDate)); */
-                    var OneMonthDate = new Date(SchDate.setMonth(SchDate.getMonth() + 1));
-                    /* $('#SchEffTillDate').val($('#SchEffFromDate').val()).datepicker("option", "minDate", OneMonthDate);
- */
-                   $('#SchEffTillDate').datepicker("setDate", (OneMonthDate));
-                    /* $('#SchEffTillDate').datepicker("option", "maxDate", parseDateToFormat($('#SOCloseDate').val())); */ 
+                  
+
+                            $('#Manual').val("")
+                           $('.ManualEntryImportbody').fadeIn();
+                           $('.SplitScheduleBody').fadeOut();
+                           $('.MonthlyEntrybody').fadeOut();
+                           $('.ManualEntryGrid').fadeIn();
+                           $('.clearGrid').fadeIn();
+                           
+                           var SchDate = $.datepicker.parseDate('dd/mm/yy', $('#SchEffFromDate').val());
+                           var OneMonthDate = new Date(SchDate.setMonth(SchDate.getMonth() + 1));
+                           /* $('#SchEffTillDate').val($('#SchEffFromDate').val()).datepicker("option", "minDate", parseDateToFormat(OneMonthDate)); */
+                             $('#SchEffTillDate').datepicker("setDate", parseDateToFormat(OneMonthDate));
+                           /* $('#SchEffTillDate').datepicker("option", "maxDate", parseDateToFormat($('#SOCloseDate').val())); */
+                             GetSOItem(parseInt($('#AccountCode').val()), $('#SONO').val(), $('#SOYearCode').val());
                 }
                 else if (selectedValue == "Split") {
-                    $('.SplitScheduleBody').fadeIn();
-                    $('.ManualEntryImportbody').fadeOut();
-                    $('.MonthlyEntrybody').fadeOut();
-                    $('.ManualEntryGrid').fadeOut();
-                    $('.clearGrid,.ItemBtn,.BtnExcel').fadeOut();
-                    $('#SchEffTillDate').datepicker("option", "minDate", parseDateToFormat($('#SchEffFromDate').val()));
-                    $('#SchEffTillDate').datepicker("option", "maxDate", new Date(SchYear, SchEffDate - 1, LastDay));
-                    BuildSplitScheduleBody();
-                    GetSOItem(parseInt($('#AccountCode').val()), $('#SONO').val(), $('#SOYearCode').val());
+                     $('.SplitScheduleBody').fadeIn();
+                      $('.ManualEntryImportbody').fadeOut();
+                      $('.MonthlyEntrybody').fadeOut();
+                      $('.ManualEntryGrid').fadeOut();
+                      $('.clearGrid,.ItemBtn,.BtnExcel').fadeOut();
+                   /*    $('#SchEffTillDate').datepicker("option", "minDate", parseDateToFormat($('#SchEffFromDate').val()));
+                      $('#SchEffTillDate').datepicker("option", "maxDate", new Date(SchYear, SchEffDate - 1, LastDay)); */
+                      BuildSplitScheduleBody();
+                      GetSOItem(parseInt($('#AccountCode').val()), $('#SONO').val(), $('#SOYearCode').val());
+                 
                 }
                 else {
 
