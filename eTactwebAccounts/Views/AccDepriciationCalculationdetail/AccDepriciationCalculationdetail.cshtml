@@ -93,7 +93,7 @@
 										<label asp-for="DepriciationDate" class="form-label">Depriciation Date</label>
 										<input asp-for="DepriciationDate" class="form-control" />
 									</div>
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px;">
 										<label asp-for="DepriciationSlipNo" class="form-label">Slip No</label>
 										<input asp-for="DepriciationSlipNo" class="form-control" />
 									</div>
@@ -457,60 +457,29 @@
 				$prevRow.find("td").eq(colIndex).find("input").focus();
 			}
 		});
+		function FillEntryID() {
 
-		function EditItemRows(SeqNo) {
-			debugger
-			var RowCount = $('#divDepriciationCalculationdetailGrid tr').length;
-			if (EditEachItem) {
-				$.notify('Cannot Edit item while AddtoGrid  Existing Item!!!', "error");
-				$('#editButton-' + RowCount).prop("disabled", true);
-			}
-			else {
-				$.ajax({
-					url: '/AccDepriciationCalculationdetail/EditItemRows',
-					type: "POST",
-					data: { SeqNo: SeqNo, Mode: "U" },
-					success: function (data) {
-
-						var obj = $.parseJSON(data);
-						if (obj != null) {
-							EditEachItem = true;
-							$('#AssetsName').val(data.AssetsName).trigger("change");
-							$('#AccountName').val(data.AccountName).trigger("change");
-							$('#MainGroup').val(data.MainGroup).trigger("change");
-							$('#ParentAccountName').val(data.ParentAccountName).trigger("change");
-							$('#SubGroup').val(data.SubGroup).trigger("change");
-							$('#UnderGroup').val(data.UnderGroup).trigger("change");
-							$('#SubSubGroup').val(data.SubSubGroup).trigger("change");
-							$('#OriginalNetBookValue').val(data.OriginalNetBookValue);
-							$('#PreviousYearValue').val(data.PreviousYearValue);
-							$('#DepreciationMethod').val(data.DepreciationMethod);
-							$('#DepreciationRate').val(data.DepreciationRate);
-							$('#AfterDepriciationNetValue').val(data.AfterDepriciationNetValue);
-							$('#RemainingUseFullLifeInYear').val(data.RemainingUseFullLifeInYear);
-
-							$('#SeqNo').val(data.SeqNo);
-							$('#Mode').val("U");
-
-
-
-							var rowCount = $('#divDepriciationCalculationdetailGrid tr').length;
-							for (var i = 1; i <= rowCount + 1; i++) {
-								$('#editItemGrid-' + i).css("pointer-events", "none");
-								$('#editItemGrid-' + i).css("cursor", "not-allowed");
-							}
-
-							DeleteItemRow(SeqNo);
-						}
-					},
-					error: function (response) {
-						$.notify(response.responseText, "error");
-					},
-					failure: function (response) {
-						$.notify(response.responseText, "error");
+			var EntryDate = $('#DepriciationDate').val();
+			var YearCode = $('#DepriciationYearCode').val();
+			$.ajax({
+				url: '@Url.Action("FillEntryID", "AccDepriciationCalculationdetail")',
+				type: 'POST',
+				data: {
+					EntryDate: EntryDate,
+					YearCode: YearCode
+				},
+				async: false,
+				success: function (data, status, xhr) {
+					var obj = $.parseJSON(data);
+					if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
+						$('#DepriciationEntryId').val(obj.Result[0].EntryID || 0);
+						$('#DepriciationSlipNo').val(obj.Result[0].DepriciationSlipNo || 0);
 					}
-				});
-			}
+				},
+				error: function (xhr, status, error) {
+					console.log('Failed to load Entry Id.');
+				}
+			});
 		}
 		async function DeleteItemRow(SeqNo) {
 			debugger
@@ -691,41 +660,6 @@
 			});
 		}
 
-		// $(document).on('select2:select', '#GroupName,#GroupCode', function (e) {
-
-		// 	var cntId = e.target.id;
-		// 	if (cntId == 'GroupName') {
-		// 		ItemNameChange(cntId);
-		// 	}
-		// 	else {
-		// 		PartCodeChange(cntId);
-		// 	}
-		// });
-
-		// function ItemNameChange(ID) {
-		// 	SetPartCodeItemName(ID);
-		// }
-
-		// function PartCodeChange(ID) {
-
-		// 	$.when(SetPartCodeItemName(ID)).done(function () {
-		// 	});
-		// }
-
-		// function SetPartCodeItemName(ID) {
-		// 	if (!ID) return;
-		// 	else {
-
-		// 		var v = $('#' + ID).select2('val');
-		// 		if (ID == "GroupCode") {
-		// 			$("#GroupName").val(v).trigger("change");
-		// 		}
-
-		// 		if (ID == "GroupName") {
-		// 			$("#GroupCode").val(v).trigger("change");
-		// 		}
-		// 	}
-		// }
 		function FillCategoryName() {
 			$.ajax({
 				url: '@Url.Action("FillCategoryName", "PartyItemGroupDiscount")', // Action that returns FillGroup data
@@ -1270,27 +1204,7 @@
 		}
 
 
-		function FillEntryID() {
-
-			var EntryDate = $('#EntryDate').val();
-			$.ajax({
-				url: '@Url.Action("FillEntryID", "PartyItemGroupDiscount")',
-				type: 'POST',
-				data: {
-					EntryDate: EntryDate
-				},
-				async: false,
-				success: function (data, status, xhr) {
-					var obj = $.parseJSON(data);
-					if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
-						$('#EntryId').val(obj.Result[0].EntryId || 0);
-					}
-				},
-				error: function (xhr, status, error) {
-					console.log('Failed to load Entry Id.');
-				}
-			});
-		}
+		
 
 		function FillTotalStock() {
 

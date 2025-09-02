@@ -1,0 +1,138 @@
+﻿@model eTactWeb.DOM.Models.HSNMasterModel;
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+
+<div class="card bg-gradient mb-3 border-light shadow-lg">
+    <form asp-action="HSNMaster" asp-controller="HSNMaster" method="post" autocomplete="on" class="form-horizontal">
+        <div class="card-header card-headerBG text-light bg-gradient">
+            <h5>
+                <strong>Discount Customer Category</strong>
+                <span class="d-flex float-end" style="margin-top:-2px;">
+                    <a asp-controller="HSNMaster" asp-action="HSNMasterDashboard" class="btn btn-sm btn-outline-light bg-gradient">
+                        <i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
+                        Dashboard
+                    </a>
+                    <div class="row justify-content-between g-2">
+                        <div class="col-auto">
+                            <a href="#" class="btn btn-primary btn-sm" onclick="PressBack();">
+                                <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                                BACK
+                            </a>
+                        </div>
+                        @if (Model.Mode != "V")
+                        {
+                            <div class="col-auto">
+                                <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                    <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                    REFRESH
+                                </a>
+                            </div>
+
+                            @if (Model.Mode == "U")
+                            {
+                                <div class="col-auto">
+                                    <button type="submit" class="btn btn-sm btn-outline-light bg-gradient submitBTN">
+                                        <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                        UPDATE
+                                    </button>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="col-auto">
+                                    <button type="submit" class="btn btn-primary btn-sm submitBTN">
+                                        <i class="fa-solid fa-chevron-circle-right"></i>
+                                        SUBMIT
+                                    </button>
+                                </div>
+                            }
+                        }
+                    </div>
+                </span>
+            </h5>
+        </div>
+
+        <div class="card-body bg-light">
+            <div class="accordion shadow-lg" id="accordionCategory">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingCategory">
+                        <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCategory"
+                                aria-expanded="true" aria-controls="collapseCategory">
+                            <strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Discount Customer Category</strong>
+                        </button>
+                    </h2>
+                    <div id="collapseCategory" class="accordion-collapse collapse show pnl1 bg-gradient" aria-labelledby="headingCategory">
+                        <div class="accordion-body">
+                            <div class="row g-2">
+
+                                <input type="hidden" value="@Model.Mode" asp-for="Mode" />
+
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
+                                    <label asp-for="HSNEntryID" class="form-label">HSN Enytry Id</label>
+                                    <input asp-for="HSNEntryID" class="form-control"  />
+                                </div>
+
+                                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+                                    <label asp-for="HSNNo" class="form-label" style="color:red;"> HSNNo*</label>
+                                    <input asp-for="HSNNo" class="form-control" required />
+                                </div>
+
+                                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+                                    <label asp-for="HSNTypeItemServ" class="form-label" style="color:red;"> HSNTypeItemServ*</label>
+                                    <input asp-for="HSNTypeItemServ" class="form-control" required />
+                                </div>
+                                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+                                    <label asp-for="ActualEntryByName" class="form-label" style="color:red;"> ActualEntryBy*</label>
+                                    <input type="hidden" asp-for="ActualEntryBy"/>
+                                    <input asp-for="ActualEntryByName" class="form-control" readonly required />
+                                </div>
+
+                                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+                                    <label asp-for="EntryByMachineName" class="form-label" style="color:red;"> EntryByMachineName*</label>
+                                    <input asp-for="EntryByMachineName" class="form-control" value="@Environment.MachineName" readonly required />
+                                </div>
+
+
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="progress my-3 mb-3" style="height: 4px;">
+                <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var message = '@TempData["Message"]';
+            var error = '@TempData["Error"]';
+
+            if (message) {
+                alert(message);
+            }
+
+            if (error) {
+                alert(error);
+            }
+        });
+        // Go back to the previous page
+        function PressBack() {
+            window.history.back();
+        }
+
+        // Reload current page (refresh form)
+        function RefreshPage() {
+            location.reload(); // reloads the same page
+        }
+    </script>
+}

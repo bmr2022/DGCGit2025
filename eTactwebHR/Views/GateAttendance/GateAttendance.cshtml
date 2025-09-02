@@ -241,12 +241,6 @@
         $(document).ready(function () {
             GetFormRights();
             //LockedFinancialYear(); //use to disable submit when not in fianancial year
-
-            //for date
-            var finFromDate = $('#FinFromDate').val();
-            var finToDate = $('#FinToDate').val();
-
-            var dateParts1 = finFromDate.split("/");
             var monthNames = {
                 "Jan": "01",
                 "Feb": "02",
@@ -261,27 +255,47 @@
                 "Nov": "11",
                 "Dec": "12"
             };
-            var formattedDate1 = dateParts1[0] + "/" + monthNames[dateParts1[1]] + "/" + dateParts1[2];
-            var dateParts2 = finToDate.split("/");
+            var finFromDate = $('#FinFromDate').val();
+            var finToDate = $('#FinToDate').val();
+            var findateParts1 = finFromDate.split("/");
+            var finformattedDate1 = findateParts1[0] + "/" + monthNames[findateParts1[1]] + "/" + findateParts1[2];
+            var findateParts2 = finToDate.split("/");
+            var finformattedDate2 = findateParts2[0] + "/" + monthNames[findateParts2[1]] + "/" + findateParts2[2];
+            
+            var NFromDate = $('#NFromDate').val();
+            var NToDate = $('#NToDate').val();
+            var NdateParts1 = NFromDate.split("/");
+            var NformattedDate1 = NdateParts1[0] + "/" + monthNames[NdateParts1[1]] + "/" + NdateParts1[2];
+            var NdateParts2 = NToDate.split("/");
+            var NformattedDate2 = NdateParts2[0] + "/" + monthNames[NdateParts2[1]] + "/" + NdateParts2[2];
+            
+            var minDate = parseCustomDate($("#NFromDate").val()); 
+            var maxDate = parseCustomDate($("#NToDate").val());   
+            var today = new Date(); today.setHours(0,0,0,0);
+            var defaultDate = (today < minDate) ? minDate : (today > maxDate ? maxDate : today);
 
-            var formattedDate2 = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
                 var strEmpAttDate = $('#strEmpAttDate').val().split("-").join("/");
                 strEmpAttDate = parseDateToFormat(strEmpAttDate.split(" ")[0]);
-                $('#strEmpAttDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", strEmpAttDate);
+                $('#strEmpAttDate').val('').datepicker("destroy").datepicker({ dateFormat: 'dd/M/yy' }).datepicker("setDate", strEmpAttDate);
             }
             else {
-                $('#strEmpAttDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", 'now');
-                var today = new (Date);
-                $("#strEmpAttDate").datepicker({
-                    dateFormat: 'dd/mm/yy',
-                    minDate: today,
-                });
-                $('#strEmpAttDate').datepicker("option", "maxDate", (formattedDate2 > today) ? today : formattedDate2);
+                $('#strEmpAttDate').val('').datepicker("destroy").datepicker({dateFormat: 'dd/M/yy', minDate: minDate, maxDate: maxDate}).datepicker("setDate", defaultDate);
             }
             DayorMonthChange();
+            EmpAttDateOnChange();
             $('#EmployeeCode').select2();
         });
+
+          function parseCustomDate(str) {
+            var parts = str.split("/");
+            var day = parseInt(parts[0], 10);
+            var monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+            var month = monthNames.indexOf(parts[1]); // 0-based
+            var year = parseInt(parts[2], 10);
+            return new Date(year, month, day);
+        }
+
         $(document).on('keyup', '.form-control', function (e) {
             var keyCode = e.keyCode || e.which;
             if (keyCode == 9) {
@@ -464,38 +478,36 @@
 
     <script type="text/javascript">
         function DayorMonthChange(e) {
-           var obj = $('#DayOrMonthType :selected').val();
-           //obj = (obj != null && obj != undefined && obj != "") ? obj : $('#DayOrMonthType :selected').text();
-           if (obj != null && obj.toLowerCase() == "daily") {
-               $('.dvEmpAttDate').show();
-               $('.dvEmpAttMonth').hide();
-               $('#strEmpAttMonth').select(0);
-           }
-           else if (obj != null && obj.toLowerCase() == "monthly"){
-               $('.dvEmpAttMonth').show();
-               $('.dvEmpAttDate').hide();
-               $('#strEmpAttDate').select(0);
-           }
-           else {
-               $('.dvEmpAttDate').show();
-               $('.dvEmpAttMonth').hide();
-               $('#strEmpAttMonth').select(0);
-           }
+            var obj = $('#DayOrMonthType :selected').val();
+            if (obj && obj.toLowerCase() === "daily") {
+                $('.dvEmpAttDate').show();
+                $('.dvEmpAttDay').show();
+                $('.dvEmpAttMonth').hide();
+                $('#strEmpAttMonth').prop("selectedIndex", 0);
+            }
+            else if (obj && obj.toLowerCase() === "monthly") {
+                $('.dvEmpAttMonth').show();
+                $('.dvEmpAttDate').hide();
+                $('.dvEmpAttDay').hide();
+                $('#strEmpAttDate').val("");
+            }
+            else {
+                $('.dvEmpAttDate').show();
+                $('.dvEmpAttDay').show();
+                $('.dvEmpAttMonth').hide();
+                $('#strEmpAttMonth').prop("selectedIndex", 0);
+            }
         }
 
         function EmpAttDateOnChange() {
             let dateStr = document.getElementById("strEmpAttDate").value;
             if (dateStr) {
                 let date = new Date(dateStr);
-                // Day name
-                let options = { weekday: 'long' }; // e.g. Monday
+                let options = { weekday: 'long' }; 
                 let dayName = date.toLocaleDateString('en-US', options);
-                // Year
                 let year = date.getFullYear();
                 console.log("Day:", dayName, "Year:", year);
-                // Example: show in labels
-                document.getElementById("dayName").innerText = dayName;
-                document.getElementById("yearVal").innerText = year;
+                $('#GateAttEntryDay').val(dayName);
             }
         }
     </script>

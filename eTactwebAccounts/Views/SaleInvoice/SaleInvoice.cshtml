@@ -1280,8 +1280,10 @@
 
             //var reportType = $('#ReportType').val();
             var Group_Code = $('#Group_Code1').val();
+            var GroupName = $('#Group_Code1 option:selected').text().trim();
             var AccountCode = $('#AccountCode').val();
             var storeid = $('#MultiStoreName').val();
+            var ToDate = $('#SaleBillDate').val();
 
             $.ajax({
                 type: 'POST',
@@ -1289,7 +1291,9 @@
                 data: {
                     Group_Code: Group_Code,
                     AccountCode: AccountCode,
-                    storeid: storeid
+                    storeid: storeid,
+                    GroupName:GroupName,
+                    ToDate: ToDate,
 
                 },
                 success: function (response) {
@@ -1300,10 +1304,10 @@
                     var totalRows = $('#MultiItemBody tr').length;
                     $('#lblTotalNoOfItems1').text(totalRows);
 
-                    for (let i = 1; i <= totalRows; i++) {
-                        FillTotalStockForGroupWiseItem(i);
-                        FillLotStockForGroupWiseItem(i);
-                    }
+                    // for (let i = 1; i <= totalRows; i++) {
+                    //     FillTotalStockForGroupWiseItem(i);
+                    //     FillLotStockForGroupWiseItem(i);
+                    // }
                 },
                 error: function (xhr, status, error) {
                     console.error("Error fetching BOM tree data:", error);
@@ -2848,7 +2852,7 @@
                             $.notify('Please enter quantity for ' + $('#PartCode-' + i).val(), 'error');
                             return;
                         }
-                        if ($('#Qty-' + i).val() > $('#LotStock-' + i).val()) {
+                        if (parseFloat($('#Qty-' + i).val()) > parseFloat($('#LotStock-' + i).val())) {
                             $.notify('Please enter Valid quantity for ' + $('#PartCode-' + i).val(), 'error');
                             return;
                         }

@@ -40,6 +40,7 @@ public class GateAttendanceModel : TimeStamp
     };
     public int GateAttEntryId { get; set; }
     public string GateAttEntryDate { get; set; }
+    public string GateAttEntryDay { get; set; }
     public int GateAttYearCode { get; set; }
     public string CardOrBiometricId { get; set; }
     public string EmpId { get; set; }
@@ -115,6 +116,8 @@ public class GateAttendanceModel : TimeStamp
     public string TypeOfSave { get; set; }
     public string FinFromDate { get; set; }
     public string FinToDate { get; set; }
+    public string NFromDate { get; set; }
+    public string NToDate { get; set; }
     public string CreatedByName { get; set; }
     public string UpdatedByName { get; set; }
     public string Branch { get; set; }
