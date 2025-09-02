@@ -77,12 +77,18 @@
 
                                 <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
                                     <label asp-for="HSNNo" class="form-label" style="color:red;"> HSNNo*</label>
-                                    <input asp-for="HSNNo" class="form-control" required />
+                                    <input asp-for="HSNNo" class="form-control only-digits"  maxlength="8" title="Enter exactly 8 digits" required />
+                                    <span asp-validation-for="HSNNo" class="text-danger"></span>
                                 </div>
 
                                 <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
                                     <label asp-for="HSNTypeItemServ" class="form-label" style="color:red;"> HSNTypeItemServ*</label>
-                                    <input asp-for="HSNTypeItemServ" class="form-control" required />
+                                    <select asp-for="HSNTypeItemServ" class="form-control" required>
+                                        <option value="">-- Select --</option>
+                                        <option value="Item">Item</option>
+                                        <option value="Service">Service</option>
+                                    </select>
+                                    <span asp-validation-for="HSNTypeItemServ" class="text-danger"></span>
                                 </div>
                                 <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
                                     <label asp-for="ActualEntryByName" class="form-label" style="color:red;"> ActualEntryBy*</label>
@@ -134,5 +140,24 @@
         function RefreshPage() {
             location.reload(); // reloads the same page
         }
+        $(document).ready(function () {
+            $(".only-digits").on("input", function () {
+                // allow only digits
+                this.value = this.value.replace(/[^0-9]/g, '');
+                // enforce max length 8
+                if (this.value.length > 8) {
+                    this.value = this.value.slice(0, 8);
+                }
+            });
+
+            // prevent pasting alphabets
+            $(".only-digits").on("paste", function (e) {
+                let pasteData = e.originalEvent.clipboardData.getData('text');
+                if (/[^0-9]/.test(pasteData)) {
+                    e.preventDefault(); // stop paste if not numbers
+                }
+            });
+        });
+    </script>
     </script>
 }
