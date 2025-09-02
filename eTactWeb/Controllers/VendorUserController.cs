@@ -223,6 +223,27 @@ namespace eTactWeb.Controllers
 
         }
 
+        public async Task<IActionResult> GetSearchData(string accountName, int userId)
+        {
+            var model = new VendorUserDashboard();
+            var Result = await _IVendorMater.GetDashboardData(accountName,userId).ConfigureAwait(true);
+            if (Result != null)
+            {
+                var _List = new List<TextValue>();
+                DataSet DS = Result.Result;
+                if (DS != null)
+                {
+                    var DT = DS.Tables[0].DefaultView.ToTable(true, "UserEntryId", "AccountCode", "AccountName", "UserId", "Password", "Active", "AllowTodelete", "AllowtoUpdate"
+                            , "rightsForReport", "RightsForPurchaseModule", "RightsForQCmodule", "RightsforAccountModule"
+                             , "AdminUser", "ourServerName", "databaseName", "BranchName", "ActualEntryBy", "ActualEntryDate", "SaleBillPrefix", "VendorEmpName"
+                             , "LastUpdationdate", "EntryByMachineName", "ActualEntryBYName", "UpdatedByName", "LastUpdatedBy");
+
+                    model.VendorUserDashboards = CommonFunc.DataTableToList<VendorUserDashboard>(DT, "VendorUserDashboard");
+                }
+            }
+            return PartialView("_VendorUserDashboardGrid", model);
+        }
+
         public async Task<IActionResult> DeleteByID(int userEntryId, int accountCode,int userId, string entryByMachineName, int actualEntryBy, string actualEntryDate)
         {
             var Result = await _IVendorMater.DeleteByID(userEntryId,accountCode,userId,entryByMachineName,actualEntryBy,actualEntryDate).ConfigureAwait(false);
