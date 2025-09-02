@@ -1663,7 +1663,7 @@
                         var obj = $.parseJSON(result);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                             $('#Group_Code').empty();
-                            $('#Group_Code').append('<option value="0"  selected>-Select-</option>');
+                            $('#Group_Code').append('<option value=""  selected>-Select-</option>');
 
 
                             $.each(obj.Result, function (index, val) {
