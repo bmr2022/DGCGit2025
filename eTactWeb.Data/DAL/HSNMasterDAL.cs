@@ -124,31 +124,20 @@ namespace eTactWeb.Data.DAL
         public async Task<int> GetNewEntryId()
         {
             int newId = 0;
-            try
-            {
-                var sqlParams = new List<SqlParameter>
-        {
-            new SqlParameter("@Flag", "NewEntryId"),
-            new SqlParameter
-            {
-                ParameterName = "@HSNEntryID",
-                SqlDbType = SqlDbType.BigInt,
-                Direction = ParameterDirection.Output
-            }
-        };
 
-                // Execute SP
-                await _IDataLogic.ExecuteDataTable("[SPHSNMaster]", sqlParams.Cast<dynamic>().ToList());
+            var sqlParams = new List<dynamic>
+    {
+        new SqlParameter("@flag", "NewEntryId"),
+        new SqlParameter("@HSNEntryID", 0) // dummy, will be overwritten in SP
+    };
 
-                // Read OUTPUT parameter manually
-                var outputParam = sqlParams.First(p => p.ParameterName == "@HSNEntryID");
-                if (outputParam.Value != DBNull.Value)
-                    newId = Convert.ToInt32(outputParam.Value);
-            }
-            catch (Exception ex)
+            var response = await _IDataLogic.ExecuteDataTable("[SPHSNMaster]", sqlParams);
+
+            if (response.Result is DataTable dt && dt.Rows.Count > 0)
             {
-                Console.WriteLine($"[GetNewEntryId] Error: {ex.Message}");
-                newId = 0;
+                var value = dt.Rows[0]["Result"];
+                if (value != DBNull.Value)
+                    newId = Convert.ToInt32(value);
             }
 
             return newId;
