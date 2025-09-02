@@ -16,6 +16,6 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> SaveVendorUser(VendorUserModel model);
         Task<VendorUserModel> GetViewByID(int ID,string mode);
         Task<ResponseResult> DeleteByID(int userEntryId, int accountCode,int userId, string entryByMachineName, int actualEntryBy, string actualEntryDate);
-        Task<ResponseResult> GetDashboardData();
+        Task<ResponseResult> GetDashboardData(string accountName = "", int? userId = null);
     }
 }
