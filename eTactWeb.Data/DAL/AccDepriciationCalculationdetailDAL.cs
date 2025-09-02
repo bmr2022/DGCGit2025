@@ -235,42 +235,42 @@ namespace eTactWeb.Data.DAL
                         model.AccDepriciationCalculationdetailGrid = (from DataRow dr in oDataSet.Tables[0].Rows
                                                             select new AccDepriciationCalculationdetailModel
                                                             {
-                                                                DepriciationSlipNo = dr["DepriciationSlipNo"] != DBNull.Value ? Convert.ToString(dr["DepriciationSlipNo"]) : string.Empty,
-                                                                DepriciationDate = dr["DepriciationDate"] != DBNull.Value ? Convert.ToString(dr["DepriciationDate"]) : string.Empty,
-                                                                AssetsName = dr["AssetsName"] != DBNull.Value ? Convert.ToString(dr["AssetsName"]) : string.Empty,
-                                                                AccountName = dr["Account_Name"] != DBNull.Value ? Convert.ToString(dr["Account_Name"]) : string.Empty,
-                                                                ItemName = dr["itemName"] != DBNull.Value ? Convert.ToString(dr["itemName"]) : string.Empty,
+                                                                //DepriciationSlipNo = dr["DepriciationSlipNo"] != DBNull.Value ? Convert.ToString(dr["DepriciationSlipNo"]) : string.Empty,
+                                                                //DepriciationDate = dr["DepriciationDate"] != DBNull.Value ? Convert.ToString(dr["DepriciationDate"]) : string.Empty,
+                                                                //AssetsName = dr["AssetsName"] != DBNull.Value ? Convert.ToString(dr["AssetsName"]) : string.Empty,
+                                                                //AccountName = dr["Account_Name"] != DBNull.Value ? Convert.ToString(dr["Account_Name"]) : string.Empty,
+                                                                //ItemName = dr["itemName"] != DBNull.Value ? Convert.ToString(dr["itemName"]) : string.Empty,
 
-                                                                MainGroup = dr["MainGroup"] != DBNull.Value ? Convert.ToString(dr["MainGroup"]) : string.Empty,
-                                                                ParentAccountCode = dr["ParentGroupName"] != DBNull.Value ? Convert.ToInt32(dr["ParentGroupName"]) :0,
-                                                                SubGroup = dr["SubGroup"] != DBNull.Value ? Convert.ToString(dr["SubGroup"]) : string.Empty,
-                                                                SubSubGroup = dr["SubSubGroup"] != DBNull.Value ? Convert.ToString(dr["SubSubGroup"]) : string.Empty,
-                                                                UnderGroup = dr["UnderGroup"] != DBNull.Value ? Convert.ToString(dr["UnderGroup"]) : string.Empty,
+                                                                //MainGroup = dr["MainGroup"] != DBNull.Value ? Convert.ToString(dr["MainGroup"]) : string.Empty,
+                                                                //ParentAccountCode = dr["ParentGroupName"] != DBNull.Value ? Convert.ToInt32(dr["ParentGroupName"]) :0,
+                                                                //SubGroup = dr["SubGroup"] != DBNull.Value ? Convert.ToString(dr["SubGroup"]) : string.Empty,
+                                                                //SubSubGroup = dr["SubSubGroup"] != DBNull.Value ? Convert.ToString(dr["SubSubGroup"]) : string.Empty,
+                                                                //UnderGroup = dr["UnderGroup"] != DBNull.Value ? Convert.ToString(dr["UnderGroup"]) : string.Empty,
 
-                                                                OriginalNetBookValue = dr["originalNetBookValue"] != DBNull.Value ? Convert.ToDecimal(dr["originalNetBookValue"]) : 0,
-                                                                PreviousYearValue = dr["PreviousYearValue"] != DBNull.Value ? Convert.ToDecimal(dr["PreviousYearValue"]) : 0,
-                                                                DepreciationMethod = dr["DepreciationMethod"] != DBNull.Value ? Convert.ToString(dr["DepreciationMethod"]) : string.Empty,
-                                                                DepreciationRate = dr["DepreciationRate"] != DBNull.Value ? Convert.ToDecimal(dr["DepreciationRate"]) : 0,
-                                                                AfterDepriciationNetValue = dr["AfterDepriciationNetValue"] != DBNull.Value ? Convert.ToDecimal(dr["AfterDepriciationNetValue"]) : 0,
-                                                                RemainingUseFullLifeInYear = dr["RemainingUseFullLifeInYear"] != DBNull.Value ? Convert.ToInt32(dr["RemainingUseFullLifeInYear"]) : 0,
+                                                                //OriginalNetBookValue = dr["originalNetBookValue"] != DBNull.Value ? Convert.ToDecimal(dr["originalNetBookValue"]) : 0,
+                                                                //PreviousYearValue = dr["PreviousYearValue"] != DBNull.Value ? Convert.ToDecimal(dr["PreviousYearValue"]) : 0,
+                                                                //DepreciationMethod = dr["DepreciationMethod"] != DBNull.Value ? Convert.ToString(dr["DepreciationMethod"]) : string.Empty,
+                                                                //DepreciationRate = dr["DepreciationRate"] != DBNull.Value ? Convert.ToDecimal(dr["DepreciationRate"]) : 0,
+                                                                //AfterDepriciationNetValue = dr["AfterDepriciationNetValue"] != DBNull.Value ? Convert.ToDecimal(dr["AfterDepriciationNetValue"]) : 0,
+                                                                //RemainingUseFullLifeInYear = dr["RemainingUseFullLifeInYear"] != DBNull.Value ? Convert.ToInt32(dr["RemainingUseFullLifeInYear"]) : 0,
                                                                
 
-                                                                CC = dr["CC"] != DBNull.Value ? Convert.ToString(dr["CC"]) : string.Empty,
-                                                                ActualEntryByEmpName = dr["ActualEntryByName"] != DBNull.Value ? Convert.ToString(dr["ActualEntryByName"]) : string.Empty,
-                                                                ActualEntryBy = dr["ActualEntryBy"] != DBNull.Value ? Convert.ToInt32(dr["ActualEntryBy"]) : 0,
-                                                                ActualEntryDate = dr["ActualEntryDate"] != DBNull.Value ? Convert.ToString(dr["ActualEntryDate"]) : string.Empty,
-                                                                LastupdatedBy = dr["LastupdatedBy"] != DBNull.Value ? Convert.ToInt32(dr["LastupdatedBy"]) : 0,
-                                                                LastUpdatedByEmpName = dr["UpdatedByName"] != DBNull.Value ? Convert.ToString(dr["UpdatedByName"]) : string.Empty,
-                                                                LastUpdatedDate = dr["LastUpdatedDate"] != DBNull.Value ? Convert.ToString(dr["LastUpdatedDate"]) : string.Empty,
+                                                                //CC = dr["CC"] != DBNull.Value ? Convert.ToString(dr["CC"]) : string.Empty,
+                                                                //ActualEntryByEmpName = dr["ActualEntryByName"] != DBNull.Value ? Convert.ToString(dr["ActualEntryByName"]) : string.Empty,
+                                                                //ActualEntryBy = dr["ActualEntryBy"] != DBNull.Value ? Convert.ToInt32(dr["ActualEntryBy"]) : 0,
+                                                                //ActualEntryDate = dr["ActualEntryDate"] != DBNull.Value ? Convert.ToString(dr["ActualEntryDate"]) : string.Empty,
+                                                                //LastupdatedBy = dr["LastupdatedBy"] != DBNull.Value ? Convert.ToInt32(dr["LastupdatedBy"]) : 0,
+                                                                //LastUpdatedByEmpName = dr["UpdatedByName"] != DBNull.Value ? Convert.ToString(dr["UpdatedByName"]) : string.Empty,
+                                                                //LastUpdatedDate = dr["LastUpdatedDate"] != DBNull.Value ? Convert.ToString(dr["LastUpdatedDate"]) : string.Empty,
 
-                                                                EntryByMachine = dr["EntryByMachine"] != DBNull.Value ? Convert.ToString(dr["EntryByMachine"]) : string.Empty,
-                                                                DepriciationEntryId = dr["DepriciationEntryId"] != DBNull.Value ? Convert.ToInt32(dr["DepriciationEntryId"]) : 0,
-                                                                DepriciationYearCode = dr["DepriciationYearCode"] != DBNull.Value ? Convert.ToInt32(dr["DepriciationYearCode"]) : 0,
-                                                                ForClosingOfFinancialYear = dr["DepricationForFinancialYear"] != DBNull.Value ? Convert.ToInt32(dr["DepricationForFinancialYear"]) : 0,
-                                                                UID = dr["UID"] != DBNull.Value ? Convert.ToInt32(dr["UID"]) : 0,
-                                                                BalanceSheetClosed = dr["BalanceSheetClosed"] != DBNull.Value ? Convert.ToString(dr["BalanceSheetClosed"]) : "",
-                                                                Carryforwarded = dr["Carryforwarded"] != DBNull.Value ? Convert.ToString(dr["Carryforwarded"]) : "",
-                                                                BlockedEntry = dr["BlockedEntry"] != DBNull.Value ? Convert.ToString(dr["BlockedEntry"]) : ""
+                                                                //EntryByMachine = dr["EntryByMachine"] != DBNull.Value ? Convert.ToString(dr["EntryByMachine"]) : string.Empty,
+                                                                //DepriciationEntryId = dr["DepriciationEntryId"] != DBNull.Value ? Convert.ToInt32(dr["DepriciationEntryId"]) : 0,
+                                                                //DepriciationYearCode = dr["DepriciationYearCode"] != DBNull.Value ? Convert.ToInt32(dr["DepriciationYearCode"]) : 0,
+                                                                //ForClosingOfFinancialYear = dr["DepricationForFinancialYear"] != DBNull.Value ? Convert.ToInt32(dr["DepricationForFinancialYear"]) : 0,
+                                                                //UID = dr["UID"] != DBNull.Value ? Convert.ToInt32(dr["UID"]) : 0,
+                                                                //BalanceSheetClosed = dr["BalanceSheetClosed"] != DBNull.Value ? Convert.ToString(dr["BalanceSheetClosed"]) : "",
+                                                                //Carryforwarded = dr["Carryforwarded"] != DBNull.Value ? Convert.ToString(dr["Carryforwarded"]) : "",
+                                                                //BlockedEntry = dr["BlockedEntry"] != DBNull.Value ? Convert.ToString(dr["BlockedEntry"]) : ""
 
 
                                                             }).ToList();
