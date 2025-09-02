@@ -42,7 +42,7 @@ namespace eTactWeb.DOM.Models
         public int SeqNo { get; set; }
         public string Characteristic { get; set; }
         public string EvalutionMeasurmentTechnique { get; set; }
-        public string SpecificationFrom { get; set; }
+        public string? SpecificationFrom { get; set; }
         public string Operator { get; set; }
         public string SpecificationTo { get; set; }
         public string FrequencyofTesting { get; set; }
@@ -74,7 +74,7 @@ namespace eTactWeb.DOM.Models
         public int CntPlanYearCode { get; set; }
         public string Characteristic { get; set; }
         public string EvalutionMeasurmentTechnique { get; set; }
-        public string SpecificationFrom { get; set; }
+        public string? SpecificationFrom { get; set; }
         public string Operator { get; set; }
         public string SpecificationTo { get; set; }
         public string FrequencyofTesting { get; set; }
@@ -123,7 +123,7 @@ namespace eTactWeb.DOM.Models
         public string? ItemNameExists { get; set; }
         public string Characteristic { get; set; }
         public string EvalutionMeasurmentTechnique { get; set; }
-        public string SpecificationFrom { get; set; }
+        public string? SpecificationFrom { get; set; }
         public string Operator { get; set; }
         public string SpecificationTo { get; set; }
         public string FrequencyofTesting { get; set; }
