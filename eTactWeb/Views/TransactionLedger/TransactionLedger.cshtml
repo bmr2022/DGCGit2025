@@ -219,7 +219,7 @@
     <script>
 
         $(document).ready(function () {
-            debugger
+             
             console.log("TransactionLedger Ready");
 
             var currentDate = new Date();
@@ -356,7 +356,7 @@
         }
 
         function PressBack() {
-            debugger
+             
             let history = JSON.parse(sessionStorage.getItem('HistoryStack')) || [];
 
             if (history.length === 0) {
@@ -385,7 +385,7 @@
                     $('#LedgerName').val(lastStep.params.accountName);
                     sessionStorage.setItem('ParentCode', lastStep.params.parentCode);
                     sessionStorage.setItem('AccountName', lastStep.params.accountName);
-                    sessionStorage.setItem('ReportType', "MonthlySummary");
+                    sessionStorage.setItem('ReportType', "TRAILDETAIL");
                     window.location.href = '/TrailBalance/Index';
                     break;
 

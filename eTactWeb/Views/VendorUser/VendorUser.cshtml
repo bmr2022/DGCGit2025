@@ -283,7 +283,7 @@
 
 	<script>
 		$(document).ready(function () {
-			debugger
+			 
 			FillEntryID();
 			FillVendorList('N');
 			GetServerDate();
@@ -354,7 +354,7 @@
 					type: "GET",
 					url: "@Url.Action("GetServerDate", "WorkOrder")",
 					success: function (result, status, error) {
-						debugger
+						 
 						var FinFromDate = parseDateToFormat($('#FinFromDate').val().split(" ")[0]);
 						var FinToDate = parseDateToFormat($('#FinToDate').val().split(" ")[0]);
 
