@@ -128,6 +128,9 @@ namespace eTactWeb.Data.BLL
             return await _MIRDal.GetReportName();
 
         }
-
+        public async Task<ResponseResult> GenerateBarCodeTag(string MIRNo, int YearCode, string ItemCodes)
+        {
+            return await _MIRDal.GenerateBarCodeTag(MIRNo, YearCode, ItemCodes);
+        }
     }
 }

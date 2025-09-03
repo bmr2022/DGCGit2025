@@ -881,5 +881,12 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+        [HttpPost]
+        public async Task<JsonResult> GenerateBarCodeTag(string MIRNo, int YearCode, string ItemCodes)
+        {
+            var JSON = await _IMirModule.GenerateBarCodeTag(MIRNo, YearCode, ItemCodes);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
     }
 }
