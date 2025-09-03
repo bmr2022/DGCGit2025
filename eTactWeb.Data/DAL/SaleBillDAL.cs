@@ -269,7 +269,7 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        public async Task<ResponseResult> ShowPendingSaleorderforBill(string Flag, int CurrentYear, string FromDate, string Todate, string InvoiceDate, int BillFromStoreId, int accountCode)
+        public async Task<ResponseResult> ShowPendingSaleorderforBill(string Flag, int CurrentYear, string FromDate, string Todate, string InvoiceDate, int BillFromStoreId, int accountCode, string SONo, string PartCode)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -292,7 +292,77 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@InvoiceDate", InvDate));
                 SqlParams.Add(new SqlParameter("@BillFromStoreId", BillFromStoreId));
                 SqlParams.Add(new SqlParameter("@accountCode", accountCode));
+                SqlParams.Add(new SqlParameter("@SONo", SONo));
+                SqlParams.Add(new SqlParameter("@partcode", PartCode));
                 
+
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("AccPendingSaleOrderForSalebill", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+
+
+        public async Task<ResponseResult> FILLPendingSONO(string Flag, int CurrentYear, string FromDate, string Todate, string InvoiceDate, int BillFromStoreId, int accountCode)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+               
+                var fromDt = CommonFunc.ParseFormattedDate(FromDate);
+                var toDt = CommonFunc.ParseFormattedDate(Todate);
+                var InvDate = CommonFunc.ParseFormattedDate(InvoiceDate);
+
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", Flag));
+                SqlParams.Add(new SqlParameter("@DropDownFlag", "FILLSONO"));
+               
+                SqlParams.Add(new SqlParameter("@FromDate", fromDt));
+                SqlParams.Add(new SqlParameter("@ToDate", toDt));
+                SqlParams.Add(new SqlParameter("@CurrentYear", CurrentYear));
+                SqlParams.Add(new SqlParameter("@InvoiceDate", InvDate));
+                SqlParams.Add(new SqlParameter("@BillFromStoreId", BillFromStoreId));
+                SqlParams.Add(new SqlParameter("@accountCode", accountCode));
+
+
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("AccPendingSaleOrderForSalebill", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+
+
+        public async Task<ResponseResult> FillPendingPartCOde(string Flag, int CurrentYear, string FromDate, string Todate, string InvoiceDate, int BillFromStoreId, int accountCode)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+
+                var fromDt = CommonFunc.ParseFormattedDate(FromDate);
+                var toDt = CommonFunc.ParseFormattedDate(Todate);
+                var InvDate = CommonFunc.ParseFormattedDate(InvoiceDate);
+
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", Flag));
+                SqlParams.Add(new SqlParameter("@DropDownFlag", "FILLPartCode"));
+
+                SqlParams.Add(new SqlParameter("@FromDate", fromDt));
+                SqlParams.Add(new SqlParameter("@ToDate", toDt));
+                SqlParams.Add(new SqlParameter("@CurrentYear", CurrentYear));
+                SqlParams.Add(new SqlParameter("@InvoiceDate", InvDate));
+                SqlParams.Add(new SqlParameter("@BillFromStoreId", BillFromStoreId));
+                SqlParams.Add(new SqlParameter("@accountCode", accountCode));
+
 
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("AccPendingSaleOrderForSalebill", SqlParams);
             }

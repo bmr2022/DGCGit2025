@@ -31,14 +31,14 @@ else
                 <input type="text"
                        name="DepreciationRate"
                        value="@item.DepreciationRate"
-                       class="form-control" />
+                       class="form-control" style="background-color:#ccffcc" />
             </td>
 
             <td>
                 <input type="text"
                        name="AfterDepriciationNetValue"
                        value="@item.AfterDepriciationNetValue"
-                       class="form-control" />
+                       class="form-control" style="background-color:#ddccff" />
             </td>
             <td>@item.PreviousYearValue</td>
             <td>@item.OriginalNetBookValue</td>
@@ -51,6 +51,7 @@ else
            
             
             <td>@item.RemainingUseFullLifeInYear</td>
+            <td>@item.AssetsCategoryName</td>
         </tr>
     }
 }

@@ -43,7 +43,7 @@ public class GateAttendanceModel : TimeStamp
     public string GateAttEntryDay { get; set; }
     public int GateAttYearCode { get; set; }
     public string CardOrBiometricId { get; set; }
-    public string EmpId { get; set; }
+    public int EmpId { get; set; }
     public DateTime? AttInTime { get; set; }
     public DateTime? AttOutTime { get; set; }
     [Column(TypeName = "decimal(5, 2)")]
@@ -51,7 +51,6 @@ public class GateAttendanceModel : TimeStamp
     public string LateEntry { get; set; }
     public string EarlyExit { get; set; }
     public int? LeaveTypeId { get; set; }
-    public int? AttShiftId { get; set; }
     public DateTime? GateOutDate { get; set; }
     public DateTime? GateOutTime { get; set; }
     public bool ApproveByDept { get; set; }
@@ -65,7 +64,7 @@ public class GateAttendanceModel : TimeStamp
     public DateTime? EmpAttDate { get; set; }
     public int? EmpAttYear { get; set; }
     public DateTime? EmpAttTime { get; set; }
-    public int? ActualEmpShift { get; set; }
+    public int? ActualEmpShiftId { get; set; }
     public string ActualEmpShiftName { get; set; }
     public DateTime? ActualShiftInTime { get; set; }
     public DateTime? ActualShiftoutTime { get; set; }
@@ -121,6 +120,9 @@ public class GateAttendanceModel : TimeStamp
     public string CreatedByName { get; set; }
     public string UpdatedByName { get; set; }
     public string Branch { get; set; }
+    // Dynamic support
+    public List<string> DayHeaders { get; set; } = new(); // dynamic column headers
+    public Dictionary<string, string> Attendance { get; set; } = new(); // dynamic day-wise In/Out
     public List<GateAttendanceModel> GateAttDetailsList { get; set; }
 }
 

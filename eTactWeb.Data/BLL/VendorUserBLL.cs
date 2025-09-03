@@ -28,6 +28,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _vendorUserDAL.FillEntryId();
         }
+        public async Task<ResponseResult> ViewDataByVendor(int accountCode)
+        {
+            return await _vendorUserDAL.ViewDataByVendor(accountCode);
+        }
         public async Task<ResponseResult> FillVendorList(string isShowAll)
         {
             return await _vendorUserDAL.FillVendorList(isShowAll);

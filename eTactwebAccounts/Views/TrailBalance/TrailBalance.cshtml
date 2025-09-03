@@ -372,28 +372,42 @@
         });
 
         function GetDetailByGroupName(cntr) {
-            let groupCode = $("#TrailBalanceGroupCode-" + cntr).val();
-            saveHistory('TrailDetail', { groupCode });
+            // Save OLD state first
+            let currentGroup = $('#TrailBalanceGroupName').val();
+            let currentReportType = $('#ReportType').val();
+            saveHistory('TrailDetail', { groupCode: currentGroup, reportType: currentReportType });
 
+            // Apply NEW state
+            let groupCode = $("#TrailBalanceGroupCode-" + cntr).val();
             $('#TrailBalanceGroupName').val(groupCode).trigger('change');
             $('#ReportType').val("TRAILDETAIL").trigger('change');
         }
 
         function GetDataByParentGroupName(cntr) {
+            // Save OLD state first
+            let currentGroup = $('#TrailBalanceGroupName').val();
+            let currentParent = $('#ParentGroupName').val();
+            let currentReportType = $('#ReportType').val();
+            saveHistory('TrailParent', { groupCode: currentGroup, parentCode: currentParent, reportType: currentReportType });
+
+            // Apply NEW state
             let groupCode = $("#TrailBalanceGroupCode-" + cntr).val();
             let parentCode = $("#ParentAccountCode-" + cntr).val();
-            saveHistory('TrailParent', { groupCode, parentCode });
-
             $('#TrailBalanceGroupName').val(groupCode).trigger("change");
             $('#ParentGroupName').val(parentCode).trigger("change");
             $('#ReportType').val("TRAILDETAIL").trigger("change");
         }
 
         function GetDataByAccountName(cntr) {
+            // Save OLD state first
+            let currentParent = $('#ParentGroupName').val();
+            let currentAccount = $('#AccountName').val();
+            let currentReportType = $('#ReportType').val();
+            saveHistory('TrailAccount', { parentCode: currentParent, accountName: currentAccount, reportType: currentReportType });
+
+            // Apply NEW state (redirect to TransactionLedger)
             let parentCode = $("#ParentAccountCode-" + cntr).val();
             let accountName = $("#AccountName-" + cntr).val();
-
-            saveHistory('TrailAccount', { parentCode, accountName });
 
             sessionStorage.setItem('ParentCode', parentCode);
             sessionStorage.setItem('AccountName', accountName);
@@ -416,7 +430,7 @@
         }
 
         function PressBack() {
-             
+            debugger
             let history = JSON.parse(sessionStorage.getItem('HistoryStack')) || [];
 
             if (history.length === 0) {
@@ -424,17 +438,18 @@
                 return;
             }
 
-            // get last state
+            // 1. Pop last state
             let prevState = history.pop();
             sessionStorage.setItem('HistoryStack', JSON.stringify(history));
 
             const action = prevState.action;
             const params = prevState.params;
 
+            // 2. Decide action type
             switch (action) {
                 case 'TrailDetail':
                     $('#TrailBalanceGroupName').val(params.groupCode).trigger("change");
-                    $('#ReportType').val("TRAILDETAIL").trigger("change");
+                    $('#ReportType').val("TRAILSUMMARY").trigger("change");
                     break;
 
                 case 'TrailParent':
@@ -452,7 +467,7 @@
                     break;
             }
 
-            // hide button if no more history
+            // 3. Hide back button if stack empty
             if (history.length === 0) {
                 $('#BackButton').hide();
             }

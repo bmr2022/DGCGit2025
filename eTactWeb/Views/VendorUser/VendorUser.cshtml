@@ -70,7 +70,7 @@
 				<div class="accordion-item">
 					<h2 class="accordion-header" id="B_ItemCategoryDetail">
 						<button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_AccountDetail" aria-expanded="true" aria-controls="B_AccountDetail">
-							<strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>ControlPlan</strong>
+							<strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Vendor User</strong>
 
 						</button>
 					</h2>
@@ -93,7 +93,7 @@
 								</div>
 								<div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12">
 									<label asp-for="AccountCode" class="form-label">Vendor Name</label>
-									<input class="form-check-input" type="checkbox" id="isShowAllAccountCode" />
+									<input class="form-check-input" type="checkbox" id="isShowAllAccountCode"/>
 									<select asp-for="AccountCode" class="form-control">
 										<option value="">-Select-</option>
 									</select>
@@ -189,12 +189,22 @@
 				</div>
 
 				<div class="accordion-item">
-					<h2 class="accordion-header" id="HPanel2">
+					@* <h2 class="accordion-header" id="HPanel2">
 						<button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#ODGrid" aria-expanded="false" aria-controls="ODGrid">
 							<strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Other Detail</strong>
 						</button>
+					</h2> *@
+
+					<h2 class="accordion-header" id="H_SAGrid">
+						<button class="accordion-button collapsed text-light pnl4BG bg-gradient prodPlanGridBtn" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+							<strong style="text-transform:uppercase">
+								<i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;">
+
+								</i>Other Detail
+							</strong>
+						</button>
 					</h2>
-					<div id="ODGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+					<div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient prodPlandiv" aria-labelledby="H_SAGrid">
 						<div class="accordion-body">
 							<div class="row g-2 gx-3" id="_ItemGrid">
 
@@ -313,10 +323,10 @@
 		$(document).ready(function () {
 			debugger
 				$("form").validate({
-			rules: {
-				UserEntryId: { required: true }
-			}
-		});
+					rules: {
+						UserEntryId: { required: true }
+					}
+				});
 
 			if($('#Mode').val() != "U" && $('#Mode').val() != "V"){
 				FillEntryID();
@@ -354,6 +364,29 @@
 					var obj = $.parseJSON(data);
 					if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
 						$('#UserEntryId').val(obj.Result[0].UserEntryId || 0);
+					}
+				},
+				error: function (xhr, status, error) {
+					console.log('Failed to load Entry Id.');
+				}
+			});
+		}
+		  $(document).on('change', '#AccountCode', function () {
+			ViewDataByVendor();
+		});
+
+		function ViewDataByVendor() {
+			debugger
+			$.ajax({
+				url: '@Url.Action("ViewDataByVendor")',
+				data: {accountCode:$('#AccountCode').val()},
+				type: 'POST',
+				success: function (data, status, xhr) {
+					var obj = $.parseJSON(data);
+					debugger
+					if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
+						$('#VendorEmpName').val();
+						// $('#UserEntryId').val(obj.Result[0].UserEntryId || 0);
 					}
 				},
 				error: function (xhr, status, error) {
@@ -436,7 +469,7 @@
 					type: "GET",
 					url: "@Url.Action("GetServerDate", "WorkOrder")",
 					success: function (result, status, error) {
-						 
+
 						var FinFromDate = parseDateToFormat($('#FinFromDate').val().split(" ")[0]);
 						var FinToDate = parseDateToFormat($('#FinToDate').val().split(" ")[0]);
 

@@ -53,7 +53,9 @@ namespace eTactWeb.Services.Interface
 
         Task<AdjChallanDetail> GetAdjustedChallanDetailsData(DataTable adjustedData, int YearCode, string EntryDate, string ChallanDate, int AccountCode);
         //Task<ResponseResult> GetReportName();
-        Task<ResponseResult> ShowPendingSaleorderforBill(string Flag, int CurrentYear, string FromDate, string Todate, string InvoiceDate, int BillFromStoreId,int accountCode);
+        Task<ResponseResult> ShowPendingSaleorderforBill(string Flag, int CurrentYear, string FromDate, string Todate, string InvoiceDate, int BillFromStoreId,int accountCode, string SONo, string PartCode);
+        Task<ResponseResult> FILLPendingSONO(string Flag, int CurrentYear, string FromDate, string Todate, string InvoiceDate, int BillFromStoreId,int accountCode);
+        Task<ResponseResult> FillPendingPartCOde(string Flag, int CurrentYear, string FromDate, string Todate, string InvoiceDate, int BillFromStoreId,int accountCode);
         Task<ResponseResult> GetFeatureOption();
     }
 }

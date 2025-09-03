@@ -27,7 +27,10 @@ namespace eTactwebAccounts.Controllers
 			this.iconfiguration = iconfiguration;
 		}
 		[Route("{controller}/Index")]
-		public async Task<ActionResult> AccDepriciationCalculationdetail(int ID, int YC, string Mode)
+		public async Task<ActionResult> AccDepriciationCalculationdetail(int ID, int YC, string Mode,
+            string DepriciationDate, string DepriciationSlipNo, string CC, string ActualEntryByEmpName,
+    int ActualEntryBy, string ActualEntryDate, string LastUpdatedByEmpName, string LastUpdatedDate, string EntryByMachine,
+    int ForClosingOfFinancialYear, int UID, string BalanceSheetClosed, string CarryForwarded, string BlockedEntry)
 		{
 			var MainModel = new AccDepriciationCalculationdetailModel();
 
@@ -41,13 +44,27 @@ namespace eTactwebAccounts.Controllers
 			HttpContext.Session.Remove("KeyAccDepriciationCalculationdetailGrid");
 			if (!string.IsNullOrEmpty(Mode) && ID > 0 && Mode == "U")
 			{
-				//MainModel = await _IDiscountCustomerCategoryMaster.GetViewByID(ID, YC).ConfigureAwait(false);
-				MainModel.Mode = Mode; // Set Mode to Update
+				MainModel = await _IAccDepriciationCalculationdetail.GetViewByID(ID, YC).ConfigureAwait(false);
+				MainModel.Mode = Mode;
 				MainModel.DepriciationEntryId = ID;
 				MainModel.DepriciationYearCode = YC;
-				
+                MainModel.DepriciationDate = DepriciationDate;
+                MainModel.DepriciationSlipNo = DepriciationSlipNo;
+                MainModel.CC = CC;
+                MainModel.ActualEntryByEmpName = ActualEntryByEmpName;
+                MainModel.ActualEntryBy = ActualEntryBy;
+                MainModel.ActualEntryDate = ActualEntryDate;
+                MainModel.LastUpdatedByEmpName = LastUpdatedByEmpName;
+                MainModel.LastUpdatedDate = LastUpdatedDate;
+                MainModel.EntryByMachine = EntryByMachine;
+                MainModel.ForClosingOfFinancialYear = ForClosingOfFinancialYear;
+                MainModel.UID = UID;
+                MainModel.BalanceSheetClosed = BalanceSheetClosed;
+                MainModel.CarryForwarded = CarryForwarded;
+                MainModel.BlockedEntry = BlockedEntry;
 
-				if (Mode == "U")
+
+                if (Mode == "U")
 				{
 					MainModel.LastupdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
 					MainModel.LastUpdatedByEmpName = HttpContext.Session.GetString("EmpName");
@@ -183,10 +200,10 @@ namespace eTactwebAccounts.Controllers
 				throw;
 			}
 		}
-		public async Task<IActionResult> GetAssets(int DepriciationYearCode)
+		public async Task<IActionResult> GetAssets(int DepriciationYearCode, string AssetsName, string DepreciationMethod, string AssetsCategoryName)
 		{
 			var model = new AccDepriciationCalculationdetailModel();
-			model = await _IAccDepriciationCalculationdetail.GetAssets(DepriciationYearCode);
+			model = await _IAccDepriciationCalculationdetail.GetAssets(DepriciationYearCode,  AssetsName,  DepreciationMethod,  AssetsCategoryName);
 			var serializedGrid = System.Text.Json.JsonSerializer.Serialize(model.AccDepriciationCalculationdetailGrid);
 			HttpContext.Session.SetString("KeyAccDepriciationCalculationdetailGrid", serializedGrid);
 			return PartialView("_AccDepriciationCalculationdetailGrid", model);
@@ -273,6 +290,29 @@ namespace eTactwebAccounts.Controllers
 
 
             return null;
+
+        }
+        public async Task<IActionResult> DeleteByID(int EntryId, int YearCode)
+        {
+            var Result = await _IAccDepriciationCalculationdetail.DeleteByID(EntryId, YearCode);
+
+            if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
+            {
+                ViewBag.isSuccess = true;
+                TempData["410"] = "410";
+            }
+            else if (Result.StatusText == "Error" || Result.StatusCode == HttpStatusCode.Accepted)
+            {
+                ViewBag.isSuccess = true;
+                TempData["423"] = "423";
+            }
+            else
+            {
+                ViewBag.isSuccess = false;
+                TempData["500"] = "500";
+            }
+
+            return RedirectToAction("AccDepriciationCalculationdetailDashBoard");
 
         }
     }

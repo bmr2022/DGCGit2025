@@ -92,7 +92,7 @@
                             <div id="container">
 
                                 <div id="viewCursorDiv-@Cntr">
-                                    <a class="table-link link-success" asp-action="PartyItemGroupDiscount" asp-route-Mode="V" asp-route-ID="@item.DepriciationEntryId" asp-route-YC="@YearCode" onclick="BackButtonData(event,'@item.DepriciationEntryId','@item.DepriciationYearCode');"
+                                    <a class="table-link link-success" asp-action="AccDepriciationCalculationdetail" asp-route-Mode="V" asp-route-ID="@item.DepriciationEntryId" asp-route-YC="@YearCode" onclick="BackButtonData(event,'@item.DepriciationEntryId','@item.DepriciationYearCode');"
                                        asp-route-DepriciationDate="@(item.DepriciationDate == null ? string.Empty : item.DepriciationDate.Split(" ")[0])"
                                        asp-route-DepriciationSlipNo="@item.DepriciationSlipNo"
                                        asp-route-CC="@item.CC"
@@ -116,7 +116,7 @@
                                 </div>
                                 <div id="editCursorDiv-@Cntr">
 
-                                    <a class="table-link link-primary" asp-action="PartyItemGroupDiscount" onclick="confirmEdit(event)" asp-route-Mode="U" asp-route-ID="@item.DepriciationEntryId" asp-route-YC="@YearCode"
+                                    <a class="table-link link-primary" asp-action="AccDepriciationCalculationdetail" onclick="confirmEdit(event)" asp-route-Mode="U" asp-route-ID="@item.DepriciationEntryId" asp-route-YC="@YearCode"
                                        asp-route-DepriciationDate="@(item.DepriciationDate == null ? string.Empty : item.DepriciationDate.Split(" ")[0])"
                                        asp-route-DepriciationSlipNo="@item.DepriciationSlipNo"
                                        asp-route-CC="@item.CC"
@@ -139,7 +139,7 @@
                                     </a>
                                 </div>
                                 <div id="deleteCursorDiv-@Cntr">
-                                    <a class="table-link link-danger" asp-action="DeleteByID" asp-route-EntryId="@item.DepriciationEntryId" asp-route-AccountCode="@item.AccountCode" asp-route-EntryDate="@item.DepriciationDate">
+                                    <a class="table-link link-danger" asp-action="DeleteByID" asp-route-EntryId="@item.DepriciationEntryId" asp-route-YearCode="@YearCode" asp-route-EntryDate="@item.DepriciationDate">
                                         <span class="fa-stack">
                                             <i class="fa fa-square fa-stack-2x"></i>
                                             <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
@@ -154,14 +154,13 @@
                         <td>@item.DepriciationSlipNo</td>
                         <td>@item.CC</td>
                         <td>@item.ActualEntryByEmpName</td>  
-                        <td>@item.ActualEntryBy</td>
                         <td>@(item.ActualEntryDate == null ? string.Empty : item.ActualEntryDate.Split(" ")[0])</td>
                         <td>@item.LastUpdatedByEmpName</td>    
                         <td>@(item.LastUpdatedDate == null ? string.Empty : item.LastUpdatedDate.Split(" ")[0])</td>
                         <td>@item.EntryByMachine</td>
                         <td>@item.DepriciationYearCode</td>
                         <td>@item.ForClosingOfFinancialYear</td>
-                        <td>@item.UID</td>
+                       
                         <td>@item.BalanceSheetClosed</td>
                         <td>@item.CarryForwarded</td>
                         <td>@item.BlockedEntry</td>

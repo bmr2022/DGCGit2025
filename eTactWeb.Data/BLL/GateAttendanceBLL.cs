@@ -22,5 +22,9 @@ namespace eTactWeb.Data.BLL
             _GateAttendanceDAL = new GateAttendanceDAL(config, dataLogicDAL, connectionStringService);
             _DataLogicDAL = dataLogicDAL;
         }
+        async Task<GateAttendanceModel> IGateAttendance.GetManualAttendance(string DayOrMonthType, DateTime Attdate)
+        {
+            return await _GateAttendanceDAL.GetManualAttendance(DayOrMonthType, Attdate);
+        }
     }
 }

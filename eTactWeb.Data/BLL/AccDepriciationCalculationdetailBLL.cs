@@ -22,9 +22,9 @@ namespace eTactWeb.Data.BLL
 			_AccDepriciationCalculationdetailDAL = new AccDepriciationCalculationdetailDAL(config, dataLogicDAL, connectionStringService);
 			_DataLogicDAL = dataLogicDAL;
 		}
-		public async Task<AccDepriciationCalculationdetailModel> GetAssets(int DepriciationYearCode)
+		public async Task<AccDepriciationCalculationdetailModel> GetAssets(int DepriciationYearCode, string AssetsName, string DepreciationMethod, string AssetsCategoryName)
 		{
-			return await _AccDepriciationCalculationdetailDAL.GetAssets(DepriciationYearCode);
+			return await _AccDepriciationCalculationdetailDAL.GetAssets(DepriciationYearCode,  AssetsName,  DepreciationMethod,  AssetsCategoryName);
 		}
 		public async Task<ResponseResult> SaveDepriciationCalculationdetail(AccDepriciationCalculationdetailModel model, DataTable GIGrid)
 		{
@@ -41,6 +41,14 @@ namespace eTactWeb.Data.BLL
         public async Task<AccDepriciationCalculationdetailModel> GetDashboardDetailData(string FromDate, string ToDate, string ReportType)
         {
             return await _AccDepriciationCalculationdetailDAL.GetDashboardDetailData(FromDate, ToDate, ReportType);
+        }
+        public async Task<ResponseResult> DeleteByID(int EntryId, int YearCode)
+        {
+            return await _AccDepriciationCalculationdetailDAL.DeleteByID(EntryId, YearCode);
+        }
+        public async Task<AccDepriciationCalculationdetailModel> GetViewByID(int ID, int YC)
+        {
+            return await _AccDepriciationCalculationdetailDAL.GetViewByID(ID,YC);
         }
     }
 }
