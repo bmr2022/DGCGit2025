@@ -104,6 +104,18 @@ public class PurchaseScheduleGrid : TimeStamp
     [Column(TypeName = "decimal(10, 4)")]
     public decimal RateInOthCurr { get; set; }
     public string? Remarks { get; set; }
+   
+    private IList<SelectListItem> _UnitRate = new List<SelectListItem>()
+    {
+        new() { Value = "Unit", Text = "Unit" },
+        new() { Value = "AltUnit", Text = "AltUnit" }
+    };
+    public IList<SelectListItem> UnitRateList
+    {
+        get => _UnitRate;
+        set => _UnitRate = value;
+    }
+    public string? UnitRate { get; set; }
     [Column(TypeName = "decimal(10, 4)")]
     public decimal SchQty { get; set; }
     public int SeqNo { get; set; }

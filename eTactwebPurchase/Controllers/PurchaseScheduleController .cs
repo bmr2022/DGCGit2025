@@ -771,6 +771,7 @@ public class PurchaseScheduleController : Controller
         DTSSGrid.Columns.Add("SchAmendYear", typeof(int));
         DTSSGrid.Columns.Add("TentQtyFor1stMonth", typeof(decimal));
         DTSSGrid.Columns.Add("TentQtyFor2stMonth", typeof(decimal));
+        DTSSGrid.Columns.Add("UnitRate", typeof(string));
 
         foreach (var Item in DetailList)
         {
@@ -796,7 +797,8 @@ public class PurchaseScheduleController : Controller
                     Item.schAmendDate == null ? string.Empty : ParseFormattedDate(Item.schAmendDate),
                     Item.SchAmendYear,
                     Item.TentQtyFor1stMonth,
-                    Item.TentQtyFor2stMonth
+                    Item.TentQtyFor2stMonth,
+                    Item.UnitRate
                 });
         }
         DTSSGrid.Dispose();

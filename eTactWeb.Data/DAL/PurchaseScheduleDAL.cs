@@ -791,6 +791,7 @@ public class PurchaseScheduleDAL
                     Rate = Convert.ToDecimal(row["Rate"]),
                     RateInOthCurr = Convert.ToDecimal(row["RateInOthCurr"]),
                     Unit = row["Unit"].ToString(),
+                    UnitRate = row["UnitRate"].ToString(),
                     AltUnit = row["AltUnit"].ToString(),
                     SchQty = Convert.ToDecimal(row["SchQty"]),
                     AltSchQty = Convert.ToDecimal(row["AltSchQty"]),

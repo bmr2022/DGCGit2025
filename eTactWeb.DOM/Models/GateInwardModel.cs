@@ -235,6 +235,7 @@ public class GateInwardItemDetail : TimeStamp
     public string PartCode { get; set; }
     public string ItemName { get; set; }
     public string? Unit { get; set; }
+    public string? UnitRate { get; set; }
     public decimal Qty { get; set; }
     public decimal Rate { get; set; }
     public string? AltUnit { get; set; }
@@ -312,6 +313,7 @@ public class GateInwardModel : GateInwardItemDetail
     public string? Unit { get; set; }
     public decimal Qty { get; set; }
     public decimal Rate { get; set; }
+    public string ? UnitRate { get; set; }
     public string? AltUnit { get; set; }
     public decimal? PendQty { get; set; }
 

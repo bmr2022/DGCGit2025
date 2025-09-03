@@ -297,21 +297,25 @@
                                     <label asp-for="Rate" class="form-label">Rate</label>
                                     <input asp-for="Rate" data-abcd="17" class="form-control" type="number" min="0" />
                                 </div>
+                                <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="UnitRate" class="form-label">UnitRate</label>
+                                    <input asp-for="UnitRate" data-abcd="18" class="form-control" readonly />
+                                </div>
                                 <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12" style="width:70px">
                                     <label asp-for="AltUnit" class="form-label">Alt Unit</label>
-                                    <input asp-for="AltUnit" data-abcd="18" class="form-control" readonly />
+                                    <input asp-for="AltUnit" data-abcd="19" class="form-control" readonly />
                                 </div>
                                 <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                     <label asp-for="PendQty" class="form-label">Pending Qty</label>
-                                    <input asp-for="PendQty" data-abcd="19" class="form-control" readonly />
+                                    <input asp-for="PendQty" data-abcd="20" class="form-control" readonly />
                                 </div>
                                 <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                     <label asp-for="AltQty" class="form-label">Alt Qty</label>
-                                    <input asp-for="AltQty" data-abcd="20" type="number" readonly class="form-control" />
+                                    <input asp-for="AltQty" data-abcd="21" type="number" readonly class="form-control" />
                                 </div>
                                 <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                     <label asp-for="AltPendQty" class="form-label">Alt Pend Qty</label>
-                                    <input asp-for="AltPendQty" data-abcd="21" class="form-control" readonly />
+                                    <input asp-for="AltPendQty" data-abcd="22" class="form-control" readonly />
                                 </div>
                                 <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                     <label asp-for="NoOfBoxes" class="form-label"></label>
@@ -420,6 +424,7 @@
                                                     <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unit</th>
                                                     <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Qty</th>
                                                     <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rate</th>
+                                                     <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unit Rate</th>
                                                     <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Unit</th>
                                                     <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Qty</th>
                                                     <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Size</th>
@@ -913,6 +918,8 @@
                 table.children('#divSaleItemGrid').append(row);
             });
         }
+
+
 
 
         $(document).ready
@@ -1544,7 +1551,7 @@
             ClearGridAjax();
             $('#ItemCheck').prop('checked', false);
             $('#Pono,#PoYear,#PoDate,#SchNo,#SchYearCode').empty();
-            $('#Unit,#Rate,#AltUnit,#Qty,#AltQty,#AltPendQty,#PendQty').val("");
+                    $('#Unit,#Rate,#UnitRate,#AltUnit,#Qty,#AltQty,#AltPendQty,#PendQty').val("");
             if ($('#AccountCode').prop('selectedIndex') != 0) {
                 $.getJSON({
                     url: "@Url.Action("GetAddress", "SaleOrder")",
@@ -1589,9 +1596,9 @@
             var poNo = $('#PONO').val();
             var docTypeId = $("#docTypeId").val();
             var ItemService = $("#Types").val();
-            
-;            $('#ItemName,#Unit,#Qty,#Rate,#SchNo,#SchYearCode,#PartCode').empty();
-            $('#PODate,#ScheduleDate,#Unit,#Qty,#Rate,#SchNo,#SchYearCode,#AltUnit,#PendQty,#AltQty').val("");
+
+        ;            $('#ItemName,#Unit,#Qty,#Rate,#UnitRate,#SchNo,#SchYearCode,#PartCode').empty();
+                    $('#PODate,#ScheduleDate,#Unit,#Qty,#Rate,#UnitRate,#SchNo,#SchYearCode,#AltUnit,#PendQty,#AltQty').val("");
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("GetPOYearList")",
@@ -1773,7 +1780,7 @@
         }
 
         function clearItems() {
-            $('#PartCode,#ItemName,#Unit,#Qty,#Rate,#AltUnit,#PendQty,#AltQty').empty();
+                    $('#PartCode,#ItemName,#Unit,#Qty,#Rate,#UnitRate,#AltUnit,#PendQty,#AltQty').empty();
         }
 
         function cleardata() {
@@ -1872,6 +1879,7 @@
                                         '" data-unit="' + val.Unit +
                                         '" data-rate="' + val.Rate +
                                         '" data-alt-unit="' + val.altunit +
+                                       '" data-unitrate="' + val.UnitRate +
                                         '" data-qty="' + val.Qty +
                                         '" data-alt-qty="' + val.AltQty +
                                         '" data-alt-pend-qty="' + val.AltPendQty +
@@ -1885,6 +1893,7 @@
                                     '" data-unit="' + val.Unit +
                                     '" data-rate="' + val.Rate +
                                     '" data-alt-unit="' + val.altunit +
+                                             '" data-unitrate="' + val.UnitRate +
                                     '" data-qty="' + val.Qty +
                                     '" data-alt-qty="' + val.AltQty +
                                     '" data-alt-pend-qty="' + val.AltPendQty +
@@ -2041,9 +2050,10 @@
         function PartCodeChange(ID) {
 
             copyToClipboardForDropdown("#PartCode");
-            $('#Unit,#Rate,#Altunit,#AltQty,#AltPendQty').val("");
+                    $('#Unit,#Rate,#Altunit,#AltQty,#AltPendQty,#UnitRate').val("");
             $("#Unit").val($('#PartCode').find(":selected").data('unit'));
             $("#Rate").val($('#PartCode').find(":selected").data('rate'));
+                            $("#UnitRate").val($('#PartCode').find(":selected").data('unitrate'));
             $("#AltUnit").val($('#PartCode').find(":selected").data('alt-unit'));
             $("#AltQty").val($('#PartCode').find(":selected").data('alt-qty'));
 
@@ -2086,6 +2096,7 @@
             copyToClipboardForDropdown("#ItemName");
             $("#Unit").val($('#ItemName').find(":selected").data('unit'));
             $("#Rate").val($('#ItemName').find(":selected").data('rate'));
+                            $("#UnitRate").val($('#ItemName').find(":selected").data('unitrate'));
             $("#AltUnit").val($('#ItemName').find(":selected").data('alt-unit'));
             $("#AltQty").val($('#ItemName').find(":selected").data('alt-qty'));
             $("#AltPendQty").val($('#ItemName').find(":selected").data('alt-pend-qty'));
@@ -2488,6 +2499,7 @@
                 "ItemName": $('#ItemName').find(":selected").text(),
                 "PartCode": $('#PartCode').find(":selected").text(),
                 "Unit": $('#Unit').val(),
+                        "UnitRate": $('#UnitRate').val(),
                 "Qty": parseFloat($('#Qty').val()),
                 "Rate": parseFloat($('#Rate').val()),
                 "AltUnit": $('#AltUnit').val(),
@@ -2539,11 +2551,25 @@
                         var sum = 0;
                         var rowCount = $('#divSaleItemGrid tr').length;
                         var columnCount = $('#divSaleItemGrid tr td').length;
+                            
+                         // Get value once
 
-                        for (var i = 1; i <= rowCount; i++) {
+                            for (var i = 1; i <= rowCount; i++) {
+                                var qty = parseFloat($('#Qty-' + i).text()) || 0;
+                                var altQty = parseFloat($('#AltQty-' + i).text()) || 0;
+                                var rate = parseFloat($('#Rate-' + i).text()) || 0;
+                                                   var unitRate = $('#UnitRate-' + i).text()
+                                        if (unitRate === "Unit" || unitRate === null || unitRate === "") {
+                                            sum += parseFloat($('#Qty-' + i).text() == '.00' ? 0 : $('#Qty-' + i).text()) * parseFloat($('#Rate-' + i).text() == '.00' ? 0 : $('#Rate-' + i).text());
+                                } else {
+                                                    sum += parseFloat($('#AltQty-' + i).text() == '.00' ? 0 : $('#AltQty-' + i).text()) * parseFloat($('#Rate-' + i).text() == '.00' ? 0 : $('#Rate-' + i).text());
+                                }
+                            }
+
+                      /*   for (var i = 1; i <= rowCount; i++) {
 
                             sum += parseFloat($('#Qty-' + i).text() == '.00' ? 0 : $('#Qty-' + i).text()) * parseFloat($('#Rate-' + i).text() == '.00' ? 0 : $('#Rate-' + i).text());
-                        }
+                        } */
                         //noofitems
                         if (columnCount > 1)
                             $('#lblItemCount').text(rowCount);
@@ -2589,6 +2615,7 @@
                 $('#Unit').val(''),
                 $('#Qty').val(''),
                 $('#Rate').val(''),
+                $('#UnitRate').val(''),
                 $('#AltUnit').val(''),
                 $('#PendQty').val(0),
                 $('#AltQty').val(0),
@@ -2773,11 +2800,23 @@
             var sum = 0;
             var rowCount = $('#divSaleItemGrid tr').length;
             var columnCount = $('#divSaleItemGrid tr td').length;
+         
+               
 
             for (var i = 1; i <= rowCount; i++) {
+                          var unitRate = $('#UnitRate-' + i).text()
+                                                        if (unitRate === "Unit" || unitRate === null || unitRate === "") {
+                sum += parseFloat($('#Qty-' + i).text() == '.00' ? 0 : $('#Qty-' + i).text()) * parseFloat($('#Rate-' + i).text() == '.00' ? 0 : $('#Rate-' + i).text());
+                                                        }
+                                                                else {
+                                                                    sum += parseFloat($('#AltQty-' + i).text() == '.00' ? 0 : $('#AltQty-' + i).text()) * parseFloat($('#Rate-' + i).text() == '.00' ? 0 : $('#Rate-' + i).text());
+                                                }
+
+            }  
+          /*   for (var i = 1; i <= rowCount; i++) {
 
                 sum += parseFloat($('#Qty-' + i).text() == '.00' ? 0 : $('#Qty-' + i).text()) * parseFloat($('#Rate-' + i).text() == '.00' ? 0 : $('#Rate-' + i).text());
-            }
+            } */
             //noofitems
             if (columnCount > 1)
                 $('#lblItemCount').text(rowCount);
@@ -2813,6 +2852,7 @@
                 $('#Unit').val(obj[0].Unit);
                 $('#Qty').val(obj[0].Qty);
                 $('#Rate').val(obj[0].Rate);
+                        $('#UnitRate').val(obj[0].UnitRate);
                 $('#AltUnit').val(obj[0].AltUnit);
                 $('#PendQty').val(obj[0].PendQty);
                 $('#AltQty').val(obj[0].AltQty);

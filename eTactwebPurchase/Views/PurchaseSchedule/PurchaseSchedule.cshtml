@@ -264,6 +264,10 @@
                                     <input asp-for="RateInOthCurr" class="form-control" readonly disabled />
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="UnitRate" class="form-label">Rate/Unit</label>
+                                    <select class="form-select" asp-for="UnitRate" asp-items="Model.UnitRateList" ></select>
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="ItemSize" class="form-label">Item Size</label>
                                     <select class="form-select" asp-for="ItemSize">
                                         <option value="">-Select-</option>
@@ -325,6 +329,7 @@
                                                 <th>Alt Sch Qty</th>
                                                 <th>Alt Pent Qty</th>
                                                 <th>Rate</th>
+                                                <th>UnitRate</th>
                                                 <th>Rate In Other Curr</th>
                                                 <th>Delivery Date</th>
                                                 <th>Item Size</th>
@@ -1581,6 +1586,7 @@
                 "AltSchQty": $('#AltSchQty').val(),
                 "AltPendQty": $('#AltPendQty').val(),
                 "Rate": $('#Rate').val(),
+                       "UnitRate": $('#UnitRate').val(),
                 "RateInOthCurr": $('#RateInOthCurr').val(),
                 "DeliveryDate": $('#DeliveryDate').val(),
                 "ItemSize": $('#ItemSize').val(),
@@ -1782,6 +1788,7 @@
                          $('#PartCode').val(obj[0].ItemCode).trigger("change");
                             $('#ItemCode').val(obj[0].ItemCode).trigger("change");
                         $('#Unit').val(obj[0].Unit);
+                               $('#UnitRate').val(obj[0].UnitRate);
                         $('#SchQty').val(obj[0].SchQty);
                         $('#PendQty').val(obj[0].PendQty);
                         $('#AltUnit').val(obj[0].AltUnit);
