@@ -50,11 +50,11 @@
                                         <label class="form-label">From Date</label>
                                         <input type="hidden" value="@Model.FromDate" id="finFromDate" />
                                         <input type="hidden" value="@Model.ToDate" id="finToDate" />
-                                        <input asp-for="FromDate" maxlength="10" class="form-control" value="@Model.FromDate" />
+                                        <input asp-for="FromDate" maxlength="10" class="form-control" value="@Model.FromDate" onchange="FILLPendingSONO();FillPendingPartCOde()" />
                                     </div>
                                     <div class="col">
                                         <label class="form-label">To Date</label>
-                                        <input asp-for="ToDate" maxlength="10" class="form-control" value="@Model.ToDate" />
+                                        <input asp-for="ToDate" maxlength="10" class="form-control" value="@Model.ToDate" onchange="FILLPendingSONO();FillPendingPartCOde()" />
                                     </div>
                                 </div>
                             </div>
@@ -64,7 +64,7 @@
                                     <div class="col">
                                         <label class="form-label">InvoiceDate</label>
                                         
-                                        <input asp-for="InvoiceDate" maxlength="10" class="form-control" value="@Model.InvoiceDate" />
+                                        <input asp-for="InvoiceDate" maxlength="10" class="form-control" value="@Model.InvoiceDate" onchange="FILLPendingSONO();FillPendingPartCOde()" />
                                     </div>
                                     <div class="col">
                                         <label class="form-label">CurrentYear</label>
@@ -75,7 +75,7 @@
                             <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
 
                                 <label asp-for="BillFromStoreId" class="control-label" style="color: red;"> BillFromStore </label>
-                                <select class="form-select" asp-for="BillFromStoreId">
+                                <select class="form-select" asp-for="BillFromStoreId" onchange="FILLPendingSONO();FillPendingPartCOde()">
                                     <option value="">-Select-</option>
                                 </select>
 
@@ -83,7 +83,23 @@
                              <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
 
                                 <label asp-for="accountCode" class="control-label" style="color: red;"> CustomerName </label>
-                                <select class="form-select" asp-for="accountCode">
+                                <select class="form-select" asp-for="accountCode" onchange="FILLPendingSONO();FillPendingPartCOde()">
+                                    <option value="">-Select-</option>
+                                </select>
+
+                            </div>
+                            <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+
+                                <label asp-for="SONo" class="control-label" style="color: red;"> SONo </label>
+                                <select class="form-select" asp-for="SONo">
+                                    <option value="">-Select-</option>
+                                </select>
+
+                            </div>
+                            <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+
+                                <label asp-for="PartCode" class="control-label" style="color: red;"> PartCode </label>
+                                <select class="form-select" asp-for="PartCode">
                                     <option value="">-Select-</option>
                                 </select>
 
@@ -99,10 +115,8 @@
                                 <button class="btn btn-sm btn-outline-primary" type="button" onclick="showDetail();" style="padding:3px;height:30px;width:100px;margin-left:20px;">
                                     <i class="fa-solid fa-magnifying-glass fa-fw fa-lg "></i>SHOW
                                 </button>
-                                <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
-                                    <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
-                                </button>
-                                <a class="btn btn-sm btn-outline-danger" asp-controller="PendingMRNtoQc" asp-action="PendingMRNtoQc" style="padding:3px;height:30px;width:100px;margin-left:20px;">
+                              
+                                <a class="btn btn-sm btn-outline-danger" asp-controller="SaleInvoice" asp-action="SaleBillList" style="padding:3px;height:30px;width:100px;margin-left:20px;">
                                     <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
                                 </a>
                             </div>
@@ -203,12 +217,21 @@
 
             $('#BillFromStoreId').select2();
             $('#accountCode').select2();
+            $('#SONo').select2();
+            $('#PartCode').select2();
+
+
             GetServerDate();
             FillStoreList();
             FillCustomerList();
+            /* FILLPendingSONO();
+            FillPendingPartCOde(); */
             
-            showDetail();
+            /* showDetail(); */
         });
+
+
+
 
         function GetServerDate() {
             $.ajax({
@@ -282,6 +305,82 @@
             });
         }
 
+
+        function FILLPendingSONO() {
+            var data = {
+                "Flag": "ShowPendingSaleorderforBill",
+                "FromDate": $('#FromDate').val(),
+                "Todate": $('#ToDate').val(),
+                "InvoiceDate": $('#InvoiceDate').val(),
+                "CurrentYear": $('#CurrentYear').val(),
+                "BillFromStoreId": $('#BillFromStoreId').val(),
+                "accountCode": $('#accountCode').val()
+
+            }
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FILLPendingSONO")",
+                dataType: "json",
+                data: data,
+              
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#SONo').empty();
+                            $('#SONo').append('<option value=""  selected>-Select-</option>');
+
+                            $.each(obj.Result.Table, function (index, val) {
+                                $('#SONo').append('<option value="' + val.SONO + '">' + val.SONO + '</option>');
+                            });
+                           
+                        }
+                    }
+                }
+            });
+        }
+
+        function FillPendingPartCOde() {
+            var data = {
+                "Flag": "ShowPendingSaleorderforBill",
+                "FromDate": $('#FromDate').val(),
+                "Todate": $('#ToDate').val(),
+                "InvoiceDate": $('#InvoiceDate').val(),
+                "CurrentYear": $('#CurrentYear').val(),
+                "BillFromStoreId": $('#BillFromStoreId').val(),
+                "accountCode": $('#accountCode').val()
+
+            }
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillPendingPartCOde")",
+                dataType: "json",
+                data: data,
+               
+
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#PartCode').empty();
+                            $('#PartCode').append('<option value=""  selected>-Select-</option>');
+
+                            $.each(obj.Result.Table, function (index, val) {
+                                $('#PartCode').append('<option value="' + val.partcode + '">' + val.partcode + '</option>');
+                            });
+
+                        }
+                    }
+                }
+            });
+        }
+
+        $('#FromDate, #ToDate,#BillFromStoreId,#accountCode,#SONo,#PartCode').change(function () {
+            $('#divPendMRNGrid').empty();
+        });
+
         function showDetail() {
 
             var data = {
@@ -291,7 +390,9 @@
                 "InvoiceDate": $('#InvoiceDate').val(),
                 "CurrentYear": $('#CurrentYear').val(),
                 "BillFromStoreId": $('#BillFromStoreId').val(),
-                "accountCode": $('#accountCode').val()
+                "accountCode": $('#accountCode').val(),
+                "SONo": $('#SONo').val(),
+                "PartCode": $('#PartCode').val()
                 
             }
 

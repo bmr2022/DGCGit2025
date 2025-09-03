@@ -18,10 +18,20 @@ namespace eTactWeb.Data.BLL
         private readonly IDataLogic _DataLogicDAL;
 
         private readonly SaleBillDAL _SaleBillDAL;
-        public async Task<ResponseResult> ShowPendingSaleorderforBill(string Flag, int CurrentYear, string FromDate, string Todate, string InvoiceDate, int BillFromStoreId, int accountCode)
+        public async Task<ResponseResult> ShowPendingSaleorderforBill(string Flag, int CurrentYear, string FromDate, string Todate, string InvoiceDate, int BillFromStoreId, int accountCode, string SONo, string PartCode)
         {
-            return await _SaleBillDAL.ShowPendingSaleorderforBill( Flag,  CurrentYear,  FromDate,  Todate,  InvoiceDate,  BillFromStoreId,  accountCode);
+            return await _SaleBillDAL.ShowPendingSaleorderforBill( Flag,  CurrentYear,  FromDate,  Todate,  InvoiceDate,  BillFromStoreId,  accountCode,  SONo,  PartCode);
         }
+
+        public async Task<ResponseResult> FILLPendingSONO(string Flag, int CurrentYear, string FromDate, string Todate, string InvoiceDate, int BillFromStoreId, int accountCode)
+        {
+            return await _SaleBillDAL.FILLPendingSONO(Flag, CurrentYear, FromDate, Todate, InvoiceDate, BillFromStoreId, accountCode);
+        }
+        public async Task<ResponseResult> FillPendingPartCOde(string Flag, int CurrentYear, string FromDate, string Todate, string InvoiceDate, int BillFromStoreId, int accountCode)
+        {
+            return await _SaleBillDAL.FillPendingPartCOde(Flag, CurrentYear, FromDate, Todate, InvoiceDate, BillFromStoreId, accountCode);
+        }
+
         public async Task<ResponseResult> GetFormRights(int ID)
         {
             return await _SaleBillDAL.GetFormRights(ID);
@@ -192,6 +202,8 @@ namespace eTactWeb.Data.BLL
         {
             return await _SaleBillDAL.FillCustomerListForPending();
         }
+
+
 
     }
 }

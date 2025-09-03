@@ -120,12 +120,26 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> ShowPendingSaleorderforBill(string Flag, int CurrentYear, string FromDate, string Todate, string InvoiceDate, int BillFromStoreId, int accountCode)
+        public async Task<JsonResult> ShowPendingSaleorderforBill(string Flag, int CurrentYear, string FromDate, string Todate, string InvoiceDate, int BillFromStoreId, int accountCode,string SONo,string PartCode)
         {
-            var JSON = await _SaleBill.ShowPendingSaleorderforBill(Flag, CurrentYear, FromDate, Todate, InvoiceDate, BillFromStoreId, accountCode);
+            var JSON = await _SaleBill.ShowPendingSaleorderforBill(Flag, CurrentYear, FromDate, Todate, InvoiceDate, BillFromStoreId, accountCode,  SONo,  PartCode);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+
+        public async Task<JsonResult> FILLPendingSONO(string Flag, int CurrentYear, string FromDate, string Todate, string InvoiceDate, int BillFromStoreId, int accountCode)
+        {
+            var JSON = await _SaleBill.FILLPendingSONO(Flag, CurrentYear, FromDate, Todate, InvoiceDate, BillFromStoreId, accountCode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> FillPendingPartCOde(string Flag, int CurrentYear, string FromDate, string Todate, string InvoiceDate, int BillFromStoreId, int accountCode)
+        {
+            var JSON = await _SaleBill.FillPendingPartCOde(Flag, CurrentYear, FromDate, Todate, InvoiceDate, BillFromStoreId, accountCode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
         [HttpPost]
         public IActionResult StoreCheckedRowsToSession([FromBody] List<SaleBillModel> selectedRows)
         {
@@ -440,7 +454,7 @@ namespace eTactWeb.Controllers
                         model1.CreatedBy = !string.IsNullOrEmpty(uidStr) ? Convert.ToInt32(uidStr) : 0;
                         //model1.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
                         model1.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-
+                        HttpContext.Session.Remove("SaleBillListItem");
                         TempData["ShowEinvoicePopup"] = "true";
                         if (ShouldEinvoice == "true")
                         {
@@ -495,6 +509,7 @@ namespace eTactWeb.Controllers
                         //}
 
                         //  return View(model1);
+                        HttpContext.Session.Remove("SaleBillListItem");
                         if (ShouldEinvoice == "true")
                         {
                             return Json(new
@@ -533,6 +548,7 @@ namespace eTactWeb.Controllers
                         ViewBag.isSuccess = false;
                         TempData["500"] = "500";
                         _logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
+                        HttpContext.Session.Remove("SaleBillListItem");
                         // return View("Error", Result);
                         return View(model);
                     }
@@ -566,6 +582,7 @@ namespace eTactWeb.Controllers
 
                     HttpContext.Session.SetString("SaleInvoice", JsonConvert.SerializeObject(model));
                 }
+                HttpContext.Session.Remove("SaleBillListItem");
                 return Json(new { status = "Success" });
                 // return View();
             }
@@ -733,6 +750,20 @@ namespace eTactWeb.Controllers
 
             return View(model);
         }
+
+
+
+        public async Task<IActionResult> SaleInvoiceMemoryGrid()
+        {
+            
+            HttpContext.Session.Remove("SaleBillListItem");
+
+
+
+            return RedirectToAction("SaleInvoice");
+        }
+
+
 
         [HttpGet]
         [Route("{controller}/Dashboard")]

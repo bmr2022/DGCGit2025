@@ -10,9 +10,20 @@ else
     foreach (var item in Model.ItemDetailGrid)
     {
         Cntr++;
-        <input type="hidden" id="AccountCode-@Cntr" value="@item.AccountCode" />
-        <input type="hidden" id="AccountName-@Cntr" value="@item.AccountName" />
+       
         <tr id="itemGrid-@Cntr" class="small" style="white-space:nowrap">
+
+            <input type="hidden" id="AccountCode-@Cntr" value="@item.AccountCode" />
+            <input type="hidden" id="AccountName-@Cntr" value="@item.AccountName" />
+            <input type="hidden" id="BatchWisePendQty-@Cntr" value="@item.Qty" />
+            <td style="white-space:nowrap;">
+                <a class="table-link link-danger" onclick="DeleteModelRow(this)">
+                    <span class="fa-stack">
+
+                        <i class="fa-solid fa-trash fa-stack-1x"></i>
+                    </span>
+                </a>
+                </td>
             <td><input type="text" style="width:50px" readonly id="SONO-@Cntr" value="@item.SONO" /></td>
             <td><input type="text" style="width:50px" readonly id="SOYearCode-@Cntr" value="@item.SOYearCode" /></td>
             <td><input type="text" style="width:50px" readonly id="CustOrderNo-@Cntr" value="@item.CustOrderNo" /></td>
@@ -21,6 +32,9 @@ else
 
             <td><input type="text" readonly id="PartCode-@Cntr" value="@item.PartCode" /><input type="hidden" readonly id="ItemCode-@Cntr" value="@item.ItemCode" /></td>
             <td><input type="text" readonly id="ItemName-@Cntr" value="@item.ItemName" /></td>
+            <td><input type="number" style="width:50px;background-color:yellow"  id="Rate-@Cntr" value="@item.Rate" /></td>
+            <td><input type="number" style="width:50px;background-color:yellow" id="Qty-@Cntr" value="@item.Qty" /></td>
+            <td><input type="text" style="width:50px" readonly id="Amount-@Cntr" value="@item.Amount" /></td>
             <td><input type="text" style="width:50px" readonly id="Unit-@Cntr" value="@item.Unit" /></td>
             <td><input type="text" style="width:50px" readonly id="HSNNo-@Cntr" value="@item.HSNNo" /></td>
 
@@ -30,12 +44,11 @@ else
             <td><input type="text" readonly id="Uniquebatchno-@Cntr" value="@item.Uniquebatchno" /></td>
             <td><input type="text" style="width:50px" readonly id="TotalStock-@Cntr" value="@item.TotalStock" /></td>
             <td><input type="text" style="width:50px" readonly id="LotStock-@Cntr" value="@item.LotStock" /></td>
-            <td><input type="text" style="width:50px" readonly id="Rate-@Cntr" value="@item.Rate" /></td>
-            <td><input type="text" style="width:50px" readonly id="Qty-@Cntr" value="@item.Qty" /></td>
+           
             <td><input type="text" style="width:50px" readonly id="SOType-@Cntr" value="@item.SOType" /></td>
             <td><input type="text" style="width:50px" readonly id="DiscountPer-@Cntr" value="@item.DiscountPer" /></td>
             <td><input type="text" style="width:50px" readonly id="DiscountAmt-@Cntr" value="@item.DiscountAmt" /></td>
-            <td><input type="text" style="width:50px" readonly id="Amount-@Cntr" value="@item.Amount" /></td>
+           
             <td><input type="text" style="width:50px" readonly id="AltQty-@Cntr" value="@item.AltQty" /></td>
 
         </tr>

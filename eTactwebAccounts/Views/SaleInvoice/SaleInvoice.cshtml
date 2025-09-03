@@ -80,7 +80,12 @@
                         @if (Model.Mode != "V")
                         {
                             <div class="col-auto">
-                                <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                @* <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                    <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                    REFRESH
+                                </a> *@
+                                <a type="button" class="btn btn-secondary btn-sm" asp-action="SaleInvoiceMemoryGrid"
+                                   asp-controller="SaleInvoice">
                                     <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
                                     REFRESH
                                 </a>
@@ -141,7 +146,7 @@
                                     <table class="table table-hover table-bordered table-striped">
                                         <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap" id="IssueThrBom">
                                             <tr>
-
+                                                <th>Action</th>
                                                 <th>SO No</th>
                                                 <th>SO YC</th>
                                                 <th>CustOrderNo</th>
@@ -150,6 +155,9 @@
 
                                                 <th>Part Code</th>
                                                 <th>Item Name</th>
+                                                <th>Rate</th>
+                                                <th>Qty</th>
+                                                <th>Amount</th>
                                                 <th>Unit</th>
                                                 <th>HSNNo</th>
 
@@ -160,12 +168,11 @@
                                                 <th>TotalStock</th>
                                                 <th>BatchStock</th>
 
-                                                <th>Rate</th>
-                                                <th>Qty</th>
+                                               
                                                 <th>SO Type</th>
                                                 <th>Discount %</th>
                                                 <th>Discount Amt</th>
-                                                <th>Amount</th>
+                                                
                                                 <th>Alt Qty</th>
 
                                             </tr>
@@ -1487,12 +1494,41 @@
             });
         }
 
+        function DeleteModelRow(el) {
+            // Find the row containing the clicked delete link
+            var row = $(el).closest("tr");
+            row.remove();
+
+            // Reset counter (first column)
+            $("#divMultiItemGrid tr").each(function (index) {
+                $(this).find("td:first").text(index + 1);
+            });
+        }
 
         $('.GridButton1').click(function (e) {
             e.preventDefault();
             /* if (!Validate_TransferGrid()) return; */
             var ItemData = [];
             var RowCount = $('#divMultiItemGrid tr').length;
+            for (var i = 1; i <= RowCount; i++) {
+                var Partcode= $('#PartCode-' + i).val();
+                if (parseFloat($('#Qty-' + i).val()) > parseFloat($('#BatchWisePendQty-' + i).val()) )
+                {
+                    $.notify('Qty should not be greater than Pending Qty or Stock for partcode:' + Partcode, "info");
+                    return;
+                }
+                if (parseFloat($('#Rate-' + i).val()) <=0 || ($('#Rate-' + i).val()) =='') {
+                    $.notify('Please Enter valid rate for :' + Partcode, "info");
+                    return;
+                }
+                if (parseFloat($('#Qty-' + i).val()) <= 0 || ($('#Qty-' + i).val()) == '') {
+                    $.notify('Please Enter valid rate for :' + Partcode, "info");
+                    return;
+                }
+            }
+
+
+
             for (var i = 1; i <= RowCount; i++) {
                 ItemData.push({
 
