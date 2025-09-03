@@ -162,11 +162,15 @@ namespace eTactWeb.Controllers
 
             return View(model);
         }
-
-
         public async Task<JsonResult> FillEntryId()
         {
             var JSON = await _IVendorMater.FillEntryId();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> ViewDataByVendor(int accountCode)
+        {
+            var JSON = await _IVendorMater.ViewDataByVendor(accountCode);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
