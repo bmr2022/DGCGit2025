@@ -75,7 +75,7 @@ namespace eTactWeb.Controllers
 
         public async Task<IActionResult> DeleteByID(int ID, int YC, string MRPNo, string EntryByMachineName, int CreatedByEmpId)
         {
-            var Result = await IMRP.DeleteByID(ID, YC, MRPNo,  EntryByMachineName,  CreatedByEmpId).ConfigureAwait(false);
+            var Result = await IMRP.DeleteByID(ID, YC, MRPNo, EntryByMachineName, CreatedByEmpId).ConfigureAwait(false);
 
             if (Result.StatusText == "Deleted" || Result.StatusCode == HttpStatusCode.Gone)
             {
@@ -228,7 +228,7 @@ namespace eTactWeb.Controllers
                                 model2.CreatedByEmpName = HttpContext.Session.GetString("EmpName");
                                 model2.CreatedByEmpId = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                                 //return View(model2);
-                               return RedirectToAction(nameof(Dashboard));
+                                return RedirectToAction(nameof(Dashboard));
                             }
 
                             ViewBag.isSuccess = false;
@@ -241,7 +241,7 @@ namespace eTactWeb.Controllers
                     }
                     //return View(model);
                     return RedirectToAction(nameof(Dashboard));
-                   
+
                 }
             }
             catch (Exception ex)
@@ -262,7 +262,7 @@ namespace eTactWeb.Controllers
         }
 
         public async Task<IActionResult> Dashboard()
-         {
+        {
             HttpContext.Session.Remove("keyAddedMRPGrid");
             var model = new MRPDashboard();
             DateTime now = DateTime.Now;
@@ -588,56 +588,105 @@ namespace eTactWeb.Controllers
             }
         }
 
+        //public IActionResult FillFGMRPDetailGrid()
+        //{
+        //    try
+        //    {
+        //        string modelJson = HttpContext.Session.GetString("KeyPendingFGRMMRP");
+        //        IList<MRPFDRMDetail> PendingMRPFGDetail = new List<MRPFDRMDetail>();
+        //        if (modelJson != null)
+        //        {
+        //            PendingMRPFGDetail = JsonConvert.DeserializeObject<IList<MRPFDRMDetail>>(modelJson);
+        //        }
+        //        var model = new MRPFDRMDetail();
+        //        var MainModel = new MRPMain();
+        //        var MRPGrid = new List<MRPFDRMDetail>();
+        //        var MRPdetailGrid = new List<MRPFDRMDetail>();
+
+
+
+        //        foreach (var item in PendingMRPFGDetail)
+        //        {
+        //            string MRPDetailJson = HttpContext.Session.GetString("KeyMRPFGDetail");
+        //            IList<MRPFDRMDetail> MRPDetail = new List<MRPFDRMDetail>();
+        //            if (MRPDetailJson != null)
+        //            {
+        //                MRPDetail = JsonConvert.DeserializeObject<IList<MRPFDRMDetail>>(MRPDetailJson);
+        //            }
+
+        //            if (MRPDetail == null)
+        //            {
+        //                model.SeqNo = 1;
+        //                MRPGrid.Add(item);
+        //            }
+        //            else
+        //            {
+        //                model.SeqNo = MRPDetail.Count + 1;
+        //                //   MRPGrid = PendingMRPDetail.Where(x => x != null).ToList();
+        //                MRPdetailGrid.AddRange(MRPGrid);
+        //                MRPGrid.Add(item);
+
+        //            }
+
+        //            MainModel.MRPFGRMGrid = MRPGrid;
+        //            HttpContext.Session.SetString("KeyMRPFGDetail", JsonConvert.SerializeObject(MainModel.MRPFGRMGrid));
+        //        }
+        //        return PartialView("_MRPFGGrid", MainModel);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw ex;
+        //    }
+        //}
+
         public IActionResult FillFGMRPDetailGrid()
         {
             try
             {
+                // Get Pending data from session
                 string modelJson = HttpContext.Session.GetString("KeyPendingFGRMMRP");
-                IList<MRPFDRMDetail> PendingMRPFGDetail = new List<MRPFDRMDetail>();
-                if (modelJson != null)
+                IList<MRPFDRMDetail> pendingMRPFGDetail = new List<MRPFDRMDetail>();
+
+                if (!string.IsNullOrEmpty(modelJson))
                 {
-                    PendingMRPFGDetail = JsonConvert.DeserializeObject<IList<MRPFDRMDetail>>(modelJson);
+                    pendingMRPFGDetail = JsonConvert.DeserializeObject<IList<MRPFDRMDetail>>(modelJson);
                 }
-                var model = new MRPFDRMDetail();
-                var MainModel = new MRPMain();
-                var MRPGrid = new List<MRPFDRMDetail>();
-                var MRPdetailGrid = new List<MRPFDRMDetail>();
 
-
-
-                foreach (var item in PendingMRPFGDetail)
+                string MRPDetailJson = HttpContext.Session.GetString("KeyMRPFGDetail");
+                IList<MRPFDRMDetail> MRPDetail = new List<MRPFDRMDetail>();
+                if (MRPDetailJson != null)
                 {
-                    string MRPDetailJson = HttpContext.Session.GetString("KeyMRPFGDetail");
-                    IList<MRPFDRMDetail> MRPDetail = new List<MRPFDRMDetail>();
-                    if (MRPDetailJson != null)
-                    {
-                        MRPDetail = JsonConvert.DeserializeObject<IList<MRPFDRMDetail>>(MRPDetailJson);
-                    }
-
-                    if (MRPDetail == null)
-                    {
-                        model.SeqNo = 1;
-                        MRPGrid.Add(item);
-                    }
-                    else
-                    {
-                        model.SeqNo = MRPDetail.Count + 1;
-                        //   MRPGrid = PendingMRPDetail.Where(x => x != null).ToList();
-                        MRPdetailGrid.AddRange(MRPGrid);
-                        MRPGrid.Add(item);
-
-                    }
-
-                    MainModel.MRPFGRMGrid = MRPGrid;
-                    HttpContext.Session.SetString("KeyMRPFGDetail", JsonConvert.SerializeObject(MainModel.MRPFGRMGrid));
+                    MRPDetail = JsonConvert.DeserializeObject<IList<MRPFDRMDetail>>(MRPDetailJson);
                 }
-                return PartialView("_MRPFGGrid", MainModel);
+                var mainModel = new MRPMain();
+                if (pendingMRPFGDetail != null)
+                {
+                    mainModel = new MRPMain
+                    {
+                        MRPFGRMGrid = pendingMRPFGDetail?.ToList() ?? new List<MRPFDRMDetail>()
+                    };
+                }
+                if (MRPDetail != null)
+                {
+                    mainModel = new MRPMain
+                    {
+                        MRPFGRMGrid = MRPDetail?.ToList() ?? new List<MRPFDRMDetail>()
+                    };
+                }
+
+                // Save directly to session
+                HttpContext.Session.SetString("KeyMRPFGDetail",
+                    JsonConvert.SerializeObject(mainModel.MRPFGRMGrid));
+
+                return PartialView("_MRPFGGrid", mainModel);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
+
+
 
         public IActionResult FillSaleOrderMRPGrid(string Month, int ForMonthYear)
         {
@@ -683,7 +732,7 @@ namespace eTactWeb.Controllers
 
                     MainModel.MRPSOGrid = MRPGrid;
 
-                   HttpContext.Session.SetString("KeyMRPSODetail", JsonConvert.SerializeObject(MainModel.MRPSOGrid));
+                    HttpContext.Session.SetString("KeyMRPSODetail", JsonConvert.SerializeObject(MainModel.MRPSOGrid));
                 }
                 return PartialView("_MRPSOGrid", MainModel);
             }
