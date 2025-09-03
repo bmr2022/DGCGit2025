@@ -17,7 +17,7 @@
 		<div class="card-header card-headerBG text-light bg-gradient">
 			<div class="card-header card-headerBG text-light justify-content-center bg-gradient">
 				<h5>
-					<strong>Depriciation Calculation Detail </strong>
+					<strong>Depriciation Calculation  </strong>
 					<span class="d-flex float-end" style="margin-top:-2px;">
 						<a asp-controller="AccDepriciationCalculationdetail" asp-action="AccDepriciationCalculationdetailDashBoard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient DashBoard">
 							<i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
@@ -69,7 +69,7 @@
 						<h2 class="accordion-header" id="H_ItemCategoryDetail">
 							<button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_ItemCategoryDetail"
 									aria-expanded="true" aria-controls="B_ItemCategoryDetail">
-								<strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Depriciation Calculation Detail</strong>
+								<strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Depriciation Calculation </strong>
 								<small class="p-3"></small>
 							</button>
 						</h2>
@@ -91,18 +91,34 @@
 
 									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12"style="width:150px;">
 										<label asp-for="DepriciationDate" class="form-label">Depriciation Date</label>
-										<input asp-for="DepriciationDate" class="form-control" />
+										<input asp-for="DepriciationDate" class="form-control" readonly/>
 									</div>
 									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px;">
 										<label asp-for="DepriciationSlipNo" class="form-label">Slip No</label>
-										<input asp-for="DepriciationSlipNo" class="form-control" />
+										<input asp-for="DepriciationSlipNo" class="form-control" readonly/>
 									</div>
 									<div class="col d-flex align-items-center" style="gap: 10px;">
 										<button type="button" class="btn btn-primary" id="btnShowAssets">Show Assets</button>
 									</div>
-									
-								
-
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px;">
+										<label asp-for="AssetsName" class="form-label">Assets Name</label>
+										<input asp-for="AssetsName" class="form-control" />
+									</div>
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px;">
+										<label asp-for="DepreciationMethod" class="form-label">Depreciation Method</label>
+										<input asp-for="DepreciationMethod" class="form-control"  />
+									</div>
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px;">
+										<label asp-for="AssetsCategoryName" class="form-label">Category Name</label>
+										<input asp-for="AssetsCategoryName" class="form-control" />
+									</div>
+									<button class="btn btn-sm btn-outline-info" style="padding:3px;height:30px;width:100px;margin-left:20px;margin-top:7px;" type="button" onclick="GetAssets();">
+										<i class="fa-solid fa-magnifying-glass fa-fw fa-lg "></i>SEARCH
+									</button>
+									<div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+										<label class="form-label">Global search</label>
+										<input type="text" class="form-control" asp-for="Searchbox" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
+									</div>
 
 								</div>
 							</div>
@@ -116,77 +132,7 @@
 								<div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
 									<div class="accordion-body">
 										<div class="row g-2 gx-3" id="_ItemGrid">
-											@* <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
-												<label asp-for="AssetsName" class="form-label">Assets Name</label>
-												<input type="hidden" asp-for="AssetsEntryId" />
-												<select class="form-select" asp-for="AssetsName" style="width:130px;"readonly>
-													<option value="">-Select-</option>
-												</select>
-											</div>
 											
-											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
-												<label asp-for="MainGroup" class="form-label">Main Group</label>
-												<input type="hidden" asp-for="MainGroupCode" />
-												<select class="form-select" asp-for="MainGroup" style="width:130px;" readonly>
-													<option value="">-Select-</option>
-												</select>
-											</div>
-											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
-												<label asp-for="ParentAccountName" class="form-label">Parent Account Name</label>
-												<input type="hidden" asp-for="ParentAccountCode" />
-												<select class="form-select" asp-for="ParentAccountName" style="width:190px;" readonly>
-													<option value="">-Select-</option>
-												</select>
-											</div>
-
-											<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-												<label asp-for="SubGroup" class="form-label">Sub Group</label>
-												<input asp-for="SubGroup" class="form-control" readonly/>
-											</div>
-											<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-												<label asp-for="UnderGroup" class="form-label">Under Group</label>
-												<input asp-for="UnderGroup" class="form-control" readonly/>
-											</div>
-											<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-												<label asp-for="SubSubGroup" class="form-label">Sub Sub Group</label>
-												<input asp-for="SubSubGroup" class="form-control" readonly />
-											</div>
-											<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-												<label asp-for="OriginalNetBookValue" class="form-label">Original NetBook Value</label>
-												<input asp-for="OriginalNetBookValue" class="form-control" readonly />
-											</div>
-											<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-												<label asp-for="PreviousYearValue" class="form-label">Previous Year  Value</label>
-												<input asp-for="PreviousYearValue" class="form-control" readonly />
-											</div>
-											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:240px;">
-												<label asp-for="DepreciationMethod" class="form-label">Depreciation Method</label>
-												
-												<select class="form-select" asp-for="DepreciationMethod" style="width:230px;" readonly>
-													<option value="">-Select-</option>
-													<option value="Weighted Method">Weighted Method</option>
-													<option value="Straight-line Method" selected>Straight-line Method</option>
-												</select>
-											</div>
-											<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-												<label asp-for="DepreciationRate" class="form-label">Depreciation Rate</label>
-												<input asp-for="DepreciationRate" class="form-control" />
-											</div>
-											<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-												<label asp-for="AfterDepriciationNetValue" class="form-label">After Depriciation NetValue</label>
-												<input asp-for="AfterDepriciationNetValue" class="form-control" />
-											</div>
-											<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-												<label asp-for="RemainingUseFullLifeInYear" class="form-label">Remaining Use Full Life[InYear]</label>
-												<input asp-for="RemainingUseFullLifeInYear" class="form-control" readonly />
-											</div>
-
-											<div class="col d-flex align-items-center" style="gap: 10px;">
-												<button type="button" class="GridButton btn btn-sm btn-outline-danger" id="GridButton">
-													<i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
-												</button>
-
-											</div> *@
 											<div class="row">
 											</div>
 											<div class="progress my-2 mb-3" style="height: 4px;">
@@ -213,6 +159,7 @@
 																<th>Sub Sub Group</th>
 																
 																<th>Remaining Useful Life (In Year)</th>
+																<th>Category Name</th>
 
 															</tr>
 														</thead>
@@ -243,7 +190,7 @@
 										<div class="row g-2 gx-3" id="_ItemGrid">
 											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
 												<label asp-for="BalanceSheetClosed" class="form-label">Balance Sheet Closed</label>
-												<select class="form-select" asp-for="BalanceSheetClosed" style="width:190px;">
+												<select class="form-select" asp-for="BalanceSheetClosed" style="width:190px;"disabled>
 													<option value="">-Select-</option>
 													<option value="Y">Yes</option>
 													<option value="N">No</option>
@@ -252,7 +199,7 @@
 
 											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
 												<label asp-for="CarryForwarded" class="form-label">Carry Forwarded</label>
-												<select class="form-select" asp-for="CarryForwarded" style="width:190px;">
+												<select class="form-select" asp-for="CarryForwarded" style="width:190px;"disabled>
 													<option value="">-Select-</option>
 													<option value="Y">Yes</option>
 													<option value="N">No</option>
@@ -260,7 +207,7 @@
 											</div>
 											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
 												<label asp-for="BlockedEntry" class="form-label">Blocked Entry</label>
-												<select class="form-select" asp-for="BlockedEntry" style="width:190px;">
+												<select class="form-select" asp-for="BlockedEntry" style="width:190px;"disabled>
 													<option value="">-Select-</option>
 													<option value="Y">Yes</option>
 													<option value="N">No</option>
@@ -308,7 +255,7 @@
 					<div class="row justify-content-between g-2">
 						<div class="card-header card-headerBG text-light bg-gradient">
 							<h5>
-								<strong>Depriciation Calculation detail</strong>
+								<strong>Depriciation Calculation </strong>
 								<span class="d-flex float-end" style="margin-top:-2px;">
 
 									@*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">*@
@@ -384,9 +331,14 @@
 			FillGroupName();
 			FillGroupCode();
 			$('#AssetsName').rules("remove", "required");
+			$('#AssetsEntryId').rules("remove", "required");
 			$('#AccountName').rules("remove", "required");
+			$('#AccountCode').rules("remove", "required");
 			$('#MainGroup').rules("remove", "required");
-			$('#ParentAccountName').rules("remove", "required");
+			$('#AccountName').rules("remove", "required");
+			$('#ItemCode').rules("remove", "required");
+			$('#ItemName').rules("remove", "required");
+			$('#AccountCode').rules("remove", "required");
 			$('#SubGroup').rules("remove", "required");
 			$('#UnderGroup').rules("remove", "required");
 			$('#SubSubGroup').rules("remove", "required");
@@ -396,13 +348,30 @@
 			$('#DepreciationRate').rules("remove", "required");
 			$('#AfterDepriciationNetValue').rules("remove", "required");
 			$('#RemainingUseFullLifeInYear').rules("remove", "required");
+			$('#Mode').rules("remove", "required");
+			$('#EntryByMachine').rules("remove", "required");
+			$('#DepriciationEntryId').rules("remove", "required");
+			$('#DepriciationYearCode').rules("remove", "required");
+			$('#ForClosingOfFinancialYear').rules("remove", "required");
+			$('#DepriciationDate').rules("remove", "required");
+			$('#DepriciationSlipNo').rules("remove", "required");
+			$('#CC').rules("remove", "required");
+			$('#ActualEntryBy').rules("remove", "required");
+			$('#ActualEntryDate').rules("remove", "required");
+			$('#ActualEntryByEmpName').rules("remove", "required");
+			$('#LastupdatedBy').rules("remove", "required");
+			$('#LastUpdatedByEmpName').rules("remove", "required");
+			$('#LastUpdatedDate').rules("remove", "required");
+			$('#UID').rules("remove", "required");
+			$('#BalanceSheetClosed').rules("remove", "required");
+			$('#Carryforwarded').rules("remove", "required");
+			$('#BlockedEntry').rules("remove", "required");
+			$('#search-box').rules("remove", "required");
+			$('#AssetsCategoryName').rules("remove", "required");
 
 
-			$('#AssetsName').select2();
-			$('#AccountName').select2();
-			$('#MainGroup').select2();
-			$('#ParentAccountName').select2();
-			$('#DepreciationMethod').select2();
+
+			
 			$('#BalanceSheetClosed').select2();
 			$('#CarryForwarded').select2();
 			$('#BlockedEntry').select2();
@@ -412,7 +381,7 @@
 			$('#GridButton').click(function (e) {
 				setFormattedDate();
 			});
-
+			$("#search-box").val($('#search-box').val()).trigger('keyup');
 			$('.submitBTN').click(function (e) {
 				console.log("SubmitButton Click");
 				if ($('#divDepriciationCalculationdetailGrid tr').length === 0) {
@@ -426,20 +395,46 @@
 
 		});
 
-		$("#btnShowAssets").click(function () {
+		$('#btnShowAssets').click(function (e) {
+			GetAssets();
+		});
+		// {
+		// 	var yearCode = $("#DepriciationYearCode").val();
+		// 	$.ajax({
+		// 		url: '/AccDepriciationCalculationdetail/GetAssets',
+		// 		type: 'POST',
+		// 		data: { DepriciationYearCode: yearCode },
+		// 		success: function (result) {
+		// 			$("#divDepriciationCalculationdetailGrid").html(result);
+		// 		},
+		// 		error: function () {
+		// 			alert("Error loading assets data.");
+		// 		}
+		// 	});
+		// });
+
+		function GetAssets() {
 			var yearCode = $("#DepriciationYearCode").val();
+			var AssetsName = $("#AssetsName").val();
+			var DepreciationMethod = $("#DepreciationMethod").val();
+			var AssetsCategoryName = $("#AssetsCategoryName").val();
 			$.ajax({
 				url: '/AccDepriciationCalculationdetail/GetAssets',
 				type: 'POST',
-				data: { DepriciationYearCode: yearCode },
+				data: { DepriciationYearCode: yearCode,
+				AssetsName:AssetsName,
+				DepreciationMethod:DepreciationMethod,
+					AssetsCategoryName: AssetsCategoryName
+				},
+				async: false,
 				success: function (result) {
 					$("#divDepriciationCalculationdetailGrid").html(result);
 				},
-				error: function () {
+				error: function (xhr, status, error) {
 					alert("Error loading assets data.");
 				}
 			});
-		});
+		}
 		$(document).on("keydown", "#itemtable input", function (e) {
 			let colIndex = $(this).closest("td").index(); // current column
 			let $rows = $("#itemtable tbody tr"); // all rows
@@ -502,6 +497,7 @@
 				}
 			});
 		}
+
 		$(function () {
 			$('#SaleDiscount, #PurchaseDiscount').on('input', function () {
 				let value = $(this).val();
@@ -519,7 +515,23 @@
 				}
 			});
 		});
+		$("#search-box").on("keyup", function () {
+			var value = $(this).val().toLowerCase();
+			$("#divDepriciationCalculationdetailGrid tr").filter(function () {
+				if (currentSearchColumn !== null) {
+					var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
+					$(this).toggle(columnText.indexOf(value) > -1);
+				} else {
+					$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+				}
+			});
+		});
 
+
+		$(document).on("click", "th[data-columnno]", function () {
+			currentSearchColumn = $(this).data('columnno');
+			$("#search-box").val('').trigger('keyup');
+		});
 		$('#CategoryCode').change(function () {
 			$('#CategoryId').val($('#CategoryCode').val());
 		});
@@ -567,9 +579,15 @@
 
 			var formattedDate = day + '/' + month + '/' + year;
 
-			$('#DepriciationDate,#LastupDationDate,#ActualEntryDate')
+			$('#LastupDationDate,#ActualEntryDate')
 				.datepicker({ dateFormat: 'dd/M/yy' })
 				.val(formattedDate);
+
+			$('#DepriciationDate')
+				.datepicker({
+					dateFormat: 'dd/M/yy',
+					maxDate: 0
+				}).val(formattedDate);
 		}
 
 

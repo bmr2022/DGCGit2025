@@ -1247,6 +1247,7 @@ namespace eTactWeb.Controllers
                 GIGrid.Columns.Add("SchEntryId", typeof(int));
                 GIGrid.Columns.Add("ItemCode", typeof(int));
                 GIGrid.Columns.Add("Unit", typeof(string));
+                GIGrid.Columns.Add("UnitRate", typeof(string));
                 GIGrid.Columns.Add("Qty", typeof(decimal));
                 GIGrid.Columns.Add("Rate", typeof(decimal));
                 GIGrid.Columns.Add("altqty", typeof(decimal));
@@ -1315,6 +1316,7 @@ namespace eTactWeb.Controllers
                     Item.SchEntryId,
                     Item.ItemCode,
                     Item.Unit??"",
+                    Item.UnitRate??"",
                     Item.Qty,
                     Item.Rate,
                     Item.AltQty,
