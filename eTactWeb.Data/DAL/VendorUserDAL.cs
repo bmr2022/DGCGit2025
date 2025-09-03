@@ -46,6 +46,25 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
+        public async Task<ResponseResult> ViewDataByVendor(int accountCode)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "VIEWBYAccountCode"));
+                SqlParams.Add(new SqlParameter("@AccountCode", accountCode));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("VPSpUserMasterForVendorPortal", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
         public async Task<ResponseResult> FillVendorList(string isShowAll)
         {
             var _ResponseResult = new ResponseResult();
@@ -262,9 +281,9 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 //DateTime FromDate1 = DateTime.ParseExact(FromDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
                 SqlParams.Add(new SqlParameter("@Flag", "Dashboard"));
-                SqlParams.Add(new SqlParameter("@accountName", accountName));
-                SqlParams.Add(new SqlParameter("@UserId", userId));
-         
+                SqlParams.Add(new SqlParameter("@VendorName", accountName));
+                SqlParams.Add(new SqlParameter("@UserId", userId == null || userId == 0 ? DBNull.Value : (object)userId));
+
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("VPSpUserMasterForVendorPortal", SqlParams);
             }
             catch (Exception ex)

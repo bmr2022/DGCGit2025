@@ -22,7 +22,15 @@
 				<div class="card-body">
 					<form id="SParam">
 						<div class="row">
+							<div class="col-sm-3 col-md-6 col-lg-4 col-xl-1">
+								<label asp-for="AccountName" class="form-label">Vendor Name</label>
+								<input asp-for="AccountName" class="form-control" />
+							</div>
 
+							<div class="col-sm-3 col-md-6 col-lg-4 col-xl-1">
+								<label asp-for="UserId" class="form-label">User Id</label>
+								<input asp-for="UserId" class="form-control" />
+							</div>
 							<div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 d-flex justify-content-end mt-3">
 								<button class="btn btn-sm btn-outline-info" type="button" onclick="GetSearchData();">
 									<i class="fa-solid fa-magnifying-glass fa-fw fa-lg "></i>SEARCH
@@ -210,8 +218,8 @@
 
 		 function GetSearchData() {
 			var formData = {
-				'accountName': $('#accountName').val(),
-				 'userId' : $('#userId').val()
+				'accountName': $('#AccountName').val(),
+				 'userId' : $('#UserId').val()
 			};
 
 			$.ajax({
@@ -220,7 +228,9 @@
 				async: false,
 				data: formData,
 				success: function (data) {
-					$('#VUDashboardGrid').empty().append(data);
+					// $('#VUDashboardGrid').empty();
+					// $('#VUDashboardGrid').append(data);
+					$('.VUDashboardData').empty().append(data);
 				},
 				error: function (response) {
 					alert(response.responseText);
