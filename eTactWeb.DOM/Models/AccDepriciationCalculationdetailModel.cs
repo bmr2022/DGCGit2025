@@ -28,6 +28,7 @@ namespace eTactWeb.DOM.Models
 		public string Mode { get; set; }
 		public int AssetsEntryId { get; set; }
 		public string  AssetsName { get; set; }
+		public string  AssetsCategoryName { get; set; }
 		public int AccountCode { get; set; }
 		public string AccountName { get; set; }
 		public int ItemCode { get; set; }
@@ -40,7 +41,7 @@ namespace eTactWeb.DOM.Models
 		public string UnderGroup { get; set; }
 		public string SubSubGroup { get; set; }
 		public decimal OriginalNetBookValue { get; set; }
-		public decimal PreviousYearValue { get; set; }
+		public int PreviousYearValue { get; set; }
 		public string DepreciationMethod { get; set; }
 		public decimal DepreciationRate { get; set; }
 		public decimal AfterDepriciationNetValue { get; set; }
