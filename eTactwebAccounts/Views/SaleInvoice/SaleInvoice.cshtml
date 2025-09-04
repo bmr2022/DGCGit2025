@@ -158,6 +158,8 @@
                                                 <th>Rate</th>
                                                 <th>Qty</th>
                                                 <th>Amount</th>
+                                                <th>Discount %</th>
+                                                <th>Discount Amt</th>
                                                 <th>Unit</th>
                                                 <th>HSNNo</th>
 
@@ -170,8 +172,7 @@
 
                                                
                                                 <th>SO Type</th>
-                                                <th>Discount %</th>
-                                                <th>Discount Amt</th>
+                                                
                                                 
                                                 <th>Alt Qty</th>
 
@@ -1484,6 +1485,8 @@
                         for (let i = 1; i <= rowCounter; i++) {
                             FillTotalStockForAll(i);
                             FillLotStockForALl(i);
+                            CalculateAmountForMemoryGrid(i);
+
                         }
 
                     }
@@ -2463,6 +2466,7 @@
                 soPendQty = (soPendQty - totalBillQty) < 0 ? 0 : (soPendQty - totalBillQty);
                 $('#SOPendQty').val(soPendQty);
                 $('#Qty').val($('#SOPendQty').val());
+                CalculateAmount();
             }
         }
 
@@ -2770,7 +2774,7 @@
             var rowCount = $('#divSaleBillList tr').length;
             for (var i = 0; i <= rowCount; i++) {
                 if ($('#GridIC-' + i).val() == $('#ItemCode').val()) {
-                    if ($('#saleBillRow-' + i).find('td.DiscPer').text() != $('#DiscountPer').val()) {
+                    if (parseFloat($('#saleBillRow-' + i).find('td.DiscPer').text()) != parseFloat($('#DiscountPer').val())) {
                         $.notify('Disc Per should same with Grid Disc Per...!', "error");
                         AddErrorCls('DiscountPer');
                         Err = 1;
@@ -2801,6 +2805,32 @@
                 $('#BOMInd option[value="B"]').prop('disabled', false);
             }
         });
+
+        function CalculateAmountForMemoryGrid(i) {
+
+            var Amount = 0;
+           
+            const UnitRate = $('#UnitRate').val();
+            const Rate = $('#Rate-' + i).val() === "0" || $('#Rate-' + i).val() === "" ? 0 : parseFloat($('#Rate-' + i).val());
+            const DP = $('#DiscountPer-' + i) === "0" || $('#DiscountPer-' + i).val() === "" ? 0 : parseFloat($('#DiscountPer-' + i).val());
+
+
+            const Qty = $('#Qty-' + i).val() == "0" || $('#Qty-' + i).val() == "" ? 0 : parseFloat($('#Qty-' + i).val());
+            Amount = Qty * Rate;
+
+
+            if (DP !== 0) {
+                const DA = ((Amount * DP) / 100);
+                $('#DiscountAmt-' + i).val(DA);
+                Amount = Amount - DA;
+            }
+
+            $('#Amount-' + i).val(Amount.toFixed(2));
+
+          
+
+        }
+
         function CalculateRateForMalti(i) {
 
             var Amount = 0;
@@ -3697,10 +3727,32 @@
 
         function CalculateAmount() {
 
-            var rate = $('#Rate').val();
-            var Qty = $('#Qty').val();
+            // var rate = $('#Rate').val();
+            // var Qty = $('#Qty').val();
 
-            $('#Amount').val(rate * Qty);
+            // $('#Amount').val(rate * Qty);
+
+
+            var Amount = 0;
+           
+           
+            const Rate = $('#Rate').val() === "0" || $('#Rate').val() === "" ? 0 : parseFloat($('#Rate').val());
+            const DP = $('#DiscountPer') === "0" || $('#DiscountPer').val() === "" ? 0 : parseFloat($('#DiscountPer').val());
+
+
+            const Qty = $('#Qty').val() == "0" || $('#Qty').val() == "" ? 0 : parseFloat($('#Qty').val());
+            Amount =  Qty * Rate ;
+
+
+            if (DP !== 0) {
+                const DA = ((Amount * DP) / 100);
+                $('#DiscountAmt').val(DA.toFixed(6));
+                Amount = Amount - DA;
+            }
+
+            $('#Amount').val(Amount.toFixed(6));
+
+
         }
 
         $('#currencyId').change(function () {
@@ -4110,7 +4162,7 @@
                             EditEachItem = true;
                             EditDeleteBatchValidation = true;
 
-                            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                            // if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
                                 FillSONO();
                                 $('#SONO').val(obj[0].SONO);
                                 FillSOYearCode();
@@ -4143,20 +4195,20 @@
                                     fillBomRevNo();
                                 }
                                 $('#BomNo').val(obj[0].BomNo);
-                            } else {
-                                $('#SONO').val(obj[0].SONO);
-                                $('#SOYearCode').val(obj[0].SOYearCode);
-                                $('#SaleSchYearCode').val(obj[0].SaleSchYearCode);
+                            // } else {
+                            //     $('#SONO').val(obj[0].SONO);
+                            //     $('#SOYearCode').val(obj[0].SOYearCode);
+                            //     $('#SaleSchYearCode').val(obj[0].SaleSchYearCode);
 
-                                $('#ItemCode').val(obj[0].ItemCode).trigger("change");
-                                $('#PartCode').val(obj[0].ItemCode).trigger("change");
-                                FillCurrentBatchINStore();
-                                // $('#Batchno').val(obj[0].Batchno);
-                                if (obj[0].Batchno != '0' && obj[0].Batchno != null && obj[0].Batchno != 0) {
-                                    $('#Batchno').append('<option value="' + obj[0].Batchno + '" selected>' + obj[0].Batchno + '</option>');
-                                }
+                            //     $('#ItemCode').val(obj[0].ItemCode).trigger("change");
+                            //     $('#PartCode').val(obj[0].ItemCode).trigger("change");
+                            //     FillCurrentBatchINStore();
+                            //     // $('#Batchno').val(obj[0].Batchno);
+                            //     if (obj[0].Batchno != '0' && obj[0].Batchno != null && obj[0].Batchno != 0) {
+                            //         $('#Batchno').append('<option value="' + obj[0].Batchno + '" selected>' + obj[0].Batchno + '</option>');
+                            //     }
 
-                            }
+                            // }
 
                             if ($('#SaleBillJobwork').val() == 'J') {
                                 fillBomRevNo();
@@ -4296,7 +4348,7 @@
                         }
 
                         var rowCount = $('#divSaleBillList tr td').length;
-                        if (rowCout <= 1) {
+                        if (rowCount <= 1) {
                             $('#DiscountPer').val(0);
                             $('#DiscountPer').prop("readonly", false);
                             $('#DiscountAmt').val(0);
@@ -4640,9 +4692,9 @@
                             var rate = obj.Result[0].Rate == '' ? 0 : parseFloat(obj.Result[0].Rate);
                             $('#Rate').val("");
                             $('#Rate').val((rate).toFixed(2));
-                            $('#DiscountPer').val("");
+                            $('#DiscountPer').val(0);
                             $('#DiscountPer').val(obj.Result[0].DiscPer);
-                            $('#DiscountAmt').val("");
+                            $('#DiscountAmt').val(0);
                             $('#DiscountAmt').val(obj.Result[0].DiscRs);
                             $('#Unit').val("");
                             $('#Unit').val(obj.Result[0].unit);
