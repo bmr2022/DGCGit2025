@@ -83,6 +83,8 @@ namespace eTactWeb.DOM.Models
         public int GateYear { get; set; }
         public string RecChallanNo { get; set; }
         public string RecChallanDate { get; set; }
+        public int PendDays { get; set; }
+        public string? IssueByEmpName { get; set; }
         
     }
 }
