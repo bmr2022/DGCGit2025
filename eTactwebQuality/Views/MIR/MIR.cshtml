@@ -744,8 +744,10 @@
                     $('#totalMirRows').text(totalRows);
                 })
                 // $('#YearCode').val(new Date().getFullYear());
-                var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
-                var MIRDate = parseDateToFormat($('#MIRDate').val().split(" ")[0]);
+                // var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
+                // var MIRDate = parseDateToFormat($('#MIRDate').val().split(" ")[0]);
+                  var EntryDate = ($('#EntryDate').val().split(" ")[0]);
+                var MIRDate = ($('#MIRDate').val().split(" ")[0]);
                 $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
                 $('#MIRDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", MIRDate);
             }
