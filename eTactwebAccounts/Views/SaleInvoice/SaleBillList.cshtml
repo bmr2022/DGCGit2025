@@ -20,6 +20,41 @@
     .select2-container--default .select2-results > .select2-results__options {
         background-color: #e0f2f1; /* Dropdown background color */
         color: #000;
+    }
+
+    .no-cursor {
+        pointer-events: none; /* Prevent clicking/typing */
+        caret-color: transparent; /* Hide blinking cursor */
+        background-color: white; /* Keep normal background */
+        color: black; /* Keep normal text color */
+        border: none; /* Remove border for clean look */
+    }
+
+    .tooltip-container {
+        position: relative;
+        display: inline-block;
+    }
+
+        .tooltip-container .tooltip-text {
+            visibility: hidden;
+            background-color: black;
+            color: #fff;
+            text-align: center;
+            padding: 3px 8px;
+            border-radius: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%; /* above the input */
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .tooltip-container:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
 </style>
 <div class="shadow-lg">
     <div class="card rounded border-light bg-gradient">
@@ -135,38 +170,42 @@
         </div> <div class="card">
             <div class="card-body overflow-auto pb-0">
                 <div class="table-responsive" style="max-height:350px;">
-                    <table class="table table-hover table-bordered table-striped" id="GateDataTable">
+                    <table class="table table-hover table-bordered table-striped" id="GateDataTable" style="table-layout: fixed;">
                         <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
                             <tr>
-                                <th>Check/UnCheck <input id="checkuncheck" class="form-check-input me-1 mt-2" type="checkbox" role="switch" /></th>
-                                <th data-columnno="1" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Customer Name</th>
-                                <th data-columnno="2" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Account Code</th>
-                                <th data-columnno="3" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO No</th>
-                                <th data-columnno="4" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO Year Code</th>
-                                <th data-columnno="5" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Customer Order No</th>
-                                <th data-columnno="6" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Schedule No</th>
-                                <th data-columnno="7" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Schedule Year Code</th>
-                                <th data-columnno="8" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Code</th>
-                                <th data-columnno="9" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Part Code</th>
-                                <th data-columnno="10" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Name</th>
-                                <th data-columnno="11" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unit</th>
-                                <th data-columnno="12" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>HSN No</th>
-                                <th data-columnno="13" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Order Qty</th>
-                                <th data-columnno="14" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Pending Qty</th>
-                                <th data-columnno="15" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sale Bill Qty</th>
-                                <th data-columnno="16" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO Item Rate</th>
-                                <th data-columnno="17" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO Type</th>
-                                <th data-columnno="18" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO For</th>
-                                <th data-columnno="19" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Total Stock</th>
-                                <th data-columnno="20" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Batch No</th>
-                                <th data-columnno="21" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unique Batch No</th>
-                                <th data-columnno="22" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Batch Stock</th>
-                                <th data-columnno="23" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Discount %</th>
-                                <th data-columnno="24" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Discount Amount</th>
-                                <th data-columnno="25" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Amount</th>
-                                <th data-columnno="26" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Qty</th>
-                                <th data-columnno="26" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>StoreId</th>
-                                <th data-columnno="26" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>StoreName</th>
+                                <th style="width:70px;">Action <input id="checkuncheck" class="form-check-input me-1 mt-2" type="checkbox" role="switch" /></th>
+                                
+                                <th style="width:70px;">SO No</th>
+                                <th style="width:70px;">SOYear </th>
+                                <th style="width:90px;">Order No</th>
+                                <th style="width:70px;">Sch No</th>
+                                <th style="width:70px;">Sch Year </th>
+
+                                <th style="width:150px;">Part Code</th>
+                                <th style="width:250px;">Item Name</th>
+
+                                <th style="width:70px;">Order Qty</th>
+                                <th style="width:70px;">Pending Qty</th>
+                                <th style="width:70px;">Bill Qty</th>
+                                <th style="width:70px;">Rate</th>
+                                <th style="width:70px;">SO Type</th>
+                                <th style="width:70px;">SO For</th>
+                                <th style="width:70px;">Unit</th>
+                                <th style="width:70px;">HSN No</th>
+                                <th style="width:80px;">TotalStock</th>
+                                <th style="width:150px;">Batch No</th>
+                                <th style="width:150px;">Unique Batch No</th>
+                                <th style="width:70px;">Batch Stock</th>
+                                <th style="width:100px;">Disc %</th>
+                                <th style="width:120px;">Disc Amount</th>
+                                <th style="width:120px;">Item Amount</th>
+                                <th style="width:100px;">AltQty</th>
+                                <th style="width:100px;">StoreId</th>
+                                <th style="width:150px;">StoreName</th>
+                                <th style="width:200px;">Customer Name</th>
+                                <th style="width:120px;">Account Code</th>
+                                <th style="width:120px;">Item Code</th>
+
 
                             </tr>
                         </thead>
@@ -230,7 +269,9 @@
             /* showDetail(); */
         });
 
-
+        $(document).on('mouseover', 'input[type="text"]', function () {
+            $(this).attr('title', $(this).val());
+        });
 
 
         function GetServerDate() {
@@ -408,40 +449,46 @@
                             $('#divPendMRNGrid').empty();
                             var i = 1;
                             $.each(obj.Result.Table, function (index, val) {
-                                
+
                                 var html = '';
                                 html += '<tr>' +
-                                    '<td style="text-align:center;"><input style="background-color: #b2b3f0;" id="AcceptedQtySHA' + i + '" class="form-check-input me-1 mt-2" type="checkbox" role="switch" onchange="CheckacceptedQtySHA(' + i + ');"/></td>' +
-                                    '<td>' + val.CustomerName + '</td>' +
-                                    '<td>' + val.Accountcode + '</td>' +
-                                    '<td>' + val.SONo + '</td>' +
-                                    '<td>' + val.SOYearCode + '</td>' +
-                                    '<td>' + val.CustorderNo + '</td>' +
-                                    '<td>' + val.SchNo + '</td>' +
-                                    '<td>' + val.SchYearCode + '</td>' +
-                                    '<td><input id="ItemCode' + i + '" type="hidden" value="' + val.ItemCode + '"/>' + val.ItemCode + '</td>' +
-                                    '<td>' + val.PartCode + '</td>' +
-                                    '<td>' + val.ItemName + '</td>' +
-                                    '<td>' + val.Unit + '</td>' +
-                                    '<td>' + val.HSNNO + '</td>' +
-                                    '<td>' + val.OrderQty + '</td>' +
-                                    '<td>' + val.OrderPendQty + '</td>' +
-                                    '<td>' + val.SaleBillQty + '</td>' +
-                                    '<td>' + val.SOItemRate + '</td>' +
-                                    '<td>' + val.SOType + '</td>' +
-                                    '<td>' + val.SOFor + '</td>' +
-                                    '<td>' + val.TotalStock + '</td>' +
-                                    '<td id="BatchNo' + i + '">' + val.BatchNo + '</td>' +
-                                    '<td id="UniqueBatchNo' + i + '">' + val.UniqueBatchNo + '</td>' +
-                                    '<td>' + val.BatchStock + '</td>' +
-                                    '<td>' + val.DisPer + '</td>' +
-                                    '<td>' + val.DisAmt + '</td>' +
-                                    '<td>' + val.ItemAmount + '</td>' +
-                                    '<td>' + val.AltQty + '</td>'+
-                                    '<td>' + val.Storeid + '</td>' +
-                                    '<td>' + val.Store_Name + '</td>' +
+                                    '<td style="text-align:center;">' +
+                                    '<input style="background-color: #b2b3f0;" id="AcceptedQtySHA' + i + '" ' +
+                                    'class="form-check-input me-1 mt-2" type="checkbox" role="switch" ' +
+                                    'onchange="CheckacceptedQtySHA(' + i + ');" />' +
+                                    '</td>' +
 
-                                    '</tr>'
+                                    '<td><input id="SONo' + i + '" class="form-control no-cursor" value="' + val.SONo + '"/></td>' +
+                                    '<td><input id="SOYearCode' + i + '" class="form-control no-cursor" value="' + val.SOYearCode + '"/></td>' +
+                                    '<td><input id="CustorderNo' + i + '" class="form-control no-cursor" value="' + val.CustorderNo + '"/></td>' +
+                                    '<td><input id="SchNo' + i + '" class="form-control no-cursor" value="' + val.SchNo + '"/></td>' +
+                                    '<td><input id="SchYearCode' + i + '" class="form-control no-cursor" value="' + val.SchYearCode + '"/></td>' +
+                                    '<td><input id="PartCode' + i + '" class="form-control no-cursor" value="' + val.PartCode + '"/></td>' +
+                                    '<td><input id="ItemName' + i + '" class="form-control no-cursor" value="' + val.ItemName + '"/></td>' +
+                                    '<td><input id="OrderQty' + i + '" class="form-control no-cursor" value="' + val.OrderQty + '"/></td>' +
+                                    '<td><input id="OrderPendQty' + i + '" class="form-control no-cursor" value="' + val.OrderPendQty + '"/></td>' +
+                                    '<td><input id="SaleBillQty' + i + '" class="form-control no-cursor" value="' + val.SaleBillQty + '"/></td>' +
+                                    '<td><input id="SOItemRate' + i + '" class="form-control no-cursor" value="' + val.SOItemRate + '"/></td>' +
+                                    '<td><input id="SOType' + i + '" class="form-control no-cursor" value="' + val.SOType + '"/></td>' +
+                                    '<td><input id="SOFor' + i + '" class="form-control no-cursor" value="' + val.SOFor + '"/></td>' +
+                                    '<td><input id="Unit' + i + '" class="form-control no-cursor" value="' + val.Unit + '"/></td>' +
+                                    '<td><input id="HSNNO' + i + '" class="form-control no-cursor" value="' + val.HSNNO + '"/></td>' +
+                                    '<td><input id="TotalStock' + i + '" class="form-control no-cursor" value="' + val.TotalStock + '"/></td>' +
+                                    '<td><input id="BatchNo' + i + '" class="form-control no-cursor" value="' + val.BatchNo + '"/></td>' +
+                                    '<td><input id="UniqueBatchNo' + i + '" class="form-control no-cursor" value="' + val.UniqueBatchNo + '"/></td>' +
+                                    '<td><input id="BatchStock' + i + '" class="form-control no-cursor" value="' + val.BatchStock + '"/></td>' +
+                                    '<td><input id="DisPer' + i + '" class="form-control no-cursor" value="' + val.DisPer + '"/></td>' +
+                                    '<td><input id="DisAmt' + i + '" class="form-control no-cursor" value="' + val.DisAmt + '"/></td>' +
+                                    '<td><input id="ItemAmount' + i + '" class="form-control no-cursor" value="' + val.ItemAmount + '"/></td>' +
+                                    '<td><input id="AltQty' + i + '" class="form-control no-cursor" value="' + val.AltQty + '"/></td>' +
+                                    '<td><input id="Storeid' + i + '" class="form-control no-cursor" value="' + val.Storeid + '"/></td>' +
+                                    '<td><input id="Store_Name' + i + '" class="form-control no-cursor" value="' + val.Store_Name + '"/></td>' +
+                                    '<td><input id="CustomerName' + i + '" class="form-control no-cursor" value="' + val.CustomerName + '"/></td>' +
+                                    '<td><input id="Accountcode' + i + '" class="form-control no-cursor" value="' + val.Accountcode + '"/></td>' +
+                                    '<td><input id="ItemCode' + i + '" type="hidden" value="' + val.ItemCode + '"/>' +
+                                    '<input class="form-control no-cursor" value="' + val.ItemCode + '"/></td>' +
+                                    '</tr>';
+
                                 $('#divPendMRNGrid').append(html);
                                 $('#TransertoMIRBtn').prop("disabled", false);
 
@@ -471,42 +518,38 @@
         function getCheckedRowData() {
             var selectedData = [];
 
-            $('#GateDataTable tbody tr').each(function () {
+            $('#GateDataTable tbody tr').each(function (rowIndex) {
                 var $row = $(this);
                 var checkbox = $row.find('input[type="checkbox"]');
 
                 if (checkbox.is(':checked')) {
+                    var i = rowIndex + 1;
                     var rowData = {
 
-                        AccountName: $row.find('td:eq(1)').text().trim(),
-                        AccountCode: $row.find('td:eq(2)').text().trim(),
-                        
-                        SONO: $row.find('td:eq(3)').text().trim(),
-                        SOYearCode: $row.find('td:eq(4)').text().trim(),
-                        CustOrderNo: $row.find('td:eq(5)').text().trim(),
-                        SchNo: $row.find('td:eq(6)').text().trim(),
-                        SaleSchYearCode: $row.find('td:eq(7)').text().trim(),
-                        ItemCode: $row.find('td:eq(8)').text().trim(),
-                        PartCode: $row.find('td:eq(9)').text().trim(),
-                        ItemName: $row.find('td:eq(10)').text().trim(),
-                        Unit: $row.find('td:eq(11)').text().trim(),
-                        HSNNo: $row.find('td:eq(12)').text().trim(),
-                        Qty: $row.find('td:eq(15)').text().trim(),
-                        SOPendQty: $row.find('td:eq(14)').text().trim(),
-                        /* SaleBillQty: $row.find('td:eq(15)').text().trim(), */
-                        Rate: $row.find('td:eq(16)').text().trim(),
-                        SOType: $row.find('td:eq(17)').text().trim(),
-                        /* SOFor: $row.find('td:eq(18)').text().trim(), */
-                        /* TotalStock: $row.find('td:eq(19)').text().trim(), */
-                        Batchno: $row.find('td:eq(20)').text().trim(),
-                        Uniquebatchno: $row.find('td:eq(21)').text().trim(),
-                        /* BatchStock: $row.find('td:eq(22)').text().trim(), */
-                        DiscountPer: $row.find('td:eq(23)').text().trim(),
-                        DiscountAmt: $row.find('td:eq(24)').text().trim(),
-                        Amount: $row.find('td:eq(25)').text().trim(),
-                        AltQty: $row.find('td:eq(26)').text().trim(),
-                        StoreId: $row.find('td:eq(27)').text().trim(),
-                        StoreName: $row.find('td:eq(28)').text().trim()
+                        AccountName: $("#CustomerName" + i).val(),   // we created CustomerNameX
+                        AccountCode: $("#Accountcode" + i).val(),
+                        SONO: $("#SONo" + i).val(),
+                        SOYearCode: $("#SOYearCode" + i).val(),
+                        CustOrderNo: $("#CustorderNo" + i).val(),
+                        SchNo: $("#SchNo" + i).val(),
+                        SaleSchYearCode: $("#SchYearCode" + i).val(),
+                        ItemCode: $("#ItemCode" + i).val(),
+                        PartCode: $("#PartCode" + i).val(),
+                        ItemName: $("#ItemName" + i).val(),
+                        Unit: $("#Unit" + i).val(),
+                        HSNNo: $("#HSNNO" + i).val(),
+                        Qty: $("#SaleBillQty" + i).val(),
+                        SOPendQty: $("#OrderPendQty" + i).val(),
+                        Rate: $("#SOItemRate" + i).val(),
+                        SOType: $("#SOType" + i).val(),
+                        Batchno: $("#BatchNo" + i).val(),
+                        Uniquebatchno: $("#UniqueBatchNo" + i).val(),
+                        DiscountPer: $("#DisPer" + i).val(),
+                        DiscountAmt: $("#DisAmt" + i).val(),
+                        Amount: $("#ItemAmount" + i).val(),
+                        AltQty: $("#AltQty" + i).val(),
+                        StoreId: $("#Storeid" + i).val(),
+                        StoreName: $("#Store_Name" + i).val()
 
 
                     };

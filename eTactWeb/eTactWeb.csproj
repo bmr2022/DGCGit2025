@@ -109,6 +109,7 @@
 		<PackageReference Include="Serilog.Extensions.Logging.File" Version="3.0.0" />
 		<PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
 		<PackageReference Include="System.Runtime.Caching" Version="7.0.0" />
+		<PackageReference Include="Westwind.AspNetCore.LiveReload" Version="0.5.2" />
 	</ItemGroup>
 
 	<ItemGroup>
