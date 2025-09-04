@@ -33,7 +33,7 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "FillAccountName"));
                 SqlParams.Add(new SqlParameter("@outstandingType", outstandingType));
-                //SqlParams.Add(new SqlParameter("Debtors", underGroup));
+                SqlParams.Add(new SqlParameter("@ReportCallingFrom", "OutstandingForm"));
                 SqlParams.Add(new SqlParameter("@TillDate", ParseFormattedDate(TillDate)));
 
 

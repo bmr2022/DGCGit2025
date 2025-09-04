@@ -278,69 +278,77 @@
             var PartynameMultiDropdown = $('#PartyNameMulti');
 
             if (isMulti) {
-                // Hide single-select and show multi-select
+                // Hide single, show multi
                 PartynameSingleDropdown.hide();
                 PartynameMultiDropdown.show();
 
-                // Destroy Select2 if initialized on single-select
+                // Destroy Select2 if exists
                 if (PartynameSingleDropdown.hasClass("select2-hidden-accessible")) {
                     PartynameSingleDropdown.select2('destroy');
                 }
 
-                // Load party options
+                // Fill options first
                 FillPartyName();
 
-                // Initialize multiselect plugin
-                PartynameMultiDropdown.attr('multiple', 'multiple');
-                PartynameMultiDropdown.multiselect({
-                    templates: {
-                        button: '<button type="button" class="multiselect btn btn-sm btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><span class="multiselect-selected-text"></span></button>',
-                    },
-                    onChange: function (option, checked) {
-                        var value = $(option).val();
-                        if (checked) {
-                            if (!selectedPartyValues.includes(value)) {
-                                selectedPartyValues.push(value);
+                // Initialize multiselect if not already
+                if (!PartynameMultiDropdown.data('multiselect')) {
+                    PartynameMultiDropdown.attr('multiple', 'multiple');
+
+                    PartynameMultiDropdown.multiselect({
+                        templates: {
+                            button: '<button type="button" class="multiselect btn btn-sm btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><span class="multiselect-selected-text"></span></button>',
+                        },
+                        enableFiltering: true,
+                        enableCaseInsensitiveFiltering: true,
+                        includeSelectAllOption: true,
+                        buttonWidth: '100%',
+                        maxHeight: 300,
+                        nonSelectedText: 'Select Party',
+                        allSelectedText: 'All selected',
+                        numberDisplayed: 2,
+
+                        // Update selectedPartyValues on individual change
+                        onChange: function (option, checked) {
+                            var value = $(option).val();
+                            if (checked) {
+                                if (!selectedPartyValues.includes(value)) {
+                                    selectedPartyValues.push(value);
+                                }
+                            } else {
+                                selectedPartyValues = selectedPartyValues.filter(v => v !== value);
                             }
-                        } else {
-                            selectedPartyValues = selectedPartyValues.filter(v => v !== value);
+                        },
+
+                        // Update selectedPartyValues when Select All is clicked
+                        onSelectAll: function () {
+                            selectedPartyValues = $('#PartyNameMulti option:visible').map(function () {
+                                return $(this).val();
+                            }).get();
+                        },
+
+                        // Clear selectedPartyValues when Deselect All is clicked
+                        onDeselectAll: function () {
+                            selectedPartyValues = [];
                         }
-                    },
-                    onSelectAll: function () {
-                        selectedPartyValues = [];
-                        $('#PartyNameMulti option').each(function () {
-                            selectedPartyValues.push($(this).val());
-                        });
-                    },
-                    onDeselectAll: function () {
-                        selectedPartyValues = [];
-                    },
-                    enableFiltering: true,
-                    enableCaseInsensitiveFiltering: true,
-                    includeSelectAllOption: true,
-                    buttonWidth: '100%',
-                    maxHeight: 300,
-                    nonSelectedText: 'Select Party',
-                    allSelectedText: 'All selected',
-                    numberDisplayed: 2,
-                });
+                    });
+                }
 
             } else {
-                // Hide multi-select and show single-select
+                // Hide multi, show single
                 PartynameMultiDropdown.hide();
                 PartynameSingleDropdown.show();
 
-                // Destroy multiselect if initialized
+                // Destroy multiselect if exists
                 if (PartynameMultiDropdown.data('multiselect')) {
                     PartynameMultiDropdown.multiselect('destroy');
                 }
 
                 selectedPartyValues = [];
 
-                // Load party options
+                // Fill options
                 FillPartyName();
 
-                // Re-initialize Select2 for single-select
+                // Initialize Select2
                 PartynameSingleDropdown.select2({
                     width: '100%',
                     placeholder: 'Select Party',
@@ -418,8 +426,9 @@
                         });
                     } else {
                         PartynameMultiDropdown.empty();
-
+                        debugger
                         $.each(obj.Result, function (index, item) {
+                            debugger
                             PartynameMultiDropdown.append('<option value="' + item.Account_Code + '">' + item.PartyName + '</option>');
                         });
 
