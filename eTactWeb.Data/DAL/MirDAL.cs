@@ -957,5 +957,25 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
+        public async Task<ResponseResult> GenerateBarCodeTag(string MIRNo, int YearCode, string ItemCodes)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@MRN_No", MIRNo));
+                SqlParams.Add(new SqlParameter("@Year_code", YearCode));
+                SqlParams.Add(new SqlParameter("@ItemCode", ItemCodes));
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("spGenerateIncomingBarcode", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
     }
 }

@@ -36,5 +36,6 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetOkRecStore(int ItemCode,string ShowAllStore);
         Task<ResponseResult> DeleteByID(int ID, int YC);
         Task<ResponseResult> GetReportName();
+        Task<ResponseResult> GenerateBarCodeTag(string MIRNo, int YearCode, string ItemCodes);
     }
 }

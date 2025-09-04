@@ -11,6 +11,7 @@ namespace eTactWeb.Services.Interface
     public interface IVendorMater
     {
         Task<ResponseResult> FillEntryId();
+        Task<ResponseResult> ViewDataByVendor(int accountCode);
         Task<ResponseResult> FillVendorList(string isShowAll);
         Task<ResponseResult> CheckUserDuplication(int userId);
         Task<ResponseResult> SaveVendorUser(VendorUserModel model);

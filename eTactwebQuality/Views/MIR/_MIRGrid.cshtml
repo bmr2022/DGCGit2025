@@ -13,8 +13,7 @@ else
         <input type="hidden" id="ItemCode-@item.SeqNo" data-ItemGrid="@item.ItemCode" />
         <tr class="small" style="white-space:nowrap" id="MIRRowGrid-@item.SeqNo">
             <td>@item.SeqNo</td>
-            <td style="white-space:nowrap;">
-                
+            <td style="white-space:nowrap;">   
                     <a class="table-link link-primary" id="BtnEdit-@item.SeqNo" onclick="EditItemRowFromGrid(@item.SeqNo)">
                         <span class="fa-stack">
                         <i class="fa fa-square fa-stack-2x"></i>
@@ -22,6 +21,7 @@ else
                     </span>
                 </a>
             </td>
+            <td><input type="checkbox" class="checkManual" value="@item.ItemCode" onclick="ManualCheck(this)" /></td>
             <td>@item.PartCode</td>
             <td>@item.ItemName</td>
             <td>@item.BillQty</td>
