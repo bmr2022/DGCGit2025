@@ -1043,7 +1043,7 @@ namespace eTactWeb.Controllers
                     foreach (var item in saleBillDetail)
                     {
                         Indx++;
-                        //item.SeqNo = Indx;
+                        item.SeqNo = Indx;
                     }
                     MainModel.saleBillDetails = saleBillDetail;
 
@@ -1069,7 +1069,7 @@ namespace eTactWeb.Controllers
                     foreach (var item in saleBillGrid)
                     {
                         Indx++;
-                        //item.SeqNo = Indx;
+                        item.SeqNo = Indx;
                     }
                     MainModel.saleBillDetails = saleBillGrid;
 
@@ -1190,7 +1190,7 @@ namespace eTactWeb.Controllers
                 {
                     if (SaleBillDetail == null)
                     {
-                        //model.SeqNo = 1;
+                        model.SeqNo = 1;
                         saleBillDetail.Add(model);
                     }
                     else
@@ -1200,7 +1200,7 @@ namespace eTactWeb.Controllers
                             return StatusCode(207, "Duplicate");
                         }
 
-                        //model.SeqNo = SaleBillDetail.Count + 1;
+                        model.SeqNo = SaleBillDetail.Count + 1;
                         saleBillDetail = SaleBillDetail.Where(x => x != null).ToList();
                         rangeSaleBillGrid.AddRange(saleBillDetail);
                         saleBillDetail.Add(model);
