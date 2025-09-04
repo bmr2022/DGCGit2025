@@ -39,7 +39,7 @@ namespace eTactWeb.Data.DAL
 					oCmd.Parameters.AddWithValue("@DepriciationYearCode", DepriciationYearCode);
 					oCmd.Parameters.AddWithValue("@AssetsName", AssetsName);
 					oCmd.Parameters.AddWithValue("@DepreciationMethod", DepreciationMethod);
-					//oCmd.Parameters.AddWithValue("@AssetsCategoryName", AssetsCategoryName);
+					oCmd.Parameters.AddWithValue("@AssetsCategoryName", AssetsCategoryName);
 
 
 					await myConnection.OpenAsync();
@@ -99,6 +99,24 @@ namespace eTactWeb.Data.DAL
 				SqlParams.Add(new SqlParameter("@Flag", "NEWENTRY"));
 				SqlParams.Add(new SqlParameter("@DepriciationDate", EntryDate));
 				SqlParams.Add(new SqlParameter("@DepriciationYearCode", YearCode));
+				_ResponseResult = await _IDataLogic.ExecuteDataTable("AccSPDepriciationCalculationMainDetail", SqlParams);
+			}
+			catch (Exception ex)
+			{
+				dynamic Error = new ExpandoObject();
+				Error.Message = ex.Message;
+				Error.Source = ex.Source;
+			}
+
+			return _ResponseResult;
+		}
+        public async Task<ResponseResult> FillEssetsName()
+		{
+			var _ResponseResult = new ResponseResult();
+			try
+			{
+				var SqlParams = new List<dynamic>();
+				SqlParams.Add(new SqlParameter("@Flag", "FillAsssetsName"));
 				_ResponseResult = await _IDataLogic.ExecuteDataTable("AccSPDepriciationCalculationMainDetail", SqlParams);
 			}
 			catch (Exception ex)

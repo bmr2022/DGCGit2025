@@ -1,6 +1,6 @@
 ﻿@model eTactWeb.DOM.Models.AccDepriciationCalculationdetailModel;
 @{
-	ViewData["Title"] = "Depriciation Calculation detail";
+	ViewData["Title"] = "Depriciation Calculation";
 	Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
 <style>
@@ -97,24 +97,9 @@
 										<label asp-for="DepriciationSlipNo" class="form-label">Slip No</label>
 										<input asp-for="DepriciationSlipNo" class="form-control" readonly/>
 									</div>
-									<div class="col d-flex align-items-center" style="gap: 10px;">
-										<button type="button" class="btn btn-primary" id="btnShowAssets">Show Assets</button>
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="gap: 10px;">
+										<button type="button" class="btn btn-sm btn-outline-info" style="margin-top:12px;" id="btnShowAssets">Show Assets</button>
 									</div>
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px;">
-										<label asp-for="AssetsName" class="form-label">Assets Name</label>
-										<input asp-for="AssetsName" class="form-control" />
-									</div>
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px;">
-										<label asp-for="DepreciationMethod" class="form-label">Depreciation Method</label>
-										<input asp-for="DepreciationMethod" class="form-control"  />
-									</div>
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px;">
-										<label asp-for="AssetsCategoryName" class="form-label">Category Name</label>
-										<input asp-for="AssetsCategoryName" class="form-control" />
-									</div>
-									<button class="btn btn-sm btn-outline-info" style="padding:3px;height:30px;width:100px;margin-left:20px;margin-top:7px;" type="button" onclick="GetAssets();">
-										<i class="fa-solid fa-magnifying-glass fa-fw fa-lg "></i>SEARCH
-									</button>
 									<div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
 										<label class="form-label">Global search</label>
 										<input type="text" class="form-control" asp-for="Searchbox" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
@@ -128,6 +113,55 @@
 										<strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Depriciation Calculation Grid</strong>
 									</button>
 								</h2>
+								@* <h2 class="accordion-header" id="H_SAGrid">
+									<button class="accordion-button collapsed text-light pnl4BG bg-gradient d-flex align-items-center justify-content-between flex-wrap gap-2"
+											type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid"
+											aria-expanded="false" aria-controls="B_SAGrid">
+
+										<!-- Left side: Title -->
+										<strong class="me-3 text-uppercase d-flex align-items-center">
+											<i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade"
+											   style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>
+											Depreciation Calculation Grid
+										</strong>
+
+										<!-- Right side: Filters + Buttons -->
+										<div class="d-flex flex-wrap align-items-center gap-2">
+
+											<!-- Dropdowns -->
+											<select class="form-select form-select-sm" asp-for="AssetsName" style="width:150px;">
+												<option value="">--Select--</option>
+											</select>
+
+											<select class="form-select form-select-sm" asp-for="DepreciationMethod" style="width:150px;">
+												<option value="">--Select--</option>
+												<option value="Weighted Method">Weighted Method</option>
+												<option value="Straight-line Method" selected>Straight-line Method</option>
+											</select>
+
+											<select class="form-select form-select-sm" asp-for="AssetsCategoryName" style="width:150px;">
+												<option value="">Category</option>
+											</select>
+
+											<!-- Search Button styled like dropdown -->
+											<button class="btn btn-sm btn-primary text-white d-flex align-items-center justify-content-center"
+													style="width: 120px; height: 31px;"
+													type="button" onclick="GetAssets();">
+												<i class="fa-solid fa-magnifying-glass me-1"></i> Search
+											</button>
+
+											<!-- Reset Button styled like dropdown -->
+											<button class="btn btn-sm btn-danger text-white d-flex align-items-center justify-content-center"
+													style="width: 120px; height: 31px;"
+													type="button" onclick="ResetAssets();">
+												<i class="fa-solid fa-rotate-right me-1"></i> Reset
+											</button>
+										</div>
+									</button>
+								</h2> *@
+
+
+
 
 								<div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
 									<div class="accordion-body">
@@ -138,6 +172,37 @@
 											<div class="progress my-2 mb-3" style="height: 4px;">
 												<div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
 											</div>
+											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:240px;">
+												<label asp-for="AssetsName" class="form-label">Assets Name</label>
+												<select class="form-select" asp-for="AssetsName" style="width:220px;">
+													<option value="">-Select-</option>
+												</select>
+											</div>
+											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:240px;">
+												<label asp-for="DepreciationMethod" class="form-label">Depreciation Method</label>
+												<select class="form-select" asp-for="DepreciationMethod" style="width:220px;">
+													<option value="">-Select-</option>
+													<option value="Weighted Method">Weighted Method</option>
+													<option value="Straight-line Method" selected>Straight-line Method</option>
+												</select>
+											</div>
+											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:240px;">
+												<label asp-for="AssetsCategoryName" class="form-label">Category Name</label>
+												<select class="form-select" asp-for="AssetsCategoryName" style="width:220px;">
+													<option value="">-Select-</option>
+												</select>
+											</div>
+											<button class="btn btn-sm btn-outline-info" style="padding:3px;height:30px;width:100px;margin-left:20px;margin-top:22px;" type="button" onclick="GetAssets();">
+												<i class="fa-solid fa-magnifying-glass fa-fw fa-lg "></i>SEARCH
+											</button>
+												
+											<button class="btn btn-sm btn-outline-danger"
+													style="padding:3px;height:30px;width:100px;margin-left:20px;margin-top:22px;"
+													type="button"
+													onclick="ResetAssets();">
+												<i class="fa-solid fa-rotate-right fa-fw fa-lg"></i>RESET
+											</button>
+
 											<div class="card">
 												<div class="card-body overflow-auto pb-0">
 													<table class="table table-hover table-bordered table-striped" id="itemtable">
@@ -259,7 +324,7 @@
 								<span class="d-flex float-end" style="margin-top:-2px;">
 
 									@*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">*@
-									<a asp-controller="AccDepriciationCalculationdetail" asp-action="AccDepriciationCalculationdetail" tabindex="-1" asp-route-ID="0" class="btn btn-secondary btn-sm DashBoard">
+									<a asp-controller="AccDepriciationCalculationdetail" asp-action="AccDepriciationCalculationdetailDashBoard" tabindex="-1" asp-route-ID="0" class="btn btn-secondary btn-sm DashBoard">
 										<i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
 										Dashboard
 									</a>
@@ -325,11 +390,8 @@
 				TotalNoOfRows();
 
 			}
-			FillPartyName();
+			FillEssetsName();
 			FillCategoryName();
-			FillCategoryCode();
-			FillGroupName();
-			FillGroupCode();
 			$('#AssetsName').rules("remove", "required");
 			$('#AssetsEntryId').rules("remove", "required");
 			$('#AccountName').rules("remove", "required");
@@ -375,6 +437,9 @@
 			$('#BalanceSheetClosed').select2();
 			$('#CarryForwarded').select2();
 			$('#BlockedEntry').select2();
+			$('#AssetsName').select2();
+			$('#AssetsCategoryName').select2();
+			$('#DepreciationMethod').select2();
 
 			$('#totalRows').text($('#divStockGrid tr').length);
 
@@ -383,12 +448,13 @@
 			});
 			$("#search-box").val($('#search-box').val()).trigger('keyup');
 			$('.submitBTN').click(function (e) {
+				e.preventDefault();
 				console.log("SubmitButton Click");
 				if ($('#divDepriciationCalculationdetailGrid tr').length === 0) {
 					$.notify("Please add at least one row in the grid before submitting.", "error");
 					return;
 				}
-				e.preventDefault();
+				
 				$('form').submit();
 			});
 
@@ -398,20 +464,14 @@
 		$('#btnShowAssets').click(function (e) {
 			GetAssets();
 		});
-		// {
-		// 	var yearCode = $("#DepriciationYearCode").val();
-		// 	$.ajax({
-		// 		url: '/AccDepriciationCalculationdetail/GetAssets',
-		// 		type: 'POST',
-		// 		data: { DepriciationYearCode: yearCode },
-		// 		success: function (result) {
-		// 			$("#divDepriciationCalculationdetailGrid").html(result);
-		// 		},
-		// 		error: function () {
-		// 			alert("Error loading assets data.");
-		// 		}
-		// 	});
-		// });
+		function ResetAssets() {
+
+			$("#AssetsName").val("").trigger("change");
+			$("#DepreciationMethod").val("").trigger("change");
+			$("#AssetsCategoryName").val("").trigger("change");
+			GetAssets();
+		}
+
 
 		function GetAssets() {
 			var yearCode = $("#DepriciationYearCode").val();
@@ -532,44 +592,7 @@
 			currentSearchColumn = $(this).data('columnno');
 			$("#search-box").val('').trigger('keyup');
 		});
-		$('#CategoryCode').change(function () {
-			$('#CategoryId').val($('#CategoryCode').val());
-		});
-		$('#CategoryName').change(function () {
-			$('#CategoryId').val($('#CategoryName').val());
-		});
-
-		$('#AccountName').change(function () {
-			$('#AccountCode').val($('#AccountName').val());
-		});
-		$('#AccountName').change(function () {
-
-			var AccountCode = $('#AccountCode').val();
-			var YearCode = $('#YearCode').val();
-			if (AccountCode) {
-				$.get('/PartyItemGroupDiscount/CheckParty', { AccountCode: AccountCode }, function (res) {
-					if (res.exists) {
-						$('#Mode').val('U');
-						$.notify("This party already exists. Switching to Update mode.", "info");
-
-						var url = '/PartyItemGroupDiscount/Index?Mode=U&ID=' + encodeURIComponent(res.entryId)
-							+ '&AccountCode=' + encodeURIComponent(res.accountCode)
-							+ '&AccountName=' + encodeURIComponent(res.accountName)
-							+ '&CategoryCode=' + encodeURIComponent(res.categoryCode)
-							+ '&CategoryName=' + encodeURIComponent(res.categoryName)
-							+ '&CategoryId=' + encodeURIComponent(res.categoryId)
-							+ '&YC=' + encodeURIComponent(YearCode);
-
-						window.location.href = url;
-
-					} else {
-						$('#Mode').val('');
-					}
-				});
-			}
-		});
-
-
+		
 		function setFormattedDate() {
 			var today = new Date();
 			var day = ('0' + today.getDate()).slice(-2);
@@ -594,29 +617,50 @@
 
 
 
-		function FillPartyName() {
+		function FillEssetsName() {
 			$.ajax({
-				url: '@Url.Action("FillPartyName", "PartyItemGroupDiscount")',
+				url: '@Url.Action("FillEssetsName", "AccDepriciationCalculationdetail")',
 				type: 'POST',
 				async: false,
 				success: function (response, status, error) {
-					var Dropdown = $('#AccountName');
+					var Dropdown = $('#AssetsName');
+					var obj = $.parseJSON(response);
+					Dropdown.empty();
+					
+					Dropdown.append('<option value="">--Select--</option>');
+				
+
+
+					$.each(obj.Result, function (index, Val) {
+						Dropdown.append('<option value="' + Val.AssetsName + '">' + Val.AssetsName + '</option>');
+					});
+					
+
+				},
+				error: function (xhr, status, error) {
+					alert('Failed to load Assets.');
+				}
+			});
+		}
+		function FillCategoryName() {
+			$.ajax({
+				url: '@Url.Action("FillEssetsName", "AccDepriciationCalculationdetail")',
+				type: 'POST',
+				async: false,
+				success: function (response, status, error) {
+					var Dropdown = $('#AssetsCategoryName');
 					var obj = $.parseJSON(response);
 					Dropdown.empty();
 					Dropdown.append('<option value="">--Select--</option>');
 
 
 					$.each(obj.Result, function (index, Val) {
-						Dropdown.append('<option value="' + Val.Account_code + '">' + Val.Account_Name + '</option>');
+						Dropdown.append('<option value="' + Val.Type_Item + '">' + Val.Type_Item + '</option>');
 					});
-
-					if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-						var AccountCode = '@Model.AccountCode';
-						$('#AccountName').val(AccountCode);
-					}
+					
 				},
 				error: function (xhr, status, error) {
-					alert('Failed to load groups.');
+					alert('Failed to load Category.');
 				}
 			});
 		}

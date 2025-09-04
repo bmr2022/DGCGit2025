@@ -42,7 +42,7 @@ namespace eTactwebAccounts.Controllers
 			MainModel.ActualEntryByEmpName = HttpContext.Session.GetString("EmpName");
 			MainModel.CC = HttpContext.Session.GetString("Branch");
 			HttpContext.Session.Remove("KeyAccDepriciationCalculationdetailGrid");
-			if (!string.IsNullOrEmpty(Mode) && ID > 0 && Mode == "U")
+			if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "U" || Mode == "V"))
 			{
 				MainModel = await _IAccDepriciationCalculationdetail.GetViewByID(ID, YC).ConfigureAwait(false);
 				MainModel.Mode = Mode;
@@ -235,6 +235,12 @@ namespace eTactwebAccounts.Controllers
 		public async Task<JsonResult> FillEntryID(string EntryDate, int YearCode)
 		{
 			var JSON = await _IAccDepriciationCalculationdetail.FillEntryID(EntryDate, YearCode);
+			string JsonString = JsonConvert.SerializeObject(JSON);
+			return Json(JsonString);
+		}
+		public async Task<JsonResult> FillEssetsName()
+		{
+			var JSON = await _IAccDepriciationCalculationdetail.FillEssetsName();
 			string JsonString = JsonConvert.SerializeObject(JSON);
 			return Json(JsonString);
 		}

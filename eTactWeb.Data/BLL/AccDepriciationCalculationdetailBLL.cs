@@ -34,6 +34,10 @@ namespace eTactWeb.Data.BLL
 		{
 			return await _AccDepriciationCalculationdetailDAL.FillEntryID(EntryDate,YearCode);
 		}
+		public async Task<ResponseResult> FillEssetsName()
+		{
+			return await _AccDepriciationCalculationdetailDAL.FillEssetsName();
+		}
         public async Task<ResponseResult> GetDashboardData(AccDepriciationCalculationdetailModel model)
         {
             return await _AccDepriciationCalculationdetailDAL.GetDashboardData(model);
