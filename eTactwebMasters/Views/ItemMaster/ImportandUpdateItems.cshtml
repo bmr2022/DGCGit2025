@@ -533,7 +533,7 @@
                 let worksheet = workbook.Sheets[sheetName];
 
                 // Convert to JSON (header row automatically used)
-                let jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+                let jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: "" });
 
                 let table = "<table class='table table-bordered table-striped'>";
                 table += "<thead><tr>";
@@ -548,7 +548,7 @@
                     let row = jsonData[i];
                     table += "<tr>";
                     row.forEach(cell => {
-                        table += `<td>${cell ?? ""}</td>`;
+                        table += `<td>${cell}</td>`; // now empty cells stay aligned
                     });
                     table += "</tr>";
                 }
@@ -558,6 +558,7 @@
             };
             reader.readAsArrayBuffer(file);
         });
+
 
         document.getElementById("MultiexcelFile").addEventListener("change", function (e) {
             let file = e.target.files[0];

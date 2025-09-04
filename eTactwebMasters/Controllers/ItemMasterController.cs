@@ -2320,6 +2320,36 @@ public class ItemMasterController : Controller
 
                         try
                         {
+                            if (dbCol == "ParentCode")  // <-- Special handling for ParentCode
+                            {
+                                string groupName = value.ToString().Trim();
+
+                                int ParentCode = 0;
+                                var groupCode =  _IItemMaster.GetItemGroupCode(groupName);
+
+                                if (groupCode.Result.Result != null && groupCode.Result.Result.Rows.Count > 0)
+                                {
+                                    ParentCode = (int)groupCode.Result.Result.Rows[0].ItemArray[0];
+                                }
+                               
+                                else
+                                {
+                                    ParentCode = 0;
+                                }
+
+                                if (ParentCode!=0)
+                                    value = ParentCode;   // replace with code
+                                else
+                                {
+                                    return Json(new
+                                    {
+                                        StatusCode = 200,
+                                        StatusText = "Please Enter valid group"
+                                       
+                                    });
+                                }
+                                   
+                            }
                             if (columnType == typeof(int))
                                 value = int.Parse(value.ToString());
                             else if (columnType == typeof(decimal))
