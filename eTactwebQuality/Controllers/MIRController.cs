@@ -882,11 +882,64 @@ namespace eTactWeb.Controllers
             return Json(JsonString);
         }
         [HttpPost]
-        public async Task<JsonResult> GenerateBarCodeTag(string MIRNo, int YearCode, string ItemCodes)
-        {
-            var JSON = await _IMirModule.GenerateBarCodeTag(MIRNo, YearCode, ItemCodes);
-            string JsonString = JsonConvert.SerializeObject(JSON);
-            return Json(JsonString);
-        }
-    }
+
+		public async Task<JsonResult> GenerateBarCodeTag(string MIRNo, int YearCode, string ItemCodes)
+		{
+			var JSON = await _IMirModule.GenerateBarCodeTag(MIRNo, YearCode, ItemCodes);
+
+			// if SP saved successfully, build PrintReport URL
+			if (JSON != null && JSON.Result != null && JSON.Result.Tables.Count > 0 && JSON.Result.Tables[0].Rows.Count > 0)
+			{
+				// Example: take EntryId from your SP result (adjust column name accordingly)
+				int entryId = Convert.ToInt32(JSON.Result.Tables[0].Rows[0]["EntryId"]);
+
+				// Build PrintReport URL
+				string reportUrl = Url.Action("PrintBarcodeTag", "MIR", new
+				{
+					EntryId = entryId,
+					YearCode = YearCode,
+					MrnNo = MIRNo
+				});
+
+				return Json(reportUrl); // return URL to AJAX
+			}
+
+			return Json(null);
+		}
+		public IActionResult PrintBarcodeTag(int EntryId = 0, int YearCode = 0, string MrnNo = "")
+		{
+			string my_connection_string;
+			string contentRootPath = _IWebHostEnvironment.ContentRootPath;
+			string webRootPath = _IWebHostEnvironment.WebRootPath;
+			var webReport = new WebReport();
+			webReport.Report.Clear();
+			var ReportName = _IMirModule.GetReportName();
+			webReport.Report.Dispose();
+			webReport.Report = new Report();
+			if (!String.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
+			{
+				webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0].ToString() + ".frx");
+			}
+			else
+			{
+				webReport.Report.Load(webRootPath + "\\MIRGenerateIncomingBarcode.frx"); // default report
+			}
+
+
+			my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+			webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+			webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
+			webReport.Report.SetParameterValue("MrnNoparam", MrnNo);
+			webReport.Report.SetParameterValue("MrnYearcodeparam", YearCode);
+			webReport.Report.SetParameterValue("MyParameter", my_connection_string);
+			webReport.Report.Refresh();
+			return View(webReport);
+		}
+		//public async Task<JsonResult> GenerateBarCodeTag(string MIRNo, int YearCode, string ItemCodes)
+		//{
+		//    var JSON = await _IMirModule.GenerateBarCodeTag(MIRNo, YearCode, ItemCodes);
+		//    string JsonString = JsonConvert.SerializeObject(JSON);
+		//    return Json(JsonString);
+		//}
+	}
 }
