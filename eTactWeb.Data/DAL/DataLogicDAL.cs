@@ -518,6 +518,14 @@ namespace eTactWeb.Data.DAL
                                     Value = Reader[Constants.EmpyID].ToString()
                                 };
                             }
+                            else if (Flag == "FillEmployee")
+                            {
+                                Listval = new TextValue()
+                                {
+                                    Text = Reader[Constants.EmpName].ToString(),
+                                    Value = Reader[Constants.EmpyID].ToString()
+                                };
+                            }
                             else if (Flag == "FillPartCode")
                             {
                                 Listval = new TextValue()
