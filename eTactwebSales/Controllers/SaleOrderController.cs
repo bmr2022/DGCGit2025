@@ -64,7 +64,7 @@ public class SaleOrderController : Controller
         webReport = new WebReport();
         
         ViewBag.EntryId = EntryId;
-        ViewBag.YearCode = YearCode;
+        ViewBag.YearCode = YearCode; 
         ViewBag.SONO = SONO;
         ViewBag.ShowOnlyAmendItem = ShowOnlyAmendItem;
         ViewBag.AmmNo = AmmNo;

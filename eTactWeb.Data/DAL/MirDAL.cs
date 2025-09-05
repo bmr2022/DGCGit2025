@@ -963,7 +963,7 @@ namespace eTactWeb.Data.DAL
             try
             {
                 var SqlParams = new List<dynamic>();
-                SqlParams.Add(new SqlParameter("@MRN_No", MIRNo));
+                SqlParams.Add(new SqlParameter("@MIR_No", MIRNo));
                 SqlParams.Add(new SqlParameter("@Year_code", YearCode));
                 SqlParams.Add(new SqlParameter("@ItemCode", ItemCodes));
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("spGenerateIncomingBarcode", SqlParams);

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="09/02/2023 14:19:27" ReportInfo.Modified="09/05/2025 15:38:45" ReportInfo.CreatorVersion="2023.2.0.0">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="09/02/2023 14:19:27" ReportInfo.Modified="09/05/2025 15:08:28" ReportInfo.CreatorVersion="2023.2.0.0">
   <ScriptText>using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -20,7 +20,15 @@ namespace FastReport
   {
     
 
-   
+    private void Text240_BeforePrint(object sender, EventArgs e)
+    {
+      decimal  value1 = ToDecimal(Report.GetColumnValue(&quot;SpSaleOrderReportForPrintout.NetAmount&quot;));
+    
+      if (value1%1 == 0 )
+      Text240.Text = ToString(FormatNumber(value1,0))  ;
+     
+      
+    }
     
     private void Text324_BeforePrint(object sender, EventArgs e)
     {
@@ -52,7 +60,17 @@ namespace FastReport
      
     }
 
-  
+    private void Text332_BeforePrint(object sender, EventArgs e)
+    {
+      decimal  value2 = ToDecimal(Report.GetColumnValue(&quot;SpSaleOrderReportForPrintout.BasicAmount&quot;));
+      decimal  value3 = ToDecimal(Report.GetColumnValue(&quot;SpSaleOrderReportForPrintout.NetAmount&quot;));
+      decimal value4 = value2 + value3-value2;
+    
+     
+        Text332.Text = value4.ToString(&quot;F2&quot;);
+    }
+
+    
 
     private void Text355_BeforePrint(object sender, EventArgs e)
     {
@@ -105,7 +123,7 @@ namespace FastReport
     <Style Name="EvenRows" Fill.Color="WhiteSmoke" Font="Arial, 10pt"/>
   </Styles>
   <Dictionary>
-    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqwYf2D6LPIs5GRi9VfJb9gu9ucqaRfzVvUaVne08cIFURWyyEsxwQsmngwHHahRU5IBf1gWxFxthjvCI+9BjhcR8BjTz2iHCnSBTgRKTkqutDkjIRRL0Lr+gAV5vh4t47BklN+Df+gZ1BDy0zz0wKb8ihM9loU9dXTaRaB3iM7MkRkKOWKZEyucGuTvDipndFarxDFlx1dudwgVsZAyT13A==" ConnectionStringExpression="[MyParameter]">
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqwYf2D6LPIs5GRi9VfJb9gu9ucqaRfzVvUaVne08cIFURWyyEsxwQsmngwHHahRU5IBf1gWxFxthjvCI+9BjhcR8BjTz2iHCnSBTgRKTkqutDkjIRRL0Lr+gAV5vh4t47BklN+Df+gZ1BDy0zz0wKb8ihM9loU9dXTaRaB3iM7MkRkKOWKZEyucGuTvDipndFG/2WYCehFdHEBY4nVarK1g==" ConnectionStringExpression="[MyParameter]">
       <TableDataSource Name="Table" Alias="SpSaleOrderReportForPrintout" DataType="System.Int32" Enabled="true" SelectCommand="exec SpSaleOrderReportForPrintout @EntryId=@entryparam,@yearCode=@yearparam,@ShowOnlyAmendItem=@ShowOnlyAmendItemparam,@AmendNo=@AmmNo">
         <Column Name="Account_Name" DataType="System.String"/>
         <Column Name="AccountCode" DataType="System.Int64"/>
@@ -268,8 +286,8 @@ namespace FastReport
         <Column Name="ProjQty2" DataType="System.Double"/>
         <CommandParameter Name="entryparam" Expression="entryparam"/>
         <CommandParameter Name="yearparam" Expression="yearparam"/>
-        <CommandParameter Name="ShowOnlyAmendItemparam" DataType="22" Size="200" Expression="ShowOnlyAmendItemparam"/>
-        <CommandParameter Name="AmmNo" DataType="22" Size="200" Expression="AmmNo"/>
+        <CommandParameter Name="ShowOnlyAmendItemparam" DataType="22" Expression="ShowOnlyAmendItemparam"/>
+        <CommandParameter Name="AmmNo" DataType="22" Expression="AmmNo"/>
       </TableDataSource>
     </MsSqlDataConnection>
     <Relation Name="Account_Head_Master_Company_Detail" ParentDataSource="null" ChildDataSource="null" ParentColumns="CC" ChildColumns="CC" Enabled="true"/>
@@ -284,11 +302,11 @@ namespace FastReport
     <Total Name="Totalcgst" Expression="[SpSaleOrderReportForPrintout.CGSTAMT]" Evaluator="Data1" ResetAfterPrint="false"/>
     <Total Name="TotalSGST" Expression="[SpSaleOrderReportForPrintout.SGSTAMT]" Evaluator="Data1" ResetAfterPrint="false"/>
     <Total Name="TotalIGST" Expression="[SpSaleOrderReportForPrintout.IGSTAMT]" Evaluator="Data1" ResetAfterPrint="false"/>
-    <Total Name="TotalAmt" Expression="[SpSaleOrderReportForPrintout.Amount]" Evaluator="Data1" PrintOn="ReportSummary1"/>
   </Dictionary>
   <ReportPage Name="Page1" RawPaperSize="9" LeftMargin="1.5" TopMargin="0.7" RightMargin="1.5" BottomMargin="0.5" Watermark.Font="Arial, 60pt">
     <ReportTitleBand Name="ReportTitle1" Width="782.46"/>
     <PageHeaderBand Name="PageHeader1" Top="3.2" Width="782.46" Height="322.06">
+      <LineObject Name="Line187" Left="2.27" Top="321.3" Width="773.01"/>
       <TextObject Name="Text252" Left="94.5" Top="292.95" Width="151.2" Height="28.35" VisibleExpression="[SpSaleOrderReportForPrintout.AmmNo]!=0" Text="[SpSaleOrderReportForPrintout.AmendApproveDate]" Format="Date" Format.Format="d" Font="Arial, 10pt"/>
       <TextObject Name="Text16" Left="9.45" Top="292.95" Width="85.05" Height="18.9" Text="Amm. Date:" Font="Arial, 10pt"/>
       <TextObject Name="Text248" Left="94.5" Top="274.05" Width="141.75" Height="18.9" Text="[SpSaleOrderReportForPrintout.AmmNo]" HideZeros="true" Font="Arial, 10pt"/>
@@ -338,70 +356,102 @@ namespace FastReport
       <TextObject Name="Text340" Left="217.35" Top="302.4" Width="103.95" Height="18.9" Text="Amm.Eff. Date:" Font="Arial, 10pt"/>
       <TextObject Name="Text355" Left="321.3" Top="302.4" Width="75.6" Height="18.9" BeforePrintEvent="Text355_BeforePrint" Font="Arial, 10pt"/>
       <ChildBand Name="Child3" Top="328.46" Width="782.46" Height="56.7">
-        <TextObject Name="Text98" Left="132.3" Top="13.45" Width="94.5" Height="18.9" Text="Group" HorzAlign="Center" Font="Arial, 10pt"/>
-        <TextObject Name="Text105" Left="311.85" Top="13.45" Width="122.85" Height="18.9" Text="Description" HorzAlign="Center" Font="Arial, 10pt"/>
-        <TextObject Name="Text303" Left="510.3" Top="13.61" Width="56.7" Height="23.06" Text="Unit" HorzAlign="Center" Font="Arial, 10pt"/>
-        <LineObject Name="Line208" Left="699.3" Height="56.7"/>
-        <TextObject Name="Text309" Left="449.82" Top="12.47" Width="56.7" Height="18.9" Text="Qty" HorzAlign="Center" Font="Arial, 10pt"/>
-        <TextObject Name="Text115" Left="9.45" Top="13.45" Width="28.35" Height="37.8" Text="Sr No." HorzAlign="Center" Font="Arial, 10pt"/>
-        <TextObject Name="Text116" Left="47.25" Top="13.45" Width="85.05" Height="37.8" Text="Location" HorzAlign="Center" Font="Arial, 10pt"/>
-        <TextObject Name="Text107" Left="567" Top="13.45" Width="66.15" Height="22.68" Text="Rate" HorzAlign="Center" Font="Arial, 10pt"/>
-        <TextObject Name="Text110" Left="633.15" Top="13.45" Width="66.15" Height="18.9" Text="Dis" HorzAlign="Center" Font="Arial, 10pt"/>
-        <TextObject Name="Text113" Left="699.3" Top="13.45" Width="75.6" Height="18.9" Text="Amount" HorzAlign="Center" Font="Arial, 10pt"/>
+        <TextObject Name="Text106" Left="529.2" Top="32.35" Width="37.8" Height="18.9" Text="%" HorzAlign="Center" Font="Arial, 11pt"/>
+        <TextObject Name="Text108" Left="567" Top="32.35" Width="37.8" Height="18.9" Text="Amt" Font="Arial, 10pt"/>
+        <TextObject Name="Text109" Left="604.8" Top="32.35" Width="37.8" Height="18.9" Text="%" HorzAlign="Center" Font="Arial, 11pt"/>
+        <TextObject Name="Text111" Left="642.6" Top="32.35" Width="37.8" Height="18.9" Text="Amt" Font="Arial, 10pt"/>
+        <TextObject Name="Text114" Left="727.65" Top="32.35" Width="47.25" Height="18.9" Text="Amt" Font="Arial, 10pt"/>
+        <LineObject Name="Line210" Left="604.8" Top="37.8" Height="-9.45"/>
+        <TextObject Name="Text338" Left="680.4" Top="32.51" Width="37.8" Height="18.9" Text="%" HorzAlign="Center" Font="Arial, 11pt"/>
+        <LineObject Name="Line203" Left="530.33" Top="28.35" Width="245.7"/>
+        <LineObject Name="Line205" Left="567" Top="28.35" Height="28.35"/>
+        <LineObject Name="Line207" Left="638.82" Top="28.35" Height="18.9"/>
+        <TextObject Name="Text99" Left="321.3" Top="22.9" Width="37.8" Height="18.9" Text="QTY" HorzAlign="Center" Font="Arial, 10pt"/>
+        <TextObject Name="Text100" Left="359.1" Top="22.9" Width="37.8" Height="18.9" Text="UOM" HorzAlign="Center" Font="Arial, 10pt"/>
+        <TextObject Name="Text101" Left="387.45" Top="22.9" Width="56.7" Height="18.9" Text="RATE" HorzAlign="Center" Font="Arial, 10pt"/>
+        <TextObject Name="Text98" Left="122.85" Top="22.9" Width="132.3" Height="18.9" Text="Item Name" HorzAlign="Center" Font="Arial, 10pt"/>
+        <TextObject Name="Text105" Left="274.05" Top="22.9" Width="37.8" Height="18.9" Text="HSN" Font="Arial, 10pt"/>
+        <TextObject Name="Text303" Left="472.5" Top="23.06" Width="56.7" Height="13.61" Text="Total" HorzAlign="Center" Font="Arial, 10pt"/>
+        <LineObject Name="Line208" Left="680.4" Top="18.9" Height="37.8"/>
+        <LineObject Name="Line209" Left="720.09" Top="18.9" Height="37.8"/>
+        <TextObject Name="Text309" Left="440.37" Top="21.92" Width="37.8" Height="18.9" Text="Disc" HorzAlign="Center" Font="Arial, 10pt"/>
+        <TextObject Name="Text115" Left="9.45" Top="13.45" Width="28.35" Height="37.8" Text="S. NO." HorzAlign="Center" Font="Arial, 10pt"/>
+        <TextObject Name="Text116" Left="37.8" Top="13.45" Width="75.6" Height="37.8" Text="Part Number" HorzAlign="Center" Font="Arial, 10pt"/>
+        <TextObject Name="Text107" Left="538.65" Top="4" Width="47.25" Height="13.23" Text="CGST " Font="Arial, 10pt"/>
+        <TextObject Name="Text110" Left="623.7" Top="4" Width="47.25" Height="18.9" Text="SGST" Font="Arial, 10pt"/>
+        <TextObject Name="Text113" Left="708.75" Top="4" Width="37.8" Height="18.9" Text="IGST " Font="Arial, 10pt"/>
         <LineObject Name="Line195" Left="37.8" Height="56.7"/>
-        <LineObject Name="Line197" Left="228.69" Height="56.7"/>
-        <LineObject Name="Line200" Left="443.39" Height="56.7"/>
-        <LineObject Name="Line202" Left="567" Height="56.7"/>
-        <LineObject Name="Line206" Left="633.15" Height="56.7"/>
+        <LineObject Name="Line197" Left="266.49" Height="56.7"/>
+        <LineObject Name="Line198" Left="321.3" Height="56.7"/>
+        <LineObject Name="Line199" Left="359.1" Height="56.7"/>
+        <LineObject Name="Line200" Left="396.14" Height="56.7"/>
+        <LineObject Name="Line202" Left="529.2" Height="56.7"/>
+        <LineObject Name="Line206" Left="604.8" Height="56.7"/>
+        <LineObject Name="Line211" Left="680.4" Height="18.9"/>
+        <LineObject Name="Line214" Left="444.15" Height="56.7"/>
         <LineObject Name="Line250" Left="132.3" Height="56.7"/>
-        <LineObject Name="Line251" Left="510.3" Height="56.7"/>
-        <LineObject Name="Line284" Left="311.85" Height="56.7"/>
-        <TextObject Name="Text359" Left="226.8" Top="9.45" Width="85.05" Height="18.9" Text="Part No." HorzAlign="Center" Font="Arial, 10pt"/>
-        <LineObject Name="Line285" Height="56.7"/>
-        <LineObject Name="Line286" Left="774.9" Height="56.7"/>
-        <LineObject Name="Line187" Left="2.27" Width="773.01"/>
-        <LineObject Name="Line287" Top="56.7" Width="773.01"/>
+        <LineObject Name="Line251" Left="472.5" Height="56.7"/>
+        <ShapeObject Name="Shape3" Left="1.51" Width="775.28" Height="56.7"/>
       </ChildBand>
     </PageHeaderBand>
     <GroupHeaderBand Name="GroupHeader2" Top="388.36" Width="782.46" Condition="[SpSaleOrderReportForPrintout.SeqNo]">
       <GroupHeaderBand Name="GroupHeader1" Top="391.56" Width="782.46" Height="28.35" CanGrow="true" Guides="28.35,28.35" Condition="[SpSaleOrderReportForPrintout.PartCode]">
+        <TextObject Name="Text310" Left="37.8" Width="94.5" Height="28.35" CanGrow="true" Text="[SpSaleOrderReportForPrintout.PartCode]" Font="Arial, 8pt"/>
+        <TextObject Name="Text312" Left="264.6" Width="56.7" Height="28.35" Text="[SpSaleOrderReportForPrintout.HSNNo]" HorzAlign="Center" Font="Arial, 9pt"/>
+        <TextObject Name="Text314" Left="359.1" Width="37.8" Height="28.35" Text="[SpSaleOrderReportForPrintout.Unit]" Font="Arial, 9pt"/>
+        <TextObject Name="Text315" Left="396.9" Width="47.25" Height="18.9" Text="[SpSaleOrderReportForPrintout.Rate]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" WordWrap="false" Font="Arial, 9pt" Trimming="EllipsisCharacter"/>
+        <TextObject Name="Text316" Left="444.15" Width="28.35" Height="18.9" Text="[SpSaleOrderReportForPrintout.DiscPer]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" WordWrap="false" Font="Arial, 9pt" Trimming="EllipsisCharacter"/>
+        <TextObject Name="Text317" Left="472.5" Width="56.7" Height="18.9" Text="[SpSaleOrderReportForPrintout.ItemBasicAmount]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Center" WordWrap="false" Font="Arial, 9pt" Trimming="EllipsisCharacter"/>
+        <TextObject Name="Text318" Left="529.2" Width="37.8" Height="18.9" Text="[SpSaleOrderReportForPrintout.CGSTPER]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" WordWrap="false" Font="Arial, 9pt" Trimming="EllipsisCharacter"/>
+        <TextObject Name="Text319" Left="567" Width="37.8" Height="18.9" Text="[SpSaleOrderReportForPrintout.CGSTAMT]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" WordWrap="false" Font="Arial, 9pt" Trimming="EllipsisCharacter"/>
+        <TextObject Name="Text320" Left="604.8" Width="37.8" Height="18.9" Text="[SpSaleOrderReportForPrintout.SGSTPER]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" WordWrap="false" Font="Arial, 9pt" Trimming="EllipsisCharacter"/>
+        <TextObject Name="Text321" Left="642.6" Width="37.8" Height="18.9" Text="[SpSaleOrderReportForPrintout.SGSTAMT]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" WordWrap="false" Font="Arial, 9pt" Trimming="EllipsisCharacter"/>
+        <TextObject Name="Text322" Left="680.4" Width="37.8" Height="18.9" Text="[SpSaleOrderReportForPrintout.IGSTPER]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" WordWrap="false" Font="Arial, 9pt" Trimming="EllipsisCharacter"/>
+        <TextObject Name="Text323" Left="727.65" Width="47.25" Height="18.9" Text="[SpSaleOrderReportForPrintout.IGSTAMT]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" WordWrap="false" Font="Arial, 9pt" Trimming="EllipsisCharacter"/>
         <TextObject Name="Text356" Left="9.45" Top="9.45" Width="28.35" Height="18.9" CanGrow="true" Text="[SpSaleOrderReportForPrintout.SeqNo]" Font="Arial, 10pt"/>
         <LineObject Name="Line268" Height="28.35" GrowToBottom="true"/>
         <LineObject Name="Line269" Left="37.8" Height="28.35" GrowToBottom="true"/>
         <LineObject Name="Line270" Left="132.3" Height="28.35" GrowToBottom="true"/>
-        <LineObject Name="Line271" Left="229.82" Height="28.35" GrowToBottom="true"/>
-        <LineObject Name="Line272" Left="311.85" Height="28.35" GrowToBottom="true"/>
+        <LineObject Name="Line271" Left="264.6" Height="28.35" GrowToBottom="true"/>
+        <LineObject Name="Line272" Left="321.3" Height="28.35" GrowToBottom="true"/>
+        <LineObject Name="Line273" Left="359.1" Height="28.35" GrowToBottom="true"/>
+        <LineObject Name="Line274" Left="396.9" Height="28.35" GrowToBottom="true"/>
         <LineObject Name="Line275" Left="444.15" Height="28.35" GrowToBottom="true"/>
-        <LineObject Name="Line277" Left="510.3" Height="28.35" GrowToBottom="true"/>
+        <LineObject Name="Line276" Left="472.5" Height="28.35" CanGrow="true" GrowToBottom="true"/>
+        <LineObject Name="Line277" Left="529.2" Height="28.35" GrowToBottom="true"/>
         <LineObject Name="Line278" Left="567" Height="28.35" GrowToBottom="true"/>
-        <LineObject Name="Line282" Left="699.3" Height="28.35" GrowToBottom="true"/>
+        <LineObject Name="Line279" Left="604.8" Height="28.35" GrowToBottom="true"/>
+        <LineObject Name="Line281" Left="680.4" Height="28.35" GrowToBottom="true"/>
+        <LineObject Name="Line282" Left="718.2" Height="28.35" GrowToBottom="true"/>
         <LineObject Name="Line283" Left="774.9" Height="28.35" GrowToBottom="true"/>
-        <LineObject Name="Line280" Left="633.15" Height="28.35" GrowToBottom="true"/>
-        <TextObject Name="Text360" Left="226.8" Top="9.45" Width="85.05" Height="18.9" CanGrow="true" CanBreak="false" Text="[SpSaleOrderReportForPrintout.PartCode]" HorzAlign="Center" Font="Arial, 8pt"/>
-        <TextObject Name="Text362" Left="444.15" Top="9.45" Width="66.15" Height="18.9" Text="[SpSaleOrderReportForPrintout.SOQty]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 10pt" Trimming="EllipsisCharacter"/>
-        <TextObject Name="Text363" Left="567" Top="9.45" Width="66.15" Height="18.9" Text="[SpSaleOrderReportForPrintout.Rate]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 10pt" Trimming="EllipsisCharacter"/>
-        <TextObject Name="Text364" Left="633.15" Top="9.45" Width="66.15" Height="18.9" Text="[SpSaleOrderReportForPrintout.Discount]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 10pt" Trimming="EllipsisCharacter"/>
-        <TextObject Name="Text365" Left="699.3" Top="9.45" Width="75.6" Height="18.9" Text="[SpSaleOrderReportForPrintout.Amount]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 10pt" Trimming="EllipsisCharacter"/>
-        <TextObject Name="Text368" Left="510.3" Top="9.45" Width="56.7" Height="18.9" CanGrow="true" CanBreak="false" Text="[SpSaleOrderReportForPrintout.Unit]" HorzAlign="Center" Font="Arial, 8pt"/>
-        <TextObject Name="Text369" Left="311.85" Top="9.45" Width="132.3" Height="18.9" CanGrow="true" CanBreak="false" Text="[SpSaleOrderReportForPrintout.Item_Name]" HorzAlign="Center" Font="Arial, 8pt"/>
+        <LineObject Name="Line280" Left="642.6" Height="28.35" GrowToBottom="true"/>
+        <TextObject Name="Text311" Left="132.3" Width="132.3" Height="28.35" CanGrow="true" Text="[SpSaleOrderReportForPrintout.Item_Name]" Font="Arial, 8pt"/>
+        <TextObject Name="Text357" Left="321.3" Top="9.45" Width="37.8" Height="18.9" CanGrow="true" CanBreak="false" Text="[SpSaleOrderReportForPrintout.PendQty]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Center" WordWrap="false" Font="Arial, 8pt" Trimming="EllipsisCharacter"/>
         <DataBand Name="Data1" Top="423.11" Width="782.46" EvenStyle="EvenRows" Guides="0,0,0" DataSource="Table" KeepTogether="true"/>
       </GroupHeaderBand>
       <GroupFooterBand Name="GroupFooter1" Top="426.31" Width="782.46"/>
     </GroupHeaderBand>
     <ReportSummaryBand Name="ReportSummary1" Top="429.51" Width="782.46" Height="417.69">
+      <TextObject Name="Text241" Left="47.25" Top="75.6" Width="378" Height="18.9" GrowToBottom="true" Text="[SpSaleOrderReportForPrintout.NetAmtInWord]" Font="Arial, 11pt"/>
       <TextObject Name="Text167" Left="37.8" Top="236.25" Width="94.5" Height="18.9" Text="Prepared By:" Font="Arial, 10pt"/>
       <TextObject Name="Text170" Left="633.15" Top="236.25" Width="94.5" Height="18.9" Text="Approved By:" Font="Arial, 10pt"/>
       <LineObject Name="Line99" Left="1.89" Top="255.15" Width="773.01"/>
-      <TextObject Name="Text166" Left="9.45" Top="160.65" Width="94.5" Height="18.9" Text="Remark:" Font="Arial, 9pt"/>
+      <TextObject Name="Text166" Left="9.45" Top="170.1" Width="94.5" Height="18.9" Text="Remark:" Font="Arial, 9pt"/>
       <LineObject Name="Line173" Width="774.9"/>
       <TextObject Name="Text283" Left="302.4" Top="236.25" Width="94.5" Height="18.9" Text="Checked By:" Font="Arial, 10pt"/>
-      <TextObject Name="Text290" Left="378" Top="94.5" Width="103.95" Height="18.9" Text="Payment Terms:" Font="Arial, 9pt"/>
-      <TextObject Name="Text299" Left="481.95" Top="94.5" Width="292.95" Height="37.8" Text="[SpSaleOrderReportForPrintout.PaymentTerms]" Font="Arial, 9pt"/>
-      <TextObject Name="Text285" Left="9.45" Top="94.5" Width="122.85" Height="18.9" Text="Delivery Terms:" Font="Arial, 9pt"/>
-      <TextObject Name="Text284" Left="9.45" Top="66.15" Width="122.85" Height="18.9" Text="Place Of Delivery:" Font="Arial, 9pt"/>
-      <TextObject Name="Text288" Left="9.45" Top="122.85" Width="103.95" Height="18.9" Text="Insurance:" Font="Arial, 9pt"/>
+      <TextObject Name="Text290" Left="378" Top="122.85" Width="103.95" Height="18.9" Text="Payment Terms:" Font="Arial, 9pt"/>
+      <TextObject Name="Text299" Left="481.95" Top="122.85" Width="292.95" Height="37.8" Text="[SpSaleOrderReportForPrintout.PaymentTerms]" Font="Arial, 9pt"/>
+      <TextObject Name="Text285" Left="9.45" Top="132.3" Width="122.85" Height="18.9" Text="Delivery Terms:" Font="Arial, 9pt"/>
+      <TextObject Name="Text284" Left="9.45" Top="113.4" Width="122.85" Height="18.9" Text="Place Of Delivery:" Font="Arial, 9pt"/>
+      <TextObject Name="Text288" Left="9.45" Top="151.2" Width="103.95" Height="18.9" Text="Insurance:" Font="Arial, 9pt"/>
       <LineObject Name="Line192" Top="207.9" Width="773.01"/>
-      <LineObject Name="Line234" Top="47.25" Width="773.01" GrowToBottom="true"/>
+      <TextObject Name="Text262" Left="548.1" Top="75.6" Width="47.25" Height="18.9" Text="Net Amt" HideZeros="true" Font="Arial, 11pt"/>
+      <TextObject Name="Text330" Left="481.95" Top="37.8" Width="113.4" Height="18.9" Text="Total ( Incl GST)" HideZeros="true" Font="Arial, 10pt"/>
+      <TextObject Name="Text333" Left="472.5" Width="56.7" Height="18.9" Text="[Totalbasic]" HorzAlign="Center" Font="Arial, 9pt, style=Bold"/>
+      <TextObject Name="Text334" Left="557.55" Width="47.25" Height="18.9" Text="[Totalcgst]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Center" Font="Arial, 9pt, style=Bold"/>
+      <TextObject Name="Text335" Left="633.15" Width="47.25" Height="18.9" Text="[TotalSGST]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Center" Font="Arial, 9pt, style=Bold"/>
+      <TextObject Name="Text336" Left="718.2" Width="56.7" Height="18.9" Text="[TotalIGST]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Center" Font="Arial, 9pt, style=Bold"/>
+      <LineObject Name="Line234" Top="103.95" Width="773.01" GrowToBottom="true"/>
       <TextObject Name="Text175" Left="9.45" Top="255.15" Width="226.8" Height="18.9" Text=" Terms &amp; Conditions" Font="Arial, 10pt"/>
       <TextObject Name="Text176" Left="18.9" Top="277.45" Width="680.4" Height="18.9" Text="1- Please ensure P.O. No.,Part code,Item description &amp; our GST No. in your all bills/correspondance." Font="Arial, 10pt"/>
       <TextObject Name="Text177" Left="18.9" Top="296.35" Width="680.4" Height="18.9" Text="2- Segregation charge would be charged @ Rs 100 /- per hour in case segregation is done by Auto Components." Font="Arial, 10pt"/>
@@ -409,22 +459,21 @@ namespace FastReport
       <TextObject Name="Text180" Left="18.9" Top="333.4" Width="756" Height="37.8" Text="4. Any material belongs to us &amp; laying with you,i.e Components,Tools,Dies and moulds must be cared properly &amp;  keep indemnified   against any damage or losses." Font="Arial, 10pt"/>
       <TextObject Name="Text181" Left="18.9" Top="370.06" Width="680.4" Height="18.9" Text="5. MRN Rejction &amp; Line Rejection will send through Transport on To pay basis." Font="Arial, 10pt"/>
       <LineObject Name="Line246" Left="774.9" Height="417.69"/>
-      <TextObject Name="Text341" Left="481.95" Top="66.15" Width="179.55" Height="18.9" Text="[SpSaleOrderReportForPrintout.FreightPaidBy]" Font="Arial, 9pt"/>
-      <TextObject Name="Text342" Left="378" Top="66.15" Width="103.95" Height="18.9" Text="Freight:" Font="Arial, 9pt"/>
-      <TextObject Name="Text343" Left="481.95" Top="122.85" Width="245.7" Height="37.8" Text="[SpSaleOrderReportForPrintout.AmmendmentReason]" Font="Arial, 9pt"/>
-      <TextObject Name="Text344" Left="378" Top="122.85" Width="103.95" Height="18.9" Text="Amm.Reason:" Font="Arial, 9pt"/>
-      <TextObject Name="Text345" Left="481.95" Top="179.55" Width="179.55" Height="28.35" Text="[SpSaleOrderReportForPrintout.Installation]" Font="Arial, 9pt"/>
-      <TextObject Name="Text346" Left="378" Top="179.55" Width="103.95" Height="18.9" Text="Installation:" Font="Arial, 9pt"/>
-      <TextObject Name="Text347" Left="491.4" Top="151.2" Width="189" Height="28.35" Text="[SpSaleOrderReportForPrintout.Warrenty]" Font="Arial, 9pt"/>
-      <TextObject Name="Text348" Left="378" Top="151.2" Width="103.95" Height="18.9" Text="Warrenty:" Font="Arial, 9pt"/>
-      <TextObject Name="Text351" Left="66.15" Top="160.65" Width="302.4" Height="37.8" CanGrow="true" CanBreak="false" Text="[SpSaleOrderReportForPrintout.ItemRemark]" Font="Arial, 9pt"/>
-      <TextObject Name="Text352" Left="113.4" Top="66.15" Width="226.8" Height="18.9" Text="[SpSaleOrderReportForPrintout.ShippingAddress]" Font="Arial, 10pt"/>
-      <TextObject Name="Text354" Left="113.4" Top="94.5" Width="264.6" Height="18.9" Text="[SpSaleOrderReportForPrintout.DeliverySch]" Font="Arial, 10pt"/>
+      <TextObject Name="Text341" Left="481.95" Top="103.95" Width="179.55" Height="18.9" Text="[SpSaleOrderReportForPrintout.FreightPaidBy]" Font="Arial, 9pt"/>
+      <TextObject Name="Text342" Left="378" Top="103.95" Width="103.95" Height="18.9" Text="Freight:" Font="Arial, 9pt"/>
+      <TextObject Name="Text343" Left="481.95" Top="151.2" Width="245.7" Height="37.8" Text="[SpSaleOrderReportForPrintout.AmmendmentReason]" Font="Arial, 9pt"/>
+      <TextObject Name="Text344" Left="378" Top="151.2" Width="103.95" Height="18.9" Text="Amm.Reason:" Font="Arial, 9pt"/>
+      <TextObject Name="Text345" Left="491.4" Top="189" Width="179.55" Height="18.9" Text="[SpSaleOrderReportForPrintout.Installation]" Font="Arial, 9pt"/>
+      <TextObject Name="Text346" Left="378" Top="189" Width="103.95" Height="18.9" Text="Installation:" Font="Arial, 9pt"/>
+      <TextObject Name="Text347" Left="491.4" Top="170.1" Width="189" Height="18.9" Text="[SpSaleOrderReportForPrintout.Warrenty]" Font="Arial, 9pt"/>
+      <TextObject Name="Text348" Left="378" Top="170.1" Width="103.95" Height="18.9" Text="Warrenty:" Font="Arial, 9pt"/>
+      <TextObject Name="Text351" Left="66.15" Top="170.1" Width="302.4" Height="37.8" CanGrow="true" CanBreak="false" Text="[SpSaleOrderReportForPrintout.ItemRemark]" Font="Arial, 8pt"/>
+      <LineObject Name="Line259" Top="75.6" Width="773.01"/>
+      <TextObject Name="Text352" Left="113.4" Top="113.4" Width="226.8" Height="18.9" Text="[SpSaleOrderReportForPrintout.ShippingAddress]" Font="Arial, 10pt"/>
+      <TextObject Name="Text354" Left="113.4" Top="132.3" Width="264.6" Height="18.9" Text="[SpSaleOrderReportForPrintout.DeliverySch]" Font="Arial, 10pt"/>
       <LineObject Name="Line264" Height="417.69"/>
       <LineObject Name="Line236" Top="415.8" Width="774.9"/>
-      <TextObject Name="Text358" Left="113.4" Top="122.85" Width="264.6" Height="18.9" CanGrow="true" CanBreak="false" Text="[SpSaleOrderReportForPrintout.FreightPaidBy]" HorzAlign="Center" Font="Arial, 9pt"/>
-      <TextObject Name="Text366" Left="699.3" Top="9.45" Width="75.6" Height="18.9" Text="[TotalAmt]" HorzAlign="Center" Font="Arial, 10pt"/>
-      <TextObject Name="Text367" Left="595.35" Top="9.45" Width="94.5" Height="18.9" Text="Total Amt:" HorzAlign="Center" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text358" Left="113.4" Top="151.2" Width="264.6" Height="18.9" CanGrow="true" CanBreak="false" Text="[SpSaleOrderReportForPrintout.FreightPaidBy]" HorzAlign="Center" Font="Arial, 8pt"/>
     </ReportSummaryBand>
     <PageFooterBand Name="PageFooter1" Top="853.6" Width="782.46" Height="18.9">
       <TextObject Name="Text337" Left="330.75" Width="94.5" Height="18.9" Text="[Page]" HorzAlign="Center" Font="Arial, 10pt"/>
