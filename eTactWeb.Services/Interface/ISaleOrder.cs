@@ -5,7 +5,7 @@ namespace eTactWeb.Services.Interface
 {
     public interface ISaleOrder
     {
-        Task<ResponseResult> DeleteByID(int ID, int YearCode, string Flag);
+        Task<ResponseResult> DeleteByID(int ID, int YearCode, string Flag,string EntryByMachineName,int AccountCode);
 		
 
 		Task<ResponseResult> GetAddress(string Code);
