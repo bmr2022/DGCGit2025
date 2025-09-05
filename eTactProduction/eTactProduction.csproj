@@ -20,6 +20,7 @@
     <PackageReference Include="FastReport.OpenSource.Data.MsSql" Version="2021.4.0" />
     <PackageReference Include="FastReport.OpenSource.Web" Version="2023.2.25" />
     <PackageReference Include="Grpc.Core" Version="2.46.6" />
+    <PackageReference Include="PDFsharp" Version="6.2.1" />
     <PackageReference Include="System.Composition.AttributedModel" Version="9.0.2" />
   </ItemGroup>
 

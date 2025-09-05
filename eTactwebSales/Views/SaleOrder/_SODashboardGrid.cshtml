@@ -91,6 +91,21 @@
                                 <td class="FWB">@Cntr</td>
                                 <td style="text-align:center;white-space: nowrap;">
                                     <div id="container">
+
+                                        <div id="printData-@Cntr">
+                                            <a class="table-link link-dark" target="_blank" asp-action="PrintReport" asp-route-EntryId="@item.EntryID" asp-route-YearCode="@item.Year" asp-route-ShowOnlyAmendItem="" target="_blank">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa-solid fa-print fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                            <a class="table-link link-dark" target="_blank" asp-action="SendReport" asp-route-EntryId="@item.EntryID" asp-route-YearCode="@item.Year" asp-route-emailTo="@item.SalesPersonEmailId" asp-route-CC1="@item.eMailFromCC1" asp-route-CC2="@item.eMailFromCC2" asp-route-CC3="@item.eMailFromCC3" asp-route-Sono="@item.SONo">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x "></i>
+                                                    <i class="fa-solid fa-envelope fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                        </div>
                                         <div id="viewCursorDiv-@Cntr">
                                             <a class="table-link link-success" asp-action="OrderDetail" asp-route-Mode="V" asp-route-ID="@item.EntryID" asp-route-YC="@item.Year" onclick="BackButtonData(event)">
                                                 <span class="fa-stack">
@@ -99,14 +114,7 @@
                                                 </span>
                                             </a>
                                         </div>
-                                        <div id="printData-@Cntr">
-                                            <a class="table-link link-dark" target="_blank" asp-action="PrintReport" asp-route-EntryId="@item.EntryID" asp-route-YearCode="@item.Year" asp-route-ShowOnlyAmendItem="" target="_blank">
-                                                <span class="fa-stack">
-                                                    <i class="fa fa-square fa-stack-2x"></i>
-                                                    <i class="fa-solid fa-print fa-stack-1x fa-inverse"></i>
-                                                </span>
-                                            </a>
-                                        </div>
+                                       
                                         @if (@item.Approved == "Y" || item.Year != yearCode)
                                         {
                                             <div>
@@ -143,7 +151,7 @@
                                         else
                                         {
                                             <div id="deleteCursorDiv-@Cntr">
-                                                <a class="table-link link-danger" asp-action="DeleteByID" asp-route-ID="@item.EntryID" asp-route-YC="@item.Year">
+                                                <a class="table-link link-danger" asp-action="DeleteByID" asp-route-ID="@item.EntryID" asp-route-YC="@item.Year" asp-route-AccountCode="@item.AccountCode">
                                                     <span class="fa-stack">
                                                         <i class="fa fa-square fa-stack-2x"></i>
                                                         <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>

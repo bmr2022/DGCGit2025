@@ -27,9 +27,9 @@ public class SaleOrderBLL : ISaleOrder
         return await _SaleOrderDAL.CheckOrderNo( year,  accountcode,  entryid,  custorderno);
     }
 
-    public async Task<ResponseResult> DeleteByID(int ID, int YearCode, string Flag)
+    public async Task<ResponseResult> DeleteByID(int ID, int YearCode, string Flag, string EntryByMachineName, int AccountCode)
     {
-        return await _SaleOrderDAL.DeleteByID(ID, YearCode, Flag);
+        return await _SaleOrderDAL.DeleteByID(ID, YearCode, Flag, EntryByMachineName,  AccountCode);
     }
 
     public async Task<ResponseResult> GetAddress(string Code)

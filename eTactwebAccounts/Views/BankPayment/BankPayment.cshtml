@@ -934,9 +934,11 @@
                 const drcr = $(`#Type-${i}`).text().trim();
                 const AdjAmt = parseFloat($(`#AdjAmtG-${i}`).text().trim()) || 0;
 
-                if (drcr.toLowerCase() === "dr") {
+                if (drcr === "DR") {   
+                    // if (drcr.toLowerCase() === "dr") {
                     drTotal += AdjAmt;
-                } else if (drcr.toLowerCase() === "cr") {
+                // } else if (drcr.toLowerCase() === "cr") {   
+                } else if (drcr === "CR") {
                     crTotal += AdjAmt;
                 }
             }
@@ -1619,10 +1621,12 @@
                 if ($('#CheckUnCheck-' + i).is(':checked') == true) {
                     var drcr = $(`#PopUpType-${i}`).text().trim();
 
-                    if (drcr.toLowerCase() === "dr") {
+                    // if (drcr.toLowerCase() === "dr") {
+                    if (drcr === "DR") {
                         var DRAmtrow = parseFloat($(`#AdjustAmt-${i}`).val());
                         DRAmt += DRAmtrow;
-                    } else if (drcr.toLowerCase() === "cr") {
+                    } else if (drcr === "CR") {
+                    // } else if (drcr.toLowerCase() === "cr") {
                         var CRAmtrow = parseFloat($(`#AdjustAmt-${i}`).val());
                         CRAmt += CRAmtrow;
                     }
@@ -1631,9 +1635,11 @@
                 var DRAmtrow = parseFloat($(`#PopUpDrAmt-${i}`).text().trim());
                 var CRAmtrow = parseFloat($(`#PopUpCrAmt-${i}`).text().trim());
 
-                if (drcr.toLowerCase() === "dr") {
+                if (drcr === "DR") {
+                // if (drcr.toLowerCase() === "dr") {
                     TotalDRAmt += DRAmtrow;
-                } else if (drcr.toLowerCase() === "cr") {
+                // } else if (drcr.toLowerCase() === "cr") {
+                } else if (drcr === "CR") {
                     TotalCrAmt += CRAmtrow;
                 }
             }
@@ -1739,15 +1745,15 @@
             for (var i = 1; i <= rowCount + 1; i++) {
 
                 if ($('#CheckUnCheck-' + i).is(':checked') == true) {
-                    var type = $('#PopUpType-' + i).text().trim().toLowerCase();
+                    var type = $('#PopUpType-' + i).text().trim()
                     var adjAmt = parseFloat($('#AdjustAmt-' + i).val()) || 0; // Convert to float, default to 0
 
                     var DrAmt = "0.00";
                     var CrAmt = "0.00";
 
-                    if (type === "dr") {
+                    if (type === "DR") {
                         CrAmt = adjAmt.toFixed(2);
-                    } else if (type === "cr") {
+                    } else if (type === "CR") {
                         DrAmt = adjAmt.toFixed(2);
                     }
                     ItemData.push({
@@ -1969,10 +1975,12 @@
             };
 
             const adjAmt = parseFloat(SchData.AdjustmentAmt) || 0;
-            if (SchData.Type.toLowerCase() === "dr") {
+            if (SchData.Type === "DR") {
+            // if (SchData.Type.toLowerCase() === "dr") {
                 SchData.DrAmt = adjAmt.toFixed(2);
                 SchData.CrAmt = "0.00";
-            } else if (SchData.Type.toLowerCase() === "cr") {
+            // } else if (SchData.Type.toLowerCase() === "cr") {
+            } else if (SchData.Type=== "CR") {
                 SchData.CrAmt = adjAmt.toFixed(2);
                 SchData.DrAmt = "0.00";
             }
@@ -2017,13 +2025,16 @@
                     }
                 }
                 else {
-                    if ($('#Type-' + i).text().toLowerCase() == "dr") {
-                        if ($('#Type').val().toLowerCase() == "cr") {
+                    if ($('#Type-' + i).text()== "DR") {
+                          if ($('#Type').val() == "CR") {
+                        // if ($('#Type').val().toLowerCase() == "cr") {
                             $('#AdjustmentAmt').val(difference)
                         }
                     }
-                    if ($('#Type-' + i).text().toLowerCase() == "cr") {
-                        if ($('#Type').val().toLowerCase() == "dr") {
+                    // if ($('#Type-' + i).text().toLowerCase() == "cr") {
+                    //     if ($('#Type').val().toLowerCase() == "dr") {   
+                            if ($('#Type-' + i).text()== "CR") {
+                        if ($('#Type').val()== "DR") {
                             $('#AdjustmentAmt').val(difference)
                         }
                     }
