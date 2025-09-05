@@ -124,6 +124,7 @@ namespace eTactWeb.DOM.Models
         public string AccPurchaseBillInvoicePrintoutFilename { get; set; }
         public string PoallowtoprintWithoutApproval { get; set; }
         public string IssueChaallanTaxIsMandatory { get; set; }
+        public decimal PurchaseIncrementPercentageofRMInMRP { get; set; }
         public string FromDate { get; set; }
         public string ToDate { get; set; }
         public string Searchbox { get; set; }

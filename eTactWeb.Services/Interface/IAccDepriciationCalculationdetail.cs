@@ -12,6 +12,7 @@ namespace eTactWeb.Services.Interface
     {
 		Task<AccDepriciationCalculationdetailModel> GetAssets(int DepriciationYearCode,string AssetsName,string DepreciationMethod,string AssetsCategoryName);
 		Task<ResponseResult> FillEntryID(string EntryDate,int YearCode);
+		Task<ResponseResult> FillEssetsName();
 		Task<ResponseResult> SaveDepriciationCalculationdetail(AccDepriciationCalculationdetailModel model, DataTable GIGrid);
         Task<ResponseResult> GetDashboardData(AccDepriciationCalculationdetailModel model);
         Task<AccDepriciationCalculationdetailModel> GetDashboardDetailData(string FromDate, string ToDate, string ReportType);
