@@ -3427,7 +3427,7 @@
             });
         }
 
-        function FillIssWorkcenter() {
+    /*     function FillIssWorkcenter() {
 
             $.ajax({
                 type: "POST",
@@ -3455,7 +3455,41 @@
                     }
                 }
             });
+        } */
+                function FillIssWorkcenter() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillIssWorkcenter")",
+                dataType: "json",
+                data: { "QcMandatory": $('#QcMandatory').val() },
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#NextWorkCenter').empty();
+                            $('#NextWorkCenter').append('<option disabled>-Select-</option>');
+
+                            $.each(obj.Result, function (index, val) {
+                                $('#NextWorkCenter').append(
+                                    '<option value="' + val.WCID + '">' + val.WorkCenterDescription + '</option>'
+                                );
+                            });
+
+                            // ✅ Move these AFTER filling all options
+                            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                                var nextwc = '@Model.NextWCID';
+                                $('#NextWorkCenter').val(nextwc).trigger("change");
+                            } else {
+                                // Default behavior
+                                $('#NextWCID').val($('#NextWorkCenter').val());
+                                $('#NextStoreId').val(0);
+                            }
+                        }
+                    }
+                }
+            });
         }
+
 
         function FillIssWorkcenterForQcMandatory() {
 
@@ -3502,9 +3536,13 @@
                             $('#NextWorkCenter').append('<option disabled>-Select-</option>');
                             $.each(obj.Result, function (index, val) {
                                 $('#NextWorkCenter').append('<option value="' + val.entryid + '">' + val.Store_Name + '</option>');
-                                $('#NextStoreId').val($('#NextWorkCenter').val());
-                                $('#NextWCID').val(0);
+                                /* $('#NextStoreId').val($('#NextWorkCenter').val());
+                                $('#NextWCID').val(0); */
                             })
+                                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+            var nextStore = '@Model.NextStoreId';
+            $('#NextWorkCenter').val(nextStore).trigger("change");
+        }
                         }
                     }
                 }

@@ -780,7 +780,7 @@
                                         <label asp-for="UnitRate" class="form-label" style="color:  red;">Rate/Unit*</label>
                                         <select class="form-select" asp-for="UnitRate" asp-items="Model.UnitRateList" onchange="CalculateRate();"></select>
                                     </div>
-                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:70px">
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="">
                                         <label asp-for="OtherRateCurr" class="form-label">Rate In FX</label>
                                         <input asp-for="OtherRateCurr" type="number" step="any" min="0" class="form-control" />
                                     </div>
@@ -1940,9 +1940,13 @@
             GetFormRights();
             GetItemGroup();
             ShowHideFields();
-            if ($('#Mode').val() == 'SOA') {
+         
+            var SOClosedate = $('#SOCloseDate').val().split(" ")[0].replace(/-/g, "/");
+            $('#SOCloseDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#SOCloseDate').val()));
+            $('#SOCloseDate').datepicker("option", "minDate", parseDateToFormat(SOClosedate));
+               if ($('#Mode').val() == 'SOA') {
                 var SOClosedate = $('#SOCloseDate').val().split(" ")[0].replace(/-/g, "/");
-                $('#SOCloseDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(SOClosedate));
+                $('#SOCloseDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", (SOClosedate));
                 $('#SOCloseDate').datepicker("option", "minDate", parseDateToFormat(SOClosedate));
 
                 $('#PN1').prop("checked", true);
@@ -1954,9 +1958,6 @@
                     $('#ConsigneeAccountCode').text('');
                 }
             }
-            var SOClosedate = $('#SOCloseDate').val().split(" ")[0].replace(/-/g, "/");
-            $('#SOCloseDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#SOCloseDate').val()));
-            $('#SOCloseDate').datepicker("option", "minDate", parseDateToFormat(SOClosedate));
             // NewEntryId();
             if ($('#Mode').val() != "U" && $('#Mode').val() != "V" && $('#Mode').val() != "SOA" && $('#Mode').val() != "SAU" && $('#Mode').val() != "SOC") {
 
@@ -2035,17 +2036,26 @@
             
             $('#AmmEffDate').val($('#AmmEffDate').val().split(' ')[0]);
 
-            $('#QDate').val(parseDateToFormat($('#QDate').val().split(' ')[0]));
-            $('#SODate').val(parseDateToFormat($('#SODate').val().split(' ')[0]));
+            $('#QDate').val(($('#QDate').val().split(' ')[0]));
+            $('#SODate').val(($('#SODate').val().split(' ')[0]));
             //alert($('#WEF').val());
-            $('#WEF').val(parseDateToFormat($('#WEF').val().split(' ')[0]));
+            $('#WEF').val(($('#WEF').val().split(' ')[0]));
+              if ($('#Mode').val() == 'SOA' || $('#Mode').val() == 'SOC') {
+                   $('#WEF').val(($('#WEF').val().split(' ')[0]));
+              }
             // $('#WEF').val($('#WEF').val().split(' ')[0]);
             //$('#SOCloseDate').val($('#SOCloseDate').val().split(' ')[0]);
-
-            $('#SOConfirmDate').val(parseDateToFormat($('#SOConfirmDate').val().split(' ')[0]));
-            $('#SODeliveryDate').val(parseDateToFormat($('#SODeliveryDate').val().split(' ')[0]));
+            
+            $('#SOConfirmDate').val(($('#SOConfirmDate').val().split(' ')[0]));
+            $('#SODeliveryDate').val(($('#SODeliveryDate').val().split(' ')[0]));
             $('#AmmEffDate,#QDate,#SODate,#SOConfirmDate,#SODeliveryDate').datepicker({ dateFormat: 'dd/mm/yy' });
-
+             if ($('#Mode').val() == 'U' || $('#Mode').val() == 'V') {
+                  $('#QDate').val(($('#QDate').val().split(' ')[0]));
+            $('#SODate').val(($('#SODate').val().split(' ')[0]));
+              $('#SOConfirmDate').val(($('#SOConfirmDate').val().split(' ')[0]));
+                 $('#SODeliveryDate').val(parseDateToFormat($('#SODeliveryDate').val().split(' ')[0]));
+                  $('#WEF').val(parseDateToFormat($('#WEF').val().split(' ')[0]));
+             }
             //$("#QDate").datepicker({ dateFormat: 'dd/mm/yy' });
             //$("#SODate").datepicker({ dateFormat: 'dd/mm/yy' });
             //$("#WEF").datepicker({ dateFormat: 'dd/mm/yy' });
@@ -2180,7 +2190,7 @@
             
             if ($('#Mode').val() == 'SOA' || $('#Mode').val() == 'SOC') {
                 var ammEffDate = $('#hiddenAmmEffDate').val().split(" ")[0];
-                $('#AmmEffDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(ammEffDate));
+                $('#AmmEffDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", (ammEffDate));
             }
 
             $('.AF').fadeOut();
@@ -2703,9 +2713,9 @@
 
             var minDate = $('#SODate').val();
             //$('#WEF').datepicker("setDate", parseDateToFormat(minDate));
-            $('#WEF').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(minDate));
+            $('#WEF').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", (minDate));
 
-            $('#WEF').datepicker("option", "minDate", parseDateToFormat(minDate));
+            $('#WEF').datepicker("option", "minDate", (minDate));
         }
 
         $('#WEF').change(function () {
