@@ -1298,7 +1298,7 @@ namespace eTactWeb.Data.DAL
                                 "AmmNo","AmmEffDate","Address","DeliveryAddress","ConsigneeAccountCode","OrderAmt","OrderNetAmt", "FreightPaidBy", "InsuApplicable", "ModeTransport","DeliverySch",
                                 "PackingChgApplicable", "DeliveryTerms", "SOComplete", "PreparedBy", "TotalDiscount", "SODeliveryDate", "TotalDisPercent", "TotalDiscAmt", "DespatchAdviseComplete", "PortToLoading", "PortOfDischarge",
                                 "ResponsibleSalesPersonID","CustContactPerson","SaleDocType","OtherDetail","SOConfirmDate","OrderDelayReason","Approved","ApprovedDate","ApprovedBy", "UID","UpdatedOn","UpdatedBy", "CreatedOn","RoundOff",
-                                "EntryByMachineName");
+                                "EntryByMachineName", "SalesPersonEmailId", "eMailFromCC1", "eMailFromCC2", "eMailFromCC3");
                         oDT.TableName = "SODASHBOARD";
 
                         Result.SODashboard = CommonFunc.DataTableToList<SaleOrderDashboard>(oDT);
@@ -1411,7 +1411,7 @@ namespace eTactWeb.Data.DAL
                               "AmmNo", "AmmEffDate", "Address", "DeliveryAddress", "ConsigneeAccountCode", "OrderAmt", "OrderNetAmt", "FreightPaidBy", "InsuApplicable", "ModeTransport", "DeliverySch",
                               "PackingChgApplicable", "DeliveryTerms", "SOComplete", "PreparedBy", "TotalDiscount", "SODeliveryDate", "TotalDisPercent", "TotalDiscAmt", "DespatchAdviseComplete", "PortToLoading", "PortOfDischarge",
                               "ResponsibleSalesPersonID", "CustContactPerson", "SaleDocType", "OtherDetail", "SOConfirmDate", "OrderDelayReason", "Approved", "ApprovedDate", "ApprovedBy", "UID", "UpdatedOn", "UpdatedBy", "CreatedOn", "RoundOff",
-                              "EntryByMachineName");
+                              "EntryByMachineName","SalesPersonEmailId", "eMailFromCC1", "eMailFromCC2", "eMailFromCC3");
 
                             oDT.TableName = "SODASHBOARD";
 
@@ -1643,6 +1643,10 @@ namespace eTactWeb.Data.DAL
                             model.QuotNo = oDataSet.Tables[0].Rows[0]["QuotNo"].ToString();
                             model.QuotYear = Convert.ToInt32(oDataSet.Tables[0].Rows[0]["QuotYear"]);
                             model.QDate = oDataSet.Tables[0].Rows[0]["QDate"].ToString();
+                            model.Email = oDataSet.Tables[0].Rows[0]["SalesPersonEmailId"].ToString();
+                            model.CC1 = oDataSet.Tables[0].Rows[0]["eMailFromCC1"].ToString();
+                            model.CC2 = oDataSet.Tables[0].Rows[0]["eMailFromCC2"].ToString();
+                            model.CC3 = oDataSet.Tables[0].Rows[0]["eMailFromCC3"].ToString();
 
                             if (Flag == "SOA")
                             {

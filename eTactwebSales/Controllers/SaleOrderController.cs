@@ -19,6 +19,21 @@ using System.Data;
 using System.Globalization;
 using System.Reflection;
 using FastReport.Web;
+using FastReport.Export.Image;
+using MimeKit;
+using System.Drawing;
+using System.Drawing.Imaging;
+using PdfSharp.Pdf;
+using PdfSharp.Drawing;
+using PdfSharp.Drawing.BarCodes;
+using MimeKit;
+using MailKit.Net.Smtp;
+using System.Drawing;
+using System.Security.Cryptography;
+using Newtonsoft.Json.Linq;
+using eTactWeb.Services;
+
+
 
 namespace eTactWeb.Controllers;
 
@@ -32,9 +47,9 @@ public class SaleOrderController : Controller
 	private readonly IMemoryCache _MemoryCache;
 	private readonly IItemMaster itemMaster;
     public WebReport webReport;
+    private readonly IEmailService _emailService;
 
-
-    public SaleOrderController(ILogger<SaleOrderController> logger, IDataLogic iDataLogic, ISaleOrder iSaleOrder, ITaxModule iTaxModule, IMemoryCache iMemoryCache, IWebHostEnvironment iWebHostEnvironment, IItemMaster itemMaster, EncryptDecrypt encryptDecrypt, LoggerInfo loggerInfo, IConfiguration configuration)
+    public SaleOrderController(ILogger<SaleOrderController> logger, IDataLogic iDataLogic, ISaleOrder iSaleOrder, ITaxModule iTaxModule, IMemoryCache iMemoryCache, IWebHostEnvironment iWebHostEnvironment, IItemMaster itemMaster, EncryptDecrypt encryptDecrypt, LoggerInfo loggerInfo, IConfiguration configuration, IEmailService emailService)
 	{
 		_logger = logger;
 		_IDataLogic = iDataLogic;
@@ -46,6 +61,7 @@ public class SaleOrderController : Controller
 		_EncryptDecrypt = encryptDecrypt;
 		LoggerInfo = loggerInfo;
         _iconfiguration = configuration;
+        _emailService = emailService;
     }
 
 	private EncryptDecrypt _EncryptDecrypt { get; }
@@ -85,6 +101,236 @@ public class SaleOrderController : Controller
         webReport.Report.Refresh();
         return View(webReport);
     }
+
+
+
+
+
+    public IActionResult SendReport(string emailTo = "", int EntryId = 0, int YearCode = 0, string Type = "", string CC1 = "", string CC2 = "", string CC3 = "", string Sono = "")
+    {
+        string my_connection_string;
+        string contentRootPath = _IWebHostEnvironment.ContentRootPath;
+        string webRootPath = _IWebHostEnvironment.WebRootPath;
+        webReport = new WebReport();
+
+        ViewBag.EntryId = EntryId;
+        ViewBag.YearCode = YearCode;
+        ViewBag.SONO = Sono;
+       
+
+        webReport.Report.Load(webRootPath + "\\SOReport.frx"); // default report
+
+
+
+        webReport.Report.SetParameterValue("entryparam", EntryId);
+        webReport.Report.SetParameterValue("yearparam", YearCode);
+        webReport.Report.SetParameterValue("ShowOnlyAmendItemparam", "");
+        webReport.Report.SetParameterValue("AmmNo", 0);
+        my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+        webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+        webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
+        webReport.Report.SetParameterValue("MyParameter", my_connection_string);
+        webReport.Report.Refresh();
+        // Now call EmailReport
+        return EmailReport(webReport, emailTo, Sono, CC1, CC2, CC3);
+    }
+
+    public IActionResult EmailReport(WebReport webReport, string emailTo, string Challanno, string CC1, string CC2, string CC3)
+    {
+        try
+        {
+            webReport.Report.Prepare(); // Prepare the report before exporting
+                                        // First export the report to an image
+            using (MemoryStream imageStream = new MemoryStream())
+            {
+                // Configure image export
+                var imageExport = new ImageExport()
+                {
+                    ImageFormat = ImageExportFormat.Png, // Force PNG format
+                    Resolution = 300, // Higher quality
+                                      //ExportQuality = 100 // Maximum quality
+                };
+
+                // Export the report
+                webReport.Report.Export(imageExport, imageStream);
+                imageStream.Position = 0;
+
+                // Verify the image data
+                if (imageStream.Length == 0)
+                    throw new Exception("Report export failed - empty image stream");
+
+                // Convert to PDF with additional validation
+                byte[] pdfBytes;
+                try
+                {
+                    pdfBytes = ConvertImageToPdf(imageStream.ToArray());
+                }
+                catch (Exception ex)
+                {
+                    // Try alternative conversion if first attempt fails
+                    pdfBytes = ConvertImageToPdf(imageStream.ToArray());
+                }
+                //emailTo = "infotech.bmr@gmail.com,bmr.client2021@gmail.com";
+                emailTo = string.Join(",", new[] { emailTo, CC1, CC2, CC3 }
+                     .Where(x => !string.IsNullOrWhiteSpace(x))
+                     .Select(x => x.Trim()));
+                string body = $@"
+                        Dear Sir,<br/>
+                        Please find the attachment for the Sale Order No: <strong>{Challanno}</strong> from DGC.<br/><br/>
+                        Regards,<br/>
+                        DGC Team
+                        ";
+                var emailToList = emailTo.Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries)
+                               .Select(e => e.Trim())
+                               .ToList();
+                // Send email
+                //_emailService.SendEmailAsync(
+                //    emailTo,
+                //    "Soft Copy Of Challan No: " +Challanno + " From AutoComponent",
+                //    CC1,
+                //    CC2,
+                //    CC3,
+                //    body,
+                //    pdfBytes,
+                //    "Report.pdf").Wait();
+                foreach (var recipient in emailToList)
+                {
+                    _emailService.SendEmailAsync(
+                        recipient,
+                        "Soft Copy Of Sale Order No: " + Challanno + " From DGC",
+                        CC1,
+                        CC2,
+                        CC3,
+                        body,
+                        pdfBytes,
+                        "Report.pdf").Wait();
+                }
+
+                return Content("Report sent successfully");
+            }
+        }
+        catch (Exception ex)
+        {
+            return Content($"Error: {ex.Message}\n\nStack Trace: {ex.StackTrace}");
+        }
+    }
+
+
+    private byte[] ConvertImageToPdf(byte[] imageBytes)
+    {
+        // First ensure the image is in a supported format
+        using (var ms = new MemoryStream(imageBytes))
+        using (var image = Image.FromStream(ms))
+        using (var pdfStream = new MemoryStream())
+        {
+            // Convert to PNG if needed (PdfSharp works best with PNG)
+            if (image.RawFormat.Equals(ImageFormat.Png))
+            {
+                using (var pngMs = new MemoryStream())
+                {
+                    image.Save(pngMs, System.Drawing.Imaging.ImageFormat.Png);
+                    imageBytes = pngMs.ToArray();
+                }
+            }
+
+            // Now create PDF
+            var document = new PdfDocument();
+            var page = document.AddPage();
+            page.Width = XUnit.FromMillimeter(image.Width / image.HorizontalResolution * 25.4);
+            page.Height = XUnit.FromMillimeter(image.Height / image.VerticalResolution * 25.4);
+
+            using (var xImage = XImage.FromStream(new MemoryStream(imageBytes)))
+            {
+                XGraphics gfx = XGraphics.FromPdfPage(page);
+                gfx.DrawImage(xImage, 0, 0, page.Width, page.Height);
+            }
+
+            document.Save(pdfStream, false);
+            return pdfStream.ToArray();
+        }
+    }
+    bool IsValidEmail(string email)
+    {
+        try
+        {
+            var addr = new System.Net.Mail.MailAddress(email);
+            return addr.Address == email;
+        }
+        catch { return false; }
+    }
+    public async Task SendEmailAsync(string emailTo, string subject, string message, byte[] attachment = null, string attachmentName = null, string CC1 = "", string CC2 = "", string CC3 = "", string Challanno = "")
+    {
+        var emailSettings = _iconfiguration.GetSection("EmailSettings");
+        emailTo = string.Join(",", new[] { emailTo, CC1, CC2, CC3 }
+                      .Where(x => !string.IsNullOrWhiteSpace(x))
+                      .Select(x => x.Trim()));
+        var mimeMessage = new MimeMessage();
+        mimeMessage.From.Add(new MailboxAddress(emailSettings["FromName"], emailSettings["FromEmail"]));
+        //mimeMessage.To.Add(MailboxAddress.Parse("infotech.bmr@gmail.com"));
+        //mimeMessage.To.Add(MailboxAddress.Parse(CC1));
+        //mimeMessage.To.Add(MailboxAddress.Parse(CC2));
+        var toEmails = emailTo.Split(',')
+                          .Where(x => !string.IsNullOrWhiteSpace(x))
+                          .Select(x => x.Trim());
+
+        foreach (var email in toEmails)
+        {
+            if (IsValidEmail(email))
+                mimeMessage.To.Add(MailboxAddress.Parse(email));
+        }
+        mimeMessage.Subject = subject;
+        //if (!string.IsNullOrWhiteSpace(CC1))
+        //    mimeMessage.Cc.Add(new MailboxAddress("CC",CC1));
+        //if (!string.IsNullOrWhiteSpace(CC2))
+        //    mimeMessage.Cc.Add(MailboxAddress.Parse(CC2));
+        //if (!string.IsNullOrWhiteSpace(CC3))
+        //    mimeMessage.Cc.Add(MailboxAddress.Parse(CC3));
+
+        // if (!string.IsNullOrWhiteSpace(CC1))
+        //  mimeMessage.Cc.Add(MailboxAddress.Parse("bmr.client2021@gmail.com"));
+        //if (!string.IsNullOrWhiteSpace(CC2))
+        //   mimeMessage.Cc.Add(MailboxAddress.Parse("bmr.client2021@gmail.com"));
+        //  if (!string.IsNullOrWhiteSpace(CC3))
+        //   mimeMessage.Cc.Add(MailboxAddress.Parse("bmr.client2021@gmail.com"));
+
+        var builder = new BodyBuilder();
+        builder.HtmlBody = message;
+
+        if (attachment != null && !string.IsNullOrEmpty(attachmentName))
+        {
+            builder.Attachments.Add(attachmentName, attachment);
+        }
+
+        mimeMessage.Body = builder.ToMessageBody();
+
+        using (var client = new SmtpClient())
+        {
+            try
+            {
+                await client.ConnectAsync(emailSettings["SmtpServer"],
+                    int.Parse(emailSettings["SmtpPort"]),
+                    MailKit.Security.SecureSocketOptions.StartTls);
+
+                await client.AuthenticateAsync(emailSettings["SmtpUsername"],
+                    emailSettings["SmtpPassword"]);
+
+                await client.SendAsync(mimeMessage);
+            }
+            catch (Exception ex)
+            {
+                // Handle exception
+                throw;
+            }
+            finally
+            {
+                await client.DisconnectAsync(true);
+            }
+        }
+    }
+
+
+
+
 
     public PartialViewResult AddSchedule(DeliverySchedule model)
 	{
@@ -551,15 +797,15 @@ public class SaleOrderController : Controller
 				item.SeqNo = Indx;
 			}
 			model.ItemNetAmount = model.ItemDetailGrid.Sum(x => x.Amount);
-			//if (model.ItemDetailGrid.Count <= 0)
-			//{
-			//	HttpContext.Session.Remove("ItemList");
-			//	_MemoryCache.Remove("ItemList");
-			//}
-			//else
-			//{
-			//	HttpContext.Session.SetString("ItemList", JsonConvert.SerializeObject(model.ItemDetailGrid));
-			//}
+			if (model.ItemDetailGrid.Count <= 0)
+			{
+				HttpContext.Session.Remove("ItemList");
+				_MemoryCache.Remove("ItemList");
+			}
+			else
+			{
+				HttpContext.Session.SetString("ItemList", JsonConvert.SerializeObject(model.ItemDetailGrid));
+			}
 		}
 		return PartialView("_SaleItemGrid", model);
 	}
@@ -1230,7 +1476,8 @@ public class SaleOrderController : Controller
                                     {
                                         status = "Success",
                                         entryId = model.EntryID,
-                                        yearCode = model.YearCode
+                                        yearCode = model.YearCode,
+										Sono = model.CustOrderNo
                                     });
                                 }
                                 return Json(new { status = "Success" });
