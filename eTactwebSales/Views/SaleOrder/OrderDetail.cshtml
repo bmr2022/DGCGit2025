@@ -151,7 +151,7 @@
                                 @*Model.Mode = "U";*@
                                 <div class="col-auto">
                                     @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
-                                    <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton">
+                                    <button type="submit" class="btn btn-sm btn-outline-light bg-gradient UpdateButton" id="UpdateButton">
                                         <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                                         UPDATE
                                     </button>
@@ -1189,7 +1189,7 @@
                                     @*Model.Mode = "U";*@
                                     <div class="col-auto">
                                         @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
-                                        <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton">
+                                        <button type="submit" class="btn btn-sm btn-outline-light bg-gradient UpdateButton" id="UpdateButton">
                                             <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                                             UPDATE
                                         </button>
@@ -1474,13 +1474,14 @@
                     $('#EntryTime').val(time);
                 }, 1000);
             }
+          
         });
         /*  document.querySelector("#files").onchange = function () {
             const fileName = this.files[0]?.name;
             const label = document.querySelector("label[for=files]");
             label.innerText = fileName ?? "Import Excel";
         }; */
-
+       
         document.querySelectorAll(".number").forEach(input => {
             input.addEventListener("input", function () {
                 // Allow only digits (0-9), no negative sign (-) or non-numeric characters
@@ -1936,7 +1937,8 @@
             GetFormRights();
             GetItemGroup();
             ShowHideFields();
-         
+      
+
             var SOClosedate = $('#SOCloseDate').val().split(" ")[0].replace(/-/g, "/");
             $('#SOCloseDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#SOCloseDate').val()));
             $('#SOCloseDate').datepicker("option", "minDate", parseDateToFormat(SOClosedate));
@@ -1999,7 +2001,18 @@
 
                 $('#SOBillToShipTo').modal("show");
             });
-
+            // if ($('#AccountCode').prop('selectedIndex') != 0) {
+                $.getJSON({
+                    url: '@Url.Action("GetGstRegister", "PurchaseOrder")',
+                    data: { Code: $('#AccountCode').val() },
+                    success: function (result, status, xhr) {
+                        if (result != null) {
+                            var obj = $.parseJSON(result);
+                            $('#Gstregistered').val(obj.Result[0].GSTRegistered);
+                        }
+                    }
+                });
+            // }
             FillCurrency();
 
             $('#AmmEffDate').on("keydown", function (event) {
@@ -2979,7 +2992,8 @@
 
             e.preventDefault();
             if (!checkPartCodeMusthaveAtLeastOneTax()) {
-                return false;
+                return ;
+
             }
             else if (!matchFound) {
                 $.notify("You must enter at least one amendment entry.", "error");
@@ -3005,7 +3019,7 @@
             //    }
             //}
             if (!checkPartCodeMusthaveAtLeastOneTax()) {
-                return false;
+                return ;
             }
             else if (soGrid <= 1) {
                 $.notify("SO Grid should at least have one item", "error");
@@ -3033,7 +3047,7 @@
             //}
 
             if (!checkPartCodeMusthaveAtLeastOneTax()) {
-                return false;
+                return ;
             }
             else if (soGrid <= 1) {
                 $.notify("SO Grid should at least have one item", "error");
