@@ -16,6 +16,7 @@ using DataTable = System.Data.DataTable;
 using eTactWeb.DOM.Models;
 using System.Net;
 using System.Data;
+using DocumentFormat.OpenXml.EMMA;
 
 namespace eTactWeb.Controllers
 {
@@ -45,10 +46,12 @@ namespace eTactWeb.Controllers
             HttpContext.Session.Remove("KeyStockMultiBatchAdjustGrid");
             var MainModel = new StockAdjustmentModel();
 
-            MainModel.FinFromDate = HttpContext.Session.GetString("FromDate");
-            MainModel.FinToDate = HttpContext.Session.GetString("ToDate");
+            //MainModel.FinFromDate = HttpContext.Session.GetString("FromDate");
+            //MainModel.FinToDate = HttpContext.Session.GetString("ToDate");
             MainModel.CC = HttpContext.Session.GetString("Branch");
             MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+            MainModel.FinFromDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString("FromDate"));
+            MainModel.FinToDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString("ToDate"));
 
             if (Mode != "U")
             {
