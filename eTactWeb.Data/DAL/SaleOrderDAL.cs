@@ -984,7 +984,7 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
-        internal async Task<ResponseResult> DeleteByID(int ID, int YearCode, string Flag)
+        internal async Task<ResponseResult> DeleteByID(int ID, int YearCode, string Flag, string EntryByMachineName, int AccountCode)
         {
             var oDataTable = new DataTable();
 
@@ -998,6 +998,8 @@ namespace eTactWeb.Data.DAL
                         oCmd.Parameters.AddWithValue("@Flag", Flag);
                         oCmd.Parameters.AddWithValue("@ID", ID);
                         oCmd.Parameters.AddWithValue("@YearCode", YearCode);
+                        oCmd.Parameters.AddWithValue("@EntryByMachineName", EntryByMachineName);
+                        oCmd.Parameters.AddWithValue("@AccountCode", AccountCode);
                         await myConnection.OpenAsync();
 
                         using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))

@@ -90,6 +90,7 @@ namespace eTactWeb.DOM.Models
     {
         public string? AmmEffDate { get; set; }
         public int AmmNo { get; set; }
+        public int AccountCode { get; set; }
         public string AmendmentDate { get; set; }
         public string AmendmentReason { get; set; }
         public string Color { get; set; }

@@ -654,9 +654,10 @@ public class SaleOrderController : Controller
             return PartialView("_SaleOrderGroupWiseItems", model);
         
     }
-    public async Task<IActionResult> DeleteByID(int ID, int YC)
+    public async Task<IActionResult> DeleteByID(int ID, int YC, string EntryByMachineName, int AccountCode)
 	{
-		var Result = await _ISaleOrder.DeleteByID(ID, YC, "DELETEBYID");
+        EntryByMachineName=Environment.MachineName;
+        var Result = await _ISaleOrder.DeleteByID(ID, YC, "DELETEBYID",  EntryByMachineName,  AccountCode);
 
 		if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
 		{
