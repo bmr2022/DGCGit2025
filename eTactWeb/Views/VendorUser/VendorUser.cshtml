@@ -385,7 +385,27 @@
 					var obj = $.parseJSON(data);
 					debugger
 					if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
-						$('#VendorEmpName').val();
+						$('#Mode').val("U");
+						$('#VendorEmpName').val(obj.Result[0].VendorEmpName);
+						$('#UserId').val(obj.Result[0].UserId);
+						$('#UserEntryId').val(obj.Result[0].UserEntryId);
+						$('#Password').val(obj.Result[0].Password);
+						$('#ConfirmPassword').val(obj.Result[0].Password);
+						$('#Active').val(obj.Result[0].Active);
+						$('#AllowToDelete').val(obj.Result[0].AllowTodelete);
+						$('#AllowToUpdate').val(obj.Result[0].AllowtoUpdate);
+						$('#RightsForReport').val(obj.Result[0].rightsForReport);
+						$('#RightsForPurchaseModule').val(obj.Result[0].RightsForPurchaseModule);
+						$('#RightsForQCModule').val(obj.Result[0].RightsForQCmodule);
+						$('#RightsForAccountModule').val(obj.Result[0].RightsforAccountModule);
+						$('#AdminUser').val(obj.Result[0].AdminUser);
+						$('#SaleBillPrefix').val(obj.Result[0].SaleBillPrefix);
+						$('#ActualEntryDate').val(obj.Result[0].ActualEntryDate);
+						$('#BranchName').val(obj.Result[0].BranchName);
+						$('#EntryByMachineName').val(obj.Result[0].EntryByMachineName);
+						$('#ActualEntryByName').val(obj.Result[0].ActualEntryBYName);
+						$('#UpdatedByName').val(obj.Result[0].UpdatedByName);
+						$('#LastUpdationDate').val(obj.Result[0].LastUpdationdate);
 						// $('#UserEntryId').val(obj.Result[0].UserEntryId || 0);
 					}
 				},
@@ -395,12 +415,31 @@
 			});
 		}
 
+		// function VendorUser() {
+		// 	debugger
+		// 	$.ajax({
+		// 		url: '@Url.Action("VendorUser")',
+		// 		data: {ID:$('#UserId').val(),Mode:$('#Mode').val()},
+		// 		type: 'POST',
+		// 		success: function (data, status, xhr) {
+		// 			var obj = $.parseJSON(data);
+		// 			debugger
+		// 			// if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
+							
+		// 			// }
+		// 		},
+		// 		error: function (xhr, status, error) {
+		// 			console.log('Failed to load Entry Id.');
+		// 		}
+		// 	});
+		// }
+
 		$('#isShowAllAccountCode').change(function () {
 		 var isShowAll =  $('#isShowAllAccountCode').is(':checked') ? "Y" : "N";
 		   FillVendorList(isShowAll);
 		});
 
-				$('form').submit(function (e) {
+	     $('form').submit(function (e) {
 			e.preventDefault();
 			debugger
 			CheckUserDuplication().done(function (isDuplicate) {
@@ -415,7 +454,8 @@
 				}
 			});
 
-			return false;
+			// return false;
+			e.target.submit();
 		});
 
 		function CheckUserDuplication() {
@@ -425,6 +465,7 @@
 				data: {userId : $('#UserId').val()},
 				dataType: 'json'
 			}).then(function (obj) {
+				debugger
 				obj = $.parseJSON(obj);
 				if (obj.StatusCode == 200) {
 					return obj.Result[0].Result == 0;
