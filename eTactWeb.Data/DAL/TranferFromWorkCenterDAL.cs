@@ -319,6 +319,27 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
+        public async Task<ResponseResult> FillItems(string Type, string ShowAllItem, string SearchItemCode, string SearchPartCode)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetItemsOnAssets"));
+                
+                SqlParams.Add(new SqlParameter("@showAllItem", ShowAllItem));
+                SqlParams.Add(new SqlParameter("@SearchItemCode", SearchItemCode ?? ""));
+                SqlParams.Add(new SqlParameter("@SearchPartCode", SearchPartCode ?? ""));
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_TransferMaterialFromWc", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
         public async Task<ResponseResult> FillPartCode(int TransferMatYearCode)
         {
             var _ResponseResult = new ResponseResult();

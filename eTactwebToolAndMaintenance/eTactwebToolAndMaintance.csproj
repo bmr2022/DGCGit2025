@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="PDFsharp" Version="6.2.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\eTactWeb.Data\eTactWeb.Data.csproj" />
     <ProjectReference Include="..\eTactWeb.DOM\eTactWeb.DOM.csproj" />
     <ProjectReference Include="..\eTactWeb.Services\eTactWeb.Services.csproj" />

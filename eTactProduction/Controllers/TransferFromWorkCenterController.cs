@@ -61,7 +61,13 @@ namespace eTactWeb.Controllers
 			}
 			return Json(new { success = false, message = "No rows received" });
 		}
-		public IActionResult FillTransferGridFromMemoryCache()
+        public async Task<JsonResult> FillItems(string Type, string ShowAllItem, string SearchItemCode, string SearchPartCode)
+        {
+            var JSON = await _ITransferFromWorkCenter.FillItems(Type, ShowAllItem, SearchItemCode, SearchPartCode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public IActionResult FillTransferGridFromMemoryCache()
 		{
 			try
 			{

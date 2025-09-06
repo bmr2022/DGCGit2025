@@ -40,6 +40,8 @@
                     </a>
                     <div class="row justify-content-between g-2">
                         <div class="col-auto">
+                            <input type="hidden" asp-for="FinFromDate" value="@Model.FinFromDate" />
+                            <input type="hidden" asp-for="FinToDate" value="@Model.FinToDate" />
                             <input asp-for="FromDateBack" type="hidden" value="@Model.FromDateBack" />
                             <input asp-for="ToDateBack" type="hidden" value="@Model.ToDateBack" />
                             <input asp-for="PartCodeBack" type="hidden" value="@Model.PartCodeBack" />
@@ -491,7 +493,7 @@
                /*  $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#EntryDate').val().split(" ")[0]));
                 $('#StockAdjustmentDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#StockAdjustmentDate').val().split(" ")[0])); */
             }
-            var finFromDate = $('#FinFromDate').val();
+            /* var finFromDate = $('#FinFromDate').val();
             var finToDate = $('#FinToDate').val();
 
             var dateParts1 = finFromDate.split("/");
@@ -527,7 +529,7 @@
             var Entrydate = $('#Entrydate').val();
             $('#Entrydate').datepicker("option", "minDate", formattedDate1);
             $('#Entrydate').datepicker("option", "maxDate", CurrentStockDate);
-
+ */
             FillStore();
             FillWorkCenter();
             StockAdjustByFeaturesOptions();
@@ -663,6 +665,34 @@
                 success: function (result, status, error) {
                     $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));
                     $('#StockAdjustmentDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));
+
+                    var finFromDate = $('#FinFromDate').val();
+                    var finToDate = $('#FinToDate').val();
+
+                    var dateParts1 = finFromDate.split("/");
+                    var monthNames = {
+                        "Jan": "01",
+                        "Feb": "02",
+                        "Mar": "03",
+                        "Apr": "04",
+                        "May": "05",
+                        "Jun": "06",
+                        "Jul": "07",
+                        "Aug": "08",
+                        "Sep": "09",
+                        "Oct": "10",
+                        "Nov": "11",
+                        "Dec": "12"
+                    };
+
+                    var formattedDate1 = dateParts1[0] + "/" + monthNames[dateParts1[1]] + "/" + dateParts1[2];
+                    var dateParts2 = finToDate.split("/");
+
+                    var formattedDate2 = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
+
+                    $('#EntryDate,#StockAdjustmentDate').datepicker("option", "minDate", formattedDate1);
+                    $('#EntryDate,#StockAdjustmentDate').datepicker("option", "maxDate", formattedDate2);
+
                 }
             });
         }

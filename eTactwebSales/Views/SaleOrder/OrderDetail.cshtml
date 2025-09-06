@@ -77,6 +77,10 @@
         <input type="hidden" asp-for="Mode" value="@Model.Mode" />
         <input type="hidden" id="Gstregistered" />
         <input type="hidden" id="ShouldPrint" name="ShouldPrint" />
+        <input type="hidden" id="Email" asp-for="Email" />
+                            <input type="hidden" id="CC1" asp-for="CC1" />
+                            <input type="hidden" id="CC2" asp-for="CC2"/>
+        <input type="hidden" id="CC3" asp-for="CC3" />
         <div class="card-header card-headerBG text-light bg-gradient">
             <h5>
                 @if (Model.Mode != "SOA" && Model.Mode != "SAU")
@@ -151,7 +155,7 @@
                                 @*Model.Mode = "U";*@
                                 <div class="col-auto">
                                     @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
-                                    <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton">
+                                    <button type="submit" class="btn btn-sm btn-outline-light bg-gradient UpdateButton" id="UpdateButton">
                                         <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                                         UPDATE
                                     </button>
@@ -720,14 +724,14 @@
                         <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
                             <div class="accordion-body">
                                 <div class="row g-2 gx-3" id="_ItemGrid">
-                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:180px">
                                         <label asp-for="Group_Code" class="form-label">Group Name</label>
                                       
                                         <select class="form-select" asp-for="Group_Code" style="width:170px">
                                             <option value="0">-Select-</option>
                                         </select>
                                     </div>
-                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px">
                                         <label asp-for="PartCode" class="form-label" style="color:  red;">Part Code*</label>
                                         <input type="hidden" id="validPartCodes" value="@string.Join(",", Model.PartCodeList.Select(p => p.Value))" />
 
@@ -735,7 +739,7 @@
                                             <option value="0">-Select-</option>
                                         </select>
                                     </div>
-                                    <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                    <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-6" style="width:300px">
                                         <label asp-for="ItemCode" class="form-label" style="color:  red;">Item Name*</label>
                                         <div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
                                             <label id="IN12" class="form-label">Show All</label>
@@ -768,7 +772,7 @@
                                         <label asp-for="AltUnit" class="form-label">Alt Unit</label>
                                         <input asp-for="AltUnit" class="form-control" value="NA" readonly="readonly" aria-readonly="readonly" />
                                     </div>
-                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:70px">
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="">
                                         <label asp-for="Rate" class="form-label" style="color:  red;">Rate*</label>
                                         <input asp-for="Rate" type="number" step="any" min="0" class="form-control" onkeyup="CalculateRate();" />
                                     </div>
@@ -776,7 +780,7 @@
                                         <label asp-for="UnitRate" class="form-label" style="color:  red;">Rate/Unit*</label>
                                         <select class="form-select" asp-for="UnitRate" asp-items="Model.UnitRateList" onchange="CalculateRate();"></select>
                                     </div>
-                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:70px">
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="">
                                         <label asp-for="OtherRateCurr" class="form-label">Rate In FX</label>
                                         <input asp-for="OtherRateCurr" type="number" step="any" min="0" class="form-control" />
                                     </div>
@@ -1189,7 +1193,7 @@
                                     @*Model.Mode = "U";*@
                                     <div class="col-auto">
                                         @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
-                                        <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton">
+                                        <button type="submit" class="btn btn-sm btn-outline-light bg-gradient UpdateButton" id="UpdateButton">
                                             <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                                             UPDATE
                                         </button>
@@ -1474,13 +1478,14 @@
                     $('#EntryTime').val(time);
                 }, 1000);
             }
+          
         });
         /*  document.querySelector("#files").onchange = function () {
             const fileName = this.files[0]?.name;
             const label = document.querySelector("label[for=files]");
             label.innerText = fileName ?? "Import Excel";
         }; */
-
+       
         document.querySelectorAll(".number").forEach(input => {
             input.addEventListener("input", function () {
                 // Allow only digits (0-9), no negative sign (-) or non-numeric characters
@@ -1936,9 +1941,14 @@
             GetFormRights();
             GetItemGroup();
             ShowHideFields();
-            if ($('#Mode').val() == 'SOA') {
+      
+
+            var SOClosedate = $('#SOCloseDate').val().split(" ")[0].replace(/-/g, "/");
+            $('#SOCloseDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#SOCloseDate').val()));
+            $('#SOCloseDate').datepicker("option", "minDate", parseDateToFormat(SOClosedate));
+               if ($('#Mode').val() == 'SOA') {
                 var SOClosedate = $('#SOCloseDate').val().split(" ")[0].replace(/-/g, "/");
-                $('#SOCloseDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(SOClosedate));
+                $('#SOCloseDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", (SOClosedate));
                 $('#SOCloseDate').datepicker("option", "minDate", parseDateToFormat(SOClosedate));
 
                 $('#PN1').prop("checked", true);
@@ -1950,9 +1960,6 @@
                     $('#ConsigneeAccountCode').text('');
                 }
             }
-            var SOClosedate = $('#SOCloseDate').val().split(" ")[0].replace(/-/g, "/");
-            $('#SOCloseDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#SOCloseDate').val()));
-            $('#SOCloseDate').datepicker("option", "minDate", parseDateToFormat(SOClosedate));
             // NewEntryId();
             if ($('#Mode').val() != "U" && $('#Mode').val() != "V" && $('#Mode').val() != "SOA" && $('#Mode').val() != "SAU" && $('#Mode').val() != "SOC") {
 
@@ -1998,7 +2005,18 @@
 
                 $('#SOBillToShipTo').modal("show");
             });
-
+            // if ($('#AccountCode').prop('selectedIndex') != 0) {
+                $.getJSON({
+                    url: '@Url.Action("GetGstRegister", "PurchaseOrder")',
+                    data: { Code: $('#AccountCode').val() },
+                    success: function (result, status, xhr) {
+                        if (result != null) {
+                            var obj = $.parseJSON(result);
+                            $('#Gstregistered').val(obj.Result[0].GSTRegistered);
+                        }
+                    }
+                });
+            // }
             FillCurrency();
 
             $('#AmmEffDate').on("keydown", function (event) {
@@ -2031,17 +2049,26 @@
             
             $('#AmmEffDate').val($('#AmmEffDate').val().split(' ')[0]);
 
-            $('#QDate').val(parseDateToFormat($('#QDate').val().split(' ')[0]));
-            $('#SODate').val(parseDateToFormat($('#SODate').val().split(' ')[0]));
+            $('#QDate').val(($('#QDate').val().split(' ')[0]));
+            $('#SODate').val(($('#SODate').val().split(' ')[0]));
             //alert($('#WEF').val());
-            $('#WEF').val(parseDateToFormat($('#WEF').val().split(' ')[0]));
+            $('#WEF').val(($('#WEF').val().split(' ')[0]));
+              if ($('#Mode').val() == 'SOA' || $('#Mode').val() == 'SOC') {
+                   $('#WEF').val(($('#WEF').val().split(' ')[0]));
+              }
             // $('#WEF').val($('#WEF').val().split(' ')[0]);
             //$('#SOCloseDate').val($('#SOCloseDate').val().split(' ')[0]);
-
-            $('#SOConfirmDate').val(parseDateToFormat($('#SOConfirmDate').val().split(' ')[0]));
-            $('#SODeliveryDate').val(parseDateToFormat($('#SODeliveryDate').val().split(' ')[0]));
+            
+            $('#SOConfirmDate').val(($('#SOConfirmDate').val().split(' ')[0]));
+            $('#SODeliveryDate').val(($('#SODeliveryDate').val().split(' ')[0]));
             $('#AmmEffDate,#QDate,#SODate,#SOConfirmDate,#SODeliveryDate').datepicker({ dateFormat: 'dd/mm/yy' });
-
+             if ($('#Mode').val() == 'U' || $('#Mode').val() == 'V') {
+                  $('#QDate').val(($('#QDate').val().split(' ')[0]));
+            $('#SODate').val(($('#SODate').val().split(' ')[0]));
+              $('#SOConfirmDate').val(($('#SOConfirmDate').val().split(' ')[0]));
+                 $('#SODeliveryDate').val(parseDateToFormat($('#SODeliveryDate').val().split(' ')[0]));
+                  $('#WEF').val(parseDateToFormat($('#WEF').val().split(' ')[0]));
+             }
             //$("#QDate").datepicker({ dateFormat: 'dd/mm/yy' });
             //$("#SODate").datepicker({ dateFormat: 'dd/mm/yy' });
             //$("#WEF").datepicker({ dateFormat: 'dd/mm/yy' });
@@ -2176,7 +2203,7 @@
             
             if ($('#Mode').val() == 'SOA' || $('#Mode').val() == 'SOC') {
                 var ammEffDate = $('#hiddenAmmEffDate').val().split(" ")[0];
-                $('#AmmEffDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(ammEffDate));
+                $('#AmmEffDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", (ammEffDate));
             }
 
             $('.AF').fadeOut();
@@ -2699,9 +2726,9 @@
 
             var minDate = $('#SODate').val();
             //$('#WEF').datepicker("setDate", parseDateToFormat(minDate));
-            $('#WEF').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(minDate));
+            $('#WEF').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", (minDate));
 
-            $('#WEF').datepicker("option", "minDate", parseDateToFormat(minDate));
+            $('#WEF').datepicker("option", "minDate", (minDate));
         }
 
         $('#WEF').change(function () {
@@ -2770,7 +2797,7 @@
 
         
 
-        $(document).on('click', '#submitBTN,#submitBTNFooter', function (e) {
+        $(document).on('click', '#submitBTN,#submitBTNFooter,.UpdateButton', function (e) {
             ;
             $('#TypeOfSave').val("NPS");
             e.preventDefault();
@@ -2871,7 +2898,7 @@
                         }
                         else if (shouldPrint && shouldSend) {
                             const printUrl = '/SaleOrder/PrintReport?EntryId=' + res.entryId + '&YearCode=' + res.yearCode;
-                            const sendUrl = '/SaleOrder/SendReport?EntryId=' + res.entryId + '&YearCode=' + res.yearCode + '&EmailTo=' + Email + '&CC1=' + CC1 + '&CC2=' + CC2 + '&CC3=' + CC3 + '&Challanno=' + CustOrderNo;
+                            const sendUrl = '/SaleOrder/SendReport?EntryId=' + res.entryId + '&YearCode=' + res.yearCode + '&EmailTo=' + Email + '&CC1=' + CC1 + '&CC2=' + CC2 + '&CC3=' + CC3 + '&Sono=' + CustOrderNo;
                             printWindow.location.href = printUrl;
                             /* sendWindow.location.href = sendUrl; */
                             $.get(sendUrl);
@@ -2969,7 +2996,8 @@
 
             e.preventDefault();
             if (!checkPartCodeMusthaveAtLeastOneTax()) {
-                return false;
+                return ;
+
             }
             else if (!matchFound) {
                 $.notify("You must enter at least one amendment entry.", "error");
@@ -2995,7 +3023,7 @@
             //    }
             //}
             if (!checkPartCodeMusthaveAtLeastOneTax()) {
-                return false;
+                return ;
             }
             else if (soGrid <= 1) {
                 $.notify("SO Grid should at least have one item", "error");
@@ -3005,41 +3033,41 @@
             }
         });
 
-        $(document).on('click', '.UpdateButton', function (e) {
+        // $(document).on('click', '.UpdateButton', function (e) {
 
-            $('#TypeOfSave').val("NPS");
-            e.preventDefault();
+        //     $('#TypeOfSave').val("NPS");
+        //     e.preventDefault();
 
-            var soGrid = $('#divSaleItemGrid tr td').length;
-            var taxGrid = $('#divTaxGrid tr td').length;
-            //var txRowCount = $('#divTaxGrid tr').length;
-            //for (var i = 1; i <= txRowCount; i++) {
-            //    var txType = $('#txgridtype-' + i).text();
-            //    var txname = $('#txgridname-' + i).text();
-            //    if (txType == '' || txname == '') {
-            //        $.notify("TaxType Or TaxName cannot be null", "error");
-            //        return;
-            //    }
-            //}
+        //     var soGrid = $('#divSaleItemGrid tr td').length;
+        //     var taxGrid = $('#divTaxGrid tr td').length;
+        //     //var txRowCount = $('#divTaxGrid tr').length;
+        //     //for (var i = 1; i <= txRowCount; i++) {
+        //     //    var txType = $('#txgridtype-' + i).text();
+        //     //    var txname = $('#txgridname-' + i).text();
+        //     //    if (txType == '' || txname == '') {
+        //     //        $.notify("TaxType Or TaxName cannot be null", "error");
+        //     //        return;
+        //     //    }
+        //     //}
 
-            if (!checkPartCodeMusthaveAtLeastOneTax()) {
-                return false;
-            }
-            else if (soGrid <= 1) {
-                $.notify("SO Grid should at least have one item", "error");
-                return;
-            }
-            else {
-                $('#Mode').val("U");
-                $("form").submit();
-            }
+            // if (!checkPartCodeMusthaveAtLeastOneTax()) {
+            //     return false;
+            // }
+            // else if (soGrid <= 1) {
+            //     $.notify("SO Grid should at least have one item", "error");
+            //     return;
+            // }
+            // else {
+            //     $('#Mode').val("U");
+            //     $("form").submit();
+            // }
             //else if (taxGrid <= 1) {
             //    $.notify("Tax Grid should at least have one item", "error");
             //    return;
             //}
 
 
-        });
+        // });
 
         $('#SODate,#AmmEffDate').on('keydown', function (e) {
             $('#AccountCode').focus();
@@ -3565,9 +3593,9 @@
                     });
 
                     if ($('#Mode').val() == "SOA" || $('#Mode').val() == "U" || $('#Mode').val() == "V") {
-                        $('#AccountCode').prop("disabled", false);
+                        // $('#AccountCode').prop("disabled", false);
                         $('#AccountCode').val($('#hiddenAccountCode').val());
-                        $('#AccountCode').prop("disabled", true);
+                        // $('#AccountCode').prop("disabled", true);
                     }
 
                     if ($('#Mode').val() != "SOA" && $('#Mode').val() != "U" && $('#Mode').val() != "V" && $('#Mode').val() != "SOC") {
@@ -3632,6 +3660,29 @@
                         if ($('#Address').val()) {
                             $('#DeliveryAddress').val($('#Address').val());
                         }
+                    }
+                });
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("GetEmails", "NRGP")",
+                    data: { AccountCode: $('#AccountCode').val() },
+                    dataType: "json",
+                    async: false,
+                    success: function (result, status, error) {
+                        if (result != null) {
+                            var obj = $.parseJSON(result);
+                            if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                                $.each(obj.Result, function (index, val) {
+                                    $('#Email').val(val.EmailId);
+                                    $('#CC1').val(val.CC1);
+                                    $('#CC2').val(val.CC2);
+                                    $('#CC3').val(val.CC3);
+                                });
+                            }
+                        }
+                    },
+                    error: function (req, status, error) {
+                        alert(error);
                     }
                 });
             }

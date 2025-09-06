@@ -543,6 +543,9 @@ public static class CommonFunc
                     && typeProperty.PropertyInfo.Name != "FromDate" && typeProperty.PropertyInfo.Name != "ToDate" && typeProperty.PropertyInfo.Name != "Mode"
                      && typeProperty.PropertyInfo.Name != "SODashboard" && typeProperty.PropertyInfo.Name != "SONoList"
                     && typeProperty.PropertyInfo.Name != "BranchList" && typeProperty.PropertyInfo.Name != "SummaryDetail"
+                    && typeProperty.PropertyInfo.Name != "eMailFromCC1" && typeProperty.PropertyInfo.Name != "eMailFromCC2" 
+                    && typeProperty.PropertyInfo.Name != "eMailFromCC3"
+                    && typeProperty.PropertyInfo.Name != "SalesPersonEmailId"
                     && typeProperty.PropertyInfo.Name != "ConsigneeAccountName" && typeProperty.PropertyInfo.Name != "SODelivery" && typeProperty.PropertyInfo.Name != "ResposibleSalesPersonID")
                     {
                         object value = row[typeProperty.PropertyInfo.Name];

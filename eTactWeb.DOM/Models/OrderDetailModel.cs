@@ -90,6 +90,7 @@ namespace eTactWeb.DOM.Models
     {
         public string? AmmEffDate { get; set; }
         public int AmmNo { get; set; }
+        public int AccountCode { get; set; }
         public string AmendmentDate { get; set; }
         public string AmendmentReason { get; set; }
         public string Color { get; set; }
@@ -138,6 +139,10 @@ namespace eTactWeb.DOM.Models
         public string? SOCloseDate { get; set; }
         public string? SOComplete { get; set; }
         public string? SOConfirmDate { get; set; }
+        public string SalesPersonEmailId { get; set; }
+        public string eMailFromCC1 { get; set; }
+        public string eMailFromCC2 { get; set; }
+        public string eMailFromCC3 { get; set; }
         public IList<SaleOrderDashboard>? SODashboard { get; set; }
         [Required]
         public string? SOFor { get; set; }
@@ -371,6 +376,10 @@ namespace eTactWeb.DOM.Models
         public string SoTypeBack { get; set; }
         public string PartCodeBack { get; set; }
         public string ItemNameBack { get; set; }
+        public string? Email { get; set; }
+        public string? CC1 { get; set; }
+        public string? CC2 { get; set; }
+        public string? CC3 { get; set; }
 
         public IList<SelectListItem> TransportModeList
         {

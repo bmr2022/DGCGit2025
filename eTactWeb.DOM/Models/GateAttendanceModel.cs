@@ -75,6 +75,7 @@ public class GateAttendanceModel : TimeStamp
     public int? DesignationEntryId { get; set; }
     public string DesignationName { get; set; }
     public string strEmpAttDate { get; set; }
+    public string EmpCategoryId { get; set; }
     public string EmpCategory { get; set; }
     public string? AttendanceEntryMethodType { get; set; }
     public IList<SelectListItem> AttendanceEntryMethodTypeList
@@ -104,9 +105,10 @@ public class GateAttendanceModel : TimeStamp
     public string EmployeeCode { get; set; }
     public string EmployeeName { get; set; }
     public IList<TextValue>? EmployeeList { get; set; }
-    public IList<TextValue>? DeptList { get; set; } // for future filter
-    public IList<TextValue>? ShiftList { get; set; } // for future filter
-    public IList<TextValue>? DesignationList { get; set; } // for future filter
+    public IList<TextValue>? DeptList { get; set; }
+    public IList<TextValue>? ShiftList { get; set; }
+    public IList<TextValue>? DesignationList { get; set; }
+    public IList<TextValue>? CategoryList { get; set; }
     public string TotalEmployees { get; set; }
     public string TotalEmployeesOnLeave { get; set; }
     public string TotalEmployeesAttDone { get; set; }

@@ -140,6 +140,7 @@
         <div class="card-header card-headerBG text-light bg-gradient">
             <h5>
                 <strong>@ViewData["Title"] - @Model.GateAttYearCode</strong>
+                <span style="display:none;" id="GateAttYearCode">@Model.GateAttYearCode</span>
                 <span class="d-flex float-end" style="margin-top:-2px;">
                     <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="PrintVoucher"
                        asp-controller="GateAttendance" asp-route-EntryId="@Model.GateAttEntryId" asp-route-YearCode="@Model.GateAttYearCode">
@@ -269,7 +270,7 @@
             var maxDate = parseCustomDate($("#NToDate").val());   
             var today = new Date(); today.setHours(0,0,0,0);
             var defaultDate = (today < minDate) ? minDate : (today > maxDate ? maxDate : today);
-
+            fillEntryId();
             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
                 var strEmpAttDate = $('#strEmpAttDate').val().split("-").join("/");
                 strEmpAttDate = parseDateToFormat(strEmpAttDate.split(" ")[0]);
@@ -509,20 +510,17 @@
 
         function ShowManualAttandance() {
             var date = $("#strEmpAttDate").val();
+            var attmonth = $("#strEmpAttMonth").val();
+            var yearcode = $("#GateAttYearCode").val();
             var DayOrMonthType = $("#DayOrMonthType").val();
             if (!DayOrMonthType) {
                 alert("Please select a Day or Month.");
                 return;
             }
-            // if (!date) {
-            //     alert("Please select a date first.");
-            //     return;
-            // }
-
             $.ajax({
                 url: '/GateAttendance/LoadAttendanceGrid',
                 type: 'GET',
-                data: { DayOrMonthType: DayOrMonthType, Attdate: date },
+                data: { DayOrMonthType: DayOrMonthType, Attdate: date, AttMonth: attmonth, YearCode: yearcode  },
                 success: function (result) {
                     $("#attendanceItemGrid").html(result);
                 },
@@ -531,8 +529,22 @@
                 }
             });
         }
+        function fillEntryId() {
+            //ENTRYID
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("FillEntryId")",
+                dataType: "json",
+                data: { "YearCode": $('#GateAttYearCode').val() },
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        $('#GateAttEntryId').val(obj.Result.Table[0].EntryId);
+                    }
+                }
+            });
+        }
     </script>
-
 }
 <!-- jQuery FIRST -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

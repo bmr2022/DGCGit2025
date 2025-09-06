@@ -40,17 +40,17 @@
         </div> *@
         <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
             <label asp-for="AttendanceType" class="form-label"> Manual / Import</label>
-            <select class="form-select" asp-for="AttendanceType" tabindex="3" asp-items="@(new SelectList(Model.AttendanceTypeList,"Value","Text"))"></select>
+            <select class="form-select" asp-for="AttendanceType" tabindex="3" asp-items="@(new SelectList(Model.AttendanceTypeList ?? new List<SelectListItem>(), "Value", "Text"))"></select>
         </div>
         <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
             <label asp-for="AttendanceEntryMethodType" class="form-label">Attendance Entry Method</label>
-            <select asp-for="AttendanceEntryMethodType" class="form-select" tabindex="6" asp-items="@(new SelectList(Model.AttendanceEntryMethodTypeList,"Value","Text"))">
+            <select asp-for="AttendanceEntryMethodType" class="form-select" tabindex="6" asp-items="@(new SelectList(Model.AttendanceEntryMethodTypeList ?? new List<SelectListItem>(), "Value", "Text"))">
                 <option value="0" selected>-Select-</option>
             </select>
         </div>
         <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
             <label asp-for="DayOrMonthType" class="form-label">Day or Month</label>
-            <select asp-for="DayOrMonthType" class="form-select" tabindex="6" asp-items="@(new SelectList(Model.DayOrMonthTypeList,"Value","Text"))" onchange="DayorMonthChange()">
+            <select asp-for="DayOrMonthType" class="form-select" tabindex="6" asp-items="@(new SelectList(Model.DayOrMonthTypeList ?? new List<SelectListItem>(), "Value", "Text"))" onchange="DayorMonthChange()">
             </select>
         </div>
         <div class="dvEmpAttDate col-xxl-1 col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
@@ -59,7 +59,7 @@
         </div>
         <div class="dvEmpAttMonth col-xxl-1 col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
             <label asp-for="strEmpAttMonth" class="form-label">Attendance Month</label>
-            <select asp-for="strEmpAttMonth" class="form-select" tabindex="6" asp-items="@(new SelectList(Model.strEmpAttMonthList,"Value","Text"))">
+            <select asp-for="strEmpAttMonth" class="form-select" tabindex="6" asp-items="@(new SelectList(Model.strEmpAttMonthList ?? new List<SelectListItem>(), "Value", "Text"))">
                 <option value="0" selected>-Select-</option>
             </select>
         </div>
@@ -73,6 +73,12 @@
                 <input asp-for="PN1" class="form-check-input" type="checkbox" role="switch" />Show All
             </div>
             <select class="form-select" asp-for="EmployeeCode" tabindex="5" asp-items="@(new SelectList(Model.EmployeeList,"Value","Text"))">
+                <option value="0">-Select-</option>
+            </select>
+        </div>
+        <div class="col-xl-2 col-lg-3 col-md-3 col-sm-3 col-xs-6">
+            <label asp-for="CategoryCode" class="form-label">Category</label>
+            <select class="form-select" asp-for="CategoryCode" tabindex="5" asp-items="@(new SelectList(Model.CategoryList ?? new List<eTactWeb.DOM.Models.Common.TextValue>(), "Value", "Text"))">
                 <option value="0">-Select-</option>
             </select>
         </div>

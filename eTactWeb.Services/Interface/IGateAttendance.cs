@@ -10,6 +10,8 @@ namespace eTactWeb.Services.Interface
 {
     public interface IGateAttendance
     {
-        Task<GateAttendanceModel> GetManualAttendance(string DayOrMonthType, DateTime Attdate);
+        Task<GateAttendanceModel> GetManualAttendance(string DayOrMonthType, DateTime Attdate, int AttMonth, int YearCode);
+        Task<ResponseResult> GetFormRights(int uId);
+        Task<ResponseResult> FillEntryId(int YearCode);
     }
 }

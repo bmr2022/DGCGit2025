@@ -66,6 +66,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _TranferFromWorkCenterDAL.FillPartCode(TransferMatYearCode);
         }
+        public async Task<ResponseResult> FillItems(string Type, string ShowAllItem, string SearchItemCode, string SearchPartCode)
+        {
+            return await _TranferFromWorkCenterDAL.FillItems(Type, ShowAllItem, SearchItemCode, SearchPartCode);
+        }
         public async Task<ResponseResult> GetBatchNumber(string SPName, int ItemCode, int YearCode, float WcId, string TransDate, string BatchNo)
         {
             return await _TranferFromWorkCenterDAL.GetBatchNumber(SPName, ItemCode, YearCode, WcId, TransDate, BatchNo);
