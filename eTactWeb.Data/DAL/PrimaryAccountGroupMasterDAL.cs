@@ -120,6 +120,7 @@ namespace eTactWeb.Data.DAL
                     SqlParams.Add(new SqlParameter("@parentAccount", model.Parent_Account_Code == 0 ? "" : model.Parent_Account_Code));
                     SqlParams.Add(new SqlParameter("@Main_Group", model.Main_Group == "" ? "" : model.Main_Group));
                     SqlParams.Add(new SqlParameter("@SubGroup", model.SubGroup == "" ? "" : model.SubGroup));
+                    SqlParams.Add(new SqlParameter("@SubSubGroup", model.SubSubGroup == 0 ? 0 : model.SubSubGroup));
                     SqlParams.Add(new SqlParameter("@UnderGroup", model.UnderGroup == "" ? "" : model.UnderGroup));
                     SqlParams.Add(new SqlParameter("@EnteredEMPID", model.EnteredEMPID == 0 ? 0 : model.EnteredEMPID));
                     SqlParams.Add(new SqlParameter("@EntryByMachineName", model.EntryByMachineName ?? ""));
@@ -194,7 +195,7 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
-        public async Task<PrimaryAccountGroupMasterDashBoardModel> GetDashboardDetailData()
+        public async Task<PrimaryAccountGroupMasterDashBoardModel> GetDashboardDetailData(string Account_Name,string ParentAccountName)
         {
             DataSet? oDataSet = new DataSet();
             var model = new PrimaryAccountGroupMasterDashBoardModel();
@@ -207,6 +208,8 @@ namespace eTactWeb.Data.DAL
                         CommandType = CommandType.StoredProcedure
                     };
                     oCmd.Parameters.AddWithValue("@Flag", "DASHBOARD");
+                    oCmd.Parameters.AddWithValue("@AccountName", Account_Name);
+                    oCmd.Parameters.AddWithValue("@parentAccount", ParentAccountName);
 
                     await myConnection.OpenAsync();
                     using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))

@@ -17,7 +17,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> UpdatePrimaryAccountGroupMaster(PrimaryAccountGroupMasterModel model);
         
         Task<ResponseResult> GetDashboardData();
-        Task<PrimaryAccountGroupMasterDashBoardModel> GetDashboardDetailData();
+        Task<PrimaryAccountGroupMasterDashBoardModel> GetDashboardDetailData(string Account_Name, string ParentAccountName);
         Task<PrimaryAccountGroupMasterModel> GetViewByID(int accountCode);
         Task<ResponseResult> DeleteByID(int accountCode);
     }

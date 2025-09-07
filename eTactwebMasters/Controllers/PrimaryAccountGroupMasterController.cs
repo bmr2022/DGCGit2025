@@ -169,11 +169,12 @@ namespace eTactWeb.Controllers
 
                 var model = new PrimaryAccountGroupMasterDashBoardModel();
                 var Result = await _IPrimaryAccountGroupMaster.GetDashboardData().ConfigureAwait(true);  // Adjust interface/service as needed
-                DateTime now = DateTime.Now;
+             
+                var now = DateTime.Today;
 
-                // Set default date range (from start of current month to end of fiscal year, for example)
-                model.FromDate = new DateTime(now.Year, now.Month, 1).ToString("dd/MM/yyyy").Replace("-", "/");
-                model.ToDate = new DateTime(DateTime.Today.Year + 1, 3, 31).ToString("dd/MM/yyyy").Replace("-", "/");
+                model.FromDate = new DateTime(now.Year, now.Month, 1).ToString("dd/MM/yyyy");
+
+                model.ToDate = now.ToString("dd/MM/yyyy");
 
                 if (Result != null)
                 {
@@ -207,10 +208,10 @@ namespace eTactWeb.Controllers
                 throw ex;
             }
         }
-        public async Task<IActionResult> GetDetailData()
+        public async Task<IActionResult> GetDetailData(string Account_Name, string ParentAccountName)
         {
             var model = new PrimaryAccountGroupMasterDashBoardModel();
-            model = await _IPrimaryAccountGroupMaster.GetDashboardDetailData();
+            model = await _IPrimaryAccountGroupMaster.GetDashboardDetailData( Account_Name,  ParentAccountName);
             return PartialView("_PrimaryAccountGroupMasterDashBoardGrid", model);
 
         }
