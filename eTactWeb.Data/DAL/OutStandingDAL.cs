@@ -117,7 +117,8 @@ namespace eTactWeb.Data.DAL
 														  select new OutStandingModel
 														  {
 															  LedgerDescription = row["LedgerDescription"] == DBNull.Value ? string.Empty : row["LedgerDescription"].ToString(),
-															  VoucherNo = row["VoucherNo"] == DBNull.Value ? string.Empty : row["VoucherNo"].ToString(),
+                                                              AccountCode = row["AccountCode"] == DBNull.Value ? 0 : Convert.ToInt32(row["AccountCode"]),
+                                                              VoucherNo = row["VoucherNo"] == DBNull.Value ? string.Empty : row["VoucherNo"].ToString(),
 															  VoucherDate = row["VoucherDate"] == DBNull.Value ? string.Empty : Convert.ToDateTime(row["VoucherDate"]).ToString("dd-MM-yyyy"),
 															  VoucherType = row["VoucherType"] == DBNull.Value ? string.Empty : row["VoucherType"].ToString(),
 															  DrAmt = row["DrAmt"] == DBNull.Value ? string.Empty : row["DrAmt"].ToString(),
@@ -131,6 +132,7 @@ namespace eTactWeb.Data.DAL
 															  AccYearCode = row["AccYearCode"] == DBNull.Value ? string.Empty : row["AccYearCode"].ToString(),
                                                               DocEntryId = row["DocEntryId"] == DBNull.Value ? 0 : Convert.ToInt32(row["DocEntryId"]),
                                                               SalesPersonName = row["SalesPersonName"] == DBNull.Value ? string.Empty : row["SalesPersonName"].ToString(),
+                                                              ReportType = outstandingType
 														  }).ToList();
 						}
 						else

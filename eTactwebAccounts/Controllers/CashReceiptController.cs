@@ -9,6 +9,7 @@ using FastReport;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using static eTactWeb.Data.Common.CommonFunc;
+using System.Globalization;
 
 namespace eTactwebAccounts.Controllers
 {
@@ -267,7 +268,7 @@ namespace eTactwebAccounts.Controllers
                 Item.VoucherDocNo ?? string.Empty,
                 Item.BillVouchNo ?? string.Empty,
                 Item.VoucherDocDate=DateTime.Now.ToString("dd/MMM/yyyy") ,
-                Item.BillInvoiceDate=DateTime.Now.ToString("dd/MMM/yyyy") ,
+                Item.BillInvoiceDate=DateTime.Now.ToString("dd/MMM/yyyy",CultureInfo.InvariantCulture) ,
                 Item.BillYearCode ,
                 Item.VoucherRefNo ?? string.Empty,
                 Item.SrNO ,

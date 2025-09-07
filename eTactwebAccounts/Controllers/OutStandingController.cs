@@ -7,6 +7,7 @@ using eTactWeb.DOM.Models;
 using System.Net;
 using System.Data;
 using System.Globalization;
+using eTactWeb.Services.Helpers;
 
 namespace eTactWeb.Controllers
 {
@@ -53,7 +54,7 @@ namespace eTactWeb.Controllers
             return Json(JsonString);
         }
 
-        public async Task<IActionResult> GetDetailsData(string outstandingType, string TillDate, string GroupName, string[] AccountNameList, int AccountCode, string ShowOnlyApprovedBill, bool ShowZeroBal)
+        public async Task<IActionResult> GetDetailsData( string outstandingType, string TillDate, string GroupName, string[] AccountNameList,  int AccountCode, string ShowOnlyApprovedBill, bool ShowZeroBal)
         {
             var model = new OutStandingModel();
             model = await _OutStanding.GetDetailsData(outstandingType, TillDate, GroupName, AccountNameList, AccountCode, ShowOnlyApprovedBill, ShowZeroBal);

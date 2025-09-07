@@ -1699,6 +1699,43 @@
             $('#toBillDate').datepicker("option", "minDate", $('#fromBillDate').val());
         });
 
+        function PressBack(extraParams = {}) {
+            // Get previous page URL
+            let prevUrl = document.referrer;
+
+            if (!prevUrl) {
+                // Fallback: go to home page
+                prevUrl = `${window.location.protocol}//${window.location.host}/`;
+            }
+
+            let url = new URL(prevUrl);
+
+            // Get current page params
+            let currentParams = new URLSearchParams(window.location.search);
+
+            // Helper to encode Base64
+            function encodeBase64(value) {
+                try {
+                    return window.btoa(unescape(encodeURIComponent(value)));
+                } catch {
+                    return value;
+                }
+            }
+
+            // Encode current page params
+            currentParams.forEach((val, key) => {
+                url.searchParams.set(key, encodeBase64(val));
+            });
+
+            // Add/override with extraParams if any
+            Object.keys(extraParams).forEach(key => {
+                url.searchParams.set(key, encodeBase64(extraParams[key]));
+            });
+
+            // Redirect to previous page with all params
+            window.location.href = url.toString();
+        }
+
         function GetServerDate() {
             $.ajax({
                 type: "GET",

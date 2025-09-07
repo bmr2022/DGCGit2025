@@ -23,6 +23,7 @@ namespace eTactWeb.DOM.Models
         public string Mode { get; set; }
         public string ShowOnlyApprovedBill { get; set; }
         public string LedgerDescription { get; set; }
+        public int AccountCode {  get; set; }
         public string VoucherNo { get; set; }
         public string VoucherDate { get; set; }
         public string VoucherType { get; set; }

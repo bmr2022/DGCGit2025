@@ -54,23 +54,6 @@
                     <div class="card-body">
                         <form id="SParam">
                             <div class="row">
-                                @* <input type="hidden" value="@Model.YearCode" asp-for="YearCode" />
-                                <input type="hidden" value="@Model.Storeid" asp-for="Storeid" /> *@
-
-                                @* <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12">
-                                <div class="row">
-                                <div class="col">
-                                <label class="form-label">From Date</label>
-                                <input asp-for="FromDate" class="form-control" />
-                                </div>
-                                <div class="col">
-                                <label class="form-label">To Date</label>
-                                <input asp-for="ToDate" class="form-control" />
-                                </div>
-                                </div>
-                                </div>
-                                *@
-
                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12">
                                     <label asp-for="ReportType" class="form-label">Party</label>
                                     <select class="form-control" asp-for="ReportType">
@@ -84,18 +67,13 @@
                                 </div>
                                 <div class="col-xl-2 col-xl-3 col-lg-3 col-md-3 col-sm-3 col-xs-6" style="width:150px">
                                     <label asp-for="TillDate" class="form-label">OutStanding Upto</label>
-
                                     <input asp-for="TillDate" class="form-control" />
-
-
                                 </div>
 
 
                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                     <label asp-for="GroupName" class="form-label">Group Name</label>
-
                                     <select asp-for="GroupName" class="form-control">
-                                        @* <option value="@Model.AccountCode">-Select-</option> *@
                                         <option value="@Model.GroupName">-Select-</option>
                                         @if (Model.Mode == "U" || Model.Mode == "V")
                                         {
@@ -234,39 +212,108 @@
     <script>
 
         $(document).ready(function () {
+            debugger
             console.log("Ready");
+
+            // Initialize datepicker with today's date
             var currentDate = new Date();
-            var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-            $('#totalRows').text($('#divStockRegisterBody tr').length);
-            $('#TillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+            $('#TillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", currentDate);
+
+            // Initialize select2
             $('#GroupName').select2();
             $('#PartyNameSingle').select2();
             $('#ReportType').select2();
+
+            // Hide back button initially
             $('#BackButton').hide();
 
-            var currentDate = new Date();
-            var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+            // Set total rows if table exists
+            if ($('#divStockRegisterBody').length) {
+                $('#totalRows').text($('#divStockRegisterBody tr').length);
+            }
+
+            // Fill dropdowns
+            FillGroupName();
+            FillPartyName();
+
+            // Optional: Load values from URL parameters and set fields
+            setValuesFromUrl();
+
+            // Handle ReportType change
+            $("#ReportType").change(function () {
+                handleReportTypeChange();
+            });
+
+            // Function to handle ReportType changes
+            function handleReportTypeChange() {
+                var reportType = $("#ReportType").val().trim();
+                var reportTypesToCheck = ["Summary", "Detail", "IndentWithPODetail"];
+                if (reportTypesToCheck.includes(reportType)) {
+                    $("#Group_Ledger").val("Ledger");
+                }
+            }
+
+            // Optional: Function to load values from URL parameters
+            function setValuesFromUrl() {
+                const params = new URLSearchParams(window.location.search);
+
+                // DashboardType
+                if (params.has("DashboardType")) {
+                    $('#ReportType').val(fullDecode(params.get("DashboardType")));
+                }
+
+                // AccountCode
+                const accountCode = params.has("AccountCode") ? fullDecode(params.get("AccountCode")) : null;
+
+                // Fill dropdown
+                FillPartyName(function () {
+                    // 🔹 This runs AFTER AJAX fills the dropdown
+                    if (accountCode) {
+                        const PartynameSingleDropdown = $('#PartyNameSingle');
+                        PartynameSingleDropdown.val(accountCode);
+
+                        // If using normal select
+                        PartynameSingleDropdown.trigger('change');
+
+                        // If using Select2, also do this:
+                        if (PartynameSingleDropdown.hasClass('select2-hidden-accessible')) {
+                            PartynameSingleDropdown.trigger('change.select2');
+                        }
+                    }
+                });
+            }
+
+            function tryBase64Decode(str) {
+                try {
+                    return atob(str);
+                } catch {
+                    return str; // not base64
+                }
+            }
+
+            function fullDecode(val) {
+                debugger
+                if (!val) return "";
+                // 1) URL decode
+                let urlDecoded = decodeURIComponent(val);
+
+                // 2) Base64 decode (maybe 2 times)
+                let once = tryBase64Decode(urlDecoded);
+                let twice = tryBase64Decode(once);
+
+                return twice !== once ? twice : once;
+            }
+
+            // Fetch details data
+            GetDetailsData();
+
+            // Optional: Helper function to format date
             function formatDate(date) {
                 var day = ("0" + date.getDate()).slice(-2);
                 var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
                 var month = monthNames[date.getMonth()];
                 var year = date.getFullYear();
                 return day + "/" + month + "/" + year;
-            }
-            FillGroupName();
-            FillPartyName();
-            GetDetailsData();
-            $("#ReportType").change(function () {
-                handleReportTypeChange();
-            });
-
-            function handleReportTypeChange() {
-
-                var reportType = $("#ReportType").val().trim();
-                var reportTypesToCheck = ["Summary", "Detail", "IndentWithPODetail"];
-                if (reportTypesToCheck.includes(reportType)) {
-                    $("#Group_Ledger").val("Ledger");
-                }
             }
         });
 
@@ -300,7 +347,7 @@
                         },
                         enableFiltering: true,
                         enableCaseInsensitiveFiltering: true,
-                        includeSelectAllOption: true,
+                        includeSelectAllOption: false,
                         buttonWidth: '100%',
                         maxHeight: 300,
                         nonSelectedText: 'Select Party',
@@ -371,7 +418,7 @@
         });
 
         function GetDetailDataForPartyWise(td) {
-             ;
+            ;
             let accountCode = $(td).find(".hdnAccountCode").val();
             let ledgerDescription = $(td).data("id");
             $('#BackButton').show();
@@ -426,9 +473,9 @@
                         });
                     } else {
                         PartynameMultiDropdown.empty();
-                        debugger
+
                         $.each(obj.Result, function (index, item) {
-                            debugger
+
                             PartynameMultiDropdown.append('<option value="' + item.Account_Code + '">' + item.PartyName + '</option>');
                         });
 
@@ -479,12 +526,12 @@
         }
 
         function GetDetailsData() {
-             
+            debugger
             var OutStandingType = $('#ReportType').val();
             var ShowZeroBal = $('#ShowZeroBal').is(':checked');
             var TillDate = $('#TillDate').val();
             var GroupName = $('#GroupName').val();
-            var AccountNameList = selectedPartyValues;
+            var AccountNameList = $('#PartyNameMulti').val();
             var AccountCode = 0;
 
             if (AccountNameList && AccountNameList.length > 0) {
@@ -567,7 +614,7 @@
         }
 
         function PressBack() {
-             
+
             let ReportType = $('#ReportType').val();
             if (ReportType === "Receive Outstanding") {
                 $('#ReportType').val("Receive Outstanding Ageing").trigger("change");
