@@ -72,11 +72,11 @@
                                     <input type="hidden" value="@Model.Mode" asp-for="Mode" />
 
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                        <label asp-for="HolidayId" class="form-label"> HolidayId</label>
+                                        <label asp-for="HolidayId" class="form-label"> Holiday Id</label>
                                         <input asp-for="HolidayId" class="form-control" readonly />
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                        <label asp-for="HolidayYear" class="form-label">HolidayYear</label>
+                                        <label asp-for="HolidayYear" class="form-label">Holiday Year</label>
                                         <input asp-for="HolidayYear" class="form-control" readonly />
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12"  >
@@ -84,20 +84,20 @@
                                         <input asp-for="Branch" class="form-control" readonly />
                                     </div>
                                     <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" >
-                                        <label asp-for="HolidayName" class="form-label">HolidayName<label class="mandatoryField">*</label></label>
+                                        <label asp-for="HolidayName" class="form-label">Holiday Name<label class="mandatoryField">*</label></label>
                                         <input asp-for="HolidayName" class="form-control" />
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                                <label asp-for="EffectiveFrom" class="form-label">EffectiveFrom<label class="mandatoryField">*</label></label>
-                                                <input asp-for="EffectiveFrom" class="form-control" />
+                                                <label asp-for="EffectiveFrom" class="form-label">Effective From<label class="mandatoryField">*</label></label>
+                                                <input asp-for="EffectiveFrom" class="form-control" readonly/>
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                                <label asp-for="HolidayEffTill" class="form-label">HolidayEffTill<label class="mandatoryField">*</label></label>
-                                                <input asp-for="HolidayEffTill" class="form-control" />
+                                                <label asp-for="HolidayEffTill" class="form-label">Holiday Eff Till<label class="mandatoryField">*</label></label>
+                                                <input asp-for="HolidayEffTill" class="form-control" readonly/>
                                     </div>
                                         
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                        <label asp-for="HolidayType" class="form-label">HolidayType<label class="mandatoryField">*</label></label>
+                                        <label asp-for="HolidayType" class="form-label">Holiday Type<label class="mandatoryField">*</label></label>
                                         
                                         <select asp-for="HolidayType" class="form-control">
                                             @* <option value="@Model.AccountCode">-Select-</option> *@
@@ -143,7 +143,7 @@
                                    
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px; ">
                                      
-                                        <label asp-for="OverrideWeekOff" class="form-label">OverrideWeekOff</label>
+                                        <label asp-for="OverrideWeekOff" class="form-label">Override WeekOff</label>
                                         <select asp-for="OverrideWeekOff" class="form-select">
                                             <option value="" disabled>-Select-</option>
                                             <option value="YES" selected>YES</option>
@@ -153,7 +153,7 @@
                                         
                                     </div>
                                     <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px; ">
-                                        <label asp-for="CompensatoryOffAllowed" class="form-label">CompensatoryOffAllowed</label>
+                                        <label asp-for="CompensatoryOffAllowed" class="form-label">Compensatory Off Allowed</label>
                                         <select asp-for="CompensatoryOffAllowed" class="form-select">
                                             <option value="" disabled>-Select-</option>
                                             <option value="YES" selected>YES</option>
@@ -162,7 +162,7 @@
                                         </select>
                                     </div>
                                     <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px; ">
-                                        <label asp-for="PaidHoliday" class="form-label">PaidHoliday</label>
+                                        <label asp-for="PaidHoliday" class="form-label">Paid Holiday</label>
                                         <select asp-for="PaidHoliday" class="form-select">
                                             <option value="" disabled>-Select-</option>
                                             <option value="YES" selected>YES</option>
@@ -171,7 +171,7 @@
                                         </select>
                                     </div>
                                     <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px; ">
-                                        <label asp-for="HalfDayFullDay" class="form-label">HalfDayFullDay</label>
+                                        <label asp-for="HalfDayFullDay" class="form-label">Half Day/Full Day</label>
                                         <select asp-for="HalfDayFullDay" class="form-select">
                                             <option value="" selected>-Select-</option>
                                             <option value="HarfDay" >HarfDay</option>
@@ -203,14 +203,14 @@
                                         <input asp-for="Remark" class="form-control" />
                                     </div>
 
-                                    <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                        <label asp-for="EmployeeCategory" class="control-label">EmployeeCategory </label>
+                                    <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:280px;">
+                                        <label asp-for="EmployeeCategory" class="control-label">Employee Category </label>
                                         <br />
 
                                         <select class="form-select" multiple="multiple" asp-for="EmployeeCategory" asp-items="@(new SelectList(Model.EmployeeCategoryList,"Value","Text"))"></select>
                                     </div>
 
-                                    <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:280px;">
                                         <label asp-for="Department" class="control-label">Department </label>
                                         <br />
 
@@ -362,21 +362,62 @@
             });
 
             if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
+                $('#HolidayEffTill').datepicker({
+                    dateFormat: 'dd/M/yy',
+                    monthNamesShort: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+                }).datepicker("setDate", new Date());
 
-                $('#HolidayEffTill').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-                $('#CreatedOn').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-                $('#EffectiveFrom').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-                $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                $('#CreatedOn').datepicker({
+                    dateFormat: 'dd/M/yy',
+                    monthNamesShort: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+                }).datepicker("setDate", new Date());
 
+                $('#EffectiveFrom').datepicker({
+                    dateFormat: 'dd/M/yy',
+                    monthNamesShort: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+                }).datepicker("setDate", new Date());
+
+                $('#EntryDate').datepicker({
+                    dateFormat: 'dd/M/yy',
+                    monthNamesShort: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+                }).datepicker("setDate", new Date());
             }
             else {
-                $('#HolidayEffTill').datepicker({ dateFormat: 'dd/mm/yy' });
-                $('#CreatedOn').datepicker({ dateFormat: 'dd/mm/yy' });
-                $('#EffectiveFrom').datepicker({ dateFormat: 'dd/mm/yy' });
-                $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' });
-                $('#UpdatedOn').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                $('#HolidayEffTill').datepicker({
+                    dateFormat: 'dd/M/yy',
+                    monthNamesShort: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+                });
 
+                $('#CreatedOn').datepicker({
+                    dateFormat: 'dd/M/yy',
+                    monthNamesShort: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+                });
+
+                $('#EffectiveFrom').datepicker({
+                    dateFormat: 'dd/M/yy',
+                    monthNamesShort: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+                });
+
+                $('#EntryDate').datepicker({
+                    dateFormat: 'dd/M/yy',
+                    monthNamesShort: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+                });
+
+                $('#UpdatedOn').datepicker({
+                    dateFormat: 'dd/M/yy',
+                    monthNamesShort: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+                }).datepicker("setDate", new Date());
             }
+
 
             $('#State').select2();
             $('#HolidayType').select2();

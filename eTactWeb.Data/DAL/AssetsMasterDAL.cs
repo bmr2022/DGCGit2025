@@ -198,7 +198,7 @@ namespace eTactWeb.Data.DAL
 					sqlParams.Add(new SqlParameter("@AssetsEntryId", model.AssetsEntryId));
 				}
 
-				sqlParams.Add(new SqlParameter("@AccountCode", model.AccountCode));
+				sqlParams.Add(new SqlParameter("@AccountCode", model.ParentAccountCode));
 				sqlParams.Add(new SqlParameter("@EntryDate",entDate));
 				sqlParams.Add(new SqlParameter("@AssetsCode", model.AssetsCode));
 				sqlParams.Add(new SqlParameter("@AssetsName", model.AssetsName));
