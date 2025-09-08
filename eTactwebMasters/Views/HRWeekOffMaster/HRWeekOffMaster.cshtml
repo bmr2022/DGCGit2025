@@ -133,7 +133,7 @@
                                         </select>
 
                                     </div>
-                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px; ">
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:190px;">
                                         <label asp-for="CompensatoryOffApplicable" class="form-label">Compensatory Off Applicable</label>
                                         <select asp-for="CompensatoryOffApplicable" class="form-select">
                                             <option value="" disabled>-Select-</option>
@@ -179,7 +179,7 @@
 
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px; ">
                                         <label asp-for="EffectiveFrom" class="form-label">EffectiveFrom</label>
-                                        <input asp-for="EffectiveFrom" class="form-control" />
+                                        <input asp-for="EffectiveFrom" class="form-control" readonly/>
                                     </div>
 
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;display:none">
@@ -317,10 +317,18 @@
         $(document).ready(function () {
 
             if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
-                $('#EffectiveFrom').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                $('#EffectiveFrom').datepicker({
+                    dateFormat: 'dd/M/yy',  
+                    monthNamesShort: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+                }).datepicker("setDate", new Date());
             }
             else {
-                $('#EffectiveFrom').datepicker({ dateFormat: 'dd/mm/yy' });
+                $('#EffectiveFrom').datepicker({
+                    dateFormat: 'dd/M/yy',
+                    monthNamesShort: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+                });
             }
 
            

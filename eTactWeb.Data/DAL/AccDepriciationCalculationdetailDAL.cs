@@ -70,7 +70,7 @@ namespace eTactWeb.Data.DAL
 											  DepreciationRate = dr["DepreciationRate"] != DBNull.Value ? Convert.ToDecimal(dr["DepreciationRate"]) : 0,
 											  AfterDepriciationNetValue = dr["DepriciationAmt"] != DBNull.Value ? Convert.ToDecimal(dr["DepriciationAmt"]) : 0,
 											  AssetsCategoryName = dr["CategoryName"] != DBNull.Value ? Convert.ToString(dr["CategoryName"]) : "",
-
+                                              //vendorname using VendorName
                                               RemainingUseFullLifeInYear = dr["UseFullLifeInYear"] != DBNull.Value ? Convert.ToDecimal(dr["UseFullLifeInYear"]) : 0
 										  }).ToList();
 
@@ -262,7 +262,7 @@ namespace eTactWeb.Data.DAL
                                                                 DepriciationSlipNo = dr["DepriciationSlipNo"] != DBNull.Value ? Convert.ToString(dr["DepriciationSlipNo"]) : string.Empty,
                                                                 DepriciationDate = dr["DepriciationDate"] != DBNull.Value ? Convert.ToString(dr["DepriciationDate"]) : string.Empty,
                                                                 AssetsName = dr["AssetsName"] != DBNull.Value ? Convert.ToString(dr["AssetsName"]) : string.Empty,
-                                                                AccountName = dr["Account_Name"] != DBNull.Value ? Convert.ToString(dr["Account_Name"]) : string.Empty,
+                                                                AccountName = dr["ParentGroupName"] != DBNull.Value ? Convert.ToString(dr["ParentGroupName"]) : string.Empty,
                                                                 ItemName = dr["itemName"] != DBNull.Value ? Convert.ToString(dr["itemName"]) : string.Empty,
 
                                                                 MainGroup = dr["MainGroup"] != DBNull.Value ? Convert.ToString(dr["MainGroup"]) : string.Empty,
