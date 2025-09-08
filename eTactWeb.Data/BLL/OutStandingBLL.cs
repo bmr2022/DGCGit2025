@@ -31,6 +31,18 @@ namespace eTactWeb.Data.BLL
         {
             return await _OutStandingDAL.GetGroupName(outstandingType, TillDate);
         }
+        public async Task<ResponseResult> GetVoucherNo(int CurrentYear)
+        {
+            return await _OutStandingDAL.GetVoucherNo(CurrentYear);
+        }
+        public async Task<ResponseResult> GetVoucherType(int CurrentYear)
+        {
+            return await _OutStandingDAL.GetVoucherType(CurrentYear);
+        }
+        public async Task<OutStandingModel> GetVoucherList(int AccountCode, string VoucherNo, string VoucherType, int VoucherYearCode, int CurrentYear)
+        {
+            return await _OutStandingDAL.GetVoucherList(AccountCode,VoucherNo, VoucherType, VoucherYearCode, CurrentYear);
+        }
 
         public async Task<OutStandingModel> GetDetailsData(string outstandingType, string TillDate,string GroupName,string[] AccountNameList,int AccountCode,string ShowOnlyApprovedBill,bool ShowZeroBal)
         {

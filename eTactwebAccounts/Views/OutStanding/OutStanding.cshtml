@@ -1,8 +1,13 @@
 ﻿@model eTactWeb.DOM.Models.OutStandingModel;
+@using Microsoft.AspNetCore.Http
+@using System.Reflection.PortableExecutable
+@inject IHttpContextAccessor HttpContextAccessor
 @{
     ViewData["Title"] = "OutStanding";
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
+    var yearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("YearCode"));
 }
+
 <style>
 
     .select2-container--default .select2-selection--single {
@@ -92,6 +97,28 @@
                                     <select class="form-control" multiple="multiple" id="PartyNameMulti" asp-for="PartyName">
                                     </select>
                                     <select class="form-control" id="PartyNameSingle" asp-for="PartyName">
+                                    </select>
+                                </div>
+
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="VoucherType" class="form-label">Voucher Type</label>
+                                    <select asp-for="VoucherType" class="form-control">
+                                        <option value="@Model.VoucherType">-Select-</option>
+                                        @if (Model.Mode == "U" || Model.Mode == "V")
+                                        {
+                                            <option value="@Model.VoucherType" selected>@Model.VoucherType</option>
+                                        }
+                                    </select>
+                                </div>
+
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="VoucherNo" class="form-label">Voucher No</label>
+                                    <select asp-for="VoucherNo" class="form-control">
+                                        <option value="@Model.VoucherNo">-Select-</option>
+                                        @if (Model.Mode == "U" || Model.Mode == "V")
+                                        {
+                                            <option value="@Model.VoucherNo" selected>@Model.VoucherNo</option>
+                                        }
                                     </select>
                                 </div>
 
@@ -195,6 +222,22 @@
                                                     <input id="totPenAmt" class="form-control" readonly />
                                                 </div>
                                             </div>
+                                            <div class="modal fade" id="popupModal" tabindex="-1" aria-hidden="true">
+                                                <div class="modal-dialog modal-xl">
+                                                    <!-- xl for wide table -->
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title">Voucher Details</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <!-- Partial view content will load here -->
+                                                            <partial name="_OutStandingPopUpData" />
+                                                            <div id="divOutStandingPopUpDatas"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -223,6 +266,8 @@
             $('#GroupName').select2();
             $('#PartyNameSingle').select2();
             $('#ReportType').select2();
+            $('#VoucherNo').select2();
+            $('#VoucherType').select2();
 
             // Hide back button initially
             $('#BackButton').hide();
@@ -235,6 +280,8 @@
             // Fill dropdowns
             FillGroupName();
             FillPartyName();
+            FillVoucherType();
+            FillVoucherNo();
 
             // Optional: Load values from URL parameters and set fields
             setValuesFromUrl();
@@ -525,6 +572,96 @@
             });
         }
 
+        function FillVoucherType() {
+            var CurrentYear = @yearCode;
+
+            $.ajax({
+                url: '@Url.Action("GetVoucherType", "OutStanding")',
+                data:
+                {
+                    "CurrentYear": CurrentYear
+                },
+                type: 'GET',
+                async: false,
+                success: function (response, status, error) {
+
+                    var VoucherTypeDropdown = $('#VoucherType');
+                    var obj = $.parseJSON(response);
+                    VoucherTypeDropdown.empty();
+                    VoucherTypeDropdown.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, item) {
+                        VoucherTypeDropdown.append('<option value="' + item.VoucherType + '">' + item.VoucherType + '</option>');
+                    });
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+
+        function FillVoucherNo() {
+            var CurrentYear = @yearCode;
+
+            $.ajax({
+                url: '@Url.Action("GetVoucherNo", "OutStanding")',
+                data:
+                {
+                    "CurrentYear": CurrentYear
+                },
+                type: 'GET',
+                async: false,
+                success: function (response, status, error) {
+
+                    var VoucherNoDropdown = $('#VoucherNo');
+                    var obj = $.parseJSON(response);
+                    VoucherNoDropdown.empty();
+                    VoucherNoDropdown.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, item) {
+                        VoucherNoDropdown.append('<option value="' + item.VoucherNo + '">' + item.VoucherNo + '</option>');
+                    });
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+
+        function FillVoucherList() {
+            var OutStandingType = $('#ReportType').val();
+            var TillDate = $('#TillDate').val();
+
+            $.ajax({
+                url: '@Url.Action("GetGroupName", "OutStanding")',
+                data:
+                {
+                    "OutStandingType": OutStandingType,
+
+                    "TillDate": TillDate
+                },
+                type: 'GET',
+                async: false,
+                success: function (response, status, error) {
+
+                    var PartynameDropdown = $('#GroupName');
+                    var obj = $.parseJSON(response);
+                    PartynameDropdown.empty();
+                    PartynameDropdown.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, item) {
+                        PartynameDropdown.append('<option value="' + item.ParentGroupName + '">' + item.ParentGroupName + '</option>');
+                    });
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+
         function GetDetailsData() {
             debugger
             var OutStandingType = $('#ReportType').val();
@@ -717,6 +854,26 @@
 
             $.each(rows, function (index, row) {
                 table.children('#divStockRegisterBody').append(row);
+            });
+        }
+
+        function ViewData(AccountCode, VoucherNo, VoucherType, VoucherYearCode, CurrentYear) {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("GetVoucherList")",
+                data: {
+                    "AccountCode": AccountCode,
+                    "VoucherNo": VoucherNo,
+                    "VoucherType": VoucherType,
+                    "VoucherYearCode": VoucherYearCode,
+                    "CurrentYear": CurrentYear
+                },
+                success: function (result) {
+                    $("#popupModal").modal("show"); // open modal popup (if you’re using Bootstrap)
+                },
+                error: function (xhr) {
+                    alert("Error loading data: " + xhr.responseText);
+                }
             });
         }
 
