@@ -45,87 +45,61 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
         
+      
         public async Task<ResponseResult> SaveData(HRWeekOffMasterModel model)
         {
+            var _ResponseResult = new ResponseResult();
+
             try
             {
-                using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
+                var sqlParams = new List<dynamic>();
+
+                // Handle flag for Insert/Update/View
+                if (model.Mode == "U" || model.Mode == "V")
                 {
-                    SqlCommand oCmd = new SqlCommand("HRSPWeekoffMaster", myConnection)
-                    {
-                        CommandType = CommandType.StoredProcedure
-                    };
-
-                    oCmd.Parameters.AddWithValue("@flag", model.Mode);
-                    oCmd.Parameters.AddWithValue("@WeekoffEntryId", model.WeekoffEntryId);
-
-                    // oCmd.Parameters.AddWithValue("@SalHeadEntryDate", model.SalHeadEntryDate);
-                    oCmd.Parameters.AddWithValue("@WeekoffYearCode", model.WeekoffYearCode);
-                    oCmd.Parameters.AddWithValue("@WeekoffName", model.WeekoffName);
-                    oCmd.Parameters.AddWithValue("@WeekoffTypefixRot", model.WeekoffTypefixRot);
-                    //oCmd.Parameters.AddWithValue("@EmpCategoryId", model.EmpCategoryId);
-                    //oCmd.Parameters.AddWithValue("@DeptId", model.DeptId);
-                    oCmd.Parameters.AddWithValue("@WeekoffDays", model.WeekoffDays);
-                    oCmd.Parameters.AddWithValue("@MinWorkDaysRequired", model.MinWorkDaysRequired);
-                    oCmd.Parameters.AddWithValue("@halfdayFulldayOff", model.halfdayFulldayOff);
-                    oCmd.Parameters.AddWithValue("@MaxWorkingDaysReqForWeekOff", model.MaxWorkingDaysReqForWeekOff);
-                    oCmd.Parameters.AddWithValue("@OverrideForHolidays", model.OverrideForHolidays);
-                    oCmd.Parameters.AddWithValue("@CompensatoryOffApplicable", model.CompensatoryOffApplicable);
-                    oCmd.Parameters.AddWithValue("@ExtraPayApplicable", model.ExtraPayApplicable);
-                    oCmd.Parameters.AddWithValue("@Remark", model.Remark);
-                    oCmd.Parameters.AddWithValue("@Active", model.Active);
-                    
-                    oCmd.Parameters.AddWithValue("@EffectiveFrom",
-               string.IsNullOrEmpty(model.EffectiveFrom) ? DBNull.Value : DateTime.Parse(model.EffectiveFrom).ToString("dd/MMM/yyyy"));
-
-                    oCmd.Parameters.AddWithValue("@EntryByEmpId", model.EntryByEmpId);
-                    oCmd.Parameters.AddWithValue("@EntryByMachine", model.EntryByMachine);
-                    oCmd.Parameters.AddWithValue("@EmpCategoryId", model.EmpCategoryId);
-                    oCmd.Parameters.AddWithValue("@DeptId", model.DeptId);
-
-
-                    if (model.Mode == "UPDATE")
-                    {
-                        oCmd.Parameters.AddWithValue("@UpdatedbyId", model.UpdatedbyId);
-
-
-                    }
-
-
-
-                    myConnection.Open();
-                    Reader = await oCmd.ExecuteReaderAsync();
-                    if (Reader != null)
-                    {
-                        while (Reader.Read())
-                        {
-                            _ResponseResult = new ResponseResult()
-                            {
-                                StatusCode = (HttpStatusCode)Reader["StatusCode"],
-                                StatusText = "Success",
-                                Result = Reader["Result"].ToString()
-                            };
-                        }
-                    }
+                    sqlParams.Add(new SqlParameter("@Flag", "UPDATE"));
+                    sqlParams.Add(new SqlParameter("@WeekoffEntryId", model.WeekoffEntryId));
+                    sqlParams.Add(new SqlParameter("@UpdatedbyId", model.UpdatedbyId));
                 }
+                else
+                {
+                    sqlParams.Add(new SqlParameter("@Flag", "INSERT"));
+                    sqlParams.Add(new SqlParameter("@WeekoffEntryId", model.WeekoffEntryId));
+                }
+
+                // Required parameters
+                sqlParams.Add(new SqlParameter("@WeekoffYearCode", model.WeekoffYearCode));
+                sqlParams.Add(new SqlParameter("@WeekoffName", model.WeekoffName));
+                sqlParams.Add(new SqlParameter("@WeekoffTypefixRot", model.WeekoffTypefixRot));
+                sqlParams.Add(new SqlParameter("@WeekoffDays", model.WeekoffDays));
+                sqlParams.Add(new SqlParameter("@MinWorkDaysRequired", model.MinWorkDaysRequired));
+                sqlParams.Add(new SqlParameter("@halfdayFulldayOff", model.halfdayFulldayOff));
+                sqlParams.Add(new SqlParameter("@MaxWorkingDaysReqForWeekOff", model.MaxWorkingDaysReqForWeekOff));
+                sqlParams.Add(new SqlParameter("@OverrideForHolidays", model.OverrideForHolidays));
+                sqlParams.Add(new SqlParameter("@CompensatoryOffApplicable", model.CompensatoryOffApplicable));
+                sqlParams.Add(new SqlParameter("@ExtraPayApplicable", model.ExtraPayApplicable));
+                sqlParams.Add(new SqlParameter("@Remark", model.Remark ?? (object)DBNull.Value));
+                sqlParams.Add(new SqlParameter("@Active", model.Active));
+
+                sqlParams.Add(new SqlParameter("@EffectiveFrom",model.EffectiveFrom));
+
+                sqlParams.Add(new SqlParameter("@EntryByEmpId", model.EntryByEmpId));
+                sqlParams.Add(new SqlParameter("@EntryByMachine", model.EntryByMachine));
+                sqlParams.Add(new SqlParameter("@EmpCategoryId", model.EmpCategoryId));
+                sqlParams.Add(new SqlParameter("@DeptId", model.DeptId));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("HRSPWeekoffMaster", sqlParams);
             }
             catch (Exception ex)
             {
-                dynamic Error = new ExpandoObject();
-                Error.Message = ex.Message;
-                Error.Source = ex.Source;
-            }
-            finally
-            {
-                if (Reader != null)
-                {
-                    Reader.Close();
-                    Reader.Dispose();
-                }
+                _ResponseResult.StatusCode = HttpStatusCode.InternalServerError;
+                _ResponseResult.StatusText = "Error";
+                _ResponseResult.Result = new { ex.Message, ex.StackTrace };
             }
 
             return _ResponseResult;
         }
+
         public async Task<ResponseResult> GetEmpCat()
         {
             var _ResponseResult = new ResponseResult();

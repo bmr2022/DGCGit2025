@@ -155,91 +155,163 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
+        //public async Task<ResponseResult> SaveData(HRHolidaysMasterModel model, List<string> HREmployeeDT, List<string> HRDepartmentDT)
+        //{
+        //    try
+        //    {
+        //        using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
+        //        {
+        //            SqlCommand oCmd = new SqlCommand("HRSPHolidayMaster", myConnection)
+        //            {
+        //                CommandType = CommandType.StoredProcedure
+        //            };
+
+        //            oCmd.Parameters.AddWithValue("@flag", model.Mode);
+        //            oCmd.Parameters.AddWithValue("@HolidayEntryId", model.HolidayId);
+
+        //            // oCmd.Parameters.AddWithValue("@SalHeadEntryDate", model.SalHeadEntryDate);
+        //            oCmd.Parameters.AddWithValue("@BranchCC", model.Branch);
+
+        //            oCmd.Parameters.AddWithValue("@HolidayEffFrom",
+        //        string.IsNullOrEmpty(model.EffectiveFrom) ? DBNull.Value : DateTime.Parse(model.EffectiveFrom).ToString("dd/MMM/yyyy"));
+        //            oCmd.Parameters.AddWithValue("@HolidayEffTill",
+        //       string.IsNullOrEmpty(model.HolidayEffTill) ? DBNull.Value : DateTime.Parse(model.HolidayEffTill).ToString("dd/MMM/yyyy"));
+        //            oCmd.Parameters.AddWithValue("@Country", model.Country);
+        //            oCmd.Parameters.AddWithValue("@StateId", model.StateId);
+        //            oCmd.Parameters.AddWithValue("@StateName", model.StateName);
+        //            oCmd.Parameters.AddWithValue("@HolidayYear", model.HolidayYear);
+        //            oCmd.Parameters.AddWithValue("@HolidayName", model.HolidayName);
+        //            oCmd.Parameters.AddWithValue("@HolidayType", model.HolidayType);
+
+        //            oCmd.Parameters.AddWithValue("@HalfDayFullDay", model.HalfDayFullDay);
+        //            oCmd.Parameters.AddWithValue("@OverrideWeekOff", model.OverrideWeekOff);
+        //            oCmd.Parameters.AddWithValue("@CompaensatoryofAllowed", model.CompensatoryOffAllowed);
+        //            oCmd.Parameters.AddWithValue("@PaidHoliday", model.PaidHoliday);
+        //            oCmd.Parameters.AddWithValue("@Remark", model.Remark);
+        //            oCmd.Parameters.AddWithValue("@Active", model.Active);
+        //            oCmd.Parameters.AddWithValue("@CreatedBy", model.CreatedBy);
+        //            oCmd.Parameters.AddWithValue("@EntryByMachine", model.EntryByMachine);
+        //            oCmd.Parameters.AddWithValue("@ActualEntryOn",
+        //            string.IsNullOrEmpty(model.CreatedOn) ? DBNull.Value : DateTime.Parse(model.CreatedOn).ToString("dd/MMM/yyyy"));
+        //            oCmd.Parameters.AddWithValue("@EntryDate",
+        //           string.IsNullOrEmpty(model.EntryDate) ? DBNull.Value : DateTime.Parse(model.EntryDate).ToString("dd/MMM/yyyy"));
+        //            string Empcat = string.Join(",", HREmployeeDT);
+        //            oCmd.Parameters.AddWithValue("@CategoryList", Empcat);
+
+        //            string department = string.Join(",", HRDepartmentDT);
+        //            oCmd.Parameters.AddWithValue("@DepartmentList", department);
+
+
+
+        //            if (model.Mode == "update")
+        //            {
+        //                oCmd.Parameters.AddWithValue("@UpdatedBy", model.UpdatedBy);
+        //                oCmd.Parameters.AddWithValue("@UpdatedOn",model.UpdatedOn);
+
+        //            }
+
+        //            myConnection.Open();
+        //            Reader = await oCmd.ExecuteReaderAsync();
+        //            if (Reader != null)
+        //            {
+        //                while (Reader.Read())
+        //                {
+        //                    _ResponseResult = new ResponseResult()
+        //                    {
+        //                        StatusCode = (HttpStatusCode)Reader["StatusCode"],
+        //                        StatusText = "Success",
+        //                        Result = Reader["Result"].ToString()
+        //                    };
+        //                }
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        dynamic Error = new ExpandoObject();
+        //        Error.Message = ex.Message;
+        //        Error.Source = ex.Source;
+        //    }
+        //    finally
+        //    {
+        //        if (Reader != null)
+        //        {
+        //            Reader.Close();
+        //            Reader.Dispose();
+        //        }
+        //    }
+
+        //    return _ResponseResult;
+        //}
+
+
         public async Task<ResponseResult> SaveData(HRHolidaysMasterModel model, List<string> HREmployeeDT, List<string> HRDepartmentDT)
         {
+            var _ResponseResult = new ResponseResult();
+
             try
             {
-                using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
+                var sqlParams = new List<dynamic>();
+
+                // Handle flag for Insert/Update/View
+                if (model.Mode == "U" || model.Mode == "V")
                 {
-                    SqlCommand oCmd = new SqlCommand("HRSPHolidayMaster", myConnection)
-                    {
-                        CommandType = CommandType.StoredProcedure
-                    };
-
-                    oCmd.Parameters.AddWithValue("@flag", model.Mode);
-                    oCmd.Parameters.AddWithValue("@HolidayEntryId", model.HolidayId);
-
-                    // oCmd.Parameters.AddWithValue("@SalHeadEntryDate", model.SalHeadEntryDate);
-                    oCmd.Parameters.AddWithValue("@BranchCC", model.Branch);
-
-                    oCmd.Parameters.AddWithValue("@HolidayEffFrom",
-                string.IsNullOrEmpty(model.EffectiveFrom) ? DBNull.Value : DateTime.Parse(model.EffectiveFrom).ToString("dd/MMM/yyyy"));
-                    oCmd.Parameters.AddWithValue("@HolidayEffTill",
-               string.IsNullOrEmpty(model.HolidayEffTill) ? DBNull.Value : DateTime.Parse(model.HolidayEffTill).ToString("dd/MMM/yyyy"));
-                    oCmd.Parameters.AddWithValue("@Country", model.Country);
-                    oCmd.Parameters.AddWithValue("@StateId", model.StateId);
-                    oCmd.Parameters.AddWithValue("@StateName", model.StateName);
-                    oCmd.Parameters.AddWithValue("@HolidayYear", model.HolidayYear);
-                    oCmd.Parameters.AddWithValue("@HolidayName", model.HolidayName);
-                    oCmd.Parameters.AddWithValue("@HolidayType", model.HolidayType);
-
-                    oCmd.Parameters.AddWithValue("@HalfDayFullDay", model.HalfDayFullDay);
-                    oCmd.Parameters.AddWithValue("@OverrideWeekOff", model.OverrideWeekOff);
-                    oCmd.Parameters.AddWithValue("@CompaensatoryofAllowed", model.CompensatoryOffAllowed);
-                    oCmd.Parameters.AddWithValue("@PaidHoliday", model.PaidHoliday);
-                    oCmd.Parameters.AddWithValue("@Remark", model.Remark);
-                    oCmd.Parameters.AddWithValue("@Active", model.Active);
-                    oCmd.Parameters.AddWithValue("@CreatedBy", model.CreatedBy);
-                    oCmd.Parameters.AddWithValue("@EntryByMachine", model.EntryByMachine);
-                    oCmd.Parameters.AddWithValue("@ActualEntryOn",
-                    string.IsNullOrEmpty(model.CreatedOn) ? DBNull.Value : DateTime.Parse(model.CreatedOn).ToString("dd/MMM/yyyy"));
-                    oCmd.Parameters.AddWithValue("@EntryDate",
-                   string.IsNullOrEmpty(model.EntryDate) ? DBNull.Value : DateTime.Parse(model.EntryDate).ToString("dd/MMM/yyyy"));
-                    string Empcat = string.Join(",", HREmployeeDT);
-                    oCmd.Parameters.AddWithValue("@CategoryList", Empcat);
-
-                    string department = string.Join(",", HRDepartmentDT);
-                    oCmd.Parameters.AddWithValue("@DepartmentList", department);
-
-
-
-                    if (model.Mode == "update")
-                    {
-                        oCmd.Parameters.AddWithValue("@UpdatedBy", model.UpdatedBy);
-                        oCmd.Parameters.AddWithValue("@UpdatedOn",
-                        string.IsNullOrEmpty(model.UpdatedOn) ? DBNull.Value : DateTime.Parse(model.UpdatedOn).ToString("dd/MMM/yyyy"));
-
-                    }
-
-                    myConnection.Open();
-                    Reader = await oCmd.ExecuteReaderAsync();
-                    if (Reader != null)
-                    {
-                        while (Reader.Read())
-                        {
-                            _ResponseResult = new ResponseResult()
-                            {
-                                StatusCode = (HttpStatusCode)Reader["StatusCode"],
-                                StatusText = "Success",
-                                Result = Reader["Result"].ToString()
-                            };
-                        }
-                    }
+                    sqlParams.Add(new SqlParameter("@Flag", "UPDATE"));
+                    sqlParams.Add(new SqlParameter("@HolidayEntryId", model.HolidayId));
+                    sqlParams.Add(new SqlParameter("@UpdatedBy", model.UpdatedBy));
+                    sqlParams.Add(new SqlParameter("@UpdatedOn", model.UpdatedOn ?? (object)DBNull.Value));
                 }
+                else
+                {
+                    sqlParams.Add(new SqlParameter("@Flag", "INSERT"));
+                    sqlParams.Add(new SqlParameter("@HolidayEntryId", model.HolidayId));
+                }
+
+                // Core Parameters
+                sqlParams.Add(new SqlParameter("@BranchCC", model.Branch));
+
+                sqlParams.Add(new SqlParameter("@HolidayEffFrom",
+                    string.IsNullOrEmpty(model.EffectiveFrom) ? (object)DBNull.Value : DateTime.Parse(model.EffectiveFrom)));
+
+                sqlParams.Add(new SqlParameter("@HolidayEffTill",
+                    string.IsNullOrEmpty(model.HolidayEffTill) ? (object)DBNull.Value : DateTime.Parse(model.HolidayEffTill)));
+
+                sqlParams.Add(new SqlParameter("@Country", model.Country));
+                sqlParams.Add(new SqlParameter("@StateId", model.StateId));
+                sqlParams.Add(new SqlParameter("@StateName", model.StateName));
+                sqlParams.Add(new SqlParameter("@HolidayYear", model.HolidayYear));
+                sqlParams.Add(new SqlParameter("@HolidayName", model.HolidayName));
+                sqlParams.Add(new SqlParameter("@HolidayType", model.HolidayType));
+                sqlParams.Add(new SqlParameter("@HalfDayFullDay", model.HalfDayFullDay));
+                sqlParams.Add(new SqlParameter("@OverrideWeekOff", model.OverrideWeekOff));
+                sqlParams.Add(new SqlParameter("@CompaensatoryofAllowed", model.CompensatoryOffAllowed));
+                sqlParams.Add(new SqlParameter("@PaidHoliday", model.PaidHoliday));
+                sqlParams.Add(new SqlParameter("@Remark", model.Remark ?? (object)DBNull.Value));
+                sqlParams.Add(new SqlParameter("@Active", model.Active));
+                sqlParams.Add(new SqlParameter("@CreatedBy", model.CreatedBy));
+                sqlParams.Add(new SqlParameter("@EntryByMachine", model.EntryByMachine));
+
+                sqlParams.Add(new SqlParameter("@ActualEntryOn",
+                    string.IsNullOrEmpty(model.CreatedOn) ? (object)DBNull.Value : DateTime.Parse(model.CreatedOn)));
+
+                sqlParams.Add(new SqlParameter("@EntryDate",
+                    string.IsNullOrEmpty(model.EntryDate) ? (object)DBNull.Value : DateTime.Parse(model.EntryDate)));
+
+                // Lists
+                string Empcat = string.Join(",", HREmployeeDT);
+                sqlParams.Add(new SqlParameter("@CategoryList", Empcat));
+
+                string department = string.Join(",", HRDepartmentDT);
+                sqlParams.Add(new SqlParameter("@DepartmentList", department));
+
+                // Execute
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("HRSPHolidayMaster", sqlParams);
             }
             catch (Exception ex)
             {
-                dynamic Error = new ExpandoObject();
-                Error.Message = ex.Message;
-                Error.Source = ex.Source;
-            }
-            finally
-            {
-                if (Reader != null)
-                {
-                    Reader.Close();
-                    Reader.Dispose();
-                }
+                _ResponseResult.StatusCode = HttpStatusCode.InternalServerError;
+                _ResponseResult.StatusText = "Error";
+                _ResponseResult.Result = new { ex.Message, ex.StackTrace };
             }
 
             return _ResponseResult;
