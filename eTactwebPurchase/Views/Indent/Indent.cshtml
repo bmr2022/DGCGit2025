@@ -621,8 +621,8 @@
             } else {
 
                 $('#BomPartCode').val($('#BomItemCode').val());
-                $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#EntryDate').val().split(" ")[0]));
-                $('#IndentDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#IndentDate').val().split(" ")[0]));
+                $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", ($('#EntryDate').val().split(" ")[0]));
+                $('#IndentDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", ($('#IndentDate').val().split(" ")[0]));
                 $('#ReqDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#ReqDate').val().split(" ")[0]));
                 $('#ReqDate').datepicker("option", "minDate", parseDateToFormat($('#ReqDate').val().split(" ")[0]));
 
