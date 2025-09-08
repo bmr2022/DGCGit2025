@@ -56,6 +56,12 @@ namespace eTactWeb.Controllers
             _MemoryCache = iMemoryCache;
             _ICommon = ICommon;
         }
+        public async Task<JsonResult> AutoFillPartCode ( string SearchPartCode)
+        {
+            var JSON = await _SaleBill.AutoFillitem("AutoFillPartCode", SearchPartCode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
         public async Task<JsonResult> GetItemGroup()
         {
             var JSON = await _SaleBill.GetItemGroup();
@@ -1124,7 +1130,7 @@ namespace eTactWeb.Controllers
                         {
 
 
-                            if (ItemDetail.Any(x => x.ItemCode == item.ItemCode))
+                            if (ItemDetail.Where(x => x.ItemCode == item.ItemCode && x.Batchno == item.Batchno && x.Uniquebatchno == item.Uniquebatchno).Any())
                             {
                                 return StatusCode(207, "Duplicate");
                             }

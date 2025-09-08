@@ -57,5 +57,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FILLPendingSONO(string Flag, int CurrentYear, string FromDate, string Todate, string InvoiceDate, int BillFromStoreId,int accountCode);
         Task<ResponseResult> FillPendingPartCOde(string Flag, int CurrentYear, string FromDate, string Todate, string InvoiceDate, int BillFromStoreId,int accountCode);
         Task<ResponseResult> GetFeatureOption();
+        public Task<ResponseResult> AutoFillitem(string Flag, string SearchPartCode);
+
     }
 }
