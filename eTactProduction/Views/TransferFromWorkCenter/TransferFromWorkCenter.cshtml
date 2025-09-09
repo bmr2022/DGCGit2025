@@ -181,6 +181,11 @@
                                     <select class="form-select" asp-for="IssueToWcStore">
                                     </select>
                                 </div>
+                                <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12" style="width:12%">
+                                    <button type="button" id="ShowAllItem" onclick="AddMultipleItems()" class=" btn btn-sm btn-outline-success mt-3">
+                                        <i class="bi bi-list"></i>ShowAllItem
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -249,7 +254,7 @@
                                                 
                                             </tr>
                                         </thead>
-                                        <tbody id="divMultiItemGrid">
+                                        <tbody id="divMultiItemBody">
                                             <partial name="_TransferFromWCItemGrid" />
                                         </tbody>
                                     </table>
@@ -684,6 +689,91 @@
     </form>
 </div>
 
+<div class="modal fade" style="display:none" id="AddMultiplrItemModel" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document" ">
+        <div class="modal-content">
+            <div class="modal-header">
+
+                
+                <label>ProcessName</label>
+                <select class="form-select" id="ProcessID" style="width:170px">
+                    <option value="0">-Select Process-</option>
+                </select>
+
+                <input type="text" id="SearchPartCode" style="width:170px" placeholder="partcode">
+
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row g-2 gx-3">
+
+                            <div class="card-body text-center overflow-auto pb-0   ">
+                                <div class="d-flex align-items-center mb-2">
+                                    <button class="btn btn-sm btn-outline-warning mb-2" type="button" id="CheckAll" style="display: flex; align-items: center;">
+                                        <i class="fa fa-check-square" aria-hidden="true"></i>
+                                        <span style="margin-left: 5px;">Ch/UnCh All</span>
+                                    </button>
+                                    <div class="col-md-2 me-3" style="margin-left:50px">
+                                        <input type="text" class="form-control" id="search-box1" placeholder="Search..." style="background-color:#FFFACD;">
+                                    </div>
+                                    <button class="btn btn-sm btn-outline-success mb-2" type="button" onclick="ShowItemsData()" style="display: flex; align-items: center;">
+                                        <i class="fa fa-eye" aria-hidden="true"></i>
+                                        <span style="margin-left: 5px;">Show</span>
+                                    </button>
+                                </div>
+                                <div class="table-responsive" style="max-height:350px;">
+                                    <table class="table table-hover table-bordered table-striped mb-0">
+                                        <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+                                            <tr>
+                                            <th>SRNO</th>
+                                            <th>Action</th>
+                                                <th>Part Code</th>
+                                                <th>Item Name</th>
+                                                <th>Transfer Qty</th>
+                                                <th>Total Stock</th>
+                                                <th>Batch Stock</th>
+                                               
+                                                <th>Unit</th>
+                                                <th>Batch No</th>
+                                                <th>Unique Batch No</th>
+                                                
+
+                                            </tr>
+                                        </thead>
+                                        <tbody id="MultiItemBody">
+                                            <partial name="_TransferFromWCALLItem" />
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="progress my-2" style="height: 4px;">
+                        <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <div class="row g-2 gx-3">
+                        <div class="col-12 text-center">
+                            <strong>Total No Of Items : <span id="lblTotalNoOfItems1"></span></strong>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="GridMultiItemBtn btn btn-sm btn-outline-success me-2">
+                        <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
+                    </button>
+
+                    <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 @section Scripts {
     <script>
         var currentSearchColumn = null;
@@ -997,6 +1087,126 @@
                 // $('#ProdDate,#QcCleaningDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
             }
         });
+
+        function DeleteModelRow(el) {
+            // Find the row containing the clicked delete link
+            var row = $(el).closest("tr");
+            row.remove();
+
+            // Reset counter (first column)
+            $("#MultiItemBody tr").each(function (index) {
+                $(this).find("td:first").text(index + 1);
+            });
+        }
+        function AddMultipleItems() {
+            $('#AddMultiplrItemModel').modal('show');
+            $('#MultiItemBody').empty();
+            
+          
+            FillProcess();
+        }
+        $("#search-box1").on("keyup", function () {
+
+            var value = $(this).val().toLowerCase();
+            $("#MultiItemBody tr").filter(function () {
+                if (currentSearchColumn !== null) {
+                    // var columnText = $(this).find('input').eq(currentSearchColumn).text().toLowerCase();
+                    var columnValue = $(this)
+                        .find('td')
+                        .eq(currentSearchColumn)
+                        .find('input')
+                        .val()
+                        .toLowerCase();
+                    $(this).toggle(columnText.indexOf(value) > -1);
+                } else {
+                    // $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                    var rowText = $(this)
+                        .find('input')
+                        .map(function () {
+                            return $(this).val();
+                        })
+                        .get()
+                        .join(" ")
+                        .toLowerCase();
+
+                    $(this).toggle(rowText.indexOf(value) > -1);
+                }
+            });
+        });
+
+
+        $('#CheckAll').click(function () {
+
+            var RowCount = $('#MultiItemBody tr').length;
+            var TotalNoOfRows = 0;
+            for (var i = 1; i <= RowCount; i++) {
+                var checkbox = $('#MBCheckbox-' + i);
+                checkbox.prop("checked", !checkbox.prop("checked"));
+               
+                if ($('#MBCheckbox-' + i).prop("checked")) {
+                    TotalNoOfRows++;
+                }
+            }
+            $('#lblTotalNoOfItems').text(TotalNoOfRows);
+        });
+
+        function FillProcess() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetProcessList","NRGP")",
+                dataType: "json",
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        $('#ProcessID').empty();
+                        $('#ProcessID').append('<option value="0">-Select-</option>');
+                        if (obj.StatusCode != 500) {
+                            $.each(obj.Result, function (index, val) {
+                                $('#ProcessID').append("<option value=" + val.EntryID + ">" + val.StageDescription + "</option>");
+                            });
+
+
+                        }
+                    }
+                }
+            });
+        }
+
+        function ShowItemsData() {
+
+
+
+            var WCID = $('#IssueFromWc').val();
+            var ToDate = $('#TransferMatSlipDate').val();
+            var PartCode = $('#SearchPartCode').val();
+
+            $.ajax({
+                type: 'POST',
+                url: "@Url.Action("selectMultipleItem")",
+                data: {
+                    
+                    WCID: WCID,
+                    ToDate: ToDate,
+                    PartCode: PartCode
+
+
+                },
+                success: function (response) {
+                    // Clear the existing items in the table body
+                    $('#MultiItemBody').empty(); // Clear existing items
+                    $('#MultiItemBody').html(response);
+
+                    var totalRows = $('#MultiItemBody tr').length;
+                    $('#lblTotalNoOfItems1').text(totalRows);
+
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching BOM tree data:", error);
+                }
+            });
+
+        }
+
 
         function GetEntryId() {
             $.ajax({
@@ -1372,6 +1582,20 @@
                     }
                 });
             };
+            $("#SearchPartCode").autocomplete({
+                source: partCodeSource,
+                appendTo: "#AddMultiplrItemModel",
+                select: function (event, ui) {
+                    $("#SearchPartCode").val(ui.item.value).data("itemcode", ui.item.itemCode);
+
+                    return false;
+                },
+                focus: function (event, ui) {
+                    $("#SearchPartCode").val(ui.item.value);
+                    return false;
+                },
+                minLength: 2
+            });
 
             // Autocomplete for PartCodeText
             $("#PartCodeText").autocomplete({
@@ -1722,6 +1946,144 @@
 
 
 
+        $('.GridMultiItemBtn').click(function (e) {
+            e.preventDefault();
+            var CheckboxArr = [];
+            var RowCount = $('#MultiItemBody tr').length;
+
+            for (var i = 1; i <= RowCount; i++) {
+                if ($('#MBCheckbox-' + i).prop("checked")) {
+                    CheckboxArr.push(i);
+                    /* CalculateAmountForMalti(i); */
+                }
+            }
+
+            if (CheckboxArr.length === 0) {
+                $.notify('Please select any item.', 'error');
+            } else {
+
+
+                var RowCount = $('#MultiItemBody tr').length;
+                for (var i = 1; i <= RowCount; i++) {
+                    if ($('#MBCheckbox-' + i).prop("checked")) {
+                        if ($('#TransferQty-' + i).val() == 0) {
+                            $.notify('Please enter quantity for ' + $('#PartCode-' + i).val(), 'error');
+                            return;
+                        }
+                        if (parseFloat($('#TransferQty-' + i).val()) > parseFloat($('#BatchStock-' + i).val())) {
+                            $.notify('Please enter Valid quantity for ' + $('#PartCode-' + i).val(), 'error');
+                            return;
+                        }
+                        if (parseFloat($('#TransferQty-' + i).val()) > parseFloat($('#TotalStock-' + i).val())) {
+                            $.notify('Please enter Valid quantity for ' + $('#PartCode-' + i).val(), 'error');
+                            return;
+                        }
+
+                        if ($('#Unit-' + i).val() == '') {
+                            $.notify('Please select unit for ' + $('#PartCode-' + i).val(), 'error');
+                            return;
+                        }
+
+
+
+
+
+                    }
+                }
+                var ArrMultiBatch = [];
+                for (var i = 1; i <= RowCount; i++) {
+                    if ($('#MBCheckbox-' + i).prop("checked")) {
+
+                        ArrMultiBatch.push({
+                            ItemName: $('#ItemName-' + i).val(),
+                            PartCode: $('#PartCode-' + i).val(),
+                            ItemCode: parseInt($('#ItemCode-' + i).val()) || 0,
+                            TransferQty: parseFloat($('#TransferQty-' + i).val()) || 0,
+                            Unit: $('#Unit-' + i).val(),
+                            BatchNo: $('#BatchNo-' + i).val(),
+                            UniqueBatchNo: $('#UniqueBatchNo-' + i).val(),
+                            TotalStock: parseFloat($('#TotalStock-' + i).val()) || 0,
+                            BatchStock: parseFloat($('#BatchStock-' + i).val()) || 0,
+
+                            ProdSchNo: $('#ProdSchNo-' + i).val(),
+                            ProdSchYearCode: $('#ProdSchYearCode-' + i).val(),
+                            ProdPlanNo: $('#ProdPlanNo-' + i).val(),
+                            ProdPlanYearCode: $('#ProdPlanYearCode-' + i).val(),
+                            ParentProdSchNo: $('#ParentProdSchNo-' + i).val(),
+                            ParentProdSchYearCode: $('#ParentProdSchYearCode-' + i).val(),
+                            ProdEntryId: $('#ProdEntryId-' + i).val(),
+                            ProdEntryYearCode: $('#ProdEntryYearCode-' + i).val(),
+                            ProdDate: $('#ProdDate-' + i).val(),
+                            QcOkQty: parseFloat($('#QcOkQty-' + i).val()) || 0,
+                            ProdQty: parseFloat($('#ProdQty-' + i).val()) || 0,
+                            AltTransferQty: parseFloat($('#AltTransferQty-' + i).val()) || 0,
+                            AltUnit: $('#AltUnit-' + i).val(),
+                            PendingToAcknowledge: $('#PendingToAcknowledge-' + i).val(),
+                            PendingQtyToAcknowledge: parseFloat($('#PendingQtyToAcknowledge-' + i).val()) || 0,
+                            ItemSize: $('#ItemSize-' + i).val(),
+                            ItemColor: $('#ItemColor-' + i).val(),
+                            InProcessQcSlipNo: $('#InProcessQcSlipNo-' + i).val(),
+                            InProcessQcEntryId: parseInt($('#InProcessQcEntryId-' + i).val()) || 0,
+                            InProcessQcYearCode: parseInt($('#InProcessQcYearCode-' + i).val()) || 0,
+                            QcCleaningDate: $('#QcCleaningDate-' + i).val(),
+                            ProcessName: $('#ProcessID option:selected').text().trim(),
+                            ProcessId: $('#ProcessID').val(),
+                            ReceivedByStoreQty: parseFloat($('#ReceivedByStoreQty-' + i).val()) || 0,
+                            ReceivedCompleted: $('#ReceivedCompleted-' + i).val(),
+                            "ReceivebyEmpName": $('#ReceivebyEmpName').val(),
+                            Rate: parseFloat($('#Rate-' + i).val()) || 0,
+                            ItemWeight: parseFloat($('#ItemWeight-' + i).val()) || 0
+                        });
+                    }
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("AddMultipleItemDetail")',
+                    data: { "model": ArrMultiBatch },
+                    statusCode: {
+                        207: function () {
+                            $.notify('Duplicate Item...!', "info");
+                        }
+                    },
+                    success: function (data, status, xhr) {
+                        if (xhr.status == 200 && xhr.responseText == data) {
+                            $('#RoundOff').prop('selectedIndex', 0);
+                            if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
+                                $.notify('Duplicate Item Not Allowed.', "info");
+                                $('.ItemBtn').html('<span role="status"><i class="fa-duotone fa-angle-double-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
+                            }
+                            else if (xhr.status == 205 && (xhr.responseText.indexOf('Reset') || xhr.statusText.indexOf('Reset'))) {
+                                $.notify('Adding Item Not Allowed, Please Clear Tax Detail...!!!', "info");
+                            }
+                            else {
+                                $('#divTransferGrid').html(data);
+                                $('#AddMultiplrItemModel').modal('hide');
+                                $.notify('Item Added To Grid', "success");
+                              
+
+                               
+
+                             
+
+                            }
+
+                            
+
+                        }
+
+
+
+                    },
+                    error: function (result, status, xhr) {
+                        $.notify('Something Went Wrong, Please Try Again.', "error");
+                    }
+                }).done(function () {
+
+                   
+                });
+            }
+        });
 
 
 

@@ -33,5 +33,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> SaveTransferFromWorkCenter(TransferFromWorkCenterModel model, DataTable TransferGrid);
         Task<ResponseResult> DeleteByID(int ID, int YC, string CC, string EntryByMachineName, string EntryDate,int EmpID);
         Task<ResponseResult> ChkWIPStockBeforeSaving(int WcId, string TransferMatEntryDate, int TransferMatYearCode,int TransferMatEntryId, DataTable TransferGrid,string Mode);
+
+        Task<TransferFromWorkCenterModel> selectMultipleItem(int WCID, string FromDate, string ToDate, string PartCode);
     }
 }
