@@ -144,7 +144,7 @@ namespace eTactWeb.Controllers
                 DisplayGrid = GetDisplayPendForQC(Displaydetails);
                 var JSON = await _IPendProcessToQC.GetDataforQc(DisplayGrid, Flag, FromDate, ToDate);
                 string JsonString = JsonConvert.SerializeObject(JSON);
-                DataTable dataTable = JSON.Result.Tables[0];
+                DataTable dataTable = JSON.Result.Tables[1];
                 List<InProcessQcDetail> InProcessQcDetail = new List<InProcessQcDetail>();
                 foreach (DataRow row in dataTable.Rows)
                 {
