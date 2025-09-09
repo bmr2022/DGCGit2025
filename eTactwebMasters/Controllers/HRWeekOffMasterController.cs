@@ -31,7 +31,7 @@ namespace eTactWeb.Controllers
 
         [Route("{controller}/Index")]
         [HttpGet]
-        public async Task<ActionResult> HRWeekOffMaster(int ID, string Mode)
+        public async Task<ActionResult> HRWeekOffMaster(int ID, string Mode,string EmpCateName)
         {
             _logger.LogInformation("\n \n ********** Page Gate Inward ********** \n \n " + _IWebHostEnvironment.EnvironmentName.ToString() + "\n \n");
             TempData.Clear();
@@ -44,6 +44,7 @@ namespace eTactWeb.Controllers
                 MainModel = await _IHRWeekOffMaster.GetViewByID(ID).ConfigureAwait(false);
                 MainModel.Mode = Mode; // Set Mode to Update
                 MainModel.WeekoffEntryId = ID;
+                MainModel.EmpCateName = EmpCateName;
 
 
                 MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
@@ -53,7 +54,7 @@ namespace eTactWeb.Controllers
                     Size = 1024
                 };
             }
-           
+            MainModel = await BindModel(MainModel).ConfigureAwait(false);
             return View(MainModel);
         }
 
@@ -92,6 +93,28 @@ namespace eTactWeb.Controllers
                 {
                     model.Mode = model.Mode == "U" ? "update" : "INSERT";
                     model.EntryByEmpId = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                    var HREmployeeTable = new List<string>();
+                    var _EmployeeDetail = new List<HRWeekOffMasterModel>();
+                    bool v = model.EmpCateg != null;
+                    if (v)
+                    {
+                        foreach (var item in model.EmpCateg)
+                        {
+                            var _Employee = new HRWeekOffMasterModel()
+                            {
+
+                                EmpCategoryId = item.ToString(),
+                                WeekoffEntryId = model.WeekoffEntryId,
+                                WeekoffYearCode = model.WeekoffEntryId,
+                                WeekoffName = model.WeekoffName,
+                                //StateId = model.StateId,
+                                //StateName = model.State,
+
+                            };
+                            _EmployeeDetail.Add(_Employee);
+                        }
+                    }
+                    HREmployeeTable = _EmployeeDetail.Select(x => x.EmpCategoryId).ToList();
 
 
 
@@ -105,7 +128,7 @@ namespace eTactWeb.Controllers
                         model.UpdatedBy = 0;
 
                     }
-                    var Result = await _IHRWeekOffMaster.SaveData(model).ConfigureAwait(false);
+                    var Result = await _IHRWeekOffMaster.SaveData(model, HREmployeeTable).ConfigureAwait(false);
 
                     if (Result != null)
                     {
@@ -146,6 +169,29 @@ namespace eTactWeb.Controllers
             }
 
             return View(model);
+        }
+        private async Task<HRWeekOffMasterModel> BindModel(HRWeekOffMasterModel model)
+        {
+            var oDataSet = new DataSet();
+            var _List = new List<TextValue>();
+            oDataSet = await _IHRWeekOffMaster.GetEmpCat().ConfigureAwait(true);
+
+            if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+            {
+                foreach (DataRow row in oDataSet.Tables[0].Rows)
+                {
+                    _List.Add(new TextValue
+                    {
+                        Value = row["CategoryId"].ToString(),
+                        Text = row["EmpCateg"].ToString()
+                    });
+                }
+                model.EmployeeCategoryList = _List;
+                _List = new List<TextValue>();
+
+            }
+
+            return model;
         }
         [HttpGet]
         public async Task<IActionResult> HRWeekOffMasterDashBoard()

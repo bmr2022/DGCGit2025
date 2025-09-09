@@ -110,5 +110,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _TranferFromWorkCenterDAL.CheckEditOrDelete(TransferEntryId, TransferYearCode);
         }
+
+        public async Task<TransferFromWorkCenterModel> selectMultipleItem(int WCID, string FromDate, string ToDate, string PartCode)
+        {
+            return await _TranferFromWorkCenterDAL.selectMultipleItem( WCID,  FromDate,  ToDate,  PartCode);
+        }
     }
 }

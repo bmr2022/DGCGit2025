@@ -46,7 +46,7 @@ namespace eTactWeb.Data.DAL
         }
         
       
-        public async Task<ResponseResult> SaveData(HRWeekOffMasterModel model)
+        public async Task<ResponseResult> SaveData(HRWeekOffMasterModel model, List<string> HREmployeeDT)
         {
             var _ResponseResult = new ResponseResult();
 
@@ -85,7 +85,9 @@ namespace eTactWeb.Data.DAL
 
                 sqlParams.Add(new SqlParameter("@EntryByEmpId", model.EntryByEmpId));
                 sqlParams.Add(new SqlParameter("@EntryByMachine", model.EntryByMachine));
-                sqlParams.Add(new SqlParameter("@EmpCategoryId", model.EmpCategoryId));
+                //sqlParams.Add(new SqlParameter("@EmpCategoryId", model.EmpCategoryId));
+                string Empcat = string.Join(",", HREmployeeDT);
+                sqlParams.Add(new SqlParameter("@CategoryList", Empcat));
                 sqlParams.Add(new SqlParameter("@DeptId", model.DeptId));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("HRSPWeekoffMaster", sqlParams);
@@ -100,15 +102,40 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
-        public async Task<ResponseResult> GetEmpCat()
+        //public async Task<ResponseResult> GetEmpCat()
+        //{
+        //    var _ResponseResult = new ResponseResult();
+        //    try
+        //    {
+        //        var SqlParams = new List<dynamic>();
+        //        SqlParams.Add(new SqlParameter("@flag", "FillEmployeeCategory"));
+
+        //        _ResponseResult = await _IDataLogic.ExecuteDataTable("HRSPWeekoffMaster", SqlParams);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        dynamic Error = new ExpandoObject();
+        //        Error.Message = ex.Message;
+        //        Error.Source = ex.Source;
+        //    }
+
+        //    return _ResponseResult;
+        //}
+        public async Task<DataSet> GetEmpCat()
         {
-            var _ResponseResult = new ResponseResult();
+            var oDataSet = new DataSet();
+
             try
             {
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@flag", "FillEmployeeCategory"));
+                var _ResponseResult = await _IDataLogic.ExecuteDataSet("HRSPWeekoffMaster", SqlParams);
+                if (_ResponseResult.Result != null && _ResponseResult.StatusCode == HttpStatusCode.OK && _ResponseResult.StatusText == "Success")
+                {
+                    _ResponseResult.Result.Tables[0].TableName = "ExemptedCategoriesList";
 
-                _ResponseResult = await _IDataLogic.ExecuteDataTable("HRSPWeekoffMaster", SqlParams);
+                    oDataSet = _ResponseResult.Result;
+                }
             }
             catch (Exception ex)
             {
@@ -117,9 +144,8 @@ namespace eTactWeb.Data.DAL
                 Error.Source = ex.Source;
             }
 
-            return _ResponseResult;
+            return oDataSet;
         }
-
         public async Task<ResponseResult> GetDeptCat()
         {
             var _ResponseResult = new ResponseResult();
@@ -204,6 +230,7 @@ namespace eTactWeb.Data.DAL
                                                    //EntryByEmpId = Convert.ToInt32(dr["EntryByEmpId"]),
                                                    //UpdatedbyId = Convert.ToInt32(dr["UpdatedbyId"]),
                                                    Active = dr["Active"].ToString(),
+                                                   EmpCateName = dr["EmpCateg"].ToString(),
                                                   
 
                                                }).ToList();
@@ -240,7 +267,7 @@ namespace eTactWeb.Data.DAL
                     var oDataSet = new DataSet();
                     oDataSet = _ResponseResult.Result;
                     var DTWeekOffMasterDetail = oDataSet.Tables[0];
-                    
+                    var DEmployeeDetail = oDataSet.Tables[1];
 
                     if (oDataSet.Tables.Count > 0 && DTWeekOffMasterDetail.Rows.Count > 0)
                     {
@@ -259,8 +286,9 @@ namespace eTactWeb.Data.DAL
                         model.OverrideForHolidays = DTWeekOffMasterDetail.Rows[0]["OverrideForHolidays"].ToString();
                         model.ExtraPayApplicable = DTWeekOffMasterDetail.Rows[0]["ExtraPayApplicable"].ToString();
                         model.EffectiveFrom = DTWeekOffMasterDetail.Rows[0]["EffectiveFrom"].ToString();
+                       // model.EmpCateName = DTWeekOffMasterDetail.Rows[0]["EmpCateg"].ToString();
                         model.EntryByEmpId = Convert.ToInt32(DTWeekOffMasterDetail.Rows[0]["EntryByEmpId"]);
-                        model.EmpCategoryId = Convert.ToInt32(DTWeekOffMasterDetail.Rows[0]["EmpCategoryId"]);
+                       
                         model.DeptId = Convert.ToInt32(DTWeekOffMasterDetail.Rows[0]["DeptId"]);
                         model.EntryByMachine = DTWeekOffMasterDetail.Rows[0]["EntryByMachine"].ToString();
                         model.EffectiveFrom = Convert.ToDateTime(DTWeekOffMasterDetail.Rows[0]["EffectiveFrom"]).ToString("dd/MM/yyyy");
@@ -269,8 +297,13 @@ namespace eTactWeb.Data.DAL
 
 
                     }
+                    if (oDataSet.Tables.Count > 0 && DEmployeeDetail.Rows.Count > 0)
+                    {
+                        DEmployeeDetail.TableName = "HRWeekEmpCategDetail";
+                        model.EmployeeCategoryDetailList = CommonFunc.DataTableToList<HRWeekOffMasterEmpCateDetailModel>(DEmployeeDetail);
+                        model.EmpCateg = model.EmployeeCategoryDetailList.Select(x => x.CategoryId).ToList();
+                    }
 
-                    
                 }
             }
             catch (Exception ex)

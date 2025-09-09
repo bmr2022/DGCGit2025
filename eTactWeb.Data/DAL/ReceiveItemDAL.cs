@@ -282,6 +282,8 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@SummDetail", DashboardType);
                     oCmd.Parameters.AddWithValue("@FromDate", fromDt);
                     oCmd.Parameters.AddWithValue("@ToDate", toDt);
+                    oCmd.Parameters.AddWithValue("@PartCode", PartCode);
+                    oCmd.Parameters.AddWithValue("@ItemName", ItemName);
 
                     await myConnection.OpenAsync();
                     using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
