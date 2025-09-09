@@ -253,8 +253,8 @@ namespace eTactWeb.Data.DAL
             {
                 var sqlParams = new List<dynamic>();
 
-                // Handle flag for Insert/Update/View
-                if (model.Mode == "U" || model.Mode == "V")
+                
+                if (model.Mode == "update" )
                 {
                     sqlParams.Add(new SqlParameter("@Flag", "UPDATE"));
                     sqlParams.Add(new SqlParameter("@HolidayEntryId", model.HolidayId));
@@ -267,14 +267,12 @@ namespace eTactWeb.Data.DAL
                     sqlParams.Add(new SqlParameter("@HolidayEntryId", model.HolidayId));
                 }
 
-                // Core Parameters
+              
                 sqlParams.Add(new SqlParameter("@BranchCC", model.Branch));
 
-                sqlParams.Add(new SqlParameter("@HolidayEffFrom",
-                    string.IsNullOrEmpty(model.EffectiveFrom) ? (object)DBNull.Value : DateTime.Parse(model.EffectiveFrom)));
+                sqlParams.Add(new SqlParameter("@HolidayEffFrom", model.EffectiveFrom));
 
-                sqlParams.Add(new SqlParameter("@HolidayEffTill",
-                    string.IsNullOrEmpty(model.HolidayEffTill) ? (object)DBNull.Value : DateTime.Parse(model.HolidayEffTill)));
+                sqlParams.Add(new SqlParameter("@HolidayEffTill",model.HolidayEffTill));
 
                 sqlParams.Add(new SqlParameter("@Country", model.Country));
                 sqlParams.Add(new SqlParameter("@StateId", model.StateId));
@@ -297,14 +295,14 @@ namespace eTactWeb.Data.DAL
                 sqlParams.Add(new SqlParameter("@EntryDate",
                     string.IsNullOrEmpty(model.EntryDate) ? (object)DBNull.Value : DateTime.Parse(model.EntryDate)));
 
-                // Lists
+            
                 string Empcat = string.Join(",", HREmployeeDT);
                 sqlParams.Add(new SqlParameter("@CategoryList", Empcat));
 
                 string department = string.Join(",", HRDepartmentDT);
                 sqlParams.Add(new SqlParameter("@DepartmentList", department));
 
-                // Execute
+               
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("HRSPHolidayMaster", sqlParams);
             }
             catch (Exception ex)

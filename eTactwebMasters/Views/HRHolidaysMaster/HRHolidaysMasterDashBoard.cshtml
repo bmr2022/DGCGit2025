@@ -92,7 +92,7 @@
 
             var currentDate = new Date();
             var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-            $('#totalRows').text($('#divStockRegisterBody tr').length);
+            $('#totalRows').text($('#divDashboardGrid tr').length);
             $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatDate1(firstDayOfMonth));
             $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
 
@@ -193,13 +193,9 @@
                
                 success: function (data) {
                     $('#divDashboardGrid').empty().append(data);
-                    if ($('#gateDashboardtable').val() == '') {
-                        var dashGrid = 0;
-                        $('#totalRows').text(dashGrid);
-                    } else {
-                        var dashGrid = $('#gateDashboardtable tr').length;
-                        $('#totalRows').text(dashGrid);
-                    }
+                    var dashGrid = $('#GateDataTable tbody tr').length;
+
+                    $('#totalRows').text(dashGrid);
                 },
                 error: function (response) {
                     alert(response.responseText);
@@ -210,12 +206,12 @@
             });
         }
         function TotalNoOfRows() {
-            var Row = $('#divStockGrid tr').length;
-            var tdCount = $('#divStockGrid tr td').length;
+            var Row = $('#divDashboardGrid tr').length;
+            var tdCount = $('#divDashboardGrid tr td').length;
             if (tdCount >= 1) {
-                $('#lblTotalNoOfBelowItems').text(Row);
+                $('#totalRows').text(Row);
             } else {
-                $('#lblTotalNoOfBelowItems').text(0);
+                $('#totalRows').text(0);
             }
         }
         function confirmEdit(event) {
