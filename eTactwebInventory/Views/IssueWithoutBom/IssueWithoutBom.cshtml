@@ -1136,38 +1136,81 @@ function submitForm(shouldPrint, printWindow) {
             var ItemData = [];
             for (let i = 1; i <= rowCount; i++) {
 
-                ItemData.push({
-                    "ReqNo1": $('#ReqNo1').val(),
-                    "ReqDate1": "",
-                    "ReqYearCode1": $('#ReqyearCode1').val(),
-                    "ItemCode": parseInt($('#ScannedItemCode-' + i).val()),
-                    "ItemName": $('#ScannedItemName-' + i).text(),
-                    "PartCode": $('#ScannedPartCode-' + i).text(),
-                    "ReqQty": $('#ScannedReqQty-' + i).text(),
-                    "StoreId": 0,
-                    "StoreName": "",
-                    "BatchNo": $('#ScannedBatchNo-' + i).text(),
-                    "uniqueBatchNo": $('#ScannedUniqueBatchNo-' + i).text(),
+                // ItemData.push({
+                //     "ReqNo1": $('#ReqNo1').val(),
+                //     "ReqDate1": "",
+                //     "ReqYearCode1": $('#ReqyearCode1').val(),
+                //     "ItemCode": parseInt($('#ScannedItemCode-' + i).val()),
+                //     "ItemName": $('#ScannedItemName-' + i).text(),
+                //     "PartCode": $('#ScannedPartCode-' + i).text(),
+                //     "ReqQty": $('#ScannedReqQty-' + i).text(),
+                //     "StoreId": 0,
+                //     "StoreName": "",
+                //     "BatchNo": $('#ScannedBatchNo-' + i).text(),
+                //     "uniqueBatchNo": $('#ScannedUniqueBatchNo-' + i).text(),
+                //     "IssueQty": $('#ScannedIssueQty-' + i).text(),
+                //     "Unit": $('#ScannedUnit-' + i).text(),
+                //     "LotStock": $('#ScannedLotStock-' + i).text(),
+                //     "TotalStock": $('#ScannedTotalStock-' + i).text(),
+                //     "AltQty": 0,
+                //     "AltUnit": "",
+                //     "Rate": 0,
+                //     "Remark": "",
+                //     "WorkCenter": "",
+                //     "WCId": 0,
+                //     "AltItemCode": 0,
+                //     "CostCenterId": 0,
+                //     "ItemSize": "",
+                //     "ItemColor": "",
+                //     "ProjectNo": "",
+                //     "ProjectYearCode": 0,
+                //     "StdPacking": 0,
+                //     "IssuedAlternateItem": "N",
+                //     "OriginalItemCode": parseInt($('#ScannedItemCode-' + i).val())
+                // });
+                        ItemData.push({
+            "ReqNo1": $('#ReqNo1').val(),
+            "ReqDate1": "",   // still empty (set if needed)
+            "ReqYearCode1": $('#ReqyearCode1').val(),
+
+            "ItemCode": parseInt($('#ScannedItemCode-' + i).val()),
+            "ItemName": $('#ScannedItemName-' + i).text(),
+            "PartCode": $('#ScannedPartCode-' + i).text(),
+            "ReqQty": $('#ScannedReqQty-' + i).text(),
+            "BatchNo": $('#ScannedBatchNo-' + i).text(),
+            "StoreName": $('#ScannedStoreName-' + i).text(),
+           "StoreId": parseInt($('#ScannedStoreId-' + i).val()), // can be filled if you add hidden field in row
+            "uniqueBatchNo": $('#ScannedUniqueBatchNo-' + i).text(),
+            "WorkCenter": $('#ScannedWorkCenter-' + i).text(),
+              "WCId":  parseInt($('#ScannedWCId' + i).val()),
                     "IssueQty": $('#ScannedIssueQty-' + i).text(),
-                    "Unit": $('#ScannedUnit-' + i).text(),
-                    "LotStock": $('#ScannedLotStock-' + i).text(),
-                    "TotalStock": $('#ScannedTotalStock-' + i).text(),
-                    "AltQty": 0,
-                    "AltUnit": "",
-                    "Rate": 0,
-                    "Remark": "",
-                    "WorkCenter": "",
-                    "WCId": 0,
-                    "AltItemCode": 0,
-                    "CostCenterId": 0,
-                    "ItemSize": "",
-                    "ItemColor": "",
-                    "ProjectNo": "",
-                    "ProjectYearCode": 0,
-                    "StdPacking": 0,
-                    "IssuedAlternateItem": "N",
-                    "OriginalItemCode": parseInt($('#ScannedItemCode-' + i).val())
-                });
+            "Unit": $('#ScannedUnit-' + i).text(),
+            "LotStock": $('#ScannedLotStock-' + i).text(),
+            "TotalStock": $('#ScannedTotalStock-' + i).text(),
+            "AltQty": $('#ScannedAltQty-' + i).text(),
+            "AltUnit": $('#ScannedAltUnit-' + i).text(),
+            "StdPacking": $('#ScannedStdPacking-' + i).text(),
+
+            "Rate": $('#ScannedRate-' + i).text(),
+            "Remark": $('#ScannedRemark-' + i).text(),
+
+            "OGItemName": $('#ScannedOGItemName-' + i).text(),
+            "OGPartCode": $('#ScannedOGPartCode-' + i).text(),
+
+            "CostCenterId": $('#ScannedCostCenter-' + i).text(),
+            "ItemSize": $('#ScannedItemSize-' + i).text(),
+            "ItemColor": $('#ScannedItemColor-' + i).text(),
+
+            "ProjectNo": $('#ScannedProjectNo-' + i).text(),
+            "ProjectYearCode": $('#ScannedProjectYearCode-' + i).text(),
+
+            "IssuedAlternateItem": $('#ScannedIssuedAltItem-' + i).text(),
+            "TransactionDate": $('#ScannedTransactionDate-' + i).text(),
+
+            "AltItemCode": 0, // keep 0 unless you add in DOM
+            "OriginalItemCode": parseInt($('#ScannedItemCode-' + i).val())
+        });
+
             }
 
             $.ajax({
