@@ -63,13 +63,13 @@ public class GateAttendanceDAL
                                  .Select(c => c.ColumnName)
                                  .ToList();
 
-                // filter only day-wise columns (like "1(Intime)", "1(OutTime)", ...)
-                var dayCols = allColumns.Where(c => c.Contains("(Intime)") || c.Contains("(OutTime)") || c.Contains("FromTime") || c.Contains("ToTime"))
-                                        .ToList();
+                //// filter only day-wise columns (like "1(Intime)", "1(OutTime)", ...)
+                //var dayCols = allColumns.Where(c => c.Contains("(Intime)") || c.Contains("(OutTime)") || c.Contains("FromTime") || c.Contains("ToTime")).Select(x => x.ToLower())
+                //                        .ToList();
 
                 if (DayOrMonthType == "Daily")
                 {
-                    Data.DayHeaders = new List<string> { "InTime", "OutTime" };
+                    Data.DayHeaders = new List<string> { "FromTime", "ToTime" };
                     // Fill GateAttDetailsList with FromTime & ToTime from SP
                 }
                 else if (DayOrMonthType == "Monthly")
@@ -102,9 +102,9 @@ public class GateAttendanceDAL
                     for (int d = 1; d <= daysInMonth; d++)
                     {
                         // fill Attendance dictionary dynamically
-                        foreach (var col in dayCols)
+                        foreach (var col in allColumns.Where(c => c.Contains("(Intime)") || c.Contains("(OutTime)") || c.Contains("FromTime") || c.Contains("ToTime")).ToList())
                         {
-                            GateAttList.Attendance[col] = dr[col]?.ToString();
+                            GateAttList.Attendance[col.ToLower()] = dr[col]?.ToString();
                         }
                     }
 
