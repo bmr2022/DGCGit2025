@@ -54,8 +54,7 @@ namespace eTactWeb.Data.DAL
             {
                 var sqlParams = new List<dynamic>();
 
-                // Handle flag for Insert/Update/View
-                if (model.Mode == "U" || model.Mode == "V")
+                if (model.Mode == "update")
                 {
                     sqlParams.Add(new SqlParameter("@Flag", "UPDATE"));
                     sqlParams.Add(new SqlParameter("@WeekoffEntryId", model.WeekoffEntryId));

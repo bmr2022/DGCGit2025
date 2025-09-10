@@ -119,7 +119,16 @@ namespace eTactWeb.Controllers
                 return "Error";
             }
         }
+        public async Task<IActionResult> selectMultipleItem(string GroupName, int StoreID, string ToDate, string PartCode)
+        {
+            var model = new JobWorkIssueModel();
+            var FromDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString("FromDate"));
+            model = await _IJobWorkIssue.selectMultipleItem(GroupName, StoreID, FromDate, ToDate, PartCode);
 
+
+            return PartialView("_JobWorkIssueMultiItem", model);
+
+        }
         public async Task<IActionResult> GenerateEwayBill([FromBody] EInvoiceItemModel input)
         {
             try
@@ -891,6 +900,72 @@ namespace eTactWeb.Controllers
             var username = HttpContext.Session.GetString("Branch");
             return Json(username);
         }
+        public IActionResult AddMultipleItemDetail(List<JobWorkGridDetail> model)
+        {
+            try
+            {
+                var MainModel = new JobWorkIssueModel();
+                var StockGrid = new List<JobWorkGridDetail>();
+                var StockAdjustGrid = new List<JobWorkGridDetail>();
+
+                var SeqNo = 1;
+                foreach (var item in model)
+                {
+                    string modelJson = HttpContext.Session.GetString("KeyJobWorkIssue");
+                    IList<JobWorkGridDetail> ItemDetail = new List<JobWorkGridDetail>();
+                    if (!string.IsNullOrEmpty(modelJson))
+                    {
+                        ItemDetail = JsonConvert.DeserializeObject<List<JobWorkGridDetail>>(modelJson);
+                    }
+
+                    //_MemoryCache.TryGetValue("ItemList", out List<SaleBillDetail> ItemDetail);
+
+
+                    if (model != null)
+                    {
+                        if (ItemDetail == null)
+                        {
+                            item.SeqForBatch = SeqNo++;
+                           
+                            StockGrid.Add(item);
+                        }
+                        else
+                        {
+
+
+                            if (ItemDetail.Where(x => x.ItemCode == item.ItemCode && x.BatchNo == item.BatchNo && x.UniqueBatchNo == item.UniqueBatchNo).Any())
+                            {
+                                return StatusCode(207, "Duplicate");
+                            }
+
+
+                            item.SeqForBatch = ItemDetail.Count + 1;
+                           
+                            StockGrid = ItemDetail.Where(x => x != null).ToList();
+                            StockAdjustGrid.AddRange(StockGrid);
+                            StockGrid.Add(item);
+                        }
+                        MainModel.JobDetailGrid = StockGrid;
+
+
+                        HttpContext.Session.SetString("KeyJobWorkIssue", JsonConvert.SerializeObject(MainModel.JobDetailGrid));
+                       
+                    }
+                    else
+                    {
+                        ModelState.TryAddModelError("Error", "Schedule List Cannot Be Empty...!");
+                    }
+                }
+
+
+                return PartialView("_JobWorkIssueGrid", MainModel);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
 
         public IActionResult AddJobWorkIssueDetail(JobWorkGridDetail model)
         {
