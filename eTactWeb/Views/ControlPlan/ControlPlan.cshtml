@@ -1,7 +1,7 @@
 ﻿@model eTactWeb.DOM.Models.ControlPlanModel
 
 @{
-    ViewData["Title"] = "ControlPlan";
+    ViewData["Title"] = "Control Plan";
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
 @*<div class="d-flex align-items-center p-3 my-2 text-white rounded shadow-sm bg-gradient" style="background-color:darkcyan;">
@@ -175,7 +175,7 @@
                                     <input asp-for="SpecificationFrom" class="form-control" />
                                 </div>
                                   *@
-                                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 mb-3">
+                               @*  <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 mb-3">
                                     <label asp-for="SpecificationFrom" class="form-label text-danger fw-bold"> Specification From* </label>
                                     <input type="checkbox" id="isMultiline" class="form-check-input" />
                                     <label class="form-check-label" for="isMultiline">Multiple Lines</label>
@@ -184,6 +184,26 @@
                                            id="SpecificationFrom_single" />
                                     
                                     <textarea asp-for="SpecificationFrom" class="form-control" id="SpecificationFrom_multi" rows="1" placeholder="Enter specification..." style="display:none;"></textarea>
+                                </div> *@
+                                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 mb-3">
+                                    <label asp-for="SpecificationFrom" class="form-label text-danger fw-bold">
+                                        Specification From*
+                                    </label>
+
+                                    <input type="checkbox" id="isMultiline" class="form-check-input" />
+                                    <label class="form-check-label" for="isMultiline">Multiple Lines</label>
+
+                                    <!-- Single-line -->
+                                    <input class="form-control"
+                                           id="SpecificationFrom_single"
+                                           value="@Model.SpecificationFrom" />
+
+                                    <!-- Multi-line -->
+                                    <textarea class="form-control"
+                                              id="SpecificationFrom_multi"
+                                              rows="1"
+                                              placeholder="Enter specification..."
+                                              style="display:none;">@Model.SpecificationFrom</textarea>
                                 </div>
 
 
@@ -1630,11 +1650,14 @@
                             //$('#SpecificationFrom').val(obj[0].SpecificationFrom).trigger("change");
                             if (obj[0].SpecificationFrom && obj[0].SpecificationFrom.includes('\n')) {
                                 $('#isMultiline').prop('checked', true).trigger('change');
-                                $('#multiLineInput').val(obj[0].SpecificationFrom);
+                                $('#SpecificationFrom_multi').val(obj[0].SpecificationFrom);
+                                $('#SpecificationFrom_single').val(''); // clear single
                             } else {
                                 $('#isMultiline').prop('checked', false).trigger('change');
-                                $('#singleLineInput').val(obj[0].SpecificationFrom);
+                                $('#SpecificationFrom_single').val(obj[0].SpecificationFrom);
+                                $('#SpecificationFrom_multi').val(''); // clear multi
                             }
+
                             $('#SpecificationTo').val(obj[0].SpecificationTo).trigger("change");
                             //$('#Operator').val(obj[0].Operator).trigger("change");
                             $('#Operator').val(obj[0].Operator?.trim()).trigger("change");
