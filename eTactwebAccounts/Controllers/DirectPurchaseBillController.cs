@@ -53,7 +53,7 @@ namespace eTactWeb.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> DirectPurchaseBill(int ID, int YearCode, string Mode, string? TypeITEMSERVASSETS, string FromDate = "", string ToDate = "", string DashboardType = "", string DocumentType = "", string VendorName = "", string PurchVouchNo = "", string InvoiceNo = "", string PartCode = "", string ItemName = "", string HSNNo = "", string Searchbox = "")
+        public async Task<IActionResult> DirectPurchaseBill( int ID,  int YearCode, string Mode, string? TypeITEMSERVASSETS, string FromDate = "", string ToDate = "",  string DashboardType = "", string DocumentType = "", string VendorName = "", string PurchVouchNo = "", string InvoiceNo = "", string PartCode = "", string ItemName = "", string HSNNo = "", string Searchbox = "")
         {
             HttpContext.Session.Remove("KeyTaxGrid");
             HttpContext.Session.Remove("KeyTDSGrid");

@@ -114,10 +114,10 @@
                                 <a asp-controller="@controller"
                                    asp-action="@action"
                                    asp-route-Mode="U"
-                                   asp-route-ID="@EncodeHelper.ToBase64(item.DocEntryId.ToString())"
-                                   asp-route-YearCode="@EncodeHelper.ToBase64(item.AccYearCode.ToString())"
-                                   asp-route-DashboardType="@EncodeHelper.ToBase64(item.ReportType)"
-                                   asp-route-AccountCode="@EncodeHelper.ToBase64(item.AccountCode.ToString())">
+                                   asp-route-ID="@item.DocEntryId.ToString()"
+                                   asp-route-YearCode="@item.AccYearCode.ToString()"
+                                   asp-route-DashboardType="@item.ReportType)"
+                                   asp-route-AccountCode="@item.AccountCode.ToString()">
                                     @item.VoucherNo
                                 </a>
                             </td>
