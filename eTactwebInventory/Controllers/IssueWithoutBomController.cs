@@ -1033,12 +1033,7 @@ namespace eTactWeb.Controllers
                 //    IssueQty = issueQty,
                 //    ReqQty = ReqQuantity
                 //});
-                var JSON = await _IIssueWOBOM.ShowDetail(
-    ReqDate, ReqDate, ReqNo, YearCode,
-    Convert.ToInt32(ItemDetailData.Result.Rows[0].ItemArray[4]),
-    "", 0, 0, ReqYearCode, ReqDate, "", "",
-    Convert.ToInt32(ReqStoreId.Result.Rows[0].ItemArray[0])
-);
+                var JSON = await _IIssueWOBOM.ShowDetail(ReqDate, ReqDate, ReqNo, YearCode,Convert.ToInt32(ItemDetailData.Result.Rows[0].ItemArray[4]),"", 0, 0, ReqYearCode, ReqDate, "", "",Convert.ToInt32(ReqStoreId.Result.Rows[0].ItemArray[0]));
 
                 var ItemList = new List<IssueWithoutBomDetail>();
 

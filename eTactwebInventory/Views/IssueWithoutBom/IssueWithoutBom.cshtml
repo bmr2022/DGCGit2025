@@ -1226,6 +1226,7 @@ function submitForm(shouldPrint, printWindow) {
                     else if (data === "Stock can't be zero" && (xhr.statusCode === 203 || xhr.responseText === "Stock can't be zero")) {
                         $.notify('Lot Stock Or Total Stock cannot be zero or less than Req Qty', "info");
                     }
+                          
                     else {
                         $('#divIssueWOBOMGridAdd').html(data);
                         //$('#divIssueWOBOMGrid').empty();

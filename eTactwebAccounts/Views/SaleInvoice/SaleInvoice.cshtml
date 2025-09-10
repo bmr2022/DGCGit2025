@@ -605,16 +605,16 @@
                             </div>
                         </div>
                     </div>
-                    <div class="progress my-2" style="height: 4px;">
+                @*     <div class="progress my-2" style="height: 4px;">
                         <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
+                    </div> *@
                 </div>
                 <div class="modal-footer">
                     <a href="#" class="btn btn-primary" id="btngenrateEinvoice">
                         save & Generate Einvoice
                     </a>
                     <button type="button" class="btn btn-danger" id="btnClose">
-                        <span class="spinner-border spinner-border-sm me-2 d-none" role="status" id="btnCloseSpinner" aria-hidden="true"></span>
+                        @* <span class="spinner-border spinner-border-sm me-2 d-none" role="status" id="btnCloseSpinner" aria-hidden="true"></span> *@
                         Save
                     </button>
                 </div>
@@ -824,19 +824,21 @@
             fieldIds.forEach(removeRequiredRule);
 
             $('#btnClose').click(function () {
-                $('#btnCloseSpinner').removeClass('d-none');
-                $('#btnClose').prop('disabled', true);
+                    submitForm(false, null);
+                     $('#EinvoicePopup').modal("hide");
+             //   $('#btnCloseSpinner').removeClass('d-none');
+              //   $('#btnClose').prop('disabled', true);
 
-                // Wait a bit, then submit the form
-              //  setTimeout(() => {
-                    submitForm(false, null).then(() => {
-                        // After async process completes
-                        $('#EinvoicePopup').modal("hide");
-                    }).finally(() => {
-                        $('#btnCloseSpinner').addClass('d-none');
-                        $('#btnClose').prop('disabled', false);
-                    });
-              //  }, 300);
+              //   // Wait a bit, then submit the form
+              // //  setTimeout(() => {
+              //       submitForm(false, null).then(() => {
+              //           // After async process completes
+              //           $('#EinvoicePopup').modal("hide");
+              //       }).finally(() => {
+              //      //     $('#btnCloseSpinner').addClass('d-none');
+              //           $('#btnClose').prop('disabled', false);
+              //       });
+              // //  }, 300);
             });
             GetFeatureOption();
             GetMaxSaleInvoiceEntryDate();
