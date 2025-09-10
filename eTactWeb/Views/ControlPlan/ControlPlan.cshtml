@@ -867,6 +867,7 @@
                 const id = '@Model.CntPlanEntryId' || 0;
                 const yc = '@Model.CntPlanYearCode' || 0;
                 const mode = '@Model.Mode' || '';
+                //const mode = urlParams.get('Mode') || 'U';
                 const entryDate = '@Model.CntPlanEntryDate';
                 const revNo = '@Model.RevNo';
 
@@ -1538,15 +1539,22 @@
             var seqNo = $('#SeqNo').val();
             var mode = $('#Mode').val();
 
-            if (!seqNo || seqNo === "0" || seqNo === "") {
-                mode = ""; // reset mode to insert for new entry
-                $('#Mode').val(""); // also reset hidden input to keep UI consistent
+            if (mode !== "U" && (!seqNo || seqNo === "0" || seqNo === "")) {
+                mode = ""; // insert for grid row
+                $('#Mode').val(""); // only if you really want to reset hidden input for insert mode
             }
-            // Determine SeqNo to use
-            // If mode is 'U' (update), keep current SeqNo; else assign new SeqNo = highest + 1
-            var finalSeqNo = ($('#Mode').val() === "U") ? $('#SeqNo').val() : (highestValue + 1);
-            $('#SeqNo').val(finalSeqNo); // update hidden field or input if needed
+            var finalSeqNo;
 
+            // if editing an existing grid row (SeqNo already filled), keep it
+            if (seqNo && seqNo !== "0" && mode === "U") {
+                finalSeqNo = seqNo;
+            }
+            else {
+                // always assign next number for new row
+                finalSeqNo = highestValue + 1;
+            }
+
+            $('#SeqNo').val(finalSeqNo);
             var ItemData = {
                 "Characteristic": $('#Characteristic').val(),
                 "EvalutionMeasurmentTechnique": $('#EvalutionMeasurmentTechnique').val(),
@@ -1594,8 +1602,10 @@
                         $('#divControlPlanGrid').html(data);
 
                         // If it's a new add (CntPlanEntryId is 0 or empty), clear mode; else keep mode
-                        if ($('#CntPlanEntryId').val() === "0" || $('#CntPlanEntryId').val() === "") {
-                            $('#Mode').val("");
+                        if ($('#Mode').val() !== "U") {
+                            if ($('#CntPlanEntryId').val() === "0" || $('#CntPlanEntryId').val() === "") {
+                                $('#Mode').val("");
+                            }
                         }
 
                         $('#SeqNo').val("");
