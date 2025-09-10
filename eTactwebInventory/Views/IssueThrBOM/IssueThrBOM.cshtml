@@ -1426,6 +1426,9 @@
                             else if (data === "Stock can't be zero" && (xhr.statusCode === 203 || xhr.responseText === "Stock can't be zero")) {
                                 $.notify('Lot Stock Or Total Stock cannot be zero', "info");
                             }
+                                         else if (data === "Cannot scan another batch.Req. Qty already fulfilled for item." && (xhr.statusCode === 208 || xhr.responseText === "Cannot scan another batch.Req. Qty already fulfilled for item.")) {
+                                        $.notify('Cannot scan another batch.Req. Qty already fulfilled for item.', "info");
+                            }
                             else if (xhr.status == 203) {
                                 $.notify(data, "info");
                             }

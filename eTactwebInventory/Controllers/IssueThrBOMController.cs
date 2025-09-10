@@ -673,14 +673,27 @@ namespace eTactWeb.Controllers
                             }
                             else
                             {
+                                decimal alreadyIssuedQty = IssueThrBomDetailGrid
+                                                .Where(x => x.ItemCode == item.ItemCode)
+                                                .Sum(x => x.IssueQty);
+
+                                decimal requiredQty = item.ReqQty; // ReqQty from requisition
+                                decimal newQty = item.IssueQty;    // Qty for this batch
+
+                               
                                 if (IssueThrBomDetailGrid.Where(x => x.uniqueBatchNo == item.uniqueBatchNo).Any())
                                 {
                                     return StatusCode(207, "Duplicate");
+                                }
+                                if (alreadyIssuedQty + newQty > requiredQty)
+                                {
+                                    return StatusCode(208, "Cannot scan another batch.Req. Qty already fulfilled for item.");
                                 }
                                 if (item.LotStock <= 0 || item.TotalStock <= 0)
                                 {
                                     return StatusCode(203, "Stock can't be zero");
                                 }
+                                
                                 else
                                 {
                                     item.seqno = IssueThrBomDetailGrid.Count + 1;
