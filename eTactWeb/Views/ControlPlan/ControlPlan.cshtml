@@ -1,7 +1,7 @@
 ﻿@model eTactWeb.DOM.Models.ControlPlanModel
 
 @{
-    ViewData["Title"] = "ControlPlan";
+    ViewData["Title"] = "Control Plan";
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
 @*<div class="d-flex align-items-center p-3 my-2 text-white rounded shadow-sm bg-gradient" style="background-color:darkcyan;">
@@ -13,7 +13,7 @@
     <div class="card rounded shadow-lg">
         <div class="card-header card-headerBG text-light justify-content-center bg-gradient">
             <h4>
-                ControlPlan - @Model.Yearcode
+                Control Plan - @Model.Yearcode
                 <span class="d-flex float-end" style="margin-top:-2px;">
                     <a asp-action="ControlPlanDashBoard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
                         <i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
@@ -71,7 +71,7 @@
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="B_ItemCategoryDetail">
                         <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_AccountDetail" aria-expanded="true" aria-controls="B_AccountDetail">
-                            <strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>ControlPlan</strong>
+                            <strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Control Plan</strong>
                           
                         </button>
                     </h2>
@@ -92,8 +92,7 @@
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                     <label asp-for="Entry_Date" class="form-label">Entry Date</label>
-                                    <input type="text" id="Entry_Date" name="Entry_Date" class="form-control"
-                                           value="@(Model.Entry_Date != null ? Convert.ToDateTime(Model.Entry_Date).ToString("dd/MM/yyyy") : "")" />
+                                    <input asp-for="Entry_Date" class="form-control" readonly/>
 
                                 </div>
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:90px;">
@@ -111,8 +110,7 @@
                                 </div>
                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" >
                                     <label asp-for="EffectiveDate" class="form-label">Effective Date</label>
-                                    <input type="text" id="EffectiveDate" name="EffectiveDate" class="form-control"
-                                           value="@(Model.EffectiveDate != null ? Convert.ToDateTime(Model.EffectiveDate).ToString("dd/MM/yyyy") : "")" />
+                                    <input asp-for="EffectiveDate" class="form-control" readonly/>
                                </div>
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                     <label asp-for="PartCode" class="form-label" style="color:red">Part Code*</label>
@@ -139,7 +137,7 @@
                                 </div>
 
                                 <input type="hidden" id="ItemCode" name="ItemCode" value="@Model.ItemCode" />
-                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:120px;">
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12 copy-plan-div" style="width:120px;">
                                     <label class="form-label">Copy This Plan</label>
                                     <div class="form-check form-switch" style="margin-top:5px;">
                                         <input asp-for="CopyControlPlan" class="form-check-input" type="checkbox" role="switch" onchange="CopyControlPlanFunc(this);" />
@@ -152,7 +150,7 @@
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="H_SAGrid">
                         <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
-                            <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>ControlPlan Detail Grid</strong>
+                            <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Control Plan Detail Grid</strong>
                         </button>
                     </h2>
 
@@ -164,7 +162,7 @@
                                     <label asp-for="Characteristic" class="form-label" style="color:red">Characteristic*</label>
                                     <input asp-for="Characteristic" class="form-control" />
                                 </div>
-                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" >
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:220px;">
                                     <label asp-for="EvalutionMeasurmentTechnique" class="form-label" style="color:red">Evalution MeasurmentTechnique*</label>
                                     <input asp-for="EvalutionMeasurmentTechnique" class="form-control" />
                                 </div>
@@ -177,24 +175,38 @@
                                     <input asp-for="SpecificationFrom" class="form-control" />
                                 </div>
                                   *@
-                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:140px;">
-                                    <label asp-for="SpecificationFrom" class="form-label" style="color:red">Specification From*</label>
+                               @*  <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 mb-3">
+                                    <label asp-for="SpecificationFrom" class="form-label text-danger fw-bold"> Specification From* </label>
+                                    <input type="checkbox" id="isMultiline" class="form-check-input" />
+                                    <label class="form-check-label" for="isMultiline">Multiple Lines</label>
+                                    <input asp-for="SpecificationFrom"
+                                           class="form-control"
+                                           id="SpecificationFrom_single" />
+                                    
+                                    <textarea asp-for="SpecificationFrom" class="form-control" id="SpecificationFrom_multi" rows="1" placeholder="Enter specification..." style="display:none;"></textarea>
+                                </div> *@
+                                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 mb-3">
+                                    <label asp-for="SpecificationFrom" class="form-label text-danger fw-bold">
+                                        Specification From*
+                                    </label>
 
-                                    <!-- Checkbox to enable multiline -->
-                                    <div class="form-check">
-                                        <input type="checkbox" id="isMultiline" class="form-check-input" />
-                                        <label class="form-check-label" for="isMultiline">Multiple Lines</label>
-                                    </div>
+                                    <input type="checkbox" id="isMultiline" class="form-check-input" />
+                                    <label class="form-check-label" for="isMultiline">Multiple Lines</label>
 
-                                    <!-- Single-line input -->
-                                    <input asp-for="SpecificationFrom" class="form-control" id="singleLineInput" />
+                                    <!-- Single-line -->
+                                    <input class="form-control"
+                                           id="SpecificationFrom_single"
+                                           value="@Model.SpecificationFrom" />
 
-                                    <!-- Multi-line textarea (hidden by default) -->
-                                    <textarea asp-for="SpecificationFrom" class="form-control" id="multiLineInput" style="display:none;"></textarea>
+                                    <!-- Multi-line -->
+                                    <textarea class="form-control"
+                                              id="SpecificationFrom_multi"
+                                              rows="1"
+                                              placeholder="Enter specification..."
+                                              style="display:none;">@Model.SpecificationFrom</textarea>
                                 </div>
 
-                                
-                               
+
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:90px;">
                                     <label asp-for="Operator" class="form-label">Operator</label>
                                     <select class="form-control" asp-for="Operator" style="width:80px;">
@@ -258,9 +270,7 @@
                                 </div> *@
                                 
                                 <div class="col d-flex align-items-center" style="gap: 10px;">
-                                <button type="button" class="GridButton btn btn-sm btn-outline-danger">
-                                    <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
-                                </button>
+                                
                                 <input type="file" id="importFile" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" class="form-control" style="width: 250px;"/>
                                 <button type="button" class="btn btn-success" id="btnImport">Import to Grid</button>
                                     <a class="btn btn-secondary btn-sm" onclick="ExportItems();">
@@ -268,6 +278,9 @@
                                         <i class="fa-solid fa-file-import" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
                                         IMPORT FORMAT
                                     </a>
+                                    <button type="button" class="GridButton btn btn-sm btn-outline-danger">
+                                        <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
+                                    </button>
                             </div>
                                 <div class="row">
                                    
@@ -577,21 +590,7 @@
 
 @section Scripts {
     <script>
-        // $('.submitBTN').click(function (e) {
-        //      
-        //    // e.preventDefault();
-        //     var rowCount = $('#divControlPlanGrid tbody tr').length;
-        //     console.log("Rows:", rowCount);
-        //     if (rowCount === 0) {
-        //         $.notify("Please add at least one row to the grid before submitting.", "error");
-        //         return false;
-        //     }
-        //     else {
-
-        //     $('form').submit();
-        //     }
-        // });
-
+       
         $("button[type='submit']").click(function (e) {
             e.preventDefault();
 
@@ -621,14 +620,35 @@
             GetRejectionPlan();
             if ($('#Mode').val() !== "U") {
                 GetNewEntryId();
-                $('#Entry_Date').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", new Date());
-                $('#EffectiveDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", new Date());
+                $('#Entry_Date').datepicker({
+                    dateFormat: 'dd/mm/yy',
+                    maxDate: 0 
+                }).datepicker("setDate", new Date());
+
+                $('#EffectiveDate').datepicker({
+                    dateFormat: 'dd/mm/yy',
+                    maxDate: 0 
+                }).datepicker("setDate", new Date());
+
             } else {
-                
-                $('#Entry_Date').datepicker({ dateFormat: 'dd/mm/yy' });
-                $('#EffectiveDate').datepicker({ dateFormat: 'dd/mm/yy' });
+
+                $('#Entry_Date').datepicker({
+                    dateFormat: 'dd/mm/yy',
+                    maxDate: 0   
+                });
+
+                $('#EffectiveDate').datepicker({
+                    dateFormat: 'dd/mm/yy',
+                    maxDate: 0  
+                });
+
             }
 
+            if ($('#Mode').val() === "U") {
+                $(".copy-plan-div").show();
+            } else {
+                $(".copy-plan-div").hide();
+            }
 
            
             $('#ItemName').select2();
@@ -670,13 +690,22 @@
                 $('#PartCode').val(itemCode).trigger("change");
                 $('#ItemName').val(itemCode).trigger("change");
             }
-            $('#isMultiline').change(function () {
-                if ($(this).is(':checked')) {
-                    $('#singleLineInput').hide();
-                    $('#multiLineInput').show();
+            // $('#isMultiline').change(function () {
+            //     if ($(this).is(':checked')) {
+            //         $('#singleLineInput').hide();
+            //         $('#multiLineInput').show();
+            //     } else {
+            //         $('#multiLineInput').hide();
+            //         $('#singleLineInput').show();
+            //     }
+            // });
+            $("#isMultiline").change(function () {
+                if ($(this).is(":checked")) {
+                    $("#SpecificationFrom_single").hide();
+                    $("#SpecificationFrom_multi").val($("#SpecificationFrom_single").val()).show();
                 } else {
-                    $('#multiLineInput').hide();
-                    $('#singleLineInput').show();
+                    $("#SpecificationFrom_multi").hide();
+                    $("#SpecificationFrom_single").val($("#SpecificationFrom_multi").val()).show();
                 }
             });
         });
@@ -838,6 +867,7 @@
                 const id = '@Model.CntPlanEntryId' || 0;
                 const yc = '@Model.CntPlanYearCode' || 0;
                 const mode = '@Model.Mode' || '';
+                //const mode = urlParams.get('Mode') || 'U';
                 const entryDate = '@Model.CntPlanEntryDate';
                 const revNo = '@Model.RevNo';
 
@@ -1478,9 +1508,17 @@
                 $('#ControlMethod').focus();
                 return false;
             }
-            if (isNullOrEmpty($('#SpecificationFrom').val())) {
+            var specValue = $('#isMultiline').is(':checked')
+                ? $('#SpecificationFrom_multi').val()
+                : $('#SpecificationFrom_single').val();
+
+            if (isNullOrEmpty(specValue)) {
                 $.notify("Specification From is required.", "error");
-                $('#SpecificationFrom').focus();
+                if ($('#isMultiline').is(':checked')) {
+                    $('#SpecificationFrom_multi').focus();
+                } else {
+                    $('#SpecificationFrom_single').focus();
+                }
                 return false;
             }
 
@@ -1501,19 +1539,28 @@
             var seqNo = $('#SeqNo').val();
             var mode = $('#Mode').val();
 
-            if (!seqNo || seqNo === "0" || seqNo === "") {
-                mode = ""; // reset mode to insert for new entry
-                $('#Mode').val(""); // also reset hidden input to keep UI consistent
+            if (mode !== "U" && (!seqNo || seqNo === "0" || seqNo === "")) {
+                mode = ""; // insert for grid row
+                $('#Mode').val(""); // only if you really want to reset hidden input for insert mode
             }
-            // Determine SeqNo to use
-            // If mode is 'U' (update), keep current SeqNo; else assign new SeqNo = highest + 1
-            var finalSeqNo = ($('#Mode').val() === "U") ? $('#SeqNo').val() : (highestValue + 1);
-            $('#SeqNo').val(finalSeqNo); // update hidden field or input if needed
+            var finalSeqNo;
 
+            // if editing an existing grid row (SeqNo already filled), keep it
+            if (seqNo && seqNo !== "0" && mode === "U") {
+                finalSeqNo = seqNo;
+            }
+            else {
+                // always assign next number for new row
+                finalSeqNo = highestValue + 1;
+            }
+
+            $('#SeqNo').val(finalSeqNo);
             var ItemData = {
                 "Characteristic": $('#Characteristic').val(),
                 "EvalutionMeasurmentTechnique": $('#EvalutionMeasurmentTechnique').val(),
-                "SpecificationFrom": $('#isMultiline').is(':checked') ? $('#multiLineInput').val() : $('#singleLineInput').val(),
+                "SpecificationFrom": $('#isMultiline').is(':checked')
+                    ? $('#SpecificationFrom_multi').val()
+                    : $('#SpecificationFrom_single').val(),
                 "SpecificationTo": $('#SpecificationTo').val(),
                 "Operator": $('#Operator').val(),
                 "OperatorText": $('#Operator').find(':selected').text() == "-Select-" ? "" : $('#Operator').find(':selected').text(),
@@ -1555,8 +1602,10 @@
                         $('#divControlPlanGrid').html(data);
 
                         // If it's a new add (CntPlanEntryId is 0 or empty), clear mode; else keep mode
-                        if ($('#CntPlanEntryId').val() === "0" || $('#CntPlanEntryId').val() === "") {
-                            $('#Mode').val("");
+                        if ($('#Mode').val() !== "U") {
+                            if ($('#CntPlanEntryId').val() === "0" || $('#CntPlanEntryId').val() === "") {
+                                $('#Mode').val("");
+                            }
                         }
 
                         $('#SeqNo').val("");
@@ -1611,11 +1660,14 @@
                             //$('#SpecificationFrom').val(obj[0].SpecificationFrom).trigger("change");
                             if (obj[0].SpecificationFrom && obj[0].SpecificationFrom.includes('\n')) {
                                 $('#isMultiline').prop('checked', true).trigger('change');
-                                $('#multiLineInput').val(obj[0].SpecificationFrom);
+                                $('#SpecificationFrom_multi').val(obj[0].SpecificationFrom);
+                                $('#SpecificationFrom_single').val(''); // clear single
                             } else {
                                 $('#isMultiline').prop('checked', false).trigger('change');
-                                $('#singleLineInput').val(obj[0].SpecificationFrom);
+                                $('#SpecificationFrom_single').val(obj[0].SpecificationFrom);
+                                $('#SpecificationFrom_multi').val(''); // clear multi
                             }
+
                             $('#SpecificationTo').val(obj[0].SpecificationTo).trigger("change");
                             //$('#Operator').val(obj[0].Operator).trigger("change");
                             $('#Operator').val(obj[0].Operator?.trim()).trigger("change");

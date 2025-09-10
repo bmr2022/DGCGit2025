@@ -525,7 +525,12 @@ namespace eTactWeb.Controllers
                 throw ex;
             }
         }
-
+        public async Task<JsonResult> GetIssueScanFeature()
+        {
+            var JSON = await _IIssueThrBOM.GetIssueScanFeature();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
         public async Task<IActionResult> GetItemDetailFromUniqBatch(string UniqBatchNo, int YearCode, string TransDate, string ReqNo, int ReqYearCode, string ReqDate)
         {
             var MainModel = new IssueThrBom();
@@ -533,11 +538,42 @@ namespace eTactWeb.Controllers
             {
                 ResponseResult StockData = new ResponseResult();
                 var ItemDetailData = await _IIssueThrBOM.GetItemDetailFromUniqBatch(UniqBatchNo, YearCode, TransDate);
+
+                ResponseResult ReqQty = await _IIssueThrBOM.GetReqQtyForScan(ReqNo, ReqYearCode, ReqDate, Convert.ToInt32(ItemDetailData.Result.Rows[0].ItemArray[4]));
+                ResponseResult ReqStoreId = await _IIssueThrBOM.GetStoreIdReqForScan(ReqNo, ReqYearCode, ReqDate, Convert.ToInt32(ItemDetailData.Result.Rows[0].ItemArray[4]));
+
+                decimal ReqQuantity = 0;
+                string modelJson1 = HttpContext.Session.GetString("KeyIssThrBom");
+                List<IssueThrBom> sessionModels = JsonConvert.DeserializeObject<List<IssueThrBom>>(modelJson1);
+
+                
+                int dbItemCode = Convert.ToInt32(ItemDetailData.Result.Rows[0].ItemArray[4]);
+
+                var matchedItem = sessionModels.FirstOrDefault(m => m.ItemCode == dbItemCode);
+
+                if (matchedItem == null)
+                {
+                    return StatusCode(203, "Invalid barcode this item " + ItemDetailData.Result.Rows[0].ItemArray[0] + " do not exist in this requisition");
+                }
+
+                //string modelJson1 = HttpContext.Session.GetString("KeyIssThrBom");
+                //IssueThrBom sessionModel = JsonConvert.DeserializeObject<IssueThrBom>(modelJson1);
+
+                //if (ReqQty.Result.Rows.Count != 0)
+                //{
+                //    ReqQuantity = Convert.ToDecimal(ReqQty.Result.Rows[0].ItemArray[0]);
+                //}
+                //else
+                //{
+                //    return StatusCode(203, "Invalid barcode this item " + ItemDetailData.Result.Rows[0].ItemArray[0] + " do not exist in this requisition");
+                //}
+
                 if (ItemDetailData.Result != null)
                 {
                     if (ItemDetailData.Result.Rows.Count != 0)
                     {
-                        StockData = await _IIssueThrBOM.FillLotandTotalStock(Convert.ToInt32(ItemDetailData.Result.Rows[0].ItemArray[4]), 1, TransDate, ItemDetailData.Result.Rows[0].ItemArray[2], UniqBatchNo);
+
+                        StockData = await _IIssueThrBOM.FillLotandTotalStock(Convert.ToInt32(ItemDetailData.Result.Rows[0].ItemArray[4]), Convert.ToInt32(matchedItem.StoreId), TransDate, ItemDetailData.Result.Rows[0].ItemArray[2], UniqBatchNo);
                     }
                     else
                     {
@@ -550,31 +586,26 @@ namespace eTactWeb.Controllers
                     return StatusCode(203, "Invalid barcode, item do not exist in this requisition");
 
                 }
-                ResponseResult ReqQty = await _IIssueThrBOM.GetReqQtyForScan(ReqNo, ReqYearCode, ReqDate, Convert.ToInt32(ItemDetailData.Result.Rows[0].ItemArray[4]));
-
-                decimal ReqQuantity = 0;
-
-                if (ReqQty.Result.Rows.Count != 0)
-                {
-                    ReqQuantity = Convert.ToDecimal(ReqQty.Result.Rows[0].ItemArray[0]);
-                }
-                else
-                {
-                    return StatusCode(203, "Invalid barcode this item " + ItemDetailData.Result.Rows[0].ItemArray[0] + " do not exist in this requisition");
-                }
-
-                var ItemList = new List<IssueThrBomDetail>();
-
+               
                 var lotStock = Convert.ToDecimal(StockData.Result.Rows[0].ItemArray[0]);
                 var totStock = Convert.ToDecimal(StockData.Result.Rows[0].ItemArray[1]);
 
                 var stock = lotStock <= totStock ? lotStock : totStock;
 
                 var issueQty = stock <= ReqQuantity ? stock : ReqQuantity;
+                
+                var JSON = await _IIssueThrBOM.ShowDetail(ReqDate, ReqDate, ReqNo, YearCode, Convert.ToInt32(ItemDetailData.Result.Rows[0].ItemArray[4]), "", 0, 0, ReqYearCode, ReqDate, "", "", Convert.ToInt32(matchedItem.StoreId));
 
-                ItemList.Add(new IssueThrBomDetail
+                var ItemList = new List<IssueThrBomDetail>();
+
+                if (JSON?.Result != null && JSON.Result.Tables.Count > 0)
                 {
-                    ItemName = ItemDetailData.Result.Rows[0].ItemArray[0],
+                    var table = JSON.Result.Tables[0];
+                    foreach (DataRow row in table.Rows)
+                    {
+                        var item = new IssueThrBomDetail
+                        {
+                            ItemName = ItemDetailData.Result.Rows[0].ItemArray[0],
                     PartCode = ItemDetailData.Result.Rows[0].ItemArray[1],
                     ItemCode = Convert.ToInt32(ItemDetailData.Result.Rows[0].ItemArray[4]),
                     BatchNo = ItemDetailData.Result.Rows[0].ItemArray[2],
@@ -582,10 +613,30 @@ namespace eTactWeb.Controllers
                     Unit = ItemDetailData.Result.Rows[0].ItemArray[3],
                     LotStock = lotStock,
                     TotalStock = totStock,
-                    IssueQty = issueQty,
-                    ReqQty = ReqQuantity
-                });
+                    IssueQty = row["IssueQty"] != DBNull.Value ? Convert.ToDecimal(row["IssueQty"]) : 0,
+                    ReqQty = row["ReqQty"] != DBNull.Value ? Convert.ToDecimal(row["ReqQty"]) : 0,
+                            StdPacking = row["StdPacking"] != DBNull.Value ? Convert.ToSingle(row["StdPacking"]) : 0,
+                    StoreName = row["StoreName"]?.ToString(),
+                    AltQty = row["AltQty"] != DBNull.Value ? Convert.ToDecimal(row["AltQty"]) : 0,
+                    AltUnit = row["AltUnit"]?.ToString(),
+                    Rate = row["Rate"] != DBNull.Value ? Convert.ToDecimal(row["Rate"]) : 0,
+                    Remark = row["Remark"]?.ToString(),
+                    AltItemCode = row["AltItemCode"] != DBNull.Value ? Convert.ToInt32(row["AltItemCode"]) : 0,
+                    CostCenterId = row["CostCenterId"] != DBNull.Value ? Convert.ToInt32(row["CostCenterId"]) : 0,
+                    ItemSize = row["ItemSize"]?.ToString(),
+                    ItemColor = row["ItemColor"]?.ToString(),
+                    StoreId = row["storeid"] != DBNull.Value ? Convert.ToInt32(row["storeid"]) : 0,
+                    WCId = row["WCId"] != DBNull.Value ? Convert.ToInt32(row["WCId"]) : 0,
+                    WorkCenter = row["WorkCenter"]?.ToString(),
+                    TransactionDate = row["TransactionDate"]?.ToString(),
+                            WipStock = row["WIPStock"] != DBNull.Value? Convert.ToSingle(Convert.ToDecimal(row["WIPStock"])): 0
 
+
+                        };
+
+                        ItemList.Add(item);
+                    }
+                }
                 var model = ItemList;
 
                 var IssueThrBomGrid = new List<IssueThrBomDetail>();
@@ -622,14 +673,27 @@ namespace eTactWeb.Controllers
                             }
                             else
                             {
+                                decimal alreadyIssuedQty = IssueThrBomDetailGrid
+                                                .Where(x => x.ItemCode == item.ItemCode)
+                                                .Sum(x => x.IssueQty);
+
+                                decimal requiredQty = item.ReqQty; // ReqQty from requisition
+                                decimal newQty = item.IssueQty;    // Qty for this batch
+
+                               
                                 if (IssueThrBomDetailGrid.Where(x => x.uniqueBatchNo == item.uniqueBatchNo).Any())
                                 {
                                     return StatusCode(207, "Duplicate");
+                                }
+                                if (alreadyIssuedQty + newQty > requiredQty)
+                                {
+                                    return StatusCode(208, "Cannot scan another batch.Req. Qty already fulfilled for item.");
                                 }
                                 if (item.LotStock <= 0 || item.TotalStock <= 0)
                                 {
                                     return StatusCode(203, "Stock can't be zero");
                                 }
+                                
                                 else
                                 {
                                     item.seqno = IssueThrBomDetailGrid.Count + 1;
@@ -650,7 +714,7 @@ namespace eTactWeb.Controllers
             {
 
             }
-            return PartialView("_IssueByScanningThrGrid", MainModel);
+            return PartialView("_IssueThrByScanningGrid", MainModel);
         }
         [HttpPost]
         public IActionResult DeleteFromZeroStockMemoryGrid(bool deleteZeroStockOnly, int? seqNo = null)

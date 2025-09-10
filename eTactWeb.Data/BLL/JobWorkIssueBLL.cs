@@ -26,6 +26,11 @@ namespace eTactWeb.Data.BLL
             _JobWorkIssueDAL = new JobWorkIssueDAL(configuration, iDataLogic, connectionStringService);
         }
 
+        public async Task<JobWorkIssueModel> selectMultipleItem(string GroupName, int StoreID, string FromDate, string ToDate, string PartCode)
+        {
+            return await _JobWorkIssueDAL.selectMultipleItem(GroupName, StoreID, FromDate, ToDate, PartCode);
+        }
+
         public async Task<DataSet> BindAllDropDowns(string Flag)
         {
             return await _JobWorkIssueDAL.BindAllDropDowns(Flag);
