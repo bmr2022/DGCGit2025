@@ -44,6 +44,8 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetFormRights(int uId);
         public Task<ResponseResult> GetItemRate(int ItemCode, string TillDate, int YearCode, string BatchNo, string UniqueBatchNo);
 
+        Task<JobWorkIssueModel> selectMultipleItem(string GroupName, int StoreID, string FromDate, string ToDate, string PartCode);
+
 
 
     }
