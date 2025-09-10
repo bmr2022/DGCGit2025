@@ -38,9 +38,26 @@
                     <th style="min-width:140px; resize: horizontal; width:150px;">Employee Category</th>
                     @if (Model != null && Model.DayHeaders != null)
                     {
-                        @foreach (var dayCol in Model.DayHeaders)
+                        @if (Model.DayOrMonthType == "Monthly")
                         {
-                            <th style="min-width:60px; resize: horizontal; width:70px;">@dayCol</th>
+                            int dayIndex = 1;
+                            int monthNo = DateTime.ParseExact(Model.strEmpAttMonth, "MMM", System.Globalization.CultureInfo.InvariantCulture).Month;
+                            @foreach (var dayCol in Model.DayHeaders)
+                            {
+                                int dayNo = (int)Math.Ceiling(dayIndex / 2.0); 
+                                var date = new DateTime(Model.GateAttYearCode, monthNo, (int)Math.Ceiling(dayIndex / 2.0));
+                                <th style="min-width:60px; resize: horizontal; width:70px;">
+                                    @dayCol  <br />
+                                    @date.ToString("dd/MMM/yyyy")
+                                </th>
+                                dayIndex++;
+                            }
+                        }
+                        else {
+                            @foreach (var dayCol in Model.DayHeaders)
+                            {
+                                <th style="min-width:60px; resize: horizontal; width:70px;">@dayCol</th>
+                            }
                         }
                     }
                     else
@@ -80,7 +97,15 @@
                                     {
                                         var value = Model.GateAttDetailsList[i].Attendance.ContainsKey(dayCol.ToLower()) ? Model.GateAttDetailsList[i].Attendance[dayCol.ToLower()] : "";
                                         var parts = dayCol.Split('('); var dayNo = parts[0]; var type = parts[1].Replace(")", "");
-                                        <td><input type="time" id='@("txt_" + Model.GateAttDetailsList[i].EmpId + "_" + dayNo + "_" + type)' name="Attendance[@Model.GateAttDetailsList[i].EmpId][@dayCol]" value="@value" class="form-control form-control-sm att-input timepicker" data-empid="@Model.GateAttDetailsList[i].EmpId" data-day="@dayNo" data-type="@type" /></td>
+                                        int monthNo = DateTime.ParseExact(Model.strEmpAttMonth, "MMM", System.Globalization.CultureInfo.InvariantCulture).Month;
+                                        var currentDate = new DateTime(Model.GateAttYearCode, monthNo, !string.IsNullOrEmpty(dayNo) ? Convert.ToInt32(dayNo) : 1);
+                                        var holiday = Model.HolidayList?.FirstOrDefault(h => h.HolidayYear == Model.GateAttYearCode && h.HolidayEffFrom == currentDate);
+                                        bool isWeekoff = holiday?.DayType == "WEEKOFF";
+                                        bool isHoliday = !isWeekoff && holiday != null;
+                                        string cssClass = isWeekoff ? "weekoff-time" : (isHoliday ? "holiday-time" : "");
+                                        bool allowEdit = (isWeekoff && holiday?.OverrideWeekoff == "YES") || (isHoliday && holiday?.AllowedCompOff == "YES");
+
+                                        <td><input type="time" id='@("txt_" + Model.GateAttDetailsList[i].EmpId + "_" + dayNo + "_" + type)' name="Attendance[@Model.GateAttDetailsList[i].EmpId][@dayCol]" value="@value" class="form-control form-control-sm att-input timepicker @cssClass" data-empid="@Model.GateAttDetailsList[i].EmpId" data-day="@dayNo" data-type="@type" @(allowEdit ? "" : "disabled") /></td>
                                     }
                                 }
                             }
