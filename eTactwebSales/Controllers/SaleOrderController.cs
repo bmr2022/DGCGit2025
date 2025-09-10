@@ -86,7 +86,7 @@ public class SaleOrderController : Controller
         ViewBag.AmmNo = AmmNo;
         
         
-            webReport.Report.Load(webRootPath + "\\SOReport.frx"); // default report
+            webReport.Report.Load(webRootPath + "\\SOReportNew.frx"); // default report
 
         
         
