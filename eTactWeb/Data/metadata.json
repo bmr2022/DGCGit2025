@@ -1,0 +1,1064 @@
+{
+  "catalog": "dbo",
+  "schema": "dbo",
+  "models": [
+    {
+      "name": "Account_head_master",
+      "tableReference": {
+        "catalog": "dbo",
+        "schema": "dbo",
+        "table": "Account_head_master"
+      },
+      "columns": [
+        {
+          "name": "Account_Code",
+          "type": "BIGINT"
+        },
+        {
+          "name": "DebCredCode",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "Party_Code",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "Entry_Date",
+          "type": "DATETIME"
+        },
+        {
+          "name": "Account_Name",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "DisplayName",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "ParentAccountCode",
+          "type": "BIGINT"
+        },
+        {
+          "name": "MainGroup",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "AccountType",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "SubGroup",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "SubSubGroup",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "UnderGroup",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "ComAddress",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "ComAddress1",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "PinCode",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "City",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "State",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "Country",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "PhoneNo",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "MobileNo",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "ContactPerson",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "PartyType",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "GSTRegistered",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "GSTNO",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "GSTPartyTypes",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "GSTTAXTYPE",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "Segment",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "SSLNo",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "PANNO",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "TDS",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "TDSRate",
+          "type": "FLOAT"
+        },
+        {
+          "name": "TDSPartyCategery",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "ResponsibleEmployee",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "ResponsibleEmpContactNo",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "SalesPersonName",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "SalesPersonEmailId",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "SalesPersonMobile",
+          "type": "NCHAR"
+        },
+        {
+          "name": "PurchPersonName",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "PurchasePersonEmailId",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "PurchMobileNo",
+          "type": "NCHAR"
+        },
+        {
+          "name": "QCPersonEmailId",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "WebSite_Add",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "EMail",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "RANGE",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "Division",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "Commodity",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "WorkingAdd1",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "WorkingAdd2",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "RateOfInt",
+          "type": "FLOAT"
+        },
+        {
+          "name": "CreditLimit",
+          "type": "FLOAT"
+        },
+        {
+          "name": "CreditDays",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "SSL",
+          "type": "NCHAR"
+        },
+        {
+          "name": "BankAccount_No",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "BankAddress",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "BankIFSCCode",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "BankSwiftCode",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "InterbranchSaleBILL",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "OursalespersonId",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "salesemailid",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "salesmobileno",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "Approved_By",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "Approved",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "ApprovalDate",
+          "type": "DATETIME"
+        },
+        {
+          "name": "BlackListed",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "BlackListed_By",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "YearCode",
+          "type": "BIGINT"
+        },
+        {
+          "name": "Uid",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "CC",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "CreatedBy",
+          "type": "BIGINT"
+        },
+        {
+          "name": "CreatedOn",
+          "type": "DATETIME"
+        },
+        {
+          "name": "UpdatedBy",
+          "type": "BIGINT"
+        },
+        {
+          "name": "UpdatedOn",
+          "type": "DATETIME"
+        },
+        {
+          "name": "Active",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "BranchCompany",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "trailbalanceGroupid",
+          "type": "BIGINT"
+        }
+      ],
+      "primaryKey": "Account_Code"
+    },
+    {
+      "name": "SalesOrdermain",
+      "tableReference": {
+        "catalog": "dbo",
+        "schema": "dbo",
+        "table": "SalesOrdermain"
+      },
+      "columns": [
+        {
+          "name": "SOEntryID",
+          "type": "BIGINT"
+        },
+        {
+          "name": "SOYearCode",
+          "type": "BIGINT"
+        },
+        {
+          "name": "SOEntryDate",
+          "type": "DATETIME"
+        },
+        {
+          "name": "EntryTime",
+          "type": "DATETIME"
+        },
+        {
+          "name": "CustOrderNo",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "SONo",
+          "type": "BIGINT"
+        },
+        {
+          "name": "SODate",
+          "type": "DATETIME"
+        },
+        {
+          "name": "OrderType",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "SOType",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "POActive",
+          "type": "CHAR"
+        },
+        {
+          "name": "SOFor",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "WEF",
+          "type": "DATETIME"
+        },
+        {
+          "name": "SOCloseDate",
+          "type": "DATETIME"
+        },
+        {
+          "name": "CurrencyID",
+          "type": "BIGINT"
+        },
+        {
+          "name": "QuotNo",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "QDate",
+          "type": "DATETIME"
+        },
+        {
+          "name": "QuotYear",
+          "type": "BIGINT"
+        },
+        {
+          "name": "AmmNo",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "AmmEffDate",
+          "type": "DATETIME"
+        },
+        {
+          "name": "AccountCode",
+          "type": "BIGINT"
+        },
+        {
+          "name": "Address",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "DeliveryAddress",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "ConsigneeAccountCode",
+          "type": "BIGINT"
+        },
+        {
+          "name": "ConsigneeAddress",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "OrderAmt",
+          "type": "FLOAT"
+        },
+        {
+          "name": "OrderNetAmt",
+          "type": "FLOAT"
+        },
+        {
+          "name": "FreightPaidBy",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "InsuApplicable",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "ModeTransport",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "Remark",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "DeliverySch",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "PackingChgApplicable",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "DeliveryTerms",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "PreparedBy",
+          "type": "BIGINT"
+        },
+        {
+          "name": "TotalDiscount",
+          "type": "FLOAT"
+        },
+        {
+          "name": "SODeliveryDate",
+          "type": "DATETIME"
+        },
+        {
+          "name": "TotalDisPercent",
+          "type": "FLOAT"
+        },
+        {
+          "name": "TotalDiscAmt",
+          "type": "FLOAT"
+        },
+        {
+          "name": "DespatchAdviseComplete",
+          "type": "NCHAR"
+        },
+        {
+          "name": "PortToLoading",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "PortOfDischarge",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "ResponsibleSalesPersonID",
+          "type": "BIGINT"
+        },
+        {
+          "name": "CustContactPerson",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "SaleDocType",
+          "type": "BIGINT"
+        },
+        {
+          "name": "OtherDetail",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "SOConfirmDate",
+          "type": "DATETIME"
+        },
+        {
+          "name": "OrderDelayReason",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "SoComplete",
+          "type": "CHAR"
+        },
+        {
+          "name": "Approved",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "ApprovedDate",
+          "type": "DATETIME"
+        },
+        {
+          "name": "ApprovedBy",
+          "type": "BIGINT"
+        },
+        {
+          "name": "DeActiveDate",
+          "type": "DATETIME"
+        },
+        {
+          "name": "DeActiveBy",
+          "type": "BIGINT"
+        },
+        {
+          "name": "UID",
+          "type": "BIGINT"
+        },
+        {
+          "name": "CC",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "RoundOff",
+          "type": "CHAR"
+        },
+        {
+          "name": "CreatedBy",
+          "type": "BIGINT"
+        },
+        {
+          "name": "CreatedOn",
+          "type": "DATETIME"
+        },
+        {
+          "name": "UpdatedBy",
+          "type": "BIGINT"
+        },
+        {
+          "name": "UpdatedOn",
+          "type": "DATETIME"
+        },
+        {
+          "name": "Active",
+          "type": "CHAR"
+        },
+        {
+          "name": "AmendApproved",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "AmendApprovedBy",
+          "type": "BIGINT"
+        },
+        {
+          "name": "AmendApproveDate",
+          "type": "DATETIME"
+        },
+        {
+          "name": "EntryByMachineName",
+          "type": "NVARCHAR"
+        }
+      ],
+      "primaryKey": "SOEntryID"
+    },
+    {
+      "name": "SaleOrderDetail",
+      "tableReference": {
+        "catalog": "dbo",
+        "schema": "dbo",
+        "table": "SaleOrderDetail"
+      },
+      "columns": [
+        {
+          "name": "SOEntryID",
+          "type": "BIGINT"
+        },
+        {
+          "name": "SoYearCode",
+          "type": "BIGINT"
+        },
+        {
+          "name": "SeqNo",
+          "type": "BIGINT"
+        },
+        {
+          "name": "ItemCode",
+          "type": "BIGINT"
+        },
+        {
+          "name": "HSNNO",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "Qty",
+          "type": "BIGINT"
+        },
+        {
+          "name": "Unit",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "AltQty",
+          "type": "FLOAT"
+        },
+        {
+          "name": "AltUnit",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "Rate",
+          "type": "FLOAT"
+        },
+        {
+          "name": "OtherRateCurr",
+          "type": "FLOAT"
+        },
+        {
+          "name": "UnitRate",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "DiscPer",
+          "type": "FLOAT"
+        },
+        {
+          "name": "DiscRs",
+          "type": "FLOAT"
+        },
+        {
+          "name": "Amount",
+          "type": "FLOAT"
+        },
+        {
+          "name": "TolLimit",
+          "type": "FLOAT"
+        },
+        {
+          "name": "Remark",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "Description",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "StoreName",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "StockQty",
+          "type": "FLOAT"
+        },
+        {
+          "name": "AmendmentNo",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "AmendmentDate",
+          "type": "DATETIME"
+        },
+        {
+          "name": "AmendmentReason",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "Color",
+          "type": "NCHAR"
+        },
+        {
+          "name": "Rejper",
+          "type": "FLOAT"
+        },
+        {
+          "name": "Excessper",
+          "type": "FLOAT"
+        },
+        {
+          "name": "ProjQty1",
+          "type": "FLOAT"
+        },
+        {
+          "name": "ProjQty2",
+          "type": "FLOAT"
+        },
+        {
+          "name": "Active",
+          "type": "CHAR"
+        },
+        {
+          "name": "PendQty",
+          "type": "FLOAT"
+        },
+        {
+          "name": "PendAltQty",
+          "type": "FLOAT"
+        },
+        {
+          "name": "DeliveryDate",
+          "type": "DATETIME"
+        },
+        {
+          "name": "CustomerSaleOrder",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "CustomerLocation",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "ItemModel",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "CustItemCategory",
+          "type": "NVARCHAR"
+        }
+      ],
+      "primaryKey": "SOEntryID"
+    },
+    {
+      "name": "Item_master",
+      "tableReference": {
+        "catalog": "dbo",
+        "schema": "dbo",
+        "table": "Item_master"
+      },
+      "columns": [
+        {
+          "name": "Item_Code",
+          "type": "BIGINT"
+        },
+        {
+          "name": "PartCode",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "Item_Name",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "ParentCode",
+          "type": "BIGINT"
+        },
+        {
+          "name": "EntryDate",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "LastUpdatedDate",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "LeadTime",
+          "type": "INT"
+        },
+        {
+          "name": "CC",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "Unit",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "SalePrice",
+          "type": "FLOAT"
+        },
+        {
+          "name": "PurchasePrice",
+          "type": "FLOAT"
+        },
+        {
+          "name": "CostPrice",
+          "type": "FLOAT"
+        },
+        {
+          "name": "WastagePercent",
+          "type": "FLOAT"
+        },
+        {
+          "name": "WtSingleItem",
+          "type": "FLOAT"
+        },
+        {
+          "name": "NoOfPcs",
+          "type": "FLOAT"
+        },
+        {
+          "name": "QcReq",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "ItemType",
+          "type": "BIGINT"
+        },
+        {
+          "name": "UploadItemImage",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "UploadImage",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "UID",
+          "type": "BIGINT"
+        },
+        {
+          "name": "DrawingNo",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "MinimumLevel",
+          "type": "FLOAT"
+        },
+        {
+          "name": "MaximumLevel",
+          "type": "FLOAT"
+        },
+        {
+          "name": "ReorderLevel",
+          "type": "FLOAT"
+        },
+        {
+          "name": "YearCode",
+          "type": "FLOAT"
+        },
+        {
+          "name": "AlternateUnit",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "RackID",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "BinNo",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "ItemSize",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "Colour",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "NeedPO",
+          "type": "NCHAR"
+        },
+        {
+          "name": "StdPacking",
+          "type": "FLOAT"
+        },
+        {
+          "name": "PackingType",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "ModelNo",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "YearlyConsumedQty",
+          "type": "FLOAT"
+        },
+        {
+          "name": "DispItemName",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "PurchaseAccountcode",
+          "type": "BIGINT"
+        },
+        {
+          "name": "SaleAccountcode",
+          "type": "BIGINT"
+        },
+        {
+          "name": "MinLevelDays",
+          "type": "BIGINT"
+        },
+        {
+          "name": "MaxLevelDays",
+          "type": "BIGINT"
+        },
+        {
+          "name": "EmpName",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "DailyRequirment",
+          "type": "FLOAT"
+        },
+        {
+          "name": "Stockable",
+          "type": "NCHAR"
+        },
+        {
+          "name": "WipStockable",
+          "type": "NCHAR"
+        },
+        {
+          "name": "Store",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "ProductLifeInus",
+          "type": "FLOAT"
+        },
+        {
+          "name": "ItemDesc",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "MaxWipStock",
+          "type": "FLOAT"
+        },
+        {
+          "name": "NeedSo",
+          "type": "NCHAR"
+        },
+        {
+          "name": "BomRequired",
+          "type": "NCHAR"
+        },
+        {
+          "name": "JobWorkItem",
+          "type": "NCHAR"
+        },
+        {
+          "name": "HsnNo",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "CreatedBy",
+          "type": "BIGINT"
+        },
+        {
+          "name": "CreatedOn",
+          "type": "DATETIME"
+        },
+        {
+          "name": "UpdatedBy",
+          "type": "BIGINT"
+        },
+        {
+          "name": "UpdatedOn",
+          "type": "DATETIME"
+        },
+        {
+          "name": "Active",
+          "type": "CHAR"
+        },
+        {
+          "name": "ItemServAssets",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "VendorBatchcodeMand",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "EntryByMachineName",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "UniversalPartCode",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "UniversalDescription",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "ProdInWorkcenter",
+          "type": "BIGINT"
+        },
+        {
+          "name": "ProdInhouseJW",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "BatchNO",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "itemCode",
+          "type": "BIGINT"
+        },
+        {
+          "name": "VoltageValue",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "SerialNo",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "OldPartCode",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "package",
+          "type": "NVARCHAR"
+        },
+        {
+          "name": "IsCustJWAdjMandatory",
+          "type": "NVARCHAR"
+        }
+      ],
+      "primaryKey": "Item_Code"
+    }
+  ],
+  "relationships": [
+    {
+      "name": "SalesOrderMain_to_AccountHeadMaster",
+      "fromModel": "SalesOrdermain",
+      "fromColumn": "AccountCode",
+      "toModel": "Account_head_master",
+      "toColumn": "Account_Code",
+      "joinType": "ONE_TO_ONE"
+    },
+    {
+      "name": "SaleOrderDetail_to_SalesOrderMain",
+      "fromModel": "SaleOrderDetail",
+      "fromColumn": "SOEntryID",
+      "toModel": "SalesOrdermain",
+      "toColumn": "SOEntryID",
+      "joinType": "ONE_TO_ONE"
+    },
+    {
+      "name": "SaleOrderDetail_to_ItemMaster",
+      "fromModel": "SaleOrderDetail",
+      "fromColumn": "Item_Code",
+      "toModel": "Item_master",
+      "toColumn": "Item_Code",
+      "joinType": "ONE_TO_ONE"
+    }
+  ]
+}

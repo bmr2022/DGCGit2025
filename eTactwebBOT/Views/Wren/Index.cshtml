@@ -1,0 +1,485 @@
+﻿    @* @using System.Data
+    @{
+        ViewData["Title"] = "Generate SQL";
+    }
+
+    <h2>Enter your question:</h2>
+
+    <form method="post" asp-action="GenerateSql">
+        <input type="text" name="question" style="width:400px" placeholder="e.g. Show me all customers" />
+        <button type="submit">Generate SQL</button>
+    </form>
+
+    @if (ViewBag.GeneratedSql != null)
+    {
+        <h3>Generated SQL:</h3>
+        <pre>@ViewBag.GeneratedSql</pre>
+    }
+
+    @if (ViewBag.Results != null)
+    {
+        var dataTable = (DataTable)ViewBag.Results;
+        <h3>Query Results:</h3>
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    @foreach (DataColumn col in dataTable.Columns)
+                    {
+                        <th>@col.ColumnName</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (DataRow row in dataTable.Rows)
+                {
+                    <tr>
+                        @foreach (var item in row.ItemArray)
+                        {
+                            <td>@(item ?? "NULL")</td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+     *@
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL Query Generator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+            margin-top: 20px;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        h2 {
+            color: #4a5568;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        h3 {
+            color: #2d3748;
+            margin: 20px 0 10px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .form-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #cbd5e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+            input[type="text"]:focus {
+                outline: none;
+                border-color: #667eea;
+                box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+            }
+
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+            button:hover {
+                background: #5a67d8;
+                transform: translateY(-2px);
+            }
+
+            button:active {
+                transform: translateY(0);
+            }
+
+        #spinner {
+            text-align: center;
+            margin: 30px 0;
+            display: none;
+        }
+
+        .spinner-circle {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #e2e8f0;
+            border-top: 5px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @@keyframes spin {
+            0%
+
+        {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+
+        }
+
+        .spinner-text {
+            margin-top: 10px;
+            color: #4a5568;
+            font-weight: 500;
+        }
+
+        pre {
+            background: #f7fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 15px;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Monaco', monospace;
+            line-height: 1.5;
+            margin: 15px 0;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            max-width: 100%;
+            width: 100%;
+        }
+
+        table {
+            min-width: 900px;
+            border-collapse: collapse;
+            background: white;
+            white-space: nowrap;
+        }
+
+        th {
+            background: #f7fafc;
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #2d3748;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 10px 15px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #4a5568;
+        }
+
+        tr:hover {
+            background: #f1f5f9;
+        }
+
+        .notification {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+            .notification.info {
+                background: #ebf8ff;
+                color: #3182ce;
+                border-left: 4px solid #3182ce;
+            }
+
+            .notification.success {
+                background: #f0fff4;
+                color: #38a169;
+                border-left: 4px solid #38a169;
+            }
+
+        .results-section {
+            display: none;
+            margin-top: 30px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @@keyframes fadeIn {
+            from
+
+        {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            color: white;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .error-message {
+            color: #e53e3e;
+            background: #fed7d7;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 15px 0;
+            display: none;
+        }
+
+        th {
+            padding: 6px 10px; /* reduce padding */
+            line-height: 1.2; /* tighter line spacing */
+            height: 30px; /* optional fixed height */
+        }
+
+        td {
+            padding: 6px 10px; /* reduce padding */
+            line-height: 1.2; /* tighter line spacing */
+            height: 30px; /* optional fixed height */
+        }
+
+        th, td {
+            min-width: 120px;
+        }
+    </style>
+</head>
+<body>
+    <h1><i class="fas fa-database"></i> Orbi: Empowering ERP Insights Through Natural Language</h1>
+
+    <div class="container">
+        <h2>Enter your question:</h2>
+        <div class="form-container">
+            <input type="text" id="questionInput" placeholder="e.g. Show me all customers from California" />
+            <button id="generateBtn"><i class="fas fa-bolt"></i> Get Data</button>
+        </div>
+
+        <div id="spinner">
+            <div class="spinner-circle"></div>
+            <div class="spinner-text">Retrieving ERP Data...</div>
+        </div>
+
+        <div id="errorMessage" class="error-message">
+            <i class="fas fa-exclamation-circle"></i>
+            <span id="errorText"></span>
+        </div>
+
+        <div class="notification info">
+            <i class="fas fa-info-circle"></i>
+            <span>XON Orbi uses AI to retrieve data from ERP from natural language questions.</span>
+        </div>
+
+        <div id="resultsSection" class="results-section">
+            @* <div class="card">
+                <h3><i class="fas fa-code"></i> Generated SQL:</h3>
+                <pre id="sqlOutput"></pre>
+            </div> *@
+
+            <div class="card">
+                <h3><i class="fas fa-table"></i>Data Insights:</h3>
+                <div class="table-container">
+                    <table id="resultsTable">
+                        <thead>
+                            <tr>
+                                <!-- Table headers will be inserted here -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Table data will be inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>XON Orbi ERP Data retriver using natural language | &copy; 2025</p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const questionInput = document.getElementById('questionInput');
+            const generateBtn = document.getElementById('generateBtn');
+            const spinner = document.getElementById('spinner');
+            const sqlOutput = document.getElementById('sqlOutput');
+            const resultsTable = document.getElementById('resultsTable');
+            const resultsSection = document.getElementById('resultsSection');
+            const errorMessage = document.getElementById('errorMessage');
+            const errorText = document.getElementById('errorText');
+
+            generateBtn.addEventListener('click', function() {
+                const question = questionInput.value.trim();
+
+                if (!question) {
+                    showError('Please enter a question');
+                    return;
+                }
+
+                // Hide any previous errors
+                errorMessage.style.display = 'none';
+
+                // Show spinner
+                spinner.style.display = 'block';
+                resultsSection.style.display = 'none';
+
+                // Create form data
+                const formData = new FormData();
+                formData.append('question', question);
+
+                // Send AJAX request
+                fetch('/Wren/GenerateSql', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Server returned an error: ' + response.status);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Display the SQL
+                         if (!data) {
+            alert('Data is null or undefined');
+            return;
+        }
+             if (!data.generatedSql) {
+            alert('generatedSql property is missing');
+        } else {
+            // alert('Generated SQL: ' + data.generatedSql.substring(0, 100) + '...');
+        }
+            if (!data.results) {
+            alert('results property is missing');
+        } else if (!Array.isArray(data.results)) {
+            alert('results is not an array: ' + typeof data.results);
+        } else {
+            // alert('results array length: ' + data.results.length);
+
+            if (data.results.length > 0) {
+                // alert('First result keys: ' + Object.keys(data.results[0]).join(', '));
+            }
+        }
+                    // sqlOutput.textContent = data.generatedSql;
+
+                    // Build the results table
+                    if (data.results && data.results.length > 0) {
+                        // Create table header
+                        const headers = Object.keys(data.results[0]);
+                        let headerRow = '<tr>';
+                        headers.forEach(header => {
+                            headerRow += `<th>${header}</th>`;
+                        });
+                        headerRow += '</tr>';
+                        resultsTable.querySelector('thead').innerHTML = headerRow;
+
+                        // Create table body
+                        let tableBody = '';
+                        data.results.forEach(row => {
+                            tableBody += '<tr>';
+                            headers.forEach(header => {
+                                const value = row[header];
+                                tableBody += `<td>${value !== null && value !== undefined ? value : 'NULL'}</td>`;
+                            });
+                            tableBody += '</tr>';
+                        });
+                        resultsTable.querySelector('tbody').innerHTML = tableBody;
+                    } else {
+                        resultsTable.querySelector('thead').innerHTML = '<tr><th>No results found</th></tr>';
+                        resultsTable.querySelector('tbody').innerHTML = '';
+                    }
+
+                    // Show results section
+                    resultsSection.style.display = 'block';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showError('An error occurred while generating the SQL. Please try again. ' + error.message);
+                })
+                .finally(() => {
+                    // Hide spinner
+                    spinner.style.display = 'none';
+                });
+            });
+
+            // Allow pressing Enter to submit
+            questionInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    generateBtn.click();
+                }
+            });
+
+            function showError(message) {
+                errorText.textContent = message;
+                errorMessage.style.display = 'flex';
+            }
+        });
+    </script>
+</body>
+</html>
