@@ -23,35 +23,36 @@
         background-color: #e0f2f1; /* Dropdown background color */
         color: #000;
     }
+
 </style>
 
 <div class="card-body overflow-auto pb-0">
-    <div class="table-responsive" style="max-height:150px;">
-        <table class="table table-bordered table-striped table-hover mb-0">
-            <thead class="bg-gradient card-headerBG text-light small">
+    <div class="table-responsive" style="max-height:400px;">
+        <table class="table table-bordered table-striped table-hover mb-0 itemgridTable">
+            <thead class="bg-gradient card-headerBG text-light small itemgridHead">
                 <tr>
-                    <th style="width: 10px;">Sr. No.</th>
-                    <th style="width: 25px;">Employee Name</th>
-                    <th style="width: 15px;">Employee Code</th>
-                    <th style="width: 15px;">Shift Name</th>
-                    <th style="width: 15px;">Employee Category</th>
+                    <th style="min-width:30px; resize: horizontal; width:60px;">Sr. No. <input type="checkbox" id="checkAllEmp" onclick="onclickCheckEmp()" /></th>
+                    <th style="min-width:120px; resize: horizontal; width:170px;">Employee Name</th>
+                    <th style="min-width:100px; resize: horizontal; width:110px;">Employee Code</th>
+                    <th style="min-width:100px; resize: horizontal; width:90px;">Shift Name</th>
+                    <th style="min-width:140px; resize: horizontal; width:150px;">Employee Category</th>
                     @if (Model != null && Model.DayHeaders != null)
                     {
                         @foreach (var dayCol in Model.DayHeaders)
                         {
-                            <th style="width: 10px">@dayCol</th>
+                            <th style="min-width:60px; resize: horizontal; width:70px;">@dayCol</th>
                         }
                     }
                     else
                     {
-                        <th style="width: 10px;">In Time</th>
-                        <th style="width: 10px;">Out Time</th>
+                        <th style="min-width:60px resize: horizontal; width:70px;">In Time</th>
+                        <th style="min-width:60px resize: horizontal; width:70px;">Out Time</th>
                     }
-                    <th style="width: 15px;">Department</th>
-                    <th style="width: 15px;">Designation</th>
+                    <th style="min-width:120px; resize: horizontal; width:140px;">Department <input type="checkbox" id="checkDeptSync" /></th>
+                    <th style="min-width:120px; resize: horizontal; width:140px;">Designation <input type="checkbox" id="checkDesigSync" /></th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="itemgridBody">
                 @if (Model?.GateAttDetailsList != null && Model.GateAttDetailsList.Any())
                 {
                     for (int i = 0; i < Model.GateAttDetailsList.Count; i++)
@@ -68,28 +69,31 @@
                             {
                                 @if (Model.DayOrMonthType == "Daily")
                                 {
-                                    var Fromvalue = Model.GateAttDetailsList[i].Attendance.ContainsKey("FromTime") ? Model.GateAttDetailsList[i].Attendance["FromTime"] : "";
-                                    var Tovalue = Model.GateAttDetailsList[i].Attendance.ContainsKey("ToTime") ? Model.GateAttDetailsList[i].Attendance["ToTime"] : "";
-                                    <td><input type="text" id='@("txt_" + Model.GateAttDetailsList[i].EmpId + "_InTime")' name="Attendance[@Model.GateAttDetailsList[i].EmpId][InTime]" value="@Fromvalue" class="form-control form-control-sm att-input" data-empid="@Model.GateAttDetailsList[i].EmpId" data-type="InTime" /></td>
-                                    <td><input type="text" id='@("txt_" + Model.GateAttDetailsList[i].EmpId + "_OutTime")' name="Attendance[@Model.GateAttDetailsList[i].EmpId][OutTime]" value="@Tovalue" class="form-control form-control-sm att-input" data-empid="@Model.GateAttDetailsList[i].EmpId" data-type="OutTime" /></td>
+                                    var Fromvalue = Model.GateAttDetailsList[i].Attendance.ContainsKey("fromtime") ? Model.GateAttDetailsList[i].Attendance["fromtime"] : "";
+                                    var Tovalue = Model.GateAttDetailsList[i].Attendance.ContainsKey("totime") ? Model.GateAttDetailsList[i].Attendance["totime"] : "";
+                                    <td><input type="time" id='@("txt_" + Model.GateAttDetailsList[i].EmpId + "_InTime")' name="Attendance[@Model.GateAttDetailsList[i].EmpId][InTime]" value="@Fromvalue" class="form-control form-control-sm att-input timepicker" data-empid="@Model.GateAttDetailsList[i].EmpId" data-type="InTime" /></td>
+                                    <td><input type="time" id='@("txt_" + Model.GateAttDetailsList[i].EmpId + "_OutTime")' name="Attendance[@Model.GateAttDetailsList[i].EmpId][OutTime]" value="@Tovalue" class="form-control form-control-sm att-input timepicker" data-empid="@Model.GateAttDetailsList[i].EmpId" data-type="OutTime" /></td>
                                 }
                                 else
                                 {
                                     @foreach (var dayCol in Model.DayHeaders)
                                     {
-                                        var value = Model.GateAttDetailsList[i].Attendance.ContainsKey(dayCol) ? Model.GateAttDetailsList[i].Attendance[dayCol] : "";
+                                        var value = Model.GateAttDetailsList[i].Attendance.ContainsKey(dayCol.ToLower()) ? Model.GateAttDetailsList[i].Attendance[dayCol.ToLower()] : "";
                                         var parts = dayCol.Split('('); var dayNo = parts[0]; var type = parts[1].Replace(")", "");
-                                        <td><input type="text" id='@("txt_" + Model.GateAttDetailsList[i].EmpId + "_" + dayNo + "_" + type)' name="Attendance[@Model.GateAttDetailsList[i].EmpId][@dayCol]" value="@value" class="form-control form-control-sm att-input" data-empid="@Model.GateAttDetailsList[i].EmpId" data-day="@dayNo" data-type="@type" /></td>
+                                        <td><input type="time" id='@("txt_" + Model.GateAttDetailsList[i].EmpId + "_" + dayNo + "_" + type)' name="Attendance[@Model.GateAttDetailsList[i].EmpId][@dayCol]" value="@value" class="form-control form-control-sm att-input timepicker" data-empid="@Model.GateAttDetailsList[i].EmpId" data-day="@dayNo" data-type="@type" /></td>
                                     }
                                 }
                             }
                             else
                             {
-                                <td>@Model.GateAttDetailsList[i].AttInTime</td>
-                                <td>@Model.GateAttDetailsList[i].AttOutTime</td>
+                                var Fromvalue = Model.GateAttDetailsList[i].Attendance.ContainsKey("fromtime") ? Model.GateAttDetailsList[i].Attendance["fromtime"] : "";
+                                var Tovalue = Model.GateAttDetailsList[i].Attendance.ContainsKey("totime") ? Model.GateAttDetailsList[i].Attendance["totime"] : "";
+                                <td><input type="time" id='@("txt_" + Model.GateAttDetailsList[i].EmpId + "_InTime")' name="Attendance[@Model.GateAttDetailsList[i].EmpId][InTime]" value="@Fromvalue" class="form-control form-control-sm att-input timepicker" data-empid="@Model.GateAttDetailsList[i].EmpId" data-type="InTime" /></td>
+                                <td><input type="time" id='@("txt_" + Model.GateAttDetailsList[i].EmpId + "_OutTime")' name="Attendance[@Model.GateAttDetailsList[i].EmpId][OutTime]" value="@Tovalue" class="form-control form-control-sm att-input timepicker" data-empid="@Model.GateAttDetailsList[i].EmpId" data-type="OutTime" /></td>
                             }
-                            <td>@Html.DropDownList($"dept_{Model.GateAttDetailsList[i].EmpId}", new SelectList(deptList, "Value", "Text", Model.GateAttDetailsList[i].DeptId), new { @class = "form-select form-select-sm dept-dd", data_empid = Model.GateAttDetailsList[i].EmpId })</td>
-                            <td>@Html.DropDownList($"desig_{Model.GateAttDetailsList[i].EmpId}", new SelectList(desigList, "Value", "Text", Model.GateAttDetailsList[i].DesignationEntryId), new { @class = "form-select form-select-sm desig-dd", data_empid = Model.GateAttDetailsList[i].EmpId })</td>
+
+                            <td>@Html.DropDownList($"dept_{Model.GateAttDetailsList[i].EmpId}", new SelectList(deptList, "Value", "Text", Model.GateAttDetailsList[i].DeptId), new { @class = "form-select form-select-sm dept-dd", data_empid = Model.GateAttDetailsList[i].EmpId, onchange = "ondeptlistchange(" + Model.GateAttDetailsList[i].EmpId + ")" })</td>
+                            <td>@Html.DropDownList($"desig_{Model.GateAttDetailsList[i].EmpId}", new SelectList(desigList, "Value", "Text", Model.GateAttDetailsList[i].DesignationEntryId), new { @class = "form-select form-select-sm desig-dd", data_empid = Model.GateAttDetailsList[i].EmpId, onchange = "ondesiglistchange(" + Model.GateAttDetailsList[i].EmpId + ")" })</td>
                             <input type="hidden" name="GateAttDetailsList[@i].DeptId" value="@Model.GateAttDetailsList[i].DeptId" />
                             <input type="hidden" name="GateAttDetailsList[@i].EmpId" value="@Model.GateAttDetailsList[i].EmpId" />
                             <input type="hidden" name="GateAttDetailsList[@i].DesignationEntryId" value="@Model.GateAttDetailsList[i].DesignationEntryId" />

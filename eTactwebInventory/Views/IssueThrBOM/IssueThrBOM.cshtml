@@ -5,13 +5,13 @@
 @{
     ViewData["Title"] = "Issue Through BOM";
     string yearCode = HttpContextAccessor.HttpContext.Session.GetString("YearCode");
-  
+
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
 
 }
 
 
-    
+
 <style>
     .color-box {
         width: 10px;
@@ -51,7 +51,7 @@
                         <i class="fa-solid fa-grip fa-lg fa-fw fa-beat"></i>
                         Pend Req
                     </a>
-                    <a asp-action="Dashboard"  class="btn btn-sm btn-outline-light bg-gradient">
+                    <a asp-action="Dashboard" class="btn btn-sm btn-outline-light bg-gradient">
                         <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                         Dashboard
                     </a>
@@ -81,7 +81,7 @@
                                     REFRESH
                                 </a>
                             </div>
-                            @if (Model.Mode == "U"  )
+                            @if (Model.Mode == "U")
                             {
                                 <div class="col-auto">
                                     <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton">
@@ -90,7 +90,7 @@
                                     </button>
                                 </div>
                             }
-                            
+
                             else
                             {
                                 <div class="col-auto">
@@ -124,7 +124,7 @@
                                     <input asp-for="Mode" value="@Model.Mode" class="form-control" type="hidden" />
                                     <input asp-for="FromDate" value="@Model.FromDate" class="form-control" type="hidden" />
                                     <input asp-for="ToDate" value="@Model.ToDate" class="form-control" type="hidden" />
-                                    <input type="hidden" id="ShouldPrint" name="ShouldPrint"  />
+                                    <input type="hidden" id="ShouldPrint" name="ShouldPrint" />
                                     <input type="hidden" id="AddPassWord" />
 
 
@@ -152,15 +152,15 @@
                                     <input asp-for="IssueDate" class="form-control" value="@Model.IssueDate" />
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="WONO" class="form-label"  >WO NO</label>
+                                    <label asp-for="WONO" class="form-label">WO NO</label>
                                     <input asp-for="WONO" class="form-control" readonly />
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="WOYearCode" class="form-label"  >WO Yr Code</label>
+                                    <label asp-for="WOYearCode" class="form-label">WO Yr Code</label>
                                     <input asp-for="WOYearCode" class="form-control" readonly />
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="WODate" class="form-label"  style="color:red">WO Date</label>
+                                    <label asp-for="WODate" class="form-label" style="color:red">WO Date</label>
                                     <input asp-for="WODate" class="form-control" readonly />
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
@@ -168,7 +168,7 @@
                                     <input asp-for="MachineCode" class="form-control" readonly />
                                 </div>
                                 <div class="col-lg-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="ReqNo" class="form-label"  style="color:red">Req No</label>
+                                    <label asp-for="ReqNo" class="form-label" style="color:red">Req No</label>
                                     <input asp-for="ReqNo" value="@Model.ReqNo" class="form-control custom-input" readonly />
                                 </div>
 
@@ -209,7 +209,7 @@
                             <div class="card">
                                 <div class="card-body overflow-auto pb-0">
                                     <table class="table table-hover table-bordered table-striped">
-                                        <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap" >
+                                        <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
                                             <tr>
                                                 <th>FG Part Code</th>
                                                 <th>FG Item name</th>
@@ -288,12 +288,12 @@
                                                 <th>Work Center</th>
                                                 <th>WIP Stock</th>
                                                 <th>Alt Qty</th>
-                                                
+
                                                 <th>Alt Unit</th>
                                                 <th>Std Packing</th>
                                                 <th>Rate</th>
                                                 <th>Remark</th>
-                                               
+
                                                 <th>Alt Part Code</th>
                                                 <th>Alt Item Name</th>
                                                 <th>Original Part Code</th>
@@ -385,7 +385,7 @@
                                     <input asp-for="IssuedByEmpCode" type="hidden" />
                                     <input asp-for="IssuedByEmpName" style="width: 100%;" class="form-control" readonly />
                                 </div>
-                    
+
                                 <div class="col-lg">
                                     <label asp-for="Remark" class="form-label">Remark</label>
                                     <input asp-for="Remark" class="form-control" />
@@ -424,69 +424,69 @@
                                         Click for CloseReq
                                     </button>
                                     </<div>
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
-
                     </div>
-                </div>
-            </div>
-            <div class="card-footer p-3">
-                <div class="row justify-content-between g-2">
-                    <div class="card-header card-headerBG text-light bg-gradient">
-                        <h5>
-                            <strong>Issue Through BOM</strong>
-                            <span class="d-flex float-end" style="margin-top:-2px;">
-                                <div class="col-auto">
-                                    <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="PrintButton">
-                                        <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
-                                        PRINT
-                                    </button>
-                                </div>
-                                <a asp-action="Dashboard"  class="btn btn-sm btn-outline-light bg-gradient">
-                                    <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
-                                    Dashboard
-                                </a>
-                                <div class="row justify-content-between g-2">
-                                    <div class="col-auto">
-                                        <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
-                                            <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
-                                            BACK
-                                        </a>
-                                    </div>
-                                    @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
-                                    {
+                    <div class="card-footer p-3">
+                        <div class="row justify-content-between g-2">
+                            <div class="card-header card-headerBG text-light bg-gradient">
+                                <h5>
+                                    <strong>Issue Through BOM</strong>
+                                    <span class="d-flex float-end" style="margin-top:-2px;">
                                         <div class="col-auto">
-                                            <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
-                                                <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
-                                                REFRESH
-                                            </a>
+                                            <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="PrintButton">
+                                                <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                                PRINT
+                                            </button>
                                         </div>
-                                        @if (Model.Mode == "U"  )
-                                        {
+                                        <a asp-action="Dashboard" class="btn btn-sm btn-outline-light bg-gradient">
+                                            <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+                                            Dashboard
+                                        </a>
+                                        <div class="row justify-content-between g-2">
                                             <div class="col-auto">
-                                                <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton">
-                                                    <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
-                                                    UPDATE
-                                                </button>
+                                                <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
+                                                    <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                                                    BACK
+                                                </a>
                                             </div>
-                                        }
-                                       
-                                        else
-                                        {
-                                            <div class="col-auto">
-                                                <button type="submit" class="btn btn-primary btn-sm submitBTN">
-                                                    <i class="fa-solid fa-chevron-circle-right"></i>
-                                                    SUBMIT
-                                                </button>
-                                            </div>
-                                        }
-                                    }
-                                </div>
-                            </span>
-                        </h5>
+                                            @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+                                            {
+                                                <div class="col-auto">
+                                                    <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                                        <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                                        REFRESH
+                                                    </a>
+                                                </div>
+                                                @if (Model.Mode == "U")
+                                                {
+                                                    <div class="col-auto">
+                                                        <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton">
+                                                            <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                                            UPDATE
+                                                        </button>
+                                                    </div>
+                                                }
+
+                                                else
+                                                {
+                                                    <div class="col-auto">
+                                                        <button type="submit" class="btn btn-primary btn-sm submitBTN">
+                                                            <i class="fa-solid fa-chevron-circle-right"></i>
+                                                            SUBMIT
+                                                        </button>
+                                                    </div>
+                                                }
+                                            }
+                                        </div>
+                                    </span>
+                                </h5>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
     </form>
 </div>
 
@@ -571,25 +571,1362 @@
 @section Scripts
 {
     <script>
-        var ICName = [];
-        var ICName2 = [];
-                   function RemoveRowsWithZeroStockAndShowPartCodes() {
-                             DeleteFromZeroStockMemoryGrid(true);
-                 }
-                        function DeleteFromZeroStockMemoryGrid(deleteZeroStockOnly, SeqNo = null, PartCode = '') {
+                var ICName = [];
+                var ICName2 = [];
+                           function RemoveRowsWithZeroStockAndShowPartCodes() {
+                                     DeleteFromZeroStockMemoryGrid(true);
+                         }
+                                function DeleteFromZeroStockMemoryGrid(deleteZeroStockOnly, SeqNo = null, PartCode = '') {
+
+                            $.ajax({
+                                        url: '@Url.Action("DeleteFromZeroStockMemoryGrid")',
+                                type: "POST",
+                                data: { deleteZeroStockOnly: deleteZeroStockOnly,seqNo: SeqNo },
+                                async: false,
+                                success: function (data, status, xhr) {
+                                             $('#divIssueThrBOMGrid').html(data);
+                                    $.notify("Item deleted from Grid", "info");
+                                    // var existingText = $('#lblDeletedPartCodes').text();
+                                    // var combined = existingText ? existingText + ", " + PartCode : PartCode;
+                                    // $('#lblDeletedPartCodes').text(combined);
+                                                       fillBatchNO();
+
+
+                                    var rowCounter = $('#divIssueThrBOMGrid tr').length;
+                                    for (var i = 1; i <= rowCounter; i++) {
+                                        fillBatchUnique(i, "unique&batch");
+                                    }
+                                    for (var i = 1; i <= rowCounter; i++) {
+
+                                        $('#MainGridBatchNo-' + i).val($('#MainGridBatchNo1-' + i).val());
+                                        $('#MainGridUniqueBatchNo-' + i).val($('#MainGridUniqueBatchNo1-' + i).val());
+                                        let itemName = $('#MainGridItemname-' + i).val();
+                                        let uniqueBatchNo = $('#MainGridUniqueBatchNo-' + i).val();
+                                        let key = itemName + '|' + uniqueBatchNo;
+
+                                        let restoredIssueQty = tempIssueQtyMap[key] || $('#MainGridIssueQty1-' + i).val();
+
+                                        $('#MainGridIssueQty-' + i).val(restoredIssueQty);
+                                        $('#MainGridBatchNo-' + i).css("pointer-events", "none");
+                                        $('#MainGridUniqueBatchNo-' + i).css("pointer-events", "none");
+                                        $('#MainGridBatchNo-' + i).css("background-color", 'rgb(248 255 178)');
+                                    }
+                                    for (var i = 1; i <= rowCounter; i++) {
+
+                                        FillLotandTotalStock(i);
+
+                                        fillProjectNo(i);
+                                        $('#MainGridBatchNo-' + i).val($('#MainGridBatchNo1-' + i).val());
+                                        $('#MainGridUniqueBatchNo-' + i).val($('#MainGridUniqueBatchNo1-' + i).val());
+                                        let itemName = $('#MainGridItemname-' + i).val();
+                                        let uniqueBatchNo = $('#MainGridUniqueBatchNo-' + i).val();
+                                        let key = itemName + '|' + uniqueBatchNo;
+
+                                        let restoredIssueQty = tempIssueQtyMap[key] || $('#MainGridIssueQty1-' + i).val();
+
+                                        $('#MainGridIssueQty-' + i).val(restoredIssueQty);
+                                        $('#MainGridBatchNo-' + i).css("pointer-events", "none");
+                                        $('#MainGridUniqueBatchNo-' + i).css("pointer-events", "none");
+                                        $('#MainGridBatchNo-' + i).css("background-color", 'rgb(248 255 178)');
+
+                                        var batchVal = $('#MainGridBatchNo-' + i).val();
+                                        var issueqty = $('#MainGridIssueQty-' + i).val();
+
+                                        if (batchVal === '' || batchVal === '0' || batchVal === null || issueqty <= 0) {
+                                            // Change background color of the whole row
+                                            $('#MainGridBatchNo-' + i).closest('tr').css('background-color', '#ee6b6e');
+                                        }
+                                    }
+                                },
+                                error: function (response, status, xhr) {
+                                    alert(response.responseText);
+                                    $.notify(response.responseText, "error");
+                                },
+                                failure: function (response, status, xhr) {
+                                    alert(response.responseText);
+                                    $.notify(response.responseText, "error");
+                                }
+                            });
+                        }
+
+                        function Validate_IssueInsert() {
+
+                    var Err = 0;
+                    if ($('#RecByEmpCodeName').val() == 0) {
+                        $.notify('RecEmpCode is not null...!', "error");
+                        Err = 1;
+                    }
+                    if ($('#divIssueThrBOMGridAdd tr td').length <= 1 || $('#divIssueThrBOMFGGrid tr td').length <= 1) {
+                        $.notify('Grid Should Have Atleast 1 Item...!', "error");
+                        Err = 1;
+                    }
+                    var rowCount = $('#divIssueThrBOMGridAdd tr').length;
+                    for (var i = 1; i <= rowCount; i++) {
+                        CheckStockBeforeSaving(i);
+                    }
+                    for (var i = 1; i <= rowCount; i++) {
+                        CheckRequisitionBeforeSaving(i);
+                    }
+
+                    if (ICName.length > 0) {
+                        alert(ICName);
+                        var ICNameArray = ICName;
+                        var delimiter = ",";
+                        var displayICName = ICNameArray.join(delimiter);
+                        $.notify("Stock not sufficient for " + displayICName, "error");
+                        Err = 1;
+
+                    }
+                    else if (ICName2.length > 0) {
+                        var ICName2Array = ICName2;
+                        var delimiter = ",";
+                        var displayICName = ICName2Array.join(delimiter);
+                        $.notify("Requisition upto maximum limit already issued for " + displayICName, "error");
+                        Err = 1;
+                    }
+                    Err == 1 ? ShowErrorFld('H_SAGrid') : HideErrorFld('H_SAGrid');
+                    if (Err == 1) return false;
+                    return true;
+                }
+
+                // $('.submitBTN').click(function (e) {
+                //     e.preventDefault();
+                //     if (!Validate_IssueInsert()) return;
+                //     $("form").submit();
+                // });
+                // $('.submitBTN').click(function (e) {
+                //     e.preventDefault();
+                //     if (!Validate_IssueInsert()) return;
+                //     $('#PasswordAllowPopup').modal("show");
+                // });
+
+                // $('#btnPrint').click(function () {
+                //     $('#ShouldPrint').val('true'); // set flag for printing
+                //     $('#PasswordAllowPopup').modal("hide");
+
+                //     setTimeout(() => {
+                //         $('form').submit();
+                //     }, 300);
+                // });
+
+                // $('#btnClose').click(function () {
+                //     $('#ShouldPrint').val('false'); // set flag for no printing
+                //     $('#PasswordAllowPopup').modal("hide");
+
+                //     setTimeout(() => {
+                //         $('form').submit();
+                //     }, 300);
+                // });
+
+
+               $('.submitBTN').click(function (e) {
+            e.preventDefault();
+            if (!Validate_IssueInsert()) return;
+
+                    ChkStockBeforeSaving(function (isValid) {
+                        if (isValid) {
+                            $('#PasswordAllowPopup').modal("show");
+                        }
+                    });
+
+
+        });
+
+        // When user clicks "Print"
+        $('#btnPrint').click(function () {
+                    if (!Validate_IssueInsert()) return;
+                    ChkStockBeforeSaving(function (isValid) {
+                        if (isValid) {
+                            const printWindow = window.open('', '_blank'); // Open blank tab first (browser-safe)
+                            $('#PasswordAllowPopup').modal("hide");
+
+                            setTimeout(() => {
+                                submitForm(true, printWindow); // Send true and window object
+                            }, 300);
+                        }
+                    });
+
+
+
+        });
+
+        // When user clicks "Close" or no print
+        $('#btnClose').click(function () {
+                    if (!Validate_IssueInsert()) return;
+                    ChkStockBeforeSaving(function (isValid) {
+                        if (isValid) {
+                            $('#PasswordAllowPopup').modal("hide");
+
+                            setTimeout(() => {
+                                submitForm(false, null); // no print
+                            }, 300);
+                        }
+                    });
+
+
+        });
+
+        function submitForm(shouldPrint, printWindow) {
+            $('#ShouldPrint').val(shouldPrint); // Set hidden input
+            const formData = $('form').serialize(); // Properly serialize full form
+
+            $.ajax({
+                type: "POST",
+                url: $('form').attr('action'),
+                data: formData,
+                dataType: 'json', // Expect JSON response
+                success: function (res) {
+                    console.log("Server response:", res);
+
+                    if (res && res.status === "Success") {
+                        if (shouldPrint && res.entryId && res.yearCode && printWindow) {
+                            const printUrl = '/IssueThrBOM/PrintReport?EntryId=' + res.entryId + '&YearCode=' + res.yearCode;
+                            printWindow.location.href = printUrl;
+                        }
+
+                        window.location.href = '/PendingMaterialToIssueThrBOM/PendingMaterialToIssueThrBOM';
+                    } else {
+                        alert(res.message || "Something went wrong.");
+                    }
+                },
+                error: function (xhr) {
+                    console.error("Error occurred:", xhr.responseText);
+                    alert("Save failed.");
+                }
+            });
+        }
+
+
+                function CheckStockBeforeSaving(i) {
+
+                    ICName = [];
 
                     $.ajax({
-                                url: '@Url.Action("DeleteFromZeroStockMemoryGrid")',
+                        url: "@Url.Action("CheckStockBeforeSaving")",
                         type: "POST",
-                        data: { deleteZeroStockOnly: deleteZeroStockOnly,seqNo: SeqNo },
+                        data: { "ItemCode": $('#MainItemCodeAdd-' + i).val(), "StoreId": $('#MainStoreIdAdd-' + i).val(), "TillDate": $('#IssueDate').val(), "BatchNo": $('#MainBatchNoAdd-' + i).text(), "UniqBatchNo": $('#MainUniqBatchNoAdd-' + i).text() },
+                        async: false,
+                        success: function (data) {
+                            var IC = $('#MainItemCodeAdd-' + i).val();
+                            if (data != null) {
+                                var obj = $.parseJSON(data);
+                                if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                                    var stockDB = parseFloat(obj.Result[0].STOCK);
+                                    var issueQty = parseFloat($('#MainIssueQty-' + i).text());
+                                    if (stockDB < issueQty) {
+                                        ICName.push($('#MainPartCodeAdd-' + i).text());
+                                    }
+                                }
+                            }
+                        },
+                        error: function (errMsg) {
+                            $.notify(errMsg, { position: "top center", className: "error" });
+                        }
+                    });
+                }
+
+                function CheckRequisitionBeforeSaving(i) {
+                    ICName2 = [];
+                    $.ajax({
+                        url: "@Url.Action("CheckRequisitionBeforeSaving")",
+                        type: "POST",
+                        data: { "ReqNo": $('#ReqNo').val(), "ReqyearCode": $('#ReqyearCode').val(), "ItemCode": $('#MainItemCodeAdd-' + i).val() },
+                        async: false,
+                        success: function (data) {
+
+                            if (data != null) {
+                                var obj = $.parseJSON(data);
+                                if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                                    var PendQty = obj.Result[0].PendQty;
+                                    var IssueQty = $('#MainIssueQty-' + i).val();
+                                    if (PendQty < IssueQty) {
+                                        ICName2.push($('#MainPartCodeAdd-' + i).text());
+                                    }
+                                }
+                            }
+                        },
+                        error: function (errMsg) {
+                            $.notify(errMsg, { position: "top center", className: "error" });
+                        }
+                    });
+                }
+
+                $('#RecByEmpCodeName').change(function () {
+                    $('#RecByEmpCode').val($('#RecByEmpCodeName').val());
+                })
+
+                $(document).ready(function () {
+                    PassForCloseReq();
+                    if ('@Model.Mode' != "U" && '@Model.Mode' != "V") {
+                        GetNewEntry();
+                        fillIssueThrGridFromMemoryCache();
+                        GetReqByName();
+
+                        $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+
+                        var totalrows = $('#divIssueThrBOMGrid tr').length;
+
+                        for (let i = 1; i <= totalrows; i++) {
+                            var batchVal = $('#MainGridBatchNo-' + i).val();
+                            var issueqty = $('#MainGridIssueQty-' + i).val();
+                            var totalQty = $('#MainGridTotalStock-' + i).val();
+                            var uniquebatch = $('#MainGridUniqueBatchNo-' + i).val();
+
+
+
+                            if (batchVal === '' || batchVal === '0' || uniquebatch === '' || uniquebatch === '0' || uniquebatch===null || batchVal === null || issueqty <= 0 || totalQty <= 0) {
+                                // Change background color of the whole row
+                                $('#MainGridBatchNo-' + i).closest('tr').css('background-color', '#ee6b6e');
+                            }
+                        }
+                    }
+                    fillFGDataList();
+                    //$('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                    $('#IssueDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                    //$('#IssueDate').datepicker("option", "maxDate", 'now');
+                    //$("#IssueDate").datepicker("disable");
+                    $('#IssueDate').css("pointer-events", "none");
+
+
+                    var inputFromDateStr = $('#FromDate').val();
+                    var parsedFromDate = new Date(inputFromDateStr);
+
+                    var inputToDateStr = $('#ToDate').val();
+                    var parsedToDate = new Date(inputToDateStr);
+
+                    if (!isNaN(parsedFromDate.getTime())) {
+                        var formattedDate = (parsedFromDate.getDate() < 10 ? '0' : '') + parsedFromDate.getDate() + '/' +
+                            ((parsedFromDate.getMonth() + 1) < 10 ? '0' : '') + (parsedFromDate.getMonth() + 1) + '/' +
+                            parsedFromDate.getFullYear();
+                        var formattedDate1 = (parsedToDate.getDate() < 10 ? '0' : '') + parsedToDate.getDate() + '/' +
+                            ((parsedToDate.getMonth() + 1) < 10 ? '0' : '') + (parsedToDate.getMonth() + 1) + '/' +
+                            parsedToDate.getFullYear();
+                        $('#IssueDate').datepicker("option", "minDate", formattedDate);
+                        $('#EntryDate').datepicker("option", "minDate", formattedDate);
+                        $('#EntryDate').datepicker("option", "maxDate", formattedDate1);
+                    }
+                    $('#IssueSlipNo', '#IssueDate', '#MachineCode', '#Remark').rules("remove", "required");
+                    $('#Remark').rules("remove", "required");
+
+                    if ('@Model.Mode' == "U") {
+
+                        const inputDate = $('#IssueDate').val();
+
+                        const parts = inputDate.split('/');
+
+                        const monthAbbreviation = parts[1];
+                        const months = {
+                            Jan: '01', Feb: '02', Mar: '03', Apr: '04', May: '05', Jun: '06',
+                            Jul: '07', Aug: '08', Sep: '09', Oct: '10', Nov: '11', Dec: '12'
+                        };
+                        const numericMonth = months[monthAbbreviation];
+                        const formattedDate = `${parts[0]}/${numericMonth}/${parts[2]}`;
+
+                        console.log(formattedDate);
+                        //$('#IssueDate').attr('disabled', true);
+                        $('#IssueDate').css("pointer-events", "none");
+                        var RecEmpCode = "@Model.RecByEmpCode";
+                        $('#RecByEmpCodeName').val(RecEmpCode).trigger("change");
+                        $('#divIssueThrBOMGrid').empty();
+                        //$('#IssueDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDate);
+                        //EnableOrDisableIssueDate();
+                    }
+
+
+                });
+
+
+
+                function parseDDMMYYYY(dateStr) {
+                    if (!dateStr) return null;
+                    var parts = dateStr.split("/");
+                    return new Date(parts[2], parts[1] - 1, parts[0]); // yyyy, mm-1, dd
+                }
+
+                function validateIssueDateBeforeAddToGrid() {
+                    var issueDateStr = $("#IssueDate").val();
+                    var issueDate = parseDDMMYYYY(issueDateStr);
+
+                    if (!issueDate) return true; // no IssueDate entered yet
+
+                    var isValid = true;
+
+                    $("[id^=MainGridTransactionDate-]").each(function () {
+                        var transDateStr = $(this).val();
+                        var transDate = parseDDMMYYYY(transDateStr);
+
+                        if (transDate && issueDate < transDate) {
+                            alert("❌ Not allowed: Issue Date (" + issueDateStr +
+                                ") is earlier than Transaction Date (" + transDateStr + ")");
+                            $(".GridButton").prop("disabled", true);
+                            isValid = false;
+                            return false; // break loop
+                        }
+                    });
+
+                    if (isValid) {
+                        $(".GridButton").prop("disabled", false);
+                    }
+
+                    return isValid;
+                }
+
+
+                $('.BtnPassword').click(function () {
+                    // if(isAllowTaxPass == "Y"){
+                    $('#CloseReqPasswordAllowPopup').modal("show");
+                    // }
+                });
+                function PasswordCheck() {
+                    var AddPassWord = $('#AddPassWord').val();
+                    if ($('#CloseReqPassword').val() != AddPassWord) {
+                        $.notify('please enter correct password...!', "error");
+                    } else {
+                        $('#ReqComplated').val("Y");
+                        $('#ReqCanceled').val("Y");
+
+
+
+                        $('#CloseReqPasswordAllowPopup').modal('hide');
+                    }
+                    $('#CloseReqPassword').val("");
+                }
+                function PassForCloseReq() {
+                    $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("PassForCloseReq")",
+                        async: false,
+                        dataType: "json",
+                        success: function (result) {
+                            // If the result is a JSON string, parse it first
+                            let obj = typeof result === "string" ? JSON.parse(result) : result;
+
+                            if (obj.StatusCode === 200 && obj.StatusText === "Success") {
+                                if (obj.Result && obj.Result.Table && obj.Result.Table.length > 0) {
+                                    $('#AddPassWord').val(obj.Result.Table[0].PassForCloseReq);
+                                    console.log($('#AddPassWord').val());
+                                }
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("AJAX Error:", status, error);
+                        }
+                    });
+                }
+
+
+                function fillFGDataList() {
+
+                    $.ajax({
+                        url: "@Url.Action("FillFGDataList")",
+                        type: "POST",
+                        data: { Reqno: $('#ReqNo').val(), ReqYC: parseInt($('#ReqyearCode').val()) },
+                        success: function (data) {
+
+                            if (data != null) {
+
+                                var obj = $.parseJSON(data);
+                                $('#divIssueThrBOMFGGrid').empty();
+                                if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+
+                                    var html1 = '';                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 //  '" value=' + obj.Result[i].ExpectedDate.split("T")[0] + '
+                                    //var i = 0;
+                                    for (var i = 0; i < obj.Result.length; i++) {
+                                        /* " value='+ obj.Result[i].BOMEffDate.split("T")[0] + '*/
+                                        html1 += '<tr style="white-space:nowrap;" id="FGGrid' + i + '"><td class="styled-cell"><input class="styled-input" style="width:100px;" readonly id="FGPartCode' + i + '" value=' + obj.Result[i].FGPartCode + ' ></td><td class="styled-cell"><input class="styled-input" style="width: 300px;" readonly id="FGItemName' + i + '" value=' + JSON.stringify(obj.Result[i].FGItemDesc) + ' ><input type="hidden" id="FGItemCode' + i + '" value="' + obj.Result[i].ItemCode + '"><button onclick="DisplayBomDetail(event,' + i + ')" style="background-color:#ffd6dd" class="formateBtn"><i class="fa-solid fa-plus"></i></button></td><td class="styled-cell"><input class="styled-input" style="width:45px;" readonly id="FGReqQty' + i + '" value=' + obj.Result[i].FGReqQty + ' ></td><td class="styled-cell"><input class="styled-input" style="width:50px;" readonly id="FGUnit' + i + '" value=' + obj.Result[i].Unit + ' ></td><td class="styled-cell"><input class="styled-input" style="width:100px;" readonly id="FGWorkCenter' + i + '" value=' + JSON.stringify(obj.Result[i].WorkCenter) + ' ><input type="hidden" class="styled-input" style="width:100px;" readonly id="WCID' + i + '" value=' + obj.Result[i].WorkcenterId + ' ></td><td class="styled-cell"><input class="styled-input" style="width:45px;" readonly id="FGBomRevNo' + i + '" value=' + obj.Result[i].BomRevNo + ' ></td><td class="styled-cell"><input class="styled-input" style="width:100px;" readonly id="FGBOMEffDate' + i + '" value=' + obj.Result[i].BOMEffDate.split("T")[0] + '></td><td class="styled-cell"><input class="styled-input" style="width:100px;" readonly id="FGFromDeptName' + i + '" value=' + JSON.stringify(obj.Result[i].FromDeptName) + ' ></td><td class="styled-cell"><input class="styled-input" style="width:45px;" readonly id="FGAltUnit' + i + '" value=' + obj.Result[i].AltUnit + ' ></td><td class="styled-cell"><input class="styled-input" style="width:45px;" readonly id="FGAltQty' + i + '" value=' + obj.Result[i].AltQty + ' ></td><td class="styled-cell"><input class="styled-input" style="width:45px;" readonly id="FGExpectedDate' + i + '" value=' + obj.Result[i].ExpectedDate + ' ></td><td class="styled-cell"><input class="styled-input" style="width:45px;" readonly id="FGPendQty' + i + '" value=' + obj.Result[i].PendQty + ' ></td><td class="styled-cell"><input class="styled-input" style="width:45px;" readonly id="FGPendAltQTy' + i + '" value=' + obj.Result[i].PendAltQty + ' ></td><td class="styled-cell"><input class="styled-input" style="width:45px;" readonly id="FGWONo' + i + '" value=' + obj.Result[i].WONo + ' ></td><td class="styled-cell"><input class="styled-input" style="width:45px;" readonly id="FGWOYearcode' + i + '" value=' + obj.Result[i].WOYearCode + ' ></td><td class="styled-cell"><input class="styled-input" style="width:100px;" readonly id="FGMachineName' + i + '" value=' + obj.Result[i].MachineName + ' ><input type="hidden" id="FGMachineId' + i + '" value="' + obj.Result[i].MachineId + '"></td><td class="styled-cell"><input class="styled-input" style="width:40px;" readonly id="FGCancel' + i + '" value=' + obj.Result[i].Cancel + ' ></td><td class="styled-cell"><input class="styled-input" style="width:45px;" readonly id="FGItemModel' + i + '" value=' + obj.Result[i].ItemModel + ' ></td><td class="styled-cell"><input class="styled-input" style="width:45px;" readonly id="FGProjectNo' + i + '" value=' + obj.Result[i].ProjectNo + ' ></td><td class="styled-cell"><input class="styled-input" style="width:45px;" readonly id="FGProjectYearCode' + i + '" value=' + obj.Result[i].ProjectYC + ' ></td><td class="styled-cell"><input class="styled-input" style="width:45px;" readonly id="FGCCName' + i + '" value=' + JSON.stringify(obj.Result[i].CCName) + ' ></td></tr> ';
+                                    }
+
+                                    $('#divIssueThrBOMFGGrid').append(html1);
+
+                                    //$('#totalRows').text($('#divPendIssueGrid tr').length);
+                                }
+                            }
+                            console.log("success");
+                        },
+                        error: function (errMsg) {
+                            console.log(errMsg);
+                        }
+                    });
+                }
+
+                function DisplayBomDetail(event, seq) {
+
+                    event.preventDefault();
+                    $('#DisplayIssueThrbomDetailModal').modal('show');
+                    $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("DisplayBomDetail")",
+                        dataType: "json",
+                        data: { "ItemCode": parseInt($('#FGItemCode' + seq).val()), "WOQty": parseInt($('#FGReqQty' + seq).val()), "BomRevNo": parseInt($('#FGBomRevNo' + seq).val()) },
+                        success: function (result, status, error) {
+                            if (result != null) {
+                                var obj = $.parseJSON(result);
+                                if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                                    var html = '';
+                                    $('#divDisplayReqThrBomDetail').empty();
+                                    var i = 1;
+                                    $.each(obj.Result, function (index, val) {
+                                        html += '<tr id="DisplayIssueThrBomRow-' + i + '">' +
+                                            '<td>' + i + '</td>' +
+                                            '<td>' + val.FGPartCode + '</td>' +
+                                            '<td>' + val.FGItemName + '</td>' +
+                                            '<td>' + val.PartCode + '</td>' +
+                                            '<td>' + val.RMItemName + '</td>' +
+                                            '<td>' + val.RMPartCode + '</td>' +
+                                            '<td>' + val.BOMQty + '</td>' +
+                                            '<td>' + val.ReqQty + '</td>' +
+                                            '</tr>';
+                                        i++;
+                                    });
+                                    $('#divDisplayReqThrBomDetail').append(html);
+                                    var RowCount = $('#divDisplayReqThrBomDetail tr').length - 1;
+                                    var TdRow = $('#divDisplayBomDetail tr td').length;
+
+                                    $('#lblTotalNoOfItems').text(RowCount);
+                                    ColorRows();
+                                }
+                            }
+                        }
+                    });
+                }
+
+                function ColorRows() {
+                    var row = $('#divDisplayReqThrBomDetail tr').length;
+                    for (var i = 1; i <= row; i++) {
+                        if ($('#SubBom-' + i).text() == 'NO') {
+                            $('#DisplayIssueThrBomRow-' + i).css({ 'background-color': '#94d6df' });
+                        } else {
+                            $('#DisplayIssueThrBomRow-' + i).css({ 'background-color': '#ffddbf' });
+                        }
+                    }
+                }
+
+                function GetNewEntry() {
+
+                    $.ajax({
+                        url: "@Url.Action("GetNewEntry")",
+                        type: "POST",
+                        success: function (data) {
+
+                            if (data != null) {
+                                var obj = $.parseJSON(data);
+                                if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                                    $('#EntryId').val(obj.Result[0].EntryId);
+                                    $('#IssueSlipNo').val(obj.Result[0].IssueSlipNo);
+                                }
+                            }
+                            console.log("success");
+                        },
+                        error: function (errMsg) {
+                            console.log(errMsg);
+                        }
+                    });
+                }
+
+                function GetReqByName() {
+                    var reqno = $('#ReqNo').val();
+                    var yearcode = $('#ReqyearCode').val();
+
+                    $.ajax({
+                        url: "@Url.Action("GetReqByName")",
+                        type: "POST",
+                        data: { "reqno": reqno, "yearcode": yearcode },
+                        success: function (data) {
+
+                            if (data != null) {
+                                var obj = $.parseJSON(data);
+                                if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                                    $('#RecByEmpCode').val(obj.Result[0].eneterdby);
+                                    $('#RecByEmpCodeName').val(obj.Result[0].eneterdby);
+                                }
+                            }
+                            console.log("success");
+                        },
+                        error: function (errMsg) {
+                            console.log(errMsg);
+                        }
+                    });
+                }
+
+
+                function fillIssueThrGridFromMemoryCache() {
+
+                    $.ajax({
+                        url: "@Url.Action("FillThrGridFromMemoryCache")",
+                        type: "POST",
+                        async: false,
+                        success: function (data) {
+
+                            if (data != null) {
+                                $('#divIssueThrBOMGrid').html(data);
+                                $('#ReqNo').val($('#MainREQNo').val());
+                                $('#ReqyearCode').val($('#MainREQYearCode').val());
+                                $('#ReqDate').val($('#MainREQDate').val());
+                                $('#IssueDate').val($('#IssuedDateMemory').val());
+                                $('#MachineCode').val($('#MachineCodeMemory').val());
+                                $('#WorkCenter').val($('#MainGridWorkCenter').val());
+                                $('#WCID').val($('#MainGridWCId').val());
+                                $('#WODate').val($('#MainGridWoDate').val());
+                                $('#WOYearCode').val($('#MainGridWOYearCode').val());
+                                $('#WONO').val($('#MainGridWONO').val());
+                                fillBatchNO();
+
+
+                                var rowCounter = $('#divIssueThrBOMGrid tr').length;
+                                for (var i = 1; i <= rowCounter; i++) {
+                                    fillBatchUnique(i, "unique&batch");
+                                    GetIsStockable(i);
+                                }
+                                for (var i = 1; i <= rowCounter; i++) {
+                                    $('#MainGridBatchNo-' + i).val($('#MainGridBatchNo1-' + i).val());
+                                    $('#MainGridUniqueBatchNo-' + i).val($('#MainGridUniqueBatchNo1-' + i).val());
+                                    $('#MainGridBatchNo-' + i).css("pointer-events", "none");
+                                    $('#MainGridUniqueBatchNo-' + i).css("pointer-events", "none");
+                                    $('#MainGridBatchNo-' + i).css("background-color", 'rgb(248 255 178)');
+                                }
+                                for (var i = 1; i <= rowCounter; i++) {
+                                     FillLotandTotalStock(i);
+
+                                    fillProjectNo(i);
+                                    $('#MainGridBatchNo-' + i).val($('#MainGridBatchNo1-' + i).val());
+                                    $('#MainGridUniqueBatchNo-' + i).val($('#MainGridUniqueBatchNo1-' + i).val());
+                                    $('#MainGridBatchNo-' + i).css("pointer-events", "none");
+                                    $('#MainGridUniqueBatchNo-' + i).css("pointer-events", "none");
+                                    $('#MainGridBatchNo-' + i).css("background-color", 'rgb(248 255 178)');
+                                }
+                            }
+                        },
+                        error: function (errMsg) {
+                            console.log(errMsg);
+                        }
+                    });
+                }
+
+                function fillBatchNO() {
+
+                    var rowCounter = $('#divIssueThrBOMGrid tr').length;
+                    for (var i = 1; i <= rowCounter; i++) {
+                        if ($('#MainGridIssuedAltItem-' + i).val() == "Y") {
+                            FillAltBatchUnique(i, "batchOnly");
+                        } else {
+                            fillBatchUnique(i, "batchOnly");
+                        }
+                    }
+                }
+
+                var Allowed = false;
+
+                function AllowBatchChange(i) {
+
+                    if (Allowed == true) {
+                        //do nothing
+                        return;
+                    } else {
+
+                        GetAllowBatch();
+
+                        if ($('#AllowBatchChange').val() == "Y") {
+                            $('#errormessage').hide();
+                            $('#AllowBatchChangeBox').modal("show");
+                        } else {
+                            $.notify("Batch Change is not allowed");
+                        }
+
+                    }
+                }
+
+                $('#confirmCheck').click(function () {
+                    if ($('#batchPassCode').val() == $('#AllowBatchChangePassWord').val()) {
+                        var rowCounter = $('#divIssueThrBOMGrid tr').length;
+                        Allowed = true;
+                        for (var i = 1; i <= rowCounter; i++) {
+                            $('#MainGridBatchNo-' + i).css("pointer-events", "auto");
+                            $('#MainGridUniqueBatchNo-' + i).css("pointer-events", "auto");
+                        }
+                        $('#AllowBatchChangeBox').modal("hide");
+                    } else {
+                        $('#errormessage').show();
+                    }
+                });
+
+                function PressBack() {
+
+                    sessionStorage.setItem('REQNoBack', $('#REQNoBack').val());
+                    sessionStorage.setItem('ItemNameBack', $('#ItemNameBack').val());
+                    sessionStorage.setItem('PartCodeBack', $('#PartCodeBack').val());
+                    sessionStorage.setItem('WorkCenterBack', $('#WorkCenterBack').val());
+                    sessionStorage.setItem('DeptNameBack', $('#DeptNameBack').val());
+                    sessionStorage.setItem('DashboardTypeBack', $('#DashboardTypeBack').val());
+                    sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());
+                    sessionStorage.setItem('ToDateBack', $('#ToDateBack').val());
+                    sessionStorage.setItem('GlobalSearchBack', $('#GlobalSearchBack').val());
+                    sessionStorage.setItem('FromStoreBack', $('#FromStoreBack').val());
+
+
+
+                    window.history.back();
+                }
+
+                function GetAllowBatch() {
+
+                    $.ajax({
+                        url: "@Url.Action("GetAllowBatch")",
+                        type: "POST",
+                        async: false,
+                        success: function (data) {
+                            if (data != null) {
+                                var obj = $.parseJSON(data);
+                                if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                                    $('#AllowBatchChange').val(obj.Result[0].AllowBatchChange);
+                                    $('#AllowBatchChangePassWord').val(obj.Result[0].AllowBatchPassword);
+                                }
+                            }
+                            console.log("success");
+                        },
+                        error: function (errMsg) {
+                            console.log(errMsg);
+                        }
+                    });
+                }
+
+                function FillAltBatchUnique(i, flag) {
+
+                    if (flag == "batchOnly") {
+                        var data = {
+                            "ItemCode": $('#MainGridAltItemName-' + i).val(),
+                            "YearCode": @yearCode,
+                            "StoreName": "MAIN STORE",//$('#MainGridStorename-' + i).val(), --- CHANGE THIS
+                            "BatchNo": '',
+                            "IssuedDate": $('#IssueDate').val()
+                        }
+                        var batchNoArray = [];
+                        var filteredBatch = [];
+                        $.ajax({
+                            url: "@Url.Action("FillBatchUnique")",
+                            type: "POST",
+                            data: data,
+                            async: false,
+                            success: function (data) {
+
+                                if (data != null) {
+                                    var obj = $.parseJSON(data);
+                                    if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                                        $('#MainGridBatchNo-' + i).empty();
+                                        $('#MainGridBatchNo-' + i).append('<option value="0" selected disabled>-Select-</option>');
+                                        $.each(obj.Result, function (index, val) {
+                                            if (filteredBatch.includes(val.batchno)) {
+                                                // do nothing
+                                            }
+                                            else {
+                                                $('#MainGridBatchNo-' + i).append('<option value = ' + val.batchno + ' > ' + val.batchno + ' </option>');
+                                            }
+                                            batchNoArray.push(val.batchno);
+                                            filteredBatch = batchNoArray.filter((value, index, self) => self.indexOf(value) === index);
+                                        });
+                                    }
+                                }
+                                console.log(obj);
+                            },
+                            error: function (errMsg) {
+                                console.log(errMsg);
+                            }
+                        });
+                    }
+                    else {
+                        var data = {
+                            "ItemCode": $('#MainGridAltItemName-' + i).val(),
+                            "YearCode": @yearCode,
+                            "StoreName": "MAIN STORE",//$('#MainGridStorename-' + i).val(), --- CHANGE THIS
+                            "BatchNo": $('#MainGridBatchNo-' + i).val() == 0 ? '' : $('#MainGridBatchNo-' + i).val(),
+                            "IssuedDate": $('#IssueDate').val()
+                        }
+                        $.ajax({
+                            url: "@Url.Action("FillBatchUnique")",
+                            type: "POST",
+                            data: data,
+                            async: false,
+                            success: function (data) {
+                                if (data != null) {
+                                    var obj = $.parseJSON(data);
+                                    if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                                        $('#MainGridUniqueBatchNo-' + i).empty();
+                                        $('#MainGridUniqueBatchNo-' + i).append('<option value="0" selected disabled>-Select-</option>');
+                                        $.each(obj.Result, function (index, val) {
+                                            $('#MainGridUniqueBatchNo-' + i).append('<option value = ' + val.UniqueBatchNo + ' > ' + val.UniqueBatchNo + ' </option>');
+                                        });
+                                    }
+                                }
+                            },
+                            error: function (errMsg) {
+                                console.log(errMsg);
+                            }
+                        });
+                    }
+                }
+
+                function BatchNumberChange(i) {
+
+                    if ($('#MainGridIssuedAltItem-' + i).val() == "Y") {
+                        FillAltBatchUnique(i, "unique&batch");
+                    } else {
+                        fillBatchUnique(i, "unique&batch");
+                    }
+                }
+
+                function UniqBatchNumberChange(i) {
+                    FillLotandTotalStock(i);
+
+                }
+
+                $('#IssueByScanButton').click(function () {
+                    $('#IssueWithScannerBox').modal("show");
+                });
+
+                $('#ScanUniqueBatchNo').keyup(function () {
+                    if ($('#ScanUniqueBatchNo').val() == '') {
+                        $.notify("Please scan the Unique batch No", "error");
+                        return false;
+                    }
+
+                    $.ajax({
+                        url: "@Url.Action("GetItemDetailFromUniqBatch")",
+                        type: "POST",
+                        data: { "UniqBatchNo": $('#ScanUniqueBatchNo').val(), "YearCode": $('#YearCode').val(), "TransDate": $('#IssueDate').val(), "ReqNo": $('#ReqNo').val(), "ReqYearCode": $('#ReqyearCode').val(), "ReqDate": $('#ReqDate').val() },
+                        success: function (data, status, xhr) {
+
+                            if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
+                                $.notify('Duplicate Item Not Allowed.', "info");
+                                $('.GridButton').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
+                            }
+                            else if (data === "Stock can't be zero" && (xhr.statusCode === 203 || xhr.responseText === "Stock can't be zero")) {
+                                $.notify('Lot Stock Or Total Stock cannot be zero', "info");
+                            }
+                            else if (xhr.status == 203) {
+                                $.notify(data, "info");
+                            }
+                            else {
+                                $('#divIssueByScanning').html(data);
+                                $.notify("Item Added to Grid", "success");
+                            }
+                            $('#ScanUniqueBatchNo').val('');
+                        },
+                        error: function (errMsg) {
+                            $.notify(errMsg, { position: "top center", className: "error" });
+                        }
+                    });
+                });
+
+                function fillBatchUnique(i, flag) {
+
+                    if (flag == "batchOnly") {
+                        var data = {
+                            "ItemCode": $('#MainGridItemCode-' + i).val(),
+                            "YearCode": @yearCode,
+                            "StoreName": $('#MainGridStorename-' + i).val() == "-Select-" ? "" : $('#MainGridStorename-' + i).val(),//$('#MainGridStorename-' + i).val(), --- CHANGE THIS
+                            "BatchNo": '',
+                            "IssuedDate": $('#IssueDate').val()
+                        }
+                        var batchNoArray = [];
+                        var filteredBatch = [];
+                        $.ajax({
+                            url: "@Url.Action("FillBatchUnique")",
+                            type: "POST",
+                            data: data,
+                            async: false,
+                            success: function (data) {
+
+                                if (data != null) {
+                                    var obj = $.parseJSON(data);
+                                    if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                                        $('#MainGridBatchNo-' + i).empty();
+                                        $('#MainGridBatchNo-' + i).append('<option value="0" selected disabled>-Select-</option>');
+                                        $.each(obj.Result, function (index, val) {
+
+                                            if (filteredBatch.includes(val.batchno)) {
+                                                // do nothing
+                                            }
+                                            else {
+                                                $('#MainGridBatchNo-' + i).append('<option value = ' + val.batchno + ' > ' + val.batchno + ' </option>');
+                                            }
+
+                                            batchNoArray.push(val.batchno);
+                                            filteredBatch = batchNoArray.filter((value, index, self) => self.indexOf(value) === index);
+                                        });
+                                    }
+                                }
+                                console.log(obj);
+                            },
+                            error: function (errMsg) {
+                                console.log(errMsg);
+                            }
+                        });
+                    }
+                    else {
+
+                        var data = {
+                            "ItemCode": $('#MainGridItemCode-' + i).val(),
+                            "YearCode": @yearCode,
+                            "StoreName": $('#MainGridStorename-' + i).val(),//$('#MainGridStorename-' + i).val(), --- CHANGE THIS
+                            "BatchNo": $('#MainGridBatchNo-' + i).val() == 0 ? '' : $('#MainGridBatchNo-' + i).val(),
+                            "IssuedDate": $('#IssueDate').val()
+                        }
+                        $.ajax({
+
+                            url: "@Url.Action("FillBatchUnique")",
+                            type: "POST",
+                            data: data,
+                            async: false,
+                            success: function (data) {
+
+                                if (data != null) {
+                                    var obj = $.parseJSON(data);
+                                    if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                                        $('#MainGridUniqueBatchNo-' + i).empty();
+                                        $('#MainGridUniqueBatchNo-' + i).append('<option value="0" selected disabled>-Select-</option>');
+                                        $.each(obj.Result, function (index, val) {
+                                            $('#MainGridUniqueBatchNo-' + i).append('<option value =' + val.UniqueBatchNo + '> ' + val.UniqueBatchNo + ' </option>');
+                                        });
+                                    }
+                                }
+                                console.log("success");
+                            },
+                            error: function (errMsg) {
+                                console.log(errMsg);
+                            }
+                        });
+                    }
+                }
+
+                function GetIsStockable(i) {
+                    $.ajax({
+                        url: "@Url.Action("GetIsStockable")",
+                        type: "POST",
+                        data: { "ItemCode": $('#MainGridItemCode-' + i).val() },
+                        success: function (data) {
+                            if (data != null) {
+                                var obj = $.parseJSON(data);
+                                if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                                    $("#MainGridStockable-" + i).val(obj.Result[0].Stockable);
+                                }
+                            }
+                        },
+                        error: function (errMsg) {
+                            console.log(errMsg);
+                        }
+                    });
+                }
+
+                function FillLotandTotalStock(i) {
+
+                    $.ajax({
+                        url: "@Url.Action("FillLotandTotalStock")",
+                        type: "POST",
+                        data: { ItemCode: $('#MainGridItemCode-' + i).val(), StoreId: $('#MainGridStoreId-' + i).val(), TillDate: $('#IssueDate').val(), BatchNo: $('#MainGridBatchNo-' + i).val(), UniqBatchNo: $('#MainGridUniqueBatchNo-' + i).find(":selected").text().trim() },
+                        async: false,
+                        success: function (data) {
+
+                            if (data != null) {
+                                var obj = $.parseJSON(data);
+                                if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                                    $('#MainGridLotStock-' + i).val(obj.Result[0].lotstock);
+                                    $('#MainGridTotalStock-' + i).val(obj.Result[0].totalstock);
+
+                                    var issQty = parseFloat($('#MainGridReqQty-' + i).val()) <= parseFloat($('#MainGridLotStock-' + i).val()) ? $('#MainGridReqQty-' + i).val() : $('#MainGridLotStock-' + i).val();
+                                    // $('#MainGridIssueQty-' + i).val(issQty);
+                                }
+                                else {
+                                    $('#MainGridLotStock-' + i).val(0);
+                                    $('#MainGridTotalStock-' + i).val(0);
+                                }
+                            }
+                            console.log("success");
+                        },
+                        error: function (errMsg) {
+                            console.log(errMsg);
+                        }
+                    });
+                }
+
+
+
+
+                function fillProjectNo(i) {
+                    $.ajax({
+                        url: "@Url.Action("FillProjectNo")",
+                        type: "POST",
+                        async: false,
+                        success: function (data) {
+                            console.log(data);
+                            if (data != null) {
+                                var obj = $.parseJSON(data);
+                                if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                                    $('#MainGridProjectNo-' + i).empty();
+                                    $('#MainGridProjectNo-' + i).append('<option value=0 selected disabled>-Select-</option>');
+                                    $.each(obj.Result.Table, function (index, val) {
+                                        $('#MainGridProjectNo-' + i).append('<option value=' + val.ProjectName + ' data-projyearcode=' + val.YearCode + '>' + val.ProjectName + '</option>');
+                                    });
+                                }
+                            }
+                        },
+                        error: function (errMsg) {
+                            console.log(errMsg);
+                        }
+                    });
+                }
+
+                function ProjectNumberChange(i) {
+                    $('#MainGridProjectYearCode-' + i).val($('#MainGridProjectNo-' + i).find(":selected").data('projyearcode'));
+                }
+
+                $('.GridButton').click(function () {
+                    var rowCount = $('#divIssueThrBOMGrid tr').length;
+                    if (!validateIssueDateBeforeAddToGrid()) {
+                        Alert("❌ Not allowed: Issue Date is earlier than Transaction Date");
+                        return false; // stop everything if invalid
+                    }
+                    for (let i = 1; i <= rowCount; i++) {
+                        if (!validateInsert(i)) return;
+                    }
+                    var ItemData = [];
+
+                    var BatchNoArray = [];
+                    for (let i = 1; i <= rowCount; i++) {
+
+                        ItemData.push({
+                            "ReqNo1": $('#MainGridReqNo-' + i).val(),
+                            "ReqDate1": $('#MainGridReqDate-' + i).val(),
+                            "ReqYearCode1": $('#MainGridReqYearCode-' + i).val(),
+                            "ItemCode": parseInt($('#MainGridItemCode-' + i).val()),
+                            "ItemName": $('#MainGridItemname-' + i).val(),
+                            "PartCode": $('#MainGridPartCode-' + i).val(),
+                            "ReqQty": $('#MainGridReqQty-' + i).val(),
+                            "StoreId": $('#MainGridStoreId-' + i).val(),
+                            "StoreName": $('#MainGridStorename-' + i).val(),
+                            "BatchNo": $('#MainGridBatchNo-' + i + ' option:selected').text().trim(),
+
+                            "uniqueBatchNo" : $('#MainGridUniqueBatchNo-' + i + ' option:selected').text().trim(),
+                            "IssueQty": $('#MainGridIssueQty-' + i).val(),
+                            "Unit": $('#MainGridUnit-' + i).val(),
+                            "LotStock": $('#MainGridLotStock-' + i).val(),
+                            "TotalStock": $('#MainGridTotalStock-' + i).val(),
+                            "AltQty": $('#MainGridAltQty-' + i).val(),
+                            "AltUnit": $('#MainGridAltUnit-' + i).val(),
+                            "Rate": $('#MainGridRate-' + i).val(),
+                            "Remark": $('#MainGridRemark-' + i).val(),
+                            "WorkCenter": $('#MainGridWorkCenter-' + i).val(),
+
+                            "WCId": $('#MainGridWCId-' + i).val(),
+
+                            "WipStock": $('#MainGridWIPStock-' + i).val(),
+                            "AltItemCode": $('#MainGridAltItemName-' + i).val(),
+                            "CostCenterId": $('#MainGridCostCenter-' + i).val(),
+                            "ItemSize": $('#MainGridItemSize-' + i).val(),
+                            "ItemColor": $('#MainGridItemColor-' + i).val(),
+                            "ProjectNo": $('#MainGridProjectNo-' + i).val(),
+                            "ProjectYearCode": $('#MainGridProjectYearCode-' + i).val(),
+                            "StdPacking": $('#MainGridStdPacking-' + i).val(),
+                            "IssuedAlternateItem": $('#MainGridIssuedAltItem-' + i).val(),
+                            "OriginalItemCode": $('#MainGridOGItemCode-' + i).val(),
+                            "StdPacking": $('#MainGridStdPacking-' + i).val()
+                        });
+
+                        BatchNoArray.push({
+
+                            "BatchNo": $('#MainGridBatchNo-' + i + ' option:selected').text().trim(),
+                             "uniqueBatchNo" : $('#MainGridUniqueBatchNo-' + i + ' option:selected').text().trim(),
+                        });
+
+
+                    }
+
+                    $.ajax({
+                        url: "@Url.Action("AddtoIssueThrBomGrid")",
+                        type: "POST",
+                        data: { model: ItemData },
+                        success: function (data, status, xhr) {
+                            if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
+                                $.notify('Duplicate Item Not Allowed.', "info");
+                                $('.GridButton').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
+                            }
+                            else if (xhr.status === 203) {
+                                $.notify(xhr.responseText, "info");
+                            }
+                            else {
+                                $('#divIssueThrBOMGridAdd').html(data);
+                                $('#divIssueThrBOMGrid').empty();
+                                $.notify("Item Added to Grid", "success");
+                                for (let i = 1; i <= rowCount; i++) {
+                                    $('#MainGridBatchNo-' + i + ' option[value="' + BatchNoArray[i - 1].BatchNo + '"]').remove();
+                                    $('#MainGridUniqueBatchNo-' + i + ' option[value="' + BatchNoArray[i - 1].UniqueBatchNo + '"]').remove();
+
+                                }
+                                if ($('#Mode').val() != "U") {
+                                    FillFGTOMemoryCache();
+
+                                }
+                                editingNow = false;
+
+                            }
+                            //    alert(success);
+                        },
+                        error: function (result, status, xhr) {
+                            $.notify(result.responseText, "error");
+                            console.log(result.responseText);
+                        }
+                    });
+                });
+
+                function FillFGTOMemoryCache() {
+
+                    var rowCountFG = $('#divIssueThrBOMFGGrid tr').length;
+                    var FGData = [];
+                    for (let i = 0; i < rowCountFG; i++) {
+
+                        FGData.push({
+                            "WONO": $('#FGWONo' + i).val(),
+                            "WOYearCode": $('#FGWOYearcode' + i).val(),
+                            "FGItemCode": $('#FGItemCode' + i).val(),
+                            "Unit": parseInt($('#FGUnit' + i).val()),
+                            "FGQty": $('#FGReqQty' + i).val(),
+                            "BOMNO": $('#FGBomRevNo' + i).val(),
+                            "BOMDate": $('#FGBOMEffDate' + i).val(),
+                            "FGStockINStore": "",
+                            "IssueFromStoreID": "",
+                            "Remark": $('#Remark' + i).val(),
+                            "WCID": $('#WCID' + i).val(),
+                            "ReqNo": $('#ReqNo').val(),
+                            "ReqYearCode": $('#ReqyearCode').val(),
+                            "ReqDate": $('#ReqDate').val(),
+                            "ProjectNo": $('#FGProjectNo' + i).val(),
+                            "ProjectYearCode": $('#FGProjectYearCode' + i).val()
+                        });
+
+                    }
+                    $.ajax({
+                        url: "@Url.Action("AddtoIssueFGThrBomGrid")",
+                        type: "POST",
+                        data: { model: FGData },
+                        success: function (data, status, xhr) {
+                            console.log(done);
+                            //    alert(success);
+                        },
+                        error: function (result, status, xhr) {
+                            $.notify(result.responseText, "error");
+                            console.log(result.responseText);
+                        }
+                    });
+                }
+
+
+                function ChkStockBeforeSaving(callback) {
+                    $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("ChkStockBeforeSaving")",
+                        dataType: "json",
+                        data: {
+                            // "WcId": parseInt($('#IssueFromWc').val()),
+                            "ReqNo": $('#ReqNo').val(),
+                            "EntryId": $('#EntryId').val(),
+
+                            "ReqYearCode": parseInt($('#ReqyearCode').val()),
+                            "YearCode": parseInt($('#YearCode').val()),
+
+                        },
+                        success: function (response) {
+                            if (response.success === false) {
+                                response.errors.forEach(function (err) {
+                                    $.notify(err, {
+                                        className: 'error',
+                                        globalPosition: 'top right'
+                                    });
+                                });
+                                callback(false); // indicate failure
+                            } else {
+                                callback(true); // indicate success
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            $.notify("Error checking stock: " + error, {
+                                className: 'error',
+                                globalPosition: 'top right'
+                            });
+                            callback(false); // prevent submission on error
+                        }
+                    });
+                }
+
+
+
+
+                function validateInsert(i) {
+                    var Err = 0;
+
+                    if ($("#MainGridStockable-" + i).val() == "Y") {
+                        if ($('#MainGridBatchNo-' + i).val() == null) {
+                            $('MainGridBatchNo-' + i).css("border", "1px solid red");
+                            $.notify("Batch No is required for " + $('#MainGridPartCode-' + i).val() + "", "error");
+                            Err = 1;
+                        }
+                        else {
+                            $('MainGridBatchNo-' + i).css("border", "1px solid black");
+                        }
+                        if ($('#MainGridUniqueBatchNo-' + i).val() == null) {
+                            $('MainGridUniqueBatchNo-' + i).css("border", "1px solid red");
+                            $.notify("Unique Batch No is required for " + $('#MainGridPartCode-' + i).val() + "", "error");
+                            Err = 1;
+                        }
+                        else {
+                            $('MainGridUniqueBatchNo-' + i).css("border", "1px solid black");
+                        }
+                    }
+                    if ($('#MainGridWorkCenter-'+i).val() == '') {
+                        $.notify("WorkCenter is required for " + $('#MainGridPartCode-' + i).val() + "", "error");
+                        Err = 1;
+                    }
+
+                    if (parseFloat($('#MainGridIssueQty-' + i).val()) <= 0) {
+                        $('MainGridIssueQty-' + i).css("border", "1px solid red");
+                        $.notify("Issue Qty is required for " + $('#MainGridPartCode-' + i).val() + "", "error");
+                        Err = 1;
+                    }
+                    else {
+                        //if(parseFloat($('#MainGridIssueQty-' + i).val()) < parseFloat($('#MainGridReqQty-' + i).val())){
+                        //    $('MainGridIssueQty-' + i).css("border", "1px solid red");
+                        //$.notify("Issue Qty cannot be less than Req Qty","error");
+                        //Err = 1;
+                        //}
+                        //else{
+                        //$('MainGridIssueQty-' + i).css("border", "1px solid black");
+                        //}
+                        if (parseFloat($('#MainGridIssueQty-' + i).val()) > parseFloat($('#MainGridReqQty-' + i).val())) {
+                            $('MainGridIssueQty-' + i).css("border", "1px solid red");
+                            $.notify("Issue Qty cannot be greater than Req Qty", "error");
+                            Err = 1;
+                        }
+                        else {
+                            $('MainGridIssueQty-' + i).css("border", "1px solid black");
+                        }
+                    }
+
+                    Err == 1 ? ShowErrorFldwithAddtoGrid('H_SAGrid') : HideErrorFldwithAddtoGrid('H_SAGrid');
+                    if (Err == 1) return false;
+
+                    return true;
+                }
+
+
+                function EnableOrDisableIssueDate() {
+                    $.ajax({
+                        url: "@Url.Action("EnableOrDisableIssueDate", "PendingRequisitionToIssue")",
+                        type: "POST",
+                        success: function (data) {
+                            if (data != null) {
+                                var obj = $.parseJSON(data);
+
+                                if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                                    if (obj.Result.Table[0].AllowbackdateIssueWOBOM == "Y") {
+                                        // $('#IssueDate').datepicker("enable");
+                                        $('#IssueDate').css("pointer-events", "auto");
+
+                                    }
+                                    else {
+                                        //$('#IssueDate').datepicker("disable");
+                                        $('#IssueDate').css("pointer-events", "none");
+
+                                    }
+                                }
+                            }
+                        },
+                        error: function (errMsg) {
+                            $.notify(errMsg, { position: "top center", className: "error" });
+                        }
+                    });
+                }
+
+                function DeleteAllFromMemoryGrid() {
+
+                    $.ajax({
+                        url: '@Url.Action("DeleteRowsWithNullBatchNo")',
+                        type: "POST",
+
                         async: false,
                         success: function (data, status, xhr) {
-                                     $('#divIssueThrBOMGrid').html(data);
+
+                            $('#divIssueThrBOMGrid').html(data);
                             $.notify("Item deleted from Grid", "info");
-                            // var existingText = $('#lblDeletedPartCodes').text();
-                            // var combined = existingText ? existingText + ", " + PartCode : PartCode;
-                            // $('#lblDeletedPartCodes').text(combined);
-                                               fillBatchNO();
+                            fillBatchNO();
+
+
+                            var rowCounter = $('#divIssueThrBOMGrid tr').length;
+                            for (var i = 1; i <= rowCounter; i++) {
+                                fillBatchUnique(i, "unique&batch");
+                            }
+                            for (var i = 1; i <= rowCounter; i++) {
+                                $('#MainGridBatchNo-' + i).val($('#MainGridBatchNo1-' + i).val());
+                                $('#MainGridUniqueBatchNo-' + i).val($('#MainGridUniqueBatchNo1-' + i).val());
+                                $('#MainGridBatchNo-' + i).css("pointer-events", "none");
+                                $('#MainGridUniqueBatchNo-' + i).css("pointer-events", "none");
+                                $('#MainGridBatchNo-' + i).css("background-color", 'rgb(248 255 178)');
+                            }
+                            for (var i = 1; i <= rowCounter; i++) {
+                                FillLotandTotalStock(i);
+
+                                fillProjectNo(i);
+                                $('#MainGridBatchNo-' + i).val($('#MainGridBatchNo1-' + i).val());
+                                $('#MainGridUniqueBatchNo-' + i).val($('#MainGridUniqueBatchNo1-' + i).val());
+                                $('#MainGridBatchNo-' + i).css("pointer-events", "none");
+                                $('#MainGridUniqueBatchNo-' + i).css("pointer-events", "none");
+                                $('#MainGridBatchNo-' + i).css("background-color", 'rgb(248 255 178)');
+
+                                var batchVal = $('#MainGridBatchNo-' + i).val();
+                                var issueqty = $('#MainGridIssueQty-' + i).val();
+                                var totalQty = $('#MainGridTotalStock-' + i).val();
+                                var uniquebatch = $('#MainGridUniqueBatchNo-' + i).val();
+
+
+                                if (batchVal === '' || batchVal === '0' || uniquebatch === '' || uniquebatch === '0' || uniquebatch === null || batchVal === null || issueqty <= 0 || totalQty <= 0) {
+                                    // Change background color of the whole row
+                                    $('#MainGridBatchNo-' + i).closest('tr').css('background-color', '#ee6b6e');
+                                }
+                            }
+                        },
+                        error: function (response, status, xhr) {
+                            alert(response.responseText);
+                            $.notify(response.responseText, "error");
+                        },
+                        failure: function (response, status, xhr) {
+                            alert(response.responseText);
+                            $.notify(response.responseText, "error");
+                        }
+                    });
+                }
+
+                var tempIssueQtyMap = {};
+
+                function DeleteFromMemoryGrid(SeqNo) {
+                    $('#divIssueThrBOMGrid tr').each(function (index) {
+                        let i = index + 1;
+
+                        let itemName = $('#MainGridItemname-' + i).val();
+                        let uniqueBatchNo = $('#MainGridUniqueBatchNo-' + i).val();
+                        let issueQtyVal = $('#MainGridIssueQty-' + i).val();
+
+                        if (itemName && uniqueBatchNo) {
+                            let key = itemName + '|' + uniqueBatchNo;
+                            tempIssueQtyMap[key] = issueQtyVal;
+                        }
+                    });
+
+                    $.ajax({
+                        url: '@Url.Action("DeleteFromMemoryGrid")',
+                        type: "POST",
+                        data: { "SeqNo": SeqNo },
+                        async: false,
+                        success: function (data, status, xhr) {
+
+                            $('#divIssueThrBOMGrid').html(data);
+                            $.notify("Item deleted from Grid", "info");
+                            fillBatchNO();
 
 
                             var rowCounter = $('#divIssueThrBOMGrid tr').length;
@@ -649,1475 +1986,138 @@
                     });
                 }
 
-                function Validate_IssueInsert() {
-             
-            var Err = 0;
-            if ($('#RecByEmpCodeName').val() == 0) {
-                $.notify('RecEmpCode is not null...!', "error");
-                Err = 1;
-            }
-            if ($('#divIssueThrBOMGridAdd tr td').length <= 1 || $('#divIssueThrBOMFGGrid tr td').length <= 1) {
-                $.notify('Grid Should Have Atleast 1 Item...!', "error");
-                Err = 1;
-            }
-            var rowCount = $('#divIssueThrBOMGridAdd tr').length;
-            for (var i = 1; i <= rowCount; i++) {
-                CheckStockBeforeSaving(i);
-            }
-            for (var i = 1; i <= rowCount; i++) {
-                CheckRequisitionBeforeSaving(i);
-            }
-
-            if (ICName.length > 0) {
-                alert(ICName);
-                var ICNameArray = ICName;
-                var delimiter = ",";
-                var displayICName = ICNameArray.join(delimiter);
-                $.notify("Stock not sufficient for " + displayICName, "error");
-                Err = 1;
-
-            }
-            else if (ICName2.length > 0) {
-                var ICName2Array = ICName2;
-                var delimiter = ",";
-                var displayICName = ICName2Array.join(delimiter);
-                $.notify("Requisition upto maximum limit already issued for " + displayICName, "error");
-                Err = 1;
-            }
-            Err == 1 ? ShowErrorFld('H_SAGrid') : HideErrorFld('H_SAGrid');
-            if (Err == 1) return false;
-            return true;
-        }
-
-        // $('.submitBTN').click(function (e) {
-        //     e.preventDefault();
-        //     if (!Validate_IssueInsert()) return;
-        //     $("form").submit();
-        // });
-        // $('.submitBTN').click(function (e) {
-        //     e.preventDefault();
-        //     if (!Validate_IssueInsert()) return;
-        //     $('#PasswordAllowPopup').modal("show");
-        // });
-
-        // $('#btnPrint').click(function () {
-        //     $('#ShouldPrint').val('true'); // set flag for printing
-        //     $('#PasswordAllowPopup').modal("hide");
-
-        //     setTimeout(() => {
-        //         $('form').submit();
-        //     }, 300);
-        // });
-
-        // $('#btnClose').click(function () {
-        //     $('#ShouldPrint').val('false'); // set flag for no printing
-        //     $('#PasswordAllowPopup').modal("hide");
-
-        //     setTimeout(() => {
-        //         $('form').submit();
-        //     }, 300);
-        // });
-
-
-       $('.submitBTN').click(function (e) {
-    e.preventDefault();
-    if (!Validate_IssueInsert()) return;
-
-            ChkStockBeforeSaving(function (isValid) {
-                if (isValid) {
-                    $('#PasswordAllowPopup').modal("show");
-                }
-            });
-
-    
-});
-
-// When user clicks "Print"
-$('#btnPrint').click(function () {
-            if (!Validate_IssueInsert()) return;
-            ChkStockBeforeSaving(function (isValid) {
-                if (isValid) {
-                    const printWindow = window.open('', '_blank'); // Open blank tab first (browser-safe)
-                    $('#PasswordAllowPopup').modal("hide");
-
-                    setTimeout(() => {
-                        submitForm(true, printWindow); // Send true and window object
-                    }, 300);
-                }
-            });
-
-
-    
-});
-
-// When user clicks "Close" or no print
-$('#btnClose').click(function () {
-            if (!Validate_IssueInsert()) return;
-            ChkStockBeforeSaving(function (isValid) {
-                if (isValid) {
-                    $('#PasswordAllowPopup').modal("hide");
-
-                    setTimeout(() => {
-                        submitForm(false, null); // no print
-                    }, 300);
-                }
-            });
-
-    
-});
-
-function submitForm(shouldPrint, printWindow) {
-    $('#ShouldPrint').val(shouldPrint); // Set hidden input
-    const formData = $('form').serialize(); // Properly serialize full form
-
-    $.ajax({
-        type: "POST",
-        url: $('form').attr('action'),
-        data: formData,
-        dataType: 'json', // Expect JSON response
-        success: function (res) {
-            console.log("Server response:", res);
-
-            if (res && res.status === "Success") {
-                if (shouldPrint && res.entryId && res.yearCode && printWindow) {
-                    const printUrl = '/IssueThrBOM/PrintReport?EntryId=' + res.entryId + '&YearCode=' + res.yearCode;
-                    printWindow.location.href = printUrl;
-                }
-
-                window.location.href = '/PendingMaterialToIssueThrBOM/PendingMaterialToIssueThrBOM';
-            } else {
-                alert(res.message || "Something went wrong.");
-            }
-        },
-        error: function (xhr) {
-            console.error("Error occurred:", xhr.responseText);
-            alert("Save failed.");
-        }
-    });
-}
-
-
-        function CheckStockBeforeSaving(i) {
-
-            ICName = [];
-
-            $.ajax({
-                url: "@Url.Action("CheckStockBeforeSaving")",
-                type: "POST",
-                data: { "ItemCode": $('#MainItemCodeAdd-' + i).val(), "StoreId": $('#MainStoreIdAdd-' + i).val(), "TillDate": $('#IssueDate').val(), "BatchNo": $('#MainBatchNoAdd-' + i).text(), "UniqBatchNo": $('#MainUniqBatchNoAdd-' + i).text() },
-                async: false,
-                success: function (data) {
-                    var IC = $('#MainItemCodeAdd-' + i).val();
-                    if (data != null) {
-                        var obj = $.parseJSON(data);
-                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                            var stockDB = parseFloat(obj.Result[0].STOCK);
-                            var issueQty = parseFloat($('#MainIssueQty-' + i).text());
-                            if (stockDB < issueQty) {
-                                ICName.push($('#MainPartCodeAdd-' + i).text());
-                            }
+                function DeleteItemRow(SeqNo) {
+                    $.ajax({
+                        url: '@Url.Action("DeleteItemRow")',
+                        type: "POST",
+                        data: { "SeqNo": SeqNo },
+                        async: false,
+                        success: function (data, status, xhr) {
+                            $('#divIssueThrBOMGridAdd').html(data);
+                            $.notify("Item deleted from Grid", "info");
+                            isEditAllowed = "true";
+                        },
+                        error: function (response, status, xhr) {
+                            alert(response.responseText);
+                            $.notify(response.responseText, "error");
+                        },
+                        failure: function (response, status, xhr) {
+                            alert(response.responseText);
+                            $.notify(response.responseText, "error");
                         }
-                    }
-                },
-                error: function (errMsg) {
-                    $.notify(errMsg, { position: "top center", className: "error" });
-                }
-            });
-        }
-
-        function CheckRequisitionBeforeSaving(i) {
-            ICName2 = [];
-            $.ajax({
-                url: "@Url.Action("CheckRequisitionBeforeSaving")",
-                type: "POST",
-                data: { "ReqNo": $('#ReqNo').val(), "ReqyearCode": $('#ReqyearCode').val(), "ItemCode": $('#MainItemCodeAdd-' + i).val() },
-                async: false,
-                success: function (data) {
-
-                    if (data != null) {
-                        var obj = $.parseJSON(data);
-                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                            var PendQty = obj.Result[0].PendQty;
-                            var IssueQty = $('#MainIssueQty-' + i).val();
-                            if (PendQty < IssueQty) {
-                                ICName2.push($('#MainPartCodeAdd-' + i).text());
-                            }
-                        }
-                    }
-                },
-                error: function (errMsg) {
-                    $.notify(errMsg, { position: "top center", className: "error" });
-                }
-            });
-        }
-
-        $('#RecByEmpCodeName').change(function () {
-            $('#RecByEmpCode').val($('#RecByEmpCodeName').val());
-        })
-
-        $(document).ready(function () {
-            PassForCloseReq();
-            if ('@Model.Mode' != "U" && '@Model.Mode' != "V") {
-                GetNewEntry();
-                fillIssueThrGridFromMemoryCache();
-                GetReqByName();
-
-                $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-
-                var totalrows = $('#divIssueThrBOMGrid tr').length;
-
-                for (let i = 1; i <= totalrows; i++) {
-                    var batchVal = $('#MainGridBatchNo-' + i).val();
-                    var issueqty = $('#MainGridIssueQty-' + i).val();
-                    var totalQty = $('#MainGridTotalStock-' + i).val();
-                    var uniquebatch = $('#MainGridUniqueBatchNo-' + i).val();
-
-
-
-                    if (batchVal === '' || batchVal === '0' || uniquebatch === '' || uniquebatch === '0' || uniquebatch===null || batchVal === null || issueqty <= 0 || totalQty <= 0) {
-                        // Change background color of the whole row
-                        $('#MainGridBatchNo-' + i).closest('tr').css('background-color', '#ee6b6e');
-                    }
-                }
-            }
-            fillFGDataList();
-            //$('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-            $('#IssueDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-            //$('#IssueDate').datepicker("option", "maxDate", 'now');
-            //$("#IssueDate").datepicker("disable");
-            $('#IssueDate').css("pointer-events", "none");
-
-
-            var inputFromDateStr = $('#FromDate').val();
-            var parsedFromDate = new Date(inputFromDateStr);
-
-            var inputToDateStr = $('#ToDate').val();
-            var parsedToDate = new Date(inputToDateStr);
-
-            if (!isNaN(parsedFromDate.getTime())) {
-                var formattedDate = (parsedFromDate.getDate() < 10 ? '0' : '') + parsedFromDate.getDate() + '/' +
-                    ((parsedFromDate.getMonth() + 1) < 10 ? '0' : '') + (parsedFromDate.getMonth() + 1) + '/' +
-                    parsedFromDate.getFullYear();
-                var formattedDate1 = (parsedToDate.getDate() < 10 ? '0' : '') + parsedToDate.getDate() + '/' +
-                    ((parsedToDate.getMonth() + 1) < 10 ? '0' : '') + (parsedToDate.getMonth() + 1) + '/' +
-                    parsedToDate.getFullYear();
-                $('#IssueDate').datepicker("option", "minDate", formattedDate);
-                $('#EntryDate').datepicker("option", "minDate", formattedDate);
-                $('#EntryDate').datepicker("option", "maxDate", formattedDate1);
-            }
-            $('#IssueSlipNo', '#IssueDate', '#MachineCode', '#Remark').rules("remove", "required");
-            $('#Remark').rules("remove", "required");
-
-            if ('@Model.Mode' == "U") {
-
-                const inputDate = $('#IssueDate').val();
-
-                const parts = inputDate.split('/');
-
-                const monthAbbreviation = parts[1];
-                const months = {
-                    Jan: '01', Feb: '02', Mar: '03', Apr: '04', May: '05', Jun: '06',
-                    Jul: '07', Aug: '08', Sep: '09', Oct: '10', Nov: '11', Dec: '12'
-                };
-                const numericMonth = months[monthAbbreviation];
-                const formattedDate = `${parts[0]}/${numericMonth}/${parts[2]}`;
-
-                console.log(formattedDate);
-                //$('#IssueDate').attr('disabled', true);
-                $('#IssueDate').css("pointer-events", "none");
-                var RecEmpCode = "@Model.RecByEmpCode";
-                $('#RecByEmpCodeName').val(RecEmpCode).trigger("change");
-                $('#divIssueThrBOMGrid').empty();
-                //$('#IssueDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDate);
-                //EnableOrDisableIssueDate();
-            }
-
-
-        });
-
-
-
-        function parseDDMMYYYY(dateStr) {
-            if (!dateStr) return null;
-            var parts = dateStr.split("/");
-            return new Date(parts[2], parts[1] - 1, parts[0]); // yyyy, mm-1, dd
-        }
-
-        function validateIssueDateBeforeAddToGrid() {
-            var issueDateStr = $("#IssueDate").val();
-            var issueDate = parseDDMMYYYY(issueDateStr);
-
-            if (!issueDate) return true; // no IssueDate entered yet
-
-            var isValid = true;
-
-            $("[id^=MainGridTransactionDate-]").each(function () {
-                var transDateStr = $(this).val();
-                var transDate = parseDDMMYYYY(transDateStr);
-
-                if (transDate && issueDate < transDate) {
-                    alert("❌ Not allowed: Issue Date (" + issueDateStr +
-                        ") is earlier than Transaction Date (" + transDateStr + ")");
-                    $(".GridButton").prop("disabled", true);
-                    isValid = false;
-                    return false; // break loop
-                }
-            });
-
-            if (isValid) {
-                $(".GridButton").prop("disabled", false);
-            }
-
-            return isValid;
-        }
-
-
-        $('.BtnPassword').click(function () {
-            // if(isAllowTaxPass == "Y"){
-            $('#CloseReqPasswordAllowPopup').modal("show");
-            // }
-        });
-        function PasswordCheck() {
-            var AddPassWord = $('#AddPassWord').val();
-            if ($('#CloseReqPassword').val() != AddPassWord) {
-                $.notify('please enter correct password...!', "error");
-            } else {
-                $('#ReqComplated').val("Y");
-                $('#ReqCanceled').val("Y");
-
-
-
-                $('#CloseReqPasswordAllowPopup').modal('hide');
-            }
-            $('#CloseReqPassword').val("");
-        }
-        function PassForCloseReq() {
-            $.ajax({
-                type: "POST",
-                url: "@Url.Action("PassForCloseReq")",
-                async: false,
-                dataType: "json",
-                success: function (result) {
-                    // If the result is a JSON string, parse it first
-                    let obj = typeof result === "string" ? JSON.parse(result) : result;
-
-                    if (obj.StatusCode === 200 && obj.StatusText === "Success") {
-                        if (obj.Result && obj.Result.Table && obj.Result.Table.length > 0) {
-                            $('#AddPassWord').val(obj.Result.Table[0].PassForCloseReq);
-                            console.log($('#AddPassWord').val());
-                        }
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.error("AJAX Error:", status, error);
-                }
-            });
-        }
-
-
-        function fillFGDataList() {
-
-            $.ajax({
-                url: "@Url.Action("FillFGDataList")",
-                type: "POST",
-                data: { Reqno: $('#ReqNo').val(), ReqYC: parseInt($('#ReqyearCode').val()) },
-                success: function (data) {
-
-                    if (data != null) {
-
-                        var obj = $.parseJSON(data);
-                        $('#divIssueThrBOMFGGrid').empty();
-                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-
-                            var html1 = '';                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 //  '" value=' + obj.Result[i].ExpectedDate.split("T")[0] + '
-                            //var i = 0;
-                            for (var i = 0; i < obj.Result.length; i++) {
-                                /* " value='+ obj.Result[i].BOMEffDate.split("T")[0] + '*/
-                                html1 += '<tr style="white-space:nowrap;" id="FGGrid' + i + '"><td class="styled-cell"><input class="styled-input" style="width:100px;" readonly id="FGPartCode' + i + '" value=' + obj.Result[i].FGPartCode + ' ></td><td class="styled-cell"><input class="styled-input" style="width: 300px;" readonly id="FGItemName' + i + '" value=' + JSON.stringify(obj.Result[i].FGItemDesc) + ' ><input type="hidden" id="FGItemCode' + i + '" value="' + obj.Result[i].ItemCode + '"><button onclick="DisplayBomDetail(event,' + i + ')" style="background-color:#ffd6dd" class="formateBtn"><i class="fa-solid fa-plus"></i></button></td><td class="styled-cell"><input class="styled-input" style="width:45px;" readonly id="FGReqQty' + i + '" value=' + obj.Result[i].FGReqQty + ' ></td><td class="styled-cell"><input class="styled-input" style="width:50px;" readonly id="FGUnit' + i + '" value=' + obj.Result[i].Unit + ' ></td><td class="styled-cell"><input class="styled-input" style="width:100px;" readonly id="FGWorkCenter' + i + '" value=' + JSON.stringify(obj.Result[i].WorkCenter) + ' ><input type="hidden" class="styled-input" style="width:100px;" readonly id="WCID' + i + '" value=' + obj.Result[i].WorkcenterId + ' ></td><td class="styled-cell"><input class="styled-input" style="width:45px;" readonly id="FGBomRevNo' + i + '" value=' + obj.Result[i].BomRevNo + ' ></td><td class="styled-cell"><input class="styled-input" style="width:100px;" readonly id="FGBOMEffDate' + i + '" value=' + obj.Result[i].BOMEffDate.split("T")[0] + '></td><td class="styled-cell"><input class="styled-input" style="width:100px;" readonly id="FGFromDeptName' + i + '" value=' + JSON.stringify(obj.Result[i].FromDeptName) + ' ></td><td class="styled-cell"><input class="styled-input" style="width:45px;" readonly id="FGAltUnit' + i + '" value=' + obj.Result[i].AltUnit + ' ></td><td class="styled-cell"><input class="styled-input" style="width:45px;" readonly id="FGAltQty' + i + '" value=' + obj.Result[i].AltQty + ' ></td><td class="styled-cell"><input class="styled-input" style="width:45px;" readonly id="FGExpectedDate' + i + '" value=' + obj.Result[i].ExpectedDate + ' ></td><td class="styled-cell"><input class="styled-input" style="width:45px;" readonly id="FGPendQty' + i + '" value=' + obj.Result[i].PendQty + ' ></td><td class="styled-cell"><input class="styled-input" style="width:45px;" readonly id="FGPendAltQTy' + i + '" value=' + obj.Result[i].PendAltQty + ' ></td><td class="styled-cell"><input class="styled-input" style="width:45px;" readonly id="FGWONo' + i + '" value=' + obj.Result[i].WONo + ' ></td><td class="styled-cell"><input class="styled-input" style="width:45px;" readonly id="FGWOYearcode' + i + '" value=' + obj.Result[i].WOYearCode + ' ></td><td class="styled-cell"><input class="styled-input" style="width:100px;" readonly id="FGMachineName' + i + '" value=' + obj.Result[i].MachineName + ' ><input type="hidden" id="FGMachineId' + i + '" value="' + obj.Result[i].MachineId + '"></td><td class="styled-cell"><input class="styled-input" style="width:40px;" readonly id="FGCancel' + i + '" value=' + obj.Result[i].Cancel + ' ></td><td class="styled-cell"><input class="styled-input" style="width:45px;" readonly id="FGItemModel' + i + '" value=' + obj.Result[i].ItemModel + ' ></td><td class="styled-cell"><input class="styled-input" style="width:45px;" readonly id="FGProjectNo' + i + '" value=' + obj.Result[i].ProjectNo + ' ></td><td class="styled-cell"><input class="styled-input" style="width:45px;" readonly id="FGProjectYearCode' + i + '" value=' + obj.Result[i].ProjectYC + ' ></td><td class="styled-cell"><input class="styled-input" style="width:45px;" readonly id="FGCCName' + i + '" value=' + JSON.stringify(obj.Result[i].CCName) + ' ></td></tr> ';
-                            }
-
-                            $('#divIssueThrBOMFGGrid').append(html1);
-
-                            //$('#totalRows').text($('#divPendIssueGrid tr').length);
-                        }
-                    }
-                    console.log("success");
-                },
-                error: function (errMsg) {
-                    console.log(errMsg);
-                }
-            });
-        }
-
-        function DisplayBomDetail(event, seq) {
-             
-            event.preventDefault();
-            $('#DisplayIssueThrbomDetailModal').modal('show');
-            $.ajax({
-                type: "POST",
-                url: "@Url.Action("DisplayBomDetail")",
-                dataType: "json",
-                data: { "ItemCode": parseInt($('#FGItemCode' + seq).val()), "WOQty": parseInt($('#FGReqQty' + seq).val()), "BomRevNo": parseInt($('#FGBomRevNo' + seq).val()) },
-                success: function (result, status, error) {
-                    if (result != null) {
-                        var obj = $.parseJSON(result);
-                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                            var html = '';
-                            $('#divDisplayReqThrBomDetail').empty();
-                            var i = 1;
-                            $.each(obj.Result, function (index, val) {
-                                html += '<tr id="DisplayIssueThrBomRow-' + i + '">' +
-                                    '<td>' + i + '</td>' +
-                                    '<td>' + val.FGPartCode + '</td>' +
-                                    '<td>' + val.FGItemName + '</td>' +
-                                    '<td>' + val.PartCode + '</td>' +
-                                    '<td>' + val.RMItemName + '</td>' +
-                                    '<td>' + val.RMPartCode + '</td>' +
-                                    '<td>' + val.BOMQty + '</td>' +
-                                    '<td>' + val.ReqQty + '</td>' +
-                                    '</tr>';
-                                i++;
-                            });
-                            $('#divDisplayReqThrBomDetail').append(html);
-                            var RowCount = $('#divDisplayReqThrBomDetail tr').length - 1;
-                            var TdRow = $('#divDisplayBomDetail tr td').length;
-
-                            $('#lblTotalNoOfItems').text(RowCount);
-                            ColorRows();
-                        }
-                    }
-                }
-            });
-        }
-
-        function ColorRows() {
-            var row = $('#divDisplayReqThrBomDetail tr').length;
-            for (var i = 1; i <= row; i++) {
-                if ($('#SubBom-' + i).text() == 'NO') {
-                    $('#DisplayIssueThrBomRow-' + i).css({ 'background-color': '#94d6df' });
-                } else {
-                    $('#DisplayIssueThrBomRow-' + i).css({ 'background-color': '#ffddbf' });
-                }
-            }
-        }
-
-        function GetNewEntry() {
-
-            $.ajax({
-                url: "@Url.Action("GetNewEntry")",
-                type: "POST",
-                success: function (data) {
-
-                    if (data != null) {
-                        var obj = $.parseJSON(data);
-                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                            $('#EntryId').val(obj.Result[0].EntryId);
-                            $('#IssueSlipNo').val(obj.Result[0].IssueSlipNo);
-                        }
-                    }
-                    console.log("success");
-                },
-                error: function (errMsg) {
-                    console.log(errMsg);
-                }
-            });
-        }
-
-        function GetReqByName() {
-            var reqno = $('#ReqNo').val();
-            var yearcode = $('#ReqyearCode').val();
-
-            $.ajax({
-                url: "@Url.Action("GetReqByName")",
-                type: "POST",
-                data: { "reqno": reqno, "yearcode": yearcode },
-                success: function (data) {
-
-                    if (data != null) {
-                        var obj = $.parseJSON(data);
-                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                            $('#RecByEmpCode').val(obj.Result[0].eneterdby);
-                            $('#RecByEmpCodeName').val(obj.Result[0].eneterdby);
-                        }
-                    }
-                    console.log("success");
-                },
-                error: function (errMsg) {
-                    console.log(errMsg);
-                }
-            });
-        }
-
-
-        function fillIssueThrGridFromMemoryCache() {
-              
-            $.ajax({
-                url: "@Url.Action("FillThrGridFromMemoryCache")",
-                type: "POST",
-                async: false,
-                success: function (data) {
-
-                    if (data != null) {
-                        $('#divIssueThrBOMGrid').html(data);
-                        $('#ReqNo').val($('#MainREQNo').val());
-                        $('#ReqyearCode').val($('#MainREQYearCode').val());
-                        $('#ReqDate').val($('#MainREQDate').val());
-                        $('#IssueDate').val($('#IssuedDateMemory').val());
-                        $('#MachineCode').val($('#MachineCodeMemory').val());
-                        $('#WorkCenter').val($('#MainGridWorkCenter').val());
-                        $('#WCID').val($('#MainGridWCId').val());
-                        $('#WODate').val($('#MainGridWoDate').val());
-                        $('#WOYearCode').val($('#MainGridWOYearCode').val());
-                        $('#WONO').val($('#MainGridWONO').val());
-                        fillBatchNO();
-
-                         
-                        var rowCounter = $('#divIssueThrBOMGrid tr').length;
-                        for (var i = 1; i <= rowCounter; i++) {
-                            fillBatchUnique(i, "unique&batch");
-                            GetIsStockable(i);
-                        }
-                        for (var i = 1; i <= rowCounter; i++) {
-                            $('#MainGridBatchNo-' + i).val($('#MainGridBatchNo1-' + i).val());
-                            $('#MainGridUniqueBatchNo-' + i).val($('#MainGridUniqueBatchNo1-' + i).val());
-                            $('#MainGridBatchNo-' + i).css("pointer-events", "none");
-                            $('#MainGridUniqueBatchNo-' + i).css("pointer-events", "none");
-                            $('#MainGridBatchNo-' + i).css("background-color", 'rgb(248 255 178)');
-                        }
-                        for (var i = 1; i <= rowCounter; i++) {
-                             FillLotandTotalStock(i);
-                            
-                            fillProjectNo(i);
-                            $('#MainGridBatchNo-' + i).val($('#MainGridBatchNo1-' + i).val());
-                            $('#MainGridUniqueBatchNo-' + i).val($('#MainGridUniqueBatchNo1-' + i).val());
-                            $('#MainGridBatchNo-' + i).css("pointer-events", "none");
-                            $('#MainGridUniqueBatchNo-' + i).css("pointer-events", "none");
-                            $('#MainGridBatchNo-' + i).css("background-color", 'rgb(248 255 178)');
-                        }
-                    }
-                },
-                error: function (errMsg) {
-                    console.log(errMsg);
-                }
-            });
-        }
-
-        function fillBatchNO() {
-
-            var rowCounter = $('#divIssueThrBOMGrid tr').length;
-            for (var i = 1; i <= rowCounter; i++) {
-                if ($('#MainGridIssuedAltItem-' + i).val() == "Y") {
-                    FillAltBatchUnique(i, "batchOnly");
-                } else {
-                    fillBatchUnique(i, "batchOnly");
-                }
-            }
-        }
-
-        var Allowed = false;
-
-        function AllowBatchChange(i) {
-
-            if (Allowed == true) {
-                //do nothing
-                return;
-            } else {
-
-                GetAllowBatch();
-
-                if ($('#AllowBatchChange').val() == "Y") {
-                    $('#errormessage').hide();
-                    $('#AllowBatchChangeBox').modal("show");
-                } else {
-                    $.notify("Batch Change is not allowed");
-                }
-
-            }
-        }
-
-        $('#confirmCheck').click(function () {
-            if ($('#batchPassCode').val() == $('#AllowBatchChangePassWord').val()) {
-                var rowCounter = $('#divIssueThrBOMGrid tr').length;
-                Allowed = true;
-                for (var i = 1; i <= rowCounter; i++) {
-                    $('#MainGridBatchNo-' + i).css("pointer-events", "auto");
-                    $('#MainGridUniqueBatchNo-' + i).css("pointer-events", "auto");
-                }
-                $('#AllowBatchChangeBox').modal("hide");
-            } else {
-                $('#errormessage').show();
-            }
-        });
-
-        function PressBack() {
-
-            sessionStorage.setItem('REQNoBack', $('#REQNoBack').val());
-            sessionStorage.setItem('ItemNameBack', $('#ItemNameBack').val());
-            sessionStorage.setItem('PartCodeBack', $('#PartCodeBack').val());
-            sessionStorage.setItem('WorkCenterBack', $('#WorkCenterBack').val());
-            sessionStorage.setItem('DeptNameBack', $('#DeptNameBack').val());
-            sessionStorage.setItem('DashboardTypeBack', $('#DashboardTypeBack').val());
-            sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());
-            sessionStorage.setItem('ToDateBack', $('#ToDateBack').val());
-            sessionStorage.setItem('GlobalSearchBack', $('#GlobalSearchBack').val());
-            sessionStorage.setItem('FromStoreBack', $('#FromStoreBack').val());
-
-
-
-            window.history.back();
-        }
-
-        function GetAllowBatch() {
-
-            $.ajax({
-                url: "@Url.Action("GetAllowBatch")",
-                type: "POST",
-                async: false,
-                success: function (data) {
-                    if (data != null) {
-                        var obj = $.parseJSON(data);
-                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                            $('#AllowBatchChange').val(obj.Result[0].AllowBatchChange);
-                            $('#AllowBatchChangePassWord').val(obj.Result[0].AllowBatchPassword);
-                        }
-                    }
-                    console.log("success");
-                },
-                error: function (errMsg) {
-                    console.log(errMsg);
-                }
-            });
-        }
-
-        function FillAltBatchUnique(i, flag) {
-             
-            if (flag == "batchOnly") {
-                var data = {
-                    "ItemCode": $('#MainGridAltItemName-' + i).val(),
-                    "YearCode": @yearCode,
-                    "StoreName": "MAIN STORE",//$('#MainGridStorename-' + i).val(), --- CHANGE THIS
-                    "BatchNo": '',
-                    "IssuedDate": $('#IssueDate').val()
-                }
-                var batchNoArray = [];
-                var filteredBatch = [];
-                $.ajax({
-                    url: "@Url.Action("FillBatchUnique")",
-                    type: "POST",
-                    data: data,
-                    async: false,
-                    success: function (data) {
-                         
-                        if (data != null) {
-                            var obj = $.parseJSON(data);
-                            if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                                $('#MainGridBatchNo-' + i).empty();
-                                $('#MainGridBatchNo-' + i).append('<option value="0" selected disabled>-Select-</option>');
-                                $.each(obj.Result, function (index, val) {
-                                    if (filteredBatch.includes(val.batchno)) {
-                                        // do nothing
-                                    }
-                                    else {
-                                        $('#MainGridBatchNo-' + i).append('<option value = ' + val.batchno + ' > ' + val.batchno + ' </option>');
-                                    }
-                                    batchNoArray.push(val.batchno);
-                                    filteredBatch = batchNoArray.filter((value, index, self) => self.indexOf(value) === index);
-                                });
-                            }
-                        }
-                        console.log(obj);
-                    },
-                    error: function (errMsg) {
-                        console.log(errMsg);
-                    }
-                });
-            }
-            else {
-                var data = {
-                    "ItemCode": $('#MainGridAltItemName-' + i).val(),
-                    "YearCode": @yearCode,
-                    "StoreName": "MAIN STORE",//$('#MainGridStorename-' + i).val(), --- CHANGE THIS
-                    "BatchNo": $('#MainGridBatchNo-' + i).val() == 0 ? '' : $('#MainGridBatchNo-' + i).val(),
-                    "IssuedDate": $('#IssueDate').val()
-                }
-                $.ajax({
-                    url: "@Url.Action("FillBatchUnique")",
-                    type: "POST",
-                    data: data,
-                    async: false,
-                    success: function (data) {
-                        if (data != null) {
-                            var obj = $.parseJSON(data);
-                            if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                                $('#MainGridUniqueBatchNo-' + i).empty();
-                                $('#MainGridUniqueBatchNo-' + i).append('<option value="0" selected disabled>-Select-</option>');
-                                $.each(obj.Result, function (index, val) {
-                                    $('#MainGridUniqueBatchNo-' + i).append('<option value = ' + val.UniqueBatchNo + ' > ' + val.UniqueBatchNo + ' </option>');
-                                });
-                            }
-                        }
-                    },
-                    error: function (errMsg) {
-                        console.log(errMsg);
-                    }
-                });
-            }
-        }
-
-        function BatchNumberChange(i) {
-
-            if ($('#MainGridIssuedAltItem-' + i).val() == "Y") {
-                FillAltBatchUnique(i, "unique&batch");
-            } else {
-                fillBatchUnique(i, "unique&batch");
-            }
-        }
-
-        function UniqBatchNumberChange(i) {
-            FillLotandTotalStock(i);
-           
-        }
-
-        $('#IssueByScanButton').click(function () {
-            $('#IssueWithScannerBox').modal("show");
-        });
-
-        $('#ScanUniqueBatchNo').keyup(function () {
-            if ($('#ScanUniqueBatchNo').val() == '') {
-                $.notify("Please scan the Unique batch No", "error");
-                return false;
-            }
-
-            $.ajax({
-                url: "@Url.Action("GetItemDetailFromUniqBatch")",
-                type: "POST",
-                data: { "UniqBatchNo": $('#ScanUniqueBatchNo').val(), "YearCode": $('#YearCode').val(), "TransDate": $('#IssueDate').val(), "ReqNo": $('#ReqNo').val(), "ReqYearCode": $('#ReqyearCode').val(), "ReqDate": $('#ReqDate').val() },
-                success: function (data, status, xhr) {
-
-                    if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
-                        $.notify('Duplicate Item Not Allowed.', "info");
-                        $('.GridButton').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
-                    }
-                    else if (data === "Stock can't be zero" && (xhr.statusCode === 203 || xhr.responseText === "Stock can't be zero")) {
-                        $.notify('Lot Stock Or Total Stock cannot be zero', "info");
-                    }
-                    else if (xhr.status == 203) {
-                        $.notify(data, "info");
-                    }
-                    else {
-                        $('#divIssueByScanning').html(data);
-                        $.notify("Item Added to Grid", "success");
-                    }
-                    $('#ScanUniqueBatchNo').val('');
-                },
-                error: function (errMsg) {
-                    $.notify(errMsg, { position: "top center", className: "error" });
-                }
-            });
-        });
-
-        function fillBatchUnique(i, flag) {
-             
-            if (flag == "batchOnly") {
-                var data = {
-                    "ItemCode": $('#MainGridItemCode-' + i).val(),
-                    "YearCode": @yearCode,
-                    "StoreName": $('#MainGridStorename-' + i).val() == "-Select-" ? "" : $('#MainGridStorename-' + i).val(),//$('#MainGridStorename-' + i).val(), --- CHANGE THIS
-                    "BatchNo": '',
-                    "IssuedDate": $('#IssueDate').val()
-                }
-                var batchNoArray = [];
-                var filteredBatch = [];
-                $.ajax({
-                    url: "@Url.Action("FillBatchUnique")",
-                    type: "POST",
-                    data: data,
-                    async: false,
-                    success: function (data) {
-                         
-                        if (data != null) {
-                            var obj = $.parseJSON(data);
-                            if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                                $('#MainGridBatchNo-' + i).empty();
-                                $('#MainGridBatchNo-' + i).append('<option value="0" selected disabled>-Select-</option>');
-                                $.each(obj.Result, function (index, val) {
-
-                                    if (filteredBatch.includes(val.batchno)) {
-                                        // do nothing
-                                    }
-                                    else {
-                                        $('#MainGridBatchNo-' + i).append('<option value = ' + val.batchno + ' > ' + val.batchno + ' </option>');
-                                    }
-
-                                    batchNoArray.push(val.batchno);
-                                    filteredBatch = batchNoArray.filter((value, index, self) => self.indexOf(value) === index);
-                                });
-                            }
-                        }
-                        console.log(obj);
-                    },
-                    error: function (errMsg) {
-                        console.log(errMsg);
-                    }
-                });
-            }
-            else {
-                 
-                var data = {
-                    "ItemCode": $('#MainGridItemCode-' + i).val(),
-                    "YearCode": @yearCode,
-                    "StoreName": $('#MainGridStorename-' + i).val(),//$('#MainGridStorename-' + i).val(), --- CHANGE THIS
-                    "BatchNo": $('#MainGridBatchNo-' + i).val() == 0 ? '' : $('#MainGridBatchNo-' + i).val(),
-                    "IssuedDate": $('#IssueDate').val()
-                }
-                $.ajax({
-
-                    url: "@Url.Action("FillBatchUnique")",
-                    type: "POST",
-                    data: data,
-                    async: false,
-                    success: function (data) {
-
-                        if (data != null) {
-                            var obj = $.parseJSON(data);
-                            if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                                $('#MainGridUniqueBatchNo-' + i).empty();
-                                $('#MainGridUniqueBatchNo-' + i).append('<option value="0" selected disabled>-Select-</option>');
-                                $.each(obj.Result, function (index, val) {
-                                    $('#MainGridUniqueBatchNo-' + i).append('<option value =' + val.UniqueBatchNo + '> ' + val.UniqueBatchNo + ' </option>');
-                                });
-                            }
-                        }
-                        console.log("success");
-                    },
-                    error: function (errMsg) {
-                        console.log(errMsg);
-                    }
-                });
-            }
-        }
-
-        function GetIsStockable(i) {
-            $.ajax({
-                url: "@Url.Action("GetIsStockable")",
-                type: "POST",
-                data: { "ItemCode": $('#MainGridItemCode-' + i).val() },
-                success: function (data) {
-                    if (data != null) {
-                        var obj = $.parseJSON(data);
-                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                            $("#MainGridStockable-" + i).val(obj.Result[0].Stockable);
-                        }
-                    }
-                },
-                error: function (errMsg) {
-                    console.log(errMsg);
-                }
-            });
-        }
-
-        function FillLotandTotalStock(i) {
-             
-            $.ajax({
-                url: "@Url.Action("FillLotandTotalStock")",
-                type: "POST",
-                data: { ItemCode: $('#MainGridItemCode-' + i).val(), StoreId: $('#MainGridStoreId-' + i).val(), TillDate: $('#IssueDate').val(), BatchNo: $('#MainGridBatchNo-' + i).val(), UniqBatchNo: $('#MainGridUniqueBatchNo-' + i).find(":selected").text().trim() },
-                async: false,
-                success: function (data) {
-                     
-                    if (data != null) {
-                        var obj = $.parseJSON(data);
-                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                            $('#MainGridLotStock-' + i).val(obj.Result[0].lotstock);
-                            $('#MainGridTotalStock-' + i).val(obj.Result[0].totalstock);
-
-                            var issQty = parseFloat($('#MainGridReqQty-' + i).val()) <= parseFloat($('#MainGridLotStock-' + i).val()) ? $('#MainGridReqQty-' + i).val() : $('#MainGridLotStock-' + i).val();
-                            // $('#MainGridIssueQty-' + i).val(issQty);
-                        }
-                        else {
-                            $('#MainGridLotStock-' + i).val(0);
-                            $('#MainGridTotalStock-' + i).val(0);
-                        }
-                    }
-                    console.log("success");
-                },
-                error: function (errMsg) {
-                    console.log(errMsg);
-                }
-            });
-        }
-
-
-
-
-        function fillProjectNo(i) {
-            $.ajax({
-                url: "@Url.Action("FillProjectNo")",
-                type: "POST",
-                async: false,
-                success: function (data) {
-                    console.log(data);
-                    if (data != null) {
-                        var obj = $.parseJSON(data);
-                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                            $('#MainGridProjectNo-' + i).empty();
-                            $('#MainGridProjectNo-' + i).append('<option value=0 selected disabled>-Select-</option>');
-                            $.each(obj.Result.Table, function (index, val) {
-                                $('#MainGridProjectNo-' + i).append('<option value=' + val.ProjectName + ' data-projyearcode=' + val.YearCode + '>' + val.ProjectName + '</option>');
-                            });
-                        }
-                    }
-                },
-                error: function (errMsg) {
-                    console.log(errMsg);
-                }
-            });
-        }
-
-        function ProjectNumberChange(i) {
-            $('#MainGridProjectYearCode-' + i).val($('#MainGridProjectNo-' + i).find(":selected").data('projyearcode'));
-        }
-
-        $('.GridButton').click(function () {
-            var rowCount = $('#divIssueThrBOMGrid tr').length;
-            if (!validateIssueDateBeforeAddToGrid()) {
-                Alert("❌ Not allowed: Issue Date is earlier than Transaction Date");
-                return false; // stop everything if invalid
-            }
-            for (let i = 1; i <= rowCount; i++) {
-                if (!validateInsert(i)) return;
-            }
-            var ItemData = [];
-
-            var BatchNoArray = [];
-            for (let i = 1; i <= rowCount; i++) {
-
-                ItemData.push({
-                    "ReqNo1": $('#MainGridReqNo-' + i).val(),
-                    "ReqDate1": $('#MainGridReqDate-' + i).val(),
-                    "ReqYearCode1": $('#MainGridReqYearCode-' + i).val(),
-                    "ItemCode": parseInt($('#MainGridItemCode-' + i).val()),
-                    "ItemName": $('#MainGridItemname-' + i).val(),
-                    "PartCode": $('#MainGridPartCode-' + i).val(),
-                    "ReqQty": $('#MainGridReqQty-' + i).val(),
-                    "StoreId": $('#MainGridStoreId-' + i).val(),
-                    "StoreName": $('#MainGridStorename-' + i).val(),
-                    "BatchNo": $('#MainGridBatchNo-' + i + ' option:selected').text().trim(),
-                    
-                    "uniqueBatchNo" : $('#MainGridUniqueBatchNo-' + i + ' option:selected').text().trim(),
-                    "IssueQty": $('#MainGridIssueQty-' + i).val(),
-                    "Unit": $('#MainGridUnit-' + i).val(),
-                    "LotStock": $('#MainGridLotStock-' + i).val(),
-                    "TotalStock": $('#MainGridTotalStock-' + i).val(),
-                    "AltQty": $('#MainGridAltQty-' + i).val(),
-                    "AltUnit": $('#MainGridAltUnit-' + i).val(),
-                    "Rate": $('#MainGridRate-' + i).val(),
-                    "Remark": $('#MainGridRemark-' + i).val(),
-                    "WorkCenter": $('#MainGridWorkCenter-' + i).val(),
-                    
-                    "WCId": $('#MainGridWCId-' + i).val(),
-
-                    "WipStock": $('#MainGridWIPStock-' + i).val(),
-                    "AltItemCode": $('#MainGridAltItemName-' + i).val(),
-                    "CostCenterId": $('#MainGridCostCenter-' + i).val(),
-                    "ItemSize": $('#MainGridItemSize-' + i).val(),
-                    "ItemColor": $('#MainGridItemColor-' + i).val(),
-                    "ProjectNo": $('#MainGridProjectNo-' + i).val(),
-                    "ProjectYearCode": $('#MainGridProjectYearCode-' + i).val(),
-                    "StdPacking": $('#MainGridStdPacking-' + i).val(),
-                    "IssuedAlternateItem": $('#MainGridIssuedAltItem-' + i).val(),
-                    "OriginalItemCode": $('#MainGridOGItemCode-' + i).val(),
-                    "StdPacking": $('#MainGridStdPacking-' + i).val()
-                });
-
-                BatchNoArray.push({
-                    
-                    "BatchNo": $('#MainGridBatchNo-' + i + ' option:selected').text().trim(),
-                     "uniqueBatchNo" : $('#MainGridUniqueBatchNo-' + i + ' option:selected').text().trim(),
-                });
-
-
-            }
-
-            $.ajax({
-                url: "@Url.Action("AddtoIssueThrBomGrid")",
-                type: "POST",
-                data: { model: ItemData },
-                success: function (data, status, xhr) {
-                    if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
-                        $.notify('Duplicate Item Not Allowed.', "info");
-                        $('.GridButton').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
-                    }
-                    else if (xhr.status === 203) {
-                        $.notify(xhr.responseText, "info");
-                    }
-                    else {
-                        $('#divIssueThrBOMGridAdd').html(data);
-                        $('#divIssueThrBOMGrid').empty();
-                        $.notify("Item Added to Grid", "success");
-                        for (let i = 1; i <= rowCount; i++) {
-                            $('#MainGridBatchNo-' + i + ' option[value="' + BatchNoArray[i - 1].BatchNo + '"]').remove();
-                            $('#MainGridUniqueBatchNo-' + i + ' option[value="' + BatchNoArray[i - 1].UniqueBatchNo + '"]').remove();
-
-                        }
-                        if ($('#Mode').val() != "U") {
-                            FillFGTOMemoryCache();
-
-                        }
-                        editingNow = false;
-
-                    }
-                    //    alert(success);
-                },
-                error: function (result, status, xhr) {
-                    $.notify(result.responseText, "error");
-                    console.log(result.responseText);
-                }
-            });
-        });
-
-        function FillFGTOMemoryCache() {
-
-            var rowCountFG = $('#divIssueThrBOMFGGrid tr').length;
-            var FGData = [];
-            for (let i = 0; i < rowCountFG; i++) {
-
-                FGData.push({
-                    "WONO": $('#FGWONo' + i).val(),
-                    "WOYearCode": $('#FGWOYearcode' + i).val(),
-                    "FGItemCode": $('#FGItemCode' + i).val(),
-                    "Unit": parseInt($('#FGUnit' + i).val()),
-                    "FGQty": $('#FGReqQty' + i).val(),
-                    "BOMNO": $('#FGBomRevNo' + i).val(),
-                    "BOMDate": $('#FGBOMEffDate' + i).val(),
-                    "FGStockINStore": "",
-                    "IssueFromStoreID": "",
-                    "Remark": $('#Remark' + i).val(),
-                    "WCID": $('#WCID' + i).val(),
-                    "ReqNo": $('#ReqNo').val(),
-                    "ReqYearCode": $('#ReqyearCode').val(),
-                    "ReqDate": $('#ReqDate').val(),
-                    "ProjectNo": $('#FGProjectNo' + i).val(),
-                    "ProjectYearCode": $('#FGProjectYearCode' + i).val()
-                });
-
-            }
-            $.ajax({
-                url: "@Url.Action("AddtoIssueFGThrBomGrid")",
-                type: "POST",
-                data: { model: FGData },
-                success: function (data, status, xhr) {
-                    console.log(done);
-                    //    alert(success);
-                },
-                error: function (result, status, xhr) {
-                    $.notify(result.responseText, "error");
-                    console.log(result.responseText);
-                }
-            });
-        }
-
-
-        function ChkStockBeforeSaving(callback) {
-            $.ajax({
-                type: "POST",
-                url: "@Url.Action("ChkStockBeforeSaving")",
-                dataType: "json",
-                data: {
-                    // "WcId": parseInt($('#IssueFromWc').val()),
-                    "ReqNo": $('#ReqNo').val(),
-                    "EntryId": $('#EntryId').val(),
-
-                    "ReqYearCode": parseInt($('#ReqyearCode').val()),
-                    "YearCode": parseInt($('#YearCode').val()),
-
-                },
-                success: function (response) {
-                    if (response.success === false) {
-                        response.errors.forEach(function (err) {
-                            $.notify(err, {
-                                className: 'error',
-                                globalPosition: 'top right'
-                            });
-                        });
-                        callback(false); // indicate failure
-                    } else {
-                        callback(true); // indicate success
-                    }
-                },
-                error: function (xhr, status, error) {
-                    $.notify("Error checking stock: " + error, {
-                        className: 'error',
-                        globalPosition: 'top right'
                     });
-                    callback(false); // prevent submission on error
                 }
-            });
-        }
 
-
-
-
-        function validateInsert(i) {
-            var Err = 0;
-
-            if ($("#MainGridStockable-" + i).val() == "Y") {
-                if ($('#MainGridBatchNo-' + i).val() == null) {
-                    $('MainGridBatchNo-' + i).css("border", "1px solid red");
-                    $.notify("Batch No is required for " + $('#MainGridPartCode-' + i).val() + "", "error");
-                    Err = 1;
+                function ExportBomDetailList() {
+                    $(".BomDetailtable").table2excel({
+                        filename: "BomDetail.xls"
+                    });
                 }
-                else {
-                    $('MainGridBatchNo-' + i).css("border", "1px solid black");
-                }
-                if ($('#MainGridUniqueBatchNo-' + i).val() == null) {
-                    $('MainGridUniqueBatchNo-' + i).css("border", "1px solid red");
-                    $.notify("Unique Batch No is required for " + $('#MainGridPartCode-' + i).val() + "", "error");
-                    Err = 1;
-                }
-                else {
-                    $('MainGridUniqueBatchNo-' + i).css("border", "1px solid black");
-                }
-            }
-            if ($('#MainGridWorkCenter-'+i).val() == '') {
-                $.notify("WorkCenter is required for " + $('#MainGridPartCode-' + i).val() + "", "error");
-                Err = 1;
-            }
 
-            if (parseFloat($('#MainGridIssueQty-' + i).val()) <= 0) {
-                $('MainGridIssueQty-' + i).css("border", "1px solid red");
-                $.notify("Issue Qty is required for " + $('#MainGridPartCode-' + i).val() + "", "error");
-                Err = 1;
-            }
-            else {
-                //if(parseFloat($('#MainGridIssueQty-' + i).val()) < parseFloat($('#MainGridReqQty-' + i).val())){
-                //    $('MainGridIssueQty-' + i).css("border", "1px solid red");
-                //$.notify("Issue Qty cannot be less than Req Qty","error");
-                //Err = 1;
-                //}
-                //else{
-                //$('MainGridIssueQty-' + i).css("border", "1px solid black");
-                //}
-                if (parseFloat($('#MainGridIssueQty-' + i).val()) > parseFloat($('#MainGridReqQty-' + i).val())) {
-                    $('MainGridIssueQty-' + i).css("border", "1px solid red");
-                    $.notify("Issue Qty cannot be greater than Req Qty", "error");
-                    Err = 1;
-                }
-                else {
-                    $('MainGridIssueQty-' + i).css("border", "1px solid black");
-                }
-            }
+                var editingNow = false;
+                function EditItemRowFromGrid(SeqNo) {
 
-            Err == 1 ? ShowErrorFldwithAddtoGrid('H_SAGrid') : HideErrorFldwithAddtoGrid('H_SAGrid');
-            if (Err == 1) return false;
+                    if (editingNow == false) {
+                        $.ajax({
+                            url: '@Url.Action("EditItemRow")',
+                            type: "POST",
+                            data: { "SeqNo": SeqNo },
+                            success: function (data, status, xhr) {
 
-            return true;
-        }
-
-
-        function EnableOrDisableIssueDate() {
-            $.ajax({
-                url: "@Url.Action("EnableOrDisableIssueDate", "PendingRequisitionToIssue")",
-                type: "POST",
-                success: function (data) {
-                    if (data != null) {
-                        var obj = $.parseJSON(data);
-
-                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                            if (obj.Result.Table[0].AllowbackdateIssueWOBOM == "Y") {
-                                // $('#IssueDate').datepicker("enable");
-                                $('#IssueDate').css("pointer-events", "auto");
-
-                            }
-                            else {
-                                //$('#IssueDate').datepicker("disable");
-                                $('#IssueDate').css("pointer-events", "none");
-
-                            }
-                        }
-                    }
-                },
-                error: function (errMsg) {
-                    $.notify(errMsg, { position: "top center", className: "error" });
-                }
-            });
-        }
-
-        function DeleteAllFromMemoryGrid() {
-
-            $.ajax({
-                url: '@Url.Action("DeleteRowsWithNullBatchNo")',
-                type: "POST",
-                
-                async: false,
-                success: function (data, status, xhr) {
-
-                    $('#divIssueThrBOMGrid').html(data);
-                    $.notify("Item deleted from Grid", "info");
-                    fillBatchNO();
-
-
-                    var rowCounter = $('#divIssueThrBOMGrid tr').length;
-                    for (var i = 1; i <= rowCounter; i++) {
-                        fillBatchUnique(i, "unique&batch");
-                    }
-                    for (var i = 1; i <= rowCounter; i++) {
-                        $('#MainGridBatchNo-' + i).val($('#MainGridBatchNo1-' + i).val());
-                        $('#MainGridUniqueBatchNo-' + i).val($('#MainGridUniqueBatchNo1-' + i).val());
-                        $('#MainGridBatchNo-' + i).css("pointer-events", "none");
-                        $('#MainGridUniqueBatchNo-' + i).css("pointer-events", "none");
-                        $('#MainGridBatchNo-' + i).css("background-color", 'rgb(248 255 178)');
-                    }
-                    for (var i = 1; i <= rowCounter; i++) {
-                        FillLotandTotalStock(i);
-                       
-                        fillProjectNo(i);
-                        $('#MainGridBatchNo-' + i).val($('#MainGridBatchNo1-' + i).val());
-                        $('#MainGridUniqueBatchNo-' + i).val($('#MainGridUniqueBatchNo1-' + i).val());
-                        $('#MainGridBatchNo-' + i).css("pointer-events", "none");
-                        $('#MainGridUniqueBatchNo-' + i).css("pointer-events", "none");
-                        $('#MainGridBatchNo-' + i).css("background-color", 'rgb(248 255 178)');
-
-                        var batchVal = $('#MainGridBatchNo-' + i).val();
-                        var issueqty = $('#MainGridIssueQty-' + i).val();
-                        var totalQty = $('#MainGridTotalStock-' + i).val();
-                        var uniquebatch = $('#MainGridUniqueBatchNo-' + i).val();
-
-
-                        if (batchVal === '' || batchVal === '0' || uniquebatch === '' || uniquebatch === '0' || uniquebatch === null || batchVal === null || issueqty <= 0 || totalQty <= 0) {
-                            // Change background color of the whole row
-                            $('#MainGridBatchNo-' + i).closest('tr').css('background-color', '#ee6b6e');
-                        }
-                    }
-                },
-                error: function (response, status, xhr) {
-                    alert(response.responseText);
-                    $.notify(response.responseText, "error");
-                },
-                failure: function (response, status, xhr) {
-                    alert(response.responseText);
-                    $.notify(response.responseText, "error");
-                }
-            });
-        }
-
-        var tempIssueQtyMap = {};
-
-        function DeleteFromMemoryGrid(SeqNo) {
-            $('#divIssueThrBOMGrid tr').each(function (index) {
-                let i = index + 1;
-
-                let itemName = $('#MainGridItemname-' + i).val();
-                let uniqueBatchNo = $('#MainGridUniqueBatchNo-' + i).val();
-                let issueQtyVal = $('#MainGridIssueQty-' + i).val();
-
-                if (itemName && uniqueBatchNo) {
-                    let key = itemName + '|' + uniqueBatchNo;
-                    tempIssueQtyMap[key] = issueQtyVal;
-                }
-            });
-
-            $.ajax({
-                url: '@Url.Action("DeleteFromMemoryGrid")',
-                type: "POST",
-                data: { "SeqNo": SeqNo },
-                async: false,
-                success: function (data, status, xhr) {
-
-                    $('#divIssueThrBOMGrid').html(data);
-                    $.notify("Item deleted from Grid", "info");
-                    fillBatchNO();
-
-
-                    var rowCounter = $('#divIssueThrBOMGrid tr').length;
-                    for (var i = 1; i <= rowCounter; i++) {
-                        fillBatchUnique(i, "unique&batch");
-                    }
-                    for (var i = 1; i <= rowCounter; i++) {
-                       
-                        $('#MainGridBatchNo-' + i).val($('#MainGridBatchNo1-' + i).val());
-                        $('#MainGridUniqueBatchNo-' + i).val($('#MainGridUniqueBatchNo1-' + i).val());
-                        let itemName = $('#MainGridItemname-' + i).val();
-                        let uniqueBatchNo = $('#MainGridUniqueBatchNo-' + i).val();
-                        let key = itemName + '|' + uniqueBatchNo;
-
-                        let restoredIssueQty = tempIssueQtyMap[key] || $('#MainGridIssueQty1-' + i).val();
-                        
-                        $('#MainGridIssueQty-' + i).val(restoredIssueQty);
-                        $('#MainGridBatchNo-' + i).css("pointer-events", "none");
-                        $('#MainGridUniqueBatchNo-' + i).css("pointer-events", "none");
-                        $('#MainGridBatchNo-' + i).css("background-color", 'rgb(248 255 178)');
-                    }
-                    for (var i = 1; i <= rowCounter; i++) {
-                       
-                        FillLotandTotalStock(i);
-                        
-                        fillProjectNo(i);
-                        $('#MainGridBatchNo-' + i).val($('#MainGridBatchNo1-' + i).val());
-                        $('#MainGridUniqueBatchNo-' + i).val($('#MainGridUniqueBatchNo1-' + i).val());
-                        let itemName = $('#MainGridItemname-' + i).val();
-                        let uniqueBatchNo = $('#MainGridUniqueBatchNo-' + i).val();
-                        let key = itemName + '|' + uniqueBatchNo;
-
-                        let restoredIssueQty = tempIssueQtyMap[key] || $('#MainGridIssueQty1-' + i).val();
-                      
-                        $('#MainGridIssueQty-' + i).val(restoredIssueQty);
-                        $('#MainGridBatchNo-' + i).css("pointer-events", "none");
-                        $('#MainGridUniqueBatchNo-' + i).css("pointer-events", "none");
-                        $('#MainGridBatchNo-' + i).css("background-color", 'rgb(248 255 178)');
-
-                        var batchVal = $('#MainGridBatchNo-' + i).val();
-                        var issueqty = $('#MainGridIssueQty-' + i).val();
-
-                        if (batchVal === '' || batchVal === '0' || batchVal === null || issueqty <= 0) {
-                            // Change background color of the whole row
-                            $('#MainGridBatchNo-' + i).closest('tr').css('background-color', '#ee6b6e');
-                        }
-                    }
-                },
-                error: function (response, status, xhr) {
-                    alert(response.responseText);
-                    $.notify(response.responseText, "error");
-                },
-                failure: function (response, status, xhr) {
-                    alert(response.responseText);
-                    $.notify(response.responseText, "error");
-                }
-            });
-        }
-
-        function DeleteItemRow(SeqNo) {
-            $.ajax({
-                url: '@Url.Action("DeleteItemRow")',
-                type: "POST",
-                data: { "SeqNo": SeqNo },
-                async: false,
-                success: function (data, status, xhr) {
-                    $('#divIssueThrBOMGridAdd').html(data);
-                    $.notify("Item deleted from Grid", "info");
-                    isEditAllowed = "true";
-                },
-                error: function (response, status, xhr) {
-                    alert(response.responseText);
-                    $.notify(response.responseText, "error");
-                },
-                failure: function (response, status, xhr) {
-                    alert(response.responseText);
-                    $.notify(response.responseText, "error");
-                }
-            });
-        }
-
-        function ExportBomDetailList() {
-            $(".BomDetailtable").table2excel({
-                filename: "BomDetail.xls"
-            });
-        }
-
-        var editingNow = false;
-        function EditItemRowFromGrid(SeqNo) {
-
-            if (editingNow == false) {
-                $.ajax({
-                    url: '@Url.Action("EditItemRow")',
-                    type: "POST",
-                    data: { "SeqNo": SeqNo },
-                    success: function (data, status, xhr) {
-
-                        var obj = $.parseJSON(data);
-                        DeleteItemRow(SeqNo);
-                        if (isEditAllowed == "false") {
-                            return false;
-                        }
-                        else {
-
-                            if (obj != null && obj.length == 1) {
-
-                                var html = '';
-                                $('#divIssueThrBOMGrid').empty();
-                                var i = 1;
-                                html += `
-                                                                <tr id="itemGrid-${i}">
-                                                                            <td> <div id="deleteCursorDiv-${i}">
-                                                                            <a class="table-link link-danger" onclick="DeleteFromMemoryGrid(${i})">
-                                                                                <span class="fa-stack">
-                                                                                    <i class="fa fa-square fa-stack-2x"></i>
-                                                                                    <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
-                                                                                </span>
-                                                                            </a>
-                                                                        </div></td>
-                                                                    <td><input style="width:200px;" id="MainGridItemname-${i}" value=${JSON.stringify(obj[0].ItemName)} readonly></td>
-                                                                    <td><input style="width:100px;" id="MainGridPartCode-${i}" value="${obj[0].PartCode}" readonly></td>
-                                                                    <td><input style="width:90px;" id="MainGridReqQty-${i}" value="${obj[0].ReqQty}"></td>
-                                                                    <td><input style="width:100px;" id="MainGridStorename-${i}" value=${JSON.stringify(obj[0].StoreName)}></td>
-                                                                    <td><select onchange="BatchNumberChange(${i})" id="MainGridBatchNo-${i}"></select></td>
-                                                                    <td><select onchange="UniqBatchNumberChange(${i})" id="MainGridUniqueBatchNo-${i}"></select></td>
-                                                                    <td><input style="width:50px;" id="MainGridIssueQty-${i}" value="${obj[0].IssueQty}"></td>
-                                                                    <td><input style="width:50px;" id="MainGridUnit-${i}" value="${obj[0].Unit}"></td>
-                                                                    <td><input style="width:50px;" id="MainGridLotStock-${i}" value="${obj[0].LotStock}"></td>
-                                                                    <td><input style="width:50px;" id="MainGridTotalStock-${i}" value="${obj[0].TotalStock}"></td>
-                                                                    <td><input style="width:50px;" id="MainGridAltQty-${i}" value="${obj[0].AltQty}"></td>
-                                                                    <td><input style="width:50px;" id="MainGridAltUnit-${i}" value="${obj[0].AltUnit}"></td>
-                                                                    <td><input readonly id="MainGridStdPacking-${i}" style="width:50px;" type="text" value="${obj[0].StdPacking}" /></td>
-                                                                    <td><input style="width:50px;" id="MainGridRate-${i}" value="${obj[0].Rate}" readonly></td>
-                                                                    <td><input style="width:100px;" id="MainGridRemark-${i}" value=${JSON.stringify(obj[0].Remark)} readonly><input id="MainGridWCId-${i}" type="hidden" value="${obj[0].WCId}" /></td>
-                                                                    <td><input style="width:100px;" id="MainGridWorkCenter-${i}" value=${JSON.stringify(obj[0].WorkCenter)} readonly></td>
-                                                                    <td><input style="width:100px;" id="MainGridAltPartCode-${i}" value="${obj[0].AltPartCode || ''}" readonly></td>
-                                                                    <td><input style="width:100px;" id="MainGridAltItemName-${i}" value="${obj[0].AltItemName || ''}" readonly></td>
-                                                                    <td><input readonly id="MainGridOGItemname-${i}" type="text" value="${obj[0].OGItemName || ''}"" /><input type="hidden" id="MainGridOGItemCode-${i}" value="${obj[0].OGItemCode || ''}"" /></td>
-                                                                    <td><input readonly id="MainGridOGPartCode-${i}" style="width:100px;" type="text" value="${obj[0].OGPartCode || ''}"" /></td>
-                                                                    <td><input style="width:100px;" id="MainGridCostCenter-${i}" value="${obj[0].CostCenterId}" readonly></td>
-                                                                    <td><input style="width:100px;" id="MainGridItemSize-${i}" value="${obj[0].ItemSize || ''}" readonly></td>
-                                                                    <td><input style="width:100px;" id="MainGridItemColor-${i}" value="${obj[0].ItemColor}" readonly></td>
-                                                                    <td><input style="width:100px;" id="MainGridProjectNo-${i}" value="${obj[0].ProjectNo || ''}"></td>
-                                                                    <td><input style="width:100px;" id="MainGridProjectYearCode-${i}" value="${obj[0].ProjectYearCode || ''}" readonly></td>
-                                                                                    <td><input id="MainGridIssuedAltItem-${i}" type="text" value="${obj[0].IssuedAlternateItem || ''}" /></td>
-                                                                                    <td><input id="MainGridIssuedAltItem-${i}" type="text" value="${obj[0].TransactionDate || ''}" /></td>
-                                                                    <td><input style="width:100px;" type="hidden" id="MainGridItemCode-${i}" value="${obj[0].ItemCode}" readonly></td>
-                                                                    <td><input type="hidden" id="MainGridStoreId-${i}" value="${obj[0].StoreId}"></td>
-                                                                    <td><input type="hidden" id="MainGridWCId-${i}" value="${obj[0].WCId}"></td>
-                                                                </tr>`;
-                                $('#divIssueThrBOMGrid').append(html);
-                                fillBatchNO();
-                                $('#MainGridBatchNo-' + i).val(obj[0].BatchNo);
-                                if ($('#MainGridBatchNo-1 option').length < 1) {
-                                    $('#MainGridBatchNo-' + 1).empty();
-                                    $('#MainGridBatchNo-' + 1).append("<option value=''>-Select-</option>");
-                                    $('#MainGridBatchNo-' + 1).append("<option value=" + obj[0].BatchNo + " selected>" + obj[0].BatchNo + "</option>");
-                                }
-                                if ($('#MainGridIssuedAltItem-' + i).val() == "Y") {
-                                    FillAltBatchUnique(i, "unique");
+                                var obj = $.parseJSON(data);
+                                DeleteItemRow(SeqNo);
+                                if (isEditAllowed == "false") {
+                                    return false;
                                 }
                                 else {
-                                    fillBatchUnique(i, "unique");
+
+                                    if (obj != null && obj.length == 1) {
+
+                                        var html = '';
+                                        $('#divIssueThrBOMGrid').empty();
+                                        var i = 1;
+                                        html += `
+                                                                        <tr id="itemGrid-${i}">
+                                                                                    <td> <div id="deleteCursorDiv-${i}">
+                                                                                    <a class="table-link link-danger" onclick="DeleteFromMemoryGrid(${i})">
+                                                                                        <span class="fa-stack">
+                                                                                            <i class="fa fa-square fa-stack-2x"></i>
+                                                                                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                                                        </span>
+                                                                                    </a>
+                                                                                </div></td>
+                                                                            <td><input style="width:200px;" id="MainGridItemname-${i}" value=${JSON.stringify(obj[0].ItemName)} readonly></td>
+                                                                            <td><input style="width:100px;" id="MainGridPartCode-${i}" value="${obj[0].PartCode}" readonly></td>
+                                                                            <td><input style="width:90px;" id="MainGridReqQty-${i}" value="${obj[0].ReqQty}"></td>
+                                                                            <td><input style="width:100px;" id="MainGridStorename-${i}" value=${JSON.stringify(obj[0].StoreName)}></td>
+                                                                            <td><select onchange="BatchNumberChange(${i})" id="MainGridBatchNo-${i}"></select></td>
+                                                                            <td><select onchange="UniqBatchNumberChange(${i})" id="MainGridUniqueBatchNo-${i}"></select></td>
+                                                                            <td><input style="width:50px;" id="MainGridIssueQty-${i}" value="${obj[0].IssueQty}"></td>
+                                                                            <td><input style="width:50px;" id="MainGridUnit-${i}" value="${obj[0].Unit}"></td>
+                                                                            <td><input style="width:50px;" id="MainGridLotStock-${i}" value="${obj[0].LotStock}"></td>
+                                                                            <td><input style="width:50px;" id="MainGridTotalStock-${i}" value="${obj[0].TotalStock}"></td>
+                                                                            <td><input style="width:50px;" id="MainGridAltQty-${i}" value="${obj[0].AltQty}"></td>
+                                                                            <td><input style="width:50px;" id="MainGridAltUnit-${i}" value="${obj[0].AltUnit}"></td>
+                                                                            <td><input readonly id="MainGridStdPacking-${i}" style="width:50px;" type="text" value="${obj[0].StdPacking}" /></td>
+                                                                            <td><input style="width:50px;" id="MainGridRate-${i}" value="${obj[0].Rate}" readonly></td>
+                                                                            <td><input style="width:100px;" id="MainGridRemark-${i}" value=${JSON.stringify(obj[0].Remark)} readonly><input id="MainGridWCId-${i}" type="hidden" value="${obj[0].WCId}" /></td>
+                                                                            <td><input style="width:100px;" id="MainGridWorkCenter-${i}" value=${JSON.stringify(obj[0].WorkCenter)} readonly></td>
+                                                                            <td><input style="width:100px;" id="MainGridAltPartCode-${i}" value="${obj[0].AltPartCode || ''}" readonly></td>
+                                                                            <td><input style="width:100px;" id="MainGridAltItemName-${i}" value="${obj[0].AltItemName || ''}" readonly></td>
+                                                                            <td><input readonly id="MainGridOGItemname-${i}" type="text" value="${obj[0].OGItemName || ''}"" /><input type="hidden" id="MainGridOGItemCode-${i}" value="${obj[0].OGItemCode || ''}"" /></td>
+                                                                            <td><input readonly id="MainGridOGPartCode-${i}" style="width:100px;" type="text" value="${obj[0].OGPartCode || ''}"" /></td>
+                                                                            <td><input style="width:100px;" id="MainGridCostCenter-${i}" value="${obj[0].CostCenterId}" readonly></td>
+                                                                            <td><input style="width:100px;" id="MainGridItemSize-${i}" value="${obj[0].ItemSize || ''}" readonly></td>
+                                                                            <td><input style="width:100px;" id="MainGridItemColor-${i}" value="${obj[0].ItemColor}" readonly></td>
+                                                                            <td><input style="width:100px;" id="MainGridProjectNo-${i}" value="${obj[0].ProjectNo || ''}"></td>
+                                                                            <td><input style="width:100px;" id="MainGridProjectYearCode-${i}" value="${obj[0].ProjectYearCode || ''}" readonly></td>
+                                                                                            <td><input id="MainGridIssuedAltItem-${i}" type="text" value="${obj[0].IssuedAlternateItem || ''}" /></td>
+                                                                                            <td><input id="MainGridIssuedAltItem-${i}" type="text" value="${obj[0].TransactionDate || ''}" /></td>
+                                                                            <td><input style="width:100px;" type="hidden" id="MainGridItemCode-${i}" value="${obj[0].ItemCode}" readonly></td>
+                                                                            <td><input type="hidden" id="MainGridStoreId-${i}" value="${obj[0].StoreId}"></td>
+                                                                            <td><input type="hidden" id="MainGridWCId-${i}" value="${obj[0].WCId}"></td>
+                                                                        </tr>`;
+                                        $('#divIssueThrBOMGrid').append(html);
+                                        fillBatchNO();
+                                        $('#MainGridBatchNo-' + i).val(obj[0].BatchNo);
+                                        if ($('#MainGridBatchNo-1 option').length < 1) {
+                                            $('#MainGridBatchNo-' + 1).empty();
+                                            $('#MainGridBatchNo-' + 1).append("<option value=''>-Select-</option>");
+                                            $('#MainGridBatchNo-' + 1).append("<option value=" + obj[0].BatchNo + " selected>" + obj[0].BatchNo + "</option>");
+                                        }
+                                        if ($('#MainGridIssuedAltItem-' + i).val() == "Y") {
+                                            FillAltBatchUnique(i, "unique");
+                                        }
+                                        else {
+                                            fillBatchUnique(i, "unique");
+                                        }
+
+                                        var valueToAdd = obj[0].uniqueBatchNo;
+
+                                        if ($('#MainGridUniqueBatchNo-' + i + ' option[value="' + valueToAdd + '"]').length === 0) {
+                                            $('#MainGridUniqueBatchNo-' + i).append('<option value="' + valueToAdd + '">' + valueToAdd + '</option>');
+                                        } else {
+                                            $('#MainGridUniqueBatchNo-' + i).val(obj[0].uniqueBatchNo);
+                                        }
+                                        editingNow = true;
+
+                                    }
                                 }
-
-                                var valueToAdd = obj[0].uniqueBatchNo;
-
-                                if ($('#MainGridUniqueBatchNo-' + i + ' option[value="' + valueToAdd + '"]').length === 0) {
-                                    $('#MainGridUniqueBatchNo-' + i).append('<option value="' + valueToAdd + '">' + valueToAdd + '</option>');
-                                } else {
-                                    $('#MainGridUniqueBatchNo-' + i).val(obj[0].uniqueBatchNo);
-                                }
-                                editingNow = true;
-
+                            },
+                            error: function (response, status, xhr) {
+                                alert(response.responseText);
+                                $.notify(response.responseText, "error");
+                            },
+                            failure: function (response, status, xhr) {
+                                alert(response.responseText);
+                                $.notify(response.responseText, "error");
                             }
-                        }
-                    },
-                    error: function (response, status, xhr) {
-                        alert(response.responseText);
-                        $.notify(response.responseText, "error");
-                    },
-                    failure: function (response, status, xhr) {
-                        alert(response.responseText);
-                        $.notify(response.responseText, "error");
+                        });
                     }
-                });
-            }
-            else {
-                $.notify("Cannot edit as one item is already on above edit grid", "error");
-            }
-        }
+                    else {
+                        $.notify("Cannot edit as one item is already on above edit grid", "error");
+                    }
+                }
 
     </script>
     <script src="~/Scripts/table2excel.js"></script>
