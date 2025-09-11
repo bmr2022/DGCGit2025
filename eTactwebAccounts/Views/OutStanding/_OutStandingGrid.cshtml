@@ -114,10 +114,11 @@
                                 <a asp-controller="@controller"
                                    asp-action="@action"
                                    asp-route-Mode="U"
-                                   asp-route-ID="@item.DocEntryId.ToString()"
-                                   asp-route-YearCode="@item.AccYearCode.ToString()"
-                                   asp-route-DashboardType="@item.ReportType)"
-                                   asp-route-AccountCode="@item.AccountCode.ToString()">
+                                   asp-route-ID="@item.DocEntryId"
+                                   asp-route-YearCode="@item.AccYearCode"
+                                   asp-route-GroupName="@item.GroupName"
+                                   asp-route-DashboardType="@item.ReportType"
+                                   asp-route-AccountCode="@item.AccountCode">
                                     @item.VoucherNo
                                 </a>
                             </td>

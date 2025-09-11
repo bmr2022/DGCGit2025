@@ -1,7 +1,11 @@
 ﻿@model eTactWeb.DOM.Models.TrailBalanceModel;
+@using Microsoft.AspNetCore.Http
+@using System.Reflection.PortableExecutable
+@inject IHttpContextAccessor HttpContextAccessor
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
+    string CompanyName = HttpContextAccessor.HttpContext.Session.GetString("CompanyName");
 }
 <style>
     .hidden-column {
@@ -667,14 +671,50 @@
 
         $('#sendToExcel').click(function () {
             let table = $("#ReportTable");
-            console.log(table);
-            TableToExcel.convert(table[0], {
-                name: `ReportTable.xlsx`,
-                sheet: {
-                    name: 'ReportTable'
-                }
+
+            // Clone the table so you don’t mess with the real one
+            let tempTable = table.clone();
+
+            // Add company and date info as header rows
+            let companyName = "@CompanyName";
+            let fromDate = $("#FromDate").val();
+            let toDate = $("#ToDate").val();
+            let colCount = tempTable.find("tr:first th").length;
+
+            let headerHtml = `
+            <thead>
+                <tr>
+                    <th colspan="${colCount}" style="text-align:center; font-weight:bold; font-size:16px;">
+                        Company Name: ${companyName}
+                    </th>
+                </tr>
+                <tr>
+                    <th colspan="${colCount}" style="text-align:center; font-weight:bold;">
+                        From Date: ${fromDate} &nbsp;&nbsp; To Date: ${toDate}
+                    </th>
+                </tr>
+            </thead>
+            `;
+
+            let footerHtml = `
+            <tfoot>
+                <tr>
+                    <td colspan="${colCount}" style="text-align:center; font-weight:bold;">
+                        *** End of Report ***
+                    </td>
+                </tr>
+            </tfoot>
+            `;
+
+            tempTable.prepend(headerHtml);
+            tempTable.append(footerHtml);
+
+            TableToExcel.convert(tempTable[0], {
+                name: `TrailBalanceData.xlsx`,
+                sheet: { name: 'ReportTable' }
             });
         });
+
         function formatDate1(date) {
             var day = ("0" + date.getDate()).slice(-2);
             var month = ("0" + (date.getMonth() + 1)).slice(-2);

@@ -57,7 +57,9 @@ namespace eTactWeb.DOM.Models
         public int PageNumber {  get; set; }
         public int TotalRecords {  get; set; }
         public int PageSize { get; set; }
-
+        public string DashboardTypeBack {  get; set; }
+        public string FromDateBack {  get; set; }
+        public string ToDateBack { get; set; }
         private IList<SelectListItem> _YesNo = new List<SelectListItem>()
         {
             new() { Value = "Y", Text = "Yes" },
