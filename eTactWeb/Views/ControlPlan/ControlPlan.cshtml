@@ -90,7 +90,7 @@
                                     <label asp-for="CntPlanEntryId" class="form-label">Entry Id</label>
                                     <input asp-for="CntPlanEntryId" class="form-control" readonly/>
                                 </div>
-                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:120px;">
                                     <label asp-for="Entry_Date" class="form-label">Entry Date</label>
                                     <input asp-for="Entry_Date" class="form-control" readonly/>
 
@@ -108,13 +108,13 @@
                                     <label asp-for="RevNo" class="form-label" style="color:red">Rev No*</label>
                                     <input asp-for="RevNo" class="form-control" value="@(Model.Mode == "U" ? Model.RevNo : "1")" />
                                 </div>
-                               <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" >
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:140px;">
                                     <label asp-for="EffectiveDate" class="form-label">Effective Date</label>
                                     <input asp-for="EffectiveDate" class="form-control" readonly/>
                                </div>
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                     <label asp-for="PartCode" class="form-label" style="color:red">Part Code*</label>
-                                    <select class="form-control" id="PartCode" asp-for="PartCode" onchange="checkItemOrPart()">
+                                    <select class="form-control" id="PartCode" asp-for="PartCode">
                                         <option value="">-Select-</option>
                                         @if (Model.Mode == "U" || Model.Mode == "V")
                                         {
@@ -127,7 +127,7 @@
 
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                     <label asp-for="ItemName" class="form-label" style="color:red"> Item Name*</label>
-                                    <select class="form-control"  id="ItemName" asp-for="ItemName" onchange="checkItemOrPart()">
+                                    <select class="form-control"  id="ItemName" asp-for="ItemName" >
                                         <option value="">-Select-</option>
                                         @if (Model.Mode == "U" || Model.Mode == "V")
                                         {
@@ -163,7 +163,8 @@
                                     <input asp-for="Characteristic" class="form-control" />
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:220px;">
-                                    <label asp-for="EvalutionMeasurmentTechnique" class="form-label" style="color:red">Evalution MeasurmentTechnique*</label>
+                                    <label asp-for="EvalutionMeasurmentTechnique" class="form-label" style="color:red">Evalution Measurment
+                                        Technique*</label>
                                     <input asp-for="EvalutionMeasurmentTechnique" class="form-control" />
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" >
@@ -228,7 +229,7 @@
                                     <input asp-for="FrequencyofTesting" class="form-control" value="5"/>
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:140px;">
-                                    <label asp-for="InspectionBy" class="form-label">InspectionBy</label>
+                                    <label asp-for="InspectionBy" class="form-label">Inspection By</label>
                                     <select class="form-control" id="InspectionBy" asp-for="InspectionBy" style="width:130px;">
                                         <option value="@Model.InspectionBy">-Select-</option>
                                     </select>
@@ -240,7 +241,7 @@
                                     <input asp-for="Remarks" class="form-control" />
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:140px">
-                                    <label asp-for="RejectionPlan" class="form-label">RejectionPlan</label>
+                                    <label asp-for="RejectionPlan" class="form-label">Rejection Plan</label>
                                     <select class="form-control" id="RejectionPlan" asp-for="RejectionPlan" style="width:130px;">
                                         <option value="@Model.RejectionPlan">-Select-</option>
                                     </select>
@@ -271,8 +272,8 @@
                                 
                                 <div class="col d-flex align-items-center" style="gap: 10px;">
                                 
-                                <input type="file" id="importFile" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" class="form-control" style="width: 250px;"/>
-                                <button type="button" class="btn btn-success" id="btnImport">Import to Grid</button>
+                                <input type="file" id="importFile" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" class="form-control" style="width: 200px;"/>
+                                    <button type="button" class="btn btn-success btn-sm" id="btnImport">Import to Grid</button>
                                     <a class="btn btn-secondary btn-sm" onclick="ExportItems();">
                                         @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
                                         <i class="fa-solid fa-file-import" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
@@ -296,7 +297,7 @@
                                                     <th>Action</th>
                                                     <th>Seq No</th>
                                                     <th>Characteristic</th>
-                                                    <th>Evalution MeasurmentTechnique</th>
+                                                    <th>Evalution Measurment Technique</th>
                                                     <th>Control Method</th>
                                                     <th>Specification From</th>
                                                     <th>Operator</th>
@@ -306,8 +307,7 @@
                                                  
                                                     <th>Remarks</th>
                                                     <th>Rejection Plan</th>
-                                                    <th>Drawing No</th>
-
+                                                   
                                                 </tr>
                                             </thead>
                                             <tbody id="divControlPlanGrid">
@@ -531,7 +531,7 @@
                         <h4>
                             @ViewData["Title"] - @Model.Yearcode
                             <span class="d-flex float-end" style="margin-top:-2px;">
-                                <a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                                <a asp-action="ControlPlanDashBoard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
                                     <i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
                                     Dashboard
                                 </a>
@@ -709,8 +709,15 @@
                 }
             });
         });
+        debugger
+        if ($('#Mode').val() !== "U" && $('#Mode').val() !== "V") {
+            $('#ItemName,#PartCode').change(function () {
+                checkItemOrPart();
+            });
+        }
 
-        $('#ItemName').change(function () {
+       
+            $('#ItemName').change(function () {
             $('#ItemCode').val($('#ItemName').val());
         });
         $('#PartCode').change(function () {
@@ -771,13 +778,13 @@
 
                 // Replace buttons
                 $('#updateBtnHeader').replaceWith(`
-                    <button type="submit" class="btn btn-sm btn-primary" id="updateBtnHeader">
+                    <button type="submit" class="btn btn-sm btn-primary submitBTN" id="updateBtnHeader">
                         <i class="fa-solid fa-floppy-disk fa-fw fa-lg"></i> SUBMIT
                     </button>
                 `);
 
                 $('#updateBtnFooter').replaceWith(`
-                    <button type="submit" class="btn btn-sm btn-primary" id="updateBtnFooter">
+                            <button type="submit" class="btn btn-sm btn-primary submitBTN" id="updateBtnFooter">
                         <i class="fa-solid fa-floppy-disk fa-fw fa-lg"></i> SUBMIT
                     </button>
                 `);
@@ -822,13 +829,13 @@
 
                 // Replace buttons
                 $('#updateBtnHeader').replaceWith(`
-                            <button type="submit" class="btn btn-sm  btn-primary bg-gradient" id="updateBtnHeader">
+                                    <button type="submit" class="btn btn-sm  btn-primary bg-gradient submitBTN" id="updateBtnHeader">
                         <i class="fa fa-pencil-square fa-fw fa-lg"></i> UPDATE
                     </button>
                 `);
 
                 $('#updateBtnFooter').replaceWith(`
-                            <button type="submit" class="btn btn-sm  btn-primary bg-gradient" id="updateBtnFooter">
+                                    <button type="submit" class="btn btn-sm  btn-primary bg-gradient submitBTN" id="updateBtnFooter">
                         <i class="fa fa-pencil-square fa-fw fa-lg"></i> UPDATE
                     </button>
                 `);
@@ -849,45 +856,69 @@
         // });
         let isNavigated = false;
 
+        // function checkItemOrPart() {
+        //     if (isNavigated) return; // prevent re-trigger
+        //     isNavigated = true;
+
+        //     const itemCode = $('#ItemCode').val();
+        //     const partCode = $('#PartCode').val();
+        //     const itemName = $('#ItemCode').val();
+
+        //     const urlParams = new URLSearchParams(window.location.search);
+        //     if (urlParams.get('ItemCode') == itemCode) {
+        //         isNavigated = false;
+        //         return;
+        //     }
+
+        //     if (itemCode) {
+        //         const id = '@Model.CntPlanEntryId' || 0;
+        //         const yc = '@Model.CntPlanYearCode' || 0;
+        //         const mode = '@Model.Mode' || '';
+        //         //const mode = urlParams.get('Mode') || 'U';
+        //         const entryDate = '@Model.CntPlanEntryDate';
+        //         const revNo = '@Model.RevNo';
+
+        //         const encodedPartCode = encodeURIComponent(partCode);
+        //         const encodedItemName = encodeURIComponent(itemName);
+
+        //         const encodedRevNo = encodeURIComponent(revNo);
+        //         const encodedEntryDate = encodeURIComponent(entryDate);
+
+        //         const url = `@Url.Action("ControlPlan", "ControlPlan")?ItemCode=${itemCode}&ID=${id}&YC=${yc}&Mode=${mode}&EntryDate=${encodedEntryDate}&RevNo=${encodedRevNo}&PartCode=${encodedPartCode}&ItemName=${encodedItemName}&isFromPartCode=true`;
+        //         console.log('Navigating to:', url);
+        //         window.location.href = url;
+        //     }
+        // }
+        let redirected = false;
+
         function checkItemOrPart() {
-            if (isNavigated) return; // prevent re-trigger
-            isNavigated = true;
+            var itemCode = $("#PartCode").val();
+            var partCode = $("#PartCode").val();
 
-            const itemCode = $('#ItemCode').val();
-            const partCode = $('#PartCode').val();
-            const itemName = $('#ItemCode').val();
+            $.getJSON('/ControlPlan/CheckItemOrPart', { itemCode: itemCode, partCode: partCode }, function (response) {
+                if (response.exists) {
+                    // build url
+                    var url = "/ControlPlan/Index?Mode=U"
+                        + "&ID=" + response.id
+                        + "&YC=" + response.yc;
 
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get('ItemCode') == itemCode) {
-                isNavigated = false;
-                return;
-            }
-
-            if (itemCode) {
-                const id = '@Model.CntPlanEntryId' || 0;
-                const yc = '@Model.CntPlanYearCode' || 0;
-                const mode = '@Model.Mode' || '';
-                //const mode = urlParams.get('Mode') || 'U';
-                const entryDate = '@Model.CntPlanEntryDate';
-                const revNo = '@Model.RevNo';
-
-                const encodedPartCode = encodeURIComponent(partCode);
-                const encodedItemName = encodeURIComponent(itemName);
-
-                const encodedRevNo = encodeURIComponent(revNo);
-                const encodedEntryDate = encodeURIComponent(entryDate);
-
-                const url = `@Url.Action("ControlPlan", "ControlPlan")?ItemCode=${itemCode}&ID=${id}&YC=${yc}&Mode=${mode}&EntryDate=${encodedEntryDate}&RevNo=${encodedRevNo}&PartCode=${encodedPartCode}&ItemName=${encodedItemName}&isFromPartCode=true`;
-                console.log('Navigating to:', url);
-                window.location.href = url;
-            }
+                    // redirect to ViewByID (loads old data)
+                    window.location.href = url;
+                }
+                else {
+                    // new entry → just continue
+                    console.log("No old data found, create new");
+                }
+            });
         }
+
+
 
 
         // function checkItemOrPart() {
         //     var itemCode = $('#PartCode').val();
         //     if (itemCode) {
-        //         window.location.href = '@Url.Action("ControlPlan", "ControlPlan")?ItemCode=' + itemCode;
+        //       
         //     }
         // }
         function ViewFile(url) {
