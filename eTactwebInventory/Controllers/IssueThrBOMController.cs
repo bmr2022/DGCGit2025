@@ -47,6 +47,7 @@ namespace eTactWeb.Controllers
             HttpContext.Session.Remove("KeyIssThrBomGrid");
             HttpContext.Session.Remove("KeyIssThrBomScannedGrid");
             HttpContext.Session.Remove("KeyIssThrBomFGGrid");
+            HttpContext.Session.Remove("AllowBatchChange");
             var MainModel = new IssueThrBom();
             MainModel.FromDate = HttpContext.Session.GetString("FromDate");
             MainModel.ToDate = HttpContext.Session.GetString("ToDate");
@@ -94,6 +95,7 @@ namespace eTactWeb.Controllers
             HttpContext.Session.Remove("KeyIssThrBomGrid");
             HttpContext.Session.Remove("KeyIssThrBomScannedGrid");
             HttpContext.Session.Remove("KeyIssThrBomFGGrid");
+            HttpContext.Session.Remove("AllowBatchChange");
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
             {
                 MainModel = await _IIssueThrBOM.GetViewByID(ID, YC).ConfigureAwait(false);
@@ -531,6 +533,13 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+        [HttpPost]
+        public IActionResult SetAllowBatchChangeFlag(bool allow)
+        {
+            HttpContext.Session.SetString("AllowBatchChange", allow ? "Y" : "N");
+            return Ok();
+        }
+
         public async Task<IActionResult> GetItemDetailFromUniqBatch(string UniqBatchNo, int YearCode, string TransDate, string ReqNo, int ReqYearCode, string ReqDate)
         {
             var MainModel = new IssueThrBom();
@@ -680,7 +689,23 @@ namespace eTactWeb.Controllers
                                 decimal requiredQty = item.ReqQty; // ReqQty from requisition
                                 decimal newQty = item.IssueQty;    // Qty for this batch
 
-                               
+                                
+                                var allowBatchChange = HttpContext.Session.GetString("AllowBatchChange");
+                                if (allowBatchChange != "Y")
+                                {
+                                    if (JSON?.Result != null && JSON.Result.Tables.Count > 0)
+                                    {
+                                        foreach (DataRow row in JSON.Result.Tables[0].Rows)
+                                        {
+                                            if (row["uniqueBatchNo"] != DBNull.Value &&
+                                                row["uniqueBatchNo"].ToString() != UniqBatchNo)
+                                            {
+                                                return StatusCode(209, "can not add new stock");
+                                            }
+                                        }
+                                    }
+                                }
+
                                 if (IssueThrBomDetailGrid.Where(x => x.uniqueBatchNo == item.uniqueBatchNo).Any())
                                 {
                                     return StatusCode(207, "Duplicate");
@@ -815,6 +840,47 @@ namespace eTactWeb.Controllers
                 HttpContext.Session.SetString("KeyIssThrBom", serializedGrid);
             }
             return PartialView("_IssueThrBOMMemoryGrid", MainModel);
+        }
+
+        public IActionResult DeleteScannedItemRow(int SeqNo)
+        {
+            var MainModel = new IssueThrBom();
+            string modelJson = HttpContext.Session.GetString("KeyIssThrBomScannedGrid");
+            var IssueThrBomGrid = new List<IssueThrBomDetail>();
+
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                IssueThrBomGrid = JsonConvert.DeserializeObject<List<IssueThrBomDetail>>(modelJson);
+            }
+
+            if (IssueThrBomGrid != null && IssueThrBomGrid.Count > 0)
+            {
+                if (SeqNo > 0 && SeqNo <= IssueThrBomGrid.Count)
+                {
+                    IssueThrBomGrid.RemoveAt(SeqNo - 1);
+
+                    // resequence
+                    int newSeq = 1;
+                    foreach (var item in IssueThrBomGrid)
+                    {
+                        item.seqno = newSeq++;
+                    }
+                }
+
+                MainModel.ItemDetailGrid = IssueThrBomGrid;
+
+                if (IssueThrBomGrid.Count == 0)
+                {
+                    HttpContext.Session.Remove("KeyIssThrBomScannedGrid");
+                }
+                else
+                {
+                    string serializedGrid = JsonConvert.SerializeObject(IssueThrBomGrid);
+                    HttpContext.Session.SetString("KeyIssThrBomScannedGrid", serializedGrid);
+                }
+            }
+
+            return PartialView("_IssueThrByScanningGrid", MainModel);
         }
 
 

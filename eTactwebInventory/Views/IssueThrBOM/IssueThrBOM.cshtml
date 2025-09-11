@@ -1242,6 +1242,7 @@
                     if ($('#batchPassCode').val() == $('#AllowBatchChangePassWord').val()) {
                         var rowCounter = $('#divIssueThrBOMGrid tr').length;
                         Allowed = true;
+                        $.post('@Url.Action("SetAllowBatchChangeFlag")', { allow: true });
                         for (var i = 1; i <= rowCounter; i++) {
                             $('#MainGridBatchNo-' + i).css("pointer-events", "auto");
                             $('#MainGridUniqueBatchNo-' + i).css("pointer-events", "auto");
@@ -1429,6 +1430,17 @@
                                          else if (data === "Cannot scan another batch.Req. Qty already fulfilled for item." && (xhr.statusCode === 208 || xhr.responseText === "Cannot scan another batch.Req. Qty already fulfilled for item.")) {
                                         $.notify('Cannot scan another batch.Req. Qty already fulfilled for item.', "info");
                             }
+                            else if (data === "can not add new stock" && (xhr.statusCode === 209 || xhr.responseText === "can not add new stock")) {
+                                 $('#IssuethrbomWithScannerBox').modal("hide");
+                               AllowBatchChange(1)
+                                
+                                if (Allowed == true) {
+                                     $('#divIssueByScanning').html(data);
+                                }else{
+                                     $.notify('Cannot scan new stock .', "info");
+                                }
+                            }
+
                             else if (xhr.status == 203) {
                                 $.notify(data, "info");
                             }
@@ -1437,9 +1449,13 @@
                                 //$.notify("Item Added to Grid", "success");
                             }
                             $('#ScanUniqueBatchNo').val('');
+                            $('#ScanUniqueBatchNo').val('').focus();
+
                         },
                         error: function (errMsg) {
                             $.notify(errMsg, { position: "top center", className: "error" });
+                            $('#ScanUniqueBatchNo').val('').focus();
+
                         }
                     });
                 });
@@ -2117,6 +2133,23 @@
                         }
                     });
                 }
+                        function DeleteScannedItemRow(seqno) {
+          
+
+            $.ajax({
+                type: "POST",
+                 url: '@Url.Action("DeleteScannedItemRow")',
+                data: { SeqNo: seqno },
+                success: function (data) {
+                    // Replace the grid with updated partial view
+                    $('#divIssueByScanning').html(data);
+                    $.notify("Row deleted successfully.", "success");
+                },
+                error: function (xhr) {
+                    $.notify("Error deleting row: " + xhr.responseText, "error");
+                }
+            });
+        }
 
                 function ExportBomDetailList() {
                     $(".BomDetailtable").table2excel({
