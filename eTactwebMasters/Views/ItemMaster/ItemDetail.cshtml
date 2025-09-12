@@ -186,7 +186,7 @@
                                     <div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                         <label asp-for="Store" class="form-label">Store<span style="color:red">*</span></label>
                                         <select asp-for="Store" class="form-select" data-val="false" asp-items="@(new SelectList(Model.StoreList,"Value", "Text"))">
-                                            @* <option value="">-Select-</option> *@
+                                            <option value="">-select-</option>
                                         </select>
                                     </div>
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
@@ -1305,11 +1305,13 @@
             $('#HSNNO').removeClass('valid').addClass('is-invalid');
             Err = 1;
         }
+          if ("@Model.FeatureOption.IsStoreMandatoryInItemMaster" == true || "@Model.FeatureOption.IsStoreMandatoryInItemMaster" == "True") {
          var Store = $('#Store').val().trim();
                 if (Store === "" || Store === "0") {
             $('#Store').removeClass('valid').addClass('is-invalid');
             Err = 1;
         }
+          }
 
                     if (Err === 1) {
                         return false;
