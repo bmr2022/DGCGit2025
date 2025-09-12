@@ -2844,7 +2844,7 @@
 
         // When user clicks "Print"
         $('#btnPrint').click(function () {
-            const printWindow = window.open('', '_blank'); // Open blank tab first (browser-safe)
+            const printWindow = window.open('', '_blank', 'width=900,height=700,toolbar=no,menubar=no,scrollbars=yes,resizable=yes');
 
             $('#SubmitionForm').modal("hide");
 
@@ -2854,7 +2854,7 @@
         });
 
         $('#btnPrintEmail').click(function () {
-            const printWindow = window.open('', '_blank'); // Open blank tab first (browser-safe)
+            const printWindow = window.open('', '_blank', 'width=900,height=700,toolbar=no,menubar=no,scrollbars=yes,resizable=yes');
             const sendWindow = window.open('', '_blank'); // Open blank tab first (browser-safe)
 
 
@@ -2895,16 +2895,30 @@
                     if (res && res.status === "Success") {
                         if (shouldPrint && res.entryId && res.yearCode && printWindow && !shouldSend) {
                             const printUrl = '/SaleOrder/PrintReport?EntryId=' + res.entryId + '&YearCode=' + res.yearCode;
-                            printWindow.location.href = printUrl;
+
+                            printWindow.location.replace(printUrl); // navigate to report
+                            printWindow.onload = function () {
+                                printWindow.document.title = "Sale Order Report";
+                            };
                         }
                         else if (shouldPrint && shouldSend) {
                             const printUrl = '/SaleOrder/PrintReport?EntryId=' + res.entryId + '&YearCode=' + res.yearCode;
-                            const sendUrl = '/SaleOrder/SendReport?EntryId=' + res.entryId + '&YearCode=' + res.yearCode + '&EmailTo=' + Email + '&CC1=' + CC1 + '&CC2=' + CC2 + '&CC3=' + CC3 + '&Sono=' + CustOrderNo;
-                            printWindow.location.href = printUrl;
-                            /* sendWindow.location.href = sendUrl; */
-                            $.get(sendUrl);
+                            const sendUrl = '/SaleOrder/SendReport?EntryId=' + res.entryId + '&YearCode=' + res.yearCode +
+                                '&EmailTo=' + Email + '&CC1=' + CC1 + '&CC2=' + CC2 + '&CC3=' + CC3 + '&Sono=' + CustOrderNo;
 
+                            // Print popup
+                            printWindow.location.replace(printUrl);
+                            printWindow.onload = function () {
+                                printWindow.document.title = "Sale Order Report";
+                            };
+
+                            // Send popup
+                            sendWindow.location.replace(sendUrl);
+                            sendWindow.onload = function () {
+                                sendWindow.document.title = "Send Sale Order Report";
+                            };
                         }
+
                         else if (ShouldEway) {
                             const ewayModel = {
                                 EntryId: res.entryId,
