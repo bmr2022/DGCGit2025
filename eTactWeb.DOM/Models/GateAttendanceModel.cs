@@ -126,5 +126,20 @@ public class GateAttendanceModel : TimeStamp
     public List<string> DayHeaders { get; set; } = new(); // dynamic column headers
     public Dictionary<string, string> Attendance { get; set; } = new(); // dynamic day-wise In/Out
     public List<GateAttendanceModel> GateAttDetailsList { get; set; }
+    public List<GateAttendanceHolidayModel> HolidayList { get; set; }
 }
 
+public class GateAttendanceHolidayModel
+{
+    public int HolidayEntryId { get; set; }
+    public int HolidayYear { get; set; }
+    public string HolidayName { get; set; }
+    public string HalfDayFullDay { get; set; }
+    public DateTime? HolidayEffFrom { get; set; }
+    public DateTime? HolidayEffTill { get; set; }
+    public string DayName { get; set; }
+    public int CategoryId { get; set; }
+    public string DayType { get; set; }  // e.g. WEEKOFF, HOLIDAY
+    public string AllowedCompOff { get; set; } // "YES" / "NO"
+    public string OverrideWeekoff { get; set; } // "YES" / "NO"
+}

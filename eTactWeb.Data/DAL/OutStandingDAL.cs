@@ -132,7 +132,8 @@ namespace eTactWeb.Data.DAL
 															  AccYearCode = row["AccYearCode"] == DBNull.Value ? string.Empty : row["AccYearCode"].ToString(),
                                                               DocEntryId = row["DocEntryId"] == DBNull.Value ? 0 : Convert.ToInt32(row["DocEntryId"]),
                                                               SalesPersonName = row["SalesPersonName"] == DBNull.Value ? string.Empty : row["SalesPersonName"].ToString(),
-                                                              ReportType = outstandingType
+                                                              ReportType = outstandingType,
+                                                              GroupName = GroupName,
 														  }).ToList();
 						}
 						else

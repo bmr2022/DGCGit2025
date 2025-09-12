@@ -553,7 +553,23 @@
 					$("#PartCodeText").val(firstItem.PartCode).data("itemcode", firstItem.ItemCode);
 					$("#ItemNameText").val(firstItem.ItemName);
 					$('#ItemCode').val(firstItem.ItemCode);
-					$('#PartCode').val(firstItem.PartCode);
+							$('#PartCode').val(firstItem.ItemCode);
+									$.ajax({
+						type: "GET",
+						url: "/PurchaseOrder/AltUnitConversion",
+						dataType: "json",
+						async: false,
+						data: { ItemCode: $('#PartCode').val(), AltQty: 0, UnitQty: $('#POQty').val() },
+						success: function (data, status, error) {
+							if (data != null) {
+								var obj = $.parseJSON(data);
+								$('#AltPOQty').val(obj.Result[0].AltUnitValue);
+							}
+						},
+						error: function (req, status, error) {
+							alert(error);
+						}
+					});
 				}
 
 						

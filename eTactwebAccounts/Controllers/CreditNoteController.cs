@@ -12,7 +12,6 @@ using System.Data;
 using System.Globalization;
 using Microsoft.AspNetCore.Mvc;
 using System.Runtime.Caching;
-using eTactWeb.Services.Helpers;
 
 namespace eTactWeb.Controllers
 {
@@ -29,7 +28,7 @@ namespace eTactWeb.Controllers
         }
         [HttpGet]
         [Route("{controller}/Index")]
-        public async Task<IActionResult> CreditNote([ModelBinder(BinderType = typeof(Base64Binder))] int ID, string Mode, [ModelBinder(BinderType = typeof(Base64Binder))] int YearCode, [ModelBinder(BinderType = typeof(Base64Binder))] string DashboardType = "", [ModelBinder(BinderType = typeof(Base64Binder))] int AccountCode = 0)
+        public async Task<IActionResult> CreditNote( int ID, string Mode, int YearCode, string FromDate = "", string ToDate = "", int GroupCode=0,string VoucherNo = "", string VoucherType = "", string DashboardType = "", int AccountCode = 0)
         {
             AccCreditNoteModel model = new AccCreditNoteModel();
             ViewData["Title"] = "Credit Note Details";

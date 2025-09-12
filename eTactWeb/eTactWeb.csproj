@@ -131,12 +131,15 @@
 	  <ProjectReference Include="..\eTactWeb.DOM\eTactWeb.DOM.csproj" />
 	  <ProjectReference Include="..\eTactWeb.Services\eTactWeb.Services.csproj" />
 	  <ProjectReference Include="..\eTactwebAccounts\eTactwebAccounts.csproj" />
+	  <ProjectReference Include="..\eTactwebBOT\eTactwebBOT.csproj" />
 	  <ProjectReference Include="..\eTactwebHR\eTactwebHR.csproj" />
 	  <ProjectReference Include="..\eTactwebInventory\eTactwebInventory.csproj" />
 	  <ProjectReference Include="..\eTactwebMasters\eTactwebMasters.csproj" />
+	  <ProjectReference Include="..\eTactwebPPAP\eTactwebPPAP.csproj" />
 	  <ProjectReference Include="..\eTactwebPurchase\eTactwebPurchase.csproj" />
 	  <ProjectReference Include="..\eTactwebQuality\eTactwebQuality.csproj" />
 	  <ProjectReference Include="..\eTactwebSales\eTactwebSales.csproj" />
+	  <ProjectReference Include="..\eTactwebToolAndMaintenance\eTactwebToolAndMaintance.csproj" />
 	</ItemGroup>
 	<ItemGroup>
 	  <Content Update="appsettings.json">

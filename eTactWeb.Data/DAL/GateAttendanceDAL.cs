@@ -62,11 +62,7 @@ public class GateAttendanceDAL
                 var allColumns = oDataSet.Tables[0].Columns.Cast<DataColumn>()
                                  .Select(c => c.ColumnName)
                                  .ToList();
-
-                //// filter only day-wise columns (like "1(Intime)", "1(OutTime)", ...)
-                //var dayCols = allColumns.Where(c => c.Contains("(Intime)") || c.Contains("(OutTime)") || c.Contains("FromTime") || c.Contains("ToTime")).Select(x => x.ToLower())
-                //                        .ToList();
-
+                Data.GateAttYearCode = YearCode;
                 if (DayOrMonthType == "Daily")
                 {
                     Data.DayHeaders = new List<string> { "FromTime", "ToTime" };
@@ -76,7 +72,7 @@ public class GateAttendanceDAL
                 {
                     daysInMonth = DateTime.DaysInMonth(YearCode, AttMonth);
                     Data.DayHeaders = new List<string>();
-
+                    Data.strEmpAttMonth = new DateTime(YearCode, AttMonth, 1).ToString("MMM");
                     for (int d = 1; d <= daysInMonth; d++)
                     {
                         Data.DayHeaders.Add($"{d}(InTime)");
@@ -124,6 +120,68 @@ public class GateAttendanceDAL
         }
         return Data;
     }
+
+    public async Task<GateAttendanceModel> GetHolidayList(int EmpCatId, DateTime Attdate, int YearCode)
+    {
+        var Data = new GateAttendanceModel();
+        Data.HolidayList = new List<GateAttendanceHolidayModel>();
+        DataSet? oDataSet = new DataSet();
+        var model1 = new GateAttendanceModel();
+        try
+        {
+            var AttndanceDt = CommonFunc.ParseFormattedDate(Attdate.ToString("dd/MMM/yyyy"));
+            using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
+            {
+                DateTime now = DateTime.Now;
+                DateTime firstDayOfMonth = new DateTime(now.Year, now.Month, 1);
+                SqlCommand oCmd = new SqlCommand("HRSPGateAttendanceMainDetail", myConnection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+                oCmd.Parameters.AddWithValue("@flag", "GetHoliday");
+                oCmd.Parameters.AddWithValue("@EmpCateid", EmpCatId);
+                oCmd.Parameters.AddWithValue("@AttndanceDt", AttndanceDt);
+                await myConnection.OpenAsync();
+                using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
+                {
+                    oDataAdapter.Fill(oDataSet);
+                }
+            }
+            if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+            {
+                Data.GateAttYearCode = YearCode;
+                foreach (DataRow dr in oDataSet.Tables[0].Rows)
+                {
+                    var HolidayList = new GateAttendanceHolidayModel
+                    {
+                        HolidayEntryId = dr["HolidayEntryId"] != DBNull.Value ? Convert.ToInt32(dr["HolidayEntryId"]) : 0,
+                        HolidayYear = dr["HolidayYear"] != DBNull.Value ? Convert.ToInt32(dr["HolidayYear"]) : 0,
+                        HolidayName = dr["HolidayName"].ToString(),
+                        HalfDayFullDay = dr["HalfDayFullDay"].ToString(),
+                        HolidayEffFrom = string.IsNullOrEmpty(dr["HolidayEffFrom"].ToString()) ? new DateTime() : Convert.ToDateTime(dr["HolidayEffFrom"]),
+                        HolidayEffTill = string.IsNullOrEmpty(dr["HolidayEffTill"].ToString()) ? new DateTime() : Convert.ToDateTime(dr["HolidayEffTill"]),
+                        DayName = dr["DayName"].ToString(),
+                        CategoryId = dr["CategoryId"] != DBNull.Value ? Convert.ToInt32(dr["CategoryId"]) : 0,
+                        DayType = dr["DayType"].ToString()
+                    };
+
+                    Data.HolidayList.Add(HolidayList);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            dynamic Error = new ExpandoObject();
+            Error.Message = ex.Message;
+            Error.Source = ex.Source;
+        }
+        finally
+        {
+            oDataSet.Dispose();
+        }
+        return Data;
+    }
+
     public async Task<ResponseResult> GetFormRights(int userId)
     {
         var _ResponseResult = new ResponseResult();

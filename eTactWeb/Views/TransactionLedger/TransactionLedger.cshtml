@@ -1,7 +1,11 @@
 ﻿@model eTactWeb.DOM.Models.TransactionLedgerModel;
+@using Microsoft.AspNetCore.Http
+@using System.Reflection.PortableExecutable
+@inject IHttpContextAccessor HttpContextAccessor
 @{
     ViewData["Title"] = "TransactionLedger";
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
+    string CompanyName = HttpContextAccessor.HttpContext.Session.GetString("CompanyName");
 }
 @{
     var dynamicTitle = Model.ReportType;
@@ -219,39 +223,48 @@
     <script>
 
         $(document).ready(function () {
-            debugger
             console.log("TransactionLedger Ready");
 
-            var currentDate = new Date();
-            var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-            $('#totalRows').text($('#divStockRegisterBody tr').length);
+            // Initialize dates & selects
+            let currentDate = new Date();
+            let firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
             $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatDate1(firstDayOfMonth));
             $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
 
             $('#LedgerName, #ParentLedgerName, #ReportType, #VoucherType, #Group_Ledger').select2();
 
+            // Fill dropdowns (no callbacks, just your original way)
             FillLedgerName();
             updateGroupLedger();
             FillVoucherName();
             FillParentLedgerName();
 
-            // Restore single-step from TrialBalance
-            let accountName = sessionStorage.getItem('AccountName');
-            let reportType = sessionStorage.getItem('ReportType');
-            let parentCode = sessionStorage.getItem('ParentCode');
+            // Restore state from TrailBalance after dropdowns are filled
+            setTimeout(function () {
+                let groupCode = sessionStorage.getItem('GroupCode');
+                let parentCode = sessionStorage.getItem('ParentCode');
+                let accountName = sessionStorage.getItem('AccountName');
+                let reportType = sessionStorage.getItem('ReportType');
 
-            if (parentCode) $('#ParentLedgerName').val(parentCode).trigger('change');
-            if (accountName) $('#LedgerName').val(accountName).trigger('change');
-            if (reportType) $('#ReportType').val(reportType).trigger('change');
+                if (groupCode) $('#Group_Ledger').val(groupCode).trigger('change');
+                if (parentCode) $('#ParentLedgerName').val(parentCode).trigger('change');
+                if (accountName) $('#LedgerName').val(accountName).trigger('change');
+                if (reportType) $('#ReportType').val(reportType).trigger('change');
+            }, 500); // wait 0.5s to ensure dropdowns are filled
 
-            if (reportType || parentCode || accountName) $('#BackButton').show();
-            else $('#BackButton').hide();
+            // Show back button if any previous state exists
+            let history = JSON.parse(sessionStorage.getItem('HistoryStack')) || [];
+            if (history.length > 0
+                || sessionStorage.getItem('GroupCode')
+                || sessionStorage.getItem('ParentCode')
+                || sessionStorage.getItem('AccountName')
+                || sessionStorage.getItem('ReportType')) {
+                $('#BackButton').show();
+            } else {
+                $('#BackButton').hide();
+            }
 
-            sessionStorage.removeItem('AccountName');
-            sessionStorage.removeItem('ReportType');
-            sessionStorage.removeItem('ParentCode');
-
-            // Restore full previous TransactionLedger state
+            // Restore full ledger state if exists
             let ledgerStateBack = JSON.parse(sessionStorage.getItem('LedgerStateBack'));
             if (ledgerStateBack) {
                 Object.keys(ledgerStateBack).forEach(key => {
@@ -262,10 +275,6 @@
                 $('#BackButton').show();
                 sessionStorage.removeItem('LedgerStateBack');
             }
-
-            // Page title
-            var dynamicTitle = "Sales Invoice Ledger";
-            $('#ledgerTitle').text(dynamicTitle);
         });
 
         $('#ReportType').on('change', function () {
@@ -357,49 +366,38 @@
         }
 
         function PressBack() {
-            debugger
             let history = JSON.parse(sessionStorage.getItem('HistoryStack')) || [];
 
             if (history.length === 0) {
-                // Back to TrialBalance main page
+                // Back to TrailBalance main page
                 window.location.href = '/TrailBalance/Index';
                 return;
             }
 
-            let lastStep = history.pop();
-            sessionStorage.setItem('HistoryStack', JSON.stringify(history));
+            let lastStep = history[history.length - 1]; // peek, don’t pop yet
 
             switch (lastStep.action) {
-                case 'TrailDetail':
-                    $('#TrailBalanceGroupName').val(lastStep.params.groupCode).trigger('change');
-                    $('#ReportType').val("TRAILDETAIL").trigger('change');
-                    break;
-
-                case 'TrailParent':
-                    $('#TrailBalanceGroupName').val(lastStep.params.groupCode).trigger('change');
-                    $('#ParentGroupName').val(lastStep.params.parentCode).trigger('change');
-                    $('#ReportType').val("TRAILDETAIL").trigger('change');
-                    break;
-
                 case 'TrailAccount':
-                    $('#ParentLedgerName').val(lastStep.params.parentCode);
-                    $('#LedgerName').val(lastStep.params.accountName);
-                    sessionStorage.setItem('ParentCode', lastStep.params.parentCode);
-                    sessionStorage.setItem('AccountName', lastStep.params.accountName);
-                    sessionStorage.setItem('ReportType', "TRAILDETAIL");
+                    // Don’t pop, just redirect
                     window.location.href = '/TrailBalance/Index';
-                    break;
+                    return;
 
                 case 'MonthlySummary':
+                    history.pop();
+                    sessionStorage.setItem('HistoryStack', JSON.stringify(history));
+
                     $('#ParentLedgerName').val(lastStep.params.parentCode);
                     $('#LedgerName').val(lastStep.params.accountCode);
                     $('#FromDate').datepicker("setDate", lastStep.params.fromDate);
                     $('#ToDate').datepicker("setDate", lastStep.params.toDate);
-                    $('#ReportType').val('TransactionLedgerSummary').trigger('change');
+                    $('#ReportType').val('MonthlySummary').trigger('change');
                     GetTransactionLedgerMonthlySummaryDetailsData();
                     break;
 
                 case 'TransactionLedgerSummary':
+                    history.pop();
+                    sessionStorage.setItem('HistoryStack', JSON.stringify(history));
+
                     $('#ParentLedgerName').val(lastStep.params.parentCode);
                     $('#LedgerName').val(lastStep.params.accountCode);
                     $('#FromDate').datepicker("setDate", lastStep.params.fromDate);
@@ -407,11 +405,9 @@
                     $('#ReportType').val('TransactionLedgerSummary').trigger('change');
                     GetDetailsData(lastStep.params.someFilter);
                     break;
-
-                case 'TransactionLedgerDetail':
-                    GetTransactionLedgerDetailData(lastStep.params.someFilter);
-                    break;
             }
+
+            if (history.length === 0) $('#BackButton').hide();
         }
 
         $('#ParentLedgerName').change(function () {
@@ -742,14 +738,50 @@
 
         $('#sendToExcel').click(function () {
             let table = $("#ReportTable");
-            console.log(table);
-            TableToExcel.convert(table[0], {
-                name: `ReportTable.xlsx`,
-                sheet: {
-                    name: 'ReportTable'
-                }
+
+            // Clone the table so you don’t mess with the real one
+            let tempTable = table.clone();
+
+            // Add company and date info as header rows
+            let companyName = "@CompanyName";
+            let fromDate = $("#FromDate").val();
+            let toDate = $("#ToDate").val();
+            let colCount = tempTable.find("tr:first th").length;
+
+            let headerHtml = `
+                    <thead>
+                        <tr>
+                            <th colspan="${colCount}" style="text-align:center; font-weight:bold; font-size:16px;">
+                                Company Name: ${companyName}
+                            </th>
+                        </tr>
+                        <tr>
+                            <th colspan="${colCount}" style="text-align:center; font-weight:bold;">
+                                From Date: ${fromDate} &nbsp;&nbsp; To Date: ${toDate}
+                            </th>
+                        </tr>
+                    </thead>
+                    `;
+
+            let footerHtml = `
+                    <tfoot>
+                        <tr>
+                            <td colspan="${colCount}" style="text-align:center; font-weight:bold;">
+                                *** End of Report ***
+                            </td>
+                        </tr>
+                    </tfoot>
+                    `;
+
+            tempTable.prepend(headerHtml);
+            tempTable.append(footerHtml);
+
+            TableToExcel.convert(tempTable[0], {
+                name: `TransactionLedgerData.xlsx`,
+                sheet: { name: 'ReportTable' }
             });
         });
+
         function formatDate1(date) {
             var day = ("0" + date.getDate()).slice(-2);
             var month = ("0" + (date.getMonth() + 1)).slice(-2);

@@ -73,7 +73,9 @@
                         <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                         Dashboard
                     </a>
-
+                    <input asp-for="DashboardTypeBack" type="hidden" value="@Model.DashboardTypeBack" />
+                    <input asp-for="FromDateBack" type="hidden" value="@Model.FromDateBack" />
+                    <input asp-for="ToDateBack" type="hidden" value="@Model.ToDateBack" />
                     <partial name="_AddCreditNotePopUp" />
                     @* <partial name="_FormsButton" /> *@
                     <div class="row justify-content-between g-2">

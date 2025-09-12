@@ -22,9 +22,7 @@
             <th data-columnno="5" data-sortorder="asc" class="sortCol">
                 <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Revision No
             </th>
-            <th data-columnno="6" data-sortorder="asc" class="sortCol">
-                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> For/In/Out Process
-            </th>
+           
             <th data-columnno="7" data-sortorder="asc" class="sortCol">
                 <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Part Code
             </th>
@@ -98,7 +96,7 @@
                                     </a>
                                 </div>
                                 <div id="deleteCursorDiv-@Cntr">
-                                    <a class="table-link link-danger" asp-action="DeleteByID" asp-route-EntryId="@item.CntPlanEntryId"  asp-route-YearCode="@item.CntPlanYearCode" asp-route-EntryDate="@item.ActualEntryDate" asp-route-EntryByempId="@ActualEntryByEmpid" asp-route-ID="@item.CntPlanEntryId" asp-route-YC="@item.CntPlanYearCode">
+                                    <a class="table-link link-danger" onclick="confirmDelete(event)" asp-action="DeleteByID" asp-route-EntryId="@item.CntPlanEntryId" asp-route-YearCode="@item.CntPlanYearCode" asp-route-EntryDate="@item.ActualEntryDate" asp-route-EntryByempId="@ActualEntryByEmpid" asp-route-ID="@item.CntPlanEntryId" asp-route-YC="@item.CntPlanYearCode">
                                         <span class="fa-stack">
                                             <i class="fa fa-square fa-stack-2x"></i>
                                             <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
@@ -116,7 +114,7 @@
                        
                         <td>@item.Control_PlanNo</td>
                         <td>@item.RevNo</td>
-                        <td>@item.ForInOutInprocess</td>
+                    
                         <td>@item.PartCode</td>
                         <td>@item.ItemName</td>
                        
