@@ -71,22 +71,28 @@ public class SaleOrderController : Controller
     private LoggerInfo LoggerInfo { get; }
 
 
-    public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string SONO = "", string ShowOnlyAmendItem = "", int AmmNo = 0)
-    {
+	public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string SONO = "", string ShowOnlyAmendItem = "", int AmmNo = 0)
+	{
 
-        string my_connection_string;
-        string contentRootPath = _IWebHostEnvironment.ContentRootPath;
-        string webRootPath = _IWebHostEnvironment.WebRootPath;
-        webReport = new WebReport();
-        
-        ViewBag.EntryId = EntryId;
-        ViewBag.YearCode = YearCode; 
-        ViewBag.SONO = SONO;
-        ViewBag.ShowOnlyAmendItem = ShowOnlyAmendItem;
-        ViewBag.AmmNo = AmmNo;
-        
-        
-            webReport.Report.Load(webRootPath + "\\SOReportNew.frx"); // default report
+		string my_connection_string;
+		string contentRootPath = _IWebHostEnvironment.ContentRootPath;
+		string webRootPath = _IWebHostEnvironment.WebRootPath;
+		webReport = new WebReport();
+		var ReportName = _ISaleOrder.GetReportName();
+		ViewBag.EntryId = EntryId;
+		ViewBag.YearCode = YearCode;
+		ViewBag.SONO = SONO;
+		ViewBag.ShowOnlyAmendItem = ShowOnlyAmendItem;
+		ViewBag.AmmNo = AmmNo;
+		if (!string.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
+		{
+			webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0] + ".frx"); // from database
+		}
+		else
+		{ 
+
+			webReport.Report.Load(webRootPath + "\\SOReportNew.frx"); // default report
+	}
 
         
         
@@ -116,9 +122,18 @@ public class SaleOrderController : Controller
         ViewBag.EntryId = EntryId;
         ViewBag.YearCode = YearCode;
         ViewBag.SONO = Sono;
-       
+        var ReportName = _ISaleOrder.GetReportName();
 
-        webReport.Report.Load(webRootPath + "\\SOReport.frx"); // default report
+        if (!string.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
+        {
+            webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0] + ".frx"); // from database
+        }
+        else
+        {
+
+            webReport.Report.Load(webRootPath + "\\SOReportNew.frx"); // default report
+        }
+        
 
 
 

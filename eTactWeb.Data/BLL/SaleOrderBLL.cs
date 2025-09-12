@@ -21,6 +21,10 @@ public class SaleOrderBLL : ISaleOrder
 	{
 		return await _SaleOrderDAL.GetSOItem(AccountCode, SONO, Year, ItemCode);
 	}
+    public async Task<ResponseResult> GetReportName()
+    {
+        return await _SaleOrderDAL.GetReportName();
+    }
 
     public async Task<ResponseResult> CheckOrderNo(int year, int accountcode, int entryid, string custorderno)
     {
