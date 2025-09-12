@@ -2595,10 +2595,10 @@ formData.append("Mode", $('#Mode').val());
 						ClearItem();
 						var NoData = '<tr class="text-center"><td colspan="28" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
 						$('#divPOItemList').html(NoData);
-						$('#ItemNetAmount').val('0.00'), $('#TotalTaxAmt').val('0.00'), $('#lblItemNetAmount').text('0.00'), $('#NetTotal').val('0.00'), $('#TotalRoundOff').prop('selectedIndex', 0), $('#TotalDiscountAmt').val('0');
+						$('#ItemNetAmount').val('0.00'), $('#TotalTaxAmt').val('0.00'), $('#lblItemNetAmount').text('0.00'), $('#NetTotal').val('0.00'), $('#TotalRoundOff').prop('selectedIndex', 0), /* $('#TotalDiscountAmt').val('0'); */
 					}
 					$('#ItemNetAmount').val('0.00'), $('#TotalTaxAmt').val('0.00'), $('#lblItemNetAmount').text('0.00'), $('#NetTotal').val('0.00'),
-						$('#TotalRoundOff').prop('selectedIndex', 0), $('#TotalDiscountAmt').val('0'), $('#TotalAmtAftrDiscount').val('0.00');
+						$('#TotalRoundOff').prop('selectedIndex', 0);/* $('#TotalDiscountAmt').val('0'), $('#TotalAmtAftrDiscount').val('0.00'); */
 				}
 			}).done(function (data) {
 
