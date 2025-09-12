@@ -1749,6 +1749,8 @@ namespace eTactWeb.Data.DAL
                                     CustomerLocation = row["CustomerLocation"].ToString(),
                                     ItemModel = row["ItemModel"].ToString(),
                                     CustItemCategory = row["CustItemCategory"].ToString(),
+                                    Location = row["Location"].ToString(),
+                                    Vehicle = row["VehicalNo"].ToString(),
                                     Group_Code = row["ItemGroupCode"] != DBNull.Value ? Convert.ToInt32(row["ItemGroupCode"]) : 0,
                                     Group_name = row["Group_name"].ToString()??"",
                                     DeliveryScheduleList = listObject.Where(x => x.DPartCode == Convert.ToInt32(row["ItemCode"])).ToList(),

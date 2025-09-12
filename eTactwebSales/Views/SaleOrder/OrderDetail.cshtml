@@ -823,6 +823,15 @@
                                         <label asp-for="StockQty" class="form-label">Stock Qty</label>
                                         <input asp-for="StockQty" class="form-control" tabindex="-1" readonly disabled />
                                     </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="Location" class="form-label">Location</label>
+                                        <input asp-for="Location" class="form-control" tabindex="-1" readonly disabled />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="Vehicle" class="form-label">Vehicle</label>
+                                        <input asp-for="Vehicle" class="form-control" tabindex="-1" readonly disabled />
+                                    </div>
+
                                     <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12 text-center" style="width:150px">
                                         <button type="button" class="ItemBtn btn btn-sm btn-outline-danger mt-3">
                                             <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
@@ -956,6 +965,8 @@
                                                         <th data-columnno="25" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Model</th>
                                                         <th data-columnno="25" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Cust Item Category</th>
                                                         <th data-columnno="25" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ItemGroup</th>
+                                                        <th data-columnno="25" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Location</th>
+                                                        <th data-columnno="25" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Vehicle No</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody id="divSaleItemGrid">
@@ -2603,6 +2614,13 @@
 
         });
 
+        $('#ItemCode,#PartCode').change(function () {
+            if($('#Mode').val()=='')
+        {
+            GetItemPartCode('ItemCode');
+        }
+        });
+
         function GetServerDate() {
             $.ajax({
                 type: "GET",
@@ -3092,7 +3110,7 @@
 
         function PartCodeChange(ID) {
             $.when(SetPartCodeItem(ID)).done(function () {
-                GetItemPartCode(ID)
+                // GetItemPartCode(ID)
             });
             // copyToClipboardForDropdown("#PartCode");
             if ($('#StoreName').prop("selectedIndex") !== 0) {
@@ -3104,7 +3122,7 @@
 
         function ItemNameChange(ID) {
             SetPartCodeItem(ID);
-            GetItemPartCode(ID);
+            // GetItemPartCode(ID);
             if ($('#StoreName').prop("selectedIndex") !== 0) {
                 StoreChange();
             }
@@ -3135,14 +3153,27 @@
                 url: "@Url.Action("GetItemPartCode")",
                 data: { Code: $('#' + ID).val() },
                 success: function (result, status, xhr) {
+
                     if (result) {
                         var obj = JSON.parse(result);
                         if (!obj) {
                             $('#Unit').val('0'), $('#HSNNo').val('0'), $('#AltUnit').val('NA');
                         }
                         else if (obj.StatusCode == 200 && obj.StatusText == "Success") {
+                            $('#Unit').val("");
                             $('#Unit').val(obj.Result[0].Unit);
+                            $('#HSNNo').val("");
                             $('#HSNNo').val(obj.Result[0].HSNNo);
+                            $('#Location').val("");
+                            $('#Location').val(obj.Result[0].Location);
+                            $('#Vehicle').val("");
+                            $('#Vehicle').val(obj.Result[0].Vehicle);
+                            $('#Rate').val("");
+                            $('#Rate').val(obj.Result[0].SalePrice);
+                            $('#OtherRateCurr').val("");
+                            $('#OtherRateCurr').val(obj.Result[0].SalePrice);
+                            $('#AltUnit').val("");
+                            $('#AltUnit').val("");
                             $('#AltUnit').val(obj.Result[0].AltUnit == null ? 'NA' : obj.Result[0].AltUnit);
                             !$('#AltUnit').val() ? $('#UnitRate').prop('disabled', true) : $('#UnitRate').prop('disabled', false);
                         }
@@ -3966,7 +3997,9 @@
                 "CustomerSaleOrder": $('#CustomerSaleOrder').val(),
                 "CustomerLocation": $('#CustomerLocation').val(),
                 "ItemModel": $('#ItemModel').val(),
-                "CustItemCategory": $('#CustItemCategory').val()
+                "CustItemCategory": $('#CustItemCategory').val(),
+                "Location": $('#Location').val(),
+                "Vehicle": $('#Vehicle').val(),
             }
             //alert('before itemgrid');
 
@@ -4242,6 +4275,8 @@
                             $('#ProjQty2').val(obj[0].ProjQty2);
                             $('#DeliveryDate').val(obj[0].DeliveryDate);
                             $('#OtherRateCurr').val(obj[0].OtherRateCurr);
+                                $('#Location').val(obj[0].Location);
+                                $('#Vehicle').val(obj[0].Vehicle);
                             DelSeqNo = SeqNo;
                             $('#divSaleItemGrid .' + DelSeqNo).remove();
                             if ($('#divSaleItemGrid').children().length == 0) {
