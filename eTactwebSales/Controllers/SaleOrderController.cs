@@ -84,8 +84,11 @@ public class SaleOrderController : Controller
 		ViewBag.SONO = SONO;
 		ViewBag.ShowOnlyAmendItem = ShowOnlyAmendItem;
 		ViewBag.AmmNo = AmmNo;
-		if (!string.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
-		{
+        var val = ReportName.Result.Result.Rows[0].ItemArray[0];
+
+        if (!Convert.IsDBNull(val) && !string.IsNullOrEmpty(val?.ToString()))
+
+        {
 			webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0] + ".frx"); // from database
 		}
 		else

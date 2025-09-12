@@ -263,23 +263,23 @@
                                     </div>
                                     <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                         <label asp-for="Address" class="form-label" style="color:  red;">Address</label>
-                                        <input asp-for="Address" class="form-control" readonly disabled />
+                                        <input asp-for="Address" class="form-control" readonly disabled tabindex="-1"/>
                                     </div>
                                     <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                         <label asp-for="DeliveryAddress" class="form-label" style="color:  red;">Delivery Address</label>
-                                        <input asp-for="DeliveryAddress" class="form-control" readonly disabled />
+                                        <input asp-for="DeliveryAddress" class="form-control" readonly disabled tabindex="-1"/>
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="WEF" class="form-label">WEF</label>
-                                        <input asp-for="WEF" class="form-control" readonly disabled />
+                                        <input asp-for="WEF" class="form-control" readonly disabled tabindex="-1" />
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="SOCloseDate" class="form-label" style="color:  red;"> Close Date</label>
-                                        <input asp-for="SOCloseDate" class="form-control" readonly />
+                                        <input asp-for="SOCloseDate" class="form-control" readonly tabindex="-1" />
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="QuotNo" class="form-label">Quot No</label>
-                                        <select class="form-select" asp-for="QuotNo" asp-items="@(new SelectList(Model.QuotList,"Value","Text"))" onchange="QuotChange(this.id);" readonly disabled>
+                                        <select class="form-select" asp-for="QuotNo" asp-items="@(new SelectList(Model.QuotList,"Value","Text"))" onchange="QuotChange(this.id);" readonly disabled tabindex="-1">
                                             <option value="0">-Select-</option>
                                         </select>
                                     </div>
@@ -291,41 +291,41 @@
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label class="form-label">Quote Date</label>
-                                        <input asp-for="QDate" class="form-control" readonly disabled />
+                                        <input asp-for="QDate" class="form-control" readonly disabled tabindex="-1"/>
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="AmmNo" class="form-label" style="color:  red;">Amm No*</label>
-                                        <input asp-for="AmmNo" class="form-control" readonly disabled />
+                                        <input asp-for="AmmNo" class="form-control" readonly disabled tabindex="-1" />
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="AmmEffDate" class="form-label" style="color:  red;">Amm eff Date*</label>
-                                        <input asp-for="AmmEffDate" class="form-control" />
+                                        <input asp-for="AmmEffDate" class="form-control" tabindex="-1"/>
                                         <input type="hidden" value="@Model.AmmEffDate" id="hiddenAmmEffDate">
                                     </div>
                                     <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="SOConfirmDate" class="form-label">SO Confirm Date</label>
-                                        <input asp-for="SOConfirmDate" class="form-control" readonly disabled />
+                                        <input asp-for="SOConfirmDate" class="form-control" readonly disabled tabindex="-1" />
                                     </div>
                                     <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                         <label asp-for="ConsigneeAccountCode" class="form-label">Consignee</label>
                                         <div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
-                                            <input asp-for="PN2" class="form-check-input" type="checkbox" role="switch" readonly disabled />Show All
+                                            <input asp-for="PN2" class="form-check-input" type="checkbox" role="switch" readonly disabled tabindex="-1" />Show All
                                         </div>
-                                        <select class="form-select" asp-for="ConsigneeAccountCode" data-val="false" asp-items="@(new SelectList(Model.AccountList,"Value","Text"))" readonly disabled>
+                                        <select class="form-select" asp-for="ConsigneeAccountCode" data-val="false" asp-items="@(new SelectList(Model.AccountList,"Value","Text"))" readonly disabled tabindex="-1">
                                             <option value="0">-Select-</option>
                                         </select>
                                     </div>
                                     <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                         <label asp-for="ConsigneeAddress" class="form-label">Consignee Address</label>
-                                        <input asp-for="ConsigneeAddress" class="form-control" readonly disabled />
+                                        <input asp-for="ConsigneeAddress" class="form-control" readonly disabled tabindex="-1" />
                                     </div>
                                     <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                        <button type="button" class="MultiBuyers btn btn-sm btn-outline-success mt-3">
+                                        <button type="button" class="MultiBuyers btn btn-sm btn-outline-success mt-3" tabindex="-1">
                                             <i class="fa-solid fa-calendar-clock fa-fw fa-lg"></i> Multiple Buyers
                                         </button>
                                     </div>
                                     <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                        <button type="button" class="btn btn-sm btn-outline-danger btnClearTax mt-3" style="margin-top:10px;">
+                                        <button type="button" class="btn btn-sm btn-outline-danger btnClearTax mt-3" style="margin-top:10px;" tabindex="-1">
                                             <i class="fa-solid fa-hand-sparkles fa-fw fa-lg"></i>
                                             CLEAR TAX
                                         </button>
@@ -409,15 +409,15 @@
                                     </div>
                                     <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                         <label asp-for="Address" class="form-label" style="color:  red;">Address</label>
-                                        <input asp-for="Address" class="form-control" readonly />
+                                        <input asp-for="Address" class="form-control" readonly tabindex="-1" />
                                     </div>
                                     <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                         <label asp-for="DeliveryAddress" class="form-label" style="color:  red;">Delivery Address</label>
-                                        <input asp-for="DeliveryAddress" class="form-control" />
+                                        <input asp-for="DeliveryAddress" class="form-control" tabindex="-1"/>
                                     </div>
                                     <div class="col-xl-1 col-lg-1 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="WEF" class="form-label" style="color:  red;">WEF</label>
-                                        <input asp-for="WEF" class="form-control" readonly />
+                                        <input asp-for="WEF" class="form-control" readonly tabindex="-1" />
                                     </div>
                                     <div class="col-xl-1 col-lg-1 col-md-3 col-sm-6 col-xs-12">
                                         @if (Model.Mode == "U" || Model.Mode == "V")
@@ -425,56 +425,56 @@
                                             <input type="hidden" value="@Model.SOCloseDate" id="hiddenSOCloseDate">
                                         }
                                         <label asp-for="SOCloseDate" class="form-label" style="color:  red;">Exp. Date</label>
-                                        <input asp-for="SOCloseDate" class="form-control" readonly />
+                                        <input asp-for="SOCloseDate" class="form-control" readonly tabindex="-1" />
                                     </div>
                                     <div class="col-xl-1 col-lg-1 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="QuotNo" class="form-label">Quot No</label>
-                                        <select class="form-select" asp-for="QuotNo" asp-items="@(new SelectList(Model.QuotList,"Value","Text"))" onchange="QuotChange(this.id);">
+                                        <select class="form-select" asp-for="QuotNo" asp-items="@(new SelectList(Model.QuotList,"Value","Text"))" onchange="QuotChange(this.id);" tabindex="-1">
                                             <option value="0">-Select-</option>
                                         </select>
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="QuotYear" class="form-label">Quot Year</label>
-                                        <select class="form-select" asp-for="QuotYear" asp-items="@(new SelectList(Model.QuotYearList,"Value","Text"))">
+                                        <select class="form-select" asp-for="QuotYear" asp-items="@(new SelectList(Model.QuotYearList,"Value","Text"))" tabindex="-1">
                                             <option value="0">-Select-</option>
                                         </select>
                                     </div>
                                     <div class="col-xl-1 col-lg-1 col-md-3 col-sm-6 col-xs-12">
                                         <label class="form-label">Quote Date</label>
-                                        <input asp-for="QDate" class="form-control" readonly disabled />
+                                        <input asp-for="QDate" class="form-control" readonly disabled tabindex="-1"/>
                                     </div>
                                     <div class="col-xl-1 col-lg-1 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="AmmNo" class="form-label">Amm No</label>
-                                        <input asp-for="AmmNo" class="form-control" />
+                                        <input asp-for="AmmNo" class="form-control" tabindex="-1" />
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="AmmEffDate" class="form-label">Amm Date</label>
-                                        <input asp-for="AmmEffDate" class="form-control" readonly />
+                                        <input asp-for="AmmEffDate" class="form-control" readonly tabindex="-1"/>
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:120px">
                                         <label asp-for="SOConfirmDate" class="form-label">SO Confirm Date</label>
-                                        <input asp-for="SOConfirmDate" class="form-control" readonly />
+                                        <input asp-for="SOConfirmDate" class="form-control" readonly tabindex="-1" />
                                     </div>
                                     <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                         <label asp-for="ConsigneeAccountCode" class="form-label">Consignee</label>
                                         <div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
-                                            <input asp-for="PN2" class="form-check-input" type="checkbox" role="switch" />Show All
+                                            <input asp-for="PN2" class="form-check-input" type="checkbox" role="switch" tabindex="-1"/>Show All
                                         </div>
-                                        <select class="form-select" asp-for="ConsigneeAccountCode" data-val="false" asp-items="@(new SelectList(Model.AccountList,"Value","Text"))">
+                                        <select class="form-select" asp-for="ConsigneeAccountCode" data-val="false" asp-items="@(new SelectList(Model.AccountList,"Value","Text"))" tabindex="-1">
                                             <option value="0">-Select-</option>
                                         </select>
                                     </div>
                                     <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                         <label asp-for="ConsigneeAddress" class="form-label">Consignee Address</label>
-                                        <input asp-for="ConsigneeAddress" class="form-control" />
+                                        <input asp-for="ConsigneeAddress" class="form-control" tabindex="-1" />
                                     </div>
                                     <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12" style="width:12%">
-                                        <button type="button" class="MultiBuyers btn btn-sm btn-outline-success mt-3">
+                                        <button type="button" class="MultiBuyers btn btn-sm btn-outline-success mt-3" tabindex="-1">
                                             <i class="fa-solid fa-calendar-clock fa-fw fa-lg"></i> Multiple Buyers
                                         </button>
                                     </div>
-                                    <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12" style="width:12%">
-                                        <button type="button" id="ShowGroupItem" onclick="AddMultipleItems()" class=" btn btn-sm btn-outline-success mt-3">
+                                    <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12" style="width:12%" >
+                                        <button type="button" id="ShowGroupItem" onclick="AddMultipleItems()" class=" btn btn-sm btn-outline-success mt-3" tabindex="-1">
                                             <i class="bi bi-list"></i>ShowGroupItem
                                         </button>
                                     </div>
@@ -485,7 +485,7 @@
                 </div>
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="H_SAGrid">
-                        <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+                        <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid" tabindex="-1">
                             <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Item Detail Grid</strong>
                         </button>
                     </h2>
@@ -726,8 +726,8 @@
                                 <div class="row g-2 gx-3" id="_ItemGrid">
                                     <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:180px">
                                         <label asp-for="Group_Code" class="form-label">Group Name</label>
-                                      
-                                        <select class="form-select" asp-for="Group_Code" style="width:170px">
+
+                                        <select class="form-select" asp-for="Group_Code" style="width:170px" tabindex="-1">
                                             <option value="0">-Select-</option>
                                         </select>
                                     </div>
@@ -743,39 +743,40 @@
                                         <label asp-for="ItemCode" class="form-label" style="color:  red;">Item Name*</label>
                                         <div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
                                             <label id="IN12" class="form-label">Show All</label>
-                                            <input asp-for="IN1" class="form-check-input" type="checkbox" role="switch" />
+                                            <input asp-for="IN1" class="form-check-input" type="checkbox" role="switch" tabindex="-1" />
                                         </div>
                                         <div class="col-xl-12">
-                                            <select class="form-select" style="height:190px;width:290px;" asp-for="ItemCode" asp-items="@(new SelectList(Model.ItemNameList,"Text","Value"))">
+                                            <select class="form-select" style="height:190px;width:290px;" asp-for="ItemCode" asp-items="@(new SelectList(Model.ItemNameList,"Text","Value"))"  tabindex="-1">
                                                 <option value="0">-Select-</option>
                                             </select>
                                         </div>
-                                    </div>
-
-                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:70px">
-                                        <label asp-for="HSNNo" class="form-label" style="color:  red;">HSN No*</label>
-                                        <input asp-for="HSNNo" class="form-control" value="0" />
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="Qty" class="form-label" style="color:  red;">Qty*</label>
                                         <input asp-for="Qty" class="form-control" type="number" step="any" min=0 value="0" onkeyup="CalculateRate();" data-val="false" />
                                     </div>
-                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:70px">
-                                        <label asp-for="Unit" class="form-label" style="color:  red;">Unit*</label>
-                                        <input asp-for="Unit" class="form-control" readonly />
-                                    </div>
-                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:70px">
-                                        <label asp-for="AltQty" class="form-label">Alt Qty</label>
-                                        <input asp-for="AltQty" class="form-control" onkeyup="CalculateRate();" />
-                                    </div>
-                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:70px">
-                                        <label asp-for="AltUnit" class="form-label">Alt Unit</label>
-                                        <input asp-for="AltUnit" class="form-control" value="NA" readonly="readonly" aria-readonly="readonly" />
-                                    </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="">
                                         <label asp-for="Rate" class="form-label" style="color:  red;">Rate*</label>
                                         <input asp-for="Rate" type="number" step="any" min="0" class="form-control" onkeyup="CalculateRate();" />
                                     </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:70px">
+                                        <label asp-for="HSNNo" class="form-label" style="color:  red;">HSN No*</label>
+                                        <input asp-for="HSNNo" class="form-control" value="0" readonly tabindex="-1" />
+                                    </div>
+                                   
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:70px">
+                                        <label asp-for="Unit" class="form-label" style="color:  red;">Unit*</label>
+                                        <input asp-for="Unit" class="form-control" readonly  tabindex="-1"/>
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:70px">
+                                        <label asp-for="AltQty" class="form-label">Alt Qty</label>
+                                        <input asp-for="AltQty" class="form-control" tabindex="-1" onkeyup="CalculateRate();" />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:70px">
+                                        <label asp-for="AltUnit" class="form-label">Alt Unit</label>
+                                        <input asp-for="AltUnit" class="form-control" value="NA"  readonly="readonly" aria-readonly="readonly" />
+                                    </div>
+                                   
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:70px">
                                         <label asp-for="UnitRate" class="form-label" style="color:  red;">Rate/Unit*</label>
                                         <select class="form-select" asp-for="UnitRate" asp-items="Model.UnitRateList" onchange="CalculateRate();"></select>
