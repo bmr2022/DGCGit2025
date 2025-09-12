@@ -693,6 +693,7 @@ namespace eTactWeb.Data.DAL
                 {
                     FO.AllowPartCode = oDataTable.Rows[0]["AutoGen_PartCode"].ToString() == "Y" ? false : true;
                     FO.DuplicateItemName = oDataTable.Rows[0]["DuplicateItemName"].ToString() == "Y" ? true : false;
+                    FO.IsStoreMandatoryInItemMaster = oDataTable.Rows[0]["IsStoreMandatoryInItemMaster"].ToString() == "Y" ? true : false;
                 }
             }
             catch (Exception e)
