@@ -1,0 +1,57 @@
+﻿@model eTactWeb.DOM.Models.Common.AdjustmentModel
+
+<div class="modal fade" id="DisplayAdjDetailModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" style="margin-top: 120px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel"> Adj Detail</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <div class="card-body" style="overflow:scroll;">
+                        <table class="table table-hover table-bordered table-striped mb-0 AdjustmntDetailtable" id="GridLabels">
+                            <thead class="bg-gradient card-headerBG text-light small" style="white-space:break-spaces">
+                                <tr>
+                                    <th>Sr#</th>
+                                    <th></th>
+                                    <th>Action</th>
+                                    <th>VOUCHER NO</th>
+                                    <th>VOUCHER DATE</th>
+                                    <th>MODE OF ADJUSTMENT</th>
+                                    <th>VOUCHER TYPE</th>
+                                    <th>BILL AMT</th>
+                                    <th>REMAINING AMT</th>
+                                    <th>ADJUSTMENT AMT</th>
+                                    <th>DR/CR</th>
+                                    <th>Entry ID</th>
+                                    <th>YEAR</th>
+                                    <th>Open Entry ID</th>
+                                    <th>Open Year Code</th>
+                                </tr>
+                            </thead>
+                            <tbody id="divDisplayAdjustmntDetail">
+                            </tbody>
+                        </table>
+                        <div class="row g-2 gx-3">
+                            <div class="col-12 text-center">
+                                <strong>Total No Of Items : <span id="AdjlblTotalNoOfItems"></span></strong>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="col-sm-3 col-md-6 col-lg-2 col-xl-4 justify-content-center mt-4" style="margin-left:50px;margin-top:10px;">
+                            @* <button class="btn btn-sm btn-outline-success me-3" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="btnAdjExcel">
+                                <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
+                            </button> *@
+                            <button type="button" class="btn btn-sm btn-outline-success btnAddAgnstAdjustment2Grid" onclick="Agnstrefonsave()">
+                                <i class="fa-solid fa-angles-down fa-fw fa-lg"></i>
+                                ADD TO GRID
+                            </button>
+                            <button type="button" class="btn btn-sm btn-danger" style="margin-left: 10px;" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

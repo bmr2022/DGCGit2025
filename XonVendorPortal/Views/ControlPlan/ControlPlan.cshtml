@@ -1,0 +1,1976 @@
+﻿@model eTactWeb.DOM.Models.ControlPlanModel
+
+@{
+    ViewData["Title"] = "ControlPlan";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+@*<div class="d-flex align-items-center p-3 my-2 text-white rounded shadow-sm bg-gradient" style="background-color:darkcyan;">
+    <div class="lh-1">
+    <h3 class="h3 mb-0 text-white lh-1">Account Master</h3>
+    </div>
+    </div>*@
+<form asp-action="ControlPlan" enctype="multipart/form-data" asp-controller="ControlPlan" autocomplete="off" class="form-horizontal" asp-antiforgery=false>
+    <div class="card rounded shadow-lg">
+        <div class="card-header card-headerBG text-light justify-content-center bg-gradient">
+            <h4>
+                ControlPlan - @Model.Yearcode
+                <span class="d-flex float-end" style="margin-top:-2px;">
+                    <a asp-action="ControlPlanDashBoard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                        <i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
+                        Dashboard
+                    </a>
+                    <div class="row justify-content-between g-2">
+                        <div class="col-auto">
+                            @*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
+                            <a href="#" class=" btn btn-primary btn-sm" onclick="back();">
+                                <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+
+                                BACK
+                            </a>
+                        </div>
+                        @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+                        {
+                            <div class="col-auto">
+                                @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                                <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                    @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                    <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                    REFRESH
+                                </a>
+                            </div>
+                            @if (Model.Mode == "U")
+                            {
+                                @*Model.Mode = "U";*@
+                                <div class="col-auto">
+                                    @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+                                    <input type="hidden" id="Mode" name="Mode" asp-for="Mode" value="U" />
+                                    <button type="submit" class="btn btn-sm btn-outline-light bg-gradient submitBTN" id="updateBtnHeader">
+                                        <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                        UPDATE
+                                    </button>
+                                </div>
+                            }
+
+                            else
+                            {
+                                <div class="col-auto">
+                                    @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
+                                    <button type="submit" class="btn btn-primary btn-sm submitBTN" id="submitBTN">
+                                        <i class="fa-solid fa-chevron-circle-right fa-fw fa-lg"></i>
+                                        SUBMIT
+                                    </button>
+                                </div>
+                            }
+                        }
+                    </div>
+                </span>
+            </h4>
+        </div>
+        <div class="card-body bg-light">
+            <div class="accordion shadow-lg" id="accordionAccountMaster">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="B_ItemCategoryDetail">
+                        <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_AccountDetail" aria-expanded="true" aria-controls="B_AccountDetail">
+                            <strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>ControlPlan</strong>
+                          
+                        </button>
+                    </h2>
+                    <div id="B_AccountDetail" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_AccountDetail">
+                        <div class="accordion-body">
+                            <input asp-for="EntryByMachine" type="hidden" class="form-control" value="@Environment.MachineName"  />
+                            <input asp-for="Mode" type="hidden" class="form-control" value="@Model.Mode"  />
+                            <input type="hidden" asp-for="SeqNo" value="0" />
+                            <input asp-for="CntPlanEntryDate" type="hidden" class="form-control" value="@Model.CntPlanEntryDate" />
+                            <input asp-for="CntPlanYearCode" type="hidden" class="form-control" value="@Model.CntPlanYearCode" />
+                            <input asp-for="CC" type="hidden" class="form-control" value="@Model.CC" />
+                            <input asp-for="ActualEntryDate" type="hidden" class="form-control" value="@Model.ActualEntryDate" />
+                            <input asp-for="ActualEntryBy" type="hidden" class="form-control" value="@Model.ActualEntryBy" />
+                            <div class="row g-3">
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:70px;">
+                                    <label asp-for="CntPlanEntryId" class="form-label">Entry Id</label>
+                                    <input asp-for="CntPlanEntryId" class="form-control" readonly/>
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="Entry_Date" class="form-label">Entry Date</label>
+                                    <input type="text" id="Entry_Date" name="Entry_Date" class="form-control"
+                                           value="@(Model.Entry_Date != null ? Convert.ToDateTime(Model.Entry_Date).ToString("dd/MM/yyyy") : "")" />
+
+                                </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:90px;">
+                                        <label asp-for="Yearcode" class="form-label">Yearcode</label>
+                                        <input asp-for="Yearcode" class="form-control" readonly />
+                                    </div>
+
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:70px;">
+                                    <label asp-for="Control_PlanNo" class="form-label">Plan No</label>
+                                    <input asp-for="Control_PlanNo" class="form-control"  />
+                                </div>
+                               <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:90px;">
+                                    <label asp-for="RevNo" class="form-label" style="color:red">Rev No*</label>
+                                    <input asp-for="RevNo" class="form-control" value="@(Model.Mode == "U" ? Model.RevNo : "1")" />
+                                </div>
+                               <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" >
+                                    <label asp-for="EffectiveDate" class="form-label">Effective Date</label>
+                                    <input type="text" id="EffectiveDate" name="EffectiveDate" class="form-control"
+                                           value="@(Model.EffectiveDate != null ? Convert.ToDateTime(Model.EffectiveDate).ToString("dd/MM/yyyy") : "")" />
+                               </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="PartCode" class="form-label" style="color:red">Part Code*</label>
+                                    <select class="form-control" id="PartCode" asp-for="PartCode" onchange="checkItemOrPart()">
+                                        <option value="">-Select-</option>
+                                        @if (Model.Mode == "U" || Model.Mode == "V")
+                                        {
+
+                                            <option value="@Model.ItemCode" selected>@Model.PartCode</option>
+                                        }
+                                    </select>
+                                </div>
+                                
+
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="ItemName" class="form-label" style="color:red"> Item Name*</label>
+                                    <select class="form-control"  id="ItemName" asp-for="ItemName" onchange="checkItemOrPart()">
+                                        <option value="">-Select-</option>
+                                        @if (Model.Mode == "U" || Model.Mode == "V")
+                                        {
+                                            <option value="@Model.ItemCode" selected>@Model.ItemName</option>
+                                        }
+                                    </select>
+                                </div>
+
+                                <input type="hidden" id="ItemCode" name="ItemCode" value="@Model.ItemCode" />
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:120px;">
+                                    <label class="form-label">Copy This Plan</label>
+                                    <div class="form-check form-switch" style="margin-top:5px;">
+                                        <input asp-for="CopyControlPlan" class="form-check-input" type="checkbox" role="switch" onchange="CopyControlPlanFunc(this);" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="H_SAGrid">
+                        <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+                            <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>ControlPlan Detail Grid</strong>
+                        </button>
+                    </h2>
+
+                    <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+                        <div class="accordion-body">
+                            <div class="row g-2 gx-3" id="_ItemGrid">
+                             
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" >
+                                    <label asp-for="Characteristic" class="form-label" style="color:red">Characteristic*</label>
+                                    <input asp-for="Characteristic" class="form-control" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" >
+                                    <label asp-for="EvalutionMeasurmentTechnique" class="form-label" style="color:red">Evalution MeasurmentTechnique*</label>
+                                    <input asp-for="EvalutionMeasurmentTechnique" class="form-control" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" >
+                                    <label asp-for="ControlMethod" class="form-label" style="color:red">Control Method*</label>
+                                    <input asp-for="ControlMethod" class="form-control" />
+                                </div>
+                               @*  <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:140px;">
+                                    <label asp-for="SpecificationFrom" class="form-label" style="color:red">Specification From*</label>
+                                    <input asp-for="SpecificationFrom" class="form-control" />
+                                </div>
+                                  *@
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:140px;">
+                                    <label asp-for="SpecificationFrom" class="form-label" style="color:red">Specification From*</label>
+
+                                    <!-- Checkbox to enable multiline -->
+                                    <div class="form-check">
+                                        <input type="checkbox" id="isMultiline" class="form-check-input" />
+                                        <label class="form-check-label" for="isMultiline">Multiple Lines</label>
+                                    </div>
+
+                                    <!-- Single-line input -->
+                                    <input asp-for="SpecificationFrom" class="form-control" id="singleLineInput" />
+
+                                    <!-- Multi-line textarea (hidden by default) -->
+                                    <textarea asp-for="SpecificationFrom" class="form-control" id="multiLineInput" style="display:none;"></textarea>
+                                </div>
+
+                                
+                               
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:90px;">
+                                    <label asp-for="Operator" class="form-label">Operator</label>
+                                    <select class="form-control" asp-for="Operator" style="width:80px;">
+                                        <option value="">-Select-</option>
+                                        <option value="+">+</option>
+                                        <option value="*">*</option>
+                                        <option value="/">/</option>
+                                        <option value="-">-</option>
+                                        <option value=",">,</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="color:red;width:140px;" >
+                                    <label asp-for="SpecificationTo" class="form-label">Specification To*</label>
+                                    <input asp-for="SpecificationTo" class="form-control" />
+                                </div>
+
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="color:red;width:140px;" >
+                                    <label asp-for="FrequencyofTesting" class="form-label">Frequency*</label>
+                                    <input asp-for="FrequencyofTesting" class="form-control" value="5"/>
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:140px;">
+                                    <label asp-for="InspectionBy" class="form-label">InspectionBy</label>
+                                    <select class="form-control" id="InspectionBy" asp-for="InspectionBy" style="width:130px;">
+                                        <option value="@Model.InspectionBy">-Select-</option>
+                                    </select>
+                                </div>
+                               
+                               
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:140px;">
+                                    <label asp-for="Remarks" class="form-label">Remarks</label>
+                                    <input asp-for="Remarks" class="form-control" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:140px">
+                                    <label asp-for="RejectionPlan" class="form-label">RejectionPlan</label>
+                                    <select class="form-control" id="RejectionPlan" asp-for="RejectionPlan" style="width:130px;">
+                                        <option value="@Model.RejectionPlan">-Select-</option>
+                                    </select>
+                                </div>
+                               
+                          
+                                
+                                
+                                
+            @*                     <div class="col mt-3">
+                                    <div class="row justify-content-end">
+                                        
+                                        
+
+                                    </div>
+                                </div> *@
+                               @*  <div class="col-auto">
+                                    <button type="button" class="GridButton btn btn-sm btn-outline-danger mt-3">
+                                        <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
+                                    </button>
+                                    <div class="col-md-4" style="width:290px;margin-top:9px;">
+                                        <input type="file" id="importFile" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" class="form-control" />
+                                    </div>
+                                    <div class="col-md-2" style="margin-top:7px;">
+                                        <button type="button" class="btn btn-success" id="btnImport">Import to Grid</button>
+                                    </div>
+                                </div> *@
+                                
+                                <div class="col d-flex align-items-center" style="gap: 10px;">
+                                <button type="button" class="GridButton btn btn-sm btn-outline-danger">
+                                    <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
+                                </button>
+                                <input type="file" id="importFile" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" class="form-control" style="width: 250px;"/>
+                                <button type="button" class="btn btn-success" id="btnImport">Import to Grid</button>
+                                    <a class="btn btn-secondary btn-sm" onclick="ExportItems();">
+                                        @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                        <i class="fa-solid fa-file-import" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
+                                        IMPORT FORMAT
+                                    </a>
+                            </div>
+                                <div class="row">
+                                   
+                                </div>
+                                <div class="progress my-2 mb-3" style="height: 4px;">
+                                    <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-body overflow-auto pb-0">
+                                        <table class="table table-hover table-bordered table-striped" id="itemtable">
+                                            <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+                                                <tr id="headerRow">
+                                                    <th>Action</th>
+                                                    <th>Seq No</th>
+                                                    <th>Characteristic</th>
+                                                    <th>Evalution MeasurmentTechnique</th>
+                                                    <th>Control Method</th>
+                                                    <th>Specification From</th>
+                                                    <th>Operator</th>
+                                                    <th>Specification To</th>
+                                                    <th>Frequency</th>
+                                                    <th>Inspection By</th>
+                                                 
+                                                    <th>Remarks</th>
+                                                    <th>Rejection Plan</th>
+                                                    <th>Drawing No</th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody id="divControlPlanGrid">
+                                                <partial name="_ControlPlanMainGrid" />
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div class="progress my-3 mb-3" style="height: 4px;">
+                                    <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="HPanel2">
+                        <button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#ODGrid" aria-expanded="false" aria-controls="ODGrid">
+                            <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Other Detail</strong>
+                        </button>
+                    </h2>
+                    <div id="ODGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+                        <div class="accordion-body">
+                            <div class="row g-2 gx-3" id="_ItemGrid">
+                             @*    @{
+                                    if (!string.IsNullOrEmpty(Model.ImageURL))
+                                    {
+                                                <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12 text-center">
+                                                    <div class="row">
+
+                                                        <div class="col-7">
+                                                            <label class="form-label">Upload Drawing File</label>
+                                                            <button type="button" class='btn btn-sm btn-outline-info mt-3' onclick="ViewFile('@Model.ImageURL')">
+                                                                <i class="fa-solid fa-eye fa-fw fa-lg" style=""></i>
+                                                                View File
+                                                            </button>
+                                                            <div>
+                                                                <span>@Model.ImageURL.Split("/")[3]</span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-5">
+                                                            <div class="form-check form-switch pt-4">
+                                                                <input class="form-check-input" type="checkbox" role="switch" id="ReUpload">
+                                                                <label class="form-check-label" for="ReUpload">Re-Upload</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-xl-4 col-lg-3 col-md-6 col-sm-6 col-xs-12 ReUploadFile">
+                                                    <label asp-for="UploadImage" class="form-label">Upload Drawing File</label>
+                                                    <input class="form-control form-control-sm" asp-for="UploadImage" type="file" data-val="false">
+                                                </div>
+                                    }
+                                    else
+                                    {
+
+                                                <div class="col-xl-4 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                                    <label asp-for="UploadImage" class="form-label">Upload Drawing File</label>
+                                                    <input class="form-control form-control-sm" asp-for="UploadImage" type="file" data-val="false">
+                                                </div>
+                                                <input type="hidden" id="hdnImageURL" value="@Model.ImageURL" />
+                                    }
+                                    if (!string.IsNullOrEmpty(Model.ItemImageURL))
+                                    {
+
+                                                <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12 text-center">
+                                                    <div class="row">
+                                                        <div class="col-7">
+                                                            <label class="form-label">Upload Item Image</label>
+                                                            <button type="button" class="btn btn-sm btn-outline-info mt-3" onclick="ViewFile('@Model.ItemImageURL')">
+                                                                <i class="fa-solid fa-eye fa-fw fa-lg"></i>
+                                                                View File
+                                                            </button>
+                                                            <div>
+                                                                <span>@Model.ItemImageURL.Split("/")[3]</span>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-5">
+                                                            <div class="form-check form-switch pt-4">
+                                                                <input class="form-check-input" type="checkbox" role="switch" id="ReUploadItem">
+                                                                <label class="form-check-label" for="ReUploadItem">Re-Upload</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-xl-4 col-lg-3 col-md-6 col-sm-6 col-xs-12 ReUploadItemFile">
+                                                    <label asp-for="ItemImage" class="form-label">Upload Item Image</label>
+                                                    <input class="form-control form-control-sm" asp-for="ItemImage" type="file" data-val="false">
+                                                </div>
+                                    }
+                                    else
+                                    {
+
+                                                <div class="col-xl-4 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                                    <label asp-for="ItemImage" class="form-label">Upload Item Image</label>
+                                                    <input class="form-control form-control-sm" asp-for="ItemImage" type="file" data-val="false">
+                                                </div>
+                                                <input type="hidden" id="hdnItemImageURL" value="@Model.ItemImageURL" />
+                                    }
+                                } *@
+                               
+
+                                @{
+                                    var showViewButton = Model.Mode == "U";
+                                }
+                                @if (!string.IsNullOrEmpty(Model.ImageURL) && showViewButton)
+                                {
+                                    <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12 text-center">
+                                        <div class="row">
+                                            <div class="col-7">
+                                                <label class="form-label">Upload Drawing File</label>
+                                                <button type="button" class='btn btn-sm btn-outline-info mt-3' onclick="ViewFile('@Model.ImageURL')">
+                                                    <i class="fa-solid fa-eye fa-fw fa-lg"></i> View File
+                                                </button>
+                                                <div>
+                                                    <span>@Model.ImageURL.Split("/")[3]</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-5">
+                                                <div class="form-check form-switch pt-4">
+                                                    <input class="form-check-input" type="checkbox" role="switch" id="ReUpload">
+                                                    <label class="form-check-label" for="ReUpload">Re-Upload</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-4 col-lg-3 col-md-6 col-sm-6 col-xs-12 ReUploadFile">
+                                        <label asp-for="UploadImage" class="form-label">Upload Drawing File</label>
+                                        <input class="form-control form-control-sm" asp-for="UploadImage" type="file" data-val="false">
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="col-xl-4 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="UploadImage" class="form-label">Upload Drawing File</label>
+                                        <input class="form-control form-control-sm" asp-for="UploadImage" type="file" data-val="false">
+                                    </div>
+                                    <input type="hidden" id="hdnImageURL" value="@Model.ImageURL" />
+                                }
+                                @if (!string.IsNullOrEmpty(Model.ItemImageURL) && showViewButton)
+                                {
+                                    <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12 text-center">
+                                        <div class="row">
+                                            <div class="col-7">
+                                                <label class="form-label">Upload Item Image</label>
+                                                <button type="button" class="btn btn-sm btn-outline-info mt-3" onclick="ViewFile('@Model.ItemImageURL')">
+                                                    <i class="fa-solid fa-eye fa-fw fa-lg"></i> View File
+                                                </button>
+                                                <div>
+                                                    <span>@Model.ItemImageURL.Split("/")[3]</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-5">
+                                                <div class="form-check form-switch pt-4">
+                                                    <input class="form-check-input" type="checkbox" role="switch" id="ReUploadItem">
+                                                    <label class="form-check-label" for="ReUploadItem">Re-Upload</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-4 col-lg-3 col-md-6 col-sm-6 col-xs-12 ReUploadItemFile">
+                                        <label asp-for="ItemImage" class="form-label">Upload Item Image</label>
+                                        <input class="form-control form-control-sm" asp-for="ItemImage" type="file" data-val="false">
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="col-xl-4 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="ItemImage" class="form-label">Upload Item Image</label>
+                                        <input class="form-control form-control-sm" asp-for="ItemImage" type="file" data-val="false">
+                                    </div>
+                                    <input type="hidden" id="hdnItemImageURL" value="@Model.ItemImageURL" />
+                                }
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="margin-left:20px;">
+                                    <label asp-for="DrawingNo" class="form-label">DrawingNo</label>
+                                    <input asp-for="DrawingNo" class="form-control" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="ActualEntryByName" class="form-label">Actual Entered By</label>
+                                    <input type="hidden" asp-for="ActualEntryBy" class="form-control" readonly />
+                                    <input asp-for="ActualEntryByName" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="ActualEntryDate" class="form-label">ActualEntryDate</label>
+                                    <input asp-for="ActualEntryDate" class="form-control" value="@Model.ActualEntryDate" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="CC" class="form-label">Branch</label>
+                                    <input asp-for="CC" class="form-control" value="@Model.CC" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="EntryByMachine" class="form-label">Machine Name</label>
+                                    <input asp-for="EntryByMachine" class="form-control" value="@Environment.MachineName" readonly />
+                                </div>
+
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="LastUpdatedByName" class="form-label">Updated By</label>
+                                    <input type="hidden" asp-for="LastUpdatedBy" class="form-control" readonly />
+                                    <input asp-for="LastUpdatedByName" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="LastUpdationDate" class="form-label">Updated Date</label>
+                                    <input asp-for="LastUpdationDate" class="form-control" readonly />
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer p-3">
+            <div class="row justify-content-between g-2">
+                
+                <div class="card border-light bg-gradient rounded shadow-lg">
+                    <div class="card-header card-headerBG text-light justify-content-center bg-gradient">
+                        <h4>
+                            @ViewData["Title"] - @Model.Yearcode
+                            <span class="d-flex float-end" style="margin-top:-2px;">
+                                <a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                                    <i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
+                                    Dashboard
+                                </a>
+                                <div class="row justify-content-between g-2">
+                                    <div class="col-auto">
+                                        @*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
+                                        <a href="#" class=" btn btn-primary btn-sm" onclick="back();">
+                                            <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+
+                                            BACK
+                                        </a>
+                                    </div>
+                                    @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+                                    {
+                                        <div class="col-auto">
+                                            @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                                            <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                                @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                                <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                                REFRESH
+                                            </a>
+                                        </div>
+                                        @if (Model.Mode == "U")
+                                        {
+                                            @*Model.Mode = "U";*@
+                                            <div class="col-auto">
+                                                @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+                                                <button type="submit" class="btn btn-sm btn-outline-light bg-gradient submitBTN" id="updateBtnFooter">
+                                                    <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                                    UPDATE
+                                                </button>
+                                            </div>
+                                        }
+
+                                        else
+                                        {
+                                            <div class="col-auto">
+                                                @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
+                                                <button type="submit" class="btn btn-primary btn-sm submitBTN" id="submitBTN">
+                                                    <i class="fa-solid fa-chevron-circle-right fa-fw fa-lg"></i>
+                                                    SUBMIT
+                                                </button>
+                                            </div>
+                                        }
+                                    }
+                                </div>
+                            </span>
+                        </h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+@section Scripts {
+    <script>
+        // $('.submitBTN').click(function (e) {
+        //      
+        //    // e.preventDefault();
+        //     var rowCount = $('#divControlPlanGrid tbody tr').length;
+        //     console.log("Rows:", rowCount);
+        //     if (rowCount === 0) {
+        //         $.notify("Please add at least one row to the grid before submitting.", "error");
+        //         return false;
+        //     }
+        //     else {
+
+        //     $('form').submit();
+        //     }
+        // });
+
+        $("button[type='submit']").click(function (e) {
+            e.preventDefault();
+
+            var rowCount = $('#divControlPlanGrid  tr').length;
+            console.log("Rows:", rowCount);
+            if (rowCount === 0) {
+                $.notify("Please add at least one row to the grid before submitting.", "error");
+                return false;
+            }
+            else {
+
+                $('form').submit();
+            }
+           
+        });
+        $(document).ready(function () {
+            console.log("Model Mode: '@Model.Mode'");
+            console.log("ImageURL: '@Model.ImageURL'");
+            console.log("ItemImageURL: '@Model.ItemImageURL'");
+            GetFormRights();
+            
+            GetPartCode();
+            GetItemName();
+            GetCharacteristic();
+            GetEvMeasureTech();
+            GetControlMethod();
+            GetRejectionPlan();
+            if ($('#Mode').val() !== "U") {
+                GetNewEntryId();
+                $('#Entry_Date').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", new Date());
+                $('#EffectiveDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", new Date());
+            } else {
+                
+                $('#Entry_Date').datepicker({ dateFormat: 'dd/mm/yy' });
+                $('#EffectiveDate').datepicker({ dateFormat: 'dd/mm/yy' });
+            }
+
+
+           
+            $('#ItemName').select2();
+            $('#PartCode').select2();
+
+         
+            //$('#Characteristic').select2();
+            $('#Operator').select2();
+           // $('#SpecificationTo').select2();
+            //$('#SpecificationFrom').select2();
+            //$('#EvalutionMeasurmentTechnique').select2();
+            $('#RejectionPlan').select2();
+           // $('#ControlMethod').select2();
+            $('#InspectionBy').select2();
+            $('#Characteristic').rules("remove", "required");
+            $('#EvalutionMeasurmentTechnique').rules("remove", "required");
+            $('#ControlMethod').rules("remove", "required");
+            $('#SpecificationFrom').rules("remove", "required");
+            $('#Operator').rules("remove", "required");
+            $('#SpecificationTo').rules("remove", "required");
+            $('#FrequencyofTesting').rules("remove", "required");
+            $('#InspectionBy').rules("remove", "required");
+            $('#Remarks').rules("remove", "required");
+            $('#RejectionPlan').rules("remove", "required");
+            $('#DrawingNo').rules("remove", "required");
+            $('#ActualEntryByName').rules("remove", "required");
+            $('#ActualEntryBy').rules("remove", "required");
+            $('#ActualEntryDate').rules("remove", "required");
+            $('#CC').rules("remove", "required");
+            $('#EntryByMachine').rules("remove", "required");
+            $('#LastUpdatedByName').rules("remove", "required");
+            $('#LastUpdatedBy').rules("remove", "required");
+            $('#LastUpdationDate').rules("remove", "required");
+            $('#ItemCode').val($('#ItemName').val());
+            //$('#ItemCode').val($('#PartCode').val());
+             
+            const itemCode = '@Model.ItemCode';
+            if (itemCode && parseInt(itemCode) > 0) {
+                $('#PartCode').val(itemCode).trigger("change");
+                $('#ItemName').val(itemCode).trigger("change");
+            }
+            $('#isMultiline').change(function () {
+                if ($(this).is(':checked')) {
+                    $('#singleLineInput').hide();
+                    $('#multiLineInput').show();
+                } else {
+                    $('#multiLineInput').hide();
+                    $('#singleLineInput').show();
+                }
+            });
+        });
+
+        $('#ItemName').change(function () {
+            $('#ItemCode').val($('#ItemName').val());
+        });
+        $('#PartCode').change(function () {
+            $('#ItemCode').val($('#PartCode').val());
+        });
+
+        if ($('#Mode').val() === "U" || $('#Mode').val() === "V") {
+            // var itemCode = '@Model.ItemCode';
+            // $('#PartCode').val(itemCode).trigger("change");
+
+          
+                $('#ItemCode').val($('#PartCode').val());
+            
+        }
+        if ($('#Mode').val() === "U" || $('#Mode').val() === "V") {
+            // var itemCode = '@Model.ItemCode';
+            // $('#ItemName').val(itemCode).trigger("change");
+            $('#ItemCode').val($('#ItemName').val());
+        }
+
+        var IsSDSC = 0;
+        var IsErr = 0;
+        var HideShow = 0;
+        function CopyControlPlanFunc(checkbox) {
+            if (checkbox.checked) {
+                // Save old values
+                const oldPartCode = $('#PartCode').val();
+                const oldPartText = $('#PartCode option:selected').text();
+
+                const oldItemCode = $('#ItemName').val();
+                const oldItemText = $('#ItemName option:selected').text();
+
+                const oldEntryDate = $('#Entry_Date').val();
+                const oldEffectiveDate = $('#EffectiveDate').val();
+
+                // Save old data in data attributes
+                $('#PartCode').data('original', oldPartCode);
+                $('#PartCode').data('text', oldPartText);
+
+                $('#ItemName').data('original', oldItemCode);
+                $('#ItemName').data('text', oldItemText);
+
+                $('#Entry_Date').data('original', oldEntryDate);
+                $('#EffectiveDate').data('original', oldEffectiveDate);
+
+                // Enable inputs
+                $('#PartCode').removeAttr('disabled');
+                $('#ItemName').removeAttr('disabled');
+                $('#Mode').val('');
+
+
+                $('#Entry_Date').val($.datepicker.formatDate('dd/mm/yy', new Date()));
+                $('#EffectiveDate').val($.datepicker.formatDate('dd/mm/yy', new Date()));
+
+                GetNewEntryId();
+                GetPartCode();
+                GetItemName();
+
+                // Replace buttons
+                $('#updateBtnHeader').replaceWith(`
+                    <button type="submit" class="btn btn-sm btn-primary" id="updateBtnHeader">
+                        <i class="fa-solid fa-floppy-disk fa-fw fa-lg"></i> SUBMIT
+                    </button>
+                `);
+
+                $('#updateBtnFooter').replaceWith(`
+                    <button type="submit" class="btn btn-sm btn-primary" id="updateBtnFooter">
+                        <i class="fa-solid fa-floppy-disk fa-fw fa-lg"></i> SUBMIT
+                    </button>
+                `);
+
+            } else {
+                // Disable inputs (if you want to)
+                // $('#PartCode').prop('disabled', true);
+                // $('#ItemName').prop('disabled', true);
+
+                // Restore old values
+                const oldPartCode = $('#PartCode').data('original');
+                const oldPartText = $('#PartCode').data('text');
+                const oldItemCode = $('#ItemName').data('original');
+                const oldItemText = $('#ItemName').data('text');
+
+                const oldEntryDate = $('#Entry_Date').data('original');
+                const oldEffectiveDate = $('#EffectiveDate').data('original');
+
+                // Reset selects
+                $('#PartCode').val(null).trigger('change');
+                $('#ItemName').val(null).trigger('change');
+
+                if (oldPartCode && oldPartText) {
+                    if (!$('#PartCode option[value="' + oldPartCode + '"]').length) {
+                        $('#PartCode').append(new Option(oldPartText, oldPartCode, true, true)).trigger('change');
+                    } else {
+                        $('#PartCode').val(oldPartCode).trigger('change');
+                    }
+                }
+
+                if (oldItemCode && oldItemText) {
+                    if (!$('#ItemName option[value="' + oldItemCode + '"]').length) {
+                        $('#ItemName').append(new Option(oldItemText, oldItemCode, true, true)).trigger('change');
+                    } else {
+                        $('#ItemName').val(oldItemCode).trigger('change');
+                    }
+                }
+
+                // Restore dates
+                if (oldEntryDate) $('#Entry_Date').val(oldEntryDate);
+                if (oldEffectiveDate) $('#EffectiveDate').val(oldEffectiveDate);
+
+                // Replace buttons
+                $('#updateBtnHeader').replaceWith(`
+                            <button type="submit" class="btn btn-sm  btn-primary bg-gradient" id="updateBtnHeader">
+                        <i class="fa fa-pencil-square fa-fw fa-lg"></i> UPDATE
+                    </button>
+                `);
+
+                $('#updateBtnFooter').replaceWith(`
+                            <button type="submit" class="btn btn-sm  btn-primary bg-gradient" id="updateBtnFooter">
+                        <i class="fa fa-pencil-square fa-fw fa-lg"></i> UPDATE
+                    </button>
+                `);
+            }
+        }
+
+
+
+
+
+
+
+        // $("button[type='submit']").click(function () {
+        //     $('#PartCode').removeProp('disabled');
+        //     $('#ItemName').removeProp('disabled');
+        //     //$('#FG1').removeProp('disabled');
+        //     $("form :input").prop("disabled", false);
+        // });
+        let isNavigated = false;
+
+        function checkItemOrPart() {
+            if (isNavigated) return; // prevent re-trigger
+            isNavigated = true;
+
+            const itemCode = $('#ItemCode').val();
+            const partCode = $('#PartCode').val();
+            const itemName = $('#ItemCode').val();
+
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('ItemCode') == itemCode) {
+                isNavigated = false;
+                return;
+            }
+
+            if (itemCode) {
+                const id = '@Model.CntPlanEntryId' || 0;
+                const yc = '@Model.CntPlanYearCode' || 0;
+                const mode = '@Model.Mode' || '';
+                const entryDate = '@Model.CntPlanEntryDate';
+                const revNo = '@Model.RevNo';
+
+                const encodedPartCode = encodeURIComponent(partCode);
+                const encodedItemName = encodeURIComponent(itemName);
+
+                const encodedRevNo = encodeURIComponent(revNo);
+                const encodedEntryDate = encodeURIComponent(entryDate);
+
+                const url = `@Url.Action("ControlPlan", "ControlPlan")?ItemCode=${itemCode}&ID=${id}&YC=${yc}&Mode=${mode}&EntryDate=${encodedEntryDate}&RevNo=${encodedRevNo}&PartCode=${encodedPartCode}&ItemName=${encodedItemName}&isFromPartCode=true`;
+                console.log('Navigating to:', url);
+                window.location.href = url;
+            }
+        }
+
+
+        // function checkItemOrPart() {
+        //     var itemCode = $('#PartCode').val();
+        //     if (itemCode) {
+        //         window.location.href = '@Url.Action("ControlPlan", "ControlPlan")?ItemCode=' + itemCode;
+        //     }
+        // }
+        function ViewFile(url) {
+            if (url) {
+                window.open(url, '_blank');
+            }
+        }
+        $('#btnImport').click(function () {
+            var fileInput = document.getElementById('importFile');
+            var file = fileInput.files[0];
+
+            if (!file) {
+                $.notify("Please choose a file to import.", "error");
+                return;
+            }
+
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                var data = e.target.result;
+                var workbook = XLSX.read(data, { type: 'binary' });
+                var firstSheet = workbook.SheetNames[0];
+                var sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheet]);
+
+                if (sheetData.length === 0) {
+                    $.notify("No data found in the file.", "error");
+                    return;
+                }
+
+                var allItems = sheetData.map(row => ({
+                    SeqNo: 0,
+                    Mode: row.Mode ? row.Mode.toString() : "",
+                    CntPlanEntryDate: row.CntPlanEntryDate ? row.CntPlanEntryDate.toString() : "",
+                    CntPlanEntryId: row.CntPlanEntryId || 0,
+                    CntPlanYearCode: row.CntPlanYearCode || 0,
+                    Characteristic: row.Characteristic ? row.Characteristic.toString() : "",
+                    EvalutionMeasurmentTechnique: row.EvalutionMeasurmentTechnique ? row.EvalutionMeasurmentTechnique.toString() : "",
+                    SpecificationFrom: row.SpecificationFrom ? row.SpecificationFrom.toString() : "",
+                    Operator: row.Operator ? row.Operator.toString() : "",
+                    SpecificationTo: row.SpecificationTo ? row.SpecificationTo.toString() : "",
+                    FrequencyofTesting: row.FrequencyofTesting ? row.FrequencyofTesting.toString() : "",
+                    InspectionBy: row.InspectionBy ? row.InspectionBy.toString() : "",
+                    ControlMethod: row.ControlMethod ? row.ControlMethod.toString() : "",
+                    RejectionPlan: row.RejectionPlan ? row.RejectionPlan.toString() : "",
+                    Remarks: row.Remarks ? row.Remarks.toString() : "",
+                    ItemimagePath: row.ItemimagePath ? row.ItemimagePath.toString() : "",
+                    DrawingNo: row.DrawingNo ? row.DrawingNo.toString() : "",
+                    DrawingNoImagePath: row.DrawingNoImagePath ? row.DrawingNoImagePath.toString() : "",
+                    ImageURL: row.ImageURL ? row.ImageURL.toString() : "",
+                    Control_PlanNo: row.Control_PlanNo ? row.Control_PlanNo.toString() : "",
+                    RevNo: row.RevNo ? row.RevNo.toString() : "",
+                    ForInOutInprocess: row.ForInOutInprocess ? row.ForInOutInprocess.toString() : "",
+                    ItemCode: row.ItemCode || 0,
+                    PartCode: row.PartCode ? row.PartCode.toString() : "",
+                    ItemName: row.ItemName ? row.ItemName.toString() : "",
+                    AccountCode: row.AccountCode || 0,
+                    EngApprovedBy: row.EngApprovedBy || 0,
+                    ApprovedBy: row.ApprovedBy || 0,
+                    UId: row.UId || 0,
+                    EntryByMachine: row.EntryByMachine ? row.EntryByMachine.toString() : "",
+                    ActualEntryBy: row.ActualEntryBy || 0,
+                    ActualEntryByName: row.ActualEntryByName ? row.ActualEntryByName.toString() : "",
+                    ActualEntryDate: row.ActualEntryDate ? row.ActualEntryDate.toString() : null,
+                    LastUpdatedBy: row.LastUpdatedBy || 0,
+                    LastUpdatedByName: row.LastUpdatedByName ? row.LastUpdatedByName.toString() : "",
+                    LastUpdationDate: row.LastUpdationDate ? row.LastUpdationDate.toString() : null,
+                    CC: row.CC ? row.CC.toString() : null,
+                    UploadImage: null,      // handled separately if needed
+                    ItemImage: null,        // handled separately if needed
+                    ItemImageURL: row.ItemImageURL ? row.ItemImageURL.toString() : null
+                }));
+
+                console.log("Sending data to server:", JSON.stringify(allItems));
+
+                $.ajax({
+                    url: '@Url.Action("ImportControlPlanDetails")',
+                    type: 'POST',
+                    data: JSON.stringify(allItems),
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'html',
+                    success: function (data) {
+                        $('#divControlPlanGrid').html(data);
+                        $.notify("Import complete.", "success");
+                    },
+                    error: function (xhr) {
+                        $.notify("Import failed: " + xhr.responseText, "error");
+                        console.error("Import failed:", xhr.responseText);
+                    }
+                });
+            };
+
+            reader.readAsBinaryString(file);
+        });
+        function ExportItems() {
+            // Clone header and grid
+            let headerRowClone = $("#headerRow").clone(true);
+            let tableBodyClone = $("#divControlPlanGrid").clone(true);
+
+            let removeIndices = [];
+
+            // Identify columns to remove and clean header text
+            $("#headerRow th").each(function (index) {
+                let text = $(this).text().trim();
+
+                // Remove "Action" and "Seq No" columns
+                if (text === "Action" || text === "Seq No") {
+                    removeIndices.push(index);
+                    $(this).remove();
+                } else {
+                    // Remove spaces from header text
+                    $(this).text(text.replace(/\s+/g, ""));
+                }
+            });
+
+            // Remove matching <td> cells in all rows
+            $("#divControlPlanGrid tr").each(function () {
+                $(this).find("td").each(function (index) {
+                    if (removeIndices.includes(index)) {
+                        $(this).remove();
+                    }
+                });
+            });
+
+            // Export to Excel
+            let table = $("#itemtable")[0];
+            TableToExcel.convert(table, {
+                name: `ImportItemsFile.xlsx`,
+                sheet: {
+                    name: 'ImportItemsFile'
+                }
+            });
+
+            // Restore original DOM
+            $("#headerRow").replaceWith(headerRowClone);
+            $("#divControlPlanGrid").replaceWith(tableBodyClone);
+        }
+
+
+        // $('#btnImport').click(function () {
+
+        //     var fileInput = document.getElementById('importFile');
+        //     var file = fileInput.files[0];
+        //     if (!file) {
+        //         $.notify("Please choose a file to import.", "error");
+        //         return;
+        //     }
+
+        //     var reader = new FileReader();
+
+        //     reader.onload = function (e) {
+        //         var data = e.target.result;
+        //         var workbook = XLSX.read(data, { type: 'binary' });
+        //         var firstSheet = workbook.SheetNames[0];
+        //         var sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheet]);
+
+        //         if (sheetData.length === 0) {
+        //             $.notify("No data found in the file.", "error");
+        //             return;
+        //         }
+        //         var allItems = [];
+        //         // Loop through each row and send to AddControlPlanDetail
+        //         sheetData.forEach((row, index) => {
+        //             var ItemData = {
+        //                 SeqNo: 0,  // default value
+        //                 Mode: "",  // Import mode = insert
+        //                 CntPlanEntryDate: row.CntPlanEntryDate || null,
+        //                 CntPlanEntryId: row.CntPlanEntryId || 0,
+        //                 CntPlanYearCode: row.CntPlanYearCode || 0,
+        //                 Characteristic: row.Characteristic || "",
+        //                 EvalutionMeasurmentTechnique: row.EvalutionMeasurmentTechnique || "",
+        //                 SpecificationFrom: row.SpecificationFrom || "",
+        //                 Operator: row.Operator || "",
+        //                 SpecificationTo: row.SpecificationTo || "",
+        //                 FrequencyofTesting: row.FrequencyofTesting || "",
+        //                 InspectionBy: row.InspectionBy || "",
+        //                 ControlMethod: row.ControlMethod || "",
+        //                 RejectionPlan: row.RejectionPlan || "",
+        //                 Remarks: row.Remarks || "",
+        //                 ItemimagePath: row.ItemimagePath || "",               // added (was missing)
+        //                 DrawingNo: row.DrawingNo || "",
+        //                 DrawingNoImagePath: row.DrawingNoImagePath || "",     // added (was missing)
+        //                 ImageURL: row.ImageURL || "",
+        //                 Control_PlanNo: row.Control_PlanNo || "",             // added (was missing)
+        //                 RevNo: row.RevNo || "",                               // added (was missing)
+        //                 ForInOutInprocess: row.ForInOutInprocess || "",       // added (was missing)
+        //                 ItemCode: row.ItemCode || 0,
+        //                 PartCode: row.PartCode || "",
+        //                 ItemName: row.ItemName || "",
+        //                 AccountCode: row.AccountCode || 0,
+        //                 EngApprovedBy: row.EngApprovedBy || 0,
+        //                 ApprovedBy: row.ApprovedBy || 0,
+        //                 UId: row.UId || 0,
+        //                 EntryByMachine: row.EntryByMachine || "",
+        //                 ActualEntryBy: row.ActualEntryBy || 0,
+        //                 ActualEntryByName: row.ActualEntryByName || "",
+        //                 ActualEntryDate: row.ActualEntryDate || null,
+        //                 LastUpdatedBy: row.LastUpdatedBy || 0,
+        //                 LastUpdatedByName: row.LastUpdatedByName || "",
+        //                 LastUpdationDate: row.LastUpdationDate || null,
+        //                 CC: row.CC || null
+        //                 // UploadImage and ItemImage are IFormFile (file uploads) so not applicable here in JS
+        //             };
+
+        //             allItems.push(ItemData);
+        //         });
+
+
+        //         console.log("Sending data to server:", JSON.stringify(allItems));
+        //         // AJAX call to add each row
+        //         $.ajax({
+        //             url: '@Url.Action("ImportControlPlanDetails")',
+        //             type: 'POST',
+        //             data: JSON.stringify(allItems),
+        //             contentType: 'application/json; charset=utf-8',
+        //             dataType: 'html',
+        //             success: function (data) {
+        //                 $('#divControlPlanGrid').html(data);
+        //                 $.notify("Import complete.", "success");
+        //             },
+        //             error: function (xhr) {
+        //                 $.notify("Import failed: " + xhr.responseText, "error");
+        //                 console.log("Import failed: " + xhr.responseText)
+        //             }
+        //         });
+
+
+        //     };
+
+        //     reader.readAsBinaryString(file);
+        // });
+        //----------new code
+        // function ExportItems() {
+        //     // Backup the original header row and table body
+        //     let headerRow = $("#headerRow").clone();
+        //     let tableBody = $("#divControlPlanGrid").clone();
+
+        //     // Remove unwanted columns from header
+        //     let removeIndices = [];
+        //     $("#headerRow th").each(function (index) {
+        //         let text = $(this).text().trim();
+        //         if (text === "Action" || text === "Seq No") {
+        //             removeIndices.push(index);
+        //             $(this).remove();
+        //         }
+        //     });
+
+        //     // Remove corresponding cells from each row in tbody
+        //     $("#divControlPlanGrid tr").each(function () {
+        //         $(this).find("td").each(function (index) {
+        //             if (removeIndices.includes(index)) {
+        //                 $(this).remove();
+        //             }
+        //         });
+        //     });
+
+        //     // Export table
+        //     let table = $("#itemtable")[0];
+        //     TableToExcel.convert(table, {
+        //         name: `ImportItemsFile.xlsx`,
+        //         sheet: {
+        //             name: 'ImportItemsFile'
+        //         }
+        //     });
+
+        //     // Restore original header and tbody
+        //     $("#headerRow").replaceWith(headerRow);
+        //     $("#divControlPlanGrid").replaceWith(tableBody);
+        // }
+
+        // function ExportItems() {
+        //     let headerRow = $("#headerRow").clone();
+
+        //     $("#headerRow th:contains('Action')").remove();
+        //     $("#headerRow th:contains('Seq No')").remove();
+
+        //     let table = $("#itemtable")[0];
+        //     TableToExcel.convert(table, {
+        //         name: `ImportItemsFile.xlsx`,
+        //         sheet: {
+        //             name: 'ImportItemsFile'
+        //         }
+        //     });
+
+        //     // Restore original header row
+        //     $("#headerRow").replaceWith(headerRow);
+        // }
+
+        $(function () {
+            $('#FrequencyofTesting').on('input', function () {
+                let value = $(this).val();
+
+                if (!/^\d*$/.test(value)) {
+                    $.notify("Please enter a valid positive number only.", "error");
+                    $(this).val(''); 
+                    return;
+                }
+            });
+        });
+        function GetNewEntryId() {
+            var Yearcode = $("#Yearcode").val();
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetNewEntryId")",
+                dataType: "json",
+                data: {Yearcode:Yearcode},
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+
+                       // $('#CntPlanEntryId').val("");
+                        $('#CntPlanEntryId').val(obj.Result[0].EntryId);
+                        //$('#Control_PlanNo').val("");
+                        $('#Control_PlanNo').val(obj.Result[0].ControlPlanNo);
+                    }
+                }
+            });
+        }
+        function GetPartCode() {
+            $.ajax({
+                url: '@Url.Action("GetPartCode", "ControlPlan")', // Action that returns FillGroup data
+                type: 'POST',
+                async: false,
+                success: function (response, status, error) {
+
+                    var partCodeDropdown = $('#PartCode');
+                    var obj = $.parseJSON(response);
+                    partCodeDropdown.empty();
+                    partCodeDropdown.append('<option value="">--Select--</option>');
+
+
+                    $.each(obj.Result, function (index, controlPlan) {
+
+                        partCodeDropdown.append('<option value="' + controlPlan.Itemcode + '">' + controlPlan.PartCode + '</option>');
+                    });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                        var ItemCode = '@Model.ItemCode';
+                        $('#PartCode').val(ItemCode).trigger("change");
+                       
+                    }
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+
+        function GetItemName() {
+            $.ajax({
+                url: '@Url.Action("GetItemName", "ControlPlan")', // Action that returns FillGroup data
+                type: 'POST',
+                async: false,
+                success: function (response, status, error) {
+
+                    var itemNameDropdown = $('#ItemName');
+                    var obj = $.parseJSON(response);
+                    itemNameDropdown.empty();
+                    itemNameDropdown.append('<option value="">--Select--</option>');
+
+
+                    $.each(obj.Result, function (index, conrolPlan) {
+                        itemNameDropdown.append('<option value="' + conrolPlan.Itemcode + '">' + conrolPlan.ItemName + '</option>');
+                    });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                        var ItemCode = '@Model.ItemCode';
+                        $('#ItemName').val(ItemCode).trigger("change");
+                       
+                    }
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+
+        $(document).on('select2:select', '#ItemName,#PartCode', function (e) {
+
+            var cntId = e.target.id;
+            if (cntId == 'ItemName') {
+                ItemNameChange(cntId);
+            }
+            else {
+                PartCodeChange(cntId);
+            }
+        });
+
+        function ItemNameChange(ID) {
+            SetPartCodeItemName(ID);
+        }
+
+        function PartCodeChange(ID) {
+
+            $.when(SetPartCodeItemName(ID)).done(function () {
+            });
+        }
+
+        function SetPartCodeItemName(ID) {
+            if (!ID) return;
+            else {
+
+                var v = $('#' + ID).select2('val');
+                if (ID == "PartCode") {
+                    $("#ItemName").val(v).trigger("change");
+                }
+
+                if (ID == "ItemName") {
+                    $("#PartCode").val(v).trigger("change");
+                }
+            }
+        }
+        function GetCharacteristic() {
+            $.ajax({
+                url: '@Url.Action("GetCharacteristic", "ControlPlan")', // Action that returns FillGroup data
+                type: 'POST',
+                async: false,
+                success: function (response, status, error) {
+
+                    var characteristicDropdown = $('#Characteristic');
+                    var obj = $.parseJSON(response);
+                    characteristicDropdown.empty();
+                    characteristicDropdown.append('<option value="">--Select--</option>');
+
+
+                    $.each(obj.Result, function (index, controlPlan) {
+
+                        characteristicDropdown.append('<option value="' + controlPlan.Characteristic + '">' + controlPlan.Characteristic + '</option>');
+                    });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+
+                        var Characteristic = '@Model.Characteristic';
+                        $('#Characteristic').val(Characteristic).trigger("change");
+                        $('#Characteristic').val(Characteristic);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.log('Failed to load groups.');
+                }
+            });
+        }
+        function GetEvMeasureTech() {
+            $.ajax({
+                url: '@Url.Action("GetEvMeasureTech", "ControlPlan")', // Action that returns FillGroup data
+                type: 'POST',
+                async: false,
+                success: function (response, status, error) {
+
+                    var evMeasureTechDropdown = $('#EvalutionMeasurmentTechnique');
+                    var obj = $.parseJSON(response);
+                    evMeasureTechDropdown.empty();
+                    evMeasureTechDropdown.append('<option value="">--Select--</option>');
+
+
+                    $.each(obj.Result, function (index, controlPlan) {
+
+                        evMeasureTechDropdown.append('<option value="' + controlPlan.EvalutionMeasurmentTechnique + '">' + controlPlan.EvalutionMeasurmentTechnique + '</option>');
+                    });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+
+                        var EvalutionMeasurmentTechnique = '@Model.EvalutionMeasurmentTechnique';
+                        $('#EvalutionMeasurmentTechnique').val(EvalutionMeasurmentTechnique).trigger("change");
+                        $('#EvalutionMeasurmentTechnique').val(EvalutionMeasurmentTechnique);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.log('Failed to load groups.');
+                }
+            });
+        }
+        function GetControlMethod() {
+            $.ajax({
+                url: '@Url.Action("GetControlMethod", "ControlPlan")', // Action that returns FillGroup data
+                type: 'POST',
+                async: false,
+                success: function (response, status, error) {
+
+                    var controlMethodDropdown = $('#ControlMethod');
+                    var obj = $.parseJSON(response);
+                    controlMethodDropdown.empty();
+                    controlMethodDropdown.append('<option value="">--Select--</option>');
+
+
+                    $.each(obj.Result, function (index, controlPlan) {
+
+                        controlMethodDropdown.append('<option value="' + controlPlan.ControlMethod + '">' + controlPlan.ControlMethod + '</option>');
+                    });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+
+                        var ControlMethod = '@Model.ControlMethod';
+                        $('#ControlMethod').val(ControlMethod).trigger("change");
+                        $('#ControlMethod').val(ControlMethod);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.log('Failed to load groups.');
+                }
+            });
+        }
+        function GetRejectionPlan() {
+            $.ajax({
+                url: '@Url.Action("GetRejectionPlan", "ControlPlan")', // Action that returns FillGroup data
+                type: 'POST',
+                async: false,
+                success: function (response, status, error) {
+
+                    var rejectionPlanDropdown = $('#RejectionPlan');
+                    var obj = $.parseJSON(response);
+                    rejectionPlanDropdown.empty();
+                    rejectionPlanDropdown.append('<option value="">--Select--</option>');
+
+
+                    $.each(obj.Result, function (index, controlPlan) {
+
+                        rejectionPlanDropdown.append('<option value="' + controlPlan.RejectionPlan + '">' + controlPlan.RejectionPlan + '</option>');
+                    });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+
+                        var RejectionPlan = '@Model.RejectionPlan';
+                        $('#RejectionPlan').val(ControlMethod).trigger("change");
+                        $('#RejectionPlan').val(RejectionPlan);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.log('Failed to load groups.');
+                }
+            });
+        }
+
+        function GetFormRights() {
+
+            $.ajax({
+                url: "@Url.Action("GetFormRights")",
+                type: "POST",
+                success: function (data) {
+
+                    if (data != null) {
+                        var obj = $.parseJSON(data);
+                        console.log(obj);
+                        var optAll = obj.Result.Table[0].OptAll;
+                        var optSave = obj.Result.Table[0].OptSave;
+                        var optUpdate = obj.Result.Table[0].OptUpdate;
+                        var optDelete = obj.Result.Table[0].OptDelete;
+                        var optView = obj.Result.Table[0].OptView;
+                        if (!optAll) {
+                            if (!optSave) {
+                                $(".submitBTN").prop("disabled", true);
+                            }
+                            if (!(optUpdate || optDelete || optView)) {
+                                $(".DashBoard")
+                                    .addClass("disabled-link")
+                                    .on("click", function (e) {
+                                        e.preventDefault(); // Prevents clicking the link
+                                    });
+                            }
+                        }
+                    }
+                },
+                error: function (errMsg) {
+                    $.notify(errMsg, { position: "top center", className: "error" });
+                }
+            });
+            // calculateSumAndSetValues();
+        }
+
+        function AutoComplete(ID) {
+
+            $("#" + ID).autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: '@Url.Action("AutoComplete", "AccountMaster")',
+                        type: "POST",
+                        data: { "ColumnName": ID, "prefix": request.term },
+                        success: function (data) {
+                            response($.map(data,
+                                function (key, value) {
+                                    return key.text;
+                                }));
+                        },
+                        error: function (response) {
+                            alert(response.responseText);
+                        },
+                        failure: function (response) {
+                            alert(response.responseText);
+                        }
+                    });
+                }
+            });
+        }
+       
+
+
+        var EditEachItem = false;
+
+        $('.GridButton').click(function (e) {
+             
+            e.preventDefault();
+            var imageUrl = $('#hdnImageURL').val();
+            var itemImageUrl = $('#hdnItemImageURL').val();
+            EditEachItem = false;
+
+            function isNullOrEmpty(val) {
+                return val === undefined || val === null || val.trim() === "";
+            }
+
+            // Mandatory Field Validation
+            if (isNullOrEmpty($('#Characteristic').val())) {
+                $.notify("Characteristic is required.", "error");
+                $('#Characteristic').focus();
+                return false;
+            }
+            if (isNullOrEmpty($('#EvalutionMeasurmentTechnique').val())) {
+                $.notify("Evaluation Measurement Technique is required.", "error");
+                $('#EvalutionMeasurmentTechnique').focus();
+                return false;
+            }
+            if (isNullOrEmpty($('#ControlMethod').val())) {
+                $.notify("Control Method is required.", "error");
+                $('#ControlMethod').focus();
+                return false;
+            }
+            if (isNullOrEmpty($('#SpecificationFrom').val())) {
+                $.notify("Specification From is required.", "error");
+                $('#SpecificationFrom').focus();
+                return false;
+            }
+
+            // Calculate highest SeqNo in grid
+            var seqnoarray = [];
+            $('#divControlPlanGrid tr').each(function (index, element) {
+                var currentRow = $(element);
+                var seqnoText = currentRow.find('td[id^=SeqNo]').text();
+                if (!isNullOrEmpty(seqnoText) && !isNaN(parseInt(seqnoText))) {
+                    seqnoarray.push(parseInt(seqnoText));
+                }
+            });
+
+            var highestValue = 0;
+            if (seqnoarray.length > 0) {
+                highestValue = Math.max(...seqnoarray);
+            }
+            var seqNo = $('#SeqNo').val();
+            var mode = $('#Mode').val();
+
+            if (!seqNo || seqNo === "0" || seqNo === "") {
+                mode = ""; // reset mode to insert for new entry
+                $('#Mode').val(""); // also reset hidden input to keep UI consistent
+            }
+            // Determine SeqNo to use
+            // If mode is 'U' (update), keep current SeqNo; else assign new SeqNo = highest + 1
+            var finalSeqNo = ($('#Mode').val() === "U") ? $('#SeqNo').val() : (highestValue + 1);
+            $('#SeqNo').val(finalSeqNo); // update hidden field or input if needed
+
+            var ItemData = {
+                "Characteristic": $('#Characteristic').val(),
+                "EvalutionMeasurmentTechnique": $('#EvalutionMeasurmentTechnique').val(),
+                "SpecificationFrom": $('#isMultiline').is(':checked') ? $('#multiLineInput').val() : $('#singleLineInput').val(),
+                "SpecificationTo": $('#SpecificationTo').val(),
+                "Operator": $('#Operator').val(),
+                "OperatorText": $('#Operator').find(':selected').text() == "-Select-" ? "" : $('#Operator').find(':selected').text(),
+                "FrequencyofTesting": $('#FrequencyofTesting').val(),
+                "InspectionBy": $('#InspectionBy').val(),
+                "InspectionByText": $('#InspectionBy').find(':selected').text() == "-Select-" ? "" : $('#InspectionBy').find(':selected').text(),
+                "ControlMethod": $('#ControlMethod').val(),
+                "ControlMethodText": $('#ControlMethod').find(':selected').text() == "-Select-" ? "" : $('#ControlMethod').find(':selected').text(),
+                "Remarks": $('#Remarks').val(),
+                "RejectionPlan": $('#RejectionPlan').val(),
+                "RejectionPlanText": $('#RejectionPlan').find(':selected').text() == "-Select-" ? "" : $('#RejectionPlan').find(':selected').text(),
+                "DrawingNo": $('#DrawingNo').val(),
+                "CntPlanEntryDate": $('#CntPlanEntryDate').val(),
+                "CntPlanYearCode": $('#CntPlanYearCode').val(),
+                "CntPlanEntryId": $('#CntPlanEntryId').val(),
+                "ImageURL": imageUrl,
+                "ItemImageURL": itemImageUrl,
+                "Mode": mode,
+                "SeqNo": finalSeqNo
+            };
+
+            console.log(ItemData);
+
+            $.ajax({
+                url: "@Url.Action("AddControlPlanDetail")",
+                type: "POST",
+                data: ItemData,
+                beforeSend: function (xhr) {
+                    console.log(1);
+                },
+                success: function (data, status, xhr) {
+                    console.log(2);
+                    $('#RoundOff').prop('selectedIndex', 0);
+                    if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
+                        $.notify('Duplicate Process Not Allowed.', "info");
+                        $('.ItemBtn').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
+                    }
+                    else {
+                        $('#divControlPlanGrid').html(data);
+
+                        // If it's a new add (CntPlanEntryId is 0 or empty), clear mode; else keep mode
+                        if ($('#CntPlanEntryId').val() === "0" || $('#CntPlanEntryId').val() === "") {
+                            $('#Mode').val("");
+                        }
+
+                        $('#SeqNo').val("");
+                        $.notify('Process Added To Grid', "success");
+                    }
+                    ClearItems();
+                },
+                error: function (result, status, xhr) {
+                    $.notify(result.responseText, "error");
+                },
+                failure: function (result, status, xhr) {
+                    alert(result.responseText);
+                },
+                complete: function () {
+                    console.log(5);
+                }
+            }).done(function () {
+                console.log(3);
+            }).fail(function () {
+                alert("error");
+            }).always(function () {
+                console.log(4);
+            });
+        });
+
+        function ViewFile(path) {
+            if (path) {
+                window.open(path, '_blank');
+            } else {
+                $.notify("No file available to view", "error");
+            }
+        }
+        function EditItemRows(SeqNo) {
+             
+            var RowCount = $('#divControlPlanGrid tr').length;
+            if (EditEachItem) {
+                $.notify('Cannot Edit item while AddtoGrid  Existing Item!!!', "error");
+                $('#editButton-' + RowCount).prop("disabled", true);
+            }
+            else {
+                $.ajax({
+                    url: '/ControlPlan/EditItemRows',
+                    type: "POST",
+                    data: { SeqNo: SeqNo ,Mode:"U"},
+                    success: function (data) {
+
+                        var obj = $.parseJSON(data);
+                        if (obj != null) {
+                            EditEachItem = true;
+                            $('#Characteristic').val(obj[0].Characteristic).trigger("change");
+                            $('#EvalutionMeasurmentTechnique').val(obj[0].EvalutionMeasurmentTechnique).trigger("change");
+                            //$('#SpecificationFrom').val(obj[0].SpecificationFrom).trigger("change");
+                            if (obj[0].SpecificationFrom && obj[0].SpecificationFrom.includes('\n')) {
+                                $('#isMultiline').prop('checked', true).trigger('change');
+                                $('#multiLineInput').val(obj[0].SpecificationFrom);
+                            } else {
+                                $('#isMultiline').prop('checked', false).trigger('change');
+                                $('#singleLineInput').val(obj[0].SpecificationFrom);
+                            }
+                            $('#SpecificationTo').val(obj[0].SpecificationTo).trigger("change");
+                            //$('#Operator').val(obj[0].Operator).trigger("change");
+                            $('#Operator').val(obj[0].Operator?.trim()).trigger("change");
+                            $('#FrequencyofTesting').val(obj[0].FrequencyofTesting).trigger("change");
+                            $('#InspectionBy').val(obj[0].InspectionBy).trigger("change");
+                            $('#ControlMethod').val(obj[0].ControlMethod).trigger("change");
+                            $('#Remarks').val(obj[0].Remarks).trigger("change");
+                            $('#RejectionPlan').val(obj[0].RejectionPlan).trigger("change");
+                            $('#DrawingNo').val(obj[0].DrawingNo).trigger("change");
+                            $('#SeqNo').val(obj[0].SeqNo);  
+                            $('#Mode').val('U');
+                            //   $('#divRoutingGrid tr#' + SeqNo).remove();
+
+                            var rowCount = $('#divControlPlanGrid tr').length;
+                            for (var i = 1; i <= rowCount + 1; i++) {
+                                $('#editItemGrid-' + i).css("pointer-events", "none");
+                                $('#editItemGrid-' + i).css("cursor", "not-allowed");
+                            }
+
+                            DeleteItemRow(SeqNo);
+                        }
+                    },
+                    error: function (response) {
+                        $.notify(response.responseText, "error");
+                    },
+                    failure: function (response) {
+                        $.notify(response.responseText, "error");
+                    }
+                });
+            }
+        }
+        async function DeleteItemRow(SeqNo) {
+             
+            $.ajax({
+                url: '@Url.Action("DeleteItemRow")',
+                type: "POST",
+                data: { "SeqNo": SeqNo, Mode: "U" },
+                success: await function (data, status, xhr) {
+                    $('#divControlPlanGrid').html(data);
+                    $.notify("Process deleted from Grid", "info");
+                },
+                error: function (response, status, xhr) {
+
+                    $.notify("Cannot delete item that exists in Tax Grid!!!", "error");
+                },
+                failure: function (response, status, xhr) {
+                    alert(response.responseText);
+                    $.notify(response.responseText, "error");
+                }
+            });
+        }
+        async function CheckDuplicate(n, v) {
+            $.ajax({
+                url: "@Url.Action("isDuplicate", "AccountMaster")",
+                type: "POST",
+                data: { "Colval": $('#' + v).val(), "ColName": n },
+                success: await function (data) {
+                    if (data.result !== "0" && data.statusText === "Error") {
+                        var message = 'Duplicate Entry : ' + $('#' + v).val() + ' Found For Column : ' + n;
+                        $('#' + v).val('');
+                        $.notify(message, { position: "top center", className: "error" });
+                    }
+                },
+                error: function (errMsg) {
+                    $.notify(errMsg, { position: "top center", className: "error" });
+                }
+            });
+        }
+
+
+        function PanNo() {
+            if ($('#GSTNO').val().length == 15) {
+                $('#PANNO').val($('#GSTNO').val().substring(5, 15)).focus();
+            }
+            else {
+                $('#PANNO').val('');
+            }
+        }
+
+
+        $('#GSTRegistered').change(function () {
+            if ($(this).val() == "Y") {
+                $('#GSTPartyTypes').val('CGST');
+            }
+            else if ($(this).val() == "N") {
+                $('#GSTPartyTypes').val('IGST');
+                RemoveErrorCls('GSTNO');
+                RemoveErrorCls('GSTTAXTYPE');
+            }
+            else {
+                $('#GSTPartyTypes').prop('selectedIndex', 0);
+                RemoveErrorCls('GSTPartyTypes');
+                RemoveErrorCls('GSTNO');
+                RemoveErrorCls('GSTTAXTYPE');
+            }
+        });
+
+
+
+        $("button[type='submit']").click(function () {
+            $(".valid").each(function () {
+                $(this).removeClass('is-invalid');
+                IsErr = 0;
+            });
+
+            //H_AccountDetail
+
+            if (!$('#Entry_Date').val()) {
+                AddErrorCls('Entry_Date');
+                IsErr = 1;
+            }
+
+            if (!$('#ParentAccountCode').val()) {
+                AddErrorCls('ParentAccountCode');
+                IsErr = 1;
+            }
+
+            if (!$('#DisplayName').val()) {
+                AddErrorCls('DisplayName');
+                IsErr = 1;
+            }
+            else {
+                IsErr = 0;
+                $('#DisplayName').removeClass('is-invalid');
+            }
+
+            if (!$('#Account_Name').val()) {
+                AddErrorCls('Account_Name');
+                IsErr = 1;
+            }
+
+            if (!$('#SubGroup').val()) {
+                AddErrorCls('SubGroup');
+                IsErr = 1;
+            }
+
+            if (!$('#AccountType').val()) {
+                AddErrorCls('AccountType');
+                IsErr = 1;
+            }
+
+            if (!$('#MainGroup').val()) {
+                AddErrorCls('MainGroup');
+                IsErr = 1;
+            }
+
+            if (!$('#SubSubGroup').val()) {
+                AddErrorCls('SubSubGroup');
+                IsErr = 1;
+            }
+
+            if (!$('#UnderGroup').val()) {
+                AddErrorCls('UnderGroup');
+                IsErr = 1;
+            }
+
+            //if(!$('#DebCredCode').val())
+            //{
+            //    AddErrorCls('DebCredCode');
+            //    IsErr=1;
+            //}
+
+            //if(!$('#Party_Code').val())
+            //{
+            //    AddErrorCls('Party_Code');
+            //    IsErr=1;
+            //}
+
+            IsErr == 1 ? ShowErrorFld('H_AccountDetail') : HideErrorFld('H_AccountDetail');
+
+            if (HideShow == 1) {
+                if (IsSDSC == 1)//in case of SUBGROUP = Sundry Debtors OR Sundry Creditors
+                {
+                    //H_AddressDetail
+
+                    if (!$('#ComAddress').val()) {
+                        AddErrorCls('ComAddress');
+                        IsErr = 1;
+                    }
+
+                    //if(!$('#ComAddress1').val())
+                    //{
+                    //    AddErrorCls('ComAddress1');
+                    //    IsErr=1;
+                    //}
+
+                    if (!$('#Country').val()) {
+                        AddErrorCls('Country');
+                        IsErr = 1;
+                    }
+
+                    if (!$('#State').val()) {
+                        AddErrorCls('State');
+                        IsErr = 1;
+                    }
+
+                    if (!$('#City').val()) {
+                        AddErrorCls('City');
+                        IsErr = 1;
+                    }
+
+                    if (!$('#PinCode').val()) {
+                        AddErrorCls('PinCode');
+                        IsErr = 1;
+                    }
+
+                    if (!$('#PhoneNo').val()) {
+                        AddErrorCls('PhoneNo');
+                        IsErr = 1;
+                    }
+
+                    if (!$('#MobileNo').val()) {
+                        AddErrorCls('MobileNo');
+                        IsErr = 1;
+                    }
+
+                    if (!$('#ContactPerson').val()) {
+                        AddErrorCls('ContactPerson');
+                        IsErr = 1;
+                    }
+
+                    IsErr == 1 ? ShowErrorFld('H_AddressDetail') : HideErrorFld('H_AddressDetail');
+
+                    //H_TaxDetail
+
+
+                    if (!$('#PartyType').val()) {
+                        AddErrorCls('PartyType');
+                        IsErr = 1;
+                    }
+
+                    if (!$('#GSTRegistered').val()) {
+                        AddErrorCls('GSTRegistered');
+                        IsErr = 1;
+                    }
+                    else {
+                        if ($('#GSTRegistered').val() === "Y") {
+                            if (!$('#GSTNO').val()) {
+                                AddErrorCls('GSTNO');
+                                IsErr = 1;
+                            }
+                            else {
+                                if ($('#GSTRegistered').val() === 'Y') {
+                                    if ($('#GSTNO').val().length !== 15) {
+                                        IsErr = 1;
+                                        AddErrorCls('GSTNO');
+                                    }
+                                }
+                            }
+
+                            if (!$('#GSTPartyTypes').val()) {
+                                AddErrorCls('GSTPartyTypes');
+                                IsErr = 1;
+                            }
+
+                            if (!$('#GSTTAXTYPE').val()) {
+                                AddErrorCls('GSTTAXTYPE');
+                                IsErr = 1;
+                            }
+                        }
+                        if ($('#GSTRegistered').val() === "N") {
+                            $('#GSTNO').val('');
+                            RemoveErrorCls('GSTNO');
+                            $('#GSTPartyTypes').prop('selectedIndex', 0);
+                            RemoveErrorCls('GSTPartyTypes');
+                            $('#GSTTAXTYPE').prop('selectedIndex', 0);
+                            RemoveErrorCls('GSTTAXTYPE');
+                        }
+                    }
+
+
+                    if (!$('#TDS').val()) {
+                        AddErrorCls('TDS');
+                        IsErr = 1;
+                    }
+                    else {
+                        if ($('#TDS').val() == "Y") {
+                            if (!$('#TDSRate').val()) {
+                                AddErrorCls('TDSRate');
+                                IsErr = 1;
+                            }
+
+                            if (!$('#TDSPartyCategery').val()) {
+                                AddErrorCls('TDSPartyCategery');
+                                IsErr = 1;
+                            }
+                        }
+                        if ($('#TDS').val() == "N") {
+                            IsErr = 0;
+                            $('#TDSRate').removeClass('is-invalid');
+                            $('#TDSPartyCategery').removeClass('is-invalid');
+                        }
+
+                        if (!$('#PANNO').val()) {
+                            AddErrorCls('PANNO');
+                            IsErr = 1;
+                        }
+                    }
+
+                    IsErr == 1 ? ShowErrorFld('H_TaxDetail') : HideErrorFld('H_TaxDetail');
+
+                }
+                else {
+                    if ($('#GSTRegistered').val() == 'Y' || $('#TDS').val() == "Y") {
+                        ShowErrorFld('H_TaxDetail');
+
+                        if ($('#GSTRegistered').val() == 'Y') {
+                            if (!$('#GSTNO').val()) {
+                                AddErrorCls('GSTNO');
+                                IsErr = 1;
+                            }
+                            else {
+                                if ($('#GSTNO').val().length != 15) {
+                                    IsErr = 1;
+                                    AddErrorCls('GSTNO');
+                                }
+                            }
+                        }
+
+                        if ($('#TDS').val() == "Y") {
+                            if (!$('#TDSRate').val()) {
+                                AddErrorCls('TDSRate');
+                                IsErr = 1;
+                            }
+
+                            if (!$('#TDSPartyCategery').val()) {
+                                AddErrorCls('TDSPartyCategery');
+                                IsErr = 1;
+                            }
+                        }
+                    }
+                    else {
+                        HideErrorFld('H_TaxDetail');
+                    }
+                }
+            }
+
+            console.log('IsErr : ' + IsErr);
+
+            if (IsErr == 1) return false;
+            if (IsErr == 0) return true;
+
+            //$("input[required],select[required]").each(function ()
+            //{
+            //    $(this).addClass('is-invalid');
+            //});
+            //$(".valid").each(function ()
+            //{
+            //    $(this).removeClass('is-invalid');
+            //});
+        });
+
+        $('#ParentAccountCode').select2();
+
+    </script>
+    <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+}

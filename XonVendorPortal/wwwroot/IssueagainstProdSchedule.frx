@@ -1,0 +1,145 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="07/14/2025 13:15:16" ReportInfo.Modified="07/14/2025 15:48:04" ReportInfo.CreatorVersion="2023.2.0.0">
+  <Dictionary>
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqtkzNtsLCrjFFKG01JH5m8VJ+Sh/Xox0qR8hUHXe2FjLO4/6zyOAe5VwCbCs+kvmsoMCoW06DlN/XqWxbD/P8+FuAMe4ImXxwNMizue8l1NkJFfCk3bI8VyNXHFr+o3m9nfGunlvNQOoRng8PLl+ebdahBMVHSVLUoJZBKcITnm3hgWn87aBzvTNqiPU0SFarIjAscb8cNR09gRwLmUtl6g==">
+      <TableDataSource Name="Table" Alias="SPPrintReportIssueAgainstPlanSch" DataType="System.Int32" Enabled="true" SelectCommand="exec SPPrintReportIssueAgainstPlanSch @Flag =N'ISSUEAGAINSTPLANWITHBATCH',@EntryId =@entryidparam,&#13;&#10;@yearCode=@yearcodeparam">
+        <Column Name="IssAgtProdSchEntryId" DataType="System.Int64"/>
+        <Column Name="IssAgtProdSchYearCode" DataType="System.Int64"/>
+        <Column Name="IssAgtProdSchSlipNo" DataType="System.String"/>
+        <Column Name="IssAgtProdSchSlipDate" DataType="System.DateTime"/>
+        <Column Name="IssuedFromStore" DataType="System.String"/>
+        <Column Name="RecByEmployee" DataType="System.String"/>
+        <Column Name="IssuedByEmployee" DataType="System.String"/>
+        <Column Name="MachineName" DataType="System.String"/>
+        <Column Name="SeqNo" DataType="System.Int64"/>
+        <Column Name="ProdPlanNo" DataType="System.String"/>
+        <Column Name="PlanDate" DataType="System.DateTime"/>
+        <Column Name="ProdSchNo" DataType="System.String"/>
+        <Column Name="ProdSchDate" DataType="System.DateTime"/>
+        <Column Name="WorkCenterDescription" DataType="System.String"/>
+        <Column Name="IssuedPartCode" DataType="System.String"/>
+        <Column Name="IssuedItemName" DataType="System.String"/>
+        <Column Name="IssueQty" DataType="System.Double"/>
+        <Column Name="Unit" DataType="System.String"/>
+        <Column Name="AltIssueQty" DataType="System.Double"/>
+        <Column Name="BatchNo" DataType="System.String"/>
+        <Column Name="BatchStock" DataType="System.Double"/>
+        <Column Name="UniqueBatchno" DataType="System.String"/>
+        <Column Name="Altunit" DataType="System.String"/>
+        <Column Name="BOMNo" DataType="System.Int64"/>
+        <Column Name="BomQty" DataType="System.Double"/>
+        <Column Name="OriginalItemCode" DataType="System.Int64"/>
+        <Column Name="IssueItemCode" DataType="System.Int64"/>
+        <Column Name="AltItemCode" DataType="System.Int64"/>
+        <Column Name="PRODSCHFGItemCode" DataType="System.Int64"/>
+        <CommandParameter Name="entryidparam" Expression="entryidparam"/>
+        <CommandParameter Name="yearcodeparam" Expression="yearcodeparam"/>
+      </TableDataSource>
+    </MsSqlDataConnection>
+    <Parameter Name="MyParameter" DataType="System.String" Expression="MyParameter"/>
+    <Total Name="TotalIssuedQty" Expression="[SPPrintReportIssueAgainstPlanSch.IssueQty]" Evaluator="Data1" PrintOn="ReportSummary1"/>
+    <Total Name="TotalBatchStock" Expression="[SPPrintReportIssueAgainstPlanSch.BatchStock]" Evaluator="Data1" PrintOn="ReportSummary1"/>
+  </Dictionary>
+  <ReportPage Name="Page1" Watermark.Font="Arial, 60pt">
+    <ReportTitleBand Name="ReportTitle1" Width="718.2" Height="236.25">
+      <LineObject Name="Line1" Left="9.45" Top="9.45" Width="699.3"/>
+      <LineObject Name="Line2" Left="9.45" Top="9.45" Height="226.8"/>
+      <LineObject Name="Line3" Left="708.75" Top="9.45" Height="226.8"/>
+      <TextObject Name="Text1" Left="179.55" Top="18.9" Width="340.2" Height="28.35" Text="Issue against ProdSchedule" HorzAlign="Center" Font="Arial, 16pt"/>
+      <LineObject Name="Line4" Left="9.45" Top="122.85" Width="699.3"/>
+      <TextObject Name="Text2" Left="122.85" Top="132.3" Width="264.6" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPPrintReportIssueAgainstPlanSch.IssAgtProdSchSlipNo]" Font="Arial, 10pt"/>
+      <TextObject Name="Text3" Left="18.9" Top="132.3" Width="94.5" Height="18.9" Text="Issue Slip No:" Font="Arial, 10pt"/>
+      <TextObject Name="Text4" Left="406.35" Top="132.3" Width="85.05" Height="18.9" Text="Issue Date:" Font="Arial, 10pt"/>
+      <TextObject Name="Text5" Left="500.85" Top="132.3" Width="217.35" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPPrintReportIssueAgainstPlanSch.IssAgtProdSchSlipDate]" Format="Date" Format.Format="d" Font="Arial, 10pt"/>
+      <TextObject Name="Text6" Left="18.9" Top="151.2" Width="103.95" Height="18.9" Text="Issue Agt SlipNo:" Font="Arial, 9pt"/>
+      <TextObject Name="Text7" Left="406.35" Top="151.2" Width="94.5" Height="18.9" Text="Issue Agt Date:" Font="Arial, 9pt"/>
+      <TextObject Name="Text8" Left="18.9" Top="170.1" Width="103.95" Height="18.9" Text="Prod Plan No.:" Font="Arial, 10pt"/>
+      <LineObject Name="Line5" Left="9.45" Top="236.25" Width="699.3"/>
+      <TextObject Name="Text20" Left="18.9" Top="189" Width="103.95" Height="18.9" Text="Prod Sch No.:" Font="Arial, 10pt"/>
+      <TextObject Name="Text9" Left="406.35" Top="170.1" Width="85.05" Height="18.9" Text="Plan Date:" Font="Arial, 10pt"/>
+      <TextObject Name="Text21" Left="406.35" Top="189" Width="85.05" Height="18.9" Text="SchDate:" Font="Arial, 10pt"/>
+      <TextObject Name="Text28" Left="122.85" Top="189" Width="255.15" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPPrintReportIssueAgainstPlanSch.ProdSchNo]" Font="Arial, 10pt"/>
+      <TextObject Name="Text29" Left="122.85" Top="170.1" Width="255.15" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPPrintReportIssueAgainstPlanSch.ProdPlanNo]" Font="Arial, 10pt"/>
+      <TextObject Name="Text30" Left="500.85" Top="170.1" Width="217.35" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPPrintReportIssueAgainstPlanSch.PlanDate]" Format="Date" Format.Format="d" Font="Arial, 10pt"/>
+      <TextObject Name="Text31" Left="500.85" Top="189" Width="217.35" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPPrintReportIssueAgainstPlanSch.ProdSchDate]" Format="Date" Format.Format="d" Font="Arial, 10pt"/>
+      <TextObject Name="Text36" Left="122.85" Top="151.2" Width="255.15" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPPrintReportIssueAgainstPlanSch.IssAgtProdSchSlipNo]" Font="Arial, 10pt"/>
+      <TextObject Name="Text37" Left="500.85" Top="151.2" Width="207.9" Height="18.9" Text="[SPPrintReportIssueAgainstPlanSch.IssAgtProdSchSlipDate]" Format="Date" Format.Format="d" Font="Arial, 10pt"/>
+      <TextObject Name="Text38" Left="18.9" Top="207.9" Width="94.5" Height="18.9" Text="StoreName:" Font="Arial, 10pt"/>
+      <TextObject Name="Text39" Left="122.85" Top="207.9" Width="264.6" Height="18.9" Text="[SPPrintReportIssueAgainstPlanSch.IssuedFromStore]" Font="Arial, 10pt"/>
+    </ReportTitleBand>
+    <PageHeaderBand Name="PageHeader1" Top="239.45" Width="718.2" Height="47.25">
+      <LineObject Name="Line7" Left="708.75" Height="47.25"/>
+      <LineObject Name="Line6" Left="9.45" Height="47.25"/>
+      <LineObject Name="Line9" Left="37.8" Height="47.25"/>
+      <LineObject Name="Line10" Left="652.05" Height="47.25"/>
+      <LineObject Name="Line11" Left="595.35" Height="47.25"/>
+      <LineObject Name="Line12" Left="548.1" Height="47.25"/>
+      <LineObject Name="Line13" Left="500.85" Height="47.25"/>
+      <LineObject Name="Line14" Left="453.6" Height="47.25"/>
+      <LineObject Name="Line15" Left="415.8" Height="47.25"/>
+      <LineObject Name="Line16" Left="122.85" Height="47.25"/>
+      <TextObject Name="Text10" Left="9.45" Top="9.45" Width="28.35" Height="28.35" Text="Sr No" HorzAlign="Center" Font="Arial, 9pt"/>
+      <TextObject Name="Text12" Left="37.8" Top="9.45" Width="85.05" Height="28.35" Text="PartCode" HorzAlign="Center" Font="Arial, 9pt"/>
+      <TextObject Name="Text13" Left="368.55" Top="9.45" Width="47.25" Height="37.8" Text="Prod schQty" HorzAlign="Center" Font="Arial, 9pt"/>
+      <TextObject Name="Text15" Left="321.3" Top="9.45" Width="47.25" Height="28.35" Text="UOM" HorzAlign="Center" Font="Arial, 9pt"/>
+      <TextObject Name="Text16" Left="415.8" Top="9.45" Width="37.8" Height="37.8" Text="Req Qty" HorzAlign="Center" Font="Arial, 9pt"/>
+      <TextObject Name="Text17" Left="453.6" Top="9.45" Width="47.25" Height="37.8" Text="Issued Qty" HorzAlign="Center" Font="Arial, 9pt"/>
+      <TextObject Name="Text18" Left="500.85" Top="9.45" Width="47.25" Height="37.8" Text="Batch Stock " HorzAlign="Center" Font="Arial, 9pt"/>
+      <TextObject Name="Text19" Left="548.1" Top="9.45" Width="47.25" Height="37.8" Text="Pend Qty" HorzAlign="Center" Font="Arial, 9pt"/>
+      <TextObject Name="Text22" Left="122.85" Top="9.45" Width="141.75" Height="28.35" Text="ItemName" HorzAlign="Center" Font="Arial, 9pt"/>
+      <LineObject Name="Line31" Left="368.55" Height="47.25"/>
+      <LineObject Name="Line32" Left="321.3" Height="47.25"/>
+      <LineObject Name="Line33" Left="264.6" Height="47.25"/>
+      <TextObject Name="Text42" Left="264.6" Top="9.45" Width="56.7" Height="28.35" Text="Workcenter &#13;&#10;Name" HorzAlign="Center" Font="Arial, 7pt"/>
+      <TextObject Name="Text40" Left="595.35" Top="9.45" Width="56.7" Height="37.8" Text="Batch No" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text41" Left="652.05" Top="9.45" Width="56.7" Height="37.8" Text="Unique BatchNo" HorzAlign="Center" Font="Arial, 9pt"/>
+    </PageHeaderBand>
+    <GroupHeaderBand Name="GroupHeader1" Top="289.9" Width="718.2" Height="66.15" Condition="[SPPrintReportIssueAgainstPlanSch.IssuedPartCode]">
+      <LineObject Name="Line17" Left="708.75" Height="66.15"/>
+      <LineObject Name="Line19" Left="9.45" Height="66.15"/>
+      <LineObject Name="Line20" Left="37.8" Height="66.15"/>
+      <LineObject Name="Line22" Left="595.35" Height="66.15"/>
+      <LineObject Name="Line23" Left="548.1" Height="66.15"/>
+      <LineObject Name="Line24" Left="453.6" Height="66.15"/>
+      <LineObject Name="Line25" Left="415.8" Height="66.15"/>
+      <LineObject Name="Line26" Left="368.55" Height="66.15"/>
+      <LineObject Name="Line27" Left="122.85" Height="66.15"/>
+      <TextObject Name="Text23" Left="9.45" Top="9.45" Width="28.35" Height="28.35" CanGrow="true" CanBreak="false" Text="[Row#]" HorzAlign="Center" Font="Arial, 9pt"/>
+      <TextObject Name="Text24" Left="37.8" Top="9.45" Width="85.05" Height="56.7" CanGrow="true" CanBreak="false" Text="[SPPrintReportIssueAgainstPlanSch.IssuedPartCode]" HorzAlign="Center" Font="Arial, 8pt"/>
+      <TextObject Name="Text25" Left="122.85" Top="9.45" Width="141.75" Height="56.7" CanGrow="true" CanBreak="false" Text="[SPPrintReportIssueAgainstPlanSch.IssuedItemName]" HorzAlign="Center" Font="Arial, 7pt"/>
+      <TextObject Name="Text26" Left="321.3" Top="9.45" Width="47.25" Height="28.35" CanGrow="true" CanBreak="false" Text="[SPPrintReportIssueAgainstPlanSch.Unit]" HorzAlign="Center" Font="Arial, 9pt"/>
+      <TextObject Name="Text27" Left="453.6" Top="9.45" Width="47.25" Height="28.35" Text="[SPPrintReportIssueAgainstPlanSch.IssueQty]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 9pt" Trimming="EllipsisCharacter"/>
+      <LineObject Name="Line34" Left="264.6" Height="66.15"/>
+      <LineObject Name="Line35" Left="321.3" Height="66.15"/>
+      <LineObject Name="Line36" Left="500.85" Height="66.15"/>
+      <TextObject Name="Text45" Left="264.6" Top="9.45" Width="56.7" Height="28.35" CanGrow="true" CanBreak="false" Text="[SPPrintReportIssueAgainstPlanSch.WorkCenterDescription]" HorzAlign="Center" Font="Arial, 9pt"/>
+      <LineObject Name="Line21" Left="652.05" Height="66.15"/>
+      <TextObject Name="Text44" Left="652.05" Top="9.45" Width="56.7" Height="56.7" CanGrow="true" CanBreak="false" Text="[SPPrintReportIssueAgainstPlanSch.UniqueBatchno]" HorzAlign="Center" Font="Arial, 7pt"/>
+      <TextObject Name="Text43" Left="595.35" Top="9.45" Width="56.7" Height="56.7" CanGrow="true" CanBreak="false" Text="[SPPrintReportIssueAgainstPlanSch.BatchNo]" HorzAlign="Center" Font="Arial, 8pt"/>
+      <TextObject Name="Text48" Left="500.85" Top="9.45" Width="47.25" Height="56.7" CanGrow="true" CanBreak="false" Text="[SPPrintReportIssueAgainstPlanSch.BatchStock]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 9pt" Trimming="EllipsisCharacter"/>
+      <LineObject Name="Line8" Left="9.45" Width="699.3"/>
+      <DataBand Name="Data1" Top="359.25" Width="718.2" DataSource="Table"/>
+      <GroupFooterBand Name="GroupFooter1" Top="362.45" Width="718.2"/>
+    </GroupHeaderBand>
+    <ReportSummaryBand Name="ReportSummary1" Top="365.65" Width="718.2" Height="85.05">
+      <LineObject Name="Line28" Left="9.45" Height="56.7"/>
+      <LineObject Name="Line29" Left="708.75" Height="56.7"/>
+      <LineObject Name="Line30" Left="708.75" Top="56.7" Width="-699.3"/>
+      <TextObject Name="Text32" Left="18.9" Top="37.8" Width="66.15" Height="18.9" Text="Issued by" Font="Arial, 9pt, style=Bold"/>
+      <TextObject Name="Text33" Left="85.05" Top="37.8" Width="198.45" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPPrintReportIssueAgainstPlanSch.IssuedByEmployee]" Font="Arial, 9pt"/>
+      <TextObject Name="Text34" Left="415.8" Top="37.8" Width="85.05" Height="18.9" Text="Received By" Font="Arial, 9pt, style=Bold"/>
+      <TextObject Name="Text35" Left="500.85" Top="37.8" Width="207.9" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPPrintReportIssueAgainstPlanSch.RecByEmployee]" Font="Arial, 9pt"/>
+      <LineObject Name="Line37" Left="708.75" Top="28.35" Width="-699.3"/>
+      <LineObject Name="Line39" Left="415.8" Height="28.35"/>
+      <LineObject Name="Line40" Left="453.6" Height="28.35"/>
+      <LineObject Name="Line41" Left="500.85" Height="28.35"/>
+      <LineObject Name="Line42" Left="548.1" Height="28.35"/>
+      <TextObject Name="Text46" Left="453.6" Top="3.4" Width="47.25" Height="22.68" CanGrow="true" CanBreak="false" Text="[TotalIssuedQty]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Center" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text47" Left="321.3" Top="9.45" Width="47.25" Height="18.9" Text="Total:" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text49" Left="500.85" Top="3.4" Width="47.25" Height="28.35" Text="[TotalBatchStock]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" Font="Arial, 8pt, style=Bold"/>
+      <LineObject Name="Line38" Left="368.55" Height="28.35"/>
+      <LineObject Name="Line43" Left="595.35" Height="28.35"/>
+      <LineObject Name="Line44" Left="9.45" Width="699.3"/>
+    </ReportSummaryBand>
+  </ReportPage>
+</Report>

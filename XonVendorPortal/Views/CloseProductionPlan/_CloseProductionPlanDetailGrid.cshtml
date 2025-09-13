@@ -1,0 +1,175 @@
+﻿@model eTactWeb.DOM.Models.CloseProductionPlanModel;
+<div class="table-responsive" style="max-height:350px;">
+    <table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0" id="GateDataTable" style="width: 100%;">
+        <thead class="bg-gradient card-headerBG text-light" style="position:static;" id="dashGateThead">
+            <tr>
+                <th>Sr#</th>
+                <th style="width:50px !important">Action</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="1"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>WONO</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="2"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>WO Date</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="3"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>WOStataus</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="4"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Account Name</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="5"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Name</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="6"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Part Code</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="7"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>WO Qty</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="8"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>FGStock</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="9"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>WIPStock</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="10"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PendRoutSheetQty</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="11"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Pend Prod Qty</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="12"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SONO</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="13"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Entry Machine Name</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="14"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO Date</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="15"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SchNo</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="16"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SchDate</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="17"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Color</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="18"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Order Qty</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="19"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unit</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="20"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Unit</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="21"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ApprovedDate</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="22"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Effective Till</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="23"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>For Month</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="24"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Close WO</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="25"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Close Date</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="26"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Close BY</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="27"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RemarkProductSupplyStage</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="28"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RemarkForProduction</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="29"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Approved</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="30"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>DrawingNo</th>
+            </tr>
+        </thead>
+        <tbody id="gateDashboardtable">
+            @{
+                var Cntr = 0;
+                if (Model.CloseProductionPlanGrid == null || Model.CloseProductionPlanGrid.Count == 0)
+                {
+                    <tr class="text-center"><td colspan="6" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                }
+                else
+                {
+                    foreach (var item in Model.CloseProductionPlanGrid)
+                    {
+                        Cntr = Cntr + 1;
+                        <tr onclick="selection(this)">
+                            <td>@Cntr</td>
+                            <td style="text-align:center;white-space: nowrap;">
+                                <div id="container">
+                                    <div id="viewCursorDiv-@Cntr">
+                                        <a class="table-link link-success" asp-route-ID="@Cntr" asp-action="AlternateItemMaster" asp-route-Mode="V" onclick="BackButtonData(event);">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+
+                                    <div id="editCursorDiv-@Cntr">
+                                        <a class="table-link link-primary"
+                                           asp-route-ID="@Cntr"
+                                           asp-action="AlternateItemMaster"
+                                           asp-controller="AlternateItemMaster"
+                                           asp-route-Mode="U"
+                                          
+                                           onclick="confirmEdit(event)">
+
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+
+                                    <div id="deleteCursorDiv-@Cntr">
+                                        <a class="table-link link-danger" id="deleteCursor-@Cntr" onclick="confirmDelete(event)" asp-action="DeleteByID" >
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>@item.WONO</td>
+                            <td>@item.WODate</td>
+                            <td>@item.CloseOpen</td>
+                            <td>@item.AccountName</td>
+                            <td>@item.ItemName</td>
+                            <td>@item.PartCode</td>
+                            <td>@item.WOQty</td>
+                            <td>@item.FGStock</td>
+                            <td>@item.WIPStock</td>
+                            <td>@item.PendRoutSheetQty</td>
+                            <td>@item.PendProdQty</td>
+                            <td>@item.SONO</td>
+                            <td>@item.EntryMachineName</td>
+                            <td>@item.SODate</td>
+                            <td>@item.SchNo</td>
+                            <td>@item.SchDate</td>
+                            <td>@item.Color</td>
+                            <td>@item.OrderQty</td>
+                            <td>@item.Unit</td>
+                            <td>@item.AltUnit</td>
+                            <td>@item.ApprovedDate</td>
+                            <td>@item.EffectiveTill</td>
+                            <td>@item.ForMonth</td>
+                            <td>@item.CloseWO</td>
+                            <td>@item.CloseDate</td>
+                            <td>@item.CloseBy</td>
+                            <td>@item.RemarkProductSupplyStage</td>
+                            <td>@item.RemarkForProduction</td>
+                            <td>@item.Approved</td>
+                            <td>@item.DrawingNo</td>
+                        </tr>
+                    }
+                }
+            }
+        </tbody>
+    </table>
+</div>
+<center style="color:black"><strong>TOTAL ROWS : <span id="totalRows">@Cntr</span></strong></center>
+
+<style>
+    #container {
+        display: flex;
+    }
+
+        #container > div {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+    #GateDataTable {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #dashGateThead th {
+        background-color: #127387;
+        position: sticky;
+        top: -2px;
+        z-index: 1;
+    }
+
+    .sort-icon {
+        padding: 5px;
+        margin: 5px;
+        vertical-align: top;
+    }
+
+    .ascCol {
+        font-size: 15px;
+        vertical-align: bottom;
+    }
+
+    .descCol {
+        font-size: 15px;
+        vertical-align: super;
+    }
+
+    table {
+        width: 100%;
+    }
+
+    th, td {
+        white-space: nowrap;
+    }
+</style>

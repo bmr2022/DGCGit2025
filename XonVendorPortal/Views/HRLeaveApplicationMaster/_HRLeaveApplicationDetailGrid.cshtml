@@ -1,0 +1,49 @@
+﻿@model eTactWeb.DOM.Models.HRLeaveApplicationMasterModel
+@if (Model.ItemDetailGrid == null || Model.ItemDetailGrid.Count == 0)
+ {    <tr class="text-center">
+        <td colspan="23" class="text-black-50"><strong>NO DATA ADDED</strong></td>
+    </tr>
+}
+else
+{
+    var @Cntr = 0;
+    foreach (var item in Model.ItemDetailGrid)
+    {
+        Cntr = Cntr + 1;
+        <tr class="small " style="white-space:nowrap">
+            <td style="white-space:nowrap;">
+                <a href="#" class="table-link link-primary" onclick="EditItemRow(@item.SeqNo);">
+                    <span class="fa-stack">
+                        <i class="fa fa-square fa-stack-2x"></i>
+                        <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                    </span>
+                </a>
+                <a href="#" class="table-link link-danger" onclick="DeleteItemFromGrid(@item.SeqNo,@item.LeaveEntryId);">
+                    <span class="fa-stack">
+                        <i class="fa fa-square fa-stack-2x"></i>
+                        <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                    </span>
+                </a>
+            </td>
+            @if (Model.Mode == "U")
+            {
+                <td>
+                    @item.SeqNo
+                </td>
+            }
+            else
+            {
+
+                <td>@Cntr</td>
+            }
+            <td>@item.FromDate</td>
+            <td>@item.ToDate</td>
+            <td>@item.LeaveName</td>
+           
+            <td>@item.Duration</td>
+            <td>@item.BalanceLeaveMonthly</td>
+            <td>@item.BalanceLeaveYearly</td>
+            <td>@item.MaxLeaveInMonth</td>
+        </tr>
+    }
+}

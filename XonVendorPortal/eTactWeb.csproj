@@ -1,0 +1,160 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<TypeScriptTarget>ES2021</TypeScriptTarget>
+	</PropertyGroup>
+
+	<PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<TypeScriptTarget>ES2021</TypeScriptTarget>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
+		
+		<RazorCompileOnBuild>false</RazorCompileOnBuild>
+		<RazorCompileOnPublish>false</RazorCompileOnPublish>
+		<!--<RazorCompileOnPublish>true</RazorCompileOnPublish>-->
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+	  <Optimize>False</Optimize>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Compile Remove="Logs\**" />
+		
+		<Compile Remove="wwwroot\NewFolder\**" />
+		<Compile Remove="wwwroot\UploadedImages\**" />
+		<Content Remove="Logs\**" />
+		
+		<Content Remove="wwwroot\NewFolder\**" />
+		<Content Remove="wwwroot\UploadedImages\**" />
+		<EmbeddedResource Remove="Logs\**" />
+				<EmbeddedResource Remove="wwwroot\NewFolder\**" />
+		<EmbeddedResource Remove="wwwroot\UploadedImages\**" />
+		<None Remove="Logs\**" />
+		<None Remove="wwwroot\NewFolder\**" />
+		<None Remove="wwwroot\UploadedImages\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Remove="bundleconfig.json" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="bundleconfig.json" />
+		<None Include="Views\Shared\_FormsButton.cshtml">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Include="Views\Shared\_DrCrTable.cshtml">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Include="Views\Shared\_FormsButton.cshtml">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+
+		<None Include="Views\Shared\_TDSDetail.cshtml">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+
+		<None Include="Views\Shared\_TaxNRGPGrid.cshtml">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Include="Views\Home\Dashboard.cshtml">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		
+		<None Include="wwwroot\images\bmr-logo-web.png">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Include="wwwroot\jQueryTable2Excel\table2excel.js" />
+		<None Include="wwwroot\lib\jquery\jquery.js" />
+		<None Include="wwwroot\lib\jquery\jquery.min.js" />
+		<None Include="wwwroot\lib\jquery\jquery.min.map" />
+		<None Include="wwwroot\lib\jquery\jquery.slim.js" />
+		<None Include="wwwroot\lib\jquery\jquery.slim.min.js" />
+		<None Include="wwwroot\lib\jquery\jquery.slim.min.map" />
+		<None Include="wwwroot\Scripts\CheckUserRights.js" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="ClosedXML" Version="0.105.0" />
+		<PackageReference Include="EPPlus" Version="6.1.0" />
+		<PackageReference Include="FastReport.OpenSource" Version="2023.2.25" />
+		<PackageReference Include="FastReport.OpenSource.Data.MsSql" Version="2021.4.0">
+		  <TreatAsUsed>true</TreatAsUsed>
+		</PackageReference>
+		<PackageReference Include="FastReport.OpenSource.Export.PdfSimple" Version="2023.2.25" />
+		<PackageReference Include="FastReport.OpenSource.Web" Version="2023.2.25" />
+		<PackageReference Include="Grpc.Core" Version="2.46.6" />
+		<PackageReference Include="MailKit" Version="4.12.1" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="7.0.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.0">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="9.0.2" />
+		<PackageReference Include="Microsoft.Office.Interop.Excel" Version="15.0.4795.1001" />
+		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.0" />
+		<PackageReference Include="MimeKit" Version="4.12.0" />
+		<PackageReference Include="Moment.js" Version="2.29.4" />
+		<PackageReference Include="NtpClient" Version="1.0.14" />
+		<PackageReference Include="PDFsharp" Version="6.2.1" />
+		<PackageReference Include="Serilog.AspNetCore" Version="8.0.3" />
+		<PackageReference Include="Serilog.Extensions.Logging.File" Version="3.0.0" />
+		<PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
+		<PackageReference Include="System.Runtime.Caching" Version="7.0.0" />
+		<PackageReference Include="Westwind.AspNetCore.LiveReload" Version="0.5.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Folder Include="wwwroot\Assets\" />
+		<Folder Include="wwwroot\Uploads\DirectPurchaseBill\" />
+		<Folder Include="wwwroot\Uploads\ItemImage\" />
+		<Folder Include="wwwroot\Uploads\Item\" />
+		<Folder Include="wwwroot\Uploads\MRIR\" />
+		<Folder Include="wwwroot\Uploads\PurchaseBill\" />
+		<Folder Include="wwwroot\Uploads\PurchaseOrder\" />
+		<Folder Include="wwwroot\Uploads\SaleBill\" />
+	</ItemGroup>
+
+	<ItemGroup>
+		
+	  <ProjectReference Include="..\eTactProduction\eTactProduction.csproj" />
+	  <ProjectReference Include="..\eTactWeb.Data\eTactWeb.Data.csproj" />
+	  <ProjectReference Include="..\eTactWeb.DOM\eTactWeb.DOM.csproj" />
+	  <ProjectReference Include="..\eTactWeb.Services\eTactWeb.Services.csproj" />
+	  <ProjectReference Include="..\eTactwebAccounts\eTactwebAccounts.csproj" />
+	  <ProjectReference Include="..\eTactwebHR\eTactwebHR.csproj" />
+	  <ProjectReference Include="..\eTactwebInventory\eTactwebInventory.csproj" />
+	  <ProjectReference Include="..\eTactwebMasters\eTactwebMasters.csproj" />
+	  <ProjectReference Include="..\eTactwebPurchase\eTactwebPurchase.csproj" />
+	  <ProjectReference Include="..\eTactwebQuality\eTactwebQuality.csproj" />
+	  <ProjectReference Include="..\eTactwebSales\eTactwebSales.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Content Update="appsettings.json">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content>
+	  
+	  <Content Update="wwwroot\images\bmr-logo-web.webp">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content>
+	  <Content Update="wwwroot\images\XON-LOGO-FINAL.png">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content>
+	  <Content Update="wwwroot\js\JSMaster.min.js">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content>
+	<Content Update="Views\**\*.cshtml">
+	<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	</Content> 
+	</ItemGroup>
+	<ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="https://www.schemastore.org/azure-deviceupdate-update-manifest-5.json" /></VisualStudio></ProjectExtensions>
+</Project>

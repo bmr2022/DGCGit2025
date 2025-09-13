@@ -1,0 +1,149 @@
+﻿@model eTactWeb.DOM.Models.PartyItemGroupDiscountModel
+@using Microsoft.AspNetCore.Http
+@using System.Reflection.PortableExecutable
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    var YearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("YearCode"));
+}
+
+<table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0" id="ISTDashboard">
+    <thead class="bg-gradient card-headerBG text-light">
+        <tr>
+            <th>Sr#</th>
+            <th>Action</th>
+
+            <th data-columnno="0" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Entry Date
+            </th>
+            <th data-columnno="1" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Party Name
+            </th>
+            <th data-columnno="2" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Category Name
+            </th>
+              <th data-columnno="3" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Category Code
+            </th>
+
+            
+            <th data-columnno="5" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Emp Name
+            </th>
+            <th data-columnno="6" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Entry By Machine
+            </th>
+            <th data-columnno="7" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Branch
+            </th>
+
+
+        </tr>
+    </thead>
+    <tbody id="DashboardGrid">
+        @{
+            var @Cntr = 0;
+            if (Model.PartyItemGroupDiscountGrid == null || Model.PartyItemGroupDiscountGrid.Count == 0)
+            {
+                <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+            }
+            else
+            {
+                foreach (var item in Model.PartyItemGroupDiscountGrid)
+                {
+                    Cntr = Cntr + 1;
+                    <tr onclick="selection(this)">
+                        <th>@Cntr</th>
+                        <td style="text-align:center;white-space: nowrap;">
+                            <div id="container">
+
+                                <div id="viewCursorDiv-@Cntr">
+                                    <a class="table-link link-success" asp-action="PartyItemGroupDiscount" asp-route-Mode="V" asp-route-ID="@item.PartyWIseGrpDiscEntryId" asp-route-YC="@YearCode" onclick="BackButtonData(event,'@item.EntryId','@item.YearCode');"
+                                       asp-route-EntryDate="@(item.EntryDate == null ? string.Empty : item.EntryDate.Split(" ")[0])"
+                                       asp-route-AccountName="@item.AccountName"
+                                       asp-route-CategoryName="@item.CategoryName"
+                                       asp-route-CategoryId="@item.CategoryId"
+                                       asp-route-GroupName="@item.GroupName"
+                                       asp-route-GroupCode="@item.GroupCode"
+                                       asp-route-PartyWIseGrpDiscEntryId="@item.PartyWIseGrpDiscEntryId"
+                                       asp-route-AccountCode="@item.AccountCode"
+                                       asp-route-ActualEntryByEmpName="@item.ActualEntryByEmpName"
+                                       asp-route-EntryByMachine="@item.EntryByMachine"
+                                       asp-route-PurchaseDiscount="@item.PurchaseDiscount"
+                                       asp-route-SaleDiscount="@item.SaleDiscount"
+                                       asp-route-CC="@item.CC">
+                                        <span class="fa-stack">
+                                            <i class="fa fa-square fa-stack-2x"></i>
+                                            <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </a>
+                                </div>
+                                <div id="editCursorDiv-@Cntr">
+
+                                    <a class="table-link link-primary" asp-action="PartyItemGroupDiscount" onclick="confirmEdit(event)" asp-route-Mode="U" asp-route-ID="@item.PartyWIseGrpDiscEntryId" asp-route-YC="@YearCode"
+                                       asp-route-EntryDate="@(item.EntryDate == null ? string.Empty : item.EntryDate.Split(" ")[0])"
+                                       asp-route-AccountName="@item.AccountName"
+                                       asp-route-CategoryName="@item.CategoryName"
+                                       asp-route-CategoryId="@item.CategoryId"
+                                       asp-route-CategoryCode="@item.CategoryCode"
+                                       asp-route-GroupName="@item.GroupName"
+                                       asp-route-GroupCode="@item.GroupCode"
+                                       asp-route-PartyWIseGrpDiscEntryId="@item.PartyWIseGrpDiscEntryId"
+                                       asp-route-AccountCode="@item.AccountCode"
+                                       asp-route-ActualEntryByEmpName="@item.ActualEntryByEmpName"
+                                       asp-route-EntryByMachine="@item.EntryByMachine"
+                                       asp-route-PurchaseDiscount="@item.PurchaseDiscount"
+                                       asp-route-SaleDiscount="@item.SaleDiscount"
+                                       asp-route-CC="@item.CC">
+                                        <span class="fa-stack">
+                                            <i class="fa fa-square fa-stack-2x"></i>
+                                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </a>
+                                </div>
+                                <div id="deleteCursorDiv-@Cntr">
+                                    <a class="table-link link-danger" asp-action="DeleteByID" asp-route-EntryId="@item.ActualEntryByEmpId" asp-route-AccountCode="@item.AccountCode" asp-route-EntryDate="@item.PartyWIseGrpDiscEntryId">
+                                        <span class="fa-stack">
+                                            <i class="fa fa-square fa-stack-2x"></i>
+                                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </a>
+                                </div>
+
+
+                            </div>
+                        </td>
+
+
+                        <td>@(item.EntryDate == null ? string.Empty : item.EntryDate.Split(" ")[0])</td>
+                        <td>@item.AccountName</td>
+                        <td>@item.CategoryName</td>
+                        <td>@item.CategoryCode</td>
+                        <td>@item.ActualEntryByEmpName</td>
+                        <td>@item.EntryByMachine</td>
+                        <td>@item.CC</td>
+
+
+
+                    </tr>
+                }
+            }
+        }
+    </tbody>
+</table>
+<center><strong>TOTAL ROWS : <span id="totalRows"></span></strong></center>
+
+
+<style>
+    #container {
+        display: flex;
+    }
+
+        #container > div {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+    #DashboardGrid {
+        background-color: blanchedalmond;
+    }
+</style>

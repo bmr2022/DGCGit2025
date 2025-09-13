@@ -1,0 +1,158 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="07/05/2025 15:30:56" ReportInfo.Modified="07/09/2025 13:08:32" ReportInfo.CreatorVersion="2023.2.0.0">
+  <Dictionary>
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqGVEBw+bD1302HhodPOki0gtd1l0TTVcz0wGHkY2lJkUIE8BaW4M/NG3pKd3qvpK4DdWqGEyHadQzRHXCkxhoSD47bth543+LgB9s26CRn9XVPJfL+TZm0iZ1auX83gwSzWkAuQz3cdbBgeP1s7vjAWBZc/oTdhvG7BW2flT09LhSyXfzZC3z368dPg0iwD4fNIgq5M/ewGNrC2K1Goep6g==">
+      <TableDataSource Name="Table" Alias="SPPrintReportVoucher" DataType="System.Int32" Enabled="true" SelectCommand="exec SPPrintReportVoucher @VoucherYearcode = @yearcodeparam,@VoucherName = @vouchernameparam, @EntryId= @entryidparam">
+        <Column Name="LedgerName" DataType="System.String"/>
+        <Column Name="VoucherDocNo" DataType="System.String"/>
+        <Column Name="VoucherDocDate" DataType="System.DateTime"/>
+        <Column Name="BillInvoiceDate" DataType="System.DateTime"/>
+        <Column Name="DrAmt" DataType="System.Double"/>
+        <Column Name="CrAmt" DataType="System.Double"/>
+        <Column Name="ENtryBankCash" DataType="System.String"/>
+        <Column Name="VoucherType" DataType="System.String"/>
+        <Column Name="VoucherNo" DataType="System.String"/>
+        <Column Name="ModeOfAdjustment" DataType="System.String"/>
+        <Column Name="SubVoucherName" DataType="System.String"/>
+        <Column Name="description" DataType="System.String"/>
+        <Column Name="VoucherRemark" DataType="System.String"/>
+        <Column Name="PreparedBy" DataType="System.String"/>
+        <Column Name="AccountCode" DataType="System.Int64"/>
+        <Column Name="AccENtryid" DataType="System.Int64"/>
+        <Column Name="TDSApplicable" DataType="System.String"/>
+        <Column Name="TDSChallanNo" DataType="System.String"/>
+        <Column Name="TDSChallanDate" DataType="System.DateTime"/>
+        <Column Name="currencyId" DataType="System.Int64"/>
+        <Column Name="SONO" DataType="System.Int64"/>
+        <Column Name="CustOrderNo" DataType="System.String"/>
+        <Column Name="SODate" DataType="System.DateTime"/>
+        <Column Name="PONO" DataType="System.String"/>
+        <Column Name="PODate" DataType="System.DateTime"/>
+        <Column Name="ParentAccountName" DataType="System.String"/>
+        <Column Name="main_Group" DataType="System.String"/>
+        <Column Name="UnderGroup" DataType="System.String"/>
+        <Column Name="VoucherAmtInWord" DataType="System.String"/>
+        <Column Name="ToatlDRAmt" DataType="System.Double"/>
+        <Column Name="TotalCrAmt" DataType="System.Double"/>
+        <Column Name="CompanyName" DataType="System.String"/>
+        <Column Name="OfficeAddress" DataType="System.String"/>
+        <Column Name="OfficeAddress2" DataType="System.String"/>
+        <Column Name="PinCode" DataType="System.String"/>
+        <Column Name="Statecode" DataType="System.String"/>
+        <Column Name="PANNO" DataType="System.String"/>
+        <Column Name="GSTNO" DataType="System.String"/>
+        <CommandParameter Name="vouchernameparam" DataType="22" Expression="vouchernameparam"/>
+        <CommandParameter Name="yearcodeparam" Expression="yearcodeparam"/>
+        <CommandParameter Name="entryidparam" Expression="entryidparam"/>
+      </TableDataSource>
+    </MsSqlDataConnection>
+    <Parameter Name="MyParameter" DataType="System.String" Expression="MyParameter"/>
+    <Total Name="DrTotal" Expression="[SPPrintReportVoucher.DrAmt]" Evaluator="Data1"/>
+    <Total Name="CrTotal" Expression="[SPPrintReportVoucher.CrAmt]" Evaluator="Data1"/>
+  </Dictionary>
+  <ReportPage Name="Page1" Watermark.Font="Arial, 60pt">
+    <ReportTitleBand Name="ReportTitle1" Width="718.2" Height="245.7">
+      <LineObject Name="Line1" Left="9.45" Top="9.45" Width="699.3"/>
+      <LineObject Name="Line2" Left="9.45" Top="9.45" Height="236.25"/>
+      <LineObject Name="Line3" Left="708.75" Top="9.45" Height="236.25"/>
+      <TextObject Name="Text1" Left="226.8" Top="18.9" Width="226.8" Height="28.35" Text="Voucher Report" HorzAlign="Center" Font="Arial, 14pt, style=Bold"/>
+      <TextObject Name="Text2" Left="189" Top="56.7" Width="321.3" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPPrintReportVoucher.CompanyName]" HorzAlign="Center" Font="Arial, 12pt"/>
+      <TextObject Name="Text3" Left="217.35" Top="85.05" Width="283.5" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPPrintReportVoucher.OfficeAddress]" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text4" Left="18.9" Top="132.3" Width="85.05" Height="18.9" Text="Voucher No:" Font="Arial, 10pt"/>
+      <TextObject Name="Text5" Left="103.95" Top="132.3" Width="255.15" Height="28.35" CanGrow="true" CanBreak="false" Text="[SPPrintReportVoucher.VoucherDocNo]" Font="Arial, 10pt"/>
+      <TextObject Name="Text6" Left="491.4" Top="132.3" Width="47.25" Height="18.9" Text="Date:" Font="Arial, 10pt"/>
+      <TextObject Name="Text7" Left="538.65" Top="132.3" Width="170.1" Height="37.8" CanGrow="true" CanBreak="false" Text="[SPPrintReportVoucher.VoucherDocDate]" Format="Date" Format.Format="d" Font="Arial, 10pt"/>
+      <LineObject Name="Line4" Left="9.45" Top="170.1" Width="699.3"/>
+      <LineObject Name="Line5" Left="9.45" Top="198.45" Width="699.3"/>
+      <TextObject Name="Text8" Left="9.45" Top="179.55" Width="226.8" Height="18.9" Text="Account Name" HorzAlign="Center" Font="Arial, 10pt"/>
+      <LineObject Name="Line6" Left="236.25" Top="170.1" Height="28.35"/>
+      <LineObject Name="Line7" Left="311.85" Top="170.1" Height="28.35"/>
+      <LineObject Name="Line8" Left="633.15" Top="170.1" Height="28.35"/>
+      <LineObject Name="Line9" Left="548.1" Top="170.1" Height="28.35"/>
+      <TextObject Name="Text9" Left="236.25" Top="179.55" Width="75.6" Height="18.9" Text="Code" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text10" Left="311.85" Top="179.55" Width="236.25" Height="18.9" Text="Narration" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text15" Left="548.1" Top="179.55" Width="85.05" Height="18.9" Text="Dr Amt" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text16" Left="633.15" Top="179.55" Width="75.6" Height="18.9" Text="Cr Amt" HorzAlign="Center" Font="Arial, 10pt"/>
+    </ReportTitleBand>
+    <PageHeaderBand Name="PageHeader1" Top="248.9" Width="718.2"/>
+    <GroupHeaderBand Name="GroupHeader1" Top="252.1" Width="718.2" Condition="[SPPrintReportVoucher.LedgerName]">
+      <DataBand Name="Data1" Top="255.3" Width="718.2" Height="66.15" DataSource="Table">
+        <TextObject Name="Text13" Left="9.45" Top="9.45" Width="226.8" Height="37.8" CanGrow="true" CanBreak="false" Text="[SPPrintReportVoucher.LedgerName]" HorzAlign="Center" Font="Arial, 10pt"/>
+        <TextObject Name="Text17" Left="548.1" Top="9.45" Width="85.05" Height="28.35" CanGrow="true" CanBreak="false" Text="[SPPrintReportVoucher.DrAmt]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 10pt" Trimming="EllipsisCharacter"/>
+        <TextObject Name="Text18" Left="633.15" Top="9.45" Width="75.6" Height="28.35" CanGrow="true" CanBreak="false" Text="[SPPrintReportVoucher.CrAmt]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 10pt" Trimming="EllipsisCharacter"/>
+        <LineObject Name="Line12" Left="9.45" Height="66.15"/>
+        <LineObject Name="Line11" Left="9.45" Top="66.15" Width="699.3"/>
+        <LineObject Name="Line14" Left="708.75" Height="66.15"/>
+        <TextObject Name="Text14" Left="236.25" Top="9.45" Width="75.6" Height="56.7" CanGrow="true" CanBreak="false" Text="[SPPrintReportVoucher.AccountCode]" HorzAlign="Center" Font="Arial, 10pt"/>
+        <LineObject Name="Line16" Left="236.25" Height="66.15"/>
+        <LineObject Name="Line17" Left="311.85" Height="66.15"/>
+        <LineObject Name="Line18" Left="548.1" Height="66.15"/>
+        <LineObject Name="Line19" Left="633.15" Height="66.15"/>
+      </DataBand>
+      <GroupFooterBand Name="GroupFooter1" Top="324.65" Width="718.2"/>
+    </GroupHeaderBand>
+    <ReportSummaryBand Name="ReportSummary1" Top="368.85" Width="718.2" Height="94.5">
+      <SubreportObject Name="Subreport1" Top="66.15" Width="699.3" Height="28.35" ReportPage="Page2"/>
+      <LineObject Name="Line27" Left="9.45" Top="18.9" Width="699.3"/>
+      <LineObject Name="Line28" Left="9.45" Height="66.15"/>
+      <LineObject Name="Line29" Left="708.75" Height="66.15"/>
+      <TextObject Name="Text23" Left="9.45" Width="141.75" Height="18.9" Text="Cleared Bill Detail" HorzAlign="Center" Font="Arial, 10pt, style=Bold"/>
+      <LineObject Name="Line30" Left="9.45" Top="66.15" Width="699.3"/>
+      <LineObject Name="Line31" Left="179.55" Top="18.9" Height="47.25"/>
+      <LineObject Name="Line32" Left="255.15" Top="18.9" Height="47.25"/>
+      <TextObject Name="Text25" Left="179.55" Top="28.35" Width="75.6" Height="28.35" Text="Voucher No" HorzAlign="Center" Font="Arial, 10pt"/>
+      <LineObject Name="Line33" Left="9.45" Width="699.3"/>
+      <TextObject Name="Text24" Left="9.45" Top="28.35" Width="170.1" Height="28.35" Text="Party Name" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text28" Left="642.6" Top="28.35" Width="66.15" Height="28.35" Text="Payable amt" HorzAlign="Center" Font="Arial, 10pt"/>
+      <LineObject Name="Line39" Left="642.6" Top="18.9" Height="47.25"/>
+      <LineObject Name="Line40" Left="576.45" Top="18.9" Height="47.25"/>
+      <LineObject Name="Line41" Left="510.3" Top="18.9" Height="47.25"/>
+      <LineObject Name="Line42" Left="453.6" Top="18.9" Height="47.25"/>
+      <LineObject Name="Line43" Left="387.45" Top="18.9" Height="47.25"/>
+      <LineObject Name="Line44" Left="321.3" Top="18.9" Height="47.25"/>
+      <TextObject Name="Text29" Left="255.15" Top="28.35" Width="66.15" Height="28.35" Text="Bill Date" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text30" Left="321.3" Top="28.35" Width="66.15" Height="28.35" Text="Bill No" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text31" Left="387.45" Top="28.35" Width="66.15" Height="28.35" Text="Bill Type" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text32" Left="453.6" Top="28.35" Width="56.7" Height="28.35" Text="Due Date" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text33" Left="510.3" Top="28.35" Width="66.15" Height="28.35" Text="Bill Amt" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text34" Left="576.45" Top="28.35" Width="66.15" Height="28.35" Text="Pass Amt" HorzAlign="Center" Font="Arial, 10pt"/>
+    </ReportSummaryBand>
+    <ColumnFooterBand Name="ColumnFooter1" Top="327.85" Width="718.2" Height="37.8">
+      <TextObject Name="Text21" Left="548.1" Top="9.45" Width="85.05" Height="18.9" CanGrow="true" CanBreak="false" Text="[DrTotal]" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text22" Left="633.15" Top="9.45" Width="75.6" Height="18.9" Text="[CrTotal]" HorzAlign="Center" Font="Arial, 10pt"/>
+      <LineObject Name="Line22" Left="9.45" Top="28.35" Width="699.3"/>
+      <LineObject Name="Line23" Left="9.45" Height="28.35"/>
+      <LineObject Name="Line24" Left="708.75" Height="28.35"/>
+      <LineObject Name="Line25" Left="548.1" Height="28.35"/>
+      <LineObject Name="Line26" Left="633.15" Height="28.35"/>
+    </ColumnFooterBand>
+    <PageFooterBand Name="PageFooter1" Top="466.55" Width="718.2" Height="132.3">
+      <LineObject Name="Line57" Left="9.45" Top="132.3" Width="699.3"/>
+      <TextObject Name="Text38" Left="349.65" Top="66.15" Width="94.5" Height="18.9" Text="Dated:" Font="Arial, 10pt"/>
+      <LineObject Name="Line56" Left="236.25" Top="94.5" Width="463.05" Border.Style="Dot"/>
+      <TextObject Name="Text39" Left="264.6" Top="103.95" Width="94.5" Height="18.9" Text="Prepared By" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text40" Left="529.2" Top="103.95" Width="160.65" Height="18.9" Text="Authorised Signatory" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text41" Left="18.9" Top="103.95" Width="94.5" Height="18.9" Text="Received By" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text35" Left="9.45" Top="18.9" Width="94.5" Height="18.9" Text="Remarks:" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text36" Left="349.65" Top="9.45" Width="160.65" Height="18.9" Text="Received From" Font="Arial, 10pt"/>
+      <TextObject Name="Text37" Left="349.65" Top="37.8" Width="94.5" Height="18.9" Text="The Sum Of" Font="Arial, 10pt"/>
+      <LineObject Name="Line59" Left="708.75" Height="132.3"/>
+      <LineObject Name="Line58" Left="9.45" Height="132.3"/>
+    </PageFooterBand>
+  </ReportPage>
+  <ReportPage Name="Page2" Watermark.Font="Arial, 60pt">
+    <DataBand Name="Data2" Width="718.2" Height="47.25" DataSource="Table">
+      <LineObject Name="Line45" Left="9.45" Height="47.25"/>
+      <LineObject Name="Line46" Left="708.75" Height="47.25"/>
+      <LineObject Name="Line47" Left="9.45" Top="47.25" Width="699.3"/>
+      <LineObject Name="Line48" Left="179.55" Height="47.25"/>
+      <LineObject Name="Line49" Left="255.15" Height="47.25"/>
+      <LineObject Name="Line50" Left="642.6" Height="47.25"/>
+      <LineObject Name="Line51" Left="576.45" Height="47.25"/>
+      <LineObject Name="Line52" Left="510.3" Height="47.25"/>
+      <LineObject Name="Line53" Left="453.6" Height="47.25"/>
+      <LineObject Name="Line54" Left="387.45" Height="47.25"/>
+      <LineObject Name="Line55" Left="321.3" Height="47.25"/>
+    </DataBand>
+  </ReportPage>
+</Report>
