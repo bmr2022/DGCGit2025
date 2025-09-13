@@ -68,10 +68,10 @@
 		<div class="card-body bg-light">
 			<div class="accordion shadow-lg" id="accordionAccountMaster">
 				<div class="accordion-item">
-					@if (TempData["Message"] != null)
+					@if (TempData["422"] != null)
 					{
-						<div class="alert alert-info">
-							@TempData["Message"]
+						<div class="alert alert-danger" role="alert">
+							@TempData["422"]
 						</div>
 					}
 
