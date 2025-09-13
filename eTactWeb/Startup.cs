@@ -80,7 +80,8 @@ namespace eTactWeb
                 options.SupportedCultures = supportedCultures;
                 options.SupportedUICultures = supportedCultures;
             });
-            services.AddControllersWithViews();
+            services.AddControllersWithViews()
+         .AddSessionStateTempDataProvider();
             services.AddRazorPages().AddRazorRuntimeCompilation();
             services.AddLogging();
             services.AddAuthentication();

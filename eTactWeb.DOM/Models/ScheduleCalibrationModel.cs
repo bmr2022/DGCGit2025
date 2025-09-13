@@ -8,8 +8,7 @@ namespace eTactWeb.DOM.Models
 {
     public class ScheduleCalibrationModel
     {
-        public class CalibrationScheduleModel
-        {
+       
 
             public int CalibSchEntryId { get; set; }
             public int CalibSchYearCode { get; set; }
@@ -28,13 +27,15 @@ namespace eTactWeb.DOM.Models
             public string? CalibSchEntryDate { get; set; }
             public int? CalibScheduledByEmpId { get; set; }
             public int? ActualEntryBy { get; set; }
+            public string? ActualEntryByEmpName { get; set; }
             public string? ActualEntryDate { get; set; }
             public int? LastUpdatedBy { get; set; }
+            public string? UpdatedByEmpName { get; set; }
             public string? LastUpdationDate { get; set; }
             public string CC { get; set; }
             public string UID { get; set; }
             public string EntryByMachine { get; set; }
-            public IList<CalibrationScheduleModel> CalibrationScheduleGrid { get; set; }
-        }
+            public IList<ScheduleCalibrationModel> CalibrationScheduleGrid { get; set; }
+        
     }
 }
