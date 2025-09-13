@@ -265,6 +265,28 @@ public class HomeController : Controller
         var builder = new SqlConnectionStringBuilder(connectionString);
         return builder.DataSource; // DataSource property contains the server name
     }
+    public LoginModel GetLastLoginDetail()
+    {
+        var model = new LoginModel();
+        string connectionstring = _configuration.GetConnectionString("eTactDB1");
+        SqlConnection conn = new(connectionstring);
+        conn.Open();
+        string EntryByMachineName = Environment.MachineName;
+        sql = "exec [SpLastLoggedInDetail]   @flag = 'LastLoginDetail',@EntryByMachine ='" + EntryByMachineName + "'";
+        SqlCommand cmdParty = new(sql, conn);
+        SqlDataReader rdrParty = cmdParty.ExecuteReader();
+        if (rdrParty.HasRows)
+        {
+            if (rdrParty.Read())
+            {
+                model.CompanyName = Convert.ToString(rdrParty["CompanyName"]);
+                model.YearCode = Convert.ToInt32(rdrParty["FinYear"]);
+                model.UserName = Convert.ToString(rdrParty["UserName"]);
+                model.Unit = Convert.ToString(rdrParty["BranchName"]);
+            }
+        }
+        return model;
+    }
     public LoginModel GeteDTRModel()
     {
         var model = new LoginModel();
@@ -291,6 +313,14 @@ public class HomeController : Controller
         model.AccList = GetCombodata("Company_detail", "Company_Name");
         model.ItemList = GetCombodata("Company_detail", "CC");
         model.StoreLst = GetCombodata("Store_Master", "Store_Name");
+        var lastLogin = GetLastLoginDetail();
+        if(lastLogin != null)
+        {
+            model.CompanyName = lastLogin?.CompanyName ?? model.AccList.FirstOrDefault()?.CompanyName;
+            model.Unit = lastLogin?.Unit ?? model.ItemList.FirstOrDefault()?.Unit;
+            model.UserName = lastLogin?.UserName;
+            model.YearCode = lastLogin.YearCode;
+        }
         return model;
     }
     //app.UseStatusCodePagesWithReExecute("/Home/HandleError/{0}"); enable this code if the line used in startup.cs
@@ -431,6 +461,24 @@ public class HomeController : Controller
             rdrAccount.Close();
         }
         conn.Close();
+        using (SqlConnection logConn = new SqlConnection(connectionstring))
+        {
+            await logConn.OpenAsync();
+            using (SqlCommand cmd = new SqlCommand("SpLastLoggedInDetail", logConn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@Flag", "INSERT");
+                cmd.Parameters.AddWithValue("@EntryByMachine", Environment.MachineName); // or HttpContext.Connection.RemoteIpAddress?.ToString()
+                cmd.Parameters.AddWithValue("@CompanyName", model.CompanyName);
+                cmd.Parameters.AddWithValue("@FinYear", yearCode);
+                cmd.Parameters.AddWithValue("@UserName", model.UserName);
+                cmd.Parameters.AddWithValue("@LastLogindate", DateTime.Now);
+                cmd.Parameters.AddWithValue("@BranchName", model.Unit);
+                Console.WriteLine("Connected DB: " + logConn.Database);
+
+                await cmd.ExecuteReaderAsync();
+            }
+        }
         //connectionstring = $"Data Source={model.ServerName};Initial Catalog={dbName};;User Id=web;Password=bmr2401;Integrated Security=False";
         connectionstring = GetConnectionString(dbName);
         _connectionStringService.SetConnectionString(connectionstring);
