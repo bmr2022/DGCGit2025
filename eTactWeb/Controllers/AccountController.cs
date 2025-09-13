@@ -789,10 +789,10 @@ public class AccountController : Controller
         HttpContext.Session.Clear();
         return RedirectToAction("Login", "Account");
     }
-    public IActionResult Privacy()
-    {
-        return View();
-    }
+    //public IActionResult Privacy()
+    //{
+    //    return View();
+    //}
 
     //public JsonResult GetRights()
     //{

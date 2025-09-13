@@ -185,6 +185,35 @@ namespace eTactWeb.Data.DAL
                             }
                         }
                     }
+                    else if (HistoryReportMode == "POSCHAMENDMENTHISTORY")
+                    {
+
+                        if (ReportType == "POSummary")
+                        {
+                            if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                            {
+                                foreach (DataRow row in oDataSet.Tables[0].Rows)
+                                {
+                                    var poDetail = CommonFunc.DataRowToClass<OrderAmendHistoryModel>(row);
+                                    _PODetail.Add(poDetail);
+                                }
+                                model.OrderAmendHistoryGrid = _PODetail;
+                            }
+                        }
+
+                        if (ReportType == "PODetail")
+                        {
+                            if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                            {
+                                foreach (DataRow row in oDataSet.Tables[0].Rows)
+                                {
+                                    var poDetail = CommonFunc.DataRowToClass<OrderAmendHistoryModel>(row);
+                                    _PODetail.Add(poDetail);
+                                }
+                                model.OrderAmendHistoryGrid = _PODetail;
+                            }
+                        }
+                    }
 
                 }
             }

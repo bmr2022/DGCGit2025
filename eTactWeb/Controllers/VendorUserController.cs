@@ -98,13 +98,28 @@ namespace eTactWeb.Controllers
 
                 if (Result != null)
                 {
-                    if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
+                    //if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
+                    //{
+                    //    ViewBag.isSuccess = true;
+                    //    TempData["200"] = "200";
+                    //    var modelSuccess = new VendorUserModel();
+                    //    return RedirectToAction("VendorUser", modelSuccess);
+                    //}
+
+                    if (Result.StatusCode == HttpStatusCode.OK)
                     {
-                        ViewBag.isSuccess = true;
-                        TempData["200"] = "200";
-                        var modelSuccess = new VendorUserModel();
-                        return RedirectToAction("VendorUser", modelSuccess);
+                        if (Result.StatusText == "Success")
+                        {
+                            TempData["Message"] = "Vendor created successfully!";
+                            return RedirectToAction("Index", "VendorUser");
+                        }
+                        else
+                        {
+                            TempData["Message"] = Result.StatusText; // e.g. "User Name already exist..."
+                            return RedirectToAction("Index", "VendorUser");
+                        }
                     }
+
                     if (Result.StatusText == "Updated" && Result.StatusCode == HttpStatusCode.Accepted)
                     {
                         ViewBag.isSuccess = true;

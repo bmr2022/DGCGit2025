@@ -1,0 +1,23 @@
+﻿@* @model eTactWeb.DOM.Models.SaleBillModel *@
+ @model eTactWeb.DOM.Models.DirectPurchaseBillModel
+
+<h1>Enter Text</h1>
+
+ 
+
+<form asp-controller="Home" asp-action="Index" method="post">
+    <div class="form-group">
+        <label asp-for="TextBox1Value">Textbox 1:</label>
+        <input type="text" asp-for="TextBox1Value" class="form-control" />
+        <span asp-validation-for="TextBox1Value" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="TextBox2Value">Textbox 2:</label>
+        <input type="text" asp-for="TextBox2Value" class="form-control" />
+        <span asp-validation-for="TextBox2Value" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+

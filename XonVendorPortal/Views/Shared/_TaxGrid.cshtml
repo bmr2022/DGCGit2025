@@ -1,0 +1,89 @@
+﻿@model eTactWeb.DOM.Models.Common.TaxModel
+
+<input type="hidden" asp-for="TotalTaxAmt" class="form-control" data-val="false"  value="0"/>
+@if (Model.TaxDetailGridd == null || Model.TaxDetailGridd.Count == 0)
+{
+    <tr class="text-center">
+        <td colspan="14" class="text-black-50"><strong>NO DATA ADDED</strong></td>
+    </tr>
+}
+else
+{
+    
+    var @Cntr = 0;
+    foreach (var item in Model.TaxDetailGridd)
+    {
+        Cntr = Cntr + 1;
+        <tr class="small @item.TxSeqNo" style="white-space:nowrap;font-weight:100;">
+            <td>
+                @if (Model.Mode == "V")
+                {
+                    <a class="table-link link-danger noCursor" disabled>
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                }
+                else
+                {
+                    <a class="table-link link-danger" onclick="DeleteTaxRow(@Cntr);">
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                }
+            </td>
+            <td>@item.TxSeqNo</td>
+            <td>@item.TxType</td>
+            @if (@item.TxPartName == "-Select-")
+            {
+                <td>NA</td>
+            }
+            else
+            {
+                <td id="txPartCode-@Cntr" data-txPartCode="@item.TxPartName">@item.TxPartName</td>
+            }
+            @if (@item.TxItemName == "-Select-")
+            {
+                <td>NA</td>
+            }
+            else
+            {
+                <td>@item.TxItemName</td>
+            }
+            <td id="txGridType-@item.TxSeqNo">@item.TxTaxTypeName</td>
+            <td id="txGridName-@item.TxSeqNo">@item.TxAccountName</td>
+            <td>@item.TxPercentg</td>
+            @if (@item.TxAdInTxable == "Y")
+            {
+                <td>YES</td>
+            }
+            else
+            {
+                <td>NO</td>
+            }
+            @if (@item.TxRoundOff == "Y")
+            {
+                <td>YES</td>
+            }
+            else
+            {
+                <td>NO</td>
+            }
+            <td id="txGridAmount-@item.TxSeqNo">@item.TxAmount.ToString("F6")</td>
+            @if (@item.TxRefundable == "Y")
+            {
+                <td>YES</td>
+            }
+            else
+            {
+                <td>NO</td>
+            }
+            <td>@item.TxOnExp.ToString("#.#0")</td>
+            <td>@item.TxRemark</td>
+        </tr>
+    }
+}
+

@@ -1,0 +1,179 @@
+﻿@model eTactWeb.DOM.Models.OrderAmendHistoryModel
+<div class="table-responsive" style="max-height:300px;overflow-y:auto;">
+    <table class="table table-responsive table-hover table-bordered PMRPGrid TbCss text-nowrap mb-0" id="ReportTable">
+        <thead class="bg-gradient card-headerBG text-light PMRPThead" style="position:static;" id="dashRThead">
+            <tr>
+                <th>Action</th>
+                <th>Sr#</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="1"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Vendor Name</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="2"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PONO</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="3"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Date</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="4"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>WEF</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="5"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Close Date</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="6"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Order Type</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="7"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Type</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="8"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO For</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="9"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Amm No</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="10"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Amm Eff Date</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="11"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Part Code</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="12"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Name</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="13"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>HSN No</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="14"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Qty</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="15"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unit</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="16"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rate</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="17"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Disc %</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="18"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Disc Rs</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="19"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Amount</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="20"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Old Rate</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="21"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Remark</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="22"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Ammendment Reason</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="23"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rate In Other Curr</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="24"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rate Applicable On Unit</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="25"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt PO Qty</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="26"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Unit</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="27"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Shipping Address</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="28"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Basic Amount</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="29"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Net Amount</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="30"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Amend Entry ID</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="31"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Amend Year Code</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="32"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Amend PO</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="33"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Amend PO Seq</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="34"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Entry ID</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="35"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Year Code</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="36"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Canceled</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="37"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Complete</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="38"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Active</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="39"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Account Code</th>
+
+            </tr>
+        </thead>
+        <tbody id="divStockRegisterBody">
+            @{
+                var @Cntr = 0;
+                int srNoStart = (Model.PageNumber - 1) * Model.PageSize;
+                int srNo = srNoStart + 1;
+                if (Model.OrderAmendHistoryGrid == null)
+                {
+                    <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                }
+                else
+                {
+                    foreach (var item in Model.OrderAmendHistoryGrid)
+                    {
+                        Cntr = Cntr + 1;
+
+                        <tr id="SAGridRow-@Cntr">
+                            <td>
+                                <a class="table-link link-danger" onclick="DeleteRow(this.id)" id="@Cntr">
+                                    <span class="fa-stack">
+                                        <i class="fa fa-square fa-stack-2x"></i>
+                                        <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </td>
+                            <th>@srNo</th>
+                            <td>@item.VendorName</td>
+                            <td>@item.PONO</td>
+                            <td>@(item.PODate == null ? string.Empty : item.PODate.Split(" ")[0])</td>
+                            <td>@(item.WEF == null ? string.Empty : item.WEF.Split(" ")[0])</td>
+                            <td>@(item.POClosedate == null ? string.Empty : item.POClosedate.Split(" ")[0])</td>
+                            <td>@item.OrderType</td>
+                            <td>@item.POType</td>
+                            <td>@item.POFor</td>
+                            <td>@item.AmmNo</td>
+                            <td>@(item.AmmEffDate == null ? string.Empty : item.AmmEffDate.Split(" ")[0])</td>
+                            <td>@item.PartCode</td>
+                            <td>@item.ItemName</td>
+                            <td>@item.HSNNo</td>
+                            <td>@item.POQty</td>
+                            <td>@item.Unit</td>
+                            <td>@item.Rate</td>
+                            <td>@item.DiscPer</td>
+                            <td>@item.DiscRs</td>
+                            <td>@item.Amount</td>
+                            <td>@item.OldRate</td>
+                            <td>@item.Remark</td>
+                            <td>@item.AmmendmentReason</td>
+                            <td>@item.RateInOtherCurr</td>
+                            <td>@item.RateApplicableOnUnit</td>
+                            <td>@item.AltPOQty</td>
+                            <td>@item.AltUnit</td>
+                            <td>@item.ShippingAddress</td>
+                            <td>@item.BasicAmount</td>
+                            <td>@item.NetAmount</td>
+                            <td>@item.POAmendEntryID</td>
+                            <td>@item.POAmendYearCode</td>
+                            <td>@item.AmendPO</td>
+                            <td>@item.AmendPOSeq</td>
+                            <td>@item.POEntryId</td>
+                            <td>@item.POYearCode</td>
+                            <td>@item.POCanceled</td>
+                            <td>@item.POComplete</td>
+                            <td>@item.Active</td>
+                            <td>@item.AccountCode</td>
+
+                        </tr>
+                        srNo++;
+                    }
+                }
+            }
+        </tbody>
+    </table>
+</div>
+@{
+    int displayedRows = Model.PageNumber * Model.PageSize;
+    if (displayedRows > Model.TotalRecords)
+    {
+        displayedRows = Model.TotalRecords;
+    }
+    <center><strong>TOTAL ROWS: <span>@displayedRows</span></strong></center>
+}
+@{
+    int totalPages = (int)Math.Ceiling((double)Model.TotalRecords / Model.PageSize);
+}
+@if (Model.TotalRecords > 0)
+{
+    <ul class="pagination d-flex align-items-center">
+        @if (Model.PageNumber > 1)
+        {
+            <li class="page-item">
+                <a class="page-link" href="#" onclick="loadPage(@(Model.PageNumber - 1)); return false;">Previous</a>
+            </li>
+        }
+
+        @if (Model.PageNumber > 3)
+        {
+            <li class="page-item">
+                <a class="page-link" href="#" onclick="loadPage(1); return false;">1</a>
+            </li>
+            <li class="page-item disabled"><a class="page-link">...</a></li>
+        }
+
+        @for (int i = Math.Max(1, Model.PageNumber - 2); i <= Math.Min(Model.PageNumber + 2, totalPages); i++)
+        {
+            <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                <a class="page-link" href="#" onclick="loadPage(@i); return false;">@i</a>
+            </li>
+        }
+
+        @if (Model.PageNumber < totalPages - 2)
+        {
+            <li class="page-item disabled"><a class="page-link">...</a></li>
+            <li class="page-item">
+                <a class="page-link" href="#" onclick="loadPage(@totalPages); return false;">@totalPages</a>
+            </li>
+        }
+
+        @if (Model.PageNumber < totalPages)
+        {
+            <li class="page-item">
+                <a class="page-link" href="#" onclick="loadPage(@(Model.PageNumber + 1)); return false;">Next</a>
+            </li>
+        }
+    </ul>
+}
+<style>
+    #divStockRegisterBody{
+        background-color:#ddccff;
+    }
+</style>

@@ -1,0 +1,684 @@
+﻿@model eTactWeb.DOM.Models.LoginModel
+
+@{
+    Layout = null;
+}
+
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <title>XON Login</title>
+    <link href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css' rel='stylesheet'>
+    <link href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css' rel='stylesheet'>
+    <style>
+        body {
+            color: #000;
+            overflow-x: hidden;
+            height: 100%;
+            background-color: #B0BEC5;
+            background-repeat: no-repeat
+        }
+
+        .card0 {
+            /* box-shadow: 0px 4px 8px 0px #757575; */
+            border-radius: 0px
+        }
+
+        .card2 {
+            margin: 0px 40px
+        }
+
+        .logo {
+            width: 150px;
+            height: 100px;
+            margin-top: 20px;
+            margin-left: 35px
+        }
+
+        .image {
+            width: 360px;
+            height: 280px
+        }
+
+        .border-line {
+            border-right: 1px solid #EEEEEE
+        }
+
+        .facebook {
+            background-color: #3b5998;
+            color: #fff;
+            font-size: 18px;
+            padding-top: 5px;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            cursor: pointer
+        }
+
+        .twitter {
+            background-color: #1DA1F2;
+            color: #fff;
+            font-size: 18px;
+            padding-top: 5px;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            cursor: pointer
+        }
+
+        .linkedin {
+            background-color: #2867B2;
+            color: #fff;
+            font-size: 18px;
+            padding-top: 5px;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            cursor: pointer
+        }
+
+        .line {
+            height: 1px;
+            width: 45%;
+            background-color: #E0E0E0;
+            margin-top: 10px
+        }
+
+        .or {
+            width: 10%;
+            font-weight: bold
+        }
+
+        .text-sm {
+            font-size: 14px !important
+        }
+
+        ::placeholder {
+            color: #BDBDBD;
+            opacity: 1;
+            font-weight: 300
+        }
+
+        :-ms-input-placeholder {
+            color: #BDBDBD;
+            font-weight: 300
+        }
+
+        ::-ms-input-placeholder {
+            color: #BDBDBD;
+            font-weight: 300
+        }
+
+        input,
+        textarea {
+            padding: 10px 12px 10px 12px;
+            border: 1px solid lightgrey;
+            border-radius: 2px;
+            margin-bottom: 5px;
+            margin-top: 2px;
+            width: 100%;
+            box-sizing: border-box;
+            color: #2C3E50;
+            font-size: 14px;
+            letter-spacing: 1px
+        }
+
+        input:focus,
+        textarea:focus {
+            -moz-box-shadow: none !important;
+            -webkit-box-shadow: none !important;
+            box-shadow: none !important;
+            border: 1px solid #304FFE;
+            outline-width: 0
+        }
+
+        button:focus {
+            -moz-box-shadow: none !important;
+            -webkit-box-shadow: none !important;
+            box-shadow: none !important;
+            outline-width: 0
+        }
+
+        a {
+            color: inherit;
+            cursor: pointer
+        }
+
+        .btn-blue {
+            background-color: #1A237E;
+            width: 150px;
+            color: #fff;
+            border-radius: 2px
+        }
+
+        .btn-blue:hover {
+            background-color: #000;
+            cursor: pointer;
+            color: #fff;
+        }
+
+        .bg-blue {
+            color: #fff;
+            background-color: #1A237E
+        }
+
+        @*@media screen and (max-width: 991px) {
+    .logo {
+        margin-left: 0px
+    }
+
+    .image {
+        width: 300px;
+        height: 220px
+    }
+
+    .border-line {
+        border-right: none
+    }
+
+    .card2 {
+        border-top: 1px solid #EEEEEE !important;
+        margin: 0px 15px
+    }
+}*@
+</style>
+    @*<script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>*@
+    <script type='text/javascript' src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script type='text/javascript' src='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js'></script>
+    @*<script type='text/javascript'></script>*@
+</head>
+<body oncontextmenu='return false' class='d-flex justify-content-center align-items-center'>
+    <div class="container-sm px-1 px-md-1 px-lg-1 px-xl-1 py-1 mx-auto">
+        <div class="card  card0 border-0" style="width:36rem;height:30rem">
+            <div class="row d-flex justify-content-center align-items-center">
+                <div class="col-sm-3">
+                    <div class="card1 pb-5">
+                        <div class="row"> <img src="~/images/bmr-logo-web.png" class="logo"> </div>
+                       
+                    </div>
+                </div>
+                <form asp-controller="Home" asp-action="Login" method="post" class="login-form">
+                    @*<form asp-controller="ItemMaster" asp-action="Dashboard" method="post" class="login-form">*@
+                    @using (Html.BeginForm())
+                    {
+                                    <div class="col-lg-4">
+                                        <div class="card2 card border-0 px-4 py-5" style="width:300px;height:28rem">
+                                            <div class="row px-3">
+                                    @if (ViewBag.LicenseExpiryWarning != null)
+                                    {
+                                        <div style="color: red; font-size: small; white-space: nowrap;">
+                                            @ViewBag.LicenseExpiryWarning
+                                        </div>
+                                    }
+                                                <label class="mb-1">
+                                                    <h6 class="mb-0 text-sm">Server Name</h6>
+                                                </label>
+                                                <input type="hidden" asp-for="Mode" value="@Model.Mode" />
+                                                <div style="font-size:0.8em;">
+                                       <select asp-for="ServerName" new { style="color:black;width: 250px;height:20px;  background: #e6eeff" }>
+                                            @if (Model.Mode == "Y")
+                                            {
+                                                <input type="hidden" id="hiddenServerName" value="@Model.ServerName"  />
+                                            }
+                                        </select>
+                                                </div>
+                                            </div>
+                                            <div class="row px-3">
+                                                <label class="mb-1">
+                                                    <h6 class="mb-0 text-sm">Company Name</h6>
+                                                </label>
+                                                <div style="font-size:0.8em;">
+                                            <select asp-for="CompanyName" asp-items="@(new SelectList(Model.AccList, "CompanyName", "CompanyName"))" new { style="color:black;width: 250px;height:20px;  background: #e6eeff" }>
+                                                 @* <option selected disabled>-Select-</option>*@
+                                            </select>            
+                                            </div>
+                                            </div>
+                                            <div class="row px-3 py-2">
+                                                <label class="mb-1">
+                                                    <h6 class="mb-0 text-sm">Branch Name</h6>
+                                                </label>
+                                                <div style="font-size:0.8em">
+                                                    <select asp-for="Unit" new { style="color:black;width: 250px;height:20px;  background: #e6eeff" }>
+                                                        
+                                                        @if (@Model.Mode == "Y")
+                                        {
+                                            <input type="hidden" id="hiddenUnit" value="@Model.Unit" />
+                                        }
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="row px-3 py-2">
+                                                <label class="mb-1">
+                                                    <h6 class="mb-0 text-sm">Year</h6>
+                                                </label>
+                                                <div style="font-size:0.8em">
+                                                    <select asp-for="YearCode" new { style="color:black;width: 250px;height:20px;  background: #e6eeff" }>
+                                                          
+                                                        @if (@Model.Mode == "Y")
+                                                         {
+                                                             <input type="hidden" id="hiddenYC" value="@Model.YearCode" />
+                                                         }
+                                            
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="row px-3 py-1">
+                                                <label class="mb-1">
+                                                    <h6 class="mb-0 text-sm">User Id</h6>
+                                                </label>
+                                                <input class="mb-2" type="text" asp-for="UserName" placeholder="Enter a valid user id" style="height:20px; ">
+                                            </div>
+                                            <div class="row px-3">
+                                                <label class="mb-1">
+                                                    <h6 class="mb-0 text-sm">Password</h6>
+                                                </label>
+                                                <input type="password" asp-for="Password" placeholder="Enter password" style="height:20px;">
+                                            </div>
+                                            <div class="row px-3 mb-4">
+                                                <div class="custom-control custom-checkbox custom-control-inline"> <input id="chk1" type="checkbox" name="chk" class="custom-control-input"> <label for="chk1" class="custom-control-label text-sm">Remember me</label> </div> <a href="#" class="ml-auto mb-0 text-sm">Forgot Password?</a>
+                                            </div>
+                                            <div class="row mb-3 px-3"> 
+                                                <button type="submit" class="btn btn-blue text-center" id="loginBtn">Login</button> 
+                                            </div>
+                                        </div>
+                                        <div asp-validation-summary="All" class="text-danger w-auto d-inline text-nowrap mb-3"></div>
+                                    </div>
+                    }
+                </form>
+            </div>
+          
+            <div class="bg-blue py-2">
+                <div class="row px-3">
+                    <small class="ml-4 ml-sm-5 mb-2  align-items-center"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Coyright &copy; 2021. All rights reserved to XON Cybernatics (P) Ltd.</small>
+                </div>
+            </div>
+        </div>
+
+        @*<script type="text/javascript">
+            //$(document).ready(function () {
+                alert("inside");
+                $("#companyname").change(function () {
+                    alert("inside");
+                    // alert($('option:selected', this).text());
+                    var id = $("#companyname").val();
+
+                    $.ajax({
+                        cache: false,
+                        type: "GET",
+                        url: '@Url.Action("GetCC", "Home")',
+                        data: { "compname": id },
+                        success: function (json, textStatus) {
+                            //alert("done");
+                            //$("#cc").empty();
+                            //json = json || {};
+                            alert(json);
+                            //for (var i = 0; i < json.length; i++) {
+                            $("#cc")
+                                .empty()
+                                .append('<option value="' + json. + '">' + json.id + '</option>');
+                            $("#year_code")
+                                .empty()
+                                .append('<option value="' + json.year_code + '">' + json.year_code + '</option>');
+                            //}
+                            //$("#ddlDesig").prop("disabled", false);
+                            json = "";
+                        },
+                        error: function () {
+                            alert("Data Not Found");
+                        }
+                    });
+                });
+            //});
+        </script>*@
+
+        <script type="text/javascript">
+            //alert("inside");
+                $('#loginBtn').click(function (e) {
+                    e.preventDefault();
+                    if (!ValidateLogin())
+                    return;
+                    else {
+                        var formData = $("form").serializeArray();
+
+                        localStorage.setItem('formData', JSON.stringify(formData));
+                        $("form").submit();
+                    }
+                });
+
+                function ValidateLogin() {
+                    var Err = 0;
+                    
+                    //if ($('#ServerName').prop('selectedIndex') == 0) {
+                    //    $('#ServerName').css('border', '1px solid red');
+                    //    Err = 1;
+                    //}
+                    //else {
+                    //    $('#ServerName').css('border', '1px solid black');
+                    //}   
+                    //if ($('#CompanyName').prop('selectedIndex') == 0) {
+                    //    $('#CompanyName').css('border', '1px solid red');
+                    //    Err = 1;
+                    //}
+                    //else {
+                    //    $('#CompanyName').css('border', '1px solid black');
+                    //} 
+                    if ($('#Unit').prop('selectedIndex') == 0) {
+                        $('#Unit').css('border', '1px solid red');
+                        Err = 1;
+                    }
+                    else {
+                        $('#Unit').css('border', '1px solid black');
+                    } 
+                    if ($('#YearCode').prop('selectedIndex') == 0) {
+                        $('#YearCode').css('border', '1px solid red');
+                        Err = 1;
+                    }
+                    else {
+                        $('#YearCode').css('border', '1px solid black');
+                    } 
+                    if ($('#UserName').val() == null || $('#UserName').val() == "") {
+                        $('#UserName').css('border', '1px solid red');
+                        Err = 1;
+                    }
+                    else {
+                        $('#UserName').css('border', '1px solid black');
+                    }
+                    if ($('#Password').val() == null || $('#Password').val() == "") {
+                        $('#Password').css('border', '1px solid red');
+                        Err = 1;
+                    }
+                    else {
+                        $('#Password').css('border', '1px solid black');
+                    }
+
+                    //Err == 1 ? ShowErrorFld('H_SAGrid') : HideErrorFld('H_SAGrid');
+                    if (Err == 1) return false;
+
+                    return true;
+                }
+                $(document).ready(function () {
+                     
+                   var unit;
+                   var yearCode;
+                   if($('#Mode').val()=="Y"){
+                        var formData = localStorage.getItem('formData');
+
+                        if (formData) {
+                            formData = JSON.parse(formData);
+                            unit = formData.find(item =>item.name === "Unit").value;
+                            yearCode = formData.find(item=>item.name==="YearCode").value;
+                            console.log(unit);
+                            
+                        }
+                   }
+                    
+                   $.ajax({
+                    type: "GET",
+                    url: "@Url.Action("GetServerName","Home")",
+                    dataType: "json",
+                    success: function (result, status, error) {
+                    var lines = result.lines;
+                    if($('#Mode').val()=="Y"){
+                            //$('#ServerName').append('<option disabled>-Select-</option>');
+                            //var hiddenSname = $('#hiddenServerName').val();
+                            //var checkVal = hiddenSname.split("\n");
+                            //var sName = checkVal +"\r";
+                    // Iterate through the lines
+                    //for (var i = 0; i < lines.length; i++) {
+                        // Use each line as needed
+                        var sName = lines;
+                        //if(sName==lines[i]){
+                        //    $('#ServerName').append('<option value="'+lines[i]+'" selected>'+lines[i]+'</option>');
+                        //}
+                        //else{
+                            $('#ServerName').append('<option value="'+sName+'">'+sName+'</option>');
+                        //}
+                       // console.log(lines[i]);
+                       
+                   // }
+                     var companyName = $('#CompanyName').find(':selected').val();
+                     var serverName = $('#ServerName').find(':selected').val();
+                        console.log(companyName);
+                        fillUnitandYC(serverName,companyName);
+                    }
+                    else{
+                    //$('#ServerName').append('<option selected disabled>-Select-</option>');
+                    // Iterate through the lines
+                    //for (var i = 0; i < lines.length; i++) {
+                    //    // Use each line as needed
+                    //    $('#ServerName').append('<option value="'+lines[i]+'">'+lines[i]+'</option>');
+                    //    console.log(lines[i]);
+                    //}
+                     var sName = lines;                       
+                            $('#ServerName').append('<option value="'+sName+'">'+sName+'</option>');
+                    }
+                    
+                },
+                    error: function(xhr, status, error) {
+                        console.log("Error: " + error);
+                    }
+                });
+                 var companyName = $('#CompanyName').find(':selected').val();
+                     var serverName = $('#ServerName').find(':selected').val();
+                        console.log(companyName);
+                        fillUnitandYC(serverName,companyName);
+               });
+
+               function fillUnitandYC(servername,compName){
+                   GetBranchname(compName);
+                   
+                   //$.ajax({
+                   //     type: "POST",
+                   //     url: "@Url.Action("GetUnitandBranch","Home")",
+                   //     data: {Company: compName,Servername:servername},
+                   //     dataType: "json",
+                   //     success: function (result, status, error) {
+                   //          
+                   //         //$('#Unit').empty();
+                   //         //$('#Unit').append('<option selected disabled>-Select-</option>');
+                   //         //console.log(result);
+                   //         //for(var i=0;i<result.length;i++){
+                   //         //     
+                   //         //    if ($('#hiddenUnit').val() == result[i]) {
+                   //         //        $('#Unit').append('<option value="'+result[i]+'" selected>'+result[i]+'</option>');
+                   //         //    }
+                   //         //    else {
+                   //         //        $('#Unit').append('<option value="'+result[i]+'">'+result[i]+'</option>');
+                   //         //    }
+                                
+                   //         //}
+                   //         console.log("sucesss");
+                   //     },
+                   //     error: function(xhr, status, error) {
+                   //         console.log("Error: " + error);
+                   //     }
+                   // });
+               }
+
+               $('#CompanyName').change(function(){
+                   var compName = $('#CompanyName').val();
+                    GetBranchname(compName);
+                   // ChangeConnectionString(compName);
+               });
+
+            function ChangeConnectionString(compName) {
+                $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("ChangeConnectionString","Home")",
+                        data: {companyName: comName},
+                        dataType: "json",
+                        success: function (result, status, error) {
+                          
+                        },
+                        error: function(xhr, status, error) {
+                            console.log("Error: " + error);
+                        }
+                    });
+            }
+
+               function GetBranchname(comName){
+                    
+                   $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("GetBranchName","Home")",
+                        data: {companyName: comName},
+                        dataType: "json",
+                        success: function (result, status, error) 
+                        {
+                             
+                            $('#Unit').empty();
+                            $('#Unit').append('<option selected disabled>-Select-</option>');
+                            console.log(result);
+                            for(var i=0;i<result.length;i++){
+                                if ($('#hiddenUnit').val() == result[i]) 
+                                {
+                                    $('#Unit').append('<option value="'+result[i]+'" selected>'+result[i]+'</option>');
+                                }
+                                else
+                                {
+                                    $('#Unit').append('<option value="'+result[i]+'">'+result[i]+'</option>');
+                                }
+                                
+                            }
+                            var unit = $('#Unit').find(':selected').val();
+                            
+                             GetYearCode(unit,comName);
+                             fillUnitandYC(serverName,companyName);
+                        },
+                        error: function(xhr, status, error) {
+                            console.log("Error: " + error);
+                        }
+                    });
+               }
+
+               function GetYearCode(unit,comname){
+                    
+                   $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("GetYearCode","Home")",
+                        data: {branchName: unit,companyName:comname},
+                        dataType: "json",
+                        success: function (result, status, error) {
+                             
+                            console.log(result);
+                            $('#YearCode').empty();
+                            $('#YearCode').append('<option selected disabled>-Select-</option>');
+                           for(var i=0;i<result.length;i++){
+                               if ($('#hiddenYC').val() == result[i]) {
+                                    $('#YearCode').append('<option value="'+result[i]+'" selected>'+result[i]+'</option>');
+                                }
+                                else {
+                                    $('#YearCode').append('<option value="'+result[i]+'">'+result[i]+'</option>');
+                                }
+                                //$('#YearCode').append('<option value="'+result[i]+'">'+result[i]+'</option>');
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.log("Error: " + error);
+                        }
+                    });
+               }
+               $('#Unit').change(function(){
+                   var unit = $('#Unit').val();
+                   var comName = $('#CompanyName').val();
+                   GetYearCode(unit,comName);
+               });
+
+               /*$('#ServerName').change(function(){
+                    $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("GetDBName","Home")",
+                    dataType: "json",
+                    success: function (result, status, error) {
+                    var lines = result.lines;
+                    $('#ServerName').append('<option selected disabled>-Select-</option>');
+                    // Iterate through the lines
+                    for (var i = 0; i < lines.length; i++) {
+                        // Use each line as needed
+                        $('#ServerName').append('<option value="'+lines[i]+'">'+lines[i]+'</option>');
+                        console.log(lines[i]);
+                        }
+                       //var fileContent = result.content;
+                   
+                   
+                       // // Use the file content as needed
+                       // console.log(fileContent);
+                    },
+                        error: function(xhr, status, error) {
+                            console.log("Error: " + error);
+                        }
+                    });
+               });*/
+
+                /*$("#CompanyName").change(function () {
+                  //  alert("inside1");
+                var id = $("#CompanyName").val();
+                //alert(id);
+                    $.ajax({
+                        cache: false,
+                        type: "GET",
+                        url: '@Url.Action("GetCC", "Home")',
+                        data: { "compname": id },
+                        success: function (json, textStatus) {
+                           //alert("done");
+                            $("#CC").empty();
+                            json = json || {};
+                            $("#Unit").empty().append('<option value="' + json[0] + '">' + json[0] + '</option>');
+                            $("#YearCode").empty().append('<option value="' + json[1] + '">' + json[1] + '</option>');
+                            json = "";
+                        },
+                        error: function () {
+                            alert("Data Not Found");
+                        }
+                    });
+                });*/
+        </script>
+
+        <script src="~/Scripts/table2excel.js"></script>
+<script type="text/javascript">
+    $(function () {
+
+        $("#btnExport").click(function () {
+            var copyTable = $("#tblCustomers").clone(false).attr('id', '_copy_dailySales');
+            copyTable.insertAfter($("#tblCustomers"));
+            copyTable.find('tr:hidden, td:hidden, th:hidden', 'td.noExl:last').remove();
+
+            copyTable.table2excel({
+
+                filename: "Daily Sales Report.xls",
+
+            });
+            copyTable.remove();
+
+        });
+
+        $("#search").keyup(function () {
+            var value = $(this).val().toLowerCase();
+
+            $("#tblCustomers tr").each(function (index) {
+                if (index != 0) {
+
+                    $row = $(this);
+
+                    $row.find("td").each(function () {
+
+                        var cell = $(this).text();
+
+                        if (cell.toLowerCase().indexOf(value) < 0) {
+                            $row.hide();
+                        } else {
+                            $row.show();
+                            return false; //Once it's shown you don't want to hide it on the next cell
+                        }
+
+                    });
+                }
+            });
+
+        });
+    });
+</script>
+        </div>
+</body >
+</html >

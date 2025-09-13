@@ -1,0 +1,19 @@
+[
+  {
+    "outputFileName": "wwwroot/css/StyleMaster.min.css",
+    "inputFiles": [
+      "wwwroot/css/StyleMaster.min.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/JSMaster.min.js",
+    "inputFiles": [
+      "wwwroot/js/JSMaster.min.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  }
+]

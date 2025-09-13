@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="05/23/2025 15:34:04" ReportInfo.Modified="05/23/2025 15:46:52" ReportInfo.CreatorVersion="2023.2.0.0">
+  <Dictionary>
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHE+UVBHO0O0957hJkIVu0t4dbpm9aekdEf62ygZHdojlQqek764bZ9INGkvHUPUV9JTunflcrPqDFJ1YAwGY/kDsdebzutLqfV6XGCFOn9PvE+IP0ZTJ2fMB+yoJo+FqxBnmdWREjjJ+UiRxshE5+/7QWYeFK8GhWAA2IBDJqQsk5gGu0SGlvyDcwj/+nHRsYtUAbQgyyK6fdLYPkX2h3w==" ConnectionStringExpression="[MyParameter]">
+      <TableDataSource Name="Table" Alias="SPPrintReportMrnTag" DataType="System.Int32" Enabled="true" SelectCommand="exec SPPrintReportMrnTag  @MRNEntryId=1,@MRNYearCode=2025">
+        <Column Name="Account_Name" DataType="System.String"/>
+        <Column Name="Item_Name" DataType="System.String"/>
+        <Column Name="partcode" DataType="System.String"/>
+        <Column Name="Item_Code" DataType="System.Int64"/>
+        <Column Name="MRNNo" DataType="System.String"/>
+        <Column Name="InvNo" DataType="System.String"/>
+        <Column Name="InvDate" DataType="System.DateTime"/>
+        <Column Name="MRNYearCode" DataType="System.Int64"/>
+        <Column Name="MRNEntryDate" DataType="System.DateTime"/>
+        <Column Name="BillQty" DataType="System.Decimal"/>
+        <Column Name="StdPacking" DataType="System.Double"/>
+        <Column Name="MRNEntryId" DataType="System.Int64"/>
+        <CommandParameter Name="MRNEntryId" Expression="MRNEntryId"/>
+        <CommandParameter Name="MRNYearCode" Expression="MRNYearCode"/>
+      </TableDataSource>
+    </MsSqlDataConnection>
+  </Dictionary>
+  <ReportPage Name="Page1" Watermark.Font="Arial, 60pt">
+    <ReportTitleBand Name="ReportTitle1" Width="718.2" Height="37.8"/>
+    <PageHeaderBand Name="PageHeader1" Top="41" Width="718.2" Height="28.35"/>
+    <DataBand Name="Data1" Top="72.55" Width="718.2" Height="75.6"/>
+    <PageFooterBand Name="PageFooter1" Top="151.35" Width="718.2" Height="94.5"/>
+  </ReportPage>
+</Report>

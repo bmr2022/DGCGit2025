@@ -1,0 +1,100 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="07/10/2025 12:56:56" ReportInfo.Modified="07/17/2025 13:56:42" ReportInfo.CreatorVersion="2023.2.0.0">
+  <Dictionary>
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqwYf2D6LPIs5GRi9VfJb9gs8qaRHeAlreZAqboi0WnhbW+ZcHyrJCx9pDi9kAMBavuNli/hefC6I1U5NQIQSUu+g2EbEpTkDJ/sD0dMQd1VKdt3IMwbdhi23mpX5cUgM2k+tAkegvgBrAISuXnnT2UVPVjfuL5Jk30hkStujX/tfx761/drz3w71T5sFQ8yxlM+HY1lN5IZuU759ogfmJ+A==">
+      <TableDataSource Name="Table" Alias="SpPrintRouteSheet" DataType="System.Int32" Enabled="true" SelectCommand="exec SpPrintRouteSheet @WOProcessEntryId=@entryparam,@WOProcYearCode=@yearparam">
+        <Column Name="SrNo" DataType="System.Int64"/>
+        <Column Name="subprocessid" DataType="System.Int64"/>
+        <Column Name="ProcessName" DataType="System.String"/>
+        <Column Name="SubProcessName" DataType="System.String"/>
+        <Column Name="ItemSrNo" DataType="System.String"/>
+        <Column Name="POSrNo" DataType="System.String"/>
+        <Column Name="CustomerName" DataType="System.String"/>
+        <Column Name="itemCode" DataType="System.String"/>
+        <Column Name="TechWODate" DataType="System.DateTime"/>
+        <Column Name="Description" DataType="System.String"/>
+        <Column Name="TechWONO" DataType="System.String"/>
+        <Column Name="Inspection" DataType="System.String"/>
+        <Column Name="Material" DataType="System.String"/>
+        <CommandParameter Name="entryparam" Expression="entryparam"/>
+        <CommandParameter Name="yearparam" Expression="yearparam"/>
+      </TableDataSource>
+    </MsSqlDataConnection>
+    <Parameter Name="MyParameter" DataType="System.String" Expression="MyParameter"/>
+  </Dictionary>
+  <ReportPage Name="Page1" Watermark.Font="Arial, 60pt">
+    <ReportTitleBand Name="ReportTitle1" Width="718.2" Height="170.1">
+      <LineObject Name="Line1" Left="9.45" Top="9.45" Height="160.65"/>
+      <LineObject Name="Line2" Left="9.45" Top="9.45" Width="699.3"/>
+      <LineObject Name="Line3" Left="708.75" Top="9.45" Height="160.65"/>
+      <TextObject Name="Text1" Left="500.85" Top="18.9" Width="207.9" Height="37.8" Text="Routing Sheet" HorzAlign="Center" Font="Arial, 16pt, style=Bold"/>
+      <LineObject Name="Line4" Left="9.45" Top="56.7" Width="699.3"/>
+      <LineObject Name="Line5" Left="500.85" Top="9.45" Height="47.25"/>
+      <TextObject Name="Text2" Left="18.9" Top="66.15" Width="47.25" Height="18.9" Text="Date:" Font="Arial, 10pt"/>
+      <TextObject Name="Text3" Left="18.9" Top="85.05" Width="85.05" Height="18.9" Text="MF Wo No:" Font="Arial, 10pt"/>
+      <TextObject Name="Text4" Left="18.9" Top="103.95" Width="66.15" Height="18.9" Text="Item No:" Font="Arial, 10pt"/>
+      <TextObject Name="Text5" Left="18.9" Top="132.3" Width="75.6" Height="18.9" Text="Inspection:" Font="Arial, 10pt"/>
+      <LineObject Name="Line6" Left="340.2" Top="56.7" Height="113.4"/>
+      <TextObject Name="Text6" Left="349.65" Top="66.15" Width="75.6" Height="18.9" Text="Customer:" Font="Arial, 10pt"/>
+      <TextObject Name="Text7" Left="349.65" Top="85.05" Width="85.05" Height="18.9" Text="Description:" Font="Arial, 10pt"/>
+      <TextObject Name="Text8" Left="349.65" Top="103.95" Width="66.15" Height="18.9" Text="Material:" Font="Arial, 10pt"/>
+      <TextObject Name="Text9" Left="349.65" Top="122.85" Width="103.95" Height="18.9" Text="MF Rev. CDD:" Font="Arial, 10pt"/>
+      <TextObject Name="Text10" Left="444.15" Top="66.15" Width="264.6" Height="18.9" CanGrow="true" CanBreak="false" Text="[SpPrintRouteSheet.CustomerName]" Font="Arial, 9pt"/>
+      <TextObject Name="Text11" Left="444.15" Top="85.05" Width="264.6" Height="18.9" CanGrow="true" CanBreak="false" Text="[SpPrintRouteSheet.Description]" Font="Arial, 10pt"/>
+      <TextObject Name="Text12" Left="103.95" Top="103.95" Width="236.25" Height="28.35" CanGrow="true" CanBreak="false" Text="[SpPrintRouteSheet.ItemSrNo]" Font="Arial, 9pt"/>
+      <LineObject Name="Line7" Left="-9450" Top="-9450" Width="699.3"/>
+      <TextObject Name="Text25" Left="103.95" Top="132.3" Width="236.25" Height="18.9" CanGrow="true" CanBreak="false" Text="[SpPrintRouteSheet.Inspection]" Font="Arial, 10pt"/>
+      <TextObject Name="Text26" Left="444.15" Top="103.95" Width="264.6" Height="18.9" CanGrow="true" CanBreak="false" Text="[SpPrintRouteSheet.Material]" Font="Arial, 10pt"/>
+      <TextObject Name="Text28" Left="453.6" Top="122.85" Width="94.5" Height="18.9" Text="[Date]" Font="Arial, 10pt"/>
+      <TextObject Name="Text29" Left="103.95" Top="66.15" Width="94.5" Height="18.9" Text="[Date]" Font="Arial, 10pt"/>
+    </ReportTitleBand>
+    <PageHeaderBand Name="PageHeader1" Top="173.3" Width="718.2" Height="47.25">
+      <LineObject Name="Line9" Left="9.45" Height="47.25"/>
+      <LineObject Name="Line10" Left="708.75" Height="47.25"/>
+      <LineObject Name="Line11" Left="9.45" Top="47.25" Width="699.3"/>
+      <LineObject Name="Line12" Left="614.25" Height="47.25"/>
+      <LineObject Name="Line13" Left="500.85" Height="47.25"/>
+      <LineObject Name="Line14" Left="396.9" Height="47.25"/>
+      <LineObject Name="Line15" Left="217.35" Height="47.25"/>
+      <LineObject Name="Line16" Left="37.8" Height="47.25"/>
+      <LineObject Name="Line17" Left="396.9" Top="18.9" Width="217.35"/>
+      <TextObject Name="Text13" Left="9.45" Top="9.45" Width="28.35" Height="37.8" Text="Sr No" Font="Arial, 10pt"/>
+      <TextObject Name="Text14" Left="37.8" Top="9.45" Width="179.55" Height="37.8" Text="Process" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text15" Left="217.35" Top="9.45" Width="179.55" Height="37.8" Text="Process Detail" HorzAlign="Center" Font="Arial, 10pt"/>
+      <LineObject Name="Line18" Left="444.15" Top="18.9" Height="28.35"/>
+      <LineObject Name="Line19" Left="557.55" Top="18.9" Height="28.35"/>
+      <TextObject Name="Text17" Left="396.9" Top="28.35" Width="47.25" Height="18.9" Text="Start" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text18" Left="444.15" Top="28.35" Width="56.7" Height="18.9" Text="End" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text19" Left="500.85" Top="28.35" Width="56.7" Height="18.9" Text="Start" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text20" Left="557.55" Top="28.35" Width="56.7" Height="18.9" Text="End" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text22" Left="614.25" Top="9.45" Width="94.5" Height="37.8" Text="Remark &amp; Sign" HorzAlign="Center" Font="Arial, 10pt"/>
+      <LineObject Name="Line8" Left="9.45" Width="699.3"/>
+      <TextObject Name="Text16" Left="396.9" Width="103.95" Height="18.9" Text="Duration" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text21" Left="500.85" Width="113.4" Height="18.9" Text="Qty" HorzAlign="Center" Font="Arial, 10pt"/>
+    </PageHeaderBand>
+    <GroupHeaderBand Name="GroupHeader1" Top="223.75" Width="718.2" Height="47.25" Condition="[SpPrintRouteSheet.SrNo]">
+      <LineObject Name="Line20" Left="9.45" Height="47.25"/>
+      <LineObject Name="Line21" Left="708.75" Height="47.25"/>
+      <LineObject Name="Line23" Left="614.25" Height="47.25"/>
+      <LineObject Name="Line24" Left="500.85" Height="47.25"/>
+      <LineObject Name="Line25" Left="396.9" Height="47.25"/>
+      <LineObject Name="Line26" Left="217.35" Height="47.25"/>
+      <LineObject Name="Line27" Left="37.8" Height="47.25"/>
+      <LineObject Name="Line29" Left="444.15" Height="47.25"/>
+      <LineObject Name="Line30" Left="557.55" Height="47.25"/>
+      <LineObject Name="Line22" Left="9.45" Top="47.25" Width="699.3"/>
+      <TextObject Name="Text23" Left="9.45" Top="9.45" Width="28.35" Height="37.8" CanGrow="true" CanBreak="false" Text="[SpPrintRouteSheet.SrNo]" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text24" Left="37.8" Top="9.45" Width="179.55" Height="37.8" CanGrow="true" CanBreak="false" Text="[SpPrintRouteSheet.ProcessName]" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text27" Left="217.35" Top="9.45" Width="179.55" Height="37.8" CanGrow="true" CanBreak="false" Text="[[SpPrintRouteSheet.ProcessName]== [SpPrintRouteSheet.SubProcessName]? &quot;Yes&quot; : [SpPrintRouteSheet.SubProcessName]]&#13;&#10;" HorzAlign="Center" Font="Arial, 10pt"/>
+      <DataBand Name="Data1" Top="274.2" Width="718.2" DataSource="Table"/>
+      <GroupFooterBand Name="GroupFooter1" Top="277.4" Width="718.2"/>
+    </GroupHeaderBand>
+    <ReportSummaryBand Name="ReportSummary1" Top="280.6" Width="718.2" Height="47.25">
+      <LineObject Name="Line42" Left="9.45" Height="37.8"/>
+      <LineObject Name="Line43" Left="708.75" Height="37.8"/>
+      <LineObject Name="Line44" Left="9.45" Top="37.8" Width="699.3"/>
+      <TextObject Name="Text30" Left="9.45" Top="9.45" Width="94.5" Height="18.9" Text="Prepared By" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text31" Left="595.35" Top="9.45" Width="94.5" Height="18.9" Text="Approved By" HorzAlign="Center" Font="Arial, 10pt"/>
+    </ReportSummaryBand>
+  </ReportPage>
+</Report>

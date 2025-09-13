@@ -1,0 +1,24 @@
+﻿@*@model System.Data.DataTable*@
+@model eTactWeb.DOM.Models.PartCodePartyWiseDashboard
+@{
+    var @Cntr=0;
+    if (Model.DTDashboard.Columns.Contains("SeqNo") && Model.DTDashboard.Rows.Count != 0)
+    {
+        for (int i = 0; i < Model.DTDashboard.Rows.Count; i++)
+        {
+            Cntr = Cntr + 1;
+            <tr class="small" style="white-space:nowrap">
+                <td>@Cntr</td>
+                <td>@Model.DTDashboard.Rows[i]["SeqNo"]</td>
+                <td>@Model.DTDashboard.Rows[i]["ItemName"]</td>
+                <td>@Model.DTDashboard.Rows[i]["PartCode"]</td>
+                <td>@Model.DTDashboard.Rows[i]["VendCustPartCode"]</td>
+                <td>@Model.DTDashboard.Rows[i]["VendCustitemname"]</td>
+                <td>@Model.DTDashboard.Rows[i]["MOQ"]</td>
+                <td>@Model.DTDashboard.Rows[i]["LeadTimeInDays"]</td>
+                <td>@Model.DTDashboard.Rows[i]["ItemRate"]</td>
+                <td>@Model.DTDashboard.Rows[i]["BusinessPercentage"]</td>
+             </tr> 
+        }
+    }
+}

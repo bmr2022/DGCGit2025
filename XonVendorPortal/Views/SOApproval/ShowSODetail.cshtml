@@ -1,0 +1,225 @@
+﻿@model List<SoApprovalDetail>
+@using Microsoft.AspNetCore.Http
+@using System.Reflection.PortableExecutable
+@{
+    ViewData["Title"] = "SO Approval";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    string branchName = HttpContextAccessor.HttpContext.Session.GetString("Branch");
+    string empName = HttpContextAccessor.HttpContext.Session.GetString("EmpName");
+    string yearCode = HttpContextAccessor.HttpContext.Session.GetString("YearCode");
+    int EmpID = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("EmpID"));
+    string typeOfApproval = HttpContextAccessor.HttpContext.Request.Query["TypeOfApproval"];
+    int EntryID = Convert.ToInt32(HttpContextAccessor.HttpContext.Request.Query["ID"]);
+    int YC = HttpContextAccessor.HttpContext.Request.Query["YC"] != "undefined" ? Convert.ToInt32(HttpContextAccessor.HttpContext.Request.Query["YC"]) : 0;
+    string SONO = HttpContextAccessor.HttpContext.Request.Query["SONo"];
+    string CustOrderNo = HttpContextAccessor.HttpContext.Request.Query["CustOrderNo"];
+    string VendorName = HttpContextAccessor.HttpContext.Request.Query["VendorName"];
+    string CustOrderNum = HttpContextAccessor.HttpContext.Request.Query["CustOrderNum"];
+    string SONum = HttpContextAccessor.HttpContext.Request.Query["SONum"];
+    string VendorNm = HttpContextAccessor.HttpContext.Request.Query["VendorNm"];
+
+}
+@{
+    ViewData["Title"] = "SO Approval";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+<div class="card-body">
+    <div class="card overflow-auto">
+        <div class="card-body">
+            <form id="SParam">
+                <center><h4>Approval/Unapproval</h4></center>
+                <div class="row">
+                    <div class="col-xl-3 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                        <input id="approvePO" type="checkbox" style="margin-left:30px;width:15px !important;height:15px !important;" />
+                        <label class="form-label" style="display: inline-block;"><strong>Click for @typeOfApproval</strong></label>
+                    </div>
+                    <div class="col-xl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                        <label class="form-label">Approve Date</label>
+                        <input id="approveDate" style="display: inline-block;" class="form-control" readonly />
+                    </div>
+                    <div class="col-xl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                        <label class="form-label">Approved By</label>
+                        <input type="hidden" id="approvedById" value="@EmpID" />
+                        <input id="approvedBy" style="display: inline-block;" readonly value="@($"{empName} --> {EmpID}")" class="form-control" />
+                    </div>
+                    <div class="col-xl-1 col-xl-1 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                        <div class="d-flex justify-content-right">
+                            <a class="btn btn-sm btn-outline-info btnSave" style="height:30px;width:100px;margin-top:15px !important;">
+                                <i class="fa-solid fa-chevron-circle-right fa-fw fa-lg"></i>SAVE
+                            </a>
+                            @* <a class="btn btn-sm btn-outline-info" style="height:30px;width:100px;margin-top:15px !important;" asp-controller="SOApproval" asp-action="SaveApproval" asp-route-EntryId="@EntryID" asp-route-YC="@YC" asp-route-SONO="@SONO" asp-route-CustOrderNo="@CustOrderNo" asp-route-type="@typeOfApproval" asp-route-SONum="@SONum" asp-route-CustOrderNum="@CustOrderNum" asp-route-VendorNm="@VendorNm" asp-route-VendorName="@VendorNm">
+                            <i class="fa-solid fa-chevron-circle-right fa-fw fa-lg"></i>SAVE
+                            </a> *@
+                        </div>
+                    </div>
+                    <div class="col-xl-1 col-xl-1 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                        <div class="d-flex justify-content-right">
+                            <a href="#" class=" btn btn-primary btn-sm" onclick="back();" style="height:30px;width:100px;margin-top:15px !important;">
+                                <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                                BACK
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="card-body">
+    <div class="card overflow-auto">
+        <div class="card-body" id="divDashboardGrid">
+            <table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0">
+                <thead class="bg-gradient card-headerBG text-light">
+                    <tr>
+
+                        <th>Sr#</th>
+                        <th>So No</th>
+                        <th>SoDate</th>
+                        <th>WEF Date</th>
+                        <th>Order Type</th>
+                        <th>So Type</th>
+                        <th>So For</th>
+                        <th>Customer Name</th>
+                        <th>Item Name</th>
+                        <th>Part Code</th>
+                        <th>HSN No</th>
+                        <th>Qty</th>
+                        <th>Unit</th>
+                        <th>Alt Qty</th>
+                        <th>Alt Unit</th>
+                        <th>Rate</th>
+                        <th> Unit Rate</th>
+                        <th>Remark</th>
+                        <th>PendQty</th>
+                        <th>Pend Alt Qty</th>
+                        <th>Entry ID</th>
+                        <th>Year Code</th>
+                    </tr>
+                </thead>
+                <tbody id="gateDashboardtable">
+                    @{
+                        var @Cntr = 0;
+                        if (Model == null || Model.Count == 0)
+                        {
+                            <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                        }
+                        else
+                        {
+                            foreach (var item in Model)
+                            {
+
+                                Cntr = Cntr + 1;
+                                <tr id="dashTableGridRow-@Cntr">
+                                    <th>@Cntr</th>
+                                    <td>@item.SONO</td>
+                                    <td>@item.SODate.Split(" ")[0]</td>
+                                    <td>@item.WEF.Split(" ")[0]</td>
+                                    <td>@item.OrderType</td>
+                                    <td>@item.SOType</td>
+                                    <td>@item.SOFor</td>
+                                    <td style="background-color: #e09ef0;">@item.CustomerName</td>
+                                    <td>@item.ItemName</td>
+                                    <td>@item.PartCode</td>
+                                    <td>@item.HSNNo</td>
+                                    <td>@item.Qty</td>
+                                    <td>@item.Unit</td>
+                                    <td>@item.AltQty</td>
+                                    <td>@item.AltUnit</td>
+                                    <td>@item.Rate</td>
+                                    <td>@item.UnitRate</td>
+                                    <td>@item.Remark</td>
+                                    <td>@item.PendQty</td>
+                                    <td>@item.PendAltQty</td>
+                                    <td>@item.EntryID</td>
+                                    <td>@item.Year</td>
+                                </tr>
+                            }
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+@section Scripts
+{
+    <script>
+        $(document).ready(function () {
+            $('#approveDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+            $('#approveDate').datepicker("option", "minDate", 'now');
+            $('#approveDate').datepicker("option", "maxDate", 'now');
+
+            colorRates();
+            //GetSearchData();
+        });
+
+        $('.btnSave').click(function () {
+            var type = @Html.Raw(Json.Serialize(typeOfApproval));
+            var custOrderNo = @Html.Raw(Json.Serialize(CustOrderNo));
+            var SONum = @Html.Raw(Json.Serialize(SONum));
+            var CustOrderNum = @Html.Raw(Json.Serialize(CustOrderNum));
+            var VendorNm = @Html.Raw(Json.Serialize(VendorNm));
+            var VendorName = @Html.Raw(Json.Serialize(VendorName));
+
+            if ($('#approvePO').is(":checked") == true) {
+                $.ajax({
+                    type: "GET",
+                    data: { "EntryId": @EntryID, "YC": @YC, "SONO": @SONO, "CustOrderNo": custOrderNo, "type": type, "SONum": SONum, "CustOrderNum": CustOrderNum, "VendorNm": VendorNm, "VendorName": VendorName },
+                    url: "@Url.Action("SaveApproval", "SOApproval")",
+                    success: function (response, status, error) {
+                         
+                        if (response.redirectUrl) {
+                            window.location.href = response.redirectUrl;
+                        }
+                    }
+                });
+            } else {
+                $.notify("Please checked items", "error");
+            }
+        });
+
+        function colorRates() {
+            var size = $('#gateDashboardtable tr').length;
+
+            for (var i = 1; i <= size; i++) {
+                var curRowTds = $('#dashTableGridRow-' + i).find('td');
+                if (parseInt($('#rateRow-' + i).text()) > parseInt($('#oldrateRow-' + i).text())) {
+                    curRowTds.css("color", "red");
+                    curRowTds.css("font-weight", "bolder");
+                    $('#rateRow-' + i).css("color", "blue");
+                    $('#oldrateRow-' + i).css("color", "blue");
+                } else if (parseInt($('#rateRow-' + i).text()) < parseInt($('#oldrateRow-' + i).text())) {
+                    curRowTds.css("color", "green");
+                    curRowTds.css("font-weight", "bolder");
+                    $('#rateRow-' + i).css("color", "purple");
+                    $('#oldrateRow-' + i).css("color", "purple");
+                } else {
+                    curRowTds.css("color", "black");
+                    $('#rateRow-' + i).css("color", "black");
+                    $('#oldrateRow-' + i).css("color", "black");
+                }
+            }
+
+        }
+
+        function checkCondition(event) {
+            if ($('#approvePO').is(":checked")) {
+                return true;
+            } else {
+                event.preventDefault();
+                $.notify("Please check for approval/unapproval", "error");
+                return false;
+            }
+        }
+    </script>
+}
+
+<style>
+    .color-box {
+        width: 10px;
+        height: 10px;
+    }
+</style>

@@ -1,0 +1,1301 @@
+﻿@model eTactWeb.DOM.Models.SalesPersonTransferModel;
+@{
+	ViewData["Title"] = "SalesPerson Transfer";
+	Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+<style>
+	.disabled-link {
+		pointer-events: none; /* Disables clicking */
+		color: gray; /* Makes it look disabled */
+		text-decoration: none; /* Removes underline */
+		cursor: not-allowed; /* Changes cursor */
+	}
+</style>
+
+<div class="card bg-gradient mb-3 border-light shadow-lg">
+	<form asp-action="SalesPersonTransfer" asp-controller="SalesPersonTransfer" method="post" autocomplete="on" class="form-horizontal">
+		<div class="card-header card-headerBG text-light bg-gradient">
+			<div class="card-header card-headerBG text-light justify-content-center bg-gradient">
+				<h5>
+					<strong>SalesPerson Transfer </strong>
+					<span class="d-flex float-end" style="margin-top:-2px;">
+						<a asp-controller="SalesPersonTransfer" asp-action="SalesPersonTransferDashBoard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient DashBoard">
+							<i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
+							Dashboard
+						</a>
+						<div class="row justify-content-between g-2">
+							<div class="col-auto">
+								<a href="#" class="btn btn-primary btn-sm" onclick="PressBack();">
+									<i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+									BACK
+								</a>
+							</div>
+							@if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+							{
+								<div class="col-auto">
+									<a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+										<i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+										REFRESH
+									</a>
+								</div>
+								@if (Model.Mode == "U")
+								{
+									Model.Mode = "U";
+									<div class="col-auto">
+										<button type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+											<i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+											UPDATE
+										</button>
+									</div>
+								}
+
+								else
+								{
+									<div class="col-auto">
+										<button type="submit" class="btn btn-primary btn-sm submitBTN">
+											<i class="fa-solid fa-chevron-circle-right"></i>
+											SUBMIT
+										</button>
+									</div>
+								}
+							}
+						</div>
+					</span>
+				</h5>
+			</div>
+			<div class="card-body bg-light">
+				<div class="accordion shadow-lg" id="accordionItemCategory">
+					<div class="accordion-item">
+						<h2 class="accordion-header" id="H_ItemCategoryDetail">
+							<button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_ItemCategoryDetail"
+									aria-expanded="true" aria-controls="B_ItemCategoryDetail">
+								<strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>SalesPerson Transfer</strong>
+								<small class="p-3"></small>
+							</button>
+						</h2>
+						<div id="B_ItemCategoryDetail" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_ItemCategoryDetail">
+							<div class="accordion-body">
+								<div class="row g-2">
+									<input type="hidden" asp-for="FromDateBack" id="FromDateBack" />
+									<input type="hidden" asp-for="ToDateBack" id="ToDateBack" />
+									<input type="hidden" asp-for="CustomerNameBack" id="CustomerNameBack" />
+									<input type="hidden" asp-for="OldEmpNameBack" id="OldEmpNameBack" />
+									<input type="hidden" asp-for="NewEmpNameBack" id="NewEmpNameBack" />
+									<input type="hidden" asp-for="GlobalSearchBack" id="GlobalSearchBack" />
+
+									<input type="hidden" value="@Model.Mode" asp-for="Mode" />
+									
+									<input type="hidden" value="@Environment.MachineName" asp-for="EntryByMachine" />
+
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+										<label asp-for="SalesPersTransfEntryId" class="form-label">Entry Id</label>
+										<input asp-for="SalesPersTransfEntryId" class="form-control" readonly />
+									</div>
+
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+										<label asp-for="SalesPersTransfYearCode" class="form-label">YearCode</label>
+										<input asp-for="SalesPersTransfYearCode" class="form-control" readonly />
+									</div>
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+										<label asp-for="SalesPersTransfEntryDate" class="form-label">Entry Date</label>
+										<input asp-for="SalesPersTransfEntryDate" class="form-control" readonly />
+									</div>
+
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+										<label asp-for="SalesPersTransfSlipNo" class="form-label"  style="color:red">Slip No*</label>
+										<input asp-for="SalesPersTransfSlipNo" class="form-control"  />
+									</div>
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+										<label asp-for="RevNo" class="form-label" >Rev No</label>
+										<input asp-for="RevNo" class="form-control"  />
+									</div>
+
+									
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:300px;">
+										<input type="checkbox" asp-for="ShowAllEmp"  />
+										<label asp-for="ShowAllEmp" class="form-label" style="color:blue;margin-right:15px;">Show All</label>
+
+										<label asp-for="NewSalesEmpName" class="form-label" style="color:red">New SalesEmp Name*</label>
+										@* <input type="hidden" asp-for="NewSalesEmpId" /> *@
+										<select class="form-select" asp-for="NewSalesEmpName" style="width:270px;">
+											<option value="">-Select-</option>
+										</select>
+									</div>
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+										<label asp-for="NewSalesCode" class="form-label">New SalesCode</label>
+										
+										<select class="form-select" asp-for="NewSalesCode">
+											<option value="">-Select-</option>
+										</select>
+									</div>
+									<input type="hidden" asp-for="NewSalesEmpId" />
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+										<label asp-for="EffFrom" class="form-label">Eff From</label>
+										<input asp-for="EffFrom" class="form-control" readonly />
+									</div>
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+										<label asp-for="Designation" class="form-label" style="color:red">Designation*</label>
+										<input asp-for="Designation" class="form-control" readonly/>
+										<input type="hidden" asp-for="DesignationId" class="form-control" />
+
+									</div>
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+										<label asp-for="Department" class="form-label" style="color:red">Department*</label>
+										<input asp-for="Department" class="form-control" readonly/>
+										<input type="hidden" asp-for="DepartmentId" class="form-control" />
+									</div>
+									<input type="hidden" asp-for="OldSalesEmpId" />
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:300px;">
+										<input type="checkbox" asp-for="ShowAllOldEmp" style="margin-top:5px;" />
+										<label asp-for="ShowAllOldEmp" class="form-label" style="color:blue;margin-right:15px;">Show All</label>
+										<label asp-for="OldSalesEmpName" class="form-label" >Old SalesEmp Name</label>
+									
+										<select class="form-select" asp-for="OldSalesEmpName" style="width:270px;">
+											<option value="">-Select-</option>
+										</select>
+									</div>
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+										<label asp-for="OldSalesCode" class="form-label">Old SalesCode</label>
+										
+										<select class="form-select" asp-for="OldSalesCode">
+											<option value="">-Select-</option>
+										</select>
+									</div>
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+										<label asp-for="EffTillDate" class="form-label">Effective TillDate</label>
+										<input asp-for="EffTillDate" class="form-control" readonly/>
+									</div>
+									<div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+										<label class="form-label">Global search</label>
+										<input type="text" class="form-control" asp-for="Searchbox" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
+									</div>
+									<div class="accordion-item" style="margin-top: 5px;">
+									
+										<h2 class="accordion-header" id="H_SAGrid">
+											<button class="accordion-button collapsed text-light pnl4BG bg-gradient d-flex justify-content-between align-items-center" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+												<strong class="text-uppercase">
+													<i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>
+													Customers List
+												</strong>
+
+												<div class="form-check ms-auto d-flex align-items-center">
+													<input type="checkbox" class="form-check-input" asp-for="ShowAllCust" />
+													<label class="form-check-label  ms-2" asp-for="ShowAllCust">
+														Show All
+													</label>
+												</div>
+											</button>
+										</h2>
+
+									</div>
+
+									<div class="card-body pb-0 pt-0">
+										<div class="progress" style="height: 4px;">
+											<div class="progress-bar progress-bar-striped bg-info" role="progressbar"
+												 style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
+											</div>
+										</div>
+									</div>
+
+									<div class="card-body">
+										<div class="card">
+											<div class="card-body" id="divDashboardGrid" style="overflow: auto; max-height: 300px;">
+												<partial name="_SalesPersonTransCustomerList" />
+											</div>
+										</div>
+									</div>
+
+								</div>
+							</div>
+							
+						</div>
+					</div>
+				</div>
+
+
+				<div class="card-footer p-3">
+					<div class="row justify-content-between g-2">
+						<div class="card-header card-headerBG text-light bg-gradient">
+							<h5>
+								<strong>SalesPerson Transfer</strong>
+								<span class="d-flex float-end" style="margin-top:-2px;">
+
+									@*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">*@
+									<a asp-controller="SalesPersonTransfer" asp-action="SalesPersonTransferDashBoard" tabindex="-1" asp-route-ID="0" class="btn btn-secondary btn-sm DashBoard">
+										<i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+										Dashboard
+									</a>
+									<div class="row justify-content-between g-2">
+										<div class="col-auto">
+
+											<a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
+												<i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+												BACK
+											</a>
+										</div>
+										@if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+										{
+											<div class="col-auto">
+												@*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+												<a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+													@* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+													<i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+													REFRESH
+												</a>
+											</div>
+											@if (Model.Mode == "U")
+											{
+												@*Model.Mode = "U";*@
+												<div class="col-auto">
+													@* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+													<button type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+														<i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+														UPDATE
+													</button>
+												</div>
+											}
+											else
+											{
+												<div class="col-auto">
+													<button type="submit" class="btn btn-primary btn-sm submitBTN">
+														<i class="fa-solid fa-chevron-circle-right"></i>
+														SUBMIT
+													</button>
+												</div>
+											}
+										}
+									</div>
+								</span>
+							</h5>
+						</div>
+					</div>
+				</div>
+			</div>
+	</form>
+</div>
+
+
+
+@section Scripts {
+	<script>
+		$(document).ready(function () {
+			GetFormRights();
+			if ($('#Mode').val() !== "U") {
+				setFormattedDate();
+				FillEntryID();
+				TotalNoOfRows();
+				
+			}
+			//$('#BillNo').removeClass('Valid');
+			$('#Mode').rules('remove', 'required');
+			$('#Searchbox').rules('remove', 'required');
+			$('#search-box').rules('remove', 'required');
+			$('#MachineName').rules('remove', 'required');
+			$('#OldSalesEmpId').rules('remove', 'required');
+			$('#NewSalesEmpId').rules('remove', 'required');
+			$('#SalesPersTransfEntryId').rules('remove', 'required');
+			$('#SalesPersTransfYearCode').rules('remove', 'required');
+			$('#SalesPersTransfEntryDate').rules('remove', 'required');
+			$('#SalesPersTransfSlipNo').rules('remove', 'required');
+			$('#RevNo').rules('remove', 'required');
+			$('#NewSalesEmpName').rules('remove', 'required');
+			$('#NewSalesCode').rules('remove', 'required');
+			$('#EffFrom').rules('remove', 'required');
+			$('#Designation').rules('remove', 'required');
+			$('#Department').rules('remove', 'required');
+			$('#OldSalesEmpName').rules('remove', 'required');
+			$('#OldSalesCode').rules('remove', 'required');
+			$('#EffTillDate').rules('remove', 'required');
+
+
+
+			$('#NewSalesEmpName').select2();
+			$('#NewSalesCode').select2();
+			$('#OldSalesEmpName').select2();
+			$('#OldSalesCode').select2();
+			
+			$('#totalRows').text($('#divStockGrid tr').length);
+
+			FillNewSalesEmpName();
+			FillOldSalesEmpName();
+			FillOldSalesCode();
+			FillNewSalesCode();
+			FillCustomerList();
+			FillDesignation();
+			initDates();
+			$('#GridButton').click(function (e) {
+				setFormattedDate();
+			});
+			
+
+
+		});
+
+		$('.submitBTN').click(function (e) {
+			 
+			console.log("SubmitButton Click");
+			e.preventDefault();
+			//$(this).off('click');
+
+			let selectedRows = [];
+
+			$('#divDashboardGrid .row-checkbox:checked').each(function () {
+				selectedRows.push({
+					CustNameCode: $(this).data('custnamecode') || 0
+				});
+
+			});
+			console.log("Selected Rows: ", selectedRows);
+			if (selectedRows.length === 0) {
+				$.notify("Please select at least one row to save.","error");
+				return;
+			}
+
+			let hasError = false;
+
+			const requiredFields = [
+				{ id: '#SalesPersTransfSlipNo', label: 'Slip No' },
+				{ id: '#NewSalesEmpName', label: 'New SalesEmp Name' },
+				{ id: '#NewSalesCode', label: 'New SalesCode' },
+				{ id: '#EffFrom', label: 'Eff From' },
+				{ id: '#Designation', label: 'Designation' },
+				{ id: '#Department', label: 'Department' }
+			];
+
+			$.each(requiredFields, function (i, field) {
+				let val = $(field.id).val();
+				if (val === null || val === "" || val === "0") {
+					$.notify(`${field.label} is required.`, { className: "error" });
+					$(field.id).focus();
+					hasError = true;
+					return false; 
+				}
+			});
+
+			if (hasError) return;
+
+			$.ajax({
+				url: '@Url.Action("StoreSelectedGrid", "SalesPersonTransfer")',
+				type: 'POST',
+				contentType: 'application/json',
+				data: JSON.stringify(selectedRows),
+				success: function () {
+					setTimeout(function () {
+						if (!$('form').valid()) {
+							console.log("Form validation failed");
+							$('form').find(":input").each(function () {
+								if (!$(this).valid()) {
+									console.warn("Invalid Field:", this.name || this.id, "→", $(this).val());
+								}
+							});
+							return;
+						}
+						$('form').submit();
+					}, 100);
+				},
+				error: function () {
+					alert("Error saving selected grid to session.");
+				}
+			});
+			//$('form').submit();
+		});
+		$('#ShowAllCust').change(function () {
+			FillCustomerList();
+		});
+		 
+		$('#ShowAllEmp').change(function () {
+			FillNewSalesEmpName();
+			FillNewSalesCode();
+		});
+		$('#ShowAllOldEmp').change(function () {
+			FillOldSalesEmpName();
+			FillOldSalesCode();
+		});
+		$('#OldSalesEmpName').change(function () {
+			$('#OldSalesEmpId').val($('#OldSalesEmpName').val());
+		});
+		$('#OldSalesCode').change(function () {
+			$('#OldSalesEmpId').val($('#OldSalesCode').val());
+		});
+		$('#NewSalesCode').change(function () {
+			$('#NewSalesEmpId').val($('#NewSalesCode').val());
+		});
+		$('#NewSalesEmpName').on('select2:select', function (e) {
+			$('#NewSalesEmpId').val($(this).val());
+		});
+		$('#OldSalesEmpName,#NewSalesEmpName').change(function () {
+			FillDesignation();
+			
+		});
+		function setFormattedDate() {
+			var today = new Date();
+			var day = ('0' + today.getDate()).slice(-2);
+			var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+			var month = monthNames[today.getMonth()];
+			var year = today.getFullYear();
+
+			var formattedDate = day + '/' + month + '/' + year;
+
+			$('#SalesPersTransfEntryDate, #EffFrom')
+				.datepicker({ dateFormat: 'dd/M/yy' })
+				.val(formattedDate);
+			updateEffTillDate(formattedDate);
+		}
+		function updateEffTillDate(effFromStr) {
+			var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+			var parts = effFromStr.split('/');
+
+			if (parts.length === 3) {
+				var day = parseInt(parts[0], 10);
+				var month = monthNames.indexOf(parts[1]);
+				var year = parseInt(parts[2], 10);
+
+				var effFromDate = new Date(year, month, day);
+
+				
+				var effTillDate = new Date(effFromDate);
+				effTillDate.setDate(effTillDate.getDate() - 1);
+
+				var effTillDay = ('0' + effTillDate.getDate()).slice(-2);
+				var effTillMonth = monthNames[effTillDate.getMonth()];
+				var effTillYear = effTillDate.getFullYear();
+
+				var formattedTillDate = effTillDay + '/' + effTillMonth + '/' + effTillYear;
+
+				$('#EffTillDate')
+					.datepicker('destroy') 
+					.datepicker({
+						dateFormat: 'dd/M/yy',
+						maxDate: effFromDate 
+					})
+					.val(formattedTillDate);
+			}
+		}
+		function initDates() {
+			var isUmode = $('#Mode').val() === 'U' || $('#Mode').val() === 'V';
+
+			var transfDateVal = $('#SalesPersTransfEntryDate').val();
+			var effFromVal = $('#EffFrom').val();
+			var effTillVal = $('#EffTillDate').val();
+
+			if (isUmode && transfDateVal && effFromVal && effTillVal) {
+				// U mode and all dates already have values
+				// Just initialize datepickers without setting default dates
+				$('#SalesPersTransfEntryDate, #EffFrom, #EffTillDate').datepicker({
+					dateFormat: 'dd/M/yy'
+				});
+			} else {
+				// No values or not U mode → run your default function
+				setFormattedDate();
+			}
+		}
+
+		function GetFormRights() {
+			$.ajax({
+				url: "@Url.Action("GetFormRights")",
+				type: "POST",
+				success: function (data) {
+					if (data != null) {
+						var obj = $.parseJSON(data);
+						if (obj.Result.Table.length == 0) {
+							$(".submitBTN").prop("disabled", true);
+							$('.card-footer .submitBTN').prop("disabled", true);
+							$(".DashBoard")
+								.addClass("disabled-link")
+								.on("click", function (e) {
+									e.preventDefault(); // Prevents clicking the link
+								});
+						}
+						else {
+							// console.log(obj);
+							var optAll = obj.Result.Table[0].OptAll;
+							var optSave = obj.Result.Table[0].OptSave;
+							var optUpdate = obj.Result.Table[0].OptUpdate;
+							var optDelete = obj.Result.Table[0].OptDelete;
+							var optView = obj.Result.Table[0].OptView;
+							if (!optAll) {
+								if (!optSave) {
+									$("#submitBTN").prop("disabled", true);
+									$('.card-footer #submitBTN').prop("disabled", true);
+								}
+								if (!(optUpdate || optDelete || optView)) {
+									$(".DashBoard")
+										.addClass("disabled-link")
+										.on("click", function (e) {
+											e.preventDefault(); // Prevents clicking the link
+										});
+								}
+							}
+						}
+					}
+				},
+				error: function (errMsg) {
+					//$.notify(errMsg, { position: "top center", className: "error" });
+					console.log(errMsg);
+				}
+			});
+		}
+
+
+		function FillNewSalesEmpName() {
+			var ShowAllEmp = $('#ShowAllEmp').is(':checked') ? "Y" : "N";
+			$.ajax({
+				url: '@Url.Action("FillNewSalesEmpName", "SalesPersonTransfer")', 
+				type: 'POST',
+				async: false,
+				data: { ShowAllEmp: ShowAllEmp},
+				success: function (response, status, error) {
+
+					var Dropdown = $('#NewSalesEmpName');
+					var obj = $.parseJSON(response);
+					Dropdown.empty();
+					Dropdown.append('<option value="">--Select--</option>');
+					$.each(obj.Result, function (index, value) {
+						Dropdown.append('<option value="' + value.EmpId + '">' + value.EmpName + '</option>');
+					});
+					if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+						var NewSalesEmpId = '@Model.NewSalesEmpId';
+						$('#NewSalesEmpName').val(NewSalesEmpId);
+					}
+				},
+				error: function (xhr, status, error) {
+					alert('Failed to load groups.');
+				}
+			});
+
+
+		}
+		function FillNewSalesCode() {
+			var ShowAllEmp = $('#ShowAllEmp').is(':checked') ? "Y" : "N";
+			$.ajax({
+				url: '@Url.Action("FillNewSalesEmpName", "SalesPersonTransfer")', 
+				type: 'POST',
+				async: false,
+				data: { ShowAllEmp: ShowAllEmp},
+				success: function (response, status, error) {
+
+					var Dropdown = $('#NewSalesCode');
+					var obj = $.parseJSON(response);
+					Dropdown.empty();
+					Dropdown.append('<option value="">--Select--</option>');
+					$.each(obj.Result, function (index, value) {
+						Dropdown.append('<option value="' + value.EmpId + '">' + value.EmpCode + '</option>');
+					});
+					if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+						var NewSalesCode = '@Model.NewSalesEmpId';
+						$('#NewSalesCode').val(NewSalesCode);
+					}
+				},
+				error: function (xhr, status, error) {
+					alert('Failed to load groups.');
+				}
+			});
+
+
+		}
+		$(document).on('select2:select', '#NewSalesEmpName,#NewSalesCode', function (e) {
+
+			var cntId = e.target.id;
+			if (cntId == 'NewSalesEmpName') {
+				ItemNameChange(cntId);
+			}
+			else {
+				PartCodeChange(cntId);
+			}
+		});
+
+		function ItemNameChange(ID) {
+			SetPartCodeItemName(ID);
+		}
+
+		function PartCodeChange(ID) {
+
+			$.when(SetPartCodeItemName(ID)).done(function () {
+			});
+		}
+
+		function SetPartCodeItemName(ID) {
+			if (!ID) return;
+			else {
+
+				var v = $('#' + ID).select2('val');
+				if (ID == "NewSalesCode") {
+					$("#NewSalesEmpName").val(v).trigger("change");
+				}
+
+				if (ID == "NewSalesEmpName") {
+					$("#NewSalesCode").val(v).trigger("change");
+				}
+			}
+		}
+
+		function FillOldSalesEmpName() {
+			//var ShowAllEmp = $('#ShowAllOldEmp').is(':checked') ? "Y" : "N";
+			 
+			if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+				var ShowAllEmp = "Y";
+			}
+			else{
+				ShowAllEmp = $('#ShowAllOldEmp').is(':checked') ? "Y" : "N";
+			}
+			$.ajax({
+				url: '@Url.Action("FillOldSalesEmpName", "SalesPersonTransfer")',
+				type: 'POST',
+				async: false,
+				data: { ShowAllEmp: ShowAllEmp },
+				success: function (response, status, error) {
+
+					var Dropdown = $('#OldSalesEmpName');
+					var obj = $.parseJSON(response);
+					Dropdown.empty();
+					Dropdown.append('<option value="">--Select--</option>');
+					$.each(obj.Result, function (index, value) {
+						Dropdown.append('<option value="' + value.EmpId + '">' + value.EmpName + '</option>');
+					});
+					if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+						var OldSalesEmpName = '@Model.OldSalesEmpId';
+						$('#OldSalesEmpName').val(OldSalesEmpName);
+					}
+					// if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+					// 	var oldEmpId = '@Model.OldSalesEmpId';
+					// 	setTimeout(function () {
+					// 		$('#OldSalesEmpName').val(oldEmpId).trigger('change');
+					// 	}, 100);
+					// }
+				},
+				error: function (xhr, status, error) {
+					alert('Failed to load groups.');
+				}
+			});
+
+
+		}
+		function FillOldSalesCode() {
+			if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+				var ShowAllEmp = "Y";
+			}
+			else {
+				ShowAllEmp = $('#ShowAllOldEmp').is(':checked') ? "Y" : "N";
+			}
+			$.ajax({
+				url: '@Url.Action("FillOldSalesEmpName", "SalesPersonTransfer")',
+				type: 'POST',
+				async: false,
+				data: { ShowAllEmp: ShowAllEmp },
+				success: function (response, status, error) {
+
+					var Dropdown = $('#OldSalesCode');
+					var obj = $.parseJSON(response);
+					Dropdown.empty();
+					Dropdown.append('<option value="">--Select--</option>');
+					$.each(obj.Result, function (index, value) {
+						Dropdown.append('<option value="' + value.EmpId + '">' + value.EmpCode + '</option>');
+					});
+					if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+						var OldSalesCode = '@Model.OldSalesEmpId';
+						$('#OldSalesCode').val(OldSalesCode);
+					}
+				},
+				error: function (xhr, status, error) {
+					alert('Failed to load groups.');
+				}
+			});
+
+
+		}
+		$(document).on('select2:select', '#OldSalesEmpName,#OldSalesCode', function (e) {
+
+			var cntId = e.target.id;
+			if (cntId == 'OldSalesEmpName') {
+				oldItemNameChange(cntId);
+			}
+			else {
+				oldPartCodeChange(cntId);
+			}
+		});
+
+		function oldItemNameChange(ID) {
+			oldSetPartCodeItemName(ID);
+		}
+
+		function oldPartCodeChange(ID) {
+
+			$.when(oldSetPartCodeItemName(ID)).done(function () {
+			});
+		}
+
+		function oldSetPartCodeItemName(ID) {
+			if (!ID) return;
+			else {
+
+				var v = $('#' + ID).select2('val');
+				if (ID == "OldSalesCode") {
+					$("#OldSalesEmpName").val(v).trigger("change");
+				}
+
+				if (ID == "OldSalesEmpName") {
+					$("#OldSalesCode").val(v).trigger("change");
+				}
+			}
+		}
+	
+		function FillCustomerList() {
+
+			var ShowAllCust = $('#ShowAllCust').is(':checked') ? "Y" : "N";
+			var entryId = ($('#Mode').val() === "U" || $('#Mode').val() === "V") ? $('#SalesPersTransfEntryId').val() : null;
+			$.ajax({
+				url: '@Url.Action("FillCustomerList", "SalesPersonTransfer")',
+				type: "POST",
+				data: { ShowAllCust: ShowAllCust, entryId: entryId },
+				async: false,
+				success: function (data) {
+
+					$('#divDashboardGrid').empty().append(data);
+					var totalRows = $('#divDashboardGrid tbody tr').length;
+					$('#totalRows').text(totalRows);
+					// RowCount();
+
+					// if ($('#Mode').val() === "U" || $('#Mode').val() === "V") {
+					// 	$('.row-checkbox').each(function () {
+					// 		var custCode = $(this).data('custnamecode');  // get cust code from data attribute
+					// 		if (selectedCustCodes.includes(custCode)) {
+					// 			$(this).prop('checked', true);  // check the checkbox
+					// 		}
+					// 	});
+					// }
+				},
+				error: function (response) {
+					alert(response.responseText);
+				},
+				failure: function (response) {
+					alert(response.responseText);
+				}
+			});
+		}
+
+		// function FillCustomerList() {
+		// 	var ShowAllCust = $('#ShowAllCust').is(':checked') ? "Y" : "N";
+
+		// 	// 🟢 Save current selections
+		// 	var userSelectedCustCodes = [];
+		// 	$('.row-checkbox:checked').each(function () {
+		// 		userSelectedCustCodes.push($(this).data('custnamecode'));
+		// 	});
+
+		// 	$.ajax({
+		// 		url: '@Url.Action("FillCustomerList", "SalesPersonTransfer")',
+		// 		type: "POST",
+		// 		data: { ShowAllCust: ShowAllCust },
+		// 		async: false,
+		// 		success: function (data) {
+		// 			$('#divDashboardGrid').empty().append(data);
+		// 			var totalRows = $('#divDashboardGrid tbody tr').length;
+		// 			$('#totalRows').text(totalRows);
+
+		// 			$('.row-checkbox').each(function () {
+		// 				var custCode = $(this).data('custnamecode');
+
+		// 				// 🟢 Reapply user selection if any
+		// 				if (userSelectedCustCodes.includes(custCode)) {
+		// 					$(this).prop('checked', true);
+		// 				}
+		// 				// 🟢 Or use server-side selectedCustCodes on first load only
+		// 				else if (($('#Mode').val() === "U" || $('#Mode').val() === "V") &&
+		// 					userSelectedCustCodes.length === 0 &&
+		// 					selectedCustCodes.includes(custCode)) {
+		// 					$(this).prop('checked', true);
+		// 				}
+		// 			});
+		// 		},
+		// 		error: function (response) {
+		// 			alert(response.responseText);
+		// 		},
+		// 		failure: function (response) {
+		// 			alert(response.responseText);
+		// 		}
+		// 	});
+		// }
+
+		var currentSearchColumn = null;
+
+		$("#search-box").on("keyup", function () {
+			var value = $(this).val().toLowerCase();
+			$("#DashboardGrid tr").filter(function () {
+				if (currentSearchColumn !== null) {
+					var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
+					$(this).toggle(columnText.indexOf(value) > -1);
+				} else {
+					$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+				}
+			});
+		});
+
+
+		$(document).on("click", "th[data-columnno]", function () {
+			currentSearchColumn = $(this).data('columnno');
+			$("#search-box").val('').trigger('keyup');
+		});
+
+		function FillEntryID() {
+			
+			var YearCode = $('#SalesPersTransfYearCode').val();
+			var EntryDate = $('#SalesPersTransfEntryDate').val();
+			$.ajax({
+				url: '@Url.Action("FillEntryID", "SalesPersonTransfer")',
+				type: 'POST',
+				data: {
+					YearCode: YearCode,
+					EntryDate: EntryDate
+				},
+				async: false,
+				success: function (data, status, xhr) {
+					var obj = $.parseJSON(data);
+					if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
+						$('#SalesPersTransfEntryId').val(obj.Result[0].SalesPersTransfEntryId || 0);
+						$('#SalesPersTransfSlipNo').val(obj.Result[0].SalesPersTransfSlipNo || 0);
+					}
+				},
+				error: function (xhr, status, error) {
+					alert('Failed to load Entry Id.');
+				}
+			});
+		}
+		// function FillDesignation() {
+		// 	var NewSalesEmpId = $('#NewSalesEmpName').val();
+		// 	var OldSalesEmpId = $('#OldSalesEmpName').val();
+		// 	if (!$('#OldSalesEmpName').val() && !$('#NewSalesEmpName').val()) {
+		// 		$.notify("Please select at least one EmpName.", "error");
+		// 		return false;
+		// 	}
+
+		// 	$.ajax({
+		// 		url: '@Url.Action("FillDesignation", "SalesPersonTransfer")',
+		// 		type: 'POST',
+		// 		async: false,
+		// 		data: {
+		// 			NewSalesEmpId: NewSalesEmpId,
+		// 			OldSalesEmpId: OldSalesEmpId
+		// 		},
+		// 		success: function (response, status, error) {
+
+		// 			var Dropdown = $('#Designation');
+		// 			var obj = $.parseJSON(response);
+		// 			Dropdown.empty();
+		// 			Dropdown.append('<option value="">--Select--</option>');
+		// 			$.each(obj.Result, function (index, value) {
+		// 				Dropdown.append('<option value="' + value.DesigId + '">' + value.Designation + '</option>');
+		// 			});
+		// 			if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+		// 				var DesignationId = '@Model.DesignationId';
+		// 				$('#Designation').val(DesignationId);
+		// 			}
+		// 		},
+		// 		error: function (xhr, status, error) {
+		// 			alert('Failed to load groups.');
+		// 		}
+		// 	});
+
+
+		// }
+		// function FillDepartment() {
+		// 	var NewSalesEmpId = $('#NewSalesEmpName').val();
+		// 	var OldSalesEmpId = $('#OldSalesEmpName').val();
+		// 	if (!$('#OldSalesEmpName').val() && !$('#NewSalesEmpName').val()) {
+		// 		$.notify("Please select at least one EmpName.", "error");
+		// 		return false;
+		// 	}
+
+		// 	$.ajax({
+		// 		url: '@Url.Action("FillDesignation", "SalesPersonTransfer")',
+		// 		type: 'POST',
+		// 		async: false,
+		// 		data: {
+		// 			NewSalesEmpId: NewSalesEmpId,
+		// 			OldSalesEmpId: OldSalesEmpId
+		// 		},
+		// 		success: function (response, status, error) {
+
+		// 			var Dropdown = $('#Department');
+		// 			var obj = $.parseJSON(response);
+		// 			Dropdown.empty();
+		// 			Dropdown.append('<option value="">--Select--</option>');
+		// 			$.each(obj.Result, function (index, value) {
+		// 				Dropdown.append('<option value="' + value.deptId + '">' + value.DeptName + '</option>');
+		// 			});
+		// 			if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+		// 				var DepartmentId = '@Model.DepartmentId';
+		// 				$('#Department').val(DepartmentId);
+		// 			}
+		// 		},
+		// 		error: function (xhr, status, error) {
+		// 			alert('Failed to load groups.');
+		// 		}
+		// 	});
+
+
+		// }
+
+		function FillDesignation() {
+			 
+			var NewSalesEmpId = $('#NewSalesEmpName').val();
+			var OldSalesEmpId = $('#OldSalesEmpName').val();
+			if (!$('#OldSalesEmpName').val() && !$('#NewSalesEmpName').val()) {
+				$.notify("Please select at least one EmpName.", "error");
+				return false;
+			}
+
+			$.ajax({
+				url: '@Url.Action("FillDesignation", "SalesPersonTransfer")',
+				type: 'POST',
+				data: {
+					NewSalesEmpId: NewSalesEmpId,
+					OldSalesEmpId: OldSalesEmpId
+				},
+				async: false,
+				success: function (data, status, xhr) {
+					var obj = $.parseJSON(data);
+					if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
+						$('#Designation').val(obj.Result[0].Designation || '');
+						$('#Department').val(obj.Result[0].DeptName || '');
+					}
+				},
+				error: function (xhr, status, error) {
+					alert('Failed to load data.');
+				}
+			});
+		}
+		
+		
+		function ClearItems() {
+
+			$('#Unit, #OriginalQty, #AltUnit, #AltOriginalQty, #OriginalStoreId,  #OrginalWCID,  #BatchNo, #UniqueBatchNo, #PlanNo, #PlanYearCode, #PlanDate, #ProdSchNo, #ProdSchYearCode, #ProdSchDatetime,   #Remark').val('');
+			$('#OriginalPartCode,#AltStoreName,#OriginalItemName,#OriginalItemCode,#StoreName,#WorkCenterName,#AltItemName, #AltPartCode, #AltItemCode').val("").trigger("change");
+
+			$('#BatchStock, #TotalStock, #AltStock, #OrigItemRate, #OriginalItemCode, #OriginalQty, #AltOriginalQty,#AltStoreName,#AltWorkCenterName').val(0);
+
+
+		   // $('select').prop('selectedIndex', 0);
+		}
+
+
+		$('#GridButton').click(function (e) {
+			e.preventDefault();
+
+			var missingFields = [];
+
+		   var issueToStoreWC = $('#IssueToStoreWC').val();
+			var originalPartCode = $('#OriginalPartCode').val();
+			var originalItemName = $('#OriginalItemName').val();
+			var originalItemCode = $('#OriginalItemCode').val();
+			var altItemName = $('#AltItemName').val();
+			var altPartCode = $('#AltPartCode').val();
+			var AltItemCode = $('#AltItemCode').val();
+			var StoreName = $('#StoreName').val();
+			var AltStoreName = $('#AltStoreName').val();
+			//var altUnit = $('#AltUnit').val().trim();
+			var unit = $('#Unit').val();
+			var originalQty = $('#OriginalQty').val();
+
+			if (!originalPartCode) missingFields.push("Original Part Code");
+			if (!originalItemName) missingFields.push("Original Item Name");
+			if (!originalItemCode) missingFields.push("Original Item Code");
+			if (!altItemName) missingFields.push("Alt Item Name");
+			if (!altPartCode) missingFields.push("Alt Part Code");
+			if (!AltItemCode) missingFields.push("Alt Item Code");
+			//if (!altUnit) missingFields.push("Alt Unit");
+			if (!unit) missingFields.push("Unit");
+			if (!originalQty) missingFields.push("Original Quantity");
+			//if (!StoreName) missingFields.push("StoreName");
+			//if (!AltStoreName) missingFields.push("AltStoreName");
+
+			if (!issueToStoreWC) {
+				$.notify("Please select Store/WC before adding to the grid!", "error");
+				return;
+			}
+			// if (!originalPartCode || !originalItemName || !originalItemCode ||
+			//     !altItemName || !altPartCode || !altUnit || !unit || !originalQty || !AltItemCode) {
+			//     $.notify("All fields are required to add data to the grid!", "error");
+			//     return;
+			// }
+			if (missingFields.length > 0) {
+				var message = "The following fields are required:\n" + missingFields.join(", ");
+				$.notify(message, "error");
+				return;
+			}
+			var SchData = {
+				OriginalPartCode: $('#OriginalPartCode').val(),
+				OriginalItemName: $('#OriginalItemName').val(),
+				OriginalItemCode: $('#OriginalItemCode').val(),
+				StoreName: $('#StoreName').val()||'',
+				StoreId: $('#StoreId').val(),
+				WorkCenterName: $('#WorkCenterName').val()||'',
+				WcId: $('#WcId').val(),
+				Unit: $('#Unit').val(),
+				OriginalQty: $('#OriginalQty').val(),
+				AltItemName: $('#AltItemName').val(),
+				AltPartCode: $('#AltPartCode').val(),
+				AltItemCode: $('#AltItemCode').val(),
+				AltUnit: $('#AltUnit').val(),
+				AltOriginalQty: $('#AltOriginalQty').val(),
+				OriginalStoreId: $('#OriginalStoreId').val(),
+
+				AltStoreId: $('#AltStoreId').val(),
+				AltStoreName: $('#AltStoreName').val(),
+			   // OrginalWCID: $('#OrginalWCID').val(),
+				AltWCID: $('#AltWCID').val(),
+				AltWorkCenterName: $('#AltWorkCenterName').val(),
+				// BatchNo: $('#BatchNo').val(),
+				// UniqueBatchNo: $('#UniqueBatchNo').val(),
+				BatchNo: $('#BatchNo').find(':selected').text().trim(),
+				UniqueBatchNo: $('#UniqueBatchNo').find(':selected').text().trim(),
+				BatchStock: $('#BatchStock').val(),
+				TotalStock: $('#TotalStock').val(),
+				AltStock: $('#AltStock').val(),
+				PlanNo: $('#PlanNo').val(),
+				PlanYearCode: $('#PlanYearCode').val(),
+				PlanDate: $('#PlanDate').val(),
+				ProdSchNo: $('#ProdSchNo').val(),
+				ProdSchYearCode: $('#ProdSchYearCode').val(),
+				ProdSchDatetime: $('#ProdSchDatetime').val(),
+				OrigItemRate: $('#OrigItemRate').val(),
+				Remark: $('#Remark').val(),
+				OriginalPartCode: $('#OriginalPartCode').find(":selected").text(),
+				OriginalItemName: $('#OriginalItemName').find(":selected").text(),
+				AltItemName: $('#AltItemName').find(":selected").text(),
+				AltPartCode: $('#AltPartCode').find(":selected").text(),
+				WorkCenterName: $('#WorkCenterName').find(":selected").text(),
+				StoreName: $('#StoreName').find(":selected").text(),
+				AltStoreName: $('#AltStoreName').find(":selected").text(),
+				AltWorkCenterName: $('#AltWorkCenterName').find(":selected").text(),
+				//OriginalItemCode: $('#OriginalItemCode').find(":selected").text(),
+			};
+			console.log(SchData);
+			$.ajax({
+				type: "POST",
+				url: '@Url.Action("AddToGridData", "MaterialConversion")',
+				data: { model: SchData },
+				success: function (result, status, xhr) {
+					if (xhr.status == 200 && xhr.responseText == result) {
+
+						$('#divStockGrid').html(result);
+						TotalNoOfRows();
+						ClearItems();
+					} else if (xhr.status == 207) {
+						$.notify('Duplicate Item...!', "info");
+					}
+				},
+				error: function () {
+					$.notify('Something Went Wrong, Please Try Again.', "error");
+				}
+			});
+		});
+
+
+		function TotalNoOfRows() {
+			var Row = $('#divStockGrid tr').length;
+			var tdCount = $('#divStockGrid tr td').length;
+			$('#lblItemCount').text(tdCount >= 1 ? Row : 0);
+		}
+		function ClearGrid() {
+			$.ajax({
+				type: "POST",
+				url: "@Url.Action("ClearGrid")",
+				success: function (result, status, error) {
+					$('#divStockGrid').empty();
+					var NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
+					$('#divStockGrid').html(NoData);
+					// BasicTotal();
+				},
+				error: function (req, status, error) {
+					alert(error);
+				}
+			});
+		}
+		function CheckBeforeUpdate() {
+			$.ajax({
+				url: '@Url.Action("CheckBeforeUpdate")',
+				type: "POST",
+				data: { Type: $('#Entry_id').val() },
+				success: function (data) {
+					var obj = $.parseJSON(data);
+					if (obj.Result?.Table[0]?.Column1 > 0) {
+						$.notify("You cannot update this Category as Item with this category already exists", "error");
+					} else {
+						$('form').submit();
+					}
+				},
+				error: function (response) {
+					alert(response.responseText);
+				}
+			});
+		}
+
+		var EditEachItem = false;
+
+		function EditItemRow(SrNO) {
+
+			if (EditEachItem) {
+				$.notify('Cannot edit item while another item is being added to the grid!', "error");
+				return;
+			}
+
+			$.ajax({
+				url: '@Url.Action("EditItemRow")',
+				type: "POST",
+				data: { SrNO: SrNO, Mode: "U" },
+				success: function (data) {
+
+					var obj = $.parseJSON(data);
+					if (obj != null) {
+
+						EditEachItem = true;
+
+						$('#OriginalPartCode').val(obj[0].OriginalItemCode).trigger("change");
+						$('#OriginalItemName').val(obj[0].OriginalItemCode).trigger("change");
+						$('#OriginalItemCode').val(obj[0].OriginalItemCode);
+						$('#Unit').val(obj[0].Unit);
+						$('#OriginalQty').val(obj[0].OriginalQty);
+						$('#AltItemName').val(obj[0].AltItemCode).trigger("change");
+						$('#AltPartCode').val(obj[0].AltItemCode).trigger("change");
+						$('#AltItemCode').val(obj[0].AltItemCode);
+						$('#AltUnit').val(obj[0].AltUnit);
+						$('#AltOriginalQty').val(obj[0].AltOriginalQty);
+						$('#OriginalStoreId').val(obj[0].OriginalStoreId).trigger("change");
+						$('#StoreName').val(obj[0].StoreId).trigger("change");
+						$('#AltStoreName').val(obj[0].AltStoreId).trigger("change");
+						$('#WorkCenterName').val(obj[0].WcId).trigger("change");
+						$('#AltWorkCenterName').val(obj[0].AltWCID).trigger("change");
+						$('#BatchNo').val(obj[0].BatchNo).trigger("change");
+						$('#UniqueBatchNo').val(obj[0].UniqueBatchNo).trigger("change");
+						$('#BatchStock').val(obj[0].BatchStock).trigger("change");
+						$('#TotalStock').val(obj[0].TotalStock).trigger("change");
+						$('#AltStock').val(obj[0].AltStock).trigger("change");
+						$('#PlanNo').val(obj[0].PlanNo).trigger("change");
+						$('#PlanYearCode').val(obj[0].PlanYearCode).trigger("change");
+						$('#PlanDate').val(obj[0].PlanDate).trigger("change");
+						$('#ProdSchNo').val(obj[0].ProdSchNo).trigger("change");
+						$('#ProdSchYearCode').val(obj[0].ProdSchYearCode).trigger("change");
+						$('#ProdSchDatetime').val(obj[0].ProdSchDatetime).trigger("change");
+						$('#OrigItemRate').val(obj[0].OrigItemRate).trigger("change");
+						$('#Remark').val(obj[0].Remark).trigger("change");
+
+						// var newSrNo = obj[0].SrNO;
+						// if (currentSrNo !== newSrNo) {
+						//     $('#SrNO').val(newSrNo).trigger("change");
+						// }
+						var rowCount = $('#divStockGrid tr').length;
+						for (var i = 1; i <= rowCount + 1; i++) {
+							$('#editItemGrid-' + i).css("pointer-events", "none");
+							$('#editItemGrid-' + i).css("cursor", "not-allowed");
+						}
+
+						DeleteItemRow(SrNO);
+					}
+				},
+				error: function (response) {
+					$.notify(response.responseText, "error");
+				}
+			});
+		}
+		 function DeleteItemRow(SrNO) {
+
+			$.ajax({
+				url: '@Url.Action("DeleteItemRow")',
+				type: "POST",
+				data: { SrNO: SrNO, Mode: "U" },
+				success: function (data, status, xhr) {
+					$('#divStockGrid').html(data);
+					$.notify("Process deleted from Grid", "info");
+					EditEachItem = false;
+
+				},
+				error: function (response, status, xhr) {
+
+					$.notify("Cannot delete item that exists in Other Grid!!!", "error");
+				},
+				failure: function (response, status, xhr) {
+					alert(response.responseText);
+					$.notify(response.responseText, "error");
+				}
+			});
+		}
+
+
+		function PressBack() {
+			var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+				"Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+			// Save FromDate only if session already has it
+			if (sessionStorage.getItem('FromDateBack')) {
+				var fromDate = $('#FromDate').val();
+				if (fromDate) { // Only save if value is not undefined or empty
+					sessionStorage.setItem('FromDateBack', fromDate);
+				}
+			}
+
+			// Save ToDate only if session already has it
+			if (sessionStorage.getItem('ToDateBack')) {
+				var toDate = $('#ToDate').val();
+				if (toDate) {
+					sessionStorage.setItem('ToDateBack', toDate);
+				}
+			}
+
+			// Save CustomerName only if session has it and new value exists
+			if (sessionStorage.getItem('CustomerNameBack')) {
+				var customerName = $('#CustomerName').val();
+				if (customerName) {
+					sessionStorage.setItem('CustomerNameBack', customerName);
+				}
+			}
+
+			// Save OldEmpName only if session has it and new value exists
+			if (sessionStorage.getItem('OldEmpNameBack')) {
+				var oldEmpName = $('#OldSalesEmpName option:selected').text().trim();
+				if (oldEmpName.includes('--->')) {
+					oldEmpName = oldEmpName.split('--->')[0].trim();
+				}
+				if (oldEmpName) {
+					sessionStorage.setItem('OldEmpNameBack', oldEmpName);
+				}
+			}
+
+			// Save NewEmpName only if session has it and new value exists
+			if (sessionStorage.getItem('NewEmpNameBack')) {
+				 var newEmpName = $('#NewSalesEmpName option:selected').text().trim();
+				if (newEmpName.includes('--->')) {
+					newEmpName = newEmpName.split('--->')[0].trim();
+				}
+				if (newEmpName) {
+					sessionStorage.setItem('NewEmpNameBack', newEmpName);
+				}
+			}
+
+			// Save GlobalSearch only if session has it and new value exists
+			if (sessionStorage.getItem('GlobalSearchBack')) {
+				var globalSearch = $('#GlobalSearch').val();
+				if (globalSearch) {
+					sessionStorage.setItem('GlobalSearchBack', globalSearch);
+				}
+			}
+
+			window.history.back();
+		}
+
+
+
+
+	</script>
+}
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
+
+
+
+

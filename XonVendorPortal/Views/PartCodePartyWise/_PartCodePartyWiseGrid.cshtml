@@ -1,0 +1,49 @@
+﻿@model eTactWeb.DOM.Models.PartCodePartyWiseModel
+@if (Model.ItemDetailGrid == null || Model.ItemDetailGrid.Count == 0)
+ {
+    <tr class="text-center">
+        <td colspan="23" class="text-black-50"><strong>NO DATA ADDED</strong></td>
+    </tr>
+}
+else
+{
+    var @Cntr = 0;
+    foreach (var item in Model.ItemDetailGrid)
+    {
+        Cntr = Cntr + 1;
+        <tr class="small " style="white-space:nowrap">
+            <td style="white-space:nowrap;">
+                <a href="#" class="table-link link-primary" onclick="EditItemRow(@Cntr,@item.AccountCode);">
+                    <span class="fa-stack">
+                        <i class="fa fa-square fa-stack-2x"></i>
+                        <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                    </span>
+                </a>
+                <a href="#" class="table-link link-danger" onclick="DeleteItemFromGrid(@Cntr,@item.AccountCode);">
+                    <span class="fa-stack">
+                        <i class="fa fa-square fa-stack-2x"></i>
+                        <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                    </span>
+                </a>
+            </td> 
+            @if (Model.Mode=="U")
+            {
+                <td>
+                    @item.SeqNo
+                </td>
+            }
+            else
+            {
+                
+                <td>@Cntr</td>
+            }
+            <td>@item.AccountName</td>
+            <td>@item.VendCustPartCode</td>
+            <td>@item.VendCustitemname</td>
+            <td>@item.LeadTimeInDays</td>
+            <td id="totalMOQ-@Cntr">@item.MOQ.ToString("F2")</td>
+            <td>@item.ItemRate.ToString("F2")</td>
+            <td>@item.BusinessPercentage.ToString("F2")</td>
+        </tr>
+    }
+}
