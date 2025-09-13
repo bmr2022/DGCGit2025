@@ -20,14 +20,15 @@ namespace eTactWeb.Controllers
         private readonly IRetFromDepartmentMain _IRetFromDepartmentMain;
         private readonly IWebHostEnvironment _IWebHostEnvironment;
         private readonly IConfiguration iconfiguration;
-
-        public ReturnFromDepartmentMainController(IDataLogic iDataLogic, ILogger<ReturnFromDepartmentMainController> logger, IWebHostEnvironment iWebHostEnvironment, IConfiguration configuration, IRetFromDepartmentMain iRetFromDepartmentMain)
+        private readonly ConnectionStringService _connectionStringService;
+        public ReturnFromDepartmentMainController(IDataLogic iDataLogic, ILogger<ReturnFromDepartmentMainController> logger, IWebHostEnvironment iWebHostEnvironment, IConfiguration configuration, IRetFromDepartmentMain iRetFromDepartmentMain, ConnectionStringService connectionStringService)
         {
             _IDataLogic = iDataLogic;
             _logger = logger;
             _IWebHostEnvironment = iWebHostEnvironment;
             iconfiguration = configuration;
             _IRetFromDepartmentMain = iRetFromDepartmentMain;
+            _connectionStringService = connectionStringService;
         }
         public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string Type = "")
         {
@@ -38,6 +39,7 @@ namespace eTactWeb.Controllers
             //webReport.Report.Load(webRootPath + "\\returnFromDeptMain.frx"); // TODO
             webReport.Report.SetParameterValue("RetFromDepEntryId", EntryId);
             webReport.Report.SetParameterValue("RetFromDepYearCode", YearCode);
+            my_connection_string = _connectionStringService.GetConnectionString();
             my_connection_string = iconfiguration.GetConnectionString("eTactDB");
             webReport.Report.SetParameterValue("MyParameter", my_connection_string);
             return View(webReport);

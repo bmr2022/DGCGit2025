@@ -22,14 +22,15 @@ namespace eTactWeb.Controllers
         private readonly IConfiguration iconfiguration;
         private readonly ILogger<SaleBillController> _logger;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
-
-        public SaleBillController(ILogger<SaleBillController> logger, IDataLogic iDataLogic, ISaleBill iSaleBill, IConfiguration configuration, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment)
+        private readonly ConnectionStringService _connectionStringService;
+        public SaleBillController(ILogger<SaleBillController> logger, IDataLogic iDataLogic, ISaleBill iSaleBill, IConfiguration configuration, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, ConnectionStringService connectionStringService)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _SaleBill = iSaleBill;
             _IWebHostEnvironment = iWebHostEnvironment;
             iconfiguration = configuration;
+            _connectionStringService = connectionStringService;
         }
 
         [HttpGet]
@@ -850,6 +851,7 @@ namespace eTactWeb.Controllers
             webReport.Report.Load(webRootPath + "\\SaleBill.frx");
             webReport.Report.SetParameterValue("entryparam", EntryId);
             webReport.Report.SetParameterValue("yearparam", YearCode);
+            my_connection_string = _connectionStringService.GetConnectionString();
             my_connection_string = iconfiguration.GetConnectionString("eTactDB");
             webReport.Report.SetParameterValue("MyParameter", my_connection_string);
             return View(webReport);

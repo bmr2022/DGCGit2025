@@ -33,8 +33,9 @@ namespace eTactWeb.Controllers
         private readonly ILogger<ProductionEntryController> _logger;
         private readonly IConfiguration iconfiguration;
         private readonly IMemoryCache _MemoryCache;
+        private readonly ConnectionStringService _connectionStringService;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
-        public ProductionEntryController(ILogger<ProductionEntryController> logger, IDataLogic iDataLogic, IProductionEntry iProductionEntry, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration, IMemoryCache iMemoryCache)
+        public ProductionEntryController(ILogger<ProductionEntryController> logger, IDataLogic iDataLogic, IProductionEntry iProductionEntry, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration, IMemoryCache iMemoryCache, ConnectionStringService connectionStringService)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
@@ -42,6 +43,7 @@ namespace eTactWeb.Controllers
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
             _MemoryCache = iMemoryCache;
+            _connectionStringService = connectionStringService;
         }
         public IActionResult PrintReport(int EntryId = 0, int YearCode = 0)
         {
@@ -60,7 +62,8 @@ namespace eTactWeb.Controllers
             webReport.Report.SetParameterValue("yearcodeparam", YearCode);
 
 
-            my_connection_string = iconfiguration.GetConnectionString("eTactDB");
+            //my_connection_string = iconfiguration.GetConnectionString("eTactDB");
+            my_connection_string = _connectionStringService.GetConnectionString();
             //my_connection_string = "Data Source=192.168.1.224\\sqlexpress;Initial  Catalog = etactweb; Integrated Security = False; Persist Security Info = False; User
             //         ID = web; Password = bmr2401";
             webReport.Report.SetParameterValue("MyParameter", my_connection_string);

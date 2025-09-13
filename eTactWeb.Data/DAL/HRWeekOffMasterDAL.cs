@@ -21,9 +21,10 @@ namespace eTactWeb.Data.DAL
         public HRWeekOffMasterDAL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
             //configuration = config;
-            DBConnectionString = configuration.GetConnectionString("eTactDB");
-            _IDataLogic = iDataLogic;
             _connectionStringService = connectionStringService;
+            DBConnectionString = _connectionStringService.GetConnectionString();
+            //DBConnectionString = configuration.GetConnectionString("eTactDB");
+            _IDataLogic = iDataLogic;
             DBConnectionString = _connectionStringService.GetConnectionString();
         }
 

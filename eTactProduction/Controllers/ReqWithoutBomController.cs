@@ -28,14 +28,15 @@ namespace eTactWeb.Controllers
         private readonly ILogger<ReqWithoutBomController> _logger;
         private readonly IWebHostEnvironment _IWebHostEnvironment;
         private readonly IConfiguration _iconfiguration;
-
-        public ReqWithoutBomController(ILogger<ReqWithoutBomController> logger, IDataLogic iDataLogic, IReqWithoutBOM iReqWithoutBOM, IWebHostEnvironment iWebHostEnvironment, IConfiguration configuration)
+        private readonly ConnectionStringService _connectionStringService;
+        public ReqWithoutBomController(ILogger<ReqWithoutBomController> logger, IDataLogic iDataLogic, IReqWithoutBOM iReqWithoutBOM, IWebHostEnvironment iWebHostEnvironment, IConfiguration configuration,ConnectionStringService connectionStringService)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IReqWithoutBOM = iReqWithoutBOM;
             _IWebHostEnvironment = iWebHostEnvironment;
             _iconfiguration = configuration;
+            _connectionStringService = connectionStringService;
         }
 
         public IActionResult PrintReport(int EntryId, int YearCode = 0, string Type = "")
@@ -48,7 +49,8 @@ namespace eTactWeb.Controllers
                // string reportPath = Path.Combine(webRootPath, "ReqWithoutBom.frx");
                 string reportPath = Path.Combine(webRootPath, "ReqWithoutBOMF.frx");
                 webReport.Report.Load(reportPath);
-                string my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+                //string my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+                string my_connection_string = _connectionStringService.GetConnectionString();
                 webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
                 webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
                 webReport.Report.SetParameterValue("entryparam", EntryId);

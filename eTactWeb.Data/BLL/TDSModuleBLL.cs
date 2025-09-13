@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
 using static eTactWeb.DOM.Models.Common;
@@ -9,9 +10,9 @@ namespace eTactWeb.Data.BLL
     {
         private TDSModuleDAL _TDSModuleDAL;
 
-        public TDSModuleBLL(IConfiguration configuration, IDataLogic iDataLogic)
+        public TDSModuleBLL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
-            _TDSModuleDAL = new TDSModuleDAL(configuration, iDataLogic);
+            _TDSModuleDAL = new TDSModuleDAL(configuration, iDataLogic, connectionStringService);
         }
 
         public async Task<ResponseResult> GetHSNTaxInfo(HSNTAX HSNTDSParam)

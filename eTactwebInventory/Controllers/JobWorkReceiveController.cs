@@ -28,13 +28,15 @@ namespace eTactWeb.Controllers
         private readonly IDataLogic _IDataLogic;
         private readonly IJobWorkReceive _IJobWorkReceive;
         private readonly ILogger<JobWorkReceiveController> _logger;
-        public JobWorkReceiveController(ILogger<JobWorkReceiveController> logger, IDataLogic iDataLogic, IJobWorkReceive iJobWorkReceive, IWebHostEnvironment iWebHostEnvironment, IConfiguration configuration)
+        private readonly ConnectionStringService _connectionStringService;
+        public JobWorkReceiveController(ILogger<JobWorkReceiveController> logger, IDataLogic iDataLogic, IJobWorkReceive iJobWorkReceive, IWebHostEnvironment iWebHostEnvironment, IConfiguration configuration, ConnectionStringService connectionStringService)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IJobWorkReceive = iJobWorkReceive;
             _IWebHostEnvironment = iWebHostEnvironment;
             _iconfiguration = configuration;
+            _connectionStringService = connectionStringService;
         }
 
         [Route("{controller}/Index")]
@@ -266,7 +268,8 @@ namespace eTactWeb.Controllers
             webReport = new WebReport();
 
             webReport.Report.Load(webRootPath + "\\jobworkMRN.frx"); // default report
-            my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+            //my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+            my_connection_string = _connectionStringService.GetConnectionString();
             webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
             webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
             webReport.Report.SetParameterValue("mrnnoparam", MRNNo);

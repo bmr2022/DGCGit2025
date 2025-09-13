@@ -1,4 +1,5 @@
-﻿using eTactWeb.DOM.Models;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
 using Org.BouncyCastle.Ocsp;
@@ -14,11 +15,14 @@ namespace eTactWeb.Data.DAL
         private readonly IDataLogic _IDataLogic;
         private IDataReader? Reader;
         //private readonly IConfiguration configuration;
+        private readonly ConnectionStringService _connectionStringService;
 
-        public AdminModuleDAL(IConfiguration configuration, IDataLogic iDataLogic)
+        public AdminModuleDAL(IConfiguration configuration, IDataLogic iDataLogic,ConnectionStringService connectionStringService)
         {
             //configuration = config;
-            DBConnectionString = configuration.GetConnectionString("eTactDB");
+            _connectionStringService = connectionStringService;
+            DBConnectionString = connectionStringService.GetConnectionString();
+            //DBConnectionString = configuration.GetConnectionString("eTactDB");
             _IDataLogic = iDataLogic;
         }
 

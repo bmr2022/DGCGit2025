@@ -30,13 +30,15 @@ namespace eTactWeb.Controllers
         private readonly ILogger<GateInwardController> _logger;
         private readonly IConfiguration iconfiguration;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
-        public GateInwardController(ILogger<GateInwardController> logger, IDataLogic iDataLogic, IGateInward iGateInward, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
+        private readonly ConnectionStringService _connectionStringService;
+        public GateInwardController(ILogger<GateInwardController> logger, IDataLogic iDataLogic, IGateInward iGateInward, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration, ConnectionStringService connectionStringService)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IGateInward = iGateInward;
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
+            _connectionStringService = connectionStringService;
         }
         public IActionResult PrintReport(int EntryId = 0, int YearCode = 0)
         {
@@ -53,8 +55,8 @@ namespace eTactWeb.Controllers
             webReport.Report.SetParameterValue("entryparam", EntryId);
             webReport.Report.SetParameterValue("yearparam", YearCode);
 
-
-            my_connection_string = iconfiguration.GetConnectionString("eTactDB");
+            my_connection_string = _connectionStringService.GetConnectionString();
+            //my_connection_string = iconfiguration.GetConnectionString("eTactDB");
             //my_connection_string = "Data Source=192.168.1.224\\sqlexpress;Initial  Catalog = etactweb; Integrated Security = False; Persist Security Info = False; User
             //         ID = web; Password = bmr2401";
             webReport.Report.SetParameterValue("MyParameter", my_connection_string);

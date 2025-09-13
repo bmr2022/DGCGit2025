@@ -25,7 +25,8 @@ namespace eTactWeb.Controllers
         private readonly ILogger<TransferFromWorkCenterController> _logger;
         private readonly IWebHostEnvironment _IWebHostEnvironment;
         private readonly IConfiguration iconfiguration;
-        public TransferFromWorkCenterController(ILogger<TransferFromWorkCenterController> logger, IWIPStockRegister iWIPStockRegister, IDataLogic iDataLogic, ITransferFromWorkCenter ITransferFromWorkCenter, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
+        private readonly ConnectionStringService _connectionStringService;
+        public TransferFromWorkCenterController(ILogger<TransferFromWorkCenterController> logger, IWIPStockRegister iWIPStockRegister, IDataLogic iDataLogic, ITransferFromWorkCenter ITransferFromWorkCenter, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration, ConnectionStringService connectionStringService)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
@@ -33,6 +34,7 @@ namespace eTactWeb.Controllers
             _IWIPStockRegister = iWIPStockRegister;
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
+            _connectionStringService = connectionStringService;
         }
         [Route("{controller}/Index")]
         public async Task<IActionResult> TransferFromWorkCenter()
@@ -191,7 +193,8 @@ namespace eTactWeb.Controllers
 
             }
 
-            my_connection_string = iconfiguration.GetConnectionString("eTactDB");
+            //my_connection_string = iconfiguration.GetConnectionString("eTactDB");
+            my_connection_string = _connectionStringService.GetConnectionString();
             webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
             webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
             webReport.Report.SetParameterValue("entryparam", EntryId);

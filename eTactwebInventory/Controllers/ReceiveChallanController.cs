@@ -26,7 +26,8 @@ namespace eTactWeb.Controllers
         public ILogger<ReceiveChallanController> Logger { get; }
         private EncryptDecrypt EncryptDecrypt { get; }
         private readonly IConfiguration iconfiguration;
-        public ReceiveChallanController(IReceiveChallan iReceiveChallan, IConfiguration configuration, IDataLogic iDataLogic, ILogger<ReceiveChallanController> logger, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment)
+        private readonly ConnectionStringService _connectionStringService;
+        public ReceiveChallanController(IReceiveChallan iReceiveChallan, IConfiguration configuration, IDataLogic iDataLogic, ILogger<ReceiveChallanController> logger, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, ConnectionStringService connectionStringService)
         {
             IReceiveChallan = iReceiveChallan;
             IDataLogic = iDataLogic;
@@ -34,6 +35,7 @@ namespace eTactWeb.Controllers
             EncryptDecrypt = encryptDecrypt;
             IWebHostEnvironment = iWebHostEnvironment;
             iconfiguration = configuration;
+            _connectionStringService = connectionStringService;
         }
 
         [HttpGet]
@@ -487,6 +489,7 @@ namespace eTactWeb.Controllers
 
             webReport.Report.SetParameterValue("entryparam", EntryId);
             webReport.Report.SetParameterValue("yearparam", YearCode);
+            my_connection_string = _connectionStringService.GetConnectionString();
             my_connection_string = iconfiguration.GetConnectionString("eTactDB");
             webReport.Report.SetParameterValue("MyParameter", my_connection_string);
             return View(webReport);

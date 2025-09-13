@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -15,9 +16,9 @@ namespace eTactWeb.Data.BLL
         private CommonDAL _CommonDAL;
         private readonly IDataLogic _IDataLogic;
 
-        public CommonBLL(IConfiguration config, IDataLogic iDataLogic)
+        public CommonBLL(IConfiguration config, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
-            _CommonDAL = new CommonDAL(config, iDataLogic);
+            _CommonDAL = new CommonDAL(config, iDataLogic, connectionStringService);
             _IDataLogic = iDataLogic;
         }
         public async Task<ResponseResult> CheckFinYearBeforeSave(int YearCode, string Date, string DateName)

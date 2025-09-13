@@ -19,10 +19,13 @@ namespace eTactWeb.Data.DAL
         private readonly string DBConnectionString = string.Empty;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private IDataReader? Reader;
-        public GateEntryRegisterDAL(IConfiguration configuration, IDataLogic iDataLogic, IHttpContextAccessor httpContextAccessor)
+        private readonly ConnectionStringService _connectionStringService;
+        public GateEntryRegisterDAL(IConfiguration configuration, IDataLogic iDataLogic, IHttpContextAccessor httpContextAccessor, ConnectionStringService connectionStringService)
         {
             _IDataLogic = iDataLogic;
-            DBConnectionString = configuration.GetConnectionString("eTactDB");
+            //DBConnectionString = configuration.GetConnectionString("eTactDB");
+            _connectionStringService = connectionStringService;
+            DBConnectionString = _connectionStringService.GetConnectionString();
             _httpContextAccessor = httpContextAccessor;
         }
         public async Task<GateEntryRegisterModel> GetGateRegisterData(string ReportType, string FromDate, string ToDate, string gateno, string docname, string PONo, string Schno, string PartCode, string ItemName, string invoiceNo, string VendorName)

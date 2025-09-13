@@ -24,13 +24,15 @@ namespace eTactwebAccounts.Controllers
         private readonly ILogger<BankPaymentController> _logger;
         private readonly IConfiguration iconfiguration;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
-        public BankPaymentController(ILogger<BankPaymentController> logger, IDataLogic iDataLogic, IBankPayment iBankPayment, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
+        private readonly ConnectionStringService _connectionStringService;
+        public BankPaymentController(ILogger<BankPaymentController> logger, IDataLogic iDataLogic, IBankPayment iBankPayment, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration, ConnectionStringService connectionStringService)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IBankPayment = iBankPayment;
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
+            _connectionStringService = connectionStringService;
         }
         [Route("{controller}/Index")]
         [HttpGet]
@@ -356,7 +358,8 @@ namespace eTactwebAccounts.Controllers
 			webReport.Report = new Report();
 
 			webReport.Report.Load(webRootPath + "\\VoucherReport.frx");
-			my_connection_string = iconfiguration.GetConnectionString("eTactDB");
+            my_connection_string = _connectionStringService.GetConnectionString();
+			//my_connection_string = iconfiguration.GetConnectionString("eTactDB");
 			webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
 			webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
 			webReport.Report.SetParameterValue("vouchernameparam", VoucherName);

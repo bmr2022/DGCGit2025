@@ -28,8 +28,9 @@ namespace eTactWeb.Controllers
         private readonly ILogger<IssueThrBOMController> _logger;
         private readonly IWebHostEnvironment _IWebHostEnvironment;
         private readonly IConfiguration _iconfiguration;
-        private readonly IMemoryCache _MemoryCache; 
-        public IssueThrBOMController(ILogger<IssueThrBOMController> logger, IConfiguration iconfiguration, IDataLogic iDataLogic, IIssueThrBOM IIssueWOBOM, IWebHostEnvironment iWebHostEnvironment, IMemoryCache iMemoryCache)
+        private readonly IMemoryCache _MemoryCache;
+        private readonly ConnectionStringService _connectionStringService;
+        public IssueThrBOMController(ILogger<IssueThrBOMController> logger, IConfiguration iconfiguration, IDataLogic iDataLogic, IIssueThrBOM IIssueWOBOM, IWebHostEnvironment iWebHostEnvironment, IMemoryCache iMemoryCache, ConnectionStringService connectionStringService)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
@@ -37,6 +38,7 @@ namespace eTactWeb.Controllers
             _IWebHostEnvironment = iWebHostEnvironment;
             _iconfiguration = iconfiguration;
             _MemoryCache = iMemoryCache;
+            _connectionStringService = connectionStringService;
         }
 
         [Route("{controller}/Index")]
@@ -69,6 +71,7 @@ namespace eTactWeb.Controllers
             var webReport = new WebReport();
     
             webReport.Report.Load(webRootPath + "\\IssueThrBom.frx"); // default report
+            my_connection_string = _connectionStringService.GetConnectionString();
             my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
             webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
             webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";

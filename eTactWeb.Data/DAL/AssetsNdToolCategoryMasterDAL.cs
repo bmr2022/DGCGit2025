@@ -21,7 +21,7 @@ namespace eTactWeb.Data.DAL
         public AssetsNdToolCategoryMasterDAL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
             //configuration = config;
-            DBConnectionString = configuration.GetConnectionString("eTactDB");
+            //DBConnectionString = configuration.GetConnectionString("eTactDB");
             _IDataLogic = iDataLogic;
             _connectionStringService = connectionStringService;
             DBConnectionString = _connectionStringService.GetConnectionString();

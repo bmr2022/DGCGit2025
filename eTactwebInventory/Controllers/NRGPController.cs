@@ -44,7 +44,8 @@ namespace eTactWeb.Controllers
         private LoggerInfo LoggerInfo { get; }
         private readonly IConfiguration _iconfiguration;
         private readonly IEmailService _emailService;
-        public NRGPController(ILogger<NRGPController> logger, IConfiguration configuration, IDataLogic iDataLogic, IIssueNRGP iIssueNRGP, ITaxModule iTaxModule, IWebHostEnvironment iWebHostEnvironment, IItemMaster itemMaster, EncryptDecrypt encryptDecrypt, LoggerInfo loggerInfo, IEmailService emailService, IEinvoiceService IEinvoiceService)
+        private readonly ConnectionStringService _connectionStringService;
+        public NRGPController(ILogger<NRGPController> logger, IConfiguration configuration, IDataLogic iDataLogic, IIssueNRGP iIssueNRGP, ITaxModule iTaxModule, IWebHostEnvironment iWebHostEnvironment, IItemMaster itemMaster, EncryptDecrypt encryptDecrypt, LoggerInfo loggerInfo, IEmailService emailService, IEinvoiceService IEinvoiceService, ConnectionStringService connectionStringService)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
@@ -57,6 +58,7 @@ namespace eTactWeb.Controllers
             _iconfiguration = configuration;
             _emailService = emailService;
             _IEinvoiceService = IEinvoiceService;
+            _connectionStringService = connectionStringService;
         }
 
         [Route("{controller}/Index")]
@@ -219,7 +221,8 @@ namespace eTactWeb.Controllers
                 webReport.Report.Load(webRootPath + "\\IssueChallan.frx"); // default report
 
             }
-            my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+            my_connection_string = _connectionStringService.GetConnectionString();
+            //my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
             webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
             webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
             webReport.Report.SetParameterValue("entryparam", EntryId);
@@ -475,7 +478,7 @@ namespace eTactWeb.Controllers
                 webReport.Report.Load(webRootPath + "\\IssueChallan.frx"); // default report
 
             }
-            my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+            my_connection_string = _connectionStringService.GetConnectionString();
             webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
             webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
             webReport.Report.SetParameterValue("entryparam", EntryId);

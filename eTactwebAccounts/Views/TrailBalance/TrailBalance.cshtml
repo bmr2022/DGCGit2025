@@ -157,6 +157,13 @@
             debugger
             var hiddenCols = {};
             console.log("TrialBalance Ready");
+            var currentDate = new Date();
+            var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+
+            $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' })
+                .datepicker("setDate", formatDate1(firstDayOfMonth));
+            $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' })
+                .datepicker("setDate", 'now');
 
             $('#BackButton').hide();
 
@@ -290,13 +297,6 @@
             /** -------------------------------
              * Datepickers
              * ------------------------------- */
-            var currentDate = new Date();
-            var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-
-            $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' })
-                .datepicker("setDate", formatDate1(firstDayOfMonth));
-            $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' })
-                .datepicker("setDate", 'now');
         });
 
         function FillGroupList() {
@@ -670,48 +670,36 @@
         }
 
         $('#sendToExcel').click(function () {
-            let table = $("#ReportTable");
+            var FromDate = $('#FromDate').val();
+            var ToDate = $('#ToDate').val();
+            var TrailBalanceGroupCode = $('#TrailBalanceGroupName option:selected').val();
+            var ParentAccountCode = $('#ParentGroupName option:selected').val();
+            var ReportType = $('#ReportType').val();
 
-            // Clone the table so you don’t mess with the real one
-            let tempTable = table.clone();
-
-            // Add company and date info as header rows
-            let companyName = "@CompanyName";
-            let fromDate = $("#FromDate").val();
-            let toDate = $("#ToDate").val();
-            let colCount = tempTable.find("tr:first th").length;
-
-            let headerHtml = `
-            <thead>
-                <tr>
-                    <th colspan="${colCount}" style="text-align:center; font-weight:bold; font-size:16px;">
-                        Company Name: ${companyName}
-                    </th>
-                </tr>
-                <tr>
-                    <th colspan="${colCount}" style="text-align:center; font-weight:bold;">
-                        From Date: ${fromDate} &nbsp;&nbsp; To Date: ${toDate}
-                    </th>
-                </tr>
-            </thead>
-            `;
-
-            let footerHtml = `
-            <tfoot>
-                <tr>
-                    <td colspan="${colCount}" style="text-align:center; font-weight:bold;">
-                        *** End of Report ***
-                    </td>
-                </tr>
-            </tfoot>
-            `;
-
-            tempTable.prepend(headerHtml);
-            tempTable.append(footerHtml);
-
-            TableToExcel.convert(tempTable[0], {
-                name: `TrailBalanceData.xlsx`,
-                sheet: { name: 'ReportTable' }
+            $.ajax({
+                url: '/TrailBalance/ExportTrailBalanceToExcel',
+                type: 'GET',
+                data: {
+                    FromDate: FromDate,
+                    ToDate: ToDate,
+                    TrailBalanceGroupCode: TrailBalanceGroupCode,
+                    ParentAccountCode: ParentAccountCode,
+                    ReportType: ReportType
+                },
+                xhrFields: {
+                    responseType: 'blob' // important for file download
+                },
+                success: function (data, status, xhr) {
+                    // Get filename from content-disposition header if needed
+                    const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                    const link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = `TrailBalance.xlsx`; // or dynamically get name
+                    link.click();
+                },
+                error: function () {
+                    alert('Failed to download Excel file.');
+                }
             });
         });
 

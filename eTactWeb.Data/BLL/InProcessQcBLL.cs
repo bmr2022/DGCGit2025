@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
@@ -16,10 +17,10 @@ namespace eTactWeb.Data.BLL
         private readonly IDataLogic _DataLogicDAL;
         private readonly InProcessQcDAL _InProcessQcDAL;
 
-        public InProcessQcBLL(IConfiguration configuration, IDataLogic iDataLogic)
+        public InProcessQcBLL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
             _DataLogicDAL = iDataLogic;
-            _InProcessQcDAL = new InProcessQcDAL(configuration, iDataLogic);
+            _InProcessQcDAL = new InProcessQcDAL(configuration, iDataLogic, connectionStringService);
         }
         public async Task<InProcessQc> GetViewByID(int ID, int YearCode)
         {

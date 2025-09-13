@@ -69,8 +69,8 @@ namespace eTactWeb.Controllers
         public readonly IEinvoiceService _IEinvoiceService;
         private readonly IEmailService _emailService;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
-
-        public JobWorkIssueController(ILogger<JobWorkIssueController> logger, IDataLogic iDataLogic, IJobWorkIssue iJobWorkIssue, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration, IIssueWithoutBom IIssueWOBOM,IEinvoiceService IEinvoiceService, IEmailService emailService)
+        private readonly ConnectionStringService _connectionStringService;
+        public JobWorkIssueController(ILogger<JobWorkIssueController> logger, IDataLogic iDataLogic, IJobWorkIssue iJobWorkIssue, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration, IIssueWithoutBom IIssueWOBOM,IEinvoiceService IEinvoiceService, IEmailService emailService, ConnectionStringService connectionStringService)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
@@ -80,6 +80,7 @@ namespace eTactWeb.Controllers
             _IIssueWOBOM = IIssueWOBOM;
             _IEinvoiceService = IEinvoiceService;
             _emailService = emailService;
+            _connectionStringService = connectionStringService;
         }
         private async Task<string> GenerateQRCodeImage(string qrText, string filePath)
         {
@@ -225,8 +226,8 @@ namespace eTactWeb.Controllers
             {
                 webReport.Report.Load(webRootPath + "\\IssueVendJobworkChallan.frx"); // default report
             }
-           
-            my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+           my_connection_string = _connectionStringService.GetConnectionString();
+            //my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
             webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
             webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
             webReport.Report.SetParameterValue("entryparam", EntryId);
@@ -257,8 +258,8 @@ namespace eTactWeb.Controllers
             {
                 webReport.Report.Load(webRootPath + "\\IssueVendJobworkChallan.frx"); // default report
             }
-
-            my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+            my_connection_string = _connectionStringService.GetConnectionString();
+            //my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
             webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
             webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
             webReport.Report.SetParameterValue("entryparam", EntryId);

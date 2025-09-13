@@ -22,14 +22,16 @@ namespace eTactWeb.Controllers
         public IBankReconciliation _IBackReconciliation { get; }
         private readonly ILogger<BankReconciliationController> _logger;
         private readonly IConfiguration iconfiguration;
+        private readonly ConnectionStringService _connectionStringService;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
-        public BankReconciliationController(ILogger<BankReconciliationController> logger, IDataLogic iDataLogic, IBankReconciliation iBackReconciliation, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
+        public BankReconciliationController(ILogger<BankReconciliationController> logger, IDataLogic iDataLogic, IBankReconciliation iBackReconciliation, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration, ConnectionStringService connectionStringService)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IBackReconciliation = iBackReconciliation;
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
+            _connectionStringService = connectionStringService;
         }
         public async Task<JsonResult> GetFormRights()
         {
@@ -50,7 +52,8 @@ namespace eTactWeb.Controllers
 			webReport.Report = new Report();
 
 			webReport.Report.Load(webRootPath + "\\VoucherReport.frx");
-			my_connection_string = iconfiguration.GetConnectionString("eTactDB");
+            my_connection_string = _connectionStringService.GetConnectionString();
+			//my_connection_string = iconfiguration.GetConnectionString("eTactDB");
 			webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
 			webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
 			webReport.Report.SetParameterValue("vouchernameparam", VoucherName);

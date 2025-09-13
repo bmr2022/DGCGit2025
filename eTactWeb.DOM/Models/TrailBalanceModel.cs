@@ -41,6 +41,7 @@ namespace eTactWeb.DOM.Models
         public string FromDate { get; set; }
         public string ToDate { get; set; }
         public string EntryByMachine { get; set; }
+        public string BranchName {  get; set; }
         public string ReportType { get; set; }
         public IList<TrailBalanceModel> TrailBalanceGrid { get; set; }
 

@@ -17,6 +17,7 @@ using System.Diagnostics;
 using FastReport.Web;
 using FastReport;
 using Microsoft.Extensions.Configuration;
+using eTactWeb.Data.Common;
 
 namespace eTactWeb.Controllers
 {
@@ -29,8 +30,8 @@ namespace eTactWeb.Controllers
         public readonly IEinvoiceService _IEinvoiceService;
         private readonly IConfiguration iconfiguration;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
-
-        public PurchaseRejectionController(IPurchaseRejection purchRej, IDataLogic iDataLogic, IWebHostEnvironment IWebHostEnvironment, ILogger<PurchaseRejectionController> logger, IMemoryCache memoryCache, IEinvoiceService IEinvoiceService, IConfiguration iconfiguration)
+        private readonly ConnectionStringService _connectionStringService;
+        public PurchaseRejectionController(IPurchaseRejection purchRej, IDataLogic iDataLogic, IWebHostEnvironment IWebHostEnvironment, ILogger<PurchaseRejectionController> logger, IMemoryCache memoryCache, IEinvoiceService IEinvoiceService, IConfiguration iconfiguration, ConnectionStringService connectionStringService)
         {
             _purchRej = purchRej;
             _IDataLogic = iDataLogic;
@@ -39,6 +40,7 @@ namespace eTactWeb.Controllers
             _MemoryCache = memoryCache;
             _IEinvoiceService = IEinvoiceService;
             this.iconfiguration = iconfiguration;
+            _connectionStringService = connectionStringService;
         }
         public IActionResult PrintReport(int EntryId = 0, int YearCode = 0)
         {
@@ -58,7 +60,8 @@ namespace eTactWeb.Controllers
             {
                 webReport.Report.Load(webRootPath + "\\PurchaseRejectionReport.frx");
             }
-            my_connection_string = iconfiguration.GetConnectionString("eTactDB");
+            my_connection_string = _connectionStringService.GetConnectionString();
+            //my_connection_string = iconfiguration.GetConnectionString("eTactDB");
             webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
             webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
             webReport.Report.SetParameterValue("yearcodeparam", YearCode);

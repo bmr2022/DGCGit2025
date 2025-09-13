@@ -16,14 +16,16 @@ namespace eTactWeb.Controllers
         public ITransferMaterialReport _ITransferMaterialReport { get; set;}
         private readonly ILogger<TransferMaterialReportController> _logger;
         private readonly IConfiguration iconfiguration;
+        private readonly ConnectionStringService _connectionStringService;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
-        public TransferMaterialReportController(ILogger<TransferMaterialReportController> logger, IDataLogic iDataLogic, ITransferMaterialReport ITransferMaterialReport, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
+        public TransferMaterialReportController(ILogger<TransferMaterialReportController> logger, IDataLogic iDataLogic, ITransferMaterialReport ITransferMaterialReport, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration, ConnectionStringService connectionStringService)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _ITransferMaterialReport = ITransferMaterialReport;
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
+            _connectionStringService = connectionStringService;
         }
         [Route("{controller}/Index")]
         public IActionResult TransferMaterialReport()
@@ -58,7 +60,8 @@ namespace eTactWeb.Controllers
             //my_connection_string = iconfiguration.GetConnectionString("eTactDB");
             //webReport.Report.SetParameterValue("MyParameter", my_connection_string);
             // return View(webReport);
-            my_connection_string = iconfiguration.GetConnectionString("eTactDB");
+            //my_connection_string = iconfiguration.GetConnectionString("eTactDB");
+            my_connection_string = _connectionStringService.GetConnectionString();
             webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
             webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
             webReport.Report.SetParameterValue("entryparam", EntryId);

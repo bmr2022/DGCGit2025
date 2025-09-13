@@ -48,8 +48,8 @@ public class SaleOrderController : Controller
 	private readonly IItemMaster itemMaster;
     public WebReport webReport;
     private readonly IEmailService _emailService;
-
-    public SaleOrderController(ILogger<SaleOrderController> logger, IDataLogic iDataLogic, ISaleOrder iSaleOrder, ITaxModule iTaxModule, IMemoryCache iMemoryCache, IWebHostEnvironment iWebHostEnvironment, IItemMaster itemMaster, EncryptDecrypt encryptDecrypt, LoggerInfo loggerInfo, IConfiguration configuration, IEmailService emailService)
+    private readonly ConnectionStringService _connectionStringService;
+    public SaleOrderController(ILogger<SaleOrderController> logger, IDataLogic iDataLogic, ISaleOrder iSaleOrder, ITaxModule iTaxModule, IMemoryCache iMemoryCache, IWebHostEnvironment iWebHostEnvironment, IItemMaster itemMaster, EncryptDecrypt encryptDecrypt, LoggerInfo loggerInfo, IConfiguration configuration, IEmailService emailService, ConnectionStringService connectionStringService)
 	{
 		_logger = logger;
 		_IDataLogic = iDataLogic;
@@ -62,6 +62,7 @@ public class SaleOrderController : Controller
 		LoggerInfo = loggerInfo;
         _iconfiguration = configuration;
         _emailService = emailService;
+		_connectionStringService = connectionStringService;
     }
 
 	private EncryptDecrypt _EncryptDecrypt { get; }
@@ -103,7 +104,8 @@ public class SaleOrderController : Controller
         webReport.Report.SetParameterValue("yearparam", YearCode);
         webReport.Report.SetParameterValue("ShowOnlyAmendItemparam", ShowOnlyAmendItem);
         webReport.Report.SetParameterValue("AmmNo", AmmNo);
-        my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+		my_connection_string = _connectionStringService.GetConnectionString();
+       //my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
         webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
         webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
         webReport.Report.SetParameterValue("MyParameter", my_connection_string);
@@ -144,7 +146,8 @@ public class SaleOrderController : Controller
         webReport.Report.SetParameterValue("yearparam", YearCode);
         webReport.Report.SetParameterValue("ShowOnlyAmendItemparam", "");
         webReport.Report.SetParameterValue("AmmNo", 0);
-        my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+		my_connection_string = _connectionStringService.GetConnectionString();
+        //my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
         webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
         webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
         webReport.Report.SetParameterValue("MyParameter", my_connection_string);

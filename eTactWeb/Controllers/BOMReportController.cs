@@ -21,7 +21,8 @@ namespace eTactWeb.Controllers
         private readonly IConfiguration _iconfiguration;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
         private readonly IMemoryCache _MemoryCache;
-        public BOMReportController(ILogger<BOMReportController> logger, IDataLogic iDataLogic, IBOMReport iBOMReport, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration, IMemoryCache iMemoryCache)
+        private readonly ConnectionStringService _connectionStringService;
+        public BOMReportController(ILogger<BOMReportController> logger, IDataLogic iDataLogic, IBOMReport iBOMReport, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration, IMemoryCache iMemoryCache, ConnectionStringService connectionStringService)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
@@ -29,6 +30,7 @@ namespace eTactWeb.Controllers
             _IWebHostEnvironment = iWebHostEnvironment;
             _iconfiguration = iconfiguration;
             _MemoryCache = iMemoryCache;
+            _connectionStringService = connectionStringService;
         }
         [Route("{controller}/Index")]
         public async Task<ActionResult> BOMReport()
@@ -61,7 +63,7 @@ namespace eTactWeb.Controllers
             webReport.Report.SetParameterValue("Yearcodeparam", YearCode);
             webReport.Report.SetParameterValue("CalForQtyparam", CalForQty);
             //webReport.Report.SetParameterValue("WcName ", WCID);
-            my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+            my_connection_string = _connectionStringService.GetConnectionString();
             webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
             webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
             webReport.Report.SetParameterValue("MyParameter", my_connection_string);

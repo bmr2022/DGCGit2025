@@ -26,7 +26,8 @@ namespace eTactWeb.Controllers
         private readonly IWebHostEnvironment _IWebHostEnvironment;
         private readonly IConfiguration _iconfiguration;
         public List<string> ImageArray = new List<string>();
-        public MIRController(ILogger<MIRController> logger, IDataLogic iDataLogic, IMirModule IMirModule, IMemoryCache iMemoryCache, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
+        private readonly ConnectionStringService _connectionStringService;
+        public MIRController(ILogger<MIRController> logger, IDataLogic iDataLogic, IMirModule IMirModule, IMemoryCache iMemoryCache, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration, ConnectionStringService connectionStringService)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
@@ -34,6 +35,7 @@ namespace eTactWeb.Controllers
             _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
             this._iconfiguration = iconfiguration;
+            _connectionStringService = connectionStringService;
         }
         public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string MrnNo = "")
         {
@@ -53,8 +55,8 @@ namespace eTactWeb.Controllers
             {
                 webReport.Report.Load(webRootPath + "\\MRN.frx"); // default report
             }
-            
 
+            my_connection_string = _connectionStringService.GetConnectionString();
             my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
             webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
             webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
@@ -920,8 +922,8 @@ namespace eTactWeb.Controllers
 				webReport.Report.Load(webRootPath + "\\MIRGenerateIncomingBarcode.frx"); 
 			
 
-
-			my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+            my_connection_string = _connectionStringService.GetConnectionString();
+			//my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
 			webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
 			webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
 			webReport.Report.SetParameterValue("MRINoparam", MIRNo);

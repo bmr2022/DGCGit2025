@@ -20,9 +20,9 @@ namespace eTactWeb.Data.DAL
         public SalepersonWiseRateMasterDAL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
             //configuration = config;
-            DBConnectionString = configuration.GetConnectionString("eTactDB");
-            _IDataLogic = iDataLogic;
             _connectionStringService = connectionStringService;
+            //DBConnectionString = configuration.GetConnectionString("eTactDB");
+            _IDataLogic = iDataLogic;
             DBConnectionString = _connectionStringService.GetConnectionString();
         }
         public async Task<ResponseResult> NewEntryId(int YearCode,string entrydate)

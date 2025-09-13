@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
@@ -16,9 +17,9 @@ namespace eTactWeb.Data.BLL
         private HRShiftMasterDAL _HRShiftMasterDAL;
         private readonly IDataLogic _DataLogicDAL;
 
-        public HRShiftMasterBLL(IConfiguration config, IDataLogic dataLogicDAL)
+        public HRShiftMasterBLL(IConfiguration config, IDataLogic dataLogicDAL, ConnectionStringService connectionStringService)
         {
-            _HRShiftMasterDAL = new HRShiftMasterDAL(config, dataLogicDAL);
+            _HRShiftMasterDAL = new HRShiftMasterDAL(config, dataLogicDAL, connectionStringService );
             _DataLogicDAL = dataLogicDAL;
         }
         public async Task<ResponseResult> SaveHrShiftMaster(HRShiftMasterModel model)

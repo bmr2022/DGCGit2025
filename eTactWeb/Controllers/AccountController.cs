@@ -246,7 +246,8 @@ public class AccountController : Controller
             .Build();
 
         // Retrieve connection string
-        string connectionString = __configuration.GetConnectionString("eTactDB");
+        string connectionString = _connectionStringService.GetConnectionString();
+        //string connectionString = __configuration.GetConnectionString("eTactDB");
 
         // Extract server name
         string serverName = GetServerNameFromConnectionString(connectionString);
@@ -803,7 +804,8 @@ public class AccountController : Controller
 
     public string GetConnectionString(string databaseName)
     {
-        string baseConnectionString = _configuration.GetConnectionString("eTactDB");
+        string baseConnectionString = _connectionStringService.GetConnectionString();
+        //string baseConnectionString = _configuration.GetConnectionString("eTactDB");
 
         var builder = new SqlConnectionStringBuilder(baseConnectionString)
         {

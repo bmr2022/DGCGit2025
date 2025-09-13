@@ -44,7 +44,8 @@ namespace eTactWeb.Controllers
         private readonly ICommon _ICommon;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
         private readonly IMemoryCache _MemoryCache;
-        public SaleInvoiceController(ILogger<SaleBillController> logger, IDataLogic iDataLogic, ISaleBill iSaleBill, IEinvoiceService IEinvoiceService, IConfiguration configuration, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, ICustomerJobWorkIssue CustomerJobWorkIssue, IMemoryCache iMemoryCache, ICommon ICommon)
+        private readonly ConnectionStringService _connectionStringService;
+        public SaleInvoiceController(ILogger<SaleBillController> logger, IDataLogic iDataLogic, ISaleBill iSaleBill, IEinvoiceService IEinvoiceService, IConfiguration configuration, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, ICustomerJobWorkIssue CustomerJobWorkIssue, IMemoryCache iMemoryCache, ICommon ICommon, ConnectionStringService connectionStringService)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
@@ -55,6 +56,7 @@ namespace eTactWeb.Controllers
             _ICustomerJobWorkIssue = CustomerJobWorkIssue;
             _MemoryCache = iMemoryCache;
             _ICommon = ICommon;
+            _connectionStringService = connectionStringService;
         }
         public async Task<JsonResult> AutoFillPartCode ( string SearchPartCode)
         {
@@ -1703,7 +1705,8 @@ namespace eTactWeb.Controllers
                 }
                 webReport.Report.SetParameterValue("entryparam", EntryId);
                 webReport.Report.SetParameterValue("yearparam", YearCode);
-                my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+                my_connection_string = _connectionStringService.GetConnectionString();
+                //my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
                 webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
                 webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
                 webReport.Report.SetParameterValue("MyParameter", my_connection_string);

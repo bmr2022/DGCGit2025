@@ -46,7 +46,8 @@ namespace eTactWeb.Controllers
         private readonly IMemoryCache _MemoryCache;
         private readonly IEmailService _emailService;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
-        public MaterialReceiptController(ILogger<MaterialReceiptController> logger, IDataLogic iDataLogic, IMaterialReceipt iMaterialReceipt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration, IMemoryCache iMemoryCache, IEmailService emailService)
+        private readonly ConnectionStringService _connectionStringService;
+        public MaterialReceiptController(ILogger<MaterialReceiptController> logger, IDataLogic iDataLogic, IMaterialReceipt iMaterialReceipt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration, IMemoryCache iMemoryCache, IEmailService emailService, ConnectionStringService connectionStringService)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
@@ -55,6 +56,7 @@ namespace eTactWeb.Controllers
             this._iconfiguration = iconfiguration;
             _MemoryCache = iMemoryCache;
             _emailService = emailService;
+            _connectionStringService = connectionStringService;
         }
 
         public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string MrnNo = "")
@@ -75,8 +77,8 @@ namespace eTactWeb.Controllers
             {
                 webReport.Report.Load(webRootPath + "\\MRN.frx"); // default report
             }
-
-            my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+            my_connection_string = _connectionStringService.GetConnectionString();
+            //my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
             webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
             webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
             webReport.Report.SetParameterValue("MrnNoparam", MrnNo);
@@ -98,7 +100,7 @@ namespace eTactWeb.Controllers
             webReport.Report = new Report();
 
             webReport.Report.Load(webRootPath + "\\MRNShortExcess.frx"); // default repor 
-            my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+            my_connection_string = _connectionStringService.GetConnectionString();
             webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
             webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
             //webReport.Report.SetParameterValue("MrnNoparam", MrnNo);
@@ -325,7 +327,7 @@ namespace eTactWeb.Controllers
             webReport.Report = new Report();
 
             webReport.Report.Load(webRootPath + "\\MRNShortExcess.frx"); // default repor 
-            my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+            my_connection_string = _connectionStringService.GetConnectionString();
             webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
             webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
             //webReport.Report.SetParameterValue("MrnNoparam", MrnNo);
@@ -348,7 +350,7 @@ namespace eTactWeb.Controllers
             webReport.Report = new Report();
 
             webReport.Report.Load(webRootPath + "\\MRNTAGFinal.frx"); 
-            my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+            my_connection_string = _connectionStringService.GetConnectionString();
             webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
             webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
            // webReport.Report.SetParameterValue("MrnNoparam", MrnNo);

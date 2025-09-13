@@ -20,15 +20,16 @@ namespace eTactWeb.Controllers
         public IBankReceipt _IBankReceipt { get; }
         private readonly ILogger<BankReceiptController> _logger;
         private readonly IConfiguration iconfiguration;
-
+        private readonly ConnectionStringService _connectionStringService;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
-        public BankReceiptController(ILogger<BankReceiptController> logger, IDataLogic iDataLogic, IBankReceipt iBankReceipt, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
+        public BankReceiptController(ILogger<BankReceiptController> logger, IDataLogic iDataLogic, IBankReceipt iBankReceipt, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration, ConnectionStringService connectionStringService)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IBankReceipt = iBankReceipt;
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
+            _connectionStringService = connectionStringService;
         }
 
         public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string VoucherName = "")
@@ -42,7 +43,7 @@ namespace eTactWeb.Controllers
             webReport.Report = new Report();
 
             webReport.Report.Load(webRootPath + "\\VoucherReport.frx");
-            my_connection_string = iconfiguration.GetConnectionString("eTactDB");
+            my_connection_string = _connectionStringService.GetConnectionString();
             webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
             webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
             webReport.Report.SetParameterValue("vouchernameparam", VoucherName);

@@ -17,11 +17,13 @@ namespace eTactWeb.Data.DAL
         private readonly IDataLogic _IDataLogic;
         private readonly string DBConnectionString = string.Empty;
         private IDataReader? Reader;
-
-        public InProcessQcDAL(IConfiguration configuration, IDataLogic iDataLogic)
+        private readonly ConnectionStringService _connectionStringService;
+        public InProcessQcDAL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
             _IDataLogic = iDataLogic;
-            DBConnectionString = configuration.GetConnectionString("eTactDB");
+            _connectionStringService = connectionStringService;
+            DBConnectionString = _connectionStringService.GetConnectionString();
+            //DBConnectionString = configuration.GetConnectionString("eTactDB");
         }
         internal async Task<InProcessQc> GetViewByID(int ID, int YearCode)
         {

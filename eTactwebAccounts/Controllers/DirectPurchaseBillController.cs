@@ -33,13 +33,14 @@ namespace eTactWeb.Controllers
         private readonly IWebHostEnvironment _IWebHostEnvironment;
         private readonly IConfiguration iconfiguration;
         private readonly IMemoryCache _MemoryCache;
+        private readonly ConnectionStringService _connectionStringService;
         public ILogger<DirectPurchaseBillModel> _Logger { get; set; }
         public CultureInfo CI { get; private set; }
         public EncryptDecrypt EncryptDecrypt { get; private set; }
         public IDataLogic IDataLogic { get; private set; }
         public IDirectPurchaseBill IDirectPurchaseBill { get; set; }
 
-        public DirectPurchaseBillController(IDirectPurchaseBill iDirectPurchaseBill, IDataLogic iDataLogic, ILogger<DirectPurchaseBillModel> logger, EncryptDecrypt encryptDecrypt, IMemoryCacheService iMemoryCacheService, IWebHostEnvironment iWebHostEnvironment, IConfiguration configuration, IMemoryCache iMemoryCache)
+        public DirectPurchaseBillController(IDirectPurchaseBill iDirectPurchaseBill, IDataLogic iDataLogic, ILogger<DirectPurchaseBillModel> logger, EncryptDecrypt encryptDecrypt, IMemoryCacheService iMemoryCacheService, IWebHostEnvironment iWebHostEnvironment, IConfiguration configuration, IMemoryCache iMemoryCache, ConnectionStringService connectionStringService)
         {
             _iMemoryCacheService = iMemoryCacheService;
             IDirectPurchaseBill = iDirectPurchaseBill;
@@ -50,6 +51,7 @@ namespace eTactWeb.Controllers
             _IWebHostEnvironment = iWebHostEnvironment;
             iconfiguration = configuration;
             _MemoryCache = iMemoryCache;
+            _connectionStringService = connectionStringService;
         }
 
         [HttpGet]
@@ -539,7 +541,7 @@ namespace eTactWeb.Controllers
             webReport.Report.SetParameterValue("yearparam", YearCode);
             webReport.Report.SetParameterValue("ponoparam", PONO);
 
-
+            my_connection_string = _connectionStringService.GetConnectionString();
             my_connection_string = iconfiguration.GetConnectionString("eTactDB");
             webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
             webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";

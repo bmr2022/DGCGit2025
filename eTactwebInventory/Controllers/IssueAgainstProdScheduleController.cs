@@ -21,13 +21,15 @@ namespace eTactWeb.Controllers
         private readonly ILogger<IssueAgainstProdScheduleController> _logger;
         private readonly IWebHostEnvironment _IWebHostEnvironment;
         private readonly IConfiguration iconfiguration;
-        public IssueAgainstProdScheduleController(ILogger<IssueAgainstProdScheduleController> logger, IDataLogic iDataLogic, IIssueAgainstProdSchedule IIssueAgainstProdSchedule, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
+        private readonly ConnectionStringService _connectionStringService;
+        public IssueAgainstProdScheduleController(ILogger<IssueAgainstProdScheduleController> logger, IDataLogic iDataLogic, IIssueAgainstProdSchedule IIssueAgainstProdSchedule, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration, ConnectionStringService connectionStringService)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IIssueAgainstProdSchedule = IIssueAgainstProdSchedule;
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
+            _connectionStringService = connectionStringService;
         }
         public IActionResult PrintReport(int EntryId = 0, int YearCode = 0)
         {
@@ -40,8 +42,8 @@ namespace eTactWeb.Controllers
             webReport.Report.SetParameterValue("entryidparam", EntryId);
             webReport.Report.SetParameterValue("yearcodeparam", YearCode);
 
-
-            my_connection_string = iconfiguration.GetConnectionString("eTactDB");
+            my_connection_string = _connectionStringService.GetConnectionString();
+            //my_connection_string = iconfiguration.GetConnectionString("eTactDB");
             webReport.Report.SetParameterValue("MyParameter", my_connection_string);
             return View(webReport);
         }

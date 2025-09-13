@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Http;
@@ -19,10 +20,10 @@ namespace eTactWeb.Data.BLL
         private readonly GateEntryRegisterDAL _GateEntryRegisterDAL;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public GateEntryRegisterBLL(IConfiguration configuration, IDataLogic iDataLogic)
+        public GateEntryRegisterBLL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
             _DataLogicDAL = iDataLogic;
-            _GateEntryRegisterDAL = new GateEntryRegisterDAL(configuration, iDataLogic, _httpContextAccessor);
+            _GateEntryRegisterDAL = new GateEntryRegisterDAL(configuration, iDataLogic, _httpContextAccessor, connectionStringService);
         }
         public async Task <ResponseResult> FillDocument(string FromDate, string ToDate)
         {

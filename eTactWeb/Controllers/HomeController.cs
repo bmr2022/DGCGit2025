@@ -312,7 +312,7 @@ public class HomeController : Controller
 
         model.AccList = GetCombodata("Company_detail", "Company_Name");
         model.ItemList = GetCombodata("Company_detail", "CC");
-        model.StoreLst = GetCombodata("Store_Master", "Store_Name");
+        //model.StoreLst = GetCombodata("Store_Master", "Store_Name");
         var lastLogin = GetLastLoginDetail();
         if(lastLogin != null)
         {
