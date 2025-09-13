@@ -5,6 +5,78 @@
 }
 else
 {
+    @if (Model.HistoryReportMode == "POSCHAMENDMENTHISTORY")
+    {
+        <div class="table-responsive" style="max-height:300px;overflow-y:auto;">
+            <table class="table table-responsive table-hover table-bordered PMRPGrid TbCss text-nowrap mb-0" id="ReportTable">
+                <thead class="bg-gradient card-headerBG text-light" style="position:static;" id="dashRThead">
+                    <tr>
+                        <th>Action</th>
+                        <th>Sr#</th>
+                        <th class="sortCol" data-sortorder="asc" data-columnno="1"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Vendor Name</th>
+                        <th class="sortCol" data-sortorder="asc" data-columnno="2"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PONO</th>
+                        <th class="sortCol" data-sortorder="asc" data-columnno="3"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Date</th>
+                        <th class="sortCol" data-sortorder="asc" data-columnno="4"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Schedule No</th>
+                        <th class="sortCol" data-sortorder="asc" data-columnno="5"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Schedule Date</th>
+                        <th class="sortCol" data-sortorder="asc" data-columnno="6"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Eff From</th>
+                        <th class="sortCol" data-sortorder="asc" data-columnno="7"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Till Date</th>
+                        <th class="sortCol" data-sortorder="asc" data-columnno="8"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Schedule Amm No</th>
+                        <th class="sortCol" data-sortorder="asc" data-columnno="9"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Schedule Amm Date</th>
+                        <th class="sortCol" data-sortorder="asc" data-columnno="10"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Schedule Complete</th>
+                        <th class="sortCol" data-sortorder="asc" data-columnno="11"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Schedule Canceled</th>
+                    </tr>
+                </thead>
+                <tbody id="divStockRegisterBody">
+                    @{
+                        var @Cntr = 0;
+                        int srNoStart = (Model.PageNumber - 1) * Model.PageSize;
+                        int srNo = srNoStart + 1;
+                        if (Model.OrderAmendHistoryGrid == null)
+                        {
+                            <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                        }
+                        else
+                        {
+                            foreach (var item in Model.OrderAmendHistoryGrid)
+                            {
+                                Cntr = Cntr + 1;
+
+                                <tr id="SAGridRow-@Cntr" onclick="selection(this)">
+                                    <td>
+                                        <a class="table-link link-danger" onclick="DeleteRow(this.id)" id="@Cntr">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </td>
+                                    <th>@srNo</th>
+                                    <td>@item.VendorName</td>
+                                    <td>@item.PONO</td>
+                                    <td>@(item.PODate == null ? string.Empty : item.PODate.Split(" ")[0])</td>
+                                    <td>@item.ScheduleNo</td>
+                                    <td>@(item.ScheduleDate == null ? string.Empty : item.ScheduleDate.Split(" ")[0])</td>
+                                    <td>@(item.EffFrom == null ? string.Empty : item.EffFrom.Split(" ")[0])</td>
+                                    <td>@(item.TillDate == null ? string.Empty : item.TillDate.Split(" ")[0])</td>
+                                    <td>@item.SchAmendNo</td>
+                                    <td>@item.SchAmendDate</td>
+                                    <td>@item.SchComplete</td>
+                                    <td>@item.SchCanceled</td>
+                                  
+                                </tr>
+                                srNo++;
+                            }
+                        }
+                    }
+
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        
+    
     <div class="table-responsive" style="max-height:300px;overflow-y:auto;">
         <table class="table table-responsive table-hover table-bordered PMRPGrid TbCss text-nowrap mb-0" id="ReportTable">
             <thead class="bg-gradient card-headerBG text-light" style="position:static;" id="dashRThead">
@@ -87,7 +159,7 @@ else
 
             </tbody>
         </table>
-    </div>
+    </div>}
     int displayedRows = Model.PageNumber * Model.PageSize;
     if (displayedRows > Model.TotalRecords)
     {
