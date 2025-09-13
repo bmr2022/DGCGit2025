@@ -14,19 +14,21 @@ else
     {
         Cntr = Cntr + 1;
         <tr class="small" style="white-space:nowrap">
-            <td style="white-space:nowrap;">
-                <a class="table-link link-primary" style="border:none;" id="editButton-@item.SeqNo" onclick="EditItemRows(@item.SeqNo);">
-                    <span class="fa-stack">
-                        <i class="fa fa-square fa-stack-2x"></i>
-                        <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-                    </span>
-                </a>
-                <a class="table-link link-danger" onclick="DeleteItemRow(@item.SeqNo);">
-                    <span class="fa-stack">
-                        <i class="fa fa-square fa-stack-2x"></i>
-                        <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
-                    </span>
-                </a>
+            <td class="action-col">
+                <div class="action-buttons">
+                    <!-- Edit -->
+                    <a class="btn-icon bg-primary"
+                       id="editButton-@item.SeqNo"
+                       onclick="EditItemRows(@item.SeqNo);">
+                        <i class="fa fa-pencil"></i>
+                    </a>
+
+                    <!-- Delete -->
+                    <a class="btn-icon bg-danger"
+                       onclick="DeleteItemRow(@item.SeqNo);">
+                        <i class="fa fa-trash"></i>
+                    </a>
+                </div>
             </td>
 
             <td id="SeqNo-@Cntr">@item.SeqNo</td>
@@ -46,3 +48,30 @@ else
         </tr>
     }
 }
+<style>
+    td.action-col, th.action-col {
+        width: 1%;
+        white-space: nowrap;
+        text-align: center;
+        padding: 0 2px;
+    }
+
+    .action-buttons {
+        display: inline-flex;
+        gap: 2px;
+    }
+
+    .btn-icon {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        width: 18px;
+        height: 18px;
+        border-radius: 3px;
+        color: #fff;
+        font-size: 12px;
+        line-height: 1;
+        text-decoration: none;
+    }
+
+    </style >

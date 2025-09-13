@@ -959,7 +959,7 @@
                     SpecificationFrom: row.SpecificationFrom ? row.SpecificationFrom.toString() : "",
                     Operator: row.Operator ? row.Operator.toString() : "",
                     SpecificationTo: row.SpecificationTo ? row.SpecificationTo.toString() : "",
-                    FrequencyofTesting: row.FrequencyofTesting ? row.FrequencyofTesting.toString() : "",
+                    FrequencyofTesting: row.Frequency ? row.Frequency.toString() : "",
                     InspectionBy: row.InspectionBy ? row.InspectionBy.toString() : "",
                     ControlMethod: row.ControlMethod ? row.ControlMethod.toString() : "",
                     RejectionPlan: row.RejectionPlan ? row.RejectionPlan.toString() : "",
@@ -1507,7 +1507,21 @@
                 }
             });
         }
-       
+
+        function ClearItems() {
+            $('#Characteristic, #EvalutionMeasurmentTechnique, #ControlMethod, #SpecificationFrom_single, #SpecificationFrom_multi, #SpecificationTo, #FrequencyofTesting, #Remarks')
+                .val('');
+
+            $('#isMultiline').prop('checked', false);
+
+            $('#SpecificationFrom_multi').hide();
+            $('#SpecificationFrom_single').show();
+
+            $('#Operator, #InspectionBy, #RejectionPlan').prop('selectedIndex', 0).trigger('change');
+            $('#Mode').val("");   
+            $('#SeqNo').val("");  
+            EditEachItem = false; 
+        }
 
 
         var EditEachItem = false;
