@@ -115,7 +115,7 @@ namespace eTactWeb.Controllers
                         }
                         else
                         {
-                            TempData["Message"] = Result.StatusText; // e.g. "User Name already exist..."
+                            TempData["Message"] = Result.StatusText;
                             return RedirectToAction("Index", "VendorUser");
                         }
                     }
