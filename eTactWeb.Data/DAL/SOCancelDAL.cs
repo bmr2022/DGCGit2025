@@ -38,11 +38,14 @@ namespace eTactWeb.Data.DAL
                 String fromdt = ParseFormattedDate(FromDate);
                 String todt = ParseFormattedDate(ToDate);
                 var SqlParams = new List<dynamic>();
-                if (CancelType == "LISTOFActiveSO")
-                    SqlParams.Add(new SqlParameter("@Flag", "LISTOFActiveSO"));
-                if (CancelType == "LISTOFDeActiveSO")
-                    SqlParams.Add(new SqlParameter("@Flag", "LISTOFDeActiveSO"));
-                
+                //if (CancelType == "LISTOFActiveSO")
+                //    SqlParams.Add(new SqlParameter("@Flag", "LISTOFActiveSO"));
+                //if (CancelType == "LISTOFDeActiveSO")
+                //    SqlParams.Add(new SqlParameter("@Flag", "LISTOFDeActiveSO"));
+
+                SqlParams.Add(new SqlParameter("@Flag", CancelType));
+
+
                 SqlParams.Add(new SqlParameter("@EmpId", EmpId));
                 SqlParams.Add(new SqlParameter("@UId", Uid));
                 SqlParams.Add(new SqlParameter("@SONO", SONO));
@@ -150,6 +153,16 @@ namespace eTactWeb.Data.DAL
                 if (type == "LISTOFDeActiveSO")
                 {
                     SqlParams.Add(new SqlParameter("@Flag", "ACTIVESO"));
+
+                }
+                if (type == "ListOFComplatedSO")
+                {
+                    SqlParams.Add(new SqlParameter("@Flag", "INCOMPLATESO"));
+
+                }
+                if (type == "LISTOFIncomplatedSO")
+                {
+                    SqlParams.Add(new SqlParameter("@Flag", "COMPLATESO"));
 
                 }
 
