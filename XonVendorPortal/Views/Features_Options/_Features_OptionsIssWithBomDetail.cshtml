@@ -1,0 +1,133 @@
+﻿@model eTactWeb.DOM.Models.Features_OptionsModel;
+<div class="table-responsive" style="max-height:350px;">
+    <table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0" id="GateDataTable" style="width: 100%;">
+        <thead class="bg-gradient card-headerBG text-light" style="position:static;" id="dashGateThead">
+            <tr>
+                <th>Sr#</th>
+                <th>Action</th>
+                <th data-columnno="1" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Allow Backdate Issue W/O BOM
+                </th>
+                <th data-columnno="2" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Allow Backdate Issue With BOM
+                </th>
+                <th data-columnno="3" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Issue Via Scanning Barcode
+                </th>
+                <th data-columnno="4" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Allow Backdate Issue Challan
+                </th>
+                <th data-columnno="5" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Allow Backdate Rec Challan
+                </th>
+
+
+            </tr>
+        </thead>
+        <tbody id="gateDashboardtable">
+            @{
+                var Cntr = 0;
+                if (Model.features_OptionsModelsGrid == null || Model.features_OptionsModelsGrid.Count == 0)
+                {
+                    <tr class="text-center"><td colspan="6" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                }
+                else
+                {
+                    foreach (var item in Model.features_OptionsModelsGrid)
+                    {
+                        Cntr = Cntr + 1;
+                        <tr onclick="selection(this)">
+                            <td>@Cntr</td>
+                            <td style="text-align:center;white-space: nowrap;">
+                                <div id="container">
+
+
+                                    <div id="editCursorDiv-@Cntr">
+                                        <a class="table-link link-primary" id="editCursor-@Cntr"
+                                           asp-action="Features_Options"
+                                           asp-controller="Features_Options"
+                                           asp-route-Mode="U"
+                                           asp-route-ID="@Cntr"
+                                           asp-route-Type="@item.Type"
+                                           asp-route-AllowBackdateIssueWOBOM="@item.AllowBackdateIssueWOBOM"
+                                           asp-route-AllowBackDateISSUEWITHBOM="@item.AllowBackDateISSUEWITHBOM"
+                                           asp-route-IssueViaScanningBarcode="@item.IssueViaScanningBarcode"
+                                           asp-route-AllowBackDateIssueChallan="@item.AllowBackDateIssueChallan"
+                                           asp-route-ALLOWBACKDATRECCHALLAN="@item.ALLOWBACKDATRECCHALLAN"
+                                           onclick="confirmEdit(event)">
+
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+
+
+
+                                </div>
+                            </td>
+                            <td>@item.AllowBackdateIssueWOBOM</td>
+                            <td>@item.AllowBackDateISSUEWITHBOM</td>
+                            <td>@item.IssueViaScanningBarcode</td>
+                            <td>@item.AllowBackDateIssueChallan</td>
+                            <td>@item.ALLOWBACKDATRECCHALLAN</td>
+
+
+
+
+                        </tr>
+                    }
+                }
+            }
+        </tbody>
+    </table>
+</div>
+<center><strong>TOTAL ROWS : <span id="totalRows">@Cntr</span></strong></center>
+
+<style>
+    #container {
+        display: flex;
+    }
+
+        #container > div {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+    #GateDataTable {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #dashGateThead th {
+        background-color: #127387;
+        position: sticky;
+        top: -2px;
+        z-index: 1;
+    }
+
+    .sort-icon {
+        padding: 5px;
+        margin: 5px;
+        vertical-align: top;
+    }
+
+    .ascCol {
+        font-size: 15px;
+        vertical-align: bottom;
+    }
+
+    .descCol {
+        font-size: 15px;
+        vertical-align: super;
+    }
+
+    table {
+        width: 100%;
+    }
+
+    th, td {
+        white-space: nowrap;
+    }
+</style>

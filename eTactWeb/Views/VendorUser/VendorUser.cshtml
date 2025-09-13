@@ -407,6 +407,28 @@
 						$('#UpdatedByName').val(obj.Result[0].UpdatedByName);
 						$('#LastUpdationDate').val(obj.Result[0].LastUpdationdate);
 						// $('#UserEntryId').val(obj.Result[0].UserEntryId || 0);
+					}else{
+						FillEntryID();
+						$('#Mode').val("");
+						$('#VendorEmpName').val("");
+						$('#UserId').val("");
+						$('#Password').val("");
+						$('#ConfirmPassword').val("");
+						$('#Active').val();
+						$('#AllowToDelete').val("Y");
+						$('#AllowToUpdate').val("Y");
+						$('#RightsForReport').val("Y");
+						$('#RightsForPurchaseModule').val("Y");
+						$('#RightsForQCModule').val("Y");
+						$('#RightsForAccountModule').val("Y");
+						$('#AdminUser').val("Y");
+						$('#SaleBillPrefix').val("");
+						// $('#ActualEntryDate').val(obj.Result[0].ActualEntryDate);
+						$('#BranchName').val(obj.Result[0].BranchName);
+						$('#EntryByMachineName').val(obj.Result[0].EntryByMachineName);
+						$('#ActualEntryByName').val(obj.Result[0].ActualEntryBYName);
+						$('#UpdatedByName').val(obj.Result[0].UpdatedByName);
+						$('#LastUpdationDate').val(obj.Result[0].LastUpdationdate);
 					}
 				},
 				error: function (xhr, status, error) {
@@ -485,7 +507,7 @@
 					isShowAll : isShowAll
 				},
 				// async: false,
-				success: function (data, status, xhr) {
+				success: function (data, status, xhr) {	
 					debugger
 					var obj = $.parseJSON(data);
 					if (obj.StatusCode == 200 && obj.StatusText === 'Success') {

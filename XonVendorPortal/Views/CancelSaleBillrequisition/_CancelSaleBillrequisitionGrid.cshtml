@@ -1,0 +1,180 @@
+﻿@model eTactWeb.DOM.Models.CancelSaleBillrequisitionModel;
+<div class="table-responsive" style="max-height:350px;">
+    <table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0" id="GateDataTable" style="width: 100%;">
+        <thead class="bg-gradient card-headerBG text-light" style="position:static;" id="dashGateThead">
+            <tr>
+                <th>Sr#</th>
+                <th style="width:50px !important">Action</th>
+                <th>Requisition No</th>
+                <th>Requisition Date</th>
+                <th>Customer Name</th>
+                <th>Sale Bill No</th>
+                <th>Sale Bill Date</th>
+                <th>Sale Bill Year Code</th>
+                <th>Sale Bill Date (Duplicate)</th>
+                <th>Bill Amount</th>
+                <th>Invoice Net Amount</th>
+                <th>Reason of Cancel</th>
+                <th>Approved By</th>
+                <th>Cost Center (CC)</th>
+                <th>UID</th>
+                <th>Cancelled</th>
+                <th>Voucher Type</th>
+                <th>Approval Date</th>
+                <th>Cancel Date</th>
+                <th>Machine Name</th>
+                <th>Requisition Entry ID</th>
+                <th>Requisition Year Code</th>
+                <th>Sale Bill Entry ID</th>
+            </tr>
+        </thead>
+        <tbody id="gateDashboardtable">
+            @{
+                var Cntr = 0;
+                if (Model.CancelSaleBillrequisitionsGrid == null || Model.CancelSaleBillrequisitionsGrid.Count == 0)
+                {
+                    <tr class="text-center"><td colspan="11" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                }
+                else
+                {
+                    foreach (var item in Model.CancelSaleBillrequisitionsGrid)
+                    {
+                        Cntr = Cntr + 1;
+                        <tr onclick="selection(this)">
+                            <td>@Cntr</td>
+                            <td style="text-align:center;white-space: nowrap;">
+                                <div id="container">
+
+                                    <div id="viewCursorDiv-@Cntr">
+                                        <a class="table-link link-success" asp-route-ID="@Cntr" asp-action="CancelSaleBillrequisition" asp-route-Mode="V" asp-route-ID="@item.CanSaleBillReqEntryid" asp-route-YC="@item.CanSaleBillReqYearcode" onclick="BackButtonData(event);">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+
+                                    <div id="editCursorDiv-@Cntr">
+                                        @* <a class="table-link link-primary" id="editCursor-@Cntr" asp-action="LedgerOpeningEntry" onclick="confirmEdit(event)" asp-controller="LedgerOpeningEntry" asp-route-Mode="U" asp-route-ID="@item.EntryByEmpId" asp-route-YC="@item.ClosingYearCode" asp-route-EntryByMachine="@item.EntryByMachine" asp-route-AccountCode="@item.AccountCode">*@
+                                        <a class="table-link link-primary"
+                                           asp-action="CancelSaleBillrequisition"
+                                           asp-controller="CancelSaleBillrequisition"
+                                           asp-route-Mode="U"
+                                           asp-route-ID="@item.CanSaleBillReqEntryid"
+                                           asp-route-CanSaleBillReqYearcode="@item.CanSaleBillReqYearcode"
+                                           asp-route-AccountCode="@item.AccountCode"
+                                           asp-route-Requisitionby="@item.Requisitionby"
+                                           asp-route-CanRequisitionNo="@item.CanRequisitionNo"
+                                           asp-route-CustomerName="@item.CustomerName"
+                                           asp-route-SaleBillEntryId="@item.SaleBillEntryId"
+                                           asp-route-SaleBillNo="@item.SaleBillNo"
+                                           asp-route-SaleBillYearCode="@item.SaleBillYearCode"
+                                           asp-route-SaleBillDate="@item.SaleBillDate"
+                                           asp-route-BillAmt="@item.BillAmt"
+                                           asp-route-INVNetAmt="@item.INVNetAmt"
+                                           asp-route-ReasonOfCancel="@item.ReasonOfCancel"
+                                           asp-route-Approvedby="@item.Approvedby"
+                                           asp-route-CC="@item.CC"
+                                           asp-route-uid="@item.uid"
+                                           asp-route-Canceled="@item.Canceled"
+                                           asp-route-VoucherType="@item.VoucherType"
+                                           asp-route-ApprovalDate="@item.ApprovalDate"
+                                           asp-route-CancelDate="@item.CancelDate"
+                                           asp-route-MachineName="@item.MachineName"
+                                           onclick="confirmEdit(event)">
+
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+
+                                    </div>
+                                    <div id="deleteCursorDiv-@Cntr">
+                                        <a class="table-link link-danger" id="deleteCursor-@Cntr" onclick="confirmDelete(event)" asp-action="DeleteByID" asp-route-ID="@Cntr" asp-route-CanReqNo="@item.CanRequisitionNo" asp-route-MachineName="@item.MachineName" asp-route-CanSaleBillReqYC="@item.CanSaleBillReqYearcode">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>@item.CanRequisitionNo</td>
+                            <td>@item.CanSaleBillReqDate</td>
+                            <td>@item.CustomerName<input type="hidden" asp-for="@item.AccountCode" value="@item.AccountCode"/></td>
+                            <td>@item.SaleBillNo</td>
+                            <td>@item.SaleBillDate</td>
+                            <td>@item.SaleBillYearCode</td>
+                            <td>@item.SaleBillDate</td>
+                            <td>@item.BillAmt</td>
+                            <td>@item.INVNetAmt</td>
+                            <td>@item.ReasonOfCancel</td>
+                            <td>@item.Approvedby</td>
+                            <td>@item.CC</td>
+                            <td>@item.uid</td>
+                            <td>@item.Canceled</td>
+                            <td>@item.VoucherType</td>
+                            <td>@item.ApprovalDate</td>
+                            <td>@item.CancelDate</td>
+                            <td>@item.MachineName</td>
+                            <td>@item.CanSaleBillReqEntryid</td>
+                            <td>@item.CanSaleBillReqYearcode</td>
+                            <td>@item.SaleBillEntryId</td>
+                        </tr>
+                    }
+                }
+            }
+        </tbody>
+    </table>
+</div>
+<center><strong>TOTAL ROWS : <span id="totalRows">@Cntr</span></strong></center>
+
+
+
+<style>
+    #container {
+        display: flex;
+    }
+
+        #container > div {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+    #GateDataTable {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #dashGateThead th {
+        background-color: #127387;
+        position: sticky;
+        top: -2px;
+        z-index: 1;
+    }
+
+    .sort-icon {
+        padding: 5px;
+        margin: 5px;
+        vertical-align: top;
+    }
+
+    .ascCol {
+        font-size: 15px;
+        vertical-align: bottom;
+    }
+
+    .descCol {
+        font-size: 15px;
+        vertical-align: super;
+    }
+
+    table {
+        width: 100%; /* Ensure table fills the container width */
+    }
+
+    th, td {
+        white-space: nowrap; /* Prevent content from wrapping */
+    }
+</style>

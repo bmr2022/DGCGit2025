@@ -1,0 +1,44 @@
+﻿<h2 class="accordion-header" id="HPanel5">
+    <button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#BPanel5" aria-expanded="true" aria-controls="BPanel4">
+        <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Debit and Credit Amount Status</strong>
+        <small class="p-3"></small>
+    </button>
+    <div class="col-sm-auto  text-center">
+        <span class="fa-stack " onclick="RefreshDbCrDetail()" style="display: inline-grid;align-items: center;color: blue;font-size: initial;">
+            <i class="fa fa-square fa-stack-2x"></i>
+            <i class="fa-solid fa-refresh fa-stack-1x fa-inverse"></i>
+        </span>
+    </div>
+    <div class="col-sm-auto text-center">
+        <input type="text" class="form-control" id="dbCrsearch-box" style="margin-top:5px;background-color:#FFFACD" placeholder="Search..." fdprocessedid="jm023h">
+    </div>
+</h2>
+<div id="BPanel5" class="accordion-collapse collapse pnl1 bg-gradient" aria-labelledby="HPanel5">
+    <div class="card-body overflow-auto pb-0">
+        <div class="table-responsive" style="max-height:150px;">
+            <table class="table table-hover table-bordered table-striped" id="dbCrTable">
+                <thead class="bg-gradient card-headerBG text-light small" id="dbCrThead" style="white-space:nowrap">
+                    <tr id="headerRow">
+                        @* <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Seq No</th> *@
+                        @* <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Account Code</th> *@
+                        <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Account Name</th>
+                        <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Debit Amount</th>
+                        <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Credit Amount</th>
+                    </tr>
+
+                </thead>
+                <tbody id="divdbCrItemList">
+                </tbody>
+            </table>
+        </div>
+        <div class="progress my-3" style="height: 4px;">
+            <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+        <div class="row g-2 gx-3">
+            <div class="col-12 text-center">
+                <strong>TOTAL DEBIT : <span id="TotalDr"></span></strong>
+                <strong>, TOTAL CREDIT : <span id="TotalCr"></span></strong>
+            </div>
+        </div>
+    </div>
+</div>

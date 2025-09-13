@@ -1,0 +1,632 @@
+﻿@model eTactWeb.DOM.Models.SOApprovalModel
+
+@{
+    ViewData["Title"] = "SO Approval";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+<div class="shadow-lg">
+    <div class="card rounded border-light bg-gradient">
+        <div class="card-header card-headerBG text-light bg-gradient">
+            <h5>
+                SO Approval
+                <span class="d-flex float-end" style="margin-top:-2px;">
+                    @*<a asp-action="ReqWithoutBom" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                    <i class="fa fa-plus-circle fafw fa-lg" aria-hidden="true"></i>
+                    Add New
+                    </a>*@
+                </span>
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="card overflow-auto">
+                <div class="card-body">
+                    <form id="SParam">
+                        <div class="row">
+                            <div class="col-sm-3 col-md-6 col-lg-2 col-xl-4">
+                                <div class="row">
+                                    <div class="col">
+                                        <label class="form-label">From Date</label>
+                                        <input type="hidden" value="@Model.FromDate" id="finFromDate" />
+                                        <input type="hidden" value="@Model.ToDate" id="finToDate" />
+                                        <input type="hidden" value="@Model.ApprovalType" id="selectedApprovalType" />
+
+                                        <input asp-for="FromDate" maxlength="10" class="form-control" value="@Model.FromDate" />
+                                    </div>
+                                    <div class="col">
+                                        <label class="form-label">To Date</label>
+                                        <input asp-for="ToDate" maxlength="10" class="form-control" value="@Model.ToDate" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                                <label asp-for="ApprovalType" class="form-label">Approval Type</label>
+                                <select class="form-select" asp-for="ApprovalType">
+                                    <option value="" disabled>-Select-</option>
+                                    <option value="UnAppSO" selected>List of UnApproved SO</option>
+                                    <option value="AppSO">List of Approved SO</option>
+                                    <option value="AppAmmSO">List of UnApproved Amendment SO</option>
+                                    <option value="UnAppAmmSO">List of Approved Amendment SO</option>
+
+                                </select>
+                                <input type="hidden" id="approvalType" value="SO Approval" />
+                            </div>
+                            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                <label asp-for="SONo" class="form-label">SO NO</label>
+                                <input asp-for="SONo" class="form-control" />
+                            </div>
+                            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                <label asp-for="CustOrderNo" class="form-label">Cust OrderNo</label>
+                                <input asp-for="CustOrderNo" class="form-control" />
+                            </div>
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                                <label asp-for="VendorName" class="form-label">Vendor Name</label>
+                                <input asp-for="VendorName" class="form-control" />
+                            </div>
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                                <label asp-for="CC" class="form-label">Branch</label>
+                                <input asp-for="CC" class="form-control" value="@Model.CC" readonly />
+                            </div>
+
+                        </div>
+                        <div class=" d-flex justify-content-center mt-3" width="inherit">
+                            <button class="btn btn-sm btn-outline-info" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" onclick="GetSearchData();">
+                                <i class="fa-solid fa-magnifying-glass fa-fw fa-lg "></i>SHOW
+                            </button>
+                            <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
+                                <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
+                            </button>
+                            <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="SOApproval" asp-action="SOApproval">
+                                <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
+                            </a>
+                            <div class="ms-auto d-flex align-items-center">
+                                <div class="col-md-4">
+                                    <label class="form-label me-2">Global search</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control" id="search-box" placeholder="Search...">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="progress my-3 mb-3" style="height: 4px;">
+            <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+        <div class="card">
+            <div class="card-body overflow-auto pb-0">
+                <div class="table-responsive" style="max-height:350px;">
+                    <table class="table table-bordered table-striped TbCss text-nowrap mb-0" id="poAppTable">
+                        <thead class="bg-gradient card-headerBG text-light" style="position:static;" id="poAppThead">
+                            <tr>
+                                <th>Action</th>
+                                <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Vendor</th>
+                                <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO No</th>
+                                <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>CustOrder No</th>
+                                <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO Date</th>
+                                <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>WEF</th>
+                                <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>So Close Date</th>
+                                <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Order type</th>
+                                <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO Type</th>
+                                <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO For</th>
+                                <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Amm NO</th>
+                                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Amm Eff Date</th>
+                                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Address</th>
+                                <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Delivery Address</th>
+                                <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Order Amt</th>
+                                <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Order NetAmt</th>
+                                <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>EntryId</th>
+                                <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>YearCode</th>
+                            </tr>
+                        </thead>
+                        <tbody id="divSOAppGrid">
+                            <tr class="text-center">
+                                <td colspan="25" class="text-black-50"><strong>NO DATA YET</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <center><strong>TOTAL ROWS : <span id="totalRows"></span></strong></center>
+    </div>
+</div>
+
+@section Scripts
+    {
+    <script>
+        $(function () {
+            var approvalType = localStorage.getItem('ApprovalType');
+            if (approvalType) {
+                // Set it to hidden input
+                $("#ApprovalType").val(approvalType);
+            }
+            $(document).on("click", ".redirecttoapproval", function (e) {
+                  
+                e.preventDefault();
+                var newurl = this.href;
+                newurl = newurl + "&SONum=" + $('#SONo').val() + "&CustOrderNum=" + $('#CustOrderNo').val() + "&VendorNm=" + $('#VendorName').val();
+                window.location.href = newurl;
+            });
+             
+             
+            var urlString = window.location.href;
+            var url = new URL(urlString);
+            var VendorNameRegex = /[?&]VendorName=/;
+            if (VendorNameRegex.test(url.search)) {
+                var VNValue = url.searchParams.get("VendorName");
+                $('#VendorName').val(VNValue);
+            }
+            var SONORegex = /[?&]SONO=/;
+            if (SONORegex.test(url.search)) {
+                var SONOValue = url.searchParams.get("SONO");
+                $('#SONo').val(SONOValue);
+            }
+            var CustOrderRegex = /[?&]CustOrderNo=/;
+            if (CustOrderRegex.test(url.search)) {
+                var COValue = url.searchParams.get("CustOrderNo");
+                $('#CustOrderNo').val(COValue);
+            }
+
+            var currentDate = new Date();
+            var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+            function formatDate(date) {
+                var day = ("0" + date.getDate()).slice(-2);
+                var month = ("0" + (date.getMonth() + 1)).slice(-2);
+                var year = date.getFullYear();
+                var dateString = day + "/" + month + "/" + year;
+                return dateString;
+            }
+            //$('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+
+            $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatDate(firstDayOfMonth));
+            $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+
+            AutoComplete('VSALEORDER', 'VendorName', 'CustomerName', null);
+            AutoComplete('VSALEORDER', 'SONo', 'SONo', null);
+            AutoComplete('VSALEORDER', 'CC', 'CC', null);
+            AutoComplete('VSALEORDER', 'CustOrderNo', 'CustOrderNo', null);
+            GetTotalRows();
+            
+            GetInitialData();
+            //GetURLforSession();
+
+            //GetAllowedAction();
+
+            if ($('#selectedApprovalType').val() == 'SO Approval') {
+                $('#ApprovalType').val('UnAppSO').change();
+                GetSearchData();
+            }
+            if ($('#selectedApprovalType').val() == 'SO Unapproval') {
+                $('#ApprovalType').val('AppSO').change();
+                GetSearchData();
+            }
+            if ($('#selectedApprovalType').val() == 'SO Amendment Approval') {
+                $('#ApprovalType').val('AppAmmSO').change();
+                GetSearchData();
+            }
+            if ($('#selectedApprovalType').val() == 'SO Amendment Unapproval') {
+                $('#ApprovalType').val('UnAppAmmSO').change();
+                GetSearchData();
+            }
+        });
+        function GetURLforSession() {
+             
+            var currentURL = window.location.href;
+            if (currentURL.includes("type")) {
+                var approvalType = decodeURIComponent(currentURL.split("type=")[1]);
+                if (approvalType.includes('SO Approval')) {
+                    $('#ApprovalType').val('UnAppSO').change();
+                    
+                    GetInitialData();
+                }
+                if (approvalType.includes('SO Unapproval')) {
+                    $('#ApprovalType').val('AppSO').change();
+                    GetApprovedSO();
+                }
+                if (approvalType.includes('SO Amendment Approval')) {
+                    $('#ApprovalType').val('AppAmmSO').change();
+                    GetUnApprovedAmmSO();
+                }
+                if (approvalType.includes('SO Amendment Unapproval')) {
+                    $('#ApprovalType').val('UnAppAmmSO').change();
+                    GetApprovedAmmSO();
+                }
+
+            }
+            else {
+                //do nothing
+            }
+        }
+
+        var currentSearchColumn = null;
+
+        $("#search-box").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#divSOAppGrid tr").filter(function () {
+                if (currentSearchColumn !== null) {
+                    var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
+                    $(this).toggle(columnText.indexOf(value) > -1);
+                } else {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                }
+            });
+        });
+
+
+        $(document).on("click", "th[data-columnno]", function () {
+            currentSearchColumn = $(this).data('columnno');
+            $("#search-box").val('').trigger('keyup');
+        });
+
+        function GetInitialData() {
+             
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("GetUnApprovedSO")",
+                dataType: "json",
+                async: false,
+                success: function (result, status, error) {
+                    
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            var html = '';
+                            $('#divSOAppGrid').empty();
+                            var ammEffDate = "";
+
+                            for (var i = 0; i < obj.Result.Table.length; i++) {
+                                if (obj.Result.Table[i].AmmEffDate == null) {
+                                    ammEffDate = obj.Result.Table[i].AmmEffDate;
+                                }
+                                else {
+                                    ammEffDate = obj.Result.Table[i].AmmEffDate.split("T")[0];
+                                }
+
+                                html += '<tr id="' + i + '"><td style="text-align:center;white-space: nowrap;"><div id="container"  style="display: flex;"><div id="viewCursorDiv"><a class="tooltip-link" href="/SaleOrder/Index?ID=' + obj.Result.Table[i].EntryId + '&YC=' + obj.Result.Table[i].YearCode + '&Mode=' + "V" + '" style="height:30px !important;"><span class="fa-stack" ><i class="fa fa-eye" aria-hidden="true"></i></span></a></div><div id="viewCursorDiv"><a class="tooltip-link1 redirecttoapproval" href="/SOApproval/ShowSODetail?ID=' + obj.Result.Table[i].EntryId + '&YC=' + obj.Result.Table[i].YearCode + '&SONo=' + obj.Result.Table[i].SONo + '&CustOrderNo=' + obj.Result.Table[i].CustOrderNo + '&TypeOfApproval=' + $('#approvalType').val() + '&VendorName=' + $('#VendorName').val() + '"><span class="fa-stack" ><i style="color:red !important;" class="fa fa-eye" aria-hidden="true"></i></span></a></div></div></td><td id="VendorName' + i + '" >' + obj.Result.Table[i].Customer + '</td><td style="width: 100px!important; " id="SONo' + i + '">' + obj.Result.Table[i].SONo + '</td><td style="width: 80px!important; " id="CustOrderNo' + i + '">' + obj.Result.Table[i].CustOrderNo + '</td><td style="width: 80px!important; " id="SoDate' + i + '">' + obj.Result.Table[i].SoDate.split("T")[0] + '</td><td style="width: 80px!important; " id="WEF' + i + '">' + obj.Result.Table[i].WEF.split("T")[0] + '</td><td style="width: 50px!important; " id="SOCloseDate' + i + '">' + obj.Result.Table[i].SOCloseDate.split("T")[0] + '</td><td style="width: 120px!important; " id="OrderType' + i + '">' + obj.Result.Table[i].OrderType + '</td><td style="width: 80px!important; " id="SOType' + i + '">' + obj.Result.Table[i].SOType + '</td><td style="width: 50px!important; " id="SOFor' + i + '">' + obj.Result.Table[i].SOFor + '</td><td style="width: 80px!important; " id="AmmNo' + i + '">' + obj.Result.Table[i].AmmNo + '</td><td id="ShipTo' + i + '">' + obj.Result.Table[i].AmmEffDate.split("T")[0] + '</td><td style="width: 50px!important; " id="Address' + i + '">' + obj.Result.Table[i].Address + '</td><td style="width: 50px!important; " id="DelAddress' + i + '">' + obj.Result.Table[i].DeliveryAddress + '</td><td style="width: 50px!important; " id="OrderAmt' + i + '">' + obj.Result.Table[i].OrderAmt + '</td><td style="width: 50px!important; " id="OrderNetAmt' + i + '">' + obj.Result.Table[i].OrderNetAmt + '</td><td  style="width: 50px!important; " id="EntryId' + i + '">' + obj.Result.Table[i].EntryId + '</td><td style="width: 50px!important; " id="YearCode' + i + '">' + obj.Result.Table[i].YearCode + '</td></tr>';
+                             
+                            }
+                            $('#divSOAppGrid').append(html);
+                            GetTotalRows();
+                        }
+                            
+                    }
+                }
+            });
+        }
+
+        function GetApprovedSO() {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("GetApprovedSO")",
+                dataType: "json",
+                async: false,
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            var html = '';
+                            $('#divSOAppGrid').empty();
+                            var ammEffDate = "";
+
+                            for (var i = 0; i < obj.Result.Table.length; i++) {
+                                if (obj.Result.Table[i].AmmEffDate == null) {
+                                    ammEffDate = obj.Result.Table[i].AmmEffDate;
+                                }
+                                else {
+                                    ammEffDate = obj.Result.Table[i].AmmEffDate.split("T")[0];
+                                }
+
+                                html += '<tr id="' + i + '"><td style="text-align:center;white-space: nowrap;"><div id="container"  style="display: flex;"><div id="viewCursorDiv"><a class="tooltip-link" href="/SaleOrder/Index?ID=' + obj.Result.Table[i].EntryId + '&YC=' + obj.Result.Table[i].YearCode + '&Mode=' + "V" + '" style="height:30px !important;"><span class="fa-stack" ><i class="fa fa-eye" aria-hidden="true"></i></span></a></div><div id="viewCursorDiv"><a class="tooltip-link1 redirecttoapproval" href="/SOApproval/ShowSODetail?ID=' + obj.Result.Table[i].EntryId + '&YC=' + obj.Result.Table[i].YearCode + '&SONo=' + obj.Result.Table[i].SONo + '&CustOrderNo=' + obj.Result.Table[i].CustOrderNo + '&TypeOfApproval=' + $('#approvalType').val() + '&VendorName=' + $('#VendorName').val() + '"><span class="fa-stack" ><i style="color:red !important;" class="fa-solid fa-floppy-disk-pen fa-fw fa-lg" aria-hidden="true"></i></span></a></div></div></td><td id="VendorName' + i + '" >' + obj.Result.Table[i].Customer + '</td><td style="width: 100px!important; " id="SONo' + i + '">' + obj.Result.Table[i].SONo + '</td><td style="width: 80px!important; " id="CustOrderNo' + i + '">' + obj.Result.Table[i].CustOrderNo + '</td><td style="width: 80px!important; " id="SoDate' + i + '">' + obj.Result.Table[i].SoDate.split("T")[0] + '</td><td style="width: 80px!important; " id="WEF' + i + '">' + obj.Result.Table[i].WEF.split("T")[0] + '</td><td style="width: 50px!important; " id="SOCloseDate' + i + '">' + obj.Result.Table[i].SOCloseDate.split("T")[0] + '</td><td style="width: 120px!important; " id="OrderType' + i + '">' + obj.Result.Table[i].OrderType + '</td><td style="width: 80px!important; " id="SOType' + i + '">' + obj.Result.Table[i].SOType + '</td><td style="width: 50px!important; " id="SOFor' + i + '">' + obj.Result.Table[i].SOFor + '</td><td style="width: 80px!important; " id="AmmNo' + i + '">' + obj.Result.Table[i].AmmNo + '</td><td id="ShipTo' + i + '">' + obj.Result.Table[i].AmmEffDate.split("T")[0] + '</td><td style="width: 50px!important; " id="Address' + i + '">' + obj.Result.Table[i].Address + '</td><td style="width: 50px!important; " id="DelAddress' + i + '">' + obj.Result.Table[i].DeliveryAddress + '</td><td style="width: 50px!important; " id="OrderAmt' + i + '">' + obj.Result.Table[i].OrderAmt + '</td><td style="width: 50px!important; " id="OrderNetAmt' + i + '">' + obj.Result.Table[i].OrderNetAmt + '</td><td  style="width: 50px!important; " id="EntryId' + i + '">' + obj.Result.Table[i].EntryId + '</td><td style="width: 50px!important; " id="YearCode' + i + '">' + obj.Result.Table[i].YearCode + '</td></tr>';
+
+                            }
+                            $('#divSOAppGrid').append(html);
+                            GetTotalRows();
+                        }
+
+                    }
+                }
+            });
+        }
+
+        function GetSearchData() {
+            //var data = $('#SParam').serialize();
+             
+            $.ajax({
+                url: '@Url.Action("GetSearchData")',
+                type: "POST",
+                async: false,
+                data: { FromDate: $('#FromDate').val(), ToDate: $('#ToDate').val(), ApprovalType: $('#ApprovalType').val(), SONO: $('#SONo').val(), AccountName: $('#VendorName').val(), CustOrderNo: $('#CustOrderNo').val() },
+                success: function (result) {
+                     
+                    $('#divSOAppGrid').empty();
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            var html = '';
+                            $('#divSOAppGrid').empty();
+                            var ammEffDate = "";
+
+                            for (var i = 0; i < obj.Result.Table.length; i++) {
+                                if (obj.Result.Table[i].AmmEffDate == null) {
+                                    ammEffDate = obj.Result.Table[i].AmmEffDate;
+                                }
+                                else {
+                                    ammEffDate = obj.Result.Table[i].AmmEffDate.split("T")[0];
+                                }
+                                html += '<tr id="' + i + '"><td style="text-align:center;white-space: nowrap;"><div id="container"  style="display: flex;"><div id="viewCursorDiv"><a class="tooltip-link" href="/SaleOrder/Index?ID=' + obj.Result.Table[i].EntryId + '&YC=' + obj.Result.Table[i].YearCode + '&Mode=' + "V" + '" style="height:30px !important;"><span class="fa-stack" ><i class="fa fa-eye" aria-hidden="true"></i></span></a></div><div id="viewCursorDiv"><a class="tooltip-link1 redirecttoapproval" href="/SOApproval/ShowSODetail?ID=' + obj.Result.Table[i].EntryId + '&YC=' + obj.Result.Table[i].YearCode + '&SONo=' + obj.Result.Table[i].SONo + '&CustOrderNo=' + obj.Result.Table[i].CustOrderNo + '&TypeOfApproval=' + $('#approvalType').val() + '&VendorName=' + $('#VendorName').val() + '"><span class="fa-stack" ><i style="color:red;font-size: 15px; !important;" class="fa-regular fa-floppy-disk" aria-hidden="true"></i></span></a></div></div></td><td id="VendorName' + i + '" >' + obj.Result.Table[i].Customer + '</td><td style="width: 100px!important; " id="SONo' + i + '">' + obj.Result.Table[i].SONo + '</td><td style="width: 80px!important; " id="CustOrderNo' + i + '">' + obj.Result.Table[i].CustOrderNo + '</td><td style="width: 80px!important; " id="SoDate' + i + '">' + obj.Result.Table[i].SoDate.split("T")[0] + '</td><td style="width: 80px!important; " id="WEF' + i + '">' + obj.Result.Table[i].WEF.split("T")[0] + '</td><td style="width: 50px!important; " id="SOCloseDate' + i + '">' + obj.Result.Table[i].SOCloseDate.split("T")[0] + '</td><td style="width: 120px!important; " id="OrderType' + i + '">' + obj.Result.Table[i].OrderType + '</td><td style="width: 80px!important; " id="SOType' + i + '">' + obj.Result.Table[i].SOType + '</td><td style="width: 50px!important; " id="SOFor' + i + '">' + obj.Result.Table[i].SOFor + '</td><td style="width: 80px!important; " id="AmmNo' + i + '">' + obj.Result.Table[i].AmmNo + '</td><td id="ShipTo' + i + '">' + obj.Result.Table[i].AmmEffDate.split("T")[0] + '</td><td style="width: 50px!important; " id="Address' + i + '">' + obj.Result.Table[i].Address + '</td><td style="width: 50px!important; " id="DelAddress' + i + '">' + obj.Result.Table[i].DeliveryAddress + '</td><td style="width: 50px!important; " id="OrderAmt' + i + '">' + obj.Result.Table[i].OrderAmt + '</td><td style="width: 50px!important; " id="OrderNetAmt' + i + '">' + obj.Result.Table[i].OrderNetAmt + '</td><td  style="width: 50px!important; " id="EntryId' + i + '">' + obj.Result.Table[i].EntryId + '</td><td style="width: 50px!important; " id="YearCode' + i + '">' + obj.Result.Table[i].YearCode + '</td></tr>';
+
+                            }
+                            $('#divSOAppGrid').append(html);
+                            GetTotalRows();
+                        }
+                    }
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+        function GetUnApprovedAmmSO() {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("GetUnApprovedAmmSO")",
+                dataType: "json",
+                async: false,
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            var html = '';
+                            $('#divSOAppGrid').empty();
+                            var ammEffDate = "";
+
+                            for (var i = 0; i < obj.Result.Table.length; i++) {
+                                if (obj.Result.Table[i].AmmEffDate == null) {
+                                    ammEffDate = obj.Result.Table[i].AmmEffDate;
+                                }
+                                else {
+                                    ammEffDate = obj.Result.Table[i].AmmEffDate.split("T")[0];
+                                }
+
+                                html += '<tr id="' + i + '"><td style="text-align:center;white-space: nowrap;"><div id="container"  style="display: flex;"><div id="viewCursorDiv"><a class="tooltip-link" href="/SaleOrder/Index?ID=' + obj.Result.Table[i].EntryId + '&YC=' + obj.Result.Table[i].YearCode + '&Mode=' + "V" + '" style="height:30px !important;"><span class="fa-stack" ><i class="fa fa-eye" aria-hidden="true"></i></span></a></div><div id="viewCursorDiv"><a class="tooltip-link1 redirecttoapproval" href="/SOApproval/ShowSODetail?ID=' + obj.Result.Table[i].EntryId + '&YC=' + obj.Result.Table[i].YearCode + '&SONo=' + obj.Result.Table[i].SONo + '&CustOrderNo=' + obj.Result.Table[i].CustOrderNo + '&TypeOfApproval=' + $('#approvalType').val() + '&VendorName=' + $('#VendorName').val() + '"><span class="fa-stack" ><i style="color:red !important;" class="fa-solid fa-floppy-disk-pen fa-fw fa-lg" aria-hidden="true"></i></span></a></div></div></td><td id="VendorName' + i + '" >' + obj.Result.Table[i].Customer + '</td><td style="width: 100px!important; " id="SONo' + i + '">' + obj.Result.Table[i].SONo + '</td><td style="width: 80px!important; " id="CustOrderNo' + i + '">' + obj.Result.Table[i].CustOrderNo + '</td><td style="width: 80px!important; " id="SoDate' + i + '">' + obj.Result.Table[i].SoDate.split("T")[0] + '</td><td style="width: 80px!important; " id="WEF' + i + '">' + obj.Result.Table[i].WEF.split("T")[0] + '</td><td style="width: 50px!important; " id="SOCloseDate' + i + '">' + obj.Result.Table[i].SOCloseDate.split("T")[0] + '</td><td style="width: 120px!important; " id="OrderType' + i + '">' + obj.Result.Table[i].OrderType + '</td><td style="width: 80px!important; " id="SOType' + i + '">' + obj.Result.Table[i].SOType + '</td><td style="width: 50px!important; " id="SOFor' + i + '">' + obj.Result.Table[i].SOFor + '</td><td style="width: 80px!important; " id="AmmNo' + i + '">' + obj.Result.Table[i].AmmNo + '</td><td id="ShipTo' + i + '">' + obj.Result.Table[i].AmmEffDate.split("T")[0] + '</td><td style="width: 50px!important; " id="Address' + i + '">' + obj.Result.Table[i].Address + '</td><td style="width: 50px!important; " id="DelAddress' + i + '">' + obj.Result.Table[i].DeliveryAddress + '</td><td style="width: 50px!important; " id="OrderAmt' + i + '">' + obj.Result.Table[i].OrderAmt + '</td><td style="width: 50px!important; " id="OrderNetAmt' + i + '">' + obj.Result.Table[i].OrderNetAmt + '</td><td  style="width: 50px!important; " id="EntryId' + i + '">' + obj.Result.Table[i].EntryId + '</td><td style="width: 50px!important; " id="YearCode' + i + '">' + obj.Result.Table[i].YearCode + '</td></tr>';
+
+                            }
+                            $('#divSOAppGrid').append(html);
+                            GetTotalRows();
+                        }
+
+                    }
+                }
+            });
+        }
+
+        function GetApprovedAmmSO() {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("GetApprovedAmmSO")",
+                dataType: "json",
+                async: false,
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            var html = '';
+                            $('#divSOAppGrid').empty();
+                            var ammEffDate = "";
+
+                            for (var i = 0; i < obj.Result.Table.length; i++) {
+                                if (obj.Result.Table[i].AmmEffDate == null) {
+                                    ammEffDate = obj.Result.Table[i].AmmEffDate;
+                                }
+                                else {
+                                    ammEffDate = obj.Result.Table[i].AmmEffDate.split("T")[0];
+                                }
+
+                                html += '<tr id="' + i + '"><td style="text-align:center;white-space: nowrap;"><div id="container"  style="display: flex;"><div id="viewCursorDiv"><a class="tooltip-link" href="/SaleOrder/Index?ID=' + obj.Result.Table[i].EntryId + '&YC=' + obj.Result.Table[i].YearCode + '&Mode=' + "V" + '" style="height:30px !important;"><span class="fa-stack" ><i class="fa fa-eye" aria-hidden="true"></i></span></a></div><div id="viewCursorDiv"><a class="tooltip-link1 redirecttoapproval" href="/SOApproval/ShowSODetail?ID=' + obj.Result.Table[i].EntryId + '&YC=' + obj.Result.Table[i].YearCode + '&SONo=' + obj.Result.Table[i].SONo + '&CustOrderNo=' + obj.Result.Table[i].CustOrderNo + '&TypeOfApproval=' + $('#approvalType').val() + '&VendorName=' + $('#VendorName').val() + '"><span class="fa-stack" ><i style="color:red !important;" class="fa-solid fa-floppy-disk-pen fa-fw fa-lg" aria-hidden="true"></i></span></a></div></div></td><td id="VendorName' + i + '" >' + obj.Result.Table[i].Customer + '</td><td style="width: 100px!important; " id="SONo' + i + '">' + obj.Result.Table[i].SONo + '</td><td style="width: 80px!important; " id="CustOrderNo' + i + '">' + obj.Result.Table[i].CustOrderNo + '</td><td style="width: 80px!important; " id="SoDate' + i + '">' + obj.Result.Table[i].SoDate.split("T")[0] + '</td><td style="width: 80px!important; " id="WEF' + i + '">' + obj.Result.Table[i].WEF.split("T")[0] + '</td><td style="width: 50px!important; " id="SOCloseDate' + i + '">' + obj.Result.Table[i].SOCloseDate.split("T")[0] + '</td><td style="width: 120px!important; " id="OrderType' + i + '">' + obj.Result.Table[i].OrderType + '</td><td style="width: 80px!important; " id="SOType' + i + '">' + obj.Result.Table[i].SOType + '</td><td style="width: 50px!important; " id="SOFor' + i + '">' + obj.Result.Table[i].SOFor + '</td><td style="width: 80px!important; " id="AmmNo' + i + '">' + obj.Result.Table[i].AmmNo + '</td><td id="ShipTo' + i + '">' + obj.Result.Table[i].AmmEffDate.split("T")[0] + '</td><td style="width: 50px!important; " id="Address' + i + '">' + obj.Result.Table[i].Address + '</td><td style="width: 50px!important; " id="DelAddress' + i + '">' + obj.Result.Table[i].DeliveryAddress + '</td><td style="width: 50px!important; " id="OrderAmt' + i + '">' + obj.Result.Table[i].OrderAmt + '</td><td style="width: 50px!important; " id="OrderNetAmt' + i + '">' + obj.Result.Table[i].OrderNetAmt + '</td><td  style="width: 50px!important; " id="EntryId' + i + '">' + obj.Result.Table[i].EntryId + '</td><td style="width: 50px!important; " id="YearCode' + i + '">' + obj.Result.Table[i].YearCode + '</td></tr>';
+
+                            }
+                            $('#divSOAppGrid').append(html);
+                            GetTotalRows();
+                        }
+
+                    }
+                }
+            });
+        }
+
+        $('#ApprovalType').change(function () {
+            if ($(this).val() == 'UnAppSO') {
+                $('#approvalType').val('SO Approval');
+                //GetInitialData();
+            }
+            else if ($(this).val() == 'AppSO') {
+                $('#approvalType').val('SO Unapproval');
+
+                //GetApprovedSO();
+            } else if ($(this).val() == 'AppAmmSO') {
+                $('#approvalType').val('SO Amendment Approval');
+
+                // GetUnApprovedAmmSO();
+            } else if ($(this).val() == 'UnAppAmmSO') {
+                $('#approvalType').val('SO Amendment Unapproval');
+
+                // GetApprovedAmmSO();
+            }
+            GetSearchData();
+            //$('#VendorName,#SONo').val('');
+        });
+
+        $('#sendToExcel').click(function () {
+            $('#poAppTable').table2excel({
+                filename: "SOApprovalTable.xls"
+            });
+        });
+
+        $(document).on("click", ".sortCol", function () {
+             
+            var $column = $(this).parent().closest("th");
+            var colno = $(this).data('columnno');
+            var currentOrder = $(this).data('sortorder');
+
+            $('.sortCol').css('color', 'white');
+
+            if (currentOrder === 'asc') {
+                sortTable(colno, false);
+                $(this).data('sortorder', 'desc');
+                $(this).css('color', 'yellow');
+                //$(this).css('font-size', 'larger');
+                $(this).find('i:first').removeClass('fa-arrow-up');
+                $(this).find('i:first').addClass('fa-arrow-down');
+            } else {
+                sortTable(colno, true);
+                $(this).data('sortorder', 'asc');
+                $(this).css('color', 'yellow');
+                // $(this).css('font-size', 'larger');
+                $(this).find('i:first').removeClass('fa-arrow-down');
+                $(this).find('i:first').addClass('fa-arrow-up');
+            }
+        });
+
+        function sortTable(columnIndex, ascending) {
+             
+            var table = $('#poAppTable');
+            var rows = table.find('#divSOAppGrid > tr').toArray();
+
+            rows.sort(function (a, b) {
+                var aValue = $(a).find('td').eq(columnIndex).text();
+                var bValue = $(b).find('td').eq(columnIndex).text();
+
+                var aIntValue = 0;
+                var bIntValue = 0;
+                if (/^\d+$/.test(aValue) && /^\d+$/.test(bValue)) {
+                    aIntValue = parseInt(aValue, 10);
+                    bIntValue = parseInt(bValue, 10);
+                }
+
+                if (aIntValue > 0) {
+                    if (ascending) {
+                        return aValue - bValue;
+                    } else {
+                        return bValue - aValue;
+                    }
+                } else {
+                    if (ascending) {
+                        return aValue.localeCompare(bValue);
+                    } else {
+                        return bValue.localeCompare(aValue);
+                    }
+                }
+            });
+
+            $.each(rows, function (index, row) {
+                table.children('#divSOAppGrid').append(row);
+            });
+        }
+
+
+        async function GetTotalRows() {
+            var rowCount = $('#divSOAppGrid tr').length;
+            var columnCount = $('#divSOAppGrid tr td').length;
+
+            if (columnCount > 1) {
+                $('#totalRows').text(rowCount);
+            }
+            else {
+                $('#totalRows').text(0);
+            }
+        }
+
+    </script>
+    <script src="~/Scripts/table2excel.js"></script>
+}
+
+<style>
+    #poAppTable {
+        /*width: 100%;*/
+        border-collapse: collapse;
+    }
+
+    #poAppThead th {
+        background-color: #127387;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
+    tbody td {
+        /* Table cell styles */
+    }
+
+    .tooltip-link {
+        position: relative;
+    }
+
+        .tooltip-link::after {
+            content: "SHOW PO";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 5px;
+            background-color: #333;
+            color: #fff;
+            border-radius: 3px;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+
+        .tooltip-link:hover::after {
+            opacity: 1;
+            visibility: visible;
+        }
+
+    .tooltip-link1 {
+        position: relative;
+    }
+
+        .tooltip-link1::after {
+            content: "SHOW DETAIL";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 5px;
+            background-color: #333;
+            color: #fff;
+            border-radius: 3px;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+
+        .tooltip-link1:hover::after {
+            opacity: 1;
+            visibility: visible;
+        }
+
+    .sort-icon {
+        padding: 5px;
+        margin: 5px;
+        vertical-align: top;
+    }
+
+    .ascCol {
+        font-size: 15px;
+        vertical-align: bottom;
+    }
+
+    .descCol {
+        font-size: 15px;
+        vertical-align: super;
+    }
+</style>

@@ -1,0 +1,1564 @@
+﻿@model eTactWeb.DOM.Models.InProcessInspectionModel;
+@{
+	ViewData["Title"] = "In Process Inspection";
+	Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+<style>
+	.disabled-link {
+		pointer-events: none; /* Disables clicking */
+		color: gray; /* Makes it look disabled */
+		text-decoration: none; /* Removes underline */
+		cursor: not-allowed; /* Changes cursor */
+	}
+</style>
+
+<div class="card bg-gradient mb-3 border-light shadow-lg">
+	<form asp-action="InProcessInspection" asp-controller="InProcessInspection" method="post" autocomplete="on" class="form-horizontal">
+		
+			<div class="card-header card-headerBG text-light justify-content-center bg-gradient">
+				<h5>
+					<strong>InProcess Inspection</strong>
+					<span class="d-flex float-end" style="margin-top:-2px;">
+						<a asp-controller="InProcessInspection" asp-action="InProcessInspectionDashBoard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient DashBoard">
+							<i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
+							Dashboard
+						</a>
+						<div class="row justify-content-between g-2">
+							<div class="col-auto">
+								<a href="#" class="btn btn-primary btn-sm" onclick="PressBack();">
+									<i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+									BACK
+								</a>
+							</div>
+							@if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+							{
+								<div class="col-auto">
+									<a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+										<i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+										REFRESH
+									</a>
+								</div>
+								@if (Model.Mode == "U")
+								{
+									Model.Mode = "U";
+									<div class="col-auto">
+										<button type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+											<i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+											UPDATE
+										</button>
+									</div>
+								}
+
+								else
+								{
+									<div class="col-auto">
+										<button type="submit" class="btn btn-primary btn-sm submitBTN">
+											<i class="fa-solid fa-chevron-circle-right"></i>
+											SUBMIT
+										</button>
+									</div>
+								}
+							}
+						</div>
+					</span>
+				</h5>
+			</div>
+			<div class="card-body bg-light">
+				<div class="accordion shadow-lg" id="accordionItemCategory">
+					<div class="accordion-item">
+						<h2 class="accordion-header" id="H_ItemCategoryDetail">
+							<button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_ItemCategoryDetail"
+									aria-expanded="true" aria-controls="B_ItemCategoryDetail">
+								<strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Material Conversion</strong>
+								<small class="p-3"></small>
+							</button>
+						</h2>
+						<div id="B_ItemCategoryDetail" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_ItemCategoryDetail">
+							<div class="accordion-body">
+								<div class="row g-2">
+									<input type="hidden" value="@Model.Mode" asp-for="Mode" />
+									<input type="hidden" value="@Model.Entry_Date" asp-for="Entry_Date" />
+									<input type="hidden" value="@Environment.MachineName" asp-for="EntryByMachine" />
+									<input type="hidden" id="DeletedSeqNo" name="DeletedSeqNo" />
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+										<label asp-for="EntryId" class="form-label">Entry Id</label>
+										<input asp-for="EntryId" class="form-control" readonly />
+									</div>
+
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+										<label asp-for="YearCode" class="form-label">YearCode</label>
+										<input asp-for="YearCode" class="form-control" readonly />
+									</div>
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+										<label asp-for="TestingDate" class="form-label">Testing Date</label>
+										<input asp-for="TestingDate" class="form-control" readonly />
+									</div>
+									
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+										<label asp-for="InspectionType" class="form-label" style="color:red"> Inspection Type*</label>
+										<select class="form-control"  asp-for="InspectionType">
+											<option value="">-Select-</option>
+											<option value="Incoming" >Incoming</option>
+											<option value="InProcess">InProcess</option>
+											<option value="OutGoing" selected>OutGoing</option>
+											
+										</select>
+									</div>
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12"@*  style="width:180px;" *@>
+										<label asp-for="SlipNo" class="form-label">Slip No</label>
+										<input asp-for="SlipNo" class="form-control" />
+									</div>
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12"@*  style="width:130px;" *@>
+										<label asp-for="RevNo" class="form-label">Rev No</label>
+										<input asp-for="RevNo" class="form-control" />
+									</div>
+									<div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12"@*  style="width:100px;" *@>
+										<label asp-for="RevDate" class="form-label">Rev Date</label>
+										<input asp-for="RevDate" class="form-control" />
+									</div>
+									<input type="hidden" id="originalPartNo" value="@Model.PartNo" />
+									<input type="hidden" id="originalPartName" value="@Model.PartName" />
+
+									<input type="hidden" asp-for="ItemCode" />
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+										<label asp-for="PartNo" class="form-label" style="color:red" > Part No*</label>
+										<select class="form-control" id="PartNo" asp-for="PartNo" onchange="onPartChange('PartNo')">
+											<option value="">-Select-</option>
+											@if (Model.Mode == "U" || Model.Mode == "V")
+											{
+												<option value="@Model.ItemCode" selected>@Model.PartNo</option>
+											}
+										</select>
+									</div>
+
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+										<label asp-for="PartName" class="form-label" style="color:red" > Part Name*</label>
+										<select class="form-control" id="PartName" asp-for="PartName" >
+											<option value="">-Select-</option>
+											@if (Model.Mode == "U" || Model.Mode == "V")
+											{
+												<option value="@Model.ItemCode" selected>@Model.PartName</option>
+											}
+										</select>
+									</div>
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+										<input type="hidden" asp-for="AccountCode">
+										<label asp-for="CustomerName" class="form-label" > Customer Name</label>
+										<select class="form-control" asp-for="CustomerName">
+											<option value="">-Select-</option>
+											@if (Model.Mode == "U" || Model.Mode == "V")
+											{
+												<option value="@Model.AccountCode" selected>@Model.CustomerName</option>
+											}
+										</select>
+									</div>
+									
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" @* style="width:90px;" *@>
+										<label asp-for="ProjectNo" class="form-label">Project No</label>
+										<input asp-for="ProjectNo" class="form-control"  />
+									</div>
+									<div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12" @* style="width:90px;" *@>
+										<label asp-for="ProjectDate" class="form-label">Project Date</label>
+										<input asp-for="ProjectDate" class="form-control" />
+									</div>
+
+									
+									<div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12"@*  style="width:150px;" *@>
+										<label asp-for="InspTimeFrom" class="form-label"> Insp Time From</label>
+										<input asp-for="InspTimeFrom" class="form-control" type="time"  value="@DateTime.Now.ToString("HH:mm")" />
+									</div>
+									<div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12"@*  style="width:130px;" *@>
+										<label asp-for="InspTimeTo" class="form-label">Insp Time To</label>
+										<input asp-for="InspTimeTo" class="form-control" type="time"  value="@DateTime.Now.ToString("HH:mm")" />
+									</div>
+									<div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12" @* style="width:130px;" *@>
+										<label asp-for="SampleSize" class="form-label">Sample Size</label>
+										<input asp-for="SampleSize" class="form-control"
+											   id="SampleSize"
+											   type="number"
+											   min="1"
+											   max="25"
+											   step="1"
+											   oninput="this.value = this.value.replace(/[^0-9]/g,''); if(this.value < 1) this.value=1; GetInprocessInspectionGridData();" />
+									</div>
+
+
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+										<label asp-for="Color" class="form-label"> Color</label>
+										<select class="form-control" asp-for="Color">
+											<option value="">-Select-</option>
+											
+										</select>
+									</div>
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+										<label asp-for="Material" class="form-label"> Material</label>
+										<input asp-for="Material" class="form-control" />
+									</div>
+									<div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12"@*  style="width:90px;" *@>
+										<label asp-for="NoOfCavity" class="form-label">No Of Cavity</label>
+										<input asp-for="NoOfCavity" class="form-control"  />
+									</div>
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" @* style="width:120px;" *@>
+									
+										<label asp-for="MachineNo" class="form-label"> Machine No</label>
+										<select class="form-control" asp-for="MachineNo">
+											<option value="">-Select-</option>
+											@if (Model.Mode == "U" || Model.Mode == "V")
+											{
+												<option value="@Model.MachineNo" selected>@Model.MachineNo</option>
+											}
+										</select>
+										<input type="hidden" asp-for="MachineId" />
+									</div>
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" @* style="width:90px;" *@>
+										<label asp-for="LotNo" class="form-label">Lot No</label>
+										<input asp-for="LotNo" class="form-control"  />
+									</div>
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12"@*  style="width:90px;" *@>
+										<label asp-for="Shift" class="form-label"> Shift</label>
+										<input type="hidden" asp-for="ShiftID" />
+										<select class="form-control" asp-for="Shift">
+											<option value="">-Select-</option>
+											@if (Model.Mode == "U" || Model.Mode == "V")
+											{
+												<option value="@Model.ShiftID" selected>@Model.Shift</option>
+											}
+										</select>
+									</div>
+								
+
+									<div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12" @* style="width:130px;" *@>
+										<label class="form-label">Process Time</label>
+										<input asp-for=Time id="Time" name="Time" type="time" class="form-control" value="@DateTime.Now.ToString("HH:mm")" />
+									</div>
+
+									<div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12" @* style="width:130px;" *@>
+										<label asp-for="Date" class="form-label">Process Date</label>
+										<input asp-for="Date" class="form-control" />
+									</div>
+								
+
+										<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12 incomingFields" style="display:none;">
+											<label asp-for="MRNNo" class="form-label">MRN No</label>
+											<input asp-for="MRNNo" class="form-control" />
+										</div>
+										<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12 incomingFields" style="display:none;">
+											<label asp-for="MRNDate" class="form-label">MRN Date</label>
+											<input asp-for="MRNDate" class="form-control" />
+										</div>
+										<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12 incomingFields" style="display:none;">
+											<label asp-for="MRNYearCode" class="form-label">MRN YearCode</label>
+											<input asp-for="MRNYearCode" class="form-control" />
+										</div>
+										<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12 incomingFields" style="display:none;">
+											<label asp-for="MRNQty" class="form-label">MRN Qty</label>
+											<input asp-for="MRNQty" class="form-control" />
+										</div>
+									
+									
+										<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12 inprocessFields" style="display:none;">
+											<label asp-for="ProdSlipNo" class="form-label">ProdSlip No</label>
+											<input asp-for="ProdSlipNo" class="form-control" />
+										</div>
+										<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12 inprocessFields" style="display:none;">
+											<label asp-for="ProdDate" class="form-label">Prod Date</label>
+											<input asp-for="ProdDate" class="form-control" />
+										</div>
+										<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12 inprocessFields" style="display:none;">
+											<label asp-for="ProdYearCode" class="form-label">Prod YearCode</label>
+											<input asp-for="ProdYearCode" class="form-control" />
+										</div>
+										<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12 inprocessFields" style="display:none;">
+											<label asp-for="ProdQty" class="form-label">Prod Qty</label>
+											<input asp-for="ProdQty" class="form-control" />
+										</div>
+									<div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12"@*  style="width:90px;" *@>
+									<label asp-for="FML" class="form-label"> FML</label>
+										<select class="form-control" asp-for="FML" style="width:80px;">
+											<option value="">-Select-</option>
+											<option value="First">First</option>
+											<option value="Middle">Middle</option>
+											<option value="Last">Last</option>
+										</select>
+									</div>
+
+								
+									
+									@* <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+										<label asp-for="SelectedInspections" class="control-label">Inspection List</label>
+										<select id="Inspection" class="form-select" multiple="multiple"
+												asp-for="SelectedInspections"
+												asp-items="@(new SelectList(Model.InspectionOptions, "Key", "Text"))">
+										</select>
+									</div> *@
+									<div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-top:22px;width:280px;" >
+										<select id="Inspection" class="form-select" multiple
+												asp-for="SelectedInspections"
+												asp-items="@(new SelectList(Model.InspectionOptions, "Key", "Text", Model.SelectedInspections))">
+										</select>
+
+									</div>
+								
+									<div class="col-md-2 mt-1 mb-1">
+										<label  class="form-label">Search</label>
+										<input type="text" class="form-control" id="search-box" placeholder="Search..." style="background-color:#FFFACD;margine-top:22px;">
+									</div>
+								</div>
+								<div class="progress my-2 mb-3" style="height: 4px;">
+									<div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+								</div>
+							
+
+								<h2 class="accordion-header d-flex align-items-center justify-content-between" id="H_SAGrid">
+									<button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button"
+											data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+										<strong class="text-uppercase">
+											<i class="fa-solid fa-table-list fa-lg fa-fw pr-2 fa-fade" style="--fa-animation-duration:2s; --fa-fade-opacity:0.6;"></i>
+											InProcess Inspection Grid
+										</strong>
+									</button>
+									<button type="button" id="GridButton"
+											class="btn btn-sm btn-outline-danger ms-2">
+										<i class="fa-duotone fa-angle-double-down fa-fw fa-lg"></i>
+										ADD TO GRID
+									</button>
+									
+								</h2>
+
+								<div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradientn show" aria-labelledby="H_SAGrid">
+									<div class="accordion-body">
+										<div class="card-body" id="divPendingMRP">
+											
+
+											<div class="col-md-12 divStockRegister" id="divinProcessInspectionGrid" >
+												<partial name="_InprocessInspectionGrid" />
+											</div>
+										</div>
+										<div class="row g-2 gx-3">
+											<div class="col-12 text-center">
+
+												<strong>TOTAL NO OF ITEMS : <span id="totalRows"></span></strong>
+											</div>
+										</div>
+
+									</div>
+							    </div>
+								@* <div class="d-flex">
+									
+								</div> *@
+								<div class="card">
+									<div class="card-body" id="divPendingMRP">
+										<div class="col-md-12 divStockRegister" id="divStockGrid" >
+											<partial name="_InProcessInspectionAddtoGrid" />
+										</div>
+									</div>
+									
+								</div>
+							</div>
+							<div class="row g-2 gx-3">
+								<div class="col-12 text-center">
+									<strong>TOTAL NO OF ITEMS : <span id="lblItemCount"></span></strong>
+								</div>
+							</div>
+						</div>
+
+					</div>
+
+
+				</div>
+				<div class="accordion-item">
+								<h2 class="accordion-header" id="OtherGrid">
+										<button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#OtherGridDetail" aria-expanded="true" aria-controls="OtherGridDetail">
+										<strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Other Detail</strong>
+									</button>
+								</h2>
+								<div id="OtherGridDetail" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="OtherGrid">
+									<div class="accordion-body">
+
+										<div class="row g-2 gx-3" id="_ItemGrid">
+												<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
+													<label asp-for="InpectionJudgement" class="form-label">Inpection Judgement</label>
+													<input asp-for="InpectionJudgement" class="form-control" />
+												</div>
+												<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
+													<label asp-for="InspectedOther1" class="form-label">Inspected Other 1</label>
+													<input asp-for="InspectedOther1" class="form-control" />
+												</div>
+												<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
+													<label asp-for="InspectedOther2" class="form-label">Inspected Other 2</label>
+													<input asp-for="InspectedOther2" class="form-control" />
+												</div>
+												<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
+													<label asp-for="InspectedOther3" class="form-label">Inspected Other3</label>
+													<input asp-for="InspectedOther3" class="form-control" />
+												</div>
+												<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
+													<label asp-for="Remark" class="form-label">Remark</label>
+													<input asp-for="Remark" class="form-control" />
+												</div>
+												<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
+													<label asp-for="InspActqty" class="form-label">Insp Act Qty</label>
+													<input asp-for="InspActqty" class="form-control" />
+												</div>
+												<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
+													<label asp-for="OkQty" class="form-label">Ok Qty</label>
+													<input asp-for="OkQty" class="form-control" />
+												</div>
+												<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
+													<label asp-for="Rejqty" class="form-label">Rej Qty</label>
+													<input asp-for="Rejqty" class="form-control" />
+												</div>
+												<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
+													<label asp-for="Weight" class="form-label">Weight</label>
+													<input asp-for="Weight" class="form-control" />
+												</div>
+											<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+												<label asp-for="UId" class="form-label">UID</label>
+												<input asp-for="UId" class="form-control" readonly />
+											</div>
+											<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+												<label asp-for="ApprovedBy" class="form-label">ApprovedBy</label>
+												<input type="hidden" asp-for="ApprovedBy" />
+												<input asp-for="ApprovedByEmpName" class="form-control" readonly />
+											</div>
+											<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+													<label asp-for="InspectedBy" class="form-label">InspectedBy</label>
+												<input type="hidden" asp-for="ApprovedBy" />
+													<input asp-for="InspectedByEmpName" class="form-control" readonly />
+											</div>
+
+
+
+											<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+												<label asp-for="CC" class="form-label">CC</label>
+												<input asp-for="CC " class="form-control" value="@Model.CC" readonly />
+											</div>
+
+											<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+												<label asp-for="ActualEntryBy" class="form-label">ActualEntryBy</label>
+												<input asp-for="ActualEntryByName " class="form-control" readonly />
+											</div>
+											<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+												<label asp-for="ActualEntryDate" class="form-label">ActualEntryDate</label>
+												<input asp-for="ActualEntryDate " class="form-control" readonly />
+											</div>
+
+											<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+												<label asp-for="LastUpdatedBy" class="form-label">Updated By</label>
+												<input asp-for="LastUpdatedByName" class="form-control" readonly />
+											</div>
+
+											<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+												<label asp-for="LastUpdationDate" class="form-label">UpdationDate</label>
+												<input asp-for="LastUpdationDate" class="form-control" readonly />
+											</div>
+											<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+												<label asp-for="EntryByMachine" class="form-label">Machine Name</label>
+												<input asp-for="EntryByMachine" class="form-control" value="@Environment.MachineName" readonly />
+											</div>
+
+										</div>
+									</div>
+
+								</div>
+							</div>
+						
+			</div>
+		
+
+
+				<div class="card-footer p-3">
+					<div class="row justify-content-between g-2">
+						<div class="card-header card-headerBG text-light bg-gradient">
+							<h5>
+								<strong>InProcess Inspection</strong>
+								<span class="d-flex float-end" style="margin-top:-2px;">
+
+									@*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">*@
+									<a asp-controller="MaterialConversion" asp-action="MaterialConversionDashBoard" tabindex="-1" asp-route-ID="0" class="btn btn-secondary btn-sm DashBoard">
+										<i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+										Dashboard
+									</a>
+									<div class="row justify-content-between g-2">
+										<div class="col-auto">
+
+											<a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
+												<i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+												BACK
+											</a>
+										</div>
+										@if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+										{
+											<div class="col-auto">
+												@*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+												<a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+													@* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+													<i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+													REFRESH
+												</a>
+											</div>
+											@if (Model.Mode == "U")
+											{
+												@*Model.Mode = "U";*@
+												<div class="col-auto">
+													@* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+													<button type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+														<i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+														UPDATE
+													</button>
+												</div>
+											}
+											else
+											{
+												<div class="col-auto">
+													<button type="submit" class="btn btn-primary btn-sm submitBTN">
+														<i class="fa-solid fa-chevron-circle-right"></i>
+														SUBMIT
+													</button>
+												</div>
+											}
+										}
+									</div>
+								</span>
+							</h5>
+						</div>
+					</div>
+				</div>
+	      
+	</form>
+</div>
+
+
+
+@section Scripts {
+	<script>
+		
+		$(document).ready(function () {
+			GetFormRights();
+			if ($('#Mode').val() !== "U") {
+				setFormattedDate();
+				FillEntryID();
+				
+				
+			}
+			setFormattedDate();
+			TotalNoOfRows();
+			UpdateInspectionRowCount();
+			const now = new Date();
+			const hours = now.getHours().toString().padStart(2, '0');
+			const minutes = now.getMinutes().toString().padStart(2, '0');
+			document.getElementById("Time").value = `${hours}:${minutes}`;
+			document.getElementById("InspTimeFrom").value = `${hours}:${minutes}`;
+			document.getElementById("InspTimeTo").value = `${hours}:${minutes}`;
+			GetInprocessInspectionGridData();
+
+			//$('#SlipDate').rules("remove", "required");
+
+			var InspectionType = $('#InspectionType').val();
+			if (!InspectionType || InspectionType === '' || InspectionType === null) {
+
+				$.notify('Inspection Type is mandatory to display the PartNo!', 'error');
+			}
+			var PartNo = $('#PartNo').val();
+			if (!PartNo || PartNo === '' || PartNo === null) {
+				$.notify('PartNo is mandatory to display the Color & Grid Data!', 'error');
+			}
+			$('#InpectionJudgement').rules("remove", "required");
+			$('#InspectedOther1').rules("remove", "required");
+			$('#InspectedOther2').rules("remove", "required");
+			$('#InspectedOther3').rules("remove", "required");
+			$('#Remark').rules("remove", "required");
+			$('#InspActqty').rules("remove", "required");
+			$('#OkQty').rules("remove", "required");
+			$('#Rejqty').rules("remove", "required");
+			$('#Weight').rules("remove", "required");
+			$('#UId').rules("remove", "required");
+			$('#ApprovedBy').rules("remove", "required");
+			$('#InspectedBy').rules("remove", "required");
+			$('#CC').rules("remove", "required");
+			$('#ActualEntryBy').rules("remove", "required");
+			$('#ActualEntryDate').rules("remove", "required");
+			$('#ActualEntryByName').rules("remove", "required");
+			$('#LastUpdatedBy').rules("remove", "required");
+			$('#LastUpdatedByName').rules("remove", "required");
+			$('#LastUpdationDate').rules("remove", "required");
+			$('#EntryByMachine').rules("remove", "required");
+			$('#EntryId').rules("remove", "required");
+			$('#YearCode').rules("remove", "required");
+			$('#TestingDate').rules("remove", "required");
+			$('#InspectionType').rules("remove", "required");
+			$('#SlipNo').rules("remove", "required");
+			$('#RevNo').rules("remove", "required");
+			$('#RevDate').rules("remove", "required");
+			$('#PartNo').rules("remove", "required");
+			$('#PartName').rules("remove", "required");
+			$('#CustomerName').rules("remove", "required");
+			$('#ProjectNo').rules("remove", "required");
+			$('#ProjectDate').rules("remove", "required");
+			$('#InspTimeFrom').rules("remove", "required");
+			$('#InspTimeTo').rules("remove", "required");
+			$('#SampleSize').rules("remove", "required");
+			$('#Color').rules("remove", "required");
+			$('#Material').rules("remove", "required");
+			$('#NoOfCavity').rules("remove", "required");
+			$('#MachineNo').rules("remove", "required");
+			$('#LotNo').rules("remove", "required");
+			$('#Shift').rules("remove", "required");
+			$('#Time').rules("remove", "required");
+			$('#Date').rules("remove", "required");
+			$('#MRNNo').rules("remove", "required");
+			$('#MRNDate').rules("remove", "required");
+			$('#MRNYearCode').rules("remove", "required");
+			$('#MRNQty').rules("remove", "required");
+			$('#ProdSlipNo').rules("remove", "required");
+			$('#ProdDate').rules("remove", "required");
+			$('#ProdYearCode').rules("remove", "required");
+			$('#ProdQty').rules("remove", "required");
+			$('#Inspection').rules("remove", "required");
+			$('#InspectedBeginingOfProd').rules("remove", "required");
+			$('#InspectedAfterMoldCorrection').rules("remove", "required");
+			$('#InspectedAfterLotChange').rules("remove", "required");
+			$('#InspectedAfterMachinIdel').rules("remove", "required");
+			$('#InspectedEndOfProd').rules("remove", "required");
+
+
+			toggleFields();
+			$('#InspectionType').select2();
+			$('#PartNo').select2();
+			$('#PartName').select2();
+			$('#CustomerName').select2();
+			$('#Color').select2();
+			
+			$('#MachineNo').select2();
+			$('#Shift').select2();
+
+			
+
+
+			FillPartName();
+			FillMachineName();
+			FillCustomer();
+			FillShift();
+	
+		
+			$('#GridButton').click(function (e) {
+				setFormattedDate();
+			});
+			if ($('#InspectionType').val() !== '') {
+				FillPartCode();
+			}
+
+				$("#NoOfCavity").on("input", function () {
+				let value = $(this).val();
+
+
+				if (!/^\d*$/.test(value)) {
+					$(this).val(value.replace(/[^0-9]/g, ""));
+					$.notify("Only numbers (0-9) are allowed!", "error");
+				}
+
+
+				if (value.startsWith("-")) {
+					$(this).val("");
+					$.notify("Negative values are not allowed!", "error");
+				}
+			});
+			$('#SampleSize').on('keydown', function (e) {
+				if (e.key === '-' || e.keyCode === 189 || e.keyCode === 109) {
+					e.preventDefault();
+				}
+			});
+			$('#SampleSize').on('blur', function () {
+				let sampleSize = parseInt($(this).val(), 10);
+
+				if (sampleSize > 25) {
+					$(this).val(25);
+					$.notify("⚠️ Sample Size cannot be more than 25", "error");
+				}
+			});
+			$('.submitBTN').click(function (e) {
+
+				console.log("SubmitButton Click");
+				e.preventDefault();
+				//$(this).off('click');
+				$('form').submit();
+			});
+
+			
+		});
+		if ($('#Mode').val() === "U" || $('#Mode').val() === "V") {
+			$('#ItemCode').val($('#PartNo').val());
+		}
+		if ($('#Mode').val() === "U" || $('#Mode').val() === "V") {
+			$('#ItemCode').val($('#PartName').val());
+		}
+		if ($('#Mode').val() === "U" || $('#Mode').val() === "V") {
+			$('#MachineId').val($('#MachineNo').val());
+		}
+		if ($('#Mode').val() === "U" || $('#Mode').val() === "V") {
+			$('#AccountCode').val($('#CustomerName').val());
+		}
+		function onPartChange(fieldId) {
+			var original = $('#original' + fieldId).val();
+			var current = $('#' + fieldId).val();
+
+			if (original !== current) {
+				if (confirm("Changing the part will reset the grid. Do you want to proceed?")) {
+				
+					$('#divStockGrid tbody').empty();
+					
+				} else {
+					
+					$('#' + fieldId).val(original);
+				}
+			}
+		}
+
+		$("#search-box").on("keyup", function () {
+			var value = $(this).val().toLowerCase();
+			$("#divinProcessInspectionGrid tbody tr").filter(function () {
+				if (currentSearchColumn !== null) {
+					var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
+					$(this).toggle(columnText.indexOf(value) > -1);
+				} else {
+					$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+				}
+			});
+		});
+		$(document).on('blur', '.sample-input', function () {
+			let $input = $(this);
+			let from = parseFloat($input.data('from'));
+			let to = parseFloat($input.data('to'));
+			let value = $input.val().trim();
+
+		
+			if (value === "") {
+				$input.val("Ok").css("color", "");
+				return; 
+			}
+
+		
+			if (!isNaN(from) && !isNaN(to)) {
+				if (!$.isNumeric(value) && value !== "Ok") {
+					$input.css("color", "red");
+				} else {
+					let numericValue = parseFloat(value);
+					if (numericValue < from || numericValue > to) {
+						$input.css("color", "red");
+					} else {
+						$input.css("color", "");
+					}
+				}
+			} else {
+				
+				$input.css("color", "");
+			}
+		});
+		
+
+		
+		function setFormattedDate() {
+			var today = new Date();
+			var day = ('0' + today.getDate()).slice(-2);
+			var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+			var month = monthNames[today.getMonth()];
+			var year = today.getFullYear();
+
+			var formattedDate = day + '/' + month + '/' + year;
+
+			$('#Date,#ActualEntryDate,#UpdationDate,#RevDate,#TestingDate,#ProjectDate,#Entry_Date')
+				.datepicker({ dateFormat: 'dd/M/yy' })
+				.val(formattedDate);
+		}
+
+		$('#InspectionType').change(function () {
+			
+			toggleFields();
+			FillPartCode();
+		});
+		
+
+		function toggleFields() {
+			var selectedType = $('#InspectionType').val();
+
+			$('.incomingFields').toggle(selectedType === "Incoming");
+			$('.inprocessFields').toggle(selectedType === "InProcess");
+
+			// If selectedType is neither, hide both
+			if (selectedType !== "Incoming" && selectedType !== "InProcess") {
+				$('.incomingFields, .inprocessFields').hide();
+			}
+		}
+
+		$('#InspectionType').change(function () {
+			
+		});
+		$('#PartNo').change(function () {
+			FillColor();
+		});
+		if ($('#PartNo').val() !== '') {
+			FillColor();
+		}
+		$('#PartNo').change(function () {
+			$('#ItemCode').val($('#PartNo').val());
+		});
+		$('#PartName').change(function () {
+			GetInprocessInspectionGridData();
+		});
+
+		$('#PartName').change(function () {
+            $('#ItemCode').val($('#PartName').val());
+        });
+	
+
+
+		$('#Shift').change(function () {
+			$('#ShiftID').val($(this).val());
+		})
+		$('#CustomerName').change(function () {
+			$('#AccountCode').val($(this).val());
+		})
+		$('#MachineNo').change(function () {
+
+			$('#MachineId').val($(this).val());
+		})
+
+
+		$('#AltStoreName').change(function () {
+			$('#AltStoreId').val($('#AltStoreName').val());
+		});
+		function selection(CurrentRow) {
+
+			$(CurrentRow).css({ 'background-color': '#00bcd4' });
+			$("#divStockRegisterBody tr").not(CurrentRow).css({ 'background-color': '' });
+		}
+
+
+		$('#Inspection').multiselect({
+			enableFiltering: true,
+			includeSelectAllOption: true,
+			enableCaseInsensitiveFiltering: true,
+			buttonWidth: '270px',
+			nonSelectedText: 'None selected',
+			templates: {
+				button: '<button type="button" class="multiselect btn btn-sm btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><span class="multiselect-selected-text"></span></button>'
+			}
+		});
+		var deletedSeqNo = null;
+		var DeletedCharacteristic = null;
+		var deletedRowData = null;
+
+
+		function DeleteItemRow(seqNo, sampleSize, Characteristic) {
+			
+			DeletedCharacteristic = Characteristic;
+			deletedSeqNo = seqNo;
+			
+			var $rowToDelete = $('#divStockGrid tbody tr').filter(function () {
+				var rowSeqNo = $(this).find('th').text().trim();
+				var rowChar = $(this).find('td').eq(1).text().trim();
+				return rowSeqNo == seqNo && rowChar === Characteristic;
+			});
+			if ($rowToDelete.length) {
+				deletedRowData = {
+					//SeqNo: $rowToDelete.find('td').eq(0).text().trim(),
+					SeqNo: $rowToDelete.find('th').text().trim(),
+					Characteristic: Characteristic,
+					EvalutionMeasurmentTechnique: $rowToDelete.find('td').eq(2).text().trim(),
+					ControlMethod: $rowToDelete.find('td').eq(3).text().trim(),
+					SpecificationFrom: $rowToDelete.find('td').eq(4).text().trim(),
+					SpecificationTo: $rowToDelete.find('td').eq(5).text().trim(),
+					RejectionPlan: $rowToDelete.find('td').eq(6).text().trim(),
+					FrequencyofTesting: $rowToDelete.find('td').eq(7).text().trim(),
+					Samples: []
+				};
+				
+
+				console.log("Row to delete:", $rowToDelete.html());
+				$rowToDelete.find('.sample').each(function () {
+					const raw = $(this).html();
+					const value = $(this).text().replace(/\s+/g, ' ').trim();
+					//console.log("Cell HTML:", raw, "→", value);
+					deletedRowData.Samples.push(value === "" ? "0" : value);
+				});
+				
+				console.log("Final Samples:", deletedRowData.Samples);
+				
+			}
+
+			$.ajax({
+				url: '/InProcessInspection/DeleteItemRow',
+				data: { SeqNo: seqNo, SampleSize: sampleSize, Characteristic: Characteristic },
+				type: 'GET',
+				success: function (result) {
+					$('#divStockGrid').html(result);
+					TotalNoOfRows();
+					UpdateInspectionRowCount();
+					highlightAndScrollToRow(seqNo,Characteristic);
+
+					prefillFormWithDeletedData(deletedRowData);
+
+					$.notify("Process deleted from Grid", "info");
+				},
+				error: function () {
+					alert('Error deleting the row.');
+				}
+			});
+		}
+
+		function prefillFormWithDeletedData(data) {
+			if (!data) return;
+
+			$('.seqno').val(data.SeqNo);
+			$('.characteristic').val(data.Characteristic);
+			$('.EvalutionMeasurmentTechnique').val(data.EvalutionMeasurmentTechnique);
+			$('.ControlMethod').val(data.ControlMethod);
+			$('.SpecificationFrom').val(data.SpecificationFrom);
+			$('.SpecificationTo').val(data.SpecificationTo);
+			$('.RejectionPlan').val(data.RejectionPlan);
+			$('.FrequencyofTesting').val(data.FrequencyofTesting);
+
+			
+			$('#DeletedSeqNo').val(data.SeqNo);
+			let matchingRow = null;
+
+			
+			$('#divinProcessInspectionGrid tbody tr').each(function () {
+				const rowSeqNo = $(this).find('th').text().trim();
+				const rowCharacteristic = $(this).find('td.characteristic').text().trim();
+
+				if (rowSeqNo == data.SeqNo && rowCharacteristic === data.Characteristic.trim()) {
+					matchingRow = $(this);
+					return false; 
+				}
+			});
+			
+			if (!matchingRow) {
+				console.warn("No matching row found for characteristic:", data.Characteristic);
+				return;
+			}
+
+			
+			const sampleInputs = matchingRow.find('input.sample-input');
+			for (let i = 0; i < data.Samples.length && i < 25 && i < sampleInputs.length; i++) {
+				$(sampleInputs[i]).val(data.Samples[i]);
+			}
+		}
+
+		function highlightAndScrollToRowforManualGrid(seqNo,characteristic) {
+			var normalizedSeqNo = seqNo?.toString().trim();
+			var normalizedChar = characteristic?.trim().toLowerCase();
+			var $rows = $('#divStockGrid tbody tr');
+
+			$rows.removeClass('highlight-deleted-row').css('background-color', '');
+
+			if (typeof characteristic !== "string" || !normalizedChar) {
+				return;
+			}
+
+			let $matchedRow = null;
+
+			$rows.each(function () {
+				var $th = $(this).find('th').eq(0);
+				var $charTd = $(this).find('td').eq(1);
+				var rowSeqNo = $th.text().trim();
+				var rowChar = $charTd.text().trim().toLowerCase();
+				if (rowSeqNo === normalizedSeqNo && rowChar === normalizedChar) {
+            $matchedRow = $(this);
+            return false; 
+        }
+			});
+
+			if ($matchedRow) {
+				$matchedRow[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+				let flashes = 4;
+				let interval = setInterval(() => {
+					$matchedRow.css('background-color', '#e6e6ff');
+					setTimeout(() => {
+						$matchedRow.css('background-color', '');
+					}, 300);
+					flashes--;
+					if (flashes <= 0) {
+						clearInterval(interval);
+					}
+				}, 500);
+			}
+		}
+
+		
+		function highlightAndScrollToRow(seqNo,characteristic) {
+			var normalizedSeqNo = seqNo?.toString().trim();
+			var normalizedChar = characteristic?.toString().trim().toLowerCase();
+
+			var $rows = $('#divinProcessInspectionGrid tbody tr');
+			if ((!normalizedSeqNo && !normalizedChar) || (typeof normalizedSeqNo === "undefined" && typeof normalizedChar === "undefined")) {
+				$rows.removeClass('highlight-deleted-row');
+				return;
+			}
+			
+			$rows.each(function () {
+				var $th = $(this).find('th').eq(0);
+				var $td = $(this).find('td').eq(1);
+				var rowSeqNo = $th.text();
+				var rowChar = $td.text();
+				if (rowSeqNo === normalizedSeqNo && rowChar === normalizedChar) {
+					$(this).addClass('highlight-deleted-row');
+					this.scrollIntoView({ behavior: 'smooth', block: 'center' });
+					return false; // stop iteration after first match
+				}
+				
+			});
+		}
+		
+		function GetInprocessInspectionGridData() {
+			 
+			var ItemCode = $('#ItemCode').val();
+			var sampleSize = $('#SampleSize').val();
+			
+			$.ajax({
+				type: 'POST',
+				url: '@Url.Action("GetInprocessInspectionGridData", "InProcessInspection")',
+				data: {
+					ItemCode: ItemCode,
+					SampleSize: sampleSize,
+					DeletedSeqNo: deletedSeqNo,
+					DeletedCharacteristic: DeletedCharacteristic
+				},
+				success: function (response) {
+					$('#divinProcessInspectionGrid').html(response);
+					
+					TotalNoOfRows();
+					deletedSeqNo = null;
+					
+				},
+				error: function (xhr, status, error) {
+					console.error("Error fetching BOM tree data:", error);
+				}
+			});
+		}
+		
+		function updateSrNos() {
+			$('#divinProcessInspectionGrid tbody tr').each(function (index) {
+				let newSr = index + 1;
+
+				$(this).find('th').first().text(newSr);
+
+				$(this).attr('id', 'SAGridRow-' + newSr);
+
+			});
+			$('#totalRows').text($('#divinProcessInspectionGrid tbody tr').length);
+		}
+
+
+		function CopyRow(btn) {
+			let $currentRow = $(btn).closest('tr');
+			let $newRow = $currentRow.clone();
+			$newRow.find('input').val('');
+			let newIndex = $('#divinProcessInspectionGrid tbody tr').length + 1;
+			$newRow.attr('id', 'SAGridRow-' + newIndex);
+			$newRow.attr('data-copied', 'true');
+			$('#divinProcessInspectionGrid tbody').append($newRow);
+			updateSrNos();
+
+			$.notify('Row copied successfully', 'success');
+		}
+
+
+		function DeleteRow(element) {
+			let $row = $(element).closest('tr');
+			$row.remove();
+			$.notify('Row deleted successfully', 'success');
+		}
+
+		function FillEntryID() {
+
+			var YearCode = $('#YearCode').val();
+			var TestingDate = $('#TestingDate').val();
+			$.ajax({
+				url: '@Url.Action("FillEntryID", "InProcessInspection")',
+				type: 'POST',
+				data: {
+					YearCode: YearCode,
+					TestingDate: TestingDate
+				},
+				async: false,
+				success: function (data, status, xhr) {
+					var obj = $.parseJSON(data);
+					if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
+						$('#EntryId').val(obj.Result[0].EntryId || 0);
+						$('#SlipNo').val(obj.Result[0].SlipNo || 0);
+					}
+				},
+				error: function (xhr, status, error) {
+					alert('Failed to load Entry Id.');
+				}
+			});
+		}
+		function FillMachineName() {
+			$.ajax({
+				url: '@Url.Action("FillMachineName", "InProcessInspection")',
+				type: 'POST',
+				async: false,
+				success: function (response, status, error) {
+
+					var Dropdown = $('#MachineNo');
+					var obj = $.parseJSON(response);
+					Dropdown.empty();
+					Dropdown.append('<option value="">--Select--</option>');
+					$.each(obj.Result, function (index, value) {
+
+						Dropdown.append('<option value="' + value.MachineId + '">' + value.MachineName + '</option>');
+					});
+					if ($('#Mode').val() === "U" || $('#Mode').val() === "V") {
+						var MachineId = '@Model.MachineId';
+						$('#MachineNo').val(MachineId);
+						$('#MachineId').val(MachineId);
+					}
+
+				},
+				error: function (xhr, status, error) {
+					alert('Failed to load groups.');
+				}
+			});
+
+
+		}
+		function FillShift() {
+			$.ajax({
+				url: '@Url.Action("FillShift", "InProcessInspection")',
+				type: 'POST',
+				async: false,
+				success: function (response, status, error) {
+
+					var Dropdown = $('#Shift');
+					var obj = $.parseJSON(response);
+					Dropdown.empty();
+					Dropdown.append('<option value="">--Select--</option>');
+					$.each(obj.Result, function (index, value) {
+
+						Dropdown.append('<option value="' + value.ShiftId + '">' + value.ShiftName + '</option>');
+					});
+					if ($('#Mode').val() === "U" || $('#Mode').val() === "V") {
+                var ShiftId = '@Model.ShiftID';
+                $('#Shift').val(ShiftId);
+                $('#ShiftID').val(ShiftId);
+            }
+				},
+				error: function (xhr, status, error) {
+					alert('Failed to load groups.');
+				}
+			});
+
+
+		}
+		function FillCustomer() {
+			$.ajax({
+				url: '@Url.Action("FillCustomer", "InProcessInspection")',
+				type: 'POST',
+				async: false,
+				success: function (response, status, error) {
+
+					var Dropdown = $('#CustomerName');
+					var obj = $.parseJSON(response);
+					Dropdown.empty();
+					Dropdown.append('<option value="">--Select--</option>');
+					$.each(obj.Result, function (index, value) {
+
+						Dropdown.append('<option value="' + value.Account_Code + '">' + value.Account_name + '</option>');
+					});
+					if ($('#Mode').val() === "U" || $('#Mode').val() === "V") {
+						var AccountCode = '@Model.AccountCode';
+						$('#CustomerName').val(AccountCode);
+						$('#AccountCode').val(AccountCode);
+					}
+
+				},
+				error: function (xhr, status, error) {
+					alert('Failed to load groups.');
+				}
+			});
+		}
+		function FillColor() {
+			$.ajax({
+				url: '@Url.Action("FillColor", "InProcessInspection")',
+				type: 'POST',
+				async: false,
+				data: { PartNo: $("#PartNo").val() },
+				success: function (response, status, error) {
+
+					var Dropdown = $('#Color');
+					var obj = $.parseJSON(response);
+					Dropdown.empty();
+					Dropdown.append('<option value="">--Select--</option>');
+					$.each(obj.Result, function (index, value) {
+
+						Dropdown.append('<option value="' + value.Colour + '">' + value.Colour + '</option>');
+					});
+					if ($('#Mode').val() === "U" || $('#Mode').val() === "V") {
+						var selectedColor = '@Model.Color';
+						Dropdown.val(selectedColor);
+					}
+				},
+				error: function (xhr, status, error) {
+					alert('Failed to load groups.');
+				}
+			});
+		}
+
+		function FillPartCode() {
+			$.ajax({
+				url: '@Url.Action("FillPartCode", "InProcessInspection")',
+				type: 'POST',
+				async: false,
+				data: { InspectionType: $("#InspectionType").val() },
+				success: function (response, status, error) {
+
+					var PartCodeDropdown = $('#PartNo');
+					var obj = $.parseJSON(response);
+					PartCodeDropdown.empty();
+					PartCodeDropdown.append('<option value="">--Select--</option>');
+					$.each(obj.Result, function (index, PartCode) {
+
+						PartCodeDropdown.append('<option value="' + PartCode.ItemCode + '">' + PartCode.PartCode + '</option>');
+					});
+					if ($('#Mode').val() === "U" || $('#Mode').val() === "V") {
+						var PartNo = '@Model.ItemCode';
+						$('#PartNo').val(PartNo);
+						$('#ItemCode').val(PartNo);
+					}
+				},
+				error: function (xhr, status, error) {
+					alert('Failed to load groups.');
+				}
+			});
+
+
+		}
+
+		function FillPartName() {
+			$.ajax({
+				url: '@Url.Action("FillItemName", "InProcessInspection")', // Action that returns FillGroup data
+				type: 'POST',
+				async: false,
+				success: function (response, status, error) {
+
+					var PartNameDropdown = $('#PartName');
+					var obj = $.parseJSON(response);
+					PartNameDropdown.empty();
+					PartNameDropdown.append('<option value="">--Select--</option>');
+
+					$.each(obj.Result, function (index, ItemName) {
+						PartNameDropdown.append('<option value="' + ItemName.ItemCode + '">' + ItemName.Item_Name + '</option>');
+					});
+
+					if ($('#Mode').val() === "U" || $('#Mode').val() === "V") {
+						var itemCode = '@Model.ItemCode';
+						$('#PartName').val(itemCode);
+						$('#ItemCode').val(itemCode);
+					}
+
+				},
+				error: function (xhr, status, error) {
+					alert('Failed to load groups.');
+				}
+			});
+		}
+
+		$(document).on('select2:select', '#PartName,#PartNo', function (e) {
+
+			var cntId = e.target.id;
+			if (cntId == 'PartName') {
+				ItemNameChange(cntId);
+			}
+			else {
+				PartCodeChange(cntId);
+			}
+		});
+
+		function ItemNameChange(ID) {
+			SetPartCodeItemName(ID);
+		}
+
+		function PartCodeChange(ID) {
+
+			$.when(SetPartCodeItemName(ID)).done(function () {
+			});
+		}
+
+		function SetPartCodeItemName(ID) {
+			if (!ID) return;
+			else {
+
+				var v = $('#' + ID).select2('val');
+				if (ID == "PartNo") {
+					$("#PartName").val(v).trigger("change");
+				}
+
+				if (ID == "PartName") {
+					$("#PartNo").val(v).trigger("change");
+				}
+			}
+		}
+
+
+
+		$('#OriginalQty').on('input', function () {
+			var originalQty = parseFloat($(this).val()) || 0;
+			var batchStock = parseFloat($('#BatchStock').val()) || 0;
+			var totalStock = parseFloat($('#TotalStock').val()) || 0;
+
+
+
+			if (originalQty > batchStock || originalQty > totalStock) {
+				$.notify("Original Quantity cannot be greater than Batch Stock or Total Stock!", "error");
+				$(this).val('');
+			}
+		});
+
+		
+		function GetFormRights() {
+			$.ajax({
+				url: "@Url.Action("GetFormRights")",
+				type: "POST",
+				success: function (data) {
+					if (data != null) {
+						var obj = $.parseJSON(data);
+						if (obj.Result.Table.length == 0) {
+							$(".submitBTN").prop("disabled", true);
+							$('.card-footer .submitBTN').prop("disabled", true);
+							$(".DashBoard")
+								.addClass("disabled-link")
+								.on("click", function (e) {
+									e.preventDefault(); // Prevents clicking the link
+								});
+						}
+						else {
+							// console.log(obj);
+							var optAll = obj.Result.Table[0].OptAll;
+							var optSave = obj.Result.Table[0].OptSave;
+							var optUpdate = obj.Result.Table[0].OptUpdate;
+							var optDelete = obj.Result.Table[0].OptDelete;
+							var optView = obj.Result.Table[0].OptView;
+							if (!optAll) {
+								if (!optSave) {
+									$("#submitBTN").prop("disabled", true);
+									$('.card-footer #submitBTN').prop("disabled", true);
+								}
+								if (!(optUpdate || optDelete || optView)) {
+									$(".DashBoard")
+										.addClass("disabled-link")
+										.on("click", function (e) {
+											e.preventDefault(); // Prevents clicking the link
+										});
+								}
+							}
+						}
+					}
+				},
+				error: function (errMsg) {
+					$.notify(errMsg, { position: "top center", className: "error" });
+				}
+			});
+		}
+
+		var UniqueBatchNo = [];
+		var usedSeqNos = $('#divinProcessInspectionGrid tbody tr').map(function () {
+			return parseInt($(this).find('td:first').text().trim());
+		}).get();
+
+		usedSeqNos.sort(function (a, b) { return a - b; });
+
+		var nextSeqNo = 1;
+		for (var i = 0; i < usedSeqNos.length; i++) {
+			if (usedSeqNos[i] === nextSeqNo) {
+				nextSeqNo++;
+			} else {
+				break;
+			}
+		}
+		
+		$('#GridButton').click(function (e) {
+			e.preventDefault();
+
+			var gridData = [];
+			var sampleSize = parseInt($('#SampleSize').val()) || 1;
+			var deletedSeqNo = parseInt($('#DeletedSeqNo').val()) || 0;
+
+			$('#divinProcessInspectionGrid tbody tr').each(function () {
+				//var $cells = $(this).find('td');
+				var $cells = $(this).find('td');
+				var $row = $(this);
+				var rowData = {
+					SeqNo: $row.find('th').text().trim(),
+					Characteristic: $cells.eq(1).text().trim(),
+					EvalutionMeasurmentTechnique: $cells.eq(2).text().trim(),
+					ControlMethod: $cells.eq(3).text().trim(),
+					SpecificationFrom: $cells.eq(4).text().trim(),
+					SpecificationTo: $cells.eq(5).text().trim(),
+					RejectionPlan: $cells.eq(6).text().trim(),
+					FrequencyofTesting: $cells.eq(7).text().trim(),
+					Samples: [],
+					Copied: $row.attr('data-copied') === 'true'
+				};
+
+				$row.find('input.sample-input').each(function (index, element) {
+					var sampleValue = $(this).val().trim() || "0";
+					rowData.Samples.push(sampleValue);
+					rowData["InspValue" + (index + 1)] = sampleValue;
+				});
+
+				gridData.push(rowData);
+				console.log("Rowdata For Grid:",rowData)
+				lastAddedCharacteristic = rowData.Characteristic;
+			});
+
+			$.ajax({
+				type: "POST",
+				url: '@Url.Action("AddToGridData", "InProcessInspection")',
+				data: {
+					modelList: gridData,
+					sampleSize: sampleSize,
+					deletedSeqNo: deletedSeqNo
+				},
+				success: function (result) {
+					$('#divStockGrid').html(result);
+					TotalNoOfRows();
+					UpdateInspectionRowCount();
+					highlightAndScrollToRow(0,null);
+					setTimeout(function () {
+						let $rows = $('#divinProcessInspectionGrid tbody tr');
+						$rows.removeClass('highlight-deleted-row').css('background-color', '');
+
+						$rows.each(function () {
+							$(this).find('.sample').each(function () {
+								$(this).text('0'); 
+							});
+						});
+					}, 800);
+					if (deletedSeqNo && DeletedCharacteristic) {
+						setTimeout(function () {
+							highlightAndScrollToRowforManualGrid(deletedSeqNo, DeletedCharacteristic);
+						}, 100);
+					}
+					$('#DeletedSeqNo').val(''); 
+					
+					$.notify("Process Add To Grid", "success");
+				},
+				error: function () {
+					$.notify('Something Went Wrong, Please Try Again.', "error");
+				}
+			});
+		});
+
+		
+		function TotalNoOfRows() {
+			var rowCount = $('#divStockGrid tbody tr').length;
+			$('#lblItemCount').text(rowCount);
+		}
+
+		function UpdateInspectionRowCount() {
+			var rowCount = $('#divinProcessInspectionGrid tbody tr').length;
+			$('#totalRows').text(rowCount);
+		}
+
+		function ClearGrid() {
+			$.ajax({
+				type: "POST",
+				url: "@Url.Action("ClearGrid")",
+				success: function (result, status, error) {
+					$('#divStockGrid').empty();
+					var NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
+					$('#divStockGrid').html(NoData);
+					
+				},
+				error: function (req, status, error) {
+					alert(error);
+				}
+			});
+		}
+		function CheckBeforeUpdate() {
+			$.ajax({
+				url: '@Url.Action("CheckBeforeUpdate")',
+				type: "POST",
+				data: { Type: $('#Entry_id').val() },
+				success: function (data) {
+					var obj = $.parseJSON(data);
+					if (obj.Result?.Table[0]?.Column1 > 0) {
+						$.notify("You cannot update this Category as Item with this category already exists", "error");
+					} else {
+						$('form').submit();
+					}
+				},
+				error: function (response) {
+					alert(response.responseText);
+				}
+			});
+		}
+
+		function EditItemRow(seqNo) {
+			$.ajax({
+				url: '/InProcessInspection/EditItemRow', // Adjust controller/action route as needed
+				data: { SeqNo: seqNo },
+				type: 'GET',
+				success: function (data) {
+					if (data) {
+						// Assuming you have form inputs with these IDs in your edit form/modal
+						$('#Characteristic').val(data.Characteristic);
+						$('#EvalutionMeasurmentTechnique').val(data.EvalutionMeasurmentTechnique);
+						$('#ControlMethod').val(data.ControlMethod);
+						$('#SpecificationFrom').val(data.SpecificationFrom);
+						$('#SpecificationTo').val(data.SpecificationTo);
+						$('#RejectionPlan').val(data.RejectionPlan);
+						$('#FrequencyofTesting').val(data.FrequencyofTesting);
+
+						
+						$('.sample-input').each(function (index) {
+							$(this).val(data.Samples[index] || '');
+						});
+
+					
+						$('#SeqNoHidden').val(data.SeqNo);
+						DeleteItemRow(seqNo);
+					}
+				},
+				error: function () {
+					alert('Error fetching data for edit.');
+				}
+			});
+		}
+
+		
+
+		function PressBack() {
+			sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());
+			sessionStorage.setItem('ToDateBack', $('#ToDateBack').val());
+			sessionStorage.setItem('GroupNameBack', $('#GroupNameBack').val());
+			sessionStorage.setItem('LedgerNameBack', $('#LedgerNameBack').val());
+			sessionStorage.setItem('OpeningYearCodeBack', $('#OpeningYearCodeBack').val());
+			sessionStorage.setItem('PreviousAmountBack', $('#PreviousAmountBack').val());
+			sessionStorage.setItem('DrCrBack', $('#DrCrBack').val());
+			sessionStorage.setItem('GlobalSearchBack', $('#GlobalSearchBack').val());
+
+			window.history.back();
+		}
+	</script>
+}
+
+<style>
+	.highlight-deleted-row {
+		background-color: #e6ccff !important;
+		transition: background-color 0.5s ease;
+	}
+
+</style>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
+
+
+
+

@@ -1,0 +1,1461 @@
+﻿@model eTactWeb.DOM.Models.BOMReportModel
+
+@{
+    ViewData["Title"] = "BOM Report";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+<style>
+
+    .select2-container--default .select2-selection--single {
+        background-color: #e0f2f1;
+        border: 1.5px solid #0a0a0a !important;
+        border-radius: 4px;
+    }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            /* border-bottom: 1.5px solid #000 !important; */
+            border-bottom: none !important;
+        }
+
+    .select2-container--default .select2-results > .select2-results__options {
+        background-color: #e0f2f1; /* Dropdown background color */
+        color: #000;
+</style>
+<head>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" ></script>
+
+</head>
+<div class="card bg-gradient mb-3 border-light shadow-lg">
+    <div class="card-header card-headerBG text-light bg-gradient">
+        <h5>
+            <strong>BOM Report</strong>
+            <span class="d-flex float-end" style="margin-top:-2px;">
+                @*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">*@
+               
+            </span>
+        </h5>
+    </div>
+    <div>
+    </div>
+    <div class="card-body bg-light pt-0">
+        <div class="accordion shadow-lg">
+            <div class="card-body">
+                <div class="card overflow-auto">
+                    <div class="card-body">
+                        <form id="SParam">
+                            <div class="row">
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                    <div class="row">
+                                        <input type="hidden" value="@Model.YearCode" asp-for="YearCode" />
+                                        <input type="hidden" value="@Model.Storeid" asp-for="Storeid" />
+                                        <input type="hidden" value="@Model.WCID" asp-for="WCID" />
+                                        <div class="col">
+                                            <label class="form-label">From Date</label>
+                                            <input asp-for="FromDate" class="form-control" />
+                                        </div>
+                                        <div class="col">
+                                            <label class="form-label">To Date</label>
+                                            <input asp-for="ToDate" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="ReportType" class="form-label">Report Type</label>
+                                    <select asp-for="ReportType" class="form-select" >
+                                        <option disabled value="">-Select-</option>
+                                        <option value="BOMTREE" selected>BOM TREE</option>
+                                        <option value="BOMSTOCK">BOM STOCK</option>
+                                        <option value="DirectBOM">Direct BOM</option>
+                                        <option value="BOMSTOCK(WITH SUB BOM)">BOMSTOCK(WITH SUB BOM)</option>
+                                        <option value="BOMSTOCK(DIRECT CHILD)">BOMSTOCK(DIRECT CHILD)</option>
+                                    </select>
+                                </div>
+                              
+                               @* <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="FGPartCode"  class="form-label">FG Part Code</label>
+                                    <select  asp-for="FGPartCode" class="form-select">
+                                        <option value="@Model.PartCode">-Select-</option>
+                                    </select>
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="FGItemName"  class="form-label">FG Item Name</label>
+                                    <select  asp-for="FGItemName" class="form-select">
+                                        <option value="@Model.PartCode">-Select-</option>
+                                    </select>
+                                </div>*@
+                                <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-6" id="PartCodeDiv">
+                                    <label asp-for="FGPartCode" class="form-label" >FG Part Code</label>
+                                    <div class="">
+                                        <input type="text" id="FgPartCodeText" class="form-control" placeholder="Type Part Code..." />
+                                        <input type="hidden" asp-for="FGPartCode" id="FGPartCode"  />
+                                    </div>
+                                </div>
+                                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-6">
+                                    <label asp-for="FGItemName" class="form-label">Fg Item Name</label>
+                                    <div class="">
+                                        <input type="text" id="FgItemNameText" class="form-control" placeholder="Type Item Name..." />
+                                        <input type="hidden" asp-for="ItemCode" id="ItemCode" />
+                                    </div>
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="BomRevNo" class="form-label">Bom Rev No</label>
+                                    <select asp-for="BomRevNo" class="form-select">
+                                        <option value="">-Select-</option>
+                                    </select>
+                                </div>
+                          
+
+                                <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-6" id="PartCodeDiv2">
+                                    <label asp-for="RMPartCode" class="form-label">RM Part Code</label>
+                                    <div class="">
+                                        <input type="text" id="RmPartCodeText" class="form-control" placeholder="Type Part Code..." />
+                                        <input type="hidden" asp-for="RMPartCode" id="RMPartCode" />
+                                    </div>
+                                </div>
+                                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-6">
+                                    <label asp-for="RMItemName" class="form-label" >RM Item Name</label>
+                                    <div class="">
+                                        <input type="text" id="RmItemNameText" class="form-control" placeholder="Type Item Name..." />
+                                        <input type="hidden" asp-for="ItemCode" id="ItemCode" />
+                                    </div>
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="display:none" id="BomStokeStoreName">
+                                    <label asp-for="StoreName" class="form-label" >Store Name</label>
+                                    <select asp-for="StoreName" class="form-select" style="width:190px;" required>
+                                        <option value="@Model.Storeid">-Select-</option>
+                                    
+                                    </select>
+                                    <span asp-validation-for="StoreName" class="text-danger"></span>
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="display:none" id="BomStokeCalculateQty">
+                                    <label  class="form-label">Calculate Qty</label>
+                                    <input type="text" class="form-control" id="calculateQty" />
+                                </div>
+
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="bomStokeCenter" style="display:none">
+                                    <label asp-for="WorkCenterName" class="form-label">Work Center Name</label>
+                                    <select asp-for="WorkCenterName" class="form-select" style="width:190px;">
+                                        <option value="@Model.WCID">-Select-</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                                    <label class="form-label">Global search</label>
+                                    <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
+                                </div>
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                <div class="d-flex justify-content-center mt-3 col-sm-5 col-md-8 col-lg-6 col-xl-4" style="width: 100%; gap: 7px;">
+
+                                    <button class="btn btn-sm btn-outline-info d-flex align-items-center justify-content-center"
+                                            type="button"
+                                            style="padding: 3px 10px; height: 36px; width: 120px;"
+                                            onclick="GetBomTreeDetailsData();">
+                                        <i class="fa-solid fa-magnifying-glass fa-fw fa-lg me-2"></i>SEARCH
+                                    </button>
+
+                                    <button class="btn btn-sm btn-outline-success d-flex align-items-center justify-content-center"
+                                            type="button" id="sendToExcel"
+                                            style="padding: 3px 10px; height: 36px; width: 120px;">
+                                        <i class="fa-solid fa-upload fa-fw fa-lg me-2"></i>EXCEL
+                                    </button>
+
+                                    <a class="btn btn-sm btn-outline-danger d-flex align-items-center justify-content-center"
+                                       asp-controller="BOMReport" asp-action="BOMReport"
+                                       style="padding: 3px 10px; height: 36px; width: 120px;">
+                                        <i class="fa-solid fa-rotate fa-fw fa-lg me-2"></i>RESET
+                                    </a>
+
+                                    <a href="#"  id="printBtn"
+                                       class="btn btn-sm btn-dark bg-gradient d-flex align-items-center justify-content-center"
+                                       style="padding: 3px 10px; height: 36px; width: 120px;">
+                                        <i class="fa fa-pencil-square fa-fw fa-lg me-2" aria-hidden="true"></i>PRINT
+                                    </a>
+
+                                    <button class="btn btn-sm btn-outline-danger d-flex align-items-center justify-content-center"
+                                            type="button" id="sendToPDF"
+                                            style="padding: 3px 10px; height: 36px; width: 120px;">
+                                        <i class="fa-solid fa-file-pdf fa-fw fa-lg me-2"></i>PDF
+                                    </button>
+
+                                    <button class="btn btn-sm btn-outline-info d-flex align-items-center justify-content-center" type="button" style="padding: 3px 10px; height: 36px; width: 120px;" id="RefreshBom">
+                                        <i class="fa-solid fa-upload fa-fw fa-lg"></i> Ref BOM
+                                    </button>
+                                  
+
+                                </div>
+
+                            </div>
+                            <div class="progress my-2 mb-3" style="height: 4px;">
+                                <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="H_SAGrid">
+                                    <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+                                        <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>BOM Report Detail Grid</strong>
+                                    </button>
+                                </h2>
+
+                                <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradientn show" aria-labelledby="H_SAGrid">
+                                    <div class="accordion-body">
+                                        <div class="card-body" id="divPendingMRP">
+                                                <div class="col-md-12 divStockRegister" id="divStockMainRegister">
+                                                <partial name="_BOMReportGrid" />
+                                            </div>
+                                        </div>
+                                        <div class="d-flex justify-content-end mt-2" id="reportFields">
+                                                    
+                                                   
+                                        </div>
+                                       
+                                    </div>
+
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+</div>
+
+@section Scripts
+{
+    <script>
+
+        $(document).ready(function () {
+            console.log("Ready");
+            // GetServerDate();
+
+            function loadReportFields(reportType) {
+                let html = '';
+
+                if (reportType === "BOMTREE") {
+                    html = `
+                                      <div class="d-flex flex-wrap">
+
+                                                  <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px; ">
+                                                       <label class="form-label">Total RMQty</label>
+                                                       <input id="totQty" class="form-control" readonly/>
+                                                 </div>
+                                     </div>
+
+                                `;
+                } else if (reportType === "BOMSTOCK(WITH SUB BOM)" || reportType === "BOMSTOCK(DIRECT CHILD)") {
+                    html = `
+                                                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px;">
+                                                                <label class="form-label">Total StoreStock</label>
+                                                                <input id="totStoreStock" class="form-control" readonly />
+                                                            </div>
+                                                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px; margin-left:10px;">
+                                                                <label class="form-label">Total WIPStock</label>
+                                                                 <input id="totWIPStock" class="form-control" readonly />
+                                                            </div>
+                                                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px; margin-left:10px;">
+                                                                <label class="form-label">Total Amount</label>
+                                                                <input id="totAmount" class="form-control" readonly />
+                                                            </div>
+                                `;
+                }
+
+                $("#reportFields").html(html);
+            }
+
+
+            $("#ReportType").change(function () {
+                let reportType = $(this).val();
+                loadReportFields(reportType);
+                $('#divStockRegisterBody tr').each(function () {
+                    let $row = $(this);
+                    let $cell = $row.find('td[id^="ShortExcess-"]'); // find the TD by ID
+
+                    if ($cell.length > 0) {
+                        let val = parseFloat($cell.text().trim());
+
+                        if (!isNaN(val) && val <= 0) {
+                            $row.css('color', 'red'); // ✅ apply red text to the full row
+                        }
+                    }
+                });
+            });
+
+            // Load initial report type if set
+            loadReportFields($("#ReportType").val());
+
+            var currentDate = new Date();
+            var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+            $('#totalRows').text($('#divStockRegisterBody tr').length);
+            $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatDate1(firstDayOfMonth));
+            $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+            
+            $('#StoreName').select2();
+            $('#WorkCenterName').select2();
+            $('#ReportType').select2();
+            $('#BomRevNo').select2();
+
+            //GetBOMTree();
+
+            FillFGItems();
+            FillRMItems();
+
+            FillWorkCenterName();
+            FillStoreName();
+            // var ReportType = $('#ReportType').val();
+            //  
+            // if (ReportType == "BOMTREE" || ReportType == "DirectBOM"){
+           
+            // }
+            handleReportType();
+        });
+         $('#StoreName').change(function () {
+
+            $('#Storeid').val($('#StoreName').val());
+            
+         });
+        $('#WorkCenterName').change(function () {
+
+            $('#WCID').val($('#WorkCenterName').val());
+            
+         });
+        document.getElementById('printBtn').addEventListener('click', function (e) {
+            e.preventDefault(); // <- IMPORTANT
+
+            var FGPartCode = $('#ItemCode').val();
+            var FGName = $('#FgItemNameText').val();
+            var RMPartCode = $('#RmPartCodeText').val();
+            var RMName = $('#RmItemNameText').val();
+            var Storeid = document.querySelector('[name="Storeid"]').value;
+            var WCID = document.querySelector('[name="WCID"]').value;
+           // var WCID = document.getElementById('WCID').value;
+           // var Storeid = document.getElementById('Storeid').value;
+            var toDate = document.getElementById('ToDate').value;
+            var CalForQty = document.getElementById('calculateQty').value;
+            //var FGItemName = document.querySelector('[name="FGItemName"]').value;
+
+            var url = `/BOMReport/PrintReport?FGPartCode=${encodeURIComponent(FGPartCode)}&FGName=${encodeURIComponent(FGName)}&RMPartCode=${encodeURIComponent(RMPartCode)}&RMName=${encodeURIComponent(RMName)}&Storeid=${encodeURIComponent(Storeid)}&WCID=${encodeURIComponent(WCID)}&CurrentDate=${encodeURIComponent(toDate)}&YearCode=@Model.YearCode&CalForQty=${encodeURIComponent(CalForQty)}`;
+            console.log("Opening report URL:", url); // Debug
+           //window.location.href = url;
+            window.open(url, '_blank');
+        });
+
+        $('#ReportType').change(function () {
+            handleReportType(); 
+        });
+        $('#divStockRegisterBody tr').each(function () {
+            let $row = $(this);
+            let $cell = $row.find('td[id^="ShortExcess-"]'); 
+
+            if ($cell.length > 0) {
+                let val = parseFloat($cell.text().trim());
+
+                if (!isNaN(val) && val <= 0) {
+                    $row.css('color', 'red');
+                }
+            }
+        });
+
+        // When StoreName dropdown value changes
+        $('#StoreName').change(function () {
+            GetBomTreeDetailsData(); 
+
+            $('#divStockRegisterBody tr').each(function () {
+                let $row = $(this);
+                let $cell = $row.find('td[id^="ShortExcess-"]'); // find the TD by ID
+
+                if ($cell.length > 0) {
+                    let val = parseFloat($cell.text().trim());
+
+                    if (!isNaN(val) && val <= 0) {
+                        $row.css('color', 'red'); // ✅ apply red text to the full row
+                    }
+                }
+            });
+        });
+
+        // Function to handle ReportType changes
+        function handleReportType() {
+            var reportType = $('#ReportType').val();
+             
+            if (  reportType === "DirectBOM") {
+                /* GetBomTreeDetailsData(); // Call details function for BOMTREE and DirectBOM */
+                $('#BomStokeStoreName').hide(); // Hide BOM STOCK fields
+                $('#BomStokeCalculateQty').hide(); // Hide BOM STOCK fields
+                $('#bomStokeCenter').hide(); // Hide BOM STOCK fields
+            } else if (reportType === "BOMSTOCK" || reportType === "BOMSTOCK(WITH SUB BOM)" || reportType === "BOMSTOCK(DIRECT CHILD)") {
+                $('#BomStokeStoreName').show(); // Show BOM STOCK fields
+                $('#BomStokeCalculateQty').show(); // Show BOM STOCK fields
+                $('#bomStokeCenter').show(); // Show BOM STOCK fields
+                if ($('#StoreName').val() === "") { // Assuming an input field for Center Name
+                    $.notify("Store Name is required.", "warn");
+                }
+                
+            }
+            else if (reportType === "BOMTREE") {
+                $('#BomStokeStoreName').show(); // Show BOM STOCK fields
+                $('#BomStokeCalculateQty').hide(); // Hide BOM STOCK fields
+                $('#bomStokeCenter').hide(); // Hide BOM STOCK fields
+            }
+            else {
+                $('#BomStokeStoreName').hide(); // Hide BOM STOCK fields for other report types
+                $('#BomStokeCalculateQty').hide(); // Hide BOM STOCK fields for other report types
+                $('#bomStokeCenter').hide(); // Hide BOM STOCK fields for other report types
+            }
+        }
+             $('#RefreshBom').click(function () {
+
+               $.ajax({
+                   type: "POST",
+                      url: "@Url.Action("GetBomMultiLevelGrid", "BOM")",
+                   success: function (response) {
+                       if ($.parseJSON(response).Result.length > 0) {
+                           $.notify('Bom refresh successfully.', 'success');
+                       } else {
+                           $.notify('Bom not refresh properly.', 'error');
+                       }
+                   },
+                   error: function (xhr, status, error) {
+                       console.error("An error occurred: " + error);
+                   }
+               });
+           });
+        $('#sendToPDF').click(async function () {
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ orientation: 'portrait', unit: 'pt', format: 'a4' });
+
+            var fromDate = $('#FromDate').val();
+            var toDate = $('#ToDate').val();
+
+            var reportTypeText = $('#ReportType option:selected').text();
+            var reportTypeValue = $('#ReportType').val();
+
+            var rmPartCodeText = $('#RMPartCode option:selected').text();
+            var rmPartCodeValue = $('#RMPartCode').val();
+
+            var fgPartCodeText = $('#FGPartCode option:selected').text();
+            var fgPartCodeValue = $('#FGPartCode').val();
+
+            var rmItemNameText = $('#RMItemName option:selected').text();
+            var rmItemNameValue = $('#RMItemName').val();
+
+            var fgItemNameText = $('#FGItemName option:selected').text();
+            var fgItemNameValue = $('#FGItemName').val();
+
+            var storeNameText = $('#StoreName option:selected').text();
+            var storeNameValue = $('#StoreName').val();
+
+            var wcNameText = $('#WorkCenterName option:selected').text();
+            var wcNameValue = $('#WorkCenterName').val();
+
+            var bomRevNoText = $('#BomRevNo option:selected').text();
+            var bomRevNoValue = $('#BomRevNo').val();
+
+
+
+            // Report Title
+            doc.setFontSize(16).text(reportTypeText, 40, 40);
+
+            // Date Range
+            doc.setFontSize(10).text(`For the duration From: ${fromDate} to ${toDate}`, 40, 58);
+
+            let currentY = 75;
+            const headerFields = [
+                {
+                    label: 'FG Item Name',
+                    value: (fgItemNameText === "-Select-") ? " " : fgItemNameText
+                },
+                {
+                    label: 'FG Part Code',
+                    value: (fgPartCodeText === "-Select-") ? " " : fgPartCodeText
+                }
+            ];
+
+
+            // Filter out any fields with empty values
+            const filled = headerFields.filter(field => field.value);
+
+            // If there is at least one non-empty value, print the header
+            if (filled.length > 0) {
+                filled.forEach(field => {
+                    doc.setFontSize(10)
+                        .text(`${field.label}: ${field.value}`, 40, currentY);
+                    currentY += 15;
+                });
+            }
+
+            // Fetch data
+            /* var resp = await fetch('/SaleBillRegister/GetSaleBillRegistergridData');
+            va r rows = await resp.json();*/
+
+            var resp = await fetch('/BOMReport/GetBOMReportForPDF');
+
+            if (!resp.ok) {
+                console.error("Fetch failed with status:", resp.status);
+                const errorText = await resp.text(); 
+                console.error("Error body:", errorText);
+                return; 
+            }
+
+            var rows = await resp.json();
+
+            let headers = [];
+            let body = [];
+            let foot = [];
+
+            switch (reportTypeValue) {
+                case 'BOMSTOCK':/*done*/
+                    headers = [
+                        "#Sr","BOM Part Code", "BOM Item Name", "FG Part Code", "FG Item Name", "FG Unit", 
+                        "RM Part Code", "RM Item Name", "RM Unit", "Store Stock", "WIP Stock", "Net ReqQty", "Sub BOM", "BOM Revision No"
+
+                    ];
+
+                    console.log("Data:", rows);
+                    body = rows.map((item, i) => [
+                        i + 1, item.fgPartCode,item.fgItemName,item.fgPartCode,item.fgItemName,item.fgUnit,item.rmPartCode,
+                        item.rmItemName,item.rmUnit,item.storeStock,item.wipStock,item.netReqQty,item.subBom,item.bomRevNo
+                    ]);
+
+                    columnStyles = {
+                        0: { cellWidth: 20 },  // Sr
+                        1: { cellWidth: 50 },  // FG Part Code
+                        2: { cellWidth: 70 },  // FG Item Name
+                        3: { cellWidth: 50 },  // FG Part Code
+                        4: { cellWidth: 70 },  // FG Item Name
+                        5: { cellWidth: 30 },  // FG Unit
+                        6: { cellWidth: 50 },  // RM Part Code
+                        7: { cellWidth: 70 },  // RM Item Name
+                        8: { cellWidth: 30 },  // RM Unit
+                        9: { cellWidth: 30 },  // Store Stock
+                        10: { cellWidth: 30 },  // WIP Stock
+                        11: { cellWidth: 30 },  // Net ReqQty
+                        12: { cellWidth: 30 },  // Sub BOM
+                        13: { cellWidth: 50 }   // BOM Rev No
+                    };
+                    break;
+                case 'DirectBOM':
+                    headers = [
+                        "#Sr", "FG Part Code", "FG Item Name",
+                        "RM Part Code", "RM Item Name", "BOM Revision No", "Quantity", "FG Item Code", "RM Item Code"
+                    ];
+
+                    console.log("Data:", rows);
+                    body = rows.map((item, i) => [
+                        i + 1, item.fgPartCode, item.fgItemName, item.rmPartCode, item.rmItemName, item.bomRevNo,
+                        item.netReqQty, item.fgItemcode, item.rmItemcode
+
+                    ]);
+
+                    columnStyles = {
+                        0: { cellWidth: 20 },  // #Sr
+                        1: { cellWidth: 50 },  // FG Part Code
+                        2: { cellWidth: 70 },  // FG Item Name
+                        3: { cellWidth: 50 },  // RM Part Code
+                        4: { cellWidth: 70 },  // RM Item Name
+                        5: { cellWidth: 50 },  // BOM Revision No
+                        6: { cellWidth: 40 },  // Quantity
+                        7: { cellWidth: 50 },  // FG Item Code
+                        8: { cellWidth: 50 }   // RM Item Code
+                    };
+                    break;
+                case 'BOMSTOCK(WITH SUB BOM)':
+                    headers = [
+                        "#Sr", "RM Part Code", "RM Item Name", "Store Stock", "TotalReqQty", "Unit", "ShortExcess"
+                    ];
+
+                    console.log("Data:", rows);
+                    body = rows.map((item, i) => [
+                        i + 1,  item.rmPartCode, item.rmItemName, item.storeStock,
+                        item.totalReqQty, item.unit, item.shortExcess
+
+                    ]);
+
+                    columnStyles = {
+                        0: { cellWidth: 20 },  
+                        1: { cellWidth: 50 },  
+                        2: { cellWidth: 70 },  
+                        3: { cellWidth: 40 },  
+                        4: { cellWidth: 40 }, 
+                        5: { cellWidth: 40 },  
+                        6: { cellWidth: 40 }, 
+                    };
+                break;
+                case 'BOMSTOCK(DIRECT CHILD)':
+                    headers = [
+                        "#Sr", "RM Part Code", "RM Item Name", "Store Stock", "TotalReqQty", "Unit", "ShortExcess"
+                    ];
+
+                    console.log("Data:", rows);
+                    body = rows.map((item, i) => [
+                        i + 1,  item.rmPartCode, item.rmItemName, item.storeStock,
+                        item.totalReqQty, item.fgUnit, item.shortExcess
+
+                    ]);
+                    let totalReqQty = 0;
+                    let totalshortExcess = 0;
+                    let totalstoreStock = 0;
+
+                    rows.forEach(r => {
+                        totalReqQty += Number(r.totalReqQty) || 0;
+                        totalstoreStock += Number(r.storeStock) || 0;
+                        totalshortExcess += Number(r.shortExcess) || 0;
+                    });
+
+                    // Footer row with totals
+                    foot = [[
+                        '', '', 'Total:',
+                        totalstoreStock.toFixed(2),
+                        totalReqQty.toFixed(2),
+                        '',
+                        totalshortExcess.toFixed(2)
+
+                    ]];
+                    columnStyles = {
+                        0: { cellWidth: 20 },  
+                        1: { cellWidth: 100 },  
+                        2: { cellWidth: 100 },  
+                        3: { cellWidth: 50 },  
+                        4: { cellWidth: 50 }, 
+                        5: { cellWidth: 50 },  
+                        6: { cellWidth: 50 }, 
+                    };
+                    
+                break;
+
+                case 'BOMTREE':
+                    headers = [
+                        "#Sr", "RM Part Code",
+                        "RM Item Name","Net Req Qty","Store Stock","RM Qty"
+                    ];
+
+                    console.log("Data:", rows);
+                    body = rows.map((item, i) => [
+                        i + 1,item.rmPartCode,
+                        item.rmItemName,item.netReqQty,item.storeStock, item.rmQty
+
+                    ]);
+                    let totalNetQty = 0;
+                    let totalStoreStock = 0;
+                    let totalRMQty = 0;
+
+                    rows.forEach(r => {
+                        totalNetQty += Number(r.netReqQty) || 0;
+                        totalStoreStock += Number(r.storeStock) || 0;
+                        totalRMQty += Number(r.rmQty) || 0;
+                    });
+
+                    foot = [[
+                        '', '', 'Total:',
+                        totalNetQty.toFixed(2),
+                        totalStoreStock.toFixed(2),
+                        totalRMQty.toFixed(2)
+                    ]];
+                    columnStyles = {
+                        0: { cellWidth: 20 },  // #Sr
+                        1: { cellWidth: 130 },  // RM Part Code
+                        2: { cellWidth: 200 },  // RM Item Name
+                        3: { cellWidth: 60 },  // Net Req Qty
+                        4: { cellWidth: 60 },  // Store Stock
+                        5: { cellWidth: 50 }  // RM Qty
+                    };
+                   
+                break;
+
+
+                default:
+                    $.notify(reportTypeValue + " report has no data to display!", "error");
+                    return;
+            }
+
+            // Generate table with custom column width handling
+            doc.autoTable({
+                startY: currentY + 15,
+                head: [headers],
+                body: body,
+                foot: foot,
+                styles: { cellWidth: 'wrap' },
+                theme: 'grid',
+                margin: { left: 40, right: 40 },
+                styles: {
+                    fontSize: 7,
+                    cellPadding: 1,
+                    overflow: 'linebreak',
+                    halign: 'center',
+                    valign: 'middle'
+                },
+                headStyles: {
+                    fillColor: [41, 128, 185],
+                    textColor: 255,
+                    fontStyle: 'bold'
+                },                                         
+                bodyStyles: {       
+                    textColor: [0, 0, 0]
+                },
+                tableWidth: 'auto',
+                columnStyles: columnStyles,
+                showHead: 'everyPage'
+            });
+
+            // Save the PDF
+            //doc.save(`BOM_${reportTypeValue.replace(/\s+/g, '_')}.pdf`);
+            doc.save(`BOM.pdf`);
+        });
+        function selection(CurrentRow) {
+
+            $(CurrentRow).css({ 'background-color': '#00bcd4' });
+            $("#divStockRegisterBody tr").not(CurrentRow).css({ 'background-color': '' });
+        }
+
+        function FillFGItems() {
+           
+            // Autocomplete for PartCodeText
+            $("#FgPartCodeText").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: '@Url.Action("FillFinishPartCode", "BOMReport")',
+                        type: 'POST',
+                        success: function (result) {
+                            //let obj = typeof result === "string" ? JSON.parse(result) : result;
+                            let obj = result;
+
+                            console.log(obj);
+                            if (obj.statusCode === 200 && obj.statusText === 'Success' && Array.isArray(obj.result.table)) {
+                                let filtered = obj.result.table.filter(function (item) {
+                                    return item.PartCode.toLowerCase().includes(request.term.toLowerCase());
+                                });
+
+                                response($.map(filtered, function (item) {
+                                    return {
+                                        label: item.PartCode,
+                                        value: item.PartCode,
+                                        itemCode: item.Item_Code
+                                    };
+                                }));
+                            } else {
+                                response([]);
+                            }
+                        }
+                    });
+                },
+                select: function (event, ui) {
+                    $("#FgPartCodeText").val(ui.item.value);
+                    $('#FgPartCode').val(ui.item.value);
+                    $('#ItemCode').val(ui.item.itemCode);
+
+                    // Now fetch ItemName for selected PartCode
+                    $.ajax({
+                        url: '@Url.Action("FillFinishItemName", "BOMReport")',
+                        type: 'POST',
+                        success: function (result) {
+                            //let obj = typeof result === "string" ? JSON.parse(result) : result;
+                            let obj = result;
+
+                            console.log(obj);
+                            if (obj.statusCode === 200 && obj.statusText === 'Success' && Array.isArray(obj.result.table)) {
+                                let match = obj.result.table.find(x => x.Item_Code === ui.item.itemCode);
+                                if (match) {
+                                    $("#FgItemNameText").val(match.ItemName);
+                                }
+                            }
+                        }
+                    });
+
+                    return false;
+                },
+                focus: function (event, ui) {
+                    $("#FgPartCodeText").val(ui.item.value);
+                    return false;
+                },
+                minLength: 2
+            });
+
+            // Autocomplete for ItemNameText
+            $("#FgItemNameText").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: '@Url.Action("FillFinishItemName", "BOMReport")',
+                        type: 'POST',
+                        success: function (result) {
+                            //let obj = typeof result === "string" ? JSON.parse(result) : result;
+                            let obj = result;
+
+                            console.log(obj);
+                            if (obj.statusCode === 200 && obj.statusText === 'Success' && Array.isArray(obj.result.table)) {
+                                let filtered = obj.result.table.filter(function (item) {
+                                    return item.ItemName.toLowerCase().includes(request.term.toLowerCase());
+                                });
+
+                                response($.map(filtered, function (item) {
+                                    return {
+                                        label: item.ItemName,
+                                        value: item.ItemName,
+                                        itemCode: item.Item_Code
+                                    };
+                                }));
+                            } else {
+                                response([]);
+                            }
+                        }
+                    });
+                },
+                select: function (event, ui) {
+                    $("#FgItemNameText").val(ui.item.value);
+                    $('#ItemCode').val(ui.item.itemCode);
+
+                    // Now fetch PartCode for selected ItemName
+                    $.ajax({
+                        url: '@Url.Action("FillFinishPartCode", "BOMReport")',
+                        type: 'POST',
+                        success: function (result) {
+                            //let obj = typeof result === "string" ? JSON.parse(result) : result;
+                            let obj = result; 
+
+                            console.log(obj);
+                            if (obj.statusCode === 200 && obj.statusText === 'Success' && Array.isArray(obj.result.table)) {
+                                let match = obj.result.table.find(x => x.Item_Code === ui.item.itemCode);
+                                if (match) {
+                                    $("#FgPartCodeText").val(match.PartCode);
+                                    $('#FgPartCode').val(match.PartCode);
+                                }
+                            }
+                        }
+                    });
+
+                    return false;
+                },
+                focus: function (event, ui) {
+                    $("#FgItemNameText").val(ui.item.value);
+                    return false;
+                },
+                minLength: 2
+            });
+
+
+            // 🔹 Clear dependent values when user clears text
+            $("#FgPartCodeText").on("input", function () {
+                if ($(this).val().trim() === "") {
+                    $('#FgPartCode').val("");
+                    $('#ItemCode').val("");
+                    $('#FgItemNameText').val("");
+                }
+            });
+
+            $("#FgItemNameText").on("input", function () {
+                if ($(this).val().trim() === "") {
+                    $('#FgPartCode').val("");
+                    $('#ItemCode').val("");
+                    $('#FgPartCodeText').val("");
+                }
+            });
+        }
+
+         function FillRMItems() {
+            
+            // Autocomplete for PartCodeText
+            $("#RmPartCodeText").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: '@Url.Action("FillRMPartCode", "BOMReport")',
+                        type: 'POST',
+                        success: function (result) {
+                            //let obj = typeof result === "string" ? JSON.parse(result) : result;
+                            let obj = result;
+
+                            console.log(obj);
+                            if (obj.statusCode === 200 && obj.statusText === 'Success' && Array.isArray(obj.result.table)) {
+                                let filtered = obj.result.table.filter(function (item) {
+                                    return item.PartCode.toLowerCase().includes(request.term.toLowerCase());
+                                });
+
+                                response($.map(filtered, function (item) {
+                                    return {
+                                        label: item.PartCode,
+                                        value: item.PartCode,
+                                        itemCode: item.Item_Code
+                                    };
+                                }));
+                            } else {
+                                response([]);
+                            }
+                        }
+                    });
+                },
+                select: function (event, ui) {
+                    $("#RmPartCodeText").val(ui.item.value);
+                    $('#RMPartCode').val(ui.item.value);
+                    /* $('#ItemCode').val(ui.item.itemCode); */
+
+                    // Now fetch ItemName for selected PartCode
+                    $.ajax({
+                        url: '@Url.Action("FillRMItemName", "BOMReport")',
+                        type: 'POST',
+                        success: function (result) {
+                            //let obj = typeof result === "string" ? JSON.parse(result) : result;
+                            let obj = result;
+
+                            console.log(obj);
+                            if (obj.statusCode === 200 && obj.statusText === 'Success' && Array.isArray(obj.result.table)) {
+                                let match = obj.result.table.find(x => x.Item_Code === ui.item.itemCode);
+                                if (match) {
+                                    $("#RmItemNameText").val(match.ItemName);
+                                }
+                            }
+                        }
+                    });
+
+                    return false;
+                },
+                focus: function (event, ui) {
+                    $("#RmPartCodeText").val(ui.item.value);
+                    return false;
+                },
+                minLength: 2
+            });
+
+            // Autocomplete for ItemNameText
+            $("#RmItemNameText").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: '@Url.Action("FillRMItemName", "BOMReport")',
+                        type: 'POST',
+                        success: function (result) {
+                            //let obj = typeof result === "string" ? JSON.parse(result) : result;
+                            let obj = result;
+
+                            console.log(obj);
+                            if (obj.statusCode === 200 && obj.statusText === 'Success' && Array.isArray(obj.result.table)) {
+                                let filtered = obj.result.table.filter(function (item) {
+                                    return item.ItemName.toLowerCase().includes(request.term.toLowerCase());
+                                });
+
+                                response($.map(filtered, function (item) {
+                                    return {
+                                        label: item.ItemName,
+                                        value: item.ItemName,
+                                        itemCode: item.Item_Code
+                                    };
+                                }));
+                            } else {
+                                response([]);
+                            }
+                        }
+                    });
+                },
+                select: function (event, ui) {
+                    $("#RmItemNameText").val(ui.item.value);
+                    /* $('#ItemCode').val(ui.item.itemCode); */
+
+                    // Now fetch PartCode for selected ItemName
+                    $.ajax({
+                        url: '@Url.Action("FillRMPartCode", "BOMReport")',
+                        type: 'POST',
+                        success: function (result) {
+                            //let obj = typeof result === "string" ? JSON.parse(result) : result;
+                            let obj = result; 
+
+                            console.log(obj);
+                            if (obj.statusCode === 200 && obj.statusText === 'Success' && Array.isArray(obj.result.table)) {
+                                let match = obj.result.table.find(x => x.Item_Code === ui.item.itemCode);
+                                if (match) {
+                                    $("#RmPartCodeText").val(match.PartCode);
+                                    $('#RMPartCode').val(match.PartCode); 
+                                }
+                            }
+                        }
+                    });
+
+                    return false;
+                },
+                focus: function (event, ui) {
+                    $("#RmItemNameText").val(ui.item.value);
+                    return false;
+                },
+                minLength: 2
+            });
+        }
+
+     /*    function FillFinishItemName() {
+            $.ajax({
+                url: '@Url.Action("FillFinishItemName", "BOMReport")', // Action that returns FillGroup data
+                type: 'GET',
+                async: false,
+                success: function (response, status, error) {
+                    var ledgerDropdown = $('#FGItemName');
+                    var obj = $.parseJSON(response);
+                    ledgerDropdown.empty();
+                    ledgerDropdown.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, ledger) {
+
+                        ledgerDropdown.append('<option value="' + ledger.Item_Code + '">' + ledger.ItemName + '</option>');
+                    });
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+        function FillFinishPartCode() {
+            $.ajax({
+                url: '@Url.Action("FillFinishPartCode", "BOMReport")', // Action that returns FillGroup data
+                type: 'GET',
+                async: false,
+                success: function (response, status, error) {
+
+                    var ledgerDropdown = $('#FGPartCode');
+                    var obj = $.parseJSON(response);
+                    ledgerDropdown.empty();
+                    ledgerDropdown.append('<option value="0">--Select--</option>');
+
+
+                    $.each(obj.Result, function (index, ledger) {
+
+                        ledgerDropdown.append('<option value="' + ledger.Item_Code + '">' + ledger.PartCode + '</option>');
+                    });
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+        $(document).on('select2:select', '#FGItemName,#FGPartCode', function (e) {
+            var cntId = e.target.id;
+             
+            if (cntId == 'FGItemName') {
+                ItemNameChange(cntId);
+            }
+            else {
+                PartCodeChange(cntId);
+            }
+        });
+
+        function ItemNameChange(ID) {
+            SetPartCodeItemName(ID);
+        }
+
+        function PartCodeChange(ID) {
+            $.when(SetPartCodeItemName(ID)).done(function () {
+            });
+        }
+
+        function SetPartCodeItemName(ID) {
+            if (!ID) return;
+            else {
+                 
+                var v = $('#' + ID).select2('val');
+                if (ID == "FGPartCode") {
+                    $("#FGItemName").val(v).trigger("change");
+                }
+                if (ID == "FGItemName") {
+                    $("#FGPartCode").val(v).trigger("change");
+                }
+            }
+        } */
+        
+        function FillRMItemName() {
+            $.ajax({
+                url: '@Url.Action("FillRMItemName", "BOMReport")', // Action that returns FillGroup data
+                type: 'GET',
+                async: false,
+                success: function (response, status, error) {
+
+                    var ledgerDropdown = $('#RMItemName');
+                    var obj = $.parseJSON(response);
+                    ledgerDropdown.empty();
+                    ledgerDropdown.append('<option value="">--Select--</option>');
+
+
+                    $.each(obj.Result, function (index, ledger) {
+                         
+                        ledgerDropdown.append('<option value="' + ledger.PartCode + '">' + ledger.ItemName + '</option>');
+                    });
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+
+        }
+        function FillRMPartCode() {
+            $.ajax({
+                url: '@Url.Action("FillRMPartCode", "BOMReport")', // Action that returns FillGroup data
+                type: 'GET',
+                async: false,
+                success: function (response, status, error) {
+
+                    var ledgerDropdown = $('#RMPartCode');
+                    var obj = $.parseJSON(response);
+                    ledgerDropdown.empty();
+                    ledgerDropdown.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, ledger) {
+                         
+                        ledgerDropdown.append('<option value="' + ledger.PartCode + '">' + ledger.PartCode + '</option>');
+                    });
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+
+        }
+        $(document).on('select2:select', '#RMItemName,#RMPartCode', function (e) {
+
+            var cntId = e.target.id;
+            if (cntId == 'RMItemName') {
+                RMItemNameChange(cntId);
+            }
+            else {
+                RMPartCodeChange(cntId);
+            }
+        });
+
+        function RMItemNameChange(ID) {
+            RMSetPartCodeItemName(ID);
+        }
+
+        function RMPartCodeChange(ID) {
+            $.when(RMSetPartCodeItemName(ID)).done(function () {
+            });
+        }
+
+        function RMSetPartCodeItemName(ID) {
+            if (!ID) return;
+            else {
+                 
+                var v = $('#' + ID).select2('val');
+                if (ID == "RMPartCode") {
+                    $("#RMItemName").val(v).trigger("change");
+                }
+                if (ID == "RMItemName") {
+                    $("#RMPartCode").val(v).trigger("change");
+                }
+            }
+        }
+        function FillStoreName() {
+            $.ajax({
+                url: '@Url.Action("FillStoreName", "BOMReport")', // Action that returns FillGroup data
+                type: 'GET',
+                async: false,
+                success: function (response, status, error) {
+
+                    var storeNameDropdown = $('#StoreName');
+                    var obj = $.parseJSON(response);
+                    storeNameDropdown.empty();
+                    storeNameDropdown.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, store) {
+                         
+                        storeNameDropdown.append('<option value="' + store.storeid + '">' + store.Store_Name + '</option>');
+                    });
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+
+        }
+        function FillWorkCenterName() {
+            $.ajax({
+                url: '@Url.Action("FillWorkCenterName", "BOMReport")', // Action that returns FillGroup data
+                type: 'GET',
+                async: false,
+                success: function (response, status, error) {
+
+                    var WorkCenterDropdown = $('#WorkCenterName');
+                    var obj = $.parseJSON(response);
+                    WorkCenterDropdown.empty();
+                    WorkCenterDropdown.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, WorkCenter) {
+                         
+                        WorkCenterDropdown.append('<option value="' + WorkCenter.WCid + '">' + WorkCenter.WCName + '</option>');
+                    });
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+
+        }
+        function GetBomTreeDetailsData() {
+              
+            var reportType = $('#ReportType').val(); // Get ReportType from a dropdown or input element
+            var fromDate = $('#FromDate').val();
+            var toDate = $('#ToDate').val();
+            var FGItemCode = $('#ItemCode').val();
+            //var FGItemName = $('#FGItemName').val();
+            var RMPartCode = $('#RmPartCodeText').val();
+            var Yearcode = $('#YearCode').val();
+            var Storeid = $('#StoreName').val();
+            var calculateQty = $('#calculateQty').val();
+            //var RMItemName = $('#RMItemName').val();
+
+            $.ajax({
+                type: 'POST',
+                url: "@Url.Action("GetBomTreeDetailsData", "BOMReport")",
+                data: {
+                    ReportType: reportType,
+                    FromDate: fromDate,
+                    ToDate: toDate,
+                    FGItemCode: FGItemCode,
+                    //FGItemName: FGItemName,
+                    RMPartCode: RMPartCode,
+                    Yearcode: Yearcode,
+                    Storeid: Storeid,
+                    calculateQty: calculateQty
+                    //RMItemName:RMItemName
+                },
+                success: function (response) {
+                    $('#divStockMainRegister').html(response);
+
+                    var totalRows = $('#divStockMainRegister tr').length;
+                    $('#divStockRegisterBody tr').each(function () {
+                        let $row = $(this);
+                        let $cell = $row.find('td[id^="ShortExcess-"]'); // find the TD by ID
+
+                        if ($cell.length > 0) {
+                            let val = parseFloat($cell.text().trim());
+
+                            if (!isNaN(val) && val <= 0) {
+                                $row.css('color', 'red'); // ✅ apply red text to the full row
+                            }
+                        }
+                    });
+                    $('#totalRows').text(totalRows);
+                    countAllTotal();
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching BOM tree data:", error);
+                }
+            });
+        }
+
+        // function GetServerDate() {
+        //     $.ajax({
+        //         type: "GET",
+        //         url: "@Url.Action("GetServerDate")",
+        //         async: false,
+        //         success: function (result, status, error) {
+        //             console.log(result);
+        //             if (result != null) {
+        //                 // $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+        //                 //$('#InvoiceDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+
+        //                 var firstDayOfMonth = getFirstDayOfMonth(result);
+        //                 $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", firstDayOfMonth);
+
+        //                 $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+
+        //             }
+        //         }
+        //     });
+        // }
+
+        function getFirstDayOfMonth(dateString) {
+            const [day, month, year] = dateString.split('/');
+
+            // Create a new Date object (months are 0-indexed, so subtract 1 from the month)
+            const currentDate = new Date(year, month - 1, day);
+
+            // Set the date to the 1st day of the month
+            currentDate.setDate(1);
+
+            // Format the result as dd/mm/YYYY
+            const firstDayOfMonth = `${currentDate.getDate().toString().padStart(2, '0')}/${(currentDate.getMonth() + 1).toString().padStart(2, '0')}/${currentDate.getFullYear()}`;
+
+            return firstDayOfMonth;
+        }
+
+        $('#sendToExcel').click(function () {
+            let table = $("#ReportTable");
+            console.log(table);
+            TableToExcel.convert(table[0], {
+                name: `ReportTable.xlsx`,
+                sheet: {
+                    name: 'ReportTable'
+                }
+            });
+        });
+        function formatDate1(date) {
+            var day = ("0" + date.getDate()).slice(-2);
+            var month = ("0" + (date.getMonth() + 1)).slice(-2);
+            var year = date.getFullYear();
+            var dateString = day + "/" + month + "/" + year;
+            return dateString;
+        }
+
+        $(document).on("click", ".sortCol", function () {
+            ;
+            var $column = $(this).parent().closest("th");
+            var colno = $(this).data('columnno');
+            var currentOrder = $(this).data('sortorder');
+
+            $('.sortCol').css('color', 'white');
+            if (currentOrder === 'asc') {
+                sortTable(colno, false);
+                $(this).data('sortorder', 'desc');
+                $(this).css('color', 'yellow'); // Visual indication of descending order
+                //$(this).css('font-size', 'larger'); // Visual indication of descending order
+                $(this).find('i:first').removeClass('fa-arrow-up');
+                $(this).find('i:first').addClass('fa-arrow-down');
+            } else {
+                sortTable(colno, true);
+                $(this).data('sortorder', 'asc');
+                $(this).css('color', 'yellow');
+                // $(this).css('font-size', 'larger'); // Visual indication of ascending order
+                $(this).find('i:first').removeClass('fa-arrow-down');
+                $(this).find('i:first').addClass('fa-arrow-up');
+            }
+        });
+
+        function sortTable(columnIndex, ascending) {
+
+            var table = $('#ReportTable');
+            var rows = table.find('#divStockRegisterBody > tr').toArray();
+
+            rows.sort(function (a, b) {
+                var aValue = $(a).find('td').eq(columnIndex).text();
+                var bValue = $(b).find('td').eq(columnIndex).text();
+
+                var aIntValue = 0;
+                var bIntValue = 0;
+                if (/^\d*\.?\d+$/.test(aValue) && /^\d*\.?\d+$/.test(bValue)) {
+                    aIntValue = parseInt(aValue, 10);
+                    bIntValue = parseInt(bValue, 10);
+                }
+
+                if (aIntValue > 0) {
+                    if (ascending) {
+                        return aValue - bValue;
+                    } else {
+                        return bValue - aValue;
+                    }
+                } else {
+                    if (ascending) {
+                        return aValue.localeCompare(bValue);
+                    } else {
+                        return bValue.localeCompare(aValue);
+                    }
+                }
+            });
+
+            $.each(rows, function (index, row) {
+                table.children('#divStockRegisterBody').append(row);
+            });
+        }
+        function countAllTotal() {
+             
+            var rowCount = $('#divStockRegisterBody tr').length;
+           
+            var TotQty = 0;
+            var TotStoreStock = 0;
+            var TotWIPStock = 0;
+            var TotAmount = 0;
+            for (var i = 1; i <= rowCount; i++) {
+
+                TotQty += $('#totQtyG-' + i).text() == '' ? 0 : parseFloat($('#totQtyG-' + i).text());
+                TotStoreStock += $('#totStoreStockG-' + i).text() == '' ? 0 : parseFloat($('#totStoreStockG-' + i).text());
+                TotWIPStock += $('#totWIPStockG-' + i).text() == '' ? 0 : parseFloat($('#totWIPStockG-' + i).text());
+                TotAmount += $('#totAmountG-' + i).text() == '' ? 0 : parseFloat($('#totAmountG-' + i).text());
+                //if(totAmount < 0){
+                //    $('#SAGridRow-' + i).css('background-color', 'red');
+                //}
+            }
+
+
+            $('#totQty').val(isNaN(TotQty) ? 0 : TotQty.toFixed(2));
+            $('#totStoreStock').val(isNaN(TotStoreStock) ? 0 : TotStoreStock.toFixed(2));
+            $('#totWIPStock').val(isNaN(TotWIPStock) ? 0 : TotWIPStock.toFixed(2));
+            $('#totAmount').val(isNaN(TotAmount) ? 0 : TotAmount.toFixed(2));
+        }
+        var currentSearchColumn = null;
+
+        $("#search-box").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#divStockRegisterBody tr").filter(function () {
+                if (currentSearchColumn !== null) {
+                    var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
+                    $(this).toggle(columnText.indexOf(value) > -1);
+                } else {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                }
+            });
+        });
+
+        $(document).on("click", "th[data-columnno]", function () {
+            currentSearchColumn = $(this).data('columnno');
+            $("#search-box").val('').trigger('keyup'); // Reset search box and trigger the search
+        });
+       
+
+   
+        
+        function DeleteRow(i) {
+
+            var indexToRemove = i - 1;
+            $('#SAGridRow-' + i).remove();
+            $('#ReportTable tbody tr').each(function (index) {
+                $(this).attr('id', 'SAGridRow-' + (index + 1));
+
+
+                $(this).find('td:first-child a:first-child').each(function (tdIndex) {
+                    $(this).attr('id', (index + 1));
+                });
+
+                $(this).find('td[id^="amount-"]').each(function (tdIndex) {
+                    $(this).attr('id', 'amount-' + (index + 1));
+                });
+
+            });
+            //$('#ReportTable tr:eq(' + indexToRemove + ')').remove();
+            countAllTotal();
+            $('#totalRows').text($('#divStockMainRegister tr').length - 1);
+        }
+
+        
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+
+
+
+}
+<style>
+
+    .sort-icon {
+        padding: 5px;
+        margin: 5px;
+        vertical-align: top;
+    }
+
+    .ascCol {
+        font-size: 15px;
+        vertical-align: bottom;
+    }
+
+    .descCol {
+        font-size: 15px;
+        vertical-align: super;
+    }
+
+    #printBtn:hover {
+        background-color: #f8f9fa; 
+        color: #000;
+        border-color: #f8f9fa;
+    }
+        
+
+</style>

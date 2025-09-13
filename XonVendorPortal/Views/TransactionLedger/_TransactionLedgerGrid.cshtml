@@ -1,0 +1,245 @@
+﻿   @model eTactWeb.DOM.Models.TransactionLedgerModel
+@using Microsoft.AspNetCore.Http
+@using System.Reflection.PortableExecutable
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+	var yearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("YearCode"));
+}
+
+<div class="card-body table-responsive" style="max-height:300px;overflow-y:auto;">
+	<table class="table table-responsive table-hover table-bordered PMRPGrid TbCss text-nowrap mb-0" id="ReportTable" style="background-color: aquamarine;">
+		<thead class="bg-gradient card-headerBG text-light PMRPThead" style="position:static;" id="dashRThead">
+			<tr>
+				<th>Action</th>
+				<th>Sr#</th>
+
+				<th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Voucher Doc Date</th>
+				<th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Particulars</th>
+				<th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Voucher Type</th>
+				<th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Inv/Vch No</th>
+				<th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>DR Amt</th>
+				<th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>CR Amt</th>
+				<th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Balance</th>
+				<th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Types</th>
+				<th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>HeadWiseNarration</th>
+				<th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Inv No</th>
+				<th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Inv Date</th>
+				<th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Doc Entry Id</th>
+				<th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SumDet</th>
+				<th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>VCHEMark</th>
+				<th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AccountCode</th>
+				<th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ReportType</th>
+				<th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Vch No</th>
+				<th data-columnno="18" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AccEntryId</th>
+				<th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AccEntry YearCode</th>
+			</tr>
+		</thead>
+		<tbody id="divStockRegisterBody">
+			@{
+				var @Cntr = 0;
+				if (Model.TransactionLedgerGrid == null)
+				{
+					<tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+				}
+				else
+				{
+					foreach (var item in Model.TransactionLedgerGrid)
+					{
+						Cntr = Cntr + 1;
+						<tr id="@Cntr" onclick="selection(this)" style="background-color:#8ec8db">
+							<td style="text-align:center;white-space: nowrap;">
+								<div id="container" style="display: flex; gap: 5px; justify-content: center;">
+									@if (item.AccEntryYearCode == yearCode)
+									{
+										var ControllerName = "";
+										var ActionName = "";
+										var VoucherType = item.VoucherType;
+										switch (VoucherType.ToUpper())
+										{
+											case "BANK-RECEIPT":
+												ControllerName = "BankReceipt";
+												ActionName = "BankReceipt";
+												break;
+											case "BANK-PAYMENT":
+												ControllerName = "BankPayment";
+												ActionName = "BankPayment";
+												break;
+											case "CASH-RECEIPt":
+												ControllerName = "BankReceipt";
+												ActionName = "BankReceipt";
+												break;
+											case "Cash-Receipt":
+												ControllerName = "CashReceipt";
+												ActionName = "CashReceipt";
+												break;
+											case "CASH-PAYMENT":
+												ControllerName = "CashPayment";
+												ActionName = "CashPayment";
+												break;
+											case "SALE-BILL":
+												ControllerName = "SaleInvoice";
+												ActionName = "SaleInvoice";
+												break;
+											case "PURCHASE-BILL":
+												ControllerName = "PurchaseBill";
+												ActionName = "PurchaseBill";
+												break;
+											case "PURCHASE-DIRECT":
+												ControllerName = "DirectPurchaseBill";
+												ActionName = "DirectPurchaseBill";
+												break;
+											case "SALE-REJECTION":
+												ControllerName = "SaleRejectionEdit";
+												ActionName = "SaleRejectionEdit";
+												break;
+											case "CREDIT-NOTE ":
+												ControllerName = "CreditNote";
+												ActionName = "CreditNote";
+												break;
+											case "JOURNAL-VOUCHER":
+												ControllerName = "JournalVoucher";
+												ActionName = "JournalVoucher";
+												break;
+											case "PURCHASE-REJECTION":
+												ControllerName = "PurchaseRejection";
+												ActionName = "PurchaseRejection";
+												break;
+										}
+										<div id="viewCursorDiv-@Cntr">
+											@if (item.VoucherType == "PURCHASE-REJECTION")
+											{
+												<a class="table-link link-success" asp-route-ID="@item.DocEntryId" asp-controller="@ControllerName" asp-action="@ActionName" asp-route-Mode="V" asp-route-YC="@item.AccEntryYearCode" asp-route-VoucherNo="@item.VchNo" onclick="BackButtonData(event);">
+													<span class="fa-stack">
+														<i class="fa fa-square fa-stack-2x"></i>
+														<i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+													</span>
+												</a>
+											}
+											else
+											{
+												<a class="table-link link-success" asp-route-ID="@item.DocEntryId" asp-controller="@ControllerName" asp-action="@ActionName" asp-route-Mode="V" asp-route-YearCode="@item.AccEntryYearCode" asp-route-VoucherNo="@item.VchNo" onclick="BackButtonData(event);">
+													<span class="fa-stack">
+														<i class="fa fa-square fa-stack-2x"></i>
+														<i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+													</span>
+												</a>
+											}
+										</div>
+
+										@*<div id="editCursorDiv-@Cntr">
+											<a class="table-link link-primary" id="editCursor-@Cntr" asp-action="@ActionName" asp-controller="@ControllerName" asp-route-Mode="U" asp-route-ID="@item.DocEntryId" asp-route-YearCode="@item.AccEntryYearCode" asp-route-VoucherNo="@item.VchNo">
+												<span class="fa-stack">
+													<i class="fa fa-square fa-stack-2x"></i>
+													<i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+												</span>
+											</a>
+										</div>
+										*@
+										<div id="editCursorDiv-@Cntr">
+											@if (item.VoucherType == "PURCHASE-REJECTION")
+											{
+												<a class="table-link link-primary" id="editCursor-@Cntr"
+												   asp-route-ID="@item.DocEntryId" asp-controller="@ControllerName" asp-action="@ActionName" asp-route-Mode="U" asp-route-YC="@item.AccEntryYearCode" asp-route-VoucherNo="@item.VchNo" onclick="confirmEdit(event)">
+													<span class="fa-stack">
+														<i class="fa fa-square fa-stack-2x"></i>
+														<i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+													</span>
+												</a>
+											}
+											else
+											{
+												<a class="table-link link-primary" id="editCursor-@Cntr"
+												   asp-route-ID="@item.DocEntryId" asp-controller="@ControllerName" asp-action="@ActionName" asp-route-Mode="U" asp-route-YearCode="@item.AccEntryYearCode" asp-route-VoucherNo="@item.VchNo" onclick="confirmEdit(event)">
+													<span class="fa-stack">
+														<i class="fa fa-square fa-stack-2x"></i>
+														<i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+													</span>
+												</a>
+											}
+										</div>
+										<div id="deleteCursorDiv-@Cntr">
+											<a class="table-link link-danger" onclick="DeleteRow(this.id)" id="@Cntr">
+												<span class="fa-stack">
+													<i class="fa fa-square fa-stack-2x"></i>
+													<i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+												</span>
+											</a>
+										</div>
+									}
+									else
+									{
+										<div>
+											<a class="table-link link-primary noCursor">
+												<span class="fa-stack">
+													<i class="fa fa-square fa-stack-2x"></i>
+													<i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+												</span>
+											</a>
+										</div>
+										<div>
+											<a class="table-link link-danger noCursor">
+												<span class="fa-stack">
+													<i class="fa fa-square fa-stack-2x"></i>
+													<i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+												</span>
+											</a>
+										</div>
+									}
+								</div>
+							</td>
+							<th>@Cntr</th>
+							<td>@item.VoucherDocDate</td>
+							<td>@item.Particulars</td>
+							<td>@item.VoucherType</td>
+							<td>@item.InvoiceVoucherNo</td>
+							<td id="totDrG-@Cntr">@item.DrAmt</td>
+							<td id="totCrG-@Cntr">@item.CrAmt</td>
+							<td id="totBalG-@Cntr">@item.Balance</td>
+							<td>@item.Types</td>
+							<td>@item.HeadWiseNarration</td>
+							<td>@item.INVNo</td>
+							<td>@item.BillDate</td>
+							<td>@item.DocEntryId</td>
+							<td>@item.SumDet</td>
+							<td>@item.VCHEMark</td>
+							<td>@item.AccountCode</td>
+							<td>@item.ReportType</td>
+							<td>@item.VchNo</td>
+							<td>@item.AccEntryId</td>
+							<td>@item.AccEntryYearCode</td>
+						</tr>
+					}
+				}
+			}
+
+		</tbody>
+	</table>
+</div>
+
+<center><strong>TOTAL ROWS : <span id="totalRows"></span></strong></center>
+
+<style>
+
+	.sort-icon {
+		padding: 5px;
+		margin: 5px;
+		vertical-align: top;
+	}
+
+	.ascCol {
+		font-size: 15px;
+		vertical-align: bottom;
+	}
+
+	.descCol {
+		font-size: 15px;
+		vertical-align: super;
+	}
+
+	#dashRThead th {
+		background-color: #127387;
+		position: sticky;
+		top: -18px;
+		z-index: 1;
+	}
+</style>

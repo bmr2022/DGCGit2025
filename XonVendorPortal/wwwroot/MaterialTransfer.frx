@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="04/05/2025 12:47:38" ReportInfo.Modified="04/14/2025 17:51:57" ReportInfo.CreatorVersion="2023.2.0.0">
+  <Styles Name="Standard">
+    <Style Name="Title" Font="Arial, 12pt, style=Bold"/>
+    <Style Name="Header" Font="Arial, 10pt, style=Bold"/>
+    <Style Name="Group" Font="Arial, 10pt, style=Bold"/>
+    <Style Name="Data" Font="Arial, 10pt"/>
+    <Style Name="Footer" Font="Arial, 10pt"/>
+    <Style Name="EvenRows" Fill.Color="WhiteSmoke" Font="Arial, 10pt"/>
+  </Styles>
+  <Dictionary>
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHE+UVBHO0O0957hJkIVu0s2gqsOYKXH+IkHcEIANOn/f5j6CYuoQEiDFM7MGNOYsneTeupHMrcT0zBNm8CNxrL7riOGl+28bz089QpmAmrQDIT6lCjJ88u+BTUkSOXIdBfNtxDL1xHAIbXHOc9wEQz6372S50qujeVKLm+2wQzoy6Vktluf2reeYK2N7Pf3R95EtmIvosquSnwNLUBS7egqztuGbLAtGGrmf7LytAsk=">
+      <TableDataSource Name="Table" Alias="gettransferdata" DataType="System.Int32" Enabled="true" SelectCommand="exec usp_GetWipIssueDetails @EntryId =@entryparam, @YearCode =@yearparam">
+        <Column Name="Com_Name" DataType="System.String"/>
+        <Column Name="Year_Code" DataType="System.Int64"/>
+        <Column Name="Slip_No" DataType="System.String"/>
+        <Column Name="Slip_Date" DataType="System.DateTime"/>
+        <Column Name="Item_Name" DataType="System.String"/>
+        <Column Name="Issue_Work_Center" DataType="System.String"/>
+        <Column Name="Rec_Work_Center" DataType="System.String"/>
+        <Column Name="IssueEmpName" DataType="System.String"/>
+        <Column Name="RecEmpName" DataType="System.String"/>
+        <Column Name="Remark" DataType="System.String"/>
+        <Column Name="Entry_date" DataType="System.DateTime"/>
+        <Column Name="PartCode" DataType="System.String"/>
+        <Column Name="Unit" DataType="System.String"/>
+        <Column Name="Iss_Qty" DataType="System.Double"/>
+        <Column Name="Entry_Id" DataType="System.Int64"/>
+        <Column Name="Prod_Status" DataType="System.String"/>
+        <Column Name="BatchNo" DataType="System.String"/>
+        <CommandParameter Name="entryparam" Expression="entryparam"/>
+        <CommandParameter Name="yearparam" Expression="yearparam"/>
+      </TableDataSource>
+    </MsSqlDataConnection>
+    <Parameter Name="MyParameter" DataType="System.String" AsString=""/>
+  </Dictionary>
+  <ReportPage Name="Page1" Guides="0" Watermark.Font="Arial, 60pt">
+    <ReportTitleBand Name="ReportTitle1" Width="718.2" Height="207.9">
+      <TextObject Name="Text37" Top="66.15" Width="708.75" Height="18.9" Text="Material Transfer Slip" HorzAlign="Center" Font="Arial, 14pt" TextFill.Color="Red"/>
+      <TextObject Name="Text50" Top="113.4" Width="85.05" Height="18.9" Text="Slip No" Font="Arial, 10pt"/>
+      <TextObject Name="Text51" Left="359.1" Top="113.4" Width="85.05" Height="18.9" Text="Slip Date" Font="Arial, 10pt"/>
+      <TextObject Name="Text52" Top="141.75" Width="141.75" Height="18.9" Text="Issue Work Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text53" Left="359.1" Top="141.75" Width="141.75" Height="18.9" Text="Receive Work Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text57" Left="141.75" Top="113.4" Width="189" Height="18.9" Text="[gettransferdata.Slip_No]" Font="Arial, 10pt"/>
+      <TextObject Name="Text58" Left="453.6" Top="113.4" Width="141.75" Height="18.9" Text="[gettransferdata.Slip_Date]" Format="Date" Format.Format="d" Font="Arial, 10pt"/>
+      <TextObject Name="Text59" Left="141.75" Top="141.75" Width="189" Height="18.9" Text="[gettransferdata.Issue_Work_Center]" Font="Arial, 10pt"/>
+      <TextObject Name="Text60" Left="500.85" Top="141.75" Width="226.8" Height="18.9" Text="[gettransferdata.Rec_Work_Center]" Font="Arial, 10pt"/>
+      <TextObject Name="Text61" Top="9.45" Width="718.2" Height="47.25" Text="[gettransferdata.Com_Name]" HorzAlign="Center" Font="Arial, 16pt"/>
+      <LineObject Name="Line25" Height="207.9"/>
+      <LineObject Name="Line26" Left="718.2" Height="207.9"/>
+      <LineObject Name="Line27" Width="718.2"/>
+    </ReportTitleBand>
+    <PageHeaderBand Name="PageHeader1" Top="211.75" Width="718.2" Height="18.9" Guides="37.8">
+      <TextObject Name="Text38" Width="47.25" Height="18.9" Text="Sr no" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text39" Left="75.6" Width="113.4" Height="18.9" Text="Item Description" Font="Arial, 10pt"/>
+      <TextObject Name="Text40" Left="217.35" Width="75.6" Height="18.9" Text="Part Code" Font="Arial, 10pt"/>
+      <TextObject Name="Text41" Left="340.2" Width="37.8" Height="18.9" Text="Unit" Font="Arial, 10pt"/>
+      <TextObject Name="Text42" Left="434.7" Width="94.5" Height="18.9" Text="Issue Qty" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text43" Left="576.45" Width="94.5" Height="18.9" Text="Remarks" HorzAlign="Center" Font="Arial, 10pt"/>
+      <LineObject Name="Line1" Width="718.2"/>
+      <LineObject Name="Line3" Height="18.9"/>
+      <LineObject Name="Line4" Left="66.15" Height="18.9"/>
+      <LineObject Name="Line5" Left="198.45" Height="18.9"/>
+      <LineObject Name="Line6" Left="311.85" Height="18.9"/>
+      <LineObject Name="Line7" Left="406.35" Height="18.9"/>
+      <LineObject Name="Line8" Left="548.1" Height="18.9"/>
+      <LineObject Name="Line21" Left="718.2" Height="18.9"/>
+    </PageHeaderBand>
+    <GroupHeaderBand Name="GroupHeader1" Top="234.49" Width="718.2" Height="37.8" Condition="[gettransferdata.PartCode]">
+      <TextObject Name="Text44" Left="75.6" Width="94.5" Height="18.9" Text="[gettransferdata.Item_Name]" Font="Arial, 10pt"/>
+      <TextObject Name="Text45" Left="207.9" Width="94.5" Height="18.9" Text="[gettransferdata.PartCode]" Font="Arial, 10pt"/>
+      <TextObject Name="Text46" Left="321.3" Width="66.15" Height="18.9" Text="[gettransferdata.Unit]" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text47" Left="434.7" Width="94.5" Height="18.9" Text="[gettransferdata.Iss_Qty]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Center" WordWrap="false" Font="Arial, 10pt" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text48" Left="567" Width="141.75" Height="18.9" Text="[gettransferdata.Remark]" Font="Arial, 10pt"/>
+      <TextObject Name="Text49" Left="9.45" Width="47.25" Height="18.9" Text="[Row#]" Font="Arial, 10pt"/>
+      <LineObject Name="Line9" Height="37.8"/>
+      <LineObject Name="Line10" Left="66.15" Height="37.8"/>
+      <LineObject Name="Line11" Left="198.45" Height="37.8"/>
+      <LineObject Name="Line12" Left="311.85" Height="37.8"/>
+      <LineObject Name="Line13" Left="406.35" Height="37.8"/>
+      <LineObject Name="Line14" Left="548.1" Height="37.8"/>
+      <LineObject Name="Line22" Left="718.2" Height="37.8"/>
+      <LineObject Name="Line2" Width="718.2"/>
+      <DataBand Name="Data1" Top="276.14" Width="718.2" EvenStyle="EvenRows" DataSource="Table"/>
+    </GroupHeaderBand>
+    <ReportSummaryBand Name="ReportSummary1" Top="321.63" Width="718.2" Height="37.8">
+      <TextObject Name="Text54" Width="103.95" Height="18.9" Text="Issued By " Font="Arial, 10pt"/>
+      <TextObject Name="Text55" Left="264.6" Width="103.95" Height="18.9" Text="Received By " Font="Arial, 10pt"/>
+      <TextObject Name="Text56" Top="18.9" Width="103.95" Height="18.9" Text="Issued By " Font="Arial, 10pt"/>
+      <LineObject Name="Line24" Width="718.2"/>
+      <ChildBand Name="Child1" Top="279.98" Width="718.2" Height="37.8" FillUnusedSpace="true">
+        <LineObject Name="Line15" Height="37.8"/>
+        <LineObject Name="Line16" Left="66.15" Height="37.8"/>
+        <LineObject Name="Line17" Left="198.45" Height="37.8"/>
+        <LineObject Name="Line18" Left="311.85" Height="37.8"/>
+        <LineObject Name="Line19" Left="406.35" Height="37.8"/>
+        <LineObject Name="Line20" Left="548.1" Height="37.8"/>
+        <LineObject Name="Line23" Left="718.2" Height="37.8"/>
+      </ChildBand>
+    </ReportSummaryBand>
+    <PageFooterBand Name="PageFooter1" Top="363.28" Width="718.2" Height="18.9">
+      <TextObject Name="Text36" Width="718.2" Height="18.9" Dock="Fill" Text="[PageN]" HorzAlign="Right" Font="Arial, 10pt" Style="Footer"/>
+    </PageFooterBand>
+  </ReportPage>
+</Report>

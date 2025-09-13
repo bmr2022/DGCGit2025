@@ -1,0 +1,154 @@
+﻿@model eTactWeb.DOM.Models.OrderAmendHistoryModel
+@if (Model.ReportMode == "PODetail")
+{
+    <partial name="_OrderAmendHistoryDetailGrid" />
+}
+else
+{
+    <div class="table-responsive" style="max-height:300px;overflow-y:auto;">
+        <table class="table table-responsive table-hover table-bordered PMRPGrid TbCss text-nowrap mb-0" id="ReportTable">
+            <thead class="bg-gradient card-headerBG text-light" style="position:static;" id="dashRThead">
+                <tr>
+                    <th>Action</th>
+                    <th>Sr#</th>
+                    <th class="sortCol" data-sortorder="asc" data-columnno="1"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Vendor Name</th>
+                    <th class="sortCol" data-sortorder="asc" data-columnno="2"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PONO</th>
+                    <th class="sortCol" data-sortorder="asc" data-columnno="3"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Date</th>
+                    <th class="sortCol" data-sortorder="asc" data-columnno="4"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Amm No</th>
+                    <th class="sortCol" data-sortorder="asc" data-columnno="5"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Amm Effective Date</th>
+                    <th class="sortCol" data-sortorder="asc" data-columnno="6"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>WEF</th>
+                    <th class="sortCol" data-sortorder="asc" data-columnno="7"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Close Date</th>
+                    <th class="sortCol" data-sortorder="asc" data-columnno="8"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Order Type</th>
+                    <th class="sortCol" data-sortorder="asc" data-columnno="9"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Type</th>
+                    <th class="sortCol" data-sortorder="asc" data-columnno="10"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO For</th>
+                    <th class="sortCol" data-sortorder="asc" data-columnno="11"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Basic Amount</th>
+                    <th class="sortCol" data-sortorder="asc" data-columnno="12"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Net Amount</th>
+                    <th class="sortCol" data-sortorder="asc" data-columnno="13"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Canceled</th>
+                    <th class="sortCol" data-sortorder="asc" data-columnno="14"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Complete</th>
+                    <th class="sortCol" data-sortorder="asc" data-columnno="15"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Active</th>
+                    <th class="sortCol" data-sortorder="asc" data-columnno="16"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Shipping Address</th>
+                    <th class="sortCol" data-sortorder="asc" data-columnno="17"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Amend Year Code</th>
+                    <th class="sortCol" data-sortorder="asc" data-columnno="18"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Amend PO Seq</th>
+                    <th class="sortCol" data-sortorder="asc" data-columnno="19"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Entry ID</th>
+                    <th class="sortCol" data-sortorder="asc" data-columnno="20"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Year Code</th>
+
+                </tr>
+            </thead>
+            <tbody id="divStockRegisterBody">
+                @{
+                    var @Cntr = 0;
+                    int srNoStart = (Model.PageNumber - 1) * Model.PageSize;
+                    int srNo = srNoStart + 1;
+                    if (Model.OrderAmendHistoryGrid == null)
+                    {
+                        <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                    }
+                    else
+                    {
+                        foreach (var item in Model.OrderAmendHistoryGrid)
+                        {
+                            Cntr = Cntr + 1;
+
+                            <tr id="SAGridRow-@Cntr" onclick="selection(this)">
+                                <td>
+                                    <a class="table-link link-danger" onclick="DeleteRow(this.id)" id="@Cntr">
+                                        <span class="fa-stack">
+                                            <i class="fa fa-square fa-stack-2x"></i>
+                                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </a>
+                                </td>
+                                <th>@srNo</th>
+                                <td>@item.VendorName</td> 
+                                <td>@item.PONO</td>
+                                <td>@(item.PODate == null ? string.Empty : item.PODate.Split(" ")[0])</td>
+                                <td>@item.AmmNo</td>
+                                <td>@(item.AmmEffDate == null ? string.Empty : item.AmmEffDate.Split(" ")[0])</td>
+                                <td>@(item.WEF == null ? string.Empty : item.WEF.Split(" ")[0])</td>
+                                <td>@(item.POClosedate == null ? string.Empty : item.POClosedate.Split(" ")[0])</td>
+                                <td>@item.OrderType</td>
+                                <td>@item.POType</td>
+                                <td>@item.POFor</td>
+                                <td>@item.BasicAmount</td>
+                                <td>@item.NetAmount</td>
+                                <td>@item.POCanceled</td>
+                                <td>@item.POComplete</td>
+                                <td>@item.Active</td>
+                                <td>@item.ShippingAddress</td>
+                                <td>@item.POAmendYearCode</td>
+                                <td>@item.AmendPOSeq</td>
+                                <td>@item.POEntryId</td>
+                                <td>@item.POYearCode</td>
+                            </tr>
+                            srNo++;
+                        }
+                    }
+                }
+
+            </tbody>
+        </table>
+    </div>
+    int displayedRows = Model.PageNumber * Model.PageSize;
+    if (displayedRows > Model.TotalRecords)
+    {
+        displayedRows = Model.TotalRecords;
+    }
+    <center><strong>TOTAL ROWS  : <span>@displayedRows</span></strong></center>
+  
+    int totalPages = (int)Math.Ceiling((double)Model.TotalRecords / Model.PageSize);
+
+@if (Model.TotalRecords > 0)
+{
+    <ul class="pagination d-flex align-items-center">
+        @if (Model.PageNumber > 1)
+        {
+            <li class="page-item">
+                <a class="page-link" href="#" onclick="loadPage(@(Model.PageNumber - 1)); return false;">Previous</a>
+            </li>
+        }
+
+        @if (Model.PageNumber > 3)
+        {
+            <li class="page-item">
+                <a class="page-link" href="#" onclick="loadPage(1); return false;">1</a>
+            </li>
+            <li class="page-item disabled"><a class="page-link">...</a></li>
+        }
+
+        @for (int i = Math.Max(1, Model.PageNumber - 2); i <= Math.Min(Model.PageNumber + 2, totalPages); i++)
+        {
+            <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                <a class="page-link" href="#" onclick="loadPage(@i); return false;">@i</a>
+            </li>
+        }
+
+        @if (Model.PageNumber < totalPages - 2)
+        {
+            <li class="page-item disabled"><a class="page-link">...</a></li>
+            <li class="page-item">
+                <a class="page-link" href="#" onclick="loadPage(@totalPages); return false;">@totalPages</a>
+            </li>
+        }
+
+        @if (Model.PageNumber < totalPages)
+        {
+            <li class="page-item">
+                <a class="page-link" href="#" onclick="loadPage(@(Model.PageNumber + 1)); return false;">Next</a>
+            </li>
+        }
+    </ul>
+}
+}
+
+<style>
+
+    #dashRThead th {
+        background-color: #127387;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
+</style>
+
+

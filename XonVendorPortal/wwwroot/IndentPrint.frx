@@ -1,0 +1,167 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="11/30/2023 10:33:33" ReportInfo.Modified="12/01/2023 17:52:54" ReportInfo.CreatorVersion="2023.2.0.0">
+  <Styles Name="Standard">
+    <Style Name="Title" Font="Arial, 12pt, style=Bold"/>
+    <Style Name="Header" Font="Arial, 10pt, style=Bold"/>
+    <Style Name="Group" Font="Arial, 10pt, style=Bold"/>
+    <Style Name="Data" Font="Arial, 10pt"/>
+    <Style Name="Footer" Font="Arial, 10pt"/>
+    <Style Name="EvenRows" Fill.Color="WhiteSmoke" Font="Arial, 10pt"/>
+  </Styles>
+  <Dictionary>
+    <MsSqlDataConnection Name="Connection1" ConnectionString="rijcmlqwYf2D6LPIs5GRi9VfJb9gm+pxqUEPFs5ArZTHMiAZrDl/CfcXTHbciGdhcro7wnA49QD7321tdnLJXqace9y1rJfKw/AsPTy41iXr7PUEw8mWNp1x0fSjVLq3dgXqVStYuCcbawPUt5ormtXl52hVU83idnONQXw6wBh8gz5LZBFtNDoGO5a+zcOUdqTMDLvosXgDEO6+hT8neF4H05rbg==">
+      <TableDataSource Name="Table" Alias="indent" DataType="System.Int32" Enabled="true" SelectCommand="select * from vindentmaindetail where EntryId= @Entryid and yearCode = @yearcode">
+        <Column Name="Account_Name" DataType="System.String"/>
+        <Column Name="Account_Name2" DataType="System.String"/>
+        <Column Name="AccountCode1" DataType="System.Int64"/>
+        <Column Name="AccountCode2" DataType="System.Int64"/>
+        <Column Name="AltQty" DataType="System.Double"/>
+        <Column Name="AltUnit" DataType="System.String"/>
+        <Column Name="Approvalue" DataType="System.Double"/>
+        <Column Name="Approved" DataType="System.String"/>
+        <Column Name="ApprovedbyEmpId" DataType="System.Int64"/>
+        <Column Name="ApprovedDate" DataType="System.DateTime"/>
+        <Column Name="ApprovedEmployeeName" DataType="System.String"/>
+        <Column Name="BOMIND" DataType="System.String"/>
+        <Column Name="BomItemCode" DataType="System.Int64"/>
+        <Column Name="BOMPartCode" DataType="System.String"/>
+        <Column Name="Bomqty" DataType="System.Double"/>
+        <Column Name="BomRevNo" DataType="System.Int64"/>
+        <Column Name="BOMtem" DataType="System.String"/>
+        <Column Name="canceled" DataType="System.String"/>
+        <Column Name="CC" DataType="System.String"/>
+        <Column Name="closed" DataType="System.String"/>
+        <Column Name="Color" DataType="System.String"/>
+        <Column Name="CreatedBy" DataType="System.Int64"/>
+        <Column Name="CreatedByName" DataType="System.String"/>
+        <Column Name="DepartmentId" DataType="System.Int64"/>
+        <Column Name="DeptName" DataType="System.String"/>
+        <Column Name="EntryDate" DataType="System.DateTime"/>
+        <Column Name="EntryId" DataType="System.Int64"/>
+        <Column Name="firstapproved" DataType="System.String"/>
+        <Column Name="firstapprovedby" DataType="System.Int64"/>
+        <Column Name="firstapproveddate" DataType="System.DateTime"/>
+        <Column Name="IndentCompleted" DataType="System.String"/>
+        <Column Name="IndentDate" DataType="System.DateTime"/>
+        <Column Name="IndentNo" DataType="System.String"/>
+        <Column Name="IndentorEmpId" DataType="System.Int64"/>
+        <Column Name="IndentorName" DataType="System.String"/>
+        <Column Name="IndentRemark" DataType="System.String"/>
+        <Column Name="ItemCode" DataType="System.Int64"/>
+        <Column Name="ItemDescription" DataType="System.String"/>
+        <Column Name="ItemName" DataType="System.String"/>
+        <Column Name="ItemRemark" DataType="System.String"/>
+        <Column Name="itemservice" DataType="System.String"/>
+        <Column Name="LastUpdatedBy" DataType="System.Int64"/>
+        <Column Name="LastUpdatedName" DataType="System.String"/>
+        <Column Name="LastUpdationDate" DataType="System.DateTime"/>
+        <Column Name="MachineNo" DataType="System.String"/>
+        <Column Name="Model" DataType="System.String"/>
+        <Column Name="MRPEntryId" DataType="System.Int64"/>
+        <Column Name="MRPNO" DataType="System.Int64"/>
+        <Column Name="MRPyearcode" DataType="System.Int64"/>
+        <Column Name="PartCode" DataType="System.String"/>
+        <Column Name="PendAltQtyForPO" DataType="System.Double"/>
+        <Column Name="PendQtyForPO" DataType="System.Double"/>
+        <Column Name="PendReqNo" DataType="System.String"/>
+        <Column Name="Qty" DataType="System.Double"/>
+        <Column Name="ReqDate" DataType="System.DateTime"/>
+        <Column Name="ReqQty" DataType="System.Double"/>
+        <Column Name="ReqYearCode" DataType="System.Int64"/>
+        <Column Name="SeqNo" DataType="System.Int64"/>
+        <Column Name="Size" DataType="System.String"/>
+        <Column Name="Specification" DataType="System.String"/>
+        <Column Name="StoreID" DataType="System.Int64"/>
+        <Column Name="StoreName" DataType="System.String"/>
+        <Column Name="TotalStock" DataType="System.Double"/>
+        <Column Name="UID" DataType="System.Int64"/>
+        <Column Name="Unit" DataType="System.String"/>
+        <Column Name="YearCode" DataType="System.Int64"/>
+        <CommandParameter Name="Entryid" DefaultValue="1"/>
+        <CommandParameter Name="YearCode" DefaultValue="2023"/>
+      </TableDataSource>
+    </MsSqlDataConnection>
+  </Dictionary>
+  <ReportPage Name="Page1" Watermark.Font="Arial, 60pt">
+    <ReportTitleBand Name="ReportTitle1" Width="718.2" Height="47.25">
+      <TextObject Name="Text63" Left="642.6" Top="18.9" Width="94.5" Height="18.9" Text="[Date]" Font="Arial, 7pt"/>
+      <TextObject Name="Text64" Left="557.55" Top="18.9" Width="75.6" Height="18.9" Text="Print Date" Font="Arial, 10pt, style=Bold" Style="Header"/>
+      <TextObject Name="Text65" Left="9.45" Top="28.35" Width="538.65" Height="18.9" Text="INDENT REPORT" Font="Arial, 10pt, style=Bold" TextFill.Color="Brown"/>
+    </ReportTitleBand>
+    <PageHeaderBand Name="PageHeader1" Top="51.25" Width="718.2"/>
+    <GroupHeaderBand Name="GroupHeader1" Top="55.25" Width="718.2" Height="66.15" Condition="[indent.IndentNo]">
+      <TextObject Name="Text3" Left="10" Top="9.45" Width="94.5" Height="18.9" Text="IndentNo" Font="Arial, 10pt, style=Bold" Style="Header"/>
+      <TextObject Name="Text2" Left="103.95" Top="9.45" Width="122.85" Height="18.9" Text="[indent.IndentNo]" Font="Arial, 10pt, style=Bold" TextFill.Color="Brown"/>
+      <TextObject Name="Text5" Left="245.7" Top="9.45" Width="66.15" Height="18.9" Text="Date  :" Font="Arial, 10pt, style=Bold" Style="Header"/>
+      <TextObject Name="Text7" Left="10" Top="28.35" Width="94.5" Height="18.9" Text="Item/Ser  :" Font="Arial, 10pt, style=Bold" Style="Header"/>
+      <TextObject Name="Text4" Left="321.3" Top="9.45" Width="94.5" Height="18.9" Text="[indent.IndentDate]" Font="Arial, 10pt, style=Bold" TextFill.Color="Brown"/>
+      <TextObject Name="Text42" Left="321.3" Top="28.35" Width="151.2" Height="18.9" Text="[indent.DeptName]" Font="Arial, 10pt"/>
+      <TextObject Name="Text52" Left="245.7" Top="28.35" Width="66.15" Height="18.9" Text="From Depart  :" Font="Arial, 10pt, style=Bold" Style="Header"/>
+      <LineObject Name="Line1" Top="56.7" Width="718.2" Border.Style="Dash" Border.Width="0.25"/>
+      <LineObject Name="Line2" Width="718.2" Border.Style="Dash" Border.Width="0.25"/>
+      <GroupHeaderBand Name="GroupHeader3" Top="125.4" Width="718.2" Height="47.25" Condition="[indent.IndentNo]">
+        <TextObject Name="Text13" Left="113.4" Width="47.25" Height="37.8" Text="Item Name" Font="Arial, 10pt, style=Bold" Style="Header"/>
+        <TextObject Name="Text15" Left="37.8" Width="47.25" Height="47.25" Text="Part Code" Font="Arial, 10pt, style=Bold" Style="Header"/>
+        <TextObject Name="Text21" Left="207.9" Width="37.8" Height="18.9" Text="Qty" Font="Arial, 10pt, style=Bold" Style="Header"/>
+        <TextObject Name="Text25" Left="245.7" Width="37.8" Height="18.9" Text="Unit" Font="Arial, 10pt, style=Bold" Style="Header"/>
+        <TextObject Name="Text23" Left="283.5" Width="56.7" Height="18.9" Text="Model" Font="Arial, 10pt, style=Bold" Style="Header"/>
+        <TextObject Name="Text27" Left="340.2" Width="37.8" Height="37.8" Text="Alt Qty" HorzAlign="Right" Font="Arial, 10pt, style=Bold" Style="Header"/>
+        <TextObject Name="Text31" Left="396.9" Width="47.25" Height="37.8" Text="Store Name" Font="Arial, 10pt, style=Bold" Style="Header"/>
+        <TextObject Name="Text33" Left="444.15" Width="47.25" Height="28.35" Text="TotalStock" HorzAlign="Right" Font="Arial, 10pt, style=Bold" Style="Header"/>
+        <TextObject Name="Text47" Left="567" Width="66.15" Height="28.35" Text="Prefered  Vendor" Font="Arial, 10pt, style=Bold" Style="Header"/>
+        <TextObject Name="Text48" Left="9.45" Width="28.35" Height="37.8" Text="S No" Font="Arial, 10pt, style=Bold" Style="Header"/>
+        <TextObject Name="Text51" Left="661.5" Width="66.15" Height="28.35" Text="Remark/Spec" Font="Arial, 10pt, style=Bold" Style="Header"/>
+        <TextObject Name="Text54" Left="510.3" Width="47.25" Height="47.25" Text="Req Date" Font="Arial, 10pt, style=Bold" Style="Header"/>
+        <LineObject Name="Line3" Top="47.25" Width="718.2" Border.Style="Dash" Border.Width="0.25"/>
+        <GroupHeaderBand Name="GroupHeader2" Top="176.65" Width="718.2" Condition="[indent.PartCode]">
+          <DataBand Name="Data1" Top="180.65" Width="718.2" Height="28.35" CanGrow="true" EvenStyle="EvenRows" DataSource="Table">
+            <TextObject Name="Text12" Left="113.4" Top="9.45" Width="85.05" Height="18.9" Text="[indent.ItemName]" Font="Arial, 7pt"/>
+            <TextObject Name="Text14" Left="37.8" Top="9.45" Width="75.6" Height="18.9" Text="[indent.PartCode]" Font="Arial, 7pt"/>
+            <TextObject Name="Text20" Left="207.9" Top="9.45" Width="37.8" Height="18.9" Text="[indent.Qty]" Font="Arial, 7pt">
+              <Highlight>
+                <Condition Expression=" [indent.Qty]&lt;[indent.TotalStock]" Font="Arial, 9.75pt, style=Bold" ApplyFont="true"/>
+              </Highlight>
+            </TextObject>
+            <TextObject Name="Text24" Left="245.7" Top="9.45" Width="28.35" Height="18.9" Text="[indent.Unit]" Font="Arial, 7pt"/>
+            <TextObject Name="Text26" Left="330.75" Top="9.45" Width="37.8" Height="18.9" Text="[indent.AltQty]" HorzAlign="Right" Font="Arial, 7pt"/>
+            <TextObject Name="Text28" Left="368.55" Top="9.45" Width="28.35" Height="18.9" Text="[indent.AltUnit]" Font="Arial, 7pt"/>
+            <TextObject Name="Text30" Left="396.9" Top="9.45" Width="56.7" Height="18.9" Text="[indent.StoreName]" Font="Arial, 7pt"/>
+            <TextObject Name="Text32" Left="453.6" Top="9.45" Width="47.25" Height="18.9" Text="[indent.TotalStock]" Font="Arial, 7pt">
+              <Highlight>
+                <Condition Expression="Value &gt; 0" TextFill.Color="MediumBlue" Font="Arial, 10pt"/>
+              </Highlight>
+            </TextObject>
+            <TextObject Name="Text22" Left="274.05" Top="9.45" Width="56.7" Height="18.9" Text="[indent.Model]" Font="Arial, 7pt"/>
+            <TextObject Name="Text50" Left="633.15" Top="9.45" Width="94.5" Height="18.9" Text="[indent.ItemRemark]  [indent.Specification]" HorzAlign="Right" Font="Arial, 7pt"/>
+            <TextObject Name="Text53" Left="9.45" Top="9.45" Width="28.35" Height="18.9" Text="[Row#]" Font="Arial, 7pt"/>
+            <TextObject Name="Text55" Left="500.85" Top="9.45" Width="66.15" Height="18.9" Text="[indent.ReqDate]" Format="Date" Format.Format="d" HorzAlign="Center" Font="Arial, 7pt"/>
+            <TextObject Name="Text61" Left="567" Top="9.45" Width="75.6" Height="9.45" Text="[indent.Account_Name]" Font="Arial, 7pt, style=Bold"/>
+            <TextObject Name="Text62" Left="567" Top="18.9" Width="85.05" Height="9.45" Text="[indent.Account_Name2]" Font="Arial, 7pt, style=Bold" TextFill.Color="Brown"/>
+          </DataBand>
+          <GroupFooterBand Name="GroupFooter2" Top="213" Width="718.2" Height="9.45">
+            <LineObject Name="Line4" Top="9.45" Width="718.2" Border.Style="Dash" Border.Width="0.25"/>
+          </GroupFooterBand>
+        </GroupHeaderBand>
+        <GroupFooterBand Name="GroupFooter3" Top="226.45" Width="718.2" Height="66.15">
+          <TextObject Name="Text17" Left="9.45" Width="103.95" Height="18.9" Text="Indent By  :" Font="Arial, 10pt, style=Bold" Style="Header"/>
+          <TextObject Name="Text56" Left="491.4" Width="141.75" Height="18.9" Text="[indent.LastUpdatedName]" Font="Arial, 7pt"/>
+          <TextObject Name="Text57" Left="122.85" Top="18.9" Width="160.65" Height="18.9" Text="[indent.IndentorName]" Font="Arial, 7pt"/>
+          <TextObject Name="Text58" Left="122.85" Width="160.65" Height="18.9" Text="[indent.CreatedByName]" Font="Arial, 7pt"/>
+          <TextObject Name="Text59" Left="9.45" Top="18.9" Width="103.95" Height="18.9" Text="Created By :" Font="Arial, 10pt, style=Bold" Style="Header"/>
+          <TextObject Name="Text60" Left="349.65" Width="132.3" Height="18.9" Text="Last Updated By :" Font="Arial, 10pt, style=Bold" Style="Header"/>
+          <LineObject Name="Line5" Left="9.45" Top="66.15" Width="718.2" Border.Style="Dash" Border.Width="0.25"/>
+          <TextObject Name="Text67" Left="349.65" Top="18.9" Width="179.55" Height="18.9" Text="Indent Canceled /Closed :" Font="Arial, 10pt, style=Bold" Style="Header"/>
+          <TextObject Name="Text68" Left="570.35" Top="18.9" Width="94.5" Height="18.9" Text="[indent.closed]" Font="Arial, 7pt"/>
+          <TextObject Name="Text69" Left="529.2" Top="18.9" Width="28.35" Height="18.9" Text="[indent.canceled]" Font="Arial, 7pt"/>
+          <TextObject Name="Text70" Left="560.9" Top="18.9" Width="9.45" Height="18.9" Text="/" Font="Arial, 10pt, style=Bold" Style="Header"/>
+          <TextObject Name="Text71" Left="9.45" Top="37.8" Width="122.85" Height="18.9" Text="Entery done On :" Font="Arial, 10pt, style=Bold" Style="Header"/>
+          <TextObject Name="Text72" Left="122.85" Top="37.8" Width="245.7" Height="18.9" Text="[indent.MachineNo]" Font="Arial, 7pt"/>
+        </GroupFooterBand>
+      </GroupHeaderBand>
+      <GroupFooterBand Name="GroupFooter1" Top="296.6" Width="718.2"/>
+    </GroupHeaderBand>
+    <PageFooterBand Name="PageFooter1" Top="300.6" Width="718.2" Height="18.9">
+      <TextObject Name="Text46" Width="718.2" Height="18.9" Dock="Fill" Text="[PageN]" HorzAlign="Right" Font="Arial, 10pt" Style="Footer"/>
+    </PageFooterBand>
+  </ReportPage>
+</Report>
