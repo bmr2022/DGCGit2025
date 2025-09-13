@@ -80,6 +80,10 @@
                                 <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
                                     <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
                                 </button>
+                                <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToPDF">
+                                    <i class="fa-solid fa-file-pdf fa-fw fa-lg"></i> PDF
+                                </button>
+                             
                                 <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="PurchaseSchedule" asp-action="Dashboard">
                                     <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
                                 </a>
@@ -436,6 +440,63 @@
 
             XLSX.writeFile(wb, "PendProductionSchGrid.xlsx");
         });
+                $("#sendToPDF").click(function () {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            const table = document.querySelector("#PSDashboard");
+            const rows = table.querySelectorAll("tr");
+
+            const headerRow = rows[0];
+            const headers = [];
+            const visibleIndexes = [];
+
+            
+            let wantedColumns = [];
+            headerRow.querySelectorAll("th").forEach((cell) => {
+                wantedColumns.push(cell.textContent.trim());
+            });
+
+       
+            const removeColumns = ["Created On","PO Entry Id", "Action"];
+            wantedColumns = wantedColumns.filter(col => !removeColumns.includes(col));
+        
+            
+
+           
+            headerRow.querySelectorAll("th").forEach((cell, index) => {
+                let title = cell.textContent.trim();
+                if (wantedColumns.includes(title)) {
+                    headers.push(title);
+                    visibleIndexes.push(index);
+                }
+            });
+
+           
+            const body = [];
+            for (let i = 1; i < rows.length; i++) {
+                const rowData = [];
+                const cells = rows[i].querySelectorAll("td, th");
+
+                visibleIndexes.forEach((index) => {
+                    const cell = cells[index];
+                    if (cell) rowData.push(cell.textContent.trim());
+                });
+
+                body.push(rowData);
+            }
+
+            
+            doc.autoTable({
+                head: [headers],
+                body: body,
+                styles: { fontSize: 8, cellPadding: 2 },
+                headStyles: { fillColor: [41, 128, 185] },
+                margin: { top: 20 }
+            });
+
+            doc.save("PSDashboard_Selected.pdf");
+        });
 
         function GetDetailData() {
             var data = $('#SParam').serialize();
@@ -638,5 +699,6 @@
 
     </script>
     <script src="~/Scripts/table2excel.js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
 }
