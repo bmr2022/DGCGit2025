@@ -53,7 +53,7 @@
                                 </div>
                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:270px;">
                                     <label asp-for="HistoryReportMode" class="form-label">Report Type</label>
-                                    <select asp-for="HistoryReportMode" class="form-select" onchange="GetOrderAmendHistoryData()" style="width:250px;">
+                                    <select asp-for="HistoryReportMode" class="form-select"  style="width:250px;">
                                         <option disabled value="">-Select-</option>
                                         <option selected value="POAmendmentHistoryReport">PO Amendment History Report</option>
                                         <option value="POSCHAMENDMENTHISTORY">PO SCH AMENDMENT HISTORY</option>
@@ -64,7 +64,7 @@
                                 </div>
                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                     <label asp-for="ReportMode" class="form-label">Summary/Detail</label>
-                                    <select asp-for="ReportMode" class="form-select" onchange="GetOrderAmendHistoryData()">
+                                    <select asp-for="ReportMode" class="form-select">
                                         <option disabled value="">-Select-</option>
 
                                         <option selected value="POSummary">SUMMARY</option>
@@ -286,6 +286,7 @@
             // Get dynamic values
             var reportTypeText = $('#HistoryReportMode').find(":selected").text();
             var reportTypeValue = $('#HistoryReportMode').val();
+                   var ReportMode=$("#ReportMode").val();
             var fromDate = $('#FromDate').val();
             var toDate = $('#ToDate').val();
             var WorkCenter = $('#WCID').find(":selected").text();
@@ -344,9 +345,101 @@
             // Declare headers and body
             let headers = [];
             let body = [];
+                    switch (reportTypeValue) {
+            // -------------------------
+            // PO Amendment History Report
+            // -------------------------
+            case 'POAmendmentHistoryReport':
+                if (ReportMode === "PODetail") {
+                    headers = [
+                        "Sr#", "Vendor Name", "PONO", "PO Date", "WEF", "PO Close Date",
+                        "Order Type", "PO Type", "PO For", "Amm No", "Amm Eff Date",
+                        "Part Code", "Item Name", "HSN No", "PO Qty", "Unit", "Rate",
+                       "Amount", "Old Rate", 
+                        "Amend Reason", "Rate In Other Curr", 
+                       "Basic Amount",
+                        "Net Amount",
+                       "PO Year Code",
+                        "PO Canceled", "PO Complete"
+                    ];
+                    body = rows.map((r, i) => [
+                        i + 1,
+                        r.vendorName, r.pono, r.poDate, r.wef, r.poClosedate,
+                        r.orderType, r.poType, r.poFor, r.ammNo, r.ammEffDate,
+                        r.partCode, r.itemName, r.hsnNo, r.poQty, r.unit, r.rate,
+                        r.amount, r.oldRate,
+                        r.ammendmentReason, r.rateInOtherCurr,
+                       r.basicAmount,
+                        r.netAmount,r.poYearCode,
+                        r.poCanceled, r.poComplete
+                              ]);
+                } else { // POSummary
+                    headers = [
+                        "Sr#", "Vendor Name", "PONO", "PO Date",
+                        "Amm No", "Amm Eff Date", "WEF", "PO Close Date",
+                        "Order Type", "PO Type", "PO For",
+                        "Basic Amount", "Net Amount", "Amend PO Seq"
+                    ];
+                    body = rows.map((r, i) => [
+                        i + 1,
+                        r.vendorName, r.pono, r.poDate,
+                        r.ammNo, r.ammEffDate, r.wef, r.poClosedate,
+                        r.orderType, r.poType, r.poFor,
+                        r.basicAmount, r.netAmount, r.amendPOSeq
+                    ]);
+                }
+                break;
+
+            // -------------------------
+            // PO Schedule Amendment History
+            // -------------------------
+            case 'POSCHAMENDMENTHISTORY':
+                       if (ReportMode === "PODetail") {
+                    headers = [
+                        "Sr#", "Vendor Name", "PONO", "PO Date", "Sch No", "Sch Date",
+                                      "Amend No", "Amend Date", "Part Code", "Item Name", "Sch Qty",
+                               "Unit", "Amend Reason", "Amend PO Seq", "Effective From", "Till Date",
+                        "Sch Complete", "Sch Canceled", "Item Amend No", "Item Amend Date",
+                        "Tentative Confirm"
+                    ];
+                    body = rows.map((r, i) => [
+                        i + 1,
+                        r.vendorName, r.pono, r.poDate, r.scheduleNo, r.scheduleDate,
+                        r.schAmendNo, r.schAmendDate, r.partCode, r.itemName, r.schQty,
+                        r.unit, r.ammendmentReason, r.amendPOSeq, r.effFrom, r.tillDate,
+                        r.schComplete, r.schCanceled, r.itemSchAmendNo, r.itemSchAmendDate,
+                        r.tentativeConfirm
+                    ]);
+                } else { // POSummary
+                               headers = [
+                   "Sr#", "Vendor Name", "PONO", "PO Date",
+                   "Schedule No", "Schedule Date",
+                   "Eff From", "Till Date",
+                   "Schedule Amm No", "Schedule Amm Date",
+                   "Schedule Complete", "Schedule Canceled"
+               ];
+                       body = rows.map((r, i) => [
+                   i + 1,
+                   r.vendorName, r.pono, r.poDate,
+                   r.scheduleNo, r.scheduleDate,
+                   r.effFrom, r.tillDate,
+                   r.schAmendNo, r.schAmendDate,
+                   r.schComplete, r.schCanceled
+               ]);
+                }
+                break;
+
+            // -------------------------
+            // Default fallback
+            // -------------------------
+            default:
+                headers = ["Sr#", "Item Name", "Total Stock"];
+                body = rows.map((r, i) => [i + 1, r.itemName, r.totStk]);
+                break;
+        }
 
             // Handle report type logic
-            switch (reportTypeValue) {
+            /* switch (reportTypeValue) {
                 case 'POAmendmentHistoryReport':
                     headers = [
                         "SrNo", "VendorName", "PONO", "PODate", "AmmNo", "AmmEffDate", "WEF", "POClosedate", "OrderType", "POType", "POFor",
@@ -370,17 +463,18 @@
                     body = rows.map((r, i) => [i + 1, r.itemName, r.totStk]);
                     break;
             }
-
+ */
             // Generate table with bold and colored header
+                 
             doc.autoTable({
                 startY: yPosition, // after headerFields
                 head: [headers],
                 body: body,
                 theme: 'grid',
-                margin: { left: 40, right: 40 },
+                margin: { left: 30, right: 30 },
                 styles: {
-                    fontSize: 7,
-                    cellPadding: 3,
+                    fontSize: 6,
+                    cellPadding: 2,
                     overflow: 'linebreak',
                     halign: 'center',
                     valign: 'middle'
