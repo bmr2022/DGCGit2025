@@ -26,6 +26,11 @@ namespace eTactWeb.Data.BLL
         {
             return await _TranferFromWorkCenterDAL.GetFormRights(userID);
         }
+        public async Task<DataSet> BindAllDropDown()
+        {
+            return await _TranferFromWorkCenterDAL.BindAllDropDown();
+        }
+
         public async Task<ResponseResult> GetReportName()
         {
             return await _TranferFromWorkCenterDAL.GetReportName();
@@ -109,6 +114,11 @@ namespace eTactWeb.Data.BLL
         public async Task<ResponseResult> CheckEditOrDelete(int TransferEntryId, int TransferYearCode)
         {
             return await _TranferFromWorkCenterDAL.CheckEditOrDelete(TransferEntryId, TransferYearCode);
+        }
+
+        public async Task<TransferFromWorkCenterModel> selectMultipleItem(int WCID, string FromDate, string ToDate, string PartCode)
+        {
+            return await _TranferFromWorkCenterDAL.selectMultipleItem( WCID,  FromDate,  ToDate,  PartCode);
         }
     }
 }

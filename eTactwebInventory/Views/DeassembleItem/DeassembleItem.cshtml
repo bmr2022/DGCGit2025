@@ -241,7 +241,7 @@
                                             <option value="">-Select-</option>
                                             <option value="Production">Production</option>
                                             <option value="MRN">MRN</option>
-                                            <option value="None">None</option>
+                                            <option value="None" selected>None</option>
                                         </select>
                                     }
                                 </div>
@@ -366,7 +366,7 @@
                                         <label asp-for="FGBatchNo" class="control-label" style="color: red;"> FGBatchNo</label>
 
                                         <select class="form-select" asp-for="FGBatchNo">
-                                            <option value="">-Select-</option>
+                                          @*   <option value="">-Select-</option> *@
                                         </select>
                                     }
                                 </div>
@@ -1103,7 +1103,8 @@
                             $.each(obj.Result, function (index, val) {
                                 html += '<tr>' +
 
-                                    '<td><select id="StoreName' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="StoreChange(' + i + ')"><option value="" selected>-Select-</option></select></td>' +
+                                  /*   '<td><select id="StoreName' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="StoreChange(' + i + ')"><option value="" selected>-Select-</option></select></td>' + */
+                                            '<td><select id="StoreName' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="StoreChange(' + i + ')"></select></td>'+
 
                                     '<td><input id="PartCode' + i + '" value=' + JSON.stringify(val.PartCode) + ' class="textbox" readonly><input type="hidden" id="Item_Code' + i + '" value=' + val.Item_Code + '></td>' +
 
@@ -2129,7 +2130,33 @@
 
                     if (result != null) {
                         var obj = $.parseJSON(result);
-                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                                if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+            $('#BomNo').empty();
+            $('#BomNo').append('<option value="" disabled selected>-Select-</option>');
+
+            var maxBomNo = null;
+
+            $.each(obj.Result, function (index, val) {
+                $('#BomNo').append('<option value="' + val.BOMNO + '">' + val.BOMNO + '</option>');
+
+                // Track max BOMNO (assuming numeric values)
+                if (maxBomNo === null || parseInt(val.BOMNO, 10) > parseInt(maxBomNo, 10)) {
+                    maxBomNo = val.BOMNO;
+                }
+            });
+
+            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                var BomNo = "@Model.BomNo";
+                $('#BomNo').val(BomNo).trigger("change");
+            } else {
+                // Select max BOMNO if not in U or V mode
+                if (maxBomNo !== null) {
+                    $('#BomNo').val(maxBomNo).trigger("change");
+                }
+            }
+        }
+
+                       /*  if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                             $('#BomNo').empty();
                             $('#BomNo').append('<option value="" disabled selected>-Select-</option>');
 
@@ -2140,7 +2167,7 @@
                                 var BomNo = "@Model.BomNo";
                                 $('#BomNo').val(BomNo).trigger("change");
                             }
-                        }
+                        } */
 
                     }
                 }
@@ -2355,8 +2382,13 @@
                                 $.each(obj.Result, function (index, val) {
                                     $('#StoreName' + i).append('<option value="' + val.storeid + '">' + val.store_name + '</option>');
                                 });
+                                                 var fgStoreId = $("#FGStoreId").val();
+                    if (fgStoreId && fgStoreId !== "0") {
+                                                            $('#StoreName' + i).val(fgStoreId);
+                             /*    $('#StoreName' + i).val(fgStoreId).trigger("change"); */
+                    }
                             }
-
+                           
 
                             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
                                 var RMStoreId = "@Model.RMStoreId";

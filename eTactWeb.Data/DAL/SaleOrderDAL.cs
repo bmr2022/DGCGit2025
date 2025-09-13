@@ -96,6 +96,25 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
+        public async Task<ResponseResult> GetReportName()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetReportName"));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_SaleOrder", SqlParams);
+
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
         public async Task<ResponseResult> NewEntryId(int YearCode)
         {
             var _ResponseResult = new ResponseResult();
@@ -1730,6 +1749,8 @@ namespace eTactWeb.Data.DAL
                                     CustomerLocation = row["CustomerLocation"].ToString(),
                                     ItemModel = row["ItemModel"].ToString(),
                                     CustItemCategory = row["CustItemCategory"].ToString(),
+                                    Location = row["Location"].ToString(),
+                                    Vehicle = row["VehicalNo"].ToString(),
                                     Group_Code = row["ItemGroupCode"] != DBNull.Value ? Convert.ToInt32(row["ItemGroupCode"]) : 0,
                                     Group_name = row["Group_name"].ToString()??"",
                                     DeliveryScheduleList = listObject.Where(x => x.DPartCode == Convert.ToInt32(row["ItemCode"])).ToList(),

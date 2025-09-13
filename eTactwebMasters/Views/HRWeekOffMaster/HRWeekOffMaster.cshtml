@@ -133,7 +133,7 @@
                                         </select>
 
                                     </div>
-                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px; ">
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:190px;">
                                         <label asp-for="CompensatoryOffApplicable" class="form-label">Compensatory Off Applicable</label>
                                         <select asp-for="CompensatoryOffApplicable" class="form-select">
                                             <option value="" disabled>-Select-</option>
@@ -179,7 +179,7 @@
 
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px; ">
                                         <label asp-for="EffectiveFrom" class="form-label">EffectiveFrom</label>
-                                        <input asp-for="EffectiveFrom" class="form-control" />
+                                        <input asp-for="EffectiveFrom" class="form-control" readonly/>
                                     </div>
 
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;display:none">
@@ -189,19 +189,23 @@
                                    
 
                                     
-                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                   @*  <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                         <label asp-for="EmpCateg" class="form-label">Employee Category </label>
                                         <input asp-for="EmpCategoryId" class="form-control" type="hidden" value="@Model.EmpCategoryId" />
                                         <select asp-for="EmpCateg" class="form-control">
-                                            @* <option value="@Model.AccountCode">-Select-</option> *@
                                             <option value="@Model.EmpCategoryId">-Select-</option>
                                             @if (Model.Mode == "U" || Model.Mode == "V")
                                             {
                                                 <option value="@Model.EmpCategoryId" selected>@Model.EmpCateg</option>
                                             }
                                         </select>
-                                    </div>
+                                    </div> *@
+                                    <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:280px;">
+                                        <label asp-for="EmpCateg" class="control-label">Employee Category </label>
+                                        <br />
 
+                                        <select id="EmpCateg" class="form-select" multiple="multiple" asp-for="EmpCateg" asp-items="@(new SelectList(Model.EmployeeCategoryList,"Value","Text"))"></select>
+                                    </div>
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                         <label asp-for="DeptName" class="form-label">Department Category </label>
                                         <input asp-for="DeptId" class="form-control" type="hidden" value="@Model.DeptId" />
@@ -317,15 +321,23 @@
         $(document).ready(function () {
 
             if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
-                $('#EffectiveFrom').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                $('#EffectiveFrom').datepicker({
+                    dateFormat: 'dd/M/yy',  
+                    monthNamesShort: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+                }).datepicker("setDate", new Date());
             }
             else {
-                $('#EffectiveFrom').datepicker({ dateFormat: 'dd/mm/yy' });
+                $('#EffectiveFrom').datepicker({
+                    dateFormat: 'dd/M/yy',
+                    monthNamesShort: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+                });
             }
 
            
 
-            $('#EmpCateg').select2();
+            //$('#EmpCateg').select2();
             $('#DeptName').select2();
             $('#WeekoffTypefixRot').select2();
             $('#WeekoffDays').select2();
@@ -342,10 +354,21 @@
             $('#EmpCateg').change(function () {
                 $('#EmpCategoryId').val($('#EmpCateg').val());
             });
-            FillEmpCat();
+            //FillEmpCat();
             FillDeptCat();
 
+            $("#EmpCateg").multiselect({
+                // Bootstrap 5 compatibility
+                templates: {
+                    button: '<button type="button" class="multiselect btn btn-sm btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><span class="multiselect-selected-text"></span></button>',
+                },
+                enableFiltering: true,
+                includeSelectAllOption: true,
+                buttonWidth: 250,
+                enableCaseInsensitiveFiltering: true
 
+
+            });
             
         });
 

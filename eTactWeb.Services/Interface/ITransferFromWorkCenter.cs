@@ -19,6 +19,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> BindEmpList();
         Task<ResponseResult> FillStoreName();
         Task<ResponseResult> FillWorkCenter();
+        Task<DataSet> BindAllDropDown();
         Task<ResponseResult> FillItemName(int TransferMatYearCode);
         Task<ResponseResult> FillPartCode(int TransferMatYearCode);
         Task<ResponseResult> GetBatchNumber(string SPName, int ItemCode, int YearCode, float WcId, string TransDate, string BatchNo);
@@ -33,5 +34,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> SaveTransferFromWorkCenter(TransferFromWorkCenterModel model, DataTable TransferGrid);
         Task<ResponseResult> DeleteByID(int ID, int YC, string CC, string EntryByMachineName, string EntryDate,int EmpID);
         Task<ResponseResult> ChkWIPStockBeforeSaving(int WcId, string TransferMatEntryDate, int TransferMatYearCode,int TransferMatEntryId, DataTable TransferGrid,string Mode);
+
+        Task<TransferFromWorkCenterModel> selectMultipleItem(int WCID, string FromDate, string ToDate, string PartCode);
     }
 }

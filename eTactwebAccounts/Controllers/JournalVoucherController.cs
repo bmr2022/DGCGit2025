@@ -11,6 +11,7 @@ using System.Data;
 using System.Net;
 using FastReport.Web;
 using FastReport;
+using System.Globalization;
 
 namespace eTactwebAccounts.Controllers
 {
@@ -277,7 +278,7 @@ namespace eTactwebAccounts.Controllers
                 Item.VoucherDocNo ?? string.Empty,
                 Item.BillVouchNo ?? string.Empty,
                 Item.VoucherDocDate=DateTime.Now.ToString("dd/MMM/yyyy") ,
-                Item.BillInvoiceDate=DateTime.Now.ToString("dd/MMM/yyyy") ,
+                Item.BillInvoiceDate=DateTime.Now.ToString("dd/MMM/yyyy",CultureInfo.InvariantCulture) ,
                 Item.BillYearCode ,
                 Item.VoucherRefNo ?? string.Empty,
                 Item.SrNO ,

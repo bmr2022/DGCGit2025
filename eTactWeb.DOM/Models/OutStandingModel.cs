@@ -23,8 +23,10 @@ namespace eTactWeb.DOM.Models
         public string Mode { get; set; }
         public string ShowOnlyApprovedBill { get; set; }
         public string LedgerDescription { get; set; }
+        public int AccountCode {  get; set; }
         public string VoucherNo { get; set; }
         public string VoucherDate { get; set; }
+        public int VoucherYearCode {  get; set; }
         public string VoucherType { get; set; }
         public string DrAmt { get; set; }
         public string CrAmt { get; set; }
@@ -42,5 +44,21 @@ namespace eTactWeb.DOM.Models
         public IList<OutStandingRow> OutStandingRow { get; set; }
         public List<string> ColumnNames { get; set; } = new(); // for dynamic header rendering
         public IList<OutStandingModel> OutStandingGrid { get; set; }
+        public List<OutStandingPopUpData> OutStandingPopUpDatas { get; set; }   
+    }
+    public class OutStandingPopUpData
+    {
+        public string VoucherNo { get; set; }
+        public string VoucherDate { get; set; }
+        public string BillOrInvoiceNo {  get; set; }
+        public decimal DrAmt {  get; set; }
+        public decimal CrAmt {  get; set; }
+        public string VoucherType {  get; set; }
+        public string NewRefNo {  get; set; }
+        public int DocEntryId { get; set; }
+        public int AccEntryId {  set; get; }
+        public int AccYearCode { get; set; }
+        public int AgainstAccEntryId {  get; set; }
+        public int AgainstAccYearCode {  get; set; }
     }
 }

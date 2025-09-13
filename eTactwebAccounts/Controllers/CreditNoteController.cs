@@ -28,11 +28,12 @@ namespace eTactWeb.Controllers
         }
         [HttpGet]
         [Route("{controller}/Index")]
-        public async Task<IActionResult> CreditNote(int ID, string Mode, int YearCode)
+        public async Task<IActionResult> CreditNote( int ID, string Mode, int YearCode, string FromDate = "", string ToDate = "", int GroupCode=0,string VoucherNo = "", string VoucherType = "", string DashboardType = "", int AccountCode = 0)
         {
             AccCreditNoteModel model = new AccCreditNoteModel();
             ViewData["Title"] = "Credit Note Details";
             TempData.Clear();
+
             HttpContext.Session.Remove("KeyCreditNoteGrid");
             HttpContext.Session.Remove("CreditNoteModel");
             HttpContext.Session.Remove("KeyAdjGrid");

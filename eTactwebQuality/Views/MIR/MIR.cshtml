@@ -2663,7 +2663,7 @@
 
             // Optional: disable button to prevent multiple clicks
             $('#btnBarcodeTag').prop('disabled', true);
-
+            var reportWindow = window.open("", "_blank");
             // AJAX call to server
             $.ajax({
                 url: '/MIR/GenerateBarCodeTag', // Correct URL
@@ -2675,9 +2675,10 @@
                 },
                 success: function (response) {
                     // Open report in new tab if server returns URL
-                    if (response) {
-                        window.open(response, '_blank');
+                    if (response && response.url) {
+                        reportWindow.location.href = response.url; // redirect blank tab to actual report
                     } else {
+                        reportWindow.close();
                         alert("No response received from server.");
                     }
                 },

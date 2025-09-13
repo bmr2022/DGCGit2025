@@ -130,18 +130,38 @@ namespace eTactwebHR.Controllers
             model.DesignationList = new List<TextValue>();
             model.EmployeeList = new List<TextValue>();
             model.ShiftList = new List<TextValue>();
+            model.CategoryList = new List<TextValue>();
 
-            model.DeptList = await IDataLogic.GetDropDownList("FILLDepartment", "HRSPGateAttendanceMainDetail");
-            model.DesignationList = await IDataLogic.GetDropDownList("FILLDocumentList", "HRSPGateAttendanceMainDetail");
+            model.DeptList = await IDataLogic.GetDropDownList("FillDepartment", "HRSPGateAttendanceMainDetail");
+            model.DesignationList = await IDataLogic.GetDropDownList("FillDesignation", "HRSPGateAttendanceMainDetail");
+            model.EmployeeList = await IDataLogic.GetDropDownList("FillEmployee", "HRSPGateAttendanceMainDetail");
+            model.CategoryList = await IDataLogic.GetDropDownList("FillCategory", "HRSPGateAttendanceMainDetail");
+            //foreach (var emp in model.EmployeeList)
+            //{
+            //    if (!string.IsNullOrWhiteSpace(emp.Text) && emp.Text.StartsWith("--->"))
+            //    {
+            //        emp.Text = emp.Value;   // updates the list item itself
+            //    }
+            //}
             return model;
         }
-        public async Task<IActionResult> LoadAttendanceGrid(string DayOrMonthType, DateTime Attdate)
+        public async Task<IActionResult> LoadAttendanceGrid(string DayOrMonthType, DateTime Attdate, int AttMonth, int YearCode)
         {
             // Get list from DB based on date
-            //var list = new List<GateAttendanceModel>();
-            var list = await IGateAttendance.GetManualAttendance(DayOrMonthType, Attdate).ConfigureAwait(false);
+            GateAttendanceModel model = new GateAttendanceModel();
+            model = await IGateAttendance.GetManualAttendance(DayOrMonthType, Attdate, AttMonth, YearCode).ConfigureAwait(false);
+            //model.ShiftList = new List<TextValue>();
 
-            return PartialView("_GateAttendanceGrid", list);
+            ViewBag.DeptList = await IDataLogic.GetDropDownList("FillDepartment", "HRSPGateAttendanceMainDetail");
+            ViewBag.DesigList = await IDataLogic.GetDropDownList("FillDesignation", "HRSPGateAttendanceMainDetail");
+            //ViewBag.ShiftList = await IDataLogic.GetDropDownList("FillShift", "HRSPGateAttendanceMainDetail");
+            ViewBag.EmployeeList = await IDataLogic.GetDropDownList("FillEmployee", "HRSPGateAttendanceMainDetail");
+
+            model.DayOrMonthType = DayOrMonthType;
+            //ViewBag.DeptList = model.DeptList;
+            //ViewBag.DesigList = model.DesignationList;
+            //ViewBag.EmployeeList = model.EmployeeList;
+            return PartialView("_GateManualAttendance", model);
         }
         public string GetEmpByMachineName()
         {
@@ -157,5 +177,18 @@ namespace eTactwebHR.Controllers
                 return "";
             }
         }
+        public async Task<JsonResult> GetFormRights()
+        {
+            var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var JSON = await IGateAttendance.GetFormRights(userID);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> FillEntryId(int YearCode)
+        {
+            var JSON = await IGateAttendance.FillEntryId(YearCode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        } 
     }
 }

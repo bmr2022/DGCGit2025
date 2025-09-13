@@ -47,9 +47,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _PrimaryAccountGroupMasterDAL.GetDashboardData();
         }
-        public async Task<PrimaryAccountGroupMasterDashBoardModel> GetDashboardDetailData()
+        public async Task<PrimaryAccountGroupMasterDashBoardModel> GetDashboardDetailData(string Account_Name, string ParentAccountName)
         {
-            return await _PrimaryAccountGroupMasterDAL.GetDashboardDetailData();
+            return await _PrimaryAccountGroupMasterDAL.GetDashboardDetailData( Account_Name,  ParentAccountName);
         }
         public async Task<PrimaryAccountGroupMasterModel> GetViewByID(int accountCode)
         {

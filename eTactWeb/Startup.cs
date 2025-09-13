@@ -11,6 +11,7 @@ using eTactWeb.DOM.Models;
 using eTactWeb.Services;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
+using etactwebBOT.Services;
 
 namespace eTactWeb
 {
@@ -71,7 +72,7 @@ namespace eTactWeb
             var cultureInfo = new CultureInfo("en-GB");
             CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
             CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
-
+            services.AddHttpClient<WrenAiService>();
             services.Configure<RequestLocalizationOptions>(options =>
             {
                 var supportedCultures = new[] { cultureInfo };

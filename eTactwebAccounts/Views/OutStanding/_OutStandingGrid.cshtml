@@ -1,4 +1,5 @@
-﻿@model eTactWeb.DOM.Models.OutStandingModel
+﻿
+@model eTactWeb.DOM.Models.OutStandingModel
 
 <div class="card-body table-responsive" style="max-height:300px;overflow-y:auto;">
     <table class="table table-responsive table-hover table-bordered PMRPGrid TbCss text-nowrap mb-0" id="ReportTable">
@@ -18,20 +19,20 @@
                     <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>
                     VoucherDate
                 </th>
-                <th data-columnno="5" data-sortorder="asc" class="sortCol">
+                <th data-columnno="4" data-sortorder="asc" class="sortCol">
                     <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>
                     VoucherType
                 </th>
-                <th data-columnno="6" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span>DrAmt</th>
-                <th data-columnno="7" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span>CrAmt</th>
-                <th data-columnno="8" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span>BillAmt</th>
-                <th data-columnno="9" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span>PendingAmt</th>
-                <th data-columnno="10" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span>DueDate</th>
-                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span>OverDueDays</th>
-                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span>TotBalanceAmt</th>
-                <th data-columnno="13" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span>AccEntryId</th>
-                <th data-columnno="14" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span>AccYearCode</th>
-                <th data-columnno="15" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span>SalesPersonName</th>
+                <th data-columnno="5" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span>DrAmt</th>
+                <th data-columnno="6" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span>CrAmt</th>
+                <th data-columnno="7" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span>BillAmt</th>
+                <th data-columnno="8" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span>PendingAmt</th>
+                <th data-columnno="9" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span>DueDate</th>
+                <th data-columnno="10" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span>OverDueDays</th>
+                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span>TotBalanceAmt</th>
+                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span>AccEntryId</th>
+                <th data-columnno="13" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span>AccYearCode</th>
+                <th data-columnno="14" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span>SalesPersonName</th>
             </tr>
         </thead>
         <tbody id="divStockRegisterBody">
@@ -100,16 +101,24 @@
                                         <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
                                     </span>
                                 </a>
+                                <a class="table-link link-primary" onclick="ViewData('@item.AccountCode','@item.VoucherNo','@item.VoucherType','@item.AccYearCode','@item.AccYearCode')" id="@Cntr">
+                                    <span class="fa-stack">
+                                        <i class="fa fa-square fa-stack-2x"></i>
+                                        <i class="fa-solid fa-eye fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
                             </td>
                             <th>@Cntr</th>
-                            <td>@item.LedgerDescription</td>
+                            <td><input type="hidden" value="@item.AccountCode" />@item.LedgerDescription</td>
                             <td>
-                                <a
-                                   asp-controller="@controller"
+                                <a asp-controller="@controller"
                                    asp-action="@action"
                                    asp-route-Mode="U"
                                    asp-route-ID="@item.DocEntryId"
-                                   asp-route-YearCode="@item.AccYearCode">
+                                   asp-route-YearCode="@item.AccYearCode"
+                                   asp-route-GroupName="@item.GroupName"
+                                   asp-route-DashboardType="@item.ReportType"
+                                   asp-route-AccountCode="@item.AccountCode">
                                     @item.VoucherNo
                                 </a>
                             </td>

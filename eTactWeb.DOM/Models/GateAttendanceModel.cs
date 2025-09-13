@@ -75,6 +75,7 @@ public class GateAttendanceModel : TimeStamp
     public int? DesignationEntryId { get; set; }
     public string DesignationName { get; set; }
     public string strEmpAttDate { get; set; }
+    public string EmpCategoryId { get; set; }
     public string EmpCategory { get; set; }
     public string? AttendanceEntryMethodType { get; set; }
     public IList<SelectListItem> AttendanceEntryMethodTypeList
@@ -104,9 +105,10 @@ public class GateAttendanceModel : TimeStamp
     public string EmployeeCode { get; set; }
     public string EmployeeName { get; set; }
     public IList<TextValue>? EmployeeList { get; set; }
-    public IList<TextValue>? DeptList { get; set; } // for future filter
-    public IList<TextValue>? ShiftList { get; set; } // for future filter
-    public IList<TextValue>? DesignationList { get; set; } // for future filter
+    public IList<TextValue>? DeptList { get; set; }
+    public IList<TextValue>? ShiftList { get; set; }
+    public IList<TextValue>? DesignationList { get; set; }
+    public IList<TextValue>? CategoryList { get; set; }
     public string TotalEmployees { get; set; }
     public string TotalEmployeesOnLeave { get; set; }
     public string TotalEmployeesAttDone { get; set; }
@@ -124,5 +126,20 @@ public class GateAttendanceModel : TimeStamp
     public List<string> DayHeaders { get; set; } = new(); // dynamic column headers
     public Dictionary<string, string> Attendance { get; set; } = new(); // dynamic day-wise In/Out
     public List<GateAttendanceModel> GateAttDetailsList { get; set; }
+    public List<GateAttendanceHolidayModel> HolidayList { get; set; }
 }
 
+public class GateAttendanceHolidayModel
+{
+    public int HolidayEntryId { get; set; }
+    public int HolidayYear { get; set; }
+    public string HolidayName { get; set; }
+    public string HalfDayFullDay { get; set; }
+    public DateTime? HolidayEffFrom { get; set; }
+    public DateTime? HolidayEffTill { get; set; }
+    public string DayName { get; set; }
+    public int CategoryId { get; set; }
+    public string DayType { get; set; }  // e.g. WEEKOFF, HOLIDAY
+    public string AllowedCompOff { get; set; } // "YES" / "NO"
+    public string OverrideWeekoff { get; set; } // "YES" / "NO"
+}

@@ -44,6 +44,7 @@ namespace eTactWeb.Services.Interface
 
 		Task<ResponseResult> GetPartyList(string Check);
         Task<ResponseResult> GetItemCode(string PartCode);
+        Task<ResponseResult> GetReportName();
 
         Task<ResponseResult> GetQuotData(string Code, string Flag);
 
@@ -58,5 +59,6 @@ namespace eTactWeb.Services.Interface
         Task<SaleOrderModel> GetViewSOCcompletedByID(int iD, int yC, string v);
 
         Task<ResponseResult> SaveSaleOrder(DataTable DTItemGrid, DataTable DTSchedule, DataTable DTTaxGrid, DataTable MultiBuyersDT, SaleOrderModel model);
+       
     }
 }

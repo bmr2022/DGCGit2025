@@ -9,31 +9,79 @@
         <td colspan="25" class="text-black-50"><strong>NO DATA ADDED</strong></td>
     </tr>
 }
+
 else
 {
     foreach (var item in Model.ItemDetailGrid)
     {
-        Cntr = Cntr + 1;
-        <tr id="itemGrid" class="small" style="white-space:nowrap">
-            <td style="white-space:nowrap;">
-                
-                <a class="table-link link-danger" onclick="DeleteScannedItemRow(@Cntr);">
-                    <span class="fa-stack">
-                        <i class="fa fa-square fa-stack-2x"></i>
-                        <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
-                    </span>
-                </a>
-
-            </td>
-            <td id="ScannedItemName-@Cntr">@item.ItemName<input type="hidden" value="@item .ItemCode" id="ScannedItemCode-@Cntr" /></td>
-            <td id="ScannedPartCode-@Cntr">@item.PartCode</td>
-            <td id="ScannedReqQty-@Cntr">@item.ReqQty</td>
-            <td id="ScannedBatchNo-@Cntr">@item.BatchNo</td>
-            <td id="ScannedUniqueBatchNo-@Cntr">@item.uniqueBatchNo</td>
-            <td id="ScannedIssueQty-@Cntr">@item.IssueQty @*<input type="text" id="ScannedIssueQty-@Cntr" class="form-control" />*@</td>
-            <td id="ScannedUnit-@Cntr">@item.Unit</td>
-            <td id="ScannedLotStock-@Cntr">@item.LotStock</td>
-            <td id="ScannedTotalStock-@Cntr">@item.TotalStock</td>
-        </tr>
+          Cntr = Cntr + 1;
+<tr id="itemGrid" class="small" style="white-space:nowrap">
+    <input type="hidden" value="@item.ItemCode" id="ScannedItemCode-@Cntr" />
+     <input type="hidden" value="@item.StoreId" id="ScannedStoreId-@Cntr" />
+            <input type="hidden" value="@item.WCId" id="ScannedWCId-@Cntr" />
+    <td style="white-space:nowrap;">
+        <a class="table-link link-danger" onclick="DeleteScannedItemRow(@Cntr);">
+            <span class="fa-stack">
+                <i class="fa fa-square fa-stack-2x"></i>
+                <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+            </span>
+        </a>
+    </td>
+    <td id="ScannedItemName-@Cntr">@item.ItemName</td>
+    <td id="ScannedPartCode-@Cntr">@item.PartCode</td>
+    <td id="ScannedReqQty-@Cntr">@item.ReqQty</td>
+    <td id="ScannedBatchNo-@Cntr">@item.BatchNo</td>
+    <td id="ScannedStoreName-@Cntr">@item.StoreName</td>
+    <td id="ScannedUniqueBatchNo-@Cntr">@item.uniqueBatchNo</td>
+     <td id="ScannedWorkCenter-@Cntr">@item.WorkCenter</td>
+    <td id="ScannedIssueQty-@Cntr">@item.IssueQty</td>
+    <td id="ScannedUnit-@Cntr">@item.Unit</td>
+    <td id="ScannedLotStock-@Cntr">@item.LotStock</td>
+    <td id="ScannedTotalStock-@Cntr">@item.TotalStock</td>
+    <td id="ScannedAltQty-@Cntr">@item.AltQty</td>
+    <td id="ScannedAltUnit-@Cntr">@item.AltUnit</td>
+    <td id="ScannedStdPacking-@Cntr">@item.StdPacking</td>
+    <td id="ScannedRate-@Cntr">@item.Rate</td>
+    <td id="ScannedRemark-@Cntr">@item.Remark</td>
+    <td id="ScannedOGItemName-@Cntr">@item.ItemName</td>
+    <td id="ScannedOGPartCode-@Cntr">@item.PartCode</td>
+    <td id="ScannedCostCenter-@Cntr">@item.CostCenterId</td>
+    <td id="ScannedItemSize-@Cntr">@item.ItemSize</td>
+    <td id="ScannedItemColor-@Cntr">@item.ItemColor</td>
+    <td id="ScannedProjectNo-@Cntr">@item.ProjectNo</td>
+    <td id="ScannedProjectYearCode-@Cntr">@item.ProjectYearCode</td>
+    <td id="ScannedIssuedAltItem-@Cntr">@item.IssuedAlternateItem</td>
+    <td id="ScannedTransactionDate-@Cntr">@item.TransactionDate</td>
+    </tr>
     }
 }
+@* else
+{
+    foreach (var item in Model.ItemDetailGrid)
+    {
+        Cntr = Cntr + 1;
+<tr id="itemGrid" class="small" style="white-space:nowrap">
+    <input type="hidden" value="@item.ItemCode" id="ScannedItemCode-@Cntr" />
+    <td style="white-space:nowrap;">
+
+        <a class="table-link link-danger" onclick="DeleteScannedItemRow(@Cntr);">
+            <span class="fa-stack">
+                <i class="fa fa-square fa-stack-2x"></i>
+                <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+            </span>
+        </a>
+
+    </td>
+    <td id="ScannedItemName-@Cntr">@item.ItemName</td>
+    <td id="ScannedPartCode-@Cntr">@item.PartCode</td>
+    <td id="ScannedReqQty-@Cntr">@item.ReqQty</td>
+    <td id="ScannedBatchNo-@Cntr">@item.BatchNo</td>
+    <td id="ScannedUniqueBatchNo-@Cntr">@item.uniqueBatchNo</td>
+    <td id="ScannedIssueQty-@Cntr">@item.IssueQty</td>
+    <td id="ScannedUnit-@Cntr">@item.Unit</td>
+    <td id="ScannedLotStock-@Cntr">@item.LotStock</td>
+    <td id="ScannedTotalStock-@Cntr">@item.TotalStock</td>
+</tr>
+    }
+}
+ *@

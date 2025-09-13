@@ -896,17 +896,17 @@ namespace eTactWeb.Controllers
 				// Build PrintReport URL
 				string reportUrl = Url.Action("PrintBarcodeTag", "MIR", new
 				{
-					EntryId = entryId,
+					MIRNo = MIRNo,
 					YearCode = YearCode,
-					MrnNo = MIRNo
-				});
+					ItemCodes = ItemCodes
+                }, protocol: Request.Scheme);
 
-				return Json(reportUrl); // return URL to AJAX
-			}
+                return Json(new { url = reportUrl });// return URL to AJAX
+            }
 
 			return Json(null);
-		}
-		public IActionResult PrintBarcodeTag(int EntryId = 0, int YearCode = 0, string MrnNo = "")
+		 }
+		public IActionResult PrintBarcodeTag(string MIRNo, int YearCode, string ItemCodes)
 		{
 			string my_connection_string;
 			string contentRootPath = _IWebHostEnvironment.ContentRootPath;
@@ -916,21 +916,17 @@ namespace eTactWeb.Controllers
 			var ReportName = _IMirModule.GetReportName();
 			webReport.Report.Dispose();
 			webReport.Report = new Report();
-			if (!String.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
-			{
-				webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0].ToString() + ".frx");
-			}
-			else
-			{
-				webReport.Report.Load(webRootPath + "\\MIRGenerateIncomingBarcode.frx"); // default report
-			}
+			
+				webReport.Report.Load(webRootPath + "\\MIRGenerateIncomingBarcode.frx"); 
+			
 
 
 			my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
 			webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
 			webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
-			webReport.Report.SetParameterValue("MrnNoparam", MrnNo);
+			webReport.Report.SetParameterValue("MRINoparam", MIRNo);
 			webReport.Report.SetParameterValue("MrnYearcodeparam", YearCode);
+			webReport.Report.SetParameterValue("Itemcodesparam", ItemCodes);
 			webReport.Report.SetParameterValue("MyParameter", my_connection_string);
 			webReport.Report.Refresh();
 			return View(webReport);

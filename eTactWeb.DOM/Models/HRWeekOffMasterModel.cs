@@ -14,8 +14,11 @@ namespace eTactWeb.DOM.Models
         public string? WeekoffName { get; set; }
         public string? WeekoffTypefixRot { get; set; }
         public string? DeptName { get; set; }
-        public string? EmpCateg { get; set; }
-        public int EmpCategoryId { get; set; }
+        public string? EmpCateName { get; set; }
+        public List<string> EmpCateg { get; set; }
+        public IList<HRWeekOffMasterEmpCateDetailModel>? EmployeeCategoryDetailList { get; set; }
+        public IList<TextValue>? EmployeeCategoryList { get; set; }
+        public string EmpCategoryId { get; set; }
         public int DeptId { get; set; }
         public string? WeekoffDays { get; set; }
         public int MinWorkDaysRequired { get; set; }
@@ -39,5 +42,12 @@ namespace eTactWeb.DOM.Models
         public IList<HRWeekOffMasterModel>? HRWeekOffMasterDashBoard { get; set; }
 
 
+    }
+    public class HRWeekOffMasterEmpCateDetailModel 
+    {
+        public int WeekoffYearCode { get; set; }
+        public string? WeekoffName { get; set; }
+        public int WeekoffEntryId { get; set; }
+        public string? CategoryId { get; set; }
     }
 }

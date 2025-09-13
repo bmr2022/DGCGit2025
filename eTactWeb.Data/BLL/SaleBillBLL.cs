@@ -22,6 +22,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _SaleBillDAL.ShowPendingSaleorderforBill( Flag,  CurrentYear,  FromDate,  Todate,  InvoiceDate,  BillFromStoreId,  accountCode,  SONo,  PartCode);
         }
+        public async Task<ResponseResult> AutoFillitem(string Flag, string SearchPartCode)
+        {
+            return await _SaleBillDAL.AutoFillitem(Flag, SearchPartCode);
+        }
 
         public async Task<ResponseResult> FILLPendingSONO(string Flag, int CurrentYear, string FromDate, string Todate, string InvoiceDate, int BillFromStoreId, int accountCode)
         {

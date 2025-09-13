@@ -10,9 +10,13 @@ namespace eTactWeb.Data.DAL
 {
     public class SaleRejectionDAL
     {
-        public SaleRejectionDAL(IConfiguration configuration, IDataLogic iDataLogic)
+        private IDataReader? Reader;
+        private readonly ConnectionStringService _connectionStringService;
+        public SaleRejectionDAL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
-            DBConnectionString = configuration.GetConnectionString("eTactDB");
+            _connectionStringService = connectionStringService;
+            //DBConnectionString = configuration.GetConnectionString("eTactDB");
+            DBConnectionString = _connectionStringService.GetConnectionString();
             _IDataLogic = iDataLogic;
         }
 

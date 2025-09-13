@@ -11,12 +11,12 @@ namespace eTactWeb.Services.Interface
     public interface IHRWeekOffMaster
     {
         Task<ResponseResult> FillEntryId();
-        Task<ResponseResult> SaveData(HRWeekOffMasterModel model);
+        Task<ResponseResult> SaveData(HRWeekOffMasterModel model, List<string> HREmployeeDT);
         Task<ResponseResult> GetDashboardData();
         Task<HRWeekOffMasterModel> GetDashboardDetailData();
         Task<HRWeekOffMasterModel> GetViewByID(int ID);
         Task<ResponseResult> DeleteByID(int ID);
-        Task<ResponseResult> GetEmpCat();
+        Task<DataSet> GetEmpCat();
         Task<ResponseResult> GetDeptCat();
 
     }

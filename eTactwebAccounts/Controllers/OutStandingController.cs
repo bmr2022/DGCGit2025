@@ -53,7 +53,28 @@ namespace eTactWeb.Controllers
             return Json(JsonString);
         }
 
-        public async Task<IActionResult> GetDetailsData(string outstandingType, string TillDate, string GroupName, string[] AccountNameList, int AccountCode, string ShowOnlyApprovedBill, bool ShowZeroBal)
+        public async Task<JsonResult> GetVoucherNo(int CurrentYear)
+        {
+            var JSON = await _OutStanding.GetVoucherNo(CurrentYear);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
+        public async Task<JsonResult> GetVoucherType(int CurrentYear)
+        {
+            var JSON = await _OutStanding.GetVoucherType(CurrentYear);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
+        public async Task<IActionResult> GetVoucherList(int AccountCode, string VoucherNo, string VoucherType, int VoucherYearCode, int CurrentYear)
+        {
+            var model = new OutStandingModel();
+            model = await _OutStanding.GetVoucherList(AccountCode, VoucherNo, VoucherType, VoucherYearCode, CurrentYear);
+            return PartialView("_OutStandingPopUpData", model);
+        }
+
+        public async Task<IActionResult> GetDetailsData( string outstandingType, string TillDate, string GroupName, string[] AccountNameList,  int AccountCode, string ShowOnlyApprovedBill, bool ShowZeroBal)
         {
             var model = new OutStandingModel();
             model = await _OutStanding.GetDetailsData(outstandingType, TillDate, GroupName, AccountNameList, AccountCode, ShowOnlyApprovedBill, ShowZeroBal);

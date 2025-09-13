@@ -1,7 +1,11 @@
 ﻿@model eTactWeb.DOM.Models.TrailBalanceModel;
+@using Microsoft.AspNetCore.Http
+@using System.Reflection.PortableExecutable
+@inject IHttpContextAccessor HttpContextAccessor
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
+    string CompanyName = HttpContextAccessor.HttpContext.Session.GetString("CompanyName");
 }
 <style>
     .hidden-column {
@@ -150,81 +154,101 @@
     <script>
 
         $(document).ready(function () {
-             
+            debugger
             var hiddenCols = {};
             console.log("TrialBalance Ready");
 
             $('#BackButton').hide();
 
-            // Fill dropdowns
-            FillGroupList();
-            FillParentGroupList();
-            FillAccountList();
+            // Run all dropdown fills, and when all done → restore session state
+            $.when(
+                FillGroupList(),
+                FillParentGroupList(),
+                FillAccountList()
+            ).done(function () {
+                // Restore last state from HistoryStack
+                let history = JSON.parse(sessionStorage.getItem('HistoryStack')) || [];
+                let trialParentCode = sessionStorage.getItem('TrialParentCode');
+                let trialAccountName = sessionStorage.getItem('TrailAccountName');
+                let trialReportType = sessionStorage.getItem('TrailReportType');
 
-            // Restore last state from HistoryStack
-            let history = JSON.parse(sessionStorage.getItem('HistoryStack')) || [];
-            let trialParentCode = sessionStorage.getItem('TrialParentCode');
-            let trialAccountName = sessionStorage.getItem('TrailAccountName');
-            let trialReportType = sessionStorage.getItem('TrailReportType');
+                if (history.length > 0) {
+                    let lastStep = history[history.length - 1];
+                    const action = lastStep.action;
+                    const params = lastStep.params;
 
-            if (history.length > 0) {
-                let lastStep = history[history.length - 1];
-                const action = lastStep.action;
-                const params = lastStep.params;
+                    switch (action) {
+                        case 'TrailDetail':
+                            $('#TrailBalanceGroupName').val(params.groupCode).trigger("change");
+                            $('#ReportType').val("TRAILDETAIL").trigger('change');
+                            break;
+                        case 'TrailParent':
+                            $('#TrailBalanceGroupName').val(params.groupCode).trigger("change");
+                            $('#ParentGroupName').val(params.parentCode).trigger("change");
+                            $('#ReportType').val("TRAILDETAIL").trigger('change');
+                            break;
+                        case 'TrailAccount':
+                            $('#TrailBalanceGroupName').val(params.groupCode).trigger("change");
+                            $('#ParentGroupName').val(params.parentCode).trigger("change");
+                            $('#AccountName').val(params.accountName).trigger("change");
+                            $('#ReportType').val("TRAILDETAIL").trigger('change');
 
-                switch (action) {
-                    case 'TrailDetail':
-                        $('#TrailBalanceGroupName').val(params.groupCode).trigger("change");
-                        $('#ReportType').val("TRAILDETAIL").trigger('change');
-                        break;
-                    case 'TrailParent':
-                        $('#TrailBalanceGroupName').val(params.groupCode).trigger("change");
-                        $('#ParentGroupName').val(params.parentCode).trigger("change");
-                        $('#ReportType').val("TRAILDETAIL").trigger('change');
-                        break;
-                    case 'TrailAccount':
-                        $('#ParentGroupName').val(params.parentCode).trigger("change");
-                        $('#AccountName').val(params.accountName).trigger("change");
-                        $('#ReportType').val("MonthlySummary").trigger('change');
-                        break;
+                            history.pop();
+                            sessionStorage.setItem('HistoryStack', JSON.stringify(history));
+                            break;
+                    }
+
+                    $('#BackButton').show();
+                } else if (trialReportType || trialParentCode || trialAccountName) {
+                    if (trialReportType) $('#ReportType').val(trialReportType).trigger('change');
+                    if (trialParentCode) $('#ParentGroupName').val(trialParentCode).trigger('change');
+                    if (trialAccountName) $('#AccountName').val(trialAccountName).trigger('change');
+                    $('#BackButton').show();
                 }
 
-                $('#BackButton').show();
-            } else if (trialReportType || trialParentCode || trialAccountName) {
-                if (trialReportType) $('#ReportType').val(trialReportType).trigger('change');
-                if (trialParentCode) $('#ParentGroupName').val(trialParentCode).trigger('change');
-                if (trialAccountName) $('#AccountName').val(trialAccountName).trigger('change');
-                $('#BackButton').show();
-            }
+                // Clear once restored
+                sessionStorage.removeItem('TrialParentCode');
+                sessionStorage.removeItem('TrailAccountName');
+                sessionStorage.removeItem('TrailReportType');
 
-            sessionStorage.removeItem('TrialParentCode');
-            sessionStorage.removeItem('TrailAccountName');
-            sessionStorage.removeItem('TrailReportType');
+                // After everything, load data
+                GetTrailBalanceDetailsData();
+            });
 
-            // Hidden columns toggling
+            /** -------------------------------
+             * Column Hide/Show Handler
+             * ------------------------------- */
             $('.toggle-col').on('click', function () {
                 var $th = $(this).closest('th');
                 var colIndex = $th.index() + 1;
                 var $icon = $(this).find('i');
                 const isVisible = !$('table tr th:nth-child(' + colIndex + ')').hasClass('hidden-column');
+
                 if (isVisible) {
                     $('table tr').each(function () {
-                        $(this).find('th:nth-child(' + colIndex + '), td:nth-child(' + colIndex + ')').addClass('hidden-column');
+                        $(this).find('th:nth-child(' + colIndex + '), td:nth-child(' + colIndex + ')')
+                            .addClass('hidden-column');
                     });
                     $icon.removeClass('fa-eye-slash').addClass('fa-eye');
                     hiddenCols[colIndex] = $th.text().trim();
                 } else {
                     $('table tr').each(function () {
-                        $(this).find('th:nth-child(' + colIndex + '), td:nth-child(' + colIndex + ')').removeClass('hidden-column');
+                        $(this).find('th:nth-child(' + colIndex + '), td:nth-child(' + colIndex + ')')
+                            .removeClass('hidden-column');
                     });
                     $icon.removeClass('fa-eye').addClass('fa-eye-slash');
                     delete hiddenCols[colIndex];
                 }
                 updateHiddenColPanel();
             });
-            $('#toggle-hidden-cols-btn').on('click', function () { $('#hidden-cols-panel').toggle(); });
 
-            // Report Fields Loader
+            $('#toggle-hidden-cols-btn').on('click', function () {
+                $('#hidden-cols-panel').toggle();
+            });
+
+            /** -------------------------------
+             * Report Fields Loader
+             * ------------------------------- */
             function loadReportFields(reportType) {
                 let html = '';
                 if (reportType === "TRAILDETAIL") {
@@ -234,40 +258,45 @@
                 }
                 $("#reportFields").html(html);
             }
+
             $("#ReportType").change(function () {
                 let reportType = $(this).val();
                 loadReportFields(reportType);
                 updateButtonTitle();
             });
+
             loadReportFields($("#ReportType").val());
 
-            // Bold rows styling
+            /** -------------------------------
+             * Bold Rows Styling
+             * ------------------------------- */
             $(".bold-row").each(function () {
                 $(this).css({ "font-weight": "bold", "font-size": "16px", "color": "green" });
                 $(this).find("input").css("color", "green");
             });
 
+            /** -------------------------------
+             * Dynamic Button Title
+             * ------------------------------- */
             function updateButtonTitle() {
                 let reportType = $("#ReportType").val();
-                let newTitle = (reportType === "TRAILSUMMARY") ? "Trail Balance Summary" : "Trail Balance Detail";
+                let newTitle = (reportType === "TRAILSUMMARY")
+                    ? "Trail Balance Summary"
+                    : "Trail Balance Detail";
                 $("#dynamicText").text(newTitle);
             }
             updateButtonTitle();
 
-            // Initialize datepickers
+            /** -------------------------------
+             * Datepickers
+             * ------------------------------- */
             var currentDate = new Date();
             var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-            $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatDate1(firstDayOfMonth));
-            $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
 
-            $('#ReportType').select2();
-            $('#TrailBalanceGroupName').select2();
-            $('#ParentGroupName').select2();
-            $('#AccountName').select2();
-
-            $('#totalRows').text($('#divStockRegisterBody tr').length);
-
-            GetTrailBalanceDetailsData();
+            $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' })
+                .datepicker("setDate", formatDate1(firstDayOfMonth));
+            $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' })
+                .datepicker("setDate", 'now');
         });
 
         function FillGroupList() {
@@ -399,19 +428,32 @@
         }
 
         function GetDataByAccountName(cntr) {
-            // Save OLD state first
+            // Save OLD state
+            let currentGroup = $('#TrailBalanceGroupName').val();
             let currentParent = $('#ParentGroupName').val();
             let currentAccount = $('#AccountName').val();
             let currentReportType = $('#ReportType').val();
-            saveHistory('TrailAccount', { parentCode: currentParent, accountName: currentAccount, reportType: currentReportType });
+            saveHistory('TrailAccount', {
+                groupCode: currentGroup,
+                parentCode: currentParent,
+                accountName: currentAccount,
+                reportType: currentReportType
+            });
 
-            // Apply NEW state (redirect to TransactionLedger)
+            // Save for TransactionLedger page
+            let groupCode = $("#TrailBalanceGroupCode-" + cntr).val();
             let parentCode = $("#ParentAccountCode-" + cntr).val();
             let accountName = $("#AccountName-" + cntr).val();
 
+            sessionStorage.setItem('GroupCode', groupCode);     // ✅ Added
             sessionStorage.setItem('ParentCode', parentCode);
             sessionStorage.setItem('AccountName', accountName);
             sessionStorage.setItem('ReportType', "MonthlySummary");
+
+            // Mark current page
+            sessionStorage.setItem('CurrentPage', 'TransactionLedger');
+
+            // Go to TransactionLedger
             window.location.href = '/TransactionLedger/Index';
         }
 
@@ -430,47 +472,34 @@
         }
 
         function PressBack() {
-            debugger
             let history = JSON.parse(sessionStorage.getItem('HistoryStack')) || [];
+            if (history.length === 0) { $('#BackButton').hide(); return; }
 
-            if (history.length === 0) {
-                $('#BackButton').hide();
-                return;
-            }
-
-            // 1. Pop last state
-            let prevState = history.pop();
+            let lastStep = history.pop();
             sessionStorage.setItem('HistoryStack', JSON.stringify(history));
 
-            const action = prevState.action;
-            const params = prevState.params;
-
-            // 2. Decide action type
-            switch (action) {
+            switch (lastStep.action) {
                 case 'TrailDetail':
-                    $('#TrailBalanceGroupName').val(params.groupCode).trigger("change");
+                    $('#TrailBalanceGroupName').val(lastStep.params.groupCode).trigger("change");
                     $('#ReportType').val("TRAILSUMMARY").trigger("change");
                     break;
 
                 case 'TrailParent':
-                    $('#TrailBalanceGroupName').val(params.groupCode).trigger("change");
-                    $('#ParentGroupName').val(params.parentCode).trigger("change");
+                    $('#TrailBalanceGroupName').val(lastStep.params.groupCode).trigger("change");
+                    $('#ParentGroupName').val(lastStep.params.parentCode).trigger("change");
                     $('#ReportType').val("TRAILDETAIL").trigger("change");
                     break;
 
                 case 'TrailAccount':
-                    // Going back to TransactionLedger
-                    sessionStorage.setItem('ParentCode', params.parentCode);
-                    sessionStorage.setItem('AccountName', params.accountName);
-                    sessionStorage.setItem('ReportType', "MonthlySummary");
+                    // Go back to TransactionLedger
+                    sessionStorage.setItem('ParentCode', lastStep.params.parentCode);
+                    sessionStorage.setItem('AccountName', lastStep.params.accountName);
+                    sessionStorage.setItem('ReportType', lastStep.params.reportType || "MonthlySummary");
                     window.location.href = '/TransactionLedger/Index';
                     break;
             }
 
-            // 3. Hide back button if stack empty
-            if (history.length === 0) {
-                $('#BackButton').hide();
-            }
+            if (history.length === 0) $('#BackButton').hide();
         }
 
         function selection(CurrentRow) {
@@ -642,14 +671,50 @@
 
         $('#sendToExcel').click(function () {
             let table = $("#ReportTable");
-            console.log(table);
-            TableToExcel.convert(table[0], {
-                name: `ReportTable.xlsx`,
-                sheet: {
-                    name: 'ReportTable'
-                }
+
+            // Clone the table so you don’t mess with the real one
+            let tempTable = table.clone();
+
+            // Add company and date info as header rows
+            let companyName = "@CompanyName";
+            let fromDate = $("#FromDate").val();
+            let toDate = $("#ToDate").val();
+            let colCount = tempTable.find("tr:first th").length;
+
+            let headerHtml = `
+            <thead>
+                <tr>
+                    <th colspan="${colCount}" style="text-align:center; font-weight:bold; font-size:16px;">
+                        Company Name: ${companyName}
+                    </th>
+                </tr>
+                <tr>
+                    <th colspan="${colCount}" style="text-align:center; font-weight:bold;">
+                        From Date: ${fromDate} &nbsp;&nbsp; To Date: ${toDate}
+                    </th>
+                </tr>
+            </thead>
+            `;
+
+            let footerHtml = `
+            <tfoot>
+                <tr>
+                    <td colspan="${colCount}" style="text-align:center; font-weight:bold;">
+                        *** End of Report ***
+                    </td>
+                </tr>
+            </tfoot>
+            `;
+
+            tempTable.prepend(headerHtml);
+            tempTable.append(footerHtml);
+
+            TableToExcel.convert(tempTable[0], {
+                name: `TrailBalanceData.xlsx`,
+                sheet: { name: 'ReportTable' }
             });
         });
+
         function formatDate1(date) {
             var day = ("0" + date.getDate()).slice(-2);
             var month = ("0" + (date.getMonth() + 1)).slice(-2);

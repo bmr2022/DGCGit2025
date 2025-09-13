@@ -83,6 +83,7 @@ namespace eTactWeb.DOM.Models
         //public int AccountCode { get; set; }
         public string? AccountName { get; set; }
         public string? DiscCategoryName { get; set; }
+        public string? Location { get; set; }
     }
 
     [Serializable()]

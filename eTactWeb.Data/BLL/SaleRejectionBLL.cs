@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
@@ -15,9 +16,10 @@ namespace eTactWeb.Data.BLL
     {
         private readonly SaleRejectionDAL _SaleRejectionDAL;
         private readonly IDataLogic _DataLogicDAL;
-        public SaleRejectionBLL(IConfiguration configuration, IDataLogic iDataLogic)
+        private readonly ConnectionStringService _connectionStringService;
+        public SaleRejectionBLL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
-            _SaleRejectionDAL = new SaleRejectionDAL(configuration, iDataLogic);
+            _SaleRejectionDAL = new SaleRejectionDAL(configuration, iDataLogic,connectionStringService);
             _DataLogicDAL = iDataLogic;
         }
 

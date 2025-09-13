@@ -71,22 +71,31 @@ public class SaleOrderController : Controller
     private LoggerInfo LoggerInfo { get; }
 
 
-    public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string SONO = "", string ShowOnlyAmendItem = "", int AmmNo = 0)
-    {
+	public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string SONO = "", string ShowOnlyAmendItem = "", int AmmNo = 0)
+	{
 
-        string my_connection_string;
-        string contentRootPath = _IWebHostEnvironment.ContentRootPath;
-        string webRootPath = _IWebHostEnvironment.WebRootPath;
-        webReport = new WebReport();
-        
-        ViewBag.EntryId = EntryId;
-        ViewBag.YearCode = YearCode; 
-        ViewBag.SONO = SONO;
-        ViewBag.ShowOnlyAmendItem = ShowOnlyAmendItem;
-        ViewBag.AmmNo = AmmNo;
-        
-        
-            webReport.Report.Load(webRootPath + "\\SOReport.frx"); // default report
+		string my_connection_string;
+		string contentRootPath = _IWebHostEnvironment.ContentRootPath;
+		string webRootPath = _IWebHostEnvironment.WebRootPath;
+		webReport = new WebReport();
+		var ReportName = _ISaleOrder.GetReportName();
+		ViewBag.EntryId = EntryId;
+		ViewBag.YearCode = YearCode;
+		ViewBag.SONO = SONO;
+		ViewBag.ShowOnlyAmendItem = ShowOnlyAmendItem;
+		ViewBag.AmmNo = AmmNo;
+        var val = ReportName.Result.Result.Rows[0].ItemArray[0];
+
+        if (!Convert.IsDBNull(val) && !string.IsNullOrEmpty(val?.ToString()))
+
+        {
+			webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0] + ".frx"); // from database
+		}
+		else
+		{ 
+
+			webReport.Report.Load(webRootPath + "\\SOReportNew.frx"); // default report
+	}
 
         
         
@@ -116,9 +125,18 @@ public class SaleOrderController : Controller
         ViewBag.EntryId = EntryId;
         ViewBag.YearCode = YearCode;
         ViewBag.SONO = Sono;
-       
+        var ReportName = _ISaleOrder.GetReportName();
 
-        webReport.Report.Load(webRootPath + "\\SOReport.frx"); // default report
+        if (!string.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
+        {
+            webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0] + ".frx"); // from database
+        }
+        else
+        {
+
+            webReport.Report.Load(webRootPath + "\\SOReportNew.frx"); // default report
+        }
+        
 
 
 
@@ -1206,29 +1224,7 @@ public class SaleOrderController : Controller
 		// string ipaddress = IPAddress.IPv6Loopback.ToString();
 		var model = new SaleOrderModel();
 
-		//var webReport = new WebReport();
-		//var mssqlDataConnection = new MsSqlDataConnection();
-		//mssqlDataConnection.ConnectionString = _IDataLogic.GetDBConnection();
-		//webReport.Report.Dictionary.Connections.Add(mssqlDataConnection);
-
-		////webReport.EnableMargins = true;
-		////webReport.ShowExports = true;
-
-		//webReport.Report.Load(Path.Combine(_IWebHostEnvironment.ContentRootPath, "REPORT", "ItemMasterReport.frx"));
-
-		//webReport.Report.Load(Path.Combine(_IWebHostEnvironment.WebRootPath, "Reports", "ItemMasterReport2.frx"));
-
-		//var categories = GetTable<Category>(_northwindContext.Categories, "Categories");
-		//webReport.Report.RegisterData(categories, "Categories");
-
-		////var DTReport = itemMaster.GetDashBoardData("", "", "", "", "", "").Result.ToArray();
-		////webReport.Report.RegisterData(DTReport, "Categories");
-
-		////webReport.Report.Prepare();
-		////FastReport.Export.Html.HTMLExport export = new FastReport.Export.Html.HTMLExport();
-		////webReport.Report.Export(export, "result.pdf");
-
-		//return PartialView("_ViewReport", webReport);
+		
 		model.PreparedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
 		model.PreparedByName = HttpContext.Session.GetString("EmpName");
 		
@@ -1406,9 +1402,11 @@ public class SaleOrderController : Controller
 					else
 					{
 						model.Mode = model.Mode;
-					}
+                        model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+                        model.CreatedByName = HttpContext.Session.GetString("EmpName");
+                    }
 					//model.Mode = model.Mode == "U" ? "Update" : "Insert";
-					model.CreatedBy = Constants.UserID;
+					//model.CreatedBy = Constants.UserID;
 					Result = await _ISaleOrder.SaveSaleOrder(ItemDetailDT, DelieveryScheduleDT, TaxDetailDT, MultiBuyersDT, model);
 				}
 				_logger.LogInformation("Save SaleOrder Data done", DateTime.UtcNow);

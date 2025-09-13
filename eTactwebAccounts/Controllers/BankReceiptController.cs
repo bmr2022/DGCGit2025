@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using System.Data;
+using System.Globalization;
 using System.Net;
 using static eTactWeb.Data.Common.CommonFunc;
 using static eTactWeb.DOM.Models.Common;
@@ -30,27 +31,27 @@ namespace eTactWeb.Controllers
             this.iconfiguration = iconfiguration;
         }
 
-            public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string VoucherName = "")
-            {
-                string my_connection_string;
-                string contentRootPath = _IWebHostEnvironment.ContentRootPath;
-                string webRootPath = _IWebHostEnvironment.WebRootPath;
-                var webReport = new WebReport();
-                webReport.Report.Clear();
-                webReport.Report.Dispose();
-                webReport.Report = new Report();
-            
-                webReport.Report.Load(webRootPath + "\\VoucherReport.frx");
-                my_connection_string = iconfiguration.GetConnectionString("eTactDB");
-                webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
-                webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
-                webReport.Report.SetParameterValue("vouchernameparam", VoucherName);
-                webReport.Report.SetParameterValue("yearcodeparam", YearCode);
-                webReport.Report.SetParameterValue("entryidparam", EntryId);
-                webReport.Report.SetParameterValue("MyParameter", my_connection_string);
-                webReport.Report.Refresh();
-                return View(webReport);
-            }   
+        public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string VoucherName = "")
+        {
+            string my_connection_string;
+            string contentRootPath = _IWebHostEnvironment.ContentRootPath;
+            string webRootPath = _IWebHostEnvironment.WebRootPath;
+            var webReport = new WebReport();
+            webReport.Report.Clear();
+            webReport.Report.Dispose();
+            webReport.Report = new Report();
+
+            webReport.Report.Load(webRootPath + "\\VoucherReport.frx");
+            my_connection_string = iconfiguration.GetConnectionString("eTactDB");
+            webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+            webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
+            webReport.Report.SetParameterValue("vouchernameparam", VoucherName);
+            webReport.Report.SetParameterValue("yearcodeparam", YearCode);
+            webReport.Report.SetParameterValue("entryidparam", EntryId);
+            webReport.Report.SetParameterValue("MyParameter", my_connection_string);
+            webReport.Report.Refresh();
+            return View(webReport);
+        }
         [Route("{controller}/Index")]
         [HttpGet]
         public async Task<ActionResult> BankReceipt(int ID, string Mode, int YearCode, string VoucherNo, string FromDate = "", string ToDate = "", string LedgerName = "", string AgainstVoucherRefNo = "", string AgainstVoucherNo = "", string Searchbox = "", string DashboardType = "")
@@ -272,8 +273,8 @@ namespace eTactWeb.Controllers
                 Item.VoucherDocNo ?? string.Empty,
                 Item.BillVouchNo ?? string.Empty,
                 Item.VoucherDocDate=DateTime.Now.ToString("dd/MMM/yyyy") ,
-                Item.BillInvoiceDate=DateTime.Now.ToString("dd/MMM/yyyy") ,
-                Item.BillYearCode ,
+                Item.BillInvoiceDate = DateTime.Now.ToString("dd/MMM/yyyy", CultureInfo.InvariantCulture),
+                    Item.BillYearCode ,
                 Item.VoucherRefNo ?? string.Empty,
                 Item.SrNO ,
                 Item.AccountCode,
@@ -852,7 +853,7 @@ namespace eTactWeb.Controllers
 
                 if (dt != null && dt.Rows.Count > 0)
                 {
-                   
+
                     TempData["DeleteMessage"] = dt.Rows[0]["Result"].ToString();
 
                 }

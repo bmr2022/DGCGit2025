@@ -76,6 +76,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _IssuewithoutBomDAL.FillBatchUnique(ItemCode,YearCode,StoreName,BatchNo,IssuedDate, FinStartDate);
         }
+        public async Task<ResponseResult> ShowDetail(string FromDate, string ToDate, string ReqNo, int YearCode, int ItemCode, string WoNo, int WorkCenter, int DeptName, int ReqYear, string IssueDate, string GlobalSearch, string FromStore, int StoreId)
+        {
+            return await _IssuewithoutBomDAL.ShowDetail(FromDate, ToDate, ReqNo, YearCode, ItemCode, WoNo, WorkCenter, DeptName, ReqYear, IssueDate, GlobalSearch, FromStore, StoreId);
+        }
         public async Task<ResponseResult> FillLotandTotalStock(int ItemCode, int StoreId, string TillDate, string BatchNo, string UniqBatchNo)
         {
             return await _IssuewithoutBomDAL.FillLotandTotalStock(ItemCode,StoreId,TillDate,BatchNo,UniqBatchNo);
@@ -83,6 +87,10 @@ namespace eTactWeb.Data.BLL
         public async Task<ResponseResult> GetReqQtyForScan(string ReqNo, int ReqYearCode, string ReqDate, int ItemCode)
         {
             return await _IssuewithoutBomDAL.GetReqQtyForScan(ReqNo,ReqYearCode,ReqDate,ItemCode);
+        }  
+        public async Task<ResponseResult> GetStoreIdReqForScan(string ReqNo, int ReqYearCode, string ReqDate, int ItemCode)
+        {
+            return await _IssuewithoutBomDAL.GetStoreIdReqForScan(ReqNo,ReqYearCode,ReqDate,ItemCode);
         }
         public async Task<ResponseResult> GetNewEntry(int YearCode)
         {

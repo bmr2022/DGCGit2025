@@ -624,6 +624,16 @@ public static class CommonFunc
                         typeProperty.PropertyInfo.SetValue(obj, safeValue, null);
                     }
                 }
+                else if (table.TableName == "HRWeekEmpCategDetail")
+                {
+                    if (typeProperty.PropertyInfo.Name != "Mode")
+                    {
+                        object value = row[typeProperty.PropertyInfo.Name];
+                        object? safeValue = value == null || DBNull.Value.Equals(value) ? null : Convert.ChangeType(value, typeProperty.Type);
+                        typeProperty.PropertyInfo.SetValue(obj, safeValue, null);
+                    }
+                }
+
                 else if (table.TableName == "LeaveDeptWiseCategDetail")
                 {
                     if (typeProperty.PropertyInfo.Name != "Mode")
@@ -741,7 +751,11 @@ public static class CommonFunc
                       && typeProperty.PropertyInfo.Name != "UpdatedByName" && typeProperty.PropertyInfo.Name != "SummaryDetail" && typeProperty.PropertyInfo.Name != "SeqNo" && typeProperty.PropertyInfo.Name != "ItemCode"
                       && typeProperty.PropertyInfo.Name != "TolLimitPercentage" && typeProperty.PropertyInfo.Name != "CretaedByName" && typeProperty.PropertyInfo.Name != "UpdatedByName"
                     && typeProperty.PropertyInfo.Name != "Remark" && typeProperty.PropertyInfo.Name != "PendQty" && typeProperty.PropertyInfo.Name != "CreatedOn" && typeProperty.PropertyInfo.Name != "PendQty"
-                      && typeProperty.PropertyInfo.Name != "Process" && typeProperty.PropertyInfo.Name != "PkgStd" && typeProperty.PropertyInfo.Name != "AmmendmentNo"
+                      && typeProperty.PropertyInfo.Name != "Process" 
+                      && typeProperty.PropertyInfo.Name != "EntryByMachineName"
+                      && typeProperty.PropertyInfo.Name != "ShowOnlyAmendItem"
+                      && typeProperty.PropertyInfo.Name != "PoallowtoprintWithoutApproval"
+                      && typeProperty.PropertyInfo.Name != "PkgStd" && typeProperty.PropertyInfo.Name != "AmmendmentNo"
                       && typeProperty.PropertyInfo.Name != "AmmendmentNo" && typeProperty.PropertyInfo.Name != "AmmendmentDate"
                       && typeProperty.PropertyInfo.Name != "AmmendmentReason" && typeProperty.PropertyInfo.Name != "FirstMonthTentQty" && typeProperty.PropertyInfo.Name != "CreatedBy"
                       && typeProperty.PropertyInfo.Name != "SecMonthTentQty" && typeProperty.PropertyInfo.Name != "SizeDetail" && typeProperty.PropertyInfo.Name != "DeliveryTerm"
@@ -896,19 +910,27 @@ public static class CommonFunc
                 else if (Tbname == "POSCHEDULEDETAILDASHBOARD")
                 {
                     if (typeProperty.PropertyInfo.Name != "AmmEffDate" && typeProperty.PropertyInfo.Name != "EID" && typeProperty.PropertyInfo.Name != "ID"
-              && typeProperty.PropertyInfo.Name != "FromDate" && typeProperty.PropertyInfo.Name != "ToDate" && typeProperty.PropertyInfo.Name != "Mode" && typeProperty.PropertyInfo.Name != "ItemName" &&
-              typeProperty.PropertyInfo.Name != "PartCode" && typeProperty.PropertyInfo.Name != "TxPageName"
+              && typeProperty.PropertyInfo.Name != "FromDate" && typeProperty.PropertyInfo.Name != "ToDate" && typeProperty.PropertyInfo.Name != "Mode" 
+              //&& typeProperty.PropertyInfo.Name != "ItemName" &&
+              //typeProperty.PropertyInfo.Name != "PartCode"
+              && typeProperty.PropertyInfo.Name != "TxPageName"
               && typeProperty.PropertyInfo.Name != "DeliveryDate" && typeProperty.PropertyInfo.Name != "PODashboard" && typeProperty.PropertyInfo.Name != "PONoList"
               && typeProperty.PropertyInfo.Name != "PSDashboard" && typeProperty.PropertyInfo.Name != "POComplete"
-               && typeProperty.PropertyInfo.Name != "ApprovedDate" && typeProperty.PropertyInfo.Name != "Approved" && typeProperty.PropertyInfo.Name != "SchQty"
-                     && typeProperty.PropertyInfo.Name != "Rate" && typeProperty.PropertyInfo.Name != "UserName" && typeProperty.PropertyInfo.Name != "DashboardType"
+               && typeProperty.PropertyInfo.Name != "ApprovedDate" && typeProperty.PropertyInfo.Name != "Approved" 
+               //&& typeProperty.PropertyInfo.Name != "SchQty"
+                     //&& typeProperty.PropertyInfo.Name != "Rate" 
+                     && typeProperty.PropertyInfo.Name != "UserName" && typeProperty.PropertyInfo.Name != "DashboardType"
                      && typeProperty.PropertyInfo.Name != "QuotNo" && typeProperty.PropertyInfo.Name != "QuotYear" && typeProperty.PropertyInfo.Name != "BasicAmount"
-                     && typeProperty.PropertyInfo.Name != "NetAmount" && typeProperty.PropertyInfo.Name != "HsnNo" && typeProperty.PropertyInfo.Name != "POQty"
-                     && typeProperty.PropertyInfo.Name != "Unit" && typeProperty.PropertyInfo.Name != "AltPOQty" && typeProperty.PropertyInfo.Name != "AltUnit"
-                     && typeProperty.PropertyInfo.Name != "Rate" && typeProperty.PropertyInfo.Name != "RateInOtherCurr" && typeProperty.PropertyInfo.Name != "DiscPer" && typeProperty.PropertyInfo.Name != "DiscRs"
-                     && typeProperty.PropertyInfo.Name != "Amount" && typeProperty.PropertyInfo.Name != "PendQty" && typeProperty.PropertyInfo.Name != "PendAltQty"
-                     && typeProperty.PropertyInfo.Name != "UnitRate" && typeProperty.PropertyInfo.Name != "SchApproved" && typeProperty.PropertyInfo.Name != "SchAmendApprove"
-                      && typeProperty.PropertyInfo.Name != "SchCompleted" && typeProperty.PropertyInfo.Name != "DashboardType" && typeProperty.PropertyInfo.Name != "EnteredBy" && typeProperty.PropertyInfo.Name != "AmmType" && typeProperty.PropertyInfo.Name != "UpdatedByName" && typeProperty.PropertyInfo.Name != "ApprovedBy")
+                     && typeProperty.PropertyInfo.Name != "NetAmount" && typeProperty.PropertyInfo.Name != "HsnNo" 
+                     //&& typeProperty.PropertyInfo.Name != "POQty"
+                     //&& typeProperty.PropertyInfo.Name != "Unit" && typeProperty.PropertyInfo.Name != "AltPOQty" && typeProperty.PropertyInfo.Name != "AltUnit"
+                     //&& typeProperty.PropertyInfo.Name != "Rate" && typeProperty.PropertyInfo.Name != "RateInOtherCurr" && typeProperty.PropertyInfo.Name != "DiscPer" && typeProperty.PropertyInfo.Name != "DiscRs"
+                     && typeProperty.PropertyInfo.Name != "Amount" 
+                     //&& typeProperty.PropertyInfo.Name != "PendQty" && typeProperty.PropertyInfo.Name != "PendAltQty"
+                     //&& typeProperty.PropertyInfo.Name != "UnitRate" 
+                     //&& typeProperty.PropertyInfo.Name != "SchApproved" && typeProperty.PropertyInfo.Name != "SchAmendApprove"
+                     // && typeProperty.PropertyInfo.Name != "SchCompleted" && typeProperty.PropertyInfo.Name != "DashboardType"
+                      && typeProperty.PropertyInfo.Name != "EnteredBy" && typeProperty.PropertyInfo.Name != "AmmType" && typeProperty.PropertyInfo.Name != "UpdatedByName" && typeProperty.PropertyInfo.Name != "ApprovedBy")
                     {
                         object value = row[typeProperty.PropertyInfo.Name];
                         object? safeValue = value == null || DBNull.Value.Equals(value) ? null : Convert.ChangeType(value, typeProperty.Type);

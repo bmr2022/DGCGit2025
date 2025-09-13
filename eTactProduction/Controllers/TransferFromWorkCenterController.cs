@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.Common;
+﻿using DocumentFormat.OpenXml.EMMA;
+using eTactWeb.Data.Common;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using FastReport.Web;
@@ -249,9 +250,34 @@ namespace eTactWeb.Controllers
             MainModel.ProdSchNoBack=ProdSchNo;
             MainModel.GlobalSearchBack = Searchbox;
             MainModel.DashboardTypeBack = DashboardType;
+            //MainModel = await BindModel(MainModel).ConfigureAwait(false);
             return View(MainModel);
         }
-        [HttpPost]
+        //public async Task<TransferFromWorkCenterModel> BindModel(TransferFromWorkCenterModel model)
+        //{
+        //    var oDataSet = new DataSet();
+        //    var _List = new List<TextValue>();
+        //    oDataSet = await _ITransferFromWorkCenter.BindAllDropDown().ConfigureAwait(true);
+        //    if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+        //    {
+
+
+        //        foreach (DataRow row in oDataSet.Tables[0].Rows)
+        //        {
+        //            _List.Add(new TextValue
+        //            {
+        //                Value = row["PartCode"].ToString(),
+        //                Text = row["PartCode"].ToString()
+        //            });
+        //        }
+        //        model.PartcodeList = _List;
+        //        _List = new List<TextValue>();
+               
+
+        //    }
+        //    return model;
+        //}
+            [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("{controller}/Index")]
         public async Task<IActionResult> TransferFromWorkCenter(TransferFromWorkCenterModel model)
@@ -844,6 +870,72 @@ namespace eTactWeb.Controllers
                 throw ex;
             }
         }
+        public IActionResult AddMultipleItemDetail(List<TransferFromWorkCenterDetail> model)
+        {
+            try
+            {
+                var MainModel = new TransferFromWorkCenterModel();
+                var StockGrid = new List<TransferFromWorkCenterDetail>();
+                var StockAdjustGrid = new List<TransferFromWorkCenterDetail>();
+
+                var SeqNo = 1;
+                foreach (var item in model)
+                {
+                    string modelJson = HttpContext.Session.GetString("KeyTransferFromWorkCenterGrid");
+                    IList<TransferFromWorkCenterDetail> ItemDetail = new List<TransferFromWorkCenterDetail>();
+                    if (!string.IsNullOrEmpty(modelJson))
+                    {
+                        ItemDetail = JsonConvert.DeserializeObject<List<TransferFromWorkCenterDetail>>(modelJson);
+                    }
+
+                    //_MemoryCache.TryGetValue("ItemList", out List<SaleBillDetail> ItemDetail);
+
+
+                    if (model != null)
+                    {
+                        if (ItemDetail == null)
+                        {
+                            item.SeqNo = SeqNo++;
+                            
+                            StockGrid.Add(item);
+                        }
+                        else
+                        {
+
+
+                            if (ItemDetail.Where(x => x.ItemCode == item.ItemCode && x.BatchNo == item.BatchNo && x.UniqueBatchNo == item.UniqueBatchNo).Any())
+                            {
+                                return StatusCode(207, "Duplicate");
+                            }
+
+
+                            item.SeqNo = ItemDetail.Count + 1;
+                           
+                            StockGrid = ItemDetail.Where(x => x != null).ToList();
+                            StockAdjustGrid.AddRange(StockGrid);
+                            StockGrid.Add(item);
+                        }
+                        MainModel.ItemDetailGrid = StockGrid;
+
+
+                        HttpContext.Session.SetString("KeyTransferFromWorkCenterGrid", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
+                       
+                    }
+                    else
+                    {
+                        ModelState.TryAddModelError("Error", "Schedule List Cannot Be Empty...!");
+                    }
+                }
+
+
+                return PartialView("_TransferFromWcGrid", MainModel);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         public async Task<IActionResult> GetSearchData(string FromDate, string ToDate, string TransferMatSlipNo, string ItemName, string PartCode, string TransferFromWC, string TransferToWC, string TransferToStore, string ProdSlipNo, string ProdSchNo, string DashboardType)
         {
             //model.Mode = "Search";
@@ -890,10 +982,11 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<IActionResult> PendingWIPDetailData(string FromDate, string ToDate, string PartCode, string ItemName, string ItemGroup, string ItemType, int WCID, string ReportType, string BatchNo, string UniqueBatchNo, string WorkCenter)
+        public async Task<IActionResult> PendingWIPDetailData( string ToDate, string PartCode, string ItemName, string ItemGroup, string ItemType, int WCID, string ReportType, string BatchNo, string UniqueBatchNo, string WorkCenter)
         {
             var model = new WIPStockRegisterModel();
-            var fullList = (await _IWIPStockRegister.GetStockRegisterData(FromDate, ToDate, PartCode, ItemName, ItemGroup, ItemType, WCID, ReportType, BatchNo, UniqueBatchNo, WorkCenter))?.WIPStockRegisterDetail ?? new List<WIPStockRegisterDetail>();
+           var FromDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString("FromDate"));
+            var fullList = (await _IWIPStockRegister.GetStockRegisterData(FromDate, ToDate, PartCode, ItemName, ItemGroup, ItemType, WCID, "BATCHWISESTOCKSUMMARY", BatchNo, UniqueBatchNo, WorkCenter))?.WIPStockRegisterDetail ?? new List<WIPStockRegisterDetail>();
             model.WIPStockRegisterDetail = fullList;
             return PartialView("_PendingToTransferMaterial", model);
         }
@@ -903,6 +996,17 @@ namespace eTactWeb.Controllers
             var model = new WIPStockRegisterModel();
             model.WIPStockRegisterDetail = new List<WIPStockRegisterDetail>();
             return View(model);
+        }
+
+        public async Task<IActionResult> selectMultipleItem(int WCID, string ToDate, string PartCode,string FromDate)
+        {
+            var model = new TransferFromWorkCenterModel();
+           
+            model = await _ITransferFromWorkCenter.selectMultipleItem(WCID, FromDate, ToDate, PartCode);
+
+
+            return PartialView("_TransferFromWCALLItem", model);
+
         }
     }
 }

@@ -21,7 +21,9 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> DeleteByID(int ID, int YC, int ActualEntryBy, string EntryByMachine);
         Task<ResponseResult> FillBatchUnique(int ItemCode, int YearCode, string StoreName, string BatchNo,string IssuedDate,string FinStartDate);
         Task<ResponseResult> FillLotandTotalStock(int ItemCode, int StoreId, string TillDate, string BatchNo, string UniqBatchNo);
+        Task<ResponseResult> ShowDetail(string FromDate, string ToDate, string ReqNo, int YearCode, int ItemCode, string WoNo, int WorkCenter, int DeptName, int ReqYear, string IssueDate, string GlobalSearch, string FromStore, int StoreId);
         Task<ResponseResult> GetReqQtyForScan(string ReqNo, int ReqYearCode, string ReqDate,int ItemCode);
+        Task<ResponseResult> GetStoreIdReqForScan(string ReqNo, int ReqYearCode, string ReqDate,int ItemCode);
 
         Task<ResponseResult> GetDashboardData(string Fromdate, string ToDate, string Flag);
         Task<ResponseResult> GetDataForDelete(int ID,int YC);

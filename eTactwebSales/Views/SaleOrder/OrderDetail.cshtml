@@ -263,23 +263,23 @@
                                     </div>
                                     <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                         <label asp-for="Address" class="form-label" style="color:  red;">Address</label>
-                                        <input asp-for="Address" class="form-control" readonly disabled />
+                                        <input asp-for="Address" class="form-control" readonly disabled tabindex="-1"/>
                                     </div>
                                     <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                         <label asp-for="DeliveryAddress" class="form-label" style="color:  red;">Delivery Address</label>
-                                        <input asp-for="DeliveryAddress" class="form-control" readonly disabled />
+                                        <input asp-for="DeliveryAddress" class="form-control" readonly disabled tabindex="-1"/>
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="WEF" class="form-label">WEF</label>
-                                        <input asp-for="WEF" class="form-control" readonly disabled />
+                                        <input asp-for="WEF" class="form-control" readonly disabled tabindex="-1" />
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="SOCloseDate" class="form-label" style="color:  red;"> Close Date</label>
-                                        <input asp-for="SOCloseDate" class="form-control" readonly />
+                                        <input asp-for="SOCloseDate" class="form-control" readonly tabindex="-1" />
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="QuotNo" class="form-label">Quot No</label>
-                                        <select class="form-select" asp-for="QuotNo" asp-items="@(new SelectList(Model.QuotList,"Value","Text"))" onchange="QuotChange(this.id);" readonly disabled>
+                                        <select class="form-select" asp-for="QuotNo" asp-items="@(new SelectList(Model.QuotList,"Value","Text"))" onchange="QuotChange(this.id);" readonly disabled tabindex="-1">
                                             <option value="0">-Select-</option>
                                         </select>
                                     </div>
@@ -291,41 +291,41 @@
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label class="form-label">Quote Date</label>
-                                        <input asp-for="QDate" class="form-control" readonly disabled />
+                                        <input asp-for="QDate" class="form-control" readonly disabled tabindex="-1"/>
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="AmmNo" class="form-label" style="color:  red;">Amm No*</label>
-                                        <input asp-for="AmmNo" class="form-control" readonly disabled />
+                                        <input asp-for="AmmNo" class="form-control" readonly disabled tabindex="-1" />
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="AmmEffDate" class="form-label" style="color:  red;">Amm eff Date*</label>
-                                        <input asp-for="AmmEffDate" class="form-control" />
+                                        <input asp-for="AmmEffDate" class="form-control" tabindex="-1"/>
                                         <input type="hidden" value="@Model.AmmEffDate" id="hiddenAmmEffDate">
                                     </div>
                                     <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="SOConfirmDate" class="form-label">SO Confirm Date</label>
-                                        <input asp-for="SOConfirmDate" class="form-control" readonly disabled />
+                                        <input asp-for="SOConfirmDate" class="form-control" readonly disabled tabindex="-1" />
                                     </div>
                                     <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                         <label asp-for="ConsigneeAccountCode" class="form-label">Consignee</label>
                                         <div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
-                                            <input asp-for="PN2" class="form-check-input" type="checkbox" role="switch" readonly disabled />Show All
+                                            <input asp-for="PN2" class="form-check-input" type="checkbox" role="switch" readonly disabled tabindex="-1" />Show All
                                         </div>
-                                        <select class="form-select" asp-for="ConsigneeAccountCode" data-val="false" asp-items="@(new SelectList(Model.AccountList,"Value","Text"))" readonly disabled>
+                                        <select class="form-select" asp-for="ConsigneeAccountCode" data-val="false" asp-items="@(new SelectList(Model.AccountList,"Value","Text"))" readonly disabled tabindex="-1">
                                             <option value="0">-Select-</option>
                                         </select>
                                     </div>
                                     <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                         <label asp-for="ConsigneeAddress" class="form-label">Consignee Address</label>
-                                        <input asp-for="ConsigneeAddress" class="form-control" readonly disabled />
+                                        <input asp-for="ConsigneeAddress" class="form-control" readonly disabled tabindex="-1" />
                                     </div>
                                     <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                        <button type="button" class="MultiBuyers btn btn-sm btn-outline-success mt-3">
+                                        <button type="button" class="MultiBuyers btn btn-sm btn-outline-success mt-3" tabindex="-1">
                                             <i class="fa-solid fa-calendar-clock fa-fw fa-lg"></i> Multiple Buyers
                                         </button>
                                     </div>
                                     <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                        <button type="button" class="btn btn-sm btn-outline-danger btnClearTax mt-3" style="margin-top:10px;">
+                                        <button type="button" class="btn btn-sm btn-outline-danger btnClearTax mt-3" style="margin-top:10px;" tabindex="-1">
                                             <i class="fa-solid fa-hand-sparkles fa-fw fa-lg"></i>
                                             CLEAR TAX
                                         </button>
@@ -409,15 +409,15 @@
                                     </div>
                                     <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                         <label asp-for="Address" class="form-label" style="color:  red;">Address</label>
-                                        <input asp-for="Address" class="form-control" readonly />
+                                        <input asp-for="Address" class="form-control" readonly tabindex="-1" />
                                     </div>
                                     <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                         <label asp-for="DeliveryAddress" class="form-label" style="color:  red;">Delivery Address</label>
-                                        <input asp-for="DeliveryAddress" class="form-control" />
+                                        <input asp-for="DeliveryAddress" class="form-control" tabindex="-1"/>
                                     </div>
                                     <div class="col-xl-1 col-lg-1 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="WEF" class="form-label" style="color:  red;">WEF</label>
-                                        <input asp-for="WEF" class="form-control" readonly />
+                                        <input asp-for="WEF" class="form-control" readonly tabindex="-1" />
                                     </div>
                                     <div class="col-xl-1 col-lg-1 col-md-3 col-sm-6 col-xs-12">
                                         @if (Model.Mode == "U" || Model.Mode == "V")
@@ -425,56 +425,56 @@
                                             <input type="hidden" value="@Model.SOCloseDate" id="hiddenSOCloseDate">
                                         }
                                         <label asp-for="SOCloseDate" class="form-label" style="color:  red;">Exp. Date</label>
-                                        <input asp-for="SOCloseDate" class="form-control" readonly />
+                                        <input asp-for="SOCloseDate" class="form-control" readonly tabindex="-1" />
                                     </div>
                                     <div class="col-xl-1 col-lg-1 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="QuotNo" class="form-label">Quot No</label>
-                                        <select class="form-select" asp-for="QuotNo" asp-items="@(new SelectList(Model.QuotList,"Value","Text"))" onchange="QuotChange(this.id);">
+                                        <select class="form-select" asp-for="QuotNo" asp-items="@(new SelectList(Model.QuotList,"Value","Text"))" onchange="QuotChange(this.id);" tabindex="-1">
                                             <option value="0">-Select-</option>
                                         </select>
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="QuotYear" class="form-label">Quot Year</label>
-                                        <select class="form-select" asp-for="QuotYear" asp-items="@(new SelectList(Model.QuotYearList,"Value","Text"))">
+                                        <select class="form-select" asp-for="QuotYear" asp-items="@(new SelectList(Model.QuotYearList,"Value","Text"))" tabindex="-1">
                                             <option value="0">-Select-</option>
                                         </select>
                                     </div>
                                     <div class="col-xl-1 col-lg-1 col-md-3 col-sm-6 col-xs-12">
                                         <label class="form-label">Quote Date</label>
-                                        <input asp-for="QDate" class="form-control" readonly disabled />
+                                        <input asp-for="QDate" class="form-control" readonly disabled tabindex="-1"/>
                                     </div>
                                     <div class="col-xl-1 col-lg-1 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="AmmNo" class="form-label">Amm No</label>
-                                        <input asp-for="AmmNo" class="form-control" />
+                                        <input asp-for="AmmNo" class="form-control" tabindex="-1" />
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="AmmEffDate" class="form-label">Amm Date</label>
-                                        <input asp-for="AmmEffDate" class="form-control" readonly />
+                                        <input asp-for="AmmEffDate" class="form-control" readonly tabindex="-1"/>
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:120px">
                                         <label asp-for="SOConfirmDate" class="form-label">SO Confirm Date</label>
-                                        <input asp-for="SOConfirmDate" class="form-control" readonly />
+                                        <input asp-for="SOConfirmDate" class="form-control" readonly tabindex="-1" />
                                     </div>
                                     <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                         <label asp-for="ConsigneeAccountCode" class="form-label">Consignee</label>
                                         <div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
-                                            <input asp-for="PN2" class="form-check-input" type="checkbox" role="switch" />Show All
+                                            <input asp-for="PN2" class="form-check-input" type="checkbox" role="switch" tabindex="-1"/>Show All
                                         </div>
-                                        <select class="form-select" asp-for="ConsigneeAccountCode" data-val="false" asp-items="@(new SelectList(Model.AccountList,"Value","Text"))">
+                                        <select class="form-select" asp-for="ConsigneeAccountCode" data-val="false" asp-items="@(new SelectList(Model.AccountList,"Value","Text"))" tabindex="-1">
                                             <option value="0">-Select-</option>
                                         </select>
                                     </div>
                                     <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                         <label asp-for="ConsigneeAddress" class="form-label">Consignee Address</label>
-                                        <input asp-for="ConsigneeAddress" class="form-control" />
+                                        <input asp-for="ConsigneeAddress" class="form-control" tabindex="-1" />
                                     </div>
                                     <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12" style="width:12%">
-                                        <button type="button" class="MultiBuyers btn btn-sm btn-outline-success mt-3">
+                                        <button type="button" class="MultiBuyers btn btn-sm btn-outline-success mt-3" tabindex="-1">
                                             <i class="fa-solid fa-calendar-clock fa-fw fa-lg"></i> Multiple Buyers
                                         </button>
                                     </div>
-                                    <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12" style="width:12%">
-                                        <button type="button" id="ShowGroupItem" onclick="AddMultipleItems()" class=" btn btn-sm btn-outline-success mt-3">
+                                    <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12" style="width:12%" >
+                                        <button type="button" id="ShowGroupItem" onclick="AddMultipleItems()" class=" btn btn-sm btn-outline-success mt-3" tabindex="-1">
                                             <i class="bi bi-list"></i>ShowGroupItem
                                         </button>
                                     </div>
@@ -485,7 +485,7 @@
                 </div>
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="H_SAGrid">
-                        <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+                        <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid" tabindex="-1">
                             <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Item Detail Grid</strong>
                         </button>
                     </h2>
@@ -726,8 +726,8 @@
                                 <div class="row g-2 gx-3" id="_ItemGrid">
                                     <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:180px">
                                         <label asp-for="Group_Code" class="form-label">Group Name</label>
-                                      
-                                        <select class="form-select" asp-for="Group_Code" style="width:170px">
+
+                                        <select class="form-select" asp-for="Group_Code" style="width:170px" tabindex="-1">
                                             <option value="0">-Select-</option>
                                         </select>
                                     </div>
@@ -743,46 +743,47 @@
                                         <label asp-for="ItemCode" class="form-label" style="color:  red;">Item Name*</label>
                                         <div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
                                             <label id="IN12" class="form-label">Show All</label>
-                                            <input asp-for="IN1" class="form-check-input" type="checkbox" role="switch" />
+                                            <input asp-for="IN1" class="form-check-input" type="checkbox" role="switch" tabindex="-1" />
                                         </div>
                                         <div class="col-xl-12">
-                                            <select class="form-select" style="height:190px;width:290px;" asp-for="ItemCode" asp-items="@(new SelectList(Model.ItemNameList,"Text","Value"))">
+                                            <select class="form-select" style="height:190px;width:290px;" asp-for="ItemCode" asp-items="@(new SelectList(Model.ItemNameList,"Text","Value"))"  tabindex="-1">
                                                 <option value="0">-Select-</option>
                                             </select>
                                         </div>
                                     </div>
-
-                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:70px">
-                                        <label asp-for="HSNNo" class="form-label" style="color:  red;">HSN No*</label>
-                                        <input asp-for="HSNNo" class="form-control" value="0" />
-                                    </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="Qty" class="form-label" style="color:  red;">Qty*</label>
                                         <input asp-for="Qty" class="form-control" type="number" step="any" min=0 value="0" onkeyup="CalculateRate();" data-val="false" />
-                                    </div>
-                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:70px">
-                                        <label asp-for="Unit" class="form-label" style="color:  red;">Unit*</label>
-                                        <input asp-for="Unit" class="form-control" readonly />
-                                    </div>
-                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:70px">
-                                        <label asp-for="AltQty" class="form-label">Alt Qty</label>
-                                        <input asp-for="AltQty" class="form-control" onkeyup="CalculateRate();" />
-                                    </div>
-                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:70px">
-                                        <label asp-for="AltUnit" class="form-label">Alt Unit</label>
-                                        <input asp-for="AltUnit" class="form-control" value="NA" readonly="readonly" aria-readonly="readonly" />
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="">
                                         <label asp-for="Rate" class="form-label" style="color:  red;">Rate*</label>
                                         <input asp-for="Rate" type="number" step="any" min="0" class="form-control" onkeyup="CalculateRate();" />
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:70px">
+                                        <label asp-for="HSNNo" class="form-label" style="color:  red;">HSN No*</label>
+                                        <input asp-for="HSNNo" class="form-control" value="0" readonly tabindex="-1" />
+                                    </div>
+                                   
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:70px">
+                                        <label asp-for="Unit" class="form-label" style="color:  red;">Unit*</label>
+                                        <input asp-for="Unit" class="form-control" readonly  tabindex="-1"/>
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:70px">
+                                        <label asp-for="AltQty" class="form-label">Alt Qty</label>
+                                        <input asp-for="AltQty" class="form-control" tabindex="-1" onkeyup="CalculateRate();" />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:70px">
+                                        <label asp-for="AltUnit" class="form-label">Alt Unit</label>
+                                        <input asp-for="AltUnit" class="form-control" tabindex="-1" value="NA"  readonly="readonly" aria-readonly="readonly" />
+                                    </div>
+                                   
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:70px">
                                         <label asp-for="UnitRate" class="form-label" style="color:  red;">Rate/Unit*</label>
-                                        <select class="form-select" asp-for="UnitRate" asp-items="Model.UnitRateList" onchange="CalculateRate();"></select>
+                                        <select class="form-select" asp-for="UnitRate" tabindex="-1" asp-items="Model.UnitRateList" onchange="CalculateRate();"></select>
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="">
                                         <label asp-for="OtherRateCurr" class="form-label">Rate In FX</label>
-                                        <input asp-for="OtherRateCurr" type="number" step="any" min="0" class="form-control" />
+                                        <input asp-for="OtherRateCurr" type="number" tabindex="-1" step="any" min="0" class="form-control" />
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:70px">
                                         <label asp-for="DiscPer" class="form-label">Disc %</label>
@@ -794,11 +795,11 @@
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="Amount" class="form-label" style="color:  red;">Amount*</label>
-                                        <input asp-for="Amount" class="form-control" value="0.00" readonly disabled />
+                                        <input asp-for="Amount" class="form-control" tabindex="-1" value="0.00" readonly disabled />
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                         <label asp-for="TolLimit" class="form-label">Tol Limit</label>
-                                        <input asp-for="TolLimit" class="form-control" />
+                                        <input asp-for="TolLimit" class="form-control"  />
                                     </div>
                                     <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                         <label asp-for="Remark" class="form-label">Remark</label>
@@ -810,7 +811,7 @@
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="DeliveryDate" class="form-label">DeliveryDate</label>
-                                        <input asp-for="DeliveryDate" class="form-control" readonly />
+                                        <input asp-for="DeliveryDate" class="form-control" tabindex="-1" readonly />
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="StoreName" class="form-label">Store Name</label>
@@ -820,8 +821,17 @@
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="StockQty" class="form-label">Stock Qty</label>
-                                        <input asp-for="StockQty" class="form-control" readonly disabled />
+                                        <input asp-for="StockQty" class="form-control" tabindex="-1" readonly disabled />
                                     </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="Location" class="form-label">Location</label>
+                                        <input asp-for="Location" class="form-control" tabindex="-1" readonly disabled />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="Vehicle" class="form-label">Vehicle</label>
+                                        <input asp-for="Vehicle" class="form-control" tabindex="-1" readonly disabled />
+                                    </div>
+
                                     <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12 text-center" style="width:150px">
                                         <button type="button" class="ItemBtn btn btn-sm btn-outline-danger mt-3">
                                             <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
@@ -955,6 +965,8 @@
                                                         <th data-columnno="25" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Model</th>
                                                         <th data-columnno="25" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Cust Item Category</th>
                                                         <th data-columnno="25" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ItemGroup</th>
+                                                        <th data-columnno="25" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Location</th>
+                                                        <th data-columnno="25" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Vehicle No</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody id="divSaleItemGrid">
@@ -1003,14 +1015,14 @@
                                         <option value="0">-Select-</option>
                                     </select>
                                 </div>
-                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                              @*   <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="TotalDiscountPercentage" class="form-label">Discount %</label>
                                     <input asp-for="TotalDiscountPercentage" class="form-control" value="0" min="0" max="100" />
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="TotalAmtAftrDiscount" class="form-label">Amt Aftr Discount</label>
                                     <input asp-for="TotalAmtAftrDiscount" class="form-control" value="0.00" readonly disabled />
-                                </div>
+                                </div> *@
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="NetTotal" class="form-label">Net Total</label>
                                     <input asp-for="NetTotal" class="form-control" readonly />
@@ -1057,7 +1069,7 @@
 
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="CreatedByName" class="form-label">Created By</label>
-                                    <input asp-for="CreatedByName" class="form-control" />
+                                    <input asp-for="CreatedByName" class="form-control" va/>
                                     <input type="hidden" asp-for="CreatedBy" />
                                 </div>
 
@@ -1778,8 +1790,8 @@
                     $('#lblItemNetAmount').text(sum.toFixed(2));
                     var txTotal = sum + txSum;
                     $('#NetTotal').val(txTotal.toFixed(2));
-                    $('#TotalDiscountPercentage').val(0);
-                    $('#TotalAmtAftrDiscount').val(0);
+                    // $('#TotalDiscountPercentage').val(0);
+                    // $('#TotalAmtAftrDiscount').val(0);
                 }
             });
         }
@@ -2006,16 +2018,16 @@
                 $('#SOBillToShipTo').modal("show");
             });
             // if ($('#AccountCode').prop('selectedIndex') != 0) {
-                $.getJSON({
-                    url: '@Url.Action("GetGstRegister", "PurchaseOrder")',
-                    data: { Code: $('#AccountCode').val() },
-                    success: function (result, status, xhr) {
-                        if (result != null) {
-                            var obj = $.parseJSON(result);
-                            $('#Gstregistered').val(obj.Result[0].GSTRegistered);
-                        }
-                    }
-                });
+                // $.getJSON({
+                //     url: '@Url.Action("GetGstRegister", "PurchaseOrder")',
+                //     data: { Code: $('#AccountCode').val() },
+                //     success: function (result, status, xhr) {
+                //         if (result != null) {
+                //             var obj = $.parseJSON(result);
+                //             $('#Gstregistered').val(obj.Result[0].GSTRegistered);
+                //         }
+                //     }
+                // });
             // }
             FillCurrency();
 
@@ -2441,8 +2453,8 @@
                             $('#lblItemNetAmount').text(sum.toFixed(2));
                             var txTotal = sum + txSum;
                             $('#NetTotal').val(txTotal.toFixed(2));
-                            $('#TotalDiscountPercentage').val(0);
-                            $('#TotalAmtAftrDiscount').val(0);
+                            // $('#TotalDiscountPercentage').val(0);
+                            // $('#TotalAmtAftrDiscount').val(0);
 
                         }
                     },
@@ -2600,6 +2612,13 @@
                 PartCodeChange(cntId);
             }
 
+        });
+
+        $('#ItemCode,#PartCode').change(function () {
+            if($('#Mode').val()=='')
+        {
+            GetItemPartCode('ItemCode');
+        }
         });
 
         function GetServerDate() {
@@ -2843,7 +2862,7 @@
 
         // When user clicks "Print"
         $('#btnPrint').click(function () {
-            const printWindow = window.open('', '_blank'); // Open blank tab first (browser-safe)
+            const printWindow = window.open('', '_blank', 'width=900,height=700,toolbar=no,menubar=no,scrollbars=yes,resizable=yes');
 
             $('#SubmitionForm').modal("hide");
 
@@ -2853,7 +2872,7 @@
         });
 
         $('#btnPrintEmail').click(function () {
-            const printWindow = window.open('', '_blank'); // Open blank tab first (browser-safe)
+            const printWindow = window.open('', '_blank', 'width=900,height=700,toolbar=no,menubar=no,scrollbars=yes,resizable=yes');
             const sendWindow = window.open('', '_blank'); // Open blank tab first (browser-safe)
 
 
@@ -2894,16 +2913,30 @@
                     if (res && res.status === "Success") {
                         if (shouldPrint && res.entryId && res.yearCode && printWindow && !shouldSend) {
                             const printUrl = '/SaleOrder/PrintReport?EntryId=' + res.entryId + '&YearCode=' + res.yearCode;
-                            printWindow.location.href = printUrl;
+
+                            printWindow.location.replace(printUrl); // navigate to report
+                            printWindow.onload = function () {
+                                printWindow.document.title = "Sale Order Report";
+                            };
                         }
                         else if (shouldPrint && shouldSend) {
                             const printUrl = '/SaleOrder/PrintReport?EntryId=' + res.entryId + '&YearCode=' + res.yearCode;
-                            const sendUrl = '/SaleOrder/SendReport?EntryId=' + res.entryId + '&YearCode=' + res.yearCode + '&EmailTo=' + Email + '&CC1=' + CC1 + '&CC2=' + CC2 + '&CC3=' + CC3 + '&Sono=' + CustOrderNo;
-                            printWindow.location.href = printUrl;
-                            /* sendWindow.location.href = sendUrl; */
-                            $.get(sendUrl);
+                            const sendUrl = '/SaleOrder/SendReport?EntryId=' + res.entryId + '&YearCode=' + res.yearCode +
+                                '&EmailTo=' + Email + '&CC1=' + CC1 + '&CC2=' + CC2 + '&CC3=' + CC3 + '&Sono=' + CustOrderNo;
 
+                            // Print popup
+                            printWindow.location.replace(printUrl);
+                            printWindow.onload = function () {
+                                printWindow.document.title = "Sale Order Report";
+                            };
+
+                            // Send popup
+                            sendWindow.location.replace(sendUrl);
+                            sendWindow.onload = function () {
+                                sendWindow.document.title = "Send Sale Order Report";
+                            };
                         }
+
                         else if (ShouldEway) {
                             const ewayModel = {
                                 EntryId: res.entryId,
@@ -3077,7 +3110,7 @@
 
         function PartCodeChange(ID) {
             $.when(SetPartCodeItem(ID)).done(function () {
-                GetItemPartCode(ID)
+                // GetItemPartCode(ID)
             });
             // copyToClipboardForDropdown("#PartCode");
             if ($('#StoreName').prop("selectedIndex") !== 0) {
@@ -3089,7 +3122,7 @@
 
         function ItemNameChange(ID) {
             SetPartCodeItem(ID);
-            GetItemPartCode(ID);
+            // GetItemPartCode(ID);
             if ($('#StoreName').prop("selectedIndex") !== 0) {
                 StoreChange();
             }
@@ -3120,14 +3153,27 @@
                 url: "@Url.Action("GetItemPartCode")",
                 data: { Code: $('#' + ID).val() },
                 success: function (result, status, xhr) {
+
                     if (result) {
                         var obj = JSON.parse(result);
                         if (!obj) {
                             $('#Unit').val('0'), $('#HSNNo').val('0'), $('#AltUnit').val('NA');
                         }
                         else if (obj.StatusCode == 200 && obj.StatusText == "Success") {
+                            $('#Unit').val("");
                             $('#Unit').val(obj.Result[0].Unit);
+                            $('#HSNNo').val("");
                             $('#HSNNo').val(obj.Result[0].HSNNo);
+                            $('#Location').val("");
+                            $('#Location').val(obj.Result[0].Location);
+                            $('#Vehicle').val("");
+                            $('#Vehicle').val(obj.Result[0].Vehicle);
+                            $('#Rate').val("");
+                            $('#Rate').val(obj.Result[0].SalePrice);
+                            $('#OtherRateCurr').val("");
+                            $('#OtherRateCurr').val(obj.Result[0].SalePrice);
+                            $('#AltUnit').val("");
+                            $('#AltUnit').val("");
                             $('#AltUnit').val(obj.Result[0].AltUnit == null ? 'NA' : obj.Result[0].AltUnit);
                             !$('#AltUnit').val() ? $('#UnitRate').prop('disabled', true) : $('#UnitRate').prop('disabled', false);
                         }
@@ -3951,7 +3997,9 @@
                 "CustomerSaleOrder": $('#CustomerSaleOrder').val(),
                 "CustomerLocation": $('#CustomerLocation').val(),
                 "ItemModel": $('#ItemModel').val(),
-                "CustItemCategory": $('#CustItemCategory').val()
+                "CustItemCategory": $('#CustItemCategory').val(),
+                "Location": $('#Location').val(),
+                "Vehicle": $('#Vehicle').val(),
             }
             //alert('before itemgrid');
 
@@ -4018,8 +4066,8 @@
                     $('#lblItemNetAmount').text(sum.toFixed(2));
                     var txTotal = sum + txSum;
                     $('#NetTotal').val(txTotal.toFixed(2));
-                    $('#TotalDiscountPercentage').val(0);
-                    $('#TotalAmtAftrDiscount').val(0);
+                    // $('#TotalDiscountPercentage').val(0);
+                    // $('#TotalAmtAftrDiscount').val(0);
                     // $('#PartCode').focus();
 
                 },
@@ -4227,6 +4275,8 @@
                             $('#ProjQty2').val(obj[0].ProjQty2);
                             $('#DeliveryDate').val(obj[0].DeliveryDate);
                             $('#OtherRateCurr').val(obj[0].OtherRateCurr);
+                                $('#Location').val(obj[0].Location);
+                                $('#Vehicle').val(obj[0].Vehicle);
                             DelSeqNo = SeqNo;
                             $('#divSaleItemGrid .' + DelSeqNo).remove();
                             if ($('#divSaleItemGrid').children().length == 0) {
@@ -4289,8 +4339,8 @@
                         $('#lblItemNetAmount').text(sum.toFixed(2));
                         var txTotal = sum + txSum;
                         $('#NetTotal').val(txTotal.toFixed(2));
-                        $('#TotalDiscountPercentage').val(0);
-                        $('#TotalAmtAftrDiscount').val(0);
+                        // $('#TotalDiscountPercentage').val(0);
+                        // $('#TotalAmtAftrDiscount').val(0);
                         $.notify('Item Deleted From Grid.', "info");
                     }
                 },

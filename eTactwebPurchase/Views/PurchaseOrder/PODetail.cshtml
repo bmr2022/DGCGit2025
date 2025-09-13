@@ -237,14 +237,14 @@
 										<option value="">-Select-</option>
 									</select>
 								</div>
-								<div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+								@* <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
 									<label asp-for="TotalDiscountPercentage" class="form-label">Discount %</label>
 									<input asp-for="TotalDiscountPercentage" class="form-control" min="0" max="100" />
-								</div>
-								<div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+								</div> *@
+							@* 	<div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
 									<label asp-for="TotalAmtAftrDiscount" class="form-label">Amt Aftr Discount</label>
 									<input asp-for="TotalAmtAftrDiscount" class="form-control" readonly />
-								</div>
+								</div> *@
 								<div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
 									<label asp-for="NetTotal" class="form-label">Net Total</label>
 									<input asp-for="NetTotal" class="form-control" readonly />
@@ -491,8 +491,18 @@
 			itemDataArray = [];
 			var indentRowCount = $('#divIndentDetail tr').length;
 			var indentQty = 0;
+					 var selectedItemCode = null;
 			for (var i = 1; i <= indentRowCount; i++) {
 				if ($('#chkIndentData-' + i).is(":checked") == true) {
+							 var currentItemCode = $('#GridIndentItemCode-' + i).val();
+
+					// validation: different items not allowed
+					if (selectedItemCode == null) {
+						selectedItemCode = currentItemCode; // set first item
+					} else if (selectedItemCode !== currentItemCode) {
+						$.notify("You can only select multiple indents for the same item!", "error");
+						return; // stop execution
+					}
 					indentQty += $('#poQtyIndenGrid-' + i).text() == '' ? 0 : parseFloat($('#poQtyIndenGrid-' + i).text());
 
 					var ItemData = {
@@ -522,7 +532,7 @@
 			}
 			$('#IndentDetailModal').modal("hide");
 			$('#POQty').val(indentQty);
-			$('#POQty').prop("readonly", true);
+			// $('#POQty').prop("readonly", true);
 
 			console.log(JSON.stringify(itemDataArray));
 
@@ -537,10 +547,37 @@
 						$.notify("Duplicate Item..!", "error");
 					}
 					else if (response == "OK") {
-						$.notify("Indent detail saved successfully..!", "success");
-						if ($('#ItemCode').val() == null && $('#PartCode').val() == null) {
-							FillItems();
+								if (itemDataArray.length > 0) {
+					var firstItem = itemDataArray[0];
+
+					$("#PartCodeText").val(firstItem.PartCode).data("itemcode", firstItem.ItemCode);
+					$("#ItemNameText").val(firstItem.ItemName);
+					$('#ItemCode').val(firstItem.ItemCode);
+							$('#PartCode').val(firstItem.ItemCode);
+									$.ajax({
+						type: "GET",
+						url: "/PurchaseOrder/AltUnitConversion",
+						dataType: "json",
+						async: false,
+						data: { ItemCode: $('#PartCode').val(), AltQty: 0, UnitQty: $('#POQty').val() },
+						success: function (data, status, error) {
+							if (data != null) {
+								var obj = $.parseJSON(data);
+								$('#AltPOQty').val(obj.Result[0].AltUnitValue);
+							}
+						},
+						error: function (req, status, error) {
+							alert(error);
 						}
+					});
+				}
+
+						
+						$.notify("Indent detail saved successfully..!", "success");
+
+						// 		if ($('#ItemCode').val() =='' && $('#PartCode').val() == 0) {
+						// 	FillItems();
+						// }
 					}
 				},
 				error: function (xhr, status, error) {
@@ -565,14 +602,14 @@
 				$('#Rate').prop("disabled", false);
 				$('#OtherRateCurr').prop("disabled", true);
 			}
-			const myInput = document.getElementById("TotalDiscountPercentage");
+			// const myInput = document.getElementById("TotalDiscountPercentage");
 
-			myInput.addEventListener("input", function (event) {
-				const inputValue = parseInt(event.target.value);
-				if (isNaN(inputValue) || inputValue > 100) {
-					event.target.value = ""; // Clear the input value if it's not a valid number or greater than 100
-				}
-			});
+			// myInput.addEventListener("input", function (event) {
+			// 	const inputValue = parseInt(event.target.value);
+			// 	if (isNaN(inputValue) || inputValue > 100) {
+			// 		event.target.value = ""; // Clear the input value if it's not a valid number or greater than 100
+			// 	}
+			// });
 			$('#AccountCode').select2();
 			// $('#PartCode').select2();
 			// $('#ItemCode').select2();
@@ -2561,7 +2598,7 @@ formData.append("Mode", $('#Mode').val());
 						$('#ItemNetAmount').val('0.00'), $('#TotalTaxAmt').val('0.00'), $('#lblItemNetAmount').text('0.00'), $('#NetTotal').val('0.00'), $('#TotalRoundOff').prop('selectedIndex', 0), $('#TotalDiscountAmt').val('0');
 					}
 					$('#ItemNetAmount').val('0.00'), $('#TotalTaxAmt').val('0.00'), $('#lblItemNetAmount').text('0.00'), $('#NetTotal').val('0.00'),
-						$('#TotalRoundOff').prop('selectedIndex', 0), $('#TotalDiscountAmt').val('0'), $('#TotalAmtAftrDiscount').val('0.00');
+						$('#TotalRoundOff').prop('selectedIndex', 0);$('#TotalDiscountAmt').val('0'), $('#TotalAmtAftrDiscount').val('0.00');
 				}
 			}).done(function (data) {
 
@@ -3452,8 +3489,8 @@ formData.append("Mode", $('#Mode').val());
 
 						var txTotal = sum + txSum;
 						$('#NetTotal').val(txTotal.toFixed(2));
-						$('#TotalDiscountPercentage').val(0);
-						$('#TotalAmtAftrDiscount').val(0);
+						// $('#TotalDiscountPercentage').val(0);
+						// $('#TotalAmtAftrDiscount').val(0);
 						$('#PartCodeText').focus().autocomplete("search", $('#PartCodeText').val());
 
 						//$('#PartCode').select2('open').select2('focus');
@@ -3661,8 +3698,8 @@ formData.append("Mode", $('#Mode').val());
 						$('#lblItemNetAmount').text(sum.toFixed(2));
 						var txTotal = sum + txSum;
 						$('#NetTotal').val(txTotal.toFixed(2));
-						$('#TotalDiscountPercentage').val(0);
-						$('#TotalAmtAftrDiscount').val(0);
+						// $('#TotalDiscountPercentage').val(0);
+						// $('#TotalAmtAftrDiscount').val(0);
 						$.notify('Item Deleted From Grid.', "success");
 						isEditAllowed = "true";
 					}

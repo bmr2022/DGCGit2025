@@ -971,11 +971,27 @@ namespace eTactWeb.Controllers
             {
                 ResponseResult StockData = new ResponseResult();
                 var ItemDetailData = await _IIssueWOBOM.GetItemDetailFromUniqBatch(UniqBatchNo, YearCode, TransDate);
+              
+                ResponseResult ReqQty = await _IIssueWOBOM.GetReqQtyForScan(ReqNo,ReqYearCode,ReqDate, Convert.ToInt32(ItemDetailData.Result.Rows[0].ItemArray[4]));
+                ResponseResult ReqStoreId = await _IIssueWOBOM.GetStoreIdReqForScan(ReqNo, ReqYearCode, ReqDate, Convert.ToInt32(ItemDetailData.Result.Rows[0].ItemArray[4]));
+
+                decimal ReqQuantity = 0;
+                
+                if (ReqQty.Result.Rows.Count != 0) 
+                {
+                    ReqQuantity = Convert.ToDecimal(ReqQty.Result.Rows[0].ItemArray[0]);
+                }
+                else
+                {
+                    return StatusCode(203, "Invalid barcode this item " + ItemDetailData.Result.Rows[0].ItemArray[0] + " do not exist in this requisition");
+                }
+
                 if (ItemDetailData.Result != null)
                 {
                     if (ItemDetailData.Result.Rows.Count != 0)
                     {
-                        StockData = await _IIssueWOBOM.FillLotandTotalStock(Convert.ToInt32(ItemDetailData.Result.Rows[0].ItemArray[4]), 1, TransDate, ItemDetailData.Result.Rows[0].ItemArray[2], UniqBatchNo);
+                        
+                        StockData = await _IIssueWOBOM.FillLotandTotalStock(Convert.ToInt32(ItemDetailData.Result.Rows[0].ItemArray[4]), Convert.ToInt32(ReqStoreId.Result.Rows[0].ItemArray[0]), TransDate, ItemDetailData.Result.Rows[0].ItemArray[2], UniqBatchNo);
                     }
                     else
                     {
@@ -988,20 +1004,8 @@ namespace eTactWeb.Controllers
                     return StatusCode(203, "Invalid barcode, item do not exist in this requisition");
 
                 }
-                ResponseResult ReqQty = await _IIssueWOBOM.GetReqQtyForScan(ReqNo,ReqYearCode,ReqDate, Convert.ToInt32(ItemDetailData.Result.Rows[0].ItemArray[4]));
-
-                decimal ReqQuantity = 0;
-
-                if (ReqQty.Result.Rows.Count != 0)
-                {
-                    ReqQuantity = Convert.ToDecimal(ReqQty.Result.Rows[0].ItemArray[0]);
-                }
-                else
-                {
-                    return StatusCode(203, "Invalid barcode this item " + ItemDetailData.Result.Rows[0].ItemArray[0] + " do not exist in this requisition");
-                }
-
-                var ItemList = new List<IssueWithoutBomDetail>();
+              
+                //var ItemList = new List<IssueWithoutBomDetail>();
 
                 var lotStock = Convert.ToDecimal(StockData.Result.Rows[0].ItemArray[0]);
                 var totStock = Convert.ToDecimal(StockData.Result.Rows[0].ItemArray[1]);
@@ -1009,20 +1013,68 @@ namespace eTactWeb.Controllers
                 var stock = lotStock <= totStock ? lotStock : totStock;
 
                 var issueQty = stock <= ReqQuantity ? stock : ReqQuantity;
+                //var JSON = await _IIssueWOBOM.ShowDetail(ReqDate, ReqDate, ReqNo, YearCode, Convert.ToInt32(ItemDetailData.Result.Rows[0].ItemArray[4]), "", 0, 0, ReqYearCode, ReqDate,"" , "", Convert.ToInt32(ReqStoreId.Result.Rows[0].ItemArray[0]));
+                //string JsonString = JsonConvert.SerializeObject(JSON.Result.Table);
 
-                ItemList.Add(new IssueWithoutBomDetail
+
+                //// Deserialize into list of IssueWithoutBomDetail
+                //var ItemList = JsonConvert.DeserializeObject<List<IssueWithoutBomDetail>>(JsonString) ?? new List<IssueWithoutBomDetail>();
+
+                //ItemList.Add(new IssueWithoutBomDetail
+                //{
+                //    ItemName = ItemDetailData.Result.Rows[0].ItemArray[0],
+                //    PartCode = ItemDetailData.Result.Rows[0].ItemArray[1],
+                //    ItemCode = Convert.ToInt32(ItemDetailData.Result.Rows[0].ItemArray[4]),
+                //    BatchNo = ItemDetailData.Result.Rows[0].ItemArray[2],
+                //    uniqueBatchNo = UniqBatchNo,
+                //    Unit = ItemDetailData.Result.Rows[0].ItemArray[3],
+                //    LotStock = lotStock,
+                //    TotalStock = totStock,
+                //    IssueQty = issueQty,
+                //    ReqQty = ReqQuantity
+                //});
+                var JSON = await _IIssueWOBOM.ShowDetail(ReqDate, ReqDate, ReqNo, YearCode,Convert.ToInt32(ItemDetailData.Result.Rows[0].ItemArray[4]),"", 0, 0, ReqYearCode, ReqDate, "", "",Convert.ToInt32(ReqStoreId.Result.Rows[0].ItemArray[0]));
+
+                var ItemList = new List<IssueWithoutBomDetail>();
+
+                if (JSON?.Result != null && JSON.Result.Tables.Count > 0)
                 {
-                    ItemName = ItemDetailData.Result.Rows[0].ItemArray[0],
-                    PartCode = ItemDetailData.Result.Rows[0].ItemArray[1],
-                    ItemCode = Convert.ToInt32(ItemDetailData.Result.Rows[0].ItemArray[4]),
-                    BatchNo = ItemDetailData.Result.Rows[0].ItemArray[2],
-                    uniqueBatchNo = UniqBatchNo,
-                    Unit = ItemDetailData.Result.Rows[0].ItemArray[3],
-                    LotStock = lotStock,
-                    TotalStock = totStock,
-                    IssueQty = issueQty,
-                    ReqQty = ReqQuantity
-                });
+                    var table = JSON.Result.Tables[0];
+                    foreach (DataRow row in table.Rows)
+                    {
+                        var item = new IssueWithoutBomDetail
+                        {
+                            ItemName = ItemDetailData.Result.Rows[0].ItemArray[0],
+                            PartCode = ItemDetailData.Result.Rows[0].ItemArray[1],
+                            ItemCode = Convert.ToInt32(ItemDetailData.Result.Rows[0].ItemArray[4]),
+                            BatchNo = ItemDetailData.Result.Rows[0].ItemArray[2],
+                            uniqueBatchNo = UniqBatchNo,
+                            Unit = ItemDetailData.Result.Rows[0].ItemArray[3],
+                            LotStock = lotStock,
+                            TotalStock = totStock,
+                            IssueQty = issueQty,
+                            ReqQty = ReqQuantity,
+                            StdPacking = row["StdPacking"] != DBNull.Value ? Convert.ToSingle(row["StdPacking"]) : 0,
+                            StoreName = row["StoreName"]?.ToString(),
+                            AltQty = row["AltQty"] != DBNull.Value ? Convert.ToDecimal(row["AltQty"]) : 0,
+                            AltUnit = row["AltUnit"]?.ToString(),
+                            Rate = row["Rate"] != DBNull.Value ? Convert.ToDecimal(row["Rate"]) : 0,
+                            Remark = row["Remark"]?.ToString(),
+                            AltItemCode = row["AltItemCode"] != DBNull.Value ? Convert.ToInt32(row["AltItemCode"]) : 0,
+                            CostCenterId = row["CostCenterId"] != DBNull.Value ? Convert.ToInt32(row["CostCenterId"]) : 0,
+                            ItemSize = row["ItemSize"]?.ToString(),
+                            ItemColor = row["ItemColor"]?.ToString(),
+                            StoreId = row["storeid"] != DBNull.Value ? Convert.ToInt32(row["storeid"]) : 0,
+                            ReqDept = row["ReqDepartment"]?.ToString(),
+                            ReqDepartmentID = row["ReqDepartmentID"] != DBNull.Value ? Convert.ToInt32(row["ReqDepartmentID"]) : 0,
+                            WCId = row["workcenterId"] != DBNull.Value ? Convert.ToInt32(row["workcenterId"]) : 0,
+                            WorkCenter = row["WorkCenterName"]?.ToString(),
+                            TransactionDate = row["TransactionDate"]?.ToString()
+                        };
+
+                        ItemList.Add(item);
+                    }
+                }
 
                 var model = ItemList;
 

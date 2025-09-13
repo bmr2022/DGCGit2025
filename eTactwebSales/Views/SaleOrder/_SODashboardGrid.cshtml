@@ -93,7 +93,9 @@
                                     <div id="container">
 
                                         <div id="printData-@Cntr">
-                                            <a class="table-link link-dark" target="_blank" asp-action="PrintReport" asp-route-EntryId="@item.EntryID" asp-route-YearCode="@item.Year" asp-route-ShowOnlyAmendItem="" target="_blank">
+                                            <a href="@Url.Action("PrintReport", new { EntryId = item.EntryID, YearCode = item.Year, ShowOnlyAmendItem = "" })"
+                                               class="table-link link-dark"
+                                               onclick="window.open(this.href, '_blank', 'width=1200,height=800'); return false;">
                                                 <span class="fa-stack">
                                                     <i class="fa fa-square fa-stack-2x"></i>
                                                     <i class="fa-solid fa-print fa-stack-1x fa-inverse"></i>

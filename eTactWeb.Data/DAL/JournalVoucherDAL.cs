@@ -281,6 +281,7 @@ namespace eTactWeb.Data.DAL
                 sqlParams.Add(new SqlParameter("@intrument", model.Intrument));
                 sqlParams.Add(new SqlParameter("@intrumentdate", InsDate));
                 sqlParams.Add(new SqlParameter("@cc", model.CC));
+                sqlParams.Add(new SqlParameter("@ActualEntryBy", model.ActualEntryby));
                 sqlParams.Add(new SqlParameter("@DTbooktrans", GIGrid));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpVoucherEntry", sqlParams);

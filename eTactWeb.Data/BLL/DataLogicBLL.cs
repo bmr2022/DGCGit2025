@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Http;
@@ -14,10 +15,10 @@ public class DataLogicBLL : IDataLogic
     private readonly UserContextService _userContextService;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public DataLogicBLL(IConfiguration configuration, IConnectionStringHelper connectionStringHelper, UserContextService userContextService, IHttpContextAccessor httpContextAccessor)
+    public DataLogicBLL(IConfiguration configuration, IConnectionStringHelper connectionStringHelper, UserContextService userContextService, IHttpContextAccessor httpContextAccessor, ConnectionStringService connectionStringService)
     {
         _connectionStringHelper = connectionStringHelper;
-        _DataLogicDAL = new DataLogicDAL(configuration, _connectionStringHelper);
+        _DataLogicDAL = new DataLogicDAL(configuration, _connectionStringHelper,connectionStringService);
         _userContextService = userContextService;
         _httpContextAccessor = httpContextAccessor;
     }
