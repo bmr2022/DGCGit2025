@@ -1,0 +1,457 @@
+﻿@model eTactWeb.DOM.Models.SSApprovalModel
+
+@{
+    ViewData["Title"] = "SS Approval";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+<div class="shadow-lg">
+    <div class="card rounded border-light bg-gradient">
+        <div class="card-header card-headerBG text-light bg-gradient">
+            <h5>
+                SS Approval
+                <span class="d-flex float-end" style="margin-top:-2px;">
+                    @*<a asp-action="ReqWithoutBom" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                    <i class="fa fa-plus-circle fafw fa-lg" aria-hidden="true"></i>
+                    Add New
+                    </a>*@
+                </span>
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="card overflow-auto">
+                <div class="card-body">
+                    <form id="SParam">
+                        <div class="row">
+                            <div class="col-sm-3 col-md-6 col-lg-2 col-xl-4">
+                                <div class="row">
+                                    <div class="col">
+                                        <label class="form-label">Schedule From Date</label>
+                                        <input type="hidden" value="@Model.FromDate" id="finFromDate" />
+                                        <input type="hidden" value="@Model.ToDate" id="finToDate" />
+                                        <input type="hidden" value="@Model.ApprovalType" id="selectedApprovalType" />
+                                        <input asp-for="FromDate" maxlength="10" class="form-control" value="@Model.FromDate" />
+                                    </div>
+                                    <div class="col">
+                                        <label class="form-label">Schedule To Date</label>
+                                        <input asp-for="ToDate" maxlength="10" class="form-control" value="@Model.ToDate" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                                <label asp-for="ApprovalType" class="form-label">Approval Type</label>
+                                <select class="form-select" asp-for="ApprovalType">
+                                    <option value="" disabled>-Select-</option>
+                                    <option value="listofApp">List of Approved SS</option>
+                                    <option value="listofUnApp" selected>List of unapproved SS</option>
+                                    <option value="listofAppAmd">List of approved amendment</option>
+                                    <option value="listofUnAppAmd">List of unapproved amendment</option>
+                                </select>
+                                <input type="hidden" id="approvalType" value="First Level Approval" />
+                            </div>
+                            <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                <label asp-for="SONO" class="form-label">SO NO</label>
+                                <input asp-for="SONO" class="form-control" />
+                            </div>
+                            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                <label asp-for="SchNo" class="form-label">Sch NO</label>
+                                <input asp-for="SchNo" class="form-control" />
+                            </div>
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                                <label asp-for="VendorName" class="form-label">Vendor Name</label>
+                                <input asp-for="VendorName" class="form-control" />
+                            </div>
+                            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                <label asp-for="CC" class="form-label">Branch</label>
+                                <input asp-for="CC" class="form-control" value="@Model.CC" readonly />
+                            </div>
+
+                        </div>
+                        <div class=" d-flex justify-content-center mt-3" width="inherit">
+                            <button class="btn btn-sm btn-outline-info" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" onclick="GetListOfApprovedSS();">
+                                <i class="fa-solid fa-magnifying-glass fa-fw fa-lg "></i>SHOW
+                            </button>
+                            <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
+                                <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
+                            </button>
+                            <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="SSApproval" asp-action="SSApproval">
+                                <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
+                            </a>
+                            <div class="ms-auto d-flex align-items-center">
+                                <div class="col-md-4">
+                                    <label class="form-label me-2">Global search</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control" id="search-box" placeholder="Search...">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="progress my-3 mb-3" style="height: 4px;">
+            <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+        <div class="card-body">
+            <div class="card overflow-auto">
+                <div class="card-body" id="divDashboardGrid">
+                    <partial name="_SSApprovalGrid" />
+                </div>
+            </div>
+        </div>
+        <center><strong>TOTAL ROWS : <span id="totalRows"></span></strong></center>
+    </div>
+</div>
+
+@section Scripts
+    {
+    <script>
+        $(document).ready(function () {
+
+            var urlString = window.location.href;
+            var url = new URL(urlString);
+
+            var sonoRegex = /[?&]SONO=/;
+            if (sonoRegex.test(url.search)) {
+                var sonoValue = url.searchParams.get("SONO");
+                $('#SONO').val(sonoValue);
+
+            }
+             
+            var VendorNameRegex = /[?&]VendorName=/;
+            if (VendorNameRegex.test(url.search)) {
+                var VNValue = url.searchParams.get("VendorName");
+                $('#VendorName').val(VNValue);
+            }
+
+            $(document).on("click", ".redirectToApproval", function (e) {
+
+                e.preventDefault();
+                var formData = $("#yourFormId").serialize();
+                var newUrl = this.href;
+                newUrl = newUrl + "&TypeOfApproval=" + $('#ApprovalType').val() + "&SONO=" + $('#SONO').val() + "&SchNo=" + $('#SchNo').val() + "&VendorName=" + $('#VendorName').val();
+                window.location.href = newUrl;
+
+            });
+
+
+            if ($('#selectedApprovalType').val() == 'UnApproval') {
+                $('#ApprovalType').val('listofApp').change();
+                GetListOfApprovedSS();
+            }
+            if ($('#selectedApprovalType').val() == 'Approval') {
+                $('#ApprovalType').val('listofUnApp').change();
+                GetListOfApprovedSS();
+            }
+            if ($('#selectedApprovalType').val() == 'Unapproving Amendment') {
+                $('#ApprovalType').val('listofAppAmd').change();
+                GetListOfApprovedSS();
+            }
+            if ($('#selectedApprovalType').val() == 'Approving Amendment') {
+                $('#ApprovalType').val('listofUnAppAmd').change();
+                GetListOfApprovedSS();
+            }
+        });
+
+        var currentSearchColumn = null;
+
+        $("#search-box").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#divDashboardGrid1 tr").filter(function () {
+                if (currentSearchColumn !== null) {
+                    var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
+                    $(this).toggle(columnText.indexOf(value) > -1);
+                } else {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                }
+            });
+        });
+
+
+        $(document).on("click", "th[data-columnno]", function () {
+            currentSearchColumn = $(this).data('columnno');
+            $("#search-box").val('').trigger('keyup');
+        });
+
+        function redirectToApproval(EntryId, SchYear, SchNo) {
+
+
+            //e.preventDefault();
+
+            var fData = new FormData();
+
+            var newUrl = this.href;
+
+            newUrl = newUrl + "&TypeOfApproval=" + $('#ApprovalType').val();
+
+            fData.append('ID', EntryId);
+            fData.append('SchYear', SchYear);
+            fData.append('SchNo', SchNo);
+            fData.append('SONO', $('#SONO').val());
+            fData.append('SchFromDate', $('#FromDate').val());
+            fData.append('SchToDate', $('#ToDate').val());
+            fData.append('VendorName', $('#VendoreName').val());
+            fData.append('ApprovalType', $('#ApprovalType').val());
+
+
+            $.ajax({
+                url: "@Url.Action("ShowSSDetail")",
+                type: 'POST',
+                data: fData,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    console.log(response);
+                },
+                error: function (error) {
+                    console.error(error);
+                }
+            });
+        }
+
+
+        $(function () {
+
+            var currentDate = new Date();
+            var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+            function formatDate(date) {
+                var day = ("0" + date.getDate()).slice(-2);
+                var month = ("0" + (date.getMonth() + 1)).slice(-2);
+                var year = date.getFullYear();
+                var dateString = day + "/" + month + "/" + year;
+                return dateString;
+            }
+            //$('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+
+            $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatDate(firstDayOfMonth));
+            $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+
+             
+            AutoComplete('VSALESCHEDULE', 'VendorName', 'CustomerName', null);
+            AutoComplete('VSALESCHEDULE', 'SONO', 'SONO', null);
+            AutoComplete('VSALESCHEDULE', 'SchNo', 'SchNo', null);
+            AutoComplete('VSALESCHEDULE', 'CC', 'CC', null);
+            GetTotalRows();
+            GetListOfApprovedSS();
+            //GetAllowedAction();
+        });
+
+
+        function GetListOfApprovedSS() {
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("GetListOfApprovedSS")",
+                type: "POST",
+                async: false,
+                data: { FromDate: $('#FromDate').val(), ToDate: $('#ToDate').val(), ApprovalType: $('#ApprovalType').val(), SONO: $('#SONO').val(), SchNo: $('#SchNo').val(), VendorName: $('#VendorName').val() },
+                success: function (result, status, error) {
+                     
+                    $('#divDashboardGrid').empty().append(result);
+                    GetTotalRows();
+
+                     
+                    sortTable(1, false);
+                }
+            });
+        }
+
+
+
+        $(document).on("click", ".sortCol", function () {
+             ;
+            var $column = $(this).parent().closest("th");
+            var colno = $(this).data('columnno');
+            var currentOrder = $(this).data('sortorder');
+
+            $('.sortCol').css('color', 'white');
+
+            if (currentOrder === 'asc') {
+                sortTable(colno, false);
+                $(this).data('sortorder', 'desc');
+                $(this).css('color', 'yellow');
+                //$(this).css('font-size', 'larger');
+                $(this).find('i:first').removeClass('fa-arrow-up');
+                $(this).find('i:first').addClass('fa-arrow-down');
+            } else {
+                sortTable(colno, true);
+                $(this).data('sortorder', 'asc');
+                $(this).css('color', 'yellow');
+                // $(this).css('font-size', 'larger');
+                $(this).find('i:first').removeClass('fa-arrow-down');
+                $(this).find('i:first').addClass('fa-arrow-up');
+            }
+        });
+
+        function sortTable(columnIndex, ascending) {
+             
+            var table = $('#PSDashboard');
+            var rows = table.find('#divDashboardGrid1 > tr').toArray();
+
+            rows.sort(function (a, b) {
+                var aValue = $(a).find('td').eq(columnIndex).text();
+                var bValue = $(b).find('td').eq(columnIndex).text();
+
+                var aIntValue = 0;
+                var bIntValue = 0;
+                if (/^\d+$/.test(aValue) && /^\d+$/.test(bValue)) {
+                    aIntValue = parseInt(aValue, 10);
+                    bIntValue = parseInt(bValue, 10);
+                }
+
+                if (aIntValue > 0) {
+                    if (ascending) {
+                        return aValue - bValue;
+                    } else {
+                        return bValue - aValue;
+                    }
+                } else {
+                    if (ascending) {
+                        return aValue.localeCompare(bValue);
+                    } else {
+                        return bValue.localeCompare(aValue);
+                    }
+                }
+            });
+
+            $.each(rows, function (index, row) {
+                table.children('#divDashboardGrid1').append(row);
+            });
+        }
+
+        $('#ApprovalType').change(function () {
+            if ($(this).val() == 'finalApproval') {
+                $('#approvalType').val('Approving Final Level');
+                //GetFinalApprovalPO();
+            }
+            else if ($(this).val() == 'firstLvlApproval') {
+                $('#approvalType').val('Approving First Level');
+
+                //GetInitialData();
+            } else if ($(this).val() == 'finalUnApp') {
+                $('#approvalType').val('Unapproving Final Level');
+
+                //GetFinalUnApprovalPO();
+            } else if ($(this).val() == 'firstLvlUnApp') {
+                $('#approvalType').val('Unapproving first Level');
+
+                //GetFirstLvlUnApprovalPO();
+            } else if ($(this).val() == 'amdUnApp') {
+                $('#approvalType').val('Unapproving Amendment Level');
+
+                //GetAmmUnApprovalPO();
+            }
+            else {
+                $('#approvalType').val('Approving Amendment Level');
+
+                //GetAmmApprovalPO();
+            }
+
+        });
+
+        $('#sendToExcel').click(function () {
+            $('#poAppTable').table2excel({
+                filename: "POApprovalTable.xls"
+            });
+        });
+
+        async function GetTotalRows() {
+            ;
+            var rowCount = $('#divDashboardGrid1 tr').length;
+            var columnCount = $('#divDashboardGrid1 tr td').length;
+
+            if (columnCount > 1) {
+                $('#totalRows').text(rowCount);
+            }
+            else {
+                $('#totalRows').text(0);
+            }
+        }
+
+    </script>
+    <script src="~/Scripts/table2excel.js"></script>
+}
+
+<style>
+    #poAppTable {
+        /*width: 100%;*/
+        border-collapse: collapse;
+    }
+
+    #poAppThead th {
+        background-color: #127387;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
+    tbody td {
+        /* Table cell styles */
+    }
+
+    .tooltip-link {
+        position: relative;
+    }
+
+        .tooltip-link::after {
+            content: "SHOW PO";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 5px;
+            background-color: #333;
+            color: #fff;
+            border-radius: 3px;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+
+        .tooltip-link:hover::after {
+            opacity: 1;
+            visibility: visible;
+        }
+
+    .tooltip-link1 {
+        position: relative;
+    }
+
+        .tooltip-link1::after {
+            content: "SHOW DETAIL";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 5px;
+            background-color: #333;
+            color: #fff;
+            border-radius: 3px;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+
+        .tooltip-link1:hover::after {
+            opacity: 1;
+            visibility: visible;
+        }
+
+    .sort-icon {
+        padding: 5px;
+        margin: 5px;
+        vertical-align: top;
+    }
+
+    .ascCol {
+        font-size: 15px;
+        vertical-align: bottom;
+    }
+
+    .descCol {
+        font-size: 15px;
+        vertical-align: super;
+    }
+</style>

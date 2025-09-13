@@ -1,0 +1,139 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="04/17/2025 13:29:35" ReportInfo.Modified="04/28/2025 15:18:45" ReportInfo.CreatorVersion="2023.2.0.0">
+  <Dictionary>
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqGVEBw+bD1302HhodPOki0mybnpuZKVLkWXI4YSXvoVCXDdUbv1TZOS4Qk6JbQnwOqsV1FfDeqhde6q/moiAFtfohQmO3e4Gb7b+/ld3nPBQo6sx23SHRFK3KehEDTX4KMq8ePZaQouwXmhkRMZKKlunfPcQMpZCReFvP22bPcgCYNy937A9q0VdODPlLItD/pzu/6+hq2rcW6qPEwrJL+zGJDCNcJnQaTYBfN6gg6p8=">
+      <TableDataSource Name="Table" Alias="SPReportInterStoreTRansfer" DataType="System.Int32" Enabled="true" SelectCommand="exec SPReportInterStoreTRansfer @Flag =N'Detail', @InterStrEntryId=@entryparam,@InterStrYearcode=@yearparam">
+        <Column Name="EntryId" DataType="System.Int64"/>
+        <Column Name="Yearcode" DataType="System.Int64"/>
+        <Column Name="EntryDate" DataType="System.DateTime"/>
+        <Column Name="SlipNo" DataType="System.String"/>
+        <Column Name="SlipDate" DataType="System.DateTime"/>
+        <Column Name="IssueToStoreWC" DataType="System.String"/>
+        <Column Name="FromStoreName" DataType="System.String"/>
+        <Column Name="ToStorename" DataType="System.String"/>
+        <Column Name="ToWCName" DataType="System.String"/>
+        <Column Name="Partcode" DataType="System.String"/>
+        <Column Name="ItemName" DataType="System.String"/>
+        <Column Name="IssueQty" DataType="System.Double"/>
+        <Column Name="Unit" DataType="System.String"/>
+        <Column Name="AltQty" DataType="System.Double"/>
+        <Column Name="AltUnit" DataType="System.String"/>
+        <Column Name="TotalStockQty" DataType="System.Double"/>
+        <Column Name="Remark" DataType="System.String"/>
+        <Column Name="ActualEntryDate" DataType="System.DateTime"/>
+        <Column Name="LastUpdatetionDate" DataType="System.DateTime"/>
+        <Column Name="EnteredBy" DataType="System.String"/>
+        <Column Name="UpdateddBy" DataType="System.String"/>
+        <Column Name="TransferReason" DataType="System.String"/>
+        <Column Name="CC" DataType="System.String"/>
+        <Column Name="MAchineName" DataType="System.String"/>
+        <Column Name="ReasonOfTransfer" DataType="System.String"/>
+        <Column Name="CompName" DataType="System.String"/>
+        <CommandParameter Name="entryparam" Expression="entryparam"/>
+        <CommandParameter Name="yearparam" DataType="22" Expression="yearparam"/>
+      </TableDataSource>
+    </MsSqlDataConnection>
+    <Parameter Name="MyParameter" DataType="System.String" AsString=""/>
+    <Total Name="TotalQty" Expression="[SPReportInterStoreTRansfer.IssueQty]" Evaluator="Data1" PrintOn="ReportSummary1"/>
+    <Total Name="TotalStock" Expression="[SPReportInterStoreTRansfer.TotalStockQty]" Evaluator="Data1" PrintOn="ReportSummary1"/>
+  </Dictionary>
+  <ReportPage Name="Page1" Watermark.Font="Arial, 60pt">
+    <ReportTitleBand Name="ReportTitle1" Width="718.2" Height="179.55">
+      <TextObject Name="Text1" Left="198.45" Top="28.35" Width="292.95" Height="28.35" Text="InterStoreTransfer Report" HorzAlign="Center" Font="Arial, 14pt, style=Bold"/>
+      <LineObject Name="Line1" Left="18.9" Top="18.9" Width="680.4"/>
+      <LineObject Name="Line2" Left="18.9" Top="18.9" Height="160.65"/>
+      <LineObject Name="Line3" Left="699.3" Top="18.9" Height="160.65"/>
+      <TextObject Name="Text2" Left="37.8" Top="122.85" Width="56.7" Height="18.9" Text="Slip No:" Font="Arial, 10pt"/>
+      <TextObject Name="Text3" Left="94.5" Top="122.85" Width="160.65" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportInterStoreTRansfer.SlipNo]" Font="Arial, 10pt"/>
+      <TextObject Name="Text4" Left="481.95" Top="122.85" Width="75.6" Height="18.9" Text="Slip Date:" Font="Arial, 10pt"/>
+      <TextObject Name="Text5" Left="557.55" Top="122.85" Width="141.75" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportInterStoreTRansfer.SlipDate]" Format="Date" Format.Format="d" Font="Arial, 10pt"/>
+      <TextObject Name="Text6" Left="37.8" Top="151.2" Width="85.05" Height="18.9" Text="From Store:" Font="Arial, 10pt"/>
+      <TextObject Name="Text7" Left="113.4" Top="151.2" Width="141.75" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportInterStoreTRansfer.FromStoreName]" Font="Arial, 10pt"/>
+      <TextObject Name="Text8" Left="264.6" Top="151.2" Width="66.15" Height="18.9" Text="To Store:&#13;&#10;" Font="Arial, 10pt"/>
+      <TextObject Name="Text9" Left="330.75" Top="151.2" Width="141.75" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportInterStoreTRansfer.ToStorename]" Font="Arial, 10pt"/>
+      <LineObject Name="Line4" Left="18.9" Top="170.1" Width="680.4"/>
+      <TextObject Name="Text15" Left="-9450" Top="-9450" Width="94.5" Height="18.9" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text31" Left="264.6" Top="122.85" Width="75.6" Height="18.9" Text="EntryDate:" Font="Arial, 10pt"/>
+      <TextObject Name="Text32" Left="340.2" Top="122.85" Width="141.75" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportInterStoreTRansfer.EntryDate]" Format="Date" Format.Format="d" Font="Arial, 10pt"/>
+      <TextObject Name="Text41" Left="481.95" Top="151.2" Width="47.25" Height="18.9" Text="ToWc:" Font="Arial, 10pt"/>
+      <TextObject Name="Text42" Left="529.2" Top="151.2" Width="170.1" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportInterStoreTRansfer.ToWCName]" Font="Arial, 10pt"/>
+      <TextObject Name="Text43" Left="217.35" Top="75.6" Width="321.3" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportInterStoreTRansfer.CompName]" Font="Arial, 14pt, style=Bold"/>
+    </ReportTitleBand>
+    <PageHeaderBand Name="PageHeader1" Top="182.22" Width="718.2" Height="37.8">
+      <LineObject Name="Line5" Left="18.9" Top="37.8" Width="680.4"/>
+      <LineObject Name="Line6" Left="18.9" Height="37.8"/>
+      <LineObject Name="Line7" Left="699.3" Height="37.8"/>
+      <TextObject Name="Text10" Left="18.9" Width="28.35" Height="37.8" Text="SrNo" HorzAlign="Center" Font="Arial, 10pt"/>
+      <LineObject Name="Line8" Left="47.25" Height="37.8"/>
+      <TextObject Name="Text11" Left="47.25" Top="9.45" Width="170.1" Height="18.9" Text="Item Name" HorzAlign="Center" Font="Arial, 10pt"/>
+      <LineObject Name="Line9" Left="217.35" Height="37.8"/>
+      <TextObject Name="Text12" Left="217.35" Top="9.45" Width="94.5" Height="18.9" Text="PartCode" HorzAlign="Center" Font="Arial, 10pt"/>
+      <LineObject Name="Line10" Left="311.85" Height="37.8"/>
+      <TextObject Name="Text13" Left="311.85" Top="9.45" Width="56.7" Height="18.9" Text="Qty" HorzAlign="Center" Font="Arial, 10pt"/>
+      <LineObject Name="Line11" Left="368.55" Height="37.8"/>
+      <TextObject Name="Text14" Left="368.55" Top="9.45" Width="47.25" Height="18.9" Text="Unit" HorzAlign="Center" Font="Arial, 10pt"/>
+      <LineObject Name="Line12" Left="415.8" Height="37.8"/>
+      <TextObject Name="Text16" Left="415.8" Top="9.45" Width="85.05" Height="18.9" Text="Stock" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text17" Left="642.6" Top="9.45" Width="56.7" Height="18.9" Text="Remark" HorzAlign="Center" Font="Arial, 10pt"/>
+      <LineObject Name="Line13" Left="642.6" Height="37.8"/>
+      <LineObject Name="Line14" Left="500.85" Height="37.8"/>
+      <TextObject Name="Text18" Left="500.85" Top="9.45" Width="141.75" Height="18.9" Text="Reason Of Transfer  " HorzAlign="Center" Font="Arial, 10pt"/>
+    </PageHeaderBand>
+    <GroupHeaderBand Name="GroupHeader1" Top="222.68" Width="718.2" Height="47.25" Condition="[SPReportInterStoreTRansfer.ItemName]">
+      <LineObject Name="Line15" Left="18.9" Height="47.25"/>
+      <LineObject Name="Line16" Left="699.3" Height="47.25"/>
+      <TextObject Name="Text19" Left="18.9" Width="28.35" Height="47.25" CanGrow="true" CanBreak="false" Text="[Row#]" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text20" Left="47.25" Top="9.45" Width="170.1" Height="37.8" CanGrow="true" CanBreak="false" Text="[SPReportInterStoreTRansfer.ItemName]" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text21" Left="217.35" Top="9.45" Width="94.5" Height="28.35" CanGrow="true" CanBreak="false" Text="[SPReportInterStoreTRansfer.Partcode]" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text22" Left="311.85" Top="9.45" Width="56.7" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportInterStoreTRansfer.IssueQty]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 10pt" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text23" Left="368.55" Top="9.45" Width="47.25" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportInterStoreTRansfer.Unit]" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text24" Left="415.8" Top="9.45" Width="85.05" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportInterStoreTRansfer.TotalStockQty]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 10pt" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text25" Left="500.85" Top="9.45" Width="141.75" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportInterStoreTRansfer.ReasonOfTransfer]" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text26" Left="642.6" Top="9.45" Width="56.7" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportInterStoreTRansfer.Remark]" HorzAlign="Center" Font="Arial, 10pt"/>
+      <LineObject Name="Line18" Left="217.35" Height="47.25"/>
+      <LineObject Name="Line19" Left="311.85" Height="47.25"/>
+      <LineObject Name="Line20" Left="368.55" Height="47.25"/>
+      <LineObject Name="Line21" Left="415.8" Height="47.25"/>
+      <LineObject Name="Line22" Left="500.85" Height="47.25"/>
+      <LineObject Name="Line23" Left="642.6" Height="47.25"/>
+      <LineObject Name="Line17" Left="47.25" Height="47.25"/>
+      <LineObject Name="Line24" Left="18.9" Top="47.25" Width="680.4"/>
+      <DataBand Name="Data1" Top="272.6" Width="718.2" DataSource="Table"/>
+      <GroupFooterBand Name="GroupFooter1" Top="275.27" Width="718.2"/>
+    </GroupHeaderBand>
+    <ReportSummaryBand Name="ReportSummary1" Top="318.4" Width="718.2" Height="103.95">
+      <LineObject Name="Line35" Left="18.9" Height="85.05"/>
+      <LineObject Name="Line36" Left="699.3" Height="85.05"/>
+      <LineObject Name="Line37" Left="311.85" Height="18.9"/>
+      <LineObject Name="Line38" Left="368.55" Height="18.9"/>
+      <LineObject Name="Line39" Left="415.8" Height="18.9"/>
+      <LineObject Name="Line40" Left="500.85" Height="18.9"/>
+      <LineObject Name="Line41" Left="18.9" Top="18.9" Width="680.4"/>
+      <TextObject Name="Text27" Left="274.05" Width="37.8" Height="18.9" Text="Total:" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text28" Left="311.85" Width="56.7" Height="18.9" Text="[TotalQty]" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text29" Left="415.8" Width="85.05" Height="18.9" Text="[TotalStock]" Font="Arial, 8pt, style=Bold"/>
+      <LineObject Name="Line42" Left="18.9" Top="85.05" Width="680.4"/>
+      <TextObject Name="Text30" Left="349.65" Top="85.05" Width="47.25" Height="18.9" Text="[Page]" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text33" Left="28.35" Top="28.35" Width="85.05" Height="18.9" Text="Entered By:" Font="Arial, 10pt"/>
+      <TextObject Name="Text34" Left="113.4" Top="28.35" Width="151.2" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportInterStoreTRansfer.EnteredBy]" Font="Arial, 10pt"/>
+      <TextObject Name="Text35" Left="28.35" Top="56.7" Width="113.4" Height="18.9" Text="ActualEntyDate:" Font="Arial, 10pt"/>
+      <TextObject Name="Text36" Left="141.75" Top="56.7" Width="122.85" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportInterStoreTRansfer.ActualEntryDate]" Format="Date" Format.Format="d" Font="Arial, 10pt"/>
+      <TextObject Name="Text37" Left="396.9" Top="28.35" Width="85.05" Height="18.9" Text="Updated By:" Font="Arial, 10pt"/>
+      <TextObject Name="Text38" Left="481.95" Top="28.35" Width="217.35" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportInterStoreTRansfer.UpdateddBy]" Font="Arial, 10pt"/>
+      <TextObject Name="Text39" Left="396.9" Top="56.7" Width="103.95" Height="18.9" Text="Updation Date:" Font="Arial, 10pt"/>
+      <TextObject Name="Text40" Left="500.85" Top="56.7" Width="198.45" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportInterStoreTRansfer.LastUpdatetionDate]" Format="Date" Format.Format="d" Font="Arial, 10pt"/>
+      <ChildBand Name="Child1" Top="277.93" Width="718.2" Height="37.8" FillUnusedSpace="true">
+        <LineObject Name="Line25" Left="18.9" Height="37.8"/>
+        <LineObject Name="Line26" Left="699.3" Height="37.8"/>
+        <LineObject Name="Line27" Left="217.35" Height="37.8"/>
+        <LineObject Name="Line28" Left="311.85" Height="37.8"/>
+        <LineObject Name="Line29" Left="368.55" Height="37.8"/>
+        <LineObject Name="Line30" Left="415.8" Height="37.8"/>
+        <LineObject Name="Line31" Left="500.85" Height="37.8"/>
+        <LineObject Name="Line32" Left="642.6" Height="37.8"/>
+        <LineObject Name="Line33" Left="47.25" Height="37.8"/>
+        <LineObject Name="Line34" Left="18.9" Top="37.8" Width="680.4"/>
+      </ChildBand>
+    </ReportSummaryBand>
+  </ReportPage>
+</Report>

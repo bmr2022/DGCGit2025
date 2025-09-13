@@ -1,0 +1,647 @@
+﻿@model eTactWeb.DOM.Models.PartCodePartyWiseModel
+
+@{
+    ViewData["Title"] = "PartCode PartyWise";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+
+<div class="card bg-gradient mb-3 rounded shadow-lg">
+    <form asp-action="PartCodePartyWise" autocomplete="off" class="form-horizontal">
+       
+        <div class="card border-light bg-gradient rounded shadow-lg">
+            <div class="card-header card-headerBG text-light justify-content-center bg-gradient">
+                <h4>
+                    Part Code Party Wise
+                    <span class="d-flex float-end" style="margin-top:-2px;">
+                        <a asp-action="PartcodePartyWiseDashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                            <i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
+                            Dashboard
+                        </a>
+                        <div class="row justify-content-between g-2">
+                            <div class="col-auto">
+                                <input asp-for="ItemNameBack" type="hidden" value="@Model.ItemNameBack" />
+                                <input asp-for="PartCodeBack" type="hidden" value="@Model.PartCodeBack" />
+                                <input asp-for="VendCustPartCodeBack" type="hidden" value="@Model.VendCustPartCodeBack" />
+                                <input asp-for="VendCustitemnameBack" type="hidden" value="@Model.VendCustitemnameBack" />
+                                <input asp-for="AccountNameBack" type="hidden" value="@Model.AccountNameBack" />
+                                <input asp-for="SummaryDetailBack" type="hidden" value="@Model.SummaryDetailBack" />
+                                <input asp-for="GlobalSearchBack" type="hidden" value="@Model.GlobalSearchBack" />
+                                <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
+                                    <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                                    BACK
+                                </a>
+                            </div>
+                            @if (Model.Mode != "V")
+                            {
+                                <div class="col-auto">
+                                    @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                                    <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                        @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                        <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                        REFRESH1
+                                    </a>
+                                </div>
+                                @if (Model.Mode == "U" || Model.ItemDetailGrid != null)
+                                {
+                                    <div class="col-auto">
+                                        @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+                                        <button type="submit submitBTN" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton">
+                                            <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                            UPDATE
+                                        </button>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="col-auto">
+                                        @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
+                                        <button type="submit submitBTN" class="btn btn-primary btn-sm" id="submitBTN">
+                                            <i class="fa-solid fa-chevron-circle-right"></i>
+                                            SUBMIT
+                                        </button>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </span>
+                </h4>
+            </div>
+        </div>
+        <div class="accordion shadow-lg" id="BomMaster">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="H_RParameter">
+                    <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_RParameter" aria-expanded="true" aria-controls="B_RParameter">
+                        <strong style="text-transform:uppercase"><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Item Detail</strong>
+                    </button>
+                </h2>
+                <div id="B_RParameter" class="accordion-collapse collapse show pnl1 bg-gradient" aria-labelledby="H_RParameter">
+                    <div class="accordion-body">
+                        <div class="row g-3">
+                            <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                <label asp-for="ItemName" class="form-label">Item Name<span style="color:red;">*</span></label>
+                                <input type="hidden" asp-for="Mode" value="@Model.Mode"/>
+                                <input asp-for="ItemCode" type="hidden" />
+                                <select asp-for="ItemName" class="form-control">
+                                    <option value="">-Select-</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                <label asp-for="PartCode" class="form-label">Part Code<span style="color:red;">*</span></label>
+                                <select asp-for="PartCode" class="form-control">
+                                    <option value="">-Select-</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="divProductionEntryGrid">
+                <partial name="_PartCodePartyWise" />
+            </div>
+            <center><strong>Total MOQ:</strong><label id="totalMOQ"></label></center>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="O_Measurements">
+                    <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#BOT_Measurements" aria-expanded="true" aria-controls="BOT_Measurements">
+                        <strong style="text-transform:uppercase"><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Other Detail</strong>
+                    </button>
+                </h2>
+                <div id="BOT_Measurements" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="O_Measurements">
+                    <div class="accordion-body">
+                        <div class="row g-3">
+                            <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                <label asp-for="ActualEnteredByName" class="form-label">Created By</label>
+                                <input asp-for="ActualEnteredBy" type="hidden" class="form-control" />
+                                <input asp-for="ActualEnteredByName" class="form-control" readonly />
+                            </div>
+                            <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                <label asp-for="CreatedOn" class="form-label">Created On</label>
+                                <input asp-for="CreatedOn" class="form-control" readonly />
+                            </div>
+                            <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                <label asp-for="EntryByMachineName" class="form-label">Entry By Machine</label>
+                                <input asp-for="EntryByMachineName" value="@Environment.MachineName" class="form-control" readonly />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer p-3">
+            <h4>
+                <span class="d-flex float-end" style="margin-top:-2px;">
+                </span>
+            </h4>
+        </div>
+    </form>
+</div>
+
+@section Scripts
+{
+    <script>
+
+        $('.submitBTN').click(function (e) {
+             
+            e.preventDefault();
+            if (!ValidatePartCode_Grid()) return;
+            $('form').submit();
+        })
+
+        function ValidatePartCode_Grid() {
+             
+            var Err = 0;
+            if ($('#ItemName').prop('selectedIndex') == 0) {
+                AddErrorCls('ItemName');
+                $.notify("ItemName Required", "error");
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('ItemName');
+            }
+            if ($('#PartCode').prop('selectedIndex') == 0) {
+                AddErrorCls('PartCode');
+                $.notify("PartCode Required", "error");
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('PartCode');
+            }
+
+            if ($('#divBomGrid tr td').length <= 1) {
+                $.notify("Childgrid Should have atleast 1 item", "error");
+                return false;
+            }
+            Err == 1 ? ShowErrorFldwithAddtoGrid('H_SAGrid') : HideErrorFldwithAddtoGrid('H_SAGrid');
+            if (Err == 1) return false;
+            return true;
+        }
+
+        $(document).ready(function () {
+            $('#B_SAGrid').addClass('show');//open accordion on ready
+            $('#ItemName').select2();
+            $('#PartCode').select2();
+            $('#AccountName').select2();
+            FillPartCode();
+            FillItems();
+            FillAccountName();
+            totalMOQ();
+            $('#CreatedOn').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+        });
+
+        $(document).on('select2:select', '#AccountName', function (e) {
+            $('#AccountCode').val($('#AccountName').val())
+        });
+
+        $(document).on('select2:select', '#ItemName,#PartCode', function (e) {
+
+            var cntId = e.target.id;
+            if (cntId == 'ItemName') {
+                ItemNameChange(cntId);
+            }
+            else {
+                PartCodeChange(cntId);
+            }
+            $('#ItemCode').val($('#ItemName').val())
+            GetListForUpdate();
+        });
+
+        function ItemNameChange(ID) {
+            SetPartCodeItemName(ID);
+        }
+
+        function PartCodeChange(ID) {
+
+            $.when(SetPartCodeItemName(ID)).done(function () {
+            });
+        }
+
+        function SetPartCodeItemName(ID) {
+            if (!ID) return;
+            else {
+                var v = $('#' + ID).select2('val');
+                if (ID == "PartCode") {
+                    $("#ItemName").val(v).trigger("change");
+                }
+
+                if (ID == "ItemName") {
+                    $("#PartCode").val(v).trigger("change");
+                }
+            }
+        }
+
+        $('.BusinessPercentage').change(function () {
+            if ($('#BusinessPercentage').val() > 100) {
+                AddErrorCls('BusinessPercentage');
+                $.notify("BusinessPercentage is not greater than 100", "error");
+                Err = 1;
+                return false;
+            }
+        })
+
+        $(".MOQ").on("keydown", function (event) {
+            if (event.key.toLowerCase() === 'e' || event.key === '-') {
+                event.preventDefault();
+            }
+        });
+        $("#LeadTimeInDays").on("keydown", function (event) {
+            if (event.key.toLowerCase() === 'e' || event.key === '-') {
+                event.preventDefault();
+            }
+        });
+        $(".ItemRate").on("keydown", function (event) {
+            if (event.key.toLowerCase() === 'e' || event.key === '-') {
+                event.preventDefault();
+            }
+        });
+        $(".BusinessPercentage").on("keydown", function (event) {
+            if (event.key.toLowerCase() === 'e' || event.key === '-') {
+                event.preventDefault();
+            }
+        });
+
+        function FillAccountName() {
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillAccountName")",
+                dataType: "json",
+                async: false,
+                data: {},
+                success: function (result, status, error) {
+                    if (result != null) {
+
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusText == 'Success') {
+                            $('#AccountName').empty();
+                            $('#AccountName').append('<option>-Select-</option>');
+                            $.each(obj.Result.Table, function (index, val) {
+
+                                $('#AccountName').append('<option value="' + val.AccountCode + '">' + val.AccountName + '</option>');
+                            });
+                        }
+                    }
+                }
+            });
+        }
+
+        function GetListForUpdate() {
+              
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetListForUpdate")",
+                data: { "ItemCode": $('#ItemName').val() },
+                async: false,
+                success: function (result, status, error) {
+                     
+                    if (result != null) {
+                        if (result.redirectUrl) {
+                            $('#Mode').val('U');
+                            window.location.href = result.redirectUrl;
+                        }
+                         
+                        $('#divBomGrid').html(result);
+                        if ($('#divBomGrid  tr').length <= 1) {
+                            $('#submitBTN').show();
+                            $('#UpdateButton').hide();
+                        }
+                        else {
+                            
+                            $('#submitBTN').hide();
+                            $('#UpdateButton').show();
+                        }
+                    }
+                }
+            });
+        }
+
+        function FillItems() {
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillItems")",
+                dataType: "json",
+                async: false,
+                data: {},
+                success: function (result, status, error) {
+                    if (result != null) {
+
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusText == 'Success') {
+                            $('#ItemName').empty();
+                            $('#ItemName').append('<option>-Select-</option>');
+                            $.each(obj.Result.Table, function (index, val) {
+
+                                $('#ItemName').append('<option value="' + val.ItemCode + '">' + val.ItemName + '</option>');
+                            });
+
+                            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                                var ItemCode = "@Model.ItemCode";
+                                $('#ItemName').val(ItemCode).trigger("change");
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        function FillPartCode() {
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillPartCode")",
+                dataType: "json",
+                async: false,
+                data: {},
+                success: function (result, status, error) {
+                    if (result != null) {
+
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusText == 'Success') {
+                            $('#PartCode').empty();
+                            $('#PartCode').append('<option>-Select-</option>');
+                            $.each(obj.Result.Table, function (index, val) {
+
+                                $('#PartCode').append('<option value="' + val.ItemCode + '">' + val.PartCode + '</option>');
+                            });
+                            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                                var ItemCode = "@Model.ItemCode";
+                                $('#PartCode').val(ItemCode).trigger("change");
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function ClearGrid() {
+            $('#AccountName').prop('selectedIndex', 0).trigger("change"),
+                $('#VendCustPartCode').val(''),
+                $('#VendCustitemname').val(''),
+                $('.MOQ').val(0),
+                $('#LeadTimeInDays').val(0),
+                $('.ItemRate').val(0),
+                $('.BusinessPercentage').val(0)
+        }
+
+        function Validate_PartCodePartyWiseGrid() {
+            var Err = 0;
+
+            if ($('.MOQ').prop('selectedIndex') > 100) {
+                AddErrorCls('MOQ');
+                $.notify("Please Enter Valid MOQ", "error");
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('MOQ');
+            }
+
+
+            if ($('#AccountName').prop('selectedIndex') == 0) {
+                AddErrorCls('AccountName');
+                $.notify("AccountName Required", "error");
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('AccountName');
+            }
+            if ($('#VendCustPartCode').val() == '' && $('#VendCustPartCode').val() == '') {
+                AddErrorCls('VendCustPartCode');
+                $.notify("Vend CusPartCode or Vend CustItemName Required", "error");
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('VendCustPartCode');
+            }
+            if ($('.BusinessPercentage').val() > 100) {
+                AddErrorCls('BusinessPercentage');
+                $.notify("BusinessPercentage is not greater than 100", "error");
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('BusinessPercentage');
+            }
+            Err == 1 ? ShowErrorFldwithAddtoGrid('H_SAGrid') : HideErrorFldwithAddtoGrid('H_SAGrid');
+            if (Err == 1) return false;
+            return true;
+        }
+
+
+        $('#decimalInput').on('blur', function () {
+             
+            let value = parseFloat($(this).val());
+            if (!isNaN(value)) {
+                $(this).val(value.toFixed(2));  // Set to 2 decimal places
+            }
+        });
+
+
+        function totalMOQ()
+
+        {
+            const rowCount = $('#divProductionEntryGrid tr').length;
+            var total = 0;
+            for (let i = 1; i <= rowCount; i++) {
+                
+                const amount = parseFloat($('#totalMOQ-' + i).text());
+                if (!isNaN(amount)) {
+                    total += amount;
+                }
+               
+            }
+            $('#totalMOQ').text(total.toFixed(2));
+        }
+        function GridButton(event) {
+            event.preventDefault();
+            if ($('.MOQ').val() > 100) {
+                $.notify("Please Enter Valid MOQ", "error");
+                return false;
+            }
+            const rowCount = $('#divProductionEntryGrid tr').length;
+
+            var MOQ = $('.MOQ').val();
+            var TotalMOQ = $('#totalMOQ').text();
+
+            if (parseFloat(MOQ) + parseFloat(TotalMOQ) >100) {
+                $.notify(" Enter Valid MOQ", "error");
+                return false;
+            }
+           
+            if (!Validate_PartCodePartyWiseGrid()) return;
+            var ItemData = {
+                "AccountName": $('#AccountName').find(":selected").text(),
+                "AccountCode": $('#AccountName').val(),
+                "VendCustitemname": $('#VendCustitemname').val(),
+                "VendCustPartCode": $('#VendCustPartCode').val(),
+                "MOQ": $('.MOQ').val(),
+                "LeadTimeInDays": $('#LeadTimeInDays').val(),
+                "ItemRate": $('.ItemRate').val(),
+                "BusinessPercentage": $('.BusinessPercentage').val(),
+                "Mode":$('#Mode').val()
+            }
+           
+
+            $.ajax({
+                url: "@Url.Action("AddPartCodePartWiseGrid")",
+                type: "POST",
+                data: ItemData,
+                success: function (data, status, xhr) {
+
+                    if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
+                        $.notify('Duplicate Item Not Allowed.', "info");
+                        $('.GridButton').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
+                    }
+                    else if (xhr.status == 205 && (xhr.responseText.indexOf('Reset') || xhr.statusText.indexOf('Reset'))) {
+                        $.notify('Adding Item Not Allowed, Please Clear Tax Detail...!!!', "info");
+                    }
+                    else {
+                        $('#divBomGrid').html(data);
+                        ClearGrid();
+                        totalMOQ();
+                        editingNow = false;
+                    }
+                },
+                error: function (result, status, xhr) {
+                    $.notify(result.responseText, "error");
+                },
+                failure: function (result, status, xhr) {
+                    alert(response.responseText);
+                },
+                complete: function () {
+
+                    $('.Schedule').fadeIn();
+                }
+            }).done(function () {
+
+            }).fail(function () {
+                alert("error");;
+            }).always(function () {
+
+            });
+        }
+
+        isEditOperationAllowed = "false";
+        function DeleteItemFromGrid(SeqNo,AccountCode) {
+             
+            return new Promise((resolve, reject) => {
+                $.ajax({
+                    url: '@Url.Action("DeleteItemFromGrid")',
+                    type: "POST",
+                    data: { "SeqNo": SeqNo, "Mode": $('#Mode').val(),"AccountCode" :AccountCode },
+                    success: function (data) {
+                         
+                        $('#divBomGrid').html(data);
+                        $.notify("Item Deleted from Grid", "info");
+                        isEditOperationAllowed = "true";
+                        resolve();
+                        totalMOQ();
+                    },
+                    error: function (response) {
+                        reject(response.responseText);
+                    }
+                });
+            });
+        }
+
+        var editingNow = false;
+        function EditItemRow(SeqNo,AccountCode) {
+             
+            if (editingNow == false) {
+
+                return new Promise((resolve, reject) => {
+                    $.ajax({
+                        url: '@Url.Action("EditItemRow")',
+                        type: "POST",
+                        data: { SeqNo: SeqNo, Mode: $('#Mode').val(), AccountCode: AccountCode },
+                    })
+                        .done(function (data, status, xhr) {
+                            editingNow = true;
+                            var obj = $.parseJSON(data);
+                            DeleteItemFromGrid(SeqNo)
+                                .then(() => {
+                                    $('#AccountCode').val(obj[0].AccountCode),
+                                    $('#AccountName').val(obj[0].AccountCode).trigger('change');
+                                    $('#VendCustPartCode').val(obj[0].VendCustPartCode);
+                                    $('#VendCustitemname').val(obj[0].VendCustitemname);
+                                    $('.MOQ').val(obj[0].MOQ.toFixed(2))
+                                    $('#LeadTimeInDays').val(obj[0].LeadTimeInDays);
+                                    $('.ItemRate').val(obj[0].ItemRate.toFixed(2));
+                                    $('.BusinessPercentage').val(obj[0].BusinessPercentage.toFixed(2));
+                                })
+                                .catch((error) => {
+                                    reject(error);
+                                });
+
+                        })
+                        .fail(function (response) {
+                            reject(response.responseText);
+                        });
+                });
+            }
+            else {
+                $.notify("Cannot edit as one item is already on above edit grid", "error");
+            }
+        }
+
+
+        $(document).on("click", ".sortCol", function () {
+            ;
+            var $column = $(this).parent().closest("th");
+            var colno = $(this).data('columnno');
+            var currentOrder = $(this).data('sortorder');
+
+            $('.sortCol').css('color', 'white');
+            if (currentOrder === 'asc') {
+                sortTable(colno, false);
+                $(this).data('sortorder', 'desc');
+                $(this).css('color', 'yellow'); // Visual indication of descending order
+                //$(this).css('font-size', 'larger'); // Visual indication of descending order
+                $(this).find('i:first').removeClass('fa-arrow-up');
+                $(this).find('i:first').addClass('fa-arrow-down');
+            } else {
+                sortTable(colno, true);
+                $(this).data('sortorder', 'asc');
+                $(this).css('color', 'yellow');
+                // $(this).css('font-size', 'larger'); // Visual indication of ascending order
+                $(this).find('i:first').removeClass('fa-arrow-down');
+                $(this).find('i:first').addClass('fa-arrow-up');
+            }
+        });
+
+        $(document).on("click", "th[data-columnno]", function () {
+            currentSearchColumn = $(this).data('columnno');
+            $("#search-box").val('').trigger('keyup'); // Reset search box and trigger the search
+        });
+
+        function DeleteRow(i) {
+
+            var indexToRemove = i - 1;
+            $('#SAGridRow-' + i).remove();
+            $('#ReportTable tbody tr').each(function (index) {
+                $(this).attr('id', 'SAGridRow-' + (index + 1));
+
+
+                $(this).find('td:first-child a:first-child').each(function (tdIndex) {
+                    $(this).attr('id', (index + 1));
+                });
+
+                $(this).find('td[id^="amount-"]').each(function (tdIndex) {
+                    $(this).attr('id', 'amount-' + (index + 1));
+                });
+
+            });
+        }
+
+        function PressBack() {
+             
+            sessionStorage.setItem('ItemNameBack', $('#ItemNameBack').val());
+            sessionStorage.setItem('PartCodeBack', $('#PartCodeBack').val());
+            sessionStorage.setItem('VendCustPartCodeBack', $('#VendCustPartCodeBack').val());
+            sessionStorage.setItem('VendCustitemnameBack', $('#VendCustitemnameBack').val());
+            sessionStorage.setItem('AccountNameBack', $('#AccountNameBack').val());
+            sessionStorage.setItem('SummaryDetailBack', $('#SummaryDetailBack').val());
+            sessionStorage.setItem('GlobalSearchBack', $('#GlobalSearchBack').val());
+
+            window.history.back();
+        }
+
+    </script>
+    <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
+}

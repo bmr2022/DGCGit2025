@@ -68,6 +68,13 @@
 		<div class="card-body bg-light">
 			<div class="accordion shadow-lg" id="accordionAccountMaster">
 				<div class="accordion-item">
+					@if (TempData["Message"] != null)
+					{
+						<div class="alert alert-info">
+							@TempData["Message"]
+						</div>
+					}
+
 					<h2 class="accordion-header" id="B_ItemCategoryDetail">
 						<button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_AccountDetail" aria-expanded="true" aria-controls="B_AccountDetail">
 							<strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Vendor User</strong>
@@ -324,7 +331,9 @@
 			debugger
 				$("form").validate({
 					rules: {
-						UserEntryId: { required: true }
+						UserEntryId: { required: true },
+						AccountCode: {required: true},
+						UserId: {required: true}
 					}
 				});
 
@@ -407,6 +416,28 @@
 						$('#UpdatedByName').val(obj.Result[0].UpdatedByName);
 						$('#LastUpdationDate').val(obj.Result[0].LastUpdationdate);
 						// $('#UserEntryId').val(obj.Result[0].UserEntryId || 0);
+					}else{
+						FillEntryID();
+						$('#Mode').val("");
+						$('#VendorEmpName').val("");
+						$('#UserId').val("");
+						$('#Password').val("");
+						$('#ConfirmPassword').val("");
+						$('#Active').val();
+						$('#AllowToDelete').val("Y");
+						$('#AllowToUpdate').val("Y");
+						$('#RightsForReport').val("Y");
+						$('#RightsForPurchaseModule').val("Y");
+						$('#RightsForQCModule').val("Y");
+						$('#RightsForAccountModule').val("Y");
+						$('#AdminUser').val("Y");
+						$('#SaleBillPrefix').val("");
+						// $('#ActualEntryDate').val(obj.Result[0].ActualEntryDate);
+						$('#BranchName').val(obj.Result[0].BranchName);
+						$('#EntryByMachineName').val(obj.Result[0].EntryByMachineName);
+						$('#ActualEntryByName').val(obj.Result[0].ActualEntryBYName);
+						$('#UpdatedByName').val(obj.Result[0].UpdatedByName);
+						$('#LastUpdationDate').val(obj.Result[0].LastUpdationdate);
 					}
 				},
 				error: function (xhr, status, error) {
@@ -442,9 +473,14 @@
 	     $('form').submit(function (e) {
 			e.preventDefault();
 			debugger
-			CheckUserDuplication().done(function (isDuplicate) {
-				if (isDuplicate) {
-					$.notify("Please use another userId", "error");
+			 if($('#AccountCode').val() == ""){
+					$.notify("Please enter vendor..!", "error");
+				}
+				else if($('#UserId').val() == ""){
+					$.notify("Please enter userId..!", "error");
+				}
+				else if($('#VendorEmpName').val() == ""){
+					$.notify("Please enter vendor empName..!", "error");
 				}
 				else if($('#Password').val() != $('#ConfirmPassword').val()){
 					$.notify("Confirm password must be match with Password..!", "error");
@@ -452,11 +488,38 @@
 				else {
 					e.target.submit();
 				}
-			});
-
-			// return false;
-			e.target.submit();
+		
+			return false;
+			// e.target.submit();
 		});
+
+		//    $('form').submit(function (e) {
+		// 	e.preventDefault();
+		// 	debugger
+		// 	CheckUserDuplication().done(function (isDuplicate) {
+		// 		if (isDuplicate) {
+		// 			$.notify("Please use another userId", "error");
+		// 		}
+		// 		else if($('#AccountCode').val() != ""){
+		// 			$.notify("Please enter vendor..!", "error");
+		// 		}
+		// 		else if($('#UserId').val() != ""){
+		// 			$.notify("Please enter userId..!", "error");
+		// 		}
+		// 		else if($('#VendorEmpName').val() != ""){
+		// 			$.notify("Please enter vendor empName..!", "error");
+		// 		}
+		// 		else if($('#Password').val() != $('#ConfirmPassword').val()){
+		// 			$.notify("Confirm password must be match with Password..!", "error");
+		// 		}
+		// 		else {
+		// 			e.target.submit();
+		// 		}
+		// 	});
+
+		// 	// return false;
+		// 	e.target.submit();
+		// });
 
 		function CheckUserDuplication() {
 			return $.ajax({
@@ -485,7 +548,7 @@
 					isShowAll : isShowAll
 				},
 				// async: false,
-				success: function (data, status, xhr) {
+				success: function (data, status, xhr) {	
 					debugger
 					var obj = $.parseJSON(data);
 					if (obj.StatusCode == 200 && obj.StatusText === 'Success') {

@@ -63,6 +63,7 @@ namespace eTactWeb.Controllers
             var model = new OrderAmendHistoryModel();
             model = await _IOrderAmendHistory.GetOrderAmendHistoryData( FromDate,  ToDate,  ReportType,  AccountCode,  PartCode,  ItemName,  PONO,  ItemCode, HistoryReportMode);
             model.ReportMode = ReportType;
+            model.HistoryReportMode = HistoryReportMode;
             var modelList = model?.OrderAmendHistoryGrid ?? new List<OrderAmendHistoryModel>();
 
 

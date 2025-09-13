@@ -1,0 +1,274 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="01/19/2025 14:16:13" ReportInfo.Modified="06/02/2025 13:55:43" ReportInfo.CreatorVersion="2023.2.0.0">
+  <ScriptText>using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Windows.Forms;
+using System.Drawing;
+using System.Data;
+using FastReport;
+using FastReport.Data;
+using FastReport.Dialog;
+using FastReport.Barcode;
+using FastReport.Table;
+using FastReport.Utils;
+
+namespace FastReport
+{
+  public class ReportScript
+  {
+     
+    private void Text63_BeforePrint(object sender, EventArgs e)
+    {  decimal  rate = ToDecimal(Report.GetColumnValue(&quot;sPreportIssueChallan.Rate&quot;));
+      decimal  qty = ToDecimal(Report.GetColumnValue(&quot;sPreportIssueChallan.Qty&quot;));
+          Text63.Text = (rate * qty).ToString();
+         
+    }
+
+    private void Text97_BeforePrint(object sender, EventArgs e)
+    {
+      string RGPNRGPval = (string)Report.GetColumnValue(&quot;sPreportIssueChallan.RGPNRGP&quot;);
+       
+      if (RGPNRGPval == &quot;NRGP&quot;)
+      {
+        Text97.Text = &quot;DELIVERY CHALLAN (NRGP)&quot;;
+      }
+     
+      else
+      {
+        // Optional: Handle cases where none of the conditions are met
+        Text97.Text = &quot;DELIVERY CHALLAN (RGP)&quot;;
+      }
+       
+    }
+    public string GetAmountWithOnly()
+    {
+      return Report.GetColumnValue(&quot;sPreportIssueChallan.NetAmtInWord&quot;).ToString() + &quot; Only&quot;;
+    }
+    
+  }
+}
+</ScriptText>
+  <Dictionary>
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlq/Xi58iMWRzenqVh/7Z8DiO/boU6EKdC9xXO1V/QSBqZGnf06M63o5oBigJ/GPyMV1YByAr12aLrIH5UFO8wDScRUn+cpMzm/1IApjxiePvgsGAFLRzDZf6eq+OeJcPSz7gkYEiSIb6M44YUqBnYcdR6FlyUvRAzU+/E+/PrRa7niZyyL+gyz9ih/Vyn/h3FhrUkhf3TIxaqanly8J51QOw==">
+      <TableDataSource Name="Table1" Alias="sPreportIssueChallan" DataType="System.Int32" Enabled="true" SelectCommand="exec SPreportIssueChallan @EntryId =@entryparam,@YearCode = @yearparam">
+        <Column Name="ROWNO" DataType="System.Int64"/>
+        <Column Name="Account_Name" DataType="System.String"/>
+        <Column Name="PartCode" DataType="System.String"/>
+        <Column Name="Item_Name" DataType="System.String"/>
+        <Column Name="EntryId" DataType="System.Int64"/>
+        <Column Name="YearCode" DataType="System.Int64"/>
+        <Column Name="EntryDate" DataType="System.DateTime"/>
+        <Column Name="EntryTime" DataType="System.DateTime"/>
+        <Column Name="RGPNRGP" DataType="System.String"/>
+        <Column Name="ChallanNo" DataType="System.String"/>
+        <Column Name="ChallanDate" DataType="System.DateTime"/>
+        <Column Name="ChallanType" DataType="System.String"/>
+        <Column Name="AccountCode" DataType="System.Int64"/>
+        <Column Name="DeliveryAddress" DataType="System.String"/>
+        <Column Name="VendorStateCode" DataType="System.String"/>
+        <Column Name="GSTType" DataType="System.String"/>
+        <Column Name="TotalAmount" DataType="System.Double"/>
+        <Column Name="NetAmount" DataType="System.Double"/>
+        <Column Name="TotalGSTAmt" DataType="System.Int64"/>
+        <Column Name="FromDepartId" DataType="System.Int64"/>
+        <Column Name="VehicleNo" DataType="System.String"/>
+        <Column Name="Remark" DataType="System.String"/>
+        <Column Name="TransportMode" DataType="System.String"/>
+        <Column Name="RemovalTime" DataType="System.DateTime"/>
+        <Column Name="EmpId" DataType="System.Int64"/>
+        <Column Name="Transporter" DataType="System.String"/>
+        <Column Name="Distance" DataType="System.Double"/>
+        <Column Name="EwayBillNo" DataType="System.String"/>
+        <Column Name="SeqNo" DataType="System.Int64"/>
+        <Column Name="ItemCode" DataType="System.Int64"/>
+        <Column Name="HSNNO" DataType="System.String"/>
+        <Column Name="unit" DataType="System.String"/>
+        <Column Name="Qty" DataType="System.Double"/>
+        <Column Name="AltQty" DataType="System.Double"/>
+        <Column Name="AltUnit" DataType="System.String"/>
+        <Column Name="Rate" DataType="System.Double"/>
+        <Column Name="discper" DataType="System.Double"/>
+        <Column Name="disamt" DataType="System.Double"/>
+        <Column Name="Amount" DataType="System.Double"/>
+        <Column Name="TAXNAME" DataType="System.String"/>
+        <Column Name="TaxPer" DataType="System.Double"/>
+        <Column Name="TAxAmount" DataType="System.Double"/>
+        <Column Name="TAXEXP" DataType="System.String"/>
+        <Column Name="TaxonExp" DataType="System.Double"/>
+        <Column Name="CGSTPER" DataType="System.Double"/>
+        <Column Name="CGSTAMT" DataType="System.Double"/>
+        <Column Name="SGSTPER" DataType="System.Double"/>
+        <Column Name="SGSTAMT" DataType="System.Double"/>
+        <Column Name="IGSTPER" DataType="System.Double"/>
+        <Column Name="IGSTAMT" DataType="System.Double"/>
+        <Column Name="BasicinInWord" DataType="System.String"/>
+        <Column Name="NetAmtInWord" DataType="System.String"/>
+        <Column Name="GSTInWord" DataType="System.String"/>
+        <Column Name="CompName" DataType="System.String"/>
+        <Column Name="CompAdd" DataType="System.String"/>
+        <Column Name="CompPinCode" DataType="System.String"/>
+        <Column Name="CompPhone" DataType="System.String"/>
+        <Column Name="CompStateCode" DataType="System.String"/>
+        <Column Name="CompStateName" DataType="System.String"/>
+        <Column Name="CompPANNo" DataType="System.String"/>
+        <Column Name="CompGSTNO" DataType="System.String"/>
+        <Column Name="CGSTTaxName" DataType="System.String"/>
+        <Column Name="SGSTTaxName" DataType="System.String"/>
+        <Column Name="IGSTTaxName" DataType="System.String"/>
+        <Column Name="TotalGSTAmtaaa" DataType="System.Double"/>
+        <Column Name="IssByEmpName" DataType="System.String"/>
+        <Column Name="gstno" DataType="System.String"/>
+        <Column Name="Purpose" DataType="System.String"/>
+        <Column Name="Process" DataType="System.String"/>
+        <Column Name="batchno" DataType="System.String"/>
+        <CommandParameter Name="entryparam" Expression="entryparam"/>
+        <CommandParameter Name="yearparam" Expression="yearparam"/>
+      </TableDataSource>
+    </MsSqlDataConnection>
+    <Parameter Name="MyParameter" DataType="System.String" AsString=""/>
+    <Total Name="Total" Expression="[sPreportIssueChallan.Qty]" Evaluator="Data1" PrintOn="ReportSummary1" ResetAfterPrint="false"/>
+  </Dictionary>
+  <ReportPage Name="Page1" Watermark.Font="Arial, 60pt">
+    <ReportTitleBand Name="ReportTitle1" Width="718.2" Height="302.4">
+      <TextObject Name="Text1" Left="9.45" Top="9.45" Width="699.3" Height="28.35" Text="[sPreportIssueChallan.CompName]" HorzAlign="Center" Font="Arial, 16pt, style=Bold"/>
+      <LineObject Name="Line1" Left="9.45" Top="9.45" Width="699.3"/>
+      <LineObject Name="Line2" Left="9.45" Top="9.45" Height="292.95"/>
+      <LineObject Name="Line3" Left="708.75" Top="9.45" Height="292.95"/>
+      <TextObject Name="Text7" Left="9.45" Top="75.6" Width="699.3" Height="28.35" Text="FOR MOVEMENTS OF INPUTS OR PARTIALY PROCESSED GOODS UNDER RULE 57AC(5) FROM ONE FACTORY TO ANOTHER FACTORY FOR FURTHER PROCESSING/ OPERATION" HorzAlign="Center" Font="Arial, 7pt"/>
+      <TextObject Name="Text9" Left="406.35" Top="132.3" Width="302.4" Height="18.9" CanGrow="true" CanBreak="false" Text="[sPreportIssueChallan.Account_Name]" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text10" Left="18.9" Top="151.2" Width="378" Height="28.35" CanGrow="true" CanBreak="false" Text="[sPreportIssueChallan.CompAdd]" Font="Arial, 10pt"/>
+      <TextObject Name="Text11" Left="18.9" Top="245.7" Width="113.4" Height="18.9" Text="GATE PASS No:" Font="Arial, 9pt, style=Bold"/>
+      <TextObject Name="Text12" Left="406.35" Top="255.15" Width="94.5" Height="18.9" Text="VEHICLE No :" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text14" Left="18.9" Top="264.6" Width="141.75" Height="18.9" Text="GATE PASS  DATE:" Font="Arial, 9pt, style=Bold"/>
+      <TextObject Name="Text17" Left="406.35" Top="236.25" Width="103.95" Height="18.9" Text="CHALLAN TYPE:" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text18" Left="406.35" Top="274.05" Width="122.85" Height="18.9" Text="TRANSPORT MODE:" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text21" Left="519.75" Top="236.25" Width="179.55" Height="18.9" Text="[sPreportIssueChallan.ChallanType]" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text55" Left="160.65" Top="264.6" Width="207.9" Height="18.9" Text="[sPreportIssueChallan.ChallanDate]" Format="Custom" Format.Format="dd/MMM/yyyy" Font="Arial, 10pt, style=Bold"/>
+      <LineObject Name="Line40" Left="9.45" Top="103.95" Width="699.3"/>
+      <LineObject Name="Line41" Left="9.45" Top="66.15" Width="699.3"/>
+      <LineObject Name="Line42" Left="396.9" Top="103.95" Height="198.45"/>
+      <LineObject Name="Line43" Left="9.45" Top="236.25" Width="699.3"/>
+      <TextObject Name="Text81" Left="18.9" Top="132.3" Width="359.1" Height="28.35" Text="[sPreportIssueChallan.CompName]" Font="Arial, 12pt, style=Bold"/>
+      <TextObject Name="Text82" Left="18.9" Top="179.55" Width="122.85" Height="18.9" Text="[sPreportIssueChallan.CompStateName]" Font="Arial, 10pt"/>
+      <TextObject Name="Text83" Left="207.9" Top="179.55" Width="94.5" Height="18.9" Text="[sPreportIssueChallan.CompPinCode]" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text84" Left="141.75" Top="179.55" Width="75.6" Height="18.9" Text="PIN CODE" HorzAlign="Center" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text85" Left="406.35" Top="217.35" Width="103.95" Height="18.9" Text="Place Of Supply :" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text87" Left="113.4" Top="217.35" Width="189" Height="18.9" Text="[sPreportIssueChallan.CompGSTNO]" Font="Arial, 8pt"/>
+      <TextObject Name="Text88" Left="18.9" Top="217.35" Width="66.15" Height="18.9" Text="GSTIN NO." Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text89" Left="18.9" Top="198.45" Width="75.6" Height="18.9" Text="PHONE NO." Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text90" Left="113.4" Top="198.45" Width="198.45" Height="18.9" Text="[sPreportIssueChallan.CompPhone]" Font="Arial, 8pt"/>
+      <TextObject Name="Text91" Left="18.9" Top="113.4" Width="226.8" Height="18.9" Text="Name &amp; Address of the supplier" Font="Arial, 9pt, style=Bold"/>
+      <TextObject Name="Text92" Left="406.35" Top="113.4" Width="226.8" Height="18.9" Text="Name &amp; Address of the Consignee" Font="Arial, 9pt, style=Bold"/>
+      <TextObject Name="Text93" Left="406.35" Top="151.2" Width="302.4" Height="37.8" Text="[sPreportIssueChallan.DeliveryAddress]" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text96" Left="529.2" Top="264.6" Width="170.1" Height="28.35" Text="[sPreportIssueChallan.TransportMode]" Font="Arial, 9pt, style=Bold"/>
+      <TextObject Name="Text54" Left="160.65" Top="245.7" Width="207.9" Height="18.9" Text="[sPreportIssueChallan.ChallanNo]" Font="Arial, 9pt, style=Bold"/>
+      <TextObject Name="Text97" Left="9.45" Top="47.25" Width="699.3" Height="18.9" BeforePrintEvent="Text97_BeforePrint" HorzAlign="Center" Font="Arial, 12pt, style=Bold"/>
+      <TextObject Name="Text101" Left="406.35" Top="198.45" Width="66.15" Height="18.9" Text="GSTIN NO." Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text102" Left="519.75" Top="198.45" Width="122.85" Height="18.9" Text="[sPreportIssueChallan.gstno]" Font="Arial, 10pt"/>
+    </ReportTitleBand>
+    <PageHeaderBand Name="PageHeader1" Top="306.36" Width="718.2" Height="18.9">
+      <LineObject Name="Line5" Left="9.45" Top="18.9" Width="699.3"/>
+      <LineObject Name="Line6" Left="9.45" Height="18.9"/>
+      <LineObject Name="Line7" Left="708.75" Height="18.9"/>
+      <LineObject Name="Line8" Left="37.8" Height="18.9"/>
+      <LineObject Name="Line9" Left="137.28" Top="-0.67" Height="18.9"/>
+      <LineObject Name="Line10" Left="349.65" Height="18.9"/>
+      <LineObject Name="Line11" Left="408.82" Top="-0.67" Height="18.9"/>
+      <LineObject Name="Line12" Left="453.6" Height="18.9"/>
+      <LineObject Name="Line13" Left="548.1" Height="18.9"/>
+      <TextObject Name="Text25" Left="9.45" Width="28.35" Height="18.9" Text="SL" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text26" Left="47.25" Width="85.05" Height="18.9" Text="ITEM CODE" HorzAlign="Center" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text27" Left="141.75" Width="94.5" Height="18.9" Text="ITEM NAME" HorzAlign="Center" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text28" Left="349.65" Width="56.7" Height="18.9" Text="QTY" HorzAlign="Center" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text29" Left="406.35" Width="47.25" Height="18.9" Text="RATE" HorzAlign="Center" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text30" Left="453.6" Width="94.5" Height="18.9" Text="Assesable Value" HorzAlign="Center" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text31" Left="548.1" Width="160.65" Height="18.9" Text="Description" HorzAlign="Center" Font="Arial, 8pt, style=Bold"/>
+      <LineObject Name="Line4" Left="9.45" Width="699.3"/>
+      <TextObject Name="Text94" Left="302.4" Width="37.8" Height="18.9" Text="HSN" HorzAlign="Center" Font="Arial, 10pt, style=Bold"/>
+      <LineObject Name="Line44" Left="292.95" Height="18.9"/>
+    </PageHeaderBand>
+    <GroupHeaderBand Name="GroupHeader1" Top="329.22" Width="718.2" Height="37.8" CanGrow="true" Guides="37.8" Condition="[sPreportIssueChallan.ROWNO]">
+      <LineObject Name="Line15" Left="9.45" Height="37.8"/>
+      <LineObject Name="Line16" Left="37.8" Height="37.8"/>
+      <LineObject Name="Line17" Left="137.21" Height="37.8"/>
+      <LineObject Name="Line18" Left="349.65" Height="37.8"/>
+      <LineObject Name="Line19" Left="409" Height="37.8"/>
+      <LineObject Name="Line20" Left="453.6" Height="37.8"/>
+      <LineObject Name="Line21" Left="548.1" Height="37.8"/>
+      <LineObject Name="Line22" Left="708.75" Height="37.8"/>
+      <TextObject Name="Text32" Left="9.45" Top="3.4" Width="28.35" Height="18.9" CanGrow="true" CanBreak="false" Text="[Row#]" HorzAlign="Center" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text33" Left="141.75" Top="3.4" Width="141.75" Height="28.35" Text="[sPreportIssueChallan.Item_Name]" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text35" Left="349.65" Top="3.4" Width="56.7" Height="18.9" CanGrow="true" CanBreak="false" Text="[sPreportIssueChallan.Qty]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Center" WordWrap="false" Font="Arial, 8pt, style=Bold" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text36" Left="415.8" Top="3.4" Width="37.8" Height="18.9" CanGrow="true" CanBreak="false" Text="[sPreportIssueChallan.Rate]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 8pt, style=Bold" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text63" Left="453.6" Top="3.4" Width="94.5" Height="18.9" BeforePrintEvent="Text63_BeforePrint" Format="Number" Format.UseLocale="false" Format.DecimalDigits="3" Format.DecimalSeparator="." Format.GroupSeparator="," Format.NegativePattern="1" HorzAlign="Center" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text76" Left="37.8" Width="94.5" Height="18.9" Text="[sPreportIssueChallan.PartCode]" Font="Arial, 10pt"/>
+      <LineObject Name="Line39" Left="9.45" Top="37.8" Width="699.3"/>
+      <LineObject Name="Line45" Left="292.95" Height="37.8"/>
+      <TextObject Name="Text95" Left="292.95" Width="56.7" Height="18.9" Text="[sPreportIssueChallan.HSNNO]" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text103" Left="557.55" Width="103.95" Height="28.35" Text="[sPreportIssueChallan.Process]" Font="Arial, 8pt"/>
+      <GroupHeaderBand Name="GroupHeader2" Top="370.98" Width="718.2" Condition="[sPreportIssueChallan.batchno]">
+        <DataBand Name="Data1" Top="374.94" Width="718.2" DataSource="Table1"/>
+      </GroupHeaderBand>
+      <GroupFooterBand Name="GroupFooter1" Top="378.9" Width="718.2" Guides="0"/>
+    </GroupHeaderBand>
+    <ReportSummaryBand Name="ReportSummary1" Top="415.17" Width="718.2" Height="179.55">
+      <LineObject Name="Line32" Left="9.45" Height="170.1"/>
+      <LineObject Name="Line33" Left="708.75" Height="170.1"/>
+      <TextObject Name="Text37" Left="349.65" Width="47.25" Height="18.9" Text="[Total]" HorzAlign="Center" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text39" Left="420.78" Top="38.45" Width="47.25" Height="18.9" Text="Tax Per" HorzAlign="Center" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text40" Left="406.35" Top="75.6" Width="75.6" Height="18.9" Text="Tax Amount" HorzAlign="Center" Font="Arial, 8pt"/>
+      <TextObject Name="Text41" Left="18.9" Top="56.7" Width="85.05" Height="18.9" Text="Value In Word:" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text42" Left="18.9" Top="75.6" Width="75.6" Height="18.9" Text="Total Value:" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text43" Left="18.9" Top="94.5" Width="94.5" Height="18.9" Text="Other Charges:" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text44" Left="18.9" Top="113.4" Width="132.3" Height="18.9" Text="Responsible Employee:" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text45" Left="548.1" Top="103.95" Width="75.6" Height="18.9" Text="Net Amount:" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text46" Left="623.7" Top="103.95" Width="85.05" Height="18.9" CanGrow="true" CanBreak="false" Text="[sPreportIssueChallan.NetAmount]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 8pt, style=Bold" Trimming="EllipsisCharacter"/>
+      <LineObject Name="Line35" Left="9.45" Top="132.3" Width="699.3"/>
+      <TextObject Name="Text47" Left="18.9" Top="145.53" Width="113.4" Height="18.9" Text="PREPARED BY" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text48" Left="585.9" Top="154.98" Width="113.4" Height="18.9" Text="AUTHORISED BY" Font="Arial, 8pt, style=Bold"/>
+      <LineObject Name="Line37" Left="9.45" Top="170.1" Width="699.3"/>
+      <TextObject Name="Text57" Left="378" Top="103.95" Width="66.15" Height="18.9" Text="[sPreportIssueChallan.TAxAmount]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 8pt" Trimming="EllipsisCharacter"/>
+      <LineObject Name="Line23" Left="9.45" Width="699.3"/>
+      <TextObject Name="Text61" Left="453.6" Width="207.9" Height="18.9" Text="[sPreportIssueChallan.TotalAmount]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" WordWrap="false" Font="Arial, 8pt, style=Bold" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text64" Left="614.25" Top="37.8" Width="94.5" Height="18.9" Text="[sPreportIssueChallan.CGSTAMT]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 8pt" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text65" Left="557.55" Top="37.8" Width="28.35" Height="18.9" Text="[sPreportIssueChallan.CGSTPER]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="0" WordWrap="false" Font="Arial, 8pt" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text66" Left="614.25" Top="56.7" Width="94.5" Height="18.9" Text="[sPreportIssueChallan.SGSTAMT]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 8pt" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text67" Left="557.55" Top="56.7" Width="37.8" Height="18.9" Text="[sPreportIssueChallan.SGSTPER]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="0" WordWrap="false" Font="Arial, 8pt" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text68" Left="614.25" Top="75.6" Width="94.5" Height="18.9" Text="[sPreportIssueChallan.IGSTAMT]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 8pt" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text69" Left="557.55" Top="75.6" Width="28.35" Height="18.9" Text="[sPreportIssueChallan.IGSTPER]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="0" WordWrap="false" Font="Arial, 8pt" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text70" Left="491.4" Top="37.8" Width="94.5" Height="18.9" Text="CGST" HorzAlign="Center" Font="Arial, 8pt"/>
+      <TextObject Name="Text71" Left="491.4" Top="56.7" Width="94.5" Height="18.9" Text="SGST" HorzAlign="Center" Font="Arial, 8pt"/>
+      <TextObject Name="Text72" Left="491.4" Top="75.6" Width="94.5" Height="18.9" Text="IGST" HorzAlign="Center" Font="Arial, 8pt"/>
+      <TextObject Name="Text73" Left="595.35" Top="37.8" Width="18.9" Height="18.9" Text="%" Font="Arial, 8pt"/>
+      <TextObject Name="Text74" Left="595.35" Top="56.7" Width="18.9" Height="18.9" Text="%" Font="Arial, 8pt"/>
+      <TextObject Name="Text75" Left="595.35" Top="75.6" Width="18.9" Height="18.9" Text="%" Font="Arial, 8pt"/>
+      <TextObject Name="Text77" Left="264.6" Top="151.2" Width="113.4" Height="18.9" Text="REQUESTED BY" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text78" Left="538.65" Top="132.3" Width="170.1" Height="18.9" Text="FOR YA AUTO INDUSTRIES" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text79" Left="264.6" Width="75.6" Height="18.9" Text="TOTAL QTY." HorzAlign="Center" Font="Arial, 8pt, style=Bold"/>
+      <LineObject Name="Line38" Left="9.45" Top="18.9" Width="699.3"/>
+      <TextObject Name="Text19" Left="18.9" Top="18.9" Width="75.6" Height="18.9" Text="Dept. Name :" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text20" Left="18.9" Top="37.8" Width="56.7" Height="18.9" Text="Remark:" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text24" Left="75.6" Top="37.8" Width="340.2" Height="18.9" CanGrow="true" CanBreak="false" Text="[sPreportIssueChallan.Remark]" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text98" Left="103.95" Top="56.7" Width="406.35" Height="18.9" Text="[GetAmountWithOnly()]" Font="Arial, 8pt"/>
+      <ChildBand Name="Child1" Top="382.86" Width="718.2" Height="28.35" FillUnusedSpace="true">
+        <LineObject Name="Line24" Left="9.45" Height="28.35"/>
+        <LineObject Name="Line25" Left="37.8" Height="28.35"/>
+        <LineObject Name="Line26" Left="137.21" Height="28.35"/>
+        <LineObject Name="Line27" Left="349.65" Height="28.35"/>
+        <LineObject Name="Line28" Left="409" Height="28.35"/>
+        <LineObject Name="Line29" Left="453.6" Height="28.35"/>
+        <LineObject Name="Line30" Left="548.1" Height="28.35"/>
+        <LineObject Name="Line31" Left="708.75" Height="28.35"/>
+        <LineObject Name="Line46" Left="292.95" Height="28.35"/>
+      </ChildBand>
+    </ReportSummaryBand>
+    <PageFooterBand Name="PageFooter1" Top="598.68" Width="718.2" Height="20.79">
+      <TextObject Name="Text49" Left="245.7" Width="37.8" Height="18.9" Text="Page" Font="Arial, 8pt"/>
+      <TextObject Name="Text50" Left="274.05" Width="28.35" Height="18.9" Text="[Page]" Font="Arial, 8pt"/>
+      <TextObject Name="Text51" Left="289.17" Top="1.89" Width="18.9" Height="18.9" Text="Of" Font="Arial, 6pt"/>
+      <TextObject Name="Text53" Left="302.4" Width="28.35" Height="18.9" Text="[Page]" Font="Arial, 8pt"/>
+    </PageFooterBand>
+  </ReportPage>
+</Report>

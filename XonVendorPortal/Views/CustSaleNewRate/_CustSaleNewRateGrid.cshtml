@@ -1,0 +1,56 @@
+﻿@model IEnumerable<eTactWeb.DOM.Models.CustomerSaleRateMasterModel>
+
+<table class="table table-bordered table-striped table-sm">
+    <thead style="background-color: #008B8B; color: white;   font-weight: bold;">
+        <tr>
+            <th>Sr#</th>
+            <th>Entry ID</th>
+            <th>Year Code</th>
+            <th>Slip No</th>
+            <th>Entry Date</th>
+            <th>Account Code</th>
+            <th>Item Code</th>
+            <th>Rate</th>
+            <th>Prev Rate</th>
+            <th>Effective Date</th>
+            <th>Effective Till</th>
+            <th>Customer Location</th>
+            <th>Rate Unit</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            int index = 1;
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td>@index++</td>
+                    <td>@item.CNRMEntryId</td>
+                    <td>@item.CNRMYearCode</td>
+                    <td>@item.CNRMSlipNo</td>
+                    <td>@item.CNRMEntryDate.ToString("dd-MMM-yyyy")</td>
+                    <td>@item.AccountCode</td>
+                    <td>@item.ItemCode</td>
+                    <td>@item.Rate</td>
+                    <td>@item.PrevRate</td>
+                    <td>@item.EffectiveDate.ToString("dd-MMM-yyyy")</td>
+                    <td>@item.EffectiveTillDate.ToString("dd-MMM-yyyy")</td>
+                    <td>@item.CustLocation</td>
+                    <td>@item.RateUnit</td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary">Edit</button>
+                        <button class="btn btn-sm btn-outline-danger">Delete</button>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="14" class="text-center text-muted">No records found.</td>
+            </tr>
+        }
+    </tbody>
+</table>

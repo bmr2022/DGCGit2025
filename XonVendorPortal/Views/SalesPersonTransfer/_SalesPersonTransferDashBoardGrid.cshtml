@@ -1,0 +1,173 @@
+﻿@model eTactWeb.DOM.Models.SalesPersonTransferModel
+@using Microsoft.AspNetCore.Http
+@using System.Reflection.PortableExecutable
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    var ActualEntryByEmpid = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("EmpID"));
+}
+
+<table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0" id="ISTDashboard">
+    <thead class="bg-gradient card-headerBG text-light">
+        <tr>
+            <th>Sr#</th>
+            <th>Action</th>
+            <th data-columnno="1" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Entry ID
+            </th>
+            <th data-columnno="2" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Year Code
+            </th>
+            <th data-columnno="3" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Slip No
+            </th>
+            <th data-columnno="4" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Entry Date
+            </th>
+            <th data-columnno="5" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Rev No
+            </th>
+            
+            <th data-columnno="7" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> New Emp Name
+            </th>
+           
+            <th data-columnno="9" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Old Emp Name
+            </th>
+            <th data-columnno="10" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> New Effective Date
+            </th>
+            <th data-columnno="11" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Old Till Date
+            </th>
+            
+            <th data-columnno="13" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Customer Name
+            </th>
+            <th data-columnno="14" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Entry By
+            </th>
+            <th data-columnno="15" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Updated By
+            </th>
+            <th data-columnno="16" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Updation Date
+            </th>
+            <th data-columnno="17" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Machine Name
+            </th>
+            <th data-columnno="18" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> CC
+            </th>
+
+        </tr>
+    </thead>
+    <tbody id="DashboardGrid">
+        @{
+            var @Cntr = 0;
+            if (Model.SalesPersonTransferGrid == null || Model.SalesPersonTransferGrid.Count == 0)
+            {
+                <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+            }
+            else
+            {
+                foreach (var item in Model.SalesPersonTransferGrid)
+                {
+                    Cntr = Cntr + 1;
+                    <tr onclick="selection(this)">
+                        <th>@Cntr</th>
+                        <td style="text-align:center;white-space: nowrap;">
+                            <div id="container">
+
+                                <div id="viewCursorDiv-@Cntr">
+                                    <a class="table-link link-success" asp-action="SalesPersonTransfer" asp-route-ID="@item.SalesPersTransfEntryId" asp-route-SlipNo="@item.SalesPersTransfSlipNo" asp-route-YC="@item.SalesPersTransfYearCode" asp-route-FromDate="@item.FromDate" asp-route-ToDate="@item.ToDate" onclick="BackButtonData(event,'@item.SalesPersTransfEntryId','@item.SalesPersTransfYearCode');">
+                                        <span class="fa-stack">
+                                            <i class="fa fa-square fa-stack-2x"></i>
+                                            <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </a>
+                                </div>
+                                <div id="editCursorDiv-@Cntr">
+
+                                    <a class="table-link link-primary" asp-action="SalesPersonTransfer" onclick="confirmEdit(event)" asp-route-Mode="U" asp-route-ID="@item.SalesPersTransfEntryId" asp-route-SlipNo="@item.SalesPersTransfSlipNo" asp-route-YC="@item.SalesPersTransfYearCode" asp-route-FromDate="@item.FromDate" 
+                                    asp-route-ToDate="@item.ToDate"
+                                       asp-route-EntryDate="@(string.IsNullOrEmpty(item.SalesPersTransfEntryDate) ? "" : item.SalesPersTransfEntryDate.Split(" ")[0])"
+                                       asp-route-RevNo="@item.RevNo"
+                                       asp-route-NewSalesEmpId="@item.NewSalesEmpId"
+                                       asp-route-NewSalesEmpName="@item.NewSalesEmpName"
+                                       asp-route-OldSalesEmpId="@item.OldSalesEmpId"
+                                       asp-route-OldSalesEmpName="@item.OldSalesEmpName"
+                                       asp-route-EffFrom="@(string.IsNullOrEmpty(item.NewSalesPersEffdate) ? "" : item.NewSalesPersEffdate.Split(" ")[0])"
+                                       asp-route-EffTillDate="@(string.IsNullOrEmpty(item.OldSalesPersTillDate) ? "" : item.OldSalesPersTillDate.Split(" ")[0])"
+                                       asp-route-AccountCode="@item.AccountCode"
+                                       asp-route-CustomerName="@item.CustomerName"
+                                       asp-route-EntryByEmpId="@item.EntryByEmpId"
+                                       asp-route-UpdatedByEmpId="@item.UpdatedByEmpId"
+                                       asp-route-UpdationDate="@(string.IsNullOrEmpty(item.UpdationDate) ? "" : item.UpdationDate.Split(" ")[0])"
+                                       asp-route-EntryByMachine="@item.EntryByMachine"
+                                       
+                                       asp-route-CC="@item.CC">
+                                        <span class="fa-stack">
+                                            <i class="fa fa-square fa-stack-2x"></i>
+                                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </a>
+                                </div>
+                                <div id="deleteCursorDiv-@Cntr">
+                                    <a class="table-link link-danger" asp-action="DeleteByID" asp-route-EntryId="@item.SalesPersTransfEntryId" asp-route-SlipNo="@item.SalesPersTransfSlipNo" asp-route-YearCode="@item.SalesPersTransfYearCode" asp-route-FromDate="@item.FromDate" asp-route-ToDate="@item.ToDate">
+                                        <span class="fa-stack">
+                                            <i class="fa fa-square fa-stack-2x"></i>
+                                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </a>
+                                </div>
+
+
+                            </div>
+                        </td>
+
+                        <td>@item.SalesPersTransfEntryId</td>
+                        <td>@item.SalesPersTransfYearCode</td>
+                        <td>@item.SalesPersTransfSlipNo</td>
+                       
+                        <td>@(string.IsNullOrEmpty(item.SalesPersTransfEntryDate) ? "" : item.SalesPersTransfEntryDate.Split(" ")[0])</td>
+                        <td>@item.RevNo</td>
+                       
+                        <td>@item.NewSalesEmpName<input type="hidden" asp-for="NewSalesEmpId" Value="@item.NewSalesEmpId" /></td>
+                       
+                        <td>@item.OldSalesEmpName<input type="hidden" asp-for="OldSalesEmpId" Value="@item.OldSalesEmpId" /></td>
+                        <td>@(string.IsNullOrEmpty(item.NewSalesPersEffdate) ? "" : item.NewSalesPersEffdate.Split(" ")[0])</td>
+                        <td>@(string.IsNullOrEmpty(item.OldSalesPersTillDate) ? "" : item.OldSalesPersTillDate.Split(" ")[0])</td>
+                     
+                        <td>@item.CustomerName</td>
+                        <td>@item.EntryBYEmpName</td>
+                        <td>@item.UpdatedByEmpName</td>
+                        <td>@(string.IsNullOrEmpty(item.UpdationDate) ? "" : item.UpdationDate.Split(" ")[0])</td>
+                        <td>@item.EntryByMachine</td>
+                        <td>@item.CC</td>
+
+
+
+                    </tr>
+                }
+            }
+        }
+    </tbody>
+</table>
+<center><strong>TOTAL ROWS : <span id="totalRows"></span></strong></center>
+
+
+<style>
+    #container {
+        display: flex;
+    }
+
+        #container > div {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+    #DashboardGrid {
+        background-color: blanchedalmond;
+    }
+</style>

@@ -34,6 +34,7 @@ namespace eTactWeb.DOM.Models
         public decimal RateInOtherCurr { get; set; }
         public string RateApplicableOnUnit { get; set; }
         public decimal AltPOQty { get; set; }
+        public decimal SchQty { get; set; }
         public string AltUnit { get; set; }
         public string ShippingAddress { get; set; }
         public decimal BasicAmount { get; set; }
@@ -51,6 +52,17 @@ namespace eTactWeb.DOM.Models
         public string FromDate { get; set; }
         public string ToDate { get; set; }
         public string ReportMode { get; set; }
+        public string ScheduleNo { get; set; }
+        public string ScheduleDate { get; set; }
+        public string SchAmendNo { get; set; }
+        public string EffFrom { get; set; }
+        public string TillDate { get; set; }
+        public string SchAmendDate { get; set; }
+        public string SchComplete { get; set; }
+        public string SchCanceled { get; set; }
+        public string ItemSchAmendNo { get; set; }
+        public string ItemSchAmenddate { get; set; }
+        public string TentativeConfirm { get; set; }
         public string HistoryReportMode { get; set; }
         public int TotalRecords { get; set; }
         public int PageNumber { get; set; }

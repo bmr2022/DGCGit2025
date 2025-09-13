@@ -1,0 +1,79 @@
+﻿@model eTactWeb.DOM.Models.PartCodePartyWiseModel
+
+<div class="accordion-item">
+    <h2 class="accordion-header" id="H_BasicParameter">
+        <button class="accordion-button text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_BasicParameter" aria-expanded="true" aria-controls="B_BasicParameter">
+            <strong style="text-transform:uppercase"><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Party Detail</strong>
+        </button>
+    </h2>
+    <div id="B_BasicParameter" class="accordion-collapse collapse show pnl4 bg-gradient" aria-labelledby="H_BasicParameter">
+        <div class="accordion-body">
+            <div class="row g-2 gx-3">
+                <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
+                    <label asp-for="AccountName" class="form-label">Party Name<span style="color:red;">*</span></label>
+                    <input asp-for="AccountCode" type="hidden"/>
+                    <select asp-for="AccountName" class="form-control">
+                        <option value="">-Select-</option>
+                    </select>
+                </div>
+                <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                    <label asp-for="VendCustPartCode" class="form-label"> Part Code<span style="color:red;">*</span></label>
+                    <input asp-for="VendCustPartCode" class="form-control" />
+                </div>
+                <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                    <label asp-for="VendCustitemname" class="form-label">Party Item Name<span style="color:red;">*</span></label>
+                    <input asp-for="VendCustitemname" class="form-control" />
+                </div>
+                <div class="col-lg-1 col-md-4 col-sm-6 col-xs-12">
+                    <label asp-for="MOQ" class="form-label">MOQ</label>
+                    <input asp-for="MOQ" class="form-control MOQ" min="0" type="number" id="decimalInput" />
+                </div>
+                <div class="col-lg-1 col-md-4 col-sm-6 col-xs-12">
+                    <label asp-for="LeadTimeInDays" class="form-label">Lead Time</label>
+                    <input asp-for="LeadTimeInDays" class="form-control" type="number" min="0" step="1" oninput="this.value = this.value.replace(/\D+/g, '');" />
+                </div>
+                <div class="col-lg-1 col-md-4 col-sm-6 col-xs-12">
+                    <label asp-for="ItemRate" class="form-label">Item Rate</label>
+                    <input asp-for="ItemRate" class="form-control ItemRate" min="0" type="number" id="decimalInput" />
+                </div>
+                <div class="col-lg-1 col-md-4 col-sm-6 col-xs-12">
+                    <label asp-for="BusinessPercentage" class="form-label">Business %</label>
+                    <input asp-for="BusinessPercentage" class="form-control BusinessPercentage" min="0" type="number" id="decimalInput" />
+                </div>
+                <div class="col mt-3">
+                    <div class="row justify-content-end">
+                        <div class="col-auto">
+                            <button type="button" class="btn btn-sm btn-outline-success" onclick="GridButton(event)" style="width:150px">
+                                <i class="fa fa-angles-down fa-lg"></i> ADD TO GRID
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="accordion-item">
+    <div id="B_Grid optionalParameterBtn" class="accordion-collapse collapse show pnl4 bg-gradient" aria-labelledby="H_Grid">
+        <div class="accordion-body overflow-auto pb-0">
+            <table class="table table-hover table-bordered table-striped">
+                <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+                    <tr>
+                        <th>Action</th>
+                        <th>Sr No</th>
+                        <th>Party Name</th>
+                        <th>Part Code</th>
+                        <th>Item Name</th>
+                        <th>Lead Time</th>
+                        <th>MOQ</th>
+                        <th>Item Rate</th>
+                        <th>Business Percentage</th>
+                    </tr>
+                </thead>
+                <tbody id="divBomGrid">
+                    <partial name="_PartCodePartyWiseGrid" />
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div> 

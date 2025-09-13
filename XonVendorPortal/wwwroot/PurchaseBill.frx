@@ -1,0 +1,327 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="01/16/2025 13:22:49" ReportInfo.Modified="08/29/2025 13:37:27" ReportInfo.CreatorVersion="2023.2.0.0">
+  <Dictionary>
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqoHDugY9G9S3Ury/uevG6dzgKLORh2IFPzyqw4h/hEczrVNd/A6Yc686WPvccudb7IdVrQPioGFcP2SBIaz+pIXhtF3DpQa1wzzZxFYylUFKr8Xr0zNSoRpgPLS0nAx+aqkj2Y2qsn38dNFuYtCHBDBfayO/6NlzmpIDV+oXrNWyQVO8GpAd1C2CzVXze8L++qcgmXbmZoGzKS/0YLQQPgA==">
+      <TableDataSource Name="Table" Alias="SPReportPurchaseBill" DataType="System.Int32" Enabled="true" SelectCommand="exec [SPReportPurchaseBill]  @EntryId = @entryparam, @yearCode = @yearparam ">
+        <Column Name="InvoiceNo" DataType="System.String"/>
+        <Column Name="purvoucherno" DataType="System.String"/>
+        <Column Name="VoucherDate" DataType="System.DateTime"/>
+        <Column Name="InvoiceDate" DataType="System.DateTime"/>
+        <Column Name="Account_Name" DataType="System.String"/>
+        <Column Name="AccountCode" DataType="System.Int64"/>
+        <Column Name="Vendorcity" DataType="System.String"/>
+        <Column Name="VendorState" DataType="System.String"/>
+        <Column Name="VendorGST" DataType="System.String"/>
+        <Column Name="Vendorpincode" DataType="System.String"/>
+        <Column Name="Vendorcountry" DataType="System.String"/>
+        <Column Name="Vendormobileno" DataType="System.String"/>
+        <Column Name="Vendorcontactperson" DataType="System.String"/>
+        <Column Name="Vendorpanno" DataType="System.String"/>
+        <Column Name="VendorPurchPersonName" DataType="System.String"/>
+        <Column Name="VendorPurchasePersonEmailId" DataType="System.String"/>
+        <Column Name="VendorPurchMobileNo" DataType="System.String"/>
+        <Column Name="Vendorbankaccount_no" DataType="System.String"/>
+        <Column Name="VendorbankAddress" DataType="System.String"/>
+        <Column Name="Vendorbankifsccode" DataType="System.String"/>
+        <Column Name="vendorCode" DataType="System.String"/>
+        <Column Name="PurchaseBillTypeMRNJWChallan" DataType="System.String"/>
+        <Column Name="GSTType" DataType="System.String"/>
+        <Column Name="PurchaseBillDirectPB" DataType="System.String"/>
+        <Column Name="TypeITEMSERVASSETS" DataType="System.String"/>
+        <Column Name="DomesticImport" DataType="System.String"/>
+        <Column Name="PaymentTerm" DataType="System.String"/>
+        <Column Name="PaymentDays" DataType="System.Int64"/>
+        <Column Name="Transporter" DataType="System.String"/>
+        <Column Name="Vehicleno" DataType="System.String"/>
+        <Column Name="CurrencyId" DataType="System.Int64"/>
+        <Column Name="GateNo" DataType="System.String"/>
+        <Column Name="gateYearcode" DataType="System.Int64"/>
+        <Column Name="GateDate" DataType="System.DateTime"/>
+        <Column Name="MrnNo" DataType="System.String"/>
+        <Column Name="MRNDate" DataType="System.DateTime"/>
+        <Column Name="MrnYearcode" DataType="System.Int64"/>
+        <Column Name="ExchangeRate" DataType="System.Double"/>
+        <Column Name="BillAmt" DataType="System.Double"/>
+        <Column Name="GSTAmount" DataType="System.Double"/>
+        <Column Name="Taxableamt" DataType="System.Double"/>
+        <Column Name="NetAmt" DataType="System.Double"/>
+        <Column Name="Remark" DataType="System.String"/>
+        <Column Name="cc" DataType="System.String"/>
+        <Column Name="Approved" DataType="System.String"/>
+        <Column Name="ApprovedDate" DataType="System.DateTime"/>
+        <Column Name="Approvedby" DataType="System.Int64"/>
+        <Column Name="PONetAmt" DataType="System.Double"/>
+        <Column Name="UID" DataType="System.Int64"/>
+        <Column Name="ActualEntryBy" DataType="System.Int64"/>
+        <Column Name="ActualEntryDate" DataType="System.DateTime"/>
+        <Column Name="UpdatedBy" DataType="System.Int64"/>
+        <Column Name="LastUpdatedDate" DataType="System.DateTime"/>
+        <Column Name="DocTypeID" DataType="System.Int64"/>
+        <Column Name="DocumentName" DataType="System.String"/>
+        <Column Name="PartCode" DataType="System.String"/>
+        <Column Name="Item_Name" DataType="System.String"/>
+        <Column Name="ItemCode" DataType="System.Int64"/>
+        <Column Name="HSNNo" DataType="System.String"/>
+        <Column Name="BillQty" DataType="System.Double"/>
+        <Column Name="Unit" DataType="System.String"/>
+        <Column Name="AltQty" DataType="System.Double"/>
+        <Column Name="AltRecQty" DataType="System.Double"/>
+        <Column Name="AltUnit" DataType="System.String"/>
+        <Column Name="RecQty" DataType="System.Double"/>
+        <Column Name="BillRate" DataType="System.Double"/>
+        <Column Name="RateInOtherCurr" DataType="System.Double"/>
+        <Column Name="RateUnit" DataType="System.String"/>
+        <Column Name="DiscPer" DataType="System.Double"/>
+        <Column Name="DiscRs" DataType="System.Double"/>
+        <Column Name="ItemAmount" DataType="System.Double"/>
+        <Column Name="MRP" DataType="System.Double"/>
+        <Column Name="AssesRate" DataType="System.Double"/>
+        <Column Name="AssesAmount" DataType="System.Double"/>
+        <Column Name="ItemBasicAmount" DataType="System.Double"/>
+        <Column Name="QTYXRATE" DataType="System.Double"/>
+        <Column Name="disAmt" DataType="System.Double"/>
+        <Column Name="TAXNAME" DataType="System.String"/>
+        <Column Name="TaxPer" DataType="System.Double"/>
+        <Column Name="TAxAmount" DataType="System.Double"/>
+        <Column Name="TAXEXP" DataType="System.String"/>
+        <Column Name="TaxonExp" DataType="System.Double"/>
+        <Column Name="TaxRemarks" DataType="System.String"/>
+        <Column Name="TaxRefundable" DataType="System.String"/>
+        <Column Name="RoundOff" DataType="System.String"/>
+        <Column Name="CGSTPER" DataType="System.Double"/>
+        <Column Name="CGSTAMT" DataType="System.Double"/>
+        <Column Name="SGSTPER" DataType="System.Double"/>
+        <Column Name="SGSTAMT" DataType="System.Double"/>
+        <Column Name="IGSTPER" DataType="System.Double"/>
+        <Column Name="IGSTAMT" DataType="System.Double"/>
+        <Column Name="TotalGSTAmt" DataType="System.Double"/>
+        <Column Name="BasicinInWord" DataType="System.String"/>
+        <Column Name="NetAmtInWord" DataType="System.String"/>
+        <Column Name="GSTInWord" DataType="System.String"/>
+        <Column Name="CurrencyId1" DataType="System.Int64"/>
+        <Column Name="CurrencyName" DataType="System.String"/>
+        <Column Name="CompName" DataType="System.String"/>
+        <Column Name="CompAdd" DataType="System.String"/>
+        <Column Name="CompPinCode" DataType="System.String"/>
+        <Column Name="CompPhone" DataType="System.String"/>
+        <Column Name="CompStateCode" DataType="System.String"/>
+        <Column Name="CompStateName" DataType="System.String"/>
+        <Column Name="CompPANNo" DataType="System.String"/>
+        <Column Name="CompGSTNO" DataType="System.String"/>
+        <CommandParameter Name="entryparam" Expression="entryparam"/>
+        <CommandParameter Name="yearparam" Expression="yearparam"/>
+      </TableDataSource>
+    </MsSqlDataConnection>
+    <Parameter Name="MyParameter" DataType="System.String" AsString=""/>
+    <Total Name="Total1" Expression="[SPReportPurchaseBill.CGSTAMT]" Evaluator="Data1" PrintOn="ReportSummary1" ResetAfterPrint="false"/>
+    <Total Name="Total2" Expression="[SPReportPurchaseBill.SGSTAMT]" Evaluator="Data1" PrintOn="ReportSummary1" ResetAfterPrint="false"/>
+    <Total Name="Total3" Expression="[SPReportPurchaseBill.IGSTAMT]" Evaluator="Data1" PrintOn="ReportSummary1" ResetAfterPrint="false"/>
+    <Total Name="Total" Expression="[SPReportPurchaseBill.ItemAmount]" Evaluator="Data1" PrintOn="ReportSummary1" ResetAfterPrint="false"/>
+    <Total Name="Total4" Expression="[SPReportPurchaseBill.Taxableamt]" Evaluator="Data1" PrintOn="ReportSummary1" ResetAfterPrint="false"/>
+    <Total Name="Total5" Expression="[SPReportPurchaseBill.ItemAmount]" Evaluator="Data1" PrintOn="ReportSummary1" ResetAfterPrint="false"/>
+  </Dictionary>
+  <ReportPage Name="Page1" Watermark.Font="Arial, 60pt">
+    <ReportTitleBand Name="ReportTitle1" Width="718.2" Height="340.2">
+      <TextObject Name="Text1" Left="264.6" Top="9.45" Width="170.1" Height="28.35" Text="Purchase Bill" Font="Arial, 16pt, style=Bold"/>
+      <TextObject Name="Text2" Left="255.15" Top="37.8" Width="387.45" Height="18.9" Text="[SPReportPurchaseBill.CompName]" Font="Arial, 12pt"/>
+      <LineObject Name="Line1" Left="9.45" Top="94.5" Width="699.3" Diagonal="true"/>
+      <LineObject Name="Line3" Left="708.75" Top="94.5" Height="245.7" Diagonal="true"/>
+      <LineObject Name="Line4" Left="9.45" Top="94.5" Height="245.7" Diagonal="true"/>
+      <TextObject Name="Text3" Left="18.9" Top="103.95" Width="113.4" Height="18.9" Text="GSTIN Number:" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text4" Left="122.85" Top="103.95" Width="217.35" Height="18.9" Text="[SPReportPurchaseBill.CompGSTNO]" Font="Arial, 8pt"/>
+      <TextObject Name="Text5" Left="18.9" Top="132.3" Width="56.7" Height="18.9" Text="Name:" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text6" Left="122.85" Top="132.3" Width="189" Height="18.9" Text="[SPReportPurchaseBill.CompName]" Font="Arial, 8pt"/>
+      <TextObject Name="Text7" Left="18.9" Top="160.65" Width="66.15" Height="18.9" Text="Address:" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text8" Left="122.85" Top="160.65" Width="189" Height="18.9" Text="[SPReportPurchaseBill.CompAdd]" Font="Arial, 8pt"/>
+      <LineObject Name="Line5" Left="330.75" Top="94.5" Height="103.95"/>
+      <TextObject Name="Text9" Left="330.75" Top="103.95" Width="56.7" Height="18.9" Text="PV Date:" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text10" Left="396.9" Top="103.95" Width="113.4" Height="18.9" CanGrow="true" Text="[SPReportPurchaseBill.VoucherDate]" Format="Date" Format.Format="d" Font="Arial, 8pt"/>
+      <TextObject Name="Text11" Left="330.75" Top="122.85" Width="75.6" Height="18.9" Text="Invoice No:" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text12" Left="396.9" Top="122.85" Width="113.4" Height="18.9" CanGrow="true" Text="[SPReportPurchaseBill.InvoiceNo]" Font="Arial, 8pt"/>
+      <TextObject Name="Text13" Left="330.75" Top="141.75" Width="56.7" Height="18.9" Text="Gate No:" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text14" Left="396.9" Top="141.75" Width="122.85" Height="18.9" Text="[SPReportPurchaseBill.GateNo]" Font="Arial, 8pt"/>
+      <TextObject Name="Text15" Left="330.75" Top="160.65" Width="56.7" Height="18.9" Text="MRN No:" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text16" Left="396.9" Top="160.65" Width="122.85" Height="18.9" Text="[SPReportPurchaseBill.MrnNo]" Font="Arial, 8pt"/>
+      <TextObject Name="Text17" Left="330.75" Top="179.55" Width="66.15" Height="18.9" Text="IQC No:" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text18" Left="519.75" Top="103.95" Width="56.7" Height="18.9" Text="PV No:" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text19" Left="519.75" Top="122.85" Width="56.7" Height="18.9" Text="INV Date:" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text20" Left="585.9" Top="122.85" Width="122.85" Height="18.9" Text="[SPReportPurchaseBill.InvoiceDate]" Format="Date" Format.Format="d" Font="Arial, 8pt"/>
+      <TextObject Name="Text21" Left="519.75" Top="141.75" Width="66.15" Height="18.9" Text="Gate Date:" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text22" Left="585.9" Top="141.75" Width="122.85" Height="18.9" Text="[SPReportPurchaseBill.GateDate]" Format="Date" Format.Format="d" Font="Arial, 8pt"/>
+      <TextObject Name="Text23" Left="519.75" Top="160.65" Width="66.15" Height="18.9" Text="MRN Date:" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text24" Left="585.9" Top="160.65" Width="122.85" Height="18.9" Text="[SPReportPurchaseBill.MRNDate]" Format="Date" Format.Format="d" Font="Arial, 8pt"/>
+      <TextObject Name="Text25" Left="519.75" Top="179.55" Width="66.15" Height="18.9" Text="IQC Date:" Font="Arial, 8pt, style=Bold"/>
+      <LineObject Name="Line6" Left="9.45" Top="198.45" Width="699.3" Diagonal="true"/>
+      <LineObject Name="Line7" Left="9.45" Top="217.35" Width="699.3" Diagonal="true"/>
+      <TextObject Name="Text26" Left="18.9" Top="202.23" Width="132.3" Height="18.9" Text="Details Of Supplier" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text27" Left="18.9" Top="226.8" Width="47.25" Height="13.23" Text="Name:" Font="Arial, 8pt"/>
+      <TextObject Name="Text29" Left="18.9" Top="245.7" Width="54.81" Height="13.23" Text="Address:" Font="Arial, 8pt"/>
+      <TextObject Name="Text30" Left="56.7" Top="226.8" Width="85.05" Height="18.9" Text="[SPReportPurchaseBill.Account_Name]" Font="Arial, 8pt"/>
+      <TextObject Name="Text31" Left="66.15" Top="245.7" Width="94.5" Height="18.9" Text="[SPReportPurchaseBill.VendorbankAddress]" Font="Arial, 8pt"/>
+      <TextObject Name="Text32" Left="18.9" Top="264.6" Width="66.15" Height="18.9" Text="City&amp;State:" Font="Arial, 8pt"/>
+      <TextObject Name="Text33" Left="75.6" Top="264.6" Width="37.8" Height="22.68" Text="[SPReportPurchaseBill.Vendorcity]" Font="Arial, 8pt"/>
+      <TextObject Name="Text34" Left="122.85" Top="264.6" Width="94.5" Height="18.9" Text="[SPReportPurchaseBill.VendorState]" Font="Arial, 8pt"/>
+      <TextObject Name="Text35" Left="18.9" Top="285.39" Width="103.95" Height="13.23" Text="GSTIN//UniqueID:" Font="Arial, 8pt"/>
+      <TextObject Name="Text36" Left="113.4" Top="283.5" Width="113.4" Height="18.9" Text="[SPReportPurchaseBill.VendorGST]" Font="Arial, 8pt"/>
+      <TextObject Name="Text37" Left="18.9" Top="302.4" Width="66.15" Height="18.9" Text="State Code:" Font="Arial, 8pt"/>
+      <TextObject Name="Text39" Left="113.4" Top="264.6" Width="9.45" Height="9.45" Text="-" Font="Arial, 8pt"/>
+      <TextObject Name="Text40" Left="340.2" Top="226.8" Width="66.15" Height="18.9" Text="Phone No:" Font="Arial, 8pt"/>
+      <TextObject Name="Text41" Left="396.9" Top="226.8" Width="94.5" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportPurchaseBill.Vendormobileno]" Font="Arial, 8pt"/>
+      <TextObject Name="Text42" Left="340.2" Top="245.7" Width="94.5" Height="18.9" Text="Contact Person:" Font="Arial, 8pt"/>
+      <TextObject Name="Text43" Left="340.2" Top="264.6" Width="75.6" Height="18.9" Text="Bank Name:" Font="Arial, 8pt"/>
+      <TextObject Name="Text44" Left="340.2" Top="283.5" Width="75.6" Height="18.9" Text="IFSC Code:" Font="Arial, 8pt"/>
+      <TextObject Name="Text45" Left="425.25" Top="283.5" Width="94.5" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportPurchaseBill.Vendorbankifsccode]" Font="Arial, 8pt"/>
+      <TextObject Name="Text46" Left="340.2" Top="302.4" Width="75.6" Height="18.9" Text="Account No:" Font="Arial, 8pt"/>
+      <TextObject Name="Text47" Left="415.8" Top="302.4" Width="94.5" Height="18.9" Text="[SPReportPurchaseBill.Vendorbankaccount_no]" Font="Arial, 8pt"/>
+      <TextObject Name="Text48" Left="340.2" Top="321.3" Width="75.6" Height="18.9" Text="Credit Days:" Font="Arial, 8pt"/>
+      <TextObject Name="Text62" Left="-9450" Top="-9450" Width="28.35" Height="18.9" Text="Rate" Font="Arial, 7pt"/>
+      <TextObject Name="Text70" Left="18.9" Top="179.55" Width="56.7" Height="18.9" Text="E-mail:" Font="Arial, 8pt, style=Bold"/>
+      <LineObject Name="Line8" Left="9.45" Top="340.2" Width="699.3" Diagonal="true"/>
+      <TextObject Name="Text94" Left="415.8" Top="321.3" Width="94.5" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportPurchaseBill.PaymentDays]" Font="Arial, 8pt"/>
+      <TextObject Name="Text95" Left="585.9" Top="103.95" Width="122.85" Height="18.9" Text="[SPReportPurchaseBill.purvoucherno]" Font="Arial, 8pt"/>
+      <TextObject Name="Text118" Left="425.25" Top="245.7" Width="94.5" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportPurchaseBill.Vendorcontactperson]" Font="Arial, 8pt"/>
+    </ReportTitleBand>
+    <PageHeaderBand Name="PageHeader1" Top="343.4" Width="718.2" Height="37.8">
+      <LineObject Name="Line10" Left="9.45" Height="37.8"/>
+      <LineObject Name="Line11" Left="708.75" Height="37.8"/>
+      <LineObject Name="Line12" Left="28.35" Height="37.8"/>
+      <LineObject Name="Line13" Left="160.65" Height="37.8"/>
+      <LineObject Name="Line14" Left="207.9" Height="37.8"/>
+      <LineObject Name="Line15" Left="264.6" Height="37.8"/>
+      <LineObject Name="Line16" Left="289.17" Height="37.8"/>
+      <LineObject Name="Line17" Left="349.65" Height="37.8"/>
+      <LineObject Name="Line18" Left="396.9" Height="37.8"/>
+      <LineObject Name="Line19" Left="444.15" Height="37.8"/>
+      <LineObject Name="Line20" Left="485.73" Height="37.8"/>
+      <LineObject Name="Line21" Left="561.33" Height="37.8"/>
+      <LineObject Name="Line22" Left="636.93" Height="37.8"/>
+      <LineObject Name="Line23" Left="485.73" Top="17.39" Width="221.51" Diagonal="true"/>
+      <TextObject Name="Text50" Left="37.8" Top="5.67" Width="103.95" Height="28.35" Text="Description Of Goods/&#13;&#10;Service" Font="Arial, 7pt"/>
+      <TextObject Name="Text51" Left="170.1" Width="37.8" Height="37.8" Text="HSN/ SAC Code" Font="Arial, 6pt"/>
+      <TextObject Name="Text52" Left="217.35" Top="5.67" Width="28.35" Height="18.9" Text="Qty" Font="Arial, 7pt"/>
+      <TextObject Name="Text53" Left="264.6" Top="5.67" Width="28.35" Height="18.9" Text="Unit" Font="Arial, 7pt"/>
+      <TextObject Name="Text54" Left="292.95" Top="5.67" Width="28.35" Height="18.9" Text="Rate" Font="Arial, 7pt"/>
+      <TextObject Name="Text55" Left="406.35" Top="5.67" Width="28.35" Height="18.9" Text="Total" Font="Arial, 7pt"/>
+      <TextObject Name="Text56" Left="359.1" Top="5.67" Width="28.35" Height="28.35" Text="Disc Amt" Font="Arial, 6pt"/>
+      <TextObject Name="Text57" Left="444.15" Top="5.67" Width="37.8" Height="28.35" Text="Taxable Value" Font="Arial, 6pt"/>
+      <TextObject Name="Text58" Left="510.3" Top="4.16" Width="47.25" Height="18.9" Text="CGST" Font="Arial, 7pt"/>
+      <TextObject Name="Text59" Left="576.45" Top="4.16" Width="47.25" Height="18.9" Text="SGST" Font="Arial, 7pt"/>
+      <TextObject Name="Text60" Left="661.5" Top="4.16" Width="37.8" Height="18.9" Text="IGST" Font="Arial, 7pt"/>
+      <TextObject Name="Text61" Left="485.73" Top="22.3" Width="28.35" Height="9.45" Text="Rate" Font="Arial, 7pt"/>
+      <TextObject Name="Text63" Left="561.33" Top="22.3" Width="28.35" Height="9.45" Text="Rate" Font="Arial, 7pt"/>
+      <TextObject Name="Text64" Left="636.93" Top="22.3" Width="28.35" Height="9.45" Text="Rate" Font="Arial, 7pt"/>
+      <TextObject Name="Text67" Left="670.95" Top="22.3" Width="47.25" Height="9.45" Text="Amount" Font="Arial, 7pt"/>
+      <TextObject Name="Text66" Left="595.35" Top="22.3" Width="47.25" Height="9.45" Text="Amount" Font="Arial, 7pt"/>
+      <TextObject Name="Text65" Left="510.3" Top="22.3" Width="47.25" Height="9.45" Text="Amount" Font="Arial, 7pt"/>
+      <LineObject Name="Line35" Left="510.3" Top="18.9" Height="18.9"/>
+      <LineObject Name="Line36" Left="585.9" Top="18.9" Height="18.9"/>
+      <LineObject Name="Line37" Left="661.5" Top="18.9" Height="18.9"/>
+      <LineObject Name="Line72" Left="321.68" Height="37.8"/>
+      <TextObject Name="Text96" Left="321.3" Top="5.67" Width="28.35" Height="28.35" Text="Disc Per" Font="Arial, 6pt"/>
+      <TextObject Name="Text99" Left="9.45" Top="9.45" Width="18.9" Height="28.35" Text="Sr No" Font="Arial, 6pt"/>
+      <LineObject Name="Line9" Left="9.45" Top="37.8" Width="699.3" Diagonal="true"/>
+    </PageHeaderBand>
+    <GroupHeaderBand Name="GroupHeader1" Top="384.4" Width="718.2" Height="37.8" CanGrow="true" Condition="[SPReportPurchaseBill.PartCode]">
+      <LineObject Name="Line48" Left="9.45" Top="37.8" Width="699.3" Diagonal="true"/>
+      <LineObject Name="Line49" Left="9.45" Height="37.8"/>
+      <LineObject Name="Line53" Left="264.6" Height="37.8"/>
+      <LineObject Name="Line54" Left="289.17" Height="37.8"/>
+      <LineObject Name="Line55" Left="321.68" Height="37.8"/>
+      <LineObject Name="Line58" Left="444.15" Height="37.8"/>
+      <LineObject Name="Line59" Left="510.3" Height="37.8"/>
+      <LineObject Name="Line60" Left="561.33" Height="37.8"/>
+      <LineObject Name="Line61" Left="585.9" Height="37.8"/>
+      <LineObject Name="Line62" Left="636.93" Height="37.8"/>
+      <LineObject Name="Line63" Left="661.5" Height="37.8"/>
+      <LineObject Name="Line64" Left="708.75" Height="37.8"/>
+      <TextObject Name="Text80" Left="661.5" Top="9.45" Width="47.25" Height="18.9" Text="[SPReportPurchaseBill.IGSTAMT]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 6pt" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text79" Left="642.6" Top="9.45" Width="18.9" Height="18.9" Text="[SPReportPurchaseBill.IGSTPER]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Justify" WordWrap="false" Font="Arial, 6pt" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text78" Left="595.35" Top="9.45" Width="37.8" Height="18.9" Text="[SPReportPurchaseBill.SGSTAMT]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 6pt" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text77" Left="567" Top="9.45" Width="18.9" Height="18.9" Text="[SPReportPurchaseBill.SGSTPER]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Justify" WordWrap="false" Font="Arial, 6pt" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text75" Left="510.3" Top="9.45" Width="47.25" Height="28.35" Text="[SPReportPurchaseBill.CGSTAMT]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 6pt" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text76" Left="491.4" Top="9.45" Width="18.9" Height="18.9" Text="[SPReportPurchaseBill.CGSTPER]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Justify" WordWrap="false" Font="Arial, 6pt" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text82" Left="264.6" Top="9.45" Width="28.35" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportPurchaseBill.Unit]" Font="Arial, 6pt"/>
+      <TextObject Name="Text83" Left="207.9" Top="9.45" Width="28.35" Height="18.9" Text="[SPReportPurchaseBill.BillQty]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 6pt" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text74" Left="170.1" Top="9.45" Width="37.8" Height="18.9" Text="[SPReportPurchaseBill.HSNNo]" Font="Arial, 6pt"/>
+      <TextObject Name="Text72" Left="9.45" Top="9.45" Width="18.9" Height="18.9" Text="[Row#]" Font="Arial, 6pt"/>
+      <LineObject Name="Line50" Left="28.35" Height="37.8"/>
+      <LineObject Name="Line51" Left="160.65" Height="37.8"/>
+      <LineObject Name="Line52" Left="207.9" Height="37.8"/>
+      <LineObject Name="Line56" Left="349.65" Height="37.8"/>
+      <LineObject Name="Line57" Left="396.9" Height="37.8"/>
+      <TextObject Name="Text73" Left="37.8" Width="122.85" Height="28.35" Text="[SPReportPurchaseBill.Item_Name]" Font="Arial, 6pt"/>
+      <TextObject Name="Text90" Left="294.84" Top="9.45" Width="28.35" Height="18.9" Text="[SPReportPurchaseBill.BillRate]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 6pt" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text91" Left="396.9" Top="9.45" Width="47.25" Height="18.9" Text="[SPReportPurchaseBill.ItemAmount]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 6pt" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text93" Left="444.15" Top="9.45" Width="37.8" Height="28.35" Text="[SPReportPurchaseBill.Taxableamt]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 6pt" Trimming="EllipsisCharacter"/>
+      <LineObject Name="Line73" Left="485.73" Height="37.8"/>
+      <TextObject Name="Text97" Left="330.75" Top="9.45" Width="18.9" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportPurchaseBill.DiscPer]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Center" WordWrap="false" Font="Arial, 6pt" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text98" Left="349.65" Top="9.45" Width="47.25" Height="18.9" Text="[SPReportPurchaseBill.DiscRs]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 6pt" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text100" Left="37.8" Top="18.9" Width="122.85" Height="18.9" Text="[SPReportPurchaseBill.PartCode]" Font="Arial, 6pt"/>
+      <DataBand Name="Data1" Top="425.4" Width="718.2" DataSource="Table"/>
+      <GroupFooterBand Name="GroupFooter1" Top="428.6" Width="718.2"/>
+    </GroupHeaderBand>
+    <ReportSummaryBand Name="ReportSummary1" Top="472.8" Width="718.2" Height="264.6">
+      <TextObject Name="Text68" Left="18.9" Top="47.25" Width="189" Height="18.9" Text="Total Basic Value(In Words):" Font="Arial, 9pt, style=Bold"/>
+      <TextObject Name="Text69" Left="548.1" Top="47.25" Width="85.05" Height="18.9" Text="Basic Total:" Font="Arial, 9pt, style=Bold"/>
+      <LineObject Name="Line44" Left="9.45" Top="25.7" Width="699.3" Diagonal="true"/>
+      <LineObject Name="Line46" Left="9.45" Height="254.77"/>
+      <LineObject Name="Line47" Left="708.75" Height="254.77"/>
+      <TextObject Name="Text86" Left="510.3" Top="9.45" Width="94.5" Height="18.9" Text="[Total1]" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text87" Left="585.9" Top="9.45" Width="47.25" Height="18.9" Text="[Total2]" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text88" Left="661.5" Top="9.45" Width="56.7" Height="18.9" Text="[Total3]" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text89" Left="396.9" Top="9.45" Width="47.25" Height="18.9" Text="[Total]" Font="Arial, 8pt, style=Bold"/>
+      <LineObject Name="Line65" Left="444.15" Height="25.7"/>
+      <LineObject Name="Line66" Left="510.3" Height="25.7"/>
+      <LineObject Name="Line67" Left="561.33" Height="25.7"/>
+      <LineObject Name="Line70" Left="636.93" Height="25.7"/>
+      <LineObject Name="Line68" Left="585.9" Height="25.7"/>
+      <LineObject Name="Line69" Left="661.5" Height="25.7"/>
+      <LineObject Name="Line71" Left="9.45" Top="47.25" Width="699.3" Diagonal="true"/>
+      <TextObject Name="Text101" Left="453.6" Top="9.45" Width="94.5" Height="18.9" Text="[Total4]" Font="Arial, 8pt, style=Bold"/>
+      <LineObject Name="Line75" Left="485.73" Height="25.7"/>
+      <LineObject Name="Line76" Left="396.9" Height="25.7"/>
+      <LineObject Name="Line77" Left="9.45" Top="122.85" Width="699.3" Diagonal="true"/>
+      <LineObject Name="Line78" Left="9.45" Top="141.75" Width="699.3" Diagonal="true"/>
+      <LineObject Name="Line79" Left="9.45" Top="207.9" Width="699.3" Diagonal="true"/>
+      <LineObject Name="Line81" Left="378" Top="122.85" Height="132.3"/>
+      <TextObject Name="Text102" Left="9.45" Top="125.87" Width="274.05" Height="18.9" Text="Amount Of Tax Subject To Reverse Charge (Yes/No)" Font="Arial, 8pt"/>
+      <TextObject Name="Text103" Left="9.45" Top="151.2" Width="311.85" Height="18.9" Text="Certified that the particulars given above are true and correct" Font="Arial, 8pt"/>
+      <TextObject Name="Text104" Left="387.45" Top="151.2" Width="160.65" Height="18.9" Text="Electronic Reference Number" Font="Arial, 8pt"/>
+      <TextObject Name="Text105" Left="387.45" Top="217.35" Width="28.35" Height="18.9" Text="For" Font="Arial, 8pt"/>
+      <TextObject Name="Text106" Left="406.35" Top="217.35" Width="189" Height="18.9" Text="[SPReportPurchaseBill.CompName]" Font="Arial, 8pt"/>
+      <LineObject Name="Line80" Left="9.45" Top="255.15" Width="699.3" Diagonal="true"/>
+      <TextObject Name="Text107" Left="434.7" Top="236.25" Width="141.75" Height="18.9" Text="Authorised Signatory" Font="Arial, 6pt"/>
+      <TextObject Name="Text108" Left="189" Top="47.25" Width="226.8" Height="28.35" CanGrow="true" CanBreak="false" Text="[SPReportPurchaseBill.BasicinInWord]" Font="Arial, 6pt"/>
+      <TextObject Name="Text109" Left="18.9" Top="66.15" Width="189" Height="18.9" Text="Total GST Value(In Words):" Font="Arial, 9pt, style=Bold"/>
+      <TextObject Name="Text110" Left="189" Top="71.82" Width="226.8" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportPurchaseBill.GSTInWord]" Font="Arial, 6pt"/>
+      <TextObject Name="Text111" Left="18.9" Top="103.95" Width="170.1" Height="18.9" Text="Total Net Value(In Words):" Font="Arial, 9pt, style=Bold"/>
+      <TextObject Name="Text112" Left="179.55" Top="107.73" Width="207.9" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportPurchaseBill.NetAmtInWord]" Font="Arial, 6pt"/>
+      <TextObject Name="Text113" Left="548.1" Top="75.6" Width="85.05" Height="18.9" Text="GST Total:" Font="Arial, 9pt, style=Bold"/>
+      <TextObject Name="Text114" Left="548.1" Top="103.95" Width="85.05" Height="18.9" Text="Net Total:" Font="Arial, 9pt, style=Bold"/>
+      <TextObject Name="Text115" Left="633.15" Top="75.6" Width="75.6" Height="18.9" Text="[SPReportPurchaseBill.TotalGSTAmt]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 9pt" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text116" Left="633.15" Top="103.95" Width="75.6" Height="18.9" Text="[SPReportPurchaseBill.NetAmt]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 9pt" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text119" Left="652.05" Top="47.25" Width="94.5" Height="18.9" Text="[Total5]" Font="Arial, 9pt"/>
+      <ChildBand Name="Child2" Top="431.8" Width="718.2" Height="37.8" FillUnusedSpace="true">
+        <LineObject Name="Line25" Left="9.45" Height="37.8"/>
+        <LineObject Name="Line24" Left="9.45" Top="37.8" Width="699.3" Diagonal="true"/>
+        <LineObject Name="Line26" Left="28.35" Height="37.8"/>
+        <LineObject Name="Line27" Left="160.65" Height="37.8"/>
+        <LineObject Name="Line28" Left="207.9" Height="37.8"/>
+        <LineObject Name="Line29" Left="264.6" Height="37.8"/>
+        <LineObject Name="Line30" Left="289.17" Height="37.8"/>
+        <LineObject Name="Line31" Left="321.68" Height="37.8"/>
+        <LineObject Name="Line32" Left="349.65" Height="37.8"/>
+        <LineObject Name="Line33" Left="396.9" Height="37.8"/>
+        <LineObject Name="Line34" Left="444.15" Height="37.8"/>
+        <LineObject Name="Line38" Left="485.73" Height="37.8"/>
+        <LineObject Name="Line39" Left="510.3" Height="37.8"/>
+        <LineObject Name="Line40" Left="561.33" Height="37.8"/>
+        <LineObject Name="Line41" Left="636.93" Height="37.8"/>
+        <LineObject Name="Line42" Left="661.5" Height="37.8"/>
+        <LineObject Name="Line43" Left="708.75" Height="37.8"/>
+        <LineObject Name="Line74" Left="585.9" Height="37.8"/>
+      </ChildBand>
+    </ReportSummaryBand>
+    <PageFooterBand Name="PageFooter1" Top="740.6" Width="718.2"/>
+  </ReportPage>
+</Report>

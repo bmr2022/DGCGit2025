@@ -1,0 +1,215 @@
+﻿@model eTactWeb.DOM.Models.Master.WorkCenterMasterModel
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+@*<div class="d-flex align-items-center p-3 my-2 text-white rounded shadow-sm bg-gradient" style="background-color:darkcyan;">
+    <div class="lh-1">
+    </div>
+    </div>*@
+<form asp-action="WorkCenterMaster" autocomplete="on" class="form-horizontal" asp-antiforgery=true>
+    <div class="card rounded shadow-lg">
+        <div class="card-header card-headerBG text-light justify-content-center bg-gradient">
+            <h5>
+                <strong>WorkCenter Master</strong>
+                <span class="d-flex float-end" style="margin-top:-2px;">
+                    <div class="col-auto">
+                        @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                        <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                            @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                        <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                            RESET
+                        </a>
+                    </div>
+
+                    <a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                        <i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
+                        Dashboard
+                    </a>
+                    <a class="btn btn-sm btn-secondary" href="#" onclick="back();"><i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>BACK</a>
+                    @if (Model.Mode == "U")
+                    {
+                        <div class="col-auto">
+                            <button type="submit" class="btn btn-primary btn-sm" id="submitBTN">
+                                <i class="fa-solid fa-chevron-circle-right"></i> UPDATE
+                            </button>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-auto">
+                            @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
+                            <button type="submit" class="btn btn-primary btn-sm" id="submitBTN">
+                                <i class="fa-solid fa-chevron-circle-right"></i>
+                                SUBMIT
+                            </button>
+                        </div>
+                    }
+
+                </span>
+            </h5>
+        </div>
+        <div class="card-body bg-light">
+            <div class="accordion shadow-lg" id="accordionItemCategory">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="H_ItemCategoryDetail">
+                        <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_WorkCenterMasterDetail"
+                                aria-expanded="true" aria-controls="B_WorkCenterMasterDetail">
+                            <strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>WorkCenter Master Detail</strong>
+                            <small class="p-3"></small>
+                        </button>
+                    </h2>
+                    <div id="B_ItemCategoryDetail" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_ItemCategoryDetail">
+                        <div class="accordion-body">
+                            <div class="row g-3">
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="WCID" class="form-label">WCID</label>
+                                    <input asp-for="WCID" class="form-control" readonly />
+                                    <input asp-for="Mode" class="form-control" type="hidden" />
+                                </div>
+
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="WorkCenterCode" class="form-label"> WorkCenter Code</label>
+                                    <input asp-for="WorkCenterCode" class="form-control" />
+                                </div>
+
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="WorkCenterDescription" class="form-label">WorkCenter Description</label>
+                                    <input asp-for="WorkCenterDescription" class="form-control" />
+                                </div>
+
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="WorkCenterType" class="form-label"> WorkCenter Type</label>
+                                  @*   <input asp-for="WorkCenterType" class="form-control" /> *@
+                                    <select class="form-select" asp-for="WorkCenterType">
+                                        <option value="">-Select-</option>
+                                        <option value="Production">Production</option>
+                                        <option value="Quality" selected>Quality</option>
+                                        <option value="R&D" selected>R&D</option>
+
+                                    </select>
+                                    @*   <input type="hidden" id="MainCategory" value="@Model.Main_Category_Type" /> *@
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="divDetail">
+                </div>
+            </div>
+        </div>
+        <div class="card-footer p-3">
+            <div class="row justify-content-between">
+                @*  <div class="col-auto">
+                <a class="btn btn-sm btn-secondary" href="#" onclick="back();"><i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>BACK</a>
+                </div> *@
+                @* @if (@Model.Mode != "V")
+                {
+                <div class="col-auto">
+                <button type="reset" class="btn btn-outline-danger">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-repeat" viewBox="0 0 16 16">
+                <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z"></path>
+                <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z"></path>
+                </svg>
+                RESET
+                </button>
+                </div>
+                if (@Model.Mode == "U")
+                {
+                <div class="col-auto">
+                <button type="submit" class="btn btn-outline-success"><i class="fa-solid fa-floppy-disks fa-fw fa-lg"></i> UPDATE</button>
+                </div>
+                }
+                else
+                {
+                <div class="col-auto">
+                <button type="submit" class="btn btn-outline-primary"><i class="fa-solid fa-floppy-disks fa-fw fa-lg"></i> SUBMIT</button>
+                </div>
+                }
+                } *@
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            GetFormRights();
+            if ($('#Mode').val() == "U") {
+
+                CheckBeforeUpdate();
+            }
+
+        }
+                        function GetFormRights() {
+
+                $.ajax({
+                    url: "@Url.Action("GetFormRights")",
+                    type: "POST",
+                    success: function (data) {
+
+                        if (data != null) {
+                            var obj = $.parseJSON(data);
+                            console.log(obj);
+                            var optAll = obj.Result.Table[0].OptAll;
+                            var optSave = obj.Result.Table[0].OptSave;
+                            var optUpdate = obj.Result.Table[0].OptUpdate;
+                            var optDelete = obj.Result.Table[0].OptDelete;
+                            var optView = obj.Result.Table[0].OptView;
+                            if (!optAll) {
+                                if (!optSave) {
+                                    $("#submitBTN").prop("disabled", true);
+                                }
+                                if (!(optUpdate || optDelete || optView)) {
+                                    $(".DashBoard")
+                                        .addClass("disabled-link")
+                                        .on("click", function (e) {
+                                            e.preventDefault(); // Prevents clicking the link
+                                        });
+                                }
+                            }
+                        }
+                    },
+                    error: function (errMsg) {
+                        $.notify(errMsg, { position: "top center", className: "error" });
+                    }
+                });
+                calculateSumAndSetValues();
+            }
+
+
+                        function CheckBeforeUpdate() {
+
+                $.ajax({
+                    url: '@Url.Action("CheckBeforeUpdate")',
+                    type: "POST",
+                    data: { "Type": $('#MachineId').val() },
+                    success: function(data) {
+
+                        console.log("success");
+                        if (data != null) {
+                            var obj = $.parseJSON(data);
+                            if (obj.Result != null) {
+                                if (obj.Result.Table[0].Column1 > 0) {
+                                    $.notify("You cannot update this process this process already exists", "error");
+                                }
+                                else {
+                                    $('form').submit();
+                                }
+                            }
+                        }
+                    },
+                    error: function(response) {
+                        alert(response.responseText);
+                    },
+                    failure: function(response) {
+                        alert(response.responseText);
+                    }
+                });
+            }
+
+    </script>
+}

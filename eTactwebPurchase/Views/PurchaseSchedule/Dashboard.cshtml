@@ -440,63 +440,62 @@
 
             XLSX.writeFile(wb, "PendProductionSchGrid.xlsx");
         });
-                $("#sendToPDF").click(function () {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
+              $("#sendToPDF").click(function () {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF("l", "pt", "a3"); // Landscape, A3 for wide tables
 
-            const table = document.querySelector("#PSDashboard");
-            const rows = table.querySelectorAll("tr");
+        const table = document.querySelector("#PSDashboard");
+        const rows = table.querySelectorAll("tr");
+        if (rows.length === 0) return;
 
-            const headerRow = rows[0];
-            const headers = [];
-            const visibleIndexes = [];
+        const headers = [];
+        const body = [];
 
-            
-            let wantedColumns = [];
-            headerRow.querySelectorAll("th").forEach((cell) => {
-                wantedColumns.push(cell.textContent.trim());
-            });
+        // Define columns to remove
+                            const removeColumns = ["Action", "PO Entry Id",  "Created On","Delivery Date","Item Amend No","Branch","Alt Pend Qty	","Entry From Machine","Entry ID"];
 
-       
-            const removeColumns = ["Created On","PO Entry Id", "Action"];
-            wantedColumns = wantedColumns.filter(col => !removeColumns.includes(col));
-        
-            
-
-           
-            headerRow.querySelectorAll("th").forEach((cell, index) => {
-                let title = cell.textContent.trim();
-                if (wantedColumns.includes(title)) {
-                    headers.push(title);
-                    visibleIndexes.push(index);
-                }
-            });
-
-           
-            const body = [];
-            for (let i = 1; i < rows.length; i++) {
-                const rowData = [];
-                const cells = rows[i].querySelectorAll("td, th");
-
-                visibleIndexes.forEach((index) => {
-                    const cell = cells[index];
-                    if (cell) rowData.push(cell.textContent.trim());
-                });
-
-                body.push(rowData);
+        // Process headers
+        const ths = rows[0].querySelectorAll("th");
+        ths.forEach((th, index) => {
+            const text = th.textContent.trim();
+            if (!removeColumns.includes(text)) {
+                headers.push({ text: text, idx: index }); // store both text and original index
             }
+        });
 
-            
-            doc.autoTable({
-                head: [headers],
-                body: body,
-                styles: { fontSize: 8, cellPadding: 2 },
-                headStyles: { fillColor: [41, 128, 185] },
-                margin: { top: 20 }
+        // Process body rows
+        for (let i = 1; i < rows.length; i++) {
+            const tr = rows[i];
+            const tds = tr.querySelectorAll("td, th");
+            const rowData = [];
+
+            headers.forEach(h => {
+                rowData.push(tds[h.idx] ? tds[h.idx].textContent.trim() : "");
             });
 
-            doc.save("PSDashboard_Selected.pdf");
+            body.push(rowData);
+        }
+
+        // Generate PDF
+        doc.autoTable({
+            head: [headers.map(h => h.text)],
+            body: body,
+            startY: 20,
+            tableWidth: "auto",
+            styles: { fontSize: 8, cellPadding: 3 },
+            headStyles: { fillColor: [41, 128, 185], textColor: 255 },
+            didParseCell: function (data) {
+                if (data.cell.width < 30) data.cell.width = 30;
+                if (data.cell.width > 80) data.cell.width = 80;
+            },
+            margin: { top: 20, left: 10, right: 10 }
         });
+
+        doc.save("PSDashboard.pdf");
+    });
+
+           
+
 
         function GetDetailData() {
             var data = $('#SParam').serialize();

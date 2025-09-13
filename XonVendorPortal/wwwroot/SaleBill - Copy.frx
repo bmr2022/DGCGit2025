@@ -1,0 +1,426 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="01/17/2025 13:32:22" ReportInfo.Modified="03/20/2025 13:25:41" ReportInfo.CreatorVersion="2023.2.0.0">
+  <ScriptText>using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Windows.Forms;
+using System.Drawing;
+using System.Data;
+using FastReport;
+using FastReport.Data;
+using FastReport.Dialog;
+using FastReport.Barcode;
+using FastReport.Table;
+using FastReport.Utils;
+
+namespace FastReport
+{
+  public class ReportScript
+  {
+    
+  }
+  
+}
+</ScriptText>
+  <Dictionary>
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqGVEBw+bD1302HhodPOki0mybnpuZKVLkWXI4YSXvoVCXDdUbv1TZOS4Qk6JbQnwOqsV1FfDeqhde6q/moiAFtdCf8tzhZYxmHtVjeNEX2LyPiNI0VAF4oQi2Zi6puF/41rfxFvqIp/AKhkw/W7cl2AGXGqjboO+eOOHOuopFwq3VLXkj6Ev8T82/8Qsdc+RSkXY0Q771WTXC1k3jljbBaA==">
+      <TableDataSource Name="Table1" Alias="SPReportSaleBill" DataType="System.Int32" Enabled="true" SelectCommand="exec SPReportSaleBill  @EntryId = @entryparam, @yearCode = @yearparam       ">
+        <Column Name="BillNo" DataType="System.String"/>
+        <Column Name="BillDate" DataType="System.DateTime"/>
+        <Column Name="SaleBillJobwork" DataType="System.String"/>
+        <Column Name="PerformaInvNo" DataType="System.String"/>
+        <Column Name="BILLAgainstWarrenty" DataType="System.String"/>
+        <Column Name="CustomerName" DataType="System.String"/>
+        <Column Name="AccountCode" DataType="System.Int64"/>
+        <Column Name="CustAddress" DataType="System.String"/>
+        <Column Name="GSTNO" DataType="System.String"/>
+        <Column Name="SupplyType" DataType="System.String"/>
+        <Column Name="StateName" DataType="System.String"/>
+        <Column Name="StateCode" DataType="System.String"/>
+        <Column Name="CITY" DataType="System.String"/>
+        <Column Name="CountryOfSupply" DataType="System.String"/>
+        <Column Name="pincode" DataType="System.String"/>
+        <Column Name="country" DataType="System.String"/>
+        <Column Name="mobileno" DataType="System.String"/>
+        <Column Name="contactperson" DataType="System.String"/>
+        <Column Name="panno" DataType="System.String"/>
+        <Column Name="PersonName" DataType="System.String"/>
+        <Column Name="EmailId" DataType="System.String"/>
+        <Column Name="MobileNo1" DataType="System.String"/>
+        <Column Name="ConsigneeAccountcode" DataType="System.Int64"/>
+        <Column Name="ConsigneeName" DataType="System.String"/>
+        <Column Name="ConsigneeAddress" DataType="System.String"/>
+        <Column Name="bankaccount_no" DataType="System.String"/>
+        <Column Name="bankAddress" DataType="System.String"/>
+        <Column Name="ifsccode" DataType="System.String"/>
+        <Column Name="PartyCode" DataType="System.String"/>
+        <Column Name="DistanceKM" DataType="System.Decimal"/>
+        <Column Name="vehicleNo" DataType="System.String"/>
+        <Column Name="TransporterName" DataType="System.String"/>
+        <Column Name="DispatchTo" DataType="System.String"/>
+        <Column Name="DispatchThrough" DataType="System.String"/>
+        <Column Name="DocTypeAccountCode" DataType="System.Int64"/>
+        <Column Name="DocumentName" DataType="System.String"/>
+        <Column Name="PaymentTerm" DataType="System.Int64"/>
+        <Column Name="PartCode" DataType="System.String"/>
+        <Column Name="ItemName" DataType="System.String"/>
+        <Column Name="ItemCode" DataType="System.Int64"/>
+        <Column Name="HSNNo" DataType="System.String"/>
+        <Column Name="BillQty" DataType="System.Double"/>
+        <Column Name="Unit" DataType="System.String"/>
+        <Column Name="AltQty" DataType="System.Double"/>
+        <Column Name="AltUnit" DataType="System.String"/>
+        <Column Name="NoofCase" DataType="System.Double"/>
+        <Column Name="ItemWeight" DataType="System.Double"/>
+        <Column Name="NoofPcs" DataType="System.Int64"/>
+        <Column Name="BillRate" DataType="System.Double"/>
+        <Column Name="RateInOtherCurr" DataType="System.Double"/>
+        <Column Name="DiscPer" DataType="System.Double"/>
+        <Column Name="DiscRs" DataType="System.Double"/>
+        <Column Name="ItemAmount" DataType="System.Double"/>
+        <Column Name="CustomerPartCode" DataType="System.String"/>
+        <Column Name="MRP" DataType="System.Double"/>
+        <Column Name="OriginalMRP" DataType="System.Double"/>
+        <Column Name="ItemSize" DataType="System.String"/>
+        <Column Name="ItemColor" DataType="System.String"/>
+        <Column Name="PacketsDetail" DataType="System.String"/>
+        <Column Name="OtherDetail" DataType="System.String"/>
+        <Column Name="ItemRemark" DataType="System.String"/>
+        <Column Name="CostCenterid" DataType="System.Int64"/>
+        <Column Name="CostCenterName" DataType="System.String"/>
+        <Column Name="ItemBasicAmount" DataType="System.Double"/>
+        <Column Name="QTYXRATE" DataType="System.Double"/>
+        <Column Name="disAmt" DataType="System.Double"/>
+        <Column Name="TAXNAME" DataType="System.String"/>
+        <Column Name="TaxPer" DataType="System.Double"/>
+        <Column Name="TAxAmount" DataType="System.Double"/>
+        <Column Name="TAXEXP" DataType="System.String"/>
+        <Column Name="TaxonExp" DataType="System.Double"/>
+        <Column Name="TaxRemarks" DataType="System.String"/>
+        <Column Name="TaxRefundable" DataType="System.String"/>
+        <Column Name="RoundOff" DataType="System.String"/>
+        <Column Name="CGSTPER" DataType="System.Double"/>
+        <Column Name="CGSTAMT" DataType="System.Double"/>
+        <Column Name="SGSTPER" DataType="System.Double"/>
+        <Column Name="SGSTAMT" DataType="System.Double"/>
+        <Column Name="IGSTPER" DataType="System.Double"/>
+        <Column Name="IGSTAMT" DataType="System.Double"/>
+        <Column Name="TotalGSTAmt" DataType="System.Double"/>
+        <Column Name="BasicinInWord" DataType="System.String"/>
+        <Column Name="NetAmtInWord" DataType="System.String"/>
+        <Column Name="GSTInWord" DataType="System.String"/>
+        <Column Name="CurrencyId" DataType="System.Int64"/>
+        <Column Name="CurrencyName" DataType="System.String"/>
+        <Column Name="BillAmt" DataType="System.Double"/>
+        <Column Name="BillAmtWord" DataType="System.String"/>
+        <Column Name="TaxableAmt" DataType="System.Double"/>
+        <Column Name="GSTAmount" DataType="System.Double"/>
+        <Column Name="INVNetAmt" DataType="System.Double"/>
+        <Column Name="BillDiscountPercent" DataType="System.Double"/>
+        <Column Name="BillDiscountAmt" DataType="System.Double"/>
+        <Column Name="currencyId1" DataType="System.Int64"/>
+        <Column Name="TypeItemServAssets" DataType="System.String"/>
+        <Column Name="CancelBill" DataType="System.String"/>
+        <Column Name="Canceldate" DataType="System.DateTime"/>
+        <Column Name="CancelBy" DataType="System.Int64"/>
+        <Column Name="BankName" DataType="System.String"/>
+        <Column Name="Ewaybillno" DataType="System.String"/>
+        <Column Name="DocketNo" DataType="System.String"/>
+        <Column Name="dispatchLocation" DataType="System.String"/>
+        <Column Name="ExchangeRate" DataType="System.Double"/>
+        <Column Name="DispatchDelayReason" DataType="System.String"/>
+        <Column Name="Commodity" DataType="System.String"/>
+        <Column Name="EInvNo" DataType="System.String"/>
+        <Column Name="EinvGenerated" DataType="System.String"/>
+        <Column Name="OursalespersonId" DataType="System.Int64"/>
+        <Column Name="Remark" DataType="System.String"/>
+        <Column Name="CC" DataType="System.String"/>
+        <Column Name="UID" DataType="System.Int64"/>
+        <Column Name="CreatedBY" DataType="System.Int64"/>
+        <Column Name="CreatedOn" DataType="System.DateTime"/>
+        <Column Name="UpdatedBY" DataType="System.Int64"/>
+        <Column Name="UpdatedOn" DataType="System.DateTime"/>
+        <Column Name="SONO" DataType="System.String"/>
+        <Column Name="CustOrderNo" DataType="System.String"/>
+        <Column Name="SOYearCode" DataType="System.Int64"/>
+        <Column Name="SODate" DataType="System.DateTime"/>
+        <Column Name="SchNo" DataType="System.String"/>
+        <Column Name="SaleSchYearCode" DataType="System.Int64"/>
+        <Column Name="Schdate" DataType="System.DateTime"/>
+        <Column Name="CompName" DataType="System.String"/>
+        <Column Name="CompAdd" DataType="System.String"/>
+        <Column Name="CompPinCode" DataType="System.String"/>
+        <Column Name="CompPhone" DataType="System.String"/>
+        <Column Name="CompStateCode" DataType="System.String"/>
+        <Column Name="CompStateName" DataType="System.String"/>
+        <Column Name="CompPANNo" DataType="System.String"/>
+        <Column Name="CompGSTNO" DataType="System.String"/>
+        <CommandParameter Name="entryparam" Expression="entryparam"/>
+        <CommandParameter Name="yearparam" Expression="yearparam"/>
+      </TableDataSource>
+    </MsSqlDataConnection>
+    <Parameter Name="MyParameter" DataType="System.String" AsString=""/>
+    <Parameter Name="copyType" DataType="System.String" AsString=""/>
+    <Total Name="Total" Expression="[SPReportSaleBill.BillQty]" Evaluator="Data1" PrintOn="ReportSummary1" ResetAfterPrint="false"/>
+    <Total Name="Total1" Expression="[SPReportSaleBill.ItemAmount]" Evaluator="Data1" PrintOn="ReportSummary1" ResetAfterPrint="false"/>
+    <Total Name="Total2" Expression="[SPReportSaleBill.TaxableAmt]" Evaluator="Data1" PrintOn="ReportSummary1" ResetAfterPrint="false"/>
+    <Total Name="Total3" Expression="[SPReportSaleBill.CGSTAMT]" Evaluator="Data1" PrintOn="ReportSummary1" ResetAfterPrint="false"/>
+    <Total Name="Total4" Expression="[SPReportSaleBill.SGSTAMT]" Evaluator="Data1" PrintOn="ReportSummary1" ResetAfterPrint="false"/>
+    <Total Name="Total5" Expression="[SPReportSaleBill.IGSTAMT]" Evaluator="Data1" PrintOn="ReportSummary1" ResetAfterPrint="false"/>
+    <Total Name="TotalCGST" Expression="[SPReportSaleBill.CGSTAMT]" Evaluator="Data1" PrintOn="ReportSummary1"/>
+    <Total Name="TotalSGST" Expression="[SPReportSaleBill.SGSTAMT]" Evaluator="Data1" PrintOn="ReportSummary1"/>
+    <Total Name="TotalIGST" Expression="[SPReportSaleBill.IGSTAMT]" Evaluator="Data1" PrintOn="ReportSummary1"/>
+  </Dictionary>
+  <ReportPage Name="Page1" Watermark.Font="Arial, 60pt">
+    <ReportTitleBand Name="ReportTitle1" Width="718.2" Height="463.05">
+      <TextObject Name="Text1" Left="292.95" Top="9.45" Width="170.1" Height="28.35" Text="Tax Invoice" Font="Arial, 16pt, style=Bold" TextFill.Color="Red"/>
+      <TextObject Name="Text2" Left="283.5" Top="47.25" Width="245.7" Height="18.9" Text="[SPReportSaleBill.CompName]" Font="Arial, 12pt"/>
+      <TextObject Name="Text3" Left="18.9" Top="94.5" Width="47.25" Height="18.9" Text="IRN:" Font="Arial, 10pt"/>
+      <TextObject Name="Text4" Left="18.9" Top="113.4" Width="56.7" Height="18.9" Text="Ack No:" Font="Arial, 10pt"/>
+      <TextObject Name="Text5" Left="18.9" Top="132.3" Width="75.6" Height="18.9" Text="Ack Date:" Font="Arial, 10pt"/>
+      <LineObject Name="Line1" Left="9.45" Top="151.2" Width="699.3" Diagonal="true"/>
+      <LineObject Name="Line3" Left="9.45" Height="463.05"/>
+      <LineObject Name="Line4" Left="708.75" Height="463.05"/>
+      <TextObject Name="Text6" Left="18.9" Top="160.65" Width="94.5" Height="18.9" Text="GSTIN Number:" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text8" Left="18.9" Top="179.55" Width="47.25" Height="18.9" Text="Name:" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text9" Left="18.9" Top="198.45" Width="56.7" Height="18.9" Text="Address:" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text10" Left="18.9" Top="217.35" Width="75.6" Height="18.9" Text="Invoice No:" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text11" Left="18.9" Top="236.25" Width="85.05" Height="18.9" Text="Invoice Date:" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text12" Left="103.95" Top="179.55" Width="113.4" Height="18.9" Text="[SPReportSaleBill.CompName]" Font="Arial, 8pt"/>
+      <TextObject Name="Text13" Left="103.95" Top="198.45" Width="132.3" Height="18.9" Text="[SPReportSaleBill.CompAdd]" Font="Arial, 8pt"/>
+      <TextObject Name="Text14" Left="103.95" Top="217.35" Width="113.4" Height="18.9" Text="[SPReportSaleBill.BillNo]" Font="Arial, 8pt"/>
+      <TextObject Name="Text15" Left="103.95" Top="236.25" Width="113.4" Height="18.9" Text="[SPReportSaleBill.BillDate]" Format="Date" Format.Format="d" Font="Arial, 8pt"/>
+      <TextObject Name="Text16" Left="255.15" Top="160.65" Width="56.7" Height="18.9" Text="PAN No:" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text17" Left="103.95" Top="160.65" Width="122.85" Height="18.9" Text="[SPReportSaleBill.CompGSTNO]" Font="Arial, 8pt"/>
+      <TextObject Name="Text18" Left="311.85" Top="160.65" Width="122.85" Height="18.9" Text="[SPReportSaleBill.CompPANNo]" Font="Arial, 8pt"/>
+      <TextObject Name="Text19" Left="255.15" Top="179.55" Width="66.15" Height="18.9" Text="MSME No:" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text20" Left="255.15" Top="198.45" Width="37.8" Height="18.9" Text="Type:" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text21" Left="463.05" Top="160.65" Width="122.85" Height="18.9" Text="Transportation Mode:" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text22" Left="463.05" Top="179.55" Width="141.75" Height="28.35" Text="(Apply Of Supply Goods Veh. No.:" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text23" Left="463.05" Top="207.9" Width="132.3" Height="18.9" Text="Date &amp; Time Of Supply:" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text24" Left="463.05" Top="226.8" Width="103.95" Height="18.9" Text="Place Of Supply:" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text25" Left="463.05" Top="245.7" Width="132.3" Height="18.9" Text="Payment Terms:(Days)" Font="Arial, 8pt, style=Bold"/>
+      <LineObject Name="Line5" Left="9.45" Top="264.6" Width="699.3" Diagonal="true"/>
+      <LineObject Name="Line6" Left="9.45" Top="283.5" Width="699.3" Diagonal="true"/>
+      <TextObject Name="Text26" Left="18.9" Top="266.87" Width="160.65" Height="18.9" Text="Details Of Receiver(Billed to)" Font="Arial, 8pt, style=Bold"/>
+      <LineObject Name="Line8" Left="359.1" Top="264.6" Height="198.45"/>
+      <TextObject Name="Text27" Left="368.55" Top="266.87" Width="189" Height="18.9" Text="Details Of consignee(Shipped to)" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text28" Left="18.9" Top="292.95" Width="47.25" Height="18.9" Text="Name:" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text29" Left="66.15" Top="292.95" Width="179.55" Height="28.35" Text="[SPReportSaleBill.CustomerName]" Font="Arial, 8pt"/>
+      <TextObject Name="Text30" Left="18.9" Top="321.3" Width="56.7" Height="18.9" Text="Address:" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text31" Left="557.55" Top="226.8" Width="151.2" Height="18.9" Text="[SPReportSaleBill.SupplyType]" Font="Arial, 8pt"/>
+      <TextObject Name="Text32" Left="18.9" Top="349.65" Width="75.6" Height="18.9" Text="City&amp;State:" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text33" Left="85.05" Top="349.65" Width="37.8" Height="18.9" Text="[SPReportSaleBill.CITY]" Font="Arial, 8pt"/>
+      <TextObject Name="Text34" Left="122.85" Top="349.65" Width="47.25" Height="18.9" Text="[SPReportSaleBill.CITY]" Font="Arial, 8pt"/>
+      <TextObject Name="Text35" Left="18.9" Top="378" Width="103.95" Height="18.9" Text="GSTIN/Unique ID:" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text36" Left="113.4" Top="378" Width="113.4" Height="18.9" Text="[SPReportSaleBill.GSTNO]" Font="Arial, 8pt"/>
+      <TextObject Name="Text37" Left="226.8" Top="378" Width="56.7" Height="18.9" Text="Pan No:" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text38" Left="18.9" Top="406.35" Width="75.6" Height="18.9" Text="State Code:" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text39" Left="85.05" Top="406.35" Width="226.8" Height="18.9" Text="[SPReportSaleBill.StateCode]" Font="Arial, 8pt"/>
+      <TextObject Name="Text40" Left="18.9" Top="434.7" Width="75.6" Height="18.9" Text="PoNo&amp;Date:" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text41" Left="94.5" Top="434.7" Width="151.2" Height="18.9" Text="[SPReportSaleBill.panno]" Font="Arial, 8pt"/>
+      <TextObject Name="Text42" Left="368.55" Top="292.95" Width="47.25" Height="18.9" Text="Name:" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text43" Left="368.55" Top="321.3" Width="56.7" Height="18.9" Text="Address:" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text44" Left="368.55" Top="349.65" Width="66.15" Height="18.9" Text="City&amp;State:" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text45" Left="368.55" Top="378" Width="75.6" Height="18.9" Text="State Code:" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text90" Left="75.6" Top="321.3" Width="226.8" Height="18.9" Text="[SPReportSaleBill.CustAddress]" Font="Arial, 8pt"/>
+      <TextObject Name="Text91" Left="274.05" Top="378" Width="85.05" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportSaleBill.panno]" Font="Arial, 8pt"/>
+      <TextObject Name="Text92" Left="434.7" Top="292.95" Width="207.9" Height="18.9" Text="[SPReportSaleBill.ConsigneeName]" Font="Arial, 8pt"/>
+      <TextObject Name="Text93" Left="434.7" Top="321.3" Width="207.9" Height="18.9" Text="[SPReportSaleBill.ConsigneeAddress]" Font="Arial, 8pt"/>
+      <TextObject Name="Text94" Left="604.8" Top="179.55" Width="94.5" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportSaleBill.vehicleNo]" Font="Arial, 8pt"/>
+      <TextObject Name="Text95" Left="576.45" Top="160.65" Width="132.3" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportSaleBill.TransporterName]" Font="Arial, 8pt"/>
+      <TextObject Name="Text96" Left="453.6" Top="378" Width="198.45" Height="18.9" Text="[SPReportSaleBill.StateCode]" Font="Arial, 8pt"/>
+      <PictureObject Name="Picture1" Left="10.96" Top="-9.45" Width="151.2" Height="94.5" ImageFormat="Png" Image="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"/>
+      <LineObject Name="Line81" Left="9.45" Width="699.3" Diagonal="true"/>
+      <TextObject Name="txtCopyTag" Left="576.45" Top="18.9" Width="94.5" Height="18.9" Text="[copyType]" HorzAlign="Right" Font="Arial, 8pt"/>
+    </ReportTitleBand>
+    <PageHeaderBand Name="PageHeader1" Top="467.99" Width="718.2" Height="47.68">
+      <LineObject Name="Line9" Left="9.45" Top="47.25" Width="699.3" Diagonal="true"/>
+      <LineObject Name="Line10" Left="9.45" Height="47.25"/>
+      <LineObject Name="Line11" Left="708.75" Height="47.25"/>
+      <LineObject Name="Line13" Left="170.1" Height="47.25"/>
+      <LineObject Name="Line14" Left="217.35" Height="47.25"/>
+      <LineObject Name="Line15" Left="274.05" Height="47.25"/>
+      <LineObject Name="Line16" Left="302.4" Height="47.25"/>
+      <LineObject Name="Line17" Left="340.2" Height="47.25"/>
+      <LineObject Name="Line18" Left="368.55" Height="47.25"/>
+      <LineObject Name="Line19" Left="396.9" Height="47.25"/>
+      <LineObject Name="Line20" Left="454.73" Height="47.25"/>
+      <LineObject Name="Line21" Left="502.74" Height="47.25"/>
+      <LineObject Name="Line22" Left="568.13" Height="47.25"/>
+      <LineObject Name="Line23" Left="641.84" Height="47.25"/>
+      <LineObject Name="Line24" Left="521.64" Top="18.95" Height="28.73"/>
+      <LineObject Name="Line25" Left="589.68" Top="18.9" Height="28.35"/>
+      <LineObject Name="Line26" Left="664.52" Top="18.9" Height="28.35"/>
+      <LineObject Name="Line27" Left="500.85" Top="18.9" Width="207.9" Diagonal="true"/>
+      <TextObject Name="Text46" Left="9.45" Top="9.45" Width="28.35" Height="28.35" Text="Sr No" Font="Arial, 8pt"/>
+      <TextObject Name="Text47" Left="28.35" Top="9.45" Width="122.85" Height="28.35" Text="Description Of Goods/&#13;&#10;Service" Font="Arial, 8pt"/>
+      <TextObject Name="Text49" Left="226.8" Top="9.45" Width="28.35" Height="18.9" Text="Qty" Font="Arial, 8pt"/>
+      <TextObject Name="Text50" Left="274.05" Top="9.45" Width="28.35" Height="18.9" Text="Unit" Font="Arial, 8pt"/>
+      <TextObject Name="Text51" Left="302.4" Top="9.45" Width="37.8" Height="18.9" Text="Rate" Font="Arial, 8pt"/>
+      <TextObject Name="Text53" Left="368.55" Top="9.45" Width="37.8" Height="37.8" Text="Disc Amt" Font="Arial, 8pt"/>
+      <TextObject Name="Text54" Left="415.8" Top="9.45" Width="37.8" Height="18.9" Text="Total" Font="Arial, 8pt"/>
+      <TextObject Name="Text55" Left="453.6" Top="9.45" Width="47.25" Height="37.8" Text="Taxable Value" Font="Arial, 8pt"/>
+      <TextObject Name="Text56" Left="510.3" Width="47.25" Height="18.9" Text="CGST" Font="Arial, 8pt"/>
+      <TextObject Name="Text57" Left="585.9" Width="37.8" Height="18.9" Text="SGST" Font="Arial, 8pt"/>
+      <TextObject Name="Text58" Left="652.05" Width="37.8" Height="18.9" Text="IGST" Font="Arial, 8pt"/>
+      <TextObject Name="Text59" Left="500.85" Top="28.35" Width="28.35" Height="18.9" Text="Rate" Font="Arial, 6pt"/>
+      <TextObject Name="Text60" Left="529.2" Top="28.35" Width="37.8" Height="9.45" Text="Amount" Font="Arial, 6pt"/>
+      <TextObject Name="Text61" Left="595.35" Top="28.35" Width="37.8" Height="9.45" Text="Amount" Font="Arial, 6pt"/>
+      <TextObject Name="Text62" Left="670.95" Top="28.35" Width="37.8" Height="9.45" Text="Amount" Font="Arial, 6pt"/>
+      <TextObject Name="Text63" Left="567" Top="28.35" Width="28.35" Height="18.9" Text="Rate" Font="Arial, 6pt"/>
+      <TextObject Name="Text64" Left="642.6" Top="28.35" Width="28.35" Height="18.9" Text="Rate" Font="Arial, 6pt"/>
+      <TextObject Name="Text48" Left="179.55" Top="3.4" Width="37.8" Height="37.8" Text="HSN/ SAC Code" Font="Arial, 7pt"/>
+      <LineObject Name="Line12" Left="28.35" Top="0.17" Height="47.25"/>
+      <TextObject Name="Text52" Left="340.2" Top="9.45" Width="28.35" Height="37.8" Text="Disc Per" Font="Arial, 8pt"/>
+      <LineObject Name="Line7" Left="9.45" Width="699.3" Diagonal="true"/>
+    </PageHeaderBand>
+    <GroupHeaderBand Name="GroupHeader1" Top="520.61" Width="718.2" Height="22.68" Condition="[SPReportSaleBill.PartCode]">
+      <TableObject Name="Table2" Width="851.5" Height="18.9" GrowToBottom="true">
+        <TableColumn Name="Column1" Width="37.8"/>
+        <TableColumn Name="Column2" Width="132.3"/>
+        <TableColumn Name="Column3" Width="47.25"/>
+        <TableColumn Name="Column4" Width="56.7"/>
+        <TableColumn Name="Column5" Width="28.35"/>
+        <TableColumn Name="Column6" Width="37.8"/>
+        <TableColumn Name="Column7" Width="18.9"/>
+        <TableColumn Name="Column8" Width="1"/>
+        <TableColumn Name="Column9" Width="28.35"/>
+        <TableColumn Name="Column10"/>
+        <TableColumn Name="Column11"/>
+        <TableColumn Name="Column12"/>
+        <TableColumn Name="Column13"/>
+        <TableColumn Name="Column14"/>
+        <TableColumn Name="Column15"/>
+        <TableColumn Name="Column16"/>
+        <TableRow Name="Row1">
+          <TableCell Name="Cell1" Font="Arial, 10pt">
+            <TextObject Name="Text65" Left="9.45" Width="18.9" Height="18.9" Text="[Row#]" Font="Arial, 6pt"/>
+            <LineObject Name="Line29" Left="9.45" Height="28.35"/>
+            <LineObject Name="Line30" Left="28.35" Height="28.35"/>
+          </TableCell>
+          <TableCell Name="Cell2" Font="Arial, 10pt">
+            <TextObject Name="Text66" Width="122.85" Height="28.35" CanGrow="true" Text="[SPReportSaleBill.ItemName]" Font="Arial, 7pt"/>
+          </TableCell>
+          <TableCell Name="Cell3" Font="Arial, 10pt">
+            <TextObject Name="Text67" Left="1.89" Width="47.25" Height="18.9" Text="[SPReportSaleBill.HSNNo]" Font="Arial, 8pt"/>
+            <LineObject Name="Line31" Height="28.35"/>
+          </TableCell>
+          <TableCell Name="Cell4" Font="Arial, 10pt">
+            <TextObject Name="Text69" Width="47.25" Height="18.9" Text="[SPReportSaleBill.BillQty]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 8pt" Trimming="EllipsisCharacter"/>
+            <LineObject Name="Line32" Height="28.35"/>
+          </TableCell>
+          <TableCell Name="Cell5" Font="Arial, 10pt">
+            <TextObject Name="Text68" Width="28.35" Height="18.9" Text="[SPReportSaleBill.Unit]" Font="Arial, 8pt"/>
+            <LineObject Name="Line33" Height="28.35"/>
+          </TableCell>
+          <TableCell Name="Cell26" Font="Arial, 10pt">
+            <TextObject Name="Text76" Width="37.8" Height="18.9" Text="[SPReportSaleBill.BillRate]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Center" WordWrap="false" Font="Arial, 8pt" Trimming="EllipsisCharacter"/>
+            <LineObject Name="Line34" Height="28.35"/>
+          </TableCell>
+          <TableCell Name="Cell27" Font="Arial, 10pt">
+            <TextObject Name="Text77" Width="28.35" Height="18.9" Text="[SPReportSaleBill.DiscPer]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 8pt" Trimming="EllipsisCharacter"/>
+            <LineObject Name="Line35" Height="28.35"/>
+          </TableCell>
+          <TableCell Name="Cell28" Font="Arial, 10pt"/>
+          <TableCell Name="Cell29" Font="Arial, 10pt">
+            <TextObject Name="Text78" Left="9.45" Width="28.35" Height="18.9" Text="[SPReportSaleBill.DiscRs]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 8pt" Trimming="EllipsisCharacter"/>
+            <LineObject Name="Line36" Left="8.32" Height="28.35"/>
+          </TableCell>
+          <TableCell Name="Cell30" Font="Arial, 10pt">
+            <TextObject Name="Text79" Left="9.45" Width="56.7" Height="18.9" Text="[SPReportSaleBill.ItemAmount]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Center" WordWrap="false" Font="Arial, 8pt" Trimming="EllipsisCharacter"/>
+            <LineObject Name="Line37" Left="8.32" Height="28.35"/>
+          </TableCell>
+          <TableCell Name="Cell31" Font="Arial, 10pt">
+            <TextObject Name="Text70" Left="47.25" Width="18.9" Height="18.9" Text="[SPReportSaleBill.CGSTPER]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="0" HorzAlign="Right" WordWrap="false" Font="Arial, 8pt" Trimming="EllipsisCharacter"/>
+            <LineObject Name="Line39" Left="47.25" Height="28.35"/>
+            <LineObject Name="Line38" Height="28.35"/>
+            <TextObject Name="Text119" Width="47.25" Height="18.9" Text="[[SPReportSaleBill.BillQty]*[SPReportSaleBill.BillRate]]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" Font="Arial, 8pt"/>
+          </TableCell>
+          <TableCell Name="Cell32" Font="Arial, 10pt">
+            <LineObject Name="Line44" Left="0.76" Height="28.35"/>
+            <LineObject Name="Line40" Left="47.25" Height="28.35"/>
+            <TextObject Name="Text98" Left="47.25" Width="18.9" Height="18.9" Text="[SPReportSaleBill.CGSTPER]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="0" HorzAlign="Right" WordWrap="false" Font="Arial, 8pt" Trimming="EllipsisCharacter"/>
+            <TextObject Name="Text71" Width="47.25" Height="18.9" Text="[SPReportSaleBill.CGSTAMT]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 8pt" Trimming="EllipsisCharacter"/>
+          </TableCell>
+          <TableCell Name="Cell33" Font="Arial, 10pt">
+            <TextObject Name="Text74" Left="56.7" Width="18.9" Height="18.9" Text="[SPReportSaleBill.IGSTPER]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="0" HorzAlign="Right" WordWrap="false" Font="Arial, 8pt" Trimming="EllipsisCharacter"/>
+            <LineObject Name="Line41" Left="3.4" Height="28.35"/>
+            <LineObject Name="Line42" Left="54.81" Height="28.35"/>
+            <TextObject Name="Text97" Width="47.25" Height="18.9" Text="[SPReportSaleBill.CGSTAMT]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 8pt" Trimming="EllipsisCharacter"/>
+          </TableCell>
+          <TableCell Name="Cell34" Font="Arial, 10pt">
+            <TextObject Name="Text75" Left="9.45" Width="47.25" Height="18.9" Text="[SPReportSaleBill.IGSTAMT]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 8pt" Trimming="EllipsisCharacter"/>
+            <LineObject Name="Line45" Left="11.72" Height="28.35"/>
+            <LineObject Name="Line43" Left="55.57" Height="28.35"/>
+          </TableCell>
+          <TableCell Name="Cell35" Font="Arial, 10pt"/>
+          <TableCell Name="Cell36" Font="Arial, 10pt"/>
+        </TableRow>
+      </TableObject>
+      <DataBand Name="Data1" Top="548.22" Width="718.2" DataSource="Table1"/>
+      <GroupFooterBand Name="GroupFooter1" Top="553.16" Width="718.2" Guides="0"/>
+    </GroupHeaderBand>
+    <ReportSummaryBand Name="ReportSummary1" Top="610.29" Width="718.2" Height="245.7">
+      <LineObject Name="Line65" Left="9.45" Top="13.23" Width="699.3" Diagonal="true"/>
+      <LineObject Name="Line66" Left="9.45" Top="37.8" Width="699.3" Diagonal="true"/>
+      <LineObject Name="Line67" Left="9.45" Height="245.7"/>
+      <LineObject Name="Line68" Left="708.75" Height="245.7"/>
+      <LineObject Name="Line69" Left="396.9" Height="13.23"/>
+      <LineObject Name="Line70" Left="454.73" Height="13.23"/>
+      <LineObject Name="Line71" Left="274.05" Height="13.23"/>
+      <LineObject Name="Line72" Left="217.35" Height="13.23"/>
+      <LineObject Name="Line73" Left="501.98" Height="13.23"/>
+      <LineObject Name="Line74" Left="521.64" Height="13.23"/>
+      <LineObject Name="Line75" Left="568.13" Height="13.23"/>
+      <LineObject Name="Line76" Left="590.44" Height="13.23"/>
+      <LineObject Name="Line77" Left="641.47" Height="13.23"/>
+      <LineObject Name="Line78" Left="664.9" Height="13.23"/>
+      <TextObject Name="Text84" Left="519.75" Width="47.25" Height="18.9" Text="[Total3]" HorzAlign="Center" Font="Arial, 6pt"/>
+      <TextObject Name="Text85" Left="595.35" Width="47.25" Height="18.9" Text="[Total4]" Font="Arial, 6pt"/>
+      <TextObject Name="Text86" Left="670.95" Width="37.8" Height="18.9" Text="[Total5]" Font="Arial, 6pt"/>
+      <TextObject Name="Text87" Left="491.4" Top="17.01" Width="122.85" Height="18.9" Text="Taxable+GST Value" Font="Arial, 9pt"/>
+      <TextObject Name="Text88" Left="9.45" Top="75.6" Width="122.85" Height="9.45" Text="Total Invoice Value(in word)" Font="Arial, 6pt, style=Bold"/>
+      <LineObject Name="Line79" Left="9.45" Top="94.5" Width="699.3" Diagonal="true"/>
+      <LineObject Name="Line46" Left="9.45" Width="699.3" Diagonal="true"/>
+      <TextObject Name="Text100" Left="604.8" Top="75.6" Width="94.5" Height="18.9" Text="[SPReportSaleBill.INVNetAmt]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 9pt" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text103" Left="132.3" Top="75.6" Width="396.9" Height="18.9" Text="[SPReportSaleBill.NetAmtInWord]" Font="Arial, 8pt"/>
+      <TextObject Name="Text104" Left="9.45" Top="103.95" Width="359.1" Height="18.9" Text="Amount of Tax subject to Reverse Charge " Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text105" Left="368.55" Top="103.95" Width="94.5" Height="18.9" Text=" (Yes/No)                               No" Font="Arial, 10pt"/>
+      <TextObject Name="Text106" Left="9.45" Top="122.85" Width="453.6" Height="18.9" Text="Certified that the particulars given above are true and correct" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text107" Left="9.45" Top="141.75" Width="491.4" Height="28.35" Text=" Terms and Conditions1.If  payment is not done as per invoice Terms then interst @2% p.m will be charged.2.Payment to be made in favour of Spinks Softech Pvt. Ltd. and marked A/c payee only" Font="Arial, 8pt"/>
+      <TextObject Name="Text108" Left="9.45" Top="179.55" Width="217.35" Height="66.15" Text="Bank Details : A/c No.: 002105004354IFSC/RTGS Code :ICIC0000021ICICI Ltd., Gurgaon Branch.81, HUDA Shopping Center,Sector-14, Gurgaon-122001" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text109" Left="510.3" Top="103.95" Width="189" Height="18.9" Text="for Spinks Softech Private Limited" Font="Arial, 8pt"/>
+      <TextObject Name="Text110" Left="548.1" Top="151.2" Width="151.2" Height="18.9" Text="Authorised Signatory" Font="Arial, 8pt"/>
+      <LineObject Name="Line80" Left="9.45" Top="245.7" Width="699.3" Diagonal="true"/>
+      <LineObject Name="Line82" Left="302.4" Height="13.23"/>
+      <LineObject Name="Line83" Left="340.2" Height="13.23"/>
+      <LineObject Name="Line84" Left="368.55" Height="13.23"/>
+      <TextObject Name="Text111" Left="604.8" Top="18.9" Width="94.5" Height="18.9" Text="[[SPReportSaleBill.BillAmt]+[TotalCGST]+[TotalSGST]+[TotalIGST]]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" Font="Arial, 9pt"/>
+      <TextObject Name="Text112" Left="519.75" Top="75.6" Width="94.5" Height="18.9" Text="NET TOTAL(₹)" Font="Arial, 10pt"/>
+      <TextObject Name="Text113" Left="548.1" Top="47.25" Width="66.15" Height="18.9" Text="Total Tax Value (₹)" Font="Arial, 10pt"/>
+      <TextObject Name="Text118" Left="604.8" Top="47.25" Width="94.5" Height="18.9" Text="[Format(&quot;{0:0.00}&quot;, [TotalCGST]+[TotalSGST]+[TotalIGST])]" HorzAlign="Right" Font="Arial, 9pt"/>
+      <TextObject Name="Text80" Left="453.6" Width="47.25" Height="18.9" Text="[SPReportSaleBill.TaxableAmt]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 8pt" Trimming="EllipsisCharacter"/>
+      <ChildBand Name="Child1" Top="558.1" Width="718.2" Height="47.25" FillUnusedSpace="true">
+        <LineObject Name="Line48" Left="9.45" Height="47.25"/>
+        <LineObject Name="Line50" Left="170.1" Height="47.25"/>
+        <LineObject Name="Line51" Left="217.35" Height="47.25"/>
+        <LineObject Name="Line52" Left="274.05" Height="47.25"/>
+        <LineObject Name="Line53" Left="302.4" Height="47.25"/>
+        <LineObject Name="Line54" Left="340.2" Height="47.25"/>
+        <LineObject Name="Line55" Left="368.55" Height="47.25"/>
+        <LineObject Name="Line56" Left="396.9" Height="47.25"/>
+        <LineObject Name="Line57" Left="454.73" Height="47.25"/>
+        <LineObject Name="Line58" Left="501.98" Height="47.25"/>
+        <LineObject Name="Line59" Left="521.64" Height="47.25"/>
+        <LineObject Name="Line60" Left="568.13" Height="47.25"/>
+        <LineObject Name="Line61" Left="590.44" Height="47.25"/>
+        <LineObject Name="Line62" Left="641.47" Height="47.25"/>
+        <LineObject Name="Line63" Left="664.9" Height="47.25"/>
+        <LineObject Name="Line64" Left="709.13" Height="47.25"/>
+        <LineObject Name="Line49" Left="28.35" Height="47.25"/>
+      </ChildBand>
+    </ReportSummaryBand>
+  </ReportPage>
+</Report>
