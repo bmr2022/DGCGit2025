@@ -1224,29 +1224,7 @@ public class SaleOrderController : Controller
 		// string ipaddress = IPAddress.IPv6Loopback.ToString();
 		var model = new SaleOrderModel();
 
-		//var webReport = new WebReport();
-		//var mssqlDataConnection = new MsSqlDataConnection();
-		//mssqlDataConnection.ConnectionString = _IDataLogic.GetDBConnection();
-		//webReport.Report.Dictionary.Connections.Add(mssqlDataConnection);
-
-		////webReport.EnableMargins = true;
-		////webReport.ShowExports = true;
-
-		//webReport.Report.Load(Path.Combine(_IWebHostEnvironment.ContentRootPath, "REPORT", "ItemMasterReport.frx"));
-
-		//webReport.Report.Load(Path.Combine(_IWebHostEnvironment.WebRootPath, "Reports", "ItemMasterReport2.frx"));
-
-		//var categories = GetTable<Category>(_northwindContext.Categories, "Categories");
-		//webReport.Report.RegisterData(categories, "Categories");
-
-		////var DTReport = itemMaster.GetDashBoardData("", "", "", "", "", "").Result.ToArray();
-		////webReport.Report.RegisterData(DTReport, "Categories");
-
-		////webReport.Report.Prepare();
-		////FastReport.Export.Html.HTMLExport export = new FastReport.Export.Html.HTMLExport();
-		////webReport.Report.Export(export, "result.pdf");
-
-		//return PartialView("_ViewReport", webReport);
+		
 		model.PreparedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
 		model.PreparedByName = HttpContext.Session.GetString("EmpName");
 		
@@ -1424,9 +1402,11 @@ public class SaleOrderController : Controller
 					else
 					{
 						model.Mode = model.Mode;
-					}
+                        model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+                        model.CreatedByName = HttpContext.Session.GetString("EmpName");
+                    }
 					//model.Mode = model.Mode == "U" ? "Update" : "Insert";
-					model.CreatedBy = Constants.UserID;
+					//model.CreatedBy = Constants.UserID;
 					Result = await _ISaleOrder.SaveSaleOrder(ItemDetailDT, DelieveryScheduleDT, TaxDetailDT, MultiBuyersDT, model);
 				}
 				_logger.LogInformation("Save SaleOrder Data done", DateTime.UtcNow);

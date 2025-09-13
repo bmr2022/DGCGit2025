@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.Common;
+﻿using DocumentFormat.OpenXml.EMMA;
+using eTactWeb.Data.Common;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using FastReport.Web;
@@ -249,9 +250,34 @@ namespace eTactWeb.Controllers
             MainModel.ProdSchNoBack=ProdSchNo;
             MainModel.GlobalSearchBack = Searchbox;
             MainModel.DashboardTypeBack = DashboardType;
+            //MainModel = await BindModel(MainModel).ConfigureAwait(false);
             return View(MainModel);
         }
-        [HttpPost]
+        //public async Task<TransferFromWorkCenterModel> BindModel(TransferFromWorkCenterModel model)
+        //{
+        //    var oDataSet = new DataSet();
+        //    var _List = new List<TextValue>();
+        //    oDataSet = await _ITransferFromWorkCenter.BindAllDropDown().ConfigureAwait(true);
+        //    if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+        //    {
+
+
+        //        foreach (DataRow row in oDataSet.Tables[0].Rows)
+        //        {
+        //            _List.Add(new TextValue
+        //            {
+        //                Value = row["PartCode"].ToString(),
+        //                Text = row["PartCode"].ToString()
+        //            });
+        //        }
+        //        model.PartcodeList = _List;
+        //        _List = new List<TextValue>();
+               
+
+        //    }
+        //    return model;
+        //}
+            [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("{controller}/Index")]
         public async Task<IActionResult> TransferFromWorkCenter(TransferFromWorkCenterModel model)
@@ -972,10 +998,10 @@ namespace eTactWeb.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> selectMultipleItem(int WCID, string ToDate, string PartCode)
+        public async Task<IActionResult> selectMultipleItem(int WCID, string ToDate, string PartCode,string FromDate)
         {
             var model = new TransferFromWorkCenterModel();
-            var FromDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString("FromDate"));
+           
             model = await _ITransferFromWorkCenter.selectMultipleItem(WCID, FromDate, ToDate, PartCode);
 
 

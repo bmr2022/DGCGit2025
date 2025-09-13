@@ -47,6 +47,31 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
+        public async Task<DataSet> BindAllDropDown()
+        {
+            var oDataSet = new DataSet();
+
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "BINDPARTCODE"));
+                var _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_TransferMaterialFromWc", SqlParams);
+                if (_ResponseResult.Result != null && _ResponseResult.StatusCode == HttpStatusCode.OK && _ResponseResult.StatusText == "Success")
+                {
+                    _ResponseResult.Result.Tables[0].TableName = "PartCodeList";
+                   
+                    oDataSet = _ResponseResult.Result;
+                }
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return oDataSet;
+        }
         public async Task<ResponseResult> GetFormRights(int userID)
         {
             var _ResponseResult = new ResponseResult();

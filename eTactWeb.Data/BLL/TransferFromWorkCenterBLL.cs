@@ -26,6 +26,11 @@ namespace eTactWeb.Data.BLL
         {
             return await _TranferFromWorkCenterDAL.GetFormRights(userID);
         }
+        public async Task<DataSet> BindAllDropDown()
+        {
+            return await _TranferFromWorkCenterDAL.BindAllDropDown();
+        }
+
         public async Task<ResponseResult> GetReportName()
         {
             return await _TranferFromWorkCenterDAL.GetReportName();

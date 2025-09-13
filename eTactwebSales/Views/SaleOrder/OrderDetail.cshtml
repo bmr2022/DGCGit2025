@@ -1069,7 +1069,7 @@
 
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="CreatedByName" class="form-label">Created By</label>
-                                    <input asp-for="CreatedByName" class="form-control" />
+                                    <input asp-for="CreatedByName" class="form-control" va/>
                                     <input type="hidden" asp-for="CreatedBy" />
                                 </div>
 
@@ -2018,16 +2018,16 @@
                 $('#SOBillToShipTo').modal("show");
             });
             // if ($('#AccountCode').prop('selectedIndex') != 0) {
-                $.getJSON({
-                    url: '@Url.Action("GetGstRegister", "PurchaseOrder")',
-                    data: { Code: $('#AccountCode').val() },
-                    success: function (result, status, xhr) {
-                        if (result != null) {
-                            var obj = $.parseJSON(result);
-                            $('#Gstregistered').val(obj.Result[0].GSTRegistered);
-                        }
-                    }
-                });
+                // $.getJSON({
+                //     url: '@Url.Action("GetGstRegister", "PurchaseOrder")',
+                //     data: { Code: $('#AccountCode').val() },
+                //     success: function (result, status, xhr) {
+                //         if (result != null) {
+                //             var obj = $.parseJSON(result);
+                //             $('#Gstregistered').val(obj.Result[0].GSTRegistered);
+                //         }
+                //     }
+                // });
             // }
             FillCurrency();
 

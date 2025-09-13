@@ -19,6 +19,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> BindEmpList();
         Task<ResponseResult> FillStoreName();
         Task<ResponseResult> FillWorkCenter();
+        Task<DataSet> BindAllDropDown();
         Task<ResponseResult> FillItemName(int TransferMatYearCode);
         Task<ResponseResult> FillPartCode(int TransferMatYearCode);
         Task<ResponseResult> GetBatchNumber(string SPName, int ItemCode, int YearCode, float WcId, string TransDate, string BatchNo);
