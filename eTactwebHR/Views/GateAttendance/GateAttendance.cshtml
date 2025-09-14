@@ -513,6 +513,7 @@
             var attmonth = $("#strEmpAttMonth").val();
             var yearcode = $("#GateAttYearCode").val();
             var DayOrMonthType = $("#DayOrMonthType").val();
+            var EmpCatId = $("#CategoryCode").val();
             if (!DayOrMonthType) {
                 alert("Please select a Day or Month.");
                 return;
@@ -520,7 +521,7 @@
             $.ajax({
                 url: '/GateAttendance/LoadAttendanceGrid',
                 type: 'GET',
-                data: { DayOrMonthType: DayOrMonthType, Attdate: date, AttMonth: attmonth, YearCode: yearcode  },
+                data: { DayOrMonthType: DayOrMonthType, Attdate: date, AttMonth: attmonth, YearCode: yearcode, EmpCatId: EmpCatId  },
                 success: function (result) {
                     $("#attendanceItemGrid").html(result);
                 },
@@ -645,7 +646,7 @@
     }
 
     .holiday-time {
-        color: blue !important;
+        color: crimson !important;
         font-weight: bold;
     }
 </style>

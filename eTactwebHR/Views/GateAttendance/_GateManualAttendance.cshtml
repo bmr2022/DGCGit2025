@@ -9,19 +9,19 @@
 <style>
 
     .select2-container--default .select2-selection--single {
-        background-color: #127387;
-        border: 1.5px solid #0a0a0a !important;
-        border-radius: 4px;
+    background-color: #127387;
+    border: 1.5px solid #0a0a0a !important;
+    border-radius: 4px;
     }
 
-        .select2-container--default .select2-selection--single .select2-selection__rendered {
-            /* border-bottom: 1.5px solid #000 !important; */
-            border-bottom: none !important;
-        }
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+    /* border-bottom: 1.5px solid #000 !important; */
+    border-bottom: none !important;
+    }
 
     .select2-container--default .select2-results > .select2-results__options {
-        background-color: #e0f2f1; /* Dropdown background color */
-        color: #000;
+    background-color: #e0f2f1; /* Dropdown background color */
+    color: #000;
     }
 
 </style>
@@ -41,7 +41,8 @@
                         @if (Model.DayOrMonthType == "Monthly")
                         {
                             int dayIndex = 1;
-                            int monthNo = DateTime.ParseExact(Model.strEmpAttMonth, "MMM", System.Globalization.CultureInfo.InvariantCulture).Month;
+                            //int monthNo = DateTime.ParseExact(Model.strEmpAttMonth, "MMM", System.Globalization.CultureInfo.InvariantCulture).Month;
+                            int monthNo = (Model.intEmpAttMonth != null) ? Convert.ToInt32(Model.intEmpAttMonth) : 1;
                             @foreach (var dayCol in Model.DayHeaders)
                             {
                                 int dayNo = (int)Math.Ceiling(dayIndex / 2.0); 
@@ -97,14 +98,15 @@
                                     {
                                         var value = Model.GateAttDetailsList[i].Attendance.ContainsKey(dayCol.ToLower()) ? Model.GateAttDetailsList[i].Attendance[dayCol.ToLower()] : "";
                                         var parts = dayCol.Split('('); var dayNo = parts[0]; var type = parts[1].Replace(")", "");
-                                        int monthNo = DateTime.ParseExact(Model.strEmpAttMonth, "MMM", System.Globalization.CultureInfo.InvariantCulture).Month;
+                                        // int monthNo = DateTime.ParseExact(Model.strEmpAttMonth, "MMM", System.Globalization.CultureInfo.InvariantCulture).Month;
+                                        int monthNo = (Model.intEmpAttMonth != null) ? Convert.ToInt32(Model.intEmpAttMonth) : 1;
                                         var currentDate = new DateTime(Model.GateAttYearCode, monthNo, !string.IsNullOrEmpty(dayNo) ? Convert.ToInt32(dayNo) : 1);
                                         var holiday = Model.HolidayList?.FirstOrDefault(h => h.HolidayYear == Model.GateAttYearCode && h.HolidayEffFrom == currentDate);
                                         bool isWeekoff = holiday?.DayType == "WEEKOFF";
                                         bool isHoliday = !isWeekoff && holiday != null;
                                         string cssClass = isWeekoff ? "weekoff-time" : (isHoliday ? "holiday-time" : "");
-                                        bool allowEdit = (isWeekoff && holiday?.OverrideWeekoff == "YES") || (isHoliday && holiday?.AllowedCompOff == "YES");
-
+                                        bool allowEdit = (isWeekoff && holiday?.OverrideWeekoff == "YES") || (isHoliday && holiday?.AllowedCompOff == "YES") || !isHoliday;
+                                        value = allowEdit ? value : "";
                                         <td><input type="time" id='@("txt_" + Model.GateAttDetailsList[i].EmpId + "_" + dayNo + "_" + type)' name="Attendance[@Model.GateAttDetailsList[i].EmpId][@dayCol]" value="@value" class="form-control form-control-sm att-input timepicker @cssClass" data-empid="@Model.GateAttDetailsList[i].EmpId" data-day="@dayNo" data-type="@type" @(allowEdit ? "" : "disabled") /></td>
                                     }
                                 }

@@ -38,7 +38,8 @@ public class GateAttendanceDAL
         var model1 = new GateAttendanceModel();
         try
         {
-            var AttndanceDt = CommonFunc.ParseFormattedDate(Attdate.ToString("dd/MMM/yyyy"));
+            //var AttndanceDt = CommonFunc.ParseFormattedDate(Attdate.ToString("dd/MMM/yyyy"));
+            var AttndanceDt = CommonFunc.ParseFormattedDate(Attdate.ToString("yyyy-MM-dd"));
             using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
             {
                 DateTime now = DateTime.Now;
@@ -121,7 +122,7 @@ public class GateAttendanceDAL
         return Data;
     }
 
-    public async Task<GateAttendanceModel> GetHolidayList(int EmpCatId, DateTime Attdate, int YearCode)
+    public GateAttendanceModel GetHolidayList(int EmpCatId, DateTime Attdate, int YearCode)
     {
         var Data = new GateAttendanceModel();
         Data.HolidayList = new List<GateAttendanceHolidayModel>();
@@ -129,7 +130,8 @@ public class GateAttendanceDAL
         var model1 = new GateAttendanceModel();
         try
         {
-            var AttndanceDt = CommonFunc.ParseFormattedDate(Attdate.ToString("dd/MMM/yyyy"));
+            var AttndanceDt = CommonFunc.ParseFormattedDate(Attdate.ToString("yyyy-MM-dd"));
+            //var AttndanceDt = CommonFunc.ParseFormattedDate(Attdate.ToString("dd/MMM/yyyy"));
             using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
             {
                 DateTime now = DateTime.Now;
@@ -140,8 +142,8 @@ public class GateAttendanceDAL
                 };
                 oCmd.Parameters.AddWithValue("@flag", "GetHoliday");
                 oCmd.Parameters.AddWithValue("@EmpCateid", EmpCatId);
-                oCmd.Parameters.AddWithValue("@AttndanceDt", AttndanceDt);
-                await myConnection.OpenAsync();
+                oCmd.Parameters.AddWithValue("@AttendanceDate", AttndanceDt);
+                myConnection.OpenAsync();
                 using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
                 {
                     oDataAdapter.Fill(oDataSet);

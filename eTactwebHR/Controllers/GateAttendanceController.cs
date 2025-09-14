@@ -145,13 +145,18 @@ namespace eTactwebHR.Controllers
             //}
             return model;
         }
-        public async Task<IActionResult> LoadAttendanceGrid(string DayOrMonthType, DateTime Attdate, int AttMonth, int YearCode)
+        public async Task<IActionResult> LoadAttendanceGrid(string DayOrMonthType, DateTime Attdate, int AttMonth, int YearCode, int EmpCatId)
         {
             // Get list from DB based on date
             GateAttendanceModel model = new GateAttendanceModel();
             model = await IGateAttendance.GetManualAttendance(DayOrMonthType, Attdate, AttMonth, YearCode).ConfigureAwait(false);
             //model.ShiftList = new List<TextValue>();
-
+            if (string.Equals(DayOrMonthType, "monthly", StringComparison.OrdinalIgnoreCase))
+            {
+                Attdate = new DateTime(YearCode, AttMonth, 1);
+                model.intEmpAttMonth = AttMonth;
+            }
+            model.HolidayList = GetHolidayList(EmpCatId, Attdate, YearCode)?.HolidayList ?? new List<GateAttendanceHolidayModel>();
             ViewBag.DeptList = await IDataLogic.GetDropDownList("FillDepartment", "HRSPGateAttendanceMainDetail");
             ViewBag.DesigList = await IDataLogic.GetDropDownList("FillDesignation", "HRSPGateAttendanceMainDetail");
             //ViewBag.ShiftList = await IDataLogic.GetDropDownList("FillShift", "HRSPGateAttendanceMainDetail");
@@ -162,6 +167,13 @@ namespace eTactwebHR.Controllers
             //ViewBag.DesigList = model.DesignationList;
             //ViewBag.EmployeeList = model.EmployeeList;
             return PartialView("_GateManualAttendance", model);
+        }
+
+        public GateAttendanceModel GetHolidayList(int EmpCatId, DateTime Attdate, int YearCode)
+        {
+            GateAttendanceModel model = new GateAttendanceModel();
+            model = IGateAttendance.GetHolidayList(EmpCatId, Attdate, YearCode);
+            return model;
         }
         public string GetEmpByMachineName()
         {

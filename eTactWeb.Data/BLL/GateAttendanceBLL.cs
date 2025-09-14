@@ -34,5 +34,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _GateAttendanceDAL.FillEntryId(YearCode);
         }
+        GateAttendanceModel IGateAttendance.GetHolidayList(int EmpCatId, DateTime Attdate, int YearCode)
+        {
+            return _GateAttendanceDAL.GetHolidayList(EmpCatId, Attdate, YearCode);
+        }
     }
 }

@@ -90,6 +90,7 @@ public class GateAttendanceModel : TimeStamp
         set => _DayOrMonthTypeList = value;
     }
     public string strEmpAttMonth { get; set; }
+    public int? intEmpAttMonth { get; set; }
     public IList<SelectListItem> strEmpAttMonthList
     {
         get => _strEmpAttMonthList;
