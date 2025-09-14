@@ -521,7 +521,7 @@
                     ledgerNameDropdown.append('<option value="">--Select--</option>');
 
                     $.each(obj.Result, function (index, ledger) {
-                        ledgerNameDropdown.append('<option value="' + ledger.Account_Code + '">' + ledger.LedgerName + '</option>');
+                        ledgerNameDropdown.append('<option selected value="' + ledger.Account_Code + '">' + ledger.LedgerName + '</option>');
                     });
 
                 },
@@ -737,48 +737,44 @@
         }
 
         $('#sendToExcel').click(function () {
-            let table = $("#ReportTable");
+            var FromDate = $('#FromDate').val();
+            var ToDate = $('#ToDate').val();
+            var LedgerCode = $('#LedgerName option:selected').val(); // example, adjust as needed
+            var AccountCode = $('#AccountName option:selected').val(); // example
+            var ReportType = $('#ReportType').val(); // "SUMMARY" or "DETAIL"
 
-            // Clone the table so you don’t mess with the real one
-            let tempTable = table.clone();
+            $.ajax({
+                url: '/TransactionLedger/ExportTransactionLedgerToExcel',
+                type: 'GET',
+                data: {
+                    FromDate: FromDate,
+                    ToDate: ToDate,
+                    LedgerCode: LedgerCode,
+                    AccountCode: AccountCode,
+                    ReportType: ReportType
+                },
+                xhrFields: {
+                    responseType: 'blob' // important for file download
+                },
+                success: function (data, status, xhr) {
+                    // Create a Blob and download
+                    const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                    const link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
 
-            // Add company and date info as header rows
-            let companyName = "@CompanyName";
-            let fromDate = $("#FromDate").val();
-            let toDate = $("#ToDate").val();
-            let colCount = tempTable.find("tr:first th").length;
+                    // Optional: get filename from response header
+                    var filename = `TransactionLedger_${ReportType}.xlsx`;
+                    var disposition = xhr.getResponseHeader('Content-Disposition');
+                    if (disposition && disposition.indexOf('filename=') !== -1) {
+                        filename = disposition.split('filename=')[1].replace(/"/g, '');
+                    }
 
-            let headerHtml = `
-                    <thead>
-                        <tr>
-                            <th colspan="${colCount}" style="text-align:center; font-weight:bold; font-size:16px;">
-                                Company Name: ${companyName}
-                            </th>
-                        </tr>
-                        <tr>
-                            <th colspan="${colCount}" style="text-align:center; font-weight:bold;">
-                                From Date: ${fromDate} &nbsp;&nbsp; To Date: ${toDate}
-                            </th>
-                        </tr>
-                    </thead>
-                    `;
-
-            let footerHtml = `
-                    <tfoot>
-                        <tr>
-                            <td colspan="${colCount}" style="text-align:center; font-weight:bold;">
-                                *** End of Report ***
-                            </td>
-                        </tr>
-                    </tfoot>
-                    `;
-
-            tempTable.prepend(headerHtml);
-            tempTable.append(footerHtml);
-
-            TableToExcel.convert(tempTable[0], {
-                name: `TransactionLedgerData.xlsx`,
-                sheet: { name: 'ReportTable' }
+                    link.download = filename;
+                    link.click();
+                },
+                error: function () {
+                    alert('Failed to download Transaction Ledger Excel file.');
+                }
             });
         });
 

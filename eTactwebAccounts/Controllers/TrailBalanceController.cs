@@ -3,6 +3,7 @@ using DocumentFormat.OpenXml.EMMA;
 using eTactWeb.Controllers;
 using eTactWeb.Data.Common;
 using eTactWeb.DOM.Models;
+using eTactWeb.Services;
 using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
@@ -30,6 +31,7 @@ namespace eTactwebAccounts.Controllers
         [HttpGet]
         public async Task<ActionResult> TrailBalance()
         {
+            HttpContext.Session.Remove("TrailBalanceData");
             var MainModel = new TrailBalanceModel();
             MainModel.TrailBalanceGrid = new List<TrailBalanceModel>();
             //MainModel.FromDate = HttpContext.Session.GetString("FromDate");
@@ -44,7 +46,11 @@ namespace eTactwebAccounts.Controllers
             var model = new TrailBalanceModel();
             model.EntryByMachine = Environment.MachineName;
             model = await _ITrailBalance.GetTrailBalanceDetailsData(FromDate, ToDate, TrailBalanceGroupCode, ParentAccountCode, ReportType);
-            if(ReportType== "TRAILSUMMARY")
+
+            var sessionData = JsonConvert.SerializeObject(model);
+            HttpContext.Session.SetString("TrailBalanceData", sessionData);
+
+            if (ReportType== "TRAILSUMMARY")
             {
                 return PartialView("_TrailBalanceSummaryGrid", model);
             } 
@@ -73,126 +79,118 @@ namespace eTactwebAccounts.Controllers
             return Json(JsonString);
         }
         [HttpGet]
-        public async Task<IActionResult> ExportTrailBalanceToExcel(
-    string FromDate,
-    string ToDate,
-    int? TrailBalanceGroupCode,
-    int? ParentAccountCode,
-    string ReportType)
+        public IActionResult ExportTrailBalanceToExcel(string ReportType, string FromDate, string ToDate)
         {
             var BranchName = HttpContext.Session.GetString("Branch");
             var CompanyName = HttpContext.Session.GetString("CompanyName");
 
-            // 1️⃣ Get data
-            var result = await _ITrailBalance.GetTrailBalanceDetailsData(
-                FromDate, ToDate, TrailBalanceGroupCode, ParentAccountCode, ReportType);
+            // Get data from session
+            var sessionData = HttpContext.Session.GetString("TrailBalanceData");
+            if (string.IsNullOrEmpty(sessionData))
+                return BadRequest("Trail balance data not found in session.");
 
-            // 2️⃣ Convert data to DataTable
+            var result = Newtonsoft.Json.JsonConvert.DeserializeObject<TrailBalanceModel>(sessionData);
+            string sheetName = ReportType == "TRAILSUMMARY" ? "TrailBalanceSummary" :
+                   ReportType == "TRAILDETAIL" ? "TrailBalanceDetail" :
+                   "TrailBalance";
             DataTable dt = new DataTable("TrailBalance");
-            dt.Columns.Add("Sr#", typeof(int));
-            dt.Columns.Add("Group Name", typeof(string));
-            dt.Columns.Add("Open DR", typeof(decimal));
-            dt.Columns.Add("Open CR", typeof(decimal));
-            dt.Columns.Add("Total Opening", typeof(decimal));
-            dt.Columns.Add("Curr DRAmt", typeof(decimal));
-            dt.Columns.Add("Curr CRAmt", typeof(decimal));
-            dt.Columns.Add("Net Current Amt", typeof(decimal));
-            dt.Columns.Add("Net Amt", typeof(decimal));
-            dt.Columns.Add("Curr DrTotal", typeof(decimal));
-            dt.Columns.Add("Curr CrTotal", typeof(decimal));
-
             int sr = 1;
-            foreach (var row in result.TrailBalanceGrid)
+
+            if (ReportType == "TRAILSUMMARY")
             {
-                dt.Rows.Add(
-                    sr++,
-                    row.TrailBalanceGroupName,
-                    row.OpnDr,
-                    row.OpnCr,
-                    row.TotalOpening,
-                    row.CurrDrAmt,
-                    row.CurrCrAmt,
-                    row.NetCurrentAmt,
-                    row.NetAmt,
-                    row.CurrDrTotal,
-                    row.CurrCrTotal
-                );
-            }
+                // Summary Columns
+                dt.Columns.Add("Sr#", typeof(int));
+                dt.Columns.Add("Group Name", typeof(string));
+                dt.Columns.Add("Open DR", typeof(decimal));
+                dt.Columns.Add("Open CR", typeof(decimal));
+                dt.Columns.Add("Total Opening", typeof(decimal));
+                dt.Columns.Add("Curr Dr Amt", typeof(decimal));
+                dt.Columns.Add("Curr Cr Amt", typeof(decimal));
+                dt.Columns.Add("Net Current Amt", typeof(decimal));
+                dt.Columns.Add("Net Amt", typeof(decimal));
 
-            // 3️⃣ Create Excel file using ClosedXML
-            using (var wb = new XLWorkbook())
-            {
-                var ws = wb.Worksheets.Add("TrailBalance");
-
-                int totalColumns = dt.Columns.Count;
-
-                // 🔹 Company + Branch
-                ws.Cell(1, 1).Value = "Company: " + CompanyName + "    Branch: " + BranchName;
-                ws.Range(1, 1, 1, totalColumns).Merge();
-                ws.Row(1).Style.Fill.BackgroundColor = XLColor.FromHtml("#6c9dc6");
-                ws.Row(1).Style.Font.FontColor = XLColor.White;
-                ws.Row(1).Style.Font.Bold = true;
-                ws.Row(1).Style.Font.FontSize = 14;
-                ws.Row(1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-
-                // 🔹 From / To Date
-                ws.Cell(2, 1).Value = $"From Date: {FromDate}   To Date: {ToDate}";
-                ws.Range(2, 1, 2, totalColumns).Merge();
-                ws.Row(2).Style.Fill.BackgroundColor = XLColor.FromHtml("#6c9dc6");
-                ws.Row(2).Style.Font.FontColor = XLColor.White;
-                ws.Row(2).Style.Font.Bold = true;
-                ws.Row(2).Style.Font.FontSize = 14;
-                ws.Row(2).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-
-                // 🔹 Insert table headers + data (start row 4)
-                ws.Cell(4, 1).InsertTable(dt, "TrailBalanceTable", true);
-
-                // Style header row
-                var headerRow = ws.Row(4);
-                headerRow.Style.Fill.BackgroundColor = XLColor.FromHtml("#6c9dc6");
-                headerRow.Style.Font.FontColor = XLColor.Black;
-                headerRow.Style.Font.Bold = true;
-                headerRow.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-
-                // 4️⃣ Add Totals row
-                int dataRowStart = 5; // first data row
-                int dataRowEnd = dt.Rows.Count + 4;
-                int totalRow = dataRowEnd + 1;
-
-                ws.Cell(totalRow, 1).Value = "Total";
-                ws.Range(totalRow, 1, totalRow, 2).Merge();
-                ws.Cell(totalRow, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-                ws.Cell(totalRow, 1).Style.Font.Bold = true;
-
-                // Totals for numeric columns (3–11)
-                for (int col = 3; col <= totalColumns; col++)
+                foreach (var row in result.TrailBalanceGrid)
                 {
-                    string colLetter = ws.Cell(1, col).Address.ColumnLetter;
-                    ws.Cell(totalRow, col).FormulaA1 = $"SUM({colLetter}{dataRowStart}:{colLetter}{dataRowEnd})";
-                }
-
-                // Style totals row
-                ws.Range(totalRow, 1, totalRow, totalColumns).Style.Font.Bold = true;
-                ws.Range(totalRow, 1, totalRow, totalColumns).Style.Fill.BackgroundColor = XLColor.FromHtml("#6c9dc6");
-                ws.Range(totalRow, 1, totalRow, totalColumns).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
-
-                // 5️⃣ Auto-fit columns
-                ws.Columns().AdjustToContents();
-
-                // 6️⃣ Return Excel file
-                using (var stream = new MemoryStream())
-                {
-                    wb.SaveAs(stream);
-                    stream.Position = 0;
-
-                    string excelName = $"TrailBalance_{DateTime.Now:yyyyMMddHHmmss}.xlsx";
-                    return File(
-                        stream.ToArray(),
-                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                        excelName
+                    dt.Rows.Add(
+                        sr++,
+                        row.TrailBalanceGroupName,
+                        row.OpnDr,
+                        row.OpnCr,
+                        row.TotalOpening,
+                        row.CurrDrAmt,
+                        row.CurrCrAmt,
+                        row.NetCurrentAmt,
+                        row.NetAmt
                     );
                 }
             }
+            else if (ReportType == "TRAILDETAIL")
+            {
+                // Detail Columns matching your HTML table
+                dt.Columns.Add("Sr#", typeof(int));
+                dt.Columns.Add("Group Name", typeof(string));
+                dt.Columns.Add("Parent Group Name", typeof(string));
+                dt.Columns.Add("Account Name", typeof(string));
+                dt.Columns.Add("Group Opn Dr", typeof(decimal));
+                dt.Columns.Add("Group Opn Cr", typeof(decimal));
+                dt.Columns.Add("Opn Dr", typeof(decimal));
+                dt.Columns.Add("Opn Cr", typeof(decimal));
+                dt.Columns.Add("Total Group Opening", typeof(decimal));
+                dt.Columns.Add("Total Opening", typeof(decimal));
+                dt.Columns.Add("Curr Dr", typeof(decimal));
+                dt.Columns.Add("Curr Cr", typeof(decimal));
+                dt.Columns.Add("Group Curr Dr", typeof(decimal));
+                dt.Columns.Add("Group Curr Cr", typeof(decimal));
+                dt.Columns.Add("Net Amt", typeof(decimal));
+                dt.Columns.Add("Group Net Amt", typeof(decimal));
+                dt.Columns.Add("Sub Group Parent", typeof(string));
+                dt.Columns.Add("Under Group", typeof(string));
+
+                foreach (var row in result.TrailBalanceGrid)
+                {
+                    dt.Rows.Add(
+                        sr++,
+                        row.TrailBalanceGroupName,
+                        row.ParentGroupName,
+                        row.AccountName,
+                        row.GroupOpnDr,
+                        row.GroupOpnCr,
+                        row.OpnDr,
+                        row.OpnCr,
+                        row.TotalGroupOpening,
+                        row.TotalOpening,
+                        row.CurrDrAmt,
+                        row.CurrCrAmt,
+                        row.GroupCurrDrAmt,
+                        row.GroupCurrCrAmt,
+                        row.NetAmt,
+                        row.GroupNetAmt,
+                        row.SubGroupParent,
+                        row.UnderGroup
+                    );
+                }
+            }
+            else
+            {
+                return BadRequest("Invalid report type.");
+            }
+
+            // Generate Excel
+            var stream = ExcelHelper.GenerateExcel(
+                dt,
+                sheetName,
+                CompanyName,
+                BranchName,
+                FromDate,
+                ToDate
+            );
+
+            string excelName = $"TrailBalance_{ReportType}_{DateTime.Now:yyyyMMddHHmmss}.xlsx";
+            return File(
+                stream.ToArray(),
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                excelName
+            );
         }
     }
 }
