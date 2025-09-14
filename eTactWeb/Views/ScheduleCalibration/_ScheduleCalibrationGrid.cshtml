@@ -1,0 +1,64 @@
+﻿@model eTactWeb.DOM.Models.ScheduleCalibrationModel;
+@if (Model.CalibrationScheduleGrid == null)
+{
+    <tr class="text-center">
+        <td colspan="25" class="text-black-50"><strong>NO DATA ADDED</strong></td>
+    </tr>
+}
+else
+{
+    var @Cntr = 0;
+    foreach (var item in Model.CalibrationScheduleGrid)
+    {
+        Cntr = Cntr + 1;
+        <tr class="small " style="white-space:nowrap" id="divMtrGrid">
+            <td style="white-space:nowrap;">
+                @if (Model.CalibSchEntryId > 0)
+                {
+                    <a class="table-link link-primary noCursor" disabled>
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                    <a class="table-link link-danger noCursor" disabled>
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                }
+                else
+                {
+                    <a class="table-link link-primary" id="editButton" onclick="EditItemRow(@Cntr);">
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                    <a class="table-link link-danger" onclick="DeleteItemRow(@Cntr);">
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                }
+            </td>
+            <td>@Cntr</td>
+           
+            <td>@item.ToolEntryId</td>
+            <td>@item.ToolOrMold</td>
+            <td>@item.ScheduleDate</td>
+            <td>@item.ActualScheduleDate</td>
+            <td>@item.FrequencyMQYN</td>
+            <td>@item.ResponsibleEmpId</td>
+            <td>@item.CalibInhouseThirdPart</td>
+            <td>@item.CalibrationAgencyId </td>
+            <td>@item.StatusSCO</td>
+            <td>@item.Remark</td>
+            <td>@item.OtherInstruction</td>
+           
+        </tr>
+
+    }
+}
