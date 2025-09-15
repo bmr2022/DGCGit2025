@@ -79,6 +79,16 @@
                             <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="SOApproval" asp-action="SOApproval">
                                 <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
                             </a>
+                            
+                                <div class="d-flex justify-content-right">
+                                    <a class="btn btn-sm btn-outline-info btnSave" style="height:30px;width:100px;margin-top:15px !important;">
+                                        <i class="fa-solid fa-chevron-circle-right fa-fw fa-lg"></i>SAVE
+                                    </a>
+                                    @* <a class="btn btn-sm btn-outline-info" style="height:30px;width:100px;margin-top:15px !important;" asp-controller="SOApproval" asp-action="SaveApproval" asp-route-EntryId="@EntryID" asp-route-YC="@YC" asp-route-SONO="@SONO" asp-route-CustOrderNo="@CustOrderNo" asp-route-type="@typeOfApproval" asp-route-SONum="@SONum" asp-route-CustOrderNum="@CustOrderNum" asp-route-VendorNm="@VendorNm" asp-route-VendorName="@VendorNm">
+                                    <i class="fa-solid fa-chevron-circle-right fa-fw fa-lg"></i>SAVE
+                                    </a> *@
+                                </div>
+                            
                             <div class="ms-auto d-flex align-items-center">
                                 <div class="col-md-4">
                                     <label class="form-label me-2">Global search</label>
@@ -104,6 +114,9 @@
                                 <th>Action</th>
                                 <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Vendor</th>
                                 <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO No</th>
+                                <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Order Amt</th>
+                                <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Order NetAmt</th>
+                                <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Pending Amount</th>
                                 <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>CustOrder No</th>
                                 <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO Date</th>
                                 <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>WEF</th>
@@ -115,8 +128,7 @@
                                 <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Amm Eff Date</th>
                                 <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Address</th>
                                 <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Delivery Address</th>
-                                <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Order Amt</th>
-                                <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Order NetAmt</th>
+
                                 <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>EntryId</th>
                                 <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>YearCode</th>
                             </tr>
@@ -252,6 +264,44 @@
             });
         });
 
+        // Listen for change on all row checkboxes
+        $(document).on('change', '.select-checkbox', function () {
+            var $row = $(this).closest('tr'); // get the row of the checkbox
+
+            // Only send if checkbox is checked
+            if ($(this).is(':checked')) {
+               
+                var EntryId= $row.find('[id^=EntryId]').text();
+                var YC= $row.find('[id^=YearCode]').text();
+                var SONO= $row.find('[id^=SONo]').text();
+                var CustOrderNo= $row.find('[id^=CustOrderNo]').text();
+                var VendorName= $row.find('[id^=VendorName]').text();
+                var OrderAmt= $row.find('[id^=OrderAmt]').text();
+                var OrderNetAmt= $row.find('[id^=OrderNetAmt]').text();
+                var type= $('#CancelationType').val();
+               
+
+                $.ajax({
+                    type: "GET",
+                    data: { "EntryId": EntryId, "YC": YC, "SONO": SONO, "CustOrderNo": CustOrderNo, "type": type, "SONum": SONO, "CustOrderNum": CustOrderNo, "VendorNm": VendorName, "VendorName": VendorName },
+                    url: "@Url.Action("SaveActivation", "SOCancel")",
+                    success: function (response, status, error) {
+
+                        if (response.redirectUrl) {
+                            window.location.href = response.redirectUrl;
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        $.notify("Error saving row data: " + error, "error");
+                    }
+                });
+            } else {
+                // Optional: handle uncheck (like remove row from server-side)
+                console.log("Row unchecked: ", $row.find('[id^=EntryId]').text());
+            }
+        });
+
+
 
         $(document).on("click", "th[data-columnno]", function () {
             currentSearchColumn = $(this).data('columnno');
@@ -354,7 +404,7 @@
                                 else {
                                     ammEffDate = obj.Result.Table[i].AmmEffDate.split("T")[0];
                                 }
-                                html += '<tr id="' + i + '"><td style="text-align:center;white-space: nowrap;"><div id="container"  style="display: flex;"><div id="viewCursorDiv"><a class="tooltip-link" href="/SaleOrder/Index?ID=' + obj.Result.Table[i].EntryId + '&YC=' + obj.Result.Table[i].YearCode + '&Mode=' + "V" + '" style="height:30px !important;"><span class="fa-stack" ><i class="fa fa-eye" aria-hidden="true"></i></span></a></div><div id="viewCursorDiv"><a class="tooltip-link1 redirecttoapproval" href="/SOCancel/ShowSODetail?ID=' + obj.Result.Table[i].EntryId + '&YC=' + obj.Result.Table[i].YearCode + '&SONo=' + obj.Result.Table[i].SONo + '&CustOrderNo=' + obj.Result.Table[i].CustOrderNo + '&TypeOfApproval=' + $('#CancelationType').val() + '&VendorName=' + $('#VendorName').val() + '"><span class="fa-stack" ><i style="color:red;font-size: 15px; !important;" class="fa-regular fa-floppy-disk" aria-hidden="true"></i></span></a></div></div></td><td id="VendorName' + i + '" >' + obj.Result.Table[i].Customer + '</td><td style="width: 100px!important; " id="SONo' + i + '">' + obj.Result.Table[i].SONo + '</td><td style="width: 80px!important; " id="CustOrderNo' + i + '">' + obj.Result.Table[i].CustOrderNo + '</td><td style="width: 80px!important; " id="SoDate' + i + '">' + obj.Result.Table[i].SoDate.split("T")[0] + '</td><td style="width: 80px!important; " id="WEF' + i + '">' + obj.Result.Table[i].WEF.split("T")[0] + '</td><td style="width: 50px!important; " id="SOCloseDate' + i + '">' + obj.Result.Table[i].SOCloseDate.split("T")[0] + '</td><td style="width: 120px!important; " id="OrderType' + i + '">' + obj.Result.Table[i].OrderType + '</td><td style="width: 80px!important; " id="SOType' + i + '">' + obj.Result.Table[i].SOType + '</td><td style="width: 50px!important; " id="SOFor' + i + '">' + obj.Result.Table[i].SOFor + '</td><td style="width: 80px!important; " id="AmmNo' + i + '">' + obj.Result.Table[i].AmmNo + '</td><td id="ShipTo' + i + '">' + obj.Result.Table[i].AmmEffDate.split("T")[0] + '</td><td style="width: 50px!important; " id="Address' + i + '">' + obj.Result.Table[i].Address + '</td><td style="width: 50px!important; " id="DelAddress' + i + '">' + obj.Result.Table[i].DeliveryAddress + '</td><td style="width: 50px!important; " id="OrderAmt' + i + '">' + obj.Result.Table[i].OrderAmt + '</td><td style="width: 50px!important; " id="OrderNetAmt' + i + '">' + obj.Result.Table[i].OrderNetAmt + '</td><td  style="width: 50px!important; " id="EntryId' + i + '">' + obj.Result.Table[i].EntryId + '</td><td style="width: 50px!important; " id="YearCode' + i + '">' + obj.Result.Table[i].YearCode + '</td></tr>';
+                                html += '<tr id="' + i + '"><td style="text-align:center;white-space: nowrap;"><div id="container"  style="display: flex;"><input type="checkbox" id="chkSelect' + i + '" class="select-checkbox" style="margin-right:5px;" /><div id="viewCursorDiv"><a class="tooltip-link" href="/SaleOrder/Index?ID=' + obj.Result.Table[i].EntryId + '&YC=' + obj.Result.Table[i].YearCode + '&Mode=' + "V" + '" style="height:30px !important;"><span class="fa-stack" ><i class="fa fa-eye" aria-hidden="true"></i></span></a></div><div id="viewCursorDiv"><a class="tooltip-link1 redirecttoapproval" href="/SOCancel/ShowSODetail?ID=' + obj.Result.Table[i].EntryId + '&YC=' + obj.Result.Table[i].YearCode + '&SONo=' + obj.Result.Table[i].SONo + '&CustOrderNo=' + obj.Result.Table[i].CustOrderNo + '&TypeOfApproval=' + $('#CancelationType').val() + '&VendorName=' + $('#VendorName').val() + '"><span class="fa-stack" ><i style="color:red;font-size: 15px; !important;" class="fa-regular fa-floppy-disk" aria-hidden="true"></i></span></a></div></div></td><td id="VendorName' + i + '" >' + obj.Result.Table[i].Customer + '</td><td style="width: 100px!important; " id="SONo' + i + '">' + obj.Result.Table[i].SONo + '</td><td style="width: 50px!important; " id="OrderAmt' + i + '">' + obj.Result.Table[i].OrderAmt + '</td><td style="width: 50px!important; " id="OrderNetAmt' + i + '">' + obj.Result.Table[i].OrderNetAmt + '</td><td style="width: 50px!important; " id="PendingAmount' + i + '">' + obj.Result.Table[i].PendingAmount + '</td><td style="width: 80px!important; " id="CustOrderNo' + i + '">' + obj.Result.Table[i].CustOrderNo + '</td><td style="width: 80px!important; " id="SoDate' + i + '">' + obj.Result.Table[i].SoDate.split("T")[0] + '</td><td style="width: 80px!important; " id="WEF' + i + '">' + obj.Result.Table[i].WEF.split("T")[0] + '</td><td style="width: 50px!important; " id="SOCloseDate' + i + '">' + obj.Result.Table[i].SOCloseDate.split("T")[0] + '</td><td style="width: 120px!important; " id="OrderType' + i + '">' + obj.Result.Table[i].OrderType + '</td><td style="width: 80px!important; " id="SOType' + i + '">' + obj.Result.Table[i].SOType + '</td><td style="width: 50px!important; " id="SOFor' + i + '">' + obj.Result.Table[i].SOFor + '</td><td style="width: 80px!important; " id="AmmNo' + i + '">' + obj.Result.Table[i].AmmNo + '</td><td id="ShipTo' + i + '">' + obj.Result.Table[i].AmmEffDate.split("T")[0] + '</td><td style="width: 50px!important; " id="Address' + i + '">' + obj.Result.Table[i].Address + '</td><td style="width: 50px!important; " id="DelAddress' + i + '">' + obj.Result.Table[i].DeliveryAddress + '</td><td  style="width: 50px!important; " id="EntryId' + i + '">' + obj.Result.Table[i].EntryId + '</td><td style="width: 50px!important; " id="YearCode' + i + '">' + obj.Result.Table[i].YearCode + '</td></tr>';
 
                             }
                             $('#divSOAppGrid').append(html);
@@ -393,7 +443,7 @@
                                     ammEffDate = obj.Result.Table[i].AmmEffDate.split("T")[0];
                                 }
 
-                                html += '<tr id="' + i + '"><td style="text-align:center;white-space: nowrap;"><div id="container"  style="display: flex;"><div id="viewCursorDiv"><a class="tooltip-link" href="/SaleOrder/Index?ID=' + obj.Result.Table[i].EntryId + '&YC=' + obj.Result.Table[i].YearCode + '&Mode=' + "V" + '" style="height:30px !important;"><span class="fa-stack" ><i class="fa fa-eye" aria-hidden="true"></i></span></a></div><div id="viewCursorDiv"><a class="tooltip-link1 redirecttoapproval" href="/SOApproval/ShowSODetail?ID=' + obj.Result.Table[i].EntryId + '&YC=' + obj.Result.Table[i].YearCode + '&SONo=' + obj.Result.Table[i].SONo + '&CustOrderNo=' + obj.Result.Table[i].CustOrderNo + '&TypeOfApproval=' + $('#CancelationType').val() + '&VendorName=' + $('#VendorName').val() + '"><span class="fa-stack" ><i style="color:red !important;" class="fa-solid fa-floppy-disk-pen fa-fw fa-lg" aria-hidden="true"></i></span></a></div></div></td><td id="VendorName' + i + '" >' + obj.Result.Table[i].Customer + '</td><td style="width: 100px!important; " id="SONo' + i + '">' + obj.Result.Table[i].SONo + '</td><td style="width: 80px!important; " id="CustOrderNo' + i + '">' + obj.Result.Table[i].CustOrderNo + '</td><td style="width: 80px!important; " id="SoDate' + i + '">' + obj.Result.Table[i].SoDate.split("T")[0] + '</td><td style="width: 80px!important; " id="WEF' + i + '">' + obj.Result.Table[i].WEF.split("T")[0] + '</td><td style="width: 50px!important; " id="SOCloseDate' + i + '">' + obj.Result.Table[i].SOCloseDate.split("T")[0] + '</td><td style="width: 120px!important; " id="OrderType' + i + '">' + obj.Result.Table[i].OrderType + '</td><td style="width: 80px!important; " id="SOType' + i + '">' + obj.Result.Table[i].SOType + '</td><td style="width: 50px!important; " id="SOFor' + i + '">' + obj.Result.Table[i].SOFor + '</td><td style="width: 80px!important; " id="AmmNo' + i + '">' + obj.Result.Table[i].AmmNo + '</td><td id="ShipTo' + i + '">' + obj.Result.Table[i].AmmEffDate.split("T")[0] + '</td><td style="width: 50px!important; " id="Address' + i + '">' + obj.Result.Table[i].Address + '</td><td style="width: 50px!important; " id="DelAddress' + i + '">' + obj.Result.Table[i].DeliveryAddress + '</td><td style="width: 50px!important; " id="OrderAmt' + i + '">' + obj.Result.Table[i].OrderAmt + '</td><td style="width: 50px!important; " id="OrderNetAmt' + i + '">' + obj.Result.Table[i].OrderNetAmt + '</td><td  style="width: 50px!important; " id="EntryId' + i + '">' + obj.Result.Table[i].EntryId + '</td><td style="width: 50px!important; " id="YearCode' + i + '">' + obj.Result.Table[i].YearCode + '</td></tr>';
+                                html += '<tr id="' + i + '"><td style="text-align:center;white-space: nowrap;"><div id="container"  style="display: flex;"><input type="checkbox" id="chkSelect' + i + '" class="select-checkbox" style="margin-right:5px;" /><div id="viewCursorDiv"><a class="tooltip-link" href="/SaleOrder/Index?ID=' + obj.Result.Table[i].EntryId + '&YC=' + obj.Result.Table[i].YearCode + '&Mode=' + "V" + '" style="height:30px !important;"><span class="fa-stack" ><i class="fa fa-eye" aria-hidden="true"></i></span></a></div><div id="viewCursorDiv"><a class="tooltip-link1 redirecttoapproval" href="/SOApproval/ShowSODetail?ID=' + obj.Result.Table[i].EntryId + '&YC=' + obj.Result.Table[i].YearCode + '&SONo=' + obj.Result.Table[i].SONo + '&CustOrderNo=' + obj.Result.Table[i].CustOrderNo + '&TypeOfApproval=' + $('#CancelationType').val() + '&VendorName=' + $('#VendorName').val() + '"><span class="fa-stack" ><i style="color:red !important;" class="fa-solid fa-floppy-disk-pen fa-fw fa-lg" aria-hidden="true"></i></span></a></div></div></td><td id="VendorName' + i + '" >' + obj.Result.Table[i].Customer + '</td><td style="width: 100px!important; " id="SONo' + i + '">' + obj.Result.Table[i].SONo + '</td><td style="width: 80px!important; " id="CustOrderNo' + i + '">' + obj.Result.Table[i].CustOrderNo + '</td><td style="width: 80px!important; " id="SoDate' + i + '">' + obj.Result.Table[i].SoDate.split("T")[0] + '</td><td style="width: 80px!important; " id="WEF' + i + '">' + obj.Result.Table[i].WEF.split("T")[0] + '</td><td style="width: 50px!important; " id="SOCloseDate' + i + '">' + obj.Result.Table[i].SOCloseDate.split("T")[0] + '</td><td style="width: 120px!important; " id="OrderType' + i + '">' + obj.Result.Table[i].OrderType + '</td><td style="width: 80px!important; " id="SOType' + i + '">' + obj.Result.Table[i].SOType + '</td><td style="width: 50px!important; " id="SOFor' + i + '">' + obj.Result.Table[i].SOFor + '</td><td style="width: 80px!important; " id="AmmNo' + i + '">' + obj.Result.Table[i].AmmNo + '</td><td id="ShipTo' + i + '">' + obj.Result.Table[i].AmmEffDate.split("T")[0] + '</td><td style="width: 50px!important; " id="Address' + i + '">' + obj.Result.Table[i].Address + '</td><td style="width: 50px!important; " id="DelAddress' + i + '">' + obj.Result.Table[i].DeliveryAddress + '</td><td style="width: 50px!important; " id="OrderAmt' + i + '">' + obj.Result.Table[i].OrderAmt + '</td><td style="width: 50px!important; " id="OrderNetAmt' + i + '">' + obj.Result.Table[i].OrderNetAmt + '</td><td  style="width: 50px!important; " id="EntryId' + i + '">' + obj.Result.Table[i].EntryId + '</td><td style="width: 50px!important; " id="YearCode' + i + '">' + obj.Result.Table[i].YearCode + '</td></tr>';
 
                             }
                             $('#divSOAppGrid').append(html);
