@@ -33,7 +33,19 @@ namespace eTactWeb.Controllers
             MainModel.ActualEntryByEmpName = HttpContext.Session.GetString("EmpName");
             MainModel.CC = HttpContext.Session.GetString("Branch");
           
-            HttpContext.Session.Remove("KeyScheduleCalibration");
+            //HttpContext.Session.Remove("KeyScheduleCalibration");
+            if (Mode == "I" && ID == 0)
+            {
+                //MainModel.AccountCode = Convert.ToInt32(AccountCode.ToString());
+                //MainModel.docTypeId = Convert.ToInt32(docTypeId.ToString());
+                var selectedJson = HttpContext.Session.GetString("KeyScheduleCalibration");
+                if (!string.IsNullOrEmpty(selectedJson))
+                {
+                    var selectedItems = JsonConvert.DeserializeObject<List<ScheduleCalibrationModel>>(selectedJson);
+                    MainModel.CalibrationScheduleGrid = selectedItems;
+
+                }
+            }
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "U" || Mode == "V"))
             {
                 //MainModel = await _IMaterialConversion.GetViewByID(ID, YC, FromDate, ToDate).ConfigureAwait(false);
@@ -239,6 +251,45 @@ namespace eTactWeb.Controllers
 
 			return PartialView("_ScheduleCalibrationDisplayDataDetail", model);
 		}
+		public IActionResult DeleteItemRow(int SrNO, string Mode)
+		{
+			var MainModel = new ScheduleCalibrationModel();
+			if (Mode == "U")
+			{
+				string modelJson = HttpContext.Session.GetString("KeyScheduleCalibration");
+				List<ScheduleCalibrationModel> ScheduleCalibrationGrid = new List<ScheduleCalibrationModel>();
+				if (!string.IsNullOrEmpty(modelJson))
+				{
+					ScheduleCalibrationGrid = JsonConvert.DeserializeObject<List<ScheduleCalibrationModel>>(modelJson);
+				}
 
-	}
+				int Indx = SrNO - 1;
+
+				if (ScheduleCalibrationGrid != null && ScheduleCalibrationGrid.Count > 0)
+				{
+					ScheduleCalibrationGrid.RemoveAt(Convert.ToInt32(Indx));
+
+					Indx = 0;
+
+					foreach (var item in ScheduleCalibrationGrid)
+					{
+						Indx++;
+						item.seqno = Indx;
+					}
+					MainModel.CalibrationScheduleGrid = ScheduleCalibrationGrid;
+
+					string serializedGrid = JsonConvert.SerializeObject(MainModel.CalibrationScheduleGrid);
+					HttpContext.Session.SetString("KeyScheduleCalibration", serializedGrid);
+				}
+			}
+
+			return PartialView("_ScheduleCalibrationGrid", MainModel);
+		}
+        public async Task<JsonResult> GetCalibrationAgency()
+        {
+            var JSON = await _IScheduleCalibration.GetCalibrationAgency();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+    }
 }

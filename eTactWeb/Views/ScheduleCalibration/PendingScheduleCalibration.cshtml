@@ -133,6 +133,7 @@
 {
 	<script>
 		function getCheckedRowData() {
+			debugger
 			var selectedData = [];
 			var rows = document.querySelectorAll('#GateDataTable tbody tr');
 			var seqCounter = 1;
@@ -146,15 +147,26 @@
 					var qtyInput = cells[13].querySelector('input');
 
 					var rowData = {
-						SeqNo: seqCounter,
-						ToolName: cells[1].textContent.trim(),
-						ToolCode: cells[2].textContent.trim(),
-						ItemCode: parseInt(cells[3].textContent.trim()),   
-						ItemName: cells[4].textContent.trim(),
-						PartCode: cells[5].textContent.trim(),
-						LastCalibrationDate: cells[6].textContent.trim(),  
-						NextCalibrationDate: cells[7].textContent.trim(),
-						CalibrationAgencyId: parseInt(cells[8].textContent.trim())
+						SeqNo: parseInt(cells[1].textContent.trim()),           
+						ToolName: cells[2].textContent.trim(),                 
+						ToolCode: cells[3].textContent.trim(),                  
+						ItemName: cells[4].textContent.trim(),                   
+						PartCode: cells[5].textContent.trim(),                  
+						LastCalibrationDate: cells[6].textContent.trim(),       
+						DueCalibrationDate: cells[7].textContent.trim(),        
+						CalibrationAgencyId: parseInt(cells[8].textContent.trim()), 
+						CalibrationFrequencyInMonth: parseInt(cells[9].textContent.trim()), 
+						NextCalibrationDate: cells[10].textContent.trim(),      
+						LastCalibrationCertificateNo: cells[11].textContent.trim(),
+						CalibrationResultPassFail: cells[12].textContent.trim(),
+						TolrenceRange: cells[13].textContent.trim(),
+						CalibrationRemark: cells[14].textContent.trim(),
+						TechEmployeeName: cells[15].textContent.trim(),
+						Technician: cells[16].textContent.trim(),
+						TechnicialcontactNo: cells[17].textContent.trim(),
+						CustoidianEmpId: cells[18].textContent.trim(),
+						ItemCode: parseInt(cells[19].textContent.trim())
+
 					};
 
 					selectedData.push(rowData);
@@ -168,12 +180,7 @@
 				data: { model: selectedData },
 				async: false,
 				success: function (response) {
-
-
-					var accountCode = document.getElementById("VendorName").value;
-					var docTypeId = document.getElementById("docTypeId").value;
-
-					window.location.href = `/GateInward/GateInward?Mode=I&AccountCode=${accountCode}&docTypeId=${docTypeId}`;
+					window.location.href = `/ScheduleCalibration/Index?ID=0&YC=2025&Mode=I`;
 
 				},
 				error: function (xhr, status, error) {

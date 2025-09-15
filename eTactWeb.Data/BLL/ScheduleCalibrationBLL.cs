@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static eTactWeb.DOM.Models.Common;
 
 namespace eTactWeb.Data.BLL
 {
@@ -27,5 +28,9 @@ namespace eTactWeb.Data.BLL
 		{
 			return await _ScheduleCalibrationDAL.GetScheduleCalibrationSearchData( PartCode,  ItemName,  ToolCode,  ToolName);
 		}
-	}
+        public async Task<ResponseResult> GetCalibrationAgency()
+        {
+            return await _ScheduleCalibrationDAL.GetCalibrationAgency();
+        }
+    }
 }

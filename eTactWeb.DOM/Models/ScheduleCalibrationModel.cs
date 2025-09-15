@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace eTactWeb.DOM.Models
 {
-    public class ScheduleCalibrationModel
+    public class ScheduleCalibrationModel: PendingScheduleCalibrationModel
     {
        
 
@@ -20,6 +20,7 @@ namespace eTactWeb.DOM.Models
             public int? ResponsibleEmpId { get; set; }
             public string CalibInhouseThirdPart { get; set; }   
             public int? CalibrationAgencyId { get; set; }
+            public string? CalibrationAgencyName { get; set; }
             public string StatusSCO { get; set; }
             public string Remark { get; set; }
             public string OtherInstruction { get; set; }
@@ -48,6 +49,7 @@ namespace eTactWeb.DOM.Models
 		public string PartCode { get; set; }
 		public string? LastCalibrationDate { get; set; }
 		public string? NextCalibrationDate { get; set; }
+		public string? DueCalibrationDate { get; set; }
 		public int CalibrationAgencyId { get; set; }
 		public string CalibrationAgencyName { get; set; }
 		public string FromDate { get; set; }
@@ -64,6 +66,7 @@ namespace eTactWeb.DOM.Models
 		public string Technician { get; set; }
 		public string TechnicialcontactNo { get; set; }
 		public int CustoidianEmpId { get; set; }
+		public int CalibrationFrequencyInMonth { get; set; }
 		public IList<PendingScheduleCalibrationModel> ?PendingScheduleCalibrationGrid { get; set; }
 	}
 }
