@@ -84,12 +84,12 @@ namespace eTactWeb.Controllers
                         TempData["302"] = message;
                     }
                     //return RedirectToAction("SOApproval", new { type = type, CustOrderNo = CustOrderNum, SONO = SONum, VendorName = VendorNm });
-                    return Json(new { redirectUrl = Url.Action("SOCancel", new { type = type, YC = YC, CustOrderNo = CustOrderNum, SONO = SONum, VendorName = VendorNm }) });
+                    return Json(new { redirectUrl = Url.Action("SOCancel", new { type = type, YC = YC, CustOrderNo = "", SONO = "", VendorName = "" }) });
                 }
             }
             var model = new SOApprovalModel();
             //return RedirectToAction("SOApproval", new { type = type, CustOrderNo = CustOrderNum, SONO = SONum, VendorName = VendorNm });
-            return Json(new { redirectUrl = Url.Action("SOCancel", new { type = type, YC = YC, CustOrderNo = CustOrderNum, SONO = SONum, VendorName = VendorNm }) });
+            return Json(new { redirectUrl = Url.Action("SOCancel", new { type = type, YC = YC, CustOrderNo = "", SONO = "", VendorName = "" }) });
         }
 
     }
