@@ -57,6 +57,11 @@ namespace eTactWeb.Data.BLL
         {
             return await _SaleBillDAL.NewEntryId(YearCode);
         }
+
+        public async Task<ResponseResult> EditableRateAndDiscountONSaleInvoice()
+        {
+            return await _SaleBillDAL.EditableRateAndDiscountONSaleInvoice();
+        }
         public async Task<ResponseResult> getdiscCategoryName(int Group_Code, int AccountCode)
         {
             return await _SaleBillDAL.getdiscCategoryName(Group_Code, AccountCode);

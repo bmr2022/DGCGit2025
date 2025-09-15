@@ -21,6 +21,7 @@
         <input type="hidden" asp-for="EinvGenerated" />
         <input type="hidden" asp-for="MaxSaleInvoiceEntryDate" />
         <input type="hidden" asp-for="AllowBackDateSALEBILL" />
+        <input type="EditableRateAndDiscountONSaleInvoice" id="EditableRateAndDiscountONSaleInvoice" />
         <div class="card-header card-headerBG text-light bg-gradient">
             <h5>
                 <strong>@ViewData["Title"] - @Model.SaleBillYearCode</strong>
@@ -793,6 +794,7 @@
             // $('#Group_Code1').select2();
             GetItemGroup();
             AutoFillItems();
+            EditableRateAndDiscountONSaleInvoice();
 
             const domesticExport = $('#DomesticExportNEPZ').val();
             const $supplyType = $('#SupplyType');
@@ -1559,6 +1561,19 @@
                             // $('#IssueFromWCid').val(firstWCID);
 
 
+                        }
+
+                        if($('#EditableRateAndDiscountONSaleInvoice').val()=='N')
+                        {
+                            $('input[id^="Rate-"]').prop('readonly', true);
+                            $('input[id^="DiscountPer-"]').prop('readonly', true);
+                            $('input[id^="DiscountAmt-"]').prop('readonly', true);
+                        }
+                        else
+                        {
+                            $('input[id^="Rate-"]').prop('readonly', false);
+                            $('input[id^="DiscountPer-"]').prop('readonly', false);
+                            $('input[id^="DiscountAmt-"]').prop('readonly', false);
                         }
 
                         var rowCounter = $('#divMultiItemGrid tr').length;
@@ -3628,6 +3643,30 @@
 
                             $('#AdjDescription').val($('#SaleBillNo').val());
                             $('#AdjNewRefNo').val($('#SaleBillNo').val());
+
+                        }
+                    }
+                }
+            });
+        }
+
+
+        function EditableRateAndDiscountONSaleInvoice() {
+
+         
+            $.ajax({
+                type: "POST",
+
+                url: "@Url.Action("EditableRateAndDiscountONSaleInvoice")",
+                dataType: "json",
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.Result != null) {
+                            $('#EditableRateAndDiscountONSaleInvoice').val('');
+                            $('#EditableRateAndDiscountONSaleInvoice').val(obj.Result.Table[0].EditableRateAndDiscountONSaleInvoice);
+                           
 
                         }
                     }

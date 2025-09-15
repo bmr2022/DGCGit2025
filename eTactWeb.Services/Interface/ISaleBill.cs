@@ -19,6 +19,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetFormRights(int uId);
         Task<ResponseResult> GetMaxSaleInvoiceEntryDate(int YearCode);
         Task<ResponseResult> NewEntryId(int YearCode);
+        Task<ResponseResult> EditableRateAndDiscountONSaleInvoice();
         Task<ResponseResult> GetBatchInventory();
         Task<ResponseResult> GetCustomerBasedDetails(int Code);
         Task<ResponseResult> FillCurrency(int accountCode);

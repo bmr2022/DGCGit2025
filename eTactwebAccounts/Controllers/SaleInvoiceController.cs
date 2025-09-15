@@ -1010,6 +1010,13 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+
+        public async Task<JsonResult> EditableRateAndDiscountONSaleInvoice()
+        {
+            var JSON = await _SaleBill.EditableRateAndDiscountONSaleInvoice();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }   
         public async Task<JsonResult> GetCustomerBasedDetails(int Code)
         {
             var JSON = await _SaleBill.GetCustomerBasedDetails(Code);
