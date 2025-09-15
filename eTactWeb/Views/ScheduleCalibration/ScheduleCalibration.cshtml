@@ -107,69 +107,6 @@
 										<div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
 											<div class="accordion-body">
 												<div class="row g-2 gx-3" id="_ItemGrid">
-													
-													<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:120px;">
-														<label asp-for="ToolOrMold" class="form-label" >Tool/Mold</label>
-														<select class="form-select" asp-for="ToolOrMold" style="width:105px;">
-															<option value="">-Select-</option>
-															<option value="Tool" selected>Tool</option>
-															<option value="Mold">Mold</option>
-														</select>
-													</div>
-													<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-														<label asp-for="ToolEntryId" class="form-label">Tool EntryId</label>
-														<input asp-for="ToolEntryId" class="form-control" readonly />
-													</div>
-													<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-														<label asp-for="ScheduleDate" class="form-label">Schedule Date</label>
-														<input asp-for="ScheduleDate" class="form-control" readonly />
-													</div>
-													<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12"style="width:180px;">
-														<label asp-for="ActualScheduleDate" class="form-label">Actual Schedule Date</label>
-														<input asp-for="ActualScheduleDate" class="form-control" readonly />
-													</div>
-													<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
-														<label asp-for="FrequencyMQYN" class="form-label">Frequency MQYN</label>
-														<input asp-for="FrequencyMQYN" class="form-control"  />
-													</div>
-													<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
-														<label asp-for="ResponsibleEmpId" class="form-label">Responsible EmpId</label>
-														<input asp-for="ResponsibleEmpId" class="form-control" readonly />
-													</div>
-													<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:180px;">
-														<label asp-for="CalibInhouseThirdPart" class="form-label">Calib Inhouse/ThirdParty</label>
-														<select class="form-select" asp-for="CalibInhouseThirdPart" style="width:170px;">
-															<option value="">-Select-</option>
-															<option value="Inhouse" selected>In house</option>
-															<option value="ThirdParty">Third Party</option>
-														</select>
-													</div>
-													<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px;">
-														<label asp-for="CalibrationAgencyId" class="form-label">Calibration AgencyId</label>
-														<input asp-for="CalibrationAgencyId" class="form-control"  />
-													</div>
-													<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-														<label asp-for="StatusSCO" class="form-label">Status</label>
-														<input asp-for="StatusSCO" class="form-control" />
-													</div>
-													<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-														<label asp-for="Remark" class="form-label">Remark</label>
-														<input asp-for="Remark" class="form-control" />
-													</div>
-													<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:130px;">
-														<label asp-for="OtherInstruction" class="form-label">Other Instruction</label>
-														<input asp-for="OtherInstruction" class="form-control" />
-													</div>
-													<div class="col d-flex align-items-center" style="gap: 10px;">
-														<button type="button" class="GridButton btn btn-sm btn-outline-danger" id="GridButton">
-															<i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
-														</button>
-
-													</div>
-													<div class="progress my-2 mb-3" style="height: 4px;">
-														<div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-													</div>
-												
 													<div class="card">
 														<div class="card-body overflow-auto pb-0">
 															<table class="table table-hover table-bordered table-striped" id="itemtable">
@@ -177,17 +114,25 @@
 																	<tr id="headerRow">
 																		<th>Action</th>
 																		<th>Seq No</th>
-																		<th>Tool EntryId</th>
-																		<th>Tool/Mold</th>
-																		<th>Schedule Date</th>
-																		<th>Actual Schedule Date </th>
-																		<th>Frequency MQYN </th>
-																		<th>Responsible EmpId </th>
-																		<th>Calib In house Third Party </th>
-																		<th>Calibration AgencyId </th>
-																		<th>Status SCO </th>
-																		<th>Remark</th>
-																		<th>Other Instruction</th>
+																		<th>Tool Name</th>
+																		<th>Tool Code</th>
+																		<th>Item Name</th>
+																		<th>Part Code</th>
+																		<th>Last Calibration Date</th>
+																		<th>Due Calibration Date</th>
+																		<th>Calibration Agency Id</th>
+																		<th>Calibration Frequency </th>
+																		<th>Next Calibration Date</th>
+																		<th>Last Calibration Certificate No</th>
+																		<th>Calibration Result (Pass/Fail)</th>
+																		<th>Tolerance Range</th>
+																		<th>Calibration Remark</th>
+																		<th>Technical Employee Name</th>
+																		<th>Technician</th>
+																		<th>Technician Contact No</th>
+																		<th>Custodian Emp Id</th>
+																		
+
 
 																	</tr>
 																</thead>
@@ -199,13 +144,10 @@
 													</div>
 													<div class="row g-2 gx-3">
 														<div class="col-12 text-center">
-
 															<strong>TOTAL NO OF ITEMS : <span id="lblItemCount"></span></strong>
 														</div>
 													</div>
-													<div class="progress my-3 mb-3" style="height: 4px;">
-														<div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-													</div>
+													
 										    </div>
 											
 											
@@ -347,15 +289,22 @@
 
 				FillEntryID();
 			}
-			//$('#SlipDate').rules("remove", "required");
-			
-
 				$('#ToolOrMold').select2();
 				$('#CalibInhouseThirdPart').select2();
-			
-			$('#totalRows').text($('#divStockGrid tr').length);
-
-			
+			GetCalibrationAgency();
+			$('#lblItemCount').text($('#divScheduleCalibrationGrid tr').length);
+			$(".DueCalibrationDate").datepicker({
+				dateFormat: "dd/M/yy",
+				minDate: 0
+			});
+			$(document).on("change", ".DueCalibrationDate", function () {
+				var row = $(this).closest("td");
+				calculateNextCalibrationDate(row);
+			});
+			$(".DueCalibrationDate").each(function () {
+				var row = $(this).closest("td");
+				calculateNextCalibrationDate(row);
+			});
 			//FillAltWorkCenterName();
 
 			
@@ -364,7 +313,6 @@
 				setFormattedDate();
 			});
 
-			
 			
 			
 			$('.submitBTN').click(function (e) {
@@ -376,6 +324,40 @@
 			});
 			
 		});
+		// $('#CalibrationAgencyName').change(function () {
+		// 	$('#CalibrationAgencyId').val($('#CalibrationAgencyName').val());
+		// });
+
+		function calculateNextCalibrationDate(row) {
+			var dueDateStr = row.find(".DueCalibrationDate").val();
+			var freq = parseInt(row.closest("tr").find(".CalibrationFrequencyInMonth").text().trim());
+
+			if (dueDateStr && !isNaN(freq)) {
+				var parts = dueDateStr.split("/");
+				if (parts.length === 3) {
+					var day = parseInt(parts[0]);
+					var month = parts[1]; // Already "Jan, Feb, ..." because of dateFormat
+					var year = parseInt(parts[2]);
+
+					// Convert month abbreviation to index
+					var monthIndex = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"].indexOf(month);
+
+					var dueDate = new Date(year, monthIndex, day);
+
+					// Add months
+					dueDate.setMonth(dueDate.getMonth() + freq);
+
+					// Format as dd/MMM/yyyy
+					var formatted =
+						("0" + dueDate.getDate()).slice(-2) + "/" +
+						["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][dueDate.getMonth()] + "/" +
+						dueDate.getFullYear();
+
+					row.closest("tr").find(".NextCalibrationDate").text(formatted);
+				}
+			}
+		}
+
 
 		function setFormattedDate() {
 			var today = new Date();
@@ -389,6 +371,12 @@
 			$('#ScheduleDate, #ActualScheduleDate, #CalibSchEntryDate,#LastUpdationDate')
 				.datepicker({ dateFormat: 'dd/M/yy', maxDate: 0 })
 				.val(formattedDate);
+
+			// $("#DueCalibrationDate").datepicker({
+			// 	dateFormat: "dd-M-yy",
+			// 	minDate: 0
+			// });
+
 		}
 
 		
@@ -460,71 +448,43 @@
 				}
 			});
 		}
-		function FillSlipNo() {
 
-			var YearCode = $('#OpeningYearCode').val();
+		function GetCalibrationAgency() {
 			$.ajax({
-				url: '@Url.Action("FillEntryID", "MaterialConversion")',
-				type: 'POST',
-				data: {
-					YearCode: YearCode
-				},
-				async: false,
-				success: function (data, status, xhr) {
-					var obj = $.parseJSON(data);
-					if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
-						$('#SlipNo').val(obj.Result[0].MatConvSlipNo || 0);
-					}
-				},
-				error: function (xhr, status, error) {
-					alert('Failed to load Slip NO.');
-				}
-			});
-		}
-		function FillBranch() {
-
-			$.ajax({
-				url: '@Url.Action("FillBranch", "MaterialConversion")',
-				type: 'POST',
-
-				async: false,
-				success: function (data, status, xhr) {
-					var obj = $.parseJSON(data);
-					if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
-						$('#CC').val(obj.Result[0].Com_Name || 0);
-					}
-				},
-				error: function (xhr, status, error) {
-					alert('Failed to load Slip NO.');
-				}
-			});
-		}
-
-		function FillStoreName() {
-			$.ajax({
-				url: '@Url.Action("FillStoreName", "MaterialConversion")',
+				url: '@Url.Action("GetCalibrationAgency", "ScheduleCalibration")',
 				type: 'POST',
 				async: false,
-				success: function (response, status, error) {
-					var StoreNameDropdown = $('#StoreName');
+				success: function (response) {
 					var obj = $.parseJSON(response);
-					StoreNameDropdown.empty();
-					StoreNameDropdown.append('<option value="">--Select--</option>');
-					$.each(obj.Result, function (index, Store) {
-						StoreNameDropdown.append('<option value="' + Store.EntryID + '">' + Store.store_name + '</option>');
+
+					$('.CalibrationAgencyName').each(function () {
+						var dropdown = $(this);
+						var hiddenId = dropdown.closest('td').find('.CalibrationAgencyId').val();
+
+						dropdown.empty();
+						dropdown.append('<option value="">--Select--</option>');
+
+						$.each(obj.Result, function (index, Val) {
+							dropdown.append('<option value="' + Val.CalAgencyEntryId + '">' + Val.CalAgencyName + '</option>');
+						});
+
+						if (hiddenId) {
+							dropdown.val(hiddenId); // preselect correct agency
+						}
 					});
-
-					if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-
-						var StoreName = ""
-						$('#StoreName').val(StoreName);
-					}
 				},
-				error: function (xhr, status, error) {
-					alert('Failed to load StoreName .');
+				error: function () {
+					alert('Failed to load Calibration Agency.');
 				}
 			});
 		}
+
+		
+		$(document).on("change", ".CalibrationAgencyName", function () {
+			var selectedVal = $(this).val();
+			$(this).closest('td').find('.CalibrationAgencyId').val(selectedVal);
+		});
+
 		function AltFillStoreName() {
 			$.ajax({
 				url: '@Url.Action("FillStoreName", "MaterialConversion")',
@@ -614,142 +574,14 @@
 		}
 
 
-		$('#GridButton').click(function (e) {
-			e.preventDefault();
-			EditItem = false;
-			var missingFields = [];
-
-			var issueToStoreWC = $('#IssueToStoreWC').val();
-			var originalPartCode = $('#OriginalPartCode').val();
-			// var originalItemName = $('#OriginalItemName').val();
-			var originalItemCode = $('#OriginalItemCode').val();
-			// var altItemName = $('#AltItemName').val();
-			var altPartCode = $('#AltPartCode').val();
-			var AltItemCode = $('#AltItemCode').val();
-			var StoreName = $('#StoreName').val();
-			var AltStoreName = $('#AltStoreName').val();
-			//var altUnit = $('#AltUnit').val().trim();
-			var unit = $('#Unit').val();
-			var originalQty = $('#OriginalQty').val();
-
-			if (!originalPartCode) missingFields.push("Original Part Code");
-			// if (!originalItemName) missingFields.push("Original Item Name");
-			if (!originalItemCode) missingFields.push("Original Item Code");
-			// if (!altItemName) missingFields.push("Alt Item Name");
-			if (!altPartCode) missingFields.push("Alt Part Code");
-			if (!AltItemCode) missingFields.push("Alt Item Code");
-			//if (!altUnit) missingFields.push("Alt Unit");
-			if (!unit) missingFields.push("Unit");
-			if (!originalQty) missingFields.push("Original Quantity");
-			//if (!StoreName) missingFields.push("StoreName");
-			//if (!AltStoreName) missingFields.push("AltStoreName");
-
-			if (!issueToStoreWC) {
-				$.notify("Please select Store/WC before adding to the grid!", "error");
-				return;
-			}
-			// if (!originalPartCode || !originalItemName || !originalItemCode ||
-			//     !altItemName || !altPartCode || !altUnit || !unit || !originalQty || !AltItemCode) {
-			//     $.notify("All fields are required to add data to the grid!", "error");
-			//     return;
-			// }
-			if (missingFields.length > 0) {
-				var message = "The following fields are required:\n" + missingFields.join(", ");
-				$.notify(message, "error");
-				return;
-			}
-			var SchData = {
-				OriginalPartCode: $('#OriginalPartCodeText').val(),
-				OriginalItemName: $('#OriginalItemNameText').val(),
-				OriginalItemCode: $('#OriginalItemCode').val(),
-				StoreName: $('#StoreName').val() || '',
-				StoreId: $('#StoreId').val(),
-				WorkCenterName: $('#WorkCenterName').val() || '',
-				WcId: $('#WcId').val(),
-				Unit: $('#Unit').val(),
-				OriginalQty: $('#OriginalQty').val(),
-				// AltItemName: $('#AltItemName').val(),
-				// AltPartCode: $('#AltPartCode').val(),
-				// AltItemCode: $('#AltItemCode').val(),
-				AltPartCode: $('#AltPartCodeText').val(),
-				AltItemName: $('#AltItemNameText').val(),
-				AltItemCode: $('#AltItemCode').val(),
-				AltUnit: $('#AltUnit').val(),
-				AltOriginalQty: $('#AltOriginalQty').val(),
-				OriginalStoreId: $('#OriginalStoreId').val(),
-
-				AltStoreId: $('#AltStoreId').val(),
-				AltStoreName: $('#AltStoreName').val(),
-				// OrginalWCID: $('#OrginalWCID').val(),
-				AltWCID: $('#AltWCID').val(),
-				AltWorkCenterName: $('#AltWorkCenterName').val(),
-				// BatchNo: $('#BatchNo').val(),
-				// UniqueBatchNo: $('#UniqueBatchNo').val(),
-				BatchNo: $('#BatchNo').find(':selected').text().trim(),
-				UniqueBatchNo: $('#UniqueBatchNo').find(':selected').text().trim(),
-				BatchStock: $('#BatchStock').val(),
-				TotalStock: $('#TotalStock').val(),
-				AltStock: $('#AltStock').val(),
-				PlanNo: $('#PlanNo').val(),
-				PlanYearCode: $('#PlanYearCode').val(),
-				PlanDate: $('#PlanDate').val(),
-				ProdSchNo: $('#ProdSchNo').val(),
-				ProdSchYearCode: $('#ProdSchYearCode').val(),
-				ProdSchDatetime: $('#ProdSchDatetime').val(),
-				OrigItemRate: $('#OrigItemRate').val(),
-				Remark: $('#Remark').val(),
-				// OriginalPartCode: $('#OriginalPartCode').find(":selected").text(),
-				// OriginalItemName: $('#OriginalItemName').find(":selected").text(),
-				// AltItemName: $('#AltItemName').find(":selected").text(),
-				// AltPartCode: $('#AltPartCode').find(":selected").text(),
-				WorkCenterName: $('#WorkCenterName').find(":selected").text(),
-				StoreName: $('#StoreName').find(":selected").text(),
-				AltStoreName: $('#AltStoreName').find(":selected").text(),
-				AltWorkCenterName: $('#AltWorkCenterName').find(":selected").text(),
-				//OriginalItemCode: $('#OriginalItemCode').find(":selected").text(),
-			};
-			console.log(SchData);
-			$.ajax({
-				type: "POST",
-				url: '@Url.Action("AddToGridData", "MaterialConversion")',
-				data: { model: SchData },
-				success: function (result, status, xhr) {
-					if (xhr.status == 200 && xhr.responseText == result) {
-
-						$('#divStockGrid').html(result);
-						TotalNoOfRows();
-						ClearItems();
-					} else if (xhr.status == 207) {
-						$.notify('Duplicate Item...!', "info");
-					}
-				},
-				error: function () {
-					$.notify('Something Went Wrong, Please Try Again.', "error");
-				}
-			});
-		});
-
+	
 
 		function TotalNoOfRows() {
-			var Row = $('#divStockGrid tr').length;
-			var tdCount = $('#divStockGrid tr td').length;
+			var Row = $('#divScheduleCalibrationGrid tr').length;
+			var tdCount = $('#divScheduleCalibrationGrid tr td').length;
 			$('#lblItemCount').text(tdCount >= 1 ? Row : 0);
 		}
-		function ClearGrid() {
-			$.ajax({
-				type: "POST",
-				url: "@Url.Action("ClearGrid")",
-				success: function (result, status, error) {
-					$('#divStockGrid').empty();
-					var NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
-					$('#divStockGrid').html(NoData);
-					// BasicTotal();
-				},
-				error: function (req, status, error) {
-					alert(error);
-				}
-			});
-		}
+		
 		function CheckBeforeUpdate() {
 			$.ajax({
 				url: '@Url.Action("CheckBeforeUpdate")',
@@ -769,86 +601,7 @@
 			});
 		}
 
-		var EditEachItem = false;
-		var EditItem = false;
-		function EditItemRow(SrNO) {
-			var RowCount = $('#divStockGrid tr').length;
-			if (EditItem) {
-				$.notify('Cannot Edit item while AddtoGrid  Existing Item!!!', "error");
-				// $('#editButton-' + RowCount).prop("disabled", true);
-			}
-			else {
-				// if (EditEachItem) {
-				// 	$.notify('Cannot edit item while another item is being added to the grid!', "error");
-				// 	return;
-				// }
-
-				$.ajax({
-					url: '@Url.Action("EditItemRow")',
-					type: "POST",
-					data: { SrNO: SrNO, Mode: "U" },
-					success: function (data) {
-
-						var obj = $.parseJSON(data);
-						if (obj != null) {
-
-							EditItem = true;
-
-							// $('#OriginalPartCode').val(obj[0].OriginalItemCode).trigger("change");
-							// $('#OriginalItemName').val(obj[0].OriginalItemCode).trigger("change");
-							// $('#OriginalItemCode').val(obj[0].OriginalItemCode);
-							$('#OriginalItemCode').val(obj[0].OriginalItemCode).trigger("change");
-							$('#OriginalPartCode').val(obj[0].OriginalPartCode).trigger("change");
-							/* $('#ItemName').val(obj[0].ItemName); */
-							$('#OriginalPartCodeText').val(obj[0].OriginalPartCode);
-							$('#OriginalItemNameText').val(obj[0].OriginalItemName);
-							$('#Unit').val(obj[0].Unit);
-							$('#OriginalQty').val(obj[0].OriginalQty);
-							$('#AltItemCode').val(obj[0].AltItemCode).trigger("change");
-							$('#AltPartCode').val(obj[0].AltPartCode).trigger("change");
-							/* $('#ItemName').val(obj[0].ItemName); */
-							$('#AltPartCodeText').val(obj[0].AltPartCode);
-							$('#AltItemNameText').val(obj[0].AltItemName);
-							$('#AltUnit').val(obj[0].AltUnit);
-							$('#AltOriginalQty').val(obj[0].AltOriginalQty);
-							$('#OriginalStoreId').val(obj[0].OriginalStoreId).trigger("change");
-							$('#StoreName').val(obj[0].StoreId).trigger("change");
-							$('#AltStoreName').val(obj[0].AltStoreId).trigger("change");
-							$('#WorkCenterName').val(obj[0].WcId).trigger("change");
-							$('#AltWorkCenterName').val(obj[0].AltWCID).trigger("change");
-							$('#BatchNo').val(obj[0].BatchNo).trigger("change");
-							$('#UniqueBatchNo').val(obj[0].UniqueBatchNo).trigger("change");
-							$('#BatchStock').val(obj[0].BatchStock).trigger("change");
-							$('#TotalStock').val(obj[0].TotalStock).trigger("change");
-							$('#AltStock').val(obj[0].AltStock).trigger("change");
-							$('#PlanNo').val(obj[0].PlanNo).trigger("change");
-							$('#PlanYearCode').val(obj[0].PlanYearCode).trigger("change");
-							$('#PlanDate').val(obj[0].PlanDate).trigger("change");
-							$('#ProdSchNo').val(obj[0].ProdSchNo).trigger("change");
-							$('#ProdSchYearCode').val(obj[0].ProdSchYearCode).trigger("change");
-							$('#ProdSchDatetime').val(obj[0].ProdSchDatetime).trigger("change");
-							$('#OrigItemRate').val(obj[0].OrigItemRate).trigger("change");
-							$('#Remark').val(obj[0].Remark).trigger("change");
-
-							// var newSrNo = obj[0].SrNO;
-							// if (currentSrNo !== newSrNo) {
-							//     $('#SrNO').val(newSrNo).trigger("change");
-							// }
-							var rowCount = $('#divStockGrid tr').length;
-							for (var i = 1; i <= rowCount + 1; i++) {
-								$('#editItemGrid-' + i).css("pointer-events", "none");
-								$('#editItemGrid-' + i).css("cursor", "not-allowed");
-							}
-
-							DeleteItemRow(SrNO);
-						}
-					},
-					error: function (response) {
-						$.notify(response.responseText, "error");
-					}
-				});
-			}
-		}
+		
 		function DeleteItemRow(SrNO) {
 
 			$.ajax({
@@ -856,7 +609,7 @@
 				type: "POST",
 				data: { SrNO: SrNO, Mode: "U" },
 				success: function (data, status, xhr) {
-					$('#divStockGrid').html(data);
+					$('#divScheduleCalibrationGrid').html(data);
 					$.notify("Process deleted from Grid", "info");
 					EditEachItem = false;
 

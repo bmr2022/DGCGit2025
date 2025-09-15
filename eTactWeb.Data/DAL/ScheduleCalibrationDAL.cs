@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static eTactWeb.DOM.Models.Common;
 
 namespace eTactWeb.Data.DAL
 {
@@ -65,16 +66,18 @@ namespace eTactWeb.Data.DAL
 														   ItemName = dr["Item_Name"].ToString(),
 														   PartCode = dr["PartCode"].ToString(),
 														   LastCalibrationDate = dr["LastCalibrationDate"].ToString(),
-														   NextCalibrationDate = dr["NextCalibrationDate"].ToString(),
+														   //NextCalibrationDate = dr["NextCalibrationDate"].ToString(),
+														   DueCalibrationDate = dr["NextCalibrationDate"].ToString(),
 														   CalibrationAgencyId =Convert.ToInt32(dr["CalibrationAgencyId"].ToString()),
-													   LastCalibrationCertificateNo = dr["LastCalibrationCertificateNo"].ToString(),
+														   LastCalibrationCertificateNo = dr["LastCalibrationCertificateNo"].ToString(),
 														   CalibrationResultPassFail = dr["CalibrationResultPassFail"].ToString(),
 														   TolrenceRange = dr["TolrenceRange"].ToString(),
 														   CalibrationRemark = dr["CalibrationRemark"].ToString(),
 														   TechEmployeeName = dr["TechEmployeeName"].ToString(),
 														   Technician = dr["Technician"].ToString(),
 														   TechnicialcontactNo = dr["TechnicialcontactNo"].ToString(),
-														   CustoidianEmpId = Convert.ToInt32(dr["CustoidianEmpId"].ToString())
+														   CustoidianEmpId = Convert.ToInt32(dr["CustoidianEmpId"].ToString()),
+														   CalibrationFrequencyInMonth = Convert.ToInt32(dr["CalibrationFrequencyInMonth"].ToString())
 
 													   }).ToList();
 				}
@@ -93,5 +96,23 @@ namespace eTactWeb.Data.DAL
 			}
 			return model;
 		}
-	}
+        public async Task<ResponseResult> GetCalibrationAgency()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "CalibrationAgency"));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("PPCSpScheduleCalibrationMainDetail", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+    }
 }

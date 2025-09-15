@@ -30,9 +30,18 @@
                     <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Last Calibration Date
                 </th>
                 <th data-columnno="7" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Due Calibration Date
+                </th>
+                <th data-columnno="16" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Calibration Agency
+                </th>
+                <th data-columnno="16" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Calibration Frequency
+                </th>
+                <th data-columnno="16" data-sortorder="asc" class="sortCol">
                     <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Next Calibration Date
                 </th>
-              
+
                 <th data-columnno="8" data-sortorder="asc" class="sortCol">
                     <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Last Calibration Certificate No
                 </th>
@@ -57,9 +66,7 @@
                 <th data-columnno="15" data-sortorder="asc" class="sortCol">
                     <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Custodian Emp ID
                 </th>
-                <th data-columnno="16" data-sortorder="asc" class="sortCol">
-                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Calibration Agency
-                </th>
+               
             </tr>
         </thead>
         <tbody id="PendinggateDashboardtable">
@@ -81,15 +88,17 @@
                             <td style="text-align:center;">
                                 <input style="background-color: #b2b3f0;" id="AcceptedQtySHA-@Cntr" class="form-check-input me-1 mt-2" type="checkbox" role="switch" onchange="CheckacceptedQtySHA();" />
                             </td>
-                            <td style="display:none;">@item.ItemCode</td>
+                          
                             <td>@srNo</td> <!-- Action (Serial) -->
                             <td>@item.ToolName</td>
                             <td>@item.ToolCode</td>
                             <td>@item.ItemName</td>
                             <td>@item.PartCode</td>
                             <td>@(item.LastCalibrationDate == null ? string.Empty : item.LastCalibrationDate.ToString().Split(" ")[0])</td>
+                            <td>@(item.DueCalibrationDate == null ? string.Empty : item.DueCalibrationDate.ToString().Split(" ")[0])</td>
+                            <td>@item.CalibrationAgencyId</td>
+                            <td>@item.CalibrationFrequencyInMonth</td>
                             <td>@(item.NextCalibrationDate == null ? string.Empty : item.NextCalibrationDate.ToString().Split(" ")[0])</td>
-
                             
                             <td>@item.LastCalibrationCertificateNo</td>
                             <td>@item.CalibrationResultPassFail</td>
@@ -99,8 +108,8 @@
                             <td>@item.Technician</td>
                             <td>@item.TechnicialcontactNo</td>
                             <td>@item.CustoidianEmpId</td>
-                            <td>@item.CalibrationAgencyId</td>
-
+                          
+                            <td style="display:none;">@item.ItemCode</td>
                           
                         </tr>
                         srNo++;
