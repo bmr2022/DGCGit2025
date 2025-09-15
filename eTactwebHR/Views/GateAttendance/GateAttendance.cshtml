@@ -545,113 +545,6 @@
                 }
             });
         }
-    </script>
-}
-<!-- jQuery FIRST -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<!-- Then Select2 -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-
-<!-- Then other plugins that depend on jQuery -->
-<script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.13/jquery.validate.unobtrusive.min.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
-
-<style>
-    #poTable {
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-    #poThead th {
-        background-color: #127387;
-        position: sticky;
-        top: 0;
-        z-index: 1;
-    }
-
-    .table-container, .table-responsive {
-        width: 100%;
-        overflow-x: auto; 
-        overflow-y: auto; 
-        white-space: nowrap;
-        border: 1px solid #ccc;
-    }
-
-    .itemgridTable {
-        border-collapse: collapse;
-        table-layout: fixed;
-        width: max-content;
-        min-width: 100%;
-    }
-
-    .itemgridHead th {
-        background-color: #127387;
-        position: sticky;
-        top: 0;
-        z-index: 1;
-        min-width: 10px;
-        padding: 6px;
-        white-space: nowrap;
-        resize: horizontal;
-        overflow: auto;
-    }
-
-    .itemgridTable td {
-        padding: 6px;
-        min-width: 80px; 
-        font-weight: normal !important;
-    }
-
-    .resize-handle {
-        position: absolute;
-        right: 0;
-        top: 0;
-        width: 6px;
-        height: 100%;
-        cursor: col-resize;
-        user-select: none;
-    }
-
-    .resize-handle::after {
-        content: '';
-        position: absolute;
-        right: 3px;
-        top: 20%;
-        width: 2px;
-        height: 60%;
-        background: rgba(0,0,0,0.3);
-        border-radius: 1px;
-    }
-
-    .itemgridHead th input[type="checkbox"] {
-        margin: 0 4px 0 0;
-        vertical-align: middle;
-    }
-
-    .select2-search__field {
-        z-index: 10000 !important; /* Adjust the value as needed */
-    }
-
-    .weekoff-time {
-        color: red !important;
-        font-weight: bold;
-    }
-
-    .holiday-time {
-        color: crimson !important;
-        font-weight: bold;
-    }
-</style>
-
-<script>
     function initItemGridResize() {
       document.querySelectorAll('.itemgridTable').forEach(function (table) {
         if (table.dataset.resizable === "true") return;
@@ -753,5 +646,123 @@
         }
         }
     }
+    function onclickCheckDate(dayNo) {
+        let checkboxes = document.querySelectorAll("input[type='checkbox'][data-day='" + dayNo + "']");
+        let isChecked = event.target.checked;
+        checkboxes.forEach(cb => cb.checked = isChecked);
+        
+        document.querySelectorAll("input.att-input[data-day='" + dayNo + "']").forEach(function (el) 
+        {
+            if (isChecked) {
+                el.removeAttribute("disabled");
+            } else {
+                el.setAttribute("disabled", "disabled");
+            }
+        });
+    }
     document.addEventListener('DOMContentLoaded', initItemGridResize);
-</script>
+    </script>
+}
+<!-- jQuery FIRST -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Then Select2 -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+<!-- Then other plugins that depend on jQuery -->
+<script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.13/jquery.validate.unobtrusive.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
+
+<style>
+    #poTable {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #poThead th {
+        background-color: #127387;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
+    .table-container, .table-responsive {
+        width: 100%;
+        overflow-x: auto; 
+        overflow-y: auto; 
+        white-space: nowrap;
+        border: 1px solid #ccc;
+    }
+
+    .itemgridTable {
+        border-collapse: collapse;
+        table-layout: fixed;
+        width: max-content;
+        min-width: 100%;
+    }
+
+    .itemgridHead th {
+        background-color: #127387;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        min-width: 10px;
+        padding: 6px;
+        white-space: nowrap;
+        resize: horizontal;
+        overflow: auto;
+    }
+
+    .itemgridTable td {
+        padding: 6px;
+        min-width: 80px; 
+        font-weight: normal !important;
+    }
+
+    .resize-handle {
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: 6px;
+        height: 100%;
+        cursor: col-resize;
+        user-select: none;
+    }
+
+    .resize-handle::after {
+        content: '';
+        position: absolute;
+        right: 3px;
+        top: 20%;
+        width: 2px;
+        height: 60%;
+        background: rgba(0,0,0,0.3);
+        border-radius: 1px;
+    }
+
+    .itemgridHead th input[type="checkbox"] {
+        margin: 0 4px 0 0;
+        vertical-align: middle;
+    }
+
+    .select2-search__field {
+        z-index: 10000 !important; /* Adjust the value as needed */
+    }
+
+    .weekoff-time {
+        color: red !important;
+        font-weight: bold;
+    }
+
+    .holiday-time {
+        color: #5b00ff !important;
+        font-weight: bold;
+    }
+</style>

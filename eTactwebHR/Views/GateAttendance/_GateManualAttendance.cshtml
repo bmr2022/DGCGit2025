@@ -47,9 +47,16 @@
                             {
                                 int dayNo = (int)Math.Ceiling(dayIndex / 2.0); 
                                 var date = new DateTime(Model.GateAttYearCode, monthNo, (int)Math.Ceiling(dayIndex / 2.0));
+                                string currentDay = date.DayOfWeek.ToString();
+                                var holiday = Model.HolidayList?.FirstOrDefault(h => h.HolidayYear == Model.GateAttYearCode && h.HolidayEffFrom >= date && h.HolidayEffTill <= date);
+                                bool isWeekoff = Model.HolidayList.Any(a => a.HolidayEffFrom == null && a.HolidayEffTill == null && a.DayName.Equals(currentDay, StringComparison.OrdinalIgnoreCase));
+                                bool isHoliday = !isWeekoff && holiday != null;
+                                string cssClass = isWeekoff ? "weekoff-time" : (isHoliday ? "holiday-time" : "");
+                                bool allowEdit = (holiday != null && isHoliday && string.Equals(holiday?.AllowedCompOff, "YES", StringComparison.OrdinalIgnoreCase)) || !isHoliday;
+                                if (isWeekoff) { allowEdit = false; }
                                 <th style="min-width:60px; resize: horizontal; width:70px;">
                                     @dayCol  <br />
-                                    @date.ToString("dd/MMM/yyyy")
+                                    @date.ToString("dd/MMM/yyyy") @if (!allowEdit) { <input type="checkbox" id="checkDateChange_@dayNo" data-day="@dayNo" onclick="onclickCheckDate(@dayNo)" /> }
                                 </th>
                                 dayIndex++;
                             }
@@ -101,11 +108,13 @@
                                         // int monthNo = DateTime.ParseExact(Model.strEmpAttMonth, "MMM", System.Globalization.CultureInfo.InvariantCulture).Month;
                                         int monthNo = (Model.intEmpAttMonth != null) ? Convert.ToInt32(Model.intEmpAttMonth) : 1;
                                         var currentDate = new DateTime(Model.GateAttYearCode, monthNo, !string.IsNullOrEmpty(dayNo) ? Convert.ToInt32(dayNo) : 1);
-                                        var holiday = Model.HolidayList?.FirstOrDefault(h => h.HolidayYear == Model.GateAttYearCode && h.HolidayEffFrom == currentDate);
-                                        bool isWeekoff = holiday?.DayType == "WEEKOFF";
+                                        string currentDay = currentDate.DayOfWeek.ToString();
+                                        var holiday = Model.HolidayList?.FirstOrDefault(h => h.HolidayYear == Model.GateAttYearCode && h.HolidayEffFrom >= currentDate && h.HolidayEffTill <= currentDate);
+                                        bool isWeekoff = Model.HolidayList.Any(a => a.HolidayEffFrom == null && a.HolidayEffTill == null && a.DayName.Equals(currentDay, StringComparison.OrdinalIgnoreCase));
                                         bool isHoliday = !isWeekoff && holiday != null;
                                         string cssClass = isWeekoff ? "weekoff-time" : (isHoliday ? "holiday-time" : "");
-                                        bool allowEdit = (isWeekoff && holiday?.OverrideWeekoff == "YES") || (isHoliday && holiday?.AllowedCompOff == "YES") || !isHoliday;
+                                        bool allowEdit = (holiday != null && isHoliday && string.Equals(holiday?.AllowedCompOff, "YES", StringComparison.OrdinalIgnoreCase)) || !isHoliday;
+                                        if(isWeekoff) { allowEdit = false; }
                                         value = allowEdit ? value : "";
                                         <td><input type="time" id='@("txt_" + Model.GateAttDetailsList[i].EmpId + "_" + dayNo + "_" + type)' name="Attendance[@Model.GateAttDetailsList[i].EmpId][@dayCol]" value="@value" class="form-control form-control-sm att-input timepicker @cssClass" data-empid="@Model.GateAttDetailsList[i].EmpId" data-day="@dayNo" data-type="@type" @(allowEdit ? "" : "disabled") /></td>
                                     }

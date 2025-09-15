@@ -160,8 +160,8 @@ public class GateAttendanceDAL
                         HolidayYear = dr["HolidayYear"] != DBNull.Value ? Convert.ToInt32(dr["HolidayYear"]) : 0,
                         HolidayName = dr["HolidayName"].ToString(),
                         HalfDayFullDay = dr["HalfDayFullDay"].ToString(),
-                        HolidayEffFrom = string.IsNullOrEmpty(dr["HolidayEffFrom"].ToString()) ? new DateTime() : Convert.ToDateTime(dr["HolidayEffFrom"]),
-                        HolidayEffTill = string.IsNullOrEmpty(dr["HolidayEffTill"].ToString()) ? new DateTime() : Convert.ToDateTime(dr["HolidayEffTill"]),
+                        HolidayEffFrom = string.IsNullOrEmpty(dr["HolidayEffFrom"].ToString()) ? null : Convert.ToDateTime(dr["HolidayEffFrom"]),
+                        HolidayEffTill = string.IsNullOrEmpty(dr["HolidayEffTill"].ToString()) ? null : Convert.ToDateTime(dr["HolidayEffTill"]),
                         DayName = dr["DayName"].ToString(),
                         CategoryId = dr["CategoryId"] != DBNull.Value ? Convert.ToInt32(dr["CategoryId"]) : 0,
                         DayType = dr["DayType"].ToString()
