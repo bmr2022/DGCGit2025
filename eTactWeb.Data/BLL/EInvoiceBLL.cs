@@ -61,6 +61,10 @@ namespace eTactWeb.Data.BLL
         public async Task<ResponseResult> CheckDuplicateIRN(int entryId, string invoiceNo, int yearCode)
         {
             return await _EInvoiceDAL.CheckDuplicateIRN(entryId, invoiceNo, yearCode);
+        } 
+        public async Task<ResponseResult> GETGSTNO()
+        {
+            return await _EInvoiceDAL.GETGSTNO();
         }
         public async Task<ResponseResult> CancelEInvoice(   string token,int SaleBillYearCode, string SaleBillNo)
         {

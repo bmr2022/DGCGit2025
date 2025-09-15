@@ -33,7 +33,7 @@ namespace eTactWeb.Controllers
         private readonly IConfiguration iconfiguration;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
         private readonly ConnectionStringService _connectionStringService;
-        public GateInwardController(ILogger<GateInwardController> logger, IDataLogic iDataLogic, IGateInward iGateInward, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration, ConnectionStringService connectionStringService)
+        public GateInwardController(ILogger<GateInwardController> logger, IDataLogic iDataLogic, IGateInward iGateInward, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration, ConnectionStringService connectionStringService,IEinvoiceService IEinvoiceService )
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
@@ -41,6 +41,7 @@ namespace eTactWeb.Controllers
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
             _connectionStringService = connectionStringService;
+            _IEinvoiceService = IEinvoiceService;
         }
         public IActionResult PrintReport(int EntryId = 0, int YearCode = 0)
         {
@@ -81,12 +82,18 @@ namespace eTactWeb.Controllers
                 {
                     return Json(new { error = "E-Way Bill number is required" });
                 }
-
+                string GSTNo = string.Empty;
                 var token = await _IEinvoiceService.GetAccessTokenAsync();
+                var gstResult = await _IEinvoiceService.GETGSTNO();
                 var ewayBillDetail = await _IEinvoiceService.GetEwayBillDataAsync();
+                if (gstResult.Result != null && gstResult.Result.Rows.Count > 0)
+                {
+                    GSTNo = gstResult.Result.Rows[0]["GSTIN"].ToString();
+                }
+               
                 // Replace with your actual API endpoint and authentication
-                string apiUrl = $"https://api.ewaybill.com/details/{ewayBillNo}";
-
+                //string apiUrl = $"https://api.ewaybill.com/details/{ewayBillNo}";
+                string apiUrl = $"https://pro.mastersindia.co/getEwayBillData" +$"?access_token={token}" +   $"&action=GetEwayBill" + $"&gstin={GSTNo}" + $"&eway_bill_number={ewayBillNo}";
                 using (HttpClient client = new HttpClient())
                 {
                     client.DefaultRequestHeaders.Accept.Clear();

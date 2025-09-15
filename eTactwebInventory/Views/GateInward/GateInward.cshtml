@@ -839,14 +839,14 @@
             });
                     function fetchEwayBillData(ewayBillNo) {
                 $.ajax({
-                    url: '/YourController/GetEwayBillData', // Replace with your actual endpoint
+                  url: "@Url.Action("GetEwayBillData")",
                     type: 'GET',
                     data: { ewayBillNo: ewayBillNo },
                     dataType: 'json',
                     success: function(response) {
                         if (response.results && response.results.status === "Success") {
                             const ewayData = response.results.message;
-                            populateFormWithEwayData(ewayData);
+                           /*  populateFormWithEwayData(ewayData); */
                             $('#ewayBillStatus').html('<span class="text-success">E-Way Bill data loaded successfully</span>');
                         } else {
                             $('#ewayBillStatus').html('<span class="text-danger">Failed to fetch E-Way Bill data</span>');
@@ -858,7 +858,7 @@
                 });
             }
 
-            function populateFormWithEwayData(ewayData) {
+           /*  function populateFormWithEwayData(ewayData) {
                 // Populate vendor information
                 $('#AccountCode').val(ewayData.gstin_of_consignee).trigger('change');
 
@@ -927,7 +927,7 @@
 
                 // Update totals
                 calculateSumAndSetValues();
-            }
+            } */
         });
 
         function SetFields() {
