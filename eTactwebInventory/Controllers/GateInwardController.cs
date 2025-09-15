@@ -18,6 +18,7 @@ using DocumentFormat.OpenXml.Drawing.Diagrams;
 using DocumentFormat.OpenXml.Wordprocessing;
 using PdfSharp.Drawing.BarCodes;
 using PdfSharp.Pdf.Content.Objects;
+using System.Net.Http.Headers;
 
 namespace eTactWeb.Controllers
 {
@@ -26,6 +27,7 @@ namespace eTactWeb.Controllers
     public class GateInwardController : Controller
     {
         private readonly IDataLogic _IDataLogic;
+        public readonly IEinvoiceService _IEinvoiceService;
         public IGateInward _IGateInward { get; }
         private readonly ILogger<GateInwardController> _logger;
         private readonly IConfiguration iconfiguration;
@@ -68,6 +70,49 @@ namespace eTactWeb.Controllers
             // webReport.Report.Dictionary.Connections[0].ConnectionString = @"Data Source=103.10.234.95;AttachDbFilename=;Initial Catalog=eTactWeb;Integrated Security=False;Persist Security Info=True;User ID=web;Password=bmr2401";
             //ViewBag.WebReport = webReport;
             return View(webReport);
+        }
+        // In your GateInwardController or appropriate controller
+        [HttpGet]
+        public async Task<IActionResult> GetEwayBillData(string ewayBillNo)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(ewayBillNo))
+                {
+                    return Json(new { error = "E-Way Bill number is required" });
+                }
+
+                var token = await _IEinvoiceService.GetAccessTokenAsync();
+                var ewayBillDetail = await _IEinvoiceService.GetEwayBillDataAsync();
+                // Replace with your actual API endpoint and authentication
+                string apiUrl = $"https://api.ewaybill.com/details/{ewayBillNo}";
+
+                using (HttpClient client = new HttpClient())
+                {
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    // Add any required authentication headers here
+
+                    HttpResponseMessage response = await client.GetAsync(apiUrl);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string jsonResponse = await response.Content.ReadAsStringAsync();
+                        var ewayData = JsonConvert.DeserializeObject<EwayBillResponse>(jsonResponse);
+
+                        return Json(ewayData);
+                    }
+                    else
+                    {
+                        return Json(new { error = "Failed to fetch E-Way Bill data from external API" });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message });
+            }
         }
         public ActionResult HtmlSave(int EntryId = 0, int YearCode = 0)
         {
