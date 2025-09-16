@@ -206,6 +206,7 @@ namespace eTactWeb.Data.DAL
                                                            MRNDate = string.IsNullOrEmpty(dr["MRNDate"].ToString()) ? "" : dr["MRNDate"].ToString(),
                                                            GateNo = string.IsNullOrEmpty(dr["GateNo"].ToString()) ? "" : dr["GateNo"].ToString(),
                                                            GateDate = string.IsNullOrEmpty(dr["GateDate"].ToString()) ? "" : dr["GateDate"].ToString(),
+                                                           MIRDate = string.IsNullOrEmpty(dr["MIRDATE"].ToString()) ? "" : dr["MIRDATE"].ToString(),
                                                            Rate = Convert.ToDecimal(dr["Rate"].ToString()),
                                                            Amount = Convert.ToDecimal(dr["Amount"].ToString()),
                                                        }).ToList();
