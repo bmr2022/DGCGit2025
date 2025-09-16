@@ -9,6 +9,6 @@ namespace eTactWeb.Services.Interface
 {
     public interface IProfitAndLoss
     {
-        Task<ProfitAndLossModel> GetProfitAndLossData(string FromDate, string ToDate, string Flag, string ReportType);
+        Task<ProfitAndLossModel> GetProfitAndLossData(string FromDate, string ToDate, string Flag, string ReportType, string ShowOpening, string ShowRecordWithZeroAmt);
     }
 }
