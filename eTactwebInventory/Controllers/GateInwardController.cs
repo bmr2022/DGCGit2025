@@ -212,7 +212,25 @@ namespace eTactWeb.Controllers
                 // Save list into Session
                 HttpContext.Session.SetString("KeyGateInwardGrid", JsonConvert.SerializeObject(IssueGrid));
 
-                return Json(new { success = true, message = "E-Way Bill saved to Gate Inward session successfully." });
+                var GIGrid = new DataTable();
+                
+                string modelJson = HttpContext.Session.GetString("KeyGateInwardGrid");
+                List<GateInwardModel> modelList = string.IsNullOrEmpty(modelJson)
+                     ? new List<GateInwardModel>()
+                     : JsonConvert.DeserializeObject<List<GateInwardModel>>(modelJson);
+
+                // Pick one model (e.g. first one) if GetEwayBillDataforPo needs a single model
+                GateInwardModel model = modelList.FirstOrDefault() ?? new GateInwardModel();
+
+                List<GateInwardItemDetail> GateInwardItemDetail = new List<GateInwardItemDetail>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    GateInwardItemDetail = JsonConvert.DeserializeObject<List<GateInwardItemDetail>>(modelJson);
+                }
+                
+                  GIGrid = GetDetailTable(GateInwardItemDetail);
+                 var Result =  _IGateInward.GetEwayBillDataforPo(model, GIGrid);
+                    return Json(new { success = true, message = "E-Way Bill saved to Gate Inward session successfully." });
             }
             catch (Exception ex)
             {

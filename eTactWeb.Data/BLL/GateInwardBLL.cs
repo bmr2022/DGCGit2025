@@ -98,6 +98,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _GateInwardDAL.SaveGateInward(model, GIGrid);
         }
+        public async Task<ResponseResult> GetEwayBillDataforPo(GateInwardModel model, DataTable GIGrid)
+        {
+            return await _GateInwardDAL.GetEwayBillDataforPo(model, GIGrid);
+        }
 
         public async Task<ResponseResult> DeleteByID(int ID, int YC,int ActualEnteredBy, string EntryByMachineName, string gateno)
         {

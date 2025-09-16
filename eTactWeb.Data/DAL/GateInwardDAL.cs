@@ -316,6 +316,27 @@ public class GateInwardDAL
         }
         return _ResponseResult;
     }
+    public async Task<ResponseResult> GetEwayBillDataforPo(GateInwardModel model, DataTable GIGrid)
+    {
+        var _ResponseResult = new ResponseResult();
+        try
+        {
+            var SqlParams = new List<dynamic>();
+           var invDt = common.CommonFunc.ParseFormattedDate(model.InvoiceDate);
+            SqlParams.Add(new SqlParameter("@Flag", "GetEwayBillDataforPo"));
+            SqlParams.Add(new SqlParameter("@AccountCode", model.AccountCode));
+            SqlParams.Add(new SqlParameter("@InvoiceDate", invDt == default ? string.Empty : invDt));
+            SqlParams.Add(new SqlParameter("@DTSSGrid", GIGrid));
+            _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_GateMainDetail", SqlParams);
+        }
+        catch (Exception ex)
+        {
+            dynamic Error = new ExpandoObject();
+            Error.Message = ex.Message;
+            Error.Source = ex.Source;
+        }
+        return _ResponseResult;
+    }
     public async Task<GateInwardDashboard> GetDashboardData(string VendorName, string Gateno, string ItemName, string PartCode,string DocName, string PONO, string ScheduleNo, string FromDate, string ToDate,string DashboardType)
     {
         DataSet? oDataSet = new DataSet();

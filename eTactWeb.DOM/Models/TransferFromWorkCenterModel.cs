@@ -110,6 +110,7 @@ namespace eTactWeb.DOM.Models
         public string? WorkCenterName {  get; set; }
         public string? PartCode {  get; set; }
         public string? ItemName {  get; set; }
+      
         public int ItemCode {  get; set; }
         public int TransferMatEntryId { get; set; }
         public int TransferMatYearCode { get; set; }
