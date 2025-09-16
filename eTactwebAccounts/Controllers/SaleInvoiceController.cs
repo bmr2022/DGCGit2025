@@ -135,15 +135,15 @@ namespace eTactWeb.Controllers
             return Json(JsonString);
         }
 
-        public async Task<JsonResult> FILLPendingSONO(string Flag, int CurrentYear, string FromDate, string Todate, string InvoiceDate, int BillFromStoreId, int accountCode)
+        public async Task<JsonResult> FILLPendingSONO()
         {
-            var JSON = await _SaleBill.FILLPendingSONO(Flag, CurrentYear, FromDate, Todate, InvoiceDate, BillFromStoreId, accountCode);
+            var JSON = await _SaleBill.FILLPendingSONO();
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> FillPendingPartCOde(string Flag, int CurrentYear, string FromDate, string Todate, string InvoiceDate, int BillFromStoreId, int accountCode)
+        public async Task<JsonResult> FillPendingPartCOde()
         {
-            var JSON = await _SaleBill.FillPendingPartCOde(Flag, CurrentYear, FromDate, Todate, InvoiceDate, BillFromStoreId, accountCode);
+            var JSON = await _SaleBill.FillPendingPartCOde();
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }

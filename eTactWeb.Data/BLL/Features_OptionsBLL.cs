@@ -32,7 +32,7 @@ namespace eTactWeb.Data.BLL
         }
         public async Task<Features_OptionsModel> GetViewByID(string Type)
         {
-            return await _Features_OptionsDAL.GetViewByID( Type);
+            return await _Features_OptionsDAL.GetViewByID(Type);
         }
         public async Task<ResponseResult> SaveFeatures_Options(Features_OptionsModel model)
         {
