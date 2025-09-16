@@ -214,7 +214,7 @@ namespace eTactWeb
             services.TryAddScoped<IGateAttendance, GateAttendanceBLL>();
             services.TryAddScoped<IAccDepriciationCalculationdetail, AccDepriciationCalculationdetailBLL>();
             services.TryAddScoped<IScheduleCalibration, ScheduleCalibrationBLL>();
-
+            services.TryAddScoped<IProfitAndLoss, ProfitAndLossBLL>();
 
             services.TryAddTransient<ISaleSchedule, SaleScheduleBLL>();
             services.TryAddTransient<ITaxMaster, TaxMasterBLL>();

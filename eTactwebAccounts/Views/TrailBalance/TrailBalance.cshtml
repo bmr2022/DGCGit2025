@@ -1,11 +1,7 @@
 ﻿@model eTactWeb.DOM.Models.TrailBalanceModel;
-@using Microsoft.AspNetCore.Http
-@using System.Reflection.PortableExecutable
-@inject IHttpContextAccessor HttpContextAccessor
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
-    string CompanyName = HttpContextAccessor.HttpContext.Session.GetString("CompanyName");
 }
 <style>
     .hidden-column {
