@@ -215,7 +215,7 @@
                                     <input class="userRightsPermission" type="hidden" value="Company Detail" />
                                 </ul>
                             </li>
-                            <li>
+                          @*   <li>
                                 <a class="dropdown-item" href="#">Features Options &raquo;</a>
                                 <ul class="submenu dropdown-menu">
                                     <li>
@@ -231,7 +231,20 @@
                                     <input class="userRightsPermission" type="hidden" value="Features Options" />
 
                                 </ul>
-                            </li>
+                            </li> *@
+                            <li>
+
+                                <a class="dropdown-item" id="Account Master" href="#">Features Options &raquo;</a>
+
+                                <ul class="submenu dropdown-menu">
+                                            <li>
+                                                <a class="dropdown-item" asp-action="FeaturesOptionsSaleOrder" asp-route-ID="0" asp-controller="Features_Options" id="FeaturesOptionsSaleOrder">
+                                                    <i class="fa fa-book fa-fw fa-lg" aria-hidden="true"></i> Sale Order Setting
+                                                </a>
+
+
+                                            </li>
+                                 </ul>
                             <li>
                                 <a class="dropdown-item" href="#">Employee Master &raquo;</a>
                                 <ul class="submenu dropdown-menu">
