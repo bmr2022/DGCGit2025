@@ -27,13 +27,13 @@ namespace eTactWeb.Data.BLL
             return await _SaleBillDAL.AutoFillitem(Flag, SearchPartCode);
         }
 
-        public async Task<ResponseResult> FILLPendingSONO(string Flag, int CurrentYear, string FromDate, string Todate, string InvoiceDate, int BillFromStoreId, int accountCode)
+        public async Task<ResponseResult> FILLPendingSONO()
         {
-            return await _SaleBillDAL.FILLPendingSONO(Flag, CurrentYear, FromDate, Todate, InvoiceDate, BillFromStoreId, accountCode);
+            return await _SaleBillDAL.FILLPendingSONO();
         }
-        public async Task<ResponseResult> FillPendingPartCOde(string Flag, int CurrentYear, string FromDate, string Todate, string InvoiceDate, int BillFromStoreId, int accountCode)
+        public async Task<ResponseResult> FillPendingPartCOde()
         {
-            return await _SaleBillDAL.FillPendingPartCOde(Flag, CurrentYear, FromDate, Todate, InvoiceDate, BillFromStoreId, accountCode);
+            return await _SaleBillDAL.FillPendingPartCOde();
         }
 
         public async Task<ResponseResult> GetFormRights(int ID)

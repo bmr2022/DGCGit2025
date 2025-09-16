@@ -73,6 +73,7 @@ namespace eTactWeb.DOM.Models
         public string? CustOrderNo { get; set; }
         public int SOYearCode { get; set; }
         public string? SODate { get; set; }
+        public string? RackID { get; set; }
         public string? SchNo { get; set; }
         public string? Schdate { get; set; }
         public int SaleSchYearCode { get; set; }
