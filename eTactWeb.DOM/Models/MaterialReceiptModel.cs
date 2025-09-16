@@ -169,6 +169,7 @@ public class MaterialReceiptModel : MaterialReceiptDetail
     public string? FinToDate { get; set; }
     public int EntryID { get; set; }
     public string EntryDate { get; set; }
+    public string EntryTime { get; set; }
     public int YearCode { get; set; }
     public string MRNNo { get; set; }
     public string GateNo { get; set; }

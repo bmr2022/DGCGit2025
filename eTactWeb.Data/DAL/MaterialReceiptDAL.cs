@@ -274,6 +274,7 @@ namespace eTactWeb.Data.DAL
             
             model.YearCode = Convert.ToInt32(DS.Tables[0].Rows[0]["YearCode"].ToString());
             model.EntryDate = DS.Tables[0].Rows[0]["EntryDate"].ToString();
+            model.EntryTime = Convert.ToDateTime(DS.Tables[0].Rows[0]["EntryTime"]).ToString("HH:mm:ss")?.Trim();
             //            EntryId,YearCode,,gm.MRNNo ,EntryDate, 
             model.GateNo = DS.Tables[0].Rows[0]["GateNo"].ToString().Trim();
             model.GateEntryId = Convert.ToInt32(DS.Tables[0].Rows[0]["GateEntryId"].ToString());

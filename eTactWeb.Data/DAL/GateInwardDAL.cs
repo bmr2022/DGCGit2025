@@ -741,6 +741,48 @@ public class GateInwardDAL
         }
 
         return _ResponseResult;
+    } 
+    public async Task<ResponseResult> GetAccountCode(string AccountName)
+    {
+        var _ResponseResult = new ResponseResult();
+        try
+        {
+            var SqlParams = new List<dynamic>();
+           
+                SqlParams.Add(new SqlParameter("@Flag", "GetAccountCode"));
+            SqlParams.Add(new SqlParameter("@AccountName", AccountName));
+           
+            _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_GateMainDetail", SqlParams);
+        }
+        catch (Exception ex)
+        {
+            dynamic Error = new ExpandoObject();
+            Error.Message = ex.Message;
+            Error.Source = ex.Source;
+        }
+
+        return _ResponseResult;
+    }
+    public async Task<ResponseResult> GetItemCode(string ItemName)
+    {
+        var _ResponseResult = new ResponseResult();
+        try
+        {
+            var SqlParams = new List<dynamic>();
+           
+                SqlParams.Add(new SqlParameter("@Flag", "GetItemCode"));
+            SqlParams.Add(new SqlParameter("@ItemName", ItemName));
+           
+            _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_GateMainDetail", SqlParams);
+        }
+        catch (Exception ex)
+        {
+            dynamic Error = new ExpandoObject();
+            Error.Message = ex.Message;
+            Error.Source = ex.Source;
+        }
+
+        return _ResponseResult;
     }
     public async Task<ResponseResult> GetItems(string Flag, int doctype, string Check,int AccountCode)
     {
@@ -896,6 +938,7 @@ public class GateInwardDAL
         int cnt = 1;
         model.EntryId = Convert.ToInt32(DS.Tables[0].Rows[0]["EntryID"].ToString());
         model.YearCode = Convert.ToInt32(DS.Tables[0].Rows[0]["YearCode"].ToString());
+        model.EntryTime = Convert.ToDateTime(DS.Tables[0].Rows[0]["EntryTime"]).ToString("HH:mm:ss")?.Trim();
         //model.EntryDate = DS.Tables[0].Rows[0]["EntryDate"].ToString().Split(" ")[0];
         model.GateNo = DS.Tables[0].Rows[0]["GateNo"].ToString();
         model.CompGateNo = DS.Tables[0].Rows[0]["EntryID"].ToString();

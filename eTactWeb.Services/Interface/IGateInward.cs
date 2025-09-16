@@ -33,6 +33,8 @@ public interface IGateInward
     Task<GateInwardDashboard> GetDashboardDetailData(string VendorName, string Gateno, string ItemName, string PartCode,string DocName, string PONO, string ScheduleNo, string FromDate, string ToDate);
 
     Task<ResponseResult> GetSearchData(GateDashboard model);
+    Task<ResponseResult> GetAccountCode(string AccountName );
+    Task<ResponseResult> GetItemCode(string ItemName );
 
     Task<GateInwardModel> GetViewByID(int ID, int YearCode);
 
