@@ -85,11 +85,11 @@
                                         <label class="form-label">From Date</label>
                                         <input type="hidden" value="@Model.FromDate" id="finFromDate" />
                                         <input type="hidden" value="@Model.ToDate" id="finToDate" />
-                                        <input asp-for="FromDate" maxlength="10" class="form-control" value="@Model.FromDate" onchange="FILLPendingSONO();FillPendingPartCOde()" />
+                                        <input asp-for="FromDate" maxlength="10" class="form-control" value="@Model.FromDate"  />
                                     </div>
                                     <div class="col">
                                         <label class="form-label">To Date</label>
-                                        <input asp-for="ToDate" maxlength="10" class="form-control" value="@Model.ToDate" onchange="FILLPendingSONO();FillPendingPartCOde()" />
+                                        <input asp-for="ToDate" maxlength="10" class="form-control" value="@Model.ToDate" />
                                     </div>
                                 </div>
                             </div>
@@ -99,7 +99,7 @@
                                     <div class="col">
                                         <label class="form-label">InvoiceDate</label>
                                         
-                                        <input asp-for="InvoiceDate" maxlength="10" class="form-control" value="@Model.InvoiceDate" onchange="FILLPendingSONO();FillPendingPartCOde()" />
+                                        <input asp-for="InvoiceDate" maxlength="10" class="form-control" value="@Model.InvoiceDate"  />
                                     </div>
                                     <div class="col">
                                         <label class="form-label">CurrentYear</label>
@@ -110,7 +110,7 @@
                             <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
 
                                 <label asp-for="BillFromStoreId" class="control-label" style="color: red;"> BillFromStore </label>
-                                <select class="form-select" asp-for="BillFromStoreId" onchange="FILLPendingSONO();FillPendingPartCOde()">
+                                <select class="form-select" asp-for="BillFromStoreId">
                                     <option value="">-Select-</option>
                                 </select>
 
@@ -118,7 +118,7 @@
                              <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
 
                                 <label asp-for="accountCode" class="control-label" style="color: red;"> CustomerName </label>
-                                <select class="form-select" asp-for="accountCode" onchange="FILLPendingSONO();FillPendingPartCOde()">
+                                <select class="form-select" asp-for="accountCode" >
                                     <option value="">-Select-</option>
                                 </select>
 
@@ -186,6 +186,7 @@
                                 <th style="width:70px;">Bill Qty</th>
                                 <th style="width:70px;">Rate</th>
                                 <th style="width:70px;">Unit</th>
+                                <th style="width:70px;">Location</th>
                                 <th style="width:70px;">SOYear </th>
                                 <th style="width:90px;">Order No</th>
                                 <th style="width:70px;">Sch No</th>
@@ -265,10 +266,10 @@
             GetServerDate();
             FillStoreList();
             FillCustomerList();
-            /* FILLPendingSONO();
-            FillPendingPartCOde(); */
+            FILLPendingSONO();
+            FillPendingPartCOde(); 
             
-            /* showDetail(); */
+            
         });
 
         $(document).on('mouseover', 'input[type="text"]', function () {
@@ -350,21 +351,12 @@
 
 
         function FILLPendingSONO() {
-            var data = {
-                "Flag": "ShowPendingSaleorderforBill",
-                "FromDate": $('#FromDate').val(),
-                "Todate": $('#ToDate').val(),
-                "InvoiceDate": $('#InvoiceDate').val(),
-                "CurrentYear": $('#CurrentYear').val(),
-                "BillFromStoreId": $('#BillFromStoreId').val(),
-                "accountCode": $('#accountCode').val()
-
-            }
+            
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("FILLPendingSONO")",
                 dataType: "json",
-                data: data,
+               
               
                 success: function (result, status, error) {
 
@@ -385,21 +377,12 @@
         }
 
         function FillPendingPartCOde() {
-            var data = {
-                "Flag": "ShowPendingSaleorderforBill",
-                "FromDate": $('#FromDate').val(),
-                "Todate": $('#ToDate').val(),
-                "InvoiceDate": $('#InvoiceDate').val(),
-                "CurrentYear": $('#CurrentYear').val(),
-                "BillFromStoreId": $('#BillFromStoreId').val(),
-                "accountCode": $('#accountCode').val()
-
-            }
+           
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("FillPendingPartCOde")",
                 dataType: "json",
-                data: data,
+               
                
 
                 success: function (result, status, error) {
@@ -469,6 +452,7 @@
                                     '<td><input id="SaleBillQty' + i + '" class="form-control no-cursor" value="' + val.SaleBillQty + '"/></td>' +
                                     '<td><input id="SOItemRate' + i + '" class="form-control no-cursor" value="' + val.SOItemRate + '"/></td>' +
                                     '<td><input id="Unit' + i + '" class="form-control no-cursor" value="' + val.Unit + '"/></td>' +
+                                    '<td><input id="RackID' + i + '" class="form-control no-cursor" value="' + val.RackID + '"/></td>' +
                                     '<td><input id="SOYearCode' + i + '" class="form-control no-cursor" value="' + val.SOYearCode + '"/></td>' +
                                     '<td><input id="CustorderNo' + i + '" class="form-control no-cursor" value="' + val.CustorderNo + '"/></td>' +
                                     '<td><input id="SchNo' + i + '" class="form-control no-cursor" value="' + val.SchNo + '"/></td>' +
@@ -553,7 +537,8 @@
                         Amount: $("#ItemAmount" + i).val(),
                         AltQty: $("#AltQty" + i).val(),
                         StoreId: $("#Storeid" + i).val(),
-                        StoreName: $("#Store_Name" + i).val()
+                        StoreName: $("#Store_Name" + i).val(),
+                        RackID: $("#RackID" + i).val()
 
 
                     };
