@@ -119,6 +119,217 @@ namespace eTactwebHR.Controllers
 
             return View(MainModel);
         }
+        [HttpPost]
+        public async Task<IActionResult> GateAttendance(GateAttendanceModel model)
+        {
+            try
+            {
+                bool isError = true;
+                DataSet DS = new();
+                DataTable ItemDetailDT = null;
+                ResponseResult Result = new();
+                Dictionary<string, string> ErrList = new();
+                string modePOA = "data";
+                var stat = new MemoryCacheStatistics();
+
+                // 1. Get GateAttendance
+                string GateAttendanceJson = HttpContext.Session.GetString("GateAttendance");
+                GateAttendanceModel MainModel = string.IsNullOrEmpty(GateAttendanceJson)
+                    ? new GateAttendanceModel()
+                    : JsonConvert.DeserializeObject<GateAttendanceModel>(GateAttendanceJson);
+
+                var cc = stat.CurrentEntryCount;
+                var pp = stat.CurrentEstimatedSize;
+
+                ModelState.Clear();
+
+                if (MainModel.GateAttDetailsList != null && MainModel.GateAttDetailsList.Count > 0)
+                {
+                    //DS = GetItemDetailTable(MainModel.ItemDetailGrid, model.Mode, MainModel.EntryID, MainModel.YearCode);
+                    //ItemDetailDT = DS.Tables[0];
+                    //model.ItemDetailGrid = MainModel.ItemDetailGrid;
+
+                    //isError = false;
+                    //if (MainModel.ItemDetailGrid != null && MainModel.ItemDetailGrid.Any())
+                    //{
+                    //    var hasDupes = MainModel.ItemDetailGrid.GroupBy(x => new { x.ItemCode, x.docTypeId, x.Description })
+                    //   .Where(x => x.Skip(1).Any()).Any();
+                    //    if (hasDupes)
+                    //    {
+                    //        isError = true;
+                    //        ErrList.Add("ItemDetailGrid", "Document Type + ItemCode + Description In ItemDetails can not be Duplicate...!");
+                    //    }
+                    //}
+                }
+                else
+                {
+                    ErrList.Add("ItemDetailGrid", "Item Details Cannot Be Blank..!");
+                }
+
+                if (model.CreatedBy == 0)
+                {
+                    ErrList.Add("CreatedBy", "Please Select Created By From List..!");
+                }
+
+                if (!isError)
+                {
+                    if (ItemDetailDT.Rows.Count > 0)
+                    {
+                        if (model.Mode == "U")
+                        {
+                            model.Mode = "UPDATE";
+                        }
+                        else if (model.Mode == "C")
+                        {
+                            model.Mode = "COPY";
+                        }
+                        else
+                        {
+                            model.Mode = "INSERT";
+                        }
+                        //model.Mode = model.Mode == "U" ? "UPDATE" : "INSERT";
+
+                        model.FinFromDate = HttpContext.Session.GetString("FromDate");
+                        model.FinToDate = HttpContext.Session.GetString("ToDate");
+                        model.GateAttYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+                        model.Branch = HttpContext.Session.GetString("Branch");
+                        model.EntryByMachineName = HttpContext.Session.GetString("EmpName");
+                        model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                        //Result = await IDirectPurchaseBill.SaveDirectPurchaseBILL(ItemDetailDT, TaxDetailDT, TDSDetailDT, model, DrCrDetailDT, AdjDetailDT);
+                    }
+
+                    if (Result != null)
+                    {
+                        if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
+                        {
+                            ViewBag.isSuccess = true;
+                            TempData["200"] = "200";
+                            HttpContext.Session.Remove("GateAttendance");
+                        }
+                        else if (Result.StatusText == "Inserted Successfully" && Result.StatusCode == HttpStatusCode.Accepted)
+                        {
+                            ViewBag.isSuccess = true;
+                            TempData["200"] = "200";
+                            HttpContext.Session.Remove("GateAttendance");
+                        }
+                        else if (Result.StatusText == "Updated Successfully" && Result.StatusCode == HttpStatusCode.Accepted)
+                        {
+                            ViewBag.isSuccess = true;
+                            TempData["202"] = "202";
+                            HttpContext.Session.Remove("GateAttendance");
+                            return RedirectToAction(nameof(GateAttendance));
+                        }
+                        else if (Result.StatusText == "Deleted Successfully" && Result.StatusCode == HttpStatusCode.Accepted)
+                        {
+                            ViewBag.isSuccess = true;
+                            TempData["410"] = "410";
+                            HttpContext.Session.Remove("GateAttendance");
+                        }
+                        else if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
+                        {
+                            var errNum = Result.ToString(); //.Result.Message.ToString().Split(":")[1];
+                            if (errNum == " 2627")
+                            {
+                                ViewBag.isSuccess = false;
+                                ViewBag.ResponseResult = Result.StatusCode + "Occurred while saving data" + Result.Result;
+                                TempData["2627"] = "2627";
+                                _Logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
+                                var model2 = await BindModels(model);
+                                model2.FinFromDate = HttpContext.Session.GetString("FromDate");
+                                model2.FinToDate = HttpContext.Session.GetString("ToDate");
+                                model2.GateAttYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+                                model2.Branch = HttpContext.Session.GetString("Branch");
+                                model2.CreatedByName = HttpContext.Session.GetString("EmpName");
+                                model2.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                                model2.UpdatedByName = HttpContext.Session.GetString("EmpName");
+                                model2.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                                return View("DirectPurchaseBill", model);
+                            }
+                            else
+                            {
+                                ViewBag.ResponseResult = Result.StatusCode + "Occurred while saving data" + Result.Result;
+                                TempData["500"] = "500";
+                                model = await BindModels(model);
+                                //model.FinFromDate = HttpContext.Session.GetString("FromDate");
+                                //model.FinToDate = HttpContext.Session.GetString("ToDate");
+                                model.GateAttYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+                                //model.Branch = HttpContext.Session.GetString("Branch");
+                                //model.PreparedByName = HttpContext.Session.GetString("EmpName");
+                                //model.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                                model.UpdatedByName = HttpContext.Session.GetString("EmpName");
+                                model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                                return View("DirectPurchaseBill", model);
+                            }
+                        }
+                        else
+                        {
+                            model = await BindModels(model);
+                            //model.adjustmentModel = model.adjustmentModel ?? new AdjustmentModel();
+                            //model.FinFromDate = HttpContext.Session.GetString("FromDate");
+                            //model.FinToDate = HttpContext.Session.GetString("ToDate");
+                            //model.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+                            //model.Branch = HttpContext.Session.GetString("Branch");
+                            //model.PreparedByName = HttpContext.Session.GetString("EmpName");
+                            //model.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                            model.UpdatedByName = HttpContext.Session.GetString("EmpName");
+                            model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                            if (Result.StatusText.Contains("success") && (Result.StatusCode == HttpStatusCode.OK || Result.StatusCode == HttpStatusCode.Accepted))
+                            {
+                                ViewBag.isSuccess = true;
+                                TempData["202"] = "202";
+                                HttpContext.Session.Remove("GateAttendance");
+                                return RedirectToAction(nameof(GateAttendance));
+                            }
+                            else
+                            {
+                                TempData["ErrorMessage"] = Result.StatusText;
+                                HttpContext.Session.Remove("GateAttendance");
+                                return View("GateAttendance", model);
+                            }
+                        }
+                    }
+                    var model1 = await BindModels(model);
+                    //model1.adjustmentModel = model.adjustmentModel ?? new AdjustmentModel();
+                    //model1.FinFromDate = HttpContext.Session.GetString("FromDate");
+                    //model1.FinToDate = HttpContext.Session.GetString("ToDate");
+                    //model1.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+                    //model1.Branch = HttpContext.Session.GetString("Branch");
+                    //model1.PreparedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+                    //model1.PreparedByName = HttpContext.Session.GetString("EmpName");
+                    //model1.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                    //model1.UpdatedByName = HttpContext.Session.GetString("EmpName");
+                    model1.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+
+                    return RedirectToAction(nameof(GateAttendance));
+
+                }
+                else
+                {
+                    model = await BindModels(model);
+                    foreach (KeyValuePair<string, string> Err in ErrList)
+                    {
+                        ModelState.AddModelError(Err.Key, Err.Value);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.Print(ex.Message);
+                _Logger.LogError("\n \n" + ex, ex.Message, model);
+
+                var ResponseResult = new ResponseResult()
+                {
+                    StatusCode = HttpStatusCode.InternalServerError,
+                    StatusText = "Error",
+                    Result = ex
+                };
+                ViewBag.ResponseResult = ResponseResult;
+                return View("Error", ResponseResult);
+            }
+            model = await BindModels(model);
+            return View("GateAttendance", model);
+
+        }
         public async Task<GateAttendanceModel> BindModels(GateAttendanceModel model)
         {
             CommonFunc.LogException<GateAttendanceModel>.LogInfo(_Logger, "********** Gate Attendance BindModels *************");
