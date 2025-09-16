@@ -127,6 +127,16 @@ namespace eTactWeb.Data.BLL
         {
             return await _GateInwardDAL.GetViewByID(ID, YearCode);
 
+        } 
+        public async Task<ResponseResult> GetAccountCode(string AccountName)
+        {
+            return await _GateInwardDAL.GetAccountCode(AccountName);
+
+        }
+        public async Task<ResponseResult> GetItemCode(string ItemName)
+        {
+            return await _GateInwardDAL.GetItemCode(ItemName);
+
         }
         public async Task<ResponseResult> FillSaleBillRate(int AccountCode, int ItemCode, string SaleBillNo, int SaleBillYearCode)
         {

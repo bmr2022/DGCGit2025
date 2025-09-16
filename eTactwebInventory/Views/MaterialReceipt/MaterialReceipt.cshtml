@@ -159,6 +159,10 @@
                                     <label asp-for="EntryDate" class="form-label">Entry Date</label>
                                     <input asp-for="EntryDate" class="form-control" readonly />
                                 </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="EntryTime" class="form-label">Time</label>
+                                    <input asp-for="EntryTime" class="form-control" value="@Model.EntryTime" readonly />
+                                </div>
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="MRNNo" class="form-label">MRNNo</label>
                                     <input asp-for="MRNNo" class="form-control" readonly value="@Model.MRNNo" style="background-color: lightblue !important;" />
@@ -1110,7 +1114,18 @@ $('#btnClose').click(function () {
                
                 GetFormRights();
                 GetGateNoFormRights();
+                           if ('@Model.Mode' != '' && parseInt('@Model.ID') != 0) {
 
+                            }
+                            else {
+                                window.setInterval(function () {
+                                    var Dat = new Date();
+                                    let am_pm = (Dat.getHours() >= 12) ? "PM" : "AM";
+                                    var time = Dat.getHours() + ":" + Dat.getMinutes() + ":" + Dat.getSeconds() + " - " + am_pm;
+                                    //console.log(time);
+                                    $('#EntryTime').val(time);
+                                }, 1000);
+                            }
                 if ($('#Mode').val() != "U" && $('#Mode').val() != "V") 
                 {
                     $('#GateNo').select2();

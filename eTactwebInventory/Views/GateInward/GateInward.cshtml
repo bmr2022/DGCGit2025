@@ -6,27 +6,27 @@
 }
 <style>
     .disabled-link {
-        pointer-events: none; /* Prevents clicking */
-        color: gray; /* Optional: Make it look disabled */
-        text-decoration: none; /* Optional: Remove underline */
-        cursor: default; /* Optional: Show normal cursor */
-        opacity: 0.6; /* Optional: Make it look faded */
+    pointer-events: none; /* Prevents clicking */
+    color: gray; /* Optional: Make it look disabled */
+    text-decoration: none; /* Optional: Remove underline */
+    cursor: default; /* Optional: Show normal cursor */
+    opacity: 0.6; /* Optional: Make it look faded */
     }
 
     .select2-container--default .select2-selection--single {
-        background-color: #e0f2f1;
-        border: 1.5px solid #0a0a0a !important;
-        border-radius: 4px;
+    background-color: #e0f2f1;
+    border: 1.5px solid #0a0a0a !important;
+    border-radius: 4px;
     }
 
-        .select2-container--default .select2-selection--single .select2-selection__rendered {
-            /* border-bottom: 1.5px solid #000 !important; */
-            border-bottom: none !important;
-        }
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+    /* border-bottom: 1.5px solid #000 !important; */
+    border-bottom: none !important;
+    }
 
     .select2-container--default .select2-results > .select2-results__options {
-        background-color: #e0f2f1; /* Dropdown background color */
-        color: #000;
+    background-color: #e0f2f1; /* Dropdown background color */
+    color: #000;
 </style>
 @if (TempData["422"] != null)
 {
@@ -210,24 +210,28 @@
                         </div>
                     </div>
                 </div>
-                <div class="card-body bg-light pt-0">
-                    <div class="row mb-3">
-                        <div class="col-md-4">
-                            <div class="input-group">
-                                <input type="text" class="form-control" id="ewayBillNo" placeholder="Enter E-Way Bill Number">
-                                <button class="btn btn-primary" type="button" id="fetchEwayBill">
-                                    <i class="fa fa-search"></i> Fetch Details
-                                </button>
+                     
+                    @if (Model.Mode != "U" && Model.Mode != "V")
+                  {
+                    <div class="card-body bg-light pt-0">
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="ewayBillNo" placeholder="Enter E-Way Bill Number">
+                                    <button class="btn btn-primary" type="button" id="fetchEwayBill">
+                                        <i class="fa fa-search"></i> Fetch Details
+                                    </button>
+                                </div>
+                                <div id="ewayBillStatus" class="form-text"></div>
                             </div>
-                            <div id="ewayBillStatus" class="form-text"></div>
+                        </div>
+
+                        <!-- Rest of your existing form -->
+                        <div class="accordion shadow-lg">
+                            <!-- Your existing accordion items -->
                         </div>
                     </div>
-
-                    <!-- Rest of your existing form -->
-                    <div class="accordion shadow-lg">
-                        <!-- Your existing accordion items -->
-                    </div>
-                </div>
+                }
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="H_SAGrid">
                         <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
@@ -795,7 +799,21 @@
         $(document).ready(function () {
 
 
+                   
+                    if ('@Model.Mode' != '' && parseInt('@Model.ID') != 0) {
+                       
+                    }
+                    else {
+                        window.setInterval(function () {
+                            var Dat = new Date();
+                            let am_pm = (Dat.getHours() >= 12) ? "PM" : "AM";
+                            var time = Dat.getHours() + ":" + Dat.getMinutes() + ":" + Dat.getSeconds() + " - " + am_pm;
+                            //console.log(time);
+                            $('#EntryTime').val(time);
+                        }, 1000);
+                    }
 
+                
             PoNoFormRights();
             $('#UpdateButton').click(function (e) {
                 e.preventDefault();
@@ -837,98 +855,43 @@
                 // Call your API to fetch E-Way Bill data
                 fetchEwayBillData(ewayBillNo);
             });
-                    function fetchEwayBillData(ewayBillNo) {
-                $.ajax({
-                  url: "@Url.Action("GetEwayBillData")",
-                    type: 'GET',
-                    data: { ewayBillNo: ewayBillNo },
-                    dataType: 'json',
-                    success: function(response) {
-                        if (response.results && response.results.status === "Success") {
-                            const ewayData = response.results.message;
-                           /*  populateFormWithEwayData(ewayData); */
-                            $('#ewayBillStatus').html('<span class="text-success">E-Way Bill data loaded successfully</span>');
-                        } else {
-                            $('#ewayBillStatus').html('<span class="text-danger">Failed to fetch E-Way Bill data</span>');
-                        }
-                    },
-                    error: function() {
-                        $('#ewayBillStatus').html('<span class="text-danger">Error fetching E-Way Bill data</span>');
-                    }
-                });
-            }
-
-           /*  function populateFormWithEwayData(ewayData) {
-                // Populate vendor information
-                $('#AccountCode').val(ewayData.gstin_of_consignee).trigger('change');
-
-                // Set a timeout to allow the AccountCode change to complete
-                setTimeout(function() {
-                    $('#Address').val(
-                        ewayData.address1_of_consignee +
-                        (ewayData.address2_of_consignee ? ', ' + ewayData.address2_of_consignee : '') +
-                        ', ' + ewayData.place_of_consignee +
-                        ', ' + ewayData.state_of_supply +
-                        ' - ' + ewayData.pincode_of_consignee
-                    );
-
-                    // Populate items in the grid
-                    populateItemGrid(ewayData.itemList);
-                }, 1000);
-            }
-
-            function populateItemGrid(itemList) {
-                // Clear existing items in the grid (except the header)
-                $('#divSaleItemGrid').empty();
-
-                // Add each item to the grid
-                itemList.forEach(function(item, index) {
-                    // You'll need to adjust this based on your actual grid structure
-                    const rowHtml = `
-                        <tr>
-                            <td>
-                                <button type="button" class="btn btn-sm btn-danger" onclick="DeleteItemRow(${index + 1})">
-                                    <i class="fa fa-trash"></i>
-                                </button>
-                                <button type="button" class="btn btn-sm btn-primary" onclick="EditItemRow(${index + 1})">
-                                    <i class="fa fa-edit"></i>
-                                </button>
-                            </td>
-                            <td>${$('#PONO').val() || ''}</td>
-                            <td>${$('#PoYear').val() || ''}</td>
-                            <td>${$('#SchNo').val() || ''}</td>
-                            <td>${$('#SchYearCode').val() || ''}</td>
-                            <td>${item.product_description}</td>
-                            <td>${item.hsn_code}</td>
-                            <td>${item.unit_of_product}</td>
-                            <td>${item.quantity}</td>
-                            <td>0</td> <!-- Rate - you might need to calculate this -->
-                            <td>0</td> <!-- Unit Rate -->
-                            <td>${item.unit_of_product}</td> <!-- Alt Unit -->
-                            <td>${item.quantity}</td> <!-- Alt Qty -->
-                            <td></td> <!-- Item Size -->
-                            <td></td> <!-- Item Color -->
-                            <td></td> <!-- Remarks -->
-                            <td></td> <!-- Process -->
-                            <td></td> <!-- Sale Bill No -->
-                            <td></td> <!-- Sale Bill Year Code -->
-                            <td></td> <!-- Sale Bill Qty -->
-                            <td></td> <!-- Against Challan No -->
-                            <td></td> <!-- Challan Year Code -->
-                            <td></td> <!-- Challan Qty -->
-                            <td></td> <!-- Supplier batch no -->
-                            <td></td> <!-- Shelf Life -->
-                            <td></td> <!-- No Of Boxes -->
-                        </tr>
-                    `;
-
-                    $('#divSaleItemGrid').append(rowHtml);
-                });
-
-                // Update totals
-                calculateSumAndSetValues();
-            } */
+                  
+          
         });
+                  function fetchEwayBillData(ewayBillNo) {
+                        $.ajax({
+                          url: "@Url.Action("GetEwayBillData")",
+                            type: 'GET',
+                            data: { ewayBillNo: ewayBillNo },
+                            dataType: 'json',
+                            success: function(response) {
+                               /*  if (response.results && response.results.status === "Success") {
+                                    const ewayData = response.results.message;
+                                    populateFormWithEwayData(ewayData);
+                                    $('#ewayBillStatus').html('<span class="text-success">E-Way Bill data loaded successfully</span>');
+                                } else {
+                                    $('#ewayBillStatus').html('<span class="text-danger">Failed to fetch E-Way Bill data</span>');
+                                } */
+                                                if (response.success) {
+                                $('#ewayBillStatus').html(
+                                    '<span class="text-success">' + (response.message || "E-Way Bill processed successfully") + '</span>'
+                                );
+
+                                setTimeout(function () {
+                                    window.location.href = "@Url.Action("GateInward", "GateInward")"
+                                        + "?ID=0&Mode=Eway&YC=" + response.yearCode;
+                                }, 2000);
+                            } else {
+                                $('#ewayBillStatus').html(
+                                    '<span class="text-danger">' + (response.message || "Failed to fetch E-Way Bill data") + '</span>'
+                                );
+                            }
+                        },
+                        error: function () {
+                            $('#ewayBillStatus').html('<span class="text-danger">Error fetching E-Way Bill data</span>');
+                        }
+                    });
+                }
 
         function SetFields() {
 
@@ -2955,7 +2918,8 @@
 
             if (obj != null && obj.length == 1) {
                 if ($('#docTypeId').val() != 3) {
-                    if (obj[0].PoNo != '') {
+                            if (obj[0].PoNo) {
+                         /*   // if (obj[0].PoNo != '') { */
                         $('#PONO').val(obj[0].PoNo).trigger('change');
                         $('#PoYear').val(obj[0].PoYear).trigger('change');
                         $('#SchNo').val(obj[0].SchNo);
@@ -2968,7 +2932,7 @@
                 }
                 else {
                     $('#ItemCheck').prop("checked", true);
-                    GetallItems();
+                            GetallItems();
                 }
                 $('#PartCode').val(obj[0].ItemCode).trigger('change');
                 $('#ItemName').val(obj[0].ItemCode).trigger('change');
@@ -2986,11 +2950,15 @@
                 //$('#OtherDetail').val(obj[0].ItemNetAmount);
                 $('#Remarks').val(obj[0].Remarks);
                 $('#ProcessId').val(obj[0].ProcessId);
+                         if ($('#docTypeId').val() == 3) {
                 $('#SaleBillNo').val(obj[0].SaleBillNo).trigger('change');
                 $('#SaleBillYearCode').val(obj[0].SaleBillYearCode).trigger('change');
+                         }
                 $('#SaleBillQty').val(obj[0].SaleBillQty);
+                 if (       $('#docTypeId').val() == 4 ||$('#docTypeId').val() == 5 || $('#docTypeId').val() == 11 ) {
                 $('#AgainstChallanNo').val(obj[0].AgainstChallanNo).trigger('change');
                 $('#AgainstChallanYearcode').val(obj[0].AgainstChallanYearcode).trigger('change');
+                }
                 $('#ChallanQty').val(obj[0].ChallanQty);
                 $('#SupplierBatchNo').val(obj[0].SupplierBatchNo);
                 $('#ShelfLife').val(obj[0].ShelfLife);

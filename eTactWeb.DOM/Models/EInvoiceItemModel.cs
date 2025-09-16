@@ -80,7 +80,7 @@ namespace eTactWeb.DOM.Models
         public string transaction_type { get; set; }
         public decimal other_value { get; set; }
         public decimal cess_nonadvol_value { get; set; }
-        public List<Item> itemList { get; set; }
+        public List<Itemewaybill> itemList { get; set; }
         public List<VehicleDetail> VehiclListDetails { get; set; }
     }
 

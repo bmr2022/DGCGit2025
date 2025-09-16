@@ -19,6 +19,8 @@ using DocumentFormat.OpenXml.Wordprocessing;
 using PdfSharp.Drawing.BarCodes;
 using PdfSharp.Pdf.Content.Objects;
 using System.Net.Http.Headers;
+using DocumentFormat.OpenXml.Office2010.Excel;
+using Newtonsoft.Json.Linq;
 
 namespace eTactWeb.Controllers
 {
@@ -72,7 +74,6 @@ namespace eTactWeb.Controllers
             //ViewBag.WebReport = webReport;
             return View(webReport);
         }
-        // In your GateInwardController or appropriate controller
         [HttpGet]
         public async Task<IActionResult> GetEwayBillData(string ewayBillNo)
         {
@@ -80,47 +81,145 @@ namespace eTactWeb.Controllers
             {
                 if (string.IsNullOrEmpty(ewayBillNo))
                 {
-                    return Json(new { error = "E-Way Bill number is required" });
+                    return Json(new { success = false, error = "E-Way Bill number is required" });
                 }
+
                 string GSTNo = string.Empty;
                 var token = await _IEinvoiceService.GetAccessTokenAsync();
                 var gstResult = await _IEinvoiceService.GETGSTNO();
-                var ewayBillDetail = await _IEinvoiceService.GetEwayBillDataAsync();
+
                 if (gstResult.Result != null && gstResult.Result.Rows.Count > 0)
                 {
                     GSTNo = gstResult.Result.Rows[0]["GSTIN"].ToString();
                 }
-               
-                // Replace with your actual API endpoint and authentication
-                //string apiUrl = $"https://api.ewaybill.com/details/{ewayBillNo}";
-                string apiUrl = $"https://pro.mastersindia.co/getEwayBillData" +$"?access_token={token}" +   $"&action=GetEwayBill" + $"&gstin={GSTNo}" + $"&eway_bill_number={ewayBillNo}";
+
+                string apiUrl = $"https://pro.mastersindia.co/getEwayBillData" +
+                                $"?access_token={token}" +
+                                $"&action=GetEwayBill" +
+                                $"&gstin={GSTNo}" +
+                                $"&eway_bill_number={ewayBillNo}";
+
                 using (HttpClient client = new HttpClient())
                 {
                     client.DefaultRequestHeaders.Accept.Clear();
-                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-                    // Add any required authentication headers here
+                    client.DefaultRequestHeaders.Accept.Add(
+                        new MediaTypeWithQualityHeaderValue("application/json"));
 
                     HttpResponseMessage response = await client.GetAsync(apiUrl);
 
                     if (response.IsSuccessStatusCode)
                     {
                         string jsonResponse = await response.Content.ReadAsStringAsync();
-                        var ewayData = JsonConvert.DeserializeObject<EwayBillResponse>(jsonResponse);
 
-                        return Json(ewayData);
+                        // ✅ RETURN the result of EwayBillToGateInward
+                        return EwayBillToGateInward(jsonResponse);
                     }
                     else
                     {
-                        return Json(new { error = "Failed to fetch E-Way Bill data from external API" });
+                        return Json(new { success = false, message = "Failed to fetch E-Way Bill data from external API" });
                     }
                 }
             }
             catch (Exception ex)
             {
-                return Json(new { error = ex.Message });
+                return Json(new { success = false, error = ex.Message });
             }
         }
+
+
+        public IActionResult EwayBillToGateInward(string issueDataJson)
+        {
+            try
+            {
+                // Deserialize E-way Bill response
+                var ewayResponse = JsonConvert.DeserializeObject<EwayBillResponse>(issueDataJson);
+
+                var IssueGrid = new List<GateInwardModel>();
+                var docTypeId = 1;
+
+                if (ewayResponse?.results?.message != null)
+                {
+                    var message = ewayResponse.results.message;
+                    var AccountCodeId = _IGateInward.GetAccountCode(message.legal_name_of_consignee);
+                    int AccountCode = 0;
+
+                    if (AccountCodeId.Result.Result != null && AccountCodeId.Result.Result.Tables.Count > 0)
+                    {
+                        var table = AccountCodeId.Result.Result.Tables[0];
+                        if (table.Rows.Count > 0)
+                        {
+                            AccountCode = Convert.ToInt32(table.Rows[0].ItemArray[0]);
+                        }
+                    }
+                    if (AccountCode == 0 )
+                    {
+                        return Json(new
+                        {
+                            success = false,
+                            message = $"No valid Account Found : {message.legal_name_of_consignee}"
+                        });
+                    }
+                    int seqNo = 1; // Initialize sequence number
+
+                    foreach (var item in message.itemList)
+                    {
+                        var ItemCodeId = _IGateInward.GetItemCode(item.product_description);
+                        int itemcode = 0;
+                        string PartCode = string.Empty;
+                        string AltUnit = string.Empty;
+
+                        if (ItemCodeId.Result.Result != null && ItemCodeId.Result.Result.Tables.Count > 0)
+                        {
+                            var table = ItemCodeId.Result.Result.Tables[0];
+                            if (table.Rows.Count > 0)
+                            {
+                                itemcode = Convert.ToInt32(table.Rows[0].ItemArray[0]);   // Item_Code
+                                AltUnit = table.Rows[0].ItemArray[1].ToString();         // AlternateUnit
+                                PartCode = table.Rows[0].ItemArray[2].ToString();        // PartCode
+                            }
+                        }
+                        if (itemcode == 0 || string.IsNullOrWhiteSpace(PartCode))
+                        {
+                            return Json(new
+                            {
+                                success = false,
+                                message = $"No Item found in ItemMaster : {item.product_description}"
+                            });
+                        }
+                        var inward = new GateInwardModel
+                        {
+                            SeqNo = seqNo++, // Assign sequence number and increment
+                            Invoiceno = message.document_number,
+                            InvoiceDate = message.document_date,
+                            AccountCode = AccountCode,
+                            Address = message.address1_of_consignor,
+                            docTypeId = docTypeId,
+                            PartCode = PartCode,
+                            ItemCode = itemcode,
+                            ItemName = item.product_description,
+                            Unit = item.unit_of_product,
+                            Qty = item.quantity,
+                            Rate = item.taxable_amount / item.quantity, // Calculate rate
+                            Remarks = $"EwayBill No: {message.eway_bill_number}",
+                            AltUnit = AltUnit,
+                            AltQty = 0
+                        };
+
+                        IssueGrid.Add(inward);
+                    }
+                }
+
+                // Save list into Session
+                HttpContext.Session.SetString("KeyGateInwardGrid", JsonConvert.SerializeObject(IssueGrid));
+
+                return Json(new { success = true, message = "E-Way Bill saved to Gate Inward session successfully." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
         public ActionResult HtmlSave(int EntryId = 0, int YearCode = 0)
         {
             using (Report report = new Report())
@@ -227,6 +326,27 @@ namespace eTactWeb.Controllers
                     var selectedItems = JsonConvert.DeserializeObject<List<GateInwardItemDetail>>(selectedJson);
                     MainModel.ItemDetailGrid = selectedItems;
                    
+                }
+            }
+            if (Mode == "Eway" && ID == 0)
+            {
+                
+                var selectedJson = HttpContext.Session.GetString("KeyGateInwardGrid");
+                if (!string.IsNullOrEmpty(selectedJson))
+                {
+                    var jArray = JArray.Parse(selectedJson);
+
+                    if (jArray.Count > 0)
+                    {
+                        MainModel.AccountCode = jArray[0].Value<int>("AccountCode");
+                        MainModel.Invoiceno = jArray[0].Value<string>("Invoiceno");
+                        MainModel.Address = jArray[0].Value<string>("Address");
+                        MainModel.InvoiceDate = jArray[0].Value<string>("InvoiceDate");
+                    }
+
+                    var selectedItems = JsonConvert.DeserializeObject<List<GateInwardItemDetail>>(selectedJson);
+                    MainModel.ItemDetailGrid = selectedItems;
+
                 }
             }
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
