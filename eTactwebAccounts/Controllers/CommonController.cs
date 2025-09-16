@@ -1023,7 +1023,7 @@ namespace eTactWeb.Controllers
                         AdjDescription = item.AdjAgnstVouchNo,
                         AdjDueDate = item.AdjAgnstVouchDate,
                         AdjNewRefNo = item.AdjAgnstVouchType,
-                        AdjPendAmt = item.AdjAgnstAdjstedAmt,
+                        AdjPendAmt =Convert.ToDecimal( item.AdjAgnstAdjstedAmt),
                         AdjDrCr = item.AdjAgnstDrCr,
                         AdjDrCrName = item.AdjAgnstDrCr,
                         AdjPurchOrderNo = string.Empty,
@@ -1048,12 +1048,12 @@ namespace eTactWeb.Controllers
             Table.Columns.Add("AccountCode", typeof(int));
             Table.Columns.Add("ModOfAdjustment", typeof(string));
             Table.Columns.Add("DrCr", typeof(string));
-            Table.Columns.Add("AdjustedAmount", typeof(float));
+            Table.Columns.Add("AdjustedAmount", typeof(decimal));
             Table.Columns.Add("AgainstAccEntryId", typeof(int));
             Table.Columns.Add("AgainstVoucheryearcode", typeof(int));
             Table.Columns.Add("AgainstvoucherType", typeof(string));
             Table.Columns.Add("AgainstVoucherNo", typeof(string));
-            Table.Columns.Add("AgainstVoucherAmount", typeof(float));
+            Table.Columns.Add("AgainstVoucherAmount", typeof(decimal));
             Table.Columns.Add("AgainstVoucherModAdjustment", typeof(string));
             Table.Columns.Add("AgainstAccOpeningEntryId", typeof(int));
             Table.Columns.Add("AgainstOpeningVoucheryearcode", typeof(int));
@@ -1140,7 +1140,8 @@ namespace eTactWeb.Controllers
                         Item.AdjAgnstAccYearCode ?? 0,
                         Item.AdjAgnstVouchType ?? (Item.AdjNewRefNo ?? string.Empty),
                         Item.AdjAgnstVouchNo ?? (Item.AdjDescription ?? string.Empty),
-                        Item.AdjAgnstPendAmt ?? (Item.AdjPendAmt ?? 0),
+                       (Item.AdjAgnstPendAmt.HasValue ? Convert.ToDecimal(Item.AdjAgnstPendAmt.Value)
+                               : Convert.ToDecimal(Item.AdjPendAmt ?? 0)),
                         Item.AdjAgnstModeOfAdjstment ?? (Item.AdjModeOfAdjstment ?? string.Empty),
                         Item.AdjAgnstOpenEntryID ?? (Item.AdjOpenEntryID ?? 0),
                         Item.AdjAgnstOpeningYearCode ?? (Item.AdjOpeningYearCode ?? 0),

@@ -1154,7 +1154,7 @@ public class PurchaseBillDAL
                             AdjDescription = row["Description"].ToString(),
                             AdjDueDate = string.IsNullOrEmpty(row["DueDate"].ToString()) ? new DateTime() : Convert.ToDateTime(row["DueDate"]),
                             AdjNewRefNo = row["NewRefNo"].ToString(),
-                            AdjPendAmt = Convert.ToSingle(row["PendAmt"]),
+                            AdjPendAmt = Convert.ToDecimal(row["PendAmt"]),
                             AdjDrCr = row["DR/CR"].ToString(),
                             AdjPurchOrderNo = string.Empty, //row["RoundOff"].ToString(),
                             AdjPOYear = 0, //Convert.ToInt32(row["RoundOffAmt"]),
