@@ -1,60 +1,77 @@
 ﻿@model eTactWeb.DOM.Models.ProfitAndLossModel
-
+@{
+    var excludeColumns = new List<string> { "ParentAccountCode", "AccountCode", "PLseqNo" };
+}
 <div class="card-body table-responsive" style="max-height:300px;overflow-y:auto;">
     <table class="table table-responsive table-hover table-bordered PMRPGrid TbCss text-nowrap mb-0" id="ReportTable">
-        <thead class="bg-gradient card-headerBG text-light PMRPThead" style="position:static;" id="dashRThead">
+        <thead class="bg-gradient card-headerBG text-light PMRPThead" style="position:sticky; top:0; z-index:1;" id="dashRThead">
             <tr>
                 <th>Action</th>
                 <th>Sr#</th>
-                <th data-columnno="1" data-sortorder="asc" class="sortCol">
-                    <div class="header-icons" style="display:flex; align-items:center; gap:6px;">
-                        <span class="sort-icon" title="Sort Column" style="user-select:none; cursor:pointer;">
-                            <i class="fa fa-sort-down" style="display:none;"></i>
-                        </span>
-                        <span>Total CR Before GrossProfit</span>
-                    </div>
-                </th>
 
-                <th data-columnno="2" data-sortorder="asc" class="sortCol">
-                    <div class="header-icons" style="display:flex; align-items:center; gap:6px;">
-                        <span class="sort-icon" title="Sort Column" style="user-select:none; cursor:pointer;">
-                            <i class="fa fa-sort-down" style="display:none;"></i>
-                        </span>
-                        <span>Total DR Before GrossProfit</span>
-                    </div>
-                </th>
+                @* Generate headers dynamically from first row, excluding some *@
+                @if (Model.ProfitAndLossGrid != null && Model.ProfitAndLossGrid.Any())
+                {
+                    foreach (var colName in Model.ProfitAndLossGrid.First().DynamicColumns.Keys)
+                    {
+                        if (!excludeColumns.Contains(colName)) // <-- skip excluded columns
+                        {
+                            <th data-columnno="@colName" data-sortorder="asc" class="sortCol">
+                                <div class="header-icons" style="display:flex; align-items:center; gap:6px;">
+                                    <span class="sort-icon" title="Sort Column" style="user-select:none; cursor:pointer;">
+                                        <i class="fa fa-sort-down" style="display:none;"></i>
+                                    </span>
+                                    <span>@colName</span>
+                                </div>
+                            </th>
+                        }
+                    }
+                }
+            </tr>
         </thead>
+
         <tbody id="divStockRegisterBody">
             @{
-                var @Cntr = 0;
-                if (Model.ProfitAndLossGrid == null)
+                var cntr = 0;
+                if (Model.ProfitAndLossGrid == null || !Model.ProfitAndLossGrid.Any())
                 {
-                    <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                    <tr class="text-center">
+                        <td colspan="50" class="text-black-50">
+                            <strong>NO DATA FOUND</strong>
+                        </td>
+                    </tr>
                 }
                 else
                 {
-                    foreach (var item in Model.ProfitAndLossGrid)
+                    foreach (var row in Model.ProfitAndLossGrid)
                     {
-                        Cntr = Cntr + 1;
+                        cntr++;
 
-                        <tr id="@Cntr" onclick="selection(this)">
-
+                        <tr id="row-@cntr" onclick="selection(this)">
                             <td>
-                                <a class="table-link link-danger" onclick="DeleteRow(this.id)" id="@Cntr">
+                                <a class="table-link link-danger" id="del-@cntr"
+                                   onclick="event.stopPropagation(); DeleteRow(this.id)">
                                     <span class="fa-stack">
                                         <i class="fa fa-square fa-stack-2x"></i>
                                         <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
                                     </span>
                                 </a>
                             </td>
-                            <th>@Cntr</th>
-                            <td id="totCurrDrG-@Cntr" style="background-color:#DAE0E2">@item.TotalCRbeforeGrossProfit</td>
-                            <td id="totCurrCrG-@Cntr" style="background-color:#DAE0E2">@item.TotalDRbeforeGrossProfit</td>
+                            <th>@cntr</th>
+
+                            @foreach (var col in row.DynamicColumns)
+                            {
+                                if (!excludeColumns.Contains(col.Key)) // <-- skip excluded columns
+                                {
+                                    <td id="@col.Key-@cntr" style="background-color:#DAE0E2">
+                                        @col.Value
+                                    </td>
+                                }
+                            }
                         </tr>
                     }
                 }
             }
-
         </tbody>
     </table>
 </div>

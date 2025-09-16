@@ -23,7 +23,7 @@ namespace eTactWeb.Data.DAL
             DBConnectionString = _connectionStringService.GetConnectionString();
             _IDataLogic = iDataLogic;
         }
-        public async Task<ProfitAndLossModel> GetProfitAndLossData(string FromDate, string ToDate, string Flag, string ReportType)
+        public async Task<ProfitAndLossModel> GetProfitAndLossData(string FromDate, string ToDate, string Flag, string ReportType, string ShowOpening ,  string ShowRecordWithZeroAmt)
         {
             var resultList = new ProfitAndLossModel();
             DataSet oDataSet = new DataSet();
@@ -32,6 +32,7 @@ namespace eTactWeb.Data.DAL
             {
                 var fromDt = CommonFunc.ParseFormattedDate(FromDate);
                 var toDt = CommonFunc.ParseFormattedDate(ToDate);
+
                 using (SqlConnection connection = new SqlConnection(DBConnectionString))
                 {
                     SqlCommand command = new SqlCommand("AccSpProfitAndLoss", connection)
@@ -42,7 +43,9 @@ namespace eTactWeb.Data.DAL
                     command.Parameters.AddWithValue("@FromDate", fromDt);
                     command.Parameters.AddWithValue("@ToDate", toDt);
                     command.Parameters.AddWithValue("@ReportType", ReportType);
-                    command.Parameters.AddWithValue("@flag",Flag);
+                    command.Parameters.AddWithValue("@flag", "ProfitAndLoss");
+                    command.Parameters.AddWithValue("@ShowOpening", ShowOpening);
+                    command.Parameters.AddWithValue("@ShowRecordWithZeroAmt", ShowRecordWithZeroAmt);
 
                     await connection.OpenAsync();
 
@@ -51,38 +54,27 @@ namespace eTactWeb.Data.DAL
                         dataAdapter.Fill(oDataSet);
                     }
                 }
-                if (ReportType == "SUMMARY")
-                {
-                    if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
-                    {
-                        resultList.ProfitAndLossGrid = (from DataRow row in oDataSet.Tables[0].Rows
-                                                       select new ProfitAndLossModel
-                                                       {
-                                                           TotalCRbeforeGrossProfit = row["TotalCRbeforeGrossProfit"] == DBNull.Value ? 0 : Convert.ToDecimal(row["TotalCRbeforeGrossProfit"]),
-                                                           TotalDRbeforeGrossProfit = row["TotalDRbeforeGrossProfit"] == DBNull.Value ? 0 : Convert.ToDecimal(row["TotalDRbeforeGrossProfit"]),
 
-                                                       }).ToList();
+                if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                {
+                    var table = oDataSet.Tables[0];
+
+                    foreach (DataRow dr in table.Rows)
+                    {
+                        var rowData = new ProfitAndLossRow();
+
+                        foreach (DataColumn col in table.Columns)
+                        {
+                            rowData.DynamicColumns[col.ColumnName] = dr[col] == DBNull.Value ? null : dr[col];
+                        }
+
+                        resultList.ProfitAndLossGrid.Add(rowData);
                     }
                 }
-                else
-                {
-                    if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
-                    {
-                        resultList.ProfitAndLossGrid = (from DataRow row in oDataSet.Tables[0].Rows
-                                                       select new ProfitAndLossModel
-                                                       {
-                                                           TotalCRbeforeGrossProfit = row["TotalCRbeforeGrossProfit"] == DBNull.Value ? 0 : Convert.ToDecimal(row["TotalCRbeforeGrossProfit"]),
-                                                           TotalDRbeforeGrossProfit = row["TotalDRbeforeGrossProfit"] == DBNull.Value ? 0 : Convert.ToDecimal(row["TotalDRbeforeGrossProfit"]),
-
-                                                       }).ToList();
-                    }
-                }
-
             }
             catch (Exception ex)
             {
-                // Handle exception (log it or rethrow)
-                throw new Exception("Error fetching BOM tree data.", ex);
+                throw new Exception("Error fetching Profit and Loss data.", ex);
             }
 
             return resultList;

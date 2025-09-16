@@ -20,9 +20,9 @@ namespace eTactWeb.Data.BLL
             _ProfitAndLossDAL = new ProfitAndLossDAL(config, dataLogicDAL, connectionStringService);
             _DataLogicDAL = dataLogicDAL;
         }
-        public async Task<ProfitAndLossModel> GetProfitAndLossData(string FromDate, string ToDate, string Flag, string ReportType)
+        public async Task<ProfitAndLossModel> GetProfitAndLossData(string FromDate, string ToDate, string Flag, string ReportType, string ShowOpening,  string ShowRecordWithZeroAmt)
         {
-            return await _ProfitAndLossDAL.GetProfitAndLossData(FromDate, ToDate, Flag, ReportType);
+            return await _ProfitAndLossDAL.GetProfitAndLossData(FromDate, ToDate, Flag, ReportType, ShowOpening, ShowRecordWithZeroAmt);
         }
     }
 }

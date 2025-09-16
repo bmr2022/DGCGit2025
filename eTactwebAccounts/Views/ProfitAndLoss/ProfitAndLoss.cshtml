@@ -24,8 +24,6 @@
                     <div class="card-body">
                         <form id="SParam">
                             <div class="row">
-                                @* <input type="hidden" value="@Model.YearCode" asp-for="YearCode" />
-                                <input type="hidden" value="@Model.Storeid" asp-for="Storeid" /> *@
                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12">
                                     <div class="row">
                                         <div class="col">
@@ -50,9 +48,20 @@
                                     <label class="form-label">Global search</label>
                                     <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
                                 </div>
+                                <div class="col-xxl-4 col-xl-6 col-lg-6 col-md-12 col-sm-12 d-flex align-items-center" style="margin-top:20px;">
+                                    <div class="form-check form-switch me-3" id="ShowRecordWithZeroAmtDiv">
+                                        <input asp-for="ShowRecordWithZeroAmt" class="form-check-input" type="checkbox" value="YES" />
+                                        <input type="hidden" asp-for="ShowRecordWithZeroAmt" value="NO" />
+                                        <label class="form-check-label" for="ShowRecordWithZeroAmt">Show Records With Zero Amount</label>
+                                    </div>
 
+                                    <div class="form-check form-switch">
+                                        <input asp-for="ShowOpening" class="form-check-input" type="checkbox" value="YES" />
+                                        <input type="hidden" asp-for="ShowOpening" value="NO" />
+                                        <label class="form-check-label" for="ShowOpening">Show Opening</label>
+                                    </div>
+                                </div>
                                 <div class=" d-flex justify-content-center   mt-3 col-sm-5 col-md-8 col-lg-6 col-xl-4" width="inherit" style="width:600px;">
-
                                     <button class="btn btn-sm btn-outline-info" type="button" style="padding:0px;height:30px;width:100px;" onclick="GetProfitAndLossData();">
                                         <i class="fa-solid fa-magnifying-glass fa-fw fa-lg"></i>SEARCH
                                     </button>
@@ -113,6 +122,7 @@
             $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' })
                 .datepicker("setDate", 'now');
 
+            $('#ShowRecordWithZeroAmtDiv').hide();
             GetProfitAndLossData();
         });
 
@@ -124,6 +134,15 @@
             return dateString;
         }
 
+        $('#ReportType').change(function () {
+            if ($('#ReportType').val() == "DETAIL") {
+                $('#ShowRecordWithZeroAmtDiv').show();
+            }
+            else{
+                $('#ShowRecordWithZeroAmtDiv').hide();
+            }
+        })
+        
         function GetProfitAndLossData() {
             var FromDate = $('#FromDate').val();
             var ToDate = $('#ToDate').val();
@@ -139,22 +158,9 @@
                 },
                 success: function (response) {
                     $('#divStockMainRegister').html(response);
-
-                    // 🔹 Re-apply hidden columns after reload
-                    $.each(hiddenCols, function (colIndex, colName) {
-                        $('#divStockMainRegister table tr').each(function () {
-                            $(this).find('th:nth-child(' + colIndex + '), td:nth-child(' + colIndex + ')')
-                                .addClass('hidden-column');
-                        });
-                        // update icon
-                        $('#divStockMainRegister table tr th:nth-child(' + colIndex + ') .toggle-col i')
-                            .removeClass('fa-eye-slash').addClass('fa-eye');
-                    });
-
                     // 🔹 Update row count
                     var totalRows = $('#divStockMainRegister tr').length;
                     $('#totalRows').text(totalRows);
-                    countAllTotal();
                 },
                 error: function (xhr, status, error) {
                     console.error("Error fetching Trail Balance data:", error);
@@ -182,5 +188,34 @@
             $('#totalRows').text($('#divStockMainRegister tr').length - 1);
         }
 
-    </script>         
+        $('#sendToExcel').click(function () {
+            var FromDate = $('#FromDate').val();
+            var ToDate = $('#ToDate').val();
+            var ReportType = $('#ReportType').val();
+
+            $.ajax({
+                url: '/ProfitAndLoss/ExportProfitAndLossToExcel',
+                type: 'GET',
+                data: {
+                    FromDate: FromDate,
+                    ToDate: ToDate,
+                    ReportType: ReportType
+                },
+                xhrFields: {
+                    responseType: 'blob' // important for file download
+                },
+                success: function (data, status, xhr) {
+                    // Get filename from content-disposition header if needed
+                    const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                    const link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = `ProfitAndLoss.xlsx`; // or dynamically get name
+                    link.click();
+                },
+                error: function () {
+                    alert('Failed to download Excel file.');
+                }
+            });
+        });
+    </script>
 }

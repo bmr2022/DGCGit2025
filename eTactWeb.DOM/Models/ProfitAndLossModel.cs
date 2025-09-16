@@ -14,6 +14,21 @@ namespace eTactWeb.DOM.Models
         public string ReportType {  get; set; }
         public decimal TotalDRbeforeGrossProfit {  get; set; }
         public decimal TotalCRbeforeGrossProfit { get; set; }
-        public IList<ProfitAndLossModel> ProfitAndLossGrid { get; set; }
+        public string ShowRecordWithZeroAmt {  get; set; }
+        public string ShowOpening {  get; set; }
+        public IList<ProfitAndLossRow> ProfitAndLossGrid { get; set; } = new List<ProfitAndLossRow>();
+    }
+    public class ProfitAndLossRow
+    {
+        public Dictionary<string, object> DynamicColumns { get; set; } = new Dictionary<string, object>();
+        public string DrGroup { get; set; }
+        public string DrLedger { get; set; }
+        public decimal GroupDrAmt { get; set; }
+        public decimal DrAmt { get; set; }
+        public string CrGroup { get; set; }
+        public string CrLedger { get; set; }
+        public decimal GroupCrAmt { get; set; }
+        public decimal CrAmt { get; set; }
+        public string ProfitLossDRCRSide { get; set; }
     }
 }
