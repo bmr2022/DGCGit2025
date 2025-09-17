@@ -141,12 +141,19 @@
             else{
                 $('#ShowRecordWithZeroAmtDiv').hide();
             }
+            GetProfitAndLossData();
         })
-        
+
+        $('#ShowOpening, #ShowRecordWithZeroAmt').on('change', function () {
+            GetProfitAndLossData();
+        });
+
         function GetProfitAndLossData() {
             var FromDate = $('#FromDate').val();
             var ToDate = $('#ToDate').val();
             var ReportType = $('#ReportType').val();
+            var ShowOpening = $('#ShowOpening').prop('checked') ? "YES" : "NO";
+            var ShowRecordWithZeroAmt = $('#ShowRecordWithZeroAmt').prop('checked') ? "YES" : "NO";
 
             $.ajax({
                 type: 'POST',
@@ -155,12 +162,11 @@
                     FromDate: FromDate,
                     ToDate: ToDate,
                     ReportType: ReportType,
+                    ShowOpening: ShowOpening,
+                    ShowRecordWithZeroAmt: ShowRecordWithZeroAmt
                 },
                 success: function (response) {
                     $('#divStockMainRegister').html(response);
-                    // 🔹 Update row count
-                    var totalRows = $('#divStockMainRegister tr').length;
-                    $('#totalRows').text(totalRows);
                 },
                 error: function (xhr, status, error) {
                     console.error("Error fetching Trail Balance data:", error);
