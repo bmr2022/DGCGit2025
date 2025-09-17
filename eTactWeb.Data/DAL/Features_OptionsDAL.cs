@@ -406,8 +406,17 @@ namespace eTactWeb.Data.DAL
                                                                 //AccSaleBillManualTaxAlloweed = dr["AccSaleBillManualTaxAlloweed"] != DBNull.Value ? dr["AccSaleBillManualTaxAlloweed"].ToString() : string.Empty,
                                                                 //AccPasswordToAllowManualTax = dr["AccPasswordToAllowManualTax"] != DBNull.Value ? dr["AccPasswordToAllowManualTax"].ToString() : string.Empty,
                                                                 salebillShowItemBatchFIFOBased = dr["salebillShowItemBatchFIFOBased"] != DBNull.Value ? dr["salebillShowItemBatchFIFOBased"].ToString() : string.Empty,
-                                                               
-                                                            }).ToList();
+																ShowHideEntryDetail = dr["ShowHideEntryDetail"] != DBNull.Value ? Convert.ToBoolean(dr["ShowHideEntryDetail"]) : false,
+																ShowHideCustomerDetail = dr["ShowHideCustomerDetail"] != DBNull.Value ? Convert.ToBoolean(dr["ShowHideCustomerDetail"]) : false,
+																ShowHideOtherRequiredDetail = dr["ShowHideOtherRequiredDetail"] != DBNull.Value ? Convert.ToBoolean(dr["ShowHideOtherRequiredDetail"]) : false,
+																ShowHideCurrency = dr["ShowHideCurrency"] != DBNull.Value ? Convert.ToBoolean(dr["ShowHideCurrency"]) : false,
+																ShowHideConsignee = dr["ShowHideConsignee"] != DBNull.Value ? Convert.ToBoolean(dr["ShowHideConsignee"]) : false,
+																ShowHideScheduleDetail = dr["ShowHideScheduleDetail"] != DBNull.Value ? Convert.ToBoolean(dr["ShowHideScheduleDetail"]) : false,
+																AllowToChangeStoreName = dr["AllowToChangeStoreName"] != DBNull.Value ? Convert.ToBoolean(dr["AllowToChangeStoreName"]) : false,
+																HideOtherFieldOFDetailTable = dr["HideOtherFieldOFDetailTable"] != DBNull.Value ? Convert.ToBoolean(dr["HideOtherFieldOFDetailTable"]) : false,
+
+
+															}).ToList();
                         }
                          if (Type == "AccountDetail")
                         {
@@ -732,12 +741,21 @@ namespace eTactWeb.Data.DAL
                 {
                     model.AllowBackDateSALEBILL = DS.Tables[0].Rows[0]["AllowBackDateSALEBILL"] != DBNull.Value ? DS.Tables[0].Rows[0]["AllowBackDateSALEBILL"].ToString() : string.Empty;
                     model.VoucherRotationDailyMonthYearly = DS.Tables[0].Rows[0]["VoucherRotationDailyMonthYearly"] != DBNull.Value ? DS.Tables[0].Rows[0]["VoucherRotationDailyMonthYearly"].ToString() : string.Empty;
-                    model.AccSaleBillManualTaxAlloweed = DS.Tables[0].Rows[0]["AccSaleBillManualTaxAlloweed"] != DBNull.Value ? DS.Tables[0].Rows[0]["AccSaleBillManualTaxAlloweed"].ToString() : string.Empty;
-                    model.AccPasswordToAllowManualTax = DS.Tables[0].Rows[0]["AccPasswordToAllowManualTax"] != DBNull.Value ? DS.Tables[0].Rows[0]["AccPasswordToAllowManualTax"].ToString() : string.Empty;
+                    //model.AccSaleBillManualTaxAlloweed = DS.Tables[0].Rows[0]["AccSaleBillManualTaxAlloweed"] != DBNull.Value ? DS.Tables[0].Rows[0]["AccSaleBillManualTaxAlloweed"].ToString() : string.Empty;
+                    //model.AccPasswordToAllowManualTax = DS.Tables[0].Rows[0]["AccPasswordToAllowManualTax"] != DBNull.Value ? DS.Tables[0].Rows[0]["AccPasswordToAllowManualTax"].ToString() : string.Empty;
                     model.salebillShowItemBatchFIFOBased = DS.Tables[0].Rows[0]["salebillShowItemBatchFIFOBased"] != DBNull.Value ? DS.Tables[0].Rows[0]["salebillShowItemBatchFIFOBased"].ToString() : string.Empty;
-                    
-                }
-                  if (Type == "AccountDetail")
+					model.ShowHideEntryDetail = DS.Tables[0].Rows[0]["ShowHideEntryDetail"] != DBNull.Value ? Convert.ToBoolean(DS.Tables[0].Rows[0]["ShowHideEntryDetail"]) : false;
+					model.ShowHideCustomerDetail = DS.Tables[0].Rows[0]["ShowHideCustomerDetail"] != DBNull.Value ? Convert.ToBoolean(DS.Tables[0].Rows[0]["ShowHideCustomerDetail"]) : false;
+					model.ShowHideOtherRequiredDetail = DS.Tables[0].Rows[0]["ShowHideOtherRequiredDetail"] != DBNull.Value ? Convert.ToBoolean(DS.Tables[0].Rows[0]["ShowHideOtherRequiredDetail"]) : false;
+					model.ShowHideCurrency = DS.Tables[0].Rows[0]["ShowHideCurrency"] != DBNull.Value ? Convert.ToBoolean(DS.Tables[0].Rows[0]["ShowHideCurrency"]) : false;
+					model.ShowHideConsignee = DS.Tables[0].Rows[0]["ShowHideConsignee"] != DBNull.Value ? Convert.ToBoolean(DS.Tables[0].Rows[0]["ShowHideConsignee"]) : false;
+					model.ShowHideScheduleDetail = DS.Tables[0].Rows[0]["ShowHideScheduleDetail"] != DBNull.Value ? Convert.ToBoolean(DS.Tables[0].Rows[0]["ShowHideScheduleDetail"]) : false;
+					model.AllowToChangeStoreName = DS.Tables[0].Rows[0]["AllowToChangeStoreName"] != DBNull.Value ? Convert.ToBoolean(DS.Tables[0].Rows[0]["AllowToChangeStoreName"]) : false;
+					model.HideOtherFieldOFDetailTable = DS.Tables[0].Rows[0]["HideOtherFieldOFDetailTable"] != DBNull.Value ? Convert.ToBoolean(DS.Tables[0].Rows[0]["HideOtherFieldOFDetailTable"]) : false;
+
+
+				}
+				if (Type == "AccountDetail")
                 {
                    
                     model.AccPasswordToAllowManualTax = DS.Tables[0].Rows[0]["AccPasswordToAllowManualTax"] != DBNull.Value ? DS.Tables[0].Rows[0]["AccPasswordToAllowManualTax"].ToString() : string.Empty;
@@ -976,12 +994,20 @@ namespace eTactWeb.Data.DAL
                             SqlParams.Add(new SqlParameter("@Flag", "UPDATESaleBill"));
                             SqlParams.Add(new SqlParameter("@AllowBackDateSALEBILL", model.AllowBackDateSALEBILL));
                             SqlParams.Add(new SqlParameter("@VoucherRotationDailyMonthYearly", model.VoucherRotationDailyMonthYearly));
-                            SqlParams.Add(new SqlParameter("@AccSaleBillManualTaxAlloweed", model.AccSaleBillManualTaxAlloweed));
-                            SqlParams.Add(new SqlParameter("@AccPasswordToAllowManualTax", model.AccPasswordToAllowManualTax));
+                            //SqlParams.Add(new SqlParameter("@AccSaleBillManualTaxAlloweed", model.AccSaleBillManualTaxAlloweed));
+                            //SqlParams.Add(new SqlParameter("@AccPasswordToAllowManualTax", model.AccPasswordToAllowManualTax));
                             SqlParams.Add(new SqlParameter("@salebillShowItemBatchFIFOBased", model.salebillShowItemBatchFIFOBased));
+					SqlParams.Add(new SqlParameter("@ShowHideEntryDetail", model.ShowHideEntryDetail));
+					SqlParams.Add(new SqlParameter("@ShowHideCustomerDetail", model.ShowHideCustomerDetail));
+					SqlParams.Add(new SqlParameter("@ShowHideOtherRequiredDetail", model.ShowHideOtherRequiredDetail));
+					SqlParams.Add(new SqlParameter("@ShowHideCurrency", model.ShowHideCurrency));
+					SqlParams.Add(new SqlParameter("@ShowHideConsignee", model.ShowHideConsignee));
+					SqlParams.Add(new SqlParameter("@ShowHideScheduleDetail", model.ShowHideScheduleDetail));
+					SqlParams.Add(new SqlParameter("@AllowToChangeStoreName", model.AllowToChangeStoreName));
+					SqlParams.Add(new SqlParameter("@HideOtherFieldOFDetailTable", model.HideOtherFieldOFDetailTable));
 
-                        }
-                         if (model.Type == "AccountDetail")
+				}
+				if (model.Type == "AccountDetail")
                          {
                             SqlParams.Add(new SqlParameter("@Flag", "UPDATEAccount"));
                            
