@@ -316,7 +316,7 @@ public class GateInwardDAL
         }
         return _ResponseResult;
     }
-    public async Task<ResponseResult> GetEwayBillDataforPo(GateInwardModel model, DataTable GIGrid)
+    public async Task<GateInwardModel> GetEwayBillDataforPo(GateInwardModel model, DataTable GIGrid)
     {
         var _ResponseResult = new ResponseResult();
         try
@@ -328,6 +328,36 @@ public class GateInwardDAL
             SqlParams.Add(new SqlParameter("@InvoiceDate", invDt == default ? string.Empty : invDt));
             SqlParams.Add(new SqlParameter("@DTSSGrid", GIGrid));
             _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_GateMainDetail", SqlParams);
+            if (_ResponseResult?.Result != null)
+            {
+                var dt = _ResponseResult.Result as DataTable;
+                if (dt != null)
+                {
+                    model.ItemDetailGrid = dt.AsEnumerable().Select(row => new GateInwardItemDetail
+                    {
+                        PoNo = row.Table.Columns.Contains("PoNo") ? row["PoNo"].ToString() : string.Empty,
+                        PoYear = row.Table.Columns.Contains("PoYear") && row["PoYear"] != DBNull.Value ? Convert.ToInt32(row["PoYear"]) : 0,
+                        PoEntryId = row.Table.Columns.Contains("PoEntryId") && row["PoEntryId"] != DBNull.Value ? Convert.ToInt32(row["PoEntryId"]) : 0,
+                        PoDate = row.Table.Columns.Contains("PoDate") && row["PoDate"] != DBNull.Value ? (row["PoDate"]).ToString() : string.Empty,
+                        POType = row.Table.Columns.Contains("POType") ? row["POType"].ToString() : string.Empty,
+                        ItemCode = row.Table.Columns.Contains("ItemCode") && row["ItemCode"] != DBNull.Value ? Convert.ToInt32(row["ItemCode"]) : 0,
+                        PartCode = row.Table.Columns.Contains("PartCode") ? row["PartCode"].ToString() : string.Empty,
+                        ItemName = row.Table.Columns.Contains("ItemName") ? row["ItemName"].ToString() : string.Empty,
+                        Unit = row.Table.Columns.Contains("Unit") ? row["Unit"].ToString() : string.Empty,
+                        UnitRate = row.Table.Columns.Contains("UnitRate") ? row["UnitRate"].ToString() : string.Empty,
+                        Qty = row.Table.Columns.Contains("Qty") && row["Qty"] != DBNull.Value ? Convert.ToDecimal(row["Qty"]) : 0,
+                        Rate = row.Table.Columns.Contains("Rate") && row["Rate"] != DBNull.Value ? Convert.ToDecimal(row["Rate"]) : 0,
+                        AltUnit = row.Table.Columns.Contains("AltUnit") ? row["AltUnit"].ToString() : string.Empty,
+                        AltQty = row.Table.Columns.Contains("AltQty") && row["AltQty"] != DBNull.Value ? Convert.ToDecimal(row["AltQty"]) : 0,
+                        PendQty = row.Table.Columns.Contains("PendQty") && row["PendQty"] != DBNull.Value ? Convert.ToDecimal(row["PendQty"]) : 0,
+                        AltPendQty = row.Table.Columns.Contains("AltPendQty") && row["AltPendQty"] != DBNull.Value ? Convert.ToSingle(row["AltPendQty"].ToString()) : 0,
+                        SchNo = row.Table.Columns.Contains("SchNo") ? row["SchNo"].ToString() : string.Empty,
+                        SchYearCode = row.Table.Columns.Contains("SchYearCode") && row["SchYearCode"] != DBNull.Value ? Convert.ToInt32(row["SchYearCode"]) : 0,
+                        SchEntryId = row.Table.Columns.Contains("SchEntryId") && row["SchEntryId"] != DBNull.Value ? Convert.ToInt32(row["SchEntryId"]) : 0,
+                        SchDate = row.Table.Columns.Contains("SchDate") && row["SchDate"] != DBNull.Value ? (row["SchDate"]).ToString() : string.Empty
+                    }).ToList();
+                }
+            }
         }
         catch (Exception ex)
         {
@@ -335,7 +365,7 @@ public class GateInwardDAL
             Error.Message = ex.Message;
             Error.Source = ex.Source;
         }
-        return _ResponseResult;
+        return model;
     }
     public async Task<GateInwardDashboard> GetDashboardData(string VendorName, string Gateno, string ItemName, string PartCode,string DocName, string PONO, string ScheduleNo, string FromDate, string ToDate,string DashboardType)
     {

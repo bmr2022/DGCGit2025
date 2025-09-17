@@ -21,6 +21,7 @@ using PdfSharp.Pdf.Content.Objects;
 using System.Net.Http.Headers;
 using DocumentFormat.OpenXml.Office2010.Excel;
 using Newtonsoft.Json.Linq;
+using System.Threading.Tasks;
 
 namespace eTactWeb.Controllers
 {
@@ -112,7 +113,7 @@ namespace eTactWeb.Controllers
                         string jsonResponse = await response.Content.ReadAsStringAsync();
 
                         // ✅ RETURN the result of EwayBillToGateInward
-                        return EwayBillToGateInward(jsonResponse);
+                        return await EwayBillToGateInward(jsonResponse).ConfigureAwait(false);
                     }
                     else
                     {
@@ -127,7 +128,7 @@ namespace eTactWeb.Controllers
         }
 
 
-        public IActionResult EwayBillToGateInward(string issueDataJson)
+        public async Task<IActionResult> EwayBillToGateInward(string issueDataJson)
         {
             try
             {
@@ -229,8 +230,16 @@ namespace eTactWeb.Controllers
                 }
                 
                   GIGrid = GetDetailTable(GateInwardItemDetail);
-                 var Result =  _IGateInward.GetEwayBillDataforPo(model, GIGrid);
-                    return Json(new { success = true, message = "E-Way Bill saved to Gate Inward session successfully." });
+                  model= await _IGateInward.GetEwayBillDataforPo(model, GIGrid);
+
+
+                HttpContext.Session.Remove("KeyGateInwardItemDetail");
+                string serializedGrid = JsonConvert.SerializeObject(model);
+                HttpContext.Session.SetString("KeyGateInwardGrid", serializedGrid);
+
+              
+
+                return Json(new { success = true, message = "E-Way Bill saved to Gate Inward session successfully." });
             }
             catch (Exception ex)
             {
@@ -352,18 +361,19 @@ namespace eTactWeb.Controllers
                 var selectedJson = HttpContext.Session.GetString("KeyGateInwardGrid");
                 if (!string.IsNullOrEmpty(selectedJson))
                 {
-                    var jArray = JArray.Parse(selectedJson);
+                    var mainModel = JsonConvert.DeserializeObject<GateInwardModel>(selectedJson);
 
-                    if (jArray.Count > 0)
+                    if (mainModel != null)
                     {
-                        MainModel.AccountCode = jArray[0].Value<int>("AccountCode");
-                        MainModel.Invoiceno = jArray[0].Value<string>("Invoiceno");
-                        MainModel.Address = jArray[0].Value<string>("Address");
-                        MainModel.InvoiceDate = jArray[0].Value<string>("InvoiceDate");
-                    }
+                        // Map main properties
+                        MainModel.AccountCode = mainModel.AccountCode;
+                        MainModel.Invoiceno = mainModel.Invoiceno ?? string.Empty;
+                        MainModel.Address = mainModel.Address ?? string.Empty;
+                        MainModel.InvoiceDate = mainModel.InvoiceDate ?? string.Empty;
 
-                    var selectedItems = JsonConvert.DeserializeObject<List<GateInwardItemDetail>>(selectedJson);
-                    MainModel.ItemDetailGrid = selectedItems;
+                        // Get ItemDetailGrid
+                        MainModel.ItemDetailGrid = mainModel.ItemDetailGrid ?? new List<GateInwardItemDetail>();
+                    }
 
                 }
             }
@@ -1052,10 +1062,30 @@ namespace eTactWeb.Controllers
                         }
                         else
                         {
-                            if (model.docTypeId == 3 ? GateInwardItemDetail.Any(x => x.PartCode == model.PartCode && x.AgainstChallanNo == model.AgainstChallanNo && x.SaleBillNo == model.SaleBillNo && x.SaleBillYearCode == model.SaleBillYearCode) : GateInwardItemDetail.Any(x => x.PartCode == model.PartCode && x.AgainstChallanNo == model.AgainstChallanNo && x.PoNo == model.PoNo))
+                            if (model.docTypeId == 3? GateInwardItemDetail.Any(x =>
+                               string.Equals(x.PartCode?.Trim(), model.PartCode?.Trim(), StringComparison.OrdinalIgnoreCase) &&
+                               string.Equals(x.PoNo?.Trim(), model.PoNo?.Trim(), StringComparison.OrdinalIgnoreCase) &&
+                               x.PoYear == model.PoYear &&
+                               string.Equals(x.SchNo?.Trim(), model.SchNo?.Trim(), StringComparison.OrdinalIgnoreCase) &&
+                               x.SchYearCode == model.SchYearCode &&
+                               string.Equals(x.AgainstChallanNo ?? "", model.AgainstChallanNo ?? "", StringComparison.OrdinalIgnoreCase) &&
+                               string.Equals(x.SaleBillNo ?? "", model.SaleBillNo ?? "", StringComparison.OrdinalIgnoreCase) &&
+                               x.SaleBillYearCode == model.SaleBillYearCode)
+                         : GateInwardItemDetail.Any(x =>
+                               string.Equals(x.PartCode?.Trim(), model.PartCode?.Trim(), StringComparison.OrdinalIgnoreCase) &&
+                               string.Equals(x.PoNo?.Trim(), model.PoNo?.Trim(), StringComparison.OrdinalIgnoreCase) &&
+                               x.PoYear == model.PoYear &&
+                               string.Equals(x.SchNo?.Trim(), model.SchNo?.Trim(), StringComparison.OrdinalIgnoreCase) &&
+                               x.SchYearCode == model.SchYearCode &&
+                               string.Equals(x.AgainstChallanNo ?? "", model.AgainstChallanNo ?? "", StringComparison.OrdinalIgnoreCase)))
                             {
                                 return StatusCode(207, "Duplicate");
                             }
+
+                            //if (model.docTypeId == 3 ? GateInwardItemDetail.Any(x => x.PartCode == model.PartCode && x.AgainstChallanNo == model.AgainstChallanNo && x.SaleBillNo == model.SaleBillNo && x.SaleBillYearCode == model.SaleBillYearCode) : GateInwardItemDetail.Any(x => x.PartCode == model.PartCode && x.AgainstChallanNo == model.AgainstChallanNo && x.PoNo == model.PoNo))
+                            //{
+                            //    return StatusCode(207, "Duplicate");
+                            //}
                             else
                             {
                                 model.SeqNo = GateInwardItemDetail.Count + 1;
