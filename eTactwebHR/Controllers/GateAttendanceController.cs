@@ -120,7 +120,7 @@ namespace eTactwebHR.Controllers
             return View(MainModel);
         }
         [HttpPost]
-        public async Task<IActionResult> GateAttendance(GateAttendanceModel model)
+        public async Task<IActionResult> GateAttendance([FromBody] GateAttendanceModel model)
         {
             try
             {
@@ -132,6 +132,7 @@ namespace eTactwebHR.Controllers
                 string modePOA = "data";
                 var stat = new MemoryCacheStatistics();
 
+                //var selectedRows = model.GateAttDetailsList.Where(e => selectedEmpIds.Contains(e.EmpId)).ToList();
                 // 1. Get GateAttendance
                 string GateAttendanceJson = HttpContext.Session.GetString("GateAttendance");
                 GateAttendanceModel MainModel = string.IsNullOrEmpty(GateAttendanceJson)
@@ -243,7 +244,7 @@ namespace eTactwebHR.Controllers
                                 model2.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                                 model2.UpdatedByName = HttpContext.Session.GetString("EmpName");
                                 model2.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                                return View("DirectPurchaseBill", model);
+                                return View("GateAttendance", model);
                             }
                             else
                             {
@@ -258,7 +259,7 @@ namespace eTactwebHR.Controllers
                                 //model.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                                 model.UpdatedByName = HttpContext.Session.GetString("EmpName");
                                 model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                                return View("DirectPurchaseBill", model);
+                                return View("GateAttendance", model);
                             }
                         }
                         else
