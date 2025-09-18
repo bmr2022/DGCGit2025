@@ -107,7 +107,7 @@ namespace eTactWeb.DOM.Models
         public string vehicle_number { get; set; }
         public string place_of_consignor { get; set; }
         public string state_of_consignor { get; set; }
-        public int tripshtNo { get; set; }
+        public long tripshtNo { get; set; }
         public string userGstin { get; set; }
         public string vehicle_number_update_date { get; set; }
         public string transportation_mode { get; set; }

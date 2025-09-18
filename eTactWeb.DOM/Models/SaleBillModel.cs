@@ -299,6 +299,15 @@ namespace eTactWeb.DOM.Models
         public IList<DPBItemDetail>? DPBItemDetails { get; set; }
         public string? MaxSaleInvoiceEntryDate {  get; set; }
         public string? AllowBackDateSALEBILL {  get; set; }
+        public string? ShowHideSaleBillEntryDetail { get; set; }
+        public string? ShowHideSaleBillCustomerDetail { get; set; }
+        public string? ShowHideSaleBillOtherRequiredDetail { get; set; }
+        public string? ShowHideSaleBillCurrency { get; set; }
+        public string? ShowHideSaleBillConsignee { get; set; }
+        public string? ShowHideSaleBillScheduleDetail { get; set; }
+        public string? AllowToChangeSaleBillStoreName { get; set; }
+        public string? HideOtherFieldOFSaleBillDetailTable { get; set; }
+        public string? ApproveSOForGenerateSaleInvoiceOrNot { get; set; }
         private IList<SelectListItem> _YesNo = new List<SelectListItem>()
         {
             new() { Value = "Y", Text = "Yes" },

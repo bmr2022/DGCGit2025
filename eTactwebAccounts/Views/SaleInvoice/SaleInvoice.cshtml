@@ -21,6 +21,15 @@
         <input type="hidden" asp-for="EinvGenerated" />
         <input type="hidden" asp-for="MaxSaleInvoiceEntryDate" />
         <input type="hidden" asp-for="AllowBackDateSALEBILL" />
+        <input type="hidden" asp-for="ShowHideSaleBillEntryDetail" />
+        <input type="hidden" asp-for="ShowHideSaleBillCustomerDetail" />
+        <input type="hidden" asp-for="ShowHideSaleBillOtherRequiredDetail" />
+        <input type="hidden" asp-for="ShowHideSaleBillCurrency" />
+        <input type="hidden" asp-for="ShowHideSaleBillConsignee" />
+        <input type="hidden" asp-for="ShowHideSaleBillScheduleDetail" />
+        <input type="hidden" asp-for="AllowToChangeSaleBillStoreName" />
+        <input type="hidden" asp-for="HideOtherFieldOFSaleBillDetailTable" />
+        <input type="hidden" asp-for="ApproveSOForGenerateSaleInvoiceOrNot" />
         <input type="hidden" id="EditableRateAndDiscountONSaleInvoice" />
         <div class="card-header card-headerBG text-light bg-gradient">
             <h5>
@@ -213,8 +222,8 @@
                                                     <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO No</th>
                                                     <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO Date</th>
                                                     <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Cust Order No</th>
-                                                    <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch No</th>
-                                                    <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch Date</th>
+                                                    <th data-columnno="9" data-sortorder="asc" class="sortCol SaleBillScheduleDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch No</th>
+                                                    <th data-columnno="10" data-sortorder="asc" class="sortCol SaleBillScheduleDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch Date</th>
                                                     <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>HSN No</th>
                                                     <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Store Name</th>
                                                     <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bill Qty</th>
@@ -227,7 +236,7 @@
                                                     <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Batch No</th>
                                                     <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unique BatchNo</th>
                                                     <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO Year</th>
-                                                    <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch YC</th>
+                                                    <th data-columnno="10" data-sortorder="asc" class="sortCol SaleBillScheduleDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch YC</th>
                                                     <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bom Rev No</th>
                                                     <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unit</th>
                                                     <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Lot Stock</th>
@@ -257,9 +266,9 @@
                                                     <th data-columnno="26" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Prod Sch YC</th>
                                                     <th data-columnno="26" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Prod Sch EntryId</th>
                                                     <th data-columnno="26" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Prod Sch Date</th>
-                                                    <th data-columnno="26" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch Delivery Date</th>
-                                                    <th data-columnno="27" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Packets Detail</th>
-                                                    <th data-columnno="28" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Other Detail</th>
+                                                    <th data-columnno="26" data-sortorder="asc" class="sortCol SaleBillScheduleDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch Delivery Date</th>
+                                                    <th data-columnno="27" data-sortorder="asc" class="sortCol SaleBillOtherDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Packets Detail</th>
+                                                    <th data-columnno="28" data-sortorder="asc" class="sortCol  SaleBillOtherDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Other Detail</th>
                                                     <th data-columnno="29" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Remark</th>
                                                     <th data-columnno="29" data-sortorder="asc" class="sortCol gridHiddenField"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>StockableNonStockable</th> @*gridHiddenField*@
                                                     <th data-columnno="29" data-sortorder="asc" class="sortCol gridHiddenField"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>CustJwAdjustmentMandatory</th>  @*gridHiddenField*@
@@ -489,6 +498,127 @@
         </div>
     </div>
 </div> *@
+
+@* ---------------------------- *@
+@* Get SaleOrder Data On CHANGE OF coustomerName *@
+
+<div class="modal fade" style="display:none" id="PendSaleOrderModel" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document" ">
+        <div class="modal-content">
+            <div class="modal-header">
+               
+               @*  <label style="margin-left:3px;margin-right:3px" for="StoreName">Store Name</label>
+                <select class="form-select" asp-for="StoreId" id="MultiStoreName" style="width:170px">
+                    <option value="0">-Select-</option>
+                </select> *@
+                <h2>Pending Sale Order For Sale Invoice</h2>
+              
+
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row g-2 gx-3">
+
+                            <div class="card-body text-center overflow-auto pb-0 pt-0  ">
+                                <div class="d-flex align-items-center mb-2">
+                                    <button class="btn btn-sm btn-outline-warning mb-2" type="button" id="CheckAllForPendSO" style="display: flex; align-items: center;">
+                                        <i class="fa fa-check-square" aria-hidden="true"></i>
+                                        <span style="margin-left: 5px;">Ch/UnCh All</span>
+                                    </button>
+                                    <div class="col-md-2 me-3" style="margin-left:50px">
+                                        <input type="text" class="form-control" id="search-box1" placeholder="Search..." style="background-color:#FFFACD;">
+                                    </div>
+                                   @*  <button class="btn btn-sm btn-outline-success mb-2" type="button" onclick="ShowGroupWiseItems()" style="display: flex; align-items: center;">
+                                        <i class="fa fa-eye" aria-hidden="true"></i>
+                                        <span style="margin-left: 5px;">Show</span>
+                                    </button> *@
+                                </div>
+                                <div class="table-responsive" style="max-height:350px;">
+                                    <table class="table table-hover table-bordered table-striped mb-0">
+                                        <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+                                            <tr>
+                                                
+                                                 <th>Action</th>
+                                                <th>SO No</th>
+                                                <th class="hiddenColumn">SO YC</th>
+                                                <th class="hiddenColumn">CustOrderNo</th>
+                                                <th class="hiddenColumn">Sch No</th>
+                                                <th class="hiddenColumn">Sch YC</th>
+
+                                                <th>Part Code</th>
+                                                <th>Item Name</th>
+                                                <th>Rate</th>
+                                                <th>Qty</th>
+                                                <th>Amount</th>
+                                                <th>Dis %</th>
+                                                <th>Dis Amt</th>
+                                                <th>Unit</th>
+                                                <th>RacKID</th>
+                                                <th>HSNNo</th>
+
+                                                <th>Pend Qty</th>
+                                                <th class="hiddenColumn">StoreName</th>
+                                                <th class="">Batch No</th>
+                                                <th class="hiddenColumn">Unique Batch No</th>
+                                                <th class="hiddenColumn">TotalStock</th>
+                                                <th class="">BatchStock</th>
+
+                                               
+                                                <th class="hiddenColumn">SO Type</th>
+                                                
+                                                
+                                                <th class="hiddenColumn">Alt Qty</th>
+                                                <th class="hiddenColumn">ItemCode</th>
+
+
+                                            </tr>
+                                        </thead>
+                                        <tbody id="divPendSOGrid">
+                                            <tr class="text-center">
+                                                <td colspan="25" class="text-black-50"><strong>NO DATA YET</strong></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="progress my-2" style="height: 4px;">
+                        <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <div class="row g-2 gx-3">
+                        <div class="col-12 text-center">
+                            <strong>Total No Of Items : <span id="lblTotalNoOfItems1"></span></strong>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="GridButton1 btn btn-sm btn-outline-success me-2">
+                        <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
+                    </button>
+
+                    <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+@* --------------------------------*@
+
+@* for groupwise item *@
 <div class="modal fade" style="display:none" id="SaleOrderGroupWiseItem" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document" ">
         <div class="modal-content">
@@ -691,6 +821,13 @@
         border-radius: 0;
     }
 
+    .no-cursor {
+        pointer-events: none; /* Prevent clicking/typing */
+        caret-color: transparent; /* Hide blinking cursor */
+        background-color: white; /* Keep normal background */
+        color: black; /* Keep normal text color */
+        border: none; /* Remove border for clean look */
+    }
     .tooltip-container {
         position: relative;
         display: inline-block;
@@ -785,6 +922,22 @@
                 checkbox.prop("checked", !checkbox.prop("checked"));
 
                 if ($('#MBCheckbox-' + i).prop("checked")) {
+                    TotalNoOfRows++;
+                }
+            }
+            $('#lblTotalNoOfItems').text(TotalNoOfRows);
+        });
+
+
+        $('#CheckAllForPendSO').click(function () {
+
+            var RowCount = $('#divPendSOGrid tr').length;
+            var TotalNoOfRows = 0;
+            for (var i = 0; i <= RowCount; i++) {
+                var checkbox = $('#AcceptedQtySHA-' + i);
+                checkbox.prop("checked", !checkbox.prop("checked"));
+
+                if ($('#AcceptedQtySHA-' + i).prop("checked")) {
                     TotalNoOfRows++;
                 }
             }
@@ -1421,6 +1574,137 @@
             });
         }
 
+        $('#AccountCode').change(function () {
+          
+            showDetail();
+
+})
+
+
+        function showDetail() {
+
+            var data = {
+                "Flag": "ShowPendingSaleorderforBill",
+                "FromDate": $('#FromDate').val(),
+                "Todate": $('#SaleBillDate').val(),
+                "InvoiceDate": $('#SaleBillDate').val(),
+                "CurrentYear": $('#SaleBillYearCode').val(),
+                "BillFromStoreId": $('#BillFromStoreId').val(),
+                "accountCode": $('#AccountCode').val(),
+                "SONo": $('#SONo').val(),
+                // "PartCode": $('#PartCode').val()
+
+            }
+
+            $.ajax({
+                url: '@Url.Action("ShowPendingSaleorderforBill")',
+                type: "POST",
+                data: data,
+                success: function (data) {
+                    if (data != null) {
+
+                        var obj = $.parseJSON(data);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#PendSaleOrderModel').modal('show');
+                            $('#divPendSOGrid').empty();
+                            var i = 1;
+                            $.each(obj.Result.Table, function (index, val) {
+
+                                var html = '';
+                                html += '<tr>' +
+                                    '<td style="text-align:center;">' +
+                                    '<input style="background-color: #b2b3f0;" id="AcceptedQtySHA-' + i + '" ' +
+                                    'class="form-check-input me-1 mt-2" type="checkbox" role="switch" ' +
+                                    'onchange="CheckacceptedQtySHA(' + i + ');" />' +
+                                    '</td>' +
+
+                                    '<td><input id="SONO-' + i + '" class=" no-cursor" style="width:50px !important;" value="' + val.SONo + '"/></td>' +
+                                     '<td><input id="SOYearCode-' + i + '" class=" no-cursor hiddenColumn" value="' + val.SOYearCode + '"/></td>' +
+                                    '<td><input id="CustOrderNo-' + i + '" class=" no-cursor hiddenColumn" value="' + val.CustorderNo + '"/></td>' +
+                                    '<td><input id="SchNo-' + i + '" class=" no-cursor hiddenColumn" value="' + val.SchNo + '"/></td>' +
+                                    '<td><input id="SaleSchYearCode-' + i + '" class=" no-cursor hiddenColumn" value="' + val.SchYearCode + '"/></td>' +
+
+                                    '<td><input id="PartCode-' + i + '" class=" no-cursor" style="width:200px !important;" value="' + val.PartCode + '"/></td>' +
+                                    '<td><input id="ItemName-' + i + '" class=" no-cursor" style="width:200px !important;" value="' + val.ItemName + '"/></td>' +
+                                    '<td><input id="Rate-' + i + '" class="" style="width:60px !important;"   onkeyup="CalculateAmountForMemoryGrid(' + i + ')"  value="' + val.SOItemRate + '"/></td>' +
+                                    // '<td><input id="OrderQty' + i + '" class="form-control no-cursor" value="' + val.OrderQty + '"/></td>' +
+                                    '<td><input id="Qty-' + i + '" class="" style="width:60px !important;"  onkeyup="CalculateAmountForMemoryGrid(' + i + ')"  value="' + val.SaleBillQty + '"/></td>' +
+                                    '<td><input id="Amount-' + i + '" class=" no-cursor" style="width:60px !important;" value="' + val.ItemAmount + '"/></td>' +
+                                    '<td><input id="DiscountPer-' + i + '" class="" style="width:40px !important;"  onkeyup="CalculateAmountForMemoryGrid(' + i + ')"  value="' + val.DisPer + '"/></td>' +
+                                    '<td><input id="DiscountAmt-' + i + '" class=" no-cursor" style="width:40px !important;" value="' + val.DisAmt + '"/></td>' +
+
+                                    '<td><input id="Unit-' + i + '" class=" no-cursor " style="width:30px !important;" value="' + val.Unit + '"/></td>' +
+                                    '<td><input id="RackID-' + i + '" class=" no-cursor" style="width:80px !important;" value="' + val.RackID + '"/></td>' +
+                                    '<td><input id="HSNNo-' + i + '" class=" no-cursor" style="width:70px !important;" value="' + val.HSNNO + '"/></td>' +
+
+
+                                    '<td><input id="SOPendQty-' + i + '" class=" no-cursor" style="width:70px !important;" value="' + val.OrderPendQty + '"/></td>' +
+                                    '<td><input id="StoreName-' + i + '" class=" no-cursor hiddenColumn" value="' + val.Store_Name + '"/></td>' +
+                                    '<td><input id="StoreId-' + i + '" class=" no-cursor hiddenColumn" value="' + val.Storeid + '"/></td>' +
+                                    '<td><input id="Batchno-' + i + '" class=" no-cursor " value="' + val.BatchNo + '"/></td>' +
+                                    '<td><input id="Uniquebatchno-' + i + '" class=" no-cursor hiddenColumn" value="' + val.UniqueBatchNo + '"/></td>' +
+                                    '<td><input id="TotalStock-' + i + '" class=" no-cursor hiddenColumn" value="' + val.TotalStock + '"/></td>' +
+
+                                    '<td><input id="LotStock-' + i + '" class=" no-cursor " value="' + val.BatchStock + '"/></td>' +
+                                   
+                                   
+                                  
+                                    '<td><input id="SOType-' + i + '" class=" no-cursor hiddenColumn" value="' + val.SOType + '"/></td>' +
+
+
+                                    '<td><input id="AltQty-' + i + '" class=" no-cursor hiddenColumn" value="' + val.AltQty + '"/></td>' +
+                                    '<td><input id="ItemCode-' + i + '" class=" no-cursor hiddenColumn" value="' + val.ItemCode + '"/></td>' +
+                                   
+                                  
+                                    // '<td><input id="CustomerName' + i + '" class="form-control no-cursor" value="' + val.CustomerName + '"/></td>' +
+                                    // '<td><input id="Accountcode' + i + '" class="form-control no-cursor" value="' + val.Accountcode + '"/></td>' +
+                                    // '<td><input id="ItemCode' + i + '" type="hidden" value="' + val.ItemCode + '"/>' +
+                                    // '<input class="form-control no-cursor" value="' + val.ItemCode + '"/></td>' +
+                                    '</tr>';
+
+                                $('#divPendSOGrid').append(html);
+                                $('#TransertoMIRBtn').prop("disabled", false);
+
+                                var count = $('#divPendSOGrid tr').length;
+                                $('#totalRows').text(count);
+                                i++;
+                            });
+                            $('th.hiddenColumn').hide();
+                            $('.hiddenColumn').closest('td').hide();
+
+                            if ($('#EditableRateAndDiscountONSaleInvoice').val() == 'N') {
+                                $('input[id^="Rate-"]').prop('readonly', true);
+                                $('input[id^="DiscountPer-"]').prop('readonly', true);
+                                $('input[id^="DiscountAmt-"]').prop('readonly', true);
+                            }
+                            else {
+                                $('input[id^="Rate-"]').prop('readonly', false);
+                                $('input[id^="DiscountPer-"]').prop('readonly', false);
+                                $('input[id^="DiscountAmt-"]').prop('readonly', false);
+                            }
+
+
+                        }
+                        else {
+                            $('#divPendSOGrid').empty();
+                            var count = $('#divPendSOGrid tr').length;
+                            $('#totalRows').text(count);
+                            $('#divPendSOGrid').append('<tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>')
+
+                        }
+                    }
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+
+
 
         function GetMultiItemGroup() {
 
@@ -1610,8 +1894,9 @@
             e.preventDefault();
             /* if (!Validate_TransferGrid()) return; */
             var ItemData = [];
-            var RowCount = $('#divMultiItemGrid tr').length;
+            var RowCount = $('#divPendSOGrid tr').length;
             for (var i = 1; i <= RowCount; i++) {
+                if ($('#AcceptedQtySHA-' + i).prop("checked") == false) continue;
                 var Partcode= $('#PartCode-' + i).val();
                 if (parseFloat($('#Qty-' + i).val()) > parseFloat($('#BatchWisePendQty-' + i).val()) )
                 {
@@ -1631,36 +1916,39 @@
 
 
             for (var i = 1; i <= RowCount; i++) {
-                ItemData.push({
+                if ($('#AcceptedQtySHA-' + i).prop("checked")) {
 
-                    SONO: $('#SONO-' + i).val(),
-                    SOYearCode: parseInt($('#SOYearCode-' + i).val()),
-                    CustOrderNo: $('#CustOrderNo-' + i).val(),
-                    SchNo: $('#SchNo-' + i).val(),
-                    SaleSchYearCode: parseInt($('#SaleSchYearCode-' + i).val()),
-                    PartCode: $('#PartCode-' + i).val(),
-                    ItemCode: parseInt($('#ItemCode-' + i).val()),
-                    ItemName: $('#ItemName-' + i).val(),
-                    Unit: $('#Unit-' + i).val(),
+                    ItemData.push({
 
-                    HSNNo: $('#HSNNo-' + i).val(),
-                    SOPendQty: parseFloat($('#SOPendQty-' + i).val()),
-                    StoreName: $('#StoreName-' + i).val(),
-                    StoreId: parseInt($('#StoreId-' + i).val()),
-                    Batchno: $('#Batchno-' + i).val(),
-                    Uniquebatchno: $('#Uniquebatchno-' + i).val(),
-                    TotalStock: parseFloat($('#TotalStock-' + i).val()),
-                    LotStock: parseFloat($('#LotStock-' + i).val()),
-                    Rate: parseFloat($('#Rate-' + i).val()),
-                    Qty: parseFloat($('#Qty-' + i).val()) || 0,
-                    SOType: $('#SOType-' + i).val,
-                    DiscountPer: parseFloat($('#DiscountPer-' + i).val()),
-                    DiscountAmt: parseFloat($('#DiscountAmt-' + i).val()),
-                    Amount: parseFloat($('#Amount-' + i).val()) || 0,
-                    AltQty: parseFloat($('#AltQty-' + i).val()),
-                    RackID: ($('#RackID-' + i).val()),
+                        SONO: $('#SONO-' + i).val(),
+                        SOYearCode: parseInt($('#SOYearCode-' + i).val()),
+                        CustOrderNo: $('#CustOrderNo-' + i).val(),
+                        SchNo: $('#SchNo-' + i).val(),
+                        SaleSchYearCode: parseInt($('#SaleSchYearCode-' + i).val()),
+                        PartCode: $('#PartCode-' + i).val(),
+                        ItemCode: parseInt($('#ItemCode-' + i).val()),
+                        ItemName: $('#ItemName-' + i).val(),
+                        Unit: $('#Unit-' + i).val(),
 
-                });
+                        HSNNo: $('#HSNNo-' + i).val(),
+                        SOPendQty: parseFloat($('#SOPendQty-' + i).val()),
+                        StoreName: $('#StoreName-' + i).val(),
+                        StoreId: parseInt($('#StoreId-' + i).val()),
+                        Batchno: $('#Batchno-' + i).val(),
+                        Uniquebatchno: $('#Uniquebatchno-' + i).val(),
+                        TotalStock: parseFloat($('#TotalStock-' + i).val()),
+                        LotStock: parseFloat($('#LotStock-' + i).val()),
+                        Rate: parseFloat($('#Rate-' + i).val()),
+                        Qty: parseFloat($('#Qty-' + i).val()) || 0,
+                        SOType: $('#SOType-' + i).val,
+                        DiscountPer: parseFloat($('#DiscountPer-' + i).val()),
+                        DiscountAmt: parseFloat($('#DiscountAmt-' + i).val()),
+                        Amount: parseFloat($('#Amount-' + i).val()) || 0,
+                        AltQty: parseFloat($('#AltQty-' + i).val()),
+                        RackID: ($('#RackID-' + i).val()),
+
+                    });
+                }
             }
 
             $.ajax({
@@ -1704,8 +1992,18 @@
                     } else if (xhr.status == 205 && (xhr.responseText.indexOf('Reset') || xhr.statusText.indexOf('Reset'))) {
                         $.notify('Adding Item Not Allowed, Please Clear Gate Detail...!!!', "info");
                     } else {
-                        $('.gridHiddenField').show();
+                        // $('.gridHiddenField').show();
+                       
                         $('#divSaleBillList').html(data);
+                        $('#PendSaleOrderModel').modal('hide');
+                         if ($('#SaleBillJobwork').val() == 'J') {
+                            $('.jobWorkChalln').show();
+                            $('.gridHiddenField').show();
+                        } else {
+                            $('.jobWorkChalln').hide();
+                            $('.gridHiddenField').hide();
+                        }
+                        GetFeatureOption();
                         $.notify('Item Added To Grid.', "success");
                     }
 
@@ -2994,6 +3292,14 @@
                 }
             });
         }
+
+
+
+
+
+
+
+
         $('.GridMultiItemBtn').click(function (e) {
             e.preventDefault();
             var CheckboxArr = [];
@@ -3126,7 +3432,13 @@
                     },
                     success: function (result, status, xhr) {
                         if (xhr.status == 200 && xhr.responseText == result) {
-                            $('.gridHiddenField').show();
+                            if ($('#SaleBillJobwork').val() == 'J') {
+                                $('.jobWorkChalln').show();
+                                $('.gridHiddenField').show();
+                            } else {
+                                $('.jobWorkChalln').hide();
+                                $('.gridHiddenField').hide();
+                            }
                             $('#divSaleBillList').html(result);
 
                             $('#SaleOrderGroupWiseItem').modal('hide');
@@ -3745,8 +4057,69 @@
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         if (obj.Result != null) {
-                            $('#AllowBackDateSALEBIL').val("");
-                            $('#AllowBackDateSALEBILL').val(obj.Result[0].AllowBackDateSALEBILL);
+                                       $('#AllowBackDateSALEBIL').val("");
+                                       $('#ShowHideSaleBillEntryDetail').val("");
+                                        $('#ShowHideSaleBillCustomerDetail').val("");
+                                        $('#ShowHideSaleBillOtherRequiredDetail').val("");
+                                        $('#ShowHideSaleBillCurrency').val("");
+                                        $('#ShowHideSaleBillConsignee').val("");
+                                        $('#ShowHideSaleBillScheduleDetail').val("");
+                                        $('#AllowToChangeSaleBillStoreName').val("");
+                                        $('#HideOtherFieldOFSaleBillDetailTable').val("");
+                                        $('#ApproveSOForGenerateSaleInvoiceOrNot').val("");
+                            
+                                     $('#AllowBackDateSALEBILL').val(obj.Result[0].AllowBackDateSALEBILL);
+                                    // $('#ShowHideSaleBillEntryDetail').val(obj.Result[0].ShowHideSaleBillEntryDetail);
+                                    // $('#ShowHideSaleBillCustomerDetail').val(obj.Result[0].ShowHideSaleBillCustomerDetail);
+                                    // $('#ShowHideSaleBillOtherRequiredDetail').val(obj.Result[0].ShowHideSaleBillOtherRequiredDetail);
+                                    // $('#ShowHideSaleBillCurrency').val(obj.Result[0].ShowHideSaleBillCurrency);
+                                    // $('#ShowHideSaleBillConsignee').val(obj.Result[0].ShowHideSaleBillConsignee);
+                                    // $('#ShowHideSaleBillScheduleDetail').val(obj.Result[0].ShowHideSaleBillScheduleDetail);
+                                    // $('#AllowToChangeSaleBillStoreName').val(obj.Result[0].AllowToChangeSaleBillStoreName);
+                                    // $('#HideOtherFieldOFSaleBillDetailTable').val(obj.Result[0].HideOtherFieldOFSaleBillDetailTable);
+                                    // $('#ApproveSOForGenerateSaleInvoiceOrNot').val(obj.Result[0].ApproveSOForGenerateSaleInvoiceOrNot);
+                                                 if (obj.Result[0].ShowHideSaleBillEntryDetail === "N") {
+            $('.SaleBillEntryDetail').hide();
+        } else {
+            $('.SaleBillEntryDetail').show();
+        }
+
+        if (obj.Result[0].ShowHideSaleBillCustomerDetail === "N") {
+            $('.SaleBillCustomerDetail').hide();
+        } else {
+            $('.SaleBillCustomerDetail').show();
+        }
+
+        if (obj.Result[0].ShowHideSaleBillOtherRequiredDetail === "N") {
+            $('.SaleBillOtherRequiredDetail').hide();
+        } else {
+            $('.SaleBillOtherRequiredDetail').show();
+        }
+
+        if (obj.Result[0].ShowHideSaleBillCurrency === "N") {
+            $('.SaleBillCurrency').hide();
+        } else {
+            $('.SaleBillCurrency').show();
+        }
+
+        if (obj.Result[0].ShowHideSaleBillConsignee === "N") {
+            $('.SaleBillConsignee').hide();
+        } else {
+            $('.SaleBillConsignee').show();
+        }
+
+        if (obj.Result[0].ShowHideSaleBillScheduleDetail === "N") {
+            $('.SaleBillScheduleDetail').hide();
+        } else {
+            $('.SaleBillScheduleDetail').show();
+        }
+                  if (obj.Result[0].HideOtherFieldOFSaleBillDetailTable === "N") {
+                    $('.SaleBillOtherDetail').hide();
+                } else {
+                            $('.SaleBillOtherDetail').show();
+                }
+                
+
                         }
                     }
                 }

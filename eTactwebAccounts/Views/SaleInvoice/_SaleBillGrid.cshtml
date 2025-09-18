@@ -49,8 +49,8 @@ else
             <td id="GridSONO-@Cntr">@item.SONO</td>
             <td>@(item.SODate != null ? (item.SODate).Split(" ")[0] : item.SODate)</td>
             <td>@item.CustOrderNo</td>
-            <td>@item.SchNo</td>
-            <td>@(item.Schdate != null ? (item.Schdate).Split(" ")[0] : item.Schdate)</td>
+            <td class="SaleBillScheduleDetail">@item.SchNo</td>
+            <td class="SaleBillScheduleDetail">@(item.Schdate != null ? (item.Schdate).Split(" ")[0] : item.Schdate)</td>
             <td>@item.HSNNo</td>
             <td>@item.StoreName</td>
             <td id="billQty" style="background-color:yellow">@item.Qty</td>
@@ -62,7 +62,7 @@ else
             <td id="GridBatchNo-@Cntr">@item.Batchno</td>
             <td id="GridUniqueBatchNo-@Cntr">@item.Uniquebatchno</td>
             <td>@item.SOYearCode</td>
-            <td>@item.SaleSchYearCode</td>
+            <td class="SaleBillScheduleDetail">@item.SaleSchYearCode</td>
             <td>@item.BomNo</td>
             <td>@item.Unit</td>
             <td>@item.LotStock</td>
@@ -78,7 +78,7 @@ else
             <td>@item.UnitOfRate</td>
             <td>@item.OriginalMRP</td>
             <td>@item.MRP</td>
-            <td>@item.AltSOPendQty</td>
+            <td class="SaleBillOtherDetail">@item.AltSOPendQty</td>
             <td>@item.AdviceNo</td>
             <td>@item.AdviseEntryId</td>
             <td>@item.AdviceYearCode</td>
@@ -92,9 +92,9 @@ else
             <td>@item.ProdSchYearcode</td>
             <td>@item.ProdSchEntryId</td>
             <td>@item.ProdSchDate</td>
-            <td>@item.SchdeliveryDate</td>
-            <td>@item.PacketsDetail</td>
-            <td>@item.OtherDetail</td>
+            <td class="SaleBillScheduleDetail">@item.SchdeliveryDate</td>
+            <td class="SaleBillOtherDetail">@item.PacketsDetail</td>
+            <td class="SaleBillOtherDetail">@item.OtherDetail</td>
             <td>@item.ItemRemark</td>
             <td id="stockableItems-@Cntr" class="gridHiddenField">@item.StockableNonStockable</td> @* stockable *@  @*gridHiddenField*@
             <td id="custJWAdjMandatory-@Cntr" class="gridHiddenField">@item.CustJwAdjustmentMandatory</td> @* cust *@  @*gridHiddenField*@

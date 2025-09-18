@@ -69,6 +69,10 @@ public class SaleOrderBLL : ISaleOrder
     {
         return await _SaleOrderDAL.NewAmmEntryId(YearCode);
     }
+    public async Task<ResponseResult> GetFeatureOption()
+    {
+        return await _SaleOrderDAL.GetFeatureOption();
+    }
     public async Task<SaleOrderDashboard> GetAmmDashboardData()
     {
         return await _SaleOrderDAL.GetAmmDashboardData();

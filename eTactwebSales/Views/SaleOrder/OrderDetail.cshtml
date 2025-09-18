@@ -200,26 +200,26 @@
                         <div id="B_RParameter" class="accordion-collapse collapse show pnl1 bg-gradient" aria-labelledby="H_RParameter">
                             <div class="accordion-body">
                                 <div class="row g-2 gx-3">
-                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 SaleOrderEntryDetail">
                                         <input type="hidden" asp-for="FinFromDate" value="@Model.FinFromDate" />
                                         <input type="hidden" asp-for="FinToDate" value="@Model.FinToDate" />
                                         <input type="hidden" asp-for="TypeOfSave" value="" />
                                         <label asp-for="EntryID" class="form-label">SOEntry ID</label>
                                         <input asp-for="EntryID" class="form-control" readonly />
                                     </div>
-                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 SaleOrderEntryDetail">
                                         <label asp-for="YearCode" class="form-label"> SOYear</label>
                                         <input asp-for="YearCode" class="form-control" value="@Model.YearCode" readonly />
                                     </div>
-                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 SaleOrderEntryDetail">
                                         <label asp-for="EntryDate" class="form-label">Entry Date</label>
                                         <input asp-for="EntryDate" class="form-control" readonly disabled />
                                     </div>
-                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 SaleOrderEntryDetail">
                                         <label asp-for="EntryTime" class="form-label">Time</label>
                                         <input asp-for="EntryTime" class="form-control" readonly disabled />
                                     </div>
-                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 SaleOrderEntryDetail">
                                         <label asp-for="Branch" class="form-label">Branch</label>
                                         <input asp-for="Branch" value="@Model.Branch" class="form-control" readonly />
                                     </div>
@@ -277,19 +277,19 @@
                                         <label asp-for="SOCloseDate" class="form-label" style="color:  red;"> Close Date</label>
                                         <input asp-for="SOCloseDate" class="form-control" readonly tabindex="-1" />
                                     </div>
-                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 SaleOrderOtherRequiredDetail">
                                         <label asp-for="QuotNo" class="form-label">Quot No</label>
                                         <select class="form-select" asp-for="QuotNo" asp-items="@(new SelectList(Model.QuotList,"Value","Text"))" onchange="QuotChange(this.id);" readonly disabled tabindex="-1">
                                             <option value="0">-Select-</option>
                                         </select>
                                     </div>
-                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 SaleOrderOtherRequiredDetail">
                                         <label asp-for="QuotYear" class="form-label">Quotation Year</label>
                                         <select class="form-select" asp-for="QuotYear" asp-items="@(new SelectList(Model.QuotYearList,"Value","Text"))" readonly disabled>
                                             <option value="0">-Select-</option>
                                         </select>
                                     </div>
-                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 SaleOrderOtherRequiredDetail">
                                         <label class="form-label">Quote Date</label>
                                         <input asp-for="QDate" class="form-control" readonly disabled tabindex="-1"/>
                                     </div>
@@ -306,7 +306,7 @@
                                         <label asp-for="SOConfirmDate" class="form-label">SO Confirm Date</label>
                                         <input asp-for="SOConfirmDate" class="form-control" readonly disabled tabindex="-1" />
                                     </div>
-                                    <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12 SaleOrderConsignee">
                                         <label asp-for="ConsigneeAccountCode" class="form-label">Consignee</label>
                                         <div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
                                             <input asp-for="PN2" class="form-check-input" type="checkbox" role="switch" readonly disabled tabindex="-1" />Show All
@@ -315,7 +315,7 @@
                                             <option value="0">-Select-</option>
                                         </select>
                                     </div>
-                                    <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-12 SaleOrderConsignee">
                                         <label asp-for="ConsigneeAddress" class="form-label">Consignee Address</label>
                                         <input asp-for="ConsigneeAddress" class="form-control" readonly disabled tabindex="-1" />
                                     </div>
@@ -339,35 +339,35 @@
                         <div id="B_RParameter" class="accordion-collapse collapse show pnl1 bg-gradient" aria-labelledby="H_RParameter">
                             <div class="accordion-body">
                                 <div class="row g-2 gx-3">
-                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 SaleOrderEntryDetail">
                                         <input type="hidden" asp-for="FinFromDate" value="@Model.FinFromDate" />
                                         <input type="hidden" asp-for="FinToDate" value="@Model.FinToDate" />
                                         <input type="hidden" asp-for="TypeOfSave" value="" />
                                         <label asp-for="EntryID" class="form-label">Entry ID</label>
                                         <input asp-for="EntryID" class="form-control" readonly />
                                     </div>
-                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 SaleOrderEntryDetail">
                                         <label asp-for="YearCode" class="form-label">Year</label>
                                         <input asp-for="YearCode" class="form-control" value="@Model.YearCode" readonly />
                                     </div>
-                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 SaleOrderEntryDetail">
                                         <label asp-for="EntryDate" class="form-label">Entry Date</label>
                                         <input asp-for="EntryDate" class="form-control" readonly />
                                     </div>
-                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 SaleOrderEntryDetail">
                                         <label asp-for="EntryTime" class="form-label">Time</label>
                                         <input asp-for="EntryTime" class="form-control" readonly />
                                     </div>
-                                    <div class="col-xl-1 col-lg-1 col-md-3 col-sm-6 col-xs-12">
+                                    <div class="col-xl-1 col-lg-1 col-md-3 col-sm-6 col-xs-12 SaleOrderEntryDetail">
                                         <label asp-for="Branch" class="form-label">Branch</label>
                                         @*<select class="form-select" asp-for="Branch" asp-items="@(new SelectList(Model.BranchList,"Value","Text"))"></select>*@
                                         <input asp-for="Branch" value="@Model.Branch" class="form-control" readonly />
                                     </div>
-                                    <div class="col-xl-1 col-lg-2 col-md-3 col-sm-6 col-xs-12">
+                                    <div class="col-xl-1 col-lg-2 col-md-3 col-sm-6 col-xs-12 SaleOrderEntryDetail">
                                         <label asp-for="SOFor" class="form-label" style="color:  red;">SO For</label>
                                         <select class="form-select" asp-for="SOFor" asp-items="@(new SelectList(Model.SOForList,"Value","Text"))"></select>
                                     </div>
-                                    <div class="col-xl-1 col-lg-1 col-md-3 col-sm-6 col-xs-12">
+                                    <div class="col-xl-1 col-lg-1 col-md-3 col-sm-6 col-xs-12 SaleOrderEntryDetail">
                                         <label asp-for="SOType" class="form-label" style="color:  red;">SO Type</label>
                                         <select class="form-select" asp-for="SOType" asp-items="@(new SelectList(Model.SOTypeList,"Value","Text"))"></select>
                                     </div>
@@ -375,11 +375,11 @@
                                         <label asp-for="SONo" class="form-label" style="color:  red;">SO No</label>
                                         <input asp-for="SONo" class="form-control" readonly="readonly" />
                                     </div>
-                                    <div class="col-xl-1 col-lg-1 col-md-3 col-sm-6 col-xs-12">
+                                    <div class="col-xl-1 col-lg-1 col-md-3 col-sm-6 col-xs-12 SaleOrderEntryDetail">
                                         <label asp-for="OrderType" class="form-label" style="color:  red;">Order Type</label>
                                         <select class="form-select" asp-for="OrderType" asp-items="Model.OrderTypeList"></select>
                                     </div>
-                                    <div class="col-xl-1 col-lg-1 col-md-3 col-sm-6 col-xs-12">
+                                    <div class="col-xl-1 col-lg-1 col-md-3 col-sm-6 col-xs-12 SaleOrderEntryDetail">
                                         <label asp-for="CurrencyID" class="form-label" style="color:  red;" `>Currency</label>
                                         <select class="form-select" asp-for="CurrencyID"></select>
                                         @if (Model.Mode == "U" || Model.Mode == "V")
@@ -388,7 +388,7 @@
                                         }
                                     </div>
 
-                                    <div class="col-xl-1 col-lg-1 col-md-3 col-sm-6 col-xs-12">
+                                    <div class="col-xl-1 col-lg-1 col-md-3 col-sm-6 col-xs-12 SaleOrderEntryDetail">
                                         <label asp-for="CustOrderNo" class="form-label" style="color:  red;"> Order No</label>
                                         <input type="hidden" id="CheckCustOrderNo" />
                                         <input asp-for="CustOrderNo" class="form-control" style="background-color: lightblue !important;" />
@@ -407,7 +407,7 @@
                                         </select>
                                         <input type="hidden" value="@Model.AccountCode" id="hiddenAccountCode" />
                                     </div>
-                                    <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-12 ">
                                         <label asp-for="Address" class="form-label" style="color:  red;">Address</label>
                                         <input asp-for="Address" class="form-control" readonly tabindex="-1" />
                                     </div>
@@ -415,11 +415,11 @@
                                         <label asp-for="DeliveryAddress" class="form-label" style="color:  red;">Delivery Address</label>
                                         <input asp-for="DeliveryAddress" class="form-control" tabindex="-1"/>
                                     </div>
-                                    <div class="col-xl-1 col-lg-1 col-md-3 col-sm-6 col-xs-12">
+                                    <div class="col-xl-1 col-lg-1 col-md-3 col-sm-6 col-xs-12 SaleOrderOtherRequiredDetail">
                                         <label asp-for="WEF" class="form-label" style="color:  red;">WEF</label>
                                         <input asp-for="WEF" class="form-control" readonly tabindex="-1" />
                                     </div>
-                                    <div class="col-xl-1 col-lg-1 col-md-3 col-sm-6 col-xs-12">
+                                    <div class="col-xl-1 col-lg-1 col-md-3 col-sm-6 col-xs-12 SaleOrderOtherRequiredDetail">
                                         @if (Model.Mode == "U" || Model.Mode == "V")
                                         {
                                             <input type="hidden" value="@Model.SOCloseDate" id="hiddenSOCloseDate">
@@ -427,35 +427,35 @@
                                         <label asp-for="SOCloseDate" class="form-label" style="color:  red;">Exp. Date</label>
                                         <input asp-for="SOCloseDate" class="form-control" readonly tabindex="-1" />
                                     </div>
-                                    <div class="col-xl-1 col-lg-1 col-md-3 col-sm-6 col-xs-12">
+                                    <div class="col-xl-1 col-lg-1 col-md-3 col-sm-6 col-xs-12 SaleOrderOtherRequiredDetail">
                                         <label asp-for="QuotNo" class="form-label">Quot No</label>
                                         <select class="form-select" asp-for="QuotNo" asp-items="@(new SelectList(Model.QuotList,"Value","Text"))" onchange="QuotChange(this.id);" tabindex="-1">
                                             <option value="0">-Select-</option>
                                         </select>
                                     </div>
-                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 SaleOrderOtherRequiredDetail">
                                         <label asp-for="QuotYear" class="form-label">Quot Year</label>
                                         <select class="form-select" asp-for="QuotYear" asp-items="@(new SelectList(Model.QuotYearList,"Value","Text"))" tabindex="-1">
                                             <option value="0">-Select-</option>
                                         </select>
                                     </div>
-                                    <div class="col-xl-1 col-lg-1 col-md-3 col-sm-6 col-xs-12">
+                                    <div class="col-xl-1 col-lg-1 col-md-3 col-sm-6 col-xs-12 SaleOrderOtherRequiredDetail">
                                         <label class="form-label">Quote Date</label>
                                         <input asp-for="QDate" class="form-control" readonly disabled tabindex="-1"/>
                                     </div>
-                                    <div class="col-xl-1 col-lg-1 col-md-3 col-sm-6 col-xs-12">
+                                    <div class="col-xl-1 col-lg-1 col-md-3 col-sm-6 col-xs-12 SaleOrderOtherRequiredDetail">
                                         <label asp-for="AmmNo" class="form-label">Amm No</label>
                                         <input asp-for="AmmNo" class="form-control" tabindex="-1" />
                                     </div>
-                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 SaleOrderOtherRequiredDetail">
                                         <label asp-for="AmmEffDate" class="form-label">Amm Date</label>
                                         <input asp-for="AmmEffDate" class="form-control" readonly tabindex="-1"/>
                                     </div>
-                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:120px">
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 SaleOrderOtherRequiredDetail" style="width:120px">
                                         <label asp-for="SOConfirmDate" class="form-label">SO Confirm Date</label>
                                         <input asp-for="SOConfirmDate" class="form-control" readonly tabindex="-1" />
                                     </div>
-                                    <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12 SaleOrderConsignee">
                                         <label asp-for="ConsigneeAccountCode" class="form-label">Consignee</label>
                                         <div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
                                             <input asp-for="PN2" class="form-check-input" type="checkbox" role="switch" tabindex="-1"/>Show All
@@ -464,18 +464,18 @@
                                             <option value="0">-Select-</option>
                                         </select>
                                     </div>
-                                    <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12 SaleOrderConsignee">
                                         <label asp-for="ConsigneeAddress" class="form-label">Consignee Address</label>
                                         <input asp-for="ConsigneeAddress" class="form-control" tabindex="-1" />
                                     </div>
-                                    <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12" style="width:12%">
+                                    <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12 MultiBuyers" style="width:12%">
                                         <button type="button" class="MultiBuyers btn btn-sm btn-outline-success mt-3" tabindex="-1">
                                             <i class="fa-solid fa-calendar-clock fa-fw fa-lg"></i> Multiple Buyers
                                         </button>
                                     </div>
-                                    <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12" style="width:12%" >
+                                    <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12"  >
                                         <button type="button" id="ShowGroupItem" onclick="AddMultipleItems()" class=" btn btn-sm btn-outline-success mt-3" tabindex="-1">
-                                            <i class="bi bi-list"></i>ShowGroupItem
+                                            <i class="bi bi-list"></i>Show
                                         </button>
                                     </div>
                                 </div>
@@ -524,11 +524,11 @@
                                         <label asp-for="Unit" class="form-label" style="color:  red;">Unit*</label>
                                         <input asp-for="Unit" class="form-control" readonly />
                                     </div>
-                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 SaleOrderOtherDetail">
                                         <label asp-for="AltQty" class="form-label">Alt Qty</label>
                                         <input asp-for="AltQty" class="form-control" onkeyup="CalculateRate();" />
                                     </div>
-                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 SaleOrderOtherDetail">
                                         <label asp-for="AltUnit" class="form-label">Alt Unit</label>
                                         <input asp-for="AltUnit" class="form-control" value="NA" readonly="readonly" aria-readonly="readonly" />
                                     </div>
@@ -536,11 +536,11 @@
                                         <label asp-for="Rate" class="form-label" style="color:  red;">Rate*</label>
                                         <input asp-for="Rate" class="form-control" onkeyup="CalculateRate();" />
                                     </div>
-                                    <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12 SaleOrderOtherDetail">
                                         <label asp-for="UnitRate" class="form-label" style="color:  red;">Rate/Unit*</label>
                                         <select class="form-select" asp-for="UnitRate" asp-items="Model.UnitRateList" onchange="CalculateRate();"></select>
                                     </div>
-                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 SaleOrderOtherDetail">
                                         <label asp-for="OtherRateCurr" class="form-label">FX Rate</label>
                                         <input asp-for="OtherRateCurr" class="form-control" />
                                     </div>
@@ -556,7 +556,7 @@
                                         <label asp-for="Amount" class="form-label" style="color:  red;">Amount*</label>
                                         <input asp-for="Amount" class="form-control" value="0.00" readonly disabled />
                                     </div>
-                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 SaleOrderOtherDetail">
                                         <label asp-for="TolLimit" class="form-label">Tol Limit</label>
                                         <input asp-for="TolLimit" class="form-control" />
                                     </div>
@@ -564,7 +564,7 @@
                                         <label asp-for="Remark" class="form-label">Remark</label>
                                         <input asp-for="Remark" class="form-control" />
                                     </div>
-                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12 SaleOrderOtherDetail">
                                         <label asp-for="Description" class="form-label">Description</label>
                                         <input asp-for="Description" class="form-control" />
                                     </div>
@@ -768,20 +768,20 @@
                                         <label asp-for="Unit" class="form-label" style="color:  red;">Unit*</label>
                                         <input asp-for="Unit" class="form-control" readonly  tabindex="-1"/>
                                     </div>
-                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:70px">
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 SaleOrderOtherDetail" style="width:70px">
                                         <label asp-for="AltQty" class="form-label">Alt Qty</label>
                                         <input asp-for="AltQty" class="form-control" tabindex="-1" onkeyup="CalculateRate();" />
                                     </div>
-                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:70px">
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 SaleOrderOtherDetail" style="width:70px">
                                         <label asp-for="AltUnit" class="form-label">Alt Unit</label>
                                         <input asp-for="AltUnit" class="form-control" tabindex="-1" value="NA"  readonly="readonly" aria-readonly="readonly" />
                                     </div>
                                    
-                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:70px">
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 SaleOrderOtherDetail" style="width:70px">
                                         <label asp-for="UnitRate" class="form-label" style="color:  red;">Rate/Unit*</label>
                                         <select class="form-select" asp-for="UnitRate" tabindex="-1" asp-items="Model.UnitRateList" onchange="CalculateRate();"></select>
                                     </div>
-                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="">
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 SaleOrderOtherDetail" style="">
                                         <label asp-for="OtherRateCurr" class="form-label">Rate In FX</label>
                                         <input asp-for="OtherRateCurr" type="number" tabindex="-1" step="any" min="0" class="form-control" />
                                     </div>
@@ -797,37 +797,37 @@
                                         <label asp-for="Amount" class="form-label" style="color:  red;">Amount*</label>
                                         <input asp-for="Amount" class="form-control" tabindex="-1" value="0.00" readonly disabled />
                                     </div>
-                                    <div class="col-xl-1 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <div class="col-xl-1 col-lg-3 col-md-6 col-sm-6 col-xs-12  SaleOrderOtherDetail">
                                         <label asp-for="TolLimit" class="form-label">Tol Limit</label>
                                         <input asp-for="TolLimit" class="form-control"  />
                                     </div>
-                                    <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12 SaleOrderOtherDetail">
                                         <label asp-for="Remark" class="form-label">Remark</label>
                                         <input asp-for="Remark" class="form-control" />
                                     </div>
-                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 SaleOrderOtherDetail">
                                         <label asp-for="Description" class="form-label">Description</label>
                                         <input asp-for="Description" class="form-control" />
                                     </div>
-                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 SaleOrderOtherDetail">
                                         <label asp-for="DeliveryDate" class="form-label">DeliveryDate</label>
                                         <input asp-for="DeliveryDate" class="form-control" tabindex="-1" readonly />
                                     </div>
-                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 SaleOrderOtherDetail">
                                         <label asp-for="StoreName" class="form-label">Store Name</label>
                                         <select class="form-select" asp-for="StoreName" asp-items="@(new SelectList(Model.StoreList,"Value","Text"))" onchange="StoreChange()">
                                             <option value="">-Select-</option>
                                         </select>
                                     </div>
-                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 SaleOrderOtherDetail">
                                         <label asp-for="StockQty" class="form-label">Stock Qty</label>
                                         <input asp-for="StockQty" class="form-control" tabindex="-1" readonly disabled />
                                     </div>
-                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="Location" class="form-label">Location</label>
                                         <input asp-for="Location" class="form-control" tabindex="-1" readonly disabled />
                                     </div>
-                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="Vehicle" class="form-label">Vehicle</label>
                                         <input asp-for="Vehicle" class="form-control" tabindex="-1" readonly disabled />
                                     </div>
@@ -939,32 +939,32 @@
                                                         <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon" style="color:  red;"><i class="fa" aria-hidden="true"></i></span>Item Name</th>
                                                         <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon" style="color:  red;"><i class="fa" aria-hidden="true"></i></span>HSN No</th>
                                                         <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon" style="color:  red;"><i class="fa" aria-hidden="true"></i></span>Qty</th>
-                                                        <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon" style="color:  red;"><i class="fa" aria-hidden="true"></i></span>Delivery Date</th>
+                                                        <th data-columnno="5" data-sortorder="asc" class="sortCol SaleOrderOtherDetail"><span style="padding:5px;margin:5px" class="sort-icon" style="color:  red;"><i class="fa" aria-hidden="true"></i></span>Delivery Date</th>
                                                         <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon" style="color:  red;"><i class="fa" aria-hidden="true"></i></span>Unit</th>
-                                                        <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Qty</th>
-                                                        <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Unit</th>
+                                                        <th data-columnno="7" data-sortorder="asc" class="sortCol SaleOrderOtherDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Qty</th>
+                                                        <th data-columnno="8" data-sortorder="asc" class="sortCol SaleOrderOtherDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Unit</th>
                                                         <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon" style="color:  red;"><i class="fa" aria-hidden="true"></i></span>Rate</th>
-                                                        <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Other Rate Curr.</th>
-                                                        <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon" style="color:  red;"><i class="fa" aria-hidden="true"></i></span>Rate/Unit</th>
+                                                        <th data-columnno="10" data-sortorder="asc" class="sortCol SaleOrderOtherDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Other Rate Curr.</th>
+                                                        <th data-columnno="11" data-sortorder="asc" class="sortCol SaleOrderOtherDetail"><span style="padding:5px;margin:5px" class="sort-icon" style="color:  red;"><i class="fa" aria-hidden="true"></i></span>Rate/Unit</th>
                                                         <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Disc%</th>
                                                         <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Disc Rs</th>
                                                         <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon" style="color:  red;"><i class="fa" aria-hidden="true"></i></span>Amount</th>
-                                                        <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Tol Limit</th>
-                                                        <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Description</th>
-                                                        <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Remark</th>
-                                                        <th data-columnno="18" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon" style="color:  red;"><i class="fa" aria-hidden="true"></i></span>Amendment No</th>
-                                                        <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon" style="color:  red;"><i class="fa" aria-hidden="true"></i></span>Amendment Date</th>
-                                                        <th data-columnno="20" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Amendment Reason</th>
-                                                        <th data-columnno="21" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Color</th>
-                                                        <th data-columnno="22" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rejper</th>
-                                                        <th data-columnno="23" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Excessper</th>
-                                                        <th data-columnno="24" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Proj Qty1</th>
-                                                        <th data-columnno="25" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Proj Qty2</th>
-                                                        <th data-columnno="25" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sale Order No</th>
-                                                        <th data-columnno="25" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Cust Location</th>
-                                                        <th data-columnno="25" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Model</th>
-                                                        <th data-columnno="25" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Cust Item Category</th>
-                                                        <th data-columnno="25" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ItemGroup</th>
+                                                        <th data-columnno="15" data-sortorder="asc" class="sortCol SaleOrderOtherDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Tol Limit</th>
+                                                        <th data-columnno="16" data-sortorder="asc" class="sortCol SaleOrderOtherDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Description</th>
+                                                        <th data-columnno="17" data-sortorder="asc" class="sortCol SaleOrderOtherDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Remark</th>
+                                                        <th data-columnno="18" data-sortorder="asc" class="sortCol SaleOrderOtherDetail"><span style="padding:5px;margin:5px" class="sort-icon" style="color:  red;"><i class="fa" aria-hidden="true"></i></span>Amendment No</th>
+                                                        <th data-columnno="19" data-sortorder="asc" class="sortCol SaleOrderOtherDetail"><span style="padding:5px;margin:5px" class="sort-icon" style="color:  red;"><i class="fa" aria-hidden="true"></i></span>Amendment Date</th>
+                                                        <th data-columnno="20" data-sortorder="asc" class="sortCol SaleOrderOtherDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Amendment Reason</th>
+                                                        <th data-columnno="21" data-sortorder="asc" class="sortCol SaleOrderOtherDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Color</th>
+                                                        <th data-columnno="22" data-sortorder="asc" class="sortCol SaleOrderOtherDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rejper</th>
+                                                        <th data-columnno="23" data-sortorder="asc" class="sortCol SaleOrderOtherDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Excessper</th>
+                                                        <th data-columnno="24" data-sortorder="asc" class="sortCol SaleOrderOtherDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Proj Qty1</th>
+                                                        <th data-columnno="25" data-sortorder="asc" class="sortCol SaleOrderOtherDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Proj Qty2</th>
+                                                        <th data-columnno="25" data-sortorder="asc" class="sortCol SaleOrderOtherDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sale Order No</th>
+                                                        <th data-columnno="25" data-sortorder="asc" class="sortCol SaleOrderOtherDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Cust Location</th>
+                                                        <th data-columnno="25" data-sortorder="asc" class="sortCol SaleOrderOtherDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Model</th>
+                                                        <th data-columnno="25" data-sortorder="asc" class="sortCol SaleOrderOtherDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Cust Item Category</th>
+                                                        <th data-columnno="25" data-sortorder="asc" class="sortCol "><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ItemGroup</th>
                                                         <th data-columnno="25" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Location</th>
                                                         <th data-columnno="25" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Vehicle No</th>
                                                     </tr>
@@ -1511,6 +1511,46 @@
                 }
             });
         });
+          function GetFeatureOption() {
+
+            $.ajax({
+                type: "POST",
+                data: {},
+                url: "@Url.Action("GetFeatureOption")",
+                dataType: "json",
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.Result != null) {
+                               if (obj.Result[0].ShowHideSaleOrderEntryDetail === "N") {
+                                        $('.SaleOrderEntryDetail').hide();
+                                    } else {
+                                        $('.SaleOrderEntryDetail').show();
+                                    }
+                                      if (obj.Result[0].ShowHideSaleOrderOtherRequiredDetail === "N") {
+                                        $('.SaleOrderOtherRequiredDetail').hide();
+                                    } else {
+                                        $('.SaleOrderOtherRequiredDetail').show();
+                                    }
+                                    if (obj.Result[0].ShowHideSaleOrderConsignee === "N") {
+                                        $('.SaleOrderConsignee').hide();
+                                    } else {
+                                        $('.SaleOrderConsignee').show();
+                                    }
+                                    if (obj.Result[0].HideOtherFieldOFSaleOrderDetailTable === "N") {
+                                        $('.SaleOrderOtherDetail').hide();
+                                    } else {
+                                        $('.SaleOrderOtherDetail').show();
+                                    }
+       
+                
+
+                        }
+                    }
+                }
+            });
+        }
 
         function ExportSaleOrderFormate() {
 
@@ -1953,7 +1993,7 @@
             GetFormRights();
             GetItemGroup();
             ShowHideFields();
-      
+      GetFeatureOption();
 
             var SOClosedate = $('#SOCloseDate').val().split(" ")[0].replace(/-/g, "/");
             $('#SOCloseDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#SOCloseDate').val()));
@@ -2424,7 +2464,7 @@
                     success: function (result, status, xhr) {
                         if (xhr.status == 200 && xhr.responseText == result) {
                             $('#divSaleItemGrid').html(result);
-
+                            GetFeatureOption();
                             $('#SaleOrderGroupWiseItem').modal('hide');
 
                             $('#TotalRoundOff').prop('selectedIndex', 0);
@@ -4027,6 +4067,7 @@
                             $('#divSaleItemGrid ."' + DelSeqNo + "'").remove();
                         }
                         $('#divSaleItemGrid').html(data);
+                        GetFeatureOption();
                         $.notify('Item Added To Grid.', "success");
                         ClearItem();
                     }
