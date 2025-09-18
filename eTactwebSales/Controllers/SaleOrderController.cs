@@ -576,8 +576,14 @@ public class SaleOrderController : Controller
 		string JsonString = JsonConvert.SerializeObject(JSON);
 		return Json(JsonString);
 	}
+    public async Task<JsonResult> GetFeatureOption()
+    {
+        var JSON = await _ISaleOrder.GetFeatureOption();
+        string JsonString = JsonConvert.SerializeObject(JSON);
+        return Json(JsonString);
+    }
 
-	public async Task<SaleOrderModel> BindModels(SaleOrderModel model)
+    public async Task<SaleOrderModel> BindModels(SaleOrderModel model)
 	{
         var ammEffDate = model?.AmmEffDate;
         if (model == null)

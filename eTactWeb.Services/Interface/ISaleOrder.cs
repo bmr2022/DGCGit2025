@@ -35,6 +35,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetFormRightsAmm(int userID);
         Task<ResponseResult> NewEntryId(int YearCode);
         Task<ResponseResult> NewAmmEntryId(int YearCode);
+        Task<ResponseResult> GetFeatureOption();
 
         Task<ResponseResult> GetItemPartCode(string Code, string Flag);
         Task<ResponseResult> GetItemGroup();
