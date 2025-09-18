@@ -223,6 +223,8 @@
     <script>
 
         $(document).ready(function () {
+             
+
             console.log("TransactionLedger Ready");
 
             // Initialize dates & selects
@@ -250,7 +252,7 @@
                 if (parentCode) $('#ParentLedgerName').val(parentCode).trigger('change');
                 if (accountName) $('#LedgerName').val(accountName).trigger('change');
                 if (reportType) $('#ReportType').val(reportType).trigger('change');
-            }, 500); // wait 0.5s to ensure dropdowns are filled
+            }, 10); // wait 0.5s to ensure dropdowns are filled
 
             // Show back button if any previous state exists
             let history = JSON.parse(sessionStorage.getItem('HistoryStack')) || [];
@@ -338,7 +340,7 @@
 
         // Save history for TrialBalance drill-down
         function saveHistory(action, params = {}) {
-            debugger
+             
             let history = JSON.parse(sessionStorage.getItem('HistoryStack')) || [];
             history.push({ action, params });
             sessionStorage.setItem('HistoryStack', JSON.stringify(history));
@@ -363,6 +365,20 @@
 
             $('#ReportType').val('TransactionLedgerSummary').trigger('change');
             GetDetailsData();
+        }
+
+        function GetDataByGroupSummary(Cntr) {
+            var ParentCode = $('#ParentCode-' + Cntr).val();
+            $('#ParentLedgerName').val(ParentCode).trigger("change");
+
+            saveHistory('GroupSummary', {
+                ParentCode: $('#ParentLedgerName').val(),
+                accountCode: $('#LedgerName').val()
+            });
+
+            $('#BackButton').show();
+
+            GetTransactionLedgerGroupSummaryDetailsData();
         }
 
         function PressBack() {
@@ -404,6 +420,25 @@
                     $('#ToDate').datepicker("setDate", lastStep.params.toDate);
                     $('#ReportType').val('TransactionLedgerSummary').trigger('change');
                     GetDetailsData(lastStep.params.someFilter);
+                    break;
+
+                case 'GroupSummary':
+                    history.pop();
+                    sessionStorage.setItem('HistoryStack', JSON.stringify(history));
+
+                    $('#ParentLedgerName').val(lastStep.params.parentCode);
+                    $('#LedgerName').val(lastStep.params.accountCode);
+                    $('#FromDate').datepicker("setDate", lastStep.params.fromDate);
+                    $('#ToDate').datepicker("setDate", lastStep.params.toDate);
+                    $('#ReportType').val('GROUPSUMMARY').trigger('change');
+                    GetDetailsData(lastStep.params.someFilter);
+                    break;
+
+                case 'ProfitAndLossGroup':
+                    history.pop();
+                    sessionStorage.setItem('HistoryStack', JSON.stringify(history));
+
+                    window.location.href = '/ProfitAndLoss/Index';
                     break;
             }
 
@@ -521,7 +556,7 @@
                     ledgerNameDropdown.append('<option value="">--Select--</option>');
 
                     $.each(obj.Result, function (index, ledger) {
-                        ledgerNameDropdown.append('<option selected value="' + ledger.Account_Code + '">' + ledger.LedgerName + '</option>');
+                        ledgerNameDropdown.append('<option value="' + ledger.Account_Code + '">' + ledger.LedgerName + '</option>');
                     });
 
                 },

@@ -328,7 +328,7 @@
 
 	<script>
 		$(document).ready(function () {
-			debugger
+			 
 				$("form").validate({
 					rules: {
 						UserEntryId: { required: true },
@@ -385,14 +385,14 @@
 		});
 
 		function ViewDataByVendor() {
-			debugger
+			 
 			$.ajax({
 				url: '@Url.Action("ViewDataByVendor")',
 				data: {accountCode:$('#AccountCode').val()},
 				type: 'POST',
 				success: function (data, status, xhr) {
 					var obj = $.parseJSON(data);
-					debugger
+					 
 					if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
 						$('#Mode').val("U");
 						$('#VendorEmpName').val(obj.Result[0].VendorEmpName);
@@ -447,14 +447,14 @@
 		}
 
 		// function VendorUser() {
-		// 	debugger
+		// 	 
 		// 	$.ajax({
 		// 		url: '@Url.Action("VendorUser")',
 		// 		data: {ID:$('#UserId').val(),Mode:$('#Mode').val()},
 		// 		type: 'POST',
 		// 		success: function (data, status, xhr) {
 		// 			var obj = $.parseJSON(data);
-		// 			debugger
+		// 			 
 		// 			// if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
 							
 		// 			// }
@@ -472,7 +472,7 @@
 
 	     $('form').submit(function (e) {
 			e.preventDefault();
-			debugger
+			 
 			 if($('#AccountCode').val() == ""){
 					$.notify("Please enter vendor..!", "error");
 				}
@@ -495,7 +495,7 @@
 
 		//    $('form').submit(function (e) {
 		// 	e.preventDefault();
-		// 	debugger
+		// 	 
 		// 	CheckUserDuplication().done(function (isDuplicate) {
 		// 		if (isDuplicate) {
 		// 			$.notify("Please use another userId", "error");
@@ -528,7 +528,7 @@
 				data: {userId : $('#UserId').val()},
 				dataType: 'json'
 			}).then(function (obj) {
-				debugger
+				 
 				obj = $.parseJSON(obj);
 				if (obj.StatusCode == 200) {
 					return obj.Result[0].Result == 0;
@@ -549,7 +549,7 @@
 				},
 				// async: false,
 				success: function (data, status, xhr) {	
-					debugger
+					 
 					var obj = $.parseJSON(data);
 					if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
 						$('#AccountCode').append('<option value="">--Select--</option>');
