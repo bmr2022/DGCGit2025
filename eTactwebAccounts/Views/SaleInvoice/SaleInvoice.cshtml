@@ -511,6 +511,7 @@
                 <select class="form-select" asp-for="StoreId" id="MultiStoreName" style="width:170px">
                     <option value="0">-Select-</option>
                 </select> *@
+                <h2>Pending Sale Order For Sale Invoice</h2>
               
 
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -521,7 +522,7 @@
                     <div class="card-body">
                         <div class="row g-2 gx-3">
 
-                            <div class="card-body text-center overflow-auto pb-0   ">
+                            <div class="card-body text-center overflow-auto pb-0 pt-0  ">
                                 <div class="d-flex align-items-center mb-2">
                                     <button class="btn btn-sm btn-outline-warning mb-2" type="button" id="CheckAllForPendSO" style="display: flex; align-items: center;">
                                         <i class="fa fa-check-square" aria-hidden="true"></i>
@@ -530,10 +531,10 @@
                                     <div class="col-md-2 me-3" style="margin-left:50px">
                                         <input type="text" class="form-control" id="search-box1" placeholder="Search..." style="background-color:#FFFACD;">
                                     </div>
-                                    <button class="btn btn-sm btn-outline-success mb-2" type="button" onclick="ShowGroupWiseItems()" style="display: flex; align-items: center;">
+                                   @*  <button class="btn btn-sm btn-outline-success mb-2" type="button" onclick="ShowGroupWiseItems()" style="display: flex; align-items: center;">
                                         <i class="fa fa-eye" aria-hidden="true"></i>
                                         <span style="margin-left: 5px;">Show</span>
-                                    </button>
+                                    </button> *@
                                 </div>
                                 <div class="table-responsive" style="max-height:350px;">
                                     <table class="table table-hover table-bordered table-striped mb-0">
@@ -560,10 +561,10 @@
 
                                                 <th>Pend Qty</th>
                                                 <th class="hiddenColumn">StoreName</th>
-                                                <th class="hiddenColumn">Batch No</th>
+                                                <th class="">Batch No</th>
                                                 <th class="hiddenColumn">Unique Batch No</th>
                                                 <th class="hiddenColumn">TotalStock</th>
-                                                <th class="hiddenColumn">BatchStock</th>
+                                                <th class="">BatchStock</th>
 
                                                
                                                 <th class="hiddenColumn">SO Type</th>
@@ -1624,11 +1625,11 @@
 
                                     '<td><input id="PartCode-' + i + '" class=" no-cursor" style="width:200px !important;" value="' + val.PartCode + '"/></td>' +
                                     '<td><input id="ItemName-' + i + '" class=" no-cursor" style="width:200px !important;" value="' + val.ItemName + '"/></td>' +
-                                    '<td><input id="Rate-' + i + '" class=" no-cursor" style="width:60px !important;" value="' + val.SOItemRate + '"/></td>' +
+                                    '<td><input id="Rate-' + i + '" class="" style="width:60px !important;"   onkeyup="CalculateAmountForMemoryGrid(' + i + ')"  value="' + val.SOItemRate + '"/></td>' +
                                     // '<td><input id="OrderQty' + i + '" class="form-control no-cursor" value="' + val.OrderQty + '"/></td>' +
-                                    '<td><input id="Qty-' + i + '" class=" no-cursor" style="width:60px !important;" value="' + val.SaleBillQty + '"/></td>' +
+                                    '<td><input id="Qty-' + i + '" class="" style="width:60px !important;"  onkeyup="CalculateAmountForMemoryGrid(' + i + ')"  value="' + val.SaleBillQty + '"/></td>' +
                                     '<td><input id="Amount-' + i + '" class=" no-cursor" style="width:60px !important;" value="' + val.ItemAmount + '"/></td>' +
-                                    '<td><input id="DiscountPer-' + i + '" class=" no-cursor" style="width:40px !important;" value="' + val.DisPer + '"/></td>' +
+                                    '<td><input id="DiscountPer-' + i + '" class="" style="width:40px !important;"  onkeyup="CalculateAmountForMemoryGrid(' + i + ')"  value="' + val.DisPer + '"/></td>' +
                                     '<td><input id="DiscountAmt-' + i + '" class=" no-cursor" style="width:40px !important;" value="' + val.DisAmt + '"/></td>' +
 
                                     '<td><input id="Unit-' + i + '" class=" no-cursor " style="width:30px !important;" value="' + val.Unit + '"/></td>' +
@@ -1639,11 +1640,11 @@
                                     '<td><input id="SOPendQty-' + i + '" class=" no-cursor" style="width:70px !important;" value="' + val.OrderPendQty + '"/></td>' +
                                     '<td><input id="StoreName-' + i + '" class=" no-cursor hiddenColumn" value="' + val.Store_Name + '"/></td>' +
                                     '<td><input id="StoreId-' + i + '" class=" no-cursor hiddenColumn" value="' + val.Storeid + '"/></td>' +
-                                    '<td><input id="Batchno-' + i + '" class=" no-cursor hiddenColumn" value="' + val.BatchNo + '"/></td>' +
+                                    '<td><input id="Batchno-' + i + '" class=" no-cursor " value="' + val.BatchNo + '"/></td>' +
                                     '<td><input id="Uniquebatchno-' + i + '" class=" no-cursor hiddenColumn" value="' + val.UniqueBatchNo + '"/></td>' +
                                     '<td><input id="TotalStock-' + i + '" class=" no-cursor hiddenColumn" value="' + val.TotalStock + '"/></td>' +
 
-                                    '<td><input id="LotStock-' + i + '" class=" no-cursor hiddenColumn" value="' + val.BatchStock + '"/></td>' +
+                                    '<td><input id="LotStock-' + i + '" class=" no-cursor " value="' + val.BatchStock + '"/></td>' +
                                    
                                    
                                   
@@ -1669,6 +1670,18 @@
                             });
                             $('th.hiddenColumn').hide();
                             $('.hiddenColumn').closest('td').hide();
+
+                            if ($('#EditableRateAndDiscountONSaleInvoice').val() == 'N') {
+                                $('input[id^="Rate-"]').prop('readonly', true);
+                                $('input[id^="DiscountPer-"]').prop('readonly', true);
+                                $('input[id^="DiscountAmt-"]').prop('readonly', true);
+                            }
+                            else {
+                                $('input[id^="Rate-"]').prop('readonly', false);
+                                $('input[id^="DiscountPer-"]').prop('readonly', false);
+                                $('input[id^="DiscountAmt-"]').prop('readonly', false);
+                            }
+
 
                         }
                         else {
@@ -1979,15 +1992,17 @@
                         $.notify('Adding Item Not Allowed, Please Clear Gate Detail...!!!', "info");
                     } else {
                         // $('.gridHiddenField').show();
-                        if ($('#SaleBillJobwork').val() == 'J') {
+                       
+                        $('#divSaleBillList').html(data);
+                        $('#PendSaleOrderModel').modal('hide');
+                         if ($('#SaleBillJobwork').val() == 'J') {
                             $('.jobWorkChalln').show();
                             $('.gridHiddenField').show();
                         } else {
                             $('.jobWorkChalln').hide();
                             $('.gridHiddenField').hide();
                         }
-                        $('#divSaleBillList').html(data);
-                        $('#PendSaleOrderModel').modal('hide');
+                        GetFeatureOption();
                         $.notify('Item Added To Grid.', "success");
                     }
 
