@@ -141,7 +141,7 @@ namespace eTactWeb.Controllers
                 if (ewayResponse?.results?.message != null)
                 {
                     var message = ewayResponse.results.message;
-                    var AccountCodeId = _IGateInward.GetAccountCode(message.legal_name_of_consignee);
+                    var AccountCodeId = _IGateInward.GetAccountCode(message.legal_name_of_consignor);
                     int AccountCode = 0;
 
                     if (AccountCodeId.Result.Result != null && AccountCodeId.Result.Result.Tables.Count > 0)
@@ -157,7 +157,7 @@ namespace eTactWeb.Controllers
                         return Json(new
                         {
                             success = false,
-                            message = $"No valid Account Found : {message.legal_name_of_consignee}"
+                            message = $"No valid Account Found : {message.legal_name_of_consignor}"
                         });
                     }
                     int seqNo = 1; // Initialize sequence number
