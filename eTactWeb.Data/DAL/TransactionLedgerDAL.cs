@@ -201,8 +201,10 @@ namespace eTactWeb.Data.DAL
 															select new TransactionLedgerModel
 															{
 																ParentLedgerName = row["ParentGroupName"] == DBNull.Value ? string.Empty : row["ParentGroupName"].ToString(),
-																AccountName = row["AccountName"] == DBNull.Value ? string.Empty : row["AccountName"].ToString(),
-																OpnDr = row["OpnDr"] == DBNull.Value ? 0 : Convert.ToDecimal(row["OpnDr"]),
+                                                                ParentAccountCode = row["ParentAccountCode"] == DBNull.Value ? 0 : Convert.ToInt32(row["ParentAccountCode"]),
+                                                                AccountName = row["AccountName"] == DBNull.Value ? string.Empty : row["AccountName"].ToString(),
+                                                                AccountCode = row["Accountcode"] == DBNull.Value ? 0 : Convert.ToInt32(row["Accountcode"]),
+                                                                OpnDr = row["OpnDr"] == DBNull.Value ? 0 : Convert.ToDecimal(row["OpnDr"]),
 																OpnCr = row["OpnCr"] == DBNull.Value ? 0 : Convert.ToDecimal(row["OpnCr"]),
 																TotalOpening = row["TotalOpening"] == DBNull.Value ? 0 : Convert.ToDecimal(row["TotalOpening"]),
 																CurrDrAmt = row["CurrDrAmt"] == DBNull.Value ? 0 : Convert.ToDecimal(row["CurrDrAmt"]),

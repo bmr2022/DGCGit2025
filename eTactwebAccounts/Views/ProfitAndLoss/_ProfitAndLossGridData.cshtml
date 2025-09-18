@@ -33,9 +33,21 @@
                                 {
                                     if (!excludeColumns.Contains(col.Key) && col.Key.Contains("(Dr)"))
                                     {
-                                        if (col.Key.Contains("Group(Dr)"))
+                                        @if (col.Key.Contains("Group(Dr)"))
                                         {
-                                            <td style="cursor:pointer;color:blue;">@col.Value</td>
+                                            <td style="cursor:pointer;color:blue;" onclick="GetProfitAndLossDataByGroup(this)">
+                                                @col.Value
+                                                <input type="hidden" class="hdnParentAccountCode"
+                                                       value="@row.DynamicColumns["ParentAccountCode"]" />
+                                            </td>
+                                        }
+                                        else if (col.Key.Contains("Ledger(Dr)"))
+                                        {
+                                            <td style="cursor:pointer;color:blue;" onclick="GetProfitAndLossDataByLedger(this)">
+                                                @col.Value
+                                                <input type="hidden" class="hdnAccountCode"
+                                                       value="@row.DynamicColumns["AccountCode"]" />
+                                            </td>
                                         }
                                         else
                                         {
@@ -87,9 +99,21 @@
                                 {
                                     if (!excludeColumns.Contains(col.Key) && col.Key.Contains("(Cr)"))
                                     {
-                                        if (col.Key.Contains("Group(Cr)"))
+                                        @if (col.Key.Contains("Group(Cr)"))
                                         {
-                                            <td style="cursor:pointer;color:blue;">@col.Value</td>
+                                            <td style="cursor:pointer;color:blue;" onclick="GetProfitAndLossDataByGroup(this)">
+                                                @col.Value
+                                                <input type="hidden" class="hdnParentAccountCode"
+                                                       value="@row.DynamicColumns["ParentAccountCode"]" />
+                                            </td>
+                                        }
+                                        else if (col.Key.Contains("Ledger(Cr)"))
+                                        {
+                                            <td style="cursor:pointer;color:blue;" onclick="GetProfitAndLossDataByLedger(this)">
+                                                @col.Value
+                                                <input type="hidden" class="hdnAccountCode"
+                                                       value="@row.DynamicColumns["AccountCode"]" />
+                                            </td>
                                         }
                                         else
                                         {
