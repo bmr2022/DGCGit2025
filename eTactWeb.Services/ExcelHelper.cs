@@ -56,8 +56,9 @@ namespace eTactWeb.Services
 
                 // 🔹 Add Totals row for numeric columns
                 int dataRowStart = 5;
-                int dataRowEnd = dt.Rows.Count + 4;
-                if (dataRowEnd >= dataRowStart) // ensure there is data
+                int dataRowEnd = dt.Rows.Count + 4; // data starts at row 5
+
+                if (dataRowEnd >= dataRowStart)
                 {
                     int totalRow = dataRowEnd + 1;
                     ws.Cell(totalRow, 1).Value = "Total";
@@ -65,15 +66,25 @@ namespace eTactWeb.Services
                     ws.Cell(totalRow, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
                     ws.Cell(totalRow, 1).Style.Font.Bold = true;
 
+                    // Loop through columns
                     for (int col = 3; col <= totalColumns; col++)
                     {
-                        string colLetter = ws.Cell(1, col).Address.ColumnLetter;
-                        ws.Cell(totalRow, col).FormulaA1 = $"SUM({colLetter}{dataRowStart}:{colLetter}{dataRowEnd})";
+                        var dataColumn = dt.Columns[col - 1]; // DataTable is 0-based
+                                                              // Check if numeric type
+                        if (
+                            dataColumn.DataType == typeof(decimal) ||
+                            dataColumn.DataType == typeof(double) ||
+                            dataColumn.DataType == typeof(float))
+                        {
+                            string colLetter = ws.Cell(4, col).Address.ColumnLetter; // header row
+                            ws.Cell(totalRow, col).FormulaA1 = $"SUM({colLetter}{dataRowStart}:{colLetter}{dataRowEnd})";
+                        }
                     }
 
-                    ws.Range(totalRow, 1, totalRow, totalColumns).Style.Font.Bold = true;
-                    ws.Range(totalRow, 1, totalRow, totalColumns).Style.Fill.BackgroundColor = XLColor.FromHtml("#6c9dc6");
-                    ws.Range(totalRow, 1, totalRow, totalColumns).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
+                    var totalRange = ws.Range(totalRow, 1, totalRow, totalColumns);
+                    totalRange.Style.Font.Bold = true;
+                    totalRange.Style.Fill.BackgroundColor = XLColor.FromHtml("#6c9dc6");
+                    totalRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
                 }
 
                 // Auto-fit columns

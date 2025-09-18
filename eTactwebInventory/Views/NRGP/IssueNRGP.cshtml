@@ -262,7 +262,7 @@
                                     <input asp-for="Distance" class="form-control" />
                                 </div>
                                 <div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                    <label asp-for="IssByEmpCodeName" class="form-label" style="color:red">Rec By Emp*</label>
+                                    <label asp-for="IssByEmpCodeName" class="form-label" style="color:red">Issue By Emp*</label>
                                     <input asp-for="IssByEmpCode" type="hidden" />
                                     <select class="form-select" style="width:150px;" asp-for="IssByEmpCodeName" asp-items="@(new SelectList(Model.EmployeeList,"Value","Text"))">
                                         <option value="0">-Select-</option>
@@ -1131,7 +1131,10 @@
                     $.notify('Please Select Removal Time...!', "error");
                     return false;
                 }
-
+                         if ($("#IssByEmpCodeName").val() === '' || $("#IssByEmpCodeName").val() === null || $("#IssByEmpCodeName").val()==='0') {
+                       $.notify('Please Select Issue by emp...!', "error");
+                       return false;
+                   }
                 if ($('#VehicleNo').val() != '') {
                     var inputValue = $('#VehicleNo').val();
                     if (inputValue.length > 10) {

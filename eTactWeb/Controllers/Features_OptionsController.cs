@@ -321,6 +321,65 @@ string AccPurchaseBillInvoicePrintoutFilename,string FIFOBasedBatchInventoryInJo
 				return View("Error", ResponseResult);
 			}
 		}
+        public async Task<ActionResult> FeaturesOptionsSaleInvoice(int ID, int YC,string Mode, string Type)
+		{
+			var MainModel = new Features_OptionsModel();
+			Type = "SaleBillDetail";
+			MainModel = await _IFeatures_Options.GetViewByID(Type).ConfigureAwait(false);
+				MainModel.Mode = Mode; // Set Mode to Update
+			
+
+			return View(MainModel);
+		}
+		[HttpPost]
+		public async Task<IActionResult> FeaturesOptionsSaleInvoice(Features_OptionsModel model, string Type= "SaleOrderDetail")
+		{
+			try
+			{
+				model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+				 model.Type= "SaleBillDetail";
+
+				var Result = await _IFeatures_Options.SaveFeatures_Options(model);
+				if (Result != null)
+				{
+					if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
+					{
+						ViewBag.isSuccess = true;
+						TempData["200"] = "200";
+						HttpContext.Session.Remove("CompanyGrid");
+					}
+					else if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
+					{
+						ViewBag.isSuccess = true;
+						TempData["202"] = "202";
+					}
+					else if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
+					{
+						ViewBag.isSuccess = false;
+						TempData["500"] = "500";
+						_logger.LogError($"\n \n ********** LogError ********** \n {JsonConvert.SerializeObject(Result)}\n \n");
+						return View("Error", Result);
+					}
+				}
+
+				return RedirectToAction(nameof(FeaturesOptionsSaleInvoice));
+
+			}
+			catch (Exception ex)
+			{
+				// Log and return the error
+				LogException<Features_OptionsController>.WriteException(_logger, ex);
+				var ResponseResult = new ResponseResult
+				{
+					StatusCode = HttpStatusCode.InternalServerError,
+					StatusText = "Error",
+					Result = ex
+				};
+				return View("Error", ResponseResult);
+			}
+		}
+
+
 		[HttpGet]
         public async Task<IActionResult> Features_OptionsDashBoard()
         {

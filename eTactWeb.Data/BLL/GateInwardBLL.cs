@@ -98,7 +98,7 @@ namespace eTactWeb.Data.BLL
         {
             return await _GateInwardDAL.SaveGateInward(model, GIGrid);
         }
-        public async Task<ResponseResult> GetEwayBillDataforPo(GateInwardModel model, DataTable GIGrid)
+        public async Task<GateInwardModel> GetEwayBillDataforPo(GateInwardModel model, DataTable GIGrid)
         {
             return await _GateInwardDAL.GetEwayBillDataforPo(model, GIGrid);
         }

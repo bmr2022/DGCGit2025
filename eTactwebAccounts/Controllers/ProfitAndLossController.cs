@@ -30,7 +30,7 @@ namespace eTactwebAccounts.Controllers
             var MainModel = new ProfitAndLossModel();
             return View(MainModel); // Pass the model with old data to the view
         }
-        public async Task<IActionResult> GetProfitAndLossData(string FromDate, string ToDate,string Flag, string ReportType, string ShowOpening, string ShowRecordWithZeroAmt)
+        public async Task<IActionResult> GetProfitAndLossData(string FromDate, string ToDate, string Flag, string ReportType, string ShowOpening, string ShowRecordWithZeroAmt)
         {
             var model = new ProfitAndLossModel();
             model.EntryByMachine = Environment.MachineName;
@@ -38,16 +38,7 @@ namespace eTactwebAccounts.Controllers
 
             var sessionData = JsonConvert.SerializeObject(model);
             HttpContext.Session.SetString("ProfitAndLossData", sessionData);
-
-            if (ReportType == "SUMMARY")
-            {
-                return PartialView("_ProfitAndLossSummaryGrid", model);
-            }
-            if (ReportType == "DETAIL")
-            {
-                return PartialView("_ProfitAndLossDetailGrid", model);
-            }
-            return null;
+            return PartialView("_ProfitAndLossGridData", model);
         }
 
         [HttpGet]

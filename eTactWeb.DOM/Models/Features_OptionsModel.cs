@@ -45,7 +45,16 @@ namespace eTactWeb.DOM.Models
 		}
 
 		public string AllowMultipleBuyerInSaleOrder { get; set; }
-        public string AllowToChangeStoreInMRN { get; set; }
+		public bool ShowHideEntryDetail { get; set; }
+		public bool ShowHideCustomerDetail { get; set; }
+		public bool ShowHideOtherRequiredDetail { get; set; }
+		public bool ShowHideCurrency { get; set; }
+		public bool ShowHideConsignee { get; set; }
+		public bool ShowHideScheduleDetail { get; set; }
+		public bool AllowToChangeStoreName { get; set; }
+		public bool HideOtherFieldOFDetailTable { get; set; }
+
+		public string AllowToChangeStoreInMRN { get; set; }
         public string ItemPartcodeGenerationFormat { get; set; }
         public string AllowBackDateStockAdjustment { get; set; }
         public string AllowBAtchEditable { get; set; }
@@ -94,12 +103,106 @@ namespace eTactWeb.DOM.Models
         public string AllowBackDateJOBWorkIssue { get; set; }
         public string ALLOWBACKDATEJobworkRec { get; set; }
         public string AllowBackDateRECEIVEINSTORE { get; set; }
-        public string AllowBackDateSALEBILL { get; set; }
-    
-        public string AccSaleBillManualTaxAlloweed { get; set; }
-        public string salebillShowItemBatchFIFOBased { get; set; }
-        public string AllowBackDateDAILYPRODUCTION { get; set; }
-        public string AllowBackDateTRANSFERMATERIAL { get; set; }
+		[NotMapped]
+		public bool AllowBackDateSALEBILLBool
+		{
+			get => AllowBackDateSALEBILL == "Y";
+			set => AllowBackDateSALEBILL = value ? "Y" : "N";
+		}
+
+		public string AllowBackDateSALEBILL { get; set; }
+
+		[NotMapped]
+		public bool AccSaleBillManualTaxAlloweedBool
+		{
+			get => AccSaleBillManualTaxAlloweed == "Y";
+			set => AccSaleBillManualTaxAlloweed = value ? "Y" : "N";
+		}
+
+		public string AccSaleBillManualTaxAlloweed { get; set; }
+
+		[NotMapped]
+		public bool salebillShowItemBatchFIFOBasedBool
+		{
+			get => salebillShowItemBatchFIFOBased == "Y";
+			set => salebillShowItemBatchFIFOBased = value ? "Y" : "N";
+		}
+
+		public string salebillShowItemBatchFIFOBased { get; set; }
+
+		// Allow Prod WithoutBom
+		[NotMapped]
+		public bool AllowProdWithoutBomBool
+		{
+			get => AllowProdWithoutBom == "Y";
+			set => AllowProdWithoutBom = value ? "Y" : "N";
+		}
+		public string AllowProdWithoutBom { get; set; }
+
+		// ProdSch Allow To Add Manual NewItem
+		[NotMapped]
+		public bool ProdSchAllowToAddManualNewItemBool
+		{
+			get => ProdSchAllowToAddManualNewItem == "Y";
+			set => ProdSchAllowToAddManualNewItem = value ? "Y" : "N";
+		}
+		public string ProdSchAllowToAddManualNewItem { get; set; }
+
+		// Prod Entry Allow To Add RMItem
+		[NotMapped]
+		public bool ProdEntryAllowToAddRMItemBool
+		{
+			get => ProdEntryAllowToAddRMItem == "Y";
+			set => ProdEntryAllowToAddRMItem = value ? "Y" : "N";
+		}
+		public string ProdEntryAllowToAddRMItem { get; set; }
+
+		// Prod Entry Allow To Add WithoutRM
+		[NotMapped]
+		public bool ProdEntryAllowToAddWithoutRMBool
+		{
+			get => ProdEntryAllowToAddWithoutRM == "Y";
+			set => ProdEntryAllowToAddWithoutRM = value ? "Y" : "N";
+		}
+		public string ProdEntryAllowToAddWithoutRM { get; set; }
+
+		// Prod Entry Allow To Add NegativeStock
+		[NotMapped]
+		public bool ProdEntryAllowToAddNegativeStockBool
+		{
+			get => ProdEntryAllowToAddNegativeStock == "Y";
+			set => ProdEntryAllowToAddNegativeStock = value ? "Y" : "N";
+		}
+		public string ProdEntryAllowToAddNegativeStock { get; set; }
+
+		// BatchWise Production
+		[NotMapped]
+		public bool BatchWiseProductionBool
+		{
+			get => BatchWiseProduction == "Y";
+			set => BatchWiseProduction = value ? "Y" : "N";
+		}
+		public string BatchWiseProduction { get; set; }
+
+		// Prod Entry Allow BackDate
+		[NotMapped]
+		public bool ProdEntryAllowBackDateBool
+		{
+			get => ProdEntryAllowBackDate == "Y";
+			set => ProdEntryAllowBackDate = value ? "Y" : "N";
+		}
+		public string ProdEntryAllowBackDate { get; set; }
+
+		// Allow BackDate Daily Production
+		[NotMapped]
+		public bool AllowBackDateDAILYPRODUCTIONBool
+		{
+			get => AllowBackDateDAILYPRODUCTION == "Y";
+			set => AllowBackDateDAILYPRODUCTION = value ? "Y" : "N";
+		}
+		public string AllowBackDateDAILYPRODUCTION { get; set; }
+
+		public string AllowBackDateTRANSFERMATERIAL { get; set; }
         public string CheckPOPendFromPOonlyNotFromAmendment { get; set; }
         public string AllowBackDateReceiveChallanEntry { get; set; }
         public string FIFOBasedBatchInventory { get; set; }
@@ -113,14 +216,9 @@ namespace eTactWeb.DOM.Models
         public string AllowBackDateProductionScheduleEntry { get; set; }
         public string InProdScheduleShowSumOrDetail { get; set; }
         public string PrdProdEntryAgainstWOProdSchReqManual { get; set; }
-        public string AllowProdWithoutBom { get; set; }
-        public string ProdSchAllowToAddManualNewItem { get; set; }
-        public string ProdEntryAllowToAddRMItem { get; set; }
-        public string ProdEntryAllowToAddWithoutRM { get; set; }
-        public string ProdEntryAllowToAddNegativeStock { get; set; }
-        public string BatchWiseProduction { get; set; }
+        
         public string VoucherRotationDailyMonthYearly { get; set; }
-        public string ProdEntryAllowBackDate { get; set; }
+      
         public string AccAllowtochangeDocumentinPurchaseBill { get; set; }
         public string AccPasswordToChangeDocumentinPurchaseBill { get; set; }
         public string AccAllowtochangeInvoiceNoDateinPurchaseBill { get; set; }

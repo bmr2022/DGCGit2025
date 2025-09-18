@@ -1,0 +1,359 @@
+﻿@model eTactWeb.DOM.Models.Features_OptionsModel;
+@{
+	ViewData["Title"] = "Production Entry setting";
+	Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+<style>
+	.disabled-link {
+		pointer-events: none; /* Disables clicking */
+		color: gray; /* Makes it look disabled */
+		text-decoration: none; /* Removes underline */
+		cursor: not-allowed; /* Changes cursor */
+	}
+</style>
+
+<div class="card bg-gradient mb-3 border-light shadow-lg">
+	<form asp-action="FeaturesOptionsProductionEntry" asp-controller="Features_Options" method="post" autocomplete="on" class="form-horizontal">
+		<div class="card-header card-headerBG text-light bg-gradient">
+			<div class="card-header card-headerBG text-light justify-content-center bg-gradient">
+				<h5>
+					<strong> Production Entry Setting </strong>
+					<span class="d-flex float-end" style="margin-top:-2px;">
+
+						<div class="row justify-content-between g-2">
+							<div class="col-auto">
+								<a href="#" class="btn btn-primary btn-sm" onclick="PressBack();">
+									<i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+									BACK
+								</a>
+							</div>
+							@if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+							{
+								<div class="col-auto">
+									<a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+										<i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+										REFRESH
+									</a>
+								</div>
+								@if (Model.Mode == "U")
+								{
+									Model.Mode = "U";
+									<div class="col-auto">
+										<button type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+											<i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+											UPDATE
+										</button>
+									</div>
+								}
+
+								else
+								{
+									<div class="col-auto">
+										<button type="submit" class="btn btn-primary btn-sm submitBTN">
+											<i class="fa-solid fa-chevron-circle-right"></i>
+											Save
+										</button>
+									</div>
+								}
+							}
+						</div>
+					</span>
+				</h5>
+			</div>
+			<div class="card-body bg-light">
+				<div class="accordion shadow-lg" id="accordionItemCategory">
+					<div class="accordion-item">
+						<h2 class="accordion-header" id="H_ItemCategoryDetail">
+							<button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_ItemCategoryDetail"
+									aria-expanded="true" aria-controls="B_ItemCategoryDetail">
+								<strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i> Production Entry Setting</strong>
+								<small class="p-3"></small>
+							</button>
+						</h2>
+						<div id="B_ItemCategoryDetail" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_ItemCategoryDetail">
+							<div class="accordion-body">
+								<div class="row g-3">
+
+									<input type="hidden" asp-for="Mode" />
+									<div class="d-flex align-items-center mb-2" style="margin-left:0;">
+										<label title="PrdProdEntryAgainstWOProdSchReqManual" asp-for="PrdProdEntryAgainstWOProdSchReqManual" class="form-label me-2" style="width:230px;">Prod Entry Agains WOProdSch Req Manual</label>
+										<input asp-for="PrdProdEntryAgainstWOProdSchReqManual" class="form-control" style="max-width:400px;" />
+									</div>
+									<div class="d-flex align-items-center mb-2">
+										<label title="AllowProdWithoutBom" asp-for="AllowProdWithoutBomBool" class="form-label me-2" style="width:230px;">
+											Allow Prod WithoutBom
+										</label>
+										<input type="checkbox" class="form-check-input" asp-for="AllowProdWithoutBomBool" />
+									</div>
+
+									<div class="d-flex align-items-center mb-2">
+										<label title="ProdSchAllowToAddManualNewItem" asp-for="ProdSchAllowToAddManualNewItemBool" class="form-label me-2" style="width:230px;">
+											ProdSch Allow To Add Manual NewItem
+										</label>
+										<input type="checkbox" class="form-check-input" asp-for="ProdSchAllowToAddManualNewItemBool" />
+									</div>
+
+									<div class="d-flex align-items-center mb-2">
+										<label title="ProdEntryAllowToAddWithoutRM" asp-for="ProdEntryAllowToAddRMItemBool" class="form-label me-2" style="width:230px;">
+											Prod Entry Allow To Add RMItem
+										</label>
+										<input type="checkbox" class="form-check-input" asp-for="ProdEntryAllowToAddRMItemBool" />
+									</div>
+
+									<div class="d-flex align-items-center mb-2">
+										<label title="ProdEntryAllowToAddWithoutRM" asp-for="ProdEntryAllowToAddWithoutRMBool" class="form-label me-2" style="width:230px;">
+											Prod Entry Allow To Add WithoutRM
+										</label>
+										<input type="checkbox" class="form-check-input" asp-for="ProdEntryAllowToAddWithoutRMBool" />
+									</div>
+
+									<div class="d-flex align-items-center mb-2">
+										<label title="ProdEntryAllowToAddNegativeStock" asp-for="ProdEntryAllowToAddNegativeStockBool" class="form-label me-2" style="width:230px;">
+											Prod Entry Allow To Add NegativeStock
+										</label>
+										<input type="checkbox" class="form-check-input" asp-for="ProdEntryAllowToAddNegativeStockBool" />
+									</div>
+
+									<div class="d-flex align-items-center mb-2">
+										<label title="BatchWiseProduction" asp-for="BatchWiseProductionBool" class="form-label me-2" style="width:230px;">
+											BatchWise Production
+										</label>
+										<input type="checkbox" class="form-check-input" asp-for="BatchWiseProductionBool" />
+									</div>
+
+									<div class="d-flex align-items-center mb-2">
+										<label title="ProdEntryAllowBackDate" asp-for="ProdEntryAllowBackDateBool" class="form-label me-2" style="width:230px;">
+											Prod Entry Allow BackDate
+										</label>
+										<input type="checkbox" class="form-check-input" asp-for="ProdEntryAllowBackDateBool" />
+									</div>
+
+									<div class="d-flex align-items-center mb-2">
+										<label title="AllowBackDateDAILYPRODUCTION" asp-for="AllowBackDateDAILYPRODUCTIONBool" class="form-label me-2" style="width:230px;">
+											Allow BackDate Daily Production
+										</label>
+										<input type="checkbox" class="form-check-input" asp-for="AllowBackDateDAILYPRODUCTIONBool" />
+									</div>
+
+
+								</div>
+							</div>
+						</div>
+
+
+						<div class="card-footer p-3">
+							<div class="row justify-content-between g-2">
+								<div class="card-header card-headerBG text-light bg-gradient">
+									<h5>
+										<strong> Sale Invoice Setting</strong>
+										<span class="d-flex float-end" style="margin-top:-2px;">
+
+
+											<div class="row justify-content-between g-2">
+												<div class="col-auto">
+
+													<a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
+														<i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+														BACK
+													</a>
+												</div>
+												@if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+												{
+													<div class="col-auto">
+														@*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+														<a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+															@* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+															<i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+															REFRESH
+														</a>
+													</div>
+													@if (Model.Mode == "U")
+													{
+														@*Model.Mode = "U";*@
+														<div class="col-auto">
+															@* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+															<button type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+																<i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+																UPDATE
+															</button>
+														</div>
+													}
+													else
+													{
+														<div class="col-auto">
+															<button type="submit" class="btn btn-primary btn-sm submitBTN">
+																<i class="fa-solid fa-chevron-circle-right"></i>
+																Save
+															</button>
+														</div>
+													}
+												}
+											</div>
+										</span>
+									</h5>
+								</div>
+							</div>
+						</div>
+					</div>
+	</form>
+</div>
+
+<style>
+	.form-label {
+		font-weight: 500;
+	}
+
+	.d-flex label {
+		white-space: nowrap;
+	}
+
+	.form-control {
+		max-width: 300px;
+	}
+
+</style>
+@section Scripts {
+	<script>
+		$(document).ready(function () {
+			//GetFormRights();
+			if ($('#Mode').val() != "U") {
+
+				FillEntryID();
+			}
+			$("#AutoGenItemGroupCode").rules("remove", "required");
+			$("#AllowMultipleBuyerInSaleOrder").rules("remove", "required");
+			$("#AllowBackDateSALEBILLBool").rules("remove", "required");
+			$("#AccSaleBillManualTaxAlloweedBool").rules("remove", "required");
+			$("#salebillShowItemBatchFIFOBasedBool").rules("remove", "required");
+			$("#VoucherRotationDailyMonthYearly").rules("remove", "required");
+			$("#AccPasswordToAllowManualTax").rules("remove", "required");
+
+			setFormattedDate();
+
+
+			$('.submitBTN').click(function (e) {
+
+				console.log("SubmitButton Click");
+				e.preventDefault();
+
+				$('form').submit();
+			});
+
+		});
+
+
+
+
+		function setFormattedDate() {
+			var today = new Date();
+			var day = ('0' + today.getDate()).slice(-2);
+			var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+			var month = monthNames[today.getMonth()];
+			var year = today.getFullYear();
+
+			var formattedDate = day + '/' + month + '/' + year;
+
+			$('#ScheduleDate, #ActualScheduleDate, #CalibSchEntryDate,#LastUpdationDate')
+				.datepicker({ dateFormat: 'dd/M/yy', maxDate: 0 })
+				.val(formattedDate);
+
+			// $("#DueCalibrationDate").datepicker({
+			// 	dateFormat: "dd-M-yy",
+			// 	minDate: 0
+			// });
+
+		}
+
+
+		function GetFormRights() {
+			$.ajax({
+				url: "@Url.Action("GetFormRights")",
+				type: "POST",
+				success: function (data) {
+					if (data != null) {
+						var obj = $.parseJSON(data);
+						if (obj.Result.Table.length == 0) {
+							$(".submitBTN").prop("disabled", true);
+							$('.card-footer .submitBTN').prop("disabled", true);
+							$(".DashBoard")
+								.addClass("disabled-link")
+								.on("click", function (e) {
+									e.preventDefault(); // Prevents clicking the link
+								});
+						}
+						else {
+							// console.log(obj);
+							var optAll = obj.Result.Table[0].OptAll;
+							var optSave = obj.Result.Table[0].OptSave;
+							var optUpdate = obj.Result.Table[0].OptUpdate;
+							var optDelete = obj.Result.Table[0].OptDelete;
+							var optView = obj.Result.Table[0].OptView;
+							if (!optAll) {
+								if (!optSave) {
+									$("#submitBTN").prop("disabled", true);
+									$('.card-footer #submitBTN').prop("disabled", true);
+								}
+								if (!(optUpdate || optDelete || optView)) {
+									$(".DashBoard")
+										.addClass("disabled-link")
+										.on("click", function (e) {
+											e.preventDefault(); // Prevents clicking the link
+										});
+								}
+							}
+						}
+					}
+				},
+				error: function (errMsg) {
+					$.notify(errMsg, { position: "top center", className: "error" });
+				}
+			});
+		}
+
+		function CheckBeforeUpdate() {
+			$.ajax({
+				url: '@Url.Action("CheckBeforeUpdate")',
+				type: "POST",
+				data: { Type: $('#Entry_id').val() },
+				success: function (data) {
+					var obj = $.parseJSON(data);
+					if (obj.Result?.Table[0]?.Column1 > 0) {
+						$.notify("You cannot update this Category as Item with this category already exists", "error");
+					} else {
+						$('form').submit();
+					}
+				},
+				error: function (response) {
+					alert(response.responseText);
+				}
+			});
+		}
+
+
+
+		function PressBack() {
+			sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());
+			sessionStorage.setItem('ToDateBack', $('#ToDateBack').val());
+			sessionStorage.setItem('GroupNameBack', $('#GroupNameBack').val());
+			sessionStorage.setItem('LedgerNameBack', $('#LedgerNameBack').val());
+			sessionStorage.setItem('OpeningYearCodeBack', $('#OpeningYearCodeBack').val());
+			sessionStorage.setItem('PreviousAmountBack', $('#PreviousAmountBack').val());
+			sessionStorage.setItem('DrCrBack', $('#DrCrBack').val());
+			sessionStorage.setItem('GlobalSearchBack', $('#GlobalSearchBack').val());
+
+			window.history.back();
+		}
+	</script>
+}
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
+
+
+
+
