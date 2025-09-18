@@ -1575,7 +1575,7 @@
         }
 
         $('#AccountCode').change(function () {
-            $('#PendSaleOrderModel').modal('show');
+          
             showDetail();
 
 })
@@ -1605,6 +1605,7 @@
 
                         var obj = $.parseJSON(data);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#PendSaleOrderModel').modal('show');
                             $('#divPendSOGrid').empty();
                             var i = 1;
                             $.each(obj.Result.Table, function (index, val) {
