@@ -37,8 +37,8 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@flag", "POAmendmentHistoryReport"));
                 SqlParams.Add(new SqlParameter("@reportType", ""));
                 SqlParams.Add(new SqlParameter("@Dashboardflag", "FillPONO"));
-                SqlParams.Add(new SqlParameter("@FromDate", FromDate));
-                SqlParams.Add(new SqlParameter("@ToDate", ToDate));
+                SqlParams.Add(new SqlParameter("@FromDate", CommonFunc.ParseFormattedDate(FromDate)));
+                SqlParams.Add(new SqlParameter("@ToDate", CommonFunc.ParseFormattedDate(ToDate)));
                 //SqlParams.Add(new SqlParameter("@CurrentDate", CurrentDate));
                 //SqlParams.Add(new SqlParameter("@StoreId", Storeid));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SpReportOrderAmendHistoryOnGrid", SqlParams);
@@ -85,8 +85,8 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@flag", "POAmendmentHistoryReport"));
                 SqlParams.Add(new SqlParameter("@reportType", ""));
                 SqlParams.Add(new SqlParameter("@Dashboardflag", "FillPOPARTCODE"));
-                SqlParams.Add(new SqlParameter("@FromDate", FromDate));
-                SqlParams.Add(new SqlParameter("@ToDate", ToDate));
+                SqlParams.Add(new SqlParameter("@FromDate", CommonFunc.ParseFormattedDate(FromDate)));
+                SqlParams.Add(new SqlParameter("@ToDate", CommonFunc.ParseFormattedDate(ToDate)));
                 //SqlParams.Add(new SqlParameter("@CurrentDate", CurrentDate));
                 //SqlParams.Add(new SqlParameter("@StoreId", Storeid));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SpReportOrderAmendHistoryOnGrid", SqlParams);
@@ -109,8 +109,8 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@flag", "POAmendmentHistoryReport"));
                 SqlParams.Add(new SqlParameter("@reportType", ""));
                 SqlParams.Add(new SqlParameter("@Dashboardflag", "FillPOPARTCODE"));
-                SqlParams.Add(new SqlParameter("@FromDate", FromDate));
-                SqlParams.Add(new SqlParameter("@ToDate", ToDate));
+                SqlParams.Add(new SqlParameter("@FromDate", CommonFunc.ParseFormattedDate(FromDate)));
+                SqlParams.Add(new SqlParameter("@ToDate",CommonFunc.ParseFormattedDate(  ToDate)));
                 //SqlParams.Add(new SqlParameter("@CurrentDate", CurrentDate));
                 //SqlParams.Add(new SqlParameter("@StoreId", Storeid));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SpReportOrderAmendHistoryOnGrid", SqlParams);
