@@ -79,6 +79,7 @@
                         <div class="accordion-body">
                             <input asp-for="EntryByMachine" type="hidden" class="form-control" value="@Environment.MachineName"  />
                             <input asp-for="Mode" type="hidden" class="form-control" value="@Model.Mode"  />
+                            <input asp-for="GridMode" type="hidden" class="form-control" value="@Model.GridMode" />
                             <input type="hidden" asp-for="SeqNo" value="0" />
                             <input asp-for="CntPlanEntryDate" type="hidden" class="form-control" value="@Model.CntPlanEntryDate" />
                             <input asp-for="CntPlanYearCode" type="hidden" class="form-control" value="@Model.CntPlanYearCode" />
@@ -423,9 +424,10 @@
                                         <div class="row">
                                             <div class="col-7">
                                                 <label class="form-label">Upload Drawing File</label>
-                                                <button type="button" class='btn btn-sm btn-outline-info mt-3' onclick="ViewFile('@Model.ImageURL')">
+                                                <button  type="button" class='btn btn-sm btn-outline-info mt-3' onclick="ViewFile('@Model.ImageURL')">
                                                     <i class="fa-solid fa-eye fa-fw fa-lg"></i> View File
                                                 </button>
+                                               
                                                 <div>
                                                     <span>@Model.ImageURL.Split("/")[3]</span>
                                                 </div>
@@ -449,7 +451,7 @@
                                         <label asp-for="UploadImage" class="form-label">Upload Drawing File</label>
                                         <input class="form-control form-control-sm" asp-for="UploadImage" type="file" data-val="false">
                                     </div>
-                                    <input type="hidden" id="hdnImageURL" value="@Model.ImageURL" />
+                                   
                                 }
                                 @if (!string.IsNullOrEmpty(Model.ItemImageURL) && showViewButton)
                                 {
@@ -457,9 +459,10 @@
                                         <div class="row">
                                             <div class="col-7">
                                                 <label class="form-label">Upload Item Image</label>
-                                                <button type="button" class="btn btn-sm btn-outline-info mt-3" onclick="ViewFile('@Model.ItemImageURL')">
+                                                <button type="button"  class="btn btn-sm btn-outline-info mt-3" onclick="ViewFile('@Model.ItemImageURL')">
                                                     <i class="fa-solid fa-eye fa-fw fa-lg"></i> View File
                                                 </button>
+                                                
                                                 <div>
                                                     <span>@Model.ItemImageURL.Split("/")[3]</span>
                                                 </div>
@@ -483,12 +486,33 @@
                                         <label asp-for="ItemImage" class="form-label">Upload Item Image</label>
                                         <input class="form-control form-control-sm" asp-for="ItemImage" type="file" data-val="false">
                                     </div>
-                                    <input type="hidden" id="hdnItemImageURL" value="@Model.ItemImageURL" />
+                                     <div class="col-xl-4 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="ItemImage" class="form-label">Drawing No</label>
+                                        <input type="text" class="form-control form-control-sm" asp-for="DrawingNo" />
+                                    </div>
+                                    
                                 }
-                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="margin-left:20px;">
-                                    <label asp-for="DrawingNo" class="form-label">DrawingNo</label>
-                                    <input asp-for="DrawingNo" class="form-control" />
+                                <div class="row align-items-center">
+                                    <!-- Upload Drawing File -->
+                                    <div class="col-md-4">
+                                        
+                                        <div id="DrawingFileContainer">
+                                            <input type="hidden" id="hdnImageURL" value="@Model.ImageURL" />
+                                        </div>
+                                    </div>
+
+                                    <!-- Upload Item Image -->
+                                    <div class="col-md-4">
+                                       
+                                        <div id="ItemFileContainer">
+                                            <input type="hidden" id="hdnItemImageURL" value="@Model.ItemImageURL" />
+                                        </div>
+                                    </div>
+
+                                    
                                 </div>
+
+
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="ActualEntryByName" class="form-label">Actual Entered By</label>
                                     <input type="hidden" asp-for="ActualEntryBy" class="form-control" readonly />
@@ -711,7 +735,7 @@
         });
         debugger
         if ($('#Mode').val() !== "U" && $('#Mode').val() !== "V") {
-            $('#ItemName,#PartCode').change(function () {
+            $('#PartCode').change(function () {
                 checkItemOrPart();
             });
         }
@@ -891,26 +915,85 @@
         // }
         let redirected = false;
 
+        // function checkItemOrPart() {
+        //     var itemCode = $("#PartCode").val();
+        //     var partCode = $("#PartCode").val();
+
+        //     $.getJSON('/ControlPlan/CheckItemOrPart', { itemCode: itemCode, partCode: partCode }, function (response) {
+        //         if (response.exists) {
+        //             // build url
+        //             var url = "/ControlPlan/Index?Mode=U"
+        //                 + "&ID=" + response.id
+        //                 + "&YC=" + response.yc;
+
+        //             // redirect to ViewByID (loads old data)
+        //             window.location.href = url;
+        //         }
+        //         else {
+        //             // new entry → just continue
+        //             console.log("No old data found, create new");
+        //         }
+        //     });
+        // }
+
         function checkItemOrPart() {
-            var itemCode = $("#PartCode").val();
             var partCode = $("#PartCode").val();
+            var itemCode = $("#PartCode").val();
 
             $.getJSON('/ControlPlan/CheckItemOrPart', { itemCode: itemCode, partCode: partCode }, function (response) {
                 if (response.exists) {
-                    // build url
-                    var url = "/ControlPlan/Index?Mode=U"
-                        + "&ID=" + response.id
-                        + "&YC=" + response.yc;
+                    $('#CntPlanEntryId').val(response.id);
+                    $('#CntPlanYearCode').val(response.yc);
+                    $('#RevNo').val(response.revNo);
+                    $('#hdnImageURL').val(response.imageURL);
+                    $('#hdnItemImageURL').val(response.itemImageURL);
+                    $("#DrawingFileContainer").html(`
+            <div class="col-xl-3 text-center">
+               
+                ${response.imageURL
+                            ? `<button type="button" class='btn btn-sm btn-outline-info mt-3' onclick="ViewFile('${response.imageURL}')">
+                           <i class="fa-solid fa-eye fa-fw fa-lg"></i> View File
+                       </button>
+                       <div><span>${response.imageURL.split("/").pop()}</span></div>`
+                            : ``}
+                <input type="hidden" id="hdnImageURL" value="${response.imageURL || ''}" />
+                        <div class="form-check form-switch pt-3">
+                    <input class="form-check-input" type="checkbox" role="switch" id="ReUpload">
+                    <label class="form-check-label" for="ReUpload">Re-Upload</label>
+                </div>
+            </div>
+        `);
 
-                    // redirect to ViewByID (loads old data)
-                    window.location.href = url;
-                }
-                else {
-                    // new entry → just continue
-                    console.log("No old data found, create new");
+                    $("#ItemFileContainer").html(`
+            <div class="col-xl-3 text-center">
+               
+                ${response.itemImageURL
+                            ? `<button type="button" class='btn btn-sm btn-outline-info mt-3' onclick="ViewFile('${response.itemImageURL}')">
+                           <i class="fa-solid fa-eye fa-fw fa-lg"></i> View File
+                       </button>
+                       <div><span>${response.itemImageURL.split("/").pop()}</span></div>`
+                            : ``}
+                <input type="hidden" id="hdnItemImageURL" value="${response.itemImageURL || ''}" />
+                        <div class="form-check form-switch pt-3">
+                    <input class="form-check-input" type="checkbox" role="switch" id="ReUploadItem">
+                    <label class="form-check-label" for="ReUploadItem">Re-Upload</label>
+                </div>
+            </div>
+        `);
+
+                    
+                    $('#divControlPlanGrid').html(response.grid);
+                    $('#Mode').val("U");
+                    $.notify("Existing Control Plan loaded", "info");
+                } else {
+                    // Clear grid for new entry
+                    $('#divControlPlanGrid').empty();
+                    $('#CntPlanEntryId').val("0");
+                    $.notify("No existing plan, you can add new", "success");
                 }
             });
         }
+
 
 
 
@@ -1518,7 +1601,7 @@
             $('#SpecificationFrom_single').show();
 
             $('#Operator, #InspectionBy, #RejectionPlan').prop('selectedIndex', 0).trigger('change');
-            $('#Mode').val("");   
+            $('#GridMode').val("");
             $('#SeqNo').val("");  
             EditEachItem = false; 
         }
@@ -1582,11 +1665,11 @@
                 highestValue = Math.max(...seqnoarray);
             }
             var seqNo = $('#SeqNo').val();
-            var mode = $('#Mode').val();
+            var mode = $('#GridMode').val();
 
             if (mode !== "U" && (!seqNo || seqNo === "0" || seqNo === "")) {
-                mode = ""; // insert for grid row
-                $('#Mode').val(""); // only if you really want to reset hidden input for insert mode
+                mode = "";
+                $('#GridMode').val("");
             }
             var finalSeqNo;
 
@@ -1623,7 +1706,7 @@
                 "CntPlanEntryId": $('#CntPlanEntryId').val(),
                 "ImageURL": imageUrl,
                 "ItemImageURL": itemImageUrl,
-                "Mode": mode,
+                "GridMode": mode,
                 "SeqNo": finalSeqNo
             };
 
@@ -1647,9 +1730,9 @@
                         $('#divControlPlanGrid').html(data);
 
                         // If it's a new add (CntPlanEntryId is 0 or empty), clear mode; else keep mode
-                        if ($('#Mode').val() !== "U") {
+                        if ($('#GridMode').val() !== "U") {
                             if ($('#CntPlanEntryId').val() === "0" || $('#CntPlanEntryId').val() === "") {
-                                $('#Mode').val("");
+                                $('#GridMode').val("");
                             }
                         }
 
@@ -1676,13 +1759,7 @@
             });
         });
 
-        function ViewFile(path) {
-            if (path) {
-                window.open(path, '_blank');
-            } else {
-                $.notify("No file available to view", "error");
-            }
-        }
+        
         function EditItemRows(SeqNo) {
              
             var RowCount = $('#divControlPlanGrid tr').length;
@@ -1694,7 +1771,7 @@
                 $.ajax({
                     url: '/ControlPlan/EditItemRows',
                     type: "POST",
-                    data: { SeqNo: SeqNo ,Mode:"U"},
+                    data: { SeqNo: SeqNo, GridMode: "U" },
                     success: function (data) {
 
                         var obj = $.parseJSON(data);
@@ -1722,8 +1799,8 @@
                             $('#Remarks').val(obj[0].Remarks).trigger("change");
                             $('#RejectionPlan').val(obj[0].RejectionPlan).trigger("change");
                             $('#DrawingNo').val(obj[0].DrawingNo).trigger("change");
-                            $('#SeqNo').val(obj[0].SeqNo);  
-                            $('#Mode').val('U');
+                            $('#SeqNo').val(obj[0].SeqNo);
+                            $('#GridMode').val('U');
                             //   $('#divRoutingGrid tr#' + SeqNo).remove();
 
                             var rowCount = $('#divControlPlanGrid tr').length;
@@ -1749,7 +1826,7 @@
             $.ajax({
                 url: '@Url.Action("DeleteItemRow")',
                 type: "POST",
-                data: { "SeqNo": SeqNo, Mode: "U" },
+                data: { "SeqNo": SeqNo, GridMode: "U" },
                 success: await function (data, status, xhr) {
                     $('#divControlPlanGrid').html(data);
                     $.notify("Process deleted from Grid", "info");
@@ -1781,7 +1858,13 @@
                 }
             });
         }
-
+        function ViewFile(path) {
+            if (path) {
+                window.open(path, '_blank');
+            } else {
+                $.notify("No file available to view", "error");
+            }
+        }
 
         function PanNo() {
             if ($('#GSTNO').val().length == 15) {

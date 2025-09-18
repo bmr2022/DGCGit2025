@@ -76,6 +76,19 @@
 									<!-- Left Column -->
 									<div class="col-md-6">
 										<div class="d-flex align-items-center mb-1" style="margin:0; padding:0;">
+											<label title="SaleInvoiceFileName" asp-for="SaleInvoiceFileName" class="form-label me-2" style="width:230px;">Sale Invoice FileName</label>
+											<input asp-for="SaleInvoiceFileName" class="form-control" style="max-width:400px;" />
+										</div>
+										<div class="d-flex align-items-center mb-1" style="margin:0; padding:0;">
+											<label title="SaleBillPrintReportName" asp-for="SaleBillPrintReportName" class="form-label me-2" style="width:230px;">Sale Invoice Print ReportName</label>
+											<input asp-for="SaleBillPrintReportName" class="form-control" style="max-width:400px;" readonly/>
+										</div>
+										<div class="d-flex align-items-center mb-1" style="margin:0; padding:0;">
+											<label title="JWSaleBillPrintReportName" asp-for="JWSaleBillPrintReportName" class="form-label me-2" style="width:230px;">JW Sale Invoice Print ReportName</label>
+											<input asp-for="JWSaleBillPrintReportName" class="form-control" style="max-width:400px;"readonly />
+										</div>
+
+										<div class="d-flex align-items-center mb-1" style="margin:0; padding:0;">
 											<label title="AllowBackDateSALEBILL" asp-for="AllowBackDateSALEBILLBool" class="form-label me-2" style="width:230px; margin:0;">
 												Allow Backdate Sale Bill
 											</label>
@@ -90,81 +103,87 @@
 										</div>
 
 										<div class="d-flex align-items-center mb-1" style="margin:0; padding:0;">
-											<label title="ShowHideEntryDetail" asp-for="ShowHideEntryDetail" class="form-label me-2" style="width:230px; margin:0;">
+											<label title="ShowHideEntryDetail" asp-for="ShowHideEntryDetailBool" class="form-label me-2" style="width:230px; margin:0;">
 												Show Hide Entry Detail
 											</label>
-											<input type="checkbox" class="form-check-input" asp-for="ShowHideEntryDetail" style="margin:0;" />
+											<input type="checkbox" class="form-check-input" asp-for="ShowHideEntryDetailBool" style="margin:0;" />
+										</div>
+										<div class="d-flex align-items-center mb-1" style="margin:0; padding:0;">
+											<label title="AccSaleBillManualTaxAlloweed" asp-for="AccSaleBillManualTaxAllowedBool" class="form-label me-2" style="width:230px; margin:0;">
+												 Manual Tax Allowed
+											</label>
+											<input type="checkbox" class="form-check-input" asp-for="AccSaleBillManualTaxAllowedBool" style="margin:0;" />
+										</div>
+										<div class="d-flex align-items-center mb-1" style="margin:0; padding:0;">
+											<label title="AccPasswordToAllowManualTax" asp-for="AccPasswordToAllowManualTax" class="form-label me-2" style="width:230px;">Password To Allow ManualTax</label>
+											<input asp-for="AccPasswordToAllowManualTax" class="form-control" style="max-width:400px;" />
 										</div>
 
 										<div class="d-flex align-items-center mb-1" style="margin:0; padding:0;">
-											<label title="ShowHideCustomerDetail" asp-for="ShowHideCustomerDetail" class="form-label me-2" style="width:230px; margin:0;">
+											<label title="EditableRateAndDiscountONSaleInvoice" asp-for="EditableRateAndDiscountONSaleInvoiceBool" class="form-label me-2" style="width:230px; margin:0;">
+												Editable Rate & Discount
+											</label>
+											<input type="checkbox" class="form-check-input" asp-for="EditableRateAndDiscountONSaleInvoiceBool" style="margin:0;" />
+										</div>
+										<div class="d-flex align-items-center mb-1" style="margin:0; padding:0;">
+											<label title="ShowHideCustomerDetail" asp-for="ShowHideCustomerDetailBool" class="form-label me-2" style="width:230px; margin:0;">
 												Show Hide Customer Detail
 											</label>
-											<input type="checkbox" class="form-check-input" asp-for="ShowHideCustomerDetail" style="margin:0;" />
+											<input type="checkbox" class="form-check-input" asp-for="ShowHideCustomerDetailBool" style="margin:0;" />
 										</div>
 
-										<div class="d-flex align-items-center mb-1" style="margin:0; padding:0;">
-											<label title="VoucherRotationDailyMonthYearly" asp-for="VoucherRotationDailyMonthYearly" class="form-label me-3" style="width:230px; margin:0;">
-												Voucher Rotation
-											</label>
-											<div class="form-check me-3">
-												<input class="form-check-input" type="radio" asp-for="VoucherRotationDailyMonthYearly" value="D" />
-												<label class="form-check-label">Daily</label>
-											</div>
-											<div class="form-check me-3">
-												<input class="form-check-input" type="radio" asp-for="VoucherRotationDailyMonthYearly" value="M" />
-												<label class="form-check-label">Monthly</label>
-											</div>
-											<div class="form-check">
-												<input class="form-check-input" type="radio" asp-for="VoucherRotationDailyMonthYearly" value="Y" />
-												<label class="form-check-label">Yearly</label>
-											</div>
-										</div>
 									</div>
 
 									<!-- Right Column -->
 									<div class="col-md-6">
 										<div class="d-flex align-items-center mb-1" style="margin:0; padding:0;">
-											<label title="ShowHideOtherRequiredDetail" asp-for="ShowHideOtherRequiredDetail" class="form-label me-2" style="width:230px; margin:0;">
+											<label title="ShowHideOtherRequiredDetail" asp-for="ShowHideOtherRequiredDetailBool" class="form-label me-2" style="width:230px; margin:0;">
 												Show Hide Other Required Detail
 											</label>
-											<input type="checkbox" class="form-check-input" asp-for="ShowHideOtherRequiredDetail" style="margin:0;" />
+											<input type="checkbox" class="form-check-input" asp-for="ShowHideOtherRequiredDetailBool" style="margin:0;" />
 										</div>
 
 										<div class="d-flex align-items-center mb-1" style="margin:0; padding:0;">
-											<label title="ShowHideCurrency" asp-for="ShowHideCurrency" class="form-label me-2" style="width:230px; margin:0;">
+											<label title="ShowHideCurrency" asp-for="ShowHideCurrencyBool" class="form-label me-2" style="width:230px; margin:0;">
 												Show Hide Currency
 											</label>
-											<input type="checkbox" class="form-check-input" asp-for="ShowHideCurrency" style="margin:0;" />
+											<input type="checkbox" class="form-check-input" asp-for="ShowHideCurrencyBool" style="margin:0;" />
 										</div>
 
 										<div class="d-flex align-items-center mb-1" style="margin:0; padding:0;">
-											<label title="ShowHideConsignee" asp-for="ShowHideConsignee" class="form-label me-2" style="width:230px; margin:0;">
+											<label title="ShowHideConsignee" asp-for="ShowHideConsigneeBool" class="form-label me-2" style="width:230px; margin:0;">
 												Show Hide Consignee
 											</label>
-											<input type="checkbox" class="form-check-input" asp-for="ShowHideConsignee" style="margin:0;" />
+											<input type="checkbox" class="form-check-input" asp-for="ShowHideConsigneeBool" style="margin:0;" />
 										</div>
 
 										<div class="d-flex align-items-center mb-1" style="margin:0; padding:0;">
-											<label title="ShowHideScheduleDetail" asp-for="ShowHideScheduleDetail" class="form-label me-2" style="width:230px; margin:0;">
+											<label title="ShowHideScheduleDetail" asp-for="ShowHideScheduleDetailBool" class="form-label me-2" style="width:230px; margin:0;">
 												Show Hide Schedule Detail
 											</label>
-											<input type="checkbox" class="form-check-input" asp-for="ShowHideScheduleDetail" style="margin:0;" />
+											<input type="checkbox" class="form-check-input" asp-for="ShowHideScheduleDetailBool" style="margin:0;" />
 										</div>
 
 										<div class="d-flex align-items-center mb-1" style="margin:0; padding:0;">
-											<label title="AllowToChangeStoreName" asp-for="AllowToChangeStoreName" class="form-label me-2" style="width:230px; margin:0;">
+											<label title="AllowToChangeStoreName" asp-for="AllowToChangeStoreNameBool" class="form-label me-2" style="width:230px; margin:0;">
 												Allow To Change Store Name
 											</label>
-											<input type="checkbox" class="form-check-input" asp-for="AllowToChangeStoreName" style="margin:0;" />
+											<input type="checkbox" class="form-check-input" asp-for="AllowToChangeStoreNameBool" style="margin:0;" />
 										</div>
 
 										<div class="d-flex align-items-center mb-1" style="margin:0; padding:0;">
-											<label title="HideOtherFieldOFDetailTable" asp-for="HideOtherFieldOFDetailTable" class="form-label me-2" style="width:230px; margin:0;">
+											<label title="HideOtherFieldOFDetailTable" asp-for="HideOtherFieldOFDetailTableBool" class="form-label me-2" style="width:230px; margin:0;">
 												Hide Other Field Of Detail Table
 											</label>
-											<input type="checkbox" class="form-check-input" asp-for="HideOtherFieldOFDetailTable" style="margin:0;" />
+											<input type="checkbox" class="form-check-input" asp-for="HideOtherFieldOFDetailTableBool" style="margin:0;" />
 										</div>
+										<div class="d-flex align-items-center mb-1" style="margin:0; padding:0;">
+											<label title="ApproveSOForGenerateSaleInvoiceOrNot" asp-for="ApproveSOForGenerateSaleInvoiceOrNotBool" class="form-label me-2" style="width:230px; margin:0;">
+												Approve SO For Generate Sale Invoice
+											</label>
+											<input type="checkbox" class="form-check-input" asp-for="ApproveSOForGenerateSaleInvoiceOrNotBool" style="margin:0;" />
+										</div>
+
 									</div>
 								</div>
 
@@ -246,21 +265,35 @@
 @section Scripts {
 	<script>
 		$(document).ready(function () {
-			//GetFormRights();
-			if ($('#Mode').val() != "U") {
-
-				FillEntryID();
-			}
-			$("#AutoGenItemGroupCode").rules("remove", "required");
-			$("#AllowMultipleBuyerInSaleOrder").rules("remove", "required");
-			$("#AllowBackDateSALEBILLBool").rules("remove", "required");
-			$("#AccSaleBillManualTaxAlloweedBool").rules("remove", "required");
-			$("#salebillShowItemBatchFIFOBasedBool").rules("remove", "required");
-			$("#VoucherRotationDailyMonthYearly").rules("remove", "required");
+			
+			$("#SaleInvoiceFileName").rules("remove", "required");
+			$("#SaleBillPrintReportName").rules("remove", "required");
+			$("#JWSaleBillPrintReportName").rules("remove", "required");
 			$("#AccPasswordToAllowManualTax").rules("remove", "required");
 
+			// Remove required rule for checkboxes
+			$("#AllowBackDateSALEBILLBool").rules("remove", "required");
+			$("#salebillShowItemBatchFIFOBasedBool").rules("remove", "required");
+			$("#ShowHideEntryDetail").rules("remove", "required");
+			$("#AccSaleBillManualTaxAllowed").rules("remove", "required");
+			$("#EditableRateAndDiscountONSaleInvoiceBool").rules("remove", "required");
+			$("#ShowHideCustomerDetail").rules("remove", "required");
+			$("#ShowHideOtherRequiredDetail").rules("remove", "required");
+			$("#ShowHideCurrency").rules("remove", "required");
+			$("#ShowHideConsignee").rules("remove", "required");
+			$("#ShowHideScheduleDetail").rules("remove", "required");
+			$("#AllowToChangeStoreName").rules("remove", "required");
+			$("#HideOtherFieldOFDetailTable").rules("remove", "required");
+			$("#ApproveSOForGenerateSaleInvoiceOrNotBool").rules("remove", "required");
+			$(":input").each(function () {
+				$(this).removeClass("input-validation-error");
+				$("#" + this.id + "-error").remove();
+			});
+
 			setFormattedDate();
-			
+			$(":input").removeClass("input-validation-error");
+			$("[id$='-error']").remove();
+			$(":input").removeAttr("aria-describedby");
 
 			$('.submitBTN').click(function (e) {
 
