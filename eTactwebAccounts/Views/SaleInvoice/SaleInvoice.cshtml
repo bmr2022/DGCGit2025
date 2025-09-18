@@ -21,6 +21,15 @@
         <input type="hidden" asp-for="EinvGenerated" />
         <input type="hidden" asp-for="MaxSaleInvoiceEntryDate" />
         <input type="hidden" asp-for="AllowBackDateSALEBILL" />
+        <input type="hidden" asp-for="ShowHideSaleBillEntryDetail" />
+        <input type="hidden" asp-for="ShowHideSaleBillCustomerDetail" />
+        <input type="hidden" asp-for="ShowHideSaleBillOtherRequiredDetail" />
+        <input type="hidden" asp-for="ShowHideSaleBillCurrency" />
+        <input type="hidden" asp-for="ShowHideSaleBillConsignee" />
+        <input type="hidden" asp-for="ShowHideSaleBillScheduleDetail" />
+        <input type="hidden" asp-for="AllowToChangeSaleBillStoreName" />
+        <input type="hidden" asp-for="HideOtherFieldOFSaleBillDetailTable" />
+        <input type="hidden" asp-for="ApproveSOForGenerateSaleInvoiceOrNot" />
         <input type="hidden" id="EditableRateAndDiscountONSaleInvoice" />
         <div class="card-header card-headerBG text-light bg-gradient">
             <h5>
@@ -213,8 +222,8 @@
                                                     <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO No</th>
                                                     <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO Date</th>
                                                     <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Cust Order No</th>
-                                                    <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch No</th>
-                                                    <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch Date</th>
+                                                    <th data-columnno="9" data-sortorder="asc" class="sortCol SaleBillScheduleDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch No</th>
+                                                    <th data-columnno="10" data-sortorder="asc" class="sortCol SaleBillScheduleDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch Date</th>
                                                     <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>HSN No</th>
                                                     <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Store Name</th>
                                                     <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bill Qty</th>
@@ -227,7 +236,7 @@
                                                     <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Batch No</th>
                                                     <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unique BatchNo</th>
                                                     <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO Year</th>
-                                                    <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch YC</th>
+                                                    <th data-columnno="10" data-sortorder="asc" class="sortCol SaleBillScheduleDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch YC</th>
                                                     <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bom Rev No</th>
                                                     <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unit</th>
                                                     <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Lot Stock</th>
@@ -257,9 +266,9 @@
                                                     <th data-columnno="26" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Prod Sch YC</th>
                                                     <th data-columnno="26" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Prod Sch EntryId</th>
                                                     <th data-columnno="26" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Prod Sch Date</th>
-                                                    <th data-columnno="26" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch Delivery Date</th>
-                                                    <th data-columnno="27" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Packets Detail</th>
-                                                    <th data-columnno="28" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Other Detail</th>
+                                                    <th data-columnno="26" data-sortorder="asc" class="sortCol SaleBillScheduleDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch Delivery Date</th>
+                                                    <th data-columnno="27" data-sortorder="asc" class="sortCol SaleBillOtherDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Packets Detail</th>
+                                                    <th data-columnno="28" data-sortorder="asc" class="sortCol  SaleBillOtherDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Other Detail</th>
                                                     <th data-columnno="29" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Remark</th>
                                                     <th data-columnno="29" data-sortorder="asc" class="sortCol gridHiddenField"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>StockableNonStockable</th> @*gridHiddenField*@
                                                     <th data-columnno="29" data-sortorder="asc" class="sortCol gridHiddenField"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>CustJwAdjustmentMandatory</th>  @*gridHiddenField*@
@@ -4032,8 +4041,69 @@
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         if (obj.Result != null) {
-                            $('#AllowBackDateSALEBIL').val("");
-                            $('#AllowBackDateSALEBILL').val(obj.Result[0].AllowBackDateSALEBILL);
+                                       $('#AllowBackDateSALEBIL').val("");
+                                       $('#ShowHideSaleBillEntryDetail').val("");
+                                        $('#ShowHideSaleBillCustomerDetail').val("");
+                                        $('#ShowHideSaleBillOtherRequiredDetail').val("");
+                                        $('#ShowHideSaleBillCurrency').val("");
+                                        $('#ShowHideSaleBillConsignee').val("");
+                                        $('#ShowHideSaleBillScheduleDetail').val("");
+                                        $('#AllowToChangeSaleBillStoreName').val("");
+                                        $('#HideOtherFieldOFSaleBillDetailTable').val("");
+                                        $('#ApproveSOForGenerateSaleInvoiceOrNot').val("");
+                            
+                                     $('#AllowBackDateSALEBILL').val(obj.Result[0].AllowBackDateSALEBILL);
+                                    // $('#ShowHideSaleBillEntryDetail').val(obj.Result[0].ShowHideSaleBillEntryDetail);
+                                    // $('#ShowHideSaleBillCustomerDetail').val(obj.Result[0].ShowHideSaleBillCustomerDetail);
+                                    // $('#ShowHideSaleBillOtherRequiredDetail').val(obj.Result[0].ShowHideSaleBillOtherRequiredDetail);
+                                    // $('#ShowHideSaleBillCurrency').val(obj.Result[0].ShowHideSaleBillCurrency);
+                                    // $('#ShowHideSaleBillConsignee').val(obj.Result[0].ShowHideSaleBillConsignee);
+                                    // $('#ShowHideSaleBillScheduleDetail').val(obj.Result[0].ShowHideSaleBillScheduleDetail);
+                                    // $('#AllowToChangeSaleBillStoreName').val(obj.Result[0].AllowToChangeSaleBillStoreName);
+                                    // $('#HideOtherFieldOFSaleBillDetailTable').val(obj.Result[0].HideOtherFieldOFSaleBillDetailTable);
+                                    // $('#ApproveSOForGenerateSaleInvoiceOrNot').val(obj.Result[0].ApproveSOForGenerateSaleInvoiceOrNot);
+                                                 if (obj.Result[0].ShowHideSaleBillEntryDetail === "N") {
+            $('.SaleBillEntryDetail').hide();
+        } else {
+            $('.SaleBillEntryDetail').show();
+        }
+
+        if (obj.Result[0].ShowHideSaleBillCustomerDetail === "N") {
+            $('.SaleBillCustomerDetail').hide();
+        } else {
+            $('.SaleBillCustomerDetail').show();
+        }
+
+        if (obj.Result[0].ShowHideSaleBillOtherRequiredDetail === "N") {
+            $('.SaleBillOtherRequiredDetail').hide();
+        } else {
+            $('.SaleBillOtherRequiredDetail').show();
+        }
+
+        if (obj.Result[0].ShowHideSaleBillCurrency === "N") {
+            $('.SaleBillCurrency').hide();
+        } else {
+            $('.SaleBillCurrency').show();
+        }
+
+        if (obj.Result[0].ShowHideSaleBillConsignee === "N") {
+            $('.SaleBillConsignee').hide();
+        } else {
+            $('.SaleBillConsignee').show();
+        }
+
+        if (obj.Result[0].ShowHideSaleBillScheduleDetail === "N") {
+            $('.SaleBillScheduleDetail').hide();
+        } else {
+            $('.SaleBillScheduleDetail').show();
+        }
+                  if (obj.Result[0].HideOtherFieldOFSaleBillDetailTable === "N") {
+                    $('.SaleBillOtherDetail').hide();
+                } else {
+                            $('.SaleBillOtherDetail').show();
+                }
+                
+
                         }
                     }
                 }
