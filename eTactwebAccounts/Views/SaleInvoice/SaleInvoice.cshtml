@@ -21,15 +21,15 @@
         <input type="hidden" asp-for="EinvGenerated" />
         <input type="hidden" asp-for="MaxSaleInvoiceEntryDate" />
         <input type="hidden" asp-for="AllowBackDateSALEBILL" />
-        <input type="hidden" asp-for="ShowHideSaleBillEntryDetail" />
+      @*   <input type="hidden" asp-for="ShowHideSaleBillEntryDetail" />
         <input type="hidden" asp-for="ShowHideSaleBillCustomerDetail" />
         <input type="hidden" asp-for="ShowHideSaleBillOtherRequiredDetail" />
         <input type="hidden" asp-for="ShowHideSaleBillCurrency" />
         <input type="hidden" asp-for="ShowHideSaleBillConsignee" />
         <input type="hidden" asp-for="ShowHideSaleBillScheduleDetail" />
         <input type="hidden" asp-for="AllowToChangeSaleBillStoreName" />
-        <input type="hidden" asp-for="HideOtherFieldOFSaleBillDetailTable" />
-        <input type="hidden" asp-for="ApproveSOForGenerateSaleInvoiceOrNot" />
+        <input type="hidden" asp-for="HideOtherFieldOFSaleBillDetailTable" /> *@
+        @* <input type="hidden" asp-for="ApproveSOForGenerateSaleInvoiceOrNot" /> *@
         <input type="hidden" id="EditableRateAndDiscountONSaleInvoice" />
         <div class="card-header card-headerBG text-light bg-gradient">
             <h5>
@@ -1895,23 +1895,81 @@
             /* if (!Validate_TransferGrid()) return; */
             var ItemData = [];
             var RowCount = $('#divPendSOGrid tr').length;
+            // for (var i = 1; i <= RowCount; i++) {
+            //     if ($('#AcceptedQtySHA-' + i).prop("checked") == false) continue;
+            //     var Partcode= $('#PartCode-' + i).val();
+            //     if (parseFloat($('#Qty-' + i).val()) > parseFloat($('#BatchWisePendQty-' + i).val()) )
+            //     {
+            //         $.notify('Qty should not be greater than Pending Qty or Stock for partcode:' + Partcode, "info");
+            //         return;
+            //     }
+            //     if (parseFloat($('#Rate-' + i).val()) <=0 || ($('#Rate-' + i).val()) =='') {
+            //         $.notify('Please Enter valid rate for :' + Partcode, "info");
+            //         return;
+            //     }
+            //     if (parseFloat($('#Qty-' + i).val()) <= 0 || ($('#Qty-' + i).val()) == '') {
+            //         $.notify('Please Enter valid rate for :' + Partcode, "info");
+            //         return;
+            //     }
+            // }
+
+
+
+
+            var CheckboxArr = [];
+            // var RowCount = $('#MultiItemBody tr').length;
+
             for (var i = 1; i <= RowCount; i++) {
-                if ($('#AcceptedQtySHA-' + i).prop("checked") == false) continue;
-                var Partcode= $('#PartCode-' + i).val();
-                if (parseFloat($('#Qty-' + i).val()) > parseFloat($('#BatchWisePendQty-' + i).val()) )
-                {
-                    $.notify('Qty should not be greater than Pending Qty or Stock for partcode:' + Partcode, "info");
-                    return;
-                }
-                if (parseFloat($('#Rate-' + i).val()) <=0 || ($('#Rate-' + i).val()) =='') {
-                    $.notify('Please Enter valid rate for :' + Partcode, "info");
-                    return;
-                }
-                if (parseFloat($('#Qty-' + i).val()) <= 0 || ($('#Qty-' + i).val()) == '') {
-                    $.notify('Please Enter valid rate for :' + Partcode, "info");
-                    return;
+                if ($('#AcceptedQtySHA-' + i).prop("checked")) {
+                    CheckboxArr.push(i);
                 }
             }
+
+            if (CheckboxArr.length === 0) {
+                $.notify('Please select any item.', 'error');
+            } else {
+
+
+                // var RowCount = $('#MultiItemBody tr').length;
+                for (var i = 1; i <= RowCount; i++) {
+                    if ($('#AcceptedQtySHA-' + i).prop("checked")) {
+                        if ($('#Qty-' + i).val() == 0) {
+                            $.notify('Please enter quantity for ' + $('#PartCode-' + i).val(), 'error');
+                            return;
+                        }
+                        if (parseFloat($('#Qty-' + i).val()) > parseFloat($('#LotStock-' + i).val())) {
+                            $.notify('Please enter Valid quantity for ' + $('#PartCode-' + i).val(), 'error');
+                            return;
+                        }
+
+                        if (parseFloat($('#Qty-' + i).val()) > parseFloat($('#SOPendQty-' + i).val())) {
+                            $.notify('Please enter Valid quantity for ' + $('#PartCode-' + i).val(), 'error');
+                            return;
+                        }
+                        if ($('#Rate-' + i).val() == 0) {
+                            $.notify('Please enter rate for ' + $('#PartCode-' + i).val(), 'error');
+                            return;
+                        }
+                        if ($('#Unit-' + i).val() == '') {
+                            $.notify('Please select unit for ' + $('#PartCode-' + i).val(), 'error');
+                            return;
+                        }
+                        if ($('#HSNNo-' + i).val() == '') {
+                            $.notify('Please enter HSN for ' + $('#PartCode-' + i).val(), 'error');
+                            return;
+                        }
+                        if ($('#Amount-' + i).val() == '') {
+                            $.notify('amount can not be 0 ' + $('#PartCode-' + i).val(), 'error');
+                            return;
+                        }
+
+
+
+
+                    }
+                }
+            }
+
 
 
 
@@ -3981,7 +4039,7 @@
                         var obj = $.parseJSON(result);
                         if (obj.Result != null) {
                             $('#EditableRateAndDiscountONSaleInvoice').val('');
-                            $('#EditableRateAndDiscountONSaleInvoice').val(obj.Result.Table[0].EditableRateAndDiscountONSaleInvoice);
+                                $('#EditableRateAndDiscountONSaleInvoice').val(obj.Result.Table[0].EditableRateAndDiscountONSaleInvoice);
                            
 
                         }
@@ -4107,6 +4165,14 @@
         } else {
             $('.SaleBillConsignee').show();
         }
+                            
+
+                 if (obj.Result[0].AllowToChangeSaleBillStoreName === "N") {
+                $('.AllowToChangeStoreOrNot').hide();
+            } else {
+                                $('.AllowToChangeStoreOrNot').show();
+            }
+
 
         if (obj.Result[0].ShowHideSaleBillScheduleDetail === "N") {
             $('.SaleBillScheduleDetail').hide();
