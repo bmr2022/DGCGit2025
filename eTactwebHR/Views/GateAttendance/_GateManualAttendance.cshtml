@@ -84,7 +84,7 @@
                     {
                         <tr>
                             <td>
-                                @(i + 1) <input type="checkbox" name="selectedEmpIds" value="@Model.GateAttDetailsList[i].EmpId" onclick="checkUncheckEmp(@Model.GateAttDetailsList[i].EmpId)" />
+                                @(i + 1) <input type="checkbox" name="selectedEmpIds" value="@Model.GateAttDetailsList[i].EmpId" id="selectedEmp_@Model.GateAttDetailsList[i].EmpId" onclick="checkUncheckEmp(@Model.GateAttDetailsList[i].EmpId)" />
                             </td>
                             <td>@Model.GateAttDetailsList[i].EmployeeName</td>
                             <td>@Model.GateAttDetailsList[i].EmployeeCode</td>

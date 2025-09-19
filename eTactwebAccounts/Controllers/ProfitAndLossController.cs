@@ -105,7 +105,7 @@ namespace eTactwebAccounts.Controllers
                 ToDate
             );
 
-            string excelName = $"ProfitAndLoss_{ReportType}_{DateTime.Now:yyyyMMddHHmmss}.xlsx";
+            string excelName = $"ProfitAndLoss_{sheetName}.xlsx";
             return File(
                 stream.ToArray(),
                 "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",

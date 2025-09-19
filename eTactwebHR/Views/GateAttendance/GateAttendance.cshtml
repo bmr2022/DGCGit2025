@@ -9,7 +9,7 @@
     <div class="alert alert-success">@ViewBag.Message</div>
 }
 <div class="card bg-gradient mb-3 border-light shadow-lg">
-    <form asp-action="GateAttendance" autocomplete="off" class="form-horizontal" method="post" enctype="multipart/form-data">
+    <form asp-action="GateAttendance" autocomplete="off" class="form-horizontal" method="post" @* onsubmit="prepareAttendanceBeforeSubmit(event)" *@ enctype="multipart/form-data">
         <input type="hidden" asp-for="Mode" value="@Model.Mode" />
         <input type="hidden" asp-for="EID" />
         <div class="card-header card-headerBG text-light bg-gradient">
@@ -67,7 +67,7 @@
                             @if (Model.Mode == "U")
                             {
                                 <div class="col-auto">
-                                    <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton">
+                                    <button @* type="submit" *@ class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton">
                                         <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                                         UPDATE
                                     </button>
@@ -77,7 +77,7 @@
                             else
                             {
                                 <div class="col-auto">
-                                    <button type="submit" class="btn btn-primary btn-sm" id="submitBTN">
+                                    <button @* type="submit" *@ class="btn btn-primary btn-sm" id="submitBTN">
                                         <i class="fa-solid fa-chevron-circle-right"></i>
                                         SUBMIT
                                     </button>
@@ -195,7 +195,7 @@
                             @if (Model.Mode == "U")
                             {
                                 <div class="col-auto">
-                                    <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton">
+                                    <button @* type="submit" *@ class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton">
                                         <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                                         UPDATE
                                     </button>
@@ -204,7 +204,7 @@
                             else
                             {
                                 <div class="col-auto">
-                                    <button type="submit" class="btn btn-primary btn-sm" id="submitBTN">
+                                    <button @* type="submit" *@ class="btn btn-primary btn-sm" id="submitBTN">
                                         <i class="fa-solid fa-chevron-circle-right"></i>
                                         SUBMIT
                                     </button>
@@ -284,6 +284,7 @@
             DayorMonthChange();
             EmpAttDateOnChange();
             $('#EmployeeCode').select2();
+            //$('form').on('submit', handleAttendanceSubmit);
         });
 
           function parseCustomDate(str) {
@@ -402,21 +403,154 @@
                 e.preventDefault();
                 return false;
             }
+            return true;
         }
 
-        $('form').submit(function (event) {
-            $('.btn-outline-primary').prop('disabled', true).html('Validating Form... <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
-            if (!ValidateForm()) {
-                event.preventDefault(); // Prevent the form from submitting via the browser
-                $('.btn-outline-primary').prop('disabled', false).html('<i class="fa-solid fa-chevron-circle-right fa-fw fa-lg"></i> SUBMIT');
+        function prepareAttendanceBeforeSubmit(e) {
+            const checked = document.querySelectorAll("input[name='selectedEmpIds']:checked");
+            if (checked.length === 0) {
+                alert("Please select at least one employee before submitting.");
+                e.preventDefault();
+                return false;
             }
-            else {
-                //event.stopPropagation(); // Prevent calling function inside this function.
-                var form = $(this);
-                var url = form.attr('action'); //get submit url [replace url here if desired]
-                $("form :input").prop("disabled", false);
+
+            const attendanceList = [];
+
+            checked.forEach(cb => {
+                const empId = cb.id.replace("selectedEmp_", "");
+                const row = cb.closest("tr");
+
+                const empData = {
+                    EmpId: empId,
+                    DeptId: row.querySelector(`[name='dept_${empId}']`)?.value || "",
+                    DesignationEntryId: row.querySelector(`[name='desig_${empId}']`)?.value || "",
+                    Attendance: {}
+                };
+
+                // collect time fields for this emp
+                row.querySelectorAll("input.timepicker").forEach(input => {
+                    const dayCol = input.getAttribute("name").match(/\[(.*?)\]$/)?.[1];
+                    empData.Attendance[dayCol] = input.value;
+                });
+
+                attendanceList.push(empData);
+            });
+
+            // put JSON into hidden field
+            let hiddenField = document.getElementById("attendanceJson");
+            if (!hiddenField) {
+                hiddenField = document.createElement("input");
+                hiddenField.type = "hidden";
+                hiddenField.name = "AttendanceJson";
+                hiddenField.id = "attendanceJson";
+                document.querySelector("form").appendChild(hiddenField);
             }
-        });
+            hiddenField.value = JSON.stringify(attendanceList);
+        }
+
+        function collectGateAttendanceModel() {
+            var model = {};
+
+            // collect top-level model fields
+            model.DayOrMonthType = document.getElementById("DayOrMonthType").value;
+            model.GateAttYearCode = parseInt(document.getElementById("GateAttYearCode").value) || 0;
+            model.intEmpAttMonth = parseInt(document.getElementById("strEmpAttMonth").value) || 0;
+
+            // collect selected employees
+            model.GateAttDetailsList = [];
+
+            document.querySelectorAll("input[name='selectedEmpIds']:checked").forEach(function (cb) {
+                var empId = cb.value;
+                var row = cb.closest("tr");
+                if (!row) return;
+
+                var deptEl = row.querySelector("[name='dept_" + empId + "']");
+                var desigEl = row.querySelector("[name='desig_" + empId + "']");
+
+                var empObj = {
+                    EmpId: parseInt(empId, 10) || 0,
+                    DeptId: deptEl ? parseInt(deptEl.value, 10) || 0 : 0,
+                    DesignationEntryId: desigEl ? parseInt(desigEl.value, 10) || 0 : 0,
+                    Attendance: {}
+                };
+
+                // collect attendance fields
+                row.querySelectorAll("input[name^='Attendance[" + empId + "]']").forEach(function (inp) {
+                    var name = inp.getAttribute("name");
+                    var keyMatch = name.match(/\[(.*?)\]$/);
+                    var key = keyMatch ? keyMatch[1] : name;
+                    empObj.Attendance[key.toLowerCase()] = inp.value || "";
+                });
+
+                model.GateAttDetailsList.push(empObj);
+            });
+
+            return model;
+        }
+        $("#submitBTN, #UpdateButton").on("click", function() {submitAttendanceAjax();});
+        function submitAttendanceAjax() {
+            var model = collectGateAttendanceModel();
+
+            if (!model.GateAttDetailsList || model.GateAttDetailsList.length === 0) {
+                alert("Please select at least one employee.");
+                return;
+            }
+
+            $.ajax({
+                url: '@Url.Action("GateAttendance", "GateAttendance")',
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(model),
+                success: function (res) {
+                    alert(res.message || "Attendance saved successfully!");
+                    console.log(res);
+                },
+                error: function (xhr) {
+                    alert("Error saving attendance");
+                    console.error(xhr.responseText);
+                }
+            });
+        }
+
+        function resetButtonText(btn) {
+            if (btn.attr('id') === "submitBTN") {
+                btn.prop('disabled', false).html('<i class="fa-solid fa-chevron-circle-right"></i> SUBMIT');
+            } else {
+                btn.prop('disabled', false).html('<i class="fa fa-pencil-square fa-fw fa-lg"></i> UPDATE');
+            }
+        }
+
+         // $('form').submit(function (event) {
+        //     $('.btn-outline-primary').prop('disabled', true).html('Validating Form... <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
+        //     if (!ValidateForm()) {
+        //         event.preventDefault(); // Prevent the form from submitting via the browser
+        //         $('.btn-outline-primary').prop('disabled', false).html('<i class="fa-solid fa-chevron-circle-right fa-fw fa-lg"></i> SUBMIT');
+        //     }
+        //     else {
+        //         document.getElementById("attendanceForm").addEventListener("submit", function (e) {
+        //             const checked = document.querySelectorAll("input[name='selectedEmpIds']:checked");
+        //             if (checked.length === 0) {
+        //                 alert("Please select at least one employee before submitting.");
+        //                 e.preventDefault();
+        //                 return false;
+        //             }
+
+        //             // disable inputs of un-checked employees
+        //             document.querySelectorAll("input[name='selectedEmpIds']").forEach(cb => {
+        //                 const tr = cb.closest("tr");
+        //                 if (!cb.checked) {
+        //                     tr.querySelectorAll("input, select, textarea").forEach(el => {
+        //                         el.disabled = true; 
+        //                     });
+        //                 }
+        //             });
+        //         });
+        //         //event.stopPropagation(); // Prevent calling function inside this function.
+        //         var form = $(this);
+        //         var url = form.attr('action'); //get submit url [replace url here if desired]
+        //         $("form :input").prop("disabled", false);
+        //     }
+        // });
 
         function copyToClipboardForDropdown(element) {
             var $temp = $("<input>");

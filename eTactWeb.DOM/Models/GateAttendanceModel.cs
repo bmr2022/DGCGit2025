@@ -124,6 +124,7 @@ public class GateAttendanceModel : TimeStamp
     public string UpdatedByName { get; set; }
     public string Branch { get; set; }
     // Dynamic support
+    public bool? IsSelectedEmployee { get; set; }
     public List<string> DayHeaders { get; set; } = new(); // dynamic column headers
     public Dictionary<string, string> Attendance { get; set; } = new(); // dynamic day-wise In/Out
     public List<GateAttendanceModel> GateAttDetailsList { get; set; }

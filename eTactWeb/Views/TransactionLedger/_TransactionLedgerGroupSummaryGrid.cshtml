@@ -42,8 +42,8 @@
                                 </a>
                             </td>
                             <th>@Cntr</th>
-                            <td>@item.ParentLedgerName</td>
-                            <td>@item.AccountName</td>
+                            <td style="color:blue;cursor:pointer;" onclick="GetDataByGroupSummary(@Cntr)">@item.ParentLedgerName<input type="hidden" value="@item.ParentAccountCode" id="ParentCode-@Cntr" /></td>
+                            <td>@item.AccountName<input type="hidden" value="@item.AccountCode" id="AccountCode-@Cntr" /></td>
                             <td id="OpnDr-@Cntr">@item.OpnDr</td>
                             <td id="OpnCr-@Cntr">@item.OpnCr</td>
                             <td id="TotOpen-@Cntr">@item.TotalOpening</td>

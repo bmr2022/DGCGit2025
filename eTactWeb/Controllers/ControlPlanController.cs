@@ -200,18 +200,47 @@ namespace eTactWeb.Controllers
 
         //            return View(MainModel); 
         //        }
+        //[HttpGet]
+        //public async Task<JsonResult> CheckItemOrPart(int itemCode, string partCode)
+        //{
+        //    var existing = await _IControlPlan.GetByItemOrPartCode(itemCode);
+        //    if (existing != null && existing.CntPlanEntryId > 0)
+        //    {
+        //        return Json(new
+        //        {
+        //            exists = true,
+        //            id = existing.CntPlanEntryId,
+        //            yc = existing.Yearcode,
+        //            revNo = existing.RevNo
+        //        });
+        //    }
+
+        //    return Json(new { exists = false });
+        //}
         [HttpGet]
         public async Task<JsonResult> CheckItemOrPart(int itemCode, string partCode)
         {
             var existing = await _IControlPlan.GetByItemOrPartCode(itemCode);
+
             if (existing != null && existing.CntPlanEntryId > 0)
             {
+                // Serialize grid into session (so Add/Edit/Delete still works)
+                HttpContext.Session.SetString("KeyControlPlanGrid", JsonConvert.SerializeObject(existing.DTSSGrid));
+
+                // Render partial grid HTML
+                var gridHtml = await this.RenderViewAsync("_ControlPlanMainGrid", existing, true);
+
                 return Json(new
                 {
                     exists = true,
                     id = existing.CntPlanEntryId,
                     yc = existing.Yearcode,
-                    revNo = existing.RevNo
+                    revNo = existing.RevNo,
+                    grid = gridHtml,
+                    model = existing,
+                    imageURL = existing.ImageURL,
+                    itemImageURL = existing.ItemImageURL,
+                    mode = "U"
                 });
             }
 
@@ -733,7 +762,7 @@ Item.Remarks ?? ""
                     if (isDuplicate)
                         return StatusCode(207, "Duplicate");
 
-                    if (model.Mode == "U")
+                    if (model.GridMode == "U")
                     {
                        
                         GridDetail.Add(model);

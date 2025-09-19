@@ -138,7 +138,7 @@
             if ($('#ReportType').val() == "DETAIL") {
                 $('#ShowRecordWithZeroAmtDiv').show();
             }
-            else{
+            else {
                 $('#ShowRecordWithZeroAmtDiv').hide();
             }
             GetProfitAndLossData();
@@ -223,5 +223,51 @@
                 }
             });
         });
+
+        function GetProfitAndLossDataByGroup(td) {
+
+            // td is the clicked cell
+            let cellValue = $(td).text().trim();
+
+            // hidden input value inside this td
+            var parentAccountCode = $(td).find(".hdnParentAccountCode").val();
+            var FromDate = $('#FromDate').val();
+            var ToDate = $('#ToDate').val();
+            var ShowOpening = $('#ShowOpening').prop('checked') ? "YES" : "NO";
+
+            // Save history
+            saveHistory('ProfitAndLossGroup', {
+                parentCode: parentAccountCode,
+                FromDate: FromDate,
+                ToDate: ToDate,
+                ShowOpening: ShowOpening
+            });
+
+            // Save to sessionStorage
+            sessionStorage.setItem('ParentCode', parentAccountCode);
+            sessionStorage.setItem('ColumnValue', cellValue);
+            sessionStorage.setItem('ReportType', "GROUPSUMMARY");
+
+            // Mark current page
+            sessionStorage.setItem('CurrentPage', 'ProfitAndLossLedger');
+
+            // Redirect
+            window.location.href = '/TransactionLedger/Index';
+        }
+
+        function saveHistory(action, params = {}) {
+            // Load existing history or create empty
+            let history = JSON.parse(sessionStorage.getItem('HistoryStack')) || [];
+
+            // Push new action
+            history.push({ action, params });
+
+            // Save back
+            sessionStorage.setItem('HistoryStack', JSON.stringify(history));
+
+            // Show back button
+            $('#BackButton').show();
+        }
+
     </script>
 }

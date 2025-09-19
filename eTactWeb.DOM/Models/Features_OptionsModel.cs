@@ -45,14 +45,87 @@ namespace eTactWeb.DOM.Models
 		}
 
 		public string AllowMultipleBuyerInSaleOrder { get; set; }
-		public bool ShowHideEntryDetail { get; set; }
-		public bool ShowHideCustomerDetail { get; set; }
-		public bool ShowHideOtherRequiredDetail { get; set; }
-		public bool ShowHideCurrency { get; set; }
-		public bool ShowHideConsignee { get; set; }
-		public bool ShowHideScheduleDetail { get; set; }
-		public bool AllowToChangeStoreName { get; set; }
-		public bool HideOtherFieldOFDetailTable { get; set; }
+		[NotMapped]
+		public bool EditableRateAndDiscountONSaleInvoiceBool
+		{
+			get => EditableRateAndDiscountONSaleInvoice == "Y";
+			set => EditableRateAndDiscountONSaleInvoice = value ? "Y" : "N";
+		}
+
+		public string EditableRateAndDiscountONSaleInvoice { get; set; }
+		[NotMapped]
+		public bool ApproveSOForGenerateSaleInvoiceOrNotBool
+		{
+			get => ApproveSOForGenerateSaleInvoiceOrNot == "Y";
+			set => ApproveSOForGenerateSaleInvoiceOrNot = value ? "Y" : "N";
+		}
+
+		public string ApproveSOForGenerateSaleInvoiceOrNot { get; set; }
+
+		[NotMapped]
+		public bool ShowHideEntryDetailBool
+		{
+			get => ShowHideEntryDetail == "Y";
+			set => ShowHideEntryDetail = value ? "Y" : "N";
+		}
+		public string ShowHideEntryDetail { get; set; }
+
+		[NotMapped]
+		public bool ShowHideCustomerDetailBool
+		{
+			get => ShowHideCustomerDetail == "Y";
+			set => ShowHideCustomerDetail = value ? "Y" : "N";
+		}
+		public string ShowHideCustomerDetail { get; set; }
+
+		[NotMapped]
+		public bool ShowHideOtherRequiredDetailBool
+		{
+			get => ShowHideOtherRequiredDetail == "Y";
+			set => ShowHideOtherRequiredDetail = value ? "Y" : "N";
+		}
+		public string ShowHideOtherRequiredDetail { get; set; }
+
+		[NotMapped]
+		public bool ShowHideCurrencyBool
+		{
+			get => ShowHideCurrency == "Y";
+			set => ShowHideCurrency = value ? "Y" : "N";
+		}
+		public string ShowHideCurrency { get; set; }
+
+		[NotMapped]
+		public bool ShowHideConsigneeBool
+		{
+			get => ShowHideConsignee == "Y";
+			set => ShowHideConsignee = value ? "Y" : "N";
+		}
+		public string ShowHideConsignee { get; set; }
+
+		[NotMapped]
+		public bool ShowHideScheduleDetailBool
+		{
+			get => ShowHideScheduleDetail == "Y";
+			set => ShowHideScheduleDetail = value ? "Y" : "N";
+		}
+		public string ShowHideScheduleDetail { get; set; }
+
+		[NotMapped]
+		public bool AllowToChangeStoreNameBool
+		{
+			get => AllowToChangeStoreName == "Y";
+			set => AllowToChangeStoreName = value ? "Y" : "N";
+		}
+		public string AllowToChangeStoreName { get; set; }
+
+		[NotMapped]
+		public bool HideOtherFieldOFDetailTableBool
+		{
+			get => HideOtherFieldOFDetailTable == "Y";
+			set => HideOtherFieldOFDetailTable = value ? "Y" : "N";
+		}
+		public string HideOtherFieldOFDetailTable { get; set; }
+
 
 		public string AllowToChangeStoreInMRN { get; set; }
         public string ItemPartcodeGenerationFormat { get; set; }
@@ -224,7 +297,13 @@ namespace eTactWeb.DOM.Models
         public string AccAllowtochangeInvoiceNoDateinPurchaseBill { get; set; }
         public long ProdMaxNoofIteminWorkorder { get; set; }
         public string AccPasswordToAllowManualTax { get; set; }
-        public string AccSaleBillManualTaxAllowed { get; set; }
+		[NotMapped]
+		public bool AccSaleBillManualTaxAllowedBool
+		{
+			get => AccSaleBillManualTaxAllowed == "Y";
+			set => AccSaleBillManualTaxAllowed = value ? "Y" : "N";
+		}
+		public string AccSaleBillManualTaxAllowed { get; set; }
         public string POClosePOAlwaysAgainstIndent { get; set; }
         public string PONotAllowedWithoutPartCodePartyWiseDefinition { get; set; }
         public string AccAllowtochangeDocumnetinPurchaseBill { get; set; }

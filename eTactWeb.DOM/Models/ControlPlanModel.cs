@@ -13,6 +13,7 @@ namespace eTactWeb.DOM.Models
         public int Yearcode { get; set; }
         public string CC { get; set; }
         public string Mode { get; set; }
+        public string GridMode { get; set; }
         public string Entry_Date { get; set; }
         public string Control_PlanNo { get; set; }
         public string Flag { get; set; } = "";
@@ -59,7 +60,7 @@ namespace eTactWeb.DOM.Models
         public IFormFile? ItemImage { get; set; }
         public string? ItemImageURL { get; set; }
         public int CreatedBy { get; set; }
-        public int seqNo { get; set; }
+       
         public string ReportType { get; set; }
         public string Searchbox { get; set; }
         public IList<ControlPlanDetailModel> DTSSGrid { get; set; }
@@ -69,6 +70,7 @@ namespace eTactWeb.DOM.Models
     {
         public int SeqNo { get; set; }
         public string Mode { get; set; }
+        public string GridMode { get; set; }
         public string? CntPlanEntryDate { get; set; }
         public int CntPlanEntryId { get; set; }
         public int CntPlanYearCode { get; set; }
