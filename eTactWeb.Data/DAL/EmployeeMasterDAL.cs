@@ -81,6 +81,7 @@ namespace eTactWeb.Data.DAL
                         _EmployeeMasterModel.DOB = dr["DOB"].ToString();
                         _EmployeeMasterModel.Shift = dr["ShiftId"].ToString();
                         _EmployeeMasterModel.Active = dr["Active"].ToString();
+                        _EmployeeMasterModel.Gender = dr["Gender"].ToString();
                         _EmployeeMasterModel.DateOfResignation = dr["ResignationDate"].ToString();
                         _EmployeeMasterModel.NatureOfDuties = dr["NatureOfDuties"].ToString();
                     }
@@ -505,6 +506,7 @@ namespace eTactWeb.Data.DAL
                                                     EntryDate = dr["Entry_Date"].ToString(),
                                                     DateOfResignation = dr["ResignationDate"].ToString(),
                                                     DOB = dr["DOB"].ToString(),
+                                                    Gender = dr["Gender"].ToString(),
                                                     Active = dr["Active"].ToString()
                                                 }).ToList();
                 }
@@ -570,6 +572,7 @@ namespace eTactWeb.Data.DAL
                         oCmd.Parameters.AddWithValue("@shiftId", model.Shift);
                         oCmd.Parameters.AddWithValue("@Deptid", model.Department);
                         oCmd.Parameters.AddWithValue("@CategoryId", model.Category);
+                        oCmd.Parameters.AddWithValue("@Gender", model.Gender);
                         oCmd.Parameters.AddWithValue("@NatureOfDuties", model.NatureOfDuties);
                         oCmd.Parameters.AddWithValue("@active", "Y");
                         oCmd.Parameters.AddWithValue("@ResignationDate", dorDt);
