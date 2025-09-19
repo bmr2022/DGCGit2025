@@ -15,6 +15,8 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetAllowedAction(string Flag, int EmpId);
         Task<ResponseResult> SaveApproval(int EntryId, int YC, string PONO, string type,int EmpID);
         Task<List<POApprovalDetail>> ShowPODetail(int ID, int YearCode, string PoNo, string TypeOfApproval,string showonlyamenditem);
-
+        Task<ResponseResult> GetReportName();
+        Task<ResponseResult> GetFeaturesOptions();
+        Task<ResponseResult> GetMobileNo(int ID, int YearCode, string PoNo);
     }
 }
