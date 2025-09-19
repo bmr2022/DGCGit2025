@@ -179,47 +179,63 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+        
         [HttpGet]
         public async Task<IActionResult> SaveApproval(int EntryId, int YC, string PONO, string type)
         {
             int EmpID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+
+            var featuresResponse = await _IPOApproval.GetFeaturesOptions();
+         
+            string companyIp = "";
+            if (featuresResponse != null && featuresResponse.Result is DataTable dt1)
+            {
+                if (dt1.Rows.Count > 0)
+                {
+                    companyIp = dt1.Rows[0]["CompanyIPAddforwhatappMessage"].ToString();
+                }
+            }
+            if (!string.IsNullOrEmpty(companyIp))
+            {
+                companyIp = companyIp.Replace("\\", "/");
+            }
+
+
             var pdfResult = Pdf(EntryId, YC, PONO) as FileContentResult;
             byte[] pdfBytes = pdfResult.FileContents;
+
+            // Save to server folder
             string uploadsFolder = Path.Combine(_IWebHostEnvironment.WebRootPath, "uploads", $"PurchaseOrder_{YC}");
             if (!Directory.Exists(uploadsFolder))
             {
                 Directory.CreateDirectory(uploadsFolder);
             }
-            string fileName = $"{PONO}.pdf";
+
+            // Sanitize PONO for file name (remove invalid chars like / \ : * ? " < > |)
+            string safePONO = string.Join("_", PONO.Split(Path.GetInvalidFileNameChars()));
+            string fileName = $"{safePONO}.pdf";
             string filePath = Path.Combine(uploadsFolder, fileName);
 
+            // Save PDF locally
             System.IO.File.WriteAllBytes(filePath, pdfBytes);
-
-            var featuresResponse = await _IPOApproval.GetFeaturesOptions();
-
-            string companyIp = "";
-            if (featuresResponse != null && featuresResponse.Result is DataSet ds1)
-            {
-                if (ds1.Tables.Count > 0 && ds1.Tables[0].Rows.Count > 0)
-                {
-                    companyIp = ds1.Tables[0].Rows[0]["CompanyIPAddforwhatappMessage"].ToString();
-                }
-            }
+            companyIp = companyIp.TrimEnd('/');
+            string fileUrl = $"{companyIp}/uploads/PurchaseOrder_{YC}/{fileName}";
+         
             var MobileNoResponse = await _IPOApproval.GetMobileNo(EntryId, YC, PONO);
 
             string MobileNo = "";
-            if (featuresResponse != null && featuresResponse.Result is DataSet ds2)
+            if (MobileNoResponse != null && MobileNoResponse.Result is DataTable ds2)
             {
-                if (ds2.Tables.Count > 0 && ds2.Tables[0].Rows.Count > 0)
+                if (ds2.Rows.Count > 0)
                 {
-                    MobileNo = ds2.Tables[0].Rows[0]["MobileNo"].ToString();
+                    MobileNo = ds2.Rows[0]["MobileNo"].ToString();
                 }
             }
 
-            string fileUrl = companyIp + fileName;
+           // string fileUrl = companyIp + fileName;
             //$"{Request.Scheme}://{Request.Host}/uploads/PurchaseOrder_{YC}/{fileName}";
 
-            System.IO.File.WriteAllBytes(filePath, pdfBytes);
+         
             var queryParams = HttpUtility.ParseQueryString(string.Empty);
             queryParams["user"] = "XON_Cybernetics";
             queryParams["pass"] = "123456";
