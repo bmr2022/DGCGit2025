@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="09/02/2023 14:19:27" ReportInfo.Modified="05/21/2025 22:00:35" ReportInfo.CreatorVersion="2023.2.0.0">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="09/02/2023 14:19:27" ReportInfo.Modified="09/19/2025 13:23:11" ReportInfo.CreatorVersion="2023.2.0.0">
   <ScriptText>using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -30,31 +30,10 @@ namespace FastReport
       
     }
     
-    private void Text324_BeforePrint(object sender, EventArgs e)
-    {
-     
-        string poForValue = (string)Report.GetColumnValue(&quot;ReportData.POFor&quot;);
-       
-      if (poForValue == &quot;For Purchase&quot;)
-      {
-        Text324.Text = &quot;Purchase order&quot;;
-      }
-      else if (poForValue == &quot;For JobWork&quot;)
-      {
-        Text324.Text = &quot;Jobwork order&quot;;
-      }
-      else if (poForValue == &quot;For Service&quot;)
-      {
-        Text324.Text = &quot;Service order&quot;;
-      }
-      else
-      {
-        // Optional: Handle cases where none of the conditions are met
-        Text324.Text = &quot;Unknown order type&quot;;
-      }
+   
        
      
-    }
+    
   }
 }
 </ScriptText>
@@ -67,7 +46,7 @@ namespace FastReport
     <Style Name="EvenRows" Fill.Color="WhiteSmoke" Font="Arial, 10pt"/>
   </Styles>
   <Dictionary>
-    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqGVEBw+bD1302HhodPOki0mybnpuZKVLkWXI4YSXvoVCXDdUbv1TZOS4Qk6JbQnwOqsV1FfDeqhde6q/moiAFtWtgn2Ohm412Ff4biI8HpKzr+OW0DcmVsl+mcKaIGpcfBq3V8l22IWrJf8KvwU/afk7W/HqeACdv1UNzNJG/040o3aubD+6U97yLI9vK6UDHr2xeSWYN4p6RuTPce3L99BkMcKH71QenRtm5DDjzKlM=" ConnectionStringExpression="[MyParameter]">
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqwYf2D6LPIs5GRi9VfJb9gu9ucqaRfzVvUaVne08cIFURWyyEsxwQsmngwHHahRU53Rdpi/mRvEP5EY6xRPUNA9FXLz8VXUujBa3Q3ZgF3Cj9EMB1nf9j1nHVLVdD8TUylTo49c8yA0NbzqWsshMPKqpyqOIC3pE++vdGg1UpB+hq8Jo54UghS4PYzNGANrGQjL/TXYeb3ch0Wx2gA3ImBg==" ConnectionStringExpression="[MyParameter]">
       <TableDataSource Name="Table" Alias="ReportData" DataType="System.Int32" Enabled="true" SelectCommand="exec ReportData @EntryId=9,@yearCode=2025,@ShowOnlyAmendItem='N',@AmendNo=1">
         <Column Name="Account_Name" DataType="System.String"/>
         <Column Name="PartCode" DataType="System.String"/>
@@ -276,7 +255,6 @@ namespace FastReport
       <LineObject Name="Line140" Left="774.9" Top="133.06" Height="206.77"/>
       <TextObject Name="Text268" Left="406.35" Top="142.51" Width="359.1" Height="66.15" Text="[ReportData.VendorAddress]" Font="Arial, 10pt"/>
       <LineObject Name="Line187" Left="40.07" Top="340.2" Width="735.21"/>
-      <TextObject Name="Text270" Left="200.34" Top="9.45" Width="415.8" Height="37.8" Text=" AUTO COMPONENT" HorzAlign="Center" Font="Arial, 22pt, style=Bold"/>
       <TextObject Name="Text271" Left="406.35" Top="94.5" Width="113.4" Height="18.9" Text="Supplier Code:" Font="Arial, 10pt, style=Bold"/>
       <TextObject Name="Text273" Left="47.25" Top="113.4" Width="349.65" Height="18.9" Text="[ReportData.CompAdd]" Font="Arial, 9pt"/>
       <LineObject Name="Line188" Left="39.69" Height="85.05"/>
@@ -284,7 +262,6 @@ namespace FastReport
       <LineObject Name="Line190" Left="37.8" Width="735.21"/>
       <TextObject Name="Text276" Left="141.75" Top="189" Width="207.9" Height="18.9" Text="[ReportData.CompGSTNO]" Font="Arial, 9pt"/>
       <TextObject Name="Text277" Left="141.75" Top="170.1" Width="207.9" Height="18.9" Text="[ReportData.CompPANNo]" Font="Arial, 9pt"/>
-      <TextObject Name="Text278" Left="47.25" Top="94.5" Width="207.9" Height="18.9" Text="AUTO COMPONENT" Font="Arial, 10pt, style=Bold"/>
       <TextObject Name="Text279" Left="500.85" Top="226.8" Width="160.65" Height="18.9" Text="[ReportData.VendorGST]" Font="Arial, 10pt"/>
       <TextObject Name="Text281" Left="500.85" Top="207.9" Width="170.1" Height="18.9" Text="[ReportData.Vendorcity]" Font="Arial, 10pt"/>
       <TextObject Name="Text304" Left="500.85" Top="94.5" Width="160.65" Height="18.9" Text="[ReportData.Party_Code]" Font="Arial, 10pt, style=Bold"/>
@@ -292,12 +269,13 @@ namespace FastReport
       <TextObject Name="Text306" Left="500.85" Top="245.7" Width="160.65" Height="18.9" Text="[ReportData.Vendorpanno]" Font="Arial, 10pt"/>
       <TextObject Name="Text307" Left="141.75" Top="245.7" Width="207.9" Height="18.9" Text="[ReportData.POCloseDate]" Format="Date" Format.Format="D" Font="Arial, 10pt"/>
       <TextObject Name="Text308" Left="47.25" Top="245.7" Width="94.5" Height="18.9" Text="PO Close Dt:" Font="Arial, 10pt"/>
-      <TextObject Name="Text324" Left="236.25" Top="47.25" Width="321.3" Height="28.35" BeforePrintEvent="Text324_BeforePrint" HorzAlign="Center" Font="Arial, 16pt, style=Bold"/>
       <TextObject Name="Text325" Left="406.35" Top="292.95" Width="94.5" Height="18.9" Text="BANK NAME:" Font="Arial, 10pt"/>
       <TextObject Name="Text326" Left="406.35" Top="321.3" Width="94.5" Height="18.9" Text="IFSC CODE :" Font="Arial, 10pt"/>
       <TextObject Name="Text327" Left="576.45" Top="321.3" Width="94.5" Height="18.9" Text="A/C NO :" Font="Arial, 10pt"/>
+      <TextObject Name="Text330" Left="47.25" Top="85.05" Width="349.65" Height="18.9" CanGrow="true" CanBreak="false" Text="[ReportData.CompName]" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text331" Left="151.2" Top="18.9" Width="519.75" Height="28.35" CanGrow="true" CanBreak="false" Text="[ReportData.CompName]" HorzAlign="Center" Font="Arial, 18pt, style=Bold"/>
     </ReportTitleBand>
-    <PageHeaderBand Name="PageHeader1" Top="344.81" Width="782.46" Height="47.25">
+    <PageHeaderBand Name="PageHeader1" Top="344.16" Width="782.46" Height="47.25">
       <ShapeObject Name="Shape3" Left="39.69" Width="737.1" Height="47.25"/>
       <TextObject Name="Text115" Left="37.8" Top="4" Width="28.35" Height="28.35" Text="S. NO." HorzAlign="Center" Font="Arial, 8pt"/>
       <TextObject Name="Text116" Left="66.15" Top="13.45" Width="103.95" Height="28.35" Text="Part Number" HorzAlign="Center" Font="Arial, 8pt"/>
@@ -335,7 +313,7 @@ namespace FastReport
       <TextObject Name="Text309" Left="440.37" Top="12.47" Width="37.8" Height="18.9" Text="Disc" HorzAlign="Center" Font="Arial, 8pt"/>
       <LineObject Name="Line214" Left="444.15" Height="47.25"/>
     </PageHeaderBand>
-    <GroupHeaderBand Name="GroupHeader1" Top="395.9" Width="782.46" Height="28.35" Condition="[ReportData.PartCode]">
+    <GroupHeaderBand Name="GroupHeader1" Top="394.61" Width="782.46" Height="28.35" Condition="[ReportData.PartCode]">
       <TextObject Name="Text310" Left="75.6" Width="75.6" Height="28.35" Text="[ReportData.PartCode]" Font="Arial, 8pt"/>
       <TextObject Name="Text311" Left="160.65" Width="103.95" Height="28.35" Text="[ReportData.Item_Name]" Font="Arial, 8pt"/>
       <LineObject Name="Line216" Left="321.3" Height="28.35"/>
@@ -367,10 +345,10 @@ namespace FastReport
       <LineObject Name="Line230" Left="40.64" Height="28.35"/>
       <LineObject Name="Line231" Left="774.9" Height="28.35"/>
       <TextObject Name="Text238" Left="47.25" Width="18.9" Height="28.35" Text="[Row#]" Font="Arial, 8pt"/>
-      <DataBand Name="Data1" Top="428.1" Width="782.46" EvenStyle="EvenRows" Guides="0,0,0,0,0" DataSource="Table" KeepTogether="true"/>
-      <GroupFooterBand Name="GroupFooter1" Top="431.94" Width="782.46"/>
+      <DataBand Name="Data1" Top="426.16" Width="782.46" EvenStyle="EvenRows" Guides="0,0,0,0,0" DataSource="Table" KeepTogether="true"/>
+      <GroupFooterBand Name="GroupFooter1" Top="429.36" Width="782.46"/>
     </GroupHeaderBand>
-    <ReportSummaryBand Name="ReportSummary1" Top="481.22" Width="782.46" Height="351.54">
+    <ReportSummaryBand Name="ReportSummary1" Top="477.34" Width="782.46" Height="351.54">
       <TextObject Name="Text241" Left="47.25" Top="113.4" Width="378" Height="18.9" Text="[ReportData.NetAmtInWord]" Font="Arial, 8pt"/>
       <TextObject Name="Text167" Left="75.6" Top="189" Width="94.5" Height="18.9" Text="Prepared By:" Font="Arial, 10pt"/>
       <TextObject Name="Text170" Left="604.8" Top="189" Width="94.5" Height="18.9" Text="Approved By:" Font="Arial, 10pt"/>
@@ -405,7 +383,7 @@ namespace FastReport
       <TextObject Name="Text262" Left="510.3" Top="9.45" Width="47.25" Height="18.9" Text="Net Amt" HideZeros="true" Font="Arial, 8pt"/>
       <TextObject Name="Text328" Left="406.35" Top="189" Width="94.5" Height="18.9" Text="Verified By:" Font="Arial, 10pt"/>
       <TextObject Name="Text329" Left="189" Top="37.8" Width="207.9" Height="18.9" Text="[ReportData.ShippingAddress]" Font="Arial, 10pt"/>
-      <ChildBand Name="Child1" Top="435.79" Width="782.46" Height="41.58" FillUnusedSpace="true">
+      <ChildBand Name="Child1" Top="432.56" Width="782.46" Height="41.58" FillUnusedSpace="true">
         <LineObject Name="Line171" Left="39.69" Height="40.82"/>
         <LineObject Name="Line174" Left="774.9" Height="40.82"/>
         <LineObject Name="Line175" Left="75.6" Height="40.82"/>
@@ -424,8 +402,8 @@ namespace FastReport
         <LineObject Name="Line215" Left="444.15" Height="40.82"/>
       </ChildBand>
     </ReportSummaryBand>
-    <PageFooterBand Name="PageFooter1" Top="840.45" Width="782.46">
-      <ChildBand Name="Child2" Top="836.6" Width="782.46" FillUnusedSpace="true">
+    <PageFooterBand Name="PageFooter1" Top="835.28" Width="782.46">
+      <ChildBand Name="Child2" Top="832.08" Width="782.46" FillUnusedSpace="true">
         <LineObject Name="Line191" Left="39.69" Width="737.1"/>
       </ChildBand>
     </PageFooterBand>
