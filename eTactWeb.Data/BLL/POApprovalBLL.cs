@@ -29,6 +29,18 @@ namespace eTactWeb.Data.BLL
         {
             return await _POAppDAL.GetSearchData(FromDate, ToDate, ApprovalType, PONO, VendorName,Eid,uid);
         }
+        public async Task<ResponseResult> GetReportName()
+        {
+            return await _POAppDAL.GetReportName();
+        }
+        public async Task<ResponseResult> GetFeaturesOptions()
+        {
+            return await _POAppDAL.GetFeaturesOptions();
+        }
+        public async Task<ResponseResult> GetMobileNo(int ID, int YearCode, string PoNo)
+        {
+            return await _POAppDAL.GetMobileNo(ID, YearCode,PoNo);
+        }
         public async Task<ResponseResult> GetAllowedAction(string Flag, int EmpId)
         {
             return await _POAppDAL.GetAllowedAction(Flag,EmpId);
