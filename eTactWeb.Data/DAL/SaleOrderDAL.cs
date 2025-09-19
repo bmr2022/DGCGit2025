@@ -1339,7 +1339,7 @@ namespace eTactWeb.Data.DAL
                                 "AmmNo","AmmEffDate","Address","DeliveryAddress","ConsigneeAccountCode","OrderAmt","OrderNetAmt", "FreightPaidBy", "InsuApplicable", "ModeTransport","DeliverySch",
                                 "PackingChgApplicable", "DeliveryTerms", "SOComplete", "PreparedBy", "TotalDiscount", "SODeliveryDate", "TotalDisPercent", "TotalDiscAmt", "DespatchAdviseComplete", "PortToLoading", "PortOfDischarge",
                                 "ResponsibleSalesPersonID","CustContactPerson","SaleDocType","OtherDetail","SOConfirmDate","OrderDelayReason","Approved","ApprovedDate","ApprovedBy", "UID","UpdatedOn","UpdatedBy", "CreatedOn","RoundOff",
-                                "EntryByMachineName", "SalesPersonEmailId", "eMailFromCC1", "eMailFromCC2", "eMailFromCC3");
+                                "EntryByMachineName", "SalesPersonEmailId", "eMailFromCC1", "eMailFromCC2", "eMailFromCC3", "pendingAmt");
                         oDT.TableName = "SODASHBOARD";
 
                         Result.SODashboard = CommonFunc.DataTableToList<SaleOrderDashboard>(oDT);
@@ -1427,7 +1427,11 @@ namespace eTactWeb.Data.DAL
                     using (SqlCommand oCmd = new SqlCommand("SP_SaleOrder", myConnection))
                     {
                         oCmd.CommandType = CommandType.StoredProcedure;
-                        oCmd.Parameters.AddWithValue("@Flag", "SEARCH");
+                        if (model.SummaryDetail == "Summary")
+
+                            oCmd.Parameters.AddWithValue("@Flag", "dashboard");
+                        else
+                            oCmd.Parameters.AddWithValue("@Flag", "SEARCH");
                         oCmd.Parameters.AddWithValue("@CustomerName", model.CustomerName);
                         oCmd.Parameters.AddWithValue("@CustOrderNo", model.CustOrderNo);
                         oCmd.Parameters.AddWithValue("@Branch", model.CC);
@@ -1436,6 +1440,7 @@ namespace eTactWeb.Data.DAL
                         oCmd.Parameters.AddWithValue("@SOType", model.SOType);
                         oCmd.Parameters.AddWithValue("@ItemName", model.ItemName);
                         oCmd.Parameters.AddWithValue("@PartCode", model.PartCode);
+                        oCmd.Parameters.AddWithValue("@SOComplete", model.SOComplete);
                         //SqlParams.Add(new SqlParameter("@EntryDate", DateTime.ParseExact(model.EntryDate.ToString(), "dd-mm-yyyy", CultureInfo.InvariantCulture)));
 
                         oCmd.Parameters.AddWithValue("@StartDate", StartDate);
@@ -1452,7 +1457,7 @@ namespace eTactWeb.Data.DAL
                               "AmmNo", "AmmEffDate", "Address", "DeliveryAddress", "ConsigneeAccountCode", "OrderAmt", "OrderNetAmt", "FreightPaidBy", "InsuApplicable", "ModeTransport", "DeliverySch",
                               "PackingChgApplicable", "DeliveryTerms", "SOComplete", "PreparedBy", "TotalDiscount", "SODeliveryDate", "TotalDisPercent", "TotalDiscAmt", "DespatchAdviseComplete", "PortToLoading", "PortOfDischarge",
                               "ResponsibleSalesPersonID", "CustContactPerson", "SaleDocType", "OtherDetail", "SOConfirmDate", "OrderDelayReason", "Approved", "ApprovedDate", "ApprovedBy", "UID", "UpdatedOn", "UpdatedBy", "CreatedOn", "RoundOff",
-                              "EntryByMachineName","SalesPersonEmailId", "eMailFromCC1", "eMailFromCC2", "eMailFromCC3");
+                              "EntryByMachineName","SalesPersonEmailId", "eMailFromCC1", "eMailFromCC2", "eMailFromCC3", "pendingAmt");
 
                             oDT.TableName = "SODASHBOARD";
 

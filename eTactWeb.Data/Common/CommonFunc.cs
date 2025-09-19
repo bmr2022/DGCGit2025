@@ -545,6 +545,7 @@ public static class CommonFunc
                     && typeProperty.PropertyInfo.Name != "BranchList" && typeProperty.PropertyInfo.Name != "SummaryDetail"
                     && typeProperty.PropertyInfo.Name != "eMailFromCC1" && typeProperty.PropertyInfo.Name != "eMailFromCC2" 
                     && typeProperty.PropertyInfo.Name != "eMailFromCC3"
+                    && typeProperty.PropertyInfo.Name != "pendingAmt"
                     && typeProperty.PropertyInfo.Name != "SalesPersonEmailId"
                     && typeProperty.PropertyInfo.Name != "ConsigneeAccountName" && typeProperty.PropertyInfo.Name != "SODelivery" && typeProperty.PropertyInfo.Name != "ResposibleSalesPersonID")
                     {
