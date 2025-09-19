@@ -220,7 +220,7 @@ namespace eTactWeb.Controllers
             System.IO.File.WriteAllBytes(filePath, pdfBytes);
             companyIp = companyIp.TrimEnd('/');
             string fileUrl = $"{companyIp}/uploads/PurchaseOrder_{YC}/{fileName}";
-         
+
             var MobileNoResponse = await _IPOApproval.GetMobileNo(EntryId, YC, PONO);
 
             string MobileNo = "";
@@ -249,10 +249,10 @@ namespace eTactWeb.Controllers
             queryParams["url"] = fileUrl;
 
             var apiUrl = $"{BaseUrl}?{queryParams}";
-
+            ViewBag.pdfUrl = fileUrl;
             var response = await _httpClient.GetAsync(apiUrl);
             var responseContent = await response.Content.ReadAsStringAsync();
-          
+            ViewBag.responseContent = responseContent;
             var Result = await _IPOApproval.SaveApproval(EntryId, YC, PONO, type, EmpID);
 
             if (Result != null)
