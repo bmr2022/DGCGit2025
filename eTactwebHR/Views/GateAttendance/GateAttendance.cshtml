@@ -9,7 +9,7 @@
     <div class="alert alert-success">@ViewBag.Message</div>
 }
 <div class="card bg-gradient mb-3 border-light shadow-lg">
-    <form asp-action="GateAttendance" autocomplete="off" class="form-horizontal" method="post" @* onsubmit="prepareAttendanceBeforeSubmit(event)" *@ enctype="multipart/form-data">
+    <form asp-action="GateAttendance" autocomplete="off" class="form-horizontal" method="post"  enctype="multipart/form-data">
         <input type="hidden" asp-for="Mode" value="@Model.Mode" />
         <input type="hidden" asp-for="EID" />
         <div class="card-header card-headerBG text-light bg-gradient">
