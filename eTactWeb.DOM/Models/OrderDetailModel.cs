@@ -105,6 +105,7 @@ namespace eTactWeb.DOM.Models
         public string? CC { get; set; }
         public int HSNNO { get; set; }
         public float Qty{ get; set; }
+        public float pendingAmt { get; set; }
         public string Unit { get; set; }
         public float AltQty{ get; set; }
         public string AltUnit{ get; set; }
