@@ -204,19 +204,18 @@ namespace eTactWeb.Controllers
             var pdfResult = Pdf(EntryId, YC, PONO) as FileContentResult;
             byte[] pdfBytes = pdfResult.FileContents;
 
-            // Save to server folder
             string uploadsFolder = Path.Combine(_IWebHostEnvironment.WebRootPath, "uploads", $"PurchaseOrder_{YC}");
             if (!Directory.Exists(uploadsFolder))
             {
                 Directory.CreateDirectory(uploadsFolder);
             }
 
-            // Sanitize PONO for file name (remove invalid chars like / \ : * ? " < > |)
+            
             string safePONO = string.Join("_", PONO.Split(Path.GetInvalidFileNameChars()));
-            string fileName = $"{safePONO}.pdf";
+            string fileName = $"{EntryId}.pdf";
             string filePath = Path.Combine(uploadsFolder, fileName);
 
-            // Save PDF locally
+         
             System.IO.File.WriteAllBytes(filePath, pdfBytes);
             companyIp = companyIp.TrimEnd('/');
             string fileUrl = $"{companyIp}/uploads/PurchaseOrder_{YC}/{fileName}";
