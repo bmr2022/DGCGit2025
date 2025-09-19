@@ -61,6 +61,7 @@ public class GateInwardDashboard
     public int SchYearCode { get; set; }
     public string? POtype { get; set; }
     public string? SchNo { get; set; }
+   
     public string? Unit { get; set; }
     public string? AltUnit { get; set; }
     public string? Size { get; set; }
@@ -285,6 +286,8 @@ public class GateInwardModel : GateInwardItemDetail
     public string? Transporter { get; set; }
     public string? Truck { get; set; }
     public int? docTypeId { get; set; }
+    public string? RecUnit { get; set; }
+
     public string? DriverName { get; set; }
     public string? BiltyNo { get; set; }
     public string? BiltyDate { get; set; }

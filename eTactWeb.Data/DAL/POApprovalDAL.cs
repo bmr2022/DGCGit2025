@@ -99,7 +99,7 @@ namespace eTactWeb.Data.DAL
             try
             {
                 var SqlParams = new List<dynamic>();
-                SqlParams.Add(new SqlParameter("@Flag", "GetFeaturesOptions"));
+                SqlParams.Add(new SqlParameter("@Flag", "GetwhatsappMobileNo"));
                 SqlParams.Add(new SqlParameter("@PoNo", PoNo));
                 SqlParams.Add(new SqlParameter("@POEntryId", ID));
                 SqlParams.Add(new SqlParameter("@Poyearcode", YearCode));
