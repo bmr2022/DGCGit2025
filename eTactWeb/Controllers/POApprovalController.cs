@@ -4,6 +4,7 @@ using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using FastReport;
 using FastReport.Export.PdfSimple;
+using FastReport.Web;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
@@ -38,7 +39,7 @@ namespace eTactWeb.Controllers
         {
             return View();
         }
-        public IActionResult Pdf(int EntryId, int YearCode, string PONO)
+        public IActionResult Pdf(int EntryId, int YearCode, string PONO, string ShowOnlyAmendItem = "", int AmmNo = 0)
         {
             try
             {
@@ -64,6 +65,8 @@ namespace eTactWeb.Controllers
                 report.SetParameterValue("entryparam", EntryId);
                 report.SetParameterValue("yearparam", YearCode);
                 report.SetParameterValue("ponoparam", PONO);
+                report.SetParameterValue("ShowOnlyAmendItemparam", ShowOnlyAmendItem);
+                report.SetParameterValue("AmmNo", AmmNo);
 
                 // Set connection string
                 string myConnectionString = _connectionStringService.GetConnectionString();
@@ -183,75 +186,102 @@ namespace eTactWeb.Controllers
         [HttpGet]
         public async Task<IActionResult> SaveApproval(int EntryId, int YC, string PONO, string type)
         {
+            string ShowOnlyAmendItem = "";
+            int AmmNo = 0;
             int EmpID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
 
             var featuresResponse = await _IPOApproval.GetFeaturesOptions();
-         
             string companyIp = "";
+            bool sendWhatsApp = false;
+
+            //if (featuresResponse != null && featuresResponse.Result is DataTable dt1)
+            //{
+            //    if (dt1.Rows.Count > 0)
+            //    {
+            //        companyIp = dt1.Rows[0]["CompanyIPAddforwhatappMessage"].ToString();
+            //    }
+            //}
+            //if (!string.IsNullOrEmpty(companyIp))
+            //{
+            //    companyIp = companyIp.Replace("\\", "/");
+            //}
+
             if (featuresResponse != null && featuresResponse.Result is DataTable dt1)
             {
                 if (dt1.Rows.Count > 0)
                 {
+                    // Get the first value (IP address)
                     companyIp = dt1.Rows[0]["CompanyIPAddforwhatappMessage"].ToString();
+
+                    // Check if the second value exists and if it's "yes"
+                    // Assuming the second column is named "SendWhatsApp" or similar
+                    if (dt1.Columns.Contains("SendWhatsApp")) // Check if column exists
+                    {
+                        string whatsAppFlag = dt1.Rows[0]["SendWhatsAppPO"].ToString();
+                        sendWhatsApp = whatsAppFlag.Equals("yes", StringComparison.OrdinalIgnoreCase);
+                    }
                 }
             }
-            if (!string.IsNullOrEmpty(companyIp))
+            if (sendWhatsApp && !string.IsNullOrEmpty(companyIp))
             {
-                companyIp = companyIp.Replace("\\", "/");
-            }
-
-
-            var pdfResult = Pdf(EntryId, YC, PONO) as FileContentResult;
-            byte[] pdfBytes = pdfResult.FileContents;
-
-            string uploadsFolder = Path.Combine(_IWebHostEnvironment.WebRootPath, "uploads", $"PurchaseOrder_{YC}");
-            if (!Directory.Exists(uploadsFolder))
-            {
-                Directory.CreateDirectory(uploadsFolder);
-            }
-
-            
-            string safePONO = string.Join("_", PONO.Split(Path.GetInvalidFileNameChars()));
-            string fileName = $"{EntryId}.pdf";
-            string filePath = Path.Combine(uploadsFolder, fileName);
-
-         
-            System.IO.File.WriteAllBytes(filePath, pdfBytes);
-            companyIp = companyIp.TrimEnd('/');
-            string fileUrl = $"{companyIp}/uploads/PurchaseOrder_{YC}/{fileName}";
-
-            var MobileNoResponse = await _IPOApproval.GetMobileNo(EntryId, YC, PONO);
-
-            string MobileNo = "";
-            if (MobileNoResponse != null && MobileNoResponse.Result is DataTable ds2)
-            {
-                if (ds2.Rows.Count > 0)
+                // Process the IP address if it exists
+                if (!string.IsNullOrEmpty(companyIp))
                 {
-                    MobileNo = ds2.Rows[0]["MobileNo"].ToString();
+                    companyIp = companyIp.Replace("\\", "/");
                 }
+
+                var pdfResult = Pdf(EntryId, YC, PONO, ShowOnlyAmendItem, AmmNo) as FileContentResult;
+                byte[] pdfBytes = pdfResult.FileContents;
+
+                string uploadsFolder = Path.Combine(_IWebHostEnvironment.WebRootPath, "uploads", $"PurchaseOrder_{YC}");
+                if (!Directory.Exists(uploadsFolder))
+                {
+                    Directory.CreateDirectory(uploadsFolder);
+                }
+
+
+                string safePONO = string.Join("_", PONO.Split(Path.GetInvalidFileNameChars()));
+                string fileName = $"{EntryId}.pdf";
+                string filePath = Path.Combine(uploadsFolder, fileName);
+
+
+                System.IO.File.WriteAllBytes(filePath, pdfBytes);
+                companyIp = companyIp.TrimEnd('/');
+                string fileUrl = $"{companyIp}/uploads/PurchaseOrder_{YC}/{fileName}";
+
+                var MobileNoResponse = await _IPOApproval.GetMobileNo(EntryId, YC, PONO);
+
+                string MobileNo = "";
+                if (MobileNoResponse != null && MobileNoResponse.Result is DataTable ds2)
+                {
+                    if (ds2.Rows.Count > 0)
+                    {
+                        MobileNo = ds2.Rows[0]["MobileNo"].ToString();
+                    }
+                }
+
+                // string fileUrl = companyIp + fileName;
+                //$"{Request.Scheme}://{Request.Host}/uploads/PurchaseOrder_{YC}/{fileName}";
+
+
+                var queryParams = HttpUtility.ParseQueryString(string.Empty);
+                queryParams["user"] = "XON_Cybernetics";
+                queryParams["pass"] = "123456";
+                queryParams["sender"] = "BUZWAP";
+                queryParams["phone"] = MobileNo;
+                queryParams["text"] = "xon_temp";
+                queryParams["priority"] = "wa";
+                queryParams["stype"] = "normal";
+                queryParams["htype"] = "document";
+                queryParams["fname"] = "PDF File";
+                queryParams["url"] = fileUrl;
+
+                var apiUrl = $"{BaseUrl}?{queryParams}";
+                ViewBag.pdfUrl = fileUrl;
+                var response = await _httpClient.GetAsync(apiUrl);
+                var responseContent = await response.Content.ReadAsStringAsync();
+                ViewBag.responseContent = responseContent;
             }
-
-           // string fileUrl = companyIp + fileName;
-            //$"{Request.Scheme}://{Request.Host}/uploads/PurchaseOrder_{YC}/{fileName}";
-
-         
-            var queryParams = HttpUtility.ParseQueryString(string.Empty);
-            queryParams["user"] = "XON_Cybernetics";
-            queryParams["pass"] = "123456";
-            queryParams["sender"] = "BUZWAP";
-            queryParams["phone"] = MobileNo;
-            queryParams["text"] = "xon_temp";
-            queryParams["priority"] = "wa";
-            queryParams["stype"] = "normal";
-            queryParams["htype"] = "document";
-            queryParams["fname"] = "PDF File";
-            queryParams["url"] = fileUrl;
-
-            var apiUrl = $"{BaseUrl}?{queryParams}";
-            ViewBag.pdfUrl = fileUrl;
-            var response = await _httpClient.GetAsync(apiUrl);
-            var responseContent = await response.Content.ReadAsStringAsync();
-            ViewBag.responseContent = responseContent;
             var Result = await _IPOApproval.SaveApproval(EntryId, YC, PONO, type, EmpID);
 
             if (Result != null)
