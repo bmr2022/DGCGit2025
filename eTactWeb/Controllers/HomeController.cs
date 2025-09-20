@@ -14,6 +14,7 @@ using eTactWeb.DOM.Models;
 using Newtonsoft.Json;
 using ClosedXML.Excel;
 using eTactWeb.Helpers;
+using Microsoft.AspNetCore.Hosting;
 
 namespace eTactWeb.Controllers;
 
@@ -31,7 +32,8 @@ public class HomeController : Controller
     private bool IsDrOpen = false;
     private string sql = string.Empty;
     private string year_code;
-    public HomeController(IConfiguration config, ILogger<HomeController> logger, IDataLogic iDataLogic, EncryptDecrypt encryptDecrypt, IConnectionStringHelper connectionStringHelper, UserContextService userContextService, ConnectionStringService connectionStringService,IDashboard IDashboard)
+    private readonly IWebHostEnvironment _IWebHostEnvironment;
+    public HomeController(IWebHostEnvironment iWebHostEnvironment, IConfiguration config, ILogger<HomeController> logger, IDataLogic iDataLogic, EncryptDecrypt encryptDecrypt, IConnectionStringHelper connectionStringHelper, UserContextService userContextService, ConnectionStringService connectionStringService,IDashboard IDashboard)
     {
         _logger = logger;
         this._IDataLogic = iDataLogic;
@@ -41,6 +43,7 @@ public class HomeController : Controller
         _userContextService = userContextService;
         _connectionStringService = connectionStringService;
         _IDashboard = IDashboard;
+        _IWebHostEnvironment = iWebHostEnvironment;
     }
     [HttpPost]
     public JsonResult AutoComplete(string Schema, string ColName, string prefix, string FromDate = "", string ToDate = "", int ItemCode = 0, int Storeid = 0)
@@ -238,24 +241,56 @@ public class HomeController : Controller
     }
     [HttpGet]
     [Route("GetServerNames")]
+    //public IActionResult GetServerName()
+    //{
+    //    var __configuration = new ConfigurationBuilder()
+    //        .AddJsonFile("appsettings.json")
+    //        .Build();
+
+    //    // Retrieve connection string
+    //    string connectionString = __configuration.GetConnectionString("eTactDB");
+
+    //    // Extract server name
+    //    string serverName = GetServerNameFromConnectionString(connectionString);
+    //    try
+    //    {
+
+    //        string lines = serverName; // Split by line breaks
+    //        return Ok(new { Lines = lines });
+    //    }
+    //    catch (FileNotFoundException ex)
+    //    {
+    //        return StatusCode(500, $"An error occurred: {ex.Message}");
+    //    }
+    //}
     public IActionResult GetServerName()
     {
-        var __configuration = new ConfigurationBuilder()
-            .AddJsonFile("appsettings.json")
-            .Build();
-
-        // Retrieve connection string
-        string connectionString = __configuration.GetConnectionString("eTactDB");
-
-        // Extract server name
-        string serverName = GetServerNameFromConnectionString(connectionString);
         try
         {
+            // Get the path to wwwroot
+            string webRootPath = _IWebHostEnvironment.WebRootPath;
 
-            string lines = serverName; // Split by line breaks
+            // Construct the path to your text file
+            string contentRootPath = _IWebHostEnvironment.ContentRootPath;
+            //string webRootPath1 = _IWebHostEnvironment.WebRootPath;
+            string filePath = Path.Combine(webRootPath,  "servername.txt");
+
+            // Check if the file exists
+            if (!System.IO.File.Exists(filePath))
+            {
+                return StatusCode(500, "Server name file not found");
+            }
+
+            // Read all text from the file
+            string serverName = System.IO.File.ReadAllText(filePath);
+
+            // Trim any whitespace and return
+            serverName = serverName.Trim();
+
+            string lines = serverName;
             return Ok(new { Lines = lines });
         }
-        catch (FileNotFoundException ex)
+        catch (Exception ex)
         {
             return StatusCode(500, $"An error occurred: {ex.Message}");
         }
