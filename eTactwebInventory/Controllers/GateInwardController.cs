@@ -569,7 +569,12 @@ namespace eTactWeb.Controllers
             var MainModel = new GateInwardModel();
             return PartialView("_GateInwardGrid", MainModel);
         }
-
+        public async Task<JsonResult> GetFeatureOption()
+        {
+            var JSON = await _IGateInward.GetFeatureOption();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
         public async Task<IActionResult> GetSearchData(string VendorName, string Gateno, string ItemName, string PartCode, string DocName, string PONO, string ScheduleNo, string FromDate, string ToDate, string DashboardType, int pageNumber = 1, int pageSize = 10, string SearchBox = "")
         {
             //model.Mode = "Search";
@@ -888,6 +893,7 @@ namespace eTactWeb.Controllers
 
             model.AccountList = await _IDataLogic.GetDropDownList("CREDITORDEBTORLIST", "F", "SP_GetDropDownList");
             model.DocumentList = await _IDataLogic.GetDropDownList("DocumentList", "SP_GetDropDownList");
+            model.RecUnitList = await _IDataLogic.GetDropDownList("RecUnitList", "SP_GetDropDownList");
             model.ProcessList = await _IDataLogic.GetDropDownList("ProcessList", "SP_GetDropDownList");
             //model.PONO = await _IDataLogic.GetDropDownList("PENDINGPOLIST","I", "SP_GateMainDetail");
 

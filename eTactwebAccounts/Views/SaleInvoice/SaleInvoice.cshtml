@@ -5189,7 +5189,7 @@
 
                         var obj = $.parseJSON(result);
                         $('#DocTypeAccountCode').empty();
-                        $('#DocTypeAccountCode').append('<option value="0">-Select-</option>');
+                        // $('#DocTypeAccountCode').append('<option value="0">-Select-</option>');
                         if (obj.StatusCode != 500) {
                             $.each(obj.Result.Table, function (index, val) {
                                 $('#DocTypeAccountCode').append("<option value=" + val.Account_Code + ">" + val.Account_Name + "</option>");

@@ -147,6 +147,12 @@ namespace eTactWeb.Controllers
             return View(MainModel);
 
         }
+        public async Task<JsonResult> GetFeatureOption()
+        {
+            var JSON = await IDirectPurchaseBill.GetFeatureOption();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
 
         [HttpPost]
         public async Task<IActionResult> DirectPurchaseBill(DirectPurchaseBillModel model)

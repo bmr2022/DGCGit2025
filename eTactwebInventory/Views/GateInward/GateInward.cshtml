@@ -179,11 +179,12 @@
                                         <option value="" disabled selected>-Select-</option>
                                     </select>
                                 </div>
-                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12 RecUnitgateentry">
                                     <label asp-for="RecUnit" class="form-label">Rec Unit</label>
-                                    <select class="form-select" data-abcd="10" asp-for="RecUnit">
-                                        <option value="">-Select-</option>
+                                    <select class="form-select" asp-for="RecUnit" data-abcd="4" asp-items="@(new SelectList(Model.RecUnitList,"Value","Text"))">
+                                        <option value="" disabled selected>-Select-</option>
                                     </select>
+                                   
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-3 col-xs-12">
                                     <label asp-for="InvoiceDate" class="form-label" style="color: red;">Invoice date*</label>
@@ -784,8 +785,34 @@
                                                           alert("Please select a valid PO No and ensure PO Year is filled in.");
                                             }
                     }
+                      function GetFeatureOption() {
 
-                                                    function redirectToPOEdit(yearCode, entryId) {
+             $.ajax({
+                 type: "POST",
+                 data: {},
+                 url: "@Url.Action("GetFeatureOption")",
+                 dataType: "json",
+                 success: function (result, status, error) {
+
+                     if (result != null) {
+                         var obj = $.parseJSON(result);
+                         if (obj.Result != null) {
+
+                               if (obj.Result[0].allowforRecUnitgateentry === "Y") {
+                                 $('.RecUnitgateentry').show();
+                             } else {
+                                         $('.RecUnitgateentry').hide();
+                             }
+
+      
+
+                         }
+                     }
+                 }
+             });
+         }
+
+          function redirectToPOEdit(yearCode, entryId) {
 
                                  
                                                               if (!formRights.pooptView) {
@@ -806,8 +833,6 @@
                         }
         $(document).ready(function () {
 
-
-                   
                     if ('@Model.Mode' != '' && parseInt('@Model.ID') != 0) {
                        
                     }
@@ -823,6 +848,7 @@
 
                 
             PoNoFormRights();
+                    GetFeatureOption();
             $('#UpdateButton').click(function (e) {
                 e.preventDefault();
                 var Entrydate = $('#EntryDate').val();

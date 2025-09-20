@@ -286,7 +286,7 @@ public class GateInwardModel : GateInwardItemDetail
     public string? Transporter { get; set; }
     public string? Truck { get; set; }
     public int? docTypeId { get; set; }
-    public string? RecUnit { get; set; }
+    public int? RecUnit { get; set; }
 
     public string? DriverName { get; set; }
     public string? BiltyNo { get; set; }
@@ -359,6 +359,7 @@ public class GateInwardModel : GateInwardItemDetail
     public string DashboardTypeBack { get; set; }
     public IList<TextValue>? AccountList { get; set; }
     public IList<TextValue>? DocumentList { get; set; }
+    public IList<TextValue>? RecUnitList { get; set; }
      public int TotalRecords { get; set; }
         public int PageNumber { get; set; }
         public int PageSize { get; set; }

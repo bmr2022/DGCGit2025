@@ -136,21 +136,21 @@
                                                     <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO No</th>
                                                     <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Year</th>
                                                     <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Date</th>
-                                                    <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Schedule No</th>
-                                                    <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Schedule Year</th>
-                                                    <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Schedule Date</th>
+                                                    <th data-columnno="8" data-sortorder="asc" class="sortCol  DirectPurchaseBillScheduleDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Schedule No</th>
+                                                    <th data-columnno="9" data-sortorder="asc" class="sortCol DirectPurchaseBillScheduleDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Schedule Year</th>
+                                                    <th data-columnno="10" data-sortorder="asc" class="sortCol DirectPurchaseBillScheduleDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Schedule Date</th>
                                                     <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>HSN No</th>
                                                     <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Qty</th>
                                                     <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unit</th>
                                                     <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bill Qty</th>
                                                     <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rate</th>
-                                                    <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rate In Oth Curr.</th>
+                                                    <th data-columnno="15" data-sortorder="asc" class="sortCol OtherFieldOFDirectPurchaseBillDetailTable"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rate In Oth Curr.</th>
                                                     <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Disc %</th>
                                                     <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Disc Rs.</th>
                                                     <th data-columnno="18" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Amount</th>
-                                                    <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Process</th>
+                                                    <th data-columnno="19" data-sortorder="asc" class="sortCol OtherFieldOFDirectPurchaseBillDetailTable"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Process</th>
                                                     <th data-columnno="20" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Description</th>
-                                                    <th data-columnno="21" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Cost Center</th>
+                                                    <th data-columnno="21" data-sortorder="asc" class="sortCol OtherFieldOFDirectPurchaseBillDetailTable"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Cost Center</th>
                                                 </tr>
                                             </thead>
                                             <tbody id="divPOItemList">
@@ -345,6 +345,67 @@
             window.history.back();
         }
         var actualRate = 0;
+              function GetFeatureOption() {
+            $.ajax({
+                type: "POST",
+                data: {},
+                url: "@Url.Action("GetFeatureOption")",
+                dataType: "json",
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.Result != null && obj.Result.length > 0) {
+                            var feature = obj.Result[0];
+
+                            // New DirectPurchaseBill flags
+                            if (feature.ShowHideDirectPurchaseBillEntryDetail === "N") {
+                                $('.DirectPurchaseBillEntryDetail').hide();
+                            } else {
+                                $('.DirectPurchaseBillEntryDetail').show();
+                            }
+
+                            if (feature.ShowHideDirectPurchaseBillCustomerDetail === "N") {
+                                $('.DirectPurchaseBillCustomerDetail').hide();
+                            } else {
+                                $('.DirectPurchaseBillCustomerDetail').show();
+                            }
+
+                            if (feature.ShowHideDirectPurchaseBillOtherRequiredDetail === "N") {
+                                $('.DirectPurchaseBillOtherRequiredDetail').hide();
+                            } else {
+                                $('.DirectPurchaseBillOtherRequiredDetail').show();
+                            }
+
+                            if (feature.ShowHideDirectPurchaseBillCurrency === "N") {
+                                $('.DirectPurchaseBillCurrency').hide();
+                            } else {
+                                $('.DirectPurchaseBillCurrency').show();
+                            }
+
+                            if (feature.ShowHideDirectPurchaseBillConsignee === "N") {
+                                $('.DirectPurchaseBillConsignee').hide();
+                            } else {
+                                $('.DirectPurchaseBillConsignee').show();
+                            }
+
+                            if (feature.ShowHideDirectPurchaseBillScheduleDetail === "N") {
+                                $('.DirectPurchaseBillScheduleDetail').hide();
+                            } else {
+                                $('.DirectPurchaseBillScheduleDetail').show();
+                            }
+
+                            if (feature.HideOtherFieldOFDirectPurchaseBillDetailTable === "N") {
+                                $('.OtherFieldOFDirectPurchaseBillDetailTable').hide();
+                            } else {
+                                $('.OtherFieldOFDirectPurchaseBillDetailTable').show();
+                            }
+
+                         
+                        }
+                    }
+                }
+            });
+        }
 
         $(function () {
             $('#EntryByMachineName').val($('#machineName').text());
@@ -365,8 +426,7 @@
                     $('#EntryTime').val(time);
                 }, 1000);
             }
-
-
+    
             AutoComplete('VDirectPurchaseBillMain', 'ModeOFTransport', 'ModeOFTransport', null);
             AutoComplete('VDirectPurchaseBillMain', 'DeliverySch', 'DeliverySch', null);
             AutoComplete('VDirectPurchaseBillMain', 'PackingChg', 'PackingChg', null);
@@ -421,6 +481,8 @@
             $('#ItemCode').select2();
             $('#PONo').select2();
             $('#ScheduleNo').select2();
+                    GetFeatureOption();
+
             GetFormRights();
             CalculateRate();
             LockedFinancialYear();

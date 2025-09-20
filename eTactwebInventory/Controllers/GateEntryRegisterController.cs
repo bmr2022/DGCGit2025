@@ -29,14 +29,22 @@ namespace eTactWeb.Controllers
             this.iconfiguration = iconfiguration;
 			_MemoryCache = iMemoryCache;
 		}
+        //[Route("{controller}/Index")]
+        //public IActionResult GateEntryRegister()
+        //{
+        //    var model = new GateEntryRegisterModel();
+        //    model.GateEntryRegisterDetail = new List<GateEntryRegisterDetail>();
+        //    return View(model);
+        //}
         [Route("{controller}/Index")]
-        public IActionResult GateEntryRegister()
+        public async Task<IActionResult> GateEntryRegister()
         {
             var model = new GateEntryRegisterModel();
+            model.RecUnitList = await _IDataLogic.GetDropDownList("RecUnitList", "SP_GetDropDownList");
             model.GateEntryRegisterDetail = new List<GateEntryRegisterDetail>();
             return View(model);
         }
-        public async Task<IActionResult> GetGateRegisterData(string ReportType, string FromDate, string ToDate, string gateno, string docname, string PONo, string Schno, string PartCode, string ItemName, string invoiceNo, string VendorName, int pageNumber = 1, int pageSize = 50, string SearchBox = "")
+        public async Task<IActionResult> GetGateRegisterData(string ReportType, string FromDate, string ToDate, string gateno, string docname, string PONo, string Schno, string PartCode, string ItemName, string invoiceNo, string VendorName,int RecUnit, int pageNumber = 1, int pageSize = 50, string SearchBox = "")
         {
             var model = new GateEntryRegisterModel();
             if (string.IsNullOrEmpty(gateno)||gateno == "0" )
@@ -56,7 +64,7 @@ namespace eTactWeb.Controllers
             if (string.IsNullOrEmpty(VendorName) || VendorName == "0")
             { VendorName = ""; }
        
-            model = await _IGateEntryRegister.GetGateRegisterData(ReportType,  FromDate,  ToDate,  gateno,  docname,  PONo,  Schno,  PartCode,  ItemName,  invoiceNo,  VendorName);
+            model = await _IGateEntryRegister.GetGateRegisterData(ReportType,  FromDate,  ToDate,  gateno,  docname,  PONo,  Schno,  PartCode,  ItemName,  invoiceNo,  VendorName,RecUnit);
             model.ReportMode= ReportType;
 
 			var modelList = model?.GateEntryRegisterDetail ?? new List<GateEntryRegisterDetail>();
@@ -287,6 +295,12 @@ namespace eTactWeb.Controllers
 
                 row++;
             }
+        }
+        public async Task<JsonResult> GetFeatureOption()
+        {
+            var JSON = await _IGateEntryRegister.GetFeatureOption();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
         }
         private void EXPORT_GateEntryRegisterItemSummGrid(IXLWorksheet sheet, IList<GateEntryRegisterDetail> list)
         {

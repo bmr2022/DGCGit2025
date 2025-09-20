@@ -449,6 +449,14 @@ namespace eTactWeb.Data.DAL
                                     Text = Reader[Constants.DocName].ToString(),
                                     Value = Reader[Constants.EntryID].ToString()
                                 };
+                            } 
+                            else if (Flag == "RecUnitList")
+                            {
+                                Listval = new TextValue()
+                                {
+                                    Text = Reader[Constants.RecStoreName].ToString(),
+                                    Value = Reader[Constants.RecStoreId].ToString()
+                                };
                             }
                             else if (Flag == "COSTCENTER")
                             {

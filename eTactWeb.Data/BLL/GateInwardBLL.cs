@@ -119,6 +119,10 @@ namespace eTactWeb.Data.BLL
         public async Task<ResponseResult> GetDashboardData()
         {
             return await _GateInwardDAL.GetDashboardData();
+        }  
+        public async Task<ResponseResult> GetFeatureOption()
+        {
+            return await _GateInwardDAL.GetFeatureOption();
         } 
        
 

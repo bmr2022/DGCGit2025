@@ -5,19 +5,19 @@
     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
         <label asp-for="TxType" class="form-label" style="color: red;">Type*</label>
         <select class="form-select" asp-for="TxType" asp-items="Model.TaxList">
-            <option>-Select-</option>
+            @* <option>-Select-</option> *@
         </select>
     </div>
     <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
         <label asp-for="TxPartCode" class="form-label" style="color: red;">Part Code*</label>
         <select class="form-select" asp-for="TxPartCode" onchange="SetTxPartItem(this.id,'TxItemCode');">
-            <option value="0">-Select-</option>
+            @* <option value="0">-Select-</option> *@
         </select>
     </div>
     <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-xs-12">
         <label asp-for="TxItemCode" class="form-label" style="color: red;">Item Name*</label>
         <select class="form-select" asp-for="TxItemCode" onchange="SetTxPartItem(this.id,'TxPartCode');">
-            <option value="0">-Select-</option>
+            @* <option value="0">-Select-</option> *@
         </select>
     </div>
     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
@@ -86,7 +86,7 @@
                     ADD TO ALL
                 </button>
             </div>
-            <div class="col-sm-auto py-2 text-center divTax4HSN" style="display:none;">
+            <div class="col-sm-auto py-2 text-center divTax4HSN" >
                 <button type="button" class="btn btn-sm btn-outline-primary btnTax4HSN" onclick="ApplyTax4HSN();" style="margin-top:10px;">
                     <i class="fa-solid fa-money-bill-trend-up fa-fw fa-lg"></i>
                     ADD HSN TAX

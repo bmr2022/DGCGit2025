@@ -123,6 +123,26 @@ public class GateInwardDAL
         }
         return _ResponseResult;
     }
+    public async Task<ResponseResult> GetFeatureOption()
+    {
+        var _ResponseResult = new ResponseResult();
+        try
+        {
+            var SqlParams = new List<dynamic>();
+
+            SqlParams.Add(new SqlParameter("@Flag", "FeatureOption"));
+
+            _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_GateMainDetail", SqlParams);
+        }
+        catch (Exception ex)
+        {
+            dynamic Error = new ExpandoObject();
+            Error.Message = ex.Message;
+            Error.Source = ex.Source;
+        }
+
+        return _ResponseResult;
+    }
     public async Task<PendingGateInwardDashboard>  GetPendingGateEntryDashboardData(int AccountCode, string PoNo, int PoYearCode, int ItemCode,
   string FromDate, string ToDate,string Partcode,string ItemName)
     {
@@ -290,6 +310,7 @@ public class GateInwardDAL
             SqlParams.Add(new SqlParameter("@PaymentMode", model.PaymentMode ?? ""));
             SqlParams.Add(new SqlParameter("@RefNo", model.RefNo ?? ""));
             SqlParams.Add(new SqlParameter("@Remark", model.Remark ?? ""));
+            SqlParams.Add(new SqlParameter("@RecUnit", model.RecUnit));
             SqlParams.Add(new SqlParameter("@Uid", model.CreatedBy));
             SqlParams.Add(new SqlParameter("@ItemService", model.Types ?? ""));
             SqlParams.Add(new SqlParameter("@TareWeight", model.TareWeight == null ? 0.0 : model.TareWeight));
@@ -1003,6 +1024,7 @@ public class GateInwardDAL
         model.Transporter = DS.Tables[0].Rows[0]["Transporter"].ToString();
         model.Truck = DS.Tables[0].Rows[0]["Truck"].ToString();
         model.docTypeId = Convert.ToInt32(DS.Tables[0].Rows[0]["docTypeId"].ToString());
+        model.RecUnit = Convert.ToInt32(DS.Tables[0].Rows[0]["RecUnit"].ToString());
         model.DriverName = DS.Tables[0].Rows[0]["DriverName"].ToString();
         model.BiltyNo = DS.Tables[0].Rows[0]["BiltyNo"].ToString();
         model.Truck = DS.Tables[0].Rows[0]["Truck"].ToString();

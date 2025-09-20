@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static eTactWeb.DOM.Models.Common;
 
 namespace eTactWeb.DOM.Models
 {
@@ -11,6 +12,7 @@ namespace eTactWeb.DOM.Models
 
         public string? FromDate { get; set; }
         public string? ReportType { get; set; }
+        public int? RecUnit { get; set; }
         public string? ToDate { get; set;} 
          public string? PartCode { get; set; }
         public string? ItemName { get; set; }
@@ -24,7 +26,8 @@ namespace eTactWeb.DOM.Models
 		public int TotalRecords { get; set; }
 		public int PageNumber { get; set; }
 		public int PageSize { get; set; }
-		public decimal TotalOpenStock { get; set; }
+        public IList<TextValue>? RecUnitList { get; set; }
+        public decimal TotalOpenStock { get; set; }
 		public decimal TotalAmount { get; set; }
 		public decimal ?TotalIssQty { get; set; }
 		public decimal TotalRecQty { get; set; }
