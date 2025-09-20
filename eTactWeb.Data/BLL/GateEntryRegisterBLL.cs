@@ -53,13 +53,18 @@ namespace eTactWeb.Data.BLL
         {
             return await _GateEntryRegisterDAL.FillSchNo(FromDate, ToDate);
         }
+          public async Task<ResponseResult> GetFeatureOption()
+        {
+            return await _GateEntryRegisterDAL.GetFeatureOption();
+        } 
+        
         public async Task<ResponseResult> FillVendor(string FromDate, string ToDate)
         {
             return await _GateEntryRegisterDAL.FillVendor(FromDate, ToDate);
         }
-        public async Task<GateEntryRegisterModel> GetGateRegisterData(string ReportType, string FromDate, string ToDate, string gateno, string docname, string PONo, string Schno, string PartCode, string ItemName, string invoiceNo, string VendorName)
+        public async Task<GateEntryRegisterModel> GetGateRegisterData(string ReportType, string FromDate, string ToDate, string gateno, string docname, string PONo, string Schno, string PartCode, string ItemName, string invoiceNo, string VendorName, int RecUnit)
          {
-            return await _GateEntryRegisterDAL.GetGateRegisterData(ReportType, FromDate, ToDate, gateno, docname, PONo, Schno, PartCode, ItemName, invoiceNo, VendorName);
+            return await _GateEntryRegisterDAL.GetGateRegisterData(ReportType, FromDate, ToDate, gateno, docname, PONo, Schno, PartCode, ItemName, invoiceNo, VendorName   ,RecUnit);
         }
         //public async Task<ResponseResult> GetAllItems()
         //{

@@ -13,6 +13,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetExchangeRate(string Currency);
         Task<ResponseResult> FillCurrency(string Ctrl);
         Task<ResponseResult> NewAmmEntryId();
+        Task<ResponseResult> GetFeatureOption();
         Task<ResponseResult> GetGstRegister(string Flag, int Code);
         Task<ResponseResult> GetStateGST(string Flag, int Code);
         Task<ResponseResult> GetItemCode(string PartCode);

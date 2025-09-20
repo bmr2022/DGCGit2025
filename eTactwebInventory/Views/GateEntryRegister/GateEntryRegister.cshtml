@@ -120,7 +120,13 @@
                                       
                                     </select>
                                 </div>
-                                 
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12 RecUnitgateentry">
+                                    <label asp-for="RecUnit" class="form-label">Rec Unit</label>
+                                    <select class="form-select" asp-for="RecUnit" data-abcd="4" asp-items="@(new SelectList(Model.RecUnitList,"Value","Text"))">
+                                        <option value="0"  selected>-Select-</option>
+                                    </select>
+
+                                </div>
                                 <div class="col-sm-2 col-md-6 col-lg-4 col-xl-2">
                                     <label class="form-label">Global search</label>
                                     <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
@@ -195,7 +201,8 @@
         $(function () {
              
             GetServerDate();
-            $('#B_SAGrid').addClass('show');//open accordion on ready
+              GetFeatureOption();
+              $('#B_SAGrid').addClass('show');//open accordion on ready
             var currentDate = new Date();
             var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
             $('#totalRows').text($('#divStockRegisterBody tr').length);
@@ -223,6 +230,32 @@
 
              GetGateRegisterData();//INITIAL - ON LOAD METHOD
         });
+             function GetFeatureOption() {
+
+               $.ajax({
+                   type: "POST",
+                   data: {},
+                   url: "@Url.Action("GetFeatureOption")",
+                   dataType: "json",
+                   success: function (result, status, error) {
+
+                       if (result != null) {
+                           var obj = $.parseJSON(result);
+                           if (obj.Result != null) {
+
+                                 if (obj.Result[0].allowforRecUnitgateentry === "Y") {
+                                   $('.RecUnitgateentry').show();
+                               } else {
+                                           $('.RecUnitgateentry').hide();
+                               }
+
+
+
+                           }
+                       }
+                   }
+               });
+           }
         $('#sendToPDF').click(async function () {
              
             const { jsPDF } = window.jspdf;
@@ -592,7 +625,7 @@
                 data: {
 
                     // $('#gateno').val() === '0' ? '' : $('#gateno').val()
-                      "ReportType": $('#ReportType').val(), "FromDate": $('#FromDate').val(), "ToDate": $('#ToDate').val(), "gateno": $('#gateno').val(), "docname": $('#docname').val() == '0' ? '' : $('#docname').val(), "PONo": $('#PONo').val() == '0' ? '' : $('#PONo').val(), "SchNo": $('#SchNo').val() == '0' ? '' : $('#SchNo').val(), "PartCode": $('#PartCode').val() == '0' ? '' : $('#PartCode').val(), "ItemName": $('#ItemName').val() == '0' ? '' : $('#ItemName').val(), "invoiceNo": $('#invoiceNo').val() == '0' ? '' : $('#invoiceNo').val(), "VendorName": $('#VendorName').val() == '0' ? '' : $('#VendorName').val()
+                          "ReportType": $('#ReportType').val(), "FromDate": $('#FromDate').val(), "ToDate": $('#ToDate').val(), "gateno": $('#gateno').val(), "docname": $('#docname').val() == '0' ? '' : $('#docname').val(), "PONo": $('#PONo').val() == '0' ? '' : $('#PONo').val(), "SchNo": $('#SchNo').val() == '0' ? '' : $('#SchNo').val(), "PartCode": $('#PartCode').val() == '0' ? '' : $('#PartCode').val(), "ItemName": $('#ItemName').val() == '0' ? '' : $('#ItemName').val(), "invoiceNo": $('#invoiceNo').val() == '0' ? '' : $('#invoiceNo').val(), "VendorName": $('#VendorName').val() == '0' ? '' : $('#VendorName').val(),"RecUnit":$("#RecUnit").val()
                 },
                 success: function (result, status, error) {
                     

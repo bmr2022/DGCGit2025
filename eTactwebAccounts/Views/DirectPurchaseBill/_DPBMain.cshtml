@@ -19,21 +19,21 @@
 </style>
 <div class="accordion-body">
     <div class="row g-2 gx-3">
-        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 DirectPurchaseBillEntryDetail">
             <input type="hidden" asp-for="FinFromDate" />
             <input type="hidden" asp-for="FinToDate" />
             <label asp-for="EntryID" class="form-label">Entry ID</label>
             <input asp-for="EntryID" class="form-control" readonly />
         </div>
-        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 DirectPurchaseBillEntryDetail">
             <label asp-for="YearCode" class="form-label">Year</label>
             <input asp-for="YearCode" class="form-control" value="@Model.YearCode" readonly />
         </div>
-        <div class="col-xxl-1 col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <div class="col-xxl-1 col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12 DirectPurchaseBillEntryDetail">
             <label asp-for="EntryDate" class="form-label">Entry Date</label>
             <input asp-for="EntryDate" class="form-control" readonly />
         </div>
-        <div class="col-xxl-1 col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <div class="col-xxl-1 col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12 DirectPurchaseBillEntryDetail">
             <label asp-for="Branch" class="form-label">Branch</label>
             <input class="form-control" asp-for="Branch" readonly />
         </div>
@@ -78,47 +78,47 @@
                 <option value="0">-Select-</option>
             </select>
         </div>
-        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-12 DirectPurchaseBillCustomerDetail">
             <label asp-for="VendorAddress" class="form-label">Vendor Address</label>
             <input asp-for="VendorAddress" disabled class="form-control" readonly />
         </div>
 
-        <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12 DirectPurchaseBillCustomerDetail">
             <label asp-for="GstType" class="form-label">GST Type</label>
             @{
                 <input asp-for="GstType" disabled class="form-control" readonly />
             }
         </div>
-        <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12 DirectPurchaseBillCustomerDetail">
             <label asp-for="VendorStateName" class="form-label">State Name</label>
             @{
                 <input asp-for="VendorStateName" disabled class="form-control" readonly />
             }
         </div>
-        <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12 DirectPurchaseBillOtherRequiredDetail">
             <label asp-for="Transport" class="form-label">Transporter</label>
             @{
                 <input asp-for="Transport" class="form-control" />
             }
         </div>
-        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 DirectPurchaseBillOtherRequiredDetail">
             <label asp-for="VehicleNo" class="form-label">VehicleNo</label>
             @{
                 <input asp-for="VehicleNo" class="form-control" />
             }
         </div>
-        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 DirectPurchaseBillOtherRequiredDetail">
             <label asp-for="ModeOfTransport" class="form-label">Mode</label>
             @{
                 <input asp-for="ModeOfTransport" class="form-control" />
             }
         </div>
-        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 DirectPurchaseBillCurrency">
             <label asp-for="Currency" class="form-label">Currency</label>
             <input type="hidden" id="hiddenCurrency" value="@Model.Currency" />
             <select class="form-select" asp-for="Currency" tabindex="4" disabled></select>
         </div>
-        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 DirectPurchaseBillCurrency">
             <label asp-for="ExchangeRate" class="form-label">FX Rate*</label>
             @{
                 <input asp-for="ExchangeRate" class="form-control" step="any" type="number" min="0" pattern="^([0-9]{1,6}\.[0-9]{2,})$" onkeypress="return (event.key == '.' || (event.charCode >= 48 && event.charCode <= 57))" />

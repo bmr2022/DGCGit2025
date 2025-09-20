@@ -27,6 +27,7 @@ public interface IGateInward
     Task<ResponseResult> FillPendQty(int ItemCode, int PartyCode, string PONO, int POYear, int Year, string SchNo, int SchYearCode, int ProcessId, int EntryId, int YearCode);
 
     Task<ResponseResult> GetDashboardData();
+      Task<ResponseResult> GetFeatureOption();
 
     Task<GateInwardDashboard> GetDashboardData(string VendorName, string Gateno, string ItemName, string PartCode,string DocName, string PONO, string ScheduleNo, string FromDate, string ToDate,string DashboardType);
     Task<PendingGateInwardDashboard> GetPendingGateEntryDashboardData(int AccountCode, string PoNo, int PoYearCode, int ItemCode,

@@ -21,6 +21,9 @@ namespace eTactWeb.DOM.Models
 
         public const string CostCenterName = "CostCenterName";
         public const string Currency = "Currency";
+        public const string RecStoreName = "Store_Name";
+        public const string RecStoreId = "StoreId";
+
         public const string DeptName = "DeptName";
         public const string DeptId = "DeptId";
         public const string EmpyID = "Emp_Id";
