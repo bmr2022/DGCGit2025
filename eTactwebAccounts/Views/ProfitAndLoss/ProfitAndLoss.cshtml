@@ -54,7 +54,6 @@
                                         <input type="hidden" asp-for="ShowRecordWithZeroAmt" value="NO" />
                                         <label class="form-check-label" for="ShowRecordWithZeroAmt">Show Records With Zero Amount</label>
                                     </div>
-
                                     <div class="form-check form-switch">
                                         <input asp-for="ShowOpening" class="form-check-input" type="checkbox" value="YES" />
                                         <input type="hidden" asp-for="ShowOpening" value="NO" />
@@ -114,6 +113,7 @@
     <script>
 
         $(document).ready(function () {
+             
             let currentDate = new Date();
 
             // FromDate model thi value
@@ -142,7 +142,45 @@
             $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' })
                 .datepicker("setDate", 'now');
 
-            $('#ShowRecordWithZeroAmtDiv').hide();
+            let history = JSON.parse(sessionStorage.getItem('HistoryStack')) || [];
+            let parentCode = sessionStorage.getItem('ParentCode');
+            let reportType = sessionStorage.getItem('ReportType');
+            let showOpening = sessionStorage.getItem('ShowOpening');
+            
+            if (history.length > 0) {
+                let lastStep = history[history.length - 1];
+                const action = lastStep.action;
+                const params = lastStep.params;
+
+                switch (action) {
+                    case 'ProfitAndLossGroup':
+                        if (params.ShowOpening === "YES") {
+                            $('#ShowOpening').prop("checked", true);
+                        } else {
+                            $('#ShowOpening').prop("checked", false);
+                        }
+                        if (params.ReportType == "DETAIL") {
+                            $('#ShowRecordWithZeroAmtDiv').show();
+                            let showRecordWithZeroAmt = sessionStorage.getItem('ShowRecordWithZeroAmt');
+                            if (params.ShowRecordWithZeroAmt === "YES") {
+                                $('#ShowRecordWithZeroAmt').prop("checked", true);
+                            } else {
+                                $('#ShowRecordWithZeroAmt').prop("checked", false);
+                            }
+                        }
+                        $('#ReportType').val(params.ReportType).trigger('change');
+
+                        history.pop();
+                        sessionStorage.setItem('HistoryStack', JSON.stringify(history));
+                        break;
+                }
+            }
+            if ($('#ReportType').val() == "SUMMARY") {
+                $('#ShowRecordWithZeroAmtDiv').hide();
+            }
+            else {
+                $('#ShowRecordWithZeroAmtDiv').show();
+            }
             GetProfitAndLossData();
         });
 
@@ -237,26 +275,74 @@
         });
 
         function GetProfitAndLossDataByGroup(td) {
-
+             
             // td is the clicked cell
             let cellValue = $(td).text().trim();
 
             // hidden input value inside this td
-            var parentAccountCode = $(td).find(".hdnParentAccountCode").val();
+            var parentCode = $(td).find(".hdnParentAccountCode").val();
             var FromDate = $('#FromDate').val();
             var ToDate = $('#ToDate').val();
             var ShowOpening = $('#ShowOpening').prop('checked') ? "YES" : "NO";
-
+            var ReportType = $('#ReportType').val();
+            if (ReportType == "DETAIL") {
+                var ShowRecordWithZeroAmt = $('#ShowRecordWithZeroAmt').prop('checked') ? "YES" : "NO";
+            }
             // Save history
             saveHistory('ProfitAndLossGroup', {
-                parentCode: parentAccountCode,
+                parentCode: parentCode,
                 FromDate: FromDate,
                 ToDate: ToDate,
-                ShowOpening: ShowOpening
+                ShowOpening: ShowOpening,
+                ReportType : ReportType,
+                ShowRecordWithZeroAmt: ShowRecordWithZeroAmt
             });
 
             // Save to sessionStorage
-            sessionStorage.setItem('ParentCode', parentAccountCode);
+            sessionStorage.setItem('ParentCode', parentCode);
+            sessionStorage.setItem('ShowOpening', ShowOpening);
+            sessionStorage.setItem('ShowRecordWithZeroAmt', ShowRecordWithZeroAmt);
+            sessionStorage.setItem('ColumnValue', cellValue);
+            sessionStorage.setItem('ReportType', "GROUPSUMMARY");
+
+            // Mark current page
+            sessionStorage.setItem('CurrentPage', 'ProfitAndLossLedger');
+
+            // Redirect
+            window.location.href = '/TransactionLedger/Index';
+        }
+
+        function GetProfitAndLossDataByLedger(td) {
+             
+            // td is the clicked cell
+            let cellValue = $(td).text().trim();
+
+            // hidden input value inside this td
+            var parentCode = $(td).find(".hdnParentAccountCode").val();
+            var accountCode = $(td).find(".hdnAccountCode").val();
+            var FromDate = $('#FromDate').val();
+            var ToDate = $('#ToDate').val();
+            var ShowOpening = $('#ShowOpening').prop('checked') ? "YES" : "NO";
+            var ReportType = $('#ReportType').val();
+            if (ReportType == "DETAIL") {
+                var ShowRecordWithZeroAmt = $('#ShowRecordWithZeroAmt').prop('checked') ? "YES" : "NO";
+            }
+            // Save history
+            saveHistory('ProfitAndLossDetail', {
+                parentCode: parentCode,
+                FromDate: FromDate,
+                ToDate: ToDate,
+                ShowOpening: ShowOpening,
+                ReportType: ReportType,
+                ShowRecordWithZeroAmt: ShowRecordWithZeroAmt,
+                AccountCode: accountCode
+            });
+
+            // Save to sessionStorage
+            sessionStorage.setItem('ParentCode', parentCode);
+            sessionStorage.setItem('ShowOpening', ShowOpening);
+            sessionStorage.setItem('ShowRecordWithZeroAmt', ShowRecordWithZeroAmt);
+            sessionStorage.setItem('AccountCode', accountCode);
             sessionStorage.setItem('ColumnValue', cellValue);
             sessionStorage.setItem('ReportType', "GROUPSUMMARY");
 

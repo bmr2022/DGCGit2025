@@ -398,7 +398,7 @@
                     return true;
                 }
                 $(document).ready(function () {
-                     
+                   debugger
                    var unit;
                    var yearCode;
                    if($('#Mode').val()=="Y"){
@@ -520,7 +520,7 @@
                function GetBranchname(comName) {
     $.ajax({
         type: "POST",
-        url: "@Url.Action("GetBranchName", "Home")",
+        url: "@Url.Action("GetBranchName", "Home")",  
         data: { companyName: comName },
         dataType: "json",
         success: function (result) {

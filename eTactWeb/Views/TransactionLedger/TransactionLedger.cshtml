@@ -494,9 +494,12 @@
                     break;
 
                 case 'ProfitAndLossGroup':
-                    history.pop();
                     sessionStorage.setItem('HistoryStack', JSON.stringify(history));
+                    window.location.href = '/ProfitAndLoss/Index';
+                    break;
 
+                case 'ProfitAndLossDetail':
+                    sessionStorage.setItem('HistoryStack', JSON.stringify(history));
                     window.location.href = '/ProfitAndLoss/Index';
                     break;
             }
