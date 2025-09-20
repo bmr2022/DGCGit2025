@@ -46,6 +46,40 @@ namespace eTactWeb.DOM.Models
 
 		public string AllowMultipleBuyerInSaleOrder { get; set; }
 		[NotMapped]
+		public bool ShowHideSaleOrderEntryDetailBool
+        {
+			get => ShowHideSaleOrderEntryDetail == "Y";
+			set => ShowHideSaleOrderEntryDetail = value ? "Y" : "N";
+		}
+
+		public string ShowHideSaleOrderEntryDetail { get; set; }
+		[NotMapped]
+		public bool ShowHideSaleOrderOtherRequiredDetailBool
+		{
+			get => ShowHideSaleOrderOtherRequiredDetail == "Y";
+			set => ShowHideSaleOrderOtherRequiredDetail = value ? "Y" : "N";
+		}
+
+		public string ShowHideSaleOrderOtherRequiredDetail { get; set; }
+		[NotMapped]
+		public bool ShowHideSaleOrderConsigneeBool
+		{
+			get => ShowHideSaleOrderConsignee == "Y";
+			set => ShowHideSaleOrderConsignee = value ? "Y" : "N";
+		}
+
+		public string ShowHideSaleOrderConsignee { get; set; }
+		[NotMapped]
+		public bool HideOtherFieldOFSaleOrderDetailTableBool
+		{
+			get => HideOtherFieldOFSaleOrderDetailTable == "Y";
+			set => HideOtherFieldOFSaleOrderDetailTable = value ? "Y" : "N";
+		}
+
+		public string HideOtherFieldOFSaleOrderDetailTable { get; set; }
+
+
+		[NotMapped]
 		public bool EditableRateAndDiscountONSaleInvoiceBool
 		{
 			get => EditableRateAndDiscountONSaleInvoice == "Y";
@@ -294,7 +328,6 @@ namespace eTactWeb.DOM.Models
       
         public string AccAllowtochangeDocumentinPurchaseBill { get; set; }
         public string AccPasswordToChangeDocumentinPurchaseBill { get; set; }
-        public string AccAllowtochangeInvoiceNoDateinPurchaseBill { get; set; }
         public long ProdMaxNoofIteminWorkorder { get; set; }
         public string AccPasswordToAllowManualTax { get; set; }
 		[NotMapped]
@@ -304,9 +337,33 @@ namespace eTactWeb.DOM.Models
 			set => AccSaleBillManualTaxAllowed = value ? "Y" : "N";
 		}
 		public string AccSaleBillManualTaxAllowed { get; set; }
-        public string POClosePOAlwaysAgainstIndent { get; set; }
+		[NotMapped]
+		public bool AccAllowtochangeDocumnetinPurchaseBillBool
+		{
+			get => AccAllowtochangeDocumnetinPurchaseBill == "Y";
+			set => AccAllowtochangeDocumnetinPurchaseBill = value ? "Y" : "N";
+		}
+		public string AccAllowtochangeDocumnetinPurchaseBill { get; set; }
+		[NotMapped]
+		public bool AccAllowTochangeVoucherDateInPurchBillBool
+		{
+			get => AccAllowTochangeVoucherDateInPurchBill == "Y";
+			set => AccAllowTochangeVoucherDateInPurchBill = value ? "Y" : "N";
+		}
+		public string AccAllowTochangeVoucherDateInPurchBill { get; set; }
+		[NotMapped]
+		public bool AccAllowtochangeInvoiceNoDateinPurchaseBillBool
+		{
+			get => AccAllowtochangeInvoiceNoDateinPurchaseBill == "Y";
+			set => AccAllowtochangeInvoiceNoDateinPurchaseBill = value ? "Y" : "N";
+		}
+		public string AccAllowtochangeInvoiceNoDateinPurchaseBill { get; set; }
+		public string AccPurchaseVoucherPrintoutFileName { get; set; }
+		public string AccPurchaseBillInvoicePrintoutFileName { get; set; }
+
+		public string POClosePOAlwaysAgainstIndent { get; set; }
         public string PONotAllowedWithoutPartCodePartyWiseDefinition { get; set; }
-        public string AccAllowtochangeDocumnetinPurchaseBill { get; set; }
+       
         public string AccAllowBackdateVoucherEntry { get; set; }
         public string AccBackdateVoucherEntryPassword { get; set; }
         public string IndentReportName { get; set; }

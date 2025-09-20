@@ -1,6 +1,6 @@
 ﻿@model eTactWeb.DOM.Models.Features_OptionsModel;
 @{
-	ViewData["Title"] = "Sale Order setting";
+	ViewData["Title"] = "Purchase Bill setting";
 	Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
 <style>
@@ -13,13 +13,13 @@
 </style>
 
 <div class="card bg-gradient mb-3 border-light shadow-lg">
-	<form asp-action="FeaturesOptionsSaleOrder" asp-controller="Features_Options" method="post" autocomplete="on" class="form-horizontal">
+	<form asp-action="FeaturesOptionsPurchaseBill" asp-controller="Features_Options" method="post" autocomplete="on" class="form-horizontal">
 		<div class="card-header card-headerBG text-light bg-gradient">
 			<div class="card-header card-headerBG text-light justify-content-center bg-gradient">
 				<h5>
-					<strong> Sale Order Setting </strong>
+					<strong>Purchase Bill Setting </strong>
 					<span class="d-flex float-end" style="margin-top:-2px;">
-						
+
 						<div class="row justify-content-between g-2">
 							<div class="col-auto">
 								<a href="#" class="btn btn-primary btn-sm" onclick="PressBack();">
@@ -66,154 +66,154 @@
 						<h2 class="accordion-header" id="H_ItemCategoryDetail">
 							<button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_ItemCategoryDetail"
 									aria-expanded="true" aria-controls="B_ItemCategoryDetail">
-								<strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i> Sale Order Setting</strong>
+								<strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i> Purchase Bill Setting</strong>
 								<small class="p-3"></small>
 							</button>
 						</h2>
 						<div id="B_ItemCategoryDetail" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_ItemCategoryDetail">
-							 <div class="accordion-body">
-						<div class="row">
-							<div class="col-md-6">
-								<input type="hidden" asp-for="Mode" />
-								@* <div class="d-flex align-items-center mb-2" style="margin-left:0;">
-									<label title="SaleInvoiceFileName" asp-for="SaleInvoiceFileName" class="form-label me-2" style="width:230px;">
-										Sale Invoice FileName
-									</label>
-									<input  asp-for="SaleInvoiceFileName" class="form-control" style="max-width:400px;" />
-								</div> *@
-							<div class="d-flex align-items-center mb-2" style="margin-left:0;">
-								<label title="SaleorderPrintReportName" asp-for="SaleorderPrintReportName" class="form-label me-2" style="width:230px;">
-									SO PrintReport Name
-								</label>
-								<input readonly asp-for="SaleorderPrintReportName" class="form-control" style="max-width:400px;" />
-							</div>
-
-							<div class="d-flex align-items-center mb-2" style="margin-left:0;">
-								<label title="SaleAmendPrintReportName" asp-for="SaleAmendPrintReportName" class="form-label me-2" style="width:230px;">
-									SO Amend PrintReport Name
-								</label>
-								<input readonly asp-for="SaleAmendPrintReportName" class="form-control" style="max-width:400px;" />
-							</div>
-
-							<div class="d-flex align-items-center mb-2" style="margin-left:0;">
-								<label title="SaleSchedulePrintReportName"  asp-for="SaleSchedulePrintReportName" class="form-label me-2" style="width:230px;">
-									SO Schedule PrintReport Name
-								</label>
-								<input readonly asp-for="SaleSchedulePrintReportName" class="form-control" style="max-width:400px;" />
-							</div>
-
-							<div class="d-flex align-items-center mb-2" style="margin-left:0;">
-								<label title="SaleScheduleAmendPrintReportName"   asp-for="SaleScheduleAmendPrintReportName" class="form-label me-2" style="width:230px;">
-									SO Schedule Amend PrintReport Name
-								</label>
-								<input readonly asp-for="SaleScheduleAmendPrintReportName" class="form-control" style="max-width:400px;" />
-							</div>
-							</div>
-							@* <div class="d-flex align-items-center mb-2">
-								<label asp-for="AutoGenItemGroupCodeBool" class="form-label me-2" style="width:220px;">
-									Auto Gen ItemGroupCode
-								</label>
-								<input type="checkbox" class="form-check-input" asp-for="AutoGenItemGroupCodeBool" />
-							</div> *@
+							<div class="accordion-body">
+								<div class="row">
 									<div class="col-md-6">
-							<div class="d-flex align-items-center mb-2">
-								<label title="ShowHideSaleOrderEntryDetail" asp-for="ShowHideSaleOrderEntryDetailBool" class="form-label me-2" style="width:230px;">
-									Show Entry Detail
-								</label>
-									<input type="checkbox" class="form-check-input" asp-for="ShowHideSaleOrderEntryDetailBool" />
-							</div>
-							<div class="d-flex align-items-center mb-2">
-								<label title="ShowHideSaleOrderOtherRequiredDetailBool" asp-for="ShowHideSaleOrderOtherRequiredDetailBool" class="form-label me-2" style="width:230px;">
-									Show Other Required Detail
-								</label>
-								<input type="checkbox" class="form-check-input" asp-for="ShowHideSaleOrderOtherRequiredDetailBool" />
-							</div>
-							<div class="d-flex align-items-center mb-2">
-								<label title="ShowHideSaleOrderConsignee" asp-for="ShowHideSaleOrderConsigneeBool" class="form-label me-2" style="width:230px;">
-									Show Consignee
-								</label>
-								<input type="checkbox" class="form-check-input" asp-for="ShowHideSaleOrderConsigneeBool" />
-							</div>
-							<div class="d-flex align-items-center mb-2">
-								<label title="HideOtherFieldOFSaleOrderDetailTable" asp-for="HideOtherFieldOFSaleOrderDetailTableBool" class="form-label me-2" style="width:230px;">
-									Hide Other Field OF  Detail Table
-								</label>
-								<input type="checkbox" class="form-check-input" asp-for="HideOtherFieldOFSaleOrderDetailTableBool" />
-							</div>
-							</div>
-
-						</div>
-					</div>
-				</div>
-
-
-				<div class="card-footer p-3">
-					<div class="row justify-content-between g-2">
-						<div class="card-header card-headerBG text-light bg-gradient">
-							<h5>
-								<strong> Sale Order Setting</strong>
-								<span class="d-flex float-end" style="margin-top:-2px;">
-
-									
-									<div class="row justify-content-between g-2">
-										<div class="col-auto">
-
-											<a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
-												<i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
-												BACK
-											</a>
+										<input type="hidden" asp-for="Mode" />
+										
+										<div class="d-flex align-items-center mb-2" style="margin-left:0;">
+											<label title="PurchaseBillPrintReportName" asp-for="PurchaseBillPrintReportName" class="form-label me-2" style="width:230px;">
+												PurchaseBill PrintReport Name
+											</label>
+											<input readonly asp-for="PurchaseBillPrintReportName" class="form-control" style="max-width:400px;" />
 										</div>
-										@if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
-										{
-											<div class="col-auto">
-												@*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
-												<a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
-													@* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
-													<i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
-													REFRESH
-												</a>
-											</div>
-											@if (Model.Mode == "U")
-											{
-												@*Model.Mode = "U";*@
-												<div class="col-auto">
-													@* <button type="submit" class="btn btn-sm btn-outline-warning">*@
-													<button type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
-														<i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
-														UPDATE
-													</button>
-												</div>
-											}
-											else
-											{
-												<div class="col-auto">
-													<button type="submit" class="btn btn-primary btn-sm submitBTN">
-														<i class="fa-solid fa-chevron-circle-right"></i>
-														Save
-													</button>
-												</div>
-											}
-										}
+
+										<div class="d-flex align-items-center mb-2" style="margin-left:0;">
+											<label title="DirectPurchaseBillPrintReportName" asp-for="DirectPurchaseBillPrintReportName" class="form-label me-2" style="width:230px;">
+												Direct PurchaseBill PrintReport Name
+											</label>
+											<input readonly asp-for="DirectPurchaseBillPrintReportName" class="form-control" style="max-width:400px;" />
+										</div>
+
+										<div class="d-flex align-items-center mb-2" style="margin-left:0;">
+											<label title="PurchBillVoucherPrintReportName" asp-for="PurchBillVoucherPrintReportName" class="form-label me-2" style="width:230px;">
+												 Voucher PrintReport Name
+											</label>
+											<input readonly asp-for="PurchBillVoucherPrintReportName" class="form-control" style="max-width:400px;" />
+										</div>
+										<div class="d-flex align-items-center mb-2" style="margin-left:0;">
+											<label title="DirectPurchBillVoucherPrintReportName" asp-for="DirectPurchBillVoucherPrintReportName" class="form-label me-2" style="width:290px;">
+												Direct PurchaseBill Voucher PrintReport Name
+											</label>
+											<input readonly asp-for="DirectPurchBillVoucherPrintReportName" class="form-control" style="max-width:350px;" />
+										</div>
+
+										
 									</div>
-								</span>
-							</h5>
+									
+									<div class="col-md-6">
+										<div class="d-flex align-items-center mb-2">
+											<label title="AccAllowtochangeDocumnetinPurchaseBill" asp-for="AccAllowtochangeDocumnetinPurchaseBillBool" class="form-label me-2" style="width:230px;">
+												Allow to change Document
+											</label>
+											<input type="checkbox" class="form-check-input" asp-for="AccAllowtochangeDocumnetinPurchaseBillBool" />
+										</div>
+										<div class="d-flex align-items-center mb-2">
+											<label title="AccAllowTochangeVoucherDateInPurchBill" asp-for="AccAllowTochangeVoucherDateInPurchBillBool" class="form-label me-2" style="width:230px;">
+												Allow To change VoucherDate
+											</label>
+											<input type="checkbox" class="form-check-input" asp-for="AccAllowTochangeVoucherDateInPurchBillBool" />
+										</div>
+										<div class="d-flex align-items-center mb-2">
+											<label title="AccAllowtochangeInvoiceNoDateinPurchaseBill" asp-for="AccAllowtochangeInvoiceNoDateinPurchaseBillBool" class="form-label me-2" style="width:230px;">
+												Allow to Change Invoice Date
+											</label>
+											<input type="checkbox" class="form-check-input" asp-for="AccAllowtochangeInvoiceNoDateinPurchaseBillBool" />
+										</div>
+										<div class="d-flex align-items-center mb-2" style="margin-left:0;">
+											<label title="AccPurchaseVoucherPrintoutFileName" asp-for="AccPurchaseVoucherPrintoutFileName" class="form-label me-2" style="width:230px;">
+												 Voucher PrintOut FileName
+											</label>
+											<input readonly asp-for="AccPurchaseVoucherPrintoutFileName" class="form-control" style="max-width:400px;" />
+										</div>
+										<div class="d-flex align-items-center mb-2" style="margin-left:0;">
+											<label title="AccPurchaseBillInvoicePrintoutFileName" asp-for="AccPurchaseBillInvoicePrintoutFileName" class="form-label me-2" style="width:230px;">
+												Invoice PrintOut FileName
+											</label>
+											<input readonly asp-for="AccPurchaseBillInvoicePrintoutFileName" class="form-control" style="max-width:400px;" />
+										</div>
+
+									</div>
+
+								</div>
+							</div>
+						</div>
+
+
+						<div class="card-footer p-3">
+							<div class="row justify-content-between g-2">
+								<div class="card-header card-headerBG text-light bg-gradient">
+									<h5>
+										<strong> Purchase Bill Setting</strong>
+										<span class="d-flex float-end" style="margin-top:-2px;">
+
+
+											<div class="row justify-content-between g-2">
+												<div class="col-auto">
+
+													<a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
+														<i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+														BACK
+													</a>
+												</div>
+												@if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+												{
+													<div class="col-auto">
+														@*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+														<a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+															@* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+															<i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+															REFRESH
+														</a>
+													</div>
+													@if (Model.Mode == "U")
+													{
+														@*Model.Mode = "U";*@
+														<div class="col-auto">
+															@* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+															<button type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+																<i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+																UPDATE
+															</button>
+														</div>
+													}
+													else
+													{
+														<div class="col-auto">
+															<button type="submit" class="btn btn-primary btn-sm submitBTN">
+																<i class="fa-solid fa-chevron-circle-right"></i>
+																Save
+															</button>
+														</div>
+													}
+												}
+											</div>
+										</span>
+									</h5>
+								</div>
+							</div>
 						</div>
 					</div>
-				</div>
-			</div>
 	</form>
 </div>
 
 <style>
 	.form-label {
-    font-weight: 500;
-}
-.d-flex label {
-    white-space: nowrap;
-}
-.form-control {
-    max-width: 300px;
-}
+		font-weight: 500;
+	}
+
+	.d-flex label {
+		white-space: nowrap;
+	}
+
+	.form-control {
+		max-width: 300px;
+	}
 
 </style>
 @section Scripts {
@@ -224,32 +224,26 @@
 
 				FillEntryID();
 			}
-			    $("#AutoGenItemGroupCode").rules("remove", "required");
-
- 
-    $("#AllowMultipleBuyerInSaleOrder").rules("remove", "required");
-    $("#SaleInvoiceFileName").rules("remove", "required");
-    $("#SaleorderPrintReportName").rules("remove", "required");
-    $("#SaleAmendPrintReportName").rules("remove", "required");
-    $("#SaleSchedulePrintReportName").rules("remove", "required");
-    $("#SaleScheduleAmendPrintReportName").rules("remove", "required");
-	$("#ShowHideSaleOrderEntryDetailBool").rules("remove", "required");
-	$("#ShowHideSaleOrderOtherRequiredDetailBool").rules("remove", "required");
-	$("#ShowHideSaleOrderConsigneeBool").rules("remove", "required");
-	$("#HideOtherFieldOFSaleOrderDetailTableBool").rules("remove", "required");
-
-				$('#ToolOrMold').select2();
-				$('#CalibInhouseThirdPart').select2();
+			$("#PurchaseBillPrintReportName").rules("remove", "required");
+			$("#DirectPurchaseBillPrintReportName").rules("remove", "required");
+			$("#PurchBillVoucherPrintReportName").rules("remove", "required");
+			$("#DirectPurchBillVoucherPrintReportName").rules("remove", "required");
+			$("#AccPurchaseVoucherPrintoutFileName").rules("remove", "required");
+			$("#AccPurchaseBillInvoicePrintoutFileName").rules("remove", "required");
+			$("#AccAllowtochangeDocumnetinPurchaseBillBool").rules("remove", "required");
+			$("#AccAllowTochangeVoucherDateInPurchBillBool").rules("remove", "required");
+			$("#AccAllowtochangeInvoiceNoDateinPurchaseBillBool").rules("remove", "required");
+		
 			GetCalibrationAgency();
 			$('#lblItemCount').text($('#divScheduleCalibrationGrid tr').length);
 			$(".DueCalibrationDate").datepicker({
 				dateFormat: "dd/M/yy",
 				minDate: 0
 			});
-			  var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl)
-    })
+			var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+			var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+				return new bootstrap.Tooltip(tooltipTriggerEl)
+			})
 			$(document).on("change", ".DueCalibrationDate", function () {
 				var row = $(this).closest("td");
 				calculateNextCalibrationDate(row);
@@ -260,22 +254,22 @@
 			});
 			//FillAltWorkCenterName();
 
-			
+
 			setFormattedDate();
 			$('#GridButton').click(function (e) {
 				setFormattedDate();
 			});
 
-			
-			
+
+
 			$('.submitBTN').click(function (e) {
 
 				console.log("SubmitButton Click");
 				e.preventDefault();
-				
+
 				$('form').submit();
 			});
-			
+
 		});
 		// $('#CalibrationAgencyName').change(function () {
 		// 	$('#CalibrationAgencyId').val($('#CalibrationAgencyName').val());
@@ -332,7 +326,7 @@
 
 		}
 
-		
+
 		function GetFormRights() {
 			$.ajax({
 				url: "@Url.Action("GetFormRights")",
@@ -378,7 +372,7 @@
 			});
 		}
 
-		
+
 		function FillEntryID() {
 
 			var YearCode = $('#OpeningYearCode').val();
@@ -432,7 +426,7 @@
 			});
 		}
 
-		
+
 		$(document).on("change", ".CalibrationAgencyName", function () {
 			var selectedVal = $(this).val();
 			$(this).closest('td').find('.CalibrationAgencyId').val(selectedVal);
@@ -514,7 +508,7 @@
 				}
 			});
 		}
-		
+
 		function ClearItems() {
 
 			$('#Unit, #OriginalQty, #AltUnit, #AltOriginalQty, #OriginalStoreId,  #OrginalWCID,  #BatchNo, #UniqueBatchNo, #PlanNo, #PlanYearCode, #PlanDate, #ProdSchNo, #ProdSchYearCode, #ProdSchDatetime,#Remark,#OriginalPartCodeText,#OriginalItemNameText,,#AltPartCodeText,#AltItemNameText').val('');
@@ -527,14 +521,14 @@
 		}
 
 
-	
+
 
 		function TotalNoOfRows() {
 			var Row = $('#divScheduleCalibrationGrid tr').length;
 			var tdCount = $('#divScheduleCalibrationGrid tr td').length;
 			$('#lblItemCount').text(tdCount >= 1 ? Row : 0);
 		}
-		
+
 		function CheckBeforeUpdate() {
 			$.ajax({
 				url: '@Url.Action("CheckBeforeUpdate")',
@@ -554,7 +548,7 @@
 			});
 		}
 
-		
+
 		function DeleteItemRow(SrNO) {
 
 			$.ajax({

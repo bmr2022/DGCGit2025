@@ -28,6 +28,7 @@ namespace eTactwebAccounts.Controllers
         public async Task<ActionResult> ProfitAndLoss()
         {
             var MainModel = new ProfitAndLossModel();
+            MainModel.FromDate = HttpContext.Session.GetString("FromDate");
             return View(MainModel); // Pass the model with old data to the view
         }
         public async Task<IActionResult> GetProfitAndLossData(string FromDate, string ToDate, string Flag, string ReportType, string ShowOpening, string ShowRecordWithZeroAmt)
