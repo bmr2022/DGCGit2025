@@ -91,12 +91,14 @@
 
         <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 HideShowOtherDiscount">
             <label asp-for="CashDisRs" class="form-label">Cash Dis Amt</label>
-            <input asp-for="CashDisRs" class="form-control"  onfocusout="NetAmountAfterDiscount()" />
+            <input asp-for="CashDisRs" class="form-control"  />
+            @* <input asp-for="CashDisRs" class="form-control"  onfocusout="NetAmountAfterDiscount()" /> *@
         </div>
 
         <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 HideShowOtherDiscount">
             <label asp-for="AdditionalDiscount" class="form-label">AdditionalDiscount</label>
-            <input asp-for="AdditionalDiscount" class="form-control" onfocusout="NetAmountAfterDiscount()" />
+            <input asp-for="AdditionalDiscount" class="form-control"  />
+            @* <input asp-for="AdditionalDiscount" class="form-control" onfocusout="NetAmountAfterDiscount()" /> *@
         </div>
 
 
