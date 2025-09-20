@@ -1702,14 +1702,15 @@ namespace eTactWeb.Controllers
                 var ReportName = _SaleBill.GetReportName();
                 webReport.Report.Dispose();
                 webReport.Report = new Report();
-                if (!String.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
-                {
-                    webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0]); // from database
-                }
-                else
-                {
-                    webReport.Report.Load(webRootPath + "\\SaleBill.frx"); // default report
-                }
+                //if (!String.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
+                //{
+                //    webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0]); // from database
+                //}
+                //else
+                //{
+                  
+                //}
+                webReport.Report.Load(webRootPath + "\\SaleBill.frx"); // default report
                 webReport.Report.SetParameterValue("entryparam", EntryId);
                 webReport.Report.SetParameterValue("yearparam", YearCode);
                 my_connection_string = _connectionStringService.GetConnectionString();
