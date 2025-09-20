@@ -31,7 +31,7 @@ namespace eTactWeb.Controllers
             var MainModel = new TransactionLedgerModel();
             MainModel.TransactionLedgerGrid = new List<TransactionLedgerModel>();
             MainModel.FromDate = HttpContext.Session.GetString("FromDate");
-            MainModel.ToDate = HttpContext.Session.GetString("ToDate");
+            //MainModel.ToDate = HttpContext.Session.GetString("ToDate");
             return View(MainModel); 
         }
         public async Task<JsonResult> GetLedgerName()

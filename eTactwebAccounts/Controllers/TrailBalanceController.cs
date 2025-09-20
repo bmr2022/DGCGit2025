@@ -34,7 +34,7 @@ namespace eTactwebAccounts.Controllers
             HttpContext.Session.Remove("TrailBalanceData");
             var MainModel = new TrailBalanceModel();
             MainModel.TrailBalanceGrid = new List<TrailBalanceModel>();
-            //MainModel.FromDate = HttpContext.Session.GetString("FromDate");
+            MainModel.FromDate = HttpContext.Session.GetString("FromDate");
             //MainModel.ToDate = HttpContext.Session.GetString("ToDate");
             MainModel.EntryByMachine = Environment.MachineName;
             //MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));

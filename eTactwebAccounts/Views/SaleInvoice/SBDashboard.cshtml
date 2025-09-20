@@ -211,6 +211,7 @@
             }
              
             GetSearchData();
+            GetFeatureOption();
             sessionStorage.removeItem('FromDateBack');
             sessionStorage.removeItem('ToDateBack');
             sessionStorage.removeItem('PartCodeBack');
@@ -229,6 +230,109 @@
             $('#PartCode').rules('remove', 'required');
 
         });
+
+
+        function GetFeatureOption() {
+
+            $.ajax({
+                type: "POST",
+                data: {},
+                url: "@Url.Action("GetFeatureOption")",
+                dataType: "json",
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.Result != null) {
+                            $('#AllowBackDateSALEBIL').val("");
+                            $('#ShowHideSaleBillEntryDetail').val("");
+                            $('#ShowHideSaleBillCustomerDetail').val("");
+                            $('#ShowHideSaleBillOtherRequiredDetail').val("");
+                            $('#ShowHideSaleBillCurrency').val("");
+                            $('#ShowHideSaleBillConsignee').val("");
+                            $('#ShowHideSaleBillScheduleDetail').val("");
+                            $('#AllowToChangeSaleBillStoreName').val("");
+                            $('#HideOtherFieldOFSaleBillDetailTable').val("");
+                            $('#ApproveSOForGenerateSaleInvoiceOrNot').val("");
+
+                            $('#AllowBackDateSALEBILL').val(obj.Result[0].AllowBackDateSALEBILL);
+                            // $('#ShowHideSaleBillEntryDetail').val(obj.Result[0].ShowHideSaleBillEntryDetail);
+                            // $('#ShowHideSaleBillCustomerDetail').val(obj.Result[0].ShowHideSaleBillCustomerDetail);
+                            // $('#ShowHideSaleBillOtherRequiredDetail').val(obj.Result[0].ShowHideSaleBillOtherRequiredDetail);
+                            // $('#ShowHideSaleBillCurrency').val(obj.Result[0].ShowHideSaleBillCurrency);
+                            // $('#ShowHideSaleBillConsignee').val(obj.Result[0].ShowHideSaleBillConsignee);
+                            // $('#ShowHideSaleBillScheduleDetail').val(obj.Result[0].ShowHideSaleBillScheduleDetail);
+                            // $('#AllowToChangeSaleBillStoreName').val(obj.Result[0].AllowToChangeSaleBillStoreName);
+                            // $('#HideOtherFieldOFSaleBillDetailTable').val(obj.Result[0].HideOtherFieldOFSaleBillDetailTable);
+                            // $('#ApproveSOForGenerateSaleInvoiceOrNot').val(obj.Result[0].ApproveSOForGenerateSaleInvoiceOrNot);
+                            if (obj.Result[0].ShowHideSaleBillEntryDetail === "N") {
+                                $('.SaleBillEntryDetail').hide();
+                            } else {
+                                $('.SaleBillEntryDetail').show();
+                            }
+
+                            if (obj.Result[0].ShowHideSaleBillCustomerDetail === "N") {
+                                $('.SaleBillCustomerDetail').hide();
+                            } else {
+                                $('.SaleBillCustomerDetail').show();
+                            }
+
+                            if (obj.Result[0].ShowHideSaleBillOtherRequiredDetail === "N") {
+                                $('.SaleBillOtherRequiredDetail').hide();
+                            } else {
+                                $('.SaleBillOtherRequiredDetail').show();
+                            }
+
+                            if (obj.Result[0].ShowHideSaleBillCurrency === "N") {
+                                $('.SaleBillCurrency').hide();
+                            } else {
+                                $('.SaleBillCurrency').show();
+                            }
+
+                            if (obj.Result[0].ShowHideSaleBillConsignee === "N") {
+                                $('.SaleBillConsignee').hide();
+                            } else {
+                                $('.SaleBillConsignee').show();
+                            }
+                            if (obj.Result[0].HideShowOtherDiscount === "N") {
+                                $('.HideShowOtherDiscount').hide();
+                            } else {
+                                $('.HideShowOtherDiscount').show();
+                            }
+
+
+                            if (obj.Result[0].ShowHideOtherDetails === "N") {
+                                $('.HideOtherDetail').hide();
+                            } else {
+                                $('.HideOtherDetail').show();
+                            }
+
+
+                            if (obj.Result[0].AllowToChangeSaleBillStoreName === "N") {
+                                $('.AllowToChangeStoreOrNot').hide();
+                            } else {
+                                $('.AllowToChangeStoreOrNot').show();
+                            }
+
+
+                            if (obj.Result[0].ShowHideSaleBillScheduleDetail === "N") {
+                                $('.SaleBillScheduleDetail').hide();
+                            } else {
+                                $('.SaleBillScheduleDetail').show();
+                            }
+                            if (obj.Result[0].HideOtherFieldOFSaleBillDetailTable === "N") {
+                                $('.SaleBillOtherDetail').hide();
+                            } else {
+                                $('.SaleBillOtherDetail').show();
+                            }
+
+
+                        }
+                    }
+                }
+            });
+        }
+
                   function GetFormRights() {
 
             $.ajax({
@@ -576,6 +680,7 @@
                 success: function (data) {
                     $('#divDashboardGrid').empty().append(data);
                       GetFormRights();
+                    GetFeatureOption();
                     CheckInv();
                     YearEditDeleteRight();
                 },
