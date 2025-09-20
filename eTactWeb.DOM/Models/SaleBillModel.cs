@@ -212,6 +212,7 @@ namespace eTactWeb.DOM.Models
         public string? PermitNo { get; set; }
         public decimal CashDisPer { get; set; }
         public decimal CashDisRs { get; set; }
+        public decimal AdditionalDiscount { get; set; }
         public string? SoDelTime { get; set; }
         public string? TypeJob { get; set; }
         public string? Approved { get; set; }

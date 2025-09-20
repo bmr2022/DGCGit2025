@@ -1663,6 +1663,7 @@ public static class CommonFunc
                         && typeProperty.PropertyInfo.Name != "TxRoundOff"
                         && typeProperty.PropertyInfo.Name != "TxSeqNo"
                         && typeProperty.PropertyInfo.Name != "RackID"
+                        && typeProperty.PropertyInfo.Name != "AdditionalDiscount"
                         && typeProperty.PropertyInfo.Name != "TxTaxType" && typeProperty.PropertyInfo.Name != "TotalRecords"
                         && typeProperty.PropertyInfo.Name != "TxTaxTypeName" && typeProperty.PropertyInfo.Name != "BOMInd" && typeProperty.PropertyInfo.Name != "ProducedUnprod"
                         && typeProperty.PropertyInfo.Name != "TxType" && typeProperty.PropertyInfo.Name != "DashboardTypeBack"
@@ -1735,6 +1736,7 @@ public static class CommonFunc
                         && typeProperty.PropertyInfo.Name != "PageNumber" && typeProperty.PropertyInfo.Name != "SummaryDetailBack" && typeProperty.PropertyInfo.Name != "PageSize" && typeProperty.PropertyInfo.Name != "TotalRecords" && typeProperty.PropertyInfo.Name != "ProducedUnprod" && typeProperty.PropertyInfo.Name != "CustJwAdjustmentMandatory" && typeProperty.PropertyInfo.Name != "StockableNonStockable" && typeProperty.PropertyInfo.Name != "VendJwAdjustmentMandatory" && typeProperty.PropertyInfo.Name != "Group_Code" && typeProperty.PropertyInfo.Name != "Group_name"
                         && typeProperty.PropertyInfo.Name != "ConsigneeAccountName"
                         && typeProperty.PropertyInfo.Name != "RackID"
+                        && typeProperty.PropertyInfo.Name != "AdditionalDiscount"
                         )
                     {
                         object value = row[typeProperty.PropertyInfo.Name];

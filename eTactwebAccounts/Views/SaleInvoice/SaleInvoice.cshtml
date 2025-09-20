@@ -3354,7 +3354,22 @@
 
 
 
+        function NetAmountAfterDiscount()
+{
+               var netAmt = $('#NetTotal').val() == "" ? 0 : parseFloat($('#NetTotal').val());
+            var discAmt = $('#CashDisRs').val() == "" ? 0 : parseFloat($('#CashDisRs').val());
+            var AdditionalDisAmt = $('#AdditionalDiscount').val() == "" ? 0 : parseFloat($('#AdditionalDiscount').val());
 
+
+            netAmt = netAmt - (discAmt + AdditionalDisAmt);
+
+
+            $('#NetTotal').val(netAmt.toFixed(6));
+                            $('#AdjPendAmt').val($('#NetTotal').val());
+            ClearAdjustmentGrid();
+            // GetDbCrDetail();
+            AddAdjstmntDetail1();
+}
 
 
 
@@ -3517,7 +3532,7 @@
                             }
 
                             var txTotal = sum + txSum;
-                            $('#NetTotal').val(txTotal.toFixed(2));
+                            $('#NetTotal').val(txTotal.toFixed(6));
                             $('#AdjPendAmt').val($('#NetTotal').val());
                             $('#TotalDiscountPercentage').val(0);
                             $('#TotalAmtAftrDiscount').val(0);
@@ -4165,6 +4180,18 @@
         } else {
             $('.SaleBillConsignee').show();
         }
+        if (obj.Result[0].HideShowOtherDiscount === "N") {
+            $('.HideShowOtherDiscount').hide();
+        } else {
+                                $('.HideShowOtherDiscount').show();
+        }
+
+
+                            if (obj.Result[0].ShowHideOtherDetails === "N") {
+                                $('.HideOtherDetail').hide();
+                            } else {
+                                $('.HideOtherDetail').show();
+                            }
                             
 
                  if (obj.Result[0].AllowToChangeSaleBillStoreName === "N") {
@@ -4248,6 +4275,10 @@
                 }
             });
         }
+
+       
+
+
         function FillTransporter() {
             $.ajax({
                 type: "POST",

@@ -632,6 +632,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@ApprovedBy", model.ApprovedBy));
                 SqlParams.Add(new SqlParameter("@currencyId", model.currencyId));
                 SqlParams.Add(new SqlParameter("@ExchangeRate", model.ExchangeRate));
+                SqlParams.Add(new SqlParameter("@AdditionalDiscount", model.AdditionalDiscount));
                 SqlParams.Add(new SqlParameter("@TypeItemServAssets", model.TypeItemServAssets ?? string.Empty));
                 //SqlParams.Add(new SqlParameter("@CostCenterId", model.CostCenter));
                 SqlParams.Add(new SqlParameter("@Shippingdate", Shippingdate == default ? string.Empty : Shippingdate));
@@ -1364,6 +1365,7 @@ namespace eTactWeb.Data.DAL
                 model.SaleQuotNo = DS.Tables[0].Rows[0]["SaleQuotNo"]?.ToString();
                 model.SaleQuotEntryID = Convert.ToInt32(DS.Tables[0].Rows[0]["SaleQuotEntryID"]);
                 model.SaleQuotyearCode = Convert.ToInt32(DS.Tables[0].Rows[0]["SaleQuotyearCode"]);
+                model.AdditionalDiscount = Convert.ToDecimal(DS.Tables[0].Rows[0]["additiondiscount"]);
                 model.SaleQuotDate = DS.Tables[0].Rows[0]["SaleQuotDate"]?.ToString();
 
                 //if (model.AttachmentFilePath1 != null)

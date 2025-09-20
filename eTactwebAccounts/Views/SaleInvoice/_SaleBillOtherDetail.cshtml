@@ -4,12 +4,12 @@
     <!-- Decimal properties -->
     <div class="row g-2 gx-3">
 
-        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12 HideOtherDetail">
             <label asp-for="BILLAgainstWarrenty" class="form-label">BillAgainst Warrenty</label>
             <input asp-for="BILLAgainstWarrenty" class="form-control" />
         </div>
 
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 HideOtherDetail">
             @* <div class="form-check form-switch mx-3 w-auto position-absolute d-inline"> *@
             <label asp-for="AgstInvNo" class="form-label">Agst Inv No</label>
             <select asp-for="AgstInvNo" class="form-control">
@@ -17,11 +17,11 @@
             </select>
         </div>
 
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 HideOtherDetail">
             <label asp-for="AgstInvDate" class="form-label">Agst Inv Date</label>
             <input asp-for="AgstInvDate" class="form-control" readonly />
         </div>
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 HideOtherDetail">
             <label asp-for="PerformaInvYearCode" class="form-label">Agst Inv YC</label>
             <select asp-for="PerformaInvYearCode" class="form-control">
                 <option value="">-Select-</option>
@@ -29,82 +29,88 @@
         </div>
 
 
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 HideOtherDetail">
             <label asp-for="TaxableAmt" class="form-label">Taxable Amt</label>
             <input asp-for="TaxableAmt" class="form-control" readonly />
         </div>
 
-        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12 HideOtherDetail">
             <label asp-for="TaxbaleAmtInWord" class="form-label">Taxable Amt in Words</label>
             <input asp-for="TaxbaleAmtInWord" class="form-control" readonly />
         </div>
 
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 HideOtherDetail">
             <label asp-for="GSTAmount" class="form-label">GST Amount</label>
             <input asp-for="GSTAmount" class="form-control" readonly />
         </div>
 
 
 
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 HideOtherDetail">
             <label asp-for="RoundOffAmt" class="form-label">Round Off Amt</label>
             <input asp-for="RoundOffAmt" class="form-control" />
         </div>
 
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 HideOtherDetail">
             <label asp-for="PermitNo" class="form-label">Permit No</label>
             <input asp-for="PermitNo" class="form-control" />
         </div>
-        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12 HideOtherDetail">
             <label asp-for="NetAmtInWords" class="form-label">Net Amt In Words</label>
             <input asp-for="NetAmtInWords" class="form-control" readonly />
         </div>
 
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 HideOtherDetail">
             <label asp-for="CostCenterId" class="form-label">Cost Center</label>
             <select asp-for="CostCenterId" class="form-control">
                 <option value="">-Select-</option>
             </select>
         </div>
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 HideOtherDetail">
             <label asp-for="Shippingdate" class="form-label">Shipping Date</label>
             <input asp-for="Shippingdate" class="form-control" />
         </div>
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 HideOtherDetail">
             <label asp-for="ExportInvoiceNo" class="form-label">Export Inv No</label>
             <input asp-for="ExportInvoiceNo" class="form-control" />
         </div>
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 HideOtherDetail">
             <label asp-for="BankName" class="form-label">Bank Name</label>
             <input asp-for="BankName" class="form-control" />
         </div>
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 HideOtherDetail">
             <label asp-for="FreightPaid" class="form-label">Freight Paid</label>
             <input asp-for="FreightPaid" class="form-control" />
         </div>
-        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12 HideOtherDetail">
             <label asp-for="TransporterdocNo" class="form-label">Transport DocNo</label>
             <input asp-for="TransporterdocNo" class="form-control" />
         </div>
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
-            <label asp-for="CashDisPer" class="form-label">Cash Dis Pr</label>
-            <input asp-for="CashDisPer" class="form-control" />
-        </div>
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+
+
+
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 HideShowOtherDiscount">
             <label asp-for="CashDisRs" class="form-label">Cash Dis Amt</label>
-            <input asp-for="CashDisRs" class="form-control" />
+            <input asp-for="CashDisRs" class="form-control"  onfocusout="NetAmountAfterDiscount()" />
         </div>
 
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 HideShowOtherDiscount">
+            <label asp-for="AdditionalDiscount" class="form-label">AdditionalDiscount</label>
+            <input asp-for="AdditionalDiscount" class="form-control" onfocusout="NetAmountAfterDiscount()" />
+        </div>
+
+
+       
 
 
         <!-- NVARCHAR properties -->
 
-        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12 HideOtherDetail">
             <label asp-for="DispatchDelayReason" class="form-label">Dispatch Delay Reason</label>
             <input asp-for="DispatchDelayReason" class="form-control" />
         </div>
 
-        <div class="col-xl-3 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-3 col-lg-2 col-md-6 col-sm-6 col-xs-12 HideOtherDetail">
             <label asp-for="AttachmentFile1" class="form-label">Attachment File Path 1</label>
             <div class="input-group">
                 <input type="file" name="AttachmentFile1" id="AttachmentFile1" class="form-control">
@@ -117,7 +123,7 @@
             <input type="file" asp-for="AttachmentFile1" class="form-control" /> *@
         </div>
 
-        <div class="col-xl-3 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-3 col-lg-2 col-md-6 col-sm-6 col-xs-12 HideOtherDetail">
             <label asp-for="AttachmentFile2" class="form-label">Attachment File Path 2</label>
             <div class="input-group">
                 <input type="file" asp-for="AttachmentFile2" class="form-control" />
@@ -130,7 +136,7 @@
             <input type="file" asp-for="AttachmentFile2" class="form-control" /> *@
         </div>
 
-        <div class="col-xl-3 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-3 col-lg-2 col-md-6 col-sm-6 col-xs-12 HideOtherDetail">
             <label asp-for="AttachmentFile3" class="form-label">Attachment File Path 3</label>
             <div class="input-group">
                 <input type="file" asp-for="AttachmentFile3" class="form-control" />
@@ -143,17 +149,17 @@
             <input type="file" asp-for="AttachmentFile3" class="form-control" /> *@
         </div>
 
-        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12 HideOtherDetail">
             <label asp-for="DocketNo" class="form-label">Docket No</label>
             <input asp-for="DocketNo" class="form-control" />
         </div>
 
-        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12 HideOtherDetail">
             <label asp-for="DispatchDelayreson" class="form-label">Dispatch Delay Reason</label>
             <input asp-for="DispatchDelayreson" class="form-control" />
         </div>
 
-        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12 HideOtherDetail">
             <label asp-for="Commodity" class="form-label">Commodity</label>
             <input asp-for="Commodity" class="form-control" />
         </div>
@@ -161,49 +167,49 @@
 
         <div class="col-xl-3 col-lg-2 col-md-6 col-sm-6 col-xs-12">
             <label asp-for="Remark" class="form-label">Remark</label>
-            <input asp-for="Remark" class="form-control" />
+            <textarea asp-for="Remark" class="form-control" ></textarea>
         </div>
 
 
 
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 HideOtherDetail">
             <label asp-for="SaleQuotNo" class="form-label">Sale Quote No</label>
             <input asp-for="SaleQuotNo" class="form-control" />
         </div>
 
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 HideOtherDetail">
             <label asp-for="SaleQuotyearCode" class="form-label">Sale Quote YC</label>
             <input asp-for="SaleQuotyearCode" class="form-control" />
         </div>
-        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12 HideOtherDetail">
             <label asp-for="SaleQuotEntryID" class="form-label">Sale Quote Entry ID</label>
             <input asp-for="SaleQuotEntryID" class="form-control" readonly />
         </div>
 
-        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12 HideOtherDetail">
             <label asp-for="SaleQuotDate" class="form-label">Sale Quote Date</label>
             <input asp-for="SaleQuotDate" class="form-control" readonly />
         </div>
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 HideOtherDetail">
             <label asp-for="ApprovDate" class="form-label">Approval Date</label>
             <input asp-for="ApprovDate" class="form-control" readonly />
         </div>
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 HideOtherDetail">
             <label asp-for="ApprovedBy" class="form-label">Approved By</label>
             <input asp-for="ApprovedBy" class="form-control" readonly />
         </div>
 
 
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 HideOtherDetail">
             <label asp-for="Ewaybillno" class="form-label">Eway Bill No</label>
             <input asp-for="Ewaybillno" class="form-control" readonly />
         </div>
 
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 HideOtherDetail">
             <label asp-for="CancelBill" class="form-label">Cancel Bill</label>
             <input asp-for="CancelBill" class="form-control" readonly />
         </div>
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 HideOtherDetail">
             <label asp-for="Canceldate" class="form-label">Cancel Date</label>
             <input asp-for="Canceldate" class="form-control" readonly />
         </div>
@@ -211,36 +217,36 @@
             <label asp-for="CancelBy" class="form-label">Canceled By</label>
             <input asp-for="CancelBy" class="form-control" readonly />
         </div>
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 HideOtherDetail">
             <label asp-for="Cancelreason" class="form-label">Cancel Reason</label>
             <input asp-for="Cancelreason" class="form-control" readonly />
         </div>
 
 
-        <div class="col-xl-1 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-1 col-lg-3 col-md-6 col-sm-6 col-xs-12 HideOtherDetail">
             <label asp-for="EInvNo" class="form-label">E-Inv No</label>
             <input asp-for="EInvNo" class="form-control" readonly />
         </div>
-        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12 HideOtherDetail">
             <label asp-for="EinvGenerated" class="form-label">E-Inv Generated</label>
             <input asp-for="EinvGenerated" class="form-control" readonly />
         </div>
 
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 HideOtherDetail">
             <label asp-for="EntryByempId" class="form-label">Entry By EmpID</label>
             <input asp-for="EntryByempId" class="form-control" readonly />
         </div>
-        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12 ">
             <label asp-for="ActualEntryDate" class="form-label">Actual Entry Date</label>
             <input asp-for="ActualEntryDate" class="form-control" readonly />
         </div>
 
-        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12 ">
             <label asp-for="ActualEnteredByName" class="form-label">Actual Entered By</label>
             <input type="hidden" asp-for="ActualEnteredBy" class="form-control" />
             <input asp-for="ActualEnteredByName" class="form-control" readonly />
         </div>
-        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12 HideOtherDetail">
             <label asp-for="Uid" class="form-label">UID</label>
             <input asp-for="Uid" class="form-control" readonly />
         </div>
@@ -255,29 +261,29 @@
             <input asp-for="LastUpdationDate" class="form-control" readonly />
         </div>
 
-        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12 HideOtherDetail">
             <label asp-for="EntryFreezToAccounts" class="form-label">Entry Freeze To Accounts</label>
             <input asp-for="EntryFreezToAccounts" class="form-control" readonly />
         </div>
 
 
 
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 HideOtherDetail">
             <label asp-for="ChallanNo" class="form-label">Challan No</label>
             <input asp-for="ChallanNo" class="form-control" readonly />
         </div>
 
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 HideOtherDetail">
             <label asp-for="ChallanDate" class="form-label">Challan Date</label>
             <input asp-for="ChallanDate" class="form-control" readonly />
         </div>
 
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 HideOtherDetail">
             <label asp-for="ChallanYearCode" class="form-label">Challan YC</label>
             <input asp-for="ChallanYearCode" class="form-control" readonly />
         </div>
 
-        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12 HideOtherDetail">
             <label asp-for="ChallanEntryid" class="form-label">Challan Entry ID</label>
             <input asp-for="ChallanEntryid" class="form-control" readonly />
         </div>
@@ -285,15 +291,15 @@
             <label asp-for="MachineName" class="form-label">Machine Name</label>
             <input asp-for="MachineName" class="form-control" value="@Environment.MachineName" readonly />
         </div>
-        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12 HideOtherDetail">
             <label asp-for="BalanceSheetClosed" class="form-label">Balance Sheet Closed</label>
             <input asp-for="BalanceSheetClosed" class="form-control" readonly />
         </div>
-        <div class="col-xs-12">
+        <div class="col-xs-12 HideOtherDetail">
             <label class="form-label"> E-Invoice Bill API Response</label>
             <textarea id="EinvoiceResponseBox" class="form-control" rows="10"></textarea>
         </div>
-        <div class="col-xs-12">
+        <div class="col-xs-12 HideOtherDetail">
             <label class="form-label"> E-Way Bill API Response</label>
             <textarea id="ewayResponseBox" class="form-control" rows="10"></textarea>
         </div>
