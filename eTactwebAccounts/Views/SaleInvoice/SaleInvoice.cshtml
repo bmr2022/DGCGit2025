@@ -144,7 +144,7 @@
                         <button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#BPanel2" aria-expanded="true" aria-controls="BPanel2">
                             <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Item Detail Grid</strong>
                         </button>
-                        <button type="button" style="display:none" class="GridButton1 btn btn-sm btn-outline-danger mt-1 mb-1 PendingItem">
+                        <button type="button" style="display:none" class="PendGridButton btn btn-sm btn-outline-danger mt-1 mb-1 PendingItem">
                             <i class="fa-duotone fa-angle-double-down fa-fw fa-lg"></i> ADD TO GRID
                         </button>
                     </h2>
@@ -1889,6 +1889,227 @@
                 $(this).find("td:first").text(index + 1);
             });
         }
+
+        $('.PendGridButton').click(function (e) {
+            e.preventDefault();
+            /* if (!Validate_TransferGrid()) return; */
+            var ItemData = [];
+            var RowCount = $('#divMultiItemGrid tr').length;
+            // for (var i = 1; i <= RowCount; i++) {
+            //     if ($('#AcceptedQtySHA-' + i).prop("checked") == false) continue;
+            //     var Partcode= $('#PartCode-' + i).val();
+            //     if (parseFloat($('#Qty-' + i).val()) > parseFloat($('#BatchWisePendQty-' + i).val()) )
+            //     {
+            //         $.notify('Qty should not be greater than Pending Qty or Stock for partcode:' + Partcode, "info");
+            //         return;
+            //     }
+            //     if (parseFloat($('#Rate-' + i).val()) <=0 || ($('#Rate-' + i).val()) =='') {
+            //         $.notify('Please Enter valid rate for :' + Partcode, "info");
+            //         return;
+            //     }
+            //     if (parseFloat($('#Qty-' + i).val()) <= 0 || ($('#Qty-' + i).val()) == '') {
+            //         $.notify('Please Enter valid rate for :' + Partcode, "info");
+            //         return;
+            //     }
+            // }
+
+
+
+
+            var CheckboxArr = [];
+            // var RowCount = $('#MultiItemBody tr').length;
+
+           
+
+
+                // var RowCount = $('#MultiItemBody tr').length;
+                for (var i = 1; i <= RowCount; i++) {
+                    
+                        if ($('#Qty-' + i).val() == 0) {
+                            $.notify('Please enter quantity for ' + $('#PartCode-' + i).val(), 'error');
+                            return;
+                        }
+                        if (parseFloat($('#Qty-' + i).val()) > parseFloat($('#LotStock-' + i).val())) {
+                            $.notify('Please enter Valid quantity for ' + $('#PartCode-' + i).val(), 'error');
+                            return;
+                        }
+
+                        if (parseFloat($('#Qty-' + i).val()) > parseFloat($('#SOPendQty-' + i).val())) {
+                            $.notify('Please enter Valid quantity for ' + $('#PartCode-' + i).val(), 'error');
+                            return;
+                        }
+                        if ($('#Rate-' + i).val() == 0) {
+                            $.notify('Please enter rate for ' + $('#PartCode-' + i).val(), 'error');
+                            return;
+                        }
+                        if ($('#Unit-' + i).val() == '') {
+                            $.notify('Please select unit for ' + $('#PartCode-' + i).val(), 'error');
+                            return;
+                        }
+                        if ($('#HSNNo-' + i).val() == '') {
+                            $.notify('Please enter HSN for ' + $('#PartCode-' + i).val(), 'error');
+                            return;
+                        }
+                        if ($('#Amount-' + i).val() == '') {
+                            $.notify('amount can not be 0 ' + $('#PartCode-' + i).val(), 'error');
+                            return;
+                        }
+
+
+
+
+                    
+                }
+            
+
+
+
+
+            for (var i = 1; i <= RowCount; i++) {
+               
+                    ItemData.push({
+
+                        SONO: $('#SONO-' + i).val(),
+                        SOYearCode: parseInt($('#SOYearCode-' + i).val()),
+                        CustOrderNo: $('#CustOrderNo-' + i).val(),
+                        SchNo: $('#SchNo-' + i).val(),
+                        SaleSchYearCode: parseInt($('#SaleSchYearCode-' + i).val()),
+                        PartCode: $('#PartCode-' + i).val(),
+                        ItemCode: parseInt($('#ItemCode-' + i).val()),
+                        ItemName: $('#ItemName-' + i).val(),
+                        Unit: $('#Unit-' + i).val(),
+
+                        HSNNo: $('#HSNNo-' + i).val(),
+                        SOPendQty: parseFloat($('#SOPendQty-' + i).val()),
+                        StoreName: $('#StoreName-' + i).val(),
+                        StoreId: parseInt($('#StoreId-' + i).val()),
+                        Batchno: $('#Batchno-' + i).val(),
+                        Uniquebatchno: $('#Uniquebatchno-' + i).val(),
+                        TotalStock: parseFloat($('#TotalStock-' + i).val()),
+                        LotStock: parseFloat($('#LotStock-' + i).val()),
+                        Rate: parseFloat($('#Rate-' + i).val()),
+                        Qty: parseFloat($('#Qty-' + i).val()) || 0,
+                        SOType: $('#SOType-' + i).val,
+                        DiscountPer: parseFloat($('#DiscountPer-' + i).val()),
+                        DiscountAmt: parseFloat($('#DiscountAmt-' + i).val()),
+                        Amount: parseFloat($('#Amount-' + i).val()) || 0,
+                        AltQty: parseFloat($('#AltQty-' + i).val()),
+                        RackID: ($('#RackID-' + i).val()),
+
+                    });
+                
+            }
+
+            $.ajax({
+                url: '@Url.Action("AddMultiSaleBillDetail")',
+                type: "POST",
+                data: JSON.stringify(ItemData),
+                contentType: 'application/json',
+                beforeSend: function () {
+                    console.log('Sending item...');
+                    console.log('ItemData', ItemData);
+                },
+                success: function (data, status, xhr) {
+
+                    /* // ✅ Store used batch
+                    itemBatchArray.push({
+                        "itemcode": parseInt($('#ItemCode').val()),
+                        "batchno": $('#BatchNo').val(),
+                        "uniqueBatchNo": $('#UniqueBatchNo').val()
+                    });
+
+                    // ✅ Disable current used batch
+                    const usedBatchNo = $('#BatchNo').val();
+                    $('#BatchNo option[value="' + usedBatchNo + '"]').prop('disabled', true);
+
+                    // ✅ Enable next unused batch from batchList
+                    for (var i = 0; i < batchList.length; i++) {
+                        var nextBatch = batchList[i];
+                        var isUsed = itemBatchArray.some(function (item) {
+                            return item.batchno === nextBatch;
+                        });
+                        if (!isUsed) {
+                            $('#BatchNo option[value="' + nextBatch + '"]').prop('disabled', false).prop('selected', true);
+                            $('#BatchNo').trigger('change'); // optional
+                            break;
+                        }
+                    } */
+
+                    if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
+                        $.notify('Duplicate Item Not Allowed.', "info");
+                        $('.ItemBtn').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
+                    } else if (xhr.status == 205 && (xhr.responseText.indexOf('Reset') || xhr.statusText.indexOf('Reset'))) {
+                        $.notify('Adding Item Not Allowed, Please Clear Gate Detail...!!!', "info");
+                    } else {
+                        // $('.gridHiddenField').show();
+
+                        $('#divSaleBillList').html(data);
+                        $('#PendSaleOrderModel').modal('hide');
+                        if ($('#SaleBillJobwork').val() == 'J') {
+                            $('.jobWorkChalln').show();
+                            $('.gridHiddenField').show();
+                        } else {
+                            $('.jobWorkChalln').hide();
+                            $('.gridHiddenField').hide();
+                        }
+                        GetFeatureOption();
+                        $.notify('Item Added To Grid.', "success");
+                    }
+
+                    editingNow = false;
+                    BasicTotal();
+                    ClearAdjustmentGrid();
+                    // ResetPendQty();
+
+                    // var rowCount = $('#divSaleBillList tr').length;
+
+                    // for (var i = 1; i <= rowCount; i++) {
+
+                    //     sum += parseFloat($('#GridAmount-' + i).text() == '.00' ? 0 : $('#GridAmount-' + i).text());
+                    // }
+                    $('#ItemNetAmount').val(sum);
+
+                    // $('#lblItemNetAmount').text(sum.toFixed(2));
+
+                    var txSum = 0;
+                    if ($('#divTaxGrid tr td').length > 1) {
+                        for (var i = 1; i <= taxRowCount; i++) {
+                            txSum += parseFloat($('#txGridAmount-' + i).text() == '.00' ? 0 : $('#txGridAmount-' + i).text());
+                        }
+                    }
+
+                    var txTotal = sum + txSum;
+                    $('#NetTotal').val(txTotal.toFixed(2));
+                    $('#AdjPendAmt').val($('#NetTotal').val());
+                    $('#TotalDiscountPercentage').val(0);
+                    $('#TotalAmtAftrDiscount').val(0);
+
+                    // ClearGrid();
+                    $('.PendingItem').hide();
+                    $('.newitems').show();
+                    // $('#BatchNo').val('0');
+                    // $('#UniqueBatchNo').val('0');
+
+                },
+                error: function (result) {
+                    $.notify(result.responseText, "error");
+                },
+                failure: function (result) {
+                    alert(result.responseText);
+                },
+                complete: function () {
+                    console.log('Done');
+                    $('.Schedule').fadeIn();
+                }
+            }).done(function () {
+                GetItemGroup();
+                GetTaxPartItem();
+                GetDbCrDetail();
+                AddAdjstmntDetail1();
+            })
+        });
+
+
 
         $('.GridButton1').click(function (e) {
             e.preventDefault();

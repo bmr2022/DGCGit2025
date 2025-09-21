@@ -338,6 +338,11 @@
                                         <label asp-for="WipStockable" class="form-label">Wip Stockable</label>
                                         <select asp-for="WipStockable" class="form-select" asp-items="@Model.YesNo"></select>
                                     </div>
+
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="BatchWiseInventory" class="form-label">BatchWise Inventory</label>
+                                        <select asp-for="BatchWiseInventory" class="form-select" asp-items="@Model.YesNo"></select>
+                                    </div>
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                         <label asp-for="NeedPO" class="form-label">Need Po</label>
                                         <select asp-for="NeedPO" class="form-select" asp-items="@Model.YesNo"></select>

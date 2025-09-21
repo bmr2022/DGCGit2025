@@ -14,6 +14,7 @@ using eTactWeb.DOM.Models;
 using Newtonsoft.Json;
 using ClosedXML.Excel;
 using eTactWeb.Helpers;
+using Microsoft.AspNetCore.Hosting;
 
 namespace eTactWeb.Controllers;
 
@@ -31,7 +32,8 @@ public class HomeController : Controller
     private bool IsDrOpen = false;
     private string sql = string.Empty;
     private string year_code;
-    public HomeController(IConfiguration config, ILogger<HomeController> logger, IDataLogic iDataLogic, EncryptDecrypt encryptDecrypt, IConnectionStringHelper connectionStringHelper, UserContextService userContextService, ConnectionStringService connectionStringService,IDashboard IDashboard)
+    private readonly IWebHostEnvironment _IWebHostEnvironment;
+    public HomeController(IWebHostEnvironment iWebHostEnvironment, IConfiguration config, ILogger<HomeController> logger, IDataLogic iDataLogic, EncryptDecrypt encryptDecrypt, IConnectionStringHelper connectionStringHelper, UserContextService userContextService, ConnectionStringService connectionStringService,IDashboard IDashboard)
     {
         _logger = logger;
         this._IDataLogic = iDataLogic;
@@ -41,6 +43,7 @@ public class HomeController : Controller
         _userContextService = userContextService;
         _connectionStringService = connectionStringService;
         _IDashboard = IDashboard;
+        _IWebHostEnvironment = iWebHostEnvironment;
     }
     [HttpPost]
     public JsonResult AutoComplete(string Schema, string ColName, string prefix, string FromDate = "", string ToDate = "", int ItemCode = 0, int Storeid = 0)
@@ -64,198 +67,277 @@ public class HomeController : Controller
     }
     public void ChangeConnectionString(string companyName)
     {
-        string connectionstring = _configuration.GetConnectionString("eTactDB1");
-        SqlConnection conn = new(connectionstring);
+        // Step 1: Base connection string with {ServerName} placeholder
+        string baseConnectionString = _configuration.GetConnectionString("eTactDB1");
+
+        // Step 2: Read server name from file
+        string serverName = System.IO.File.ReadAllText(
+            Path.Combine(_IWebHostEnvironment.WebRootPath, "servername.txt")
+        ).Trim();
+
+        // Step 3: Replace placeholder with actual server
+        string finalConnStr = baseConnectionString.Replace("{ServerName}", serverName);
+
+        using SqlConnection conn = new(finalConnStr);
         conn.Open();
-        sql = "Select DISTINCT DataBase_Name from Company_Detail where Company_Name='" + companyName + "'";
-        SqlCommand cmdAccountCode = new(sql, conn);
-        SqlDataReader rdrAccount = cmdAccountCode.ExecuteReader();
+
+        // Step 4: Parameterized query to avoid SQL injection
+        string sql = "SELECT DISTINCT DataBase_Name FROM Company_Detail WHERE Company_Name = @CompanyName";
+        using SqlCommand cmdAccountCode = new(sql, conn);
+        cmdAccountCode.Parameters.AddWithValue("@CompanyName", companyName);
+
         List<string> detail = new List<string>();
+        using SqlDataReader rdrAccount = cmdAccountCode.ExecuteReader();
         if (rdrAccount.HasRows)
         {
-
-            IsDrOpen = true;
             while (rdrAccount.Read())
             {
-                for (int i = 0; i < rdrAccount.FieldCount; i++)
-                {
-                    detail.Add(rdrAccount[i].ToString());
-                }
+                detail.Add(rdrAccount[0].ToString());
             }
-
         }
-        if (IsDrOpen == true)
+
+        // Step 5: Store selected database name in session
+        if (detail.Count > 0)
         {
-            IsDrOpen = false;
-            rdrAccount.Close();
+            HttpContext.Session.SetString("databaseName", detail[0]);
         }
-        HttpContext.Session.SetString("databaseName", detail[0]);
-        string connectionString = _connectionStringHelper.GetConnectionStringForCompany();
 
+        // Step 6: Optionally, get new connection string for the selected company
+        string connectionStringForCompany = _connectionStringHelper.GetConnectionStringForCompany();
     }
+
     public IActionResult GetBranchName(string companyName)
     {
+        // Step 1: Change session database if needed
         ChangeConnectionString(companyName);
-        string connectionstring = _configuration.GetConnectionString("eTactDB1");
-        SqlConnection conn = new(connectionstring);
-        conn.Open();
-        sql = "Select DISTINCT CC from Company_Detail where Company_Name='" + companyName + "'";
-        SqlCommand cmdAccountCode = new(sql, conn);
-        SqlDataReader rdrAccount = cmdAccountCode.ExecuteReader();
+
+        // Step 2: Base connection string with {ServerName} placeholder
+        string baseConnectionString = _configuration.GetConnectionString("eTactDB1");
+
+        // Step 3: Read server name from file
+        string serverName = System.IO.File.ReadAllText(
+            Path.Combine(_IWebHostEnvironment.WebRootPath, "servername.txt")
+        ).Trim();
+
+        // Step 4: Replace placeholder with actual server name
+        string finalConnStr = baseConnectionString.Replace("{ServerName}", serverName);
+
         List<string> detail = new List<string>();
+
+        using SqlConnection conn = new(finalConnStr);
+        conn.Open();
+
+        // Step 5: Parameterized query
+        string sql = "SELECT DISTINCT CC FROM Company_Detail WHERE Company_Name = @CompanyName";
+        using SqlCommand cmdAccountCode = new(sql, conn);
+        cmdAccountCode.Parameters.AddWithValue("@CompanyName", companyName);
+
+        using SqlDataReader rdrAccount = cmdAccountCode.ExecuteReader();
         if (rdrAccount.HasRows)
         {
-
-            IsDrOpen = true;
             while (rdrAccount.Read())
             {
-                for (int i = 0; i < rdrAccount.FieldCount; i++)
-                {
-                    detail.Add(rdrAccount[i].ToString());
-                }
+                detail.Add(rdrAccount[0].ToString());
             }
         }
-        if (IsDrOpen == true)
-        {
-            IsDrOpen = false;
-            rdrAccount.Close();
-        }
-        conn.Close();
+
         return Json(detail);
     }
+
     public IActionResult GetYearCode(string branchName, string companyName)
     {
-        string connectionstring = _configuration.GetConnectionString("eTactDB1");
-        SqlConnection conn = new(connectionstring);
+        List<string> detail = new();
+
+        // Step 1: Base connection string with {ServerName} placeholder
+        string baseConnectionString = _configuration.GetConnectionString("eTactDB1");
+
+        // Step 2: Read server name from file
+        string serverName = System.IO.File.ReadAllText(
+            Path.Combine(_IWebHostEnvironment.WebRootPath, "servername.txt")
+        ).Trim();
+
+        // Step 3: Replace placeholder
+        string finalConnStr = baseConnectionString.Replace("{ServerName}", serverName);
+
+        // Step 4: Open connection using 'using' block
+        using SqlConnection conn = new(finalConnStr);
         conn.Open();
-        sql = "Select DISTINCT Financial_Year from Company_Detail where CC='" + branchName + "' and Company_Name='" + companyName + "' ORDER BY Financial_Year DESC";
-        SqlCommand cmdAccountCode = new(sql, conn);
-        SqlDataReader rdrAccount = cmdAccountCode.ExecuteReader();
-        List<string> detail = new List<string>();
-        if (rdrAccount.HasRows)
+
+        // Step 5: Parameterized query
+        string sql = @"SELECT DISTINCT Financial_Year 
+                   FROM Company_Detail 
+                   WHERE CC = @BranchName AND Company_Name = @CompanyName 
+                   ORDER BY Financial_Year DESC";
+
+        using SqlCommand cmd = new(sql, conn);
+        cmd.Parameters.AddWithValue("@BranchName", branchName);
+        cmd.Parameters.AddWithValue("@CompanyName", companyName);
+
+        using SqlDataReader rdr = cmd.ExecuteReader();
+        while (rdr.Read())
         {
-
-            IsDrOpen = true;
-            while (rdrAccount.Read())
-            {
-
-
-                for (int i = 0; i < rdrAccount.FieldCount; i++)
-                {
-                    detail.Add(rdrAccount[i].ToString());
-                }
-            }
+            detail.Add(rdr[0].ToString());
         }
-        if (IsDrOpen == true)
-        {
-            IsDrOpen = false;
-            rdrAccount.Close();
-        }
-        conn.Close();
+
         return Json(detail);
     }
+
     [HttpGet]
     public JsonResult GetCC(string compname)
     {
-        string connectionstring = _configuration.GetConnectionString("eTactDB1");
-        SqlConnection conn = new(connectionstring);
-        conn.Open();
-        sql = " exec GetId 'Company_Detail','CC', 'Company_Name','" + compname + "'";
-        SqlCommand cmdAccountCode = new(sql, conn);
-        SqlDataReader rdrAccount = cmdAccountCode.ExecuteReader();
-        if (rdrAccount.HasRows)
-        {
-            IsDrOpen = true;
-            if (rdrAccount.Read())
-            {
-                CC = Convert.ToString(rdrAccount["CC"]);
-                rdrAccount.Close();
-            }
-        }
-        if (IsDrOpen == true)
-        {
-            IsDrOpen = false;
-            rdrAccount.Close();
-        }
-        sql = " exec GetId 'Company_Detail','Financial_Year', 'Company_Name','" + compname + "'";
-        cmdAccountCode = new SqlCommand(sql, conn);
-        rdrAccount = cmdAccountCode.ExecuteReader();
-        if (rdrAccount.HasRows)
-        {
-            IsDrOpen = true;
-            if (rdrAccount.Read())
-            {
-                year_code = Convert.ToString(rdrAccount["Financial_Year"]);
-                rdrAccount.Close();
-            }
-        }
-        if (IsDrOpen == true)
-        {
-            IsDrOpen = false;
-            rdrAccount.Close();
-        }
-        conn.Close();
-        List<string> detail = new() { CC, year_code };
+        string CC = string.Empty;
+        string year_code = string.Empty;
 
-        //return Json(CC, JsonRequestBehavior.AllowGet);
+        // Step 1: Base connection string with {ServerName} placeholder
+        string baseConnectionString = _configuration.GetConnectionString("eTactDB1");
+
+        // Step 2: Read server name from file
+        string serverName = System.IO.File.ReadAllText(
+            Path.Combine(_IWebHostEnvironment.WebRootPath, "servername.txt")
+        ).Trim();
+
+        // Step 3: Replace placeholder
+        string finalConnStr = baseConnectionString.Replace("{ServerName}", serverName);
+
+        using SqlConnection conn = new(finalConnStr);
+        conn.Open();
+
+        // Step 4: First stored procedure call to get CC
+        using (SqlCommand cmd = new("GetId", conn))
+        {
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@TableName", "Company_Detail");
+            cmd.Parameters.AddWithValue("@FieldName", "CC");
+            cmd.Parameters.AddWithValue("@WhereField", "Company_Name");
+            cmd.Parameters.AddWithValue("@WhereValue", compname);
+
+            using SqlDataReader rdr = cmd.ExecuteReader();
+            if (rdr.HasRows && rdr.Read())
+            {
+                CC = rdr["CC"].ToString();
+            }
+        }
+
+        // Step 5: Second stored procedure call to get Financial_Year
+        using (SqlCommand cmd = new("GetId", conn))
+        {
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@TableName", "Company_Detail");
+            cmd.Parameters.AddWithValue("@FieldName", "Financial_Year");
+            cmd.Parameters.AddWithValue("@WhereField", "Company_Name");
+            cmd.Parameters.AddWithValue("@WhereValue", compname);
+
+            using SqlDataReader rdr = cmd.ExecuteReader();
+            if (rdr.HasRows && rdr.Read())
+            {
+                year_code = rdr["Financial_Year"].ToString();
+            }
+        }
+
+        // Step 6: Return result as JSON
+        List<string> detail = new() { CC, year_code };
         return Json(detail);
     }
+
     public List<LoginModel> GetCombodata(string Tablename, string fieldname)
     {
         List<LoginModel> catlist = new();
-        string connectionstring =
+
+        // Determine base connection string
+        string baseConnectionString =
             Tablename == "Store_Master"
                 ? _configuration.GetConnectionString("eTactDB")
                 : _configuration.GetConnectionString("eTactDB1");
 
-        SqlConnection conn = new(connectionstring);
-        conn.Open();
-        string sql = " select distinct " + fieldname + " from " + Tablename;
+        // Only replace server name if it's eTactDB1
+        string finalConnStr = baseConnectionString;
+        if (Tablename != "Store_Master")
+        {
+            // Read server name from file
+            string serverName = System.IO.File.ReadAllText(
+                Path.Combine(_IWebHostEnvironment.WebRootPath, "servername.txt")
+            ).Trim();
 
-        SqlCommand cmd = new(sql, conn);
-        SqlDataReader rdr = cmd.ExecuteReader();
+            // Replace placeholder {ServerName} with actual server
+            finalConnStr = baseConnectionString.Replace("{ServerName}", serverName);
+        }
+
+        using SqlConnection conn = new(finalConnStr);
+        conn.Open();
+
+        string sql = "SELECT DISTINCT " + fieldname + " FROM " + Tablename;
+        using SqlCommand cmd = new(sql, conn);
+        using SqlDataReader rdr = cmd.ExecuteReader();
 
         while (rdr.Read())
         {
             var lstAdd = new LoginModel();
+
             if (fieldname == "Company_Name")
-            {
                 lstAdd.CompanyName = rdr[fieldname].ToString();
-            }
             else if (fieldname == "CC")
-            {
                 lstAdd.CC = rdr[fieldname].ToString();
-            }
             else if (fieldname == "Item_name")
-            {
                 lstAdd.ItemName = rdr[fieldname].ToString();
-            }
+
             catlist.Add(lstAdd);
         }
-        rdr.Close();
-        conn.Close();
+
         return catlist;
     }
+
     [HttpGet]
     [Route("GetServerNames")]
+    //public IActionResult GetServerName()
+    //{
+    //    var __configuration = new ConfigurationBuilder()
+    //        .AddJsonFile("appsettings.json")
+    //        .Build();
+
+    //    // Retrieve connection string
+    //    string connectionString = __configuration.GetConnectionString("eTactDB");
+
+    //    // Extract server name
+    //    string serverName = GetServerNameFromConnectionString(connectionString);
+    //    try
+    //    {
+
+    //        string lines = serverName; // Split by line breaks
+    //        return Ok(new { Lines = lines });
+    //    }
+    //    catch (FileNotFoundException ex)
+    //    {
+    //        return StatusCode(500, $"An error occurred: {ex.Message}");
+    //    }
+    //}
     public IActionResult GetServerName()
     {
-        var __configuration = new ConfigurationBuilder()
-            .AddJsonFile("appsettings.json")
-            .Build();
-
-        // Retrieve connection string
-        string connectionString = __configuration.GetConnectionString("eTactDB");
-
-        // Extract server name
-        string serverName = GetServerNameFromConnectionString(connectionString);
         try
         {
+            // Get the path to wwwroot
+            string webRootPath = _IWebHostEnvironment.WebRootPath;
 
-            string lines = serverName; // Split by line breaks
+            // Construct the path to your text file
+            string contentRootPath = _IWebHostEnvironment.ContentRootPath;
+            //string webRootPath1 = _IWebHostEnvironment.WebRootPath;
+            string filePath = Path.Combine(webRootPath,  "servername.txt");
+
+            // Check if the file exists
+            if (!System.IO.File.Exists(filePath))
+            {
+                return StatusCode(500, "Server name file not found");
+            }
+
+            // Read all text from the file
+            string serverName = System.IO.File.ReadAllText(filePath);
+
+            // Trim any whitespace and return
+            serverName = serverName.Trim();
+
+            string lines = serverName;
             return Ok(new { Lines = lines });
         }
-        catch (FileNotFoundException ex)
+        catch (Exception ex)
         {
             return StatusCode(500, $"An error occurred: {ex.Message}");
         }
@@ -268,13 +350,28 @@ public class HomeController : Controller
     public LoginModel GetLastLoginDetail()
     {
         var model = new LoginModel();
+
+        // Base connection string with {ServerName} placeholder
         string connectionstring = _configuration.GetConnectionString("eTactDB1");
-        SqlConnection conn = new(connectionstring);
+
+        // Read server name from file
+        string serverName = System.IO.File.ReadAllText(
+            Path.Combine(_IWebHostEnvironment.WebRootPath, "servername.txt")
+        ).Trim();
+
+        // Replace placeholder with actual server
+        string finalConnStr = connectionstring.Replace("{ServerName}", serverName);
+
+        using SqlConnection conn = new(finalConnStr);
         conn.Open();
+
         string EntryByMachineName = Environment.MachineName;
-        sql = "exec [SpLastLoggedInDetail]   @flag = 'LastLoginDetail',@EntryByMachine ='" + EntryByMachineName + "'";
-        SqlCommand cmdParty = new(sql, conn);
-        SqlDataReader rdrParty = cmdParty.ExecuteReader();
+        string sql = "exec [SpLastLoggedInDetail] @flag = 'LastLoginDetail', @EntryByMachine = @MachineName";
+
+        using SqlCommand cmdParty = new(sql, conn);
+        cmdParty.Parameters.AddWithValue("@MachineName", EntryByMachineName);
+
+        using SqlDataReader rdrParty = cmdParty.ExecuteReader();
         if (rdrParty.HasRows)
         {
             if (rdrParty.Read())
@@ -285,17 +382,32 @@ public class HomeController : Controller
                 model.Unit = Convert.ToString(rdrParty["BranchName"]);
             }
         }
+
         return model;
     }
+
     public LoginModel GeteDTRModel()
     {
         var model = new LoginModel();
+
+        // Base connection string with {ServerName} placeholder
         string connectionstring = _configuration.GetConnectionString("eTactDB1");
-        SqlConnection conn = new(connectionstring);
+
+        // Read server name only
+        string serverName = System.IO.File.ReadAllText(
+            Path.Combine(_IWebHostEnvironment.WebRootPath, "servername.txt")
+        ).Trim();
+
+        // Replace placeholder
+        string finalConnStr = connectionstring.Replace("{ServerName}", serverName);
+
+        using SqlConnection conn = new(finalConnStr);
         conn.Open();
-        sql = "select company_name from company_detail";
-        SqlCommand cmdParty = new(sql, conn);
-        SqlDataReader rdrParty = cmdParty.ExecuteReader();
+
+        string sql = "select company_name from company_detail";
+        using SqlCommand cmdParty = new(sql, conn);
+        using SqlDataReader rdrParty = cmdParty.ExecuteReader();
+
         if (rdrParty.HasRows)
         {
             IsDrOpen = true;
@@ -304,7 +416,8 @@ public class HomeController : Controller
                 ViewBag.Party = Convert.ToString(rdrParty["company_name"]);
             }
         }
-        if (IsDrOpen == true)
+
+        if (IsDrOpen)
         {
             IsDrOpen = false;
             rdrParty.Close();
@@ -312,9 +425,9 @@ public class HomeController : Controller
 
         model.AccList = GetCombodata("Company_detail", "Company_Name");
         model.ItemList = GetCombodata("Company_detail", "CC");
-        //model.StoreLst = GetCombodata("Store_Master", "Store_Name");
+
         var lastLogin = GetLastLoginDetail();
-        if(lastLogin != null)
+        if (lastLogin != null)
         {
             model.CompanyName = lastLogin?.CompanyName ?? model.AccList.FirstOrDefault()?.CompanyName;
             model.Unit = lastLogin?.Unit ?? model.ItemList.FirstOrDefault()?.Unit;
@@ -323,6 +436,7 @@ public class HomeController : Controller
         }
         return model;
     }
+
     //app.UseStatusCodePagesWithReExecute("/Home/HandleError/{0}"); enable this code if the line used in startup.cs
     //https://www.infoworld.com/article/3545304/how-to-handle-404-errors-in-aspnet-core-mvc.html#:~:text=A%20simple%20solution%20is%20to,a%20404%20error%20has%20occurred.
     //[Route("/Home/HandleError/{code:int}")]
@@ -407,8 +521,15 @@ public class HomeController : Controller
         //}
         //string connectionstring = GetConnectionString(databaseName);
         #endregion
-       string  connectionstring = _configuration.GetConnectionString("eTactDB1");
-        SqlConnection conn = new(connectionstring);
+       string baseConnectionString = _configuration.GetConnectionString("eTactDB1");
+        // Step 2: Read server name from file
+        string serverName = System.IO.File.ReadAllText(
+            Path.Combine(_IWebHostEnvironment.WebRootPath, "servername.txt")
+        ).Trim();
+
+        // Step 3: Replace placeholder
+        string finalConnStr = baseConnectionString.Replace("{ServerName}", serverName);
+        SqlConnection conn = new(finalConnStr);
         conn.Open();
         CultureInfo culture = new CultureInfo("en-US");
         DateTime FromDate = new DateTime();
@@ -461,7 +582,7 @@ public class HomeController : Controller
             rdrAccount.Close();
         }
         conn.Close();
-        using (SqlConnection logConn = new SqlConnection(connectionstring))
+        using (SqlConnection logConn = new SqlConnection(finalConnStr))
         {
             await logConn.OpenAsync();
             using (SqlCommand cmd = new SqlCommand("SpLastLoggedInDetail", logConn))
@@ -480,9 +601,9 @@ public class HomeController : Controller
             }
         }
         //connectionstring = $"Data Source={model.ServerName};Initial Catalog={dbName};;User Id=web;Password=bmr2401;Integrated Security=False";
-        connectionstring = GetConnectionString(dbName);
-        _connectionStringService.SetConnectionString(connectionstring);
-        conn = new(connectionstring);
+        finalConnStr = GetConnectionString(dbName);
+        _connectionStringService.SetConnectionString(finalConnStr);
+        conn = new(finalConnStr);
         try
         {
             conn.Open();
@@ -833,8 +954,17 @@ public class HomeController : Controller
     }
     public JsonResult GetUnitandBranch(string Company, string servername)
     {
-        string connectionstring = _configuration.GetConnectionString("eTactDB1");
-        SqlConnection conn = new(connectionstring);
+        // Step 1: Base connection string with {ServerName} placeholder
+        string baseConnectionString = _configuration.GetConnectionString("eTactDB1");
+
+        // Step 2: Read server name from file
+        string serverName = System.IO.File.ReadAllText(
+            Path.Combine(_IWebHostEnvironment.WebRootPath, "servername.txt")
+        ).Trim();
+
+        // Step 3: Replace placeholder
+        string finalConnStr = baseConnectionString.Replace("{ServerName}", serverName);
+        SqlConnection conn = new(baseConnectionString);
         conn.Open();
         sql = "select CC from Company_Detail where Company_Name = '" + Company + "'";
         SqlCommand cmdAccountCode = new(sql, conn);

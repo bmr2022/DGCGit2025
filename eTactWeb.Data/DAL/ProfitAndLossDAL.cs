@@ -46,7 +46,7 @@ namespace eTactWeb.Data.DAL
                     command.Parameters.AddWithValue("@flag", "ProfitAndLoss");
                     command.Parameters.AddWithValue("@ShowOpening", ShowOpening);
                     command.Parameters.AddWithValue("@ShowRecordWithZeroAmt", ShowRecordWithZeroAmt);
-
+                    command.Parameters.AddWithValue("@reportCallingFrom", "FromP&LForm");
                     await connection.OpenAsync();
 
                     using (SqlDataAdapter dataAdapter = new SqlDataAdapter(command))
