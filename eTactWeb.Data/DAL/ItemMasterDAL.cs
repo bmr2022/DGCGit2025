@@ -830,6 +830,7 @@ namespace eTactWeb.Data.DAL
                         model.SerialNo = dr["SerialNo"].ToString();
                         model.usedinMachorVehicle = dr["usedinMachorVehicle"].ToString();
                         model.Barcode = dr["Barcode"].ToString();
+                        model.BatchWiseInventory = dr["BatchWiseInventory"].ToString();
 
                         model.Branch = branchCsv.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList();
                         model.ProdInMachineGroup = dr["ProdInMachineGroup"].ToString() == "" ? 0 : Convert.ToInt32(dr["ProdInMachineGroup"].ToString());
@@ -972,6 +973,7 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@usedinMachorVehicle", model.usedinMachorVehicle);
                     oCmd.Parameters.AddWithValue("@Barcode", model.Barcode);
                     oCmd.Parameters.AddWithValue("@CreatedBy", model.CreatedBy);
+                    oCmd.Parameters.AddWithValue("@BatchWiseInventory", model.BatchWiseInventory);
                     if (model.Mode == "Update")
                     {
                         oCmd.Parameters.AddWithValue("@UpdatedBy", model.UpdatedBy);
