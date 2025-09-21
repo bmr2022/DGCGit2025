@@ -1710,7 +1710,7 @@ namespace eTactWeb.Controllers
                 //{
                   
                 //}
-                webReport.Report.Load(webRootPath + "\\SaleBill.frx"); // default report
+                webReport.Report.Load(webRootPath + "\\SaleEstimate.frx"); // default report
                 webReport.Report.SetParameterValue("entryparam", EntryId);
                 webReport.Report.SetParameterValue("yearparam", YearCode);
                 my_connection_string = _connectionStringService.GetConnectionString();
@@ -1718,9 +1718,9 @@ namespace eTactWeb.Controllers
                 webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
                 webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
                 webReport.Report.SetParameterValue("MyParameter", my_connection_string);
-                webReport.Report.SetParameterValue("copyType", copyType);
+                //webReport.Report.SetParameterValue("copyType", copyType);
                 webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
-                webReport.Report.SetParameterValue("copyType", copyType);
+                //webReport.Report.SetParameterValue("copyType", copyType);
                 webReport.Report.Prepare();
                 foreach (var dataSource in webReport.Report.Dictionary.DataSources)
                 {
