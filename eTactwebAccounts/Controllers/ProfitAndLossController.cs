@@ -31,17 +31,22 @@ namespace eTactwebAccounts.Controllers
             MainModel.FromDate = HttpContext.Session.GetString("FromDate");
             return View(MainModel); // Pass the model with old data to the view
         }
-        public async Task<IActionResult> GetProfitAndLossData(string FromDate, string ToDate, string Flag, string ReportType, string ShowOpening, string ShowRecordWithZeroAmt)
+        public async Task<IActionResult> GetProfitAndLossData(string FromDate, string ToDate, string Flag, string ReportType, string ShowOpening, string ShowRecordWithZeroAmt, int? ParentAccountCode)
         {
             var model = new ProfitAndLossModel();
             model.EntryByMachine = Environment.MachineName;
-            model = await _IProfitAndLoss.GetProfitAndLossData(FromDate, ToDate, Flag, ReportType, ShowOpening, ShowRecordWithZeroAmt);
+            model = await _IProfitAndLoss.GetProfitAndLossData(FromDate, ToDate, Flag, ReportType, ShowOpening, ShowRecordWithZeroAmt, ParentAccountCode);
 
             var sessionData = JsonConvert.SerializeObject(model);
             HttpContext.Session.SetString("ProfitAndLossData", sessionData);
             return PartialView("_ProfitAndLossGridData", model);
         }
-
+        public async Task<JsonResult> GetGroupData(string FromDate, string ToDate, string ReportType, string ShowOpening, string ShowRecordWithZeroAmt)
+        {
+            var JSON = await _IProfitAndLoss.GetGroupData(FromDate, ToDate,ReportType,ShowOpening,ShowRecordWithZeroAmt);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
         [HttpGet]
         public IActionResult ExportProfitAndLossToExcel(string ReportType, string FromDate, string ToDate)
         {

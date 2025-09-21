@@ -44,6 +44,11 @@
                                         <option value="DETAIL">Detail</option>
                                     </select>
                                 </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="Group" class="form-label">Group</label>
+                                    <select asp-for="Group" class="form-select">
+                                    </select>
+                                </div>
                                 <div class="col-sm-2 col-md-6 col-lg-4 col-xl-2">
                                     <label class="form-label">Global search</label>
                                     <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
@@ -69,6 +74,10 @@
                                     </button>
                                     <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="TrailBalance" asp-action="TrailBalance">
                                         <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
+                                    </a>
+                                    <a href="#" class="btn btn-primary btn-sm ms-3" onclick="PressBack();" id="BackButton">
+                                        <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                                        BACK
                                     </a>
                                 </div>
                                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -113,7 +122,7 @@
     <script>
 
         $(document).ready(function () {
-             
+
             let currentDate = new Date();
 
             // FromDate model thi value
@@ -130,7 +139,6 @@
                     May: "05", Jun: "06", Jul: "07", Aug: "08",
                     Sep: "09", Oct: "10", Nov: "11", Dec: "12"
                 };
-
                 return `${day}/${months[mon]}/${year}`;
             }
 
@@ -141,12 +149,25 @@
 
             $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' })
                 .datepicker("setDate", 'now');
+            $('#Group').select2();
+            $('#BackButton').hide();
+            GetGroupData();
 
             let history = JSON.parse(sessionStorage.getItem('HistoryStack')) || [];
             let parentCode = sessionStorage.getItem('ParentCode');
             let reportType = sessionStorage.getItem('ReportType');
             let showOpening = sessionStorage.getItem('ShowOpening');
-            
+            if (parentCode) {
+                GetGroupData(parentCode)
+            }
+            if (history.length > 0
+                || sessionStorage.getItem('ParentCode')
+                || sessionStorage.getItem('ShowOpening')
+                || sessionStorage.getItem('ReportType')) {
+                $('#BackButton').show();
+            } else {
+                $('#BackButton').hide();
+            }
             if (history.length > 0) {
                 let lastStep = history[history.length - 1];
                 const action = lastStep.action;
@@ -173,7 +194,37 @@
                         history.pop();
                         sessionStorage.setItem('HistoryStack', JSON.stringify(history));
                         break;
+                    case 'ProfitAndLossGroupLedgerDetail':
+                        if (params.ShowOpening === "YES") {
+                            $('#ShowOpening').prop("checked", true);
+                        } else {
+                            $('#ShowOpening').prop("checked", false);
+                        }
+                        if (params.ReportType == "DETAIL") {
+                            $('#ShowRecordWithZeroAmtDiv').show();
+                            let showRecordWithZeroAmt = sessionStorage.getItem('ShowRecordWithZeroAmt');
+                            if (params.ShowRecordWithZeroAmt === "YES") {
+                                $('#ShowRecordWithZeroAmt').prop("checked", true);
+                            } else {
+                                $('#ShowRecordWithZeroAmt').prop("checked", false);
+                            }
+                        }
+                        $('#FromDate').val(params.FromDate);
+                        $('#ToDate').val(params.ToDate);
+                        let groupCode = params.GroupCode;
+                        if ($('#Group option[value="' + groupCode + '"]').length === 0) {
+                            // Option doesn't exist, add it
+                            $('#Group').append(new Option(groupCode, groupCode, true, true));
+                        } else {
+                            // Option exists, just select it
+                            $('#Group').val(groupCode).trigger('change');
+                        }
+                        $('#ReportType').val(params.ReportType).trigger('change');
+                        history.pop();
+                        sessionStorage.setItem('HistoryStack', JSON.stringify(history));
+                        break;
                 }
+                if (history.length === 0) $('#BackButton').hide();
             }
             if ($('#ReportType').val() == "SUMMARY") {
                 $('#ShowRecordWithZeroAmtDiv').hide();
@@ -204,6 +255,7 @@
             var ReportType = $('#ReportType').val();
             var ShowOpening = $('#ShowOpening').prop('checked') ? "YES" : "NO";
             var ShowRecordWithZeroAmt = $('#ShowRecordWithZeroAmt').prop('checked') ? "YES" : "NO";
+            var ParentAccountCode = $('#Group').val();
 
             $.ajax({
                 type: 'POST',
@@ -213,7 +265,8 @@
                     ToDate: ToDate,
                     ReportType: ReportType,
                     ShowOpening: ShowOpening,
-                    ShowRecordWithZeroAmt: ShowRecordWithZeroAmt
+                    ShowRecordWithZeroAmt: ShowRecordWithZeroAmt,
+                    ParentAccountCode: ParentAccountCode
                 },
                 success: function (response) {
                     $('#divStockMainRegister').html(response);
@@ -275,12 +328,82 @@
         });
 
         function GetProfitAndLossDataByGroup(td) {
-             
             // td is the clicked cell
             let cellValue = $(td).text().trim();
 
+            if ($('#ReportType').val() == "SUMMARY") {
+                // hidden input value inside this td
+                var parentCode = $(td).find(".hdnParentAccountCode").val();
+                var FromDate = $('#FromDate').val();
+                var ToDate = $('#ToDate').val();
+                var ShowOpening = $('#ShowOpening').prop('checked') ? "YES" : "NO";
+                var ReportType = $('#ReportType').val();
+                if (ReportType == "DETAIL") {
+                    var ShowRecordWithZeroAmt = $('#ShowRecordWithZeroAmt').prop('checked') ? "YES" : "NO";
+                }
+                // Save history
+                saveHistory('ProfitAndLossGroup', {
+                    parentCode: parentCode,
+                    FromDate: FromDate,
+                    ToDate: ToDate,
+                    ShowOpening: ShowOpening,
+                    ReportType: ReportType,
+                    ShowRecordWithZeroAmt: ShowRecordWithZeroAmt
+                });
+
+                // Save to sessionStorage
+                sessionStorage.setItem('ParentCode', parentCode);
+                sessionStorage.setItem('ShowOpening', ShowOpening);
+                sessionStorage.setItem('ShowRecordWithZeroAmt', ShowRecordWithZeroAmt);
+                sessionStorage.setItem('ColumnValue', cellValue);
+                sessionStorage.setItem('ReportType', "GROUPSUMMARY");
+
+                // Mark current page
+                sessionStorage.setItem('CurrentPage', 'ProfitAndLossLedger');
+
+                // Redirect
+                window.location.href = '/TransactionLedger/Index';
+            }
+            else {
+                // Save OLD state first
+                let currentFromDate = $('#FromDate').val();
+                let currentToDate = $('#ToDate').val();
+                let currentReportType = $('#ReportType').val();
+                let currentGroup = $('#Group').val();
+                let curentShowOpening = $('#ShowOpening').prop('checked') ? "YES" : "NO";
+                let currentShowRecordWithZeroAmt = $('#ShowRecordWithZeroAmt').prop('checked') ? "YES" : "NO";
+                saveHistory('ProfitAndLossGroupDetail', { FromDate: currentFromDate, ToDate: currentToDate, ReportType: currentReportType, GroupCode: currentGroup, ShowOpening: curentShowOpening, ShowRecordWithZeroAmt: currentShowRecordWithZeroAmt });
+
+                // Apply NEW state
+                var FromDate = $('#FromDate').val();
+                var ToDate = $('#ToDate').val();
+                var GroupCode = $(td).find(".hdnParentAccountCode").val();
+                var ShowOpening = $('#ShowOpening').prop('checked') ? "YES" : "NO";
+                var ShowRecordWithZeroAmt = $('#ShowRecordWithZeroAmt').prop('checked') ? "YES" : "NO";
+                $('#Group').val(GroupCode).trigger("change");
+                $('#ReportType').val("DETAIL").trigger("change");
+
+                $('#BackButton').show();
+            }
+        }
+
+        function GetProfitAndLossDataByLedger(td) {
+
+            // td is the clicked cell
+            let cellValue = $(td).text().trim();
+
+            // Save OLD state first
+            let currentFromDate = $('#FromDate').val();
+            let currentToDate = $('#ToDate').val();
+            let currentReportType = $('#ReportType').val();
+            let currentGroup = $('#Group').val();
+            let curentShowOpening = $('#ShowOpening').prop('checked') ? "YES" : "NO";
+            let currentShowRecordWithZeroAmt = $('#ShowRecordWithZeroAmt').prop('checked') ? "YES" : "NO";
+            saveHistory('ProfitAndLossGroupLedgerDetail', { FromDate: currentFromDate, ToDate: currentToDate, ReportType: currentReportType, GroupCode: currentGroup, ShowOpening: curentShowOpening, ShowRecordWithZeroAmt: currentShowRecordWithZeroAmt });
+
             // hidden input value inside this td
-            var parentCode = $(td).find(".hdnParentAccountCode").val();
+            var parentCode = $('#Group').val();
+            var accountCode = $(td).find(".hdnAccountCode").val();
             var FromDate = $('#FromDate').val();
             var ToDate = $('#ToDate').val();
             var ShowOpening = $('#ShowOpening').prop('checked') ? "YES" : "NO";
@@ -288,20 +411,12 @@
             if (ReportType == "DETAIL") {
                 var ShowRecordWithZeroAmt = $('#ShowRecordWithZeroAmt').prop('checked') ? "YES" : "NO";
             }
-            // Save history
-            saveHistory('ProfitAndLossGroup', {
-                parentCode: parentCode,
-                FromDate: FromDate,
-                ToDate: ToDate,
-                ShowOpening: ShowOpening,
-                ReportType : ReportType,
-                ShowRecordWithZeroAmt: ShowRecordWithZeroAmt
-            });
 
             // Save to sessionStorage
             sessionStorage.setItem('ParentCode', parentCode);
             sessionStorage.setItem('ShowOpening', ShowOpening);
             sessionStorage.setItem('ShowRecordWithZeroAmt', ShowRecordWithZeroAmt);
+            sessionStorage.setItem('AccountName', accountCode);
             sessionStorage.setItem('ColumnValue', cellValue);
             sessionStorage.setItem('ReportType', "GROUPSUMMARY");
 
@@ -312,45 +427,23 @@
             window.location.href = '/TransactionLedger/Index';
         }
 
-        function GetProfitAndLossDataByLedger(td) {
-             
-            // td is the clicked cell
-            let cellValue = $(td).text().trim();
+        function PressBack() {
+            let history = JSON.parse(sessionStorage.getItem('HistoryStack')) || [];
+            if (history.length === 0) { $('#BackButton').hide(); return; }
 
-            // hidden input value inside this td
-            var parentCode = $(td).find(".hdnParentAccountCode").val();
-            var accountCode = $(td).find(".hdnAccountCode").val();
-            var FromDate = $('#FromDate').val();
-            var ToDate = $('#ToDate').val();
-            var ShowOpening = $('#ShowOpening').prop('checked') ? "YES" : "NO";
-            var ReportType = $('#ReportType').val();
-            if (ReportType == "DETAIL") {
-                var ShowRecordWithZeroAmt = $('#ShowRecordWithZeroAmt').prop('checked') ? "YES" : "NO";
+            let lastStep = history.pop();
+            sessionStorage.setItem('HistoryStack', JSON.stringify(history));
+
+            switch (lastStep.action) {
+                case 'ProfitAndLossGroupDetail':
+                    $('#FromDate').val(lastStep.params.FromDate);
+                    $('#ToDate').val(lastStep.params.ToDate);
+                    $('#Group').val(lastStep.params.GroupCode).trigger("change");
+                    $('#ReportType').val("DETAIL").trigger("change");
+                    break;
             }
-            // Save history
-            saveHistory('ProfitAndLossDetail', {
-                parentCode: parentCode,
-                FromDate: FromDate,
-                ToDate: ToDate,
-                ShowOpening: ShowOpening,
-                ReportType: ReportType,
-                ShowRecordWithZeroAmt: ShowRecordWithZeroAmt,
-                AccountCode: accountCode
-            });
 
-            // Save to sessionStorage
-            sessionStorage.setItem('ParentCode', parentCode);
-            sessionStorage.setItem('ShowOpening', ShowOpening);
-            sessionStorage.setItem('ShowRecordWithZeroAmt', ShowRecordWithZeroAmt);
-            sessionStorage.setItem('AccountCode', accountCode);
-            sessionStorage.setItem('ColumnValue', cellValue);
-            sessionStorage.setItem('ReportType', "GROUPSUMMARY");
-
-            // Mark current page
-            sessionStorage.setItem('CurrentPage', 'ProfitAndLossLedger');
-
-            // Redirect
-            window.location.href = '/TransactionLedger/Index';
+            if (history.length === 0) $('#BackButton').hide();
         }
 
         function saveHistory(action, params = {}) {
@@ -365,6 +458,49 @@
 
             // Show back button
             $('#BackButton').show();
+        }
+
+        function GetGroupData(selectedGroupCode = null) {
+            var FromDate = $('#FromDate').val();
+            var ToDate = $('#ToDate').val();
+            var ReportType = $('#ReportType').val();
+            var ShowOpening = $('#ShowOpening').prop('checked') ? "YES" : "NO";
+            var ShowRecordWithZeroAmt = $('#ShowRecordWithZeroAmt').prop('checked') ? "YES" : "NO";
+
+            $.ajax({
+                type: 'POST',
+                url: "@Url.Action("GetGroupData", "ProfitAndLoss")",
+                data: {
+                    FromDate: FromDate,
+                    ToDate: ToDate,
+                    ReportType: ReportType,
+                    ShowOpening: ShowOpening,
+                    ShowRecordWithZeroAmt: ShowRecordWithZeroAmt
+                },
+                success: function (response) {
+                    var Group = $('#Group');
+                    var obj = $.parseJSON(response);
+                    Group.empty();
+                    Group.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, ledger) {
+                        Group.append('<option value="' + ledger.ParentAccountCode + '">' + ledger.ParentAccountName + '</option>');
+                    });
+
+                    // Set selected GroupCode AFTER options are loaded
+                    let groupCode = selectedGroupCode || sessionStorage.getItem('ParentCode');
+                    if (groupCode) {
+                        if ($('#Group option[value="' + groupCode + '"]').length === 0) {
+                            // Add option if not present
+                            Group.append(new Option(groupCode, groupCode, true, true));
+                        }
+                        Group.val(groupCode).trigger('change');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching Group data:", error);
+                }
+            });
         }
 
     </script>

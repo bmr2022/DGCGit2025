@@ -16,6 +16,7 @@ namespace eTactWeb.DOM.Models
         public decimal TotalCRbeforeGrossProfit { get; set; }
         public string ShowRecordWithZeroAmt {  get; set; }
         public string ShowOpening {  get; set; }
+        public string Group {  get; set; }
         public IList<ProfitAndLossRow> ProfitAndLossGrid { get; set; } = new List<ProfitAndLossRow>();
     }
     public class ProfitAndLossRow
