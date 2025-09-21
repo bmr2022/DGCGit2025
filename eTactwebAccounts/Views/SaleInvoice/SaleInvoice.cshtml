@@ -795,6 +795,48 @@
     </div>
 </div>
 
+<div class="modal fade" id="SubmitionForm" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+     aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="staticBackdropLabel">Confirmation </h3>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row g-2 gx-3">
+                            <div class="card">
+                                <div class="card-body overflow-auto pb-0">
+                                    <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-xs-12">
+                                        <div class="d-flex align-items-center">
+                                            <h6 class="mb-0 me-2">Do You Want Save&Print or Save & E-way Bill?</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="progress my-2" style="height: 4px;">
+                        <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" id="btnClose">Save</button>
+                    <a href="#" class="btn btn-primary" id="btnPrint">
+                        <i class="fa fa-print"></i> Save & Print
+                    </a>
+                    <a href="#" class="btn btn-primary" id="btnPrintEmail">
+                        <i class="fa fa-print"></i> Save & Print & Email
+                    </a>
+                    @* <button type="button" class="btn btn-danger" id="btnEwayBill">Save & EWay Bill</button> *@
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
     @* <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -4777,9 +4819,46 @@
                 $.notify('Adjustgrid is manadatory...!', "error");
             }
             else {
-                $("form").submit();
+                //$("form").submit();
+                $('#SubmitionForm').modal("show");
             }
         })
+        $('#btnPrint').click(function () {
+            const printWindow = window.open('', '_blank', 'width=900,height=700,toolbar=no,menubar=no,scrollbars=yes,resizable=yes');
+
+            $('#SubmitionForm').modal("hide");
+
+            setTimeout(() => {
+                submitForm(true, false, false, printWindow, null); // Send true and window object
+            }, 300);
+        });
+
+        $('#btnPrintEmail').click(function () {
+            const printWindow = window.open('', '_blank', 'width=900,height=700,toolbar=no,menubar=no,scrollbars=yes,resizable=yes');
+            const sendWindow = window.open('', '_blank'); // Open blank tab first (browser-safe)
+
+
+            $('#SubmitionForm').modal("hide");
+
+            setTimeout(() => {
+                submitForm(true, true, false, printWindow, sendWindow); // Send true and window object
+            }, 300);
+        });
+        $('#submitBTN, #submitBTNfooter, #UpdateButton').click(function (e) {
+            e.preventDefault(); // Prevent default button action if needed
+
+            // Show the modal
+            $('#SubmitionForm').modal('show');
+        });
+
+        $('#btnClose').click(function () {
+            $('#SubmitionForm').modal("hide");
+
+            setTimeout(() => {
+                submitForm(false, false, false, null, null); // no print
+            }, 300);
+        });
+
         var itemsStockableAndCustJw = [];
         function ValidateBomItemsInCustGrid() {
             var custItemCodes = new Set();
