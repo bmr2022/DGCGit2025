@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="09/20/2025 17:13:34" ReportInfo.Modified="09/20/2025 17:50:59" ReportInfo.CreatorVersion="2023.2.0.0">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="09/20/2025 17:13:34" ReportInfo.Modified="09/21/2025 11:41:00" ReportInfo.CreatorVersion="2023.2.0.0">
   <Dictionary>
-    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqwYf2D6LPIs5GRi9VfJb9gu9ucqaRfzVvUaVne08cIFURWyyEsxwQsmngwHHahRU5IBf1gWxFxthjvCI+9BjhcR8BjTz2iHCnSBTgRKTkqutDkjIRRL0Lr+gAV5vh4t47BklN+Df+gZ1BDy0zz0wKb8ihM9loU9dXTaRaB3iM7MkRkKOWKZEyucGuTvDipndF3ceGN4EszyAcaWAnzwd7uA==" ConnectionStringExpression="[MyParameter]">
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqwYf2D6LPIs5GRi9VfJb9gu9ucqaRfzVvUaVne08cIFURWyyEsxwQsmngwHHahRU5IBf1gWxFxthjvCI+9BjhcR8BjTz2iHCnSBTgRKTkqutDkjIRRL0Lr+gAV5vh4t47BklN+Df+gZ1BDy0zz0wKb8ihM9loU9dXTaRaB3iM7MkRkKOWKZEyucGuTvDipndFmuzNrXnZdCIFPXOC3P1ReA==" ConnectionStringExpression="[MyParameter]">
       <TableDataSource Name="Table" Alias="SPReportSaleBill" DataType="System.Int32" Enabled="true" SelectCommand="exec SPReportSaleBill  @EntryId = 13 , @yearCode = 2025">
         <Column Name="EntryID" DataType="System.Int64"/>
         <Column Name="YearCode" DataType="System.Int64"/>
@@ -139,63 +139,94 @@
       </TableDataSource>
     </MsSqlDataConnection>
     <Parameter Name="MyParameter" DataType="System.String" Expression="MyParameter"/>
+    <Total Name="TotalQty" Expression="[SPReportSaleBill.BillQty]" Evaluator="Data1" PrintOn="ReportSummary1"/>
+    <Total Name="TotalAmt" Expression="[SPReportSaleBill.ItemAmount]" Evaluator="Data1" PrintOn="ReportSummary1"/>
   </Dictionary>
   <ReportPage Name="Page1" Watermark.Font="Arial, 60pt">
-    <ReportTitleBand Name="ReportTitle1" Width="718.2" Height="132.3">
+    <ReportTitleBand Name="ReportTitle1" Width="718.2" Height="179.55">
       <LineObject Name="Line1" Left="28.35" Top="37.8" Width="670.95"/>
-      <LineObject Name="Line2" Left="28.35" Top="37.8" Height="94.5"/>
-      <LineObject Name="Line3" Left="699.3" Top="37.8" Height="94.5"/>
+      <LineObject Name="Line2" Left="28.35" Top="37.8" Height="141.75"/>
+      <LineObject Name="Line3" Left="699.3" Top="37.8" Height="141.75"/>
       <TextObject Name="Text3" Left="292.95" Top="9.45" Width="94.5" Height="28.35" Text="Estimate" HorzAlign="Center" Font="Arial, 14pt, style=Bold"/>
-      <TextObject Name="Text7" Left="132.3" Top="66.15" Width="189" Height="18.9" Text="[SPReportSaleBill.CustAddress]" Font="Arial, 10pt"/>
-      <TextObject Name="Text8" Left="37.8" Top="66.15" Width="94.5" Height="18.9" Text="CustAddress:" Font="Arial, 10pt"/>
+      <TextObject Name="Text8" Left="37.8" Top="66.15" Width="66.15" Height="18.9" Text="Address:" Font="Arial, 10pt"/>
       <TextObject Name="Text9" Left="37.8" Top="47.25" Width="56.7" Height="18.9" Text="Client:" Font="Arial, 10pt"/>
+      <TextObject Name="Text10" Left="103.95" Top="47.25" Width="255.15" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportSaleBill.CustomerName]" Font="Arial, 10pt"/>
+      <LineObject Name="Line4" Left="359.1" Top="37.8" Height="141.75"/>
+      <TextObject Name="Text11" Left="103.95" Top="66.15" Width="255.15" Height="47.25" CanGrow="true" CanBreak="false" Text="[SPReportSaleBill.CustAddress]" Font="Arial, 8pt"/>
+      <TextObject Name="Text12" Left="103.95" Top="113.4" Width="255.15" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportSaleBill.CITY]" Font="Arial, 10pt"/>
+      <TextObject Name="Text13" Left="37.8" Top="113.4" Width="56.7" Height="18.9" Text="City:" Font="Arial, 10pt"/>
+      <TextObject Name="Text14" Left="103.95" Top="132.3" Width="255.15" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportSaleBill.StateName]" Font="Arial, 10pt"/>
+      <TextObject Name="Text15" Left="37.8" Top="132.3" Width="56.7" Height="18.9" Text="State:" Font="Arial, 10pt"/>
+      <TextObject Name="Text16" Left="103.95" Top="151.2" Width="255.15" Height="18.9" Text="[SPReportSaleBill.mobileno]" Font="Arial, 10pt"/>
+      <TextObject Name="Text17" Left="37.8" Top="151.2" Width="56.7" Height="18.9" Text="Mobile:" Font="Arial, 10pt"/>
+      <LineObject Name="Line5" Left="28.35" Top="179.55" Width="670.95"/>
+      <TextObject Name="Text18" Left="359.1" Top="47.25" Width="85.05" Height="18.9" Text="Invoice No:" Font="Arial, 10pt"/>
+      <TextObject Name="Text19" Left="444.15" Top="47.25" Width="122.85" Height="18.9" Text="[SPReportSaleBill.BillNo]" Font="Arial, 10pt"/>
+      <TextObject Name="Text20" Left="567" Top="47.25" Width="47.25" Height="18.9" Text="Date:" Font="Arial, 10pt"/>
+      <TextObject Name="Text21" Left="614.25" Top="47.25" Width="85.05" Height="18.9" Text="[SPReportSaleBill.BillDate]" Format="Date" Format.Format="d" Font="Arial, 8pt"/>
+      <LineObject Name="Line6" Left="359.1" Top="66.15" Width="340.2"/>
+      <TextObject Name="Text22" Left="359.1" Top="75.6" Width="56.7" Height="18.9" Text="Gr No:" Font="Arial, 10pt"/>
+      <TextObject Name="Text23" Left="359.1" Top="94.5" Width="56.7" Height="18.9" Text="P Mark:" Font="Arial, 10pt"/>
+      <TextObject Name="Text24" Left="359.1" Top="113.4" Width="75.6" Height="18.9" Text="Transport:" Font="Arial, 10pt"/>
+      <TextObject Name="Text25" Left="434.7" Top="113.4" Width="264.6" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportSaleBill.TransporterName]" Font="Arial, 10pt"/>
+      <TextObject Name="Text26" Left="359.1" Top="132.3" Width="103.95" Height="18.9" Text="Freight Terms:" Font="Arial, 10pt"/>
+      <TextObject Name="Text27" Left="463.05" Top="132.3" Width="236.25" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportSaleBill.PaymentTerm]" Font="Arial, 10pt"/>
     </ReportTitleBand>
-    <PageHeaderBand Name="PageHeader1" Top="135.5" Width="718.2" Height="28.35">
-      <TextObject Name="Text2" Left="359.1" Width="94.5" Height="18.9" Text="BillDate" Font="Arial, 10pt"/>
+    <PageHeaderBand Name="PageHeader1" Top="182.75" Width="718.2" Height="28.35">
+      <LineObject Name="Line7" Left="28.35" Height="28.35"/>
+      <LineObject Name="Line8" Left="699.3" Height="28.35"/>
+      <TextObject Name="Text28" Left="28.35" Width="37.8" Height="18.9" Text="Sr " Font="Arial, 10pt"/>
+      <TextObject Name="Text29" Left="633.15" Width="66.15" Height="18.9" Text="Amount" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text30" Left="576.45" Width="56.7" Height="18.9" Text="Disc%" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text31" Left="529.2" Width="47.25" Height="18.9" Text="Rate" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text32" Left="491.4" Width="37.8" Height="18.9" Text="Unit" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text33" Left="444.15" Width="47.25" Height="18.9" Text="Qty" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text34" Left="226.8" Width="217.35" Height="18.9" Text="Description" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text35" Left="151.2" Width="75.6" Height="18.9" Text="Part No" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text36" Left="66.15" Width="85.05" Height="18.9" Text="Group" HorzAlign="Center" Font="Arial, 10pt"/>
+      <LineObject Name="Line9" Left="28.35" Top="28.35" Width="670.95"/>
+      <LineObject Name="Line10" Left="66.15" Height="28.35"/>
+      <LineObject Name="Line11" Left="151.2" Height="28.35"/>
+      <LineObject Name="Line12" Left="226.8" Height="28.35"/>
+      <LineObject Name="Line13" Left="444.15" Height="28.35"/>
+      <LineObject Name="Line14" Left="491.4" Height="28.35"/>
+      <LineObject Name="Line15" Left="529.2" Height="28.35"/>
+      <LineObject Name="Line16" Left="576.45" Height="28.35"/>
+      <LineObject Name="Line17" Left="633.15" Height="28.35"/>
     </PageHeaderBand>
-    <DataBand Name="Data1" Top="167.05" Width="718.2" Height="75.6" DataSource="Table">
-      <TextObject Name="Text1" Left="510.3" Top="18.9" Width="94.5" Height="18.9" Text="[SPReportSaleBill.BillNo]" Font="Arial, 10pt"/>
-      <TextObject Name="Text4" Left="359.1" Top="28.35" Width="94.5" Height="18.9" Text="[SPReportSaleBill.BillDate]" Format="Date" Format.Format="d" Font="Arial, 10pt"/>
-    </DataBand>
-    <PageFooterBand Name="PageFooter1" Top="245.85" Width="718.2" Height="18.9"/>
-  </ReportPage>
-  <ReportPage Name="Page2" Watermark.Font="Arial, 60pt">
-    <ReportTitleBand Name="ReportTitle2" Width="718.2" Height="132.3">
-      <LineObject Name="Line4" Left="28.35" Top="37.8" Width="670.95"/>
-      <LineObject Name="Line5" Left="28.35" Top="37.8" Height="94.5"/>
-      <LineObject Name="Line6" Left="699.3" Top="37.8" Height="94.5"/>
-      <TextObject Name="Text5" Left="292.95" Top="9.45" Width="94.5" Height="28.35" Text="Estimate" HorzAlign="Center" Font="Arial, 14pt, style=Bold"/>
-      <TextObject Name="Text6" Left="132.3" Top="66.15" Width="189" Height="18.9" Text="[SPReportSaleBill.CustAddress]" Font="Arial, 10pt"/>
-      <TextObject Name="Text10" Left="37.8" Top="66.15" Width="94.5" Height="18.9" Text="CustAddress:" Font="Arial, 10pt"/>
-      <TextObject Name="Text11" Left="37.8" Top="47.25" Width="56.7" Height="18.9" Text="Client:" Font="Arial, 10pt"/>
-    </ReportTitleBand>
-    <PageHeaderBand Name="PageHeader2" Top="135.5" Width="718.2" Height="28.35">
-      <TextObject Name="Text12" Left="359.1" Width="94.5" Height="18.9" Text="BillDate" Font="Arial, 10pt"/>
-    </PageHeaderBand>
-    <DataBand Name="Data2" Top="167.05" Width="718.2" Height="75.6" DataSource="Table">
-      <TextObject Name="Text13" Left="510.3" Top="18.9" Width="94.5" Height="18.9" Text="[SPReportSaleBill.BillNo]" Font="Arial, 10pt"/>
-      <TextObject Name="Text14" Left="359.1" Top="28.35" Width="94.5" Height="18.9" Text="[SPReportSaleBill.BillDate]" Format="Date" Format.Format="d" Font="Arial, 10pt"/>
-    </DataBand>
-    <PageFooterBand Name="PageFooter2" Top="245.85" Width="718.2" Height="18.9"/>
-  </ReportPage>
-  <ReportPage Name="Page3" Watermark.Font="Arial, 60pt">
-    <ReportTitleBand Name="ReportTitle3" Width="718.2" Height="132.3">
-      <LineObject Name="Line7" Left="28.35" Top="37.8" Width="670.95"/>
-      <LineObject Name="Line8" Left="28.35" Top="37.8" Height="94.5"/>
-      <LineObject Name="Line9" Left="699.3" Top="37.8" Height="94.5"/>
-      <TextObject Name="Text15" Left="292.95" Top="9.45" Width="94.5" Height="28.35" Text="Estimate" HorzAlign="Center" Font="Arial, 14pt, style=Bold"/>
-      <TextObject Name="Text16" Left="132.3" Top="66.15" Width="217.35" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportSaleBill.CustAddress]" Font="Arial, 10pt"/>
-      <TextObject Name="Text17" Left="37.8" Top="66.15" Width="94.5" Height="18.9" Text="CustAddress:" Font="Arial, 10pt"/>
-      <TextObject Name="Text18" Left="37.8" Top="47.25" Width="56.7" Height="18.9" Text="Client:" Font="Arial, 10pt"/>
-      <LineObject Name="Line10" Left="349.65" Top="37.8" Height="94.5"/>
-    </ReportTitleBand>
-    <PageHeaderBand Name="PageHeader3" Top="135.5" Width="718.2" Height="28.35">
-      <TextObject Name="Text19" Left="359.1" Width="94.5" Height="18.9" Text="BillDate" Font="Arial, 10pt"/>
-    </PageHeaderBand>
-    <DataBand Name="Data3" Top="167.05" Width="718.2" Height="75.6" DataSource="Table">
-      <TextObject Name="Text20" Left="510.3" Top="18.9" Width="94.5" Height="18.9" Text="[SPReportSaleBill.BillNo]" Font="Arial, 10pt"/>
-      <TextObject Name="Text21" Left="359.1" Top="28.35" Width="94.5" Height="18.9" Text="[SPReportSaleBill.BillDate]" Format="Date" Format.Format="d" Font="Arial, 10pt"/>
-    </DataBand>
-    <PageFooterBand Name="PageFooter3" Top="245.85" Width="718.2" Height="18.9"/>
+    <GroupHeaderBand Name="GroupHeader1" Top="214.3" Width="718.2" Height="28.35" Condition="[SPReportSaleBill.PartCode]">
+      <LineObject Name="Line19" Left="699.3" Height="28.35"/>
+      <LineObject Name="Line18" Left="28.35" Height="28.35"/>
+      <LineObject Name="Line21" Left="66.15" Height="28.35"/>
+      <LineObject Name="Line22" Left="151.2" Height="28.35"/>
+      <LineObject Name="Line23" Left="226.8" Height="28.35"/>
+      <LineObject Name="Line24" Left="444.15" Height="28.35"/>
+      <LineObject Name="Line25" Left="491.4" Height="28.35"/>
+      <LineObject Name="Line26" Left="529.2" Height="28.35"/>
+      <LineObject Name="Line27" Left="576.45" Height="28.35"/>
+      <LineObject Name="Line28" Left="633.15" Height="28.35"/>
+      <LineObject Name="Line20" Left="28.35" Top="28.35" Width="670.95"/>
+      <TextObject Name="Text37" Left="28.35" Width="37.8" Height="28.35" CanGrow="true" CanBreak="false" Text="[Row#]" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text38" Left="151.2" Width="75.6" Height="28.35" CanGrow="true" CanBreak="false" Text="[SPReportSaleBill.PartCode]" HorzAlign="Center" Font="Arial, 8pt"/>
+      <TextObject Name="Text39" Left="226.8" Width="217.35" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportSaleBill.ItemName]" HorzAlign="Center" Font="Arial, 8pt"/>
+      <TextObject Name="Text40" Left="444.15" Width="47.25" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportSaleBill.BillQty]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 8pt" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text41" Left="491.4" Width="37.8" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportSaleBill.Unit]" HorzAlign="Center" Font="Arial, 8pt"/>
+      <TextObject Name="Text42" Left="529.2" Width="47.25" Height="28.35" CanGrow="true" CanBreak="false" Text="[SPReportSaleBill.BillRate]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 8pt" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text43" Left="576.45" Width="56.7" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportSaleBill.DiscPer]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 10pt" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text44" Left="633.15" Width="66.15" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportSaleBill.ItemAmount]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 8pt" Trimming="EllipsisCharacter"/>
+      <DataBand Name="Data1" Top="245.85" Width="718.2" DataSource="Table"/>
+      <GroupFooterBand Name="GroupFooter1" Top="249.05" Width="718.2"/>
+    </GroupHeaderBand>
+    <ReportSummaryBand Name="ReportSummary1" Top="252.25" Width="718.2" Height="226.8">
+      <LineObject Name="Line29" Left="28.35" Height="103.95"/>
+      <LineObject Name="Line30" Left="699.3" Height="103.95"/>
+      <TextObject Name="Text45" Left="28.35" Width="132.3" Height="18.9" Text="Amount Before Tax:" Font="Arial, 10pt"/>
+      <TextObject Name="Text46" Left="444.15" Width="47.25" Height="18.9" CanGrow="true" CanBreak="false" Text="[TotalQty]" Font="Arial, 10pt"/>
+      <TextObject Name="Text47" Left="633.15" Width="66.15" Height="18.9" CanGrow="true" CanBreak="false" Text="[TotalAmt]" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text48" Left="434.7" Top="28.35" Width="94.5" Height="18.9" Text="CGST Amt:" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text49" Left="434.7" Top="47.25" Width="94.5" Height="18.9" Text="SGST Amt:" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text50" Left="415.8" Top="66.15" Width="113.4" Height="18.9" Text="Total Amt Inc. GST:" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text51" Left="434.7" Top="85.05" Width="94.5" Height="18.9" Text="Less Bill Amt:" HorzAlign="Center" Font="Arial, 10pt"/>
+    </ReportSummaryBand>
   </ReportPage>
 </Report>
