@@ -600,8 +600,8 @@ public class HomeController : Controller
                 await cmd.ExecuteReaderAsync();
             }
         }
-        //connectionstring = $"Data Source={model.ServerName};Initial Catalog={dbName};;User Id=web;Password=bmr2401;Integrated Security=False";
-        finalConnStr = GetConnectionString(dbName);
+        finalConnStr = $"Data Source={model.ServerName};Initial Catalog={dbName};;User Id=web;Password=bmr2401;Integrated Security=False";
+       // finalConnStr = GetConnectionString(dbName);
         _connectionStringService.SetConnectionString(finalConnStr);
         conn = new(finalConnStr);
         try
