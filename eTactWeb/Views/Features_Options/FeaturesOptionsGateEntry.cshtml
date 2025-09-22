@@ -1,6 +1,6 @@
 ﻿@model eTactWeb.DOM.Models.Features_OptionsModel;
 @{
-	ViewData["Title"] = "MRN Setting";
+	ViewData["Title"] = "Gate Entry Setting";
 	Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
 <style>
@@ -13,11 +13,11 @@
 </style>
 
 <div class="card bg-gradient mb-3 border-light shadow-lg">
-	<form asp-action="FeaturesOptionsMRN" asp-controller="Features_Options" method="post" autocomplete="on" class="form-horizontal">
+	<form asp-action="FeaturesOptionsGateEntry" asp-controller="Features_Options" method="post" autocomplete="on" class="form-horizontal">
 		<div class="card-header card-headerBG text-light bg-gradient">
 			<div class="card-header card-headerBG text-light justify-content-center bg-gradient">
 				<h5>
-					<strong> MRN Setting </strong>
+					<strong> Gate Entry Setting </strong>
 					<span class="d-flex float-end" style="margin-top:-2px;">
 
 						<div class="row justify-content-between g-2">
@@ -76,22 +76,35 @@
 									<div class="col-md-6">
 										<input type="hidden" asp-for="Mode" />
 										<div class="d-flex align-items-center mb-2" style="margin-left:0;">
-											<label title="BatchWiseInventory" asp-for="BatchWiseInventoryBool" class="form-label me-2" style="width:230px;">
-												Batch Wise Inventory
+											<label title="blockGateEntry4UnAppPOAmm" asp-for="blockGateEntry4UnAppPOAmmBool" class="form-label me-2" style="width:230px;">
+												Block GateEntry
 											</label>
-											<input type="checkbox" class="form-check-input" asp-for="BatchWiseInventoryBool" style="max-width:400px;" />
+											<input type="checkbox" class="form-check-input" asp-for="blockGateEntry4UnAppPOAmmBool" style="max-width:400px;" />
 										</div>
 										<div class="d-flex align-items-center mb-2">
-											<label title="AllowBackDateMRNEntry" asp-for="AllowBackDateMRNEntryBool" class="form-label me-2" style="width:230px;">
+											<label title="AllowBackDateGAteEntry" asp-for="AllowBackDateGAteEntryBool" class="form-label me-2" style="width:230px;">
 												Allow Back Date
 											</label>
-											<input type="checkbox" class="form-check-input" asp-for="AllowBackDateMRNEntryBool" />
+											<input type="checkbox" class="form-check-input" asp-for="AllowBackDateGAteEntryBool" />
 										</div>
-										<div class="d-flex align-items-center mb-2" style="margin-left:0;">
-											<label title="MRNPrintReportName" asp-for="MRNPrintReportName" class="form-label me-2" style="width:230px;">
-												MRN PrintReport Name
+										<div class="d-flex align-items-center mb-2">
+											<label title="AllowGateRateEnabled" asp-for="AllowGateRateEnabledBool" class="form-label me-2" style="width:230px;">
+												Allow Gate Rate Enabled
 											</label>
-											<input readonly asp-for="MRNPrintReportName" class="form-control" style="max-width:400px;" />
+											<input type="checkbox" class="form-check-input" asp-for="AllowGateRateEnabledBool" />
+										</div>
+										<div class="d-flex align-items-center mb-2">
+											<label title="AllowToChangeBranch" asp-for="AllowToChangeBranchBool" class="form-label me-2" style="width:230px;">
+												Allow To Change Branch
+											</label>
+											<input type="checkbox" class="form-check-input" asp-for="AllowToChangeBranchBool" />
+										</div>
+
+										<div class="d-flex align-items-center mb-2" style="margin-left:0;">
+											<label title="allowforRecUnitgateentry" asp-for="allowforRecUnitgateentry" class="form-label me-2" style="width:230px;">
+												Allow For Rec Unit Gate Entry
+											</label>
+											<input  asp-for="allowforRecUnitgateentry" class="form-control" style="max-width:400px;" />
 										</div>
 
 									</div>
@@ -105,7 +118,7 @@
 							<div class="row justify-content-between g-2">
 								<div class="card-header card-headerBG text-light bg-gradient">
 									<h5>
-										<strong> MRN Setting</strong>
+										<strong> Gate Entry Setting</strong>
 										<span class="d-flex float-end" style="margin-top:-2px;">
 
 
@@ -163,7 +176,7 @@
 		font-weight: 500;
 	}
 
-	
+
 	.d-flex label {
 		white-space: nowrap;
 	}
@@ -177,9 +190,12 @@
 	<script>
 		$(document).ready(function () {
 
-			$("#MRNPrintReportName").rules("remove", "required");
-			$("#AllowBackDateMRNEntry").rules("remove", "required");
-			$("#BatchWiseInventory").rules("remove", "required");
+			$("#blockGateEntry4UnAppPOAmmBool").rules("remove", "required");
+			$("#AllowBackDateGAteEntryBool").rules("remove", "required");
+			$("#AllowGateRateEnabledBool").rules("remove", "required");
+			$("#AllowToChangeBranchBool").rules("remove", "required");
+			$("#allowforRecUnitgateentry").rules("remove", "required");
+
 
 			var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
 			var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {

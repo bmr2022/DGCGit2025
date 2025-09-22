@@ -221,7 +221,7 @@ namespace eTactWeb.Data.DAL
                         model.features_OptionsModelsGrid = (from DataRow dr in oDataSet.Tables[0].Rows
                                                             select new Features_OptionsModel
                                                             {
-                                                                BlockGateEntry4UnAppPOAmm = dr["BlockGateEntry4UnAppPOAmm"] != DBNull.Value ? dr["BlockGateEntry4UnAppPOAmm"].ToString() : string.Empty,
+                                                                //BlockGateEntry4UnAppPOAmm = dr["BlockGateEntry4UnAppPOAmm"] != DBNull.Value ? dr["BlockGateEntry4UnAppPOAmm"].ToString() : string.Empty,
                                                                 AllowBackDateGAteEntry = dr["AllowBackDateGAteEntry"] != DBNull.Value ? dr["AllowBackDateGAteEntry"].ToString() : string.Empty,
                                                                 ShowRateINGAteMrn = dr["ShowRateINGAteMrn"] != DBNull.Value ? dr["ShowRateINGAteMrn"].ToString() : string.Empty,
                                                                 GateEntryPrintReportName = dr["GateEntryPrintReportName"] != DBNull.Value ? dr["GateEntryPrintReportName"].ToString() : string.Empty,
@@ -569,12 +569,15 @@ namespace eTactWeb.Data.DAL
                 int cnt = 0;
 
                 if (Type == "ItemDetail")
-                { 
-                    model.AutoGen_PartCode = DS.Tables[0].Rows[0]["AutoGen_PartCode"].ToString();
-                    model.DuplicateItemName = DS.Tables[0].Rows[0]["DuplicateItemName"].ToString();
-                    model.ItemPartcodeGenerationFormat = DS.Tables[0].Rows[0]["ItemPartcodeGenerationFormat"].ToString();
-                }
-                if (Type == "PurchaseBill")
+                {
+					model.AutoGen_PartCode = DS.Tables[0].Rows[0]["AutoGen_PartCode"].ToString();
+					model.DuplicateItemName = DS.Tables[0].Rows[0]["DuplicateItemName"].ToString();
+					model.AutoGenItemGroupCode = DS.Tables[0].Rows[0]["AutoGenItemGroupCode"].ToString();
+					model.ItemPartcodeGenerationFormat = DS.Tables[0].Rows[0]["ItemPartcodeGenerationFormat"].ToString();
+					model.IsStoreMandatoryInItemMaster = DS.Tables[0].Rows[0]["IsStoreMandatoryInItemMaster"].ToString();
+
+				}
+				if (Type == "PurchaseBill")
                 {
 					model.PurchaseBillPrintReportName = DS.Tables[0].Rows[0]["PurchaseBillPrintReportName"].ToString();
 					model.DirectPurchaseBillPrintReportName = DS.Tables[0].Rows[0]["DirectPurchaseBillPrintReportName"].ToString();
@@ -626,13 +629,12 @@ namespace eTactWeb.Data.DAL
 				}
 				if (Type == "GateEntryDetail")
                 {
-                    model.BlockGateEntry4UnAppPOAmm = DS.Tables[0].Rows[0]["BlockGateEntry4UnAppPOAmm"].ToString();
-                    model.AllowBackDateGAteEntry = DS.Tables[0].Rows[0]["AllowBackDateGAteEntry"].ToString();
-                    model.ShowRateINGAteMrn = DS.Tables[0].Rows[0]["ShowRateINGAteMrn"].ToString();
-                    model.GateEntryPrintReportName = DS.Tables[0].Rows[0]["GateEntryPrintReportName"].ToString();
-                    model.AllowGateRateEnabled = DS.Tables[0].Rows[0]["AllowGateRateEnabled"].ToString();
-
-                }
+					model.blockGateEntry4UnAppPOAmm = DS.Tables[0].Rows[0]["blockGateEntry4UnAppPOAmm"].ToString();
+					model.AllowBackDateGAteEntry = DS.Tables[0].Rows[0]["AllowBackDateGAteEntry"].ToString();
+					model.AllowGateRateEnabled = DS.Tables[0].Rows[0]["AllowGateRateEnabled"].ToString();
+					model.AllowToChangeBranch = DS.Tables[0].Rows[0]["AllowToChangeBranch"].ToString();
+					model.allowforRecUnitgateentry = DS.Tables[0].Rows[0]["allowforRecUnitgateentry"].ToString();
+				}
                 if (Type == "MRNDetail")
                 {
                     model.AllowBackDateMRNEntry = DS.Tables[0].Rows[0]["AllowBackDateMRNEntry"].ToString();
@@ -810,12 +812,15 @@ namespace eTactWeb.Data.DAL
                     if (model.Type == "ItemDetail")
                     {
 
-                        SqlParams.Add(new SqlParameter("@Flag", "UPDATEItemDashbaord"));
-                        SqlParams.Add(new SqlParameter("@AutoGen_PartCode", model.AutoGen_PartCode));
-                        SqlParams.Add(new SqlParameter("@DuplicateItemName", model.DuplicateItemName));
-                        SqlParams.Add(new SqlParameter("@ItemPartcodeGenerationFormat", model.ItemPartcodeGenerationFormat));
-                    }
-                     if (model.Type == "PurchaseDetail")
+                         SqlParams.Add(new SqlParameter("@Flag", "UPDATEItemDashbaord"));
+					    SqlParams.Add(new SqlParameter("@AutoGen_PartCode", model.AutoGen_PartCode));
+					    SqlParams.Add(new SqlParameter("@DuplicateItemName", model.DuplicateItemName));
+					    SqlParams.Add(new SqlParameter("@AutoGenItemGroupCode", model.AutoGenItemGroupCode));
+					    SqlParams.Add(new SqlParameter("@ItemPartcodeGenerationFormat", model.ItemPartcodeGenerationFormat));
+					    SqlParams.Add(new SqlParameter("@IsStoreMandatoryInItemMaster", model.IsStoreMandatoryInItemMaster));
+
+				    }
+				if (model.Type == "PurchaseDetail")
                      {
 
                         SqlParams.Add(new SqlParameter("@Flag", "UPDATEPurchaseDashbaord"));
@@ -872,15 +877,15 @@ namespace eTactWeb.Data.DAL
                     if (model.Type == "GateEntryDetail")
                     {
                         SqlParams.Add(new SqlParameter("@Flag", "UPDATEGateEntryDashbaord"));
-                        SqlParams.Add(new SqlParameter("@BlockGateEntry4UnAppPOAmm", model.BlockGateEntry4UnAppPOAmm));
-                        SqlParams.Add(new SqlParameter("@AllowBackDateGAteEntry", model.AllowBackDateGAteEntry));
-                        SqlParams.Add(new SqlParameter("@ShowRateINGAteMrn", model.ShowRateINGAteMrn));
-                        SqlParams.Add(new SqlParameter("@GateEntryPrintReportName", model.GateEntryPrintReportName));
-                        SqlParams.Add(new SqlParameter("@AllowGateRateEnabled", model.AllowGateRateEnabled));
+					SqlParams.Add(new SqlParameter("@blockGateEntry4UnAppPOAmm", model.blockGateEntry4UnAppPOAmm));
+					SqlParams.Add(new SqlParameter("@AllowBackDateGAteEntry", model.AllowBackDateGAteEntry));
+					SqlParams.Add(new SqlParameter("@AllowGateRateEnabled", model.AllowGateRateEnabled));
+					SqlParams.Add(new SqlParameter("@AllowToChangeBranch", model.AllowToChangeBranch));
+					SqlParams.Add(new SqlParameter("@AllowForRecUnitGateEntry", model.allowforRecUnitgateentry));
 
 
-                    }
-                     if (model.Type == "MRNDetail")
+				}
+				if (model.Type == "MRNDetail")
                      {
                         SqlParams.Add(new SqlParameter("@Flag", "UPDATEMRNDashbaord"));
                         SqlParams.Add(new SqlParameter("@AllowBackDateMRNEntry", model.AllowBackDateMRNEntry));
