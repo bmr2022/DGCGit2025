@@ -1,6 +1,6 @@
 ﻿@model eTactWeb.DOM.Models.Features_OptionsModel;
 @{
-	ViewData["Title"] = "MRN Setting";
+	ViewData["Title"] = "Item Master Setting";
 	Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
 <style>
@@ -13,11 +13,11 @@
 </style>
 
 <div class="card bg-gradient mb-3 border-light shadow-lg">
-	<form asp-action="FeaturesOptionsMRN" asp-controller="Features_Options" method="post" autocomplete="on" class="form-horizontal">
+	<form asp-action="FeaturesOptionsItemMaster" asp-controller="Features_Options" method="post" autocomplete="on" class="form-horizontal">
 		<div class="card-header card-headerBG text-light bg-gradient">
 			<div class="card-header card-headerBG text-light justify-content-center bg-gradient">
 				<h5>
-					<strong> MRN Setting </strong>
+					<strong> Item Master Setting </strong>
 					<span class="d-flex float-end" style="margin-top:-2px;">
 
 						<div class="row justify-content-between g-2">
@@ -66,7 +66,7 @@
 						<h2 class="accordion-header" id="H_ItemCategoryDetail">
 							<button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_ItemCategoryDetail"
 									aria-expanded="true" aria-controls="B_ItemCategoryDetail">
-								<strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i> MRN Setting</strong>
+								<strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i> Item Master Setting</strong>
 								<small class="p-3"></small>
 							</button>
 						</h2>
@@ -76,26 +76,39 @@
 									<div class="col-md-6">
 										<input type="hidden" asp-for="Mode" />
 										<div class="d-flex align-items-center mb-2" style="margin-left:0;">
-											<label title="BatchWiseInventory" asp-for="BatchWiseInventoryBool" class="form-label me-2" style="width:230px;">
-												Batch Wise Inventory
+											<label title="AutoGen_PartCode" asp-for="AutoGen_PartCodeBool" class="form-label me-2" style="width:230px;">
+												AutoGen PartCode
 											</label>
-											<input type="checkbox" class="form-check-input" asp-for="BatchWiseInventoryBool" style="max-width:400px;" />
+											<input type="checkbox" class="form-check-input" asp-for="AutoGen_PartCodeBool" style="max-width:400px;" />
 										</div>
 										<div class="d-flex align-items-center mb-2">
-											<label title="AllowBackDateMRNEntry" asp-for="AllowBackDateMRNEntryBool" class="form-label me-2" style="width:230px;">
-												Allow Back Date
+											<label title="DuplicateItemName" asp-for="DuplicateItemNameBool" class="form-label me-2" style="width:230px;">
+												Duplicate ItemName
 											</label>
-											<input type="checkbox" class="form-check-input" asp-for="AllowBackDateMRNEntryBool" />
+											<input type="checkbox" class="form-check-input" asp-for="DuplicateItemNameBool" />
 										</div>
-										<div class="d-flex align-items-center mb-2" style="margin-left:0;">
-											<label title="MRNPrintReportName" asp-for="MRNPrintReportName" class="form-label me-2" style="width:230px;">
-												MRN PrintReport Name
+										<div class="d-flex align-items-center mb-2">
+											<label title="AutoGenItemGroupCode" asp-for="AutoGenItemGroupCodeBool" class="form-label me-2" style="width:230px;">
+												Auto Gen Item GroupCode
 											</label>
-											<input readonly asp-for="MRNPrintReportName" class="form-control" style="max-width:400px;" />
+											<input type="checkbox" class="form-check-input" asp-for="AutoGenItemGroupCodeBool" />
+										</div>
+										<div class="d-flex align-items-center mb-2">
+											<label title="IsStoreMandatoryInItemMaster" asp-for="IsStoreMandatoryInItemMasterBool" class="form-label me-2" style="width:230px;">
+												Is Store Mandatory
+											</label>
+											<input type="checkbox" class="form-check-input" asp-for="IsStoreMandatoryInItemMasterBool" />
+										</div>
+
+										<div class="d-flex align-items-center mb-2" style="margin-left:0;">
+											<label title="ItemPartcodeGenerationFormat" asp-for="ItemPartcodeGenerationFormat" class="form-label me-2" style="width:230px;">
+												Item Partcode Generation Format
+											</label>
+											<input  asp-for="ItemPartcodeGenerationFormat" class="form-control" style="max-width:400px;" />
 										</div>
 
 									</div>
-
+									
 								</div>
 							</div>
 						</div>
@@ -105,7 +118,7 @@
 							<div class="row justify-content-between g-2">
 								<div class="card-header card-headerBG text-light bg-gradient">
 									<h5>
-										<strong> MRN Setting</strong>
+										<strong> Item Master Setting</strong>
 										<span class="d-flex float-end" style="margin-top:-2px;">
 
 
@@ -163,7 +176,6 @@
 		font-weight: 500;
 	}
 
-	
 	.d-flex label {
 		white-space: nowrap;
 	}
@@ -177,15 +189,18 @@
 	<script>
 		$(document).ready(function () {
 
-			$("#MRNPrintReportName").rules("remove", "required");
-			$("#AllowBackDateMRNEntry").rules("remove", "required");
-			$("#BatchWiseInventory").rules("remove", "required");
+			$("#AutoGen_PartCode").rules("remove", "required");
+			$("#DuplicateItemName").rules("remove", "required");
+			$("#AutoGenItemGroupCode").rules("remove", "required");
+			$("#ItemPartcodeGenerationFormat").rules("remove", "required");
+			$("#IsStoreMandatoryInItemMaster").rules("remove", "required");
 
+			
 			var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
 			var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
 				return new bootstrap.Tooltip(tooltipTriggerEl)
 			})
-
+			
 			$('.submitBTN').click(function (e) {
 
 				console.log("SubmitButton Click");
@@ -195,7 +210,7 @@
 			});
 
 		});
-
+		
 
 		function GetFormRights() {
 			$.ajax({
