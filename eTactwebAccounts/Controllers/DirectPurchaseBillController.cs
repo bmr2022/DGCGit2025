@@ -1267,6 +1267,7 @@ namespace eTactWeb.Controllers
             Table.Columns.Add("RejectedQty", typeof(float));
             Table.Columns.Add("AltQty", typeof(float));
             Table.Columns.Add("AltUnit", typeof(string));
+            
             Table.Columns.Add("Rate", typeof(float));
             Table.Columns.Add("MRP", typeof(float));
             Table.Columns.Add("RateUnit", typeof(string));
@@ -1309,9 +1310,11 @@ namespace eTactWeb.Controllers
             Table.Columns.Add("AgainstImportYearCode", typeof(int));
             Table.Columns.Add("AgainstImportInvDate", typeof(string));
             Table.Columns.Add("HSNNO", typeof(string));
+           
             Table.Columns.Add("AcceptedQty", typeof(float));
             Table.Columns.Add("ReworkQty", typeof(float));
             Table.Columns.Add("HoldQty", typeof(float));
+            Table.Columns.Add("ItemLocation", typeof(string));
 
             foreach (DPBItemDetail Item in itemDetailList)
             {
@@ -1351,6 +1354,7 @@ namespace eTactWeb.Controllers
                     0f, // Item.RejectedQty
                     Item.AltQty > 0 ? Math.Round(Item.AltQty, 2, MidpointRounding.AwayFromZero) : 0,
                     Item.AltUnit ?? string.Empty,
+                     
                     Item.Rate > 0 ? Math.Round(Item.Rate, 2, MidpointRounding.AwayFromZero) : 0,
                     0f, // Item.MRP
                     Item.UnitRate ?? string.Empty,
@@ -1393,9 +1397,11 @@ namespace eTactWeb.Controllers
                     0, // Item.AgainstImportYearCode
                     againstImportInvDt, // Item.AgainstImportInvDate
                     Item.HSNNo.ToString(),
+                   
                     Item.AcceptedQty,
                     Item.HoldQty,
-                Item.ReworkQty
+                Item.ReworkQty,
+                Item.ItemLocation.ToString()
                     });
             }
 
@@ -1677,6 +1683,7 @@ namespace eTactWeb.Controllers
                     ScheduleNo = model.ScheduleNo,
                     ScheduleYear = model.ScheduleYear,
                     ScheduleDate = model.ScheduleDate,
+                    ItemLocation = model.ItemLocation,
 
                     Unit = model.Unit,
                 });

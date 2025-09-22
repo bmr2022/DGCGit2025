@@ -26,15 +26,15 @@
         <label asp-for="ItemCode" class="form-label">Item Name*</label>
         <div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
             <label id="IN12" class="form-label">Show All</label>
-            <input asp-for="IN1" class="form-check-input" type="checkbox" role="switch" />
+            <input asp-for="IN1" class="form-check-input" type="checkbox" tabindex="-1" role="switch" />
         </div>
         <div class="col-xl-12">
-            <select class="form-select" asp-for="ItemCode" style="height:190px;width:430px;" asp-items="@(new SelectList(Model.ItemNameList,"Value","Text"))">
+            <select class="form-select" asp-for="ItemCode" style="height:190px;width:430px;" tabindex="-1" asp-items="@(new SelectList(Model.ItemNameList,"Value","Text"))">
                 <option value="0">-Select-</option>
             </select>
         </div>
     </div>
-    <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-6" id="PONoDiv">
+    <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-6 DirectPurchaseBillScheduleDetail" id="PONoDiv">
         <label asp-for="PONo" class="form-label">PO No</label>
         <div class="col-xl-6  col-lg-6 col-md-6 col-sm-6 col-xs-12">
             <select class="form-select" asp-for="PONo" style="height:190px;width:190px;" onchange="EnableDisableOthers()">
@@ -42,13 +42,13 @@
             </select>
         </div>
     </div>
-    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 DirectPurchaseBillScheduleDetail">
         <label asp-for="POYear" class="form-label">PO Year</label>
         <select class="form-select" asp-for="POYear" disabled>
             <option value="0">-Select-</option>
         </select>
     </div>
-    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 DirectPurchaseBillScheduleDetail">
         <label class="form-label">PO Date</label>
         <input asp-for="PODate" class="form-control" disabled readonly />
     </div>
@@ -71,18 +71,6 @@
         <input asp-for="ScheduleDate" class="form-control" disabled readonly />
     </div>
     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-        <label asp-for="HSNNo" class="form-label">HSN No</label>
-        <input asp-for="HSNNo" class="form-control" value="0" onkeypress="return (event.key == '.' || (event.charCode >= 48 && event.charCode <= 57)) && event.key != '-'" />
-    </div>
-    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-        <label asp-for="DPBQty" class="form-label">PO Qty</label>
-        <input asp-for="DPBQty" class="form-control" type="number" min=0 onkeypress="return (event.key == '.' || (event.charCode >= 48 && event.charCode <= 57))" readonly disabled onkeyup="CalculateRate();" data-val="false" />
-    </div>
-    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-        <label asp-for="Unit" class="form-label">Unit</label>
-        <input asp-for="Unit" class="form-control" readonly disabled />
-    </div>
-    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
         <label asp-for="BillQty" class="form-label">Bill Qty</label>
         <input asp-for="BillQty" class="form-control" type="number" min=0 onkeypress="return (event.key == '.' || (event.charCode >= 48 && event.charCode <= 57))" onkeyup="CalculateRate();" />
     </div>
@@ -90,18 +78,36 @@
         <label asp-for="Rate" class="form-label">Rate</label>
         <input asp-for="Rate" step="any" type="number" min="0" pattern="^([0-9]{1,6}\.[0-9]{2,})$" onkeypress="return (event.key == '.' || (event.charCode >= 48 && event.charCode <= 57))" class="form-control" onkeyup="CalculateRate();" />
     </div>
-    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 OtherFieldOFDirectPurchaseBillDetailTable">
-        <label asp-for="OtherRateCurr" class="form-label">Rate in FX</label>
-        <input asp-for="OtherRateCurr" step="any" type="number" min="0" class="form-control" onchange="CalculateRate1();" disabled />
-    </div>
     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
         <label asp-for="DiscPer" class="form-label">Disc %</label>
         <input asp-for="DiscPer" class="form-control" value="0" min="0" max="100" onkeypress="return (event.key == '.' || (event.charCode >= 48 && event.charCode <= 57))" onchange="CalculateRate();" />
     </div>
     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
         <label asp-for="DiscRs" class="form-label">Disc Rs.</label>
-        <input asp-for="DiscRs" class="form-control" onkeyup="CalculateRate();" />
+        <input asp-for="DiscRs" class="form-control" onkeyup="CalculateRate();"  />
     </div>
+    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <label asp-for="HSNNo" class="form-label">HSN No</label>
+        <input asp-for="HSNNo" class="form-control" value="0" tabindex="-1" onkeypress="return (event.key == '.' || (event.charCode >= 48 && event.charCode <= 57)) && event.key != '-'" />
+    </div>
+    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 DirectPurchaseBillScheduleDetail">
+        <label asp-for="DPBQty" class="form-label">PO Qty</label>
+        <input asp-for="DPBQty" class="form-control" type="number" min=0 onkeypress="return (event.key == '.' || (event.charCode >= 48 && event.charCode <= 57))" readonly disabled onkeyup="CalculateRate();" data-val="false" />
+    </div>
+    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <label asp-for="Unit" class="form-label">Unit</label>
+        <input asp-for="Unit" class="form-control" tabindex="-1" readonly disabled />
+    </div>
+    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <label asp-for="ItemLocation" class="form-label">Location</label>
+        <input asp-for="ItemLocation" class="form-control" />
+    </div>
+   
+    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 OtherFieldOFDirectPurchaseBillDetailTable">
+        <label asp-for="OtherRateCurr" class="form-label">Rate in FX</label>
+        <input asp-for="OtherRateCurr" step="any" type="number" min="0" class="form-control" onchange="CalculateRate1();" disabled />
+    </div>
+   
     <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
         <label asp-for="Amount" class="form-label">Amount*</label>
         <input asp-for="Amount" class="form-control" type="number" min="0" value="0.00" onkeypress="return (event.key == '.' || (event.charCode >= 48 && event.charCode <= 57))" readonly disabled />
@@ -113,7 +119,7 @@
         </select>
     </div>
 
-    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12 col-sm-auto">
+    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12 col-sm-auto OtherFieldOFDirectPurchaseBillDetailTable">
         <label asp-for="Description" class="form-label">Description*</label>
         <input asp-for="Description" class="form-control" />
     </div>

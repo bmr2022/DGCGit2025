@@ -62,15 +62,15 @@ else
                 }
                 else { }
             </td>
-            <td>
+            <td class="DirectPurchaseBillScheduleDetail">
                 @if (item.PONo != null && item.PONo != "" && !item.PONo.Contains("Select"))
                 {
                     @item.PONo
                 }
                 else { }
             </td>
-            <td>@item.POYear</td>
-            <td>
+            <td class="DirectPurchaseBillScheduleDetail">@item.POYear</td>
+            <td class="DirectPurchaseBillScheduleDetail">
                 @{
                     DateTime parsedDate;
                     string formattedDate = DateTime.TryParse(item.PODate, out parsedDate)
@@ -97,7 +97,7 @@ else
                 @formattedDate1
             </td>
             <td>@item.HSNNo</td>
-            <td>@item.DPBQty</td>
+            <td class="DirectPurchaseBillScheduleDetail">@item.DPBQty</td>
             <td>@item.Unit</td>
             <td>@item.BillQty</td>
             <td>@item.Rate.ToString("#.##")</td>
@@ -106,7 +106,8 @@ else
             <td>@item.DiscRs</td>
             <td id="GridAmount-@item.SeqNo">@item.Amount.ToString("#.##")</td>
             <td class="OtherFieldOFDirectPurchaseBillDetailTable">@item.ProcessName</td>
-            <td>@item.Description</td>
+            <td class="OtherFieldOFDirectPurchaseBillDetailTable">@item.Description</td>
+            <td>@item.ItemLocation</td>
             <td class="OtherFieldOFDirectPurchaseBillDetailTable">@(item.CostCenterName ?? string.Empty)</td>
         </tr>
     }

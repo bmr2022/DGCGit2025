@@ -41,11 +41,11 @@
             <label asp-for="PurchVouchNo" class="form-label">Voucher No*</label>
                 <input asp-for="PurchVouchNo" value="@Model.PurchVouchNo" class="form-control" readonly style="background-color: lightblue !important;" />
         </div>
-        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 DirectPurchaseBillEntryDetail">
             <label asp-for="VouchDate" class="form-label">Date*</label>
             <input asp-for="VouchDate" tabindex="7"  class="form-control datePickerControl" />
         </div>
-        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 DirectPurchaseBillCurrency">
             <label asp-for="DPBType" class="form-label">Order Type</label>
             <select class="form-select" asp-for="DPBType" tabindex="3" asp-items="Model.DPBTypeList"></select>
         </div>
@@ -62,7 +62,7 @@
                 class="form-control" onchange="onInvoiceChange('InvoiceNo')" />
 
           </div>
-        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 DirectPurchaseBillEntryDetail">
             <label asp-for="InvDate" class="form-label">Inv Date*</label>
             <input asp-for="InvDate" tabindex="7" class="form-control datePickerControl" />
         </div>
