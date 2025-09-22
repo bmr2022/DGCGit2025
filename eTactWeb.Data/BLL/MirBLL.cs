@@ -29,9 +29,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _MIRDal.GetFormRights(ID);
         }
-        public async Task<ResponseResult> GetOkRecStore(int ItemCode, string ShowAllStore)
+        public async Task<ResponseResult> GetOkRecStore(int ItemCode, string ShowAllStore,string GateNo)
         {
-            return await _MIRDal.GetOkRecStore(ItemCode, ShowAllStore);
+            return await _MIRDal.GetOkRecStore(ItemCode, ShowAllStore, GateNo);
         }
         public async Task<ResponseResult> GetNewEntry(string Flag, int YearCode, string SPName)
         {

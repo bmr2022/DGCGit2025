@@ -67,7 +67,7 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
-        public async Task<ResponseResult> GetOkRecStore(int ItemCode,string ShowAllStore)
+        public async Task<ResponseResult> GetOkRecStore(int ItemCode,string ShowAllStore,string GateNo)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -75,6 +75,7 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "FillOkRecStore"));
                 SqlParams.Add(new SqlParameter("@itemcode", ItemCode));
+                SqlParams.Add(new SqlParameter("@GateNo", GateNo));
                 SqlParams.Add(new SqlParameter("@ShowAllStore", ShowAllStore));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("SPMIR", SqlParams);

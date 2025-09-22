@@ -2237,7 +2237,7 @@
                 type: "POST",
                 url: "@Url.Action("GetOkRecStore")",
                 dataType: "json",
-                data: { "ItemCode": parseInt($('#ItemCode-' + i).val()), "ShowAllStore": ShowAllStore },
+                data: { "ItemCode": parseInt($('#ItemCode-' + i).val()), "ShowAllStore": ShowAllStore ,"GateNo":$("#GateNo").val()},
                 async: false,
                 success: function (result, status, error) {
 
