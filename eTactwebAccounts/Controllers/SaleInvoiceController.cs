@@ -480,10 +480,12 @@ namespace eTactWeb.Controllers
                                 vehicleNo = model.vehicleNo,
                                 distanceKM = model.DistanceKM,
                                 EntrybyId = model.EntryByempId,
-                                MachineName = model.MachineName
+                                MachineName = model.MachineName,
+                                AccountCode = model.AccountCode
 
                             });
                         }
+                        
                         HttpContext.Session.Remove("KeySaleBillGrid");
                         HttpContext.Session.Remove("SaleBillModel");
                         //return RedirectToAction(nameof(SaleInvoice), new { Id = 0, Mode = "", YC = 0 });
@@ -534,12 +536,14 @@ namespace eTactWeb.Controllers
                                 vehicleNo = model.vehicleNo,
                                 distanceKM = model.DistanceKM,
                                 EntrybyId = model.EntryByempId,
-                                MachineName = model.MachineName
+                                MachineName = model.MachineName,
+                                AccountCode = model.AccountCode
 
                             });
 
                         }
-                        HttpContext.Session.Remove("KeySaleBillGrid");
+                       
+                            HttpContext.Session.Remove("KeySaleBillGrid");
                         HttpContext.Session.Remove("SaleBillModel");
                     }
                     if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
@@ -593,7 +597,18 @@ namespace eTactWeb.Controllers
                     HttpContext.Session.SetString("SaleInvoice", JsonConvert.SerializeObject(model));
                 }
                 HttpContext.Session.Remove("SaleBillListItem");
-                return Json(new { status = "Success" });
+               // return Json(new { status = "Success" });
+                return Json(new
+                {
+                    status = "Success",
+                    EntryId = model.SaleBillEntryId,
+                    InvoiceNo = model.SaleBillNo,
+                    YearCode = model.SaleBillYearCode,
+                    saleBillType = model.SupplyType,
+                    AccountCode = model.AccountCode
+
+                });
+
                 // return View();
             }
         }

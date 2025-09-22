@@ -701,9 +701,9 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> GetOkRecStore(int ItemCode,string ShowAllStore)
+        public async Task<JsonResult> GetOkRecStore(int ItemCode,string ShowAllStore, string GateNo)
         {
-            var JSON = await _IMirModule.GetOkRecStore(ItemCode, ShowAllStore);
+            var JSON = await _IMirModule.GetOkRecStore(ItemCode, ShowAllStore, GateNo);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }

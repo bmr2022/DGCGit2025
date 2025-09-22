@@ -751,6 +751,10 @@
                         @* <span class="spinner-border spinner-border-sm me-2 d-none" role="status" id="btnCloseSpinner" aria-hidden="true"></span> *@
                         Save
                     </button>
+                      <button type="button" class="btn btn-danger" id="btnSaveAndPrint">
+                        @* <span class="spinner-border spinner-border-sm me-2 d-none" role="status" id="btnCloseSpinner" aria-hidden="true"></span> *@
+                        Save & Print
+                    </button>
                 </div>
             </div>
         </div>
@@ -1022,7 +1026,15 @@
             // Initialize validator only once
             //   $form.validate();
             fieldIds.forEach(removeRequiredRule);
+                             $('#btnSaveAndPrint').click(function () {
+                    const printWindow = window.open('', '_blank', 'width=900,height=700,toolbar=no,menubar=no,scrollbars=yes,resizable=yes');
 
+                           $('#EinvoicePopup').modal("hide");
+
+                    // setTimeout(() => {
+                                       submitForm(false,printWindow); // Send true and window object
+                    // }, 300);
+                });
             $('#btnClose').click(function () {
                     submitForm(false, null);
                      $('#EinvoicePopup').modal("hide");
@@ -1187,7 +1199,17 @@
                                         alert("Failed to generate invoice.");
                                     });
 
-                            } else {
+                            }else if( res.entryId && res.yearCode && printWindow){
+
+                                                                                          const printUrl = '/SaleInvoice/PrintReport?EntryId=' + res.entryId + '&YearCode=' + res.yearCode+'&Type=SALEBILL'+'&InvoiceNo='+res.invoiceNo+'&AccountCode='+res.accountCode;
+                            printWindow.location.replace(printUrl); // navigate to report
+                            printWindow.onload = function () {
+                                printWindow.document.title = "Sale Invoice Report";
+                                         
+                            };
+                                     window.location.href = '/SaleInvoice/SaleInvoice/0';
+                            }
+                            else {
                                 window.location.href = '/SaleInvoice/SaleInvoice/0';
                             }
                         } else {
