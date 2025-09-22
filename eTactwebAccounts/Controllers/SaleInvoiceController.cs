@@ -27,6 +27,7 @@ using Microsoft.AspNetCore.Http;
 using System.Drawing.Printing;
 using Org.BouncyCastle.Asn1.Ocsp;
 using Newtonsoft.Json.Linq;
+using DocumentFormat.OpenXml.Vml.Office;
 
 
 namespace eTactWeb.Controllers
@@ -280,6 +281,7 @@ namespace eTactWeb.Controllers
             DataTable AdjChallanDetailDT = null;
             string SaleBillModel = HttpContext.Session.GetString("SaleBillModel");
             SaleBillModel MainModel = new SaleBillModel();
+          
             if (!string.IsNullOrEmpty(SaleBillModel))
             {
                 MainModel = JsonConvert.DeserializeObject<SaleBillModel>(SaleBillModel);
@@ -703,6 +705,18 @@ namespace eTactWeb.Controllers
             HttpContext.Session.Remove("SaleBillModel");
             HttpContext.Session.Remove("KeyAdjGrid");
             HttpContext.Session.Remove("KeyAdjChallanGrid");
+            var featuresoptions = _SaleBill.GetFeatureOption();
+
+            if (featuresoptions?.Result?.Result != null &&
+                featuresoptions.Result.Result.Rows.Count > 0)
+            {
+                model.AllowToChangeSaleBillStoreName =
+                    featuresoptions.Result.Result.Rows[0]["AllowToChangeSaleBillStoreName"]?.ToString() ?? "";
+            }
+            else
+            {
+                model.AllowToChangeSaleBillStoreName = "";
+            }
 
             if (model.Mode != "U" && model.Mode != "V")
             {

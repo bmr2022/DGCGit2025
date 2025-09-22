@@ -306,7 +306,7 @@ namespace eTactWeb.DOM.Models
         //public string? ShowHideSaleBillCurrency { get; set; }
         //public string? ShowHideSaleBillConsignee { get; set; }
         //public string? ShowHideSaleBillScheduleDetail { get; set; }
-        //public string? AllowToChangeSaleBillStoreName { get; set; }
+        public string? AllowToChangeSaleBillStoreName { get; set; }
         //public string? HideOtherFieldOFSaleBillDetailTable { get; set; }
         //public string? ApproveSOForGenerateSaleInvoiceOrNot { get; set; }
         private IList<SelectListItem> _YesNo = new List<SelectListItem>()

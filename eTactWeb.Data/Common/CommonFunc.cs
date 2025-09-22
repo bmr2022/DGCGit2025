@@ -1664,6 +1664,7 @@ public static class CommonFunc
                         && typeProperty.PropertyInfo.Name != "TxSeqNo"
                         && typeProperty.PropertyInfo.Name != "RackID"
                         && typeProperty.PropertyInfo.Name != "AdditionalDiscount"
+                        && typeProperty.PropertyInfo.Name != "AllowToChangeSaleBillStoreName"
                         && typeProperty.PropertyInfo.Name != "TxTaxType" && typeProperty.PropertyInfo.Name != "TotalRecords"
                         && typeProperty.PropertyInfo.Name != "TxTaxTypeName" && typeProperty.PropertyInfo.Name != "BOMInd" && typeProperty.PropertyInfo.Name != "ProducedUnprod"
                         && typeProperty.PropertyInfo.Name != "TxType" && typeProperty.PropertyInfo.Name != "DashboardTypeBack"
@@ -1737,6 +1738,7 @@ public static class CommonFunc
                         && typeProperty.PropertyInfo.Name != "ConsigneeAccountName"
                         && typeProperty.PropertyInfo.Name != "RackID"
                         && typeProperty.PropertyInfo.Name != "AdditionalDiscount"
+                        && typeProperty.PropertyInfo.Name != "AllowToChangeSaleBillStoreName"
                         )
                     {
                         object value = row[typeProperty.PropertyInfo.Name];
