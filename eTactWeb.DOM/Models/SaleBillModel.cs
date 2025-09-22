@@ -213,6 +213,10 @@ namespace eTactWeb.DOM.Models
         public decimal CashDisPer { get; set; }
         public decimal CashDisRs { get; set; }
         public decimal AdditionalDiscount { get; set; }
+        public decimal PackingCharges { get; set; }
+        public decimal ForwardingCharges { get; set; }
+        public decimal CourieerCharges { get; set; }
+        public decimal GST { get; set; }
         public string? SoDelTime { get; set; }
         public string? TypeJob { get; set; }
         public string? Approved { get; set; }

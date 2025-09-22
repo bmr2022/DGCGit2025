@@ -3617,22 +3617,29 @@
 
 
 
-        function NetAmountAfterDiscount()
-{
-               var netAmt = $('#NetTotal').val() == "" ? 0 : parseFloat($('#NetTotal').val());
+        function NetAmountAfterDiscount() {
+            var netAmt = $('#NetTotal').val() == "" ? 0 : parseFloat($('#NetTotal').val());
             var discAmt = $('#CashDisRs').val() == "" ? 0 : parseFloat($('#CashDisRs').val());
-            var AdditionalDisAmt = $('#AdditionalDiscount').val() == "" ? 0 : parseFloat($('#AdditionalDiscount').val());
+            var additionalDisAmt = $('#AdditionalDiscount').val() == "" ? 0 : parseFloat($('#AdditionalDiscount').val());
 
+            var PackingCharges = $('#PackingCharges').val() == "" ? 0 : parseFloat($('#PackingCharges').val());
+            var ForwardingCharges = $('#ForwardingCharges').val() == "" ? 0 : parseFloat($('#ForwardingCharges').val());
+            var CourieerCharges = $('#CourieerCharges').val() == "" ? 0 : parseFloat($('#CourieerCharges').val());
+            var GST = $('#GST').val() == "" ? 0 : parseFloat($('#GST').val());
 
-            netAmt = netAmt - (discAmt + AdditionalDisAmt);
+            // Apply discounts
+            netAmt = netAmt - (discAmt + additionalDisAmt);
 
+            // Add charges
+            netAmt = netAmt + PackingCharges + ForwardingCharges + CourieerCharges + GST;
 
             $('#NetTotal').val(netAmt.toFixed(6));
-                            $('#AdjPendAmt').val($('#NetTotal').val());
+            $('#AdjPendAmt').val($('#NetTotal').val());
+
             ClearAdjustmentGrid();
             // GetDbCrDetail();
             AddAdjstmntDetail1();
-}
+        }
 
 
 

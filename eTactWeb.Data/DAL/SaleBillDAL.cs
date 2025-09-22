@@ -633,6 +633,10 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@currencyId", model.currencyId));
                 SqlParams.Add(new SqlParameter("@ExchangeRate", model.ExchangeRate));
                 SqlParams.Add(new SqlParameter("@AdditionalDiscount", model.AdditionalDiscount));
+                SqlParams.Add(new SqlParameter("@PackingCharges", model.PackingCharges));
+                SqlParams.Add(new SqlParameter("@ForwardingCharges", model.ForwardingCharges));
+                SqlParams.Add(new SqlParameter("@CourieerCharges", model.CourieerCharges));
+                SqlParams.Add(new SqlParameter("@GST", model.GST));
                 SqlParams.Add(new SqlParameter("@TypeItemServAssets", model.TypeItemServAssets ?? string.Empty));
                 //SqlParams.Add(new SqlParameter("@CostCenterId", model.CostCenter));
                 SqlParams.Add(new SqlParameter("@Shippingdate", Shippingdate == default ? string.Empty : Shippingdate));
@@ -1365,7 +1369,12 @@ namespace eTactWeb.Data.DAL
                 model.SaleQuotNo = DS.Tables[0].Rows[0]["SaleQuotNo"]?.ToString();
                 model.SaleQuotEntryID = Convert.ToInt32(DS.Tables[0].Rows[0]["SaleQuotEntryID"]);
                 model.SaleQuotyearCode = Convert.ToInt32(DS.Tables[0].Rows[0]["SaleQuotyearCode"]);
-                model.AdditionalDiscount = Convert.ToDecimal(DS.Tables[0].Rows[0]["additiondiscount"]);
+                model.AdditionalDiscount = DS.Tables[0].Rows[0]["additiondiscount"] == DBNull.Value ? 0 : Convert.ToDecimal(DS.Tables[0].Rows[0]["additiondiscount"]);
+                model.PackingCharges = DS.Tables[0].Rows[0]["PackingCharges"] == DBNull.Value ? 0 : Convert.ToDecimal(DS.Tables[0].Rows[0]["PackingCharges"]);
+                model.ForwardingCharges = DS.Tables[0].Rows[0]["ForwardingCharges"] == DBNull.Value ? 0 : Convert.ToDecimal(DS.Tables[0].Rows[0]["ForwardingCharges"]);
+                model.CourieerCharges = DS.Tables[0].Rows[0]["CourieerCharges"] == DBNull.Value ? 0 : Convert.ToDecimal(DS.Tables[0].Rows[0]["CourieerCharges"]);
+                model.GST = DS.Tables[0].Rows[0]["GST"] == DBNull.Value ? 0 : Convert.ToDecimal(DS.Tables[0].Rows[0]["GST"]);
+
                 model.SaleQuotDate = DS.Tables[0].Rows[0]["SaleQuotDate"]?.ToString();
 
                 //if (model.AttachmentFilePath1 != null)
