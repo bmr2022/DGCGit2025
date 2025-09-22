@@ -636,9 +636,8 @@ namespace eTactWeb.Data.DAL
                 if (Type == "MRNDetail")
                 {
                     model.AllowBackDateMRNEntry = DS.Tables[0].Rows[0]["AllowBackDateMRNEntry"].ToString();
-                    model.AllowToChangeStoreInMRN = DS.Tables[0].Rows[0]["AllowToChangeStoreInMRN"].ToString();
+                    model.BatchWiseInventory = DS.Tables[0].Rows[0]["BatchWiseInventory"].ToString();
                     model.MRNPrintReportName = DS.Tables[0].Rows[0]["MRNPrintReportName"].ToString();
-                    model.AllowBackDateMRIR = DS.Tables[0].Rows[0]["AllowBackDateMRIR"].ToString();
 
 
                 }
@@ -767,6 +766,8 @@ namespace eTactWeb.Data.DAL
 					model.AllowToChangeStoreName = DS.Tables[0].Rows[0]["AllowToChangeSaleBillStoreName"] != DBNull.Value ? DS.Tables[0].Rows[0]["AllowToChangeSaleBillStoreName"].ToString() : string.Empty;
 					model.HideOtherFieldOFDetailTable = DS.Tables[0].Rows[0]["HideOtherFieldOfSaleBillDetailTable"] != DBNull.Value ? DS.Tables[0].Rows[0]["HideOtherFieldOfSaleBillDetailTable"].ToString() : string.Empty;
 					model.ApproveSOForGenerateSaleInvoiceOrNot = DS.Tables[0].Rows[0]["ApproveSOForGenerateSaleInvoiceOrNot"] != DBNull.Value ? DS.Tables[0].Rows[0]["ApproveSOForGenerateSaleInvoiceOrNot"].ToString() : string.Empty;
+					model.ShowHideOtherDetails = DS.Tables[0].Rows[0]["ShowHideOtherDetails"] != DBNull.Value ? DS.Tables[0].Rows[0]["ShowHideOtherDetails"].ToString() : string.Empty;
+					model.HideShowOtherDiscount = DS.Tables[0].Rows[0]["HideShowOtherDiscount"] != DBNull.Value ? DS.Tables[0].Rows[0]["HideShowOtherDiscount"].ToString() : string.Empty;
 					
 				}
 				if (Type == "AccountDetail")
@@ -866,7 +867,7 @@ namespace eTactWeb.Data.DAL
                         SqlParams.Add(new SqlParameter("@ShowHideSaleOrderOtherRequiredDetail", model.ShowHideSaleOrderOtherRequiredDetail));
                         SqlParams.Add(new SqlParameter("@ShowHideSaleOrderConsignee", model.ShowHideSaleOrderConsignee));
                         SqlParams.Add(new SqlParameter("@HideOtherFieldOFSaleOrderDetailTable", model.HideOtherFieldOFSaleOrderDetailTable));
-
+                        
                     }
                     if (model.Type == "GateEntryDetail")
                     {
@@ -883,9 +884,8 @@ namespace eTactWeb.Data.DAL
                      {
                         SqlParams.Add(new SqlParameter("@Flag", "UPDATEMRNDashbaord"));
                         SqlParams.Add(new SqlParameter("@AllowBackDateMRNEntry", model.AllowBackDateMRNEntry));
-                        SqlParams.Add(new SqlParameter("@AllowToChangeStoreInMRN", model.AllowToChangeStoreInMRN));
+                        SqlParams.Add(new SqlParameter("@BatchWiseInventory", model.BatchWiseInventory));
                         SqlParams.Add(new SqlParameter("@MRNPrintReportName", model.MRNPrintReportName));
-                        SqlParams.Add(new SqlParameter("@AllowBackDateMRIR", model.AllowBackDateMRIR));
 
                      }
                       if (model.Type == "CommonDetail")
@@ -1028,6 +1028,8 @@ namespace eTactWeb.Data.DAL
 					SqlParams.Add(new SqlParameter("@AllowToChangeSaleBillStoreName", model.AllowToChangeStoreName));
 					SqlParams.Add(new SqlParameter("@HideOtherFieldOfSaleBillDetailTable", model.HideOtherFieldOFDetailTable));
 					SqlParams.Add(new SqlParameter("@ApproveSOForGenerateSaleInvoiceOrNot", model.ApproveSOForGenerateSaleInvoiceOrNot));
+					SqlParams.Add(new SqlParameter("@ShowHideOtherDetails", model.ShowHideOtherDetails));
+					SqlParams.Add(new SqlParameter("@HideShowOtherDiscount", model.HideShowOtherDiscount));
 
 				}
 				if (model.Type == "AccountDetail")

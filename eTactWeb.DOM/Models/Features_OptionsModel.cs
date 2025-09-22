@@ -65,7 +65,13 @@ namespace eTactWeb.DOM.Models
         public string AllowBackDateGAteEntry { get; set; }
         public string AllowToChangeBranch { get; set; }
         public long MaxDurationForReqToBePend { get; set; }
-        public string AllowBackDateMRNEntry { get; set; }
+		[NotMapped]
+		public bool AllowBackDateMRNEntryBool
+		{
+			get => AllowBackDateMRNEntry == "Y";
+			set => AllowBackDateMRNEntry = value ? "Y" : "N";
+		}
+		public string AllowBackDateMRNEntry { get; set; }
 		[NotMapped]
 		public bool AllowMultipleBuyerInSaleOrderBool
 		{
@@ -180,6 +186,20 @@ namespace eTactWeb.DOM.Models
 			set => AllowToChangeStoreName = value ? "Y" : "N";
 		}
 		public string AllowToChangeStoreName { get; set; }
+		[NotMapped]
+		public bool ShowHideOtherDetailsBool
+		{
+			get => ShowHideOtherDetails == "Y";
+			set => ShowHideOtherDetails = value ? "Y" : "N";
+		}
+		public string ShowHideOtherDetails { get; set; }
+		[NotMapped]
+		public bool HideShowOtherDiscountBool
+		{
+			get => HideShowOtherDiscount == "Y";
+			set => HideShowOtherDiscount = value ? "Y" : "N";
+		}
+		public string HideShowOtherDiscount { get; set; }
 
 		[NotMapped]
 		public bool HideOtherFieldOFDetailTableBool
