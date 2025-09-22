@@ -63,7 +63,7 @@
 		<None Include="Views\Shared\_TaxNRGPGrid.cshtml">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
-		<None Include="Views\Home\Dashboard.cshtml">
+		<None Include="Views\Home\Dashboard1.cshtml">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
 		

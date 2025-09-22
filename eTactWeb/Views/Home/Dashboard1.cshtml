@@ -15,8 +15,22 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+   
     <style>
+        @keyframes fadeIn {
+            from
+
+        {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
         /* Chatbot Styles */
         .chatbot-container {
             position: fixed;
@@ -106,22 +120,7 @@
             border-radius: 18px;
             margin-bottom: 10px;
             animation: fadeIn 0.3s ease;
-        }
-
-        @@keyframes fadeIn {
-            from
-
-        {
-            opacity: 0;
-            transform: translateY(10px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        }
+        }    
 
         .user-message {
             align-self: flex-end;
@@ -982,7 +981,7 @@
             display: flex;
             margin-bottom: 20px;
             border-bottom: 1px solid rgba(0,0,0,0.1);
-            cursor: pointer;
+            cursor:pointer;
         }
 
             .sales-card-header h2 {
@@ -1191,6 +1190,9 @@
     </style>
 </head>
 <body>
+    @* <div>
+        <a asp-controller="Wren" asp-action="Index">Ask Question</a>
+    </div> *@
     <div class="chatbot-container">
         <div class="chatbot-button" id="chatbotButton">
             <i class="fas fa-comments"></i>
@@ -2032,7 +2034,7 @@
                 </div>
             </div>
 
-            <div class="sales-card">
+             <div class="sales-card">
                 <div class="sales-card-header" style="display: flex; align-items: center; gap: 10px;">
                     <i class="fa fa-chart-area" style="font-size: 20px; color: #0d6efd;"></i>
                     <h2>Monthly Rejection Trend</h2>
@@ -2042,7 +2044,7 @@
                     <!-- Chart canvas -->
                     <canvas id="MonthlyRejectionTrend" width="300" height="150"></canvas>
                 </div>
-            </div>
+            </div>  
 
             <div class="sales-card-SO-Dispatch">
                 <div class="sales-card-header" onclick="SaveSaleOrderVsDispatch()">
@@ -2081,7 +2083,7 @@
     <script>
 
         $(".table-link").on("click", function () {
-
+             
             var approvalType = $(this).data("approvaltype"); // get data-approvalType
             if (approvalType) {
                 $("#ApprovalTypeHidden").val(approvalType); // set value in hidden input
@@ -2624,7 +2626,7 @@
         }
 
         function FillNoOfItemInStock() {
-
+             
             $.ajax({
                 url: '@Url.Action("NoOfItemInStock", "XONDashboard")',
                 type: 'POST',
@@ -4255,7 +4257,7 @@
                 async: false,
                 data: {},
                 success: function (response, status, error) {
-
+                     
                     var obj = $.parseJSON(response);
                     if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
                         if ($('#RefreshSalesAllData').val() == "false") {
