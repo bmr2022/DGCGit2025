@@ -104,13 +104,13 @@
     </div>
     @if (Model.AllowToChangeSaleBillStoreName == "N")
     {
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6 ">
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6 AllowToChangeStoreOrNot">
             <label asp-for="Batchno" class="form-label" style="color: red;">Batch No*</label>
             <select asp-for="Batchno" class="form-control">
                 <option value="1">1</option>
             </select>
         </div>
-        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-6 ">
+        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-6 AllowToChangeStoreOrNot">
             <label asp-for="Uniquebatchno" class="form-label" style="color: blue;">Unique BatchNo*</label>
             <select asp-for="Uniquebatchno" class="form-control">
                 <option value="1">1</option>

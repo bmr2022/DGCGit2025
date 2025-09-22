@@ -4819,45 +4819,45 @@
                 $.notify('Adjustgrid is manadatory...!', "error");
             }
             else {
-                //$("form").submit();
+                $("form").submit();
                 $('#SubmitionForm').modal("show");
             }
         })
-        $('#btnPrint').click(function () {
-            const printWindow = window.open('', '_blank', 'width=900,height=700,toolbar=no,menubar=no,scrollbars=yes,resizable=yes');
+        // $('#btnPrint').click(function () {
+        //     const printWindow = window.open('', '_blank', 'width=900,height=700,toolbar=no,menubar=no,scrollbars=yes,resizable=yes');
 
-            $('#SubmitionForm').modal("hide");
+        //     $('#SubmitionForm').modal("hide");
 
-            setTimeout(() => {
-                submitForm(true, false, false, printWindow, null); // Send true and window object
-            }, 300);
-        });
+        //     setTimeout(() => {
+        //         submitForm(true, false, false, printWindow, null); // Send true and window object
+        //     }, 300);
+        // });
 
-        $('#btnPrintEmail').click(function () {
-            const printWindow = window.open('', '_blank', 'width=900,height=700,toolbar=no,menubar=no,scrollbars=yes,resizable=yes');
-            const sendWindow = window.open('', '_blank'); // Open blank tab first (browser-safe)
+        // $('#btnPrintEmail').click(function () {
+        //     const printWindow = window.open('', '_blank', 'width=900,height=700,toolbar=no,menubar=no,scrollbars=yes,resizable=yes');
+        //     const sendWindow = window.open('', '_blank'); // Open blank tab first (browser-safe)
 
 
-            $('#SubmitionForm').modal("hide");
+        //     $('#SubmitionForm').modal("hide");
 
-            setTimeout(() => {
-                submitForm(true, true, false, printWindow, sendWindow); // Send true and window object
-            }, 300);
-        });
-        $('#submitBTN, #submitBTNfooter, #UpdateButton').click(function (e) {
-            e.preventDefault(); // Prevent default button action if needed
+        //     setTimeout(() => {
+        //         submitForm(true, true, false, printWindow, sendWindow); // Send true and window object
+        //     }, 300);
+        // });
+        // $('#submitBTN, #submitBTNfooter, #UpdateButton').click(function (e) {
+        //     e.preventDefault(); // Prevent default button action if needed
 
-            // Show the modal
-            $('#SubmitionForm').modal('show');
-        });
+        //     // Show the modal
+        //     $('#SubmitionForm').modal('show');
+        // });
 
-        $('#btnClose').click(function () {
-            $('#SubmitionForm').modal("hide");
+        // $('#btnClose').click(function () {
+        //     $('#SubmitionForm').modal("hide");
 
-            setTimeout(() => {
-                submitForm(false, false, false, null, null); // no print
-            }, 300);
-        });
+        //     setTimeout(() => {
+        //         submitForm(false, false, false, null, null); // no print
+        //     }, 300);
+        // });
 
         var itemsStockableAndCustJw = [];
         function ValidateBomItemsInCustGrid() {

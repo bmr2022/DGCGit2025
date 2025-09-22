@@ -230,7 +230,13 @@
             $('#PartCode').rules('remove', 'required');
 
         });
-
+        function openPopup(url) {
+            window.open(
+                url,
+                "_blank",
+                "width=1000,height=800,scrollbars=yes,resizable=yes,top=100,left=200"
+            );
+        }
 
         function GetFeatureOption() {
 

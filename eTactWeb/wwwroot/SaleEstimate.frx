@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="09/21/2025 11:50:07" ReportInfo.Modified="09/21/2025 14:28:18" ReportInfo.CreatorVersion="2023.2.0.0">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="09/21/2025 11:50:07" ReportInfo.Modified="09/22/2025 11:46:25" ReportInfo.CreatorVersion="2023.2.0.0">
   <Dictionary>
-    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqwYf2D6LPIs5GRi9VfJb9gu9ucqaRfzVvUaVne08cIFURWyyEsxwQsmngwHHahRU5IBf1gWxFxthjvCI+9BjhcR8BjTz2iHCnSBTgRKTkqutDkjIRRL0Lr+gAV5vh4t47BklN+Df+gZ1BDy0zz0wKb8ihM9loU9dXTaRaB3iM7MkRkKOWKZEyucGuTvDipndFRnxIF61cNWIuz0N9b+C85w==">
-      <TableDataSource Name="Table" Alias="SPReportSaleBill" DataType="System.Int32" Enabled="true" SelectCommand="exec SPReportSaleBill  @EntryId = 12 , @yearCode = 2025">
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqwYf2D6LPIs5GRi9VfJb9gu9ucqaRfzVvUaVne08cIFURWyyEsxwQsmngwHHahRU5IBf1gWxFxthjvCI+9BjhcR8BjTz2iHCnSBTgRKTkqutDkjIRRL0Lr+gAV5vh4t47BklN+Df+gZ1BDy0zz0wKb8ihM9loU9dXTaRaB3iM7MkRkKOWKZEyucGuTvDipndF6sgch2AxGpUE/Wt+o4j8Cw==">
+      <TableDataSource Name="Table" Alias="SPReportSaleBill" DataType="System.Int32" Enabled="true" SelectCommand="exec SPReportSaleBill  @EntryId = @entryparam, @yearCode = @yearparam">
         <Column Name="EntryID" DataType="System.Int64"/>
         <Column Name="YearCode" DataType="System.Int64"/>
         <Column Name="BillNo" DataType="System.String"/>
@@ -137,7 +137,9 @@
         <Column Name="CompPANNo" DataType="System.String"/>
         <Column Name="CompGSTNO" DataType="System.String"/>
         <Column Name="TotalItemAmt" DataType="System.Int32" PropName="Column" Calculated="true" Expression=""/>
-        <Column Name="TotalItemAmt" DataType="System.Int32" PropName="Column"/>
+        <Column Name="Group_name" DataType="System.String"/>
+        <CommandParameter Name="entryparam" Expression="entryparam"/>
+        <CommandParameter Name="yearparam" Expression="yearparam"/>
       </TableDataSource>
     </MsSqlDataConnection>
     <Total Name="TotalQty" Expression="[SPReportSaleBill.BillQty]" Evaluator="Data1" PrintOn="ReportSummary1"/>
@@ -171,9 +173,9 @@
       <TextObject Name="Text27" Left="444.15" Top="113.4" Width="236.25" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportSaleBill.PaymentTerm]" Font="Arial, 10pt"/>
       <TextObject Name="Text16" Left="85.05" Top="132.3" Width="255.15" Height="18.9" Text="[SPReportSaleBill.mobileno]" Font="Arial, 10pt"/>
       <TextObject Name="Text17" Left="18.9" Top="132.3" Width="56.7" Height="18.9" Text="Mobile:" Font="Arial, 10pt"/>
-      <TextObject Name="Text52" Left="434.7" Top="56.7" Width="94.5" Height="18.9" Text="[SPReportSaleBill.BillNo]" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text52" Left="434.7" Top="56.7" Width="170.1" Height="18.9" Text="[SPReportSaleBill.BillNo]" HorzAlign="Center" Font="Arial, 10pt"/>
     </ReportTitleBand>
-    <PageHeaderBand Name="PageHeader1" Top="163.85" Width="718.2" Height="28.35">
+    <PageHeaderBand Name="PageHeader1" Top="164.65" Width="718.2" Height="28.35">
       <LineObject Name="Line7" Left="9.45" Height="28.35"/>
       <LineObject Name="Line8" Left="680.4" Height="28.35"/>
       <TextObject Name="Text37" Left="9.45" Width="37.8" Height="18.9" Text="Sr " Font="Arial, 10pt"/>
@@ -181,7 +183,7 @@
       <TextObject Name="Text30" Left="557.55" Width="56.7" Height="18.9" Text="Disc%" HorzAlign="Center" Font="Arial, 10pt"/>
       <TextObject Name="Text31" Left="510.3" Width="47.25" Height="18.9" Text="Rate" HorzAlign="Center" Font="Arial, 10pt"/>
       <TextObject Name="Text32" Left="472.5" Width="37.8" Height="18.9" Text="Unit" HorzAlign="Center" Font="Arial, 10pt"/>
-      <TextObject Name="Text33" Left="425.25" Width="47.25" Height="18.9" Text="Qty" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text33" Left="425.25" Width="47.25" Height="18.9" Text="Qty" HorzAlign="Center" Font="Arial, 10pt" TextFill.Color="165, 42, 42"/>
       <TextObject Name="Text34" Left="207.9" Width="217.35" Height="18.9" Text="Description" HorzAlign="Center" Font="Arial, 10pt"/>
       <TextObject Name="Text35" Left="132.3" Width="75.6" Height="18.9" Text="Part No" HorzAlign="Center" Font="Arial, 10pt"/>
       <TextObject Name="Text36" Left="47.25" Width="85.05" Height="18.9" Text="Group" HorzAlign="Center" Font="Arial, 10pt"/>
@@ -196,7 +198,7 @@
       <LineObject Name="Line5" Left="9.45" Width="670.95"/>
       <LineObject Name="Line18" Left="9.45" Top="28.35" Width="670.95"/>
     </PageHeaderBand>
-    <GroupHeaderBand Name="GroupHeader1" Top="195.4" Width="718.2" Height="28.35" Condition="[SPReportSaleBill.CGSTPER]">
+    <GroupHeaderBand Name="GroupHeader1" Top="197" Width="718.2" Height="28.35" Condition="[SPReportSaleBill.PartCode]">
       <LineObject Name="Line19" Left="680.4" Height="28.35"/>
       <LineObject Name="Line31" Left="9.45" Height="28.35"/>
       <LineObject Name="Line21" Left="47.25" Height="28.35"/>
@@ -210,16 +212,17 @@
       <TextObject Name="Text53" Left="9.45" Width="37.8" Height="28.35" CanGrow="true" CanBreak="false" Text="[Row#]" HorzAlign="Center" Font="Arial, 10pt"/>
       <TextObject Name="Text38" Left="132.3" Width="75.6" Height="28.35" CanGrow="true" CanBreak="false" Text="[SPReportSaleBill.PartCode]" HorzAlign="Center" Font="Arial, 8pt"/>
       <TextObject Name="Text39" Left="207.9" Width="217.35" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportSaleBill.ItemName]" HorzAlign="Center" Font="Arial, 8pt"/>
-      <TextObject Name="Text40" Left="425.25" Width="47.25" Height="28.35" CanGrow="true" CanBreak="false" Text="[SPReportSaleBill.BillQty]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 6pt" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text40" Left="425.25" Width="47.25" Height="28.35" CanGrow="true" CanBreak="false" Text="[SPReportSaleBill.BillQty]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 10pt" Trimming="EllipsisCharacter"/>
       <TextObject Name="Text41" Left="472.5" Width="37.8" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportSaleBill.Unit]" HorzAlign="Center" Font="Arial, 8pt"/>
       <TextObject Name="Text42" Left="510.3" Width="47.25" Height="28.35" CanGrow="true" CanBreak="false" Text="[SPReportSaleBill.BillRate]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 8pt" Trimming="EllipsisCharacter"/>
       <TextObject Name="Text43" Left="557.55" Width="56.7" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportSaleBill.DiscPer]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 10pt" Trimming="EllipsisCharacter"/>
-      <TextObject Name="Text44" Left="614.25" Width="66.15" Height="28.35" CanGrow="true" CanBreak="false" Text="[SPReportSaleBill.ItemAmount]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 6pt" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text44" Left="614.25" Width="66.15" Height="28.35" CanGrow="true" CanBreak="false" Text="[SPReportSaleBill.ItemAmount]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 10pt" Trimming="EllipsisCharacter"/>
       <LineObject Name="Line20" Left="9.45" Top="28.35" Width="670.95"/>
-      <DataBand Name="Data1" Top="226.95" Width="718.2" DataSource="Table"/>
-      <GroupFooterBand Name="GroupFooter1" Top="230.15" Width="718.2"/>
+      <TextObject Name="Text66" Left="47.25" Width="85.05" Height="18.9" CanGrow="true" Text="[SPReportSaleBill.Group_name]" Font="Arial, 10pt"/>
+      <DataBand Name="Data1" Top="229.35" Width="718.2" DataSource="Table"/>
+      <GroupFooterBand Name="GroupFooter1" Top="233.35" Width="718.2"/>
     </GroupHeaderBand>
-    <ReportSummaryBand Name="ReportSummary1" Top="233.35" Width="718.2" Height="132.3">
+    <ReportSummaryBand Name="ReportSummary1" Top="237.35" Width="718.2" Height="132.3">
       <TextObject Name="Text54" Left="425.25" Width="47.25" Height="18.9" Text="[TotalQty]" HorzAlign="Center" Font="Arial, 10pt"/>
       <TextObject Name="Text55" Left="614.25" Width="66.15" Height="18.9" Text="[TotalAmt]" HorzAlign="Center" Font="Arial, 10pt"/>
       <TextObject Name="Text59" Left="359.1" Top="66.15" Width="151.2" Height="18.9" Text="Total Amt Inc. GST:" HorzAlign="Center" Font="Arial, 10pt"/>
