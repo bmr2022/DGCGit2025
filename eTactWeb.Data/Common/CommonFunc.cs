@@ -1665,6 +1665,10 @@ public static class CommonFunc
                         && typeProperty.PropertyInfo.Name != "RackID"
                         && typeProperty.PropertyInfo.Name != "AdditionalDiscount"
                         && typeProperty.PropertyInfo.Name != "AllowToChangeSaleBillStoreName"
+                        && typeProperty.PropertyInfo.Name != "PackingCharges"
+                        && typeProperty.PropertyInfo.Name != "ForwardingCharges"
+                        && typeProperty.PropertyInfo.Name != "CourieerCharges"
+                        && typeProperty.PropertyInfo.Name != "GST"
                         && typeProperty.PropertyInfo.Name != "TxTaxType" && typeProperty.PropertyInfo.Name != "TotalRecords"
                         && typeProperty.PropertyInfo.Name != "TxTaxTypeName" && typeProperty.PropertyInfo.Name != "BOMInd" && typeProperty.PropertyInfo.Name != "ProducedUnprod"
                         && typeProperty.PropertyInfo.Name != "TxType" && typeProperty.PropertyInfo.Name != "DashboardTypeBack"
@@ -1739,6 +1743,10 @@ public static class CommonFunc
                         && typeProperty.PropertyInfo.Name != "RackID"
                         && typeProperty.PropertyInfo.Name != "AdditionalDiscount"
                         && typeProperty.PropertyInfo.Name != "AllowToChangeSaleBillStoreName"
+                        && typeProperty.PropertyInfo.Name != "PackingCharges"
+                        && typeProperty.PropertyInfo.Name != "ForwardingCharges"
+                        && typeProperty.PropertyInfo.Name != "CourieerCharges"
+                        && typeProperty.PropertyInfo.Name != "GST"
                         )
                     {
                         object value = row[typeProperty.PropertyInfo.Name];
