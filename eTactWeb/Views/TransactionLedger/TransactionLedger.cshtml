@@ -502,6 +502,11 @@
                     sessionStorage.setItem('HistoryStack', JSON.stringify(history));
                     window.location.href = '/ProfitAndLoss/Index';
                     break;
+
+                case 'BalanceSheetSummary':
+                    sessionStorage.setItem('HistoryStack', JSON.stringify(history));
+                    window.location.href = '/BalanceSheet/Index';
+                    break;
             }
 
             if (history.length === 0) $('#BackButton').hide();

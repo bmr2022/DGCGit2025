@@ -65,17 +65,23 @@
                                                 }
                                                 else if (col.Key.Contains("Liabilities"))
                                                 {
-                                                    <td style="cursor:pointer;color:blue;" onclick="GetProfitAndLossDataByGroup(this)">
+                                                    <td style="cursor:pointer;color:blue;" onclick="GetBalanceSheetDataByBalParentCode(this)">
                                                         @col.Value
-                                                        <input type="hidden" class="hdnParentAccountCode"
-                                                               value="@row.DynamicColumns["ParentAccountCode"]" />
-                                                        <input type="hidden" class="hdnLedgerGroup"
-                                                               value="@row.DynamicColumns["LedgGroup"]" />
+                                                        <input type="hidden" class="hdnBalParentAccountCode"
+                                                               value="@row.DynamicColumns["BalParentAccountCode"]" />
                                                     </td>
                                                 }
                                                 else if (col.Key.Contains("ParentAccountName(Cr)"))
                                                 {
-                                                    <td style="cursor:pointer;color:blue;" onclick="GetProfitAndLossDataByLedger(this)">
+                                                    <td style="cursor:pointer;color:blue;" onclick="GetBalanceSheetDataByParentCode(this)">
+                                                        @col.Value
+                                                        <input type="hidden" class="hdnParentAccountCode"
+                                                               value="@row.DynamicColumns["ParentAccountCode"]" />
+                                                    </td>
+                                                }
+                                                else if (col.Key.Contains("LedgerName(Cr)"))
+                                                {
+                                                    <td style="cursor:pointer;color:blue;" onclick="GetBalanceSheetDataByLedger(this)">
                                                         @col.Value
                                                         <input type="hidden" class="hdnAccountCode"
                                                                value="@row.DynamicColumns["AccountCode"]" />
@@ -160,17 +166,23 @@
                                                 }
                                                 else if (col.Key.Contains("Assets"))
                                                 {
-                                                    <td style="cursor:pointer;color:blue;" onclick="GetProfitAndLossDataByGroup(this)">
+                                                    <td style="cursor:pointer;color:blue;" onclick="GetBalanceSheetDataByBalParentCode(this)">
+                                                        @col.Value
+                                                        <input type="hidden" class="hdnBalParentAccountCode"
+                                                               value="@row.DynamicColumns["BalParentAccountCode"]" />
+                                                    </td>
+                                                }
+                                                else if (col.Key.Contains("ParentAccountName(Dr)"))
+                                                {
+                                                    <td style="cursor:pointer;color:blue;" onclick="GetBalanceSheetDataByParentCode(this)">
                                                         @col.Value
                                                         <input type="hidden" class="hdnParentAccountCode"
                                                                value="@row.DynamicColumns["ParentAccountCode"]" />
-                                                        <input type="hidden" class="hdnLedgerGroup"
-                                                               value="@row.DynamicColumns["LedgGroup"]" />
                                                     </td>
                                                 }
-                                                else if (col.Key.Contains("Ledger(Dr)"))
+                                                else if (col.Key.Contains("LedgerName(Dr)"))
                                                 {
-                                                    <td style="cursor:pointer;color:blue;" onclick="GetProfitAndLossDataByLedger(this)">
+                                                    <td style="cursor:pointer;color:blue;" onclick="GetBalanceSheetDataByLedger(this)">
                                                         @col.Value
                                                         <input type="hidden" class="hdnAccountCode"
                                                                value="@row.DynamicColumns["AccountCode"]" />

@@ -39,5 +39,11 @@ namespace eTactwebAccounts.Controllers
             HttpContext.Session.SetString("BalanceSheetData", sessionData);
             return PartialView("_BalanceSheetGridData", model);
         }
+        public async Task<JsonResult> GetLiabilitiesAndAssetsData(string FromDate, string ToDate)
+        {
+            var JSON = await _IBalanceSheet.GetLiabilitiesAndAssetsData(FromDate, ToDate);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
     }
 }

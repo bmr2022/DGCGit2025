@@ -42,12 +42,27 @@
                                         <option value="CONSOLIDATED">Consolidated</option>
                                     </select>
                                 </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="LiabilitiesAndAssets" class="form-label">Liabilities/Assets</label>
+                                    <select asp-for="LiabilitiesAndAssets" class="form-select">
+                                    </select>
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="ParentAccountName" class="form-label">ParentAccountList</label>
+                                    <select asp-for="ParentAccountName" class="form-select">
+                                    </select>
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="AccountName" class="form-label">AccountList</label>
+                                    <select asp-for="AccountName" class="form-select">
+                                    </select>
+                                </div>
                                 <div class="col-sm-2 col-md-6 col-lg-4 col-xl-2">
                                     <label class="form-label">Global search</label>
                                     <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
                                 </div>
                                 <div class=" d-flex justify-content-center   mt-3 col-sm-5 col-md-8 col-lg-6 col-xl-4" width="inherit" style="width:600px;">
-                                    <button class="btn btn-sm btn-outline-info" type="button" style="padding:0px;height:30px;width:100px;" onclick="GetProfitAndLossData();">
+                                    <button class="btn btn-sm btn-outline-info" type="button" style="padding:0px;height:30px;width:100px;" onclick="GetBalanceSheetData();">
                                         <i class="fa-solid fa-magnifying-glass fa-fw fa-lg"></i>SEARCH
                                     </button>
                                     <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
@@ -133,7 +148,42 @@
             $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' })
                 .datepicker("setDate", 'now');
 
+            $('#LiabilitiesAndAssets').select2();
+            $('#ParentAccountName').select2();
+            $('#AccountName').select2();
             $('#BackButton').hide();
+            GetLiabilitiesAndAssetsData();
+
+            let history = JSON.parse(sessionStorage.getItem('HistoryStack')) || [];
+            let parentCode = sessionStorage.getItem('ParentCode');
+            if (parentCode) {
+                GetLiabilitiesAndAssetsData(parentCode)
+            }
+            let reportType = sessionStorage.getItem('ReportType');
+            if (history.length > 0
+                || sessionStorage.getItem('ParentCode')
+                || sessionStorage.getItem('ShowOpening')
+                || sessionStorage.getItem('ReportType')) {
+                $('#BackButton').show();
+            } else {
+                $('#BackButton').hide();
+            }
+            if (history.length > 0) {
+                let lastStep = history[history.length - 1];
+                const action = lastStep.action;
+                const params = lastStep.params;
+
+                switch (action) {
+                    case 'BalanceSheetSummary':
+                        $('#ReportType').val(params.ReportType).trigger('change');
+
+                        history.pop();
+                        sessionStorage.setItem('HistoryStack', JSON.stringify(history));
+                        break;
+                }
+            }
+            if (history.length === 0) $('#BackButton').hide();
+
             GetBalanceSheetData();
         });
 
@@ -227,6 +277,108 @@
                     console.error("Error fetching Trail Balance data:", error);
                 }
             });
+        }
+
+        function GetBalanceSheetDataByBalParentCode(td) {
+            // td is the clicked cell
+            let cellValue = $(td).text().trim();
+
+            if ($('#ReportType').val() == "SUMMARY" || $('#ReportType').val() == "CONSOLIDATED") {
+                // hidden input value inside this td
+                var balParentCode = $(td).find(".hdnBalParentAccountCode").val();
+                var FromDate = $('#FromDate').val();
+                var ToDate = $('#ToDate').val();
+                var ReportType = $('#ReportType').val();
+                // Save history
+                saveHistory('BalanceSheetSummary', {
+                    balParentCode: balParentCode,
+                    FromDate: FromDate,
+                    ToDate: ToDate,
+                    ReportType: ReportType
+                });
+
+                // Save to sessionStorage
+                sessionStorage.setItem('ParentCode', balParentCode);
+                sessionStorage.setItem('ReportType', "GROUPSUMMARY");
+
+                // Mark current page
+                sessionStorage.setItem('CurrentPage', 'BalanceSheetSummary');
+
+                // Redirect
+                window.location.href = '/TransactionLedger/Index';
+            }
+            else {
+                // Save OLD state first
+                let currentFromDate = $('#FromDate').val();
+                let currentToDate = $('#ToDate').val();
+                let currentReportType = $('#ReportType').val();
+                let currentGroup = $('#Group').val();
+                let curentShowOpening = $('#ShowOpening').prop('checked') ? "YES" : "NO";
+                let currentShowRecordWithZeroAmt = $('#ShowRecordWithZeroAmt').prop('checked') ? "YES" : "NO";
+                saveHistory('ProfitAndLossGroupDetail', { FromDate: currentFromDate, ToDate: currentToDate, ReportType: currentReportType, GroupCode: currentGroup, ShowOpening: curentShowOpening, ShowRecordWithZeroAmt: currentShowRecordWithZeroAmt });
+
+                // Apply NEW state
+                var FromDate = $('#FromDate').val();
+                var ToDate = $('#ToDate').val();
+                var GroupCode = $(td).find(".hdnParentAccountCode").val();
+                var ShowOpening = $('#ShowOpening').prop('checked') ? "YES" : "NO";
+                var ShowRecordWithZeroAmt = $('#ShowRecordWithZeroAmt').prop('checked') ? "YES" : "NO";
+                $('#Group').val(GroupCode).trigger("change");
+                $('#ReportType').val("DETAIL").trigger("change");
+
+                $('#BackButton').show();
+            }
+        }
+
+        function GetLiabilitiesAndAssetsData(selectedGroupCode = null) {
+            var FromDate = $('#FromDate').val();
+            var ToDate = $('#ToDate').val();
+
+            $.ajax({
+                type: 'POST',
+                url: "@Url.Action("GetLiabilitiesAndAssetsData", "BalanceSheet")",
+                data: {
+                    FromDate: FromDate,
+                    ToDate: ToDate
+                },
+                success: function (response) {
+                    var LiabilitiesAndAssets = $('#LiabilitiesAndAssets');
+                    var obj = $.parseJSON(response);
+                    LiabilitiesAndAssets.empty();
+                    LiabilitiesAndAssets.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, ledger) {
+                        LiabilitiesAndAssets.append('<option value="' + ledger.ParentAccountCode + '">' + ledger.ParentAccountName + '</option>');
+                    });
+
+                    // Set selected GroupCode AFTER options are loaded
+                    let groupCode = selectedGroupCode || sessionStorage.getItem('ParentCode');
+                    if (groupCode) {
+                        if ($('#ParentAccountName option[value="' + groupCode + '"]').length === 0) {
+                            // Add option if not present
+                            ParentAccountName.append(new Option(groupCode, groupCode, true, true));
+                        }
+                        ParentAccountName.val(groupCode).trigger('change');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching Group data:", error);
+                }
+            });
+        }
+
+        function saveHistory(action, params = {}) {
+            // Load existing history or create empty
+            let history = JSON.parse(sessionStorage.getItem('HistoryStack')) || [];
+
+            // Push new action
+            history.push({ action, params });
+
+            // Save back
+            sessionStorage.setItem('HistoryStack', JSON.stringify(history));
+
+            // Show back button
+            $('#BackButton').show();
         }
 
     </script>
