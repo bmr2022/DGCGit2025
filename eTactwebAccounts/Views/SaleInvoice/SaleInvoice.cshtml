@@ -2144,6 +2144,7 @@
 
                     var txTotal = sum + txSum;
                     $('#NetTotal').val(txTotal.toFixed(2));
+                    $('#BaseNetTotal').val(txTotal.toFixed(2));
                     $('#AdjPendAmt').val($('#NetTotal').val());
                     $('#TotalDiscountPercentage').val(0);
                     $('#TotalAmtAftrDiscount').val(0);
@@ -2374,6 +2375,7 @@
 
                     var txTotal = sum + txSum;
                     $('#NetTotal').val(txTotal.toFixed(2));
+                    $('#BaseNetTotal').val(txTotal.toFixed(2));
                     $('#AdjPendAmt').val($('#NetTotal').val());
                     $('#TotalDiscountPercentage').val(0);
                     $('#TotalAmtAftrDiscount').val(0);
@@ -2494,6 +2496,7 @@
             }
             var txTotal = sum + txSum;
             $('#NetTotal').val(txTotal.toFixed(2));
+            $('#BaseNetTotal').val(txTotal.toFixed(2));
             $('#AdjPendAmt').val($('#NetTotal').val());
         }
 
@@ -3640,26 +3643,30 @@
 
 
         function NetAmountAfterDiscount() {
-            var netAmt = $('#NetTotal').val() == "" ? 0 : parseFloat($('#NetTotal').val());
-            var discAmt = $('#CashDisRs').val() == "" ? 0 : parseFloat($('#CashDisRs').val());
-            var additionalDisAmt = $('#AdditionalDiscount').val() == "" ? 0 : parseFloat($('#AdditionalDiscount').val());
+            function safeParse(selector) {
+                var val = $.trim($(selector).val());
+                var num = parseFloat(val);
+                return isNaN(num) ? 0 : num;
+            }
 
-            var PackingCharges = $('#PackingCharges').val() == "" ? 0 : parseFloat($('#PackingCharges').val());
-            var ForwardingCharges = $('#ForwardingCharges').val() == "" ? 0 : parseFloat($('#ForwardingCharges').val());
-            var CourieerCharges = $('#CourieerCharges').val() == "" ? 0 : parseFloat($('#CourieerCharges').val());
-            var GST = $('#GST').val() == "" ? 0 : parseFloat($('#GST').val());
+            // Always start from original clean net total
+            var baseAmt = safeParse('#BaseNetTotal');
 
-            // Apply discounts
-            netAmt = netAmt - (discAmt + additionalDisAmt);
+            var discAmt = safeParse('#CashDisRs');
+            var additionalDisAmt = safeParse('#AdditionalDiscount');
+            var PackingCharges = safeParse('#PackingCharges');
+            var ForwardingCharges = safeParse('#ForwardingCharges');
+            var CourieerCharges = safeParse('#CourieerCharges');
+            var GST = safeParse('#GST');
 
-            // Add charges
-            netAmt = netAmt + PackingCharges + ForwardingCharges + CourieerCharges + GST;
+            // Apply adjustments
+            var netAmt = baseAmt - (discAmt + additionalDisAmt)
+                + PackingCharges + ForwardingCharges + CourieerCharges + GST;
 
-            $('#NetTotal').val(netAmt.toFixed(6));
-            $('#AdjPendAmt').val($('#NetTotal').val());
+            $('#NetTotal').val(netAmt.toFixed(2));
+            $('#AdjPendAmt').val(netAmt.toFixed(2));
 
             ClearAdjustmentGrid();
-            // GetDbCrDetail();
             AddAdjstmntDetail1();
         }
 
@@ -3825,6 +3832,7 @@
 
                             var txTotal = sum + txSum;
                             $('#NetTotal').val(txTotal.toFixed(6));
+                            $('#BaseNetTotal').val(txTotal.toFixed(6));
                             $('#AdjPendAmt').val($('#NetTotal').val());
                             $('#TotalDiscountPercentage').val(0);
                             $('#TotalAmtAftrDiscount').val(0);
@@ -4016,6 +4024,8 @@
 
                         var txTotal = sum + txSum;
                         $('#NetTotal').val(txTotal.toFixed(2));
+                        $('#BaseNetTotal').val(txTotal.toFixed(2));
+
                         $('#AdjPendAmt').val($('#NetTotal').val());
                         $('#TotalDiscountPercentage').val(0);
                         $('#TotalAmtAftrDiscount').val(0);
@@ -4102,6 +4112,7 @@
                     $('#divTaxGrid').html(NoData);
                     var txAmt = $('#lblItemNetAmount').text();
                     $('#NetTotal').val(txAmt);
+                    $('#BaseNetTotal').val(txAmt);
                     $('#AdjPendAmt').val($('#NetTotal').val());
                     // $('#AdjNewRefNo').val($('#NetTotal').val());
 
