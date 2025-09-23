@@ -6308,6 +6308,7 @@
                         $('#SaleBillEntryDate,#SaleBillDate').datepicker("option", "maxDate", FinToDate);
                         $('#SaleBillDate').prop("disabled", false);
                         $('#ActualEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                        $('#GRDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
                     } else {
                         let d = $('#SaleBillEntryDate').val().split(" ")[0].split("-");
                         $('#SaleBillEntryDate').datepicker({ dateFormat: 'dd/mm/yy' })

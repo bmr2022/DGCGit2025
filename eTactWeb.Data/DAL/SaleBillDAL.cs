@@ -668,6 +668,9 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@SaleQuotNo", model.SaleQuotNo ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@SaleQuotEntryID", model.SaleQuotEntryID));
                 SqlParams.Add(new SqlParameter("@SaleQuotyearCode", model.SaleQuotyearCode));
+                SqlParams.Add(new SqlParameter("@PrivateMark", model.PrivateMark));
+                SqlParams.Add(new SqlParameter("@GRNo", model.GRNo));
+                SqlParams.Add(new SqlParameter("@GRDate",CommonFunc.ParseFormattedDate( model.GRDate)));
                 SqlParams.Add(new SqlParameter("@SaleQuotDate", SaleQuotDate == default ? string.Empty : SaleQuotDate));
                 //SqlParams.Add(new SqlParameter("@BooktrnsEntryId", model.SaleBillEntryId));
 
@@ -1367,6 +1370,9 @@ namespace eTactWeb.Data.DAL
                 model.ChallanEntryid = Convert.ToInt32(DS.Tables[0].Rows[0]["ChallanEntryid"]);
                 model.BalanceSheetClosed = DS.Tables[0].Rows[0]["BalanceSheetClosed"]?.ToString();
                 model.SaleQuotNo = DS.Tables[0].Rows[0]["SaleQuotNo"]?.ToString();
+                model.PrivateMark = DS.Tables[0].Rows[0]["PrivateMark"]?.ToString();
+                model.GRNo = DS.Tables[0].Rows[0]["GRNo"]?.ToString();
+                model.GRDate = DS.Tables[0].Rows[0]["GRDate"]?.ToString();
                 model.SaleQuotEntryID = Convert.ToInt32(DS.Tables[0].Rows[0]["SaleQuotEntryID"]);
                 model.SaleQuotyearCode = Convert.ToInt32(DS.Tables[0].Rows[0]["SaleQuotyearCode"]);
                 model.AdditionalDiscount = DS.Tables[0].Rows[0]["additiondiscount"] == DBNull.Value ? 0 : Convert.ToDecimal(DS.Tables[0].Rows[0]["additiondiscount"]);

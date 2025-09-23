@@ -188,6 +188,9 @@ namespace eTactWeb.DOM.Models
         public string? TransporterdocNo { get; set; }
         public int TransporterId { get; set; }
         public string? TransportModeBYRoadAIR { get; set; }
+        public string? PrivateMark { get; set; }
+        public string? GRNo { get; set; }
+        public string? GRDate { get; set; }
         public int ConsigneeAccountcode { get; set; }
         public bool PNConsingee { get; set; }
         public string? ConsigneeAccountName { get; set; }

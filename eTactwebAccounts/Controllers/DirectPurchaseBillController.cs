@@ -1401,7 +1401,7 @@ namespace eTactWeb.Controllers
                     Item.AcceptedQty,
                     Item.HoldQty,
                 Item.ReworkQty,
-                Item.ItemLocation.ToString()
+                Item.ItemLocation ?? string.Empty
                     });
             }
 
