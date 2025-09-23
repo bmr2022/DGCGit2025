@@ -1,5 +1,6 @@
 ﻿using eTactWeb.Data.Common;
 using eTactWeb.Data.DAL;
+using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -18,6 +19,10 @@ namespace eTactWeb.Data.BLL
         {
             _BalanceSheetDAL = new BalanceSheetDAL(config, dataLogicDAL, connectionStringService);
             _DataLogicDAL = dataLogicDAL;
+        }
+        public async Task<BalanceSheetModel> GetBalanceSheetData(string FromDate, string ToDate, string ReportType)
+        {
+            return await _BalanceSheetDAL.GetBalanceSheetData(FromDate, ToDate, ReportType);
         }
     }
 }

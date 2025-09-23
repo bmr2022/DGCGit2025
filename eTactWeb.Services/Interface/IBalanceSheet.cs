@@ -1,4 +1,5 @@
-﻿using System;
+﻿using eTactWeb.DOM.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,6 @@ namespace eTactWeb.Services.Interface
 {
     public interface IBalanceSheet
     {
+        Task<BalanceSheetModel> GetBalanceSheetData(string FromDate, string ToDate, string ReportType);
     }
 }

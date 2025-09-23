@@ -190,6 +190,7 @@ namespace eTactWeb
             services.TryAddScoped<IEmployeeMaster, EmployeeMasterBLL>();
             services.TryAddScoped<IRetFromDepartmentMain, RetFromDepartmentMainBLL>();
             services.TryAddScoped<ICustomerJobWorkIssue, CustomerJobWorkIssueBLL>();
+            services.TryAddScoped<IBalanceSheet, BalanceSheetBLL>();
             services.TryAddScoped<ICloseProductionPlan, CloseProductionPlanBLL>();
             services.TryAddScoped<ITransactionLedger, TransactionLedgerBLL>();
             services.TryAddScoped<IOutStanding, OutStandingBLL>();

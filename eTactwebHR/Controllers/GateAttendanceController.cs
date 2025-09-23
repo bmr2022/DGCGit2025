@@ -166,8 +166,7 @@ namespace eTactwebHR.Controllers
                 {
                     ErrList.Add("ItemDetailGrid", "Item Details Cannot Be Blank..!");
                 }
-
-                if (model.CreatedBy == 0)
+                if (model != null && model.CreatedBy == 0)
                 {
                     ErrList.Add("CreatedBy", "Please Select Created By From List..!");
                 }
@@ -196,7 +195,8 @@ namespace eTactwebHR.Controllers
                         model.Branch = HttpContext.Session.GetString("Branch");
                         model.EntryByMachineName = HttpContext.Session.GetString("EmpName");
                         model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                        //Result = await IDirectPurchaseBill.SaveDirectPurchaseBILL(ItemDetailDT, TaxDetailDT, TDSDetailDT, model, DrCrDetailDT, AdjDetailDT);
+                        DataTable itemgrid = null;
+                        Result = await IGateAttendance.SaveGateAtt(model, itemgrid);
                     }
 
                     if (Result != null)
@@ -380,7 +380,67 @@ namespace eTactwebHR.Controllers
             //ViewBag.EmployeeList = model.EmployeeList;
             return PartialView("_GateManualAttendance", model);
         }
+        private static DataSet GetItemDetailTable(GateAttendanceModel itemDetailList, string Mode, int? EntryID, int? YearCode)
+        {
+            DataSet DS = new();
+            DataTable Table = new();
 
+            int daysInMonth = 1;
+            Table.Columns.Add("GateAttEntryId", typeof(int));
+            Table.Columns.Add("GateAttYearCode", typeof(int));
+            Table.Columns.Add("EmpId", typeof(int));
+            Table.Columns.Add("EmpAttYear", typeof(int));
+            if (itemDetailList != null && string.Equals(itemDetailList.DayOrMonthType, "Monthly", StringComparison.OrdinalIgnoreCase))
+            {
+                if (YearCode > 0 && itemDetailList.intEmpAttMonth > 0) {
+                    daysInMonth = DateTime.DaysInMonth(Convert.ToInt32(YearCode), Convert.ToInt32(itemDetailList.intEmpAttMonth));
+                }
+                if (itemDetailList.DayHeaders == null)
+                {
+                    itemDetailList.DayHeaders = new List<string>();
+                    itemDetailList.strEmpAttMonth = new DateTime(Convert.ToInt32(YearCode), Convert.ToInt32(itemDetailList.intEmpAttMonth), 1).ToString("MMM");
+                    for (int d = 1; d <= daysInMonth; d++)
+                    {
+                        itemDetailList.DayHeaders.Add($"AttInTime{d}");
+                        itemDetailList.DayHeaders.Add($"AttOutTime{d}");
+                    }
+                }
+            }
+            Table.Columns.Add("AttShiftId", typeof(int));
+            Table.Columns.Add("categoryid", typeof(int));
+            Table.Columns.Add("shiftid", typeof(int));
+
+            foreach (GateAttendanceModel Item in itemDetailList?.GateAttDetailsList ?? new List<GateAttendanceModel>())
+            {
+                List<object> rowValues = new List<object>
+                {
+                    (itemDetailList.GateAttEntryId > 0 ? itemDetailList.GateAttEntryId : EntryID) ?? 0,
+                    (itemDetailList.GateAttYearCode > 0 ? itemDetailList.GateAttYearCode : YearCode) ?? 0,
+                    Item.EmpId,
+                    Item.EmpAttYear
+                };
+
+                if (itemDetailList.DayHeaders != null)
+                {
+                    foreach (var header in itemDetailList.DayHeaders)
+                    {
+                        if (Item.Attendance != null && Item.Attendance.ContainsKey(header))
+                            rowValues.Add(Item.Attendance[header]);
+                        else
+                            rowValues.Add(null);
+                    }
+                }
+
+                rowValues.Add(Item.ActualEmpShiftId);
+                rowValues.Add(itemDetailList.EmpCategoryId);
+                rowValues.Add(itemDetailList.ActualEmpShiftId);
+
+                Table.Rows.Add(rowValues.ToArray());
+            }
+
+            DS.Tables.Add(Table);
+            return DS;
+        }
         public GateAttendanceModel GetHolidayList(int EmpCatId, DateTime Attdate, int YearCode)
         {
             GateAttendanceModel model = new GateAttendanceModel();

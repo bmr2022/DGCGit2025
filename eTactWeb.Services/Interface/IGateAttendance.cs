@@ -14,5 +14,6 @@ namespace eTactWeb.Services.Interface
         GateAttendanceModel GetHolidayList(int EmpCatId, DateTime Attdate, int YearCode);
         Task<ResponseResult> GetFormRights(int uId);
         Task<ResponseResult> FillEntryId(int YearCode);
+        Task<ResponseResult> SaveGateAtt(GateAttendanceModel model, DataTable itemgrid);
     }
 }
