@@ -1,1 +1,233 @@
 ﻿@model eTactWeb.DOM.Models.BalanceSheetModel
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+
+<div class="card bg-gradient mb-3 border-light shadow-lg">
+    <div class="card-header card-headerBG text-light bg-gradient">
+        <h5>
+            <strong>Balance Sheet</strong>
+            <span class="d-flex float-end" style="margin-top:-2px;">
+            </span>
+        </h5>
+    </div>
+    <div>
+    </div>
+    <div class="card-body bg-light pt-0">
+        <div class="accordion shadow-lg">
+            <div class="card-body">
+                <div class="card overflow-auto">
+                    <div class="card-body">
+                        <form id="SParam">
+                            <div class="row">
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                    <div class="row">
+                                        <div class="col">
+                                            <label class="form-label">From Date</label>
+                                            <input asp-for="FromDate" class="form-control" />
+                                        </div>
+                                        <div class="col">
+                                            <label class="form-label">To Date</label>
+                                            <input asp-for="ToDate" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <input type="hidden" asp-for="EntryByMachine" value="@Environment.MachineName" class="form-control" />
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="ReportType" class="form-label">ReportType</label>
+                                    <select asp-for="ReportType" class="form-select">
+                                        <option value="SUMMARY" selected>Summary</option>
+                                        <option value="DETAIL">Detail</option>
+                                        <option value="CONSOLIDATED">Consolidated</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-2 col-md-6 col-lg-4 col-xl-2">
+                                    <label class="form-label">Global search</label>
+                                    <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
+                                </div>
+                                <div class=" d-flex justify-content-center   mt-3 col-sm-5 col-md-8 col-lg-6 col-xl-4" width="inherit" style="width:600px;">
+                                    <button class="btn btn-sm btn-outline-info" type="button" style="padding:0px;height:30px;width:100px;" onclick="GetProfitAndLossData();">
+                                        <i class="fa-solid fa-magnifying-glass fa-fw fa-lg"></i>SEARCH
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
+                                        <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
+                                    </button>
+                                    <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="TrailBalance" asp-action="TrailBalance">
+                                        <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
+                                    </a>
+                                    <a href="#" class="btn btn-primary btn-sm ms-3" onclick="PressBack();" id="BackButton">
+                                        <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                                        BACK
+                                    </a>
+                                </div>
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            </div>
+                            <div class="progress my-2 mb-3" style="height: 4px;">
+                                <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="H_SAGrid">
+                                    <button id="dynamicButton" class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+                                        <strong id="buttonTitle" style="text-transform:uppercase">
+                                            <i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade"
+                                               style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>
+                                            <span id="dynamicText"></span>
+                                        </strong>
+                                    </button>
+                                </h2>
+                                <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradientn show" aria-labelledby="H_SAGrid">
+                                    <div class="accordion-body">
+                                        <div class="card-body" id="divPendingMRP">
+                                            <div class="row">
+                                                <div class="col-md-12 divStockRegister" id="divStockMainRegister">
+                                                </div>
+                                            </div>
+                                            <div class="d-flex justify-content-end mt-2 " id="reportFields">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script>
+
+        var hiddenCols = {};
+
+        $(document).ready(function () {
+
+            let currentDate = new Date();
+
+            // FromDate model thi value
+            let fromDateRaw = '@Model.FromDate'; // e.g. "01/Apr/2025 00:00:00"
+
+            function convertToDDMMYYYY(dateStr) {
+                if (!dateStr) return '';
+                let parts = dateStr.split(" ");
+                let datePart = parts[0]; // "01/Apr/2025"
+                let [day, mon, year] = datePart.split("/");
+
+                const months = {
+                    Jan: "01", Feb: "02", Mar: "03", Apr: "04",
+                    May: "05", Jun: "06", Jul: "07", Aug: "08",
+                    Sep: "09", Oct: "10", Nov: "11", Dec: "12"
+                };
+
+                return `${day}/${months[mon]}/${year}`;
+            }
+
+            let fromDateFormatted = convertToDDMMYYYY(fromDateRaw);
+
+            $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' })
+                .datepicker("setDate", fromDateFormatted);
+
+            $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' })
+                .datepicker("setDate", 'now');
+
+            $('#BackButton').hide();
+            GetBalanceSheetData();
+        });
+
+        $(document).on('click', '.toggle-col', function () {
+            debugger; // should now hit when clicked
+            var $th = $(this).closest('th');
+            var colIndex = $th.index() + 1;
+            var $icon = $(this).find('i');
+            const isVisible = !$('table tr th:nth-child(' + colIndex + ')').hasClass('hidden-column');
+
+            if (isVisible) {
+                $('table tr').each(function () {
+                    $(this).find('th:nth-child(' + colIndex + '), td:nth-child(' + colIndex + ')')
+                        .addClass('hidden-column');
+                });
+                $icon.removeClass('fa-eye-slash').addClass('fa-eye');
+                hiddenCols[colIndex] = $th.text().trim();
+            } else {
+                $('table tr').each(function () {
+                    $(this).find('th:nth-child(' + colIndex + '), td:nth-child(' + colIndex + ')')
+                        .removeClass('hidden-column');
+                });
+                $icon.removeClass('fa-eye').addClass('fa-eye-slash');
+                delete hiddenCols[colIndex];
+            }
+            updateHiddenColPanel();
+        });
+
+        function updateHiddenColPanel() {
+            const $panel = $('#hidden-cols-panel');
+            $panel.empty();
+
+            if (Object.keys(hiddenCols).length === 0) {
+                $panel.append('<em>No hidden columns</em>');
+                return;
+            }
+
+            $.each(hiddenCols, function (index, name) {
+                const btn = $('<button class="btn btn-sm btn-outline-primary" style="margin: 2px;"></button>')
+                    .text('Show: ' + name)
+                    .on('click', function () {
+                        $('table tr').each(function () {
+                            $(this).find('th:nth-child(' + index + '), td:nth-child(' + index + ')').removeClass('hidden-column');
+                        });
+                        $('.toggle-col').each(function () {
+                            const $btn = $(this);
+                            const colIndex = $btn.closest('th').index() + 1;
+                            if (colIndex == index) {
+                                $btn.find('i').removeClass('fa-eye').addClass('fa-eye-slash');
+                            }
+                        });
+                        delete hiddenCols[index];
+                        updateHiddenColPanel();
+                    });
+                $panel.append(btn);
+            });
+        }
+
+        $('#ReportType').change(function () {
+            GetBalanceSheetData();
+        })
+
+        function GetBalanceSheetData() {
+            var FromDate = $('#FromDate').val();
+            var ToDate = $('#ToDate').val();
+            var ReportType = $('#ReportType').val();
+
+            $.ajax({
+                type: 'POST',
+                url: "@Url.Action("GetBalanceSheetData", "BalanceSheet")",
+                data: {
+                    FromDate: FromDate,
+                    ToDate: ToDate,
+                    ReportType: ReportType
+                },
+                success: function (response) {
+                    $('#divStockMainRegister').html(response);
+
+                    // 🔹 Re-apply hidden columns after reload
+                    $.each(hiddenCols, function (colIndex, colName) {
+                        $('#divStockMainRegister table tr').each(function () {
+                            $(this).find('th:nth-child(' + colIndex + '), td:nth-child(' + colIndex + ')')
+                                .addClass('hidden-column');
+                        });
+                        // update icon
+                        $('#divStockMainRegister table tr th:nth-child(' + colIndex + ') .toggle-col i')
+                            .removeClass('fa-eye-slash').addClass('fa-eye');
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching Trail Balance data:", error);
+                }
+            });
+        }
+
+    </script>
+}

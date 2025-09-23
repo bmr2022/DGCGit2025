@@ -2,6 +2,7 @@
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace eTactwebAccounts.Controllers
 {
@@ -27,6 +28,16 @@ namespace eTactwebAccounts.Controllers
             var MainModel = new BalanceSheetModel();
             MainModel.FromDate = HttpContext.Session.GetString("FromDate");
             return View(MainModel); // Pass the model with old data to the view
+        }
+        public async Task<IActionResult> GetBalanceSheetData(string FromDate, string ToDate, string ReportType)
+        {
+            var model = new BalanceSheetModel();
+            model.EntryByMachine = Environment.MachineName;
+            model = await _IBalanceSheet.GetBalanceSheetData(FromDate, ToDate, ReportType);
+
+            var sessionData = JsonConvert.SerializeObject(model);
+            HttpContext.Session.SetString("BalanceSheetData", sessionData);
+            return PartialView("_BalanceSheetGridData", model);
         }
     }
 }

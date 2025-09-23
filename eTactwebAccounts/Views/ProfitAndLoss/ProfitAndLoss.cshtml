@@ -4,6 +4,14 @@
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
 
+<style>
+
+    .hidden-column {
+        display: none !important;
+    }
+
+</style>
+
 <div class="card bg-gradient mb-3 border-light shadow-lg">
 
     <div class="card-header card-headerBG text-light bg-gradient">
@@ -120,9 +128,9 @@
 @section Scripts {
 
     <script>
+        var hiddenCols = {};
 
         $(document).ready(function () {
-
             let currentDate = new Date();
 
             // FromDate model thi value
@@ -235,6 +243,61 @@
             GetProfitAndLossData();
         });
 
+        $(document).on('click', '.toggle-col', function () {
+            debugger; // should now hit when clicked
+            var $th = $(this).closest('th');
+            var colIndex = $th.index() + 1;
+            var $icon = $(this).find('i');
+            const isVisible = !$('table tr th:nth-child(' + colIndex + ')').hasClass('hidden-column');
+
+            if (isVisible) {
+                $('table tr').each(function () {
+                    $(this).find('th:nth-child(' + colIndex + '), td:nth-child(' + colIndex + ')')
+                        .addClass('hidden-column');
+                });
+                $icon.removeClass('fa-eye-slash').addClass('fa-eye');
+                hiddenCols[colIndex] = $th.text().trim();
+            } else {
+                $('table tr').each(function () {
+                    $(this).find('th:nth-child(' + colIndex + '), td:nth-child(' + colIndex + ')')
+                        .removeClass('hidden-column');
+                });
+                $icon.removeClass('fa-eye').addClass('fa-eye-slash');
+                delete hiddenCols[colIndex];
+            }
+            updateHiddenColPanel();
+        });
+
+        function updateHiddenColPanel() {
+            const $panel = $('#hidden-cols-panel');
+            $panel.empty();
+
+            if (Object.keys(hiddenCols).length === 0) {
+                $panel.append('<em>No hidden columns</em>');
+                return;
+            }
+
+            $.each(hiddenCols, function (index, name) {
+                const btn = $('<button class="btn btn-sm btn-outline-primary" style="margin: 2px;"></button>')
+                    .text('Show: ' + name)
+                    .on('click', function () {
+                        $('table tr').each(function () {
+                            $(this).find('th:nth-child(' + index + '), td:nth-child(' + index + ')').removeClass('hidden-column');
+                        });
+                        $('.toggle-col').each(function () {
+                            const $btn = $(this);
+                            const colIndex = $btn.closest('th').index() + 1;
+                            if (colIndex == index) {
+                                $btn.find('i').removeClass('fa-eye').addClass('fa-eye-slash');
+                            }
+                        });
+                        delete hiddenCols[index];
+                        updateHiddenColPanel();
+                    });
+                $panel.append(btn);
+            });
+        }
+
         $('#ReportType').change(function () {
             if ($('#ReportType').val() == "DETAIL") {
                 $('#ShowRecordWithZeroAmtDiv').show();
@@ -270,6 +333,17 @@
                 },
                 success: function (response) {
                     $('#divStockMainRegister').html(response);
+
+                    // 🔹 Re-apply hidden columns after reload
+                    $.each(hiddenCols, function (colIndex, colName) {
+                        $('#divStockMainRegister table tr').each(function () {
+                            $(this).find('th:nth-child(' + colIndex + '), td:nth-child(' + colIndex + ')')
+                                .addClass('hidden-column');
+                        });
+                        // update icon
+                        $('#divStockMainRegister table tr th:nth-child(' + colIndex + ') .toggle-col i')
+                            .removeClass('fa-eye-slash').addClass('fa-eye');
+                    });
                 },
                 error: function (xhr, status, error) {
                     console.error("Error fetching Trail Balance data:", error);
