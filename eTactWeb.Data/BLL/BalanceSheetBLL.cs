@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static eTactWeb.DOM.Models.Common;
 
 namespace eTactWeb.Data.BLL
 {
@@ -23,6 +24,10 @@ namespace eTactWeb.Data.BLL
         public async Task<BalanceSheetModel> GetBalanceSheetData(string FromDate, string ToDate, string ReportType)
         {
             return await _BalanceSheetDAL.GetBalanceSheetData(FromDate, ToDate, ReportType);
+        }
+        public async Task<ResponseResult> GetLiabilitiesAndAssetsData(string FromDate, string ToDate)
+        {
+            return await _BalanceSheetDAL.GetLiabilitiesAndAssetsData(FromDate, ToDate);
         }
     }
 }

@@ -12,6 +12,9 @@ namespace eTactWeb.DOM.Models
         public string ToDate { get; set; }
         public string EntryByMachine {  get; set; }
         public string ReportType {  get; set; }
+        public string LiabilitiesAndAssets {  get; set; }
+        public string ParentAccountName {  get; set; }
+        public string AccountName {  get; set; }
         public IList<BalanceSheetRow> BalanceSheetGrid { get; set; } = new List<BalanceSheetRow>();
     }
     public class BalanceSheetRow

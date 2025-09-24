@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static eTactWeb.DOM.Models.Common;
 
 namespace eTactWeb.Data.DAL
 {
@@ -74,6 +75,31 @@ namespace eTactWeb.Data.DAL
             }
 
             return resultList;
+        }
+
+        public async Task<ResponseResult> GetLiabilitiesAndAssetsData(string FromDate, string ToDate)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var fromDt = CommonFunc.ParseFormattedDate(FromDate);
+                var toDt = CommonFunc.ParseFormattedDate(ToDate);
+
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@FromDate", fromDt));
+                SqlParams.Add(new SqlParameter("@ToDate", toDt));
+                SqlParams.Add(new SqlParameter("@Flag", "FillLiabilitiesAndAssets"));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpBalanceSheet", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+
         }
     }
 }
