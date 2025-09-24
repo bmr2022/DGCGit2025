@@ -116,7 +116,24 @@ namespace eTactWeb.Controllers
             HttpContext.Session.SetString("KeyPendingSaleBill", JsonConvert.SerializeObject(model));
             return View(MainModel);
         }
-
+        [HttpPost]
+        public IActionResult RemovePackingChargesTax(string taxName)
+        {
+            IList<TaxModel> TaxGrid = new List<TaxModel>();
+            string modelTxGridJson = HttpContext.Session.GetString("KeyTaxGrid");
+            if (!string.IsNullOrEmpty(modelTxGridJson))
+            {
+                TaxGrid = JsonConvert.DeserializeObject<List<TaxModel>>(modelTxGridJson);
+            }
+            
+            if (TaxGrid != null)
+            {
+                TaxGrid = TaxGrid.Where(x => x.TxAccountName != taxName).ToList();
+                string serializedGrid = JsonConvert.SerializeObject(TaxGrid);
+                HttpContext.Session.SetString("KeyTaxGrid", serializedGrid);
+            }
+            return Json(new { success = true });
+        }
         public async Task<JsonResult> FillStoreList()
         {
             var JSON = await _SaleBill.FillStoreList();
