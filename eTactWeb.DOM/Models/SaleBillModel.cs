@@ -307,6 +307,7 @@ namespace eTactWeb.DOM.Models
         public IList<DPBItemDetail>? DPBItemDetails { get; set; }
         public string? MaxSaleInvoiceEntryDate {  get; set; }
         public string? AllowBackDateSALEBILL {  get; set; }
+        public string? AllowToAdjZeroAmt {  get; set; }
         //public string? ShowHideSaleBillEntryDetail { get; set; }
         //public string? ShowHideSaleBillCustomerDetail { get; set; }
         //public string? ShowHideSaleBillOtherRequiredDetail { get; set; }

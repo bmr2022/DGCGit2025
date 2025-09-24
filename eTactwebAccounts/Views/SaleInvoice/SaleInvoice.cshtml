@@ -21,6 +21,7 @@
         <input type="hidden" asp-for="EinvGenerated" />
         <input type="hidden" asp-for="MaxSaleInvoiceEntryDate" />
         <input type="hidden" asp-for="AllowBackDateSALEBILL" />
+        <input type="hidden" asp-for="AllowToAdjZeroAmt" />
       @*   <input type="hidden" asp-for="ShowHideSaleBillEntryDetail" />
         <input type="hidden" asp-for="ShowHideSaleBillCustomerDetail" />
         <input type="hidden" asp-for="ShowHideSaleBillOtherRequiredDetail" />
@@ -3665,7 +3666,50 @@
         }
 
 
+        function addPackingExpenceInNetAmount()
+        {
+            //  var PackingCharges = safeParse('#PackingCharges');
+            // var ForwardingCharges = safeParse('#ForwardingCharges');
+            // var CourieerCharges = safeParse('#CourieerCharges');
+            // var GST = safeParse('#GST');
 
+            // $('TxType').val('EXPENSES');
+            $("#divTaxGrid  tr").each(function () {
+                let cellText = $(this).find(".txGridName").text().trim();
+                if (cellText === "PackingCharges") {
+                    $(this).remove();
+                }
+            });
+
+            $.ajax({
+                url: '/SaleInvoice/RemovePackingChargesTax', // <-- create this action in your controller
+                type: 'POST',
+                data: { taxName: "PackingCharges" },
+                success: function (res) {
+                    console.log("PackingCharges removed from session");
+                },
+                error: function (err) {
+                    console.error("Error removing from session", err);
+                }
+            });
+
+            $('#TxType').val('EXPENSES').trigger('change');
+            $("#TxTaxType option").filter(function () {
+                return $(this).text() === "Other";
+            }).prop("selected", true).trigger("change");
+            $("#TxAccountCode option").filter(function () {
+                return $(this).text() === "PackingCharges";
+            }).prop("selected", true).trigger("change");
+            $('#TxRoundOff').val('N').trigger('change');
+            let packingCharges = parseFloat($('#PackingCharges').val()) || 0;
+            $('#TxAmount').val(packingCharges.toFixed(2)).trigger('change');
+
+            $('.btnAddTax2Grid').trigger('click');
+
+
+           
+
+        }
 
         function NetAmountAfterDiscount() {
             function safeParse(selector) {
@@ -4470,6 +4514,7 @@
                                         $('#ApproveSOForGenerateSaleInvoiceOrNot').val("");
                             
                                      $('#AllowBackDateSALEBILL').val(obj.Result[0].AllowBackDateSALEBILL);
+                            $('#AllowToAdjZeroAmt').val(obj.Result[0].AllowToAdjZeroAmt);
                                     // $('#ShowHideSaleBillEntryDetail').val(obj.Result[0].ShowHideSaleBillEntryDetail);
                                     // $('#ShowHideSaleBillCustomerDetail').val(obj.Result[0].ShowHideSaleBillCustomerDetail);
                                     // $('#ShowHideSaleBillOtherRequiredDetail').val(obj.Result[0].ShowHideSaleBillOtherRequiredDetail);
