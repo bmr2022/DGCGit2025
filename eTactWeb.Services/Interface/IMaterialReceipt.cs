@@ -38,5 +38,7 @@ namespace eTactWeb.Services.Interface
 
         Task<MaterialReceiptModel> GetViewByID(int ID, int YearCode);
         Task<ResponseResult> CheckFeatureOption();
+        Task<ResponseResult> GenerateMultiMRNPrint(string MRNNo, int YearCode);
+
     }
 }

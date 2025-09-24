@@ -17,7 +17,7 @@ else
                     <tr>
 
                         <th>Sr#</th>
-                        <th>Action</th>
+                    <th>Action<input type="checkbox" id="selectAll" /></th>
                         <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MRN No</th>
                         <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MRN Date</th>
                         <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Gate No</th>
@@ -108,6 +108,9 @@ else
                                                                     </a>
                                                                 </div>
                                         }
+                                        <div>
+                                            <input type="checkbox" class="checkManual" value="@item.MrnNo" onclick="ManualCheck(this)" /> 
+                                        </div>
                                                     </div>
                                                 </td>
                                 @*

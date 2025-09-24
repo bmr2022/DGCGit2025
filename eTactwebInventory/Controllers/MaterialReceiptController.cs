@@ -59,7 +59,60 @@ namespace eTactWeb.Controllers
             _connectionStringService = connectionStringService;
         }
 
-        public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string MrnNo = "")
+        [HttpPost]
+
+        public async Task<JsonResult> GenerateMultiMRNPrint(string MRNNo, int YearCode)
+        {
+            var JSON = await _IMaterialReceipt.GenerateMultiMRNPrint(MRNNo, YearCode);
+
+            // if SP saved successfully, build PrintReport URL
+            if (JSON != null && JSON.Result != null && JSON.Result.Tables.Count > 0 && JSON.Result.Tables[0].Rows.Count > 0)
+            {
+                // Example: take EntryId from your SP result (adjust column name accordingly)
+                //int entryId = Convert.ToInt32(JSON.Result.Tables[0].Rows[0]["EntryId"]);
+
+                // Build PrintReport URL
+                string reportUrl = Url.Action("PrintMultiMRN", "MaterialReceipt", new
+                {
+                    MRNNo = MRNNo,
+                    YearCode = YearCode
+
+                }, protocol: Request.Scheme);
+
+                return Json(new { url = reportUrl });// return URL to AJAX
+            }
+
+            return Json(null);
+        }
+        public IActionResult PrintMultiMRN(string MRNNo, int YearCode)
+        {
+            string my_connection_string;
+            string contentRootPath = _IWebHostEnvironment.ContentRootPath;
+            string webRootPath = _IWebHostEnvironment.WebRootPath;
+            var webReport = new WebReport();
+            webReport.Report.Clear();
+            //var ReportName = _IMirModule.GetReportName();
+            webReport.Report.Dispose();
+            webReport.Report = new Report();
+
+            webReport.Report.Load(webRootPath + "\\MRNMultiReport.frx");
+
+
+            my_connection_string = _connectionStringService.GetConnectionString();
+            //my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+            webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+            webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
+            webReport.Report.SetParameterValue("MrnNoparam", MRNNo);
+            webReport.Report.SetParameterValue("MrnNoparam", YearCode);
+
+            webReport.Report.SetParameterValue("MyParameter", my_connection_string);
+            webReport.Report.Refresh();
+            return View(webReport);
+        }
+       
+ 
+
+public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string MrnNo = "")
         {
             string my_connection_string;
             string contentRootPath = _IWebHostEnvironment.ContentRootPath;

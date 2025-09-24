@@ -4,6 +4,27 @@
     ViewData["Title"] = "Dashboard";
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
+<style>
+    .color-box {
+        width: 10px;
+        height: 10px;
+    }
+
+
+    .fa-stack {
+        display: inline-block;
+        height: 1.5em;
+        line-height: 2em;
+        position: relative;
+        vertical-align: middle;
+        width: 1.4em;
+    }
+
+    #container > div {
+        flex: 1;
+        /* margin-right: 10px; */
+    }
+</style>
 <div class="shadow-lg">
     <div class="card rounded border-light bg-gradient">
         <div class="card-header card-headerBG text-light bg-gradient">
@@ -107,6 +128,10 @@
                                 <a class="btn btn-sm btn-outline-danger" asp-controller="MaterialReceipt" asp-action="MRNDashboard" style="padding:3px;height:30px;width:100px;margin-left:20px;">
                                     <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
                                 </a>
+                                <a type="button" class="btn btn-sm btn-primary" onclick="PrintReport()">
+                                    <i class="fas fa-barcode"></i>
+                                    Print
+                                </a>
                             </div>
 
                             @* <div >
@@ -153,6 +178,56 @@
             // }
             // GetSearchData();
         });
+        function PrintReport() {
+            ;
+
+            // Get MIRNo and YearCode values
+            // var MIRNo = $('#MIRNo').val();
+            var YearCode = "2025";
+
+            // Collect selected ItemCodes from manual checkboxes
+            var selectedItems = $('#mrnTbody .checkManual:checked')
+                .map(function () {
+                    return $(this).val();
+                }).get(); // get() converts jQuery object to plain array
+
+            if (selectedItems.length === 0) {
+                alert("Please select at least one item.");
+                return;
+            }
+
+            // Optional: disable button to prevent multiple clicks
+            $('#btnBarcodeTag').prop('disabled', true);
+            var reportWindow = window.open("", "_blank");
+            // AJAX call to server
+            $.ajax({
+                url: '/MaterialReceipt/GenerateMultiMRNPrint', // Correct URL
+                type: 'POST',
+                data: {
+                    
+                    "YearCode": YearCode,
+                    "MRNNo": selectedItems.join(',')
+                },
+                success: function (response) {
+                    // Open report in new tab if server returns URL
+                    if (response && response.url) {
+                        reportWindow.location.href = response.url; // redirect blank tab to actual report
+                    } else {
+                        reportWindow.close();
+                        alert("No response received from server.");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("AJAX Error: ", error);
+                    alert("Error generating Barcode Tag.");
+                },
+                complete: function () {
+                    // Re-enable button after AJAX completes
+                    $('#btnBarcodeTag').prop('disabled', false);
+                }
+            });
+        }
+
 
         $(function () {
             GetFormRights();
@@ -181,6 +256,11 @@
 
                 //GetSearchData();
             }
+            $('#selectAll').click(function () {
+                var isChecked = $(this).prop('checked');
+
+                $("#mrnTbody .checkManual").prop('checked', isChecked).trigger('change');
+            });
 
             var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
                  $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatDate(firstDayOfMonth));

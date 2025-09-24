@@ -111,6 +111,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _MaterialReceiptDAL.GetEmployeeList();
         }
+        public async Task<ResponseResult> GenerateMultiMRNPrint(string MRNNo, int YearCode)
+        {
+            return await _MaterialReceiptDAL.GenerateMultiMRNPrint( MRNNo,  YearCode);
+        }
 
     }
 }
