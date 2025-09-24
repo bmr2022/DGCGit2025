@@ -2722,7 +2722,7 @@ formData.append("Mode", $('#Mode').val());
 					url: '@Url.Action("GetAddress", "SaleOrder")',
 					data: { Code: $('#ShipTo').val() },
 					success: function (result, status, xhr) {
-						$('#ShippingAddress').val(result.result);
+								$('#ShippingAddress').val(result.result.address);
 					}
 				});
 			}
