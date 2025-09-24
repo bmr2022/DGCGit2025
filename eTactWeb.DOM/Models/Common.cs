@@ -315,5 +315,8 @@ public class Common
         public int? AdjAgnstOpeningYearCode { get; set; }
         public DateTime? AdjAgnstVouchDate { get; set; }
         public string? AdjAgnstTransType { get; set; }
+        public float TotalBillAmount {  get; set; }
+        public float TotalRemainingAmount {  get; set; }
+        public float TotalAdjustAmount { get; set; }
     }
 }

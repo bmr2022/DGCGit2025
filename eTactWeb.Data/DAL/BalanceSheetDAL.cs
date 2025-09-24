@@ -101,5 +101,30 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
 
         }
+
+        public async Task<ResponseResult> GetParentAccountData(string FromDate, string ToDate)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var fromDt = CommonFunc.ParseFormattedDate(FromDate);
+                var toDt = CommonFunc.ParseFormattedDate(ToDate);
+
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@FromDate", fromDt));
+                SqlParams.Add(new SqlParameter("@ToDate", toDt));
+                SqlParams.Add(new SqlParameter("@Flag", "FillParentAccountData"));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpBalanceSheet", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+
+        }
     }
 }
