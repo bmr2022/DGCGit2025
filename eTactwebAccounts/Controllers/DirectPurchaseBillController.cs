@@ -532,23 +532,15 @@ namespace eTactWeb.Controllers
             //string frx = Path.Combine(_env.ContentRootPath, "reports", value.file);
             var webReport = new WebReport();
 
-            var ReportName = IDirectPurchaseBill.GetReportName();
-            //if (ReportName.Result.Result.Rows[0].ItemArray[0] != System.DBNull.Value)
-            //{
-            //    webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0] + ".frx"); // from database
-            //}
-            //else
-            //{
-                webReport.Report.Load(webRootPath + "\\PO.frx"); // default report
+           
+           webReport.Report.Load(webRootPath + "\\DirectPurchaseBillReport.frx"); // default report
 
-           // }
-            //webReport.Report.SetParameterValue("flagparam", "PURCHASEORDERPRINT");
             webReport.Report.SetParameterValue("entryparam", EntryId);
             webReport.Report.SetParameterValue("yearparam", YearCode);
-            webReport.Report.SetParameterValue("ponoparam", PONO);
+            //webReport.Report.SetParameterValue("ponoparam", PONO);
 
             my_connection_string = _connectionStringService.GetConnectionString();
-            my_connection_string = iconfiguration.GetConnectionString("eTactDB");
+            //my_connection_string = iconfiguration.GetConnectionString("eTactDB");
             webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
             webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
             webReport.Report.SetParameterValue("MyParameter", my_connection_string);
