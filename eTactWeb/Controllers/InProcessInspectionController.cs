@@ -436,22 +436,28 @@ namespace eTactWeb.Controllers
 				{
 					foreach (var model in modelList)
 					{
-						
-						if (existingGrid.Any(x => x.SeqNo == model.SeqNo && !x.Copied))
-							continue;
+                        var existingRow = existingGrid.FirstOrDefault(x => x.SeqNo == model.SeqNo && !x.Copied);
 
-						
-						if (model.SeqNo == 0 || usedSeqNos.Contains(model.SeqNo))
+                        if (existingRow!=null)
 						{
-							int newSeqNo = 1;
-							while (usedSeqNos.Contains(newSeqNo))
-								newSeqNo++;
+                            existingGrid.Remove(existingRow);
+                            existingGrid.Add(model);
+                        }
+						else
+						{
 
-							model.SeqNo = newSeqNo;
+							if (model.SeqNo == 0 || usedSeqNos.Contains(model.SeqNo))
+							{
+								int newSeqNo = 1;
+								while (usedSeqNos.Contains(newSeqNo))
+									newSeqNo++;
+
+								model.SeqNo = newSeqNo;
+							}
+
+							usedSeqNos.Add(model.SeqNo);
+							existingGrid.Add(model);
 						}
-
-						usedSeqNos.Add(model.SeqNo);
-						existingGrid.Add(model);
 					}
 				}
 
