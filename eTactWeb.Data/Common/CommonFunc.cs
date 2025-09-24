@@ -1672,6 +1672,7 @@ public static class CommonFunc
                         && typeProperty.PropertyInfo.Name != "PrivateMark"
                         && typeProperty.PropertyInfo.Name != "GRNo"
                         && typeProperty.PropertyInfo.Name != "GRDate"
+                        && typeProperty.PropertyInfo.Name != "AllowToAdjZeroAmt"
                         && typeProperty.PropertyInfo.Name != "TxTaxType" && typeProperty.PropertyInfo.Name != "TotalRecords"
                         && typeProperty.PropertyInfo.Name != "TxTaxTypeName" && typeProperty.PropertyInfo.Name != "BOMInd" && typeProperty.PropertyInfo.Name != "ProducedUnprod"
                         && typeProperty.PropertyInfo.Name != "TxType" && typeProperty.PropertyInfo.Name != "DashboardTypeBack"
@@ -1753,6 +1754,7 @@ public static class CommonFunc
                          && typeProperty.PropertyInfo.Name != "PrivateMark"
                         && typeProperty.PropertyInfo.Name != "GRNo"
                         && typeProperty.PropertyInfo.Name != "GRDate"
+                        && typeProperty.PropertyInfo.Name != "AllowToAdjZeroAmt"
                         )
                     {
                         object value = row[typeProperty.PropertyInfo.Name];

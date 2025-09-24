@@ -94,18 +94,18 @@
          <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12 HideShowOtherDiscount">
             <label asp-for="ForwardingCharges" class="form-label">Forwarding Charges</label>
             @* <input asp-for="CashDisRs" class="form-control"  /> *@
-            <input asp-for="ForwardingCharges" class="form-control" onkeyup="NetAmountAfterDiscount()" />
+            <input asp-for="ForwardingCharges" class="form-control" onfocusout="addForwardingChargesInNetAmount()" />
         </div>
          <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12 HideShowOtherDiscount">
             <label asp-for="CourieerCharges" class="form-label">Courieer Charges</label>
             @* <input asp-for="CashDisRs" class="form-control"  /> *@
-            <input asp-for="CourieerCharges" class="form-control" onkeyup="NetAmountAfterDiscount()" />
+            <input asp-for="CourieerCharges" class="form-control" onfocusout="addCourieerChargesInNetAmount()" />
         </div>
         <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 HideShowOtherDiscount">
             <label asp-for="GST" class="form-label">GST</label>
             <input type="hidden" id="BaseNetTotal" value="@Model.NetTotal" />
             @* <input asp-for="CashDisRs" class="form-control"  /> *@
-            <input asp-for="GST" class="form-control" onkeyup="NetAmountAfterDiscount()" />
+            <input asp-for="GST" class="form-control" onfocusout="addGSTInNetAmount()" />
         </div>
 
 

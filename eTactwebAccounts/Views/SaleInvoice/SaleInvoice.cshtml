@@ -3665,6 +3665,16 @@
             });
         }
 
+        function removeChargeFromNetTotal(chargeId) {
+            let currentNet = parseFloat($('#NetTotal').val()) || 0;
+            let chargeValue = parseFloat($(chargeId).val()) || 0;
+
+            // Subtract the charge from NetTotal
+            let newNet = currentNet - chargeValue;
+            if (newNet < 0) newNet = 0; // safety check
+
+            $('#NetTotal').val(newNet.toFixed(2));
+        }
 
         function addPackingExpenceInNetAmount()
         {
@@ -3678,6 +3688,7 @@
                 let cellText = $(this).find(".txGridName").text().trim();
                 if (cellText === "PackingCharges") {
                     $(this).remove();
+                    recalcNetTotal();
                 }
             });
 
@@ -3687,6 +3698,9 @@
                 data: { taxName: "PackingCharges" },
                 success: function (res) {
                     console.log("PackingCharges removed from session");
+                    GetDbCrDetail();
+                    ClearAdjustmentGrid();
+                    AddAdjstmntDetail1();
                 },
                 error: function (err) {
                     console.error("Error removing from session", err);
@@ -3704,11 +3718,177 @@
             let packingCharges = parseFloat($('#PackingCharges').val()) || 0;
             $('#TxAmount').val(packingCharges.toFixed(2)).trigger('change');
 
-            $('.btnAddTax2Grid').trigger('click');
+         if (packingCharges > 0) {
+    $('.btnAddTax2Grid').trigger('click');
+}
 
 
            
 
+        }
+
+        function addForwardingChargesInNetAmount() {
+            //  var PackingCharges = safeParse('#PackingCharges');
+            // var ForwardingCharges = safeParse('#ForwardingCharges');
+            // var CourieerCharges = safeParse('#CourieerCharges');
+            // var GST = safeParse('#GST');
+
+            // $('TxType').val('EXPENSES');
+            $("#divTaxGrid  tr").each(function () {
+                let cellText = $(this).find(".txGridName").text().trim();
+                if (cellText === "ForwardingCharges") {
+                    $(this).remove();
+                    recalcNetTotal();
+                }
+            });
+
+            $.ajax({
+                url: '/SaleInvoice/RemovePForwardingChargesTax', // <-- create this action in your controller
+                type: 'POST',
+                data: { taxName: "ForwardingCharges" },
+                success: function (res) {
+                    console.log("PackingCharges removed from session");
+                    GetDbCrDetail();
+                    ClearAdjustmentGrid();
+                    AddAdjstmntDetail1();
+                },
+                error: function (err) {
+                    console.error("Error removing from session", err);
+                }
+            });
+
+            $('#TxType').val('EXPENSES').trigger('change');
+            $("#TxTaxType option").filter(function () {
+                return $(this).text() === "Other";
+            }).prop("selected", true).trigger("change");
+            $("#TxAccountCode option").filter(function () {
+                return $(this).text() === "ForwardingCharges";
+            }).prop("selected", true).trigger("change");
+            $('#TxRoundOff').val('N').trigger('change');
+            let ForwardingCharges = parseFloat($('#ForwardingCharges').val()) || 0;
+            $('#TxAmount').val(ForwardingCharges.toFixed(2)).trigger('change');
+
+            if (ForwardingCharges > 0) {
+                $('.btnAddTax2Grid').trigger('click');
+            }
+
+
+
+
+        }
+
+
+        function addCourieerChargesInNetAmount() {
+            //  var PackingCharges = safeParse('#PackingCharges');
+            // var ForwardingCharges = safeParse('#ForwardingCharges');
+            // var CourieerCharges = safeParse('#CourieerCharges');
+            // var GST = safeParse('#GST');
+
+            // $('TxType').val('EXPENSES');
+            $("#divTaxGrid  tr").each(function () {
+                let cellText = $(this).find(".txGridName").text().trim();
+                if (cellText === "CourieerCharges") {
+                    $(this).remove();
+                    recalcNetTotal();
+                }
+            });
+
+            $.ajax({
+                url: '/SaleInvoice/RemoveCourieerChargesTax', // <-- create this action in your controller
+                type: 'POST',
+                data: { taxName: "CourieerCharges" },
+                success: function (res) {
+                    console.log("PackingCharges removed from session");
+                    GetDbCrDetail();
+                    ClearAdjustmentGrid();
+                    AddAdjstmntDetail1();
+                },
+                error: function (err) {
+                    console.error("Error removing from session", err);
+                }
+            });
+
+            $('#TxType').val('EXPENSES').trigger('change');
+            $("#TxTaxType option").filter(function () {
+                return $(this).text() === "Other";
+            }).prop("selected", true).trigger("change");
+            $("#TxAccountCode option").filter(function () {
+                return $(this).text() === "CourieerCharges";
+            }).prop("selected", true).trigger("change");
+            $('#TxRoundOff').val('N').trigger('change');
+            let CourieerCharges = parseFloat($('#CourieerCharges').val()) || 0;
+            $('#TxAmount').val(CourieerCharges.toFixed(2)).trigger('change');
+
+            if (CourieerCharges > 0) {
+                $('.btnAddTax2Grid').trigger('click');
+            }
+
+
+
+
+        }
+
+        function addGSTInNetAmount() {
+            //  var PackingCharges = safeParse('#PackingCharges');
+            // var ForwardingCharges = safeParse('#ForwardingCharges');
+            // var CourieerCharges = safeParse('#CourieerCharges');
+            // var GST = safeParse('#GST');
+
+            // $('TxType').val('EXPENSES');
+            $("#divTaxGrid  tr").each(function () {
+                let cellText = $(this).find(".txGridName").text().trim();
+                if (cellText === "GST") {
+                    $(this).remove();
+                    recalcNetTotal();
+                }
+            });
+
+            $.ajax({
+                url: '/SaleInvoice/RemoveGSTTax', // <-- create this action in your controller
+                type: 'POST',
+                data: { taxName: "GST" },
+                success: function (res) {
+                    console.log("PackingCharges removed from session");
+                    ClearAdjustmentGrid();
+                    GetDbCrDetail();
+                    AddAdjstmntDetail1();
+                },
+                error: function (err) {
+                    console.error("Error removing from session", err);
+                }
+            });
+
+            $('#TxType').val('EXPENSES').trigger('change');
+            $("#TxTaxType option").filter(function () {
+                return $(this).text() === "Other";
+            }).prop("selected", true).trigger("change");
+            $("#TxAccountCode option").filter(function () {
+                return $(this).text() === "GST";
+            }).prop("selected", true).trigger("change");
+            $('#TxRoundOff').val('N').trigger('change');
+            let GST = parseFloat($('#GST').val()) || 0;
+            $('#TxAmount').val(GST.toFixed(2)).trigger('change');
+
+            if (GST > 0) {
+                $('.btnAddTax2Grid').trigger('click');
+            }
+
+
+
+
+        }
+        function recalcNetTotal() {
+            let baseTotal = parseFloat($('#lblItemNetAmount').text()) || 0;
+            let packing = parseFloat($('#PackingCharges').val()) || 0;
+            let forwarding = parseFloat($('#ForwardingCharges').val()) || 0;
+            let courier = parseFloat($('#CourieerCharges').val()) || 0;
+            let gst = parseFloat($('#GST').val()) || 0;
+            let CashDisRs = parseFloat($('#CashDisRs').val()) || 0;
+            let AdditionalDiscount = parseFloat($('#AdditionalDiscount').val()) || 0;
+
+            let net = baseTotal + packing + forwarding + courier + gst - CashDisRs - AdditionalDiscount;
+
+            $('#NetTotal').val(net.toFixed(2));
         }
 
         function NetAmountAfterDiscount() {
@@ -3719,7 +3899,7 @@
             }
 
             // Always start from original clean net total
-            var baseAmt = safeParse('#BaseNetTotal');
+            var baseAmt = parseFloat($('#lblItemNetAmount').text()) || 0;;
 
             var discAmt = safeParse('#CashDisRs');
             var additionalDisAmt = safeParse('#AdditionalDiscount');
@@ -3735,6 +3915,8 @@
             $('#NetTotal').val(netAmt.toFixed(2));
             $('#AdjPendAmt').val(netAmt.toFixed(2));
 
+             // GetDbCrDetail();
+                  
             ClearAdjustmentGrid();
             AddAdjstmntDetail1();
         }
@@ -4557,6 +4739,7 @@
             $('.HideShowOtherDiscount').hide();
         } else {
                                 $('.HideShowOtherDiscount').show();
+            recalcNetTotal();
         }
 
 

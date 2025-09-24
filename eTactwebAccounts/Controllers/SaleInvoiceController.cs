@@ -119,21 +119,89 @@ namespace eTactWeb.Controllers
         [HttpPost]
         public IActionResult RemovePackingChargesTax(string taxName)
         {
-            IList<TaxModel> TaxGrid = new List<TaxModel>();
-            string modelTxGridJson = HttpContext.Session.GetString("KeyTaxGrid");
+            var modelTxGridJson = HttpContext.Session.GetString("KeyTaxGrid");
             if (!string.IsNullOrEmpty(modelTxGridJson))
             {
-                TaxGrid = JsonConvert.DeserializeObject<List<TaxModel>>(modelTxGridJson);
+                var taxGrid = JsonConvert.DeserializeObject<List<TaxModel>>(modelTxGridJson);
+
+                if (taxGrid != null)
+                {
+                    // ✅ Remove items directly from list
+                    taxGrid.RemoveAll(x => x.TxAccountName == taxName);
+
+                    // ✅ Save updated list back to session
+                    HttpContext.Session.SetString("KeyTaxGrid", JsonConvert.SerializeObject(taxGrid));
+                }
             }
-            
-            if (TaxGrid != null)
-            {
-                TaxGrid = TaxGrid.Where(x => x.TxAccountName != taxName).ToList();
-                string serializedGrid = JsonConvert.SerializeObject(TaxGrid);
-                HttpContext.Session.SetString("KeyTaxGrid", serializedGrid);
-            }
+
             return Json(new { success = true });
         }
+
+        [HttpPost]
+        public IActionResult RemovePForwardingChargesTax(string taxName)
+        {
+            var modelTxGridJson = HttpContext.Session.GetString("KeyTaxGrid");
+            if (!string.IsNullOrEmpty(modelTxGridJson))
+            {
+                var taxGrid = JsonConvert.DeserializeObject<List<TaxModel>>(modelTxGridJson);
+
+                if (taxGrid != null)
+                {
+                    // ✅ Remove items directly from list
+                    taxGrid.RemoveAll(x => x.TxAccountName == taxName);
+
+                    // ✅ Save updated list back to session
+                    HttpContext.Session.SetString("KeyTaxGrid", JsonConvert.SerializeObject(taxGrid));
+                }
+            }
+
+            return Json(new { success = true });
+        }
+
+        [HttpPost]
+        public IActionResult RemoveCourieerChargesTax(string taxName)
+        {
+            var modelTxGridJson = HttpContext.Session.GetString("KeyTaxGrid");
+            if (!string.IsNullOrEmpty(modelTxGridJson))
+            {
+                var taxGrid = JsonConvert.DeserializeObject<List<TaxModel>>(modelTxGridJson);
+
+                if (taxGrid != null)
+                {
+                    // ✅ Remove items directly from list
+                    taxGrid.RemoveAll(x => x.TxAccountName == taxName);
+
+                    // ✅ Save updated list back to session
+                    HttpContext.Session.SetString("KeyTaxGrid", JsonConvert.SerializeObject(taxGrid));
+                }
+            }
+
+            return Json(new { success = true });
+        }
+
+
+        [HttpPost]
+        public IActionResult RemoveGSTTax(string taxName)
+        {
+            var modelTxGridJson = HttpContext.Session.GetString("KeyTaxGrid");
+            if (!string.IsNullOrEmpty(modelTxGridJson))
+            {
+                var taxGrid = JsonConvert.DeserializeObject<List<TaxModel>>(modelTxGridJson);
+
+                if (taxGrid != null)
+                {
+                    // ✅ Remove items directly from list
+                    taxGrid.RemoveAll(x => x.TxAccountName == taxName);
+
+                    // ✅ Save updated list back to session
+                    HttpContext.Session.SetString("KeyTaxGrid", JsonConvert.SerializeObject(taxGrid));
+                }
+            }
+
+            return Json(new { success = true });
+        }
+
+
         public async Task<JsonResult> FillStoreList()
         {
             var JSON = await _SaleBill.FillStoreList();
