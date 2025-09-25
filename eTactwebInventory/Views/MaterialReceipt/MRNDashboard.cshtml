@@ -183,7 +183,7 @@
 
             // Get MIRNo and YearCode values
             // var MIRNo = $('#MIRNo').val();
-            var YearCode = "2025";
+            //var YearCode = "2025";
 
             // Collect selected ItemCodes from manual checkboxes
             var selectedItems = $('#mrnTbody .checkManual:checked')
@@ -205,7 +205,6 @@
                 type: 'POST',
                 data: {
                     
-                    "YearCode": YearCode,
                     "MRNNo": selectedItems.join(',')
                 },
                 success: function (response) {
@@ -513,7 +512,20 @@
                 GetDetailData();
             }
         }
+        var selectedMRN = [];
 
+        function ManualCheck(chk) {
+            debugger
+            var value = $(chk).val();
+            if ($(chk).is(':checked')) {
+                if (selectedMRN.indexOf(value) === -1) {
+                    selectedMRN.push(value);
+                }
+            } else {
+                selectedMRN = selectedMRN.filter(v => v !== value);
+            }
+            console.log("Selected:", selectedMRN);
+        }
         function GetSummaryData() {
             var data = $('#SParam').serialize();
             $.ajax({
@@ -523,6 +535,9 @@
                 data: $('#SParam').serializeArray(),
                 success: function (data) {
                     $('#divDashboardGrid').empty().append(data);
+                    selectedMRN.forEach(val => {
+                        $(".checkManual[value='" + val + "']").prop("checked", true);
+                    });
                     var dashGrid = $('#mrnTbody tr').length;
                     $('#totalRows').text(dashGrid);
                     GetFormRights();
@@ -545,6 +560,9 @@
                 data: $('#SParam').serializeArray(),
                 success: function (data) {
                     $('#divDashboardGrid').empty().append(data);
+                    selectedMRN.forEach(val => {
+                        $(".checkManual[value='" + val + "']").prop("checked", true);
+                    });
                     var dashGrid = $('#mrnTbody tr').length;
                     $('#totalRows').text(dashGrid);
                     GetFormRights();

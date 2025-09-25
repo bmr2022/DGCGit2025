@@ -129,7 +129,7 @@ namespace eTactWeb.Controllers
                     }
                 }
 
-                return RedirectToAction(nameof(LedgerOpeningEntryDashBoard));
+                return RedirectToAction(nameof(LedgerOpeningEntry));
 
             }
             catch (Exception ex)
