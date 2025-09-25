@@ -29,6 +29,7 @@ namespace eTactWeb.DOM.Models
         public decimal DiscRs { get; set; }
         public decimal Amount { get; set; }
         public decimal GSTAMT { get; set; }
+        public decimal GSTPer { get; set; }
         public decimal OldRate { get; set; }
         public string Remark { get; set; }
         public string AmmendmentReason { get; set; }
