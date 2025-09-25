@@ -32,6 +32,7 @@ namespace eTactWeb.DOM.Models
         public DateTime? SchEffTillDate { get; set; }
         public string? SchApproved { get; set; }
         public string? ApprovedBy { get; set; }
+        public string? Remarks { get; set; }
         public string? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
         public int EntryID { get; set; }
