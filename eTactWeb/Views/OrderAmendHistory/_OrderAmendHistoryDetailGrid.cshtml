@@ -18,6 +18,10 @@
                     <th>Item Name</th>
                     <th>Schedule Qty</th>
                     <th>Unit</th>
+                    <th>Rate</th>
+                    <th>Amount</th>
+                    <th>GST%</th>
+                    <th>GSTAmt</th>
                     <th>Amendment Reason</th>
                     <th>Amend PO Seq</th>
                     <th>Effective From</th>
@@ -67,6 +71,10 @@
                                 <td>@item.ItemName</td>
                                 <td>@item.SchQty</td>
                                 <td>@item.Unit</td>
+                                <td>@item.Rate</td>
+                                <td>@item.Amount</td>
+                                <td>@item.GSTPer</td>
+                                <td>@item.GSTAMT</td>
                                 <td>@item.AmmendmentReason</td>
                                 <td>@item.AmendPOSeq</td>
                                 <td>@(item.EffFrom == null ? "" : item.EffFrom.Split(" ")[0])</td>
