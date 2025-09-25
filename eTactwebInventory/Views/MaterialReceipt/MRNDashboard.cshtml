@@ -255,12 +255,48 @@
 
                 //GetSearchData();
             }
-            $('#selectAll').click(function () {
-                var isChecked = $(this).prop('checked');
+            // $('#selectAll').click(function () {
+            //     var isChecked = $(this).prop('checked');
 
-                $("#mrnTbody .checkManual").prop('checked', isChecked).trigger('change');
+            //     $("#mrnTbody .checkManual").prop('checked', isChecked).trigger('change');
+            // });
+            var selectedMRN = [];
+            $(document).on('change', '.checkManual', function () {
+                var val = $(this).val();
+                if ($(this).is(':checked')) {
+                    if (selectedMRN.indexOf(val) === -1) selectedMRN.push(val);
+                } else {
+                    selectedMRN = selectedMRN.filter(v => v !== val);
+                }
+                updateSelectAllCheckbox();
             });
+            $(document).on('change', '#selectAll', function () {
+                var isChecked = $(this).prop('checked');
+                $("#mrnTbody .checkManual").prop('checked', isChecked);
 
+                if (isChecked) {
+                    selectedMRN = $("#mrnTbody .checkManual").map(function () {
+                        return $(this).val();
+                    }).get();
+                } else {
+                    selectedMRN = [];
+                }
+            });
+            function updateSelectAllCheckbox() {
+                var total = $('#mrnTbody .checkManual').length;
+                var checked = $('#mrnTbody .checkManual:checked').length;
+                $('#selectAll').prop('checked', total > 0 && total === checked);
+            }
+            function reapplySelections() {
+                if (!selectedMRN.length) {
+                    updateSelectAllCheckbox();
+                    return;
+                }
+                selectedMRN.forEach(val => {
+                    $("#mrnTbody .checkManual[value='" + val + "']").prop("checked", true);
+                });
+                updateSelectAllCheckbox();
+            }
             var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
                  $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatDate(firstDayOfMonth));
             $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
@@ -512,20 +548,20 @@
                 GetDetailData();
             }
         }
-        var selectedMRN = [];
+        // var selectedMRN = [];
 
-        function ManualCheck(chk) {
-            debugger
-            var value = $(chk).val();
-            if ($(chk).is(':checked')) {
-                if (selectedMRN.indexOf(value) === -1) {
-                    selectedMRN.push(value);
-                }
-            } else {
-                selectedMRN = selectedMRN.filter(v => v !== value);
-            }
-            console.log("Selected:", selectedMRN);
-        }
+        // function ManualCheck(chk) {
+        //     debugger
+        //     var value = $(chk).val();
+        //     if ($(chk).is(':checked')) {
+        //         if (selectedMRN.indexOf(value) === -1) {
+        //             selectedMRN.push(value);
+        //         }
+        //     } else {
+        //         selectedMRN = selectedMRN.filter(v => v !== value);
+        //     }
+        //     console.log("Selected:", selectedMRN);
+        // }
         function GetSummaryData() {
             var data = $('#SParam').serialize();
             $.ajax({
@@ -535,9 +571,10 @@
                 data: $('#SParam').serializeArray(),
                 success: function (data) {
                     $('#divDashboardGrid').empty().append(data);
-                    selectedMRN.forEach(val => {
-                        $(".checkManual[value='" + val + "']").prop("checked", true);
-                    });
+                    reapplySelections();
+                    // selectedMRN.forEach(val => {
+                    //     $(".checkManual[value='" + val + "']").prop("checked", true);
+                    // });
                     var dashGrid = $('#mrnTbody tr').length;
                     $('#totalRows').text(dashGrid);
                     GetFormRights();
