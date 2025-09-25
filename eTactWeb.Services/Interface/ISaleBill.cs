@@ -14,6 +14,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GETGROUPWISEITEM(int Group_Code);
         Task<ResponseResult> GetReportName();
         Task<SaleBillModel> ShowGroupWiseItems(int Group_Code, int AccountCode,int storeid,string GroupName,string ToDate,string FromDate,string PartCode);
+        Task<SaleBillModel> GetlastBillDetail(string invoicedate, int currentYearcode, int AccountCode, int ItemCode);
         Task<ResponseResult> getdiscCategoryName(int Group_Code, int AccountCode);
         Task<ResponseResult> AutoFillStore( string SearchStoreName);
         Task<ResponseResult> GetFormRights(int uId);

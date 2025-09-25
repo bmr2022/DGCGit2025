@@ -100,6 +100,72 @@ namespace eTactWeb.Data.DAL
 
             return Result;
         }
+        public async Task<SaleBillModel> GetlastBillDetail(string invoicedate, int currentYearcode, int AccountCode,int ItemCode)
+        {
+            var resultList = new SaleBillModel();
+            DataSet oDataSet = new DataSet();
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(DBConnectionString))
+                {
+                    SqlCommand command = new SqlCommand("AccGetLAstSaleBillAndCustomerOutstanding1", connection)
+                    {
+                        CommandType = CommandType.StoredProcedure
+                    };
+                    ;
+
+                    command.Parameters.AddWithValue("@Flag", "GetlastBillDetail");
+                   
+                    command.Parameters.AddWithValue("@AccountCode", AccountCode);
+                    command.Parameters.AddWithValue("@invoicedate", CommonFunc.ParseFormattedDate(invoicedate));
+                    command.Parameters.AddWithValue("@currentYearcode", currentYearcode);
+                    command.Parameters.AddWithValue("@ItemCode", ItemCode);
+                   
+
+
+                    await connection.OpenAsync();
+
+                    using (SqlDataAdapter dataAdapter = new SqlDataAdapter(command))
+                    {
+                        dataAdapter.Fill(oDataSet);
+                    }
+                }
+
+                if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                {
+                    resultList.ItemDetailGrid = (from DataRow row in oDataSet.Tables[0].Rows
+                                                 select new SaleBillDetail
+                                                 {
+                                                    
+
+                                                     BillNo = row["InvNo"] == DBNull.Value ? string.Empty : row["InvNo"].ToString(),
+
+
+                                                     BillDate = row["InvDate"] == DBNull.Value ? string.Empty : row["InvDate"].ToString(),
+                                                     CustomerName = row["Account_Name"] == DBNull.Value ? string.Empty : row["Account_Name"].ToString(),
+
+
+
+                                                    
+                                                     Qty = row["BillQty"] == DBNull.Value ? 0 : Convert.ToSingle(row["BillQty"]),
+                                                     Rate = row["BillRate"] == DBNull.Value ? 0 : Convert.ToSingle(row["BillRate"]),
+                                                     DiscountPer = row["DiscountPer"] == DBNull.Value ? 0 : Convert.ToSingle(row["DiscountPer"]),
+                                                     Amount = row["ItemAmount"] == DBNull.Value ? 0 : Convert.ToDecimal(row["ItemAmount"])
+                                                    
+
+
+                                                 }).ToList();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error fetching data.", ex);
+            }
+
+            return resultList;
+        }
 
 
         public async Task<SaleBillModel> ShowGroupWiseItems(int Group_Code, int AccountCode, int storeid, string GroupName, string ToDate, string FromDate, string PartCode)

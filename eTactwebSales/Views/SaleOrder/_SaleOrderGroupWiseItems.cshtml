@@ -14,7 +14,7 @@
             Cntr = Cntr + 1;
             <tr>
                 <td>@Cntr</td>
-                <td><input type="checkbox" class="row-select" id="MBCheckbox-@Cntr" /></td>
+                <td><input type="checkbox" class="row-select" id="MBCheckbox-@Cntr" value="@item.ItemCode" /></td>
                 <td style="background-color: #e09ef0;"><input type="text" id="PartText-@Cntr" value="@item.PartText" readonly></input><input id="ItemCode-@Cntr" type="hidden" value="@item.ItemCode" /></td>
                 <td><input type="text" id="ItemText-@Cntr" value="@item.ItemText"  style="width:350px" readonly></td>
                 <td><input id="Qty-@Cntr" type="number" style="width:50px" onkeyup="CalculateRateForMalti(@Cntr)" value="@item.Qty" /></td>

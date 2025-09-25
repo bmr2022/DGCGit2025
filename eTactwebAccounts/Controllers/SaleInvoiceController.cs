@@ -82,6 +82,17 @@ namespace eTactWeb.Controllers
             return PartialView("_SaleBillGroupWiseItems", model);
 
         }
+
+        public async Task<IActionResult> GetlastBillDetail(string invoicedate, int currentYearcode, int AccountCode,int ItemCode)
+        {
+           
+            var model = new SaleBillModel();
+            model = await _SaleBill.GetlastBillDetail( invoicedate,  currentYearcode,  AccountCode, ItemCode);
+
+
+            return PartialView("_SaleBillHistoryGrid", model);
+
+        }
         public async Task<JsonResult> GetFormRights()
         {
             var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));

@@ -44,6 +44,8 @@ namespace eTactWeb.DOM.Models
         public string? AmendmentDate { get; set; }
         public string? AmendmentNo { get; set; }
         public string? AmendmentReason { get; set; }
+        public string? SONo { get; set; }
+        public string? SODate { get; set; }
         public decimal Amount { get; set; }
         public string? Color { get; set; }
         public IList<DeliverySchedule>? DeliveryScheduleList { get; set; }
