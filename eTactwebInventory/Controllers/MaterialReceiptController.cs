@@ -63,6 +63,7 @@ namespace eTactWeb.Controllers
 
         public async Task<JsonResult> GenerateMultiMRNPrint(string MRNNo, int YearCode)
         {
+            YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
             var JSON = await _IMaterialReceipt.GenerateMultiMRNPrint(MRNNo, YearCode);
 
             // if SP saved successfully, build PrintReport URL
@@ -91,19 +92,25 @@ namespace eTactWeb.Controllers
             string webRootPath = _IWebHostEnvironment.WebRootPath;
             var webReport = new WebReport();
             webReport.Report.Clear();
-            //var ReportName = _IMirModule.GetReportName();
+            var ReportName = _IMaterialReceipt.GetReportName();
             webReport.Report.Dispose();
             webReport.Report = new Report();
 
-            webReport.Report.Load(webRootPath + "\\MRNMultiReport.frx");
-
-
+            //webReport.Report.Load(webRootPath + "\\MRNMultiReportYauto.frx");
+            if (!String.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
+            {
+                webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0].ToString() + ".frx");
+            }
+            else
+            {
+                webReport.Report.Load(webRootPath + "\\MRNMultiReportYauto.frx"); 
+            }
             my_connection_string = _connectionStringService.GetConnectionString();
             //my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
             webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
             webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
             webReport.Report.SetParameterValue("MrnNoparam", MRNNo);
-            webReport.Report.SetParameterValue("MrnNoparam", YearCode);
+            webReport.Report.SetParameterValue("MrnYearcodeparam", YearCode);
 
             webReport.Report.SetParameterValue("MyParameter", my_connection_string);
             webReport.Report.Refresh();
