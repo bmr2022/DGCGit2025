@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="11/29/2023 15:17:39" ReportInfo.Modified="09/24/2025 20:42:06" ReportInfo.CreatorVersion="2023.2.0.0" PrintSettings.Duplex="Simplex">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="11/29/2023 15:17:39" ReportInfo.Modified="09/25/2025 10:46:59" ReportInfo.CreatorVersion="2023.2.0.0" PrintSettings.Duplex="Simplex">
   <ScriptText>using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -53,7 +53,7 @@ namespace FastReport
     <Style Name="EvenRows" Fill.Color="WhiteSmoke" Font="Arial, 10pt"/>
   </Styles>
   <Dictionary>
-    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqwYf2D6LPIs5GRi9VfJb9gu9ucqaRfzVvUaVne08cIFURWyyEsxwQsmngwHHahRU5IBf1gWxFxthjvCI+9BjhcR8BjTz2iHCnSBTgRKTkqutDkjIRRL0Lr+gAV5vh4t47BklN+Df+gZ1BDy0zz0wKb8ihM9loU9dXTaRaB3iM7MkRkKOWKZEyucGuTvDipndF9F/JYF+rzxiew3Mgk1uC2w==">
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqwYf2D6LPIs5GRi9VfJb9gu9ucqaRfzVvUaVne08cIFURWyyEsxwQsmngwHHahRU5IBf1gWxFxthjvCI+9BjhcR8BjTz2iHCnSBTgRKTkqutDkjIRRL0Lr+gAV5vh4t47BklN+Df+gZ1BDy0zz0wKb8ihM9loU9dXTaRaB3iM7MkRkKOWKZEyucGuTvDipndFMalmrLO8jXMprAndAnV0LQ==">
       <TableDataSource Name="Table1" Alias="SPMRNMIRDetailsReport" DataType="System.Int32" Enabled="true" SelectCommand="exec SPMRNMIRDetailsReport @MRN_No =@MrnNoparam,@Year_Code=@MrnYearcodeparam">
         <Column Name="Rec_Qty" DataType="System.Decimal"/>
         <Column Name="Accepted_Qty" DataType="System.Double"/>
@@ -124,19 +124,19 @@ namespace FastReport
     </MsSqlDataConnection>
     <Relation Name="VMRNMainDetail_Company_Detail" ParentDataSource="null" ChildDataSource="null" ParentColumns="cc" ChildColumns="CC" Enabled="true"/>
     <Parameter Name="MyParameter" DataType="System.String" AsString=""/>
-    <Total Name="Total" Expression="[GetMRNMIRDetails1.Amount]" Evaluator="Data1" ResetAfterPrint="false"/>
-    <Total Name="Total1OK" Expression="[GetMRNMIRDetails1.Accepted_Qty1]" Evaluator="Data1" ResetAfterPrint="false"/>
-    <Total Name="Total1rej" Expression="[GetMRNMIRDetails1.Rejected_Qty1]" Evaluator="Data1" ResetAfterPrint="false"/>
-    <Total Name="Total1short" Expression="[GetMRNMIRDetails1.Short_Qty]" Evaluator="Data1" ResetAfterPrint="false"/>
-    <Total Name="Total1bill" Expression="[GetMRNMIRDetails1.Bill_Qty]" Evaluator="Data1" ResetAfterPrint="false"/>
-    <Total Name="Total1rec" Expression="[GetMRNMIRDetails1.Rec_Qty1]" Evaluator="Data1" ResetAfterPrint="false"/>
+    <Total Name="Total" Expression="[SPMRNMIRDetailsReport.Amount]" Evaluator="Data1" ResetAfterPrint="false"/>
+    <Total Name="Total1OK" Expression="[SPMRNMIRDetailsReport.Accepted_Qty1]" Evaluator="Data1" ResetAfterPrint="false"/>
+    <Total Name="Total1rej" Expression="[SPMRNMIRDetailsReport.Rejected_Qty1]" Evaluator="Data1" ResetAfterPrint="false"/>
+    <Total Name="Total1short" Expression="[SPMRNMIRDetailsReport.Short_Qty]" Evaluator="Data1" ResetAfterPrint="false"/>
+    <Total Name="Total1bill" Expression="[SPMRNMIRDetailsReport.Bill_Qty]" Evaluator="Data1" ResetAfterPrint="false"/>
+    <Total Name="Total1rec" Expression="[SPMRNMIRDetailsReport.Rec_Qty1]" Evaluator="Data1" ResetAfterPrint="false"/>
   </Dictionary>
   <ReportPage Name="Page1" Landscape="true" PaperWidth="297" PaperHeight="210" RawPaperSize="9" LeftMargin="0" TopMargin="5" RightMargin="0" BottomMargin="0" Watermark.Font="Arial, 60pt">
     <ReportTitleBand Name="ReportTitle1" Width="1122.66" Height="102.5">
       <TextObject Name="Text25" Top="55.25" Width="1039.5" Height="28.35" Text="GOODS/MATERIAL  RECEIPT NOTE" HorzAlign="Center" Font="Arial, 14pt, style=Bold, Underline" TextFill.Color="MediumBlue"/>
       <TextObject Name="Text241" Top="9.45" Width="1039.5" Height="37.8" Text="AUTO COMPONENT" HorzAlign="Center" Font="Arial, 18pt, style=Bold"/>
     </ReportTitleBand>
-    <GroupHeaderBand Name="GroupHeader2" Top="106.5" Width="1122.66" Height="75.6" Condition="[GetMRNMIRDetails1.MRN_No]">
+    <GroupHeaderBand Name="GroupHeader2" Top="106.5" Width="1122.66" Height="75.6" Condition="[SPMRNMIRDetailsReport.MRN_No]">
       <TextObject Name="Text3" Left="18.9" Top="28.35" Width="75.6" Height="18.9" Text="Gate No :" Font="Arial, 10pt, style=Bold"/>
       <TextObject Name="Text27" Left="255.15" Top="28.35" Width="75.6" Height="18.9" Text="Date :" Font="Arial, 10pt, style=Bold"/>
       <TextObject Name="Text29" Left="18.9" Top="49.35" Width="85.05" Height="18.9" Text="Invoice No:" Font="Arial, 10pt, style=Bold"/>
@@ -158,11 +158,11 @@ namespace FastReport
       <TextObject Name="Text41" Left="714.6" Top="37.8" Width="85.05" Height="37.8" Text="Sch No" Font="Arial, 10pt, style=Bold"/>
       <TextObject Name="Text137" Left="793.8" Top="37.8" Width="207.9" Height="18.9" Text="[SPMRNMIRDetailsReport.Sch_No]" HorzAlign="Center" Font="Arial, 10pt"/>
       <TextObject Name="Text246" Left="567" Top="47.25" Width="132.3" Height="18.9" Text="[SPMRNMIRDetailsReport.DocName]" Font="Arial, 10pt, style=Bold"/>
-      <GroupHeaderBand Name="GroupHeader3" Top="186.1" Width="1122.66" Height="66.15" Condition="[GetMRNMIRDetails1.MRN_No]">
+      <GroupHeaderBand Name="GroupHeader3" Top="186.1" Width="1122.66" Height="66.15" Condition="[SPMRNMIRDetailsReport.MRN_No]">
         <TextObject Name="Text94" Left="18.9" Top="18.9" Width="103.95" Height="28.35" Text="Vendor :" Font="Arial, 10pt, style=Bold"/>
         <LineObject Name="Line3" Top="66.15" Width="1048.95" Border.Style="Dash"/>
         <TextObject Name="Text128" Left="103.95" Top="18.9" Width="567" Height="18.9" Text="[SPMRNMIRDetailsReport.Account_Name]" Font="Arial, 10pt, style=Bold"/>
-        <GroupHeaderBand Name="GroupHeader4" Top="256.25" Width="1122.66" Height="47.25" Condition="[GetMRNMIRDetails1.MRN_No]">
+        <GroupHeaderBand Name="GroupHeader4" Top="256.25" Width="1122.66" Height="47.25" Condition="[SPMRNMIRDetailsReport.MRN_No]">
           <TextObject Name="Text34" Left="56.7" Width="94.5" Height="28.35" Text="Part Code" Font="Arial, 10pt, style=Bold"/>
           <TextObject Name="Text35" Left="189" Width="85.05" Height="28.35" Text="Item Name" Font="Arial, 10pt, style=Bold"/>
           <TextObject Name="Text79" Left="18.9" Width="28.35" Height="37.8" Text="S No" Font="Arial, 10pt, style=Bold"/>
@@ -175,7 +175,7 @@ namespace FastReport
           <TextObject Name="Text90" Left="718.2" Width="37.8" Height="47.25" Text="Shrt/Exc" HorzAlign="Center" Font="Arial, 10pt, style=Bold"/>
           <TextObject Name="Text37" Left="349.65" Width="37.8" Height="28.35" Text="Unit" Font="Arial, 10pt, style=Bold"/>
           <TextObject Name="Text120" Left="973.35" Width="94.5" Height="18.9" Text="Remark :" Font="Arial, 10pt, style=Bold"/>
-          <GroupHeaderBand Name="GroupHeader1" Top="307.5" Width="1122.66" Condition="[GetMRNMIRDetails1.Part_Code]">
+          <GroupHeaderBand Name="GroupHeader1" Top="307.5" Width="1122.66" Condition="[SPMRNMIRDetailsReport.Part_Code]">
             <DataBand Name="Data1" Top="311.5" Width="1122.66" Height="37.8" EvenStyle="EvenRows" BeforePrintEvent="Data1_BeforePrint" DataSource="Table1">
               <TextObject Name="Text136" Left="47.25" Width="132.3" Height="37.8" Text="[SPMRNMIRDetailsReport.Part_Code]" Font="Arial, 8pt"/>
               <TextObject Name="Text124" Left="548.1" Width="75.6" Height="18.9" Text="[SPMRNMIRDetailsReport.Accepted_Qty]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Center" WordWrap="false" Font="Arial, 10pt" Trimming="EllipsisCharacter"/>

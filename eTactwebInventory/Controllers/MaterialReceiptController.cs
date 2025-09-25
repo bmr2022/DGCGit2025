@@ -95,7 +95,7 @@ namespace eTactWeb.Controllers
             webReport.Report.Dispose();
             webReport.Report = new Report();
 
-            webReport.Report.Load(webRootPath + "\\MRNMultiReport.frx");
+            webReport.Report.Load(webRootPath + "\\MRNMultiReportYauto.frx");
 
 
             my_connection_string = _connectionStringService.GetConnectionString();
@@ -103,7 +103,7 @@ namespace eTactWeb.Controllers
             webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
             webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
             webReport.Report.SetParameterValue("MrnNoparam", MRNNo);
-            webReport.Report.SetParameterValue("MrnNoparam", YearCode);
+            webReport.Report.SetParameterValue("MrnYearcodeparam", YearCode);
 
             webReport.Report.SetParameterValue("MyParameter", my_connection_string);
             webReport.Report.Refresh();
