@@ -51,7 +51,11 @@ namespace eTactWeb.Data.BLL
         public async Task<ResponseResult> GetBatchInventory()
         {
             return await _IssueNRGPDAL.GetBatchInventory();
-        }  
+        }
+        public async Task<ResponseResult> GetFeatureOption()
+        {
+            return await _IssueNRGPDAL.GetFeatureOption();
+        }
         public async Task<ResponseResult> GetVendorList()
         {
             return await _IssueNRGPDAL.GetVendorList();

@@ -76,6 +76,19 @@ namespace eTactWeb.Controllers
             var jsonResult = fillEntryChallanResult.Value?.ToString();
             var challanTypeJson = fillChallanTypeResult.Value?.ToString();
 
+            var featuresoptions = _IIssueNRGP.GetFeatureOption();
+
+            if (featuresoptions?.Result?.Result != null &&
+                featuresoptions.Result.Result.Rows.Count > 0)
+            {
+                model.AllowToChangeStore =
+                    featuresoptions.Result.Result.Rows[0]["AllowToChangeStore"]?.ToString() ?? "";
+            }
+            else
+            {
+                model.AllowToChangeStore = "";
+            }
+
             // Deserialize JSON into a dynamic object or a specific class
             if (!string.IsNullOrEmpty(jsonResult))
             {
@@ -86,6 +99,7 @@ namespace eTactWeb.Controllers
                 model.ChallanNo = entryChallanData.Result[0].ChallanNo;
                 //model.ChallanNo = entryChallanData.ChallanNo;
             }
+
 
             if (!string.IsNullOrEmpty(challanTypeJson))
             {
@@ -198,8 +212,14 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-      
 
+
+        public async Task<JsonResult> GetFeatureOption()
+        {
+            var JSON = await _IIssueNRGP.GetFeatureOption();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
 
 
         public IActionResult SendReport(string emailTo = "", int EntryId = 0, int YearCode = 0, string Type = "",string CC1="",string CC2="",string CC3="",string Challanno="")
