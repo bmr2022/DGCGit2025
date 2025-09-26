@@ -283,6 +283,7 @@ namespace eTactWeb.DOM.Models
         public string PurchasScheduleAmendPrintReportName { get; set; }
         public string GateEntryPrintReportName { get; set; }
         public string MRNPrintReportName { get; set; }
+        public string TakeSuuplierBatchOrSystmGeneratedBatchForInv { get; set; }
         public string RGPChallanPrintReportName { get; set; }
         public string NRGPChallanPrintReportName { get; set; }
         public string VendJWIssuePrintReportName { get; set; }
