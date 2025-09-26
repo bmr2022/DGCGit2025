@@ -153,11 +153,15 @@
             $('#AccountName').select2();
             $('#BackButton').hide();
             GetLiabilitiesAndAssetsData();
+            GetParentAccountData();
+            GetAccountData();
 
             let history = JSON.parse(sessionStorage.getItem('HistoryStack')) || [];
             let parentCode = sessionStorage.getItem('ParentCode');
             if (parentCode) {
                 GetLiabilitiesAndAssetsData(parentCode)
+                GetParentAccountData(parentCode)
+                GetAccountData(parentCode)
             }
             let reportType = sessionStorage.getItem('ReportType');
             if (history.length > 0
@@ -250,6 +254,7 @@
             var FromDate = $('#FromDate').val();
             var ToDate = $('#ToDate').val();
             var ReportType = $('#ReportType').val();
+            var BalParentAccountCode = $('#LiabilitiesAndAssets').val();
 
             $.ajax({
                 type: 'POST',
@@ -257,7 +262,8 @@
                 data: {
                     FromDate: FromDate,
                     ToDate: ToDate,
-                    ReportType: ReportType
+                    ReportType: ReportType,
+                    BalParentAccountCode: BalParentAccountCode
                 },
                 success: function (response) {
                     $('#divStockMainRegister').html(response);
@@ -348,7 +354,44 @@
                     LiabilitiesAndAssets.append('<option value="">--Select--</option>');
 
                     $.each(obj.Result, function (index, ledger) {
-                        LiabilitiesAndAssets.append('<option value="' + ledger.ParentAccountCode + '">' + ledger.ParentAccountName + '</option>');
+                        LiabilitiesAndAssets.append('<option value="' + ledger.BalParentAccountCode + '">' + ledger.BalParentAccountName + '</option>');
+                    });
+
+                    // Set selected GroupCode AFTER options are loaded
+                    let groupCode = selectedGroupCode || sessionStorage.getItem('ParentCode');
+                    if (groupCode) {
+                        if ($('#LiabilitiesAndAssets option[value="' + groupCode + '"]').length === 0) {
+                            // Add option if not present
+                            ParentAccountName.append(new Option(groupCode, groupCode, true, true));
+                        }
+                        ParentAccountName.val(groupCode).trigger('change');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching Group data:", error);
+                }
+            });
+        }
+
+        function GetParentAccountData(selectedGroupCode = null) {
+            var FromDate = $('#FromDate').val();
+            var ToDate = $('#ToDate').val();
+
+            $.ajax({
+                type: 'POST',
+                url: "@Url.Action("GetParentAccountData", "BalanceSheet")",
+                data: {
+                    FromDate: FromDate,
+                    ToDate: ToDate
+                },
+                success: function (response) {
+                    var ParentAccountName = $('#ParentAccountName');
+                    var obj = $.parseJSON(response);
+                    ParentAccountName.empty();
+                    ParentAccountName.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, ledger) {
+                        ParentAccountName.append('<option value="' + ledger.ParentAccountCode + '">' + ledger.ParentAccountName + '</option>');
                     });
 
                     // Set selected GroupCode AFTER options are loaded
@@ -359,6 +402,43 @@
                             ParentAccountName.append(new Option(groupCode, groupCode, true, true));
                         }
                         ParentAccountName.val(groupCode).trigger('change');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching Group data:", error);
+                }
+            });
+        }
+
+        function GetAccountData(selectedGroupCode = null) {
+            var FromDate = $('#FromDate').val();
+            var ToDate = $('#ToDate').val();
+
+            $.ajax({
+                type: 'POST',
+                url: "@Url.Action("GetAccountData", "BalanceSheet")",
+                data: {
+                    FromDate: FromDate,
+                    ToDate: ToDate
+                },
+                success: function (response) {
+                    var AccountName = $('#AccountName');
+                    var obj = $.parseJSON(response);
+                    AccountName.empty();
+                    AccountName.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, ledger) {
+                        AccountName.append('<option value="' + ledger.AccountCode + '">' + ledger.AccountName + '</option>');
+                    });
+
+                    // Set selected GroupCode AFTER options are loaded
+                    let groupCode = selectedGroupCode || sessionStorage.getItem('ParentCode');
+                    if (groupCode) {
+                        if ($('#AccountName option[value="' + groupCode + '"]').length === 0) {
+                            // Add option if not present
+                            AccountName.append(new Option(groupCode, groupCode, true, true));
+                        }
+                        AccountName.val(groupCode).trigger('change');
                     }
                 },
                 error: function (xhr, status, error) {
@@ -379,6 +459,23 @@
 
             // Show back button
             $('#BackButton').show();
+        }
+
+        function GetBalanceSheetDataByLiabilitiesAndAssets(td){
+            let cellValue = $(td).text().trim();
+
+            let currentFromDate = $('#FromDate').val();
+            let currentToDate = $('#ToDate').val();
+            let currentReportType = $('#ReportType').val();
+            let currentLiabilitiesAndAssets = $('#LiabilitiesAndAssets').val();
+
+            saveHistory('BalanceSheetLiabilitiesAndAssetsData', { FromDate: currentFromDate, ToDate: currentToDate, ReportType: currentReportType, currentLiabilitiesAndAssets: currentLiabilitiesAndAssets });
+
+            var FromDate = $('#FromDate').val();
+            var ToDate = $('#ToDate').val();
+            var LiabilitiesAndAssets = $(td).find(".hdnBalParentAccountCode").val();
+            $('#LiabilitiesAndAssets').val(LiabilitiesAndAssets).trigger("change");
+            $('#ReportType').val("DETAIL").trigger("change");
         }
 
     </script>

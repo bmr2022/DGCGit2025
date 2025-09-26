@@ -24,7 +24,7 @@ namespace eTactWeb.Data.DAL
             DBConnectionString = _connectionStringService.GetConnectionString();
             _IDataLogic = iDataLogic;
         }
-        public async Task<BalanceSheetModel> GetBalanceSheetData(string FromDate, string ToDate, string ReportType)
+        public async Task<BalanceSheetModel> GetBalanceSheetData(string FromDate, string ToDate, string ReportType, int? BalParentAccountCode)
         {
             var resultList = new BalanceSheetModel();
             DataSet oDataSet = new DataSet();
@@ -43,6 +43,7 @@ namespace eTactWeb.Data.DAL
 
                     command.Parameters.AddWithValue("@FromDate", fromDt);
                     command.Parameters.AddWithValue("@ToDate", toDt);
+                    command.Parameters.AddWithValue("@BalParentAccountCode", BalParentAccountCode);
                     command.Parameters.AddWithValue("@ReportType", ReportType);
                     await connection.OpenAsync();
 
@@ -114,6 +115,31 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@FromDate", fromDt));
                 SqlParams.Add(new SqlParameter("@ToDate", toDt));
                 SqlParams.Add(new SqlParameter("@Flag", "FillParentAccountData"));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpBalanceSheet", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+
+        }
+
+        public async Task<ResponseResult> GetAccountData(string FromDate, string ToDate)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var fromDt = CommonFunc.ParseFormattedDate(FromDate);
+                var toDt = CommonFunc.ParseFormattedDate(ToDate);
+
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@FromDate", fromDt));
+                SqlParams.Add(new SqlParameter("@ToDate", toDt));
+                SqlParams.Add(new SqlParameter("@Flag", "FillAccountData"));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpBalanceSheet", SqlParams);
             }
             catch (Exception ex)
