@@ -2062,11 +2062,13 @@
                     $('#ItemCode').val(ui.item.itemCode);
                     $('#PartCode').val(ui.item.itemCode);
                     GetItemPartCode("PartCode");
-                    GetItemRate();
+                   
                     FillCurrentBatchINStore();
-                    GetBatchStock();
+                    GetItemRate();
+                   
                     GetTotalStockQty();
                     StockableItems(parseInt($('#ItemCode').val()));
+                    GetBatchStock();
                     return false;
                 },
                 focus: function (event, ui) {
@@ -2087,9 +2089,12 @@
                     $('#ItemCode').val(ui.item.itemCode);
                     $('#PartCode').val(ui.item.itemCode);
                     GetItemPartCode("ItemCode");
-                    GetItemRate();
                     FillCurrentBatchINStore();
+                    GetItemRate();
+
+                    GetTotalStockQty();
                     StockableItems(parseInt($('#ItemCode').val()));
+                    GetBatchStock();
                     return false;
                 },
                 focus: function (event, ui) {

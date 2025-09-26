@@ -29,7 +29,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetDashboardData();
         Task<ResponseResult> BindDept(string flag,string SpName);
 
-        Task<MRNQDashboard> GetDashboardData(string VendorName, string MrnNo, string GateNo, string PONo, string ItemName, string PartCode, string FromDate, string ToDate);
+        Task<MRNQDashboard> GetDashboardData(string VendorName, string MrnNo, string GateNo, string PONo, string ItemName, string PartCode, string FromDate, string ToDate, int FromMRNNo, int ToMRNNo);
         Task<MRNQDashboard> GetDetailDashboardData(string VendorName, string MrnNo, string GateNo, string PONo, string ItemName, string PartCode, string FromDate, string ToDate);
         Task<ResponseResult> GetSearchData(MRNQDashboard model);
         Task<ResponseResult> GetFormRights(int uId);
