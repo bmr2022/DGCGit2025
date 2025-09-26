@@ -19,6 +19,8 @@ public class MRNDashboard
     public string? EntryId { get; set; }
     public int? YearCode { get; set; }
     public string? MrnNo { get; set; }
+    public int FromMRNNo { get; set; }
+    public int ToMRNNo { get; set; }
     public string? InvNo { get; set; }
     public string? InvDate { get; set; }
     public string? Docname { get; set; }
@@ -172,6 +174,7 @@ public class MaterialReceiptModel : MaterialReceiptDetail
     public string EntryTime { get; set; }
     public int YearCode { get; set; }
     public string MRNNo { get; set; }
+  
     public string GateNo { get; set; }
     public int GateEntryId { get; set; }
     public string GateDate { get; set; }

@@ -1420,7 +1420,7 @@
             FillWorkcenter();
             FillMachineGroup();
             FillMachineName();
-            FillItems();
+                        FillItems();
             /* GetItem();
             GetPartCode(); */
             FillOperator();
@@ -1816,7 +1816,19 @@
             }
 
         })
+             $('#WorkCenter').change(function () {
+                FillItems();
+            });
+             $("#MachineGroup").change(function () {
+            
+            FillMachineName();
+        });
 
+        
+        $("#MachineName").change(function () {
+            
+            FillMachineGroup();
+        });
         $('#childData').click(function () {
 
             FillScrapData();
@@ -3381,12 +3393,12 @@
             });
         }
 
-        function FillMachineGroup() {
+            function FillMachineGroup() {
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("FillMachineGroup")",
                 dataType: "json",
-                data: {},
+                       data: { machineId: $("#MachineName").val() },
                 success: function (result, status, error) {
                     if (result != null) {
                         var obj = $.parseJSON(result);
@@ -3405,12 +3417,12 @@
             });
         }
 
-        function FillMachineName() {
+            function FillMachineName() {
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("FillMachineName")",
                 dataType: "json",
-                data: {},
+                         data: { groupId:  $("#MachineGroup").val() },
                 success: function (result, status, error) {
                     if (result != null) {
                         var obj = $.parseJSON(result);
@@ -4546,7 +4558,8 @@
                     data: {
                         ProdAgainst: $('#ProdAgainstPlanManual').val(),
                         YearCode: $('#YearCode').val(),
-                        PartCode: request.term
+                        PartCode: request.term,
+                            WCID:$("#WorkCenter").val(),
                     },
                     success: function (result) {
                         let obj = typeof result === "string" ? JSON.parse(result) : result;
@@ -4575,7 +4588,8 @@
                     data: {
                         ProdAgainst: $('#ProdAgainstPlanManual').val(),
                         YearCode: $('#YearCode').val(),
-                        ItemName: request.term
+                        ItemName: request.term,      
+                        WCID:$("#WorkCenter").val(),
                     },
                     success: function (result) {
                         let obj = typeof result === "string" ? JSON.parse(result) : result;

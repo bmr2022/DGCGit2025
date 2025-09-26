@@ -65,7 +65,7 @@
                                                 }
                                                 else if (col.Key.Contains("Liabilities"))
                                                 {
-                                                    <td style="cursor:pointer;color:blue;" onclick="GetBalanceSheetDataByBalParentCode(this)">
+                                                    <td style="cursor:pointer;color:blue;" onclick="GetBalanceSheetDataByLiabilitiesAndAssets(this)">
                                                         @col.Value
                                                         <input type="hidden" class="hdnBalParentAccountCode"
                                                                value="@row.DynamicColumns["BalParentAccountCode"]" />

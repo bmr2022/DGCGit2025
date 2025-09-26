@@ -76,6 +76,7 @@
                             <input asp-for="ChallanNoBack" type="hidden" value="@Model.ChallanNoBack" />
                             <input asp-for="ChallanTypeBack" type="hidden" value="@Model.ChallanTypeBack" />
                             <input asp-for="DashboardTypeBack" type="hidden" value="@Model.DashboardTypeBack" />
+                            <input asp-for="AllowToChangeStore" type="hidden" value="@Model.AllowToChangeStore" />
                             <input type="hidden" id="Email" />
                             <input type="hidden" id="CC1" />
                             <input type="hidden" id="CC2" />
@@ -138,7 +139,7 @@
                     <div id="B_RParameter" class="accordion-collapse collapse show pnl1 bg-gradient" aria-labelledby="H_RParameter">
                         <div class="accordion-body">
                             <div class="row g-2 gx-3">
-                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-6 col-xs-12">
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-6 col-xs-12 ShowHideEntryDetail">
                                     <input type="hidden" id="ShouldPrint" name="ShouldPrint" />
                                     <input type="hidden" id="ShouldEway" name="ShouldEway" />
                                     @* <div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">*@
@@ -151,19 +152,19 @@
                                     <input asp-for="EntryId" class="form-control" value="@Model.EntryId" readonly />
                                 </div>
                                 @*<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">*@
-                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 ShowHideEntryDetail">
                                     <label asp-for="YearCode" class="form-label">Year Code</label>
                                     <input asp-for="YearCode" class="form-control" value="@Model.YearCode" readonly />
                                 </div>
-                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 ShowHideEntryDetail">
                                     <label asp-for="EntryDate" class="form-label">Entry Date</label>
                                     <input asp-for="EntryDate" class="form-control" readonly value="@Model.EntryDate" />
                                 </div>
-                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 ShowHideEntryDetail">
                                     <label asp-for="EntryTime" class="form-label">Entry Time</label>
                                     <input asp-for="EntryTime" class="form-control" readonly value="@Model.EntryTime" />
                                 </div>
-                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 ShowHideEntryDetail">
                                     <label asp-for="CC" class="form-label">Branch</label>
                                     <input asp-for="CC" class="form-control" value="@Model.CC" readonly />
                                 </div>
@@ -217,7 +218,7 @@
                                 </div>
                                 <div class="col-xl-1  col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                     <label asp-for="ChallanDate" class="form-label" style="color: red;">Challan Date</label>
-                                    <input asp-for="ChallanDate" class="form-control" readonly value="@Model.ChallanDate" />
+                                    <input asp-for="ChallanDate" class="form-control" readonly value="@Model.ChallanDate" tabindex="-1" />
                                 </div>
                                 <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                     <label asp-for="AccountCode" class="form-label" style="color: red;">Vendor Name</label>
@@ -226,17 +227,17 @@
                                     <input type="hidden" value="@Model.AccountCode" id="hiddenAccountCode" />
             }
                                     <div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
-                                        <input asp-for="AC1" class="form-check-input" type="checkbox" role="switch" />Show All
+                                        <input asp-for="AC1" class="form-check-input" type="checkbox" role="switch" tabindex="-1" />Show All
                                     </div>
                                     <select class="form-select" asp-for="AccountCode">
                                         <option value="">-Select-</option>
                                     </select>
                                 </div>
-                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 ShowHideEntryDetail">
                                     <label asp-for="RemovalTime" class="form-label">Time</label>
                                     <input asp-for="RemovalTime" class="form-control" readonly value="@Model.EntryTime" />
                                 </div>
-                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 ShowHideOtherRequiredDetail">
                                     <label asp-for="GSTType" class="form-label">Gst Type</label>
                                     <input asp-for="GSTType " class="form-control" readonly />
                                 </div>
@@ -247,7 +248,7 @@
             {
                                     <input type="hidden" value="@Model.DeliveryAddress" id="hiddenDA" />
             }
-                                    <input asp-for="DeliveryAddress" class="form-control" readonly />
+                                    <input asp-for="DeliveryAddress" class="form-control" tabindex="-1" readonly />
                                 </div>
                                 <div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                     <label asp-for="VehicleNo" class="form-label">Vehicle No</label>
@@ -269,14 +270,14 @@
                                     </select>
                                 </div>
                                 <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12" style="width:12%">
-                                    <button type="button" id="ShowAllItem" onclick="AddMultipleItems()" class=" btn btn-sm btn-outline-success mt-3">
+                                    <button type="button" tabindex="-1" id="ShowAllItem" onclick="AddMultipleItems()" class=" btn btn-sm btn-outline-success mt-3">
                                         <i class="bi bi-list"></i>ShowAllItem
                                     </button>
                                 </div>
 
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <div class="form-check form-switch d-flex justify-content-center mt-2">
-                                        <input asp-for="SH" class="form-check-input" type="checkbox" role="switch" />
+                                        <input asp-for="SH" class="form-check-input" type="checkbox" role="switch" tabindex="-1" />
                                     </div>
                                     <label class="form-label d-flex justify-content-center">Show/Hide Additional Fields</label>
                                 </div>
@@ -286,7 +287,7 @@
 
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="H_SAGrid">
-                            <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+                            <button tabindex="-1" class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
                                 <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Issue Challan Grid</strong>
                             </button>
                         </h2>
@@ -303,29 +304,31 @@
                                         <table class="table table-hover table-bordered table-striped" id="TableGrid">
                                             <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap" id="GridLabels">
                                                 <tr>
-                                                    <th>Store</th>
+                                                    <th class="AllowToChangeStore">Store</th>
                                                     <th>Part Code</th>
                                                     <th style="align-items:left;">Item Name<label style="float:right;">  <input asp-for="IC1" class="form-check-input me-1 mt-2" type="checkbox" role="switch" />Show All</label></th>
-                                                    <th>HSN No</th>
-                                                    <th>Batch NO</th>
-                                                    <th>Unique Batch No</th>
+                                                   
+                                                    <th class="AllowToChangeStore">Batch NO</th>
+                                                    <th class="AllowToChangeStore">Unique Batch No</th>
                                                     <th>Qty</th>
-                                                    <th>Total Stock</th>
-                                                    <th>Total Batch Stock</th>
-                                                    <th>Process</th>
-                                                    <th>Unit</th>
                                                     <th>Rate</th>
+                                                    <th>Total Stock</th>
+                                                    <th class="AllowToChangeStore">Total Batch Stock</th>
+                                                    <th class="ShowHideOtherDetailTableData">Process</th>
+                                                    <th>HSN No</th>
+                                                    <th>Unit</th>
+                                                    
                                                     <th>Amount</th>
                                                     <th>Remark</th>
-                                                    <th>Purpose</th>
+                                                    <th class="ShowHideOtherDetailTableData">Purpose</th>
                                                     <th>PurchasePrice</th>
-                                                    <th>Alt Qty</th>
-                                                    <th>Alt Unit</th>
+                                                    <th class="ShowHideOtherDetailTableData">Alt Qty</th>
+                                                    <th class="ShowHideOtherDetailTableData">Alt Unit</th>
                                                 </tr>
                                             </thead>
                                             <tbody id="GridControls">
                                                 <tr>
-                                                    <td>
+                                                    <td class="AllowToChangeStore">
                                                         <select class="form-select" asp-for="Storeid" style="width:100px;" onchange="FillCurrentBatchINStore(); GetTotalStockQty();">
                                                             <option value="" disabled selected>-Select-</option>
                                                         </select>
@@ -344,35 +347,37 @@
                                                         <input type="text" id="ItemNameText" class="form-control" placeholder="Type Item Name..." />
                                                         <input type="hidden" asp-for="ItemCode" id="ItemCode" />
                                                     </td>
-                                                    <td><input asp-for="HSNNo" style="width:70px !important" /></td>
+                                                   
 
-                                                    <td>
+                                                    <td class="AllowToChangeStore">
                                                         <select class="form-select" asp-for="BatchNo" style="width:100px;">
                                                             <option value="0" disabled selected>-Select-</option>
                                                         </select>
                                                     </td>
-                                                    <td>
+                                                    <td class="AllowToChangeStore">
                                                         <select class="form-select" asp-for="uniquebatchno">
                                                             <option value="0" disabled selected>-Select-</option>
                                                         </select>
                                                     </td>
                                                     <td><input asp-for="Qty" class="form-control" style="width:80px;" value="0" /></td>
+                                                    <td><input asp-for="Rate" style="width:70px!important" class="form-control" value="0" /></td>
                                                     <td><input asp-for="TotalStock" style="width:70px !important" readonly /></td>
-                                                    <td><input asp-for="BatchStock" style="width:70px !important" readonly /></td>
-                                                    <td>
+                                                    <td class="AllowToChangeStore"><input asp-for="BatchStock" style="width:70px !important" readonly /></td>
+                                                    <td class="ShowHideOtherDetailTableData">
                                                         <select class="form-select" asp-for="ProcessId" style="width:70px;">
                                                             <option value="0" selected>-Select-</option>
                                                         </select>
                                                     </td>
+                                                    <td><input asp-for="HSNNo" style="width:70px !important" readonly/></td>
                                                     <td><input asp-for="unit" style="width:70px !important" readonly /></td>
-                                                    <td><input asp-for="Rate" style="width:70px!important" class="form-control" value="0" /></td>
+                                                    
                                                     <td><input asp-for="Amount" style="width:70px !important" readonly /></td>
                                                     <td><input asp-for="RemarkDetail" /></td>
-                                                    <td><input asp-for="Purpose" /></td>
+                                                    <td class="ShowHideOtherDetailTableData"><input asp-for="Purpose" /></td>
                                                     <td><input asp-for="PurchasePrice" style="width:70px !important" readonly /></td>
 
-                                                    <td><input asp-for="AltQty" style="width:70px !important" /></td>
-                                                    <td><input asp-for="AltUnit" style="width:70px !important" readonly /></td>
+                                                    <td class="ShowHideOtherDetailTableData"><input asp-for="AltQty" style="width:70px !important" /></td>
+                                                    <td class="ShowHideOtherDetailTableData"><input asp-for="AltUnit" style="width:70px !important" readonly /></td>
 
                                                 </tr>
                                             </tbody>
@@ -484,38 +489,38 @@
                                                     <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Part Code</th>
                                                     <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Name</th>
                                                     <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>HSN No</th>
-                                                    <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Store</th>
-                                                    <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Batch NO</th>
-                                                    <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unique Batch No</th>
+                                                    <th data-columnno="4" data-sortorder="asc" class="sortCol AllowToChangeStore"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Store</th>
+                                                    <th data-columnno="5" data-sortorder="asc" class="sortCol AllowToChangeStore"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Batch NO</th>
+                                                    <th data-columnno="6" data-sortorder="asc" class="sortCol AllowToChangeStore"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unique Batch No</th>
                                                     <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Total Stock</th>
-                                                    <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Total Batch Stock</th>
-                                                    <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Process</th>
+                                                    <th data-columnno="8" data-sortorder="asc" class="sortCol AllowToChangeStore"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Total Batch Stock</th>
+                                                    <th data-columnno="9" data-sortorder="asc" class="sortCol ShowHideOtherDetailTableData"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Process</th>
                                                     <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Qty</th>
                                                     <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unit</th>
                                                     <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rate</th>
                                                     <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Amount</th>
                                                     <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PurchasePrice</th>
-                                                    <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Qty</th>
-                                                    <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Unit</th>
+                                                    <th data-columnno="15" data-sortorder="asc" class="sortCol ShowHideOtherDetailTableData"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Qty</th>
+                                                    <th data-columnno="16" data-sortorder="asc" class="sortCol ShowHideOtherDetailTableData"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Unit</th>
                                                     <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Remark</th>
-                                                    <th data-columnno="18" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Purpose</th>
-                                                    <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO No</th>
-                                                    <th data-columnno="20" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Year</th>
-                                                    <th data-columnno="21" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Date</th>
-                                                    <th data-columnno="22" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Amendment</th>
-                                                    <th data-columnno="23" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Discount%</th>
-                                                    <th data-columnno="24" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Dis Amt</th>
-                                                    <th data-columnno="25" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Amount</th>
-                                                    <th data-columnno="26" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Against ChallanEntryId</th>
-                                                    <th data-columnno="27" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Against ChallanNo</th>
-                                                    <th data-columnno="28" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Against ChallanYear</th>
-                                                    <th data-columnno="29" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Against ChallanType</th>
-                                                    <th data-columnno="30" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Closed</th>
-                                                    <th data-columnno="31" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Color</th>
-                                                    <th data-columnno="32" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Size</th>
-                                                    <th data-columnno="33" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Model</th>
-                                                    <th data-columnno="34" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PendQty</th>
-                                                    <th data-columnno="35" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Pend AltQty</th>
+                                                    <th data-columnno="18" data-sortorder="asc" class="sortCol ShowHideOtherDetailTableData"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Purpose</th>
+                                                    <th data-columnno="19" data-sortorder="asc" class="sortCol ShowHideOtherDetailTableData"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO No</th>
+                                                    <th data-columnno="20" data-sortorder="asc" class="sortCol ShowHideOtherDetailTableData"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Year</th>
+                                                    <th data-columnno="21" data-sortorder="asc" class="sortCol ShowHideOtherDetailTableData"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Date</th>
+                                                    <th data-columnno="22" data-sortorder="asc" class="sortCol ShowHideOtherDetailTableData"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Amendment</th>
+                                                    <th data-columnno="23" data-sortorder="asc" class="sortCol ShowHideOtherDetailTableData"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Discount%</th>
+                                                    <th data-columnno="24" data-sortorder="asc" class="sortCol ShowHideOtherDetailTableData"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Dis Amt</th>
+                                                    <th data-columnno="25" data-sortorder="asc" class="sortCol ShowHideOtherDetailTableData"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Amount</th>
+                                                    <th data-columnno="26" data-sortorder="asc" class="sortCol ShowHideOtherDetailTableData"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Against ChallanEntryId</th>
+                                                    <th data-columnno="27" data-sortorder="asc" class="sortCol ShowHideOtherDetailTableData"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Against ChallanNo</th>
+                                                    <th data-columnno="28" data-sortorder="asc" class="sortCol ShowHideOtherDetailTableData"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Against ChallanYear</th>
+                                                    <th data-columnno="29" data-sortorder="asc" class="sortCol ShowHideOtherDetailTableData"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Against ChallanType</th>
+                                                    <th data-columnno="30" data-sortorder="asc" class="sortCol ShowHideOtherDetailTableData"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Closed</th>
+                                                    <th data-columnno="31" data-sortorder="asc" class="sortCol ShowHideOtherDetailTableData"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Color</th>
+                                                    <th data-columnno="32" data-sortorder="asc" class="sortCol ShowHideOtherDetailTableData"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Size</th>
+                                                    <th data-columnno="33" data-sortorder="asc" class="sortCol ShowHideOtherDetailTableData"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Model</th>
+                                                    <th data-columnno="34" data-sortorder="asc" class="sortCol ShowHideOtherDetailTableData"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PendQty</th>
+                                                    <th data-columnno="35" data-sortorder="asc" class="sortCol ShowHideOtherDetailTableData"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Pend AltQty</th>
                                                 </tr>
                                             </thead>
                                             <tbody id="divIssueNRGPGrid">
@@ -1388,6 +1393,7 @@
 
             $(document).ready(function () {
                 GetFormRights();
+                
                /*  $('#ItemCode').select2();
                 $('#PartCode').select2(); */
                 $('#AccountCode').select2();
@@ -1587,11 +1593,74 @@
                 FillStoreList();
             
                 $('#BatchNo').css('background-color', 'rgb(248 255 178)');
+                GetFeatureOption();
 
                /*  $('#ChallanDate').css('color', 'rgb(248 255 178)');
                 $('#EntryDate').css('color', 'rgb(248 255 178)'); */
                
             });
+
+
+
+        function GetFeatureOption() {
+
+            $.ajax({
+                type: "POST",
+                data: {},
+                url: "@Url.Action("GetFeatureOption")",
+                dataType: "json",
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.Result != null) {
+
+                            if (obj.Result[0].ShowHideEntryDetail === "N") {
+                                $('.ShowHideEntryDetail').hide();
+                            } else {
+                                $('.ShowHideEntryDetail').show();
+                            }
+
+                            if (obj.Result[0].ShowHideSaleBillCustomerDetail === "N") {
+                                $('.SaleBillCustomerDetail').hide();
+                            } else {
+                                $('.SaleBillCustomerDetail').show();
+                            }
+
+                            if (obj.Result[0].ShowHideOtherRequiredDetail === "N") {
+                                $('.ShowHideOtherRequiredDetail').hide();
+                            } else {
+                                $('.ShowHideOtherRequiredDetail').show();
+                            }
+
+                            if (obj.Result[0].AllowToChangeStore === "N") {
+                                $('.AllowToChangeStore').hide();
+                            } else {
+                                $('.AllowToChangeStore').show();
+                            }
+
+                            if (obj.Result[0].ShowHideOtherDetailTableData === "N") {
+                                $('.ShowHideOtherDetailTableData').hide();
+                            } else {
+                                $('.ShowHideOtherDetailTableData').show();
+                            }
+                            if (obj.Result[0].ShowHideOtherDetail === "N") {
+                                $('.ShowHideOtherDetail').hide();
+                            } else {
+                                $('.ShowHideOtherDetail').show();
+                                
+                            }
+
+
+                           
+
+
+                        }
+                    }
+                }
+            });
+        }
+
 
         $('#CheckAll').click(function () {
 
@@ -1993,9 +2062,13 @@
                     $('#ItemCode').val(ui.item.itemCode);
                     $('#PartCode').val(ui.item.itemCode);
                     GetItemPartCode("PartCode");
-                    GetItemRate();
+                   
                     FillCurrentBatchINStore();
+                    GetItemRate();
+                   
+                    GetTotalStockQty();
                     StockableItems(parseInt($('#ItemCode').val()));
+                    GetBatchStock();
                     return false;
                 },
                 focus: function (event, ui) {
@@ -2016,9 +2089,12 @@
                     $('#ItemCode').val(ui.item.itemCode);
                     $('#PartCode').val(ui.item.itemCode);
                     GetItemPartCode("ItemCode");
-                    GetItemRate();
                     FillCurrentBatchINStore();
+                    GetItemRate();
+
+                    GetTotalStockQty();
                     StockableItems(parseInt($('#ItemCode').val()));
+                    GetBatchStock();
                     return false;
                 },
                 focus: function (event, ui) {
@@ -2073,24 +2149,37 @@
                 });
             }
 
-            function FillStoreList() {
-                $.ajax({
-                    type: "POST",
-                    url: "@Url.Action("GetStoreList")",
-                    dataType: "json",
-                    success: function (result, status, error) {
+        function FillStoreList() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetStoreList")",
+                dataType: "json",
+                success: function (result, status, error) {
 
-                        if (result != null) {
-                            var obj = $.parseJSON(result);
-                            $('#Storeid').empty();
-                            $('#Storeid').append('<option value="0">-Select-</option>');
-                            $.each(obj.Result, function (key, val) {
-                                $('#Storeid').append('<option value="' + val.entryid + '">' + val.store_name + '</option>');
-                            });
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        $('#Storeid').empty();
+                        $('#Storeid').append('<option value="0">-Select-</option>');
+
+                        $.each(obj.Result, function (key, val) {
+                            $('#Storeid').append('<option value="' + val.entryid + '" data-type="' + val.Store_Type + '">' + val.store_name + '</option>');
+                        });
+                    }
+
+                    // check AllowToChangeStore
+                    if ($('#AllowToChangeStore').val() == "N") {
+                        // find store where store_type is "Main Store"
+                        var mainStore = $("#Storeid option[data-type='MAIN STORE']").val();
+
+                        if (mainStore) {
+                            $("#Storeid").val(mainStore);   // set selected
+                            $("#Storeid").prop("disabled", true); // make dropdown readonly
                         }
                     }
-                });
-            }
+                }
+            });
+        }
+
 
             function GetServerDate() {
                 $.ajax({
@@ -2306,76 +2395,77 @@
 
 
 
-            function FillCurrentBatchINStore() {
-                var ItemCode = $('#ItemCode').val();
-                var YearCode = $('#YearCode').val();
-                var StoreName = $('#Storeid').find(':selected').text();
-                var batchno = "";
-                if ($('#BatchNo').prop('selectedIndex') != 0) {
-                    batchno = $('#BatchNo').val();
-                }
-                $.ajax({
-                    type: "GET",
-                    data: { "ItemCode": ItemCode, "YearCode": YearCode, "StoreName": StoreName, "batchno": batchno },
-                    url: "@Url.Action("FillCurrentBatchINStore")",
-                    dataType: "json",
-                    success: function (result, status, error) {
-                        $('#Qty').val(0);
-                        if (result != null) {
-                            var obj = $.parseJSON(result);
-                            if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                                $('#BatchNo').empty();
-                                $('#BatchNo').append('<option value="0" disabled selected>-Select-</option>');
-                                //$('#uniquebatchno').empty();
-                                //$('#uniquebatchno').append('<option value="" disabled selected>-Select-</option>');
+        function FillCurrentBatchINStore() {
+            var ItemCode = $('#ItemCode').val();
+            var YearCode = $('#YearCode').val();
+            var StoreName = $('#Storeid').find(':selected').text();
+            var batchno = "";
+            if ($('#BatchNo').prop('selectedIndex') != 0) {
+                batchno = $('#BatchNo').val();
+            }
+            $.ajax({
+                type: "GET",
+                data: { "ItemCode": ItemCode, "YearCode": YearCode, "StoreName": StoreName, "batchno": batchno },
+                url: "@Url.Action("FillCurrentBatchINStore")",
+                dataType: "json",
+                success: function (result, status, error) {
+                    $('#Qty').val(0);
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#BatchNo').empty();
+                            $('#BatchNo').append('<option value="0" disabled selected>-Select-</option>');
 
-                                var seenValues = {};
-                                $.each(obj.Result, function (index, val) {
-                                    if (!seenValues[val.batchno]) {
-                                        seenValues[val.batchno] = true;
-                                        $('#BatchNo').append('<option value="' + val.batchno + '">' + val.batchno + '</option>');
-                                    }
-                                    // $('#uniquebatchno').append('<option value="' + val.UniqueBatchNo + '">' + val.UniqueBatchNo + '</option>');
-                                });
-                                GetBatchInventory();
-
-                                var selectListLength = $('#BatchNo option').length - 1;
-                                // var selectList
-                                var itemArrayLength = itemBatchArray.length;
-                                if (itemArrayLength > 0) {
-                                    var itemsWithCode16 = itemBatchArray.filter(function (item) {
-                                        return item.itemcode === parseInt(ItemCode);
-                                    });
-                                    var selectList = $('#BatchNo');
-                                    selectList.find('option').each(function () {
-                                        var optionValue = $(this).val();
-                                        var existsInItemsWithCode16 = itemsWithCode16.some(function (item) {
-                                            return item.batchno === optionValue;
-                                        });
-
-                                        if (existsInItemsWithCode16) {
-                                            $(this).remove();
-                                        }
-                                    });
-                                    //}
-                                    //if (itemBatchArray.length > 0) {
-                                    //    $('#BatchNo option[value="' + itemBatchArray[0].batchno + '"]').remove();
-                                    //    $('#uniquebatchno option[value="' + itemBatchArray[0].uniquebatchno + '"]').remove();
-                                    //}
+                            var seenValues = {};
+                            $.each(obj.Result, function (index, val) {
+                                if (!seenValues[val.batchno]) {
+                                    seenValues[val.batchno] = true;
+                                    $('#BatchNo').append('<option value="' + val.batchno + '">' + val.batchno + '</option>');
                                 }
-                            } else {
-                                $('#BatchNo').empty();
-                                $('#BatchNo').append('<option value="0" disabled selected>-Select-</option>');
-                                $('#uniquebatchno').empty();
-                                $('#uniquebatchno').append('<option value="0" disabled selected>-Select-</option>');
-                            }
+                            });
 
+                            GetBatchInventory();
+
+                            var itemArrayLength = itemBatchArray.length;
+                            if (itemArrayLength > 0) {
+                                var itemsWithCode16 = itemBatchArray.filter(function (item) {
+                                    return item.itemcode === parseInt(ItemCode);
+                                });
+                                var selectList = $('#BatchNo');
+                                selectList.find('option').each(function () {
+                                    var optionValue = $(this).val();
+                                    var existsInItemsWithCode16 = itemsWithCode16.some(function (item) {
+                                        return item.batchno === optionValue;
+                                    });
+                                    if (existsInItemsWithCode16) {
+                                        $(this).remove();
+                                    }
+                                });
+                            }
+                        } else {
+                            $('#BatchNo').empty();
+                            $('#BatchNo').append('<option value="0" disabled selected>-Select-</option>');
+                            $('#uniquebatchno').empty();
+                            $('#uniquebatchno').append('<option value="0" disabled selected>-Select-</option>');
+                        }
+
+                        // 🔹 Auto-select 1st batch if store change not allowed
+                        if ($('#AllowToChangeStore').val() == "N") {
+                            var firstBatch = $('#BatchNo option:eq(1)').val(); // first real batch (skip -Select-)
+                            if (firstBatch) {
+                                $('#BatchNo').val(firstBatch);
+                                $('#BatchNo').prop("disabled", true);
+                            }
+                            $('#uniquebatchno').empty();
+                            $('#uniquebatchno').append('<option value="1" selected>1</option>');
                         }
                     }
-                });
-            }
+                }
+            });
+        }
 
-            $('#BatchNo').change(function () {
+
+        $('#BatchNo').change(function () {
                 $('#Qty').val(0);
             });
 
@@ -3080,35 +3170,38 @@
             });
 
 
-            $('#StoreId').change(function () {
-                $('#BatchNo,#UniqueBatchNo').empty();
-                $('#StockQty,#BatchStockQty').val('');
-                $.ajax({
-                    type: "POST",
-                    url: '@Url.Action("GetBatchNumber")',
-                    data: { StoreId: $('#StoreId').val(), StoreName: $('#StoreId').find(':selected').text(), ItemCode: $('#ItemCode').val(), TransDate: $('#ChallanDate').val(), YearCode: $('#YearCode').val(), BatchNo: $('#BatchNo').val() },
-                    dataType: "json",
-                    success: function (result, status, error) {
+    $('#StoreId').change(function () {
+        if ($('#AllowToChangeStore').val() == 'N') { }
+        else { 
+        $('#BatchNo,#UniqueBatchNo').empty();
+        $('#StockQty,#BatchStockQty').val('');
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GetBatchNumber")',
+            data: { StoreId: $('#StoreId').val(), StoreName: $('#StoreId').find(':selected').text(), ItemCode: $('#ItemCode').val(), TransDate: $('#ChallanDate').val(), YearCode: $('#YearCode').val(), BatchNo: $('#BatchNo').val() },
+            dataType: "json",
+            success: function (result, status, error) {
 
-                        if (result != null) {
-                            var obj = $.parseJSON(result);
-                            if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                                $('#BatchNo,#UniqueBatchNo').empty();
-                                $('#BatchNo').append('<option value="0" disabled selected>-Select-</option>');
-                                $('#UniqueBatchNo').append('<option value="0" selected>-Select-</option>');
-                                $.each(obj.Result, function (index, val) {
-                                    if ($("#BatchNo option[value='" + val.batchno + "']").length == 0) {
-                                        $('#BatchNo').append('<option value="' + val.batchno + '" data-uniquebatchno="' + val.UniqueBatchNo + '">' + val.batchno + '</option>');
-                                    }
-                                });
+                if (result != null) {
+                    var obj = $.parseJSON(result);
+                    if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                        $('#BatchNo,#UniqueBatchNo').empty();
+                        $('#BatchNo').append('<option value="0" disabled selected>-Select-</option>');
+                        $('#UniqueBatchNo').append('<option value="0" selected>-Select-</option>');
+                        $.each(obj.Result, function (index, val) {
+                            if ($("#BatchNo option[value='" + val.batchno + "']").length == 0) {
+                                $('#BatchNo').append('<option value="' + val.batchno + '" data-uniquebatchno="' + val.UniqueBatchNo + '">' + val.batchno + '</option>');
                             }
-                        }
-                    },
-                    error: function (req, status, error) {
-                        alert(error);
+                        });
                     }
-                });
-                GetBatchStock();
+                }
+            },
+            error: function (req, status, error) {
+                alert(error);
+            }
+        });
+        GetBatchStock();
+    }
             });
             $('#UniqueBatchNo').change(function () {
                 //$("#StockQty").val($(this).find(":selected").data('stock'));
@@ -3491,6 +3584,7 @@
                         }
                         else {
                             $('#divIssueNRGPGrid').html(data);
+                            GetFeatureOption();
                             $.notify('Item Added To Grid', "success");
                             //GetAmtAfterDiscount();
                             ClearGrid();

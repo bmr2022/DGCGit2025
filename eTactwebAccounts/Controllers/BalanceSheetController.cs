@@ -29,11 +29,11 @@ namespace eTactwebAccounts.Controllers
             MainModel.FromDate = HttpContext.Session.GetString("FromDate");
             return View(MainModel); // Pass the model with old data to the view
         }
-        public async Task<IActionResult> GetBalanceSheetData(string FromDate, string ToDate, string ReportType)
+        public async Task<IActionResult> GetBalanceSheetData(string FromDate, string ToDate, string ReportType, int? BalParentAccountCode)
         {
             var model = new BalanceSheetModel();
             model.EntryByMachine = Environment.MachineName;
-            model = await _IBalanceSheet.GetBalanceSheetData(FromDate, ToDate, ReportType);
+            model = await _IBalanceSheet.GetBalanceSheetData(FromDate, ToDate, ReportType, BalParentAccountCode);
 
             var sessionData = JsonConvert.SerializeObject(model);
             HttpContext.Session.SetString("BalanceSheetData", sessionData);
@@ -42,6 +42,18 @@ namespace eTactwebAccounts.Controllers
         public async Task<JsonResult> GetLiabilitiesAndAssetsData(string FromDate, string ToDate)
         {
             var JSON = await _IBalanceSheet.GetLiabilitiesAndAssetsData(FromDate, ToDate);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> GetParentAccountData(string FromDate, string ToDate)
+        {
+            var JSON = await _IBalanceSheet.GetParentAccountData(FromDate, ToDate);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> GetAccountData(string FromDate, string ToDate)
+        {
+            var JSON = await _IBalanceSheet.GetAccountData(FromDate, ToDate);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }

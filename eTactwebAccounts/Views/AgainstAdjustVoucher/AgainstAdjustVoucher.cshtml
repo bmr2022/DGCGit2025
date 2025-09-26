@@ -1,4 +1,4 @@
-﻿@model eTactWeb.DOM.Models.JournalVoucherModel;
+﻿@model eTactWeb.DOM.Models.AgainstAdjustVoucherModel;
 @{
     ViewData["Title"] = "Journal Voucher";
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
@@ -108,12 +108,12 @@
 </style>
 
 <div class="card bg-gradient mb-3 border-light shadow-lg">
-    <form asp-action="JournalVoucher" asp-controller="JournalVoucher" method="post" class="form-horizontal">
+    <form asp-action="AgainstAdjustVoucher" asp-controller="AgainstAdjustVoucher" method="post" class="form-horizontal">
         <div class="card-header card-headerBG text-light justify-content-center bg-gradient">
             <h5>
                 <strong>Journal Voucher</strong>
                 <span class="d-flex float-end" style="margin-top:-2px;">
-                    <a asp-controller="JournalVoucher" asp-action="JournalVoucherDashBoard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                    <a asp-controller="AgainstAdjustVoucher" asp-action="AgainstAdjustVoucherDashBoard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
                         <i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
                         Dashboard
                     </a>
@@ -292,7 +292,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody id="divBankReceipt">
-                                                <partial name="_JournalVoucher" />
+                                                <partial name="_AgainstAdjustVoucher" />
                                             </tbody>
                                         </table>
                                     </div>
@@ -327,7 +327,7 @@
                                             </tr>
                                         </thead>
                                         <tbody id="divBankReceiptDetail">
-                                            <partial name="_JournalVoucherGrid" />
+                                            <partial name="_AgainstAdjustVoucherGrid" />
                                         </tbody>
                                     </table>
                                 </div>
@@ -419,7 +419,7 @@
                                         </a>
                                     </div>
                                     @*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">*@
-                                    <a asp-controller="JournalVoucher" asp-action="JournalVoucherDashBoard" tabindex="-1" asp-route-ID="0" class="btn btn-secondary btn-sm">
+                                    <a asp-controller="AgainstAdjustVoucher" asp-action="AgainstAdjustVoucherDashBoard" tabindex="-1" asp-route-ID="0" class="btn btn-secondary btn-sm">
                                         <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                                         Dashboard
                                     </a>
@@ -1091,7 +1091,7 @@
                 }
             }
             $.ajax({
-                url: '@Url.Action("FillEntryID", "JournalVoucher")',
+                url: '@Url.Action("FillEntryID", "AgainstAdjustVoucher")',
                 type: 'POST',
                 data: { "YearCode": $('#YearCode').val(), "VoucherDate": VoucherDate },
                 async: false,
@@ -1113,7 +1113,7 @@
             var AccountCode = $('#AccountCode').val();
             var VoucherDate = $('#VoucherDate').val();
             $.ajax({
-                url: '@Url.Action("GetLedgerBalance", "JournalVoucher")',
+                url: '@Url.Action("GetLedgerBalance", "AgainstAdjustVoucher")',
                 type: 'POST',
                 data: {
                     OpeningYearCode: OpeningYearCode,
@@ -1149,7 +1149,7 @@
             var VoucherDate = $('#VoucherDate').val();
 
             $.ajax({
-                url: '@Url.Action("GetLedgerBalance", "JournalVoucher")',
+                url: '@Url.Action("GetLedgerBalance", "AgainstAdjustVoucher")',
                 type: 'POST',
                 data: {
                     OpeningYearCode: OpeningYearCode,
@@ -1203,7 +1203,7 @@
             }
 
             $.ajax({
-                url: '@Url.Action("FillSONO", "JournalVoucher")',
+                url: '@Url.Action("FillSONO", "AgainstAdjustVoucher")',
                 type: 'POST',
                 async: false,
                 data: {
@@ -1262,7 +1262,7 @@
             }
 
             $.ajax({
-                url: '@Url.Action("GetSODetail", "JournalVoucher")',
+                url: '@Url.Action("GetSODetail", "AgainstAdjustVoucher")',
                 type: 'GET',
                 data: {
                     SONO: SONO,
@@ -1340,7 +1340,7 @@
             }
 
             $.ajax({
-                url: '@Url.Action("GetPODate", "JournalVoucher")',
+                url: '@Url.Action("GetPODate", "AgainstAdjustVoucher")',
                 type: 'GET',
                 data: {
                     PONO: PONO,
@@ -1384,7 +1384,7 @@
         function FillCurrency() {
 
             $.ajax({
-                url: '@Url.Action("FillCurrency", "JournalVoucher")',
+                url: '@Url.Action("FillCurrency", "AgainstAdjustVoucher")',
                 type: 'POST',
                 async: false,
                 success: function (response, status, error) {
@@ -1412,7 +1412,7 @@
         function CheckAmountBeforeSave(i) {
 
             $.ajax({
-                url: '@Url.Action("CheckAmountBeforeSave", "JournalVoucher")',
+                url: '@Url.Action("CheckAmountBeforeSave", "AgainstAdjustVoucher")',
                 type: 'POST',
                 async: false,
                 data: { "VoucherDate": $('#VoucherDate').val(), "YearCode": $('#YearCode').val(), "AgainstVoucherYearCode": $('#AgainstVoucheryearCode-' + i).text(), "AgainstVoucherEntryId": $('#AgainstVoucherEntryId-' + i).text(), "AgainstVoucherNo": $('#AgainstVoucherNo-' + i).text(), "AccountCode": $('#AccountCode-' + i).val() },
@@ -1442,7 +1442,7 @@
 
                     var ShowAll = $('#ShowAll').is(':checked') ? 'Y' : 'N';
             $.ajax({
-                url: '@Url.Action("FillLedgerName", "JournalVoucher")',
+                url: '@Url.Action("FillLedgerName", "AgainstAdjustVoucher")',
                 type: 'POST',
                 data: {
                             ShowAll: ShowAll
@@ -1474,7 +1474,7 @@
         function FillSubVoucherName() {
             var VoucherType = $('#VoucherType').val();
             $.ajax({
-                url: '@Url.Action("FillSubVoucherName", "JournalVoucher")',
+                url: '@Url.Action("FillSubVoucherName", "AgainstAdjustVoucher")',
                 type: 'POST',
                 data: {
                     VoucherType: VoucherType
@@ -1504,7 +1504,7 @@
 
         function FillIntrument() {
             $.ajax({
-                url: '@Url.Action("FillIntrument", "JournalVoucher")',
+                url: '@Url.Action("FillIntrument", "AgainstAdjustVoucher")',
                 type: 'POST',
                 async: false,
                 success: function (response, status, error) {
@@ -1531,7 +1531,7 @@
         function FillCostCenterName() {
             ;
             $.ajax({
-                url: '@Url.Action("FillCostCenterName", "JournalVoucher")',
+                url: '@Url.Action("FillCostCenterName", "AgainstAdjustVoucher")',
                 type: 'POST',
                 async: false,
                 success: function (response, status, error) {
@@ -1587,7 +1587,7 @@
         function CheckBankType() {
 
             $.ajax({
-                url: '@Url.Action("FillBankType", "JournalVoucher")',
+                url: '@Url.Action("FillBankType", "AgainstAdjustVoucher")',
                 type: 'POST',
                 async: false,
                 data: { "AccountCode": $('#AccountCode').val(), },
@@ -1661,7 +1661,7 @@
                 DataTable = { "VoucherType": $('#SubVoucherName').find(":selected").text(), "Flag": "PopupData", "SumDetail": "", "AccountCode": $('#AccountCode-' + SrNO).val(), "YearCode": $('#YearCode').val(), "VoucherDate": convertDateFormat($('#VoucherDate').val()), "AccEntryId": $('#AccEntryId').val(), "AccYearCode": $('#YearCode').val() };
             }
             $.ajax({
-                url: '@Url.Action("PopUpForPendingVouchers", "JournalVoucher")',
+                url: '@Url.Action("PopUpForPendingVouchers", "AgainstAdjustVoucher")',
                 type: 'POST',
                 async: false,
                 data: { "DataTable": DataTable },
@@ -1876,7 +1876,7 @@
             }
             $.ajax({
                 type: "POST",
-                url: '@Url.Action("AddJournalVoucherAdjustDetail", "JournalVoucher")',
+                url: '@Url.Action("AddAgainstAdjustVoucherAdjustDetail", "AgainstAdjustVoucher")',
                 data: { model: ItemData, "Mode": $('#Mode').val() },
                 success: function (result, status, xhr) {
                     if (xhr.status == 200 && xhr.responseText == result) {
@@ -2009,7 +2009,7 @@
             }
             $.ajax({
                 type: "POST",
-                url: '@Url.Action("AddJournalVoucherDetail", "JournalVoucher")',
+                url: '@Url.Action("AddAgainstAdjustVoucherDetail", "AgainstAdjustVoucher")',
                 data: { model: SchData },
                 success: function (result, status, xhr) {
                     if (xhr.status == 200 && xhr.responseText == result) {
@@ -2073,7 +2073,7 @@
             }
             else {
                 $.ajax({
-                    url: '@Url.Action("EditItemRows", "JournalVoucher")',
+                    url: '@Url.Action("EditItemRows", "AgainstAdjustVoucher")',
                     type: "POST",
                     data: { SrNO: SrNO, "Mode": $('#Mode').val() },
                     success: function (data) {

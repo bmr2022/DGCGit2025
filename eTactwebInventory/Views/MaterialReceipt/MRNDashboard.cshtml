@@ -54,6 +54,15 @@
                                 <label asp-for="MrnNo" class="form-label">Mrn No</label>
                                 <input asp-for="MrnNo" class="form-control" />
                             </div>
+                            <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                <label asp-for="FromMRNNo" class="form-label">From MRNNo</label>
+                                <input asp-for="FromMRNNo" class="form-control"  />
+                            </div>
+
+                            <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                <label asp-for="ToMRNNo" class="form-label">To MRNNo</label>
+                                <input asp-for="ToMRNNo" class="form-control"  />
+                            </div>
                             <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
                                 <label asp-for="GateNo" class="form-label">Gate No</label>
                                 <input asp-for="GateNo" class="form-control" />
@@ -118,7 +127,7 @@
                                 <label class="form-label">Global search</label>
                                 <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
                             </div>
-                            <div class="col-sm-3 col-md-6 col-lg-2 col-xl-4 d-flex justify-content-end mt-3">
+                            <div class="col-sm-3 col-md-6 col-lg-2 col-xl-7 d-flex justify-content-end mt-3">
                                 <button class="btn btn-sm btn-outline-info" type="button" onclick="GetSearchData();">
                                     <i class="fa-solid fa-magnifying-glass fa-fw fa-lg "></i>SEARCH
                                 </button>
@@ -128,10 +137,12 @@
                                 <a class="btn btn-sm btn-outline-danger" asp-controller="MaterialReceipt" asp-action="MRNDashboard" style="padding:3px;height:30px;width:100px;margin-left:20px;">
                                     <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
                                 </a>
-                                <a type="button" class="btn btn-sm btn-primary" onclick="PrintReport()">
-                                    <i class="fas fa-barcode"></i>
-                                    Print
+
+                                <a class="btn btn-sm btn-outline-danger" onclick="PrintReport()" style="padding:3px;height:30px;width:100px;margin-left:20px;">
+                                    <i class="fas fa-barcode"></i>Print
                                 </a>
+
+                              
                             </div>
 
                             @* <div >
@@ -329,6 +340,8 @@
             AutoComplete('VMRNMainDetail', 'GateNo', 'GateNo', null);
             AutoComplete('VMRNMainDetail', 'PONo', 'pono', null);
             AutoComplete('VMRNMainDetail', 'MrnNo', 'MRNNo', null);
+            AutoComplete('VMRNMainDetail', 'FromMRNNo', 'MRNNo', null);
+            AutoComplete('VMRNMainDetail', 'ToMRNNo', 'MRNNo', null);
             //AutoComplete('VMRNMainDetail', 'ItemName', 'ItemName', null);
             if ($('#FromDate1').val() != "" && $('#ToDate1').val() != "") {
 
@@ -551,7 +564,7 @@
         // var selectedMRN = [];
 
         // function ManualCheck(chk) {
-        //     debugger
+        //      
         //     var value = $(chk).val();
         //     if ($(chk).is(':checked')) {
         //         if (selectedMRN.indexOf(value) === -1) {

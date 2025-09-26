@@ -1497,6 +1497,7 @@ public static class CommonFunc
                     && typeProperty.PropertyInfo.Name != "ShelfLife" && typeProperty.PropertyInfo.Name != "ItemSize"
                     && typeProperty.PropertyInfo.Name != "ItemColor" && typeProperty.PropertyInfo.Name != "TotalRecords"
                     && typeProperty.PropertyInfo.Name != "PageNumber" && typeProperty.PropertyInfo.Name != "PageSize"
+                    && typeProperty.PropertyInfo.Name != "FromMRNNo" && typeProperty.PropertyInfo.Name != "ToMRNNo"
                     )
 
                     {

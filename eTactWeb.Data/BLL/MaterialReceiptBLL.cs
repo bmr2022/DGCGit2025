@@ -61,9 +61,9 @@ namespace eTactWeb.Data.BLL
             return await _MaterialReceiptDAL.BindDept(flag,spname);
         }
 
-        public async Task<MRNQDashboard> GetDashboardData(string VendorName, string MrnNo, string GateNo, string PONo, string ItemName, string PartCode, string FromDate, string ToDate)
+        public async Task<MRNQDashboard> GetDashboardData(string VendorName, string MrnNo, string GateNo, string PONo, string ItemName, string PartCode, string FromDate, string ToDate, int FromMRNNo, int ToMRNNo)
         {
-            return await _MaterialReceiptDAL.GetDashboardData(VendorName, MrnNo,GateNo,PONo, ItemName, PartCode,  FromDate, ToDate);
+            return await _MaterialReceiptDAL.GetDashboardData(VendorName, MrnNo,GateNo,PONo, ItemName, PartCode,  FromDate, ToDate, FromMRNNo,  ToMRNNo);
         }
         public async Task<MRNQDashboard> GetDetailDashboardData(string VendorName, string MrnNo, string GateNo, string PONo, string ItemName, string PartCode, string FromDate, string ToDate)
         {

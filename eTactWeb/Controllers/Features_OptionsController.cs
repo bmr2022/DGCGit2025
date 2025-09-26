@@ -33,7 +33,7 @@ namespace eTactWeb.Controllers
     string CheckPOPendFromPOonlyNotFromAmendment,string SOFileName,string AutoGenItemGroupCode,string AllowMultipleBuyerInSO,string SOPrintReportName
             ,string SaleAmendPrintReportName,string SaleSchedulePrintReportName,string SaleScheduleAmendPrintReportName,
     string BlockGateEntry4UnAppPOAmm,string AllowBackDateGateEntry, string ShowRateInGateMRN,string GateEntryPrintReportName,
-        string AllowGateRateEnabled, string AllowBackDateMRNEntry, string AllowToChangeStoreInMRN,string MRNPrintReportName,
+        string AllowGateRateEnabled, string AllowBackDateMRNEntry, string AllowToChangeStoreInMRN,string MRNPrintReportName, string TakeSuuplierBatchOrSystmGeneratedBatchForInv,
         string AllowBackDateMRIR, string CCMandatoryInQuery,string BatchWiseInventory,string AllowToChangeBranch,
         string AllowBAtchEditable, string AllowBAtchEditablePAssword, string FIFOBasedBatchInventory,
         string AllowBackdateReqWOBOM, long MaxDurationForReqToBePend, string IssueWithScanner,
@@ -106,6 +106,7 @@ string AccPurchaseBillInvoicePrintoutFilename,string FIFOBasedBatchInventoryInJo
                 MainModel.AllowBackDateMRNEntry = AllowBackDateMRNEntry;
                 MainModel.AllowToChangeStoreInMRN = AllowToChangeStoreInMRN;
                 MainModel.MRNPrintReportName = MRNPrintReportName;
+                MainModel.TakeSuuplierBatchOrSystmGeneratedBatchForInv = TakeSuuplierBatchOrSystmGeneratedBatchForInv;
                 MainModel.AllowBackDateMRIR = AllowBackDateMRIR;
                 MainModel.CCMandatoryInQuery = CCMandatoryInQuery;
                 MainModel.BatchWiseInventory = BatchWiseInventory;

@@ -960,7 +960,7 @@
             $.ajax({
                 type: "GET",
                 url: "@Url.Action("FillCurrentBatchINStore")",
-                data: { "ItemCode": ItemCode, "YearCode": YearCode, "StoreName": StoreName, "batchno": batchno },
+                data: { "ItemCode": ItemCode, "YearCode": YearCode, "StoreName": StoreName, "batchno": batchno, "TransDate": TransDate },
                 dataType: "json",
                 success: function (result, status, error) {
                     if (result != null) {
@@ -1105,6 +1105,7 @@
             var ItemCode = $('#ItemCode').val();
             var YearCode = $('#YearCode').val();
             var StoreName = $('#Storeid').find(':selected').text();
+            var TransDate = $('#StockAdjustmentDate').val();
             var batchno = "";
 
             $("#batchno").autocomplete({
@@ -1112,7 +1113,7 @@
                     $.ajax({
                         url: "@Url.Action("FillCurrentBatchINStore")",
                         type: "GET",
-                        data: { "ItemCode": ItemCode, "YearCode": YearCode, "StoreName": StoreName },
+                        data: { "ItemCode": ItemCode, "YearCode": YearCode, "StoreName": StoreName, "TransDate": TransDate },
                         success: function (data) {
 
                             var obj = $.parseJSON(data);
@@ -1144,6 +1145,7 @@
             var ItemCode = $('#ItemCode').val();
             var YearCode = $('#YearCode').val();
             var StoreName = $('#Storeid').find(':selected').text();
+            var TransDate = $('#StockAdjustmentDate').val();
             var batchno = "";
 
             $("#uniqbatchno").autocomplete({
@@ -1151,7 +1153,7 @@
                     $.ajax({
                         url: "@Url.Action("FillCurrentBatchINStore")",
                         type: "GET",
-                        data: { "ItemCode": ItemCode, "YearCode": YearCode, "StoreName": StoreName },
+                        data: { "ItemCode": ItemCode, "YearCode": YearCode, "StoreName": StoreName, "TransDate": TransDate },
                         success: function (data) {
 
                             var obj = $.parseJSON(data);

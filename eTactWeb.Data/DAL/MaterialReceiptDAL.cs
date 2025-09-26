@@ -450,6 +450,8 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@vendorName", model.VendorName));
                 SqlParams.Add(new SqlParameter("@PONo", model.MrnNo));
                 SqlParams.Add(new SqlParameter("@ItemName", model.ItemName));
+                SqlParams.Add(new SqlParameter("@FromMRNNo", model.FromMRNNo));
+                SqlParams.Add(new SqlParameter("@ToMRNNo", model.ToMRNNo));
                 SqlParams.Add(new SqlParameter("@StartDate", fromDt));
                 SqlParams.Add(new SqlParameter("@EndDate", toDt));
 
@@ -579,7 +581,7 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
-        public async Task<MRNQDashboard> GetDashboardData(string VendorName, string MRNNo, string GateNo, string PONo, string ItemName, string PartCode, string FromDate, string ToDate)
+        public async Task<MRNQDashboard> GetDashboardData(string VendorName, string MRNNo, string GateNo, string PONo, string ItemName, string PartCode, string FromDate, string ToDate,int FromMRNNo,int ToMRNNo)
         {
             DataSet? oDataSet = new DataSet();
             var model = new MRNQDashboard();
@@ -606,6 +608,8 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@PartCode", PartCode);
                     oCmd.Parameters.AddWithValue("@FromDate", fromDt);
                     oCmd.Parameters.AddWithValue("@ToDate", toDt);
+                    oCmd.Parameters.AddWithValue("@FromMRNNo", FromMRNNo);
+                    oCmd.Parameters.AddWithValue("@ToMRNNo", ToMRNNo);
 
 
                     await myConnection.OpenAsync();

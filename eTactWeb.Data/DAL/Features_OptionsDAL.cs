@@ -238,6 +238,7 @@ namespace eTactWeb.Data.DAL
                                                                 AllowBackDateMRNEntry = dr["AllowBackDateMRNEntry"] != DBNull.Value ? dr["AllowBackDateMRNEntry"].ToString() : string.Empty,
                                                                 AllowToChangeStoreInMRN = dr["AllowToChangeStoreInMRN"] != DBNull.Value ? dr["AllowToChangeStoreInMRN"].ToString() : string.Empty,
                                                                 MRNPrintReportName = dr["MRNPrintReportName"] != DBNull.Value ? dr["MRNPrintReportName"].ToString() : string.Empty,
+                                                                TakeSuuplierBatchOrSystmGeneratedBatchForInv = dr["TakeSuuplierBatchOrSystmGeneratedBatchForInv"] != DBNull.Value ? dr["TakeSuuplierBatchOrSystmGeneratedBatchForInv"].ToString() : string.Empty,
                                                                 AllowBackDateMRIR = dr["AllowBackDateMRIR"] != DBNull.Value ? dr["AllowBackDateMRIR"].ToString() : string.Empty,
 
                                                             }).ToList();
@@ -640,6 +641,7 @@ namespace eTactWeb.Data.DAL
                     model.AllowBackDateMRNEntry = DS.Tables[0].Rows[0]["AllowBackDateMRNEntry"].ToString();
                     model.BatchWiseInventory = DS.Tables[0].Rows[0]["BatchWiseInventory"].ToString();
                     model.MRNPrintReportName = DS.Tables[0].Rows[0]["MRNPrintReportName"].ToString();
+                    model.TakeSuuplierBatchOrSystmGeneratedBatchForInv = DS.Tables[0].Rows[0]["TakeSuuplierBatchOrSystmGeneratedBatchForInv"].ToString();
 
 
                 }
@@ -891,6 +893,7 @@ namespace eTactWeb.Data.DAL
                         SqlParams.Add(new SqlParameter("@AllowBackDateMRNEntry", model.AllowBackDateMRNEntry));
                         SqlParams.Add(new SqlParameter("@BatchWiseInventory", model.BatchWiseInventory));
                         SqlParams.Add(new SqlParameter("@MRNPrintReportName", model.MRNPrintReportName));
+                        SqlParams.Add(new SqlParameter("@TakeSuuplierBatchOrSystmGeneratedBatchForInv", model.TakeSuuplierBatchOrSystmGeneratedBatchForInv));
 
                      }
                       if (model.Type == "CommonDetail")
