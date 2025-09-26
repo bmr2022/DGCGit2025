@@ -1267,6 +1267,10 @@ namespace eTactWeb.Controllers
 
             dynamic MainModel = new DirectPurchaseBillModel();
             var SN = model.AdjPageName;
+            foreach (var item in model.AdjAdjustmentDetailGrid)
+            {
+                SN = item.AdjPageName;
+            }
             if (SN == "DirectPurchaseBill")
             {
                 MainModel = new DirectPurchaseBillModel();
@@ -1274,6 +1278,10 @@ namespace eTactWeb.Controllers
             else if (SN == "PurchaseBill")
             {
                 MainModel = new PurchaseBillModel();
+            }
+            else if(SN == "SaleInvoice")
+            {
+                MainModel = new SaleBillModel();
             }
             string modelJson = HttpContext.Session.GetString("KeyAdjGrid");
             AdjustmentModel AdjGrid = new AdjustmentModel();

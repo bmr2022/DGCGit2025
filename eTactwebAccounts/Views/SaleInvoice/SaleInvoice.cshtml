@@ -141,8 +141,50 @@
                     </div>
                 </div>
                 <div class="accordion-item">
+                    <h2 class="accordion-header" id="HPanel10">
+                        <button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#BPanel10" aria-expanded="true" aria-controls="BPanel10">
+                            <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>History Detail Grid</strong>
+                        </button>
+                       
+                    </h2>
+                    <div id="BPanel10" class="accordion-collapse collapse pnl1 bg-gradient" aria-labelledby="HPanel10">
+                        <div class="accordion-body">
+
+                            <div class="card">
+                               @*  <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12" style="margin-top:10px;margin-left:1100px">
+                                    <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
+                                </div> *@
+
+                                <div class="card-body overflow-auto pb-0">
+                                    <div class="table-responsive" style="max-height:150px;">
+                                        <table class="table table-hover table-bordered table-striped" id="poTable">
+                                            <thead class="bg-gradient card-headerBG text-light small" id="poThead" style="white-space:nowrap">
+                                                <tr id="HistoryRow">
+                                                    
+                                                    <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bill No</th>
+                                                    <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Date</th>
+                                                    <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Customer</th>
+                                                    <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Qty</th>
+                                                    <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MRP</th>
+                                                    <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Discount %</th>
+                                                    <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rate</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="DivSaleBillHistory">
+                                                <partial name="_SaleBillHistoryGrid" />
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
                     <h2 class="accordion-header" id="HPanel2">
-                        <button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#BPanel2" aria-expanded="true" aria-controls="BPanel2">
+                        <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#BPanel2" aria-expanded="true" aria-controls="BPanel2">
                             <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Item Detail Grid</strong>
                         </button>
                         <button type="button" style="display:none" class="PendGridButton btn btn-sm btn-outline-danger mt-1 mb-1 PendingItem">
@@ -363,7 +405,7 @@
                 </div>
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="H_TaxDetail">
-                        <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_TaxDetail" aria-expanded="true" aria-controls="B_TaxDetail">
+                        <button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_TaxDetail" aria-expanded="true" aria-controls="B_TaxDetail">
                             <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Tax Detail</strong>
                         </button>
                     </h2>
@@ -411,7 +453,7 @@
                 </div>
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="HPanel4">
-                        <button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#BPanel4" aria-expanded="true" aria-controls="BPanel4">
+                        <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#BPanel4" aria-expanded="true" aria-controls="BPanel4">
                             <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Other Detail</strong>
                             <small class="p-3"></small>
                         </button>
@@ -1667,8 +1709,43 @@
         $('#AccountCode').change(function () {
           
             showDetail();
+            GetlastBillDetail();
 
 })
+
+        function GetlastBillDetail() {
+           
+            
+            var AccountCode = $('#AccountCode').val();
+            var invoicedate = $('#SaleBillDate').val();
+            var currentYearcode = $('#SaleBillYearCode').val();
+            var ItemCode = $('#ItemCode').val();
+           
+
+            $.ajax({
+                type: 'POST',
+                url: "@Url.Action("GetlastBillDetail")",
+                data: {
+                    
+                    AccountCode: AccountCode,
+                    invoicedate: invoicedate,
+                    currentYearcode: currentYearcode,
+                    ItemCode: ItemCode,
+                   
+                },
+                success: function (response) {
+                    // Clear the existing items in the table body
+                    $('#DivSaleBillHistory').empty(); // Clear existing items
+                    $('#DivSaleBillHistory').html(response);
+
+                   
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching BOM tree data:", error);
+                }
+            });
+           
+        }
 
 
         function showDetail() {
@@ -3392,6 +3469,7 @@
             FillSOItemRate();
             DisableDiscountFields();
             CalculateAmount();
+            GetlastBillDetail();
         });
 
         function DisableDiscountFields() {

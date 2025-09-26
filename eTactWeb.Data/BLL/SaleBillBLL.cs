@@ -44,6 +44,11 @@ namespace eTactWeb.Data.BLL
         {
             return await _SaleBillDAL.ShowGroupWiseItems( Group_Code,  AccountCode,  storeid,  GroupName,  ToDate,  FromDate,  PartCode);
         }
+
+        public async Task<SaleBillModel> GetlastBillDetail(string invoicedate, int currentYearcode, int AccountCode, int ItemCode)
+        {
+            return await _SaleBillDAL.GetlastBillDetail( invoicedate,  currentYearcode,  AccountCode, ItemCode);
+        }
         public async Task<ResponseResult> GetReportName()
         {
             return await _SaleBillDAL.GetReportName();

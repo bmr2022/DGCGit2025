@@ -773,14 +773,14 @@ namespace eTactWeb.Data.DAL
             var _ResponseResult = new ResponseResult();
             try
             {
-                var finStDt = Convert.ToDateTime(FinStartDate);
-                //var transDt= Convert.ToDateTime(TrDate);
+                var finStDt = CommonFunc.ParseFormattedDate(FinStartDate);
+                var transDt = CommonFunc.ParseFormattedDate(TrDate);
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@itemCode", ItemCode));
                 SqlParams.Add(new SqlParameter("@Yearcode", YearCode));
                 SqlParams.Add(new SqlParameter("@StorName", StoreName));
-                SqlParams.Add(new SqlParameter("@FinStartDate", ParseFormattedDate(FinStartDate)));
-                SqlParams.Add(new SqlParameter("@transDate", ParseFormattedDate(TrDate)));
+                SqlParams.Add(new SqlParameter("@FinStartDate", finStDt));
+                SqlParams.Add(new SqlParameter("@transDate", transDt));
                 SqlParams.Add(new SqlParameter("@batchno", batchno));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("FillCurrentBatchINStoreWithNegativeStock", SqlParams);
             }

@@ -106,6 +106,10 @@ public class SaleOrderBLL : ISaleOrder
     {
         return await _SaleOrderDAL.GetLockedYear(YearCode);
     }
+    public async Task<SaleOrderModel> GetlastSaleOrderDetail(string EntryDate, int currentYearcode, int AccountCode, int ItemCode)
+    {
+        return await _SaleOrderDAL.GetlastSaleOrderDetail(EntryDate, currentYearcode, AccountCode, ItemCode);
+    }
 
     public async Task<object> GetAmmStatus(int EntryID, int YearCode)
     {

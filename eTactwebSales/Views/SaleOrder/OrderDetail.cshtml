@@ -483,6 +483,49 @@
                         </div>
                     }
                 </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="HPanel10">
+                        <button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#BPanel10" aria-expanded="true" aria-controls="BPanel10">
+                            <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>History Detail Grid</strong>
+                        </button>
+
+                    </h2>
+                    <div id="BPanel10" class="accordion-collapse collapse pnl1 bg-gradient" aria-labelledby="HPanel10">
+                        <div class="accordion-body">
+
+                            <div class="card">
+                              @*   <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12" style="margin-top:10px;margin-left:1100px">
+                                    <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
+                                </div>
+ *@
+                                <div class="card-body overflow-auto pb-0">
+                                    <div class="table-responsive" style="max-height:150px;">
+                                        <table class="table table-hover table-bordered table-striped" id="poTable">
+                                            <thead class="bg-gradient card-headerBG text-light small" id="poThead" style="white-space:nowrap">
+                                                <tr id="HistoryRow">
+
+                                                    <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bill No</th>
+                                                    <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Date</th>
+                                                    <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Customer</th>
+                                                    <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Qty</th>
+                                                    <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MRP</th>
+                                                    <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Discount %</th>
+                                                    <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rate</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="DivSaleBillHistory">
+                                                <partial name="_SaleOrderHistoryGrid" />
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="H_SAGrid">
                         <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid" tabindex="-1">
@@ -1293,7 +1336,7 @@
 </div>
 
 <div class="modal fade" style="display:none" id="SaleOrderGroupWiseItem" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl" >
+    <div class="modal-dialog modal-xl modal-fullscreen">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="staticBackdropLabel">Group Name</h5>
@@ -1311,7 +1354,7 @@
                     <div class="card-body">
                         <div class="row g-2 gx-3">
 
-                            <div class="card-body text-center overflow-auto pb-0   ">
+                            <div class="card-body text-center overflow-auto pb-0 mt-0 pt-0  ">
                                 <div class="d-flex align-items-center mb-2">
                                 <button class="btn btn-sm btn-outline-warning mb-2" type="button" id="CheckAll" style="display: flex; align-items: center;">
                                     <i class="fa fa-check-square" aria-hidden="true"></i>
@@ -1320,7 +1363,33 @@
                                 <div class="col-md-2 me-3" style="margin-left:50px">
                                         <input type="text" class="form-control" id="search-box1" placeholder="Search..." style="background-color:#FFFACD;">
                                     </div>
+                                    <div style="width:800px;">
+                                        <div class="card">
+
+                                            <div class="card-body overflow-auto p-0" style="max-height:200px;">
+                                                <table class="table table-sm table-bordered table-striped mb-0">
+                                                    <thead class="bg-gradient card-headerBG text-light small" id="poThead" style="white-space:nowrap">
+                                                        <tr id="HistoryRow">
+
+                                                            <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bill No</th>
+                                                            <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Date</th>
+                                                            <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Customer</th>
+                                                            <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Qty</th>
+                                                            <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MRP</th>
+                                                            <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Discount %</th>
+                                                            <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rate</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="DivSaleOrderGroupHistory">
+                                                        <partial name="_SaleOrderHistoryGrid" />
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
+
+                               
                                 <div class="table-responsive" style="max-height:350px;">
                                     <table class="table table-hover table-bordered table-striped mb-0">
                                         <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
@@ -2292,6 +2361,83 @@
 
         });//ready end here
 
+        function GetlastSaleOrderDetail() {
+
+
+            var AccountCode = $('#AccountCode').val();
+            var EntryDate = $('#SODate').val();
+            var currentYearcode = $('#YearCode').val();
+            var ItemCode = $('#ItemCode').val();
+
+
+            $.ajax({
+                type: 'POST',
+                url: "@Url.Action("GetlastSaleOrderDetail")",
+                data: {
+
+                    AccountCode: AccountCode,
+                    EntryDate: EntryDate,
+                    currentYearcode: currentYearcode,
+                    ItemCode: ItemCode,
+
+                },
+                success: function (response) {
+                    // Clear the existing items in the table body
+                    $('#DivSaleBillHistory').empty(); // Clear existing items
+                    $('#DivSaleBillHistory').html(response);
+
+
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching BOM tree data:", error);
+                }
+            });
+
+        }
+
+
+
+        // Handle each checkbox change individually
+        $(document).on('change', '.row-select', function () {
+            var itemCode = $(this).val(); // Get the ItemCode of this checkbox
+            var isChecked = $(this).is(':checked'); // true if checked, false if unchecked
+
+            if (isChecked) {
+                // Call your function for this ItemCode only if checked
+                GetlastGroupWiseSaleOrderDetail(itemCode);
+            }
+        });
+
+        // Modified function to accept a single ItemCode
+        function GetlastGroupWiseSaleOrderDetail(itemCode) {
+            var AccountCode = $('#AccountCode').val();
+            var EntryDate = $('#SODate').val();
+            var currentYearcode = $('#YearCode').val();
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetlastSaleOrderDetail")',
+                data: {
+                    AccountCode: AccountCode,
+                    EntryDate: EntryDate,
+                    currentYearcode: currentYearcode,
+                    ItemCode: itemCode // send the single selected item code
+                },
+                success: function (response) {
+                    // Clear the existing items in the table body
+                    $('#DivSaleOrderGroupHistory').empty();
+                    $('#DivSaleOrderGroupHistory').html(response);
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching Group Wise Sale Order data:", error);
+                }
+            });
+        }
+
+
+
+
+
         $(document).on('mouseover', 'input[type="text"]', function () {
             $(this).attr('title', $(this).val());
         });
@@ -2658,7 +2804,9 @@
             if($('#Mode').val()=='')
         {
             GetItemPartCode('ItemCode');
+
         }
+            GetlastSaleOrderDetail();
         });
 
         function GetServerDate() {
@@ -3774,6 +3922,7 @@
             }
             else $('#Address').val(''), $('#DeliveryAddress').val('');
             $('#PartyName').val($('#AccountCode option:selected').text());
+            GetlastSaleOrderDetail();
         });
 
 

@@ -570,7 +570,17 @@ public class SaleOrderController : Controller
 		string JsonString = JsonConvert.SerializeObject(JSON);
 		return Json(JsonString);
 	}
-	public async Task<JsonResult> NewAmmEntryId(int YearCode)
+    public async Task<IActionResult> GetlastSaleOrderDetail(string EntryDate, int currentYearcode, int AccountCode, int ItemCode)
+    {
+
+        var model = new SaleOrderModel();
+        model = await _ISaleOrder.GetlastSaleOrderDetail(EntryDate, currentYearcode, AccountCode, ItemCode);
+
+
+        return PartialView("_SaleOrderHistoryGrid", model);
+
+    }
+    public async Task<JsonResult> NewAmmEntryId(int YearCode)
 	{
 		var JSON = await _ISaleOrder.NewAmmEntryId(YearCode);
 		string JsonString = JsonConvert.SerializeObject(JSON);

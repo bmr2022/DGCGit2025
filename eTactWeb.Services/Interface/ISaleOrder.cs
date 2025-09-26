@@ -15,8 +15,10 @@ namespace eTactWeb.Services.Interface
         Task<SaleOrderModel> ShowGroupWiseItems(int Group_Code,int AccountCode);
         Task<ResponseResult> getdiscCategoryName(int Group_Code, int AccountCode);
         Task<string> GetSOItem(int AccountCode, int SONO, int Year, int ItemCode);
+        Task<SaleOrderModel> GetlastSaleOrderDetail(string EntryDate, int currentYearcode, int AccountCode, int ItemCode);
 
-      
+
+
         Task<SaleOrderDashboard> GetAmmDashboardData();
         Task<ResponseResult> GetTotalStockList(int store, int Itemcode);
         Task<ResponseResult> GetAllowMultiBuyerProp();

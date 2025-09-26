@@ -38,38 +38,38 @@
                 <td class="divNRGPItemListPC">@item.PartCode <input type="hidden" value="@item.ItemCode" id="GridIC-@item.SEQNo" /></td>
                 <td>@item.ItemName</td>
                 <td>@item.HSNNo</td>
-                <td>@item.StoreName</td>
-                <td id="GridBatchNo-@item.SEQNo">@item.BatchNo</td>
-                <td id="GridUniqueBatchNo-@item.SEQNo">@item.uniquebatchno</td>
+                <td class="AllowToChangeStore">@item.StoreName</td>
+                <td class="AllowToChangeStore" id="GridBatchNo-@item.SEQNo">@item.BatchNo</td>
+                <td class="AllowToChangeStore" id="GridUniqueBatchNo-@item.SEQNo">@item.uniquebatchno</td>
                 <td>@item.TotalStock</td>
-                <td id="ItemBatchNo-@item.SEQNo">@item.BatchStock</td>
-                <td>@item.ProcessName</td>
+                <td class="AllowToChangeStore" id="ItemBatchNo-@item.SEQNo">@item.BatchStock</td>
+                <td class="ShowHideOtherDetailTableData">@item.ProcessName</td>
                 <td>@item.Qty.ToString("#.#0")</td>
                 <td>@item.unit</td>
                 <td>@item.Rate.ToString("#.#0")</td>
                 <td id="GridAmount-@Cntr">@item.Amount.ToString("#.#0")</td>
                 <td>@item.PurchasePrice</td>
-                <td>@item.AltQty</td>
-                <td>@item.AltUnit</td>
+                <td class="ShowHideOtherDetailTableData">@item.AltQty</td>
+                <td class="ShowHideOtherDetailTableData">@item.AltUnit</td>
                 <td>@item.RemarkDetail</td>
-                <td>@item.Purpose</td>
-                <td>@item.PONO</td>
-                <td>@item.POYearCode</td>
-                <td>@item.PODate</td>
-                <td>@item.POAmendementNo</td>
-                <td>@item.discper</td>
-                <td>@item.disamt</td>
-                <td>@item.Amount</td>
-                <td>@item.AgainstChallanEntryId</td>
-                <td>@item.AgainstChallanNo</td>
-                <td>@item.AgainstChallanYearCode</td>
-                <td>@item.AgainstChallanType</td>
-                <td>@item.Closed</td>
-                <td>@item.ItemColor</td>
-                <td>@item.ItemSize</td>
-                <td>@item.ItemModel</td>
-                <td>@item.PendQty</td>
-                <td>@item.PendAltQty</td>
+                <td class="ShowHideOtherDetailTableData">@item.Purpose</td>
+                <td class="ShowHideOtherDetailTableData">@item.PONO</td>
+                <td class="ShowHideOtherDetailTableData">@item.POYearCode</td>
+                <td class="ShowHideOtherDetailTableData">@item.PODate</td>
+                <td class="ShowHideOtherDetailTableData">@item.POAmendementNo</td>
+                <td class="ShowHideOtherDetailTableData">@item.discper</td>
+                <td class="ShowHideOtherDetailTableData">@item.disamt</td>
+                <td class="ShowHideOtherDetailTableData">@item.Amount</td>
+                <td class="ShowHideOtherDetailTableData">@item.AgainstChallanEntryId</td>
+                <td class="ShowHideOtherDetailTableData">@item.AgainstChallanNo</td>
+                <td class="ShowHideOtherDetailTableData">@item.AgainstChallanYearCode</td>
+                <td class="ShowHideOtherDetailTableData">@item.AgainstChallanType</td>
+                <td class="ShowHideOtherDetailTableData">@item.Closed</td>
+                <td class="ShowHideOtherDetailTableData">@item.ItemColor</td>
+                <td class="ShowHideOtherDetailTableData">@item.ItemSize</td>
+                <td class="ShowHideOtherDetailTableData">@item.ItemModel</td>
+                <td class="ShowHideOtherDetailTableData">@item.PendQty</td>
+                <td class="ShowHideOtherDetailTableData">@item.PendAltQty</td>
             </tr>
         }
     }
