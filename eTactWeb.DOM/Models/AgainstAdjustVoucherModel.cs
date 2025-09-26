@@ -64,7 +64,7 @@ namespace eTactWeb.DOM.Models
         public decimal DrAmt { get; set; }
         public decimal CrAmt { get; set; }
         public double VoucherAmt { get; set; }
-        public IList<JournalVoucherModel> JournalVoucherList { get; set; }
+        public IList<JournalVoucherModel> AgainstAdjustVoucherList { get; set; }
         public List<PopUpDataTableAgainstRef> DataTable { get; set; }
         public int BooktrnsEntryId { get; set; }
         public int DocEntryId { get; set; }

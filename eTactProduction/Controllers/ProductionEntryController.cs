@@ -1804,15 +1804,15 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> FillMachineGroup()
+        public async Task<JsonResult> FillMachineGroup(int machineId)
         {
-            var JSON = await _IProductionEntry.FillMachineGroup();
+            var JSON = await _IProductionEntry.FillMachineGroup(machineId);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> FillMachineName()
+        public async Task<JsonResult> FillMachineName(int groupId)
         {
-            var JSON = await _IProductionEntry.FillMachineName();
+            var JSON = await _IProductionEntry.FillMachineName(groupId);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
@@ -1948,15 +1948,15 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> GetItems(string ProdAgainst, int YearCode, string ItemName)
+        public async Task<JsonResult> GetItems(string ProdAgainst, int YearCode, string ItemName,int WCID)
         {
-            var JSON = await _IProductionEntry.GetItems(ProdAgainst, YearCode,ItemName);
+            var JSON = await _IProductionEntry.GetItems(ProdAgainst, YearCode,ItemName,WCID);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> GetPartCode(string ProdAgainst, int YearCode, string PartCode)
+        public async Task<JsonResult> GetPartCode(string ProdAgainst, int YearCode, string PartCode,int WCID)
         {
-            var JSON = await _IProductionEntry.GetPartCode(ProdAgainst, YearCode   ,PartCode);
+            var JSON = await _IProductionEntry.GetPartCode(ProdAgainst, YearCode   ,PartCode, WCID);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
