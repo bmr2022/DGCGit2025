@@ -331,13 +331,14 @@ public class ProductionEntryDAL
 
         return _ResponseResult;
     }
-    public async Task<ResponseResult> FillMachineGroup()
+    public async Task<ResponseResult> FillMachineGroup(int machineId)
     {
         var _ResponseResult = new ResponseResult();
         try
         {
             var SqlParams = new List<dynamic>();
             SqlParams.Add(new SqlParameter("@Flag", "machinegroup"));
+            SqlParams.Add(new SqlParameter("@MachineId", machineId));
             _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_ProductionEntry", SqlParams);
         }
         catch (Exception ex)
@@ -349,13 +350,14 @@ public class ProductionEntryDAL
 
         return _ResponseResult;
     }
-    public async Task<ResponseResult> FillMachineName()
+    public async Task<ResponseResult> FillMachineName(int groupId)
     {
         var _ResponseResult = new ResponseResult();
         try
         {
             var SqlParams = new List<dynamic>();
             SqlParams.Add(new SqlParameter("@Flag", "machine"));
+            SqlParams.Add(new SqlParameter("@MachGroupId", groupId));
             _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_ProductionEntry", SqlParams);
         }
         catch (Exception ex)
@@ -958,7 +960,7 @@ public class ProductionEntryDAL
 
         return _ResponseResult;
     }
-    public async Task<ResponseResult> GetItems(string ProdAgainst, int YearCode,string ItemName)
+    public async Task<ResponseResult> GetItems(string ProdAgainst, int YearCode,string ItemName, int WCID)
     {
         var _ResponseResult = new ResponseResult();
         try
@@ -967,6 +969,7 @@ public class ProductionEntryDAL
             SqlParams.Add(new SqlParameter("@Flag", "FillItemName"));
             SqlParams.Add(new SqlParameter("@ProdAgainstReqPlanDirect", ProdAgainst));
             SqlParams.Add(new SqlParameter("@ItemName", ItemName));
+            SqlParams.Add(new SqlParameter("@WCID", WCID));
             SqlParams.Add(new SqlParameter("@Yearcode", YearCode));
             _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_ProductionEntry", SqlParams);
         }
@@ -979,7 +982,7 @@ public class ProductionEntryDAL
 
         return _ResponseResult;
     }
-    public async Task<ResponseResult> GetPartCode(string ProdAgainst, int YearCode,string PartCode)
+    public async Task<ResponseResult> GetPartCode(string ProdAgainst, int YearCode,string PartCode,int WCID)
     {
         var _ResponseResult = new ResponseResult();
         try
@@ -988,6 +991,7 @@ public class ProductionEntryDAL
             SqlParams.Add(new SqlParameter("@Flag", "FillPartCode"));
             SqlParams.Add(new SqlParameter("@ProdAgainstReqPlanDirect", ProdAgainst));
             SqlParams.Add(new SqlParameter("@PartCode", PartCode));
+            SqlParams.Add(new SqlParameter("@WCID", WCID));
             SqlParams.Add(new SqlParameter("@Yearcode", YearCode));
             _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_ProductionEntry", SqlParams);
         }
