@@ -231,102 +231,59 @@ public class GateAttendanceDAL
             var SqlParams = new List<dynamic>();
 
             //DateTime EntryDt = new DateTime();
-            //DateTime VouchDate = new DateTime();
+            //DateTime attdate = new DateTime();
             //DateTime InvDate = new DateTime();
             //DateTime AppDate = new DateTime();
             //DateTime CurrentDate = new DateTime();
 
-            //var EntryDt = CommonFunc.ParseFormattedDate(model.EntryDate);
-            //var VouchDate = CommonFunc.ParseFormattedDate(model.VouchDate);
-            //var InvDate = CommonFunc.ParseFormattedDate(model.InvDate);
-            var CurrentDate = CommonFunc.ParseFormattedDate(DateTime.Now.ToString("dd/MM/yyyy"));
-            var AppDate = "";
+            var EntryDt = CommonFunc.ParseSafeDate(model.GateAttEntryDate);
+            var AttDate = CommonFunc.ParseSafeDate(model.strEmpAttDate);
+            var fromdate = CommonFunc.ParseSafeDate(model.NFromDate);
+            var todate = CommonFunc.ParseSafeDate(model.NToDate);
+            var CurrentDate = CommonFunc.ParseSafeDate(DateTime.Now.ToString("dd/MM/yyyy"));
             SqlParams.Add(new SqlParameter("@Flag", model.Mode == "COPY" ? "INSERT" : model.Mode));
             //SqlParams.Add(new SqlParameter("@ID", model.ID));
             if (model.Mode == "INSERT")
-                SqlParams.Add(new SqlParameter("@EntryID", 0));
+                SqlParams.Add(new SqlParameter("@GateAttEntryId", 0));
             else
-                SqlParams.Add(new SqlParameter("@EntryID", model.GateAttEntryId));
-            if (model.Mode == "POA")
+                SqlParams.Add(new SqlParameter("@GateAttEntryId", model.GateAttEntryId));
+
+            SqlParams.Add(new SqlParameter("@GateAttYearCode", model.GateAttYearCode));
+            SqlParams.Add(new SqlParameter("@AttendanceDate", EntryDt == default ? null : EntryDt));
+            SqlParams.Add(new SqlParameter("@AttendanceEntryMethod", model.AttendanceEntryMethodType));
+            SqlParams.Add(new SqlParameter("@fromdate", fromdate == default ? string.Empty : fromdate));
+            SqlParams.Add(new SqlParameter("@todate", todate == default ? string.Empty : todate));
+            SqlParams.Add(new SqlParameter("@ShiftId", model.ActualEmpShiftId != null ? model.ActualEmpShiftId : 1));
+            SqlParams.Add(new SqlParameter("@EmpCateid", model.EmpCategoryId != null ? model.EmpCategoryId : 0));
+            SqlParams.Add(new SqlParameter("@DepId", model.DeptId != null ? model.DeptId : 0));
+            SqlParams.Add(new SqlParameter("@DesgId", model.DesignationEntryId != null ? model.DesignationEntryId : 0));
+            SqlParams.Add(new SqlParameter("@EmpId", model.EmpId != null ? model.EmpId : 0));
+            SqlParams.Add(new SqlParameter("@AttendanceForMonth", model.intEmpAttMonth != null ? model.intEmpAttMonth  : 0));
+            SqlParams.Add(new SqlParameter("@DailyMonthlyAttendance", model.DayOrMonthType.ToUpper()));
+            SqlParams.Add(new SqlParameter("@CC", model.Branch));
+
+            if (string.Equals(model.DayOrMonthType, "Monthly", StringComparison.OrdinalIgnoreCase))
             {
-                //AppDate = CommonFunc.ParseFormattedDate(model.ApprovedDate);
-                SqlParams.Add(new SqlParameter("@ApprovedDate", AppDate == default ? string.Empty : AppDate));
-                //SqlParams.Add(new SqlParameter("@Approved", model.Approved));
-                //SqlParams.Add(new SqlParameter("@Approvedby", model.Approvedby));
+                SqlParams.Add(new SqlParameter("@dtMonthly", itemgrid));
             }
+            else
+            {
+                SqlParams.Add(new SqlParameter("@dt", itemgrid));
+            }
+            if (model.Mode == "UPDATE")
+            {
+                SqlParams.Add(new SqlParameter("@UpdatedByEmpId", model.UpdatedBy));
+                SqlParams.Add(new SqlParameter("@EneterdBy", model.UpdatedBy));
+                SqlParams.Add(new SqlParameter("@LastUpdationDate", CurrentDate == default ? null : CurrentDate));
+            }
+            else if (model.Mode == "INSERT")
+             {
+                SqlParams.Add(new SqlParameter("@ActualEnteredBy", model.CreatedBy));
+                SqlParams.Add(new SqlParameter("@ActualEntryDate", CurrentDate == default ? null : CurrentDate));
+            }
+            SqlParams.Add(new SqlParameter("@EntryByMachineName", model.EntryByMachineName));
 
-            //SqlParams.Add(new SqlParameter("@YearCode", model.YearCode));
-            //SqlParams.Add(new SqlParameter("@EntryDate", EntryDt == default ? string.Empty : EntryDt));
-            //SqlParams.Add(new SqlParameter("@InvNo", model.InvoiceNo));
-            //SqlParams.Add(new SqlParameter("@InvoiceTime", InvDate == default ? string.Empty : InvDate));
-            //SqlParams.Add(new SqlParameter("@InvoiceDate", InvDate == default ? string.Empty : InvDate));
-            //SqlParams.Add(new SqlParameter("@PurchVoucherNo", model.PurchVouchNo));
-            //SqlParams.Add(new SqlParameter("@VoucherDate", VouchDate == default ? string.Empty : VouchDate));
-            //SqlParams.Add(new SqlParameter("@AccountCode", model.AccountCode));
-            //SqlParams.Add(new SqlParameter("@StateName", model.VendorStateName));
-            //SqlParams.Add(new SqlParameter("@GSTType", model.GstType));
-            //SqlParams.Add(new SqlParameter("@TypeITEMSERVASSETS", model.DPBTypeServItem));
-
-            //SqlParams.Add(new SqlParameter("@DomesticImport", model.DPBType));
-            //SqlParams.Add(new SqlParameter("@PaymentTerm", model.PaymentTerms));
-            //SqlParams.Add(new SqlParameter("@Transporter", model.Transport));
-            //SqlParams.Add(new SqlParameter("@Vehicleno", model.VehicleNo));
-            //SqlParams.Add(new SqlParameter("@CurrencyId", Convert.ToInt32(model.Currency)));
-            //SqlParams.Add(new SqlParameter("@ExchangeRate", model.ExchangeRate));
-            //SqlParams.Add(new SqlParameter("@ConversionFactor", model.ExchangeRate));
-            //SqlParams.Add(new SqlParameter("@BillAmt", (float)Math.Round(model.ItemNetAmount, 2)));
-            //SqlParams.Add(new SqlParameter("@RoundOffAmt", (float)Math.Round(model.TotalRoundOffAmt, 2)));
-            //SqlParams.Add(new SqlParameter("@RoundoffType", model.TotalRoundOff));
-            //SqlParams.Add(new SqlParameter("@GSTAmount", 0));
-            //SqlParams.Add(new SqlParameter("@Taxableamt", (float)Math.Round(model.TxAmount, 2)));
-            //SqlParams.Add(new SqlParameter("@ToatlDiscountPercent", (float)Math.Round(model.TotalDiscountPercentage, 2)));
-            //SqlParams.Add(new SqlParameter("@TotalDiscountAmount", (float)Math.Round(model.TotalAmtAftrDiscount, 2)));
-            //SqlParams.Add(new SqlParameter("@NetAmt", (float)model.NetTotal));
-            //SqlParams.Add(new SqlParameter("@Remark", model.Remark));
-            //SqlParams.Add(new SqlParameter("@CC", model.Branch));
-            //SqlParams.Add(new SqlParameter("@Uid", model.CreatedBy));
-            //SqlParams.Add(new SqlParameter("@TaxVariationPOvsBill", string.Empty));
-            //SqlParams.Add(new SqlParameter("@PONetAmt", (float)Math.Round(model.NetTotal, 2)));
-            //SqlParams.Add(new SqlParameter("@BOEDate", EntryDt == default ? string.Empty : EntryDt));
-            //SqlParams.Add(new SqlParameter("@ModeOfTrans", model.ModeOfTransport));
-            //SqlParams.Add(new SqlParameter("@TotalAmtInOtherCurr", (float)Math.Round(model.NetTotal, 2)));
-            //SqlParams.Add(new SqlParameter("@boeno", string.Empty));
-            //SqlParams.Add(new SqlParameter("@Commodity", string.Empty));
-            //SqlParams.Add(new SqlParameter("@PathOfFile1", model.PathOfFile1URL));
-            //SqlParams.Add(new SqlParameter("@PathOfFile2", model.PathOfFile2URL));
-            //SqlParams.Add(new SqlParameter("@PathOfFile3", model.PathOfFile3URL));
-            //SqlParams.Add(new SqlParameter("@BalanceSheetClosed", 'N'));
-            //SqlParams.Add(new SqlParameter("@GateRemark", string.Empty));
-            //SqlParams.Add(new SqlParameter("@MrnRemark", string.Empty));
-            //SqlParams.Add(new SqlParameter("@ActualEntryBy", model.PreparedBy));
-            //SqlParams.Add(new SqlParameter("@ActualEntryDate", CurrentDate == default ? string.Empty : CurrentDate));
-            //SqlParams.Add(new SqlParameter("@LastQcDate", EntryDt == default ? string.Empty : EntryDt));
-            //SqlParams.Add(new SqlParameter("@PORemarks", string.Empty));
-            //SqlParams.Add(new SqlParameter("@VendoreAddress", model.VendorAddress));
-            //SqlParams.Add(new SqlParameter("@paymentDay", model.PaymentDays));
-
-            //RoundFloatColumns(ItemDetailDT);
-            //RoundFloatColumns(TaxDetailDT);
-
-            //SqlParams.Add(new SqlParameter("@DTItemGrid", ItemDetailDT));
-            //SqlParams.Add(new SqlParameter("@DTTaxGrid", TaxDetailDT));
-            //SqlParams.Add(new SqlParameter("@DTTDSGrid", TDSDetailDT));
-            //SqlParams.Add(new SqlParameter("@DRCRDATA", DrCrDetailDT));
-            //SqlParams.Add(new SqlParameter("@AgainstRef", AdjDetailDT));
-            //if (model.Mode == "UPDATE")
-            //{
-            //    SqlParams.Add(new SqlParameter("@UpdatedBy", model.UpdatedBy));
-            //    SqlParams.Add(new SqlParameter("@EneterdBy", model.UpdatedBy));
-            //    SqlParams.Add(new SqlParameter("@LastUpdatedDate", CurrentDate == default ? string.Empty : CurrentDate));
-            //}
-            //else if (model.Mode == "INSERT")
-            //{
-            //    SqlParams.Add(new SqlParameter("@CreatedBY", model.CreatedBy));
-            //}
-            //SqlParams.Add(new SqlParameter("@EntryByMachine", model.EntryByMachineName));
-            //SqlParams.Add(new SqlParameter("@EntryByMachineName", model.EntryByMachineName));
-
-            //_ResponseResult = await _IDataLogic.ExecuteDataTable("SP_DirectPurchaseBillMainDetail", SqlParams);
+            _ResponseResult = await _IDataLogic.ExecuteDataTable("HRSPGateAttendanceMainDetail", SqlParams);
         }
         catch (Exception ex)
         {

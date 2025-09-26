@@ -67,7 +67,7 @@
                             @if (Model.Mode == "U")
                             {
                                 <div class="col-auto">
-                                    <button @* type="submit" *@ class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton">
+                                    <button type="button" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton">
                                         <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                                         UPDATE
                                     </button>
@@ -77,7 +77,7 @@
                             else
                             {
                                 <div class="col-auto">
-                                    <button @* type="submit" *@ class="btn btn-outline-primary btn-sm" id="submitBTN">
+                                    <button type="button" class="btn btn-outline-primary btn-sm" id="submitBTN">
                                         <i class="fa-solid fa-chevron-circle-right"></i>
                                         SUBMIT
                                     </button>
@@ -195,7 +195,7 @@
                             @if (Model.Mode == "U")
                             {
                                 <div class="col-auto">
-                                    <button @* type="submit" *@ class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton">
+                                    <button type="button" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton">
                                         <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                                         UPDATE
                                     </button>
@@ -204,7 +204,7 @@
                             else
                             {
                                 <div class="col-auto">
-                                    <button @* type="submit" *@ class="btn btn-primary btn-sm" id="submitBTN">
+                                    <button type="button" class="btn btn-primary btn-sm" id="submitBTN">
                                         <i class="fa-solid fa-chevron-circle-right"></i>
                                         SUBMIT
                                     </button>
@@ -459,7 +459,11 @@
             });
             return model;
         }
-        $("#submitBTN, #UpdateButton").on("click", function() {submitAttendanceAjax();});
+        $("#submitBTN, #UpdateButton").on("click", function(e) 
+        { 
+            e.preventDefault(); // stop page refresh
+            submitAttendanceAjax();
+        });
         function submitAttendanceAjax() {
             $('.btn-outline-primary').prop('disabled', true).html('Validating Form... <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
             var IsErr = 0;
@@ -479,18 +483,26 @@
                     resetButtonText('.btn-outline-primary');
                 }
                 else{
-                    $.ajax({
+                    console.log("Payload:", model);
+                     $.ajax({
                         url: '@Url.Action("GateAttendance", "GateAttendance")',
                         type: "POST",
-                        contentType: "application/json",
-                        data: JSON.stringify(model),
+                        //contentType: "application/json; charset=utf-8",
+                        //data: JSON.stringify(model),
+                        data: model,
                         success: function (res) {
-                            alert(res.message || "Attendance saved successfully!");
-                            console.log(res);
+                            if (res != null && res.isSuccess == true) {
+                                $.notify(res?.message || "Attendance saved successfully!", "success");
+                                console.success("AJAX error:", xhr.responseText);
+                            }
+                            else if (res != null && res.isSuccess == false) {
+                                $.notify(res?.message || "Something went wrong", "error");
+                                console.error("AJAX error:", xhr.responseText);
+                            }
                         },
                         error: function (xhr) {
-                            alert("Error saving attendance");
-                            console.error(xhr.responseText);
+                            $.notify("Error saving attendance", "error");
+                            console.error("AJAX error:", xhr.responseText);
                         }
                     });
                 }

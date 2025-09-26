@@ -2262,6 +2262,24 @@ public static class CommonFunc
         }
         return minSqlDate;
     }
+    public static DateTime ParseSafeTime(string inputTime)
+    {
+        string[] formats = {
+        "HH:mm:ss",     // 23:59:59
+        "HH:mm",        // 23:59
+        "hh:mm tt",     // 11:59 PM
+        "hh:mm:ss tt"   // 11:59:59 PM
+    };
+
+        DateTime baseDate = new DateTime(1900, 1, 1); 
+        if (!string.IsNullOrWhiteSpace(inputTime) &&
+            DateTime.TryParseExact(inputTime, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsed))
+        {
+            return baseDate.Add(parsed.TimeOfDay);
+        }
+
+        return baseDate;
+    }
     public class LogException<T> where T : class
     {
         public LogException()

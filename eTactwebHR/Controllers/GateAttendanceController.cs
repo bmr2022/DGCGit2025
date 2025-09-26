@@ -120,7 +120,7 @@ namespace eTactwebHR.Controllers
             return View(MainModel);
         }
         [HttpPost]
-        public async Task<IActionResult> GateAttendance([FromBody] GateAttendanceModel model)
+        public async Task<IActionResult> GateAttendance(GateAttendanceModel model)
         {
             try
             {
@@ -139,32 +139,34 @@ namespace eTactwebHR.Controllers
                     ? new GateAttendanceModel()
                     : JsonConvert.DeserializeObject<GateAttendanceModel>(GateAttendanceJson);
 
-                var cc = stat.CurrentEntryCount;
-                var pp = stat.CurrentEstimatedSize;
+                SetEmptyOrNullFields<GateAttendanceModel>(model, MainModel);
+                string serializedGateAttendance = JsonConvert.SerializeObject(model);
+                HttpContext.Session.SetString("GateAttendance", serializedGateAttendance);
+
 
                 ModelState.Clear();
 
-                if (MainModel.GateAttDetailsList != null && MainModel.GateAttDetailsList.Count > 0)
+                if (model.GateAttDetailsList != null && model.GateAttDetailsList.Count > 0)
                 {
-                    //DS = GetItemDetailTable(MainModel.ItemDetailGrid, model.Mode, MainModel.EntryID, MainModel.YearCode);
-                    //ItemDetailDT = DS.Tables[0];
-                    //model.ItemDetailGrid = MainModel.ItemDetailGrid;
+                    DS = GetItemDetailTable(model, model.Mode, model.GateAttEntryId, model.GateAttYearCode);
+                    ItemDetailDT = DS.Tables[0];
+                    MainModel.GateAttDetailsList = model.GateAttDetailsList;
 
-                    //isError = false;
-                    //if (MainModel.ItemDetailGrid != null && MainModel.ItemDetailGrid.Any())
-                    //{
-                    //    var hasDupes = MainModel.ItemDetailGrid.GroupBy(x => new { x.ItemCode, x.docTypeId, x.Description })
-                    //   .Where(x => x.Skip(1).Any()).Any();
-                    //    if (hasDupes)
-                    //    {
-                    //        isError = true;
-                    //        ErrList.Add("ItemDetailGrid", "Document Type + ItemCode + Description In ItemDetails can not be Duplicate...!");
-                    //    }
-                    //}
+                    isError = false;
+                    if (model.GateAttDetailsList != null && model.GateAttDetailsList.Any())
+                    {
+                        var hasDupes = model.GateAttDetailsList.GroupBy(x => new { x.EmpId, x.EmpCategoryId })
+                       .Where(x => x.Skip(1).Any()).Any();
+                        if (hasDupes)
+                        {
+                            isError = true;
+                            ErrList.Add("GateAttDetailsList", "ItemDetails can not be Duplicate...!");
+                        }
+                    }
                 }
                 else
                 {
-                    ErrList.Add("ItemDetailGrid", "Item Details Cannot Be Blank..!");
+                    ErrList.Add("GateAttDetailsList", "Select At least one employee attandance..!");
                 }
                 if (model != null && model.CreatedBy == 0)
                 {
@@ -195,10 +197,9 @@ namespace eTactwebHR.Controllers
                         model.Branch = HttpContext.Session.GetString("Branch");
                         model.EntryByMachineName = HttpContext.Session.GetString("EmpName");
                         model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                        DataTable itemgrid = null;
-                        Result = await IGateAttendance.SaveGateAtt(model, itemgrid);
+                        Result = await IGateAttendance.SaveGateAtt(model, ItemDetailDT);
                     }
-
+                    string message = string.Empty;
                     if (Result != null)
                     {
                         if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
@@ -206,25 +207,30 @@ namespace eTactwebHR.Controllers
                             ViewBag.isSuccess = true;
                             TempData["200"] = "200";
                             HttpContext.Session.Remove("GateAttendance");
+                            message = "Success!";
                         }
                         else if (Result.StatusText == "Inserted Successfully" && Result.StatusCode == HttpStatusCode.Accepted)
                         {
                             ViewBag.isSuccess = true;
                             TempData["200"] = "200";
                             HttpContext.Session.Remove("GateAttendance");
+                            message = "Attendance inserted successfully!";
                         }
                         else if (Result.StatusText == "Updated Successfully" && Result.StatusCode == HttpStatusCode.Accepted)
                         {
                             ViewBag.isSuccess = true;
                             TempData["202"] = "202";
                             HttpContext.Session.Remove("GateAttendance");
-                            return RedirectToAction(nameof(GateAttendance));
+                            //return RedirectToAction(nameof(GateAttendance));
+                            message = "Attendance updated successfully!";
+                            return Json(new { isSuccess = true, message = message });
                         }
                         else if (Result.StatusText == "Deleted Successfully" && Result.StatusCode == HttpStatusCode.Accepted)
                         {
                             ViewBag.isSuccess = true;
                             TempData["410"] = "410";
                             HttpContext.Session.Remove("GateAttendance");
+                            message = "Deleted Successfully";
                         }
                         else if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
                         {
@@ -244,7 +250,9 @@ namespace eTactwebHR.Controllers
                                 model2.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                                 model2.UpdatedByName = HttpContext.Session.GetString("EmpName");
                                 model2.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                                return View("GateAttendance", model);
+                                //return View("GateAttendance", model);
+                                message = Result.StatusCode + "Occurred while saving data" + Result.Result;
+                                return Json(new { isSuccess = false, message = message });
                             }
                             else
                             {
@@ -259,7 +267,9 @@ namespace eTactwebHR.Controllers
                                 //model.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                                 model.UpdatedByName = HttpContext.Session.GetString("EmpName");
                                 model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                                return View("GateAttendance", model);
+                                //return View("GateAttendance", model);
+                                message = Result.StatusCode + "Occurred while saving data" + Result.Result;
+                                return Json(new { isSuccess = false, message = message });
                             }
                         }
                         else
@@ -279,13 +289,17 @@ namespace eTactwebHR.Controllers
                                 ViewBag.isSuccess = true;
                                 TempData["202"] = "202";
                                 HttpContext.Session.Remove("GateAttendance");
-                                return RedirectToAction(nameof(GateAttendance));
+                                //return RedirectToAction(nameof(GateAttendance));
+                                message = Result.StatusText;
+                                return Json(new { isSuccess = true, message = message });
                             }
                             else
                             {
                                 TempData["ErrorMessage"] = Result.StatusText;
                                 HttpContext.Session.Remove("GateAttendance");
-                                return View("GateAttendance", model);
+                                //return View("GateAttendance", model);
+                                message = Result.StatusText;
+                                return Json(new { isSuccess = false, message = message });
                             }
                         }
                     }
@@ -301,8 +315,9 @@ namespace eTactwebHR.Controllers
                     //model1.UpdatedByName = HttpContext.Session.GetString("EmpName");
                     model1.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
 
-                    return RedirectToAction(nameof(GateAttendance));
-
+                    //return RedirectToAction(nameof(GateAttendance));
+                    message = (!string.IsNullOrEmpty(message)) ? message : Result.StatusCode + "Occurred while saving data";
+                    return Json(new { isSuccess = true, message = message });
                 }
                 else
                 {
@@ -325,11 +340,52 @@ namespace eTactwebHR.Controllers
                     Result = ex
                 };
                 ViewBag.ResponseResult = ResponseResult;
-                return View("Error", ResponseResult);
+                //return View("Error", ResponseResult);
+                var message = "Occurred while saving data" + ex.Message;
+                return Json(new { isSuccess = true, message = message });
             }
             model = await BindModels(model);
-            return View("GateAttendance", model);
+            //return View("GateAttendance", model);
+            return Json(new { isSuccess = true, message = string.Empty });
+        }
+        public static void SetEmptyOrNullFields<T>(T target, T source)
+        {
+            if (target == null || source == null) return;
 
+            var properties = typeof(T).GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+
+            foreach (var prop in properties)
+            {
+                if (!prop.CanRead || !prop.CanWrite) continue;
+
+                var targetValue = prop.GetValue(target);
+                var sourceValue = prop.GetValue(source);
+
+                // If property type is class (not string), handle recursively
+                if (prop.PropertyType.IsClass && prop.PropertyType != typeof(string))
+                {
+                    if (targetValue == null && sourceValue != null)
+                    {
+                        prop.SetValue(target, sourceValue);
+                    }
+                    else if (targetValue != null && sourceValue != null)
+                    {
+                        // recursion for inner model
+                        SetEmptyOrNullFields(targetValue, sourceValue);
+                    }
+                }
+                else
+                {
+                    bool isDefault = targetValue == null ||
+                                     (prop.PropertyType.IsValueType && targetValue.Equals(Activator.CreateInstance(prop.PropertyType))) ||
+                                     (prop.PropertyType == typeof(string) && string.IsNullOrEmpty((string)targetValue));
+
+                    if (isDefault && sourceValue != null)
+                    {
+                        prop.SetValue(target, sourceValue);
+                    }
+                }
+            }
         }
         public async Task<GateAttendanceModel> BindModels(GateAttendanceModel model)
         {
@@ -378,6 +434,15 @@ namespace eTactwebHR.Controllers
             //ViewBag.DeptList = model.DeptList;
             //ViewBag.DesigList = model.DesignationList;
             //ViewBag.EmployeeList = model.EmployeeList;
+            
+            string GateAttendanceJson = HttpContext.Session.GetString("GateAttendance");
+            GateAttendanceModel MainModel = string.IsNullOrEmpty(GateAttendanceJson)
+                ? new GateAttendanceModel()
+                : JsonConvert.DeserializeObject<GateAttendanceModel>(GateAttendanceJson);
+            SetEmptyOrNullFields<GateAttendanceModel>(MainModel, model);
+            
+            string serializedGateAttendance = JsonConvert.SerializeObject(MainModel);
+            HttpContext.Session.SetString("GateAttendance", serializedGateAttendance);
             return PartialView("_GateManualAttendance", model);
         }
         private static DataSet GetItemDetailTable(GateAttendanceModel itemDetailList, string Mode, int? EntryID, int? YearCode)
@@ -394,24 +459,51 @@ namespace eTactwebHR.Controllers
             {
                 if (YearCode > 0 && itemDetailList.intEmpAttMonth > 0) {
                     daysInMonth = DateTime.DaysInMonth(Convert.ToInt32(YearCode), Convert.ToInt32(itemDetailList.intEmpAttMonth));
+                    daysInMonth = 31;
                 }
-                if (itemDetailList.DayHeaders == null)
+                if (itemDetailList.DayHeaders == null || itemDetailList.DayHeaders.Count == 0 || itemDetailList.DayHeaders.Count != (31*4))
                 {
                     itemDetailList.DayHeaders = new List<string>();
                     itemDetailList.strEmpAttMonth = new DateTime(Convert.ToInt32(YearCode), Convert.ToInt32(itemDetailList.intEmpAttMonth), 1).ToString("MMM");
                     for (int d = 1; d <= daysInMonth; d++)
                     {
+                        itemDetailList.DayHeaders.Add($"AttendStatus{d}");
                         itemDetailList.DayHeaders.Add($"AttInTime{d}");
                         itemDetailList.DayHeaders.Add($"AttOutTime{d}");
+                        itemDetailList.DayHeaders.Add($"TotalNoOfHours{d}");
                     }
                 }
+                for (int d = 1; d <= daysInMonth; d++)
+                {
+                    Table.Columns.Add($"AttendStatus{d}", typeof(string));
+                    Table.Columns.Add($"AttInTime{d}", typeof(DateTime));
+                    Table.Columns.Add($"AttOutTime{d}", typeof(DateTime));
+                    Table.Columns.Add($"TotalNoOfHours{d}", typeof(decimal));
+                }
+            }
+            else
+            {
+                itemDetailList.DayHeaders.Add($"AttendStatus");
+                itemDetailList.DayHeaders.Add($"AttInTime");
+                itemDetailList.DayHeaders.Add($"AttOutTime");
+                itemDetailList.DayHeaders.Add($"TotalNoOfHours");
+                Table.Columns.Add($"AttendStatus", typeof(string));
+                Table.Columns.Add($"AttInTime", typeof(DateTime));
+                Table.Columns.Add($"AttOutTime", typeof(DateTime));
+                Table.Columns.Add($"TotalNoOfHours", typeof(decimal));
             }
             Table.Columns.Add("AttShiftId", typeof(int));
-            Table.Columns.Add("categoryid", typeof(int));
-            Table.Columns.Add("shiftid", typeof(int));
+            Table.Columns.Add("CC", typeof(string));
+            Table.Columns.Add("CategoryCode", typeof(int));
+            Table.Columns.Add("EmpAttTime", typeof(DateTime));
+            Table.Columns.Add("ActualEmpShift", typeof(int));
+            Table.Columns.Add("ActualEmpInTime", typeof(DateTime));
+            Table.Columns.Add("ActualEmpOutTime", typeof(DateTime));
+            Table.Columns.Add("OvertTime", typeof(decimal));
 
             foreach (GateAttendanceModel Item in itemDetailList?.GateAttDetailsList ?? new List<GateAttendanceModel>())
             {
+                var currentDt = CommonFunc.ParseSafeDate(DateTime.Today.ToString());
                 List<object> rowValues = new List<object>
                 {
                     (itemDetailList.GateAttEntryId > 0 ? itemDetailList.GateAttEntryId : EntryID) ?? 0,
@@ -424,16 +516,28 @@ namespace eTactwebHR.Controllers
                 {
                     foreach (var header in itemDetailList.DayHeaders)
                     {
-                        if (Item.Attendance != null && Item.Attendance.ContainsKey(header))
-                            rowValues.Add(Item.Attendance[header]);
+                        if (!Item.Attendance.ContainsKey(header) && header.Contains("AttendStatus"))
+                        { rowValues.Add(string.Empty); }
+                        else if (!Item.Attendance.ContainsKey(header) && header.Contains("TotalNoOfHours"))
+                        { rowValues.Add(0); } //Math.Round(Item.Attendance[header], 2, MidpointRounding.AwayFromZero)
+                        else if (Item.Attendance != null && Item.Attendance.ContainsKey(header) && (header.Contains("InTime") || header.Contains("OutTime")))
+                        {
+                            var dt = CommonFunc.ParseSafeTime(Item.Attendance[header]);
+                            rowValues.Add(dt);
+                        }
                         else
-                            rowValues.Add(null);
+                        { rowValues.Add(null); }
                     }
                 }
 
                 rowValues.Add(Item.ActualEmpShiftId);
+                rowValues.Add(itemDetailList.CC);
                 rowValues.Add(itemDetailList.EmpCategoryId);
+                rowValues.Add(currentDt);
                 rowValues.Add(itemDetailList.ActualEmpShiftId);
+                rowValues.Add(currentDt);
+                rowValues.Add(currentDt);
+                rowValues.Add(0);
 
                 Table.Rows.Add(rowValues.ToArray());
             }
