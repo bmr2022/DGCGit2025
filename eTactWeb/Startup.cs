@@ -193,6 +193,7 @@ namespace eTactWeb
             services.TryAddScoped<ICustomerJobWorkIssue, CustomerJobWorkIssueBLL>();
             services.TryAddScoped<IBalanceSheet, BalanceSheetBLL>();
             services.TryAddScoped<ICloseProductionPlan, CloseProductionPlanBLL>();
+            services.TryAddScoped<ICloseJobWorkChallan, CloseJobWorkChallanBLL>();
             services.TryAddScoped<ITransactionLedger, TransactionLedgerBLL>();
             services.TryAddScoped<IOutStanding, OutStandingBLL>();
             services.TryAddScoped<IIndentRegister, IndentRegisterBLL>();
