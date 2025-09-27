@@ -2068,7 +2068,7 @@
                    
                     GetTotalStockQty();
                     StockableItems(parseInt($('#ItemCode').val()));
-                    GetBatchStock();
+                    /* GetBatchStock(); */
                     return false;
                 },
                 focus: function (event, ui) {
@@ -2094,7 +2094,7 @@
 
                     GetTotalStockQty();
                     StockableItems(parseInt($('#ItemCode').val()));
-                    GetBatchStock();
+                    /* GetBatchStock(); */
                     return false;
                 },
                 focus: function (event, ui) {
@@ -2458,6 +2458,7 @@
                             }
                             $('#uniquebatchno').empty();
                             $('#uniquebatchno').append('<option value="1" selected>1</option>');
+                            GetBatchStock();
                         }
                     }
                 }
