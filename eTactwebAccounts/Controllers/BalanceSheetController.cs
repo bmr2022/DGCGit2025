@@ -29,11 +29,11 @@ namespace eTactwebAccounts.Controllers
             MainModel.FromDate = HttpContext.Session.GetString("FromDate");
             return View(MainModel); // Pass the model with old data to the view
         }
-        public async Task<IActionResult> GetBalanceSheetData(string FromDate, string ToDate, string ReportType, int? BalParentAccountCode)
+        public async Task<IActionResult> GetBalanceSheetData(string FromDate, string ToDate, string ReportType, int? BalParentAccountCode, int? ParentAccountCode)
         {
             var model = new BalanceSheetModel();
             model.EntryByMachine = Environment.MachineName;
-            model = await _IBalanceSheet.GetBalanceSheetData(FromDate, ToDate, ReportType, BalParentAccountCode);
+            model = await _IBalanceSheet.GetBalanceSheetData(FromDate, ToDate, ReportType, BalParentAccountCode, ParentAccountCode);
 
             var sessionData = JsonConvert.SerializeObject(model);
             HttpContext.Session.SetString("BalanceSheetData", sessionData);

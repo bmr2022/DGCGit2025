@@ -318,5 +318,6 @@ public class Common
         public float TotalBillAmount {  get; set; }
         public float TotalRemainingAmount {  get; set; }
         public float TotalAdjustAmount { get; set; }
+        public float? PendingToAdjustAmount { get; set; }
     }
 }

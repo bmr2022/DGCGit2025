@@ -192,7 +192,7 @@
         });
 
         $(document).on('click', '.toggle-col', function () {
-             ; // should now hit when clicked
+            ; // should now hit when clicked
             var $th = $(this).closest('th');
             var colIndex = $th.index() + 1;
             var $icon = $(this).find('i');
@@ -255,7 +255,7 @@
             var ToDate = $('#ToDate').val();
             var ReportType = $('#ReportType').val();
             var BalParentAccountCode = $('#LiabilitiesAndAssets').val();
-
+            var ParentAccountCode = $('#ParentAccountName').val();
             $.ajax({
                 type: 'POST',
                 url: "@Url.Action("GetBalanceSheetData", "BalanceSheet")",
@@ -263,7 +263,8 @@
                     FromDate: FromDate,
                     ToDate: ToDate,
                     ReportType: ReportType,
-                    BalParentAccountCode: BalParentAccountCode
+                    BalParentAccountCode: BalParentAccountCode,
+                    ParentAccountCode: ParentAccountCode
                 },
                 success: function (response) {
                     $('#divStockMainRegister').html(response);
@@ -318,22 +319,60 @@
                 let currentFromDate = $('#FromDate').val();
                 let currentToDate = $('#ToDate').val();
                 let currentReportType = $('#ReportType').val();
-                let currentGroup = $('#Group').val();
-                let curentShowOpening = $('#ShowOpening').prop('checked') ? "YES" : "NO";
-                let currentShowRecordWithZeroAmt = $('#ShowRecordWithZeroAmt').prop('checked') ? "YES" : "NO";
-                saveHistory('ProfitAndLossGroupDetail', { FromDate: currentFromDate, ToDate: currentToDate, ReportType: currentReportType, GroupCode: currentGroup, ShowOpening: curentShowOpening, ShowRecordWithZeroAmt: currentShowRecordWithZeroAmt });
+                let currentLiabilitiesAndAssets = $('#LiabilitiesAndAssets').val();
+                saveHistory('BalanceSheetDetailByBalParentCode', { FromDate: currentFromDate, ToDate: currentToDate, ReportType: currentReportType, LiabilitiesAndAssets: currentLiabilitiesAndAssets, ParentCode: currentParentCode });
 
                 // Apply NEW state
                 var FromDate = $('#FromDate').val();
                 var ToDate = $('#ToDate').val();
-                var GroupCode = $(td).find(".hdnParentAccountCode").val();
-                var ShowOpening = $('#ShowOpening').prop('checked') ? "YES" : "NO";
-                var ShowRecordWithZeroAmt = $('#ShowRecordWithZeroAmt').prop('checked') ? "YES" : "NO";
-                $('#Group').val(GroupCode).trigger("change");
+                var BalParentCode = $(td).find(".hdnBalParentAccountCode").val();
+                $('#LiabilitiesAndAssets').val(BalParentCode).trigger("change");
                 $('#ReportType').val("DETAIL").trigger("change");
 
                 $('#BackButton').show();
             }
+        }
+
+        function GetBalanceSheetDataByParentCode(td) {
+            // Save OLD state first
+            let currentFromDate = $('#FromDate').val();
+            let currentToDate = $('#ToDate').val();
+            let currentReportType = $('#ReportType').val();
+            let currentLiabilitiesAndAssets = $('#LiabilitiesAndAssets').val();
+            let currentParentCode = $('#ParentAccountName').val();
+            saveHistory('BalanceSheetDetailByParentCode', { FromDate: currentFromDate, ToDate: currentToDate, ReportType: currentReportType, LiabilitiesAndAssets: currentLiabilitiesAndAssets, ParentCode: currentParentCode });
+
+            // Apply NEW state
+            var FromDate = $('#FromDate').val();
+            var ToDate = $('#ToDate').val();
+            var BalParentCode = $(td).find(".hdnBalParentAccountCode").val();
+            var ParentCode = $(td).find(".hdnParentAccountCode").val();
+            $('#ParentAccountName').val(ParentCode).trigger("change");
+            $('#ReportType').val("DETAIL").trigger("change");
+
+            $('#BackButton').show();
+        }
+
+        function GetBalanceSheetDataByLedger(td) {
+            // Save OLD state first
+            let currentFromDate = $('#FromDate').val();
+            let currentToDate = $('#ToDate').val();
+            let currentReportType = $('#ReportType').val();
+            let currentLiabilitiesAndAssets = $('#LiabilitiesAndAssets').val();
+            let currentParentCode = $('#ParentAccountName').val();
+            let curentLedgerCode = $('#AccountName').val();
+            saveHistory('BalanceSheetDetailByParentCode', { FromDate: currentFromDate, ToDate: currentToDate, ReportType: currentReportType, LiabilitiesAndAssets: currentLiabilitiesAndAssets, ParentCode: currentParentCode, AccountCode: curentLedgerCode });
+
+            // Apply NEW state
+            var FromDate = $('#FromDate').val();
+            var ToDate = $('#ToDate').val();
+            var BalParentCode = $(td).find(".hdnBalParentAccountCode").val();
+            var ParentCode = $(td).find(".hdnParentAccountCode").val();
+            var AccountCode = $(td).find(".hdnAccountCode").val();
+            $('#AccountName').val(AccountCode).trigger("change");
+            $('#ReportType').val("DETAIL").trigger("change");
+
+            $('#BackButton').show();
         }
 
         function GetLiabilitiesAndAssetsData(selectedGroupCode = null) {
@@ -461,7 +500,7 @@
             $('#BackButton').show();
         }
 
-        function GetBalanceSheetDataByLiabilitiesAndAssets(td){
+        function GetBalanceSheetDataByLiabilitiesAndAssets(td) {
             let cellValue = $(td).text().trim();
 
             let currentFromDate = $('#FromDate').val();

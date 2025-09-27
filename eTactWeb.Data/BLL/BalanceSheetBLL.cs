@@ -21,9 +21,9 @@ namespace eTactWeb.Data.BLL
             _BalanceSheetDAL = new BalanceSheetDAL(config, dataLogicDAL, connectionStringService);
             _DataLogicDAL = dataLogicDAL;
         }
-        public async Task<BalanceSheetModel> GetBalanceSheetData(string FromDate, string ToDate, string ReportType, int? BalParentAccountCode)
+        public async Task<BalanceSheetModel> GetBalanceSheetData(string FromDate, string ToDate, string ReportType, int? BalParentAccountCode, int? ParentAccountCode)
         {
-            return await _BalanceSheetDAL.GetBalanceSheetData(FromDate, ToDate, ReportType, BalParentAccountCode);
+            return await _BalanceSheetDAL.GetBalanceSheetData(FromDate, ToDate, ReportType, BalParentAccountCode, ParentAccountCode);
         }
         public async Task<ResponseResult> GetLiabilitiesAndAssetsData(string FromDate, string ToDate)
         {

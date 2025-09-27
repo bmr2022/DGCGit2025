@@ -1048,12 +1048,12 @@ namespace eTactWeb.Controllers
             Table.Columns.Add("AccountCode", typeof(int));
             Table.Columns.Add("ModOfAdjustment", typeof(string));
             Table.Columns.Add("DrCr", typeof(string));
-            Table.Columns.Add("AdjustedAmount", typeof(decimal));
+            Table.Columns.Add("AdjustedAmount", typeof(float));
             Table.Columns.Add("AgainstAccEntryId", typeof(int));
             Table.Columns.Add("AgainstVoucheryearcode", typeof(int));
             Table.Columns.Add("AgainstvoucherType", typeof(string));
             Table.Columns.Add("AgainstVoucherNo", typeof(string));
-            Table.Columns.Add("AgainstVoucherAmount", typeof(decimal));
+            Table.Columns.Add("AgainstVoucherAmount", typeof(float));
             Table.Columns.Add("AgainstVoucherModAdjustment", typeof(string));
             Table.Columns.Add("AgainstAccOpeningEntryId", typeof(int));
             Table.Columns.Add("AgainstOpeningVoucheryearcode", typeof(int));
@@ -1262,64 +1262,73 @@ namespace eTactWeb.Controllers
         }
         public IActionResult AddAgnstRefToAdjstmntDetail([FromBody] AdjustmentModel model)
         {
-            var isDuplicate = false;
-            var _List = new List<AdjustmentModel>();
+            if (model == null || model.AdjAdjustmentDetailGrid == null || !model.AdjAdjustmentDetailGrid.Any())
+            {
+                return BadRequest("No adjustment data provided.");
+            }
 
+            var isDuplicate = false;
+            var combinedList = new List<AdjustmentModel>();
+
+            // Determine main model type
             dynamic MainModel = new DirectPurchaseBillModel();
-            var SN = model.AdjPageName;
+            string SN = model.AdjPageName;
             foreach (var item in model.AdjAdjustmentDetailGrid)
             {
                 SN = item.AdjPageName;
             }
-            if (SN == "DirectPurchaseBill")
-            {
-                MainModel = new DirectPurchaseBillModel();
-            }
-            else if (SN == "PurchaseBill")
-            {
-                MainModel = new PurchaseBillModel();
-            }
-            else if(SN == "SaleInvoice")
-            {
-                MainModel = new SaleBillModel();
-            }
+
+            if (SN == "DirectPurchaseBill") MainModel = new DirectPurchaseBillModel();
+            else if (SN == "PurchaseBill") MainModel = new PurchaseBillModel();
+            else if (SN == "SaleInvoice") MainModel = new SaleBillModel();
+
+            // Get existing grid from session
             string modelJson = HttpContext.Session.GetString("KeyAdjGrid");
-            AdjustmentModel AdjGrid = new AdjustmentModel();
-            if (!string.IsNullOrEmpty(modelJson))
+            AdjustmentModel existingGrid = !string.IsNullOrEmpty(modelJson)
+                ? JsonConvert.DeserializeObject<AdjustmentModel>(modelJson)
+                : new AdjustmentModel();
+
+            MainModel.adjustmentModel = existingGrid;
+
+            // Mark mode
+            model.AdjAgnstModeOfAdjstment = "AgainstRef";
+
+            // Check duplicate (if needed)
+            isDuplicate = existingGrid?.AdjAdjustmentDetailGrid?.Any(a =>
+                (a.AdjModeOfAdjstment != null && a.AdjModeOfAdjstment.Equals(model.AdjModeOfAdjstmentName ?? string.Empty)) &&
+                (a.AdjNewRefNo != null && a.AdjNewRefNo.Equals(model.AdjAgnstNewRefNo ?? string.Empty))
+            ) ?? false;
+
+            if (isDuplicate)
             {
-                AdjGrid = JsonConvert.DeserializeObject<AdjustmentModel>(modelJson);
+                return StatusCode(200); // duplicate found
             }
 
-            if (model != null && model.AdjAdjustmentDetailGrid != null && model.AdjAdjustmentDetailGrid.Count > 0)
+            // Combine existing rows and new rows
+            if (existingGrid.AdjAdjustmentDetailGrid != null && existingGrid.AdjAdjustmentDetailGrid.Count > 0)
             {
-                MainModel.adjustmentModel = AdjGrid;
-                model.AdjAgnstModeOfAdjstment = "AgainstRef";
-                isDuplicate = AdjGrid?.AdjAdjustmentDetailGrid?.Any(a => (a.AdjModeOfAdjstment != null && a.AdjModeOfAdjstment.Equals(model.AdjModeOfAdjstmentName ?? string.Empty)) && (a.AdjNewRefNo != null && a.AdjNewRefNo.Equals(model.AdjAgnstNewRefNo ?? string.Empty))) ?? false;
+                combinedList.AddRange(existingGrid.AdjAdjustmentDetailGrid);
             }
 
-            if (!isDuplicate && model != null)
+            var newRows = Add2List(model, combinedList, true);
+
+            // Assign sequence numbers
+            int seqStart = combinedList.Count + 1;
+            foreach (var row in newRows)
             {
-                if (AdjGrid.AdjAdjustmentDetailGrid != null && AdjGrid.AdjAdjustmentDetailGrid.Count > 0)
-                {
-                    _List.AddRange(MainModel.adjustmentModel.AdjAdjustmentDetailGrid);
-                    _List.AddRange(Add2List(model, _List, true));
-                }
-                else
-                {
-                    var AdjModelList = Add2List(model, _List, true);
-                    _List.AddRange(AdjModelList);
-                }
-            }
-            else
-            {
-                return StatusCode(200);
+                row.AdjSeqNo = seqStart;
+                seqStart++;
             }
 
-            MainModel.adjustmentModel.AdjAdjustmentDetailGrid = _List;
+            combinedList.AddRange(newRows);
 
-            StoreInSession("KeyAdjGrid1", MainModel.adjustmentModel);
-            string JsonString = JsonConvert.SerializeObject(_List);
-            return Json(JsonString);
+            // Save back to main model and session
+            MainModel.adjustmentModel.AdjAdjustmentDetailGrid = combinedList;
+            StoreInSession("KeyAdjGrid", MainModel.adjustmentModel);
+
+            // Return JSON
+            string jsonString = JsonConvert.SerializeObject(combinedList);
+            return Json(jsonString);
         }
         public IActionResult GetUpdatedAdjGridData()
         {

@@ -10,7 +10,7 @@ namespace eTactWeb.Services.Interface
 {
     public interface IBalanceSheet
     {
-        Task<BalanceSheetModel> GetBalanceSheetData(string FromDate, string ToDate, string ReportType, int? BalParentAccountCode);
+        Task<BalanceSheetModel> GetBalanceSheetData(string FromDate, string ToDate, string ReportType, int? BalParentAccountCode, int? ParentAccountCode);
         Task<ResponseResult> GetLiabilitiesAndAssetsData(string FromDate, string ToDate);
         Task<ResponseResult> GetParentAccountData(string FromDate, string ToDate);
         Task<ResponseResult> GetAccountData(string FromDate, string ToDate);
