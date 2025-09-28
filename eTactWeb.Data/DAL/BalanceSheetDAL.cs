@@ -44,13 +44,13 @@ namespace eTactWeb.Data.DAL
                     command.Parameters.AddWithValue("@FromDate", fromDt);
                     command.Parameters.AddWithValue("@ToDate", toDt);
                     command.Parameters.AddWithValue(
-    "@BalParentAccountCode",
-    BalParentAccountCode.HasValue ? (object)BalParentAccountCode.Value : DBNull.Value
-);
+                        "@BalParentAccountCode",
+                        BalParentAccountCode.HasValue ? (object)BalParentAccountCode.Value : DBNull.Value
+                    );
                     command.Parameters.AddWithValue(
-    "@ParentAccountCode",
-    ParentAccountCode.HasValue ? (object)ParentAccountCode.Value : DBNull.Value
-);
+                        "@ParentAccountCode",
+                        ParentAccountCode.HasValue ? (object)ParentAccountCode.Value : DBNull.Value
+                    );
                     command.Parameters.AddWithValue("@ReportType", ReportType);
                     await connection.OpenAsync();
 

@@ -14,18 +14,13 @@
                            onchange="ChangeAdjustAmount()" min="0" type="number" style="width:150px;" />
                 </div>
                 <div class="d-flex align-items-center ms-3">
-                    <label asp-for="TotalRemainingAmount" class="form-label me-2 mb-0">Total Remaining Amt</label>
-                    <input asp-for="TotalRemainingAmount" class="form-control form-control-sm" readonly
-                           onchange="ChangeAdjustAmount()" min="0" type="number" style="width:150px;" />
-                </div>
-                <div class="d-flex align-items-center ms-3">
                     <label asp-for="PendingToAdjustAmount" class="form-label me-2 mb-0">Pending to Adjst Amt</label>
                     <input asp-for="PendingToAdjustAmount" class="form-control form-control-sm" readonly
                            onchange="ChangeAdjustAmount()" min="0" type="number" style="width:150px;" />
                 </div>
                 <div class="d-flex align-items-center ms-3">
                     <label asp-for="TotalAdjustAmount" class="form-label me-2 mb-0">Total Adjst Amt</label>
-                    <input asp-for="TotalAdjustAmount" class="form-control form-control-sm"
+                    <input asp-for="TotalAdjustAmount" class="form-control form-control-sm" readonly
                            onchange="ChangeAdjustAmount()" min="0" type="number" style="width:150px;" />
                 </div>
                 <!-- Right side: Close button -->
@@ -40,7 +35,7 @@
                             <thead class="bg-gradient card-headerBG text-light small" style="white-space:break-spaces">
                                 <tr>
                                     <th>Sr#</th>
-                                    <th></th>
+                                    <th>Chk <input type="checkbox" id="chkAll" onclick="toggleAll(this)" /></th>
                                     <th>Action</th>
                                     <th>VOUCHER NO</th>
                                     <th>VOUCHER DATE</th>
@@ -65,13 +60,34 @@
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <div class="col-sm-3 col-md-6 col-lg-2 col-xl-4 justify-content-center mt-4" style="margin-left:50px;margin-top:10px;">
-                            <button type="button" class="btn btn-sm btn-outline-success btnAddAgnstAdjustment2Grid" onclick="Agnstrefonsave()">
+                    <div class="modal-footer d-flex flex-wrap justify-content-between align-items-center">
+                        <!-- Left Section -->
+                        <div class="d-flex align-items-center mb-2 mb-md-0">
+                            <label asp-for="TotalRemainingAmount" class="form-label me-2 mb-0">
+                                Total Remaining Amt
+                            </label>
+                            <input asp-for="TotalRemainingAmount"
+                                   class="form-control form-control-sm"
+                                   readonly
+                                   onchange="ChangeAdjustAmount()"
+                                   min="0"
+                                   type="number"
+                                   style="width:150px;" />
+                        </div>
+
+                        <!-- Right Section -->
+                        <div class="d-flex align-items-center">
+                            <button type="button"
+                                    class="btn btn-sm btn-outline-success me-2 btnAddAgnstAdjustment2Grid"
+                                    onclick="Agnstrefonsave()">
                                 <i class="fa-solid fa-angles-down fa-fw fa-lg"></i>
                                 ADD TO GRID
                             </button>
-                            <button type="button" class="btn btn-sm btn-danger" style="margin-left: 10px;" data-bs-dismiss="modal">Close</button>
+                            <button type="button"
+                                    class="btn btn-sm btn-danger"
+                                    data-bs-dismiss="modal">
+                                Close
+                            </button>
                         </div>
                     </div>
                 </div>
