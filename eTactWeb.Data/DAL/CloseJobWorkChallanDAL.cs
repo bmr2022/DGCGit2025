@@ -44,7 +44,7 @@ namespace eTactWeb.Data.DAL
 
                 SqlParams.Add(new SqlParameter("@Flag", "FillChallan"));
                 SqlParams.Add(new SqlParameter("@VendCustomerJW", "vendor"));
-                SqlParams.Add(new SqlParameter("@SummeryDetail", "SUMMARY"));
+                SqlParams.Add(new SqlParameter("@ShowSummDetail", "SUMMARY"));
 
 
                 SqlParams.Add(new SqlParameter("@ShowClsoedPendingAll", ShowClsoedPendingAll));
@@ -78,7 +78,7 @@ namespace eTactWeb.Data.DAL
             {
                 SqlParams.Add(new SqlParameter("@Flag", "FillChallan"));
                 SqlParams.Add(new SqlParameter("@VendCustomerJW", "vendor"));
-                SqlParams.Add(new SqlParameter("@SummeryDetail", "Detail"));
+                SqlParams.Add(new SqlParameter("@ShowSummDetail", "Detail"));
                 SqlParams.Add(new SqlParameter("@JWCloseEntryId", ID));
                 //SqlParams.Add(new SqlParameter("@Soyearcode", YC));
                 //SqlParams.Add(new SqlParameter("@SoNo", SONo));
@@ -137,6 +137,104 @@ namespace eTactWeb.Data.DAL
             }
             return MainModel;
         }
+        public async Task<ResponseResult> FillVendorList(string fromDate, string toDate, string ShowClsoedPendingAll)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "FillVendorList"));
+                SqlParams.Add(new SqlParameter("@VendCustomerJW", "vendor"));
+                SqlParams.Add(new SqlParameter("@fromDate", CommonFunc.ParseFormattedDate(fromDate)));
+                SqlParams.Add(new SqlParameter("@toDate", CommonFunc.ParseFormattedDate(toDate)));
+                SqlParams.Add(new SqlParameter("@ShowClsoedPendingAll", ShowClsoedPendingAll));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SPCloseJobworkChallanManual", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+         public async Task<ResponseResult> FillJWChallanList(string fromDate, string toDate, string ShowClsoedPendingAll)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "FillJWChallanList"));
+                SqlParams.Add(new SqlParameter("@VendCustomerJW", "vendor"));
+                SqlParams.Add(new SqlParameter("@fromDate", CommonFunc.ParseFormattedDate(fromDate)));
+                SqlParams.Add(new SqlParameter("@toDate", CommonFunc.ParseFormattedDate(toDate)));
+                SqlParams.Add(new SqlParameter("@ShowClsoedPendingAll", ShowClsoedPendingAll));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SPCloseJobworkChallanManual", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+
+        public async Task<ResponseResult> SaveActivation(int JWCloseEntryId, int JWCloseYearCode, string JWCloseEntryDate, int JWCloseEntryByEmpid, string VendJwCustomerJW, int AccountCode, int VendJWIssEntryId, int VendJWIssYearCode, string VendJWIssChallanNo,
+           string VendJWIssChallanDate, int CustJwIssEntryid, int CustJwIssYearCode, string CustJwIssChallanNo, string CustJwIssChallanDate, float TotalChallanAmount, float NetAmount, string ClosingReason,
+           string CC, string ActualEntryDate, int ActualEnteredBy, string EntryByMachineName,string ShowClsoedPendingAll)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+               
+                    SqlParams.Add(new SqlParameter("@Flag", "UpdateChallNStatus"));
+
+
+
+                SqlParams.Add(new SqlParameter("@VendCustomerJW", (object)"vendor" ?? ""));
+                SqlParams.Add(new SqlParameter("@JWCloseEntryId", JWCloseEntryId));
+                SqlParams.Add(new SqlParameter("@ShowClsoedPendingAll", ShowClsoedPendingAll));
+                SqlParams.Add(new SqlParameter("@JWCloseYearCode", JWCloseYearCode));
+                SqlParams.Add(new SqlParameter("@JWCloseEntryDate", DateTime.Today));
+                SqlParams.Add(new SqlParameter("@JWCloseEntryByEmpid", (object)JWCloseEntryByEmpid ?? ""));
+                SqlParams.Add(new SqlParameter("@VendJwCustomerJW", (object)"Vendor" ?? ""));
+                SqlParams.Add(new SqlParameter("@AccountCode", AccountCode));
+                SqlParams.Add(new SqlParameter("@VendJWIssEntryId", VendJWIssEntryId));
+                SqlParams.Add(new SqlParameter("@VendJWIssYearCode", VendJWIssYearCode));
+                SqlParams.Add(new SqlParameter("@VendJWIssChallanNo", (object)VendJWIssChallanNo ?? ""));
+                SqlParams.Add(new SqlParameter("@VendJWIssChallanDate", (object)VendJWIssChallanDate ?? ""));
+                SqlParams.Add(new SqlParameter("@CustJwIssEntryid", CustJwIssEntryid));
+                SqlParams.Add(new SqlParameter("@CustJwIssYearCode", CustJwIssYearCode));
+                SqlParams.Add(new SqlParameter("@CustJwIssChallanNo", (object)CustJwIssChallanNo ?? ""));
+                SqlParams.Add(new SqlParameter("@CustJwIssChallanDate", (object)CustJwIssChallanDate ?? ""));
+                SqlParams.Add(new SqlParameter("@TotalChallanAmount", TotalChallanAmount));
+                SqlParams.Add(new SqlParameter("@NetAmount", NetAmount));
+                SqlParams.Add(new SqlParameter("@ClosingReason", (object)ClosingReason ?? ""));
+                SqlParams.Add(new SqlParameter("@CC", (object)CC ?? ""));
+                SqlParams.Add(new SqlParameter("@ActualEntryDate", DateTime.Today));
+                SqlParams.Add(new SqlParameter("@ActualEnteredBy", ActualEnteredBy));
+                SqlParams.Add(new SqlParameter("@EntryByMachineName", (object)EntryByMachineName ?? ""));
+
+
+
+                //SqlParams.Add(new SqlParameter("@ApprovalDate", DateTime.Today));
+
+
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SPCloseJobworkChallanManual", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+
 
 
     }
