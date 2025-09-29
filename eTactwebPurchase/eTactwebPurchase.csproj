@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Views\PORegister\_POOrdervsDispatchReport.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="ClosedXML" Version="0.105.0" />
     <PackageReference Include="EPPlus" Version="6.1.0" />
     <PackageReference Include="FastReport.OpenSource" Version="2023.2.25" />
@@ -20,6 +24,18 @@
     <ProjectReference Include="..\eTactWeb.Data\eTactWeb.Data.csproj" />
     <ProjectReference Include="..\eTactWeb.DOM\eTactWeb.DOM.csproj" />
     <ProjectReference Include="..\eTactWeb.Services\eTactWeb.Services.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\PORegister\_POOrdervsDispatchReport.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Views\PORegister\_POOrdervsDispatchReport.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Views\PORegister\_POOrdervsDispatchReport.cshtml" />
   </ItemGroup>
 
 </Project>

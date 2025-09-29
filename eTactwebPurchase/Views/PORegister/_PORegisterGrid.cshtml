@@ -35,6 +35,10 @@ else if (Model.ReportMode == "PRICEHISTORY")
 {
     <partial name="_POPriceHistoryReport" />
 }
+else if (Model.ReportMode == "Order vs Dispatch")
+{
+    <partial name="_POOrderDispatchReport" />
+}
 
 else
 {
@@ -48,8 +52,8 @@ else
                     <th class="sortCol" data-sortorder="asc" data-columnno="2"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PODate</th>
                     <th class="sortCol" data-sortorder="asc" data-columnno="3"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Vendor Name</th>
                     <th class="sortCol" data-sortorder="asc" data-columnno="4"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>POFOR</th>
-                    <th class="sortCol" data-sortorder="asc" data-columnno="5"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SchNO</th>
-                    <th class="sortCol" data-sortorder="asc" data-columnno="6"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Schdate</th>
+                    <th class="sortCol sch-fields" data-sortorder="asc" data-columnno="5"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SchNO</th>
+                    <th class="sortCol sch-fields" data-sortorder="asc" data-columnno="6"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Schdate</th>
                     <th class="sortCol" data-sortorder="asc" data-columnno="7"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PartCode</th>
                     <th class="sortCol" data-sortorder="asc" data-columnno="8"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ItemName</th>
                     <th class="sortCol" data-sortorder="asc" data-columnno="9"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>POQTY</th>
@@ -75,7 +79,7 @@ else
                     <th class="sortCol" data-sortorder="asc" data-columnno="26"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ItemGroup</th>
                     <th class="sortCol" data-sortorder="asc" data-columnno="27"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ItemCategory</th>
                     <th class="sortCol" data-sortorder="asc" data-columnno="28"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>POYear</th>
-                    <th class="sortCol" data-sortorder="asc" data-columnno="29"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SchYear</th>
+                    <th class="sortCol sch-fields" data-sortorder="asc" data-columnno="29"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SchYear</th>
                     <th class="sortCol" data-sortorder="asc" data-columnno="30"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>DOMESTIC/IMPORT</th> 
                     
                 </tr>
@@ -109,8 +113,8 @@ else
                                 <td>@(item.PODate == null ? string.Empty : item.PODate.Split(" ")[0])</td>
                                 <td>@item.Account_name</td>
                                 <td>@item.POFOR</td>
-                                <td>@item.SchNO</td>
-                                <td>@(item.SchNO == "" ? null : (item.Schdate == null ? string.Empty : item.Schdate.Split(" ")[0]))</td>
+                                <td class="sch-fields">@item.SchNO</td>
+                                <td class="sch-fields">@(item.SchNO == "" ? null : (item.Schdate == null ? string.Empty : item.Schdate.Split(" ")[0]))</td>
                                 <td>@item.PartCode</td>
                                 <td>@item.ItemName</td>
                                 <td id="POQty-@Cntr">@item.POQty</td>
@@ -136,7 +140,7 @@ else
                                 <td>@item.ItemGroup</td>
                                 <td>@item.ItemCategory</td>
                                 <td>@item.POYearCode</td>
-                                <td>@item.SchYear</td>
+                                <td class="sch-fields">@item.SchYear</td>
                                 <td>@item.DOMESTICIMPORT</td>
                             </tr>
                             srNo++;
