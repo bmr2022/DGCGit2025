@@ -374,7 +374,39 @@ namespace eTactwebAccounts.Controllers
                 throw;
             }
         }
-
+        public async Task<JsonResult> FillEntryID(int YearCode, string VoucherDate)
+        {
+            var JSON = await _IAgainstAdjustVoucher.FillEntryID(YearCode, VoucherDate);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> FillVoucherType(int yearcode)
+        { 
+            yearcode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+            var JSON = await _IAgainstAdjustVoucher.FillVoucherType(yearcode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> FillVoucherNo(int YearCode, string VoucherType, string FromDate, string ToDate)
+        {
+            YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+            var JSON = await _IAgainstAdjustVoucher.FillVoucherNo(YearCode,VoucherType, FromDate,ToDate);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        } 
+        public async Task<JsonResult> FillInvoiceNo(int YearCode, string VoucherType, string FromDate, string ToDate, string VoucherNo, int AccountCode)
+        {
+            YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+            var JSON = await _IAgainstAdjustVoucher.FillInvoiceNo(YearCode,VoucherType, FromDate,ToDate, VoucherNo,AccountCode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> FillLedgerName(string VoucherType, string ShowAll)
+        {
+            var JSON = await _IAgainstAdjustVoucher.FillLedgerName(VoucherType, ShowAll);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
 
     }
 }

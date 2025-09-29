@@ -1,6 +1,6 @@
 ﻿@model eTactWeb.DOM.Models.AgainstAdjustVoucherModel;
 @{
-    ViewData["Title"] = "Journal Voucher";
+    ViewData["Title"] = "Against Adjust Voucher";
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
 <style>
@@ -111,7 +111,7 @@
     <form asp-action="AgainstAdjustVoucher" asp-controller="AgainstAdjustVoucher" method="post" class="form-horizontal">
         <div class="card-header card-headerBG text-light justify-content-center bg-gradient">
             <h5>
-                <strong>Journal Voucher</strong>
+                <strong>Against Adjust Voucher/strong>
                 <span class="d-flex float-end" style="margin-top:-2px;">
                     <a asp-controller="AgainstAdjustVoucher" asp-action="AgainstAdjustVoucherDashBoard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
                         <i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
@@ -176,7 +176,7 @@
                     <h2 class="accordion-header" id="H_ItemCategoryDetail">
                         <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_ItemCategoryDetail"
                                 aria-expanded="true" aria-controls="B_ItemCategoryDetail">
-                            <strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Journal Voucher Detail</strong>
+                            <strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Against Adjust Voucher Detail</strong>
                             <small class="p-3"></small>
                         </button>
                     </h2>
@@ -203,40 +203,46 @@
                                     <label asp-for="YearCode" class="form-label">YearCode</label>
                                     <input asp-for="YearCode" class="form-control" readonly />
                                 </div>
-                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px;">
-                                    <label asp-for="SubVoucherName" class="form-label" style="width:130px;color:red;">SubVoucher Name*</label>
-                                    <input type="hidden" asp-for="SubVoucherID" />
-                                    <select class="form-control" asp-for="SubVoucherName" style="width:130px;">
-                                        <option value="">Journal Voucher</option>
-                                        <option value="JOURNAL-VOUCHER">Journal Voucher</option>
-                                        @if (Model.Mode == "U" || Model.Mode == "V")
-                                        {
-                                            <option value="@Model.SubVoucherName" selected>@Model.SubVoucherName</option>
-                                        }
-                                    </select>
-                                </div>
-                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px;">
-                                    <label asp-for="VoucherNo" class="form-label" style=" color:red;">VoucherNo*</label>
-                                    <input asp-for="VoucherNo" class="form-control" readonly style="background-color: lightblue !important;" />
-                                </div>
-                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:120px;">
-                                    <label asp-for="VoucherDate" class="form-label" style=" color:red;">Voucher Date*</label>
-                                    <input asp-for="VoucherDate" class="form-control" readonly />
-                                </div>
-                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:80px;">
-                                    <label asp-for="Currency" class="form-label">Currency</label>
-                                    <input type="hidden" asp-for="CurrencyId" />
-                                    <select class="form-control" asp-for="Currency" disabled>
-                                        <option value="">-Select-</option>
-                                        @if (Model.Mode == "U" || Model.Mode == "V")
-                                        {
-                                            <option value="@Model.Currency" selected>@Model.Currency</option>
-                                        }
-                                    </select>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label class="form-label">From Date</label>
+                                    <input asp-for="FromDate" class="form-control" />
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="ExRate" class="form-label">ExRate</label>
-                                    <input asp-for="ExRate" class="form-control" readonly />
+                                    <label class="form-label">To Date</label>
+                                    <input asp-for="ToDate" class="form-control" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="VoucherType" class="form-label" style="color:red;">Voucher Type*</label>
+                                    <select class="form-control" asp-for="VoucherType" >
+                                    </select>
+                                </div>
+                                <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="LedgerName" class="form-label" style="color:red;">Ledger Name</label>
+                                    <select class="form-control" asp-for="LedgerName" >
+                                    </select>
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" >
+                                    <label asp-for="VoucherNo" class="form-label" style=" color:red;">VoucherNo*</label>
+                                    <select class="form-control" asp-for="VoucherNo" >
+                                    </select>
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" >
+                                    <label asp-for="InVoiceNo" class="form-label" style=" color:red;">InVoice No</label>
+                                    <select class="form-control" asp-for="InVoiceNo" >
+                                    </select>
+                                </div>
+                             @*    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:120px;">
+                                    <label asp-for="VoucherDate" class="form-label" style=" color:red;">Voucher Date*</label>
+                                    <input asp-for="VoucherDate" class="form-control" readonly />
+                                </div> *@
+                              
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="BillAmount" class="form-label">Bill Amount</label>
+                                    <input asp-for="BillAmount" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="NetAmount" class="form-label">Net Amount</label>
+                                    <input asp-for="NetAmount" class="form-control" readonly />
                                 </div>
                             </div>
                         </div>
@@ -245,7 +251,7 @@
                 <div class="accordion-item">
                     <h2 class="accordion-header">
                         <button id="H_SAGrid" class="accordion-button collapsed text-light pnl4BG " type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid" style="width: 90%;">
-                            <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Journal Voucher Grid</strong>
+                            <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Against Adjust Voucher Grid</strong>
                         </button>
                         <button class="btn btn-sm btn-outline-danger GridButton" style="width:150px;" type="button" onclick="GridButton()">
                             <i class="fa-solid fa-angles-down fa-fw fa-lg "></i>ADD TO GRID
@@ -292,7 +298,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody id="divBankReceipt">
-                                                <partial name="_AgainstAdjustVoucher" />
+                                                @* <partial name="_AgainstAdjustVoucher" /> *@
                                             </tbody>
                                         </table>
                                     </div>
@@ -327,7 +333,7 @@
                                             </tr>
                                         </thead>
                                         <tbody id="divBankReceiptDetail">
-                                            <partial name="_AgainstAdjustVoucherGrid" />
+                                         @*    <partial name="_AgainstAdjustVoucherGrid" /> *@
                                         </tbody>
                                     </table>
                                 </div>
@@ -410,7 +416,7 @@
                     <div class="row justify-content-between g-2">
                         <div class="card-header card-headerBG text-light bg-gradient">
                             <h5>
-                                <strong>Journal Voucher</strong>
+                                <strong>Against Adjust Voucher</strong>
                                 <span class="d-flex float-end" style="margin-top:-2px;">
                                     <div class="col-auto">
                                         <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="PrintReport" asp-controller="BankReceipt" asp-route-EntryId="@Model.EntryId" asp-route-YearCode="@Model.YearCode" asp-route-VoucherName="@Model.SubVoucherName">
@@ -530,7 +536,7 @@
                                             </tr>
                                         </thead>
                                         <tbody id="divDisplayPopupForPendingVouchersDetail">
-                                            <partial name="_DisplayPopupForPendingVouchers" />
+                                          @*   <partial name="_DisplayPopupForPendingVouchers" /> *@
                                         </tbody>
                                     </table>
                                 </div>
@@ -700,18 +706,38 @@
             $('#LedgerName').select2();
             $('#ModeOfAdjustment').select2();
             $('#CostCenterName').select2();
-            $('#SubVoucherName').select2();
-            $('#Currency').select2();
+                    $('#VoucherNo').select2();
+                    $('#InVoiceNo').select2();
             FillCostCenterName();
-            FillSubVoucherName();
-            FillIntrument();
-            FillCurrency();
+                    FillVoucherType();
+         FillInvoiceNo();
+                 FillVoucherNo();
             BindModeOfAdjust();
             FillLedgerName();
-
+                $('#VoucherType').change(function () {
+                FillVoucherNo();
+                            FillInvoiceNo();
+                    });
+                $('#LedgerName').change(function () {
+                FillVoucherNo();
+                            FillInvoiceNo();
+                  });
+                $('#VoucherNo').change(function () {
+                            FillInvoiceNo();
+                });
             $('#CostCenterName').change(function () {
                 $('#CostCenterId').val($('#CostCenterName').val());
             });
+                     if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
+                        NewEntryId();
+
+                    } else {
+                                var FromDate = $('#FromDate').val().split(" ")[0].replace(/-/g, "/");
+                        var ToDate = $('#EffectiveTill').val().split(" ")[0].replace(/-/g, "/");
+                                        $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", FromDate);
+                                        $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", ToDate);
+
+                    }
             $('#LedgerName').rules("remove", "required");
             $('#DRCR').rules("remove", "required");
             $('#Intrument').rules("remove", "required");
@@ -1103,7 +1129,7 @@
                     }
                 },
                 error: function (xhr, status, error) {
-                    alert('Failed to load Entry ID.');
+                  //  //alert('Failed to load Entry ID.');
                 }
             });
         }
@@ -1134,7 +1160,7 @@
                     }
                 },
                 error: function (xhr, status, error) {
-                    alert('Failed to load opening amount.');
+                  //  //alert('Failed to load opening amount.');
                 }
             });
         }
@@ -1167,7 +1193,7 @@
                     }
                 },
                 error: function (xhr, status, error) {
-                    alert('Failed to load opening amount.');
+                //    //alert('Failed to load opening amount.');
                 }
             });
         }
@@ -1230,7 +1256,7 @@
                     }
                 },
                 error: function (xhr, status, error) {
-                    alert('Failed to load ledger names.');
+                    ////alert('Failed to load ledger names.');
                 }
             });
         }
@@ -1404,7 +1430,7 @@
                     }
                 },
                 error: function (xhr, status, error) {
-                    alert('Failed to load ledger names.');
+                    ////alert('Failed to load ledger names.');
                 }
             });
         }
@@ -1433,7 +1459,7 @@
                     }
                 },
                 error: function (xhr, status, error) {
-                    alert('Failed to load ledger names.');
+                    ////alert('Failed to load ledger names.');
                 }
             });
         }
@@ -1466,41 +1492,119 @@
                     }
                 },
                 error: function (xhr, status, error) {
-                    alert('Failed to load ledger names.');
+                  //  //alert('Failed to load ledger names.');
                 }
             });
         }
 
-        function FillSubVoucherName() {
+                function FillVoucherType() {
             var VoucherType = $('#VoucherType').val();
             $.ajax({
-                url: '@Url.Action("FillSubVoucherName", "AgainstAdjustVoucher")',
+                        url: '@Url.Action("FillVoucherType", "AgainstAdjustVoucher")',
                 type: 'POST',
-                data: {
-                    VoucherType: VoucherType
-                },
                 async: false,
                 success: function (response, status, error) {
-                    var SubVoucherNameDropdown = $('#SubVoucherName');
+                                    var VoucherTypeDropdown = $('#VoucherType');
                     var obj = $.parseJSON(response);
-                    SubVoucherNameDropdown.empty();
-                    SubVoucherNameDropdown.append('<option value="">Journal-Voucher</option>');
-                    $.each(obj.Result, function (index, SubVoucherName) {
-                        SubVoucherNameDropdown.append('<option value="' + SubVoucherName.SubVoucherName + '">' + SubVoucherName.SubVoucherName + '</option>');
+                    VoucherTypeDropdown.empty();
+                              
+                    $.each(obj.Result, function (index, VoucherType) {
+                                                                VoucherTypeDropdown.append('<option value="' + VoucherType.VoucherType + '">' + VoucherType.VoucherType + '</option>');
                     });
 
                     if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
 
-                        var SubVoucherName = '@Model.SubVoucherID';
-                        $('#SubVoucherName').val(SubVoucherName).trigger("change");
-                        $('#SubVoucherName').val(SubVoucherName);
+                                        var VoucherType = '@Model.VoucherType';
+                                        $('#VoucherType').val(VoucherType).trigger("change");
+                                        $('#VoucherType').val(VoucherType);
                     }
                 },
                 error: function (xhr, status, error) {
-                    alert('Failed to load SubVoucher names.');
+                  //  //alert('Failed to load SubVoucher names.');
+                }
+            });
+                }
+                function FillVoucherNo() {
+            
+
+            $.ajax({
+                url: '@Url.Action("FillVoucherNo", "AgainstAdjustVoucher")',
+                type: 'POST',
+                data: {
+                            YearCode: $('#YearCode').val(), // or from session if hidden
+                                    VoucherType: $('#VoucherType').val(),
+                                    FromDate: $('#FromDate').val(),
+                                    ToDate:$('#ToDate').val()
+                },
+                success: function (response) {
+                            var VoucherDropdown = $('#VoucherNo'); // better to bind numbers to a separate dropdown
+                 
+                             var obj = $.parseJSON(response);
+                                    VoucherDropdown.empty();
+
+                            $.each(obj.Result, function (index, VoucherType) {
+                                                                      VoucherDropdown.append('<option value="' + VoucherType.VoucherDocNo + '">' + VoucherType.VoucherDocNo + '</option>');
+                            });
+
+                          
+                    
+
+                    // If update/view mode, set default selection
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                                var selectedVoucher = '@Model.VoucherNo';
+                        VoucherDropdown.val(selectedVoucher).trigger("change");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    ////alert('Failed to load Voucher numbers.');
                 }
             });
         }
+                function FillInvoiceNo() {
+            var YearCode = $('#YearCode').val();   // or from hidden/session
+            var VoucherType = $('#VoucherType').val();
+            var FromDate = $('#FromDate').val();
+            var ToDate = $('#ToDate').val();
+            var VoucherNo = $('#VoucherNo').val();
+                    var AccountCode = $('#LedgerName').val();
+
+            $.ajax({
+                url: '@Url.Action("FillInvoiceNo", "AgainstAdjustVoucher")',
+                type: 'POST',
+                data: {
+                    YearCode: YearCode,
+                    VoucherType: VoucherType,
+                    FromDate: FromDate,
+                    ToDate: ToDate,
+                    VoucherNo: VoucherNo,
+                    AccountCode: AccountCode
+                },
+                success: function (response) {
+                            var InvoiceDropdown = $('#InVoiceNo'); // assuming you have an InvoiceNo dropdown
+                   
+                                     var obj = $.parseJSON(response);
+                                                    InvoiceDropdown.empty();
+
+                                    $.each(obj.Result, function (index, VoucherType) {
+                                                                           InvoiceDropdown.append('<option value="' + VoucherType.InvoiceNo + '">' + VoucherType.InvoiceNo + '</option>');
+                                    });
+
+                    // $.each(response, function (index, item) {
+                    //     InvoiceDropdown.append('<option value="' + item.InvoiceNo + '">' + item.InvoiceNo + '</option>');
+                    // });
+
+                    // If in update/view mode, preselect value
+                    if ($('#Mode').val() === "U" || $('#Mode').val() === "V") {
+                                var selectedInvoice = '@Model.InVoiceNo';
+                        InvoiceDropdown.val(selectedInvoice).trigger("change");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    ////alert('Failed to load Invoice numbers.');
+                }
+            });
+        }
+
 
         function FillIntrument() {
             $.ajax({
@@ -1523,7 +1627,7 @@
                     }
                 },
                 error: function (xhr, status, error) {
-                    alert('Failed to load ledger names.');
+                    ////alert('Failed to load ledger names.');
                 }
             });
         }
@@ -1551,7 +1655,7 @@
                     }
                 },
                 error: function (xhr, status, error) {
-                    alert('Failed to load ledger names.');
+                   // //alert('Failed to load ledger names.');
                 }
             });
         }
@@ -1576,10 +1680,10 @@
                     }
                 },
                 error: function (response) {
-                    alert(response.responseText);
+                    //alert(response.responseText);
                 },
                 failure: function (response) {
-                    alert(response.responseText);
+                    //alert(response.responseText);
                 }
             });
         }
@@ -1635,7 +1739,7 @@
                     }
                 },
                 error: function (xhr, status, error) {
-                    alert('Failed to load ledger names.');
+                   // //alert('Failed to load ledger names.');
                 }
             });
         }
@@ -1684,7 +1788,7 @@
                     AdjustAmount();
                 },
                 error: function (xhr, status, error) {
-                    alert('Failed to load ledger names.');
+                    //alert('Failed to load ledger names.');
                 }
             });
         }

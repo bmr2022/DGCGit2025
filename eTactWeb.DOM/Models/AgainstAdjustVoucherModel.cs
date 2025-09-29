@@ -41,6 +41,8 @@ namespace eTactWeb.DOM.Models
         public string DRCR { get; set; }
         public decimal Balance { get; set; }
         public string? InVoiceNo { get; set; }
+        public decimal? BillAmount { get; set; }
+        public decimal? NetAmount { get; set; }
         public string AccountName { get; set; }
         public int AccountCode { get; set; }
         public string? BankType { get; set; }

@@ -12,8 +12,11 @@ namespace eTactWeb.Services.Interface
     {
       
         Task<ResponseResult> FillLedgerName(string VoucherType, string Type);
-        Task<ResponseResult> FillSubVoucherName(string VoucherType);
-       
+        Task<ResponseResult> FillVoucherType(int yearcode);
+        Task<ResponseResult> FillVoucherNo(int YearCode, string VoucherType, string FromDate, string ToDate);
+        Task<ResponseResult> FillInvoiceNo(int YearCode, string VoucherType, string FromDate, string ToDate, string VoucherNo, int AccountCode);
+
+
         Task<ResponseResult> FillModeofAdjust(string VoucherType);
         Task<ResponseResult> FillCostCenterName();
         Task<ResponseResult> FillEntryID(int YearCode, string VoucherDate);
