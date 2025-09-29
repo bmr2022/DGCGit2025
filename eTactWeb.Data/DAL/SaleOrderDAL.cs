@@ -2030,7 +2030,7 @@ namespace eTactWeb.Data.DAL
                                     Rate = Convert.ToInt32(row["Rate"]),
                                     Rejper = Convert.ToInt32(row["Rejper"]),
                                     Remark = row["Remark"].ToString(),
-                                    StockQty = Convert.ToInt32(row["StockQty"]),
+                                    StockQty = Convert.ToDecimal(row["StockQty"]),
                                     StoreName = row["StoreName"].ToString(),
                                     TolLimit = Convert.ToInt32(row["TolLimit"]),
                                     Unit = row["Unit"].ToString(),

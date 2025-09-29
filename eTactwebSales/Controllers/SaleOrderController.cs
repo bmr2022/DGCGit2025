@@ -1885,7 +1885,7 @@ public class SaleOrderController : Controller
 		Table.Columns.Add("Description", typeof(string));
 		Table.Columns.Add("Remark", typeof(string));
 		Table.Columns.Add("StoreName", typeof(string));
-		Table.Columns.Add("StockQty", typeof(int));
+		Table.Columns.Add("StockQty", typeof(decimal));
 		Table.Columns.Add("AmendmentNo", typeof(string));
 		Table.Columns.Add("AmendmentDate", typeof(string)); // datetime
 		Table.Columns.Add("AmendmentReason", typeof(string));
