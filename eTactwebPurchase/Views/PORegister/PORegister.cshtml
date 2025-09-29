@@ -90,7 +90,7 @@
                                 </div>
                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                     <label asp-for="ReportMode" class="form-label">Report Type</label>
-                                    <select asp-for="ReportMode" class="form-select" onchange="GetPORegisterData()">
+                                    <select asp-for="ReportMode" class="form-select" onchange="GetPORegisterData();UpdateAccordionHeader();">
                                         <option disabled value="">-Select-</option>
                                         <option selected value="LISTOFPO">LIST OF PO</option>
                                         <option value="LISTOFSCHEDULESUMMARY">LIST OF POSUMMARY</option>
@@ -103,6 +103,7 @@
                                         <option value="ITEMWISECONSOLIDATED">ITEM WISE CONSOLIDATED</option>
                                         <option value="DETAIL">PO RATE ANALYSIS</option>
                                         <option value="PRICEHISTORY">PRICE HISTORY</option>
+                                        <option value="Order vs Dispatch">Order vs Dispatch</option>
                                     </select>
                                 </div>
                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
@@ -110,61 +111,60 @@
                                     <input id="search-box" class="form-control" style="background-color: #FFFACD;" placeholder="Search..." />
                                 </div>
                                 <div class=" d-flex justify-content-center mt-3" width="inherit">
-                                    <div class="p-3 border rounded me-3" style="min-width: 220px;">
+                                    <div class="p-3 border rounded me-3" style="min-width: 220px;" id="activePOSection">
                                         <label class="form-label d-block mb-2 fw-bold">Show Active PO</label>
 
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" asp-for="showOnlyActivePO" id="showOnlyActivePOYes" value="Y">
-                                            <label class="form-check-label" for="showOnlyActivePOYes">Yes</label>
+                                            <input class="form-check-input " type="radio" asp-for="showOnlyActivePO" id="showOnlyActivePOYes" value="Y">
+                                            <label class="form-check-label" for="showOnlyActivePOYes">Active Po</label>
                                         </div>
 
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input" type="radio" asp-for="showOnlyActivePO" id="showOnlyActivePONo" value="N">
-                                            <label class="form-check-label" for="showOnlyActivePONo">No</label>
+                                            <label class="form-check-label" for="showOnlyActivePONo">InActive Po</label>
                                         </div>
 
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" asp-for="showOnlyActivePO" id="showOnlyActivePOAll" value="A">
+                                            <input class="form-check-input" type="radio" asp-for="showOnlyActivePO" id="showOnlyActivePOAll" value="A" checked>
                                             <label class="form-check-label" for="showOnlyActivePOAll">All</label>
                                         </div>
                                     </div>
-                                    <div class="p-3 border rounded me-3" style="min-width: 220px;">
+                                    <div class="p-3 border rounded me-3" style="min-width: 220px;" id="closedPOSection">
                                         <label class="form-label d-block mb-2 fw-bold">Show Closed PO</label>
 
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" asp-for="showClosedPO" id="showClosedPOYes" value="Y">
-                                            <label class="form-check-label" for="showClosedPOYes">Yes</label>
+                                            <input class="form-check-input showClosedPO" type="radio" asp-for="showClosedPO" id="showClosedPOYes" value="Y">
+                                            <label class="form-check-label" for="showClosedPOYes">Close Po</label>
                                         </div>
 
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" asp-for="showClosedPO" id="showClosedPONo" value="N">
-                                            <label class="form-check-label" for="showClosedPONo">No</label>
+                                            <input class="form-check-input showClosedPO" type="radio" asp-for="showClosedPO" id="showClosedPONo" value="N">
+                                            <label class="form-check-label" for="showClosedPONo">OPen Po</label>
                                         </div>
 
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" asp-for="showClosedPO" id="showClosedPOAll" value="A">
+                                            <input class="form-check-input showClosedPO" type="radio" asp-for="showClosedPO" id="showClosedPOAll" value="A" checked>
                                             <label class="form-check-label" for="showClosedPOAll">All</label>
                                         </div>
                                     </div>
 
 
-                                    <div class="p-3 border rounded me-3" style="min-width: 250px;">
+                                    <div class="p-3 border rounded me-3" style="min-width: 250px;" id="completedPOSection">
                                         <label class="form-label d-block mb-2 fw-bold">Show Only Completed PO</label>
 
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" asp-for="showOnlyCompletedPO" id="showOnlyCompletedPOYes" value="Y">
-                                            <label class="form-check-label" for="showOnlyCompletedPOYes">Yes</label>
+                                            <input class="form-check-input showPOFilter" type="radio" asp-for="showOnlyCompletedPO" id="showOnlyCompletedPOYes" value="Y">
+                                            <label class="form-check-label" for="showOnlyCompletedPOYes">Completed</label>
                                         </div>
-
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" asp-for="showOnlyCompletedPO" id="showOnlyCompletedPONo" value="N">
-                                            <label class="form-check-label" for="showOnlyCompletedPONo">No</label>
+                                            <input class="form-check-input showPOFilter" type="radio" asp-for="showOnlyCompletedPO" id="showOnlyCompletedPONo" value="N">
+                                            <label class="form-check-label" for="showOnlyCompletedPONo">Pending</label>
                                         </div>
-
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" asp-for="showOnlyCompletedPO" id="showOnlyCompletedPOAll" value="A">
+                                            <input class="form-check-input showPOFilter" type="radio" asp-for="showOnlyCompletedPO" id="showOnlyCompletedPOAll" value="A" checked>
                                             <label class="form-check-label" for="showOnlyCompletedPOAll">All</label>
                                         </div>
+
                                     </div>
 
                                    
@@ -338,7 +338,8 @@
             $('#TotalPOSummary').hide();
             $('#TotalConsolidated').hide();
             $('#TotalItemConsoled').hide();
-
+            var initialMode = $("#ReportMode").val();
+            togglePOSections(initialMode);
             $('#ReportMode').change(function () {
                 var selectedValue = $(this).val();
                 if (selectedValue === 'SUMMRATEING') {
@@ -386,8 +387,140 @@
 
                 }
             });
+            $("#ReportMode").change(function () {
+                var selectedMode = $(this).val();
+                togglePOSections(selectedMode);
+            });
+            function togglePOSections(reportMode) {
+                if (reportMode === "LISTOFPO") {
+                    $("#activePOSection").hide();      
+                    $("#closedPOSection").show();     
+                    $("#completedPOSection").hide();   
+                }
+                else if (reportMode === "LISTOFSCHEDULESUMMARY") {
+                    $("#activePOSection").show();      
+                    $("#closedPOSection").hide();     
+                    $("#completedPOSection").hide();   
+                }
+                else if (reportMode === "LISTOFSCHEDULE") {
+                    $("#activePOSection").hide();      
+                    $("#closedPOSection").show();     
+                    $("#completedPOSection").hide();   
+                }
+                else if (reportMode === "SUMM") {
+                    $("#activePOSection").show();      
+                    $("#closedPOSection").hide();     
+                    $("#completedPOSection").show();   
+                }
+                else if (reportMode === "DETAIL") {
+                    $("#activePOSection").show();      
+                    $("#closedPOSection").hide();     
+                    $("#completedPOSection").hide();   
+                }
+                else if (reportMode === "CONSOLIDATED") {
+                    $("#activePOSection").hide();      
+                    $("#closedPOSection").hide();     
+                    $("#completedPOSection").show();   
+                }
+                else if (reportMode === "PARTYWISECONSOLIDATED") {
+                    $("#activePOSection").hide();      
+                    $("#closedPOSection").hide();     
+                    $("#completedPOSection").show();   
+                }
+                else if (reportMode === "ITEMWISECONSOLIDATED") {
+                    $("#activePOSection").hide();      
+                    $("#closedPOSection").hide();     
+                    $("#completedPOSection").show();   
+                }
+                
+                else {
+                    $("#activePOSection").hide();      
+                    $("#closedPOSection").hide();
+                    $("#completedPOSection").hide();
+                }
+            }
+            $('.showPOFilter').change(function () {
+                var filter = $(this).val(); // Y / N / A
+                var srNo = 1;
+
+                $('#divStockRegisterBody .po-row').each(function () {
+                    var pendQty = parseFloat($(this).find('.PendQty').text());
+
+                    if (filter === "Y" && pendQty === 0) {
+                        $(this).show();
+                        $(this).find('td:eq(1)').text(srNo); // update srNo column
+                        srNo++;
+                    }
+                    else if (filter === "N" && pendQty !== 0) {
+                        $(this).show();
+                        $(this).find('td:eq(1)').text(srNo); // update srNo column
+                        srNo++;
+                    }
+                    else if (filter === "A") {
+                        $(this).show();
+                        $(this).find('td:eq(1)').text(srNo); // update srNo column
+                        srNo++;
+                    }
+                    else {
+                        $(this).hide();
+                    }
+                });
+            });
+            $('.showClosedPO').change(function () {
+                var filter = $(this).val(); // Y / N / A
+                var srNo = 1;
+
+                $('#divStockRegisterBody .po-row').each(function () {
+                    var POtype = $(this).find('.POtype').text().trim(); // get PO type
+
+                    if ((filter === "Y" && POtype === "Close") ||
+                        (filter === "N" && POtype === "Open") ||
+                        filter === "A") {
+                        $(this).show();
+                        $(this).find('.sr-no').text(srNo); // update serial number
+                        srNo++;
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            });
+
+
         });
 
+        $(document).on("change", "input[name='showOnlyActivePO']", function () {
+            var selectedVal = $(this).val();
+
+            if (selectedVal === "Y") {
+                $(".sch-fields").hide();
+            } else {
+                $(".sch-fields").show();
+            }
+        });
+        function UpdateAccordionHeader() {
+            var reportType = $('#ReportMode').val();;
+
+            var headerTextMap = {
+                "LISTOFPO": "PO/Sch List",
+                "LISTOFSCHEDULESUMMARY": "PO Summary",
+                "LISTOFSCHEDULE": "Schedule List",
+                "SUMM": "Purchase Order Summary",
+                "DETAIL": "Purchase Order Detail",
+                "SUMMRATEING": "Summary Rating",
+                "CONSOLIDATED": "Consolidated",
+                "PARTYWISECONSOLIDATED": "Party Wise Consolidated",
+                "ITEMWISECONSOLIDATED": "Item Wise Consolidated",
+                "PRICEHISTORY": "Price History",
+                "Order vs Dispatch": "Order vs Dispatch",
+                "PO RATE ANALYSIS": "PO Rate Analysis"
+            };
+
+            var accordionStrong = document.querySelector("#H_SAGrid button strong");
+
+            if (accordionStrong && headerTextMap[reportType]) {
+                accordionStrong.innerHTML = `<i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i> ${headerTextMap[reportType]}`;
+            }
+        }
         function selection(CurrentRow) {
              
             $(CurrentRow).css({ 'background-color': '#00bcd4' });
@@ -647,6 +780,21 @@
                         i + 1, item.partyName, item.pono, item.poDate?.split(" ")[0] || '', item.itemName, item.partCode,
                         item.poRate, item.currency, item.poQty, item.disPer, item.disAmt,
                         item.poValue, item.poCloseDate?.split(" ")[0] || '', item.poEffDate?.split(" ")[0] || '', item.poEntryId, item.poYearCode
+                    ]);
+
+                break;
+                case 'Order vs Dispatch':
+                     headers = [
+                        "#Sr", "PartyName", "PONo", "PODate","Domestic/Import", "Sch No", "Sch Date", "Sch Year",
+                        "PartCode","ItemName", "POQty", "Rec Qty", "Qc Ok Qty", "Pend Qty","Unit"
+                    ];
+
+                    console.log("Data:", rows);
+                     body = rows.map((item, i) => [
+                        i + 1, item.vendor, item.pono, item.poDate?.split(" ")[0] || '', item.domesticimport,
+                        item.schNO, item.schdate?.split(" ")[0] || '', item.schYear, item.partCode, item.itemName,
+                        item.poQty, item.recQty, item.qcokQty, item.pendQty, item.unit
+
                     ]);
 
                 break;

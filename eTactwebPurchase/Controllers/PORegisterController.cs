@@ -7,6 +7,8 @@ using eTactWeb.DOM.Models;
 using System.Globalization;
 using ClosedXML.Excel;
 using System;
+using Microsoft.AspNetCore.Components;
+using OfficeOpenXml;
 namespace eTactWeb.Controllers
 {
     public class PORegisterController : Controller
@@ -169,6 +171,11 @@ namespace eTactWeb.Controllers
             {
                 return PartialView("_POPriceHistoryReport", model);
             }
+            else if (model.ReportMode == "Order vs Dispatch")
+            {
+                return PartialView("_POOrderDispatchReport", model);
+            }
+
             else
             {
                 return PartialView("_PORegisterGrid", model);
@@ -275,7 +282,8 @@ namespace eTactWeb.Controllers
                  { "CONSOLIDATED", EXPORTCONSOLIDATED },
                  { "PARTYWISECONSOLIDATED", EXPORTPARTYWISECONSOLIDATED },
                  { "ITEMWISECONSOLIDATED", EXPORTITEMWISECONSOLIDATED },
-                 { "PRICEHISTORY", EXPORTPRICEHISTORY },
+                { "PRICEHISTORY", EXPORTPRICEHISTORY },
+                { "Order vs Dispatch", EXPORTOrdervsDispatch },
                
             };
 
@@ -704,6 +712,42 @@ namespace eTactWeb.Controllers
                 sheet.Cell(row, 14).Value = item.POclosedate?.Split(' ')[0] ?? string.Empty;
                 sheet.Cell(row, 15).Value = item.POEntryId;
                 sheet.Cell(row, 16).Value = item.POYearCode;
+
+
+                row++;
+            }
+        }
+         private void EXPORTOrdervsDispatch(IXLWorksheet sheet, IList<PORegisterDetail> list)
+        {
+            string[] headers = {
+               "srNo","PartyName", "PONo", "PODate","Domestic/Import", "Sch No", "Sch Date", "Sch Year",
+                "PartCode","ItemName", "POQty", "Rec Qty", "Qc Ok Qty", "Pend Qty","Unit"
+            };
+
+
+
+
+            for (int i = 0; i < headers.Length; i++)
+                sheet.Cell(1, i + 1).Value = headers[i];
+
+            int row = 2, srNo = 1;
+            foreach (var item in list)
+            {
+                sheet.Cell(row, 1).Value = srNo++;
+                sheet.Cell(row, 2).Value = item.Vendor;
+                sheet.Cell(row, 3).Value = item.PONO;
+                sheet.Cell(row, 4).Value = item.PODate?.Split(' ')[0] ?? string.Empty;
+                sheet.Cell(row, 5).Value = item.DOMESTICIMPORT;
+                sheet.Cell(row, 6).Value = item.SchNO;
+                sheet.Cell(row, 7).Value = item.Schdate?.Split(' ')[0] ?? string.Empty;
+                sheet.Cell(row, 8).Value = item.SchYear;
+                sheet.Cell(row, 9).Value = item.PartCode;
+                sheet.Cell(row, 10).Value = item.ItemName;
+                sheet.Cell(row, 11).Value = item.POQty;
+                sheet.Cell(row, 12).Value = item.RECQty;
+                sheet.Cell(row, 13).Value = item.QCOKQty;
+                sheet.Cell(row, 14).Value = item.PendQty;
+                sheet.Cell(row, 15).Value = item.unit;
 
 
                 row++;

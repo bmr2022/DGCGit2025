@@ -7,11 +7,11 @@
                 <th>Sr#</th>
                 <th class="sortCol" data-sortorder="asc" data-columnno="1"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PONO</th>
                 <th class="sortCol" data-sortorder="asc" data-columnno="2"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PODate</th>
-                <th class="sortCol" data-sortorder="asc" data-columnno="3"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SchNO</th>
-                <th class="sortCol" data-sortorder="asc" data-columnno="4"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Schdate</th>
+                <th class="sortCol sch-fields" data-sortorder="asc" data-columnno="3"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SchNO</th>
+                <th class="sortCol sch-fields" data-sortorder="asc" data-columnno="4"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Schdate</th>
                 <th class="sortCol" data-sortorder="asc" data-columnno="5"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Vendor Name</th>
-                <th class="sortCol" data-sortorder="asc" data-columnno="6"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ScheduleEffectiveFromDate</th>
-                <th class="sortCol" data-sortorder="asc" data-columnno="7"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ScheduleEffectiveTillDate</th>
+                <th class="sortCol sch-fields" data-sortorder="asc" data-columnno="6"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SchEffFromDate</th>
+                <th class="sortCol sch-fields" data-sortorder="asc" data-columnno="7"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SchEffTillDate</th>
                 <th class="sortCol" data-sortorder="asc" data-columnno="8"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>POEffDate</th>
                 <th class="sortCol" data-sortorder="asc" data-columnno="9"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>POclosedate</th>
                 <th class="sortCol" data-sortorder="asc" data-columnno="10"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>POAmmeffdate</th>
@@ -50,11 +50,11 @@
                             <th>@srNo</th>
                             <td style="background-color: #e09ef0;">@item.PONO</td>
                             <td>@(item.PODate == null ? string.Empty : item.PODate.Split(" ")[0])</td>
-                            <td>@item.SchNO</td>
-                            <td>@(item.Schdate== null ? string.Empty : item.Schdate.Split(" ")[0])</td>
+                            <td class="sch-fields">@item.SchNO</td>
+                            <td class="sch-fields">@(item.Schdate == null ? string.Empty : item.Schdate.Split(" ")[0])</td>
                             <td>@item.Vendor</td>
-                            <td>@(item.ScheduleEffectiveFromDate == null ? string.Empty : item.ScheduleEffectiveFromDate.Split(" ")[0])</td>
-                            <td>@(item.ScheduleEffectiveTillDate == null ? string.Empty : item.ScheduleEffectiveTillDate.Split(" ")[0])</td>
+                            <td class="sch-fields">@(item.ScheduleEffectiveFromDate == null ? string.Empty : item.ScheduleEffectiveFromDate.Split(" ")[0])</td>
+                            <td class="sch-fields">@(item.ScheduleEffectiveTillDate == null ? string.Empty : item.ScheduleEffectiveTillDate.Split(" ")[0])</td>
                             <td>@(item.POEffDate   == null ? string.Empty : item.POEffDate.Split(" ")[0])</td>
                             <td>@(item.POclosedate   == null ? string.Empty : item.POclosedate.Split(" ")[0])</td>
                             <td>@(item.poAmmeffdate    == null ? string.Empty : item.poAmmeffdate.Split(" ")[0])</td>
@@ -82,3 +82,8 @@
     }
     <center><strong>TOTAL ROWS: <span>@displayedRows</span></strong></center>
 }
+<style>
+    #divStockRegisterBody {
+        background-color: #e6fff3;
+    }
+</style>

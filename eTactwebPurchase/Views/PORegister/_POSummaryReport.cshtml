@@ -10,9 +10,9 @@
                 <th class="sortCol" data-sortorder="asc" data-columnno="3"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>POEffDate</th>
                 <th class="sortCol" data-sortorder="asc" data-columnno="4"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>POEndDate</th>
                 <th class="sortCol" data-sortorder="asc" data-columnno="5"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>POFOR</th>
-                <th class="sortCol" data-sortorder="asc" data-columnno="6"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SchNO</th>
-                <th class="sortCol" data-sortorder="asc" data-columnno="7"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Schdate</th>
-                <th class="sortCol" data-sortorder="asc" data-columnno="8"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SchYear</th>
+                <th class="sortCol sch-fields" data-sortorder="asc" data-columnno="6"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SchNO</th>
+                <th class="sortCol sch-fields" data-sortorder="asc" data-columnno="7"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Schdate</th>
+                <th class="sortCol sch-fields" data-sortorder="asc" data-columnno="8"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SchYear</th>
                 <th class="sortCol" data-sortorder="asc" data-columnno="9"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PartCode</th>
                 <th class="sortCol" data-sortorder="asc" data-columnno="10"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ItemName</th>
                 <th class="sortCol" data-sortorder="asc" data-columnno="11"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Currency</th>
@@ -46,7 +46,7 @@
                     {
                         Cntr = Cntr + 1;
 
-                        <tr id="SAGridRow-@Cntr">
+                        <tr id="SAGridRow-@Cntr" class="po-row">
                             <td>
                                 <a class="table-link link-danger" onclick="DeleteRow(this.id)" id="@Cntr">
                                     <span class="fa-stack">
@@ -61,9 +61,9 @@
                             <td>@(item.POEffDate   == null ? string.Empty : @item.POEffDate.Split(" ")[0])</td>
                             <td>@(item.POEndDate   == null ? string.Empty : @item.POEndDate.Split(" ")[0])</td>
                             <td>@item.POFOR</td>
-                            <td>@item.SchNO</td>
-                            <td>@(item.Schdate   == null ? string.Empty : @item.Schdate.Split(" ")[0])</td>
-                            <td>@item.SchYear</td>
+                            <td class="sch-fields">@item.SchNO</td>
+                            <td class="sch-fields">@(item.Schdate == null ? string.Empty : @item.Schdate.Split(" ")[0])</td>
+                            <td class="sch-fields">@item.SchYear</td>
                             <td>@item.PartCode</td>
                             <td>@item.ItemName</td>
                             <td>@item.Currency</td>
@@ -74,7 +74,7 @@
                             <td>@item.GSTAmt</td>
                             <td id="RECQty-@Cntr">@item.RECQty</td>
                             <td id="QCOKQty-@Cntr">@item.QCOKQty</td>
-                            <td id="PendQty-@Cntr">@item.PendQty</td>
+                            <td id="PendQty-@Cntr" class="PendQty">@item.PendQty</td>
                             <td>@item.MinLevel</td>
                             <td>@item.unit</td>
                             <td>@item.Minlvldays</td>
@@ -96,3 +96,8 @@
     }
     <center><strong>TOTAL ROWS: <span>@displayedRows</span></strong></center>
 }
+<style>
+    #divStockRegisterBody {
+        background-color: #ffebe6;
+    }
+</style>

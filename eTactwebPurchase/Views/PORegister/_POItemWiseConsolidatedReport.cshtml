@@ -36,7 +36,7 @@
                     {
                         Cntr = Cntr + 1;
 
-                        <tr id="SAGridRow-@Cntr">
+                        <tr id="SAGridRow-@Cntr" class="po-row">
                             <td>
                                 <a class="table-link link-danger" onclick="DeleteRow(this.id)" id="@Cntr">
                                     <span class="fa-stack">
@@ -53,7 +53,7 @@
                             <td id="RECQty-@Cntr">@item.RECQty</td>
                             <td id="RecValue-@Cntr">@item.RecValue</td>
                             <td id="QCOKQty-@Cntr">@item.QCOKQty</td>
-                            <td id="PendQty-@Cntr">@item.PendQty</td>
+                            <td id="PendQty-@Cntr" class="PendQty">@item.PendQty</td>
                             <td>@item.MinLevel</td>
                             <td>@item.unit</td>
                             <td>@item.Minlvldays</td>
@@ -77,3 +77,8 @@
     }
     <center><strong>TOTAL ROWS: <span>@displayedRows</span></strong></center>
 }
+<style>
+    #divStockRegisterBody {
+        background-color: #ffffcc;
+    }
+</style>
