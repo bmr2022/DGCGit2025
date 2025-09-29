@@ -61,6 +61,7 @@ namespace eTactWeb.Controllers
     DateTime JWCloseEntryDate,
     int JWCloseEntryByEmpid,
     string VendJwCustomerJW,
+    string ShowClsoedPendingAll,
     int AccountCode,
     int VendJWIssEntryId,
     int VendJWIssYearCode,
@@ -97,6 +98,70 @@ namespace eTactWeb.Controllers
             MainModel = await _ICloseJobWorkChallan.ShowDetail(VendJWIssEntryId, VendJWIssYearCode).ConfigureAwait(true);
             return View(MainModel);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> SaveActivation(int JWCloseEntryId, string JWCloseEntryDate, string VendJwCustomerJW, int AccountCode, int VendJWIssEntryId, int VendJWIssYearCode, string VendJWIssChallanNo,
+           string VendJWIssChallanDate, int CustJwIssEntryid, int CustJwIssYearCode, string CustJwIssChallanNo, string CustJwIssChallanDate, float TotalChallanAmount, float NetAmount, string ClosingReason,
+            string ActualEntryDate,string ShowClsoedPendingAll)
+        {
+            int JWCloseEntryByEmpid = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            int ActualEnteredBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            int JWCloseYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+            var CC= HttpContext.Session.GetString("Branch");
+            string EntryByMachineName= Environment.MachineName;
+            var Result = await _ICloseJobWorkChallan.SaveActivation(JWCloseEntryId, JWCloseYearCode, JWCloseEntryDate, JWCloseEntryByEmpid, VendJwCustomerJW, AccountCode, VendJWIssEntryId, VendJWIssYearCode, VendJWIssChallanNo,
+            VendJWIssChallanDate, CustJwIssEntryid, CustJwIssYearCode, CustJwIssChallanNo, CustJwIssChallanDate, TotalChallanAmount, NetAmount, ClosingReason,
+            CC, ActualEntryDate, ActualEnteredBy, EntryByMachineName, ShowClsoedPendingAll).ConfigureAwait(true);
+            if (Result != null)
+            {
+                if (Result.StatusText == "Success")
+                {
+                    var status = "";
+                    var message = "";
+
+                    var ds = (DataSet)Result.Result;
+                    if (ds.Tables.Count > 0)
+                    {
+                        var dt = ds.Tables[0];
+                        if (dt.Rows.Count > 0)
+                        {
+                            status = Convert.ToString(dt.Rows[0][0]);
+                            if (dt.Columns.Count > 1)
+                                message = dt.Rows[0][1].ToString();
+                        }
+                    }
+
+
+                    var model1 = new SOApprovalModel();
+                    ViewBag.isSuccess = true;
+                    if (string.IsNullOrEmpty(message))
+                        TempData["200"] = "200";
+                    else
+                    {
+                        TempData["302"] = message;
+                    }
+                    //return RedirectToAction("SOApproval", new { type = type, CustOrderNo = CustOrderNum, SONO = SONum, VendorName = VendorNm });
+                    return Json(new { redirectUrl = Url.Action("CloseJobWorkChallan") });
+                }
+            }
+            var model = new SOApprovalModel();
+            //return RedirectToAction("SOApproval", new { type = type, CustOrderNo = CustOrderNum, SONO = SONum, VendorName = VendorNm });
+            return Json(new { redirectUrl = Url.Action("CloseJobWorkChallan") });
+        }
+
+        public async Task<JsonResult> FillVendorList(string fromDate, string toDate, string ShowClsoedPendingAll)
+        {
+            var JSON = await _ICloseJobWorkChallan.FillVendorList(fromDate, toDate, ShowClsoedPendingAll);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+         public async Task<JsonResult> FillJWChallanList(string fromDate, string toDate, string ShowClsoedPendingAll)
+        {
+            var JSON = await _ICloseJobWorkChallan.FillJWChallanList(fromDate, toDate, ShowClsoedPendingAll);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
 
     }
 }

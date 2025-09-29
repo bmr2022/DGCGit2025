@@ -7,13 +7,14 @@
 }
 @inject IHttpContextAccessor HttpContextAccessor
 @{
-    string branchName = HttpContextAccessor.HttpContext.Session.GetString("Branch");
+    // string VendJWIssEntryId = HttpContextAccessor.HttpContext.Session.GetString("Branch");
     string empName = HttpContextAccessor.HttpContext.Session.GetString("EmpName");
     string yearCode = HttpContextAccessor.HttpContext.Session.GetString("YearCode");
     int EmpID = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("EmpID"));
     string typeOfApproval = HttpContextAccessor.HttpContext.Request.Query["ShowClsoedPendingAll"];
     int EntryID = Convert.ToInt32(HttpContextAccessor.HttpContext.Request.Query["ID"]);
-    int YC = HttpContextAccessor.HttpContext.Request.Query["YC"] != "undefined" ? Convert.ToInt32(HttpContextAccessor.HttpContext.Request.Query["YC"]) : 0;
+    int VendJWIssYearCode = HttpContextAccessor.HttpContext.Request.Query["VendJWIssYearCode"] != "undefined" ? Convert.ToInt32(HttpContextAccessor.HttpContext.Request.Query["VendJWIssYearCode"]) : 0;
+    int VendJWIssEntryId = HttpContextAccessor.HttpContext.Request.Query["VendJWIssEntryId"] != "undefined" ? Convert.ToInt32(HttpContextAccessor.HttpContext.Request.Query["VendJWIssEntryId"]) : 0;
     string SONO = HttpContextAccessor.HttpContext.Request.Query["SONo"];
     string CustOrderNo = HttpContextAccessor.HttpContext.Request.Query["CustOrderNo"];
     string VendorName = HttpContextAccessor.HttpContext.Request.Query["VendorName"];
@@ -41,6 +42,10 @@
                         }
                       
 
+                    </div>
+                    <div class="col-xl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                        <label class="form-label">Reason </label>
+                        <input id="ClosingReason" style="display: inline-block;" class="form-control" />
                     </div>
                     <div class="col-xl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                         <label class="form-label">Approve Date</label>
@@ -150,18 +155,19 @@
         });
 
         $('.btnSave').click(function () {
-            var type = @Html.Raw(Json.Serialize(typeOfApproval));
-            var custOrderNo = @Html.Raw(Json.Serialize(CustOrderNo));
-            var SONum = @Html.Raw(Json.Serialize(SONum));
-            var CustOrderNum = @Html.Raw(Json.Serialize(CustOrderNum));
-            var VendorNm = @Html.Raw(Json.Serialize(VendorNm));
-            var VendorName = @Html.Raw(Json.Serialize(VendorName));
+            // // var VendJWIssEntryId = @Html.Raw(Json.Serialize(VendJWIssEntryId));
+            // var custOrderNo = @Html.Raw(Json.Serialize(CustOrderNo));
+            // var SONum = @Html.Raw(Json.Serialize(SONum));
+            // var CustOrderNum = @Html.Raw(Json.Serialize(CustOrderNum));
+            // var VendorNm = @Html.Raw(Json.Serialize(VendorNm));
+            var typeOfApproval = @Html.Raw(Json.Serialize(typeOfApproval));
+            var ClosingReason = $('#ClosingReason').val();
 
             if ($('#approvePO').is(":checked") == true) {
                 $.ajax({
                     type: "GET",
-                    data: { "EntryId": @EntryID, "YC": @YC, "SONO": @SONO, "CustOrderNo": custOrderNo, "type": type, "SONum": SONum, "CustOrderNum": CustOrderNum, "VendorNm": VendorNm, "VendorName": VendorName },
-                    url: "@Url.Action("SaveActivation", "SOCancel")",
+                    data: { "VendJWIssEntryId": @VendJWIssEntryId, "VendJWIssYearCode": @VendJWIssYearCode , "ShowClsoedPendingAll": typeOfApproval, "ClosingReason": ClosingReason },
+                    url: "@Url.Action("SaveActivation", "CloseJobWorkChallan")",
                     success: function (response, status, error) {
 
                         if (response.redirectUrl) {
@@ -173,7 +179,6 @@
                 $.notify("Please checked items", "error");
             }
         });
-
         function colorRates() {
             var size = $('#gateDashboardtable tr').length;
 
