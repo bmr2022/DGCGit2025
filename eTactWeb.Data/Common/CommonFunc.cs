@@ -2263,7 +2263,7 @@ public static class CommonFunc
         }
         return minSqlDate;
     }
-    public static DateTime ParseSafeTime(string inputTime)
+    public static TimeOnly ParseSafeTime(string inputTime)
     {
         string[] formats = {
         "HH:mm:ss",     // 23:59:59
@@ -2271,15 +2271,20 @@ public static class CommonFunc
         "hh:mm tt",     // 11:59 PM
         "hh:mm:ss tt"   // 11:59:59 PM
     };
-
-        DateTime baseDate = new DateTime(1900, 1, 1); 
-        if (!string.IsNullOrWhiteSpace(inputTime) &&
-            DateTime.TryParseExact(inputTime, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsed))
+        if (!string.IsNullOrWhiteSpace(inputTime))
         {
-            return baseDate.Add(parsed.TimeOfDay);
+            foreach (var fmt in formats)
+            {
+                if (TimeOnly.TryParseExact(inputTime, fmt, CultureInfo.InvariantCulture, DateTimeStyles.None, out TimeOnly parsed))
+                    return parsed;
+            }
+
+            // fallback try general parse
+            if (TimeOnly.TryParse(inputTime, CultureInfo.InvariantCulture, out TimeOnly fallback))
+                return fallback;
         }
 
-        return baseDate;
+        return new TimeOnly(0, 0, 0);
     }
     public class LogException<T> where T : class
     {

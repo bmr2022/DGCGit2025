@@ -197,6 +197,18 @@ namespace eTactwebHR.Controllers
                         model.Branch = HttpContext.Session.GetString("Branch");
                         model.EntryByMachineName = HttpContext.Session.GetString("EmpName");
                         model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                        if(!string.IsNullOrEmpty(model.DayOrMonthType) && string.Equals(model.DayOrMonthType, "monthly", StringComparison.OrdinalIgnoreCase))
+                        {
+                            DateTime fromDate = new DateTime(MainModel.GateAttYearCode, 1, 1);
+                            DateTime toDate = new DateTime(MainModel.GateAttYearCode, 12, 31);
+                            MainModel.NFromDate = CommonFunc.ParseFormattedDate(fromDate.ToString("dd/MM/yyyy"));
+                            MainModel.NToDate = CommonFunc.ParseFormattedDate(toDate.ToString("dd/MM/yyyy"));    
+                        }
+                        else 
+                        {
+                            model.NFromDate = model.strEmpAttDate;
+                            model.NToDate = model.strEmpAttDate;
+                        }
                         Result = await IGateAttendance.SaveGateAtt(model, ItemDetailDT);
                     }
                     string message = string.Empty;
@@ -503,7 +515,7 @@ namespace eTactwebHR.Controllers
 
             foreach (GateAttendanceModel Item in itemDetailList?.GateAttDetailsList ?? new List<GateAttendanceModel>())
             {
-                var currentDt = CommonFunc.ParseSafeDate(DateTime.Today.ToString());
+                var currentDt = CommonFunc.ParseSafeDate(DateTime.Now.ToString());
                 List<object> rowValues = new List<object>
                 {
                     (itemDetailList.GateAttEntryId > 0 ? itemDetailList.GateAttEntryId : EntryID) ?? 0,
@@ -522,8 +534,28 @@ namespace eTactwebHR.Controllers
                         { rowValues.Add(0); } //Math.Round(Item.Attendance[header], 2, MidpointRounding.AwayFromZero)
                         else if (Item.Attendance != null && Item.Attendance.ContainsKey(header) && (header.Contains("InTime") || header.Contains("OutTime")))
                         {
-                            var dt = CommonFunc.ParseSafeTime(Item.Attendance[header]);
-                            rowValues.Add(dt);
+                            var time = CommonFunc.ParseSafeTime(Item.Attendance[header]);
+
+                            int year = itemDetailList.GateAttYearCode;
+                            int month = itemDetailList.intEmpAttMonth != null && itemDetailList.intEmpAttMonth > 0 ? Convert.ToInt32(itemDetailList.intEmpAttMonth) : 0;
+                            int day = 1;
+
+                            if (string.Equals(itemDetailList.DayOrMonthType, "Monthly", StringComparison.OrdinalIgnoreCase))
+                            {
+                                var dayPart = new string(header.Where(char.IsDigit).ToArray());
+                                if (int.TryParse(dayPart, out int parsedDay))
+                                    day = parsedDay;
+                            }
+                            else 
+                            {
+                                day = itemDetailList.EmpAttDate != null  ? CommonFunc.ParseDate(Convert.ToDateTime(itemDetailList.EmpAttDate).Date.ToString()).Day : 1;
+                            }
+                            var combinedDateTime = new DateTime(year, month, day, time.Hour, time.Minute, time.Second);
+                            rowValues.Add(combinedDateTime);
+                        }
+                        else if (header.Contains("InTime") || header.Contains("OutTime"))
+                        {
+                            rowValues.Add((object?)null ?? DBNull.Value);
                         }
                         else
                         { rowValues.Add(null); }

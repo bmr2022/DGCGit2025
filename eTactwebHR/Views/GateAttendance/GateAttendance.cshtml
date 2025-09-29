@@ -493,11 +493,9 @@
                         success: function (res) {
                             if (res != null && res.isSuccess == true) {
                                 $.notify(res?.message || "Attendance saved successfully!", "success");
-                                console.success("AJAX error:", xhr.responseText);
                             }
                             else if (res != null && res.isSuccess == false) {
                                 $.notify(res?.message || "Something went wrong", "error");
-                                console.error("AJAX error:", xhr.responseText);
                             }
                         },
                         error: function (xhr) {
@@ -665,7 +663,8 @@
                     success: function (result, status, error) {
                         if (result != null) {
                             var obj = $.parseJSON(result);
-                            $('#GateAttEntryId').val(obj.Result.Table[0].EntryId);
+                            var EntryId = obj.Result.Table[0] != null ? obj.Result.Table[0].EntryId : (obj.Result.Table1[0] != null ? obj.Result.Table1[0].EntryId : 0);
+                            $('#GateAttEntryId').val(EntryId);
                         }
                     }
                 });
