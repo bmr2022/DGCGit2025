@@ -29,9 +29,17 @@ namespace eTactWeb.Data.BLL
         {
             return await _AgainstAdjustVoucherDAL.GetFormRights(ID);
         }
-        public async Task<ResponseResult> FillSubVoucherName(string VoucherType)
+        public async Task<ResponseResult> FillVoucherType(int Yearcode)
         {
-            return await _AgainstAdjustVoucherDAL.FillSubVoucherName(VoucherType);
+            return await _AgainstAdjustVoucherDAL.FillVoucherType(Yearcode);
+        }
+        public async Task<ResponseResult> FillInvoiceNo(int YearCode, string VoucherType, string FromDate, string ToDate, string VoucherNo, int AccountCode)
+        {
+            return await _AgainstAdjustVoucherDAL.FillInvoiceNo(YearCode, VoucherType,FromDate,ToDate,VoucherNo,AccountCode);
+        }
+        public async Task<ResponseResult> FillVoucherNo(int YearCode, string VoucherType, string FromDate, string ToDate)
+        {
+            return await _AgainstAdjustVoucherDAL.FillVoucherNo(YearCode, VoucherType,FromDate,ToDate);
         }
         public async Task<ResponseResult> FillModeofAdjust(string VoucherType)
         {

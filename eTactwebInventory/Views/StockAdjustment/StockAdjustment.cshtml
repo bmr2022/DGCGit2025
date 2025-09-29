@@ -1581,16 +1581,16 @@
 
         function MbAdjStockOperation(RowCount) {
 
-            var MbAQ = parseInt($('#MbActualQty-' + RowCount).val());
+            var MbAQ = ($('#MbActualQty-' + RowCount).val());
             if ($('#MbLotStock-' + RowCount).text() == '') {
                 $('#MbLotStock-' + RowCount).text('0');
             }
             //else{
             //    $('#MbLotStock-' + RowCount).text();
             //}
-            var MbLS = parseInt($('#MbLotStock-' + RowCount).text());
+            var MbLS = ($('#MbLotStock-' + RowCount).text());
             var MbAdjQty = MbAQ - MbLS;
-            $('#MbAdjQty-' + RowCount).text(Math.abs(MbAdjQty));
+                   $('#MbAdjQty-' + RowCount).text(Math.abs(MbAdjQty).toFixed(6));
             if (MbAdjQty > 0) {
                 $('#MbAdjType-' + RowCount).text('+');
             } else {
@@ -1941,8 +1941,8 @@
 
         function FillAmount() {
              
-            var ActualStockQty = parseInt($('#ActualStockQty').val());
-            var Rate = parseInt($('#Rate').val());
+            var ActualStockQty = ($('#ActualStockQty').val());
+            var Rate = ($('#Rate').val());
             Amount = ActualStockQty * Rate;
             $('#Amount').val("");
             $('#Amount').val(Amount);
@@ -2397,7 +2397,7 @@
                         "LotStock": $('#MbLotStock-' + i).text(),
                         "altUnit": $('#altUnit').val(),
                         "AltQty": $('#AltQty').val(),
-                        "ActualStockQty": parseInt($('#MbActualQty-' + i).val()),
+                        "ActualStockQty": ($('#MbActualQty-' + i).val()),
                         "AdjQty": $('#MbAdjQty-' + i).text(),
                         "AdjType": $('#MbAdjType-' + i).text(),
                         "Rate": $('#Rate').val(),
