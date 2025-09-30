@@ -92,11 +92,11 @@
                                     <label asp-for="ReportMode" class="form-label">Report Type</label>
                                     <select asp-for="ReportMode" class="form-select" onchange="GetPORegisterData();UpdateAccordionHeader();">
                                         <option disabled value="">-Select-</option>
-                                        <option selected value="LISTOFPO">LIST OF PO</option>
-                                        <option value="LISTOFSCHEDULESUMMARY">LIST OF POSUMMARY</option>
+                                        <option selected value="LIST OF PO">LIST OF PO</option>
+                                        <option value="List of PO With Item">List of PO With Item</option>
+                                        <option value="PO vs Receiving Detail ( GateMRNQC)">PO vs Receiving Detail ( GateMRNQC)</option>
                                         <option value="LISTOFSCHEDULE">LIST OF SCHEDULE</option>
                                         <option value="SUMM">PURCHASE ORDER SUMMARY</option>
-                                        <option value="DETAIL">PURCHASE ORDER DETAIL</option>
                                         <option value="SUMMRATEING">SUMMARY RATING</option>
                                         <option value="CONSOLIDATED">CONSOLIDATED</option>
                                         <option value="PARTYWISECONSOLIDATED">PARTY WISE CONSOLIDATED</option>
@@ -501,7 +501,7 @@
             var reportType = $('#ReportMode').val();;
 
             var headerTextMap = {
-                "LISTOFPO": "PO/Sch List",
+                "LISTOFPO": "LIST OF PO",
                 "LISTOFSCHEDULESUMMARY": "PO Summary",
                 "LISTOFSCHEDULE": "Schedule List",
                 "SUMM": "Purchase Order Summary",

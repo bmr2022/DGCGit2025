@@ -139,9 +139,13 @@ namespace eTactWeb.Controllers
             model.PORegisterDetails = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
             model.PageNumber = pageNumber;
             model.PageSize = pageSize;
-            if (model.ReportMode == "SUMM")
+            if (model.ReportMode == "PO vs Receiving Detail ( GateMRNQC)")
             {
                 return PartialView("_POSummaryReport", model);
+            }
+            else if (model.ReportMode == "LIST OF PO")
+            {
+                return PartialView("_ListOfPOReport", model);
             }
             else if (model.ReportMode == "SUMMRATEING")
             {
