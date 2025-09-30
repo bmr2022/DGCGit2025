@@ -173,6 +173,29 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
+        public async Task<ResponseResult> GetAccEntryId(int YearCode, string VoucherType, string VoucherNo, int AccountCode,string InvoiceNo)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetAccEntryId"));
+                SqlParams.Add(new SqlParameter("@voucherType", VoucherType));
+                SqlParams.Add(new SqlParameter("@VoucherNo", VoucherNo));
+                SqlParams.Add(new SqlParameter("@AccountCode", AccountCode));
+                SqlParams.Add(new SqlParameter("@InvoiceNo", InvoiceNo));
+                SqlParams.Add(new SqlParameter("@VoucherYearcode", YearCode));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("AccAgainstRefAdjustmentOfVoucherAndBills", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
         public async Task<ResponseResult> FillBankType(int AccountCode)
         {
             var _ResponseResult = new ResponseResult();

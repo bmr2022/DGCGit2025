@@ -4989,8 +4989,9 @@
                 data: {
                     "WcId": parseInt($('#WorkCenter').val()),
                     "TransferMatEntryDate": $('#EntryDate').val(),
+                    "TransferMatYearCode": parseInt($('#YearCode').val()),
                     "TransferMatEntryId": $('#EntryId').val(),
-                    "TransferMatYearCode": parseInt($('#YearCode').val())
+                    "Mode":$("#Mode").val()
                 },
                 success: function (response) {
                     if (response.success === false) {

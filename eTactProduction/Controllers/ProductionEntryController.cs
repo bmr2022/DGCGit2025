@@ -200,6 +200,7 @@ namespace eTactWeb.Controllers
             HttpContext.Session.Remove("KeyProductionEntryBreakdowndetail");
             HttpContext.Session.Remove("KeyProductionEntryOperatordetail");
             HttpContext.Session.Remove("KeyProductionEntryScrapdetail");
+            HttpContext.Session.Remove("KeyProductionEntryProductdetail");
 
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
             {
@@ -212,12 +213,14 @@ namespace eTactWeb.Controllers
                 MainModel.FinToDate = HttpContext.Session.GetString("ToDate");
                 string serializedProductionGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
                 HttpContext.Session.SetString("KeyProductionEntryGrid", serializedProductionGrid);
-                string serializedBreakdownGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
+                string serializedBreakdownGrid = JsonConvert.SerializeObject(MainModel.BreakdownDetailGrid);
                 HttpContext.Session.SetString("KeyProductionEntryBreakdowndetail", serializedBreakdownGrid);
-                string serializedOperatorGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
+                string serializedOperatorGrid = JsonConvert.SerializeObject(MainModel.OperatorDetailGrid);
                 HttpContext.Session.SetString("KeyProductionEntryOperatordetail", serializedOperatorGrid);
-                string serializedScrapGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
-                HttpContext.Session.SetString("KeyProductionEntryScrapdetail", serializedScrapGrid);
+                string serializedScrapGrid = JsonConvert.SerializeObject(MainModel.ScrapDetailGrid);
+                HttpContext.Session.SetString("KeyProductionEntryScrapdetail", serializedScrapGrid); 
+                string serializedProductGrid = JsonConvert.SerializeObject(MainModel.ProductDetailGrid);
+                HttpContext.Session.SetString("KeyProductionEntryProductdetail", serializedProductGrid);
             }
             else
             {
@@ -390,7 +393,7 @@ namespace eTactWeb.Controllers
             }
         }
 
-        public async Task<JsonResult> ChkWIPStockBeforeSaving(int WcId, string TransferMatEntryDate, int TransferMatYearCode, int TransferMatEntryId)
+        public async Task<JsonResult> ChkWIPStockBeforeSaving(int WcId, string TransferMatEntryDate, int TransferMatYearCode, int TransferMatEntryId,string Mode)
         {
             var TransferGrid = new DataTable();
             string serializedGrid = HttpContext.Session.GetString("KeyProductionEntryGrid");
@@ -401,7 +404,7 @@ namespace eTactWeb.Controllers
             }
             //_MemoryCache.TryGetValue("KeyTransferFromWorkCenterGrid", out List<TransferFromWorkCenterDetail> TransferFromWorkCenterDetail);
             TransferGrid = GetDetailTable(ProductionEntryItemDetail);
-            var ChechedData = await _IProductionEntry.ChkWIPStockBeforeSaving(WcId, TransferMatEntryDate, TransferMatYearCode, TransferMatEntryId, TransferGrid);
+            var ChechedData = await _IProductionEntry.ChkWIPStockBeforeSaving(WcId, TransferMatEntryDate, TransferMatYearCode, TransferMatEntryId, TransferGrid,Mode);
             if (ChechedData.StatusCode == HttpStatusCode.OK && ChechedData.StatusText == "Success")
             {
                 DataTable dt = ChechedData.Result;
