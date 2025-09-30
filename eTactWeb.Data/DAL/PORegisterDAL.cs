@@ -71,7 +71,7 @@ namespace eTactWeb.Data.DAL
                         oDataAdapter.Fill(oDataSet);
                     }
 
-                    if (ReportType == "LISTOFPO") //list of po
+                    if (ReportType == "LIST OF PO") //list of po
                     {
                         if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
                         {
@@ -107,7 +107,7 @@ namespace eTactWeb.Data.DAL
                             model.PORegisterDetails = _PODetail;
                         }
                     } 
-                    if (ReportType == "DETAIL") //PURCHASE ORDER DETAIL
+                    if (ReportType == "List of PO With Item") //PURCHASE ORDER DETAIL
                     {
                         if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
                         {
@@ -119,7 +119,7 @@ namespace eTactWeb.Data.DAL
                             model.PORegisterDetails = _PODetail;
                         }
                     }
-                    if (ReportType == "SUMM") //PURCHASE ORDER SUMMARY
+                    if (ReportType == "PO vs Receiving Detail ( GateMRNQC)") //PURCHASE ORDER SUMMARY
                     {
                         if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
                         {

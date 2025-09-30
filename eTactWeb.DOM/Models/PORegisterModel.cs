@@ -75,6 +75,7 @@ namespace eTactWeb.DOM.Models
 
         //summary
         public string Vendor { get; set; }        
+        public string VendorName { get; set; }        
         public string ScheduleEffectiveFromDate { get; set; }        
         public string ScheduleEffectiveTillDate { get; set; }                   
         public string POEffDate { get; set; }

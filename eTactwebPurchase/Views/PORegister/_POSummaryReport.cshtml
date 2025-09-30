@@ -5,30 +5,118 @@
             <tr>
                 <th>Action</th>
                 <th>Sr#</th>
-                <th class="sortCol" data-sortorder="asc" data-columnno="1"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Vendor Name</th>
-                <th class="sortCol" data-sortorder="asc" data-columnno="2"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PONO</th>
-                <th class="sortCol" data-sortorder="asc" data-columnno="3"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>POEffDate</th>
-                <th class="sortCol" data-sortorder="asc" data-columnno="4"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>POEndDate</th>
-                <th class="sortCol" data-sortorder="asc" data-columnno="5"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>POFOR</th>
-                <th class="sortCol sch-fields" data-sortorder="asc" data-columnno="6"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SchNO</th>
-                <th class="sortCol sch-fields" data-sortorder="asc" data-columnno="7"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Schdate</th>
-                <th class="sortCol sch-fields" data-sortorder="asc" data-columnno="8"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SchYear</th>
-                <th class="sortCol" data-sortorder="asc" data-columnno="9"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PartCode</th>
-                <th class="sortCol" data-sortorder="asc" data-columnno="10"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ItemName</th>
-                <th class="sortCol" data-sortorder="asc" data-columnno="11"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Currency</th>
-                <th class="sortCol" data-sortorder="asc" data-columnno="12"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PORate</th>
-                <th class="sortCol" data-sortorder="asc" data-columnno="13"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>POQty</th>
-                <th class="sortCol" data-sortorder="asc" data-columnno="14"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>POValue</th>
-                <th class="sortCol" data-sortorder="asc" data-columnno="14"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>GST%</th>
-                <th class="sortCol" data-sortorder="asc" data-columnno="14"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>GSTAmt</th>
-                <th class="sortCol" data-sortorder="asc" data-columnno="15"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RECQty</th>
-                <th class="sortCol" data-sortorder="asc" data-columnno="16"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>QCOKQty</th>
-                <th class="sortCol" data-sortorder="asc" data-columnno="17"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PendQty</th>
-                <th class="sortCol" data-sortorder="asc" data-columnno="18"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MinLevel</th>
-                <th class="sortCol" data-sortorder="asc" data-columnno="19"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unit</th>
-                <th class="sortCol" data-sortorder="asc" data-columnno="20"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Minlvldays</th>
-                <th class="sortCol" data-sortorder="asc" data-columnno="21"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ItemGroup</th>
-                <th class="sortCol" data-sortorder="asc" data-columnno="22"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ItemCategory</th>                         
+                
+                            <th class="sortCol" data-sortorder="asc" data-columnno="1">
+                                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Vendor Name
+                            </th>
+                            <th class="sortCol" data-sortorder="asc" data-columnno="2">
+                                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO No
+                            </th>
+                            <th class="sortCol" data-sortorder="asc" data-columnno="3">
+                                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Year
+                            </th>
+                            <th class="sortCol" data-sortorder="asc" data-columnno="4">
+                                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Date
+                            </th>
+                            <th class="sortCol" data-sortorder="asc" data-columnno="5">
+                                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO For
+                            </th>
+                            <th class="sortCol" data-sortorder="asc" data-columnno="6">
+                                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch No
+                            </th>
+                            <th class="sortCol" data-sortorder="asc" data-columnno="7">
+                                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch Date
+                            </th>
+                            <th class="sortCol" data-sortorder="asc" data-columnno="8">
+                                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch Year
+                            </th>
+                            <th class="sortCol" data-sortorder="asc" data-columnno="9">
+                                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Part Code
+                            </th>
+                            <th class="sortCol" data-sortorder="asc" data-columnno="10">
+                                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Name
+                            </th>
+                            <th class="sortCol" data-sortorder="asc" data-columnno="11">
+                                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Currency
+                            </th>
+                            <th class="sortCol" data-sortorder="asc" data-columnno="12">
+                                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Rate
+                            </th>
+                            <th class="sortCol" data-sortorder="asc" data-columnno="13">
+                                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Qty
+                            </th>
+                            <th class="sortCol" data-sortorder="asc" data-columnno="14">
+                                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Discount %
+                            </th>
+                            <th class="sortCol" data-sortorder="asc" data-columnno="15">
+                                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Discount Amount
+                            </th>
+                            <th class="sortCol" data-sortorder="asc" data-columnno="16">
+                                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Amount
+                            </th>
+                            <th class="sortCol" data-sortorder="asc" data-columnno="17">
+                                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Old Rate
+                            </th>
+                            <th class="sortCol" data-sortorder="asc" data-columnno="18">
+                                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MRN No
+                            </th>
+                            <th class="sortCol" data-sortorder="asc" data-columnno="19">
+                                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MRN Date
+                            </th>
+                            <th class="sortCol" data-sortorder="asc" data-columnno="20">
+                                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Gate No
+                            </th>
+                            <th class="sortCol" data-sortorder="asc" data-columnno="21">
+                                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Gate Year Code
+                            </th>
+                            <th class="sortCol" data-sortorder="asc" data-columnno="22">
+                                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Gate Date
+                            </th>
+                            <th class="sortCol" data-sortorder="asc" data-columnno="23">
+                                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bill Qty
+                            </th>
+                            <th class="sortCol" data-sortorder="asc" data-columnno="24">
+                                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Received Qty
+                            </th>
+                            <th class="sortCol" data-sortorder="asc" data-columnno="25">
+                                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Accepted Qty
+                            </th>
+                            <th class="sortCol" data-sortorder="asc" data-columnno="26">
+                                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Invoice No
+                            </th>
+                            <th class="sortCol" data-sortorder="asc" data-columnno="27">
+                                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Invoice Date
+                            </th>
+                            <th class="sortCol" data-sortorder="asc" data-columnno="28">
+                                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MIR No
+                            </th>
+                            <th class="sortCol" data-sortorder="asc" data-columnno="29">
+                                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MIR Date
+                            </th>
+                            <th class="sortCol" data-sortorder="asc" data-columnno="30">
+                                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Batch No
+                            </th>
+                            <th class="sortCol" data-sortorder="asc" data-columnno="31">
+                                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unique Batch No
+                            </th>
+                            <th class="sortCol" data-sortorder="asc" data-columnno="32">
+                                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Group
+                            </th>
+                            <th class="sortCol" data-sortorder="asc" data-columnno="33">
+                                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Category
+                            </th>
+                            <th class="sortCol" data-sortorder="asc" data-columnno="34">
+                                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Domestic / Import
+                            </th>
+                            <th class="sortCol" data-sortorder="asc" data-columnno="35">
+                                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>GST Amount
+                            </th>
+                            <th class="sortCol" data-sortorder="asc" data-columnno="36">
+                                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>GST %
+                            </th>
+                       
+                   
+
             </tr>
         </thead>
         <tbody id="divStockRegisterBody">
@@ -56,30 +144,45 @@
                                 </a>
                             </td>
                             <th>@srNo</th>
-                            <td>@item.Vendor</td>
+                            <td>@item.VendorName</td>
                             <td style="background-color: #e09ef0;">@item.PONO</td>
-                            <td>@(item.POEffDate   == null ? string.Empty : @item.POEffDate.Split(" ")[0])</td>
-                            <td>@(item.POEndDate   == null ? string.Empty : @item.POEndDate.Split(" ")[0])</td>
+                            <td>@item.POYearCode</td>
+                            <td>@item.PODate.Split(" ")[0]</td>
                             <td>@item.POFOR</td>
                             <td class="sch-fields">@item.SchNO</td>
-                            <td class="sch-fields">@(item.Schdate == null ? string.Empty : @item.Schdate.Split(" ")[0])</td>
+                            <td class="sch-fields">@item.Schdate</td>
                             <td class="sch-fields">@item.SchYear</td>
                             <td>@item.PartCode</td>
                             <td>@item.ItemName</td>
                             <td>@item.Currency</td>
                             <td>@item.PORate</td>
                             <td id="POQty-@Cntr">@item.POQty</td>
-                            <td  id="POValue-@Cntr">@item.POValue</td>
-                            <td>@item.GSTPer</td>
-                            <td>@item.GSTAmt</td>
+                            <td>@item.DisPer</td>
+                            <td>@item.DisAmt</td>
+                            <td>@item.POAmount</td>
+                            <td>@item.Rate</td>
+                            <td>@item.MRNNo</td>
+                            <td>@item.MRNDATE.Split(" ")[0]</td>
+                            <td>@item.GateNo</td>
+                            <td>@item.GateYearCode</td>
+                            <td>@item.GateDate.Split(" ")[0]</td>
+                            <td>@item.BillQty</td>
                             <td id="RECQty-@Cntr">@item.RECQty</td>
-                            <td id="QCOKQty-@Cntr">@item.QCOKQty</td>
-                            <td id="PendQty-@Cntr" class="PendQty">@item.PendQty</td>
-                            <td>@item.MinLevel</td>
-                            <td>@item.unit</td>
-                            <td>@item.Minlvldays</td>
+                            <td>@item.AcceptedQty</td>
+                            <td>@item.InvNo</td>
+                            <td>@item.INVDate.Split(" ")[0]</td>
+                            <td>@item.MIRNo</td>
+                            <td>@item.MIRDate.Split(" ")[0]</td>
+                            <td>@item.BatchNo</td>
+                            <td>@item.UniqueBatchno</td>
                             <td>@item.ItemGroup</td>
-                            <td>@item.ItemCategory</td>                           
+                            <td>@item.ItemCategory</td>
+                            <td>@item.DOMESTICIMPORT</td>
+                            <td>@item.GSTAmt</td>
+                            <td>@item.GSTPer</td>
+
+
+                                                      
                         </tr>
                         srNo++;
                     }
