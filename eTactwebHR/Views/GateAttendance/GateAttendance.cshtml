@@ -493,6 +493,9 @@
                         success: function (res) {
                             if (res != null && res.isSuccess == true) {
                                 $.notify(res?.message || "Attendance saved successfully!", "success");
+                                setTimeout(function () {
+                                    window.location.href = '@Url.Action("GateAttendance", "GateAttendance")' + '?ID=' + res.ID + '&Mode=' + $('#Mode').val();
+                                }, 1500);       
                             }
                             else if (res != null && res.isSuccess == false) {
                                 $.notify(res?.message || "Something went wrong", "error");

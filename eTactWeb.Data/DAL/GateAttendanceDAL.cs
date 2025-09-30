@@ -238,9 +238,10 @@ public class GateAttendanceDAL
 
             var EntryDt = CommonFunc.ParseSafeDate(model.GateAttEntryDate);
             var AttDate = CommonFunc.ParseSafeDate(model.strEmpAttDate);
-            var fromdate = CommonFunc.ParseSafeDate(model.NFromDate);
-            var todate = CommonFunc.ParseSafeDate(model.NToDate);
+            var fromdate = CommonFunc.ParseSafeDate(CommonFunc.ParseDate(model.NFromDate).ToString("dd/MM/yyyy"));
+            var todate = CommonFunc.ParseSafeDate(CommonFunc.ParseDate(model.NToDate).ToString("dd/MM/yyyy"));
             var CurrentDate = CommonFunc.ParseSafeDate(DateTime.Now.ToString("dd/MM/yyyy"));
+            var CurrentDateTime = CommonFunc.ParseSafeDate(DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss"));
             SqlParams.Add(new SqlParameter("@Flag", model.Mode == "COPY" ? "INSERT" : model.Mode));
             //SqlParams.Add(new SqlParameter("@ID", model.ID));
             if (model.Mode == "INSERT")
@@ -250,7 +251,7 @@ public class GateAttendanceDAL
 
             SqlParams.Add(new SqlParameter("@GateAttYearCode", model.GateAttYearCode));
             SqlParams.Add(new SqlParameter("@AttendanceDate", EntryDt == default ? null : EntryDt));
-            SqlParams.Add(new SqlParameter("@AttendanceEntryMethod", model.AttendanceEntryMethodType));
+            SqlParams.Add(new SqlParameter("@AttendanceEntryMethod", model.AttendanceEntryMethodType ?? string.Empty));
             SqlParams.Add(new SqlParameter("@fromdate", fromdate == default ? string.Empty : fromdate));
             SqlParams.Add(new SqlParameter("@todate", todate == default ? string.Empty : todate));
             SqlParams.Add(new SqlParameter("@ShiftId", model.ActualEmpShiftId != null ? model.ActualEmpShiftId : 1));
@@ -259,8 +260,8 @@ public class GateAttendanceDAL
             SqlParams.Add(new SqlParameter("@DesgId", model.DesignationEntryId != null ? model.DesignationEntryId : 0));
             SqlParams.Add(new SqlParameter("@EmpId", model.EmpId != null ? model.EmpId : 0));
             SqlParams.Add(new SqlParameter("@AttendanceForMonth", model.intEmpAttMonth != null ? model.intEmpAttMonth  : 0));
-            SqlParams.Add(new SqlParameter("@DailyMonthlyAttendance", model.DayOrMonthType.ToUpper()));
-            SqlParams.Add(new SqlParameter("@CC", model.Branch));
+            SqlParams.Add(new SqlParameter("@DailyMonthlyAttendance", model.DayOrMonthType.ToUpper() ?? string.Empty));
+            SqlParams.Add(new SqlParameter("@CC", model.Branch ?? string.Empty));
 
             if (string.Equals(model.DayOrMonthType, "Monthly", StringComparison.OrdinalIgnoreCase))
             {
@@ -272,16 +273,16 @@ public class GateAttendanceDAL
             }
             if (model.Mode == "UPDATE")
             {
-                SqlParams.Add(new SqlParameter("@UpdatedByEmpId", model.UpdatedBy));
-                SqlParams.Add(new SqlParameter("@EneterdBy", model.UpdatedBy));
-                SqlParams.Add(new SqlParameter("@LastUpdationDate", CurrentDate == default ? null : CurrentDate));
+                SqlParams.Add(new SqlParameter("@UpdatedByEmpId", model.UpdatedBy ?? 0));
+                SqlParams.Add(new SqlParameter("@EneterdBy", model.UpdatedBy ?? 0));
+                SqlParams.Add(new SqlParameter("@LastUpdationDate", CurrentDateTime == default ? null : CurrentDateTime));
             }
             else if (model.Mode == "INSERT")
              {
                 SqlParams.Add(new SqlParameter("@ActualEnteredBy", model.CreatedBy));
-                SqlParams.Add(new SqlParameter("@ActualEntryDate", CurrentDate == default ? null : CurrentDate));
+                SqlParams.Add(new SqlParameter("@ActualEntryDate", CurrentDateTime == default ? null : CurrentDateTime));
             }
-            SqlParams.Add(new SqlParameter("@EntryByMachineName", model.EntryByMachineName));
+            SqlParams.Add(new SqlParameter("@EntryByMachineName", model.EntryByMachineName ?? string.Empty));
 
             _ResponseResult = await _IDataLogic.ExecuteDataTable("HRSPGateAttendanceMainDetail", SqlParams);
         }

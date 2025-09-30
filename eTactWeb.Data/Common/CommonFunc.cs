@@ -2263,7 +2263,7 @@ public static class CommonFunc
         }
         return minSqlDate;
     }
-    public static TimeOnly ParseSafeTime(string inputTime)
+    public static TimeOnly? ParseSafeTime(string inputTime, bool? MinValueIfNull = false)
     {
         string[] formats = {
         "HH:mm:ss",     // 23:59:59
@@ -2283,8 +2283,11 @@ public static class CommonFunc
             if (TimeOnly.TryParse(inputTime, CultureInfo.InvariantCulture, out TimeOnly fallback))
                 return fallback;
         }
-
-        return new TimeOnly(0, 0, 0);
+        if(MinValueIfNull != null && Convert.ToBoolean(MinValueIfNull))
+        {
+            return new TimeOnly(0, 0, 0);
+        }
+        return null;
     }
     public class LogException<T> where T : class
     {

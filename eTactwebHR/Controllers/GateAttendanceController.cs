@@ -521,7 +521,7 @@ namespace eTactwebHR.Controllers
                     (itemDetailList.GateAttEntryId > 0 ? itemDetailList.GateAttEntryId : EntryID) ?? 0,
                     (itemDetailList.GateAttYearCode > 0 ? itemDetailList.GateAttYearCode : YearCode) ?? 0,
                     Item.EmpId,
-                    Item.EmpAttYear
+                    Item.EmpAttYear ?? Item.GateAttYearCode
                 };
 
                 if (itemDetailList.DayHeaders != null)
@@ -550,23 +550,32 @@ namespace eTactwebHR.Controllers
                             {
                                 day = itemDetailList.EmpAttDate != null  ? CommonFunc.ParseDate(Convert.ToDateTime(itemDetailList.EmpAttDate).Date.ToString()).Day : 1;
                             }
-                            var combinedDateTime = new DateTime(year, month, day, time.Hour, time.Minute, time.Second);
-                            rowValues.Add(combinedDateTime);
+                            if (time == null)
+                            {
+                                rowValues.Add((object?)null ?? DBNull.Value);
+                                continue;
+                            }
+                            else
+                            {
+                                var timeOnly = (TimeOnly)time;
+                                var combinedDateTime = new DateTime(year, month, day, timeOnly.Hour, timeOnly.Minute, timeOnly.Second);
+                                rowValues.Add(combinedDateTime);
+                            }
                         }
                         else if (header.Contains("InTime") || header.Contains("OutTime"))
                         {
                             rowValues.Add((object?)null ?? DBNull.Value);
                         }
                         else
-                        { rowValues.Add(null); }
+                        { rowValues.Add(string.Empty); }
                     }
                 }
 
-                rowValues.Add(Item.ActualEmpShiftId);
-                rowValues.Add(itemDetailList.CC);
+                rowValues.Add(Item.ActualEmpShiftId ?? 0);
+                rowValues.Add(itemDetailList.CC ?? string.Empty);
                 rowValues.Add(itemDetailList.EmpCategoryId);
                 rowValues.Add(currentDt);
-                rowValues.Add(itemDetailList.ActualEmpShiftId);
+                rowValues.Add(itemDetailList.ActualEmpShiftId ?? 0);
                 rowValues.Add(currentDt);
                 rowValues.Add(currentDt);
                 rowValues.Add(0);
