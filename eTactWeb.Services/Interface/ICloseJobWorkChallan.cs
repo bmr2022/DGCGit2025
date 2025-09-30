@@ -12,7 +12,7 @@ namespace eTactWeb.Services.Interface
     {
         Task<ResponseResult> GetSearchData(string FromDate, string ToDate, int AccountCode, string ChallanNO, string ShowClsoedPendingAll);
 
-        Task<List<CloseJobWorkChallanModel>> ShowDetail(int ID, int YearCode);
+        Task<List<CloseJobWorkChallanModel>> ShowDetail(int ID, int YearCode,string ShowClsoedPendingAll);
         Task<ResponseResult> FillVendorList(string fromDate, string toDate,string ShowClsoedPendingAll);
         Task<ResponseResult> FillJWChallanList(string fromDate, string toDate,string ShowClsoedPendingAll);
 

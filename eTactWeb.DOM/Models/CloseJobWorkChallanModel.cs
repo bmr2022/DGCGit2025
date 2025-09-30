@@ -25,6 +25,8 @@ namespace eTactWeb.DOM.Models
         public string VendJWIssChallanDate { get; set; }
         public decimal TolApprVal { get; set; }
         public string Closed { get; set; }
+        public string PartCode { get; set; }
+        public string Item_Name { get; set; }
         public decimal TotalAmount { get; set; }
         public decimal NetAmount { get; set; }
         public int? Processdays { get; set; }

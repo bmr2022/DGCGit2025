@@ -78,7 +78,7 @@
 
 
 
-                                <label for="search-box" class="form-label mb-0 ms-2">Search</label>
+                                @* <label for="search-box" class="form-label mb-0 ms-2">Search</label> *@
                                 <input type="text" class="form-control" id="search-box" placeholder="Search..." style="max-width: 180px;">
                             </div>
                          
@@ -367,11 +367,12 @@
                                     '<td>' + row.VendJWIssChallanNo + '</td>' +
                                     '<td>' + challanDate + '</td>' +
                                     '<td>' + row.TolApprVal + '</td>' +
+                                    '<td>' + row.Closed + '</td>' +
                                     '<td>' + row.TotalAmount + '</td>' +
                                     '<td>' + row.NetAmount + '</td>' +
                                     '<td>' + row.Processdays + '</td>' +
                                     '<td>' + row.Remark + '</td>' +
-                                    '<td>' + row.Closed + '</td>' +
+                                   
                                     '<td>' + row.VendJWIssEntryId + '</td>' +
                                     '<td>' + row.VendJWIssYearCode + '</td>' +
                                     '</tr>';
@@ -630,5 +631,9 @@
     .descCol {
         font-size: 15px;
         vertical-align: super;
+    }
+
+    #divSOAppGrid table tbody td {
+        font-weight: normal !important;
     }
 </style>

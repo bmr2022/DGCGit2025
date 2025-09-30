@@ -26,9 +26,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _CloseJobWorkChallanDAL.GetSearchData( FromDate,  ToDate,  AccountCode,  ChallanNO,  ShowClsoedPendingAll);
         }
-        public async Task<List<CloseJobWorkChallanModel>> ShowDetail(int ID, int YC)
+        public async Task<List<CloseJobWorkChallanModel>> ShowDetail(int ID, int YC,string ShowClsoedPendingAll)
         {
-            return await _CloseJobWorkChallanDAL.ShowDetail(ID, YC);
+            return await _CloseJobWorkChallanDAL.ShowDetail(ID, YC, ShowClsoedPendingAll);
         }
         public async Task<ResponseResult> SaveActivation(int JWCloseEntryId, int JWCloseYearCode, string JWCloseEntryDate, int JWCloseEntryByEmpid, string VendJwCustomerJW, int AccountCode, int VendJWIssEntryId, int VendJWIssYearCode, string VendJWIssChallanNo,
            string VendJWIssChallanDate, int CustJwIssEntryid, int CustJwIssYearCode, string CustJwIssChallanNo, string CustJwIssChallanDate, float TotalChallanAmount, float NetAmount, string ClosingReason,

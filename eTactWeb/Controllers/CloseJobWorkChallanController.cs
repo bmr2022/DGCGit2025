@@ -95,7 +95,7 @@ namespace eTactWeb.Controllers
     DateTime? UpdatedOn)
         {
             var MainModel = new List<CloseJobWorkChallanModel>();
-            MainModel = await _ICloseJobWorkChallan.ShowDetail(VendJWIssEntryId, VendJWIssYearCode).ConfigureAwait(true);
+            MainModel = await _ICloseJobWorkChallan.ShowDetail(VendJWIssEntryId, VendJWIssYearCode, ShowClsoedPendingAll).ConfigureAwait(true);
             return View(MainModel);
         }
 
