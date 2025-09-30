@@ -40,7 +40,9 @@ namespace eTactWeb.Controllers
             webReport.Report.SetParameterValue("RetFromDepEntryId", EntryId);
             webReport.Report.SetParameterValue("RetFromDepYearCode", YearCode);
             my_connection_string = _connectionStringService.GetConnectionString();
-            my_connection_string = iconfiguration.GetConnectionString("eTactDB");
+            //my_connection_string = iconfiguration.GetConnectionString("eTactDB");
+            webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+            webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
             webReport.Report.SetParameterValue("MyParameter", my_connection_string);
             return View(webReport);
         }
