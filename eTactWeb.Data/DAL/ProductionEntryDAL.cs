@@ -2793,7 +2793,7 @@ public class ProductionEntryDAL
         }
         return _ResponseResult;
     }
-    public async Task<ResponseResult> ChkWIPStockBeforeSaving(int WcId, string TransferMatEntryDate, int TransferMatYearCode, int TransferMatEntryId, DataTable TransferGrid)
+    public async Task<ResponseResult> ChkWIPStockBeforeSaving(int WcId, string TransferMatEntryDate, int TransferMatYearCode, int TransferMatEntryId, DataTable TransferGrid, string mode)
     {
         var _ResponseResult = new ResponseResult();
         try
@@ -2805,6 +2805,7 @@ public class ProductionEntryDAL
             SqlParams.Add(new SqlParameter("@Yearcode", TransferMatYearCode));
             SqlParams.Add(new SqlParameter("@Entryid", TransferMatEntryId));
             SqlParams.Add(new SqlParameter("@DTItemGrid", TransferGrid));
+            SqlParams.Add(new SqlParameter("@Mode", mode));
             _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_ProductionEntry", SqlParams);
         }
         catch (Exception ex)

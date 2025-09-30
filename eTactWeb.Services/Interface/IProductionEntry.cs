@@ -87,7 +87,7 @@ public interface IProductionEntry
     Task<ResponseResult> CheckDuplicateEntry(int YearCode, int AccountCode, string InvNo, int DocType);
     Task<ResponseResult> FillProductType();
     public Task<PendingProductionEntryModel> GetPendingProductionEntry(int Yearcode);
-    Task<ResponseResult> ChkWIPStockBeforeSaving(int WcId, string TransferMatEntryDate, int TransferMatYearCode, int TransferMatEntryId, DataTable TransferGrid);
+    Task<ResponseResult> ChkWIPStockBeforeSaving(int WcId, string TransferMatEntryDate, int TransferMatYearCode, int TransferMatEntryId, DataTable TransferGrid,string mode);
 
 
 }

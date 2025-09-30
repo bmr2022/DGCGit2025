@@ -127,6 +127,8 @@
                             <input asp-for="AgainstVoucherNoBack" type="hidden" value="@Model.AgainstVoucherNoBack" />
                             <input asp-for="GlobalSearchBack" type="hidden" value="@Model.GlobalSearchBack" />
                             <input asp-for="DashboardTypeBack" type="hidden" value="@Model.DashboardTypeBack" />
+                                <input asp-for="AccEntryId" type="hidden" />
+                                <input asp-for="DocEntryId" type="hidden" />
                             <a href="#" class="btn btn-primary btn-sm" onclick="PressBack();">
                                 <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
                                 BACK
@@ -720,7 +722,7 @@
                     });
                 $('#LedgerName').change(function () {
                 FillVoucherNo();
-                            FillInvoiceNo();
+               FillInvoiceNo();
                   });
                 $('#VoucherNo').change(function () {
                             FillInvoiceNo();
@@ -729,13 +731,15 @@
                 $('#CostCenterId').val($('#CostCenterName').val());
             });
                      if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
-                        NewEntryId();
-
+                                  var FromDate = $('#FromDate').val().split(" ")[0].replace(/-/g, "/");
+                                var ToDate = $('#EffectiveTill').val().split(" ")[0].replace(/-/g, "/");
+                                                $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", FromDate);
+                                                $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", ToDate);
                     } else {
-                                var FromDate = $('#FromDate').val().split(" ")[0].replace(/-/g, "/");
-                        var ToDate = $('#EffectiveTill').val().split(" ")[0].replace(/-/g, "/");
-                                        $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", FromDate);
-                                        $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", ToDate);
+                        //         var FromDate = $('#FromDate').val().split(" ")[0].replace(/-/g, "/");
+                        // var ToDate = $('#EffectiveTill').val().split(" ")[0].replace(/-/g, "/");
+                        //                 $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", FromDate);
+                        //                 $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", ToDate);
 
                     }
             $('#LedgerName').rules("remove", "required");
