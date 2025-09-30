@@ -66,7 +66,7 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
-        public async Task<List<CloseJobWorkChallanModel>> ShowDetail(int ID, int YC)
+        public async Task<List<CloseJobWorkChallanModel>> ShowDetail(int ID, int YC,string ShowClsoedPendingAll)
         {
             var oDataSet = new DataSet();
             var SqlParams = new List<dynamic>();
@@ -80,6 +80,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@VendCustomerJW", "vendor"));
                 SqlParams.Add(new SqlParameter("@ShowSummDetail", "Detail"));
                 SqlParams.Add(new SqlParameter("@JWCloseEntryId", ID));
+                SqlParams.Add(new SqlParameter("@ShowClsoedPendingAll", ShowClsoedPendingAll));
                 //SqlParams.Add(new SqlParameter("@Soyearcode", YC));
                 //SqlParams.Add(new SqlParameter("@SoNo", SONo));
 
@@ -98,11 +99,13 @@ namespace eTactWeb.Data.DAL
                             {
                                 VendJWIssChallanNo = row["VendJWIssChallanNo"].ToString(),
                                 VendJWIssChallanDate = string.IsNullOrEmpty(row["VendJWIssChallanDate"].ToString())
-                            ? ""
-                            : row["VendJWIssChallanDate"].ToString(),
+    ? ""
+    : Convert.ToDateTime(row["VendJWIssChallanDate"]).ToString("yyyy-MM-dd"),
 
                                 TolApprVal = row["TolApprVal"] == DBNull.Value ? 0 : Convert.ToDecimal(row["TolApprVal"]),
                                 Closed = row["Closed"].ToString(),
+                                PartCode = row["PartCode"].ToString(),
+                                Item_Name = row["Item_Name"].ToString(),
                                 TotalAmount = row["TotalAmount"] == DBNull.Value ? 0 : Convert.ToDecimal(row["TotalAmount"]),
 
                                 ItemCode = row["ItemCode"] == DBNull.Value ? 0 : Convert.ToInt32(row["ItemCode"]),

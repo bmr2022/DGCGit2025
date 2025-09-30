@@ -38,7 +38,11 @@
 
                         @if (@typeOfApproval == "Pending")
                         {
-                            <label class="form-label" style="display: inline-block;"><strong>Click For Close Challan</strong></label>
+                            <label class="form-label" style="display: inline-block;"><strong>Click To Close Challan</strong></label>
+                        }
+                        @if (@typeOfApproval == "Closed")
+                        {
+                            <label class="form-label" style="display: inline-block;"><strong>Click To Open Challan</strong></label>
                         }
                       
 
@@ -92,11 +96,12 @@
                         <th>Total Approved Value</th>
                         <th>Closed</th>
                         <th>Total Amount</th>
-                        <th>Item Code</th>
+                        <th> PartCode</th>
+                        <th>Item Name</th>
                         <th>Rate</th>
                         <th>Amount</th>
                         <th>Issued Qty</th>
-                        <th>Detail Closed</th>
+                     
                         <th>Pending Qty</th>
                         <th>Pending Alt Qty</th>
                         <th>Entry Id</th>
@@ -108,7 +113,7 @@
                         var @Cntr = 0;
                         if (Model == null || Model.Count == 0)
                         {
-                            <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                                <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
                         }
                         else
                         {
@@ -116,24 +121,25 @@
                             {
 
                                 Cntr = Cntr + 1;
-                                <tr id="dashTableGridRow-@Cntr">
-                                    <th>@Cntr</th>
-                                    <td>@item.VendJWIssChallanNo</td>
-                                    <td>@item.VendJWIssChallanDate]</td>
-                                    <td>@item.TolApprVal</td>
-                                    <td>@item.Closed</td>
-                                    <td>@item.TotalAmount</td>
-                                    <td>@item.ItemCode</td>
-                                    <td>@item.Rate</td>
-                                    <td>@item.Amount</td>
-                                    <td>@item.IssQty</td>
-                                    <td>@item.Closed</td>
-                                    <td>@item.PendQty</td>
-                                    <td>@item.PendAltQty</td>
-                                    <td>@item.VendJWIssEntryId</td>
-                                    <td>@item.VendJWIssYearCode</td>
+                                    <tr id="dashTableGridRow-@Cntr">
+                                        <th>@Cntr</th>
+                                        <td>@item.VendJWIssChallanNo</td>
+                                        <td>@item.VendJWIssChallanDate]</td>
+                                        <td>@item.TolApprVal</td>
+                                        <td>@item.Closed</td>
+                                        <td>@item.TotalAmount</td>
+                                        <td>@item.PartCode</td>
+                                        <td>@item.Item_Name</td>
+                                        <td>@item.Rate</td>
+                                        <td>@item.Amount</td>
+                                        <td>@item.IssQty</td>
 
-                                </tr>
+                                        <td>@item.PendQty</td>
+                                        <td>@item.PendAltQty</td>
+                                        <td>@item.VendJWIssEntryId</td>
+                                        <td>@item.VendJWIssYearCode</td>
+
+                                    </tr>
                             }
                         }
                     }
@@ -160,8 +166,14 @@
             // var SONum = @Html.Raw(Json.Serialize(SONum));
             // var CustOrderNum = @Html.Raw(Json.Serialize(CustOrderNum));
             // var VendorNm = @Html.Raw(Json.Serialize(VendorNm));
+
             var typeOfApproval = @Html.Raw(Json.Serialize(typeOfApproval));
             var ClosingReason = $('#ClosingReason').val();
+
+            if (ClosingReason == '') {
+                $.notify("Please enter  reason", "error");
+                return false;
+            }
 
             if ($('#approvePO').is(":checked") == true) {
                 $.ajax({
