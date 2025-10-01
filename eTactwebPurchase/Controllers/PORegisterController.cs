@@ -141,32 +141,39 @@ namespace eTactWeb.Controllers
             model.PageSize = pageSize;
             if (model.ReportMode == "PO vs Receiving Detail ( GateMRNQC)")
             {
-                return PartialView("_POSummaryReport", model);
+                return PartialView("_POvsReceivingDetail", model);
             }
             else if (model.ReportMode == "LIST OF PO")
             {
                 return PartialView("_ListOfPOReport", model);
             }
-            else if (model.ReportMode == "SUMMRATEING")
+
+            else if (model.ReportMode == "PO+Sch Vs Receiving Summary")
             {
-                return PartialView("_POSumRatingReport", model);
+                return PartialView("_POSchVsReceivingSummary", model);
             }
             else if (model.ReportMode == "LISTOFSCHEDULESUMMARY")
             {
                 return PartialView("_ListOfPOSummaryReport", model);
             }
-            else if (model.ReportMode == "LISTOFSCHEDULE")
-            {
-                return PartialView("_ListOfSchduleReport", model);
-            }
-            else if (model.ReportMode == "CONSOLIDATED")
-            {
-                return PartialView("_POConsolidatedReport", model);
-            }
             else if (model.ReportMode == "PARTYWISECONSOLIDATED")
             {
                 return PartialView("_POPartyWiseConsolidatedReport", model);
             }
+            else if (model.ReportMode == "CONSOLIDATED ( Part+Item Wise)")
+            {
+                return PartialView("_POConsolidatedReport", model);
+            }
+            else if (model.ReportMode == "SUMMRATEING")
+            {
+                return PartialView("_POSummRatingReport", model);
+            }
+
+            else if (model.ReportMode == "LISTOFSCHEDULE")
+            {
+                return PartialView("_ListOfSchduleReport", model);
+            }
+           
             else if (model.ReportMode == "ITEMWISECONSOLIDATED")
             {
                 return PartialView("_POItemWiseConsolidatedReport", model);
@@ -179,7 +186,7 @@ namespace eTactWeb.Controllers
             {
                 return PartialView("_POOrderDispatchReport", model);
             }
-
+            //LIST OF PO WITH ITEM SUMMARY
             else
             {
                 return PartialView("_PORegisterGrid", model);
