@@ -86,6 +86,7 @@ namespace eTactWeb.DOM.Models
         public string MinLevel { get; set; }
         public string unit { get; set; }
         public string Rate { get; set; }
+        public string Oldrate { get; set; }
         public string SchQty { get; set; }
         public string DisPer { get; set; }
         public string DisAmt { get; set; }

@@ -1,31 +1,32 @@
 ﻿@model eTactWeb.DOM.Models.PORegisterModel
 @if (Model.ReportMode == "PO vs Receiving Detail ( GateMRNQC)")
 {
-    <partial name="_POSummaryReport" />
+    <partial name="_POvsReceivingDetail" />
 }
 else if (Model.ReportMode == "LIST OF PO")
 {
     <partial name="_ListOfPOReport" />
 }
-else if (Model.ReportMode == "SUMMRATEING")
+else if (Model.ReportMode == "PO+Sch Vs Receiving Summary")
 {
-    <partial name="_POSumRatingReport" />
+    <partial name="_POSchVsReceivingSummary" />
 }
 else if (Model.ReportMode == "LISTOFSCHEDULESUMMARY")
 {
     <partial name="_ListOfPOSummaryReport" />
 }
-else if (Model.ReportMode == "LISTOFSCHEDULE")
-{
-    <partial name="_ListOfSchduleReport" />
-}
-else if (Model.ReportMode == "CONSOLIDATED")
+else if (Model.ReportMode == "CONSOLIDATED ( Part+Item Wise)")
 {
     <partial name="_POConsolidatedReport" />
 }
 else if (Model.ReportMode == "PARTYWISECONSOLIDATED")
 {
     <partial name="_POPartyWiseConsolidatedReport" />
+}
+
+else if (Model.ReportMode == "LISTOFSCHEDULE")
+{
+    <partial name="_ListOfSchduleReport" />
 }
 else if (Model.ReportMode == "ITEMWISECONSOLIDATED")
 {
@@ -35,12 +36,16 @@ else if (Model.ReportMode == "PRICEHISTORY")
 {
     <partial name="_POPriceHistoryReport" />
 }
+else if (Model.ReportMode == "SUMMRATEING")
+{
+    <partial name="_POSummRatingReport" />
+}
 else if (Model.ReportMode == "Order vs Dispatch")
 {
     <partial name="_POOrderDispatchReport" />
 }
 
-else
+else @* List Of PO with Item Detail(Open +close) *@
 {
     <div class="table-responsive" style="max-height:300px;overflow-y:auto;">
         <table class="table table-responsive table-hover table-bordered PMRPGrid TbCss text-nowrap mb-0" id="ReportTable">
@@ -142,7 +147,7 @@ else
                         {
                             Cntr = Cntr + 1;
 
-                            <tr id="SAGridRow-@Cntr" onclick="selection(this)">
+                            <tr id="SAGridRow-@Cntr" onclick="selection(this)" class="po-row">
                                 <td>
                                     <a class="table-link link-danger" onclick="DeleteRow(this.id)" id="@Cntr">
                                         <span class="fa-stack">
@@ -151,13 +156,13 @@ else
                                         </span>
                                     </a>
                                 </td>
-                                <th>@srNo</th>
+                                <th class="sr-no">@srNo</th>
                                 <td style="background-color: #e09ef0;">@item.PONO</td>
-                                <td>@item.PODate</td>
-                                <td>@item.POtype</td>
-                                <td>@item.POEffDate</td>
-                                <td>@item.POclosedate</td>
-                                <td>@item.poAmmeffdate</td>
+                                <td>@item.PODate.Split(" ")[0]</td>
+                                <td class="POtype">@item.POtype</td>
+                                <td>@item.POEffDate.Split(" ")[0]</td>
+                                <td>@item.POclosedate.Split(" ")[0]</td>
+                                <td>@item.poAmmeffdate.Split(" ")[0]</td>
                                 <td>@item.ordertype</td>
                                 <td>@item.VendorName</td>
                                 <td>@item.PartCode</td>
@@ -168,10 +173,10 @@ else
                                 <td>@item.DisAmt</td>
                                 <td>@item.ItemAmount</td>
                                 <td>@item.Ammno</td>
-                                <td>@item.AmmDate</td>
+                                <td>@item.AmmDate.Split(" ")[0]</td>
                                 <td>@item.Assrate</td>
                                 <td>@item.Deliveryterms</td>
-                                <td>@item.deliveryDate</td>
+                                <td>@item.deliveryDate.Split(" ")[0]</td>
                                 <td>@item.POQty</td>
                                 <td>@item.POFOR</td>
                                 <td>@item.Currency</td>

@@ -131,7 +131,7 @@ namespace eTactWeb.Data.DAL
                             model.PORegisterDetails = _PODetail;
                         }
                     }
-                    if (ReportType == "SUMMRATEING") //SUMMARY RATING
+                    if (ReportType == "PO+Sch Vs Receiving Summary") //SUMMARY RATING
                     {
                         if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
                         {
@@ -143,7 +143,7 @@ namespace eTactWeb.Data.DAL
                             model.PORegisterDetails = _PODetail;
                         }
                     }
-                    if (ReportType == "CONSOLIDATED") //Consolidated
+                    if (ReportType == "CONSOLIDATED ( Part+Item Wise)") //Consolidated
                     {
                         if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
                         {
@@ -155,6 +155,19 @@ namespace eTactWeb.Data.DAL
                             model.PORegisterDetails = _PODetail;
                         }
                     }
+                    if (ReportType == "SUMMRATEING") //Consolidated
+                    {
+                        if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                        {
+                            foreach (DataRow row in oDataSet.Tables[0].Rows)
+                            {
+                                var poDetail = CommonFunc.DataRowToClass<PORegisterDetail>(row);
+                                _PODetail.Add(poDetail);
+                            }
+                            model.PORegisterDetails = _PODetail;
+                        }
+                    }
+
                     if (ReportType == "PARTYWISECONSOLIDATED") //party WISE CONSOLIDATED
                     {
                         if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)

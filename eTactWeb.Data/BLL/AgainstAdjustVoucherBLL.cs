@@ -37,9 +37,21 @@ namespace eTactWeb.Data.BLL
         {
             return await _AgainstAdjustVoucherDAL.FillInvoiceNo(YearCode, VoucherType,FromDate,ToDate,VoucherNo,AccountCode);
         }
-        public async Task<ResponseResult> FillVoucherNo(int YearCode, string VoucherType, string FromDate, string ToDate)
+        public async Task<ResponseResult> GetAccEntryId(int YearCode, string VoucherType, string VoucherNo, int AccountCode, string InvoiceNo)
         {
-            return await _AgainstAdjustVoucherDAL.FillVoucherNo(YearCode, VoucherType,FromDate,ToDate);
+            return await _AgainstAdjustVoucherDAL.GetAccEntryId(YearCode, VoucherType,VoucherNo,AccountCode,InvoiceNo);
+        } 
+        public async Task<ResponseResult> GetLedgerBalance(int OpeningYearCode, int AccountCode, string VoucherDate)
+        {
+            return await _AgainstAdjustVoucherDAL.GetLedgerBalance(OpeningYearCode, AccountCode, VoucherDate);
+        }
+        public async Task<AgainstAdjustVoucherModel> GetAdjustedData(int YearCode, string VoucherType, string VoucherNo, int AccountCode, string InvoiceNo, int AccEntryId)
+        {
+            return await _AgainstAdjustVoucherDAL.GetAdjustedData(YearCode, VoucherType,VoucherNo,AccountCode,InvoiceNo,AccEntryId);
+        }
+        public async Task<ResponseResult> FillVoucherNo(int YearCode, string VoucherType, string FromDate, string ToDate, int AccountCode)
+        {
+            return await _AgainstAdjustVoucherDAL.FillVoucherNo(YearCode, VoucherType,FromDate,ToDate,AccountCode);
         }
         public async Task<ResponseResult> FillModeofAdjust(string VoucherType)
         {

@@ -96,14 +96,15 @@
                                         <option value="List of PO With Item">List of PO With Item</option>
                                         <option value="PO vs Receiving Detail ( GateMRNQC)">PO vs Receiving Detail ( GateMRNQC)</option>
                                         <option value="LISTOFSCHEDULE">LIST OF SCHEDULE</option>
-                                        <option value="SUMM">PURCHASE ORDER SUMMARY</option>
-                                        <option value="SUMMRATEING">SUMMARY RATING</option>
-                                        <option value="CONSOLIDATED">CONSOLIDATED</option>
+                                        <option value="PO+Sch Vs Receiving Summary">PO+Sch Vs Receiving Summary</option>
                                         <option value="PARTYWISECONSOLIDATED">PARTY WISE CONSOLIDATED</option>
+                                        <option value="CONSOLIDATED ( Part+Item Wise)">CONSOLIDATED ( Part+Item Wise)</option>
+                                        <option value="Order vs Dispatch">Order vs Dispatch</option>
+
+                                        <option value="SUMMRATEING">SUMMARY RATING</option>
                                         <option value="ITEMWISECONSOLIDATED">ITEM WISE CONSOLIDATED</option>
                                         <option value="DETAIL">PO RATE ANALYSIS</option>
                                         <option value="PRICEHISTORY">PRICE HISTORY</option>
-                                        <option value="Order vs Dispatch">Order vs Dispatch</option>
                                     </select>
                                 </div>
                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
@@ -392,36 +393,48 @@
                 togglePOSections(selectedMode);
             });
             function togglePOSections(reportMode) {
-                if (reportMode === "LISTOFPO") {
+                if (reportMode === "LIST OF PO") {
                     $("#activePOSection").hide();      
                     $("#closedPOSection").show();     
                     $("#completedPOSection").hide();   
                 }
-                else if (reportMode === "LISTOFSCHEDULESUMMARY") {
-                    $("#activePOSection").show();      
-                    $("#closedPOSection").hide();     
+                else if (reportMode === "List of PO With Item") {
+                    $("#activePOSection").hide();      
+                    $("#closedPOSection").show();     
                     $("#completedPOSection").hide();   
                 }
                 else if (reportMode === "LISTOFSCHEDULE") {
-                    $("#activePOSection").hide();      
-                    $("#closedPOSection").show();     
-                    $("#completedPOSection").hide();   
-                }
-                else if (reportMode === "SUMM") {
                     $("#activePOSection").show();      
                     $("#closedPOSection").hide();     
+                    $("#completedPOSection").hide();   
+                }
+                else if (reportMode === "PO vs Receiving Detail ( GateMRNQC)") {
+                    $("#activePOSection").show();      
+                    $("#closedPOSection").hide();     
+                    $("#completedPOSection").hide();   
+                }
+                else if (reportMode === "PO+Sch Vs Receiving Summary") {
+                    $("#activePOSection").show();      
+                    $("#closedPOSection").show();     
                     $("#completedPOSection").show();   
                 }
+                else if (reportMode === "CONSOLIDATED ( Part+Item Wise)") {
+                    $("#activePOSection").hide();
+                    $("#closedPOSection").hide();
+                    $("#completedPOSection").show();
+                }
+                else if (reportMode === "Order vs Dispatch") {
+                    $("#activePOSection").show();
+                    $("#closedPOSection").hide();
+                    $("#completedPOSection").show();
+                }
+
                 else if (reportMode === "DETAIL") {
                     $("#activePOSection").show();      
                     $("#closedPOSection").hide();     
                     $("#completedPOSection").hide();   
                 }
-                else if (reportMode === "CONSOLIDATED") {
-                    $("#activePOSection").hide();      
-                    $("#closedPOSection").hide();     
-                    $("#completedPOSection").show();   
-                }
+                
                 else if (reportMode === "PARTYWISECONSOLIDATED") {
                     $("#activePOSection").hide();      
                     $("#closedPOSection").hide();     
@@ -448,17 +461,17 @@
 
                     if (filter === "Y" && pendQty === 0) {
                         $(this).show();
-                        $(this).find('td:eq(1)').text(srNo); // update srNo column
+                        $(this).find('.sr-no').text(srNo); // update SrNo column by class
                         srNo++;
                     }
                     else if (filter === "N" && pendQty !== 0) {
                         $(this).show();
-                        $(this).find('td:eq(1)').text(srNo); // update srNo column
+                        $(this).find('.sr-no').text(srNo);
                         srNo++;
                     }
                     else if (filter === "A") {
                         $(this).show();
-                        $(this).find('td:eq(1)').text(srNo); // update srNo column
+                        $(this).find('.sr-no').text(srNo);
                         srNo++;
                     }
                     else {
@@ -466,6 +479,7 @@
                     }
                 });
             });
+
             $('.showClosedPO').change(function () {
                 var filter = $(this).val(); // Y / N / A
                 var srNo = 1;
