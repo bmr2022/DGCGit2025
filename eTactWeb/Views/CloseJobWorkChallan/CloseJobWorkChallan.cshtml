@@ -38,7 +38,20 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-1">
+                                <label asp-for="ChallanYear" class="form-label"> Year</label>
+                                <select class="form-select" asp-for="ChallanYear" onchange="FillVendorList();FillJWChallanList()">
+                                    <option value="" disabled>-Select-</option>
+                                    <option value="CurrentYear" selected>CurrentYear</option>
+                                    <option value="PreviousYear">PreviousYear</option>
+
+
+
+
+                                </select>
+                                @* <input type="hidden" id="CancelationType" value="SO Approval" /> *@
+                            </div>
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-1">
                                 <label asp-for="ShowClsoedPendingAll" class="form-label"> Close/Pending</label>
                                 <select class="form-select" asp-for="ShowClsoedPendingAll" onchange="FillVendorList();FillJWChallanList()">
                                     <option value="" disabled>-Select-</option>
@@ -245,50 +258,10 @@
             });
         });
 
-        // Listen for change on all row checkboxes
-        $(document).on('change', '.select-checkbox', function () {
-            var $row = $(this).closest('tr'); // get the row of the checkbox
-
-            // Only send if checkbox is checked
-            if ($(this).is(':checked')) {
-
-                var EntryId = $row.find('[id^=EntryId]').text();
-                var YC = $row.find('[id^=YearCode]').text();
-                var SONO = $row.find('[id^=SONo]').text();
-                var CustOrderNo = $row.find('[id^=CustOrderNo]').text();
-                var VendorName = $row.find('[id^=VendorName]').text();
-                var OrderAmt = $row.find('[id^=OrderAmt]').text();
-                var OrderNetAmt = $row.find('[id^=OrderNetAmt]').text();
-                var type = $('#CancelationType').val();
+       
 
 
-                $.ajax({
-                    type: "GET",
-                    data: { "EntryId": EntryId, "YC": YC, "SONO": SONO, "CustOrderNo": CustOrderNo, "type": type, "SONum": SONO, "CustOrderNum": CustOrderNo, "VendorNm": VendorName, "VendorName": VendorName },
-                    url: "@Url.Action("SaveActivation", "SOCancel")",
-                    success: function (response, status, error) {
-
-                        if (response.redirectUrl) {
-                            window.location.href = response.redirectUrl;
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        $.notify("Error saving row data: " + error, "error");
-                    }
-                });
-            } else {
-                // Optional: handle uncheck (like remove row from server-side)
-                console.log("Row unchecked: ", $row.find('[id^=EntryId]').text());
-            }
-        });
-
-
-
-        $(document).on("click", "th[data-columnno]", function () {
-            currentSearchColumn = $(this).data('columnno');
-            $("#search-box").val('').trigger('keyup');
-        });
-
+      
        
         function GetSearchData() {
             //var data = $('#SParam').serialize();
@@ -297,7 +270,7 @@
                 url: '@Url.Action("GetSearchData")',
                 type: "POST",
                 async: false,
-                data: { FromDate: $('#FromDate').val(), ToDate: $('#ToDate').val(), AccountCode: $('#VendorName').val(), ChallanNO: $('#VendJWIssChallanNo').val(), ShowClsoedPendingAll: $('#ShowClsoedPendingAll').val() },
+                data: { FromDate: $('#FromDate').val(), ToDate: $('#ToDate').val(), AccountCode: $('#VendorName').val(), ChallanNO: $('#VendJWIssChallanNo').val(), ShowClsoedPendingAll: $('#ShowClsoedPendingAll').val(), ChallanYear: $('#ChallanYear').val() },
                 success: function (result) {
 
                     $('#divSOAppGrid').empty();
@@ -321,7 +294,8 @@
                                     '         href="/CloseJobWorkChallan/ShowDetail?' +
                                     'JWCloseEntryId=' + row.VendJWIssEntryId +
                                     '&JWCloseYearCode=' + row.VendJWIssYearCode +
-                                    '&ShowClsoedPendingAll=' + $('#ShowClsoedPendingAll').val() + 
+                                    '&ShowClsoedPendingAll=' + $('#ShowClsoedPendingAll').val() +
+                                    '&ChallanYear=' + $('#ChallanYear').val() +
 
 
                                     '&VendJwCustomerJW=' + row.VendCustomerJW +
@@ -396,6 +370,7 @@
         function FillVendorList() {
             var fromDate = $("#FromDate").val();
             var toDate = $("#ToDate").val();
+            var ChallanYear = $("#ChallanYear").val();
             var ShowClsoedPendingAll = $("#ShowClsoedPendingAll").val();
           
             $.ajax({
@@ -405,6 +380,7 @@
                     fromDate: fromDate,
                     toDate: toDate,
                     ShowClsoedPendingAll: ShowClsoedPendingAll,
+                    ChallanYear: ChallanYear
                 },
                 async: false,
                 success: function (response, status, error) {
@@ -432,6 +408,7 @@
             var fromDate = $("#FromDate").val();
             var toDate = $("#ToDate").val();
             var ShowClsoedPendingAll = $("#ShowClsoedPendingAll").val();
+            var ChallanYear = $("#ChallanYear").val();
           
             $.ajax({
                 url: '@Url.Action("FillJWChallanList", "CloseJobWorkChallan")',
@@ -440,6 +417,7 @@
                     fromDate: fromDate,
                     toDate: toDate,
                     ShowClsoedPendingAll: ShowClsoedPendingAll,
+                    ChallanYear: ChallanYear,
                 },
                 async: false,
                 success: function (response, status, error) {

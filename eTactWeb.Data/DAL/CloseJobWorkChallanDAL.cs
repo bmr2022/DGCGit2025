@@ -27,7 +27,7 @@ namespace eTactWeb.Data.DAL
         }
 
 
-        public async Task<ResponseResult> GetSearchData(string FromDate, string ToDate, int AccountCode, string ChallanNO,string ShowClsoedPendingAll)
+        public async Task<ResponseResult> GetSearchData(string FromDate, string ToDate, int AccountCode, string ChallanNO,string ShowClsoedPendingAll, string ChallanYear)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -53,6 +53,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@JWChallanNo", ChallanNO));
                 SqlParams.Add(new SqlParameter("@Fromdate", fromdt));
                 SqlParams.Add(new SqlParameter("@ToDate", todt));
+                SqlParams.Add(new SqlParameter("@ChallanYear", ChallanYear));
 
 
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("SPCloseJobworkChallanManual", SqlParams);
@@ -66,7 +67,7 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
-        public async Task<List<CloseJobWorkChallanModel>> ShowDetail(int ID, int YC,string ShowClsoedPendingAll)
+        public async Task<List<CloseJobWorkChallanModel>> ShowDetail(int ID, int YC,string ShowClsoedPendingAll, string ChallanYear)
         {
             var oDataSet = new DataSet();
             var SqlParams = new List<dynamic>();
@@ -81,6 +82,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@ShowSummDetail", "Detail"));
                 SqlParams.Add(new SqlParameter("@JWCloseEntryId", ID));
                 SqlParams.Add(new SqlParameter("@ShowClsoedPendingAll", ShowClsoedPendingAll));
+                SqlParams.Add(new SqlParameter("@ChallanYear", ChallanYear));
                 //SqlParams.Add(new SqlParameter("@Soyearcode", YC));
                 //SqlParams.Add(new SqlParameter("@SoNo", SONo));
 
@@ -140,7 +142,7 @@ namespace eTactWeb.Data.DAL
             }
             return MainModel;
         }
-        public async Task<ResponseResult> FillVendorList(string fromDate, string toDate, string ShowClsoedPendingAll)
+        public async Task<ResponseResult> FillVendorList(string fromDate, string toDate, string ShowClsoedPendingAll, string ChallanYear)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -151,6 +153,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@fromDate", CommonFunc.ParseFormattedDate(fromDate)));
                 SqlParams.Add(new SqlParameter("@toDate", CommonFunc.ParseFormattedDate(toDate)));
                 SqlParams.Add(new SqlParameter("@ShowClsoedPendingAll", ShowClsoedPendingAll));
+                SqlParams.Add(new SqlParameter("@ChallanYear", ChallanYear));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SPCloseJobworkChallanManual", SqlParams);
             }
             catch (Exception ex)
@@ -162,7 +165,7 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-         public async Task<ResponseResult> FillJWChallanList(string fromDate, string toDate, string ShowClsoedPendingAll)
+         public async Task<ResponseResult> FillJWChallanList(string fromDate, string toDate, string ShowClsoedPendingAll, string ChallanYear)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -173,6 +176,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@fromDate", CommonFunc.ParseFormattedDate(fromDate)));
                 SqlParams.Add(new SqlParameter("@toDate", CommonFunc.ParseFormattedDate(toDate)));
                 SqlParams.Add(new SqlParameter("@ShowClsoedPendingAll", ShowClsoedPendingAll));
+                SqlParams.Add(new SqlParameter("@ChallanYear", ChallanYear));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SPCloseJobworkChallanManual", SqlParams);
             }
             catch (Exception ex)
@@ -187,7 +191,7 @@ namespace eTactWeb.Data.DAL
 
         public async Task<ResponseResult> SaveActivation(int JWCloseEntryId, int JWCloseYearCode, string JWCloseEntryDate, int JWCloseEntryByEmpid, string VendJwCustomerJW, int AccountCode, int VendJWIssEntryId, int VendJWIssYearCode, string VendJWIssChallanNo,
            string VendJWIssChallanDate, int CustJwIssEntryid, int CustJwIssYearCode, string CustJwIssChallanNo, string CustJwIssChallanDate, float TotalChallanAmount, float NetAmount, string ClosingReason,
-           string CC, string ActualEntryDate, int ActualEnteredBy, string EntryByMachineName,string ShowClsoedPendingAll)
+           string CC, string ActualEntryDate, int ActualEnteredBy, string EntryByMachineName,string ShowClsoedPendingAll, string ChallanYear)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -201,6 +205,8 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@VendCustomerJW", (object)"vendor" ?? ""));
                 SqlParams.Add(new SqlParameter("@JWCloseEntryId", JWCloseEntryId));
                 SqlParams.Add(new SqlParameter("@ShowClsoedPendingAll", ShowClsoedPendingAll));
+                SqlParams.Add(new SqlParameter("@ChallanYear", ChallanYear));
+
                 SqlParams.Add(new SqlParameter("@JWCloseYearCode", JWCloseYearCode));
                 SqlParams.Add(new SqlParameter("@JWCloseEntryDate", DateTime.Today));
                 SqlParams.Add(new SqlParameter("@JWCloseEntryByEmpid", (object)JWCloseEntryByEmpid ?? ""));
