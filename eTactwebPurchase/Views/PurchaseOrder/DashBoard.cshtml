@@ -65,8 +65,10 @@
                 return dateString;
             }
             //$('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-
-            $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatDate(firstDayOfMonth));
+            if( $('#allowtostartdateindashboarddate').val()=="N"){
+                    $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatDate(firstDayOfMonth));
+            }
+        
             $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
 
             AutoComplete('VPURCHASEORDER', 'VendorName', 'VendorName', null);
@@ -368,7 +370,8 @@
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         $('#PoallowtoprintWithoutApproval').val(obj.Result.Table[0].PoallowtoprintWithoutApproval);
-                       
+                        $('#allowtostartdateindashboarddate').val(obj.Result.Table[0].allowtostartdateindashboarddate);
+                      
                     }
                 }
             });

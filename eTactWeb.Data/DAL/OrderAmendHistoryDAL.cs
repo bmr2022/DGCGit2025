@@ -34,7 +34,7 @@ namespace eTactWeb.Data.DAL
             try
             {
                 var SqlParams = new List<dynamic>();
-                SqlParams.Add(new SqlParameter("@flag", "POAmendmentHistoryReport"));
+            //    SqlParams.Add(new SqlParameter("@flag", "POAmendmentHistoryReport"));
                 SqlParams.Add(new SqlParameter("@reportType", ""));
                 SqlParams.Add(new SqlParameter("@Dashboardflag", "FillPONO"));
                 SqlParams.Add(new SqlParameter("@FromDate", CommonFunc.ParseFormattedDate(FromDate)));
@@ -58,8 +58,8 @@ namespace eTactWeb.Data.DAL
             try
             {
                 var SqlParams = new List<dynamic>();
-                SqlParams.Add(new SqlParameter("@flag", "POAmendmentHistoryReport"));
-                SqlParams.Add(new SqlParameter("@reportType", ""));
+              //  SqlParams.Add(new SqlParameter("@flag", "POAmendmentHistoryReport"));
+            
                 SqlParams.Add(new SqlParameter("@Dashboardflag", "FillPOVendorName"));
                 SqlParams.Add(new SqlParameter("@FromDate",CommonFunc.ParseFormattedDate( FromDate)));
                 SqlParams.Add(new SqlParameter("@ToDate",CommonFunc.ParseFormattedDate( ToDate)));
@@ -82,7 +82,7 @@ namespace eTactWeb.Data.DAL
             try
             {
                 var SqlParams = new List<dynamic>();
-                SqlParams.Add(new SqlParameter("@flag", "POAmendmentHistoryReport"));
+               // SqlParams.Add(new SqlParameter("@flag", "POAmendmentHistoryReport"));
                 SqlParams.Add(new SqlParameter("@reportType", ""));
                 SqlParams.Add(new SqlParameter("@Dashboardflag", "FillPOPARTCODE"));
                 SqlParams.Add(new SqlParameter("@FromDate", CommonFunc.ParseFormattedDate(FromDate)));
@@ -106,7 +106,7 @@ namespace eTactWeb.Data.DAL
             try
             {
                 var SqlParams = new List<dynamic>();
-                SqlParams.Add(new SqlParameter("@flag", "POAmendmentHistoryReport"));
+            //    SqlParams.Add(new SqlParameter("@flag", "POAmendmentHistoryReport"));
                 SqlParams.Add(new SqlParameter("@reportType", ""));
                 SqlParams.Add(new SqlParameter("@Dashboardflag", "FillPOPARTCODE"));
                 SqlParams.Add(new SqlParameter("@FromDate", CommonFunc.ParseFormattedDate(FromDate)));
