@@ -2101,6 +2101,8 @@
         });
         $('#Store').change(function () {
             if ($('#Store').val() == "S") {
+                $('#NextStoreId').val($('#NextWorkCenter').val());
+                $('#NextWCID').val(0);
                 $('#NextWorkCenter').change(function () {
                     $('#NextStoreId').val($('#NextWorkCenter').val());
                     $('#NextWCID').val(0);
@@ -3548,8 +3550,8 @@
                             $('#NextWorkCenter').append('<option disabled>-Select-</option>');
                             $.each(obj.Result, function (index, val) {
                                 $('#NextWorkCenter').append('<option value="' + val.entryid + '">' + val.Store_Name + '</option>');
-                                /* $('#NextStoreId').val($('#NextWorkCenter').val());
-                                $('#NextWCID').val(0); */
+                                $('#NextStoreId').val($('#NextWorkCenter').val());
+                                $('#NextWCID').val(0);
                             })
                                     if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
             var nextStore = '@Model.NextStoreId';
