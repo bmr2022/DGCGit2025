@@ -379,6 +379,12 @@ namespace eTactwebAccounts.Controllers
             var JSON = await _IAgainstAdjustVoucher.FillEntryID(YearCode, VoucherDate);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
+        } 
+        public async Task<JsonResult> GetAccEntryId(int YearCode, string VoucherType, string VoucherNo, int AccountCode, string InvoiceNo)
+        {
+            var JSON = await _IAgainstAdjustVoucher.GetAccEntryId(YearCode, VoucherType, VoucherNo, AccountCode, InvoiceNo);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
         }
         public async Task<JsonResult> FillVoucherType(int yearcode)
         { 
@@ -387,10 +393,22 @@ namespace eTactwebAccounts.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> FillVoucherNo(int YearCode, string VoucherType, string FromDate, string ToDate)
+        public async Task<IActionResult> GetAdjustedData(int YearCode, string VoucherType, string VoucherNo, int AccountCode, string InvoiceNo, int AccEntryId)
+        {
+            var model = new AgainstAdjustVoucherModel();
+            model = await _IAgainstAdjustVoucher.GetAdjustedData(YearCode, VoucherType, VoucherNo, AccountCode, InvoiceNo, AccEntryId);
+            return PartialView("_AgainstAdjustVoucher", model);
+        }
+        public async Task<JsonResult> GetLedgerBalance(int OpeningYearCode, int AccountCode, string VoucherDate)
+        {
+            var JSON = await _IAgainstAdjustVoucher.GetLedgerBalance(OpeningYearCode, AccountCode, VoucherDate);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> FillVoucherNo(int YearCode, string VoucherType, string FromDate, string ToDate, int AccountCode)
         {
             YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-            var JSON = await _IAgainstAdjustVoucher.FillVoucherNo(YearCode,VoucherType, FromDate,ToDate);
+            var JSON = await _IAgainstAdjustVoucher.FillVoucherNo(YearCode,VoucherType, FromDate,ToDate,AccountCode);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         } 
