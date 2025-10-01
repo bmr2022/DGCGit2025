@@ -175,6 +175,7 @@ namespace eTactWeb.DOM.Models
         public int EntryId { get; set; }
         public int YearCode { get; set; }
         public string EntryDate { get; set; }
+        public string AllowToAddNegativeStockInStore { get; set; }
 
         public string AllowToChangeStore { get; set; }
         public string EntryTime { get; set; }

@@ -894,6 +894,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@Transporter", model.Transporter));
                 SqlParams.Add(new SqlParameter("@Distance", model.Distance));
                 SqlParams.Add(new SqlParameter("@IssByEmpId", model.IssByEmpCode));
+                SqlParams.Add(new SqlParameter("@AllowToAddNegativeStockInStore", model.AllowToAddNegativeStockInStore));
 
                 if (model.Mode == "U")
                 {

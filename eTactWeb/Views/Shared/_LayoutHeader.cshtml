@@ -1693,6 +1693,13 @@
                                            style="--fa-secondary-opacity: 1.0; --fa-primary-color: red; --fa-secondary-color: limegreen;"></i>
                                         New Challan
                                     </a>
+                                </li> 
+                                <li>
+                                    <a class="dropdown-item" asp-action="IssueChallanOnCounter" asp-controller="NRGP" id="IssueChallanOnCounter">
+                                        <i class="fa-solid fa-money-check-dollar fa-fw fa-lg" aria-hidden="true"
+                                           style="--fa-secondary-opacity: 1.0; --fa-primary-color: red; --fa-secondary-color: limegreen;"></i>
+                                        Issue Challan On Counter
+                                    </a>
                                 </li>
                                 <li>
                                     <a class="dropdown-item IssueChallan" asp-action="Dashboard" asp-controller="NRGP" asp-route-Flag="True">
@@ -2393,6 +2400,13 @@
                                     <a class="dropdown-item" asp-controller="SaleInvoice" asp-action="SaleInvoice" id="SaleBill">
                                         <i class="fa-solid fa-money-check-dollar fa-fw fa-lg" aria-hidden="true"
                                            style="--fa-secondary-opacity: 1.0; --fa-primary-color: red; --fa-secondary-color: limegreen;"></i> New Sale Bill
+                                    </a>
+                                </li>
+                                <li>
+                                    @*  <a class="dropdown-item" href="/FinancialManagement">New DPB</a> *@
+                                    <a class="dropdown-item" asp-controller="SaleInvoice" asp-action="SaleBillOnCounter" id="SaleBillOnCounter">
+                                        <i class="fa-solid fa-money-check-dollar fa-fw fa-lg" aria-hidden="true"
+                                           style="--fa-secondary-opacity: 1.0; --fa-primary-color: red; --fa-secondary-color: limegreen;"></i>  Sale Bill ON Counter
                                     </a>
                                 </li>
                                 <li>
