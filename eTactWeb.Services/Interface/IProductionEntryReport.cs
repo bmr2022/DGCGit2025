@@ -20,6 +20,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FillReqNo(string FromDate, string ToDate);
         Task<ResponseResult> FillShiftName();
         Task<ResponseResult> filltranstore();
+        Task<ResponseResult> GetCompanyName();
         Task<ResponseResult> filltranworkcenter();
         Task<ResponseResult> FillWorkCenter(string FromDate, string ToDate);
         Task<ResponseResult> FillMachinName(string FromDate, string ToDate);

@@ -45,11 +45,11 @@ namespace eTactWeb.Controllers
            
             return View(MainModel);
         }
-        public async Task<JsonResult> GetSearchData(string FromDate, string ToDate, int AccountCode, string ChallanNO, string ShowClsoedPendingAll)
+        public async Task<JsonResult> GetSearchData(string FromDate, string ToDate, int AccountCode, string ChallanNO, string ShowClsoedPendingAll,string ChallanYear)
         {
             int EmpID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
             string UID = HttpContext.Session.GetString("UID");
-            var JSON = await _ICloseJobWorkChallan.GetSearchData(FromDate, ToDate, AccountCode, ChallanNO, ShowClsoedPendingAll).ConfigureAwait(true);
+            var JSON = await _ICloseJobWorkChallan.GetSearchData(FromDate, ToDate, AccountCode, ChallanNO, ShowClsoedPendingAll, ChallanYear).ConfigureAwait(true);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
@@ -62,6 +62,7 @@ namespace eTactWeb.Controllers
     int JWCloseEntryByEmpid,
     string VendJwCustomerJW,
     string ShowClsoedPendingAll,
+    string ChallanYear,
     int AccountCode,
     int VendJWIssEntryId,
     int VendJWIssYearCode,
@@ -95,14 +96,14 @@ namespace eTactWeb.Controllers
     DateTime? UpdatedOn)
         {
             var MainModel = new List<CloseJobWorkChallanModel>();
-            MainModel = await _ICloseJobWorkChallan.ShowDetail(VendJWIssEntryId, VendJWIssYearCode, ShowClsoedPendingAll).ConfigureAwait(true);
+            MainModel = await _ICloseJobWorkChallan.ShowDetail(VendJWIssEntryId, VendJWIssYearCode, ShowClsoedPendingAll, ChallanYear).ConfigureAwait(true);
             return View(MainModel);
         }
 
         [HttpGet]
         public async Task<IActionResult> SaveActivation(int JWCloseEntryId, string JWCloseEntryDate, string VendJwCustomerJW, int AccountCode, int VendJWIssEntryId, int VendJWIssYearCode, string VendJWIssChallanNo,
            string VendJWIssChallanDate, int CustJwIssEntryid, int CustJwIssYearCode, string CustJwIssChallanNo, string CustJwIssChallanDate, float TotalChallanAmount, float NetAmount, string ClosingReason,
-            string ActualEntryDate,string ShowClsoedPendingAll)
+            string ActualEntryDate,string ShowClsoedPendingAll,string ChallanYear)
         {
             int JWCloseEntryByEmpid = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
             int ActualEnteredBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
@@ -111,7 +112,7 @@ namespace eTactWeb.Controllers
             string EntryByMachineName= Environment.MachineName;
             var Result = await _ICloseJobWorkChallan.SaveActivation(JWCloseEntryId, JWCloseYearCode, JWCloseEntryDate, JWCloseEntryByEmpid, VendJwCustomerJW, AccountCode, VendJWIssEntryId, VendJWIssYearCode, VendJWIssChallanNo,
             VendJWIssChallanDate, CustJwIssEntryid, CustJwIssYearCode, CustJwIssChallanNo, CustJwIssChallanDate, TotalChallanAmount, NetAmount, ClosingReason,
-            CC, ActualEntryDate, ActualEnteredBy, EntryByMachineName, ShowClsoedPendingAll).ConfigureAwait(true);
+            CC, ActualEntryDate, ActualEnteredBy, EntryByMachineName, ShowClsoedPendingAll, ChallanYear).ConfigureAwait(true);
             if (Result != null)
             {
                 if (Result.StatusText == "Success")
@@ -149,15 +150,15 @@ namespace eTactWeb.Controllers
             return Json(new { redirectUrl = Url.Action("CloseJobWorkChallan") });
         }
 
-        public async Task<JsonResult> FillVendorList(string fromDate, string toDate, string ShowClsoedPendingAll)
+        public async Task<JsonResult> FillVendorList(string fromDate, string toDate, string ShowClsoedPendingAll,string ChallanYear)
         {
-            var JSON = await _ICloseJobWorkChallan.FillVendorList(fromDate, toDate, ShowClsoedPendingAll);
+            var JSON = await _ICloseJobWorkChallan.FillVendorList(fromDate, toDate, ShowClsoedPendingAll, ChallanYear);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-         public async Task<JsonResult> FillJWChallanList(string fromDate, string toDate, string ShowClsoedPendingAll)
+         public async Task<JsonResult> FillJWChallanList(string fromDate, string toDate, string ShowClsoedPendingAll, string ChallanYear)
         {
-            var JSON = await _ICloseJobWorkChallan.FillJWChallanList(fromDate, toDate, ShowClsoedPendingAll);
+            var JSON = await _ICloseJobWorkChallan.FillJWChallanList(fromDate, toDate, ShowClsoedPendingAll, ChallanYear);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }

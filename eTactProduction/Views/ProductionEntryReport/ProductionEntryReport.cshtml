@@ -49,6 +49,8 @@
                                         <div class="col">
                                             <label class="form-label">From Date</label>
                                             <input asp-for="FromDate" class="form-control" />
+                                            <input type="hidden" id="Com_Name" />
+
                                         </div>
                                         <div class="col">
                                             <label class="form-label">To Date</label>
@@ -233,6 +235,7 @@
             FillShiftName();
             filltranstore();
             filltranworkcenter();
+            GetCompanyName();
             // GetProductionReport();
             
             $('#ReportType').on('select2:open', function () {
@@ -264,6 +267,25 @@
             $('#TransWCID').select2();
         });
         GetProductionReportName();
+        function GetCompanyName() {
+
+          
+            $.ajax({
+                type: "POST",
+
+                url: "@Url.Action("GetCompanyName")",
+                dataType: "json",
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        $('#Com_Name').val("");
+                        $('#Com_Name').val(obj.Result[0].Com_Name);
+                       
+                    }
+                }
+            });
+        }
         $('#FromDate').change(function(){
             FillFGPartCode();
             FillFGItemName();
@@ -719,13 +741,15 @@ $('#sendToPDF').click(async function () {
     var BatchNo = $('#BatchNo').val();
     var UniqueBatchNo = $('#UniqueBatchNo').val();
     var ShiftName = $('#ShiftName').val();
+            var Com_Name = $('#Com_Name').val();
 
     // Report Title
-    doc.setFontSize(16).text('PRODUCED MATERIAL TRANSFER REPORT', 200, 40);
+            doc.setFontSize(16).text(Com_Name, 200, 40);
+    doc.setFontSize(10).text('PRODUCED MATERIAL TRANSFER REPORT', 200, 60);
 
     // Date Range
-    doc.setFontSize(10).text(`For the duration From: ${fromDate}     To: ${toDate}`, 40, 58);
-    doc.setFontSize(10).text(`ShiftName :${ShiftName}`, 40, 73);
+    doc.setFontSize(10).text(`For the duration From: ${fromDate}     To: ${toDate}`, 40, 70);
+    doc.setFontSize(10).text(`ShiftName :${ShiftName}`, 40, 80);
 
     let currentY = 90;
     const headerFields = [

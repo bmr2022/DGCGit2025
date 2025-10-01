@@ -11,6 +11,7 @@ namespace eTactWeb.DOM.Models
 
         // Master (JobworkIssueMain + Account info)
         public string ShowClsoedPendingAll { get; set; }
+        public string ChallanYear { get; set; }
         public string MachineName { get; set; }
         public string Mode { get; set; }
         public int ActualEntryId { get; set; }

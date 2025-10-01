@@ -30,6 +30,12 @@ namespace eTactWeb.Controllers
             model.ProductionEntryReportDetail = new List<ProductionEntryReportDetail>();
             return View(model);
         }
+        public async Task<JsonResult> GetCompanyName()
+        {
+            var JSON = await _IProductionEntryReport.GetCompanyName();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
         public async Task<JsonResult> GetServerDate()
         {
             try

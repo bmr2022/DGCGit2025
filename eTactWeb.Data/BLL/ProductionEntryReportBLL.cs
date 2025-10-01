@@ -23,6 +23,10 @@ namespace eTactWeb.Data.BLL
             _DataLogicDAL = iDataLogic;
             _ProductionEntryReportDAL = new ProductionEntryReportDAL(configuration, iDataLogic, _httpContextAccessor, connectionStringService);
         }
+        public async Task<ResponseResult> GetCompanyName()
+        {
+            return await _ProductionEntryReportDAL.GetCompanyName();
+        }
         public async Task<ResponseResult> FillFGPartCode(string FromDate,string ToDate)
         {
             return await _ProductionEntryReportDAL.FillFGPartCode(FromDate,ToDate);
