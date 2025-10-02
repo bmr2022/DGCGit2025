@@ -259,7 +259,7 @@ public class GateAttendanceDAL
             SqlParams.Add(new SqlParameter("@DepId", model.DeptId != null ? model.DeptId : 0));
             SqlParams.Add(new SqlParameter("@DesgId", model.DesignationEntryId != null ? model.DesignationEntryId : 0));
             SqlParams.Add(new SqlParameter("@EmpId", model.EmpId != null ? model.EmpId : 0));
-            SqlParams.Add(new SqlParameter("@AttendanceForMonth", model.intEmpAttMonth != null ? model.intEmpAttMonth  : 0));
+            SqlParams.Add(new SqlParameter("@AttendanceForMonth", model.intEmpAttMonth != null ? model.intEmpAttMonth : 0));
             SqlParams.Add(new SqlParameter("@DailyMonthlyAttendance", model.DayOrMonthType.ToUpper() ?? string.Empty));
             SqlParams.Add(new SqlParameter("@CC", model.Branch ?? string.Empty));
 
@@ -278,7 +278,7 @@ public class GateAttendanceDAL
                 SqlParams.Add(new SqlParameter("@LastUpdationDate", CurrentDateTime == default ? null : CurrentDateTime));
             }
             else if (model.Mode == "INSERT")
-             {
+            {
                 SqlParams.Add(new SqlParameter("@ActualEnteredBy", model.CreatedBy));
                 SqlParams.Add(new SqlParameter("@ActualEntryDate", CurrentDateTime == default ? null : CurrentDateTime));
             }
@@ -294,5 +294,121 @@ public class GateAttendanceDAL
         }
 
         return _ResponseResult;
+    }
+    internal async Task<GateAttDashBoard> GetDashBoardData()
+    {
+        var DashBoardData = new GateAttDashBoard();
+        var SqlParams = new List<dynamic>();
+        DataSet? oDataSet = new DataSet();
+
+        try
+        {
+            using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
+            {
+                DateTime now = DateTime.Now;
+                DateTime firstDayOfMonth = new DateTime(now.Year, now.Month, 1);
+                var firstdayofMonthh = CommonFunc.ParseFormattedDate(firstDayOfMonth.ToString("dd/MM/yyyy"));
+                var today = CommonFunc.ParseFormattedDate(DateTime.Now.ToString("dd/MM/yyyy"));
+                SqlCommand oCmd = new SqlCommand("HRSPGateAttendanceMainDetail", myConnection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+                oCmd.Parameters.AddWithValue("@Flag", "Dashboard");
+                //oCmd.Parameters.AddWithValue("@YearCode", now.Year);
+                oCmd.Parameters.AddWithValue("@FromDate", firstdayofMonthh);
+                oCmd.Parameters.AddWithValue("@ToDate", today);
+                await myConnection.OpenAsync();
+                using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
+                {
+                    oDataAdapter.Fill(oDataSet);
+                }
+            }
+
+            if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+            {
+                DashBoardData.GateAttDashboard = (from DataRow dr in oDataSet.Tables[0].Rows
+                                              select new GateAttDashBoard
+                                              {
+                                                  GateAttEntryId = !string.IsNullOrEmpty(dr["GateAttEntryId"].ToString()) ? Convert.ToInt32(dr["GateAttEntryId"]) : 0,
+                                                  GateAttYearCode = !string.IsNullOrEmpty(dr["GateAttYearCode"].ToString()) ? Convert.ToInt32(dr["GateAttYearCode"]) : 0,
+                                                  AttendanceEntryDate = string.IsNullOrEmpty(dr["AttendanceEntryDate"].ToString()) ? new DateTime() : Convert.ToDateTime(dr["AttendanceEntryDate"]),
+                                                  ActualEntryDate = string.IsNullOrEmpty(dr["ActualEntryDate"].ToString()) ? new DateTime() : Convert.ToDateTime(dr["ActualEntryDate"]),
+                                                  DailyMonthlyAttendance = dr["DailyMonthlyAttendance"].ToString(),
+                                                  AttendanceEntryMethod  = dr["AttendanceEntryMethod"].ToString(),
+                                                  AttMonthName  = dr["AttMonthName"].ToString(),
+                                                  EntryByMachineName  = dr["EntryByMachineName"].ToString(),
+                                                  CC  = dr["CC"].ToString(),
+                                                  EntryByEmp  = dr["EntryByEmp"].ToString(),
+                                                  UpdatedByEmp  = dr["EntryByEmp1"].ToString(),
+                                              }).OrderBy(a => a.GateAttEntryId).ToList();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            dynamic Error = new ExpandoObject();
+            Error.Message = ex.Message;
+            Error.Source = ex.Source;
+        }
+
+        return DashBoardData;
+    }
+    public async Task<GateAttendanceModel> GetViewByID(int ID, int YC, string Flag)
+    {
+        var oDataSet = new DataSet();
+        var MainModel = new GateAttendanceModel();
+        var SqlParams = new List<dynamic>();
+        //var listObject = new List<DeliverySchedule>();
+
+        try
+        {
+            SqlParams.Add(new SqlParameter("@Flag", "ViewById"));
+            SqlParams.Add(new SqlParameter("@GateAttEntryId", ID));
+            SqlParams.Add(new SqlParameter("@GateAttYearCode", YC));
+
+            var ResponseResult = await _IDataLogic.ExecuteDataSet("HRSPGateAttendanceMainDetail", SqlParams);
+
+            if (((DataSet)ResponseResult.Result).Tables.Count > 0 && ((DataSet)ResponseResult.Result).Tables[0].Rows.Count > 0)
+            {
+                oDataSet = ResponseResult.Result;
+                oDataSet.Tables[0].TableName = "GateAttandance";
+
+                if (oDataSet.Tables.Count != 0 && oDataSet.Tables[0].Rows.Count > 0)
+                {
+                    MainModel.GateAttEntryId = !string.IsNullOrEmpty(oDataSet.Tables[0].Rows[0]["GateAttEntryId"].ToString()) ? Convert.ToInt32(oDataSet.Tables[0].Rows[0]["GateAttEntryId"]) : 0;
+                    MainModel.GateAttYearCode = !string.IsNullOrEmpty(oDataSet.Tables[0].Rows[0]["GateAttYearCode"].ToString()) ? Convert.ToInt32(oDataSet.Tables[0].Rows[0]["GateAttYearCode"]) : 0;
+                    MainModel.EmpAttDate = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[0]["AttendanceEntryDate"].ToString()) ? new DateTime() : Convert.ToDateTime(oDataSet.Tables[0].Rows[0]["AttendanceEntryDate"]);
+                    MainModel.GateAttEntryDate = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[0]["ActualEntryDate"].ToString()) ? new DateTime().ToString("dd/MM/yyyy") : Convert.ToDateTime(oDataSet.Tables[0].Rows[0]["ActualEntryDate"]).ToString("dd/MM/yyyy");
+                    MainModel.DayOrMonthType = oDataSet.Tables[0].Rows[0]["DailyMonthlyAttendance"].ToString();
+                    MainModel.AttendanceEntryMethodType = oDataSet.Tables[0].Rows[0]["AttendanceEntryMethod"].ToString();
+                    MainModel.strEmpAttMonth = oDataSet.Tables[0].Rows[0]["AttMonthName"].ToString();
+                    MainModel.EntryByMachineName = oDataSet.Tables[0].Rows[0]["EntryByMachineName"].ToString();
+                    MainModel.CC = oDataSet.Tables[0].Rows[0]["CC"].ToString();
+                    MainModel.CreatedByName = oDataSet.Tables[0].Rows[0]["EntryByEmp"].ToString();
+                    MainModel.UpdatedByName = oDataSet.Tables[0].Rows[0]["EntryByEmp1"].ToString();
+
+                    MainModel.Branch = oDataSet.Tables[0].Rows[0]["CC"].ToString();
+                    MainModel.CreatedBy = Convert.ToInt32(oDataSet.Tables[0].Rows[0]["ActualEntryBy"].ToString());
+                    MainModel.CreatedByName = oDataSet.Tables[0].Rows[0]["EntryByMachine"].ToString();
+                    MainModel.CreatedOn = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[0]["LastUpdatedDate"].ToString()) ? new DateTime() : Convert.ToDateTime(oDataSet.Tables[0].Rows[0]["LastUpdatedDate"]);
+                    if (!string.IsNullOrEmpty(oDataSet.Tables[0].Rows[0]["UpdatedBy"].ToString()))
+                    {
+                        MainModel.UpdatedBy = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[0]["UpdatedBy"].ToString()) ? 0 : Convert.ToInt32(oDataSet.Tables[0].Rows[0]["UpdatedBy"]);
+                        MainModel.UpdatedOn = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[0]["LastUpdatedDate"].ToString()) ? new DateTime() : Convert.ToDateTime(oDataSet.Tables[0].Rows[0]["LastUpdatedDate"]);
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            dynamic Error = new ExpandoObject();
+            Error.Message = ex.Message;
+            Error.Source = ex.Source;
+        }
+        finally
+        {
+            oDataSet.Dispose();
+        }
+        return MainModel;
     }
 }

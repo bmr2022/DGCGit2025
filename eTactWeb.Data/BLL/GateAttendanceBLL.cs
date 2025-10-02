@@ -42,5 +42,9 @@ namespace eTactWeb.Data.BLL
         {
             return _GateAttendanceDAL.SaveGateAtt(model, itemgrid);
         }
+        async Task<GateAttDashBoard> IGateAttendance.GetDashBoardData()
+        {
+            return await _GateAttendanceDAL.GetDashBoardData();
+        }
     }
 }

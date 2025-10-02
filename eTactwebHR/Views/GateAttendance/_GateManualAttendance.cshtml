@@ -130,10 +130,10 @@
 
                             <td>@Html.DropDownList($"dept_{Model.GateAttDetailsList[i].EmpId}", new SelectList(deptList, "Value", "Text", Model.GateAttDetailsList[i].DeptId), new { @class = "form-select form-select-sm dept-dd", data_empid = Model.GateAttDetailsList[i].EmpId, onchange = "ondeptlistchange(" + Model.GateAttDetailsList[i].EmpId + ")" })</td>
                             <td>@Html.DropDownList($"desig_{Model.GateAttDetailsList[i].EmpId}", new SelectList(desigList, "Value", "Text", Model.GateAttDetailsList[i].DesignationEntryId), new { @class = "form-select form-select-sm desig-dd", data_empid = Model.GateAttDetailsList[i].EmpId, onchange = "ondesiglistchange(" + Model.GateAttDetailsList[i].EmpId + ")" })</td>
-                            <input type="hidden" name="GateAttDetailsList[@i].DeptId" value="@Model.GateAttDetailsList[i].DeptId" />
-                            <input type="hidden" name="GateAttDetailsList[@i].EmpId" value="@Model.GateAttDetailsList[i].EmpId" />
-                            <input type="hidden" name="GateAttDetailsList[@i].DesignationEntryId" value="@Model.GateAttDetailsList[i].DesignationEntryId" />
-                            <input type="hidden" name="GateAttDetailsList[@i].ActualEmpShiftId" value="@Model.GateAttDetailsList[i].ActualEmpShiftId" />
+                            <input type="hidden" name="GateAttDetailsList[@Model.GateAttDetailsList[i].EmpId].DeptId" value="@Model.GateAttDetailsList[i].DeptId" />
+                            <input type="hidden" name="GateAttDetailsList[@Model.GateAttDetailsList[i].EmpId].EmpId" value="@Model.GateAttDetailsList[i].EmpId" />
+                            <input type="hidden" name="GateAttDetailsList[@Model.GateAttDetailsList[i].EmpId].DesignationEntryId" value="@Model.GateAttDetailsList[i].DesignationEntryId" />
+                            <input type="hidden" name="GateAttDetailsList[@Model.GateAttDetailsList[i].EmpId].ActualEmpShiftId" value="@Model.GateAttDetailsList[i].ActualEmpShiftId" />
                         </tr>
                     }
                 }
