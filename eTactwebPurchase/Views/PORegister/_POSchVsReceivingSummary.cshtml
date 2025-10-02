@@ -50,7 +50,7 @@
                     {
                         Cntr = Cntr + 1;
 
-                        <tr id="SAGridRow-@Cntr" class="po-row">
+                        <tr id="SAGridRow-@Cntr" class="po-row" data-active="@item.Active">
                             <td>
                                 <a class="table-link link-danger" onclick="DeleteRow(this.id)" id="@Cntr">
                                     <span class="fa-stack">
@@ -59,7 +59,7 @@
                                     </span>
                                 </a>
                             </td>
-                            <th>@srNo</th>
+                            <th class="sr-no">@srNo</th>
                             <td>@item.Vendor</td>
                             <td>@item.PONO</td>
                             <td>@item.POEffDate.Split(" ")[0]</td>
@@ -77,7 +77,7 @@
                             <td id="POValue-@Cntr">@item.POValue</td>
                             <td id="RECQty-@Cntr">@item.RECQty</td>
                             <td id="QCOKQty-@Cntr">@item.QCOKQty</td>
-                            <td class="PendQty">@item.PendQty</td>
+                            <td class="PendQty" style="background-color:#c6ebd9">@item.PendQty</td>
                             <td>@item.MinLevel</td>
                             <td>@item.unit</td>
                             <td>@item.Minlvldays</td>
@@ -85,7 +85,7 @@
                             <td>@item.ItemCategory</td>
                             <td>@item.GSTPer</td>
                             <td>@item.GSTAmt</td>
-                            <td>@item.POtype</td>
+                            <td class="POtype" style="background-color:#ebd9c6">@item.POtype</td>
 
                          
                         </tr>

@@ -48,6 +48,7 @@ namespace eTactWeb.DOM.Models
         public string PartCode { get; set; }
         public string ItemName { get; set; }
         public string Currency { get; set; }
+        public string Active { get; set; }
         public float PORate { get; set; }
         public float POAmount { get; set; }
         public float GSTAmt { get; set; }

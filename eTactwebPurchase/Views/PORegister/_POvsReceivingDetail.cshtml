@@ -45,6 +45,10 @@
                             <th class="sortCol" data-sortorder="asc" data-columnno="13">
                                 <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Qty
                             </th>
+                            <th class="sortCol" data-sortorder="asc" data-columnno="13">
+                                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Pend Qty
+                            </th>
+
                             <th class="sortCol" data-sortorder="asc" data-columnno="14">
                                 <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Discount %
                             </th>
@@ -114,6 +118,9 @@
                             <th class="sortCol" data-sortorder="asc" data-columnno="36">
                                 <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>GST %
                             </th>
+                       <th class="sortCol" data-sortorder="asc" data-columnno="36">
+                                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>POType
+                            </th>
                        
                    
 
@@ -134,7 +141,7 @@
                     {
                         Cntr = Cntr + 1;
 
-                        <tr id="SAGridRow-@Cntr" class="po-row">
+                        <tr id="SAGridRow-@Cntr" class="po-row" data-active="@item.Active">
                             <td>
                                 <a class="table-link link-danger" onclick="DeleteRow(this.id)" id="@Cntr">
                                     <span class="fa-stack">
@@ -150,13 +157,14 @@
                             <td>@item.PODate.Split(" ")[0]</td>
                             <td>@item.POFOR</td>
                             <td class="sch-fields">@item.SchNO</td>
-                            <td class="sch-fields">@item.Schdate</td>
+                            <td class="sch-fields">@item.Schdate.Split(" ")[0]</td>
                             <td class="sch-fields">@item.SchYear</td>
                             <td>@item.PartCode</td>
                             <td>@item.ItemName</td>
                             <td>@item.Currency</td>
                             <td>@item.PORate</td>
                             <td id="POQty-@Cntr">@item.POQty</td>
+                            <td id="PendQty-@Cntr" class="PendQty" style="background-color:#c6ebd9">@item.PendQty</td>
                             <td>@item.DisPer</td>
                             <td>@item.DisAmt</td>
                             <td>@item.POAmount</td>
@@ -180,6 +188,7 @@
                             <td>@item.DOMESTICIMPORT</td>
                             <td>@item.GSTAmt</td>
                             <td>@item.GSTPer</td>
+                            <td class ="POtype" style="background-color:#ebd9c6">@item.POtype</td>
 
 
                                                       

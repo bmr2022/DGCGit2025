@@ -135,12 +135,12 @@
 
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input showClosedPO" type="radio" asp-for="showClosedPO" id="showClosedPOYes" value="Y">
-                                            <label class="form-check-label" for="showClosedPOYes">Close Po</label>
+                                            <label class="form-check-label" for="showClosedPOYes">Close PO</label>
                                         </div>
 
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input showClosedPO" type="radio" asp-for="showClosedPO" id="showClosedPONo" value="N">
-                                            <label class="form-check-label" for="showClosedPONo">OPen Po</label>
+                                            <label class="form-check-label" for="showClosedPONo">Open PO</label>
                                         </div>
 
                                         <div class="form-check form-check-inline">
@@ -250,16 +250,12 @@
                                             </div>
                                             <div class="row" id="TotalPOSummary">
                                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
-                                                    <label class="form-label">Total POValue</label>
+                                                    <label class="form-label">Total POQty</label>
                                                     <input id="ToTalPOValueSum" class="form-control" readonly />
                                                 </div>
                                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                                     <label class="form-label">Total RecQty</label>
                                                     <input id="ToTalRECQtySum" class="form-control" readonly />
-                                                </div>
-                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
-                                                    <label class="form-label">Total QCOKQty</label>
-                                                    <input id="ToTalQCOKQtySum" class="form-control" readonly />
                                                 </div>
                                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                                     <label class="form-label">Total PendQty</label>
@@ -359,7 +355,7 @@
 
                     $('#TotalItemConsoled').hide();
 
-                } else if (selectedValue === 'SUMM') {
+                } else if (selectedValue === 'PO vs Receiving Detail ( GateMRNQC)') {
                     $('#TotalPOSummary').show();
                     $('#TOTALSUMRatingdata').hide();
                     $('#TOTALDetailData').hide();
@@ -391,15 +387,21 @@
             $("#ReportMode").change(function () {
                 var selectedMode = $(this).val();
                 togglePOSections(selectedMode);
+                setTimeout(function () {
+                    $(".showPOFilter:checked").trigger("change");
+                    $(".showClosedPO:checked").trigger("change");
+                    $("input[name='showOnlyActivePO']:checked").trigger("change");
+                }, 300);
             });
             function togglePOSections(reportMode) {
                 if (reportMode === "LIST OF PO") {
-                    $("#activePOSection").hide();      
+                    $("#activePOSection").show();      
                     $("#closedPOSection").show();     
                     $("#completedPOSection").hide();   
                 }
+
                 else if (reportMode === "List of PO With Item") {
-                    $("#activePOSection").hide();      
+                    $("#activePOSection").show();      
                     $("#closedPOSection").show();     
                     $("#completedPOSection").hide();   
                 }
@@ -410,8 +412,8 @@
                 }
                 else if (reportMode === "PO vs Receiving Detail ( GateMRNQC)") {
                     $("#activePOSection").show();      
-                    $("#closedPOSection").hide();     
-                    $("#completedPOSection").hide();   
+                    $("#closedPOSection").show();     
+                    $("#completedPOSection").show();   
                 }
                 else if (reportMode === "PO+Sch Vs Receiving Summary") {
                     $("#activePOSection").show();      
@@ -425,7 +427,7 @@
                 }
                 else if (reportMode === "Order vs Dispatch") {
                     $("#activePOSection").show();
-                    $("#closedPOSection").hide();
+                    $("#closedPOSection").show();
                     $("#completedPOSection").show();
                 }
 
@@ -452,80 +454,115 @@
                     $("#completedPOSection").hide();
                 }
             }
-            $('.showPOFilter').change(function () {
-                var filter = $(this).val(); // Y / N / A
-                var srNo = 1;
+            $(".showPOFilter:checked").trigger("change");
+            $(".showClosedPO:checked").trigger("change");
+            $("input[name='showOnlyActivePO']:checked").trigger("change");
 
-                $('#divStockRegisterBody .po-row').each(function () {
-                    var pendQty = parseFloat($(this).find('.PendQty').text());
+        });
+        $("#ReportMode").change(function () {
+           debugger
+            setTimeout(function () {
+                $(".showPOFilter:checked").trigger("change");
+                $(".showClosedPO:checked").trigger("change");
+                $("input[name='showOnlyActivePO']:checked").trigger("change");
+            }, 300);
+        });
 
-                    if (filter === "Y" && pendQty === 0) {
-                        $(this).show();
-                        $(this).find('.sr-no').text(srNo); // update SrNo column by class
-                        srNo++;
-                    }
-                    else if (filter === "N" && pendQty !== 0) {
-                        $(this).show();
-                        $(this).find('.sr-no').text(srNo);
-                        srNo++;
-                    }
-                    else if (filter === "A") {
-                        $(this).show();
-                        $(this).find('.sr-no').text(srNo);
-                        srNo++;
-                    }
-                    else {
-                        $(this).hide();
-                    }
-                });
+        // For PO Filter
+        $(document).on("change", ".showPOFilter", function () {
+            applyPOFilter($(this).val());
+        });
+
+        function applyPOFilter(filter) {
+            var srNo = 1;
+            $('#divStockRegisterBody .po-row').each(function () {
+                var pendQty = parseFloat($(this).find('.PendQty').text());
+
+                if (filter === "Y" && pendQty === 0) {
+                    $(this).show();
+                    $(this).find('.sr-no').text(srNo++);
+                }
+                else if (filter === "N" && pendQty !== 0) {
+                    $(this).show();
+                    $(this).find('.sr-no').text(srNo++);
+                }
+                else if (filter === "A") {
+                    $(this).show();
+                    $(this).find('.sr-no').text(srNo++);
+                }
+                else {
+                    $(this).hide();
+                }
             });
+        }
 
-            $('.showClosedPO').change(function () {
-                var filter = $(this).val(); // Y / N / A
-                var srNo = 1;
+        // For Closed PO
+        $(document).on("change", ".showClosedPO", function () {
+            applyClosedPO($(this).val());
+        });
 
-                $('#divStockRegisterBody .po-row').each(function () {
-                    var POtype = $(this).find('.POtype').text().trim(); // get PO type
+        function applyClosedPO(filter) {
+            var srNo = 1;
+            $('#divStockRegisterBody .po-row').each(function () {
+                var POtype = $(this).find('.POtype').text().trim();
 
-                    if ((filter === "Y" && POtype === "Close") ||
-                        (filter === "N" && POtype === "Open") ||
-                        filter === "A") {
-                        $(this).show();
-                        $(this).find('.sr-no').text(srNo); // update serial number
-                        srNo++;
+                if ((filter === "Y" && POtype === "Close") ||
+                    (filter === "N" && POtype === "Open") ||
+                    filter === "A") {
+                    $(this).show();
+                    $(this).find('.sr-no').text(srNo++);
+
+                    if (POtype === "Close") {
+                         $('.sch-fields').hide();
                     } else {
-                        $(this).hide();
+                        $('.sch-fields').show();
                     }
-                });
+                } else {
+                    $(this).hide();
+                }
             });
+        }
 
-
-        });
-
+        // For Active PO
         $(document).on("change", "input[name='showOnlyActivePO']", function () {
-            var selectedVal = $(this).val();
-
-            if (selectedVal === "Y") {
-                $(".sch-fields").hide();
-            } else {
-                $(".sch-fields").show();
-            }
+            applyActivePO($(this).val());
         });
+
+        function applyActivePO(selectedVal) {
+            $('#divStockRegisterBody .po-row').each(function () {
+                var rowActive = $(this).data('active'); // Y / N
+
+                if (selectedVal === "A") {
+                    $(this).show();
+                    $(this).css("color", rowActive === "N" ? "red" : "");
+                } else if (selectedVal === rowActive) {
+                    $(this).show();
+                    $(this).css("color", rowActive === "N" ? "red" : "");
+                } else {
+                    $(this).hide();
+                }
+            });
+        }
+
+
         function UpdateAccordionHeader() {
             var reportType = $('#ReportMode').val();;
 
             var headerTextMap = {
-                "LISTOFPO": "LIST OF PO",
-                "LISTOFSCHEDULESUMMARY": "PO Summary",
+                "LIST OF PO": "LIST OF PO",
+                "List of PO With Item": "List of PO With Item",
+                "PO vs Receiving Detail ( GateMRNQC)": "PO vs Receiving Detail (GateMRNQC)",
+                "LISTOFSCHEDULESUMMARY": "List Of Schedule Summary",
+                "PO+Sch Vs Receiving Summary": "PO+Sch Vs Receiving Summary",
+                "PARTYWISECONSOLIDATED": "Party Wise Consolidated",
+                "CONSOLIDATED ( Part+Item Wise)": "CONSOLIDATED ( Part+Item Wise)",
+                "Order vs Dispatch": "Order vs Dispatch",
+
                 "LISTOFSCHEDULE": "Schedule List",
-                "SUMM": "Purchase Order Summary",
                 "DETAIL": "Purchase Order Detail",
                 "SUMMRATEING": "Summary Rating",
-                "CONSOLIDATED": "Consolidated",
-                "PARTYWISECONSOLIDATED": "Party Wise Consolidated",
                 "ITEMWISECONSOLIDATED": "Item Wise Consolidated",
                 "PRICEHISTORY": "Price History",
-                "Order vs Dispatch": "Order vs Dispatch",
                 "PO RATE ANALYSIS": "PO Rate Analysis"
             };
 

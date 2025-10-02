@@ -49,7 +49,7 @@
                     {
                         Cntr = Cntr + 1;
 
-                        <tr id="SAGridRow-@Cntr" class="po-row">
+                        <tr id="SAGridRow-@Cntr" class="po-row" data-active="@item.Active">
                             <td>
                                 <a class="table-link link-danger" onclick="DeleteRow(this.id)" id="@Cntr">
                                     <span class="fa-stack">
@@ -65,7 +65,7 @@
                             <td class="sch-fields">@(item.Schdate == null ? string.Empty : item.Schdate.Split(" ")[0])</td>
                             <td class="sch-fields">@(item.ScheduleEffectiveFromDate == null ? string.Empty : item.ScheduleEffectiveFromDate.Split(" ")[0])</td>
                             <td class="sch-fields">@(item.ScheduleEffectiveTillDate == null ? string.Empty : item.ScheduleEffectiveTillDate.Split(" ")[0])</td>
-                            <td class="POtype">@item.POtype</td>
+                            <td class="POtype" style="background-color:#ebd9c6">@item.POtype</td>
                             <td>@(item.POEffDate  == null ? string.Empty : item.POEffDate.Split(" ")[0])</td>
                             <td>@(item.POclosedate  == null ? string.Empty : item.POclosedate.Split(" ")[0])</td>
                             <td>@(item.poAmmeffdate == null ? string.Empty : item.poAmmeffdate.Split(" ")[0])</td>

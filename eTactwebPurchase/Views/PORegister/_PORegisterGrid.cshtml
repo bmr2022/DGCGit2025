@@ -129,6 +129,9 @@ else @* List Of PO with Item Detail(Open +close) *@
                     <th class="sortCol" data-sortorder="asc" data-columnno="26">
                         <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>HSN No
                     </th>
+                     <th class="sortCol" data-sortorder="asc" data-columnno="26">
+                        <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Active
+                    </th>
 
                 </tr>
             </thead>
@@ -147,7 +150,7 @@ else @* List Of PO with Item Detail(Open +close) *@
                         {
                             Cntr = Cntr + 1;
 
-                            <tr id="SAGridRow-@Cntr" onclick="selection(this)" class="po-row">
+                            <tr id="SAGridRow-@Cntr" onclick="selection(this)" class="po-row" data-active="@item.Active">
                                 <td>
                                     <a class="table-link link-danger" onclick="DeleteRow(this.id)" id="@Cntr">
                                         <span class="fa-stack">
@@ -159,7 +162,7 @@ else @* List Of PO with Item Detail(Open +close) *@
                                 <th class="sr-no">@srNo</th>
                                 <td style="background-color: #e09ef0;">@item.PONO</td>
                                 <td>@item.PODate.Split(" ")[0]</td>
-                                <td class="POtype">@item.POtype</td>
+                                <td class="POtype" style="background-color:#ebd9c6">@item.POtype</td>
                                 <td>@item.POEffDate.Split(" ")[0]</td>
                                 <td>@item.POclosedate.Split(" ")[0]</td>
                                 <td>@item.poAmmeffdate.Split(" ")[0]</td>
@@ -177,11 +180,12 @@ else @* List Of PO with Item Detail(Open +close) *@
                                 <td>@item.Assrate</td>
                                 <td>@item.Deliveryterms</td>
                                 <td>@item.deliveryDate.Split(" ")[0]</td>
-                                <td>@item.POQty</td>
+                                <td id="POQty-@Cntr">@item.POQty</td>
                                 <td>@item.POFOR</td>
                                 <td>@item.Currency</td>
-                                <td>@item.AmmDate</td>
+                                <td>@item.AmmDate.Split(" ")[0]</td>
                                 <td>@item.HSNNO</td>
+                                <td>@item.Active</td>
 
 
                             </tr>

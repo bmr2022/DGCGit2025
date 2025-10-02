@@ -47,6 +47,9 @@
                 <th class="sortCol" data-sortorder="asc" data-columnno="14">
                     <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unit
                 </th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="15">
+                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>POType
+                </th>
 
             </tr>
         </thead>
@@ -65,7 +68,7 @@
                     {
                         Cntr = Cntr + 1;
 
-                        <tr id="SAGridRow-@Cntr" class="po-row">
+                        <tr id="SAGridRow-@Cntr" class="po-row" data-active="@item.Active">
                             <td>
                                 <a class="table-link link-danger" onclick="DeleteRow(this.id)" id="@Cntr">
                                     <span class="fa-stack">
@@ -87,8 +90,9 @@
                             <td id="POQty-@Cntr">@item.POQty</td>
                             <td id="RECQty-@Cntr">@item.RECQty</td>
                             <td id="QCOKQty-@Cntr">@item.QCOKQty</td>
-                            <td  class="PendQty" id="PendQty-@Cntr">@item.PendQty</td>
+                            <td class="PendQty" id="PendQty-@Cntr" style="background-color:#c6ebd9">@item.PendQty</td>
                             <td>@item.unit</td>
+                            <td class="POtype" style="background-color:#ebd9c6">@item.POtype</td>
                         </tr>
                         srNo++;
                     }
