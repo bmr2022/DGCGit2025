@@ -430,11 +430,13 @@
 
                 var deptEl = row.querySelector("[name='dept_" + empId + "']");
                 var desigEl = row.querySelector("[name='desig_" + empId + "']");
+                var EmpShiftId = row.querySelector("[name='GateAttDetailsList[" + empId + "].ActualEmpShiftId']");
 
                 var empObj = {
                     EmpId: parseInt(empId, 10) || 0,
                     DeptId: deptEl ? parseInt(deptEl.value, 10) || 0 : 0,
                     DesignationEntryId: desigEl ? parseInt(desigEl.value, 10) || 0 : 0,
+                    ActualEmpShiftId: EmpShiftId ? parseInt(EmpShiftId.value, 10) || 0 : 0,
                     Attendance: {}
                 };
 

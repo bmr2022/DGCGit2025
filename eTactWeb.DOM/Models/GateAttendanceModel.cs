@@ -131,6 +131,34 @@ public class GateAttendanceModel : TimeStamp
     public List<GateAttendanceHolidayModel> HolidayList { get; set; }
 }
 
+[Serializable]
+public class GateAttDashBoard : TimeStamp
+{
+    public IList<GateAttDashBoard> GateAttDashboard { get; set; }
+    public string? ApprovedDate { get; set; }
+    public string? Approved { get; set; }
+
+    public DateTime? AttendanceEntryDate { get; set; }
+    public string? DailyMonthlyAttendance { get; set; }
+    public string? AttendanceEntryMethod { get; set; }
+    public string? AttMonthName { get; set; }
+    public DateTime? ActualEntryDate { get; set; }
+    public string? EntryByMachineName { get; set; }
+    public string? CC { get; set; }
+    public string? EntryByEmp { get; set; }
+    public string? UpdatedByEmp { get; set; }
+    public int? GateAttEntryId { get; set; }
+    public int? GateAttYearCode { get; set; }
+    public string? FromDate { get; set; }
+    public string? ToDate { get; set; }
+    //public IList<TextValue>? PONoList { get; set; }
+    //pagintion
+    public int PageNumber { get; set; }
+    public int PageSize { get; set; }
+    public int TotalRecords { get; set; }
+
+}
+
 public class GateAttendanceHolidayModel
 {
     public int HolidayEntryId { get; set; }

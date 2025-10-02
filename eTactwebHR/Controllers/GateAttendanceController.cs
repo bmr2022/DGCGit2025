@@ -606,6 +606,16 @@ namespace eTactwebHR.Controllers
                 return "";
             }
         }
+        public async Task<IActionResult> DashBoard()
+        {
+            HttpContext.Session.Remove("GateAttendance");
+            var _List = new List<TextValue>();
+            var MainModel = await IGateAttendance.GetDashBoardData();
+            MainModel.FromDate = new DateTime(DateTime.Today.Year, 1, 1).ToString("dd/MM/yyyy").Replace("-", "/");
+            MainModel.ToDate = new DateTime(DateTime.Today.Year + 1, 12, 31).ToString("dd/MM/yyyy").Replace("-", "/");// Last day in December this year
+
+            return View(MainModel);
+        }
         public async Task<JsonResult> GetFormRights()
         {
             var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
