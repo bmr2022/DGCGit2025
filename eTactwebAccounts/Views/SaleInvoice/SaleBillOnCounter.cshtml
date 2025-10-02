@@ -14,7 +14,7 @@
 <div class="card bg-gradient mb-3 border-light shadow-lg">
     <partial name="_saleBillDisplaySODetail" />
     <partial name="_SaleBillTaxPassword" />
-    <form asp-action="SaleBillOnCounter" autocomplete="off" class="form-horizontal" id="saleInvoiceForm" method="post" enctype="multipart/form-data">
+    <form asp-action="SaleInvoice" autocomplete="off" class="form-horizontal" id="saleInvoiceForm" method="post" enctype="multipart/form-data">
         <input type="hidden" asp-for="Mode" value="@Model.Mode" />
         <input type="hidden" asp-for="EID" />
         <input type="hidden" asp-for="EInvNo" />
@@ -56,7 +56,7 @@
                     </a>
 
 
-                    <a asp-action="SBDashboard" class="btn btn-sm btn-outline-light bg-gradient" style="margin-right:5px;">
+                    <a asp-action="SaleBillOnCounterDashboard" class="btn btn-sm btn-outline-light bg-gradient" style="margin-right:5px;">
                         <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                         Dashboard
                     </a>
@@ -77,6 +77,7 @@
                             <input asp-for="DomesticExportNEPZBack" type="hidden" value="@Model.DomesticExportNEPZBack" />
                             <input asp-for="SearchBoxBack" type="hidden" value="@Model.SearchBoxBack" />
                             <input asp-for="SummaryDetailBack" type="hidden" value="@Model.SummaryDetailBack" />
+                            <input asp-for="AllowToAddNegativeStockInStore" type="hidden" value="Y" />
                             <input type="hidden" id="ShouldEinvoice" name="ShouldEinvoice" />
 
                             @if (Model.Mode == "U" || Model.Mode == "V")
@@ -476,7 +477,7 @@
                             <div class="col-auto">
                                 @*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
 
-                                <a asp-action="SBDashboard" asp-route-ID="0" class="btn btn-secondary btn-sm">
+                                <a asp-action="SaleBillOnCounterDashboard" asp-route-ID="0" class="btn btn-secondary btn-sm">
                                     <i class="fa-solid fa-grid-horizontal fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                                     Dashboard
                                 </a>
@@ -1275,10 +1276,10 @@
                                     printWindow.document.title = "Sale Invoice Report";
 
                                 };
-                                window.location.href = '/SaleInvoice/SaleInvoice/0';
+                                window.location.href = '/SaleInvoice/SaleBillOnCounter/0';
                             }
                             else {
-                                window.location.href = '/SaleInvoice/SaleInvoice/0';
+                                window.location.href = '/SaleInvoice/SaleBillOnCounter/0';
                             }
                         } else {
                             alert(res.message || "Something went wrong.");

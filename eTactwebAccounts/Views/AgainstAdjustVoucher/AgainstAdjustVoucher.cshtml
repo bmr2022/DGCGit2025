@@ -271,7 +271,7 @@
                             <div class="card">
                                 <div class="card-body overflow-auto pb-0">
                                     <div style="overflow-x:auto; overflow-y:auto; max-height:340px; border:1px solid #ccc;">
-                                        <table class="table table-hover table-bordered table-striped">
+                                        <table class="table table-hover table-bordered table-striped" id="tblAgainstAdjustVoucher">
                                             <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap" id="dashGateThead">
                                                 <tr>
                                                     <th style="color:yellow">Type*</th>
@@ -279,7 +279,7 @@
                                                         <div style="display: flex; align-items: center; gap: 5px;">
                                                             Ledger Name*
                                                             <label class="tiny-switch">
-                                                                <input type="checkbox" id="ShowAll" onchange="FillLedgerName()">
+                                                                <input type="checkbox" id="ShowAll" onchange="FillAccountName()()">
                                                                 <span class="tiny-slider"></span>
                                                             </label>
                                                             <span style="font-size: 12px; color: white;">Show All</span>
@@ -336,7 +336,7 @@
                                             </tr>
                                         </thead>
                                         <tbody id="divBankReceiptDetail">
-                                            @*    <partial name="_AgainstAdjustVoucherGrid" /> *@
+                                            <partial name="_AgainstAdjustVoucherGrid" />
                                         </tbody>
                                     </table>
                                 </div>
@@ -393,7 +393,7 @@
                                     </div>
                                     <div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                         <label asp-for="ActualEntryBy" class="form-label">Actual Entry By </label>
-                                        <input asp-for="ActualEntryby" class="form-label" type="hidden" />
+                                        <input asp-for="ActualEntryBy" class="form-label" type="hidden" />
                                         <input asp-for="UID" class="form-label" type="hidden" />
                                         <input asp-for="ActualEntryBy" class="form-control" readonly />
                                     </div>
@@ -592,10 +592,10 @@
                             var DrAmt = parseFloat($('#DrAmt').val()) || 0;
                             var CrAmt = parseFloat($('#CrAmt').val()) || 0;
 
-                            if (DrAmt != CrAmt) {
-                                $.notify("DrAmt and CrAmt must be equal to proceed.", "error");
-                                Err = 1;
-                            }
+                            // if (DrAmt != CrAmt) {
+                            //     $.notify("DrAmt and CrAmt must be equal to proceed.", "error");
+                            //     Err = 1;
+                            // }
 
                             var Row = $('#divBankReceiptDetail tr').length;
                             if ($('#divBankReceiptDetail tr').text().trim() == "NO DATA ADDED") {
@@ -612,18 +612,18 @@
                                 }
                             });
 
-                            if (partySet.size === 1) {
-                                $.notify("Same party Dr & Cr with same amount is not feasible add at least one more ledger", "error");
-                                Err = 1;
-                            }
+                            // if (partySet.size === 1) {
+                            //     $.notify("Same party Dr & Cr with same amount is not feasible add at least one more ledger", "error");
+                            //     Err = 1;
+                            // }
 
                             // Existing validation for ModeOfAdjustment
-                            for (let i = 1; i <= Row; i++) {
-                                var ModeOfAdjust = $('#ModeOfAdjustment-' + i).text();
-                                if (ModeOfAdjust == "Against Ref") {
-                                    CheckAmountBeforeSave(i);
-                                }
-                            }
+                            // for (let i = 1; i <= Row; i++) {
+                            //     var ModeOfAdjust = $('#ModeOfAdjustment-' + i).text();
+                            //     if (ModeOfAdjust == "Against Ref") {
+                            //         CheckAmountBeforeSave(i);
+                            //     }
+                            // }
 
                             Err == 1 ? ShowErrorFld('H_SAGrid') : HideErrorFld('H_SAGrid');
                             return Err === 0;
@@ -717,6 +717,7 @@
                          //         FillVoucherNo();
                             BindModeOfAdjust();
                             FillLedgerName();
+                            FillAccountName();
                                 $('#VoucherType').change(function () {
                                 FillVoucherNo();
                                             FillInvoiceNo();
@@ -806,7 +807,7 @@
                                     var VoucherDate = $('#VoucherDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
                                     var AgainstVoucherDate = $('#AgainstVoucherDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
                                     var soDate = $('#SoDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-                                               //     FillEntryID();
+                                                  FillEntryID();
                                     }
                                     var finFromDate = $('#FromDate').val();
                                 var finToDate = $('#ToDate').val();
@@ -835,7 +836,7 @@
                                      $('#EntryDate').on('change', function () {
                                     var entryDateVal = $(this).val(); // Get selected EntryDate
                                     $('#VoucherDate').datepicker("setDate", entryDateVal); // Set same date in VoucherDate
-                                         //   FillEntryID();
+                                        //   FillEntryID();
                                                             $('#divBankReceiptDetail').empty()
                                 });
                                 $('#VoucherDate').on('change', function () {
@@ -1072,7 +1073,7 @@
 
                         function ClearGrid() {
 
-                            $('#LedgerName').prop('selectedIndex', 0).trigger("change");
+                       //     $('#LedgerName').prop('selectedIndex', 0).trigger("change");
                             $('#Balance').val(0);
                             $('#DRCR').val('');
                             $('#AdjustmentAmt').val(0);
@@ -1139,8 +1140,8 @@
                                 success: function (data, status, xhr) {
                                     var obj = $.parseJSON(data);
                                     if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
-                                        $('#AccEntryId').val(obj.Result[0].ENtryId || 0);
-                                        $('#VoucherNo').val(obj.Result[0].VoucherNo || 0);
+                                        $('#EntryId').val(obj.Result[0].EntryId || 0);
+                                        // $('#VoucherNo').val(obj.Result[0].VoucherNo || 0);
                                     }
                                 },
                                 error: function (xhr, status, error) {
@@ -1511,6 +1512,38 @@
                                 }
                             });
                         }
+                           function FillAccountName() {
+
+                    var ShowAll = $('#ShowAll').is(':checked') ? 'Y' : 'N';
+            $.ajax({
+                url: '@Url.Action("FillLedgerName", "AgainstAdjustVoucher")',
+                type: 'POST',
+                data: {
+                            ShowAll: ShowAll
+                },
+                async: false,
+                success: function (response, status, error) {
+
+                    var LedgerNameDropdown = $('#AccountCode');
+                    var obj = $.parseJSON(response);
+                    LedgerNameDropdown.empty();
+                    LedgerNameDropdown.append('<option value="">--Select--</option>');
+                    $.each(obj.Result, function (index, LedgerName) {
+                        LedgerNameDropdown.append('<option value="' + LedgerName.Account_Code + '">' + LedgerName.Account_Name + '</option>');
+                    });
+
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+
+                        var LedgerName = '@Model.AccountCode';
+                        $('#AccountCode').val(LedgerName).trigger("change");
+                        $('#AccountCode').val(LedgerName);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load ledger names.');
+                }
+            });
+        }
 
                                 function FillVoucherType() {
                             var VoucherType = $('#VoucherType').val();
@@ -2090,138 +2123,229 @@
                             return Math.round(num * 100) / 100;  // round to 2 decimals
                         }
 
-                        function Validate_GridButton() {
+                        // function Validate_GridButton() {
 
-                            var Err = 0;
-                            if ($('#Type').val() == "") {
-                                AddErrorCls('Type');
-                                $.notify("Type is required", "error");
-                                Err = 1;
-                            }
-                            else {
-                                RemoveErrorCls('Type');
-                            }
-                            if ($('#LedgerName').prop('selectedIndex') == 0) {
-                                AddErrorCls('LedgerName');
-                                $.notify("LedgerName is required", "error");
-                                Err = 1;
-                            }
-                            else {
-                                RemoveErrorCls('LedgerName');
-                            }
-                            if ($('#ModeOfAdjustment').val() == null || $('#ModeOfAdjustment').val() == "") {
-                                AddErrorCls('ModeOfAdjustment');
-                                $.notify("ModeOfAdjustment is required", "error");
-                                Err = 1;
-                            }
-                            else {
-                                RemoveErrorCls('ModeOfAdjustment');
-                            }
-                            if ($('#AdjustmentAmt').val() == 0) {
-                                AddErrorCls('AdjustmentAmt');
-                                $.notify("Amount must be greater than 0 in case of against ref", "error");
-                                Err = 1;
-                            }
-                            else {
-                                RemoveErrorCls('AdjustmentAmt');
-                            }
-                           /*  if ($('#Balance').val() == 0) {
-                                AddErrorCls('Balance');
-                                $.notify("Balance is must be greater than 0.", "error");
-                                Err = 1;
-                            }
-                            else {
-                                RemoveErrorCls('Balance');
-                            } */
-                            if ($('#ModeOfAdjustment').find(":selected").text() == "Against Ref") {
-                                AddErrorCls('ModeOfAdjustment');
-                                $.notify("Cannot add to grid directly.", "error");
-                                Err = 1;
-                            }
-                            else {
-                                RemoveErrorCls('ModeOfAdjustment');
-                            }
+                        //     var Err = 0;
+                        //     if ($('#Type').val() == "") {
+                        //         AddErrorCls('Type');
+                        //         $.notify("Type is required", "error");
+                        //         Err = 1;
+                        //     }
+                        //     else {
+                        //         RemoveErrorCls('Type');
+                        //     }
+                        //     if ($('#LedgerName').prop('selectedIndex') == 0) {
+                        //         AddErrorCls('LedgerName');
+                        //         $.notify("LedgerName is required", "error");
+                        //         Err = 1;
+                        //     }
+                        //     else {
+                        //         RemoveErrorCls('LedgerName');
+                        //     }
+                        //     if ($('#ModeOfAdjustment').val() == null || $('#ModeOfAdjustment').val() == "") {
+                        //         AddErrorCls('ModeOfAdjustment');
+                        //         $.notify("ModeOfAdjustment is required", "error");
+                        //         Err = 1;
+                        //     }
+                        //     else {
+                        //         RemoveErrorCls('ModeOfAdjustment');
+                        //     }
+                        //     if ($('#AdjustmentAmt').val() == 0) {
+                        //         AddErrorCls('AdjustmentAmt');
+                        //         $.notify("Amount must be greater than 0 in case of against ref", "error");
+                        //         Err = 1;
+                        //     }
+                        //     else {
+                        //         RemoveErrorCls('AdjustmentAmt');
+                        //     }
+                        //    /*  if ($('#Balance').val() == 0) {
+                        //         AddErrorCls('Balance');
+                        //         $.notify("Balance is must be greater than 0.", "error");
+                        //         Err = 1;
+                        //     }
+                        //     else {
+                        //         RemoveErrorCls('Balance');
+                        //     } */
+                        //     if ($('#ModeOfAdjustment').find(":selected").text() == "Against Ref") {
+                        //         AddErrorCls('ModeOfAdjustment');
+                        //         $.notify("Cannot add to grid directly.", "error");
+                        //         Err = 1;
+                        //     }
+                        //     else {
+                        //         RemoveErrorCls('ModeOfAdjustment');
+                        //     }
 
-                            Err == 1 ? ShowErrorFld('H_SAGrid') : HideErrorFld('H_SAGrid');
-                            if (Err == 1) return false;
-                            return true;
-                        }
+                        //     Err == 1 ? ShowErrorFld('H_SAGrid') : HideErrorFld('H_SAGrid');
+                        //     if (Err == 1) return false;
+                        //     return true;
+                        // }
 
-                        function GridButton() {
-                            if (!Validate_GridButton()) return;
-                            var SchData = {
-                                "AccountCode": $('#AccountCode').val(),
-                                "Balance": roundVal($('#Balance').val()),
-                                "BankType": $('#BankType').val(),
-                                "DRCR": $('#DRCR').val(),
-                                "InsNo": $('#InsNo').val(),
-                                "InsDate": $('#InsDate').val(),
-                                "AdjustmentAmt": roundVal($('#AdjustmentAmt').val()),
-                                "AdjustmentAmtOthCur": roundVal($('#AdjustmentAmtOthCur').val()),
-                                "PartyWiseNaration": $('#PartyWiseNaration').val(),
-                                "AgainstVoucherNo": $('#AgainstVoucherNo').val(),
-                                "AgainstVoucherCode": $('#AgainstVoucherCode').val(),
-                                "AgainstVoucherDate": $('#AgainstVoucherDate').val(),
-                                "AgainstVoucherType": $('#AgainstVoucherType').val(),
-                                "AgainstVoucherEntryId": $('#AgainstVoucherEntryId').val(),
-                                "VoucherBillAmt": roundVal($('#VoucherBillAmt').val()),
-                                "PendBillAmt": roundVal($('#PendBillAmt').val()),
-                                "SeqNo": $('#SeqNo').val(),
-                                "CustOrderNo": $('#CustOrderNo').val(),
-                                "SoDate": $('#SoDate').val(),
-                                "SOYear": $('#SOYear').val(),
-                                "DrAmt": roundVal($('#DrAmt').val()),
-                                "CrAmt": roundVal($('#CrAmt').val()),
-                                "ActualEntryby": parseInt($('#ActualEntryby').val()),
-                                "UID": parseInt($('#UID').val()),
-                                "EntryByMachine": $('#EntryByMachine').val(),
-                                "CurrencyId": parseInt($('#CurrencyId').val()),
-                                "ActualEntryDate": $('#ActualEntryDate').val(),
-                                "Mode": $('#Mode').val(),
-                                "Type": $('#Type').find(":selected").text() == '-Select-' ? '' : $('#Type').find(":selected").text(),
-                                "LedgerName": $('#LedgerName').find(":selected").text() == '--Select--' ? '' : $('#LedgerName').find(":selected").text(),
-                                "Intrument": $('#Intrument').find(":selected").text() == '--Select--' ? '' : $('#Intrument').find(":selected").text(),
-                                "ModeOfAdjustment": $('#ModeOfAdjustment').find(":selected").text() == '--Select--' ? '' : $('#ModeOfAdjustment').find(":selected").text(),
-                                "CostCenterName": $('#CostCenterName').find(":selected").text() == '--Select--' ? '' : $('#CostCenterName').find(":selected").text(),
-                                "CostCenterId": $('#CostCenterId').val(),
-                            };
+                        // function GridButton() {
+                        //     if (!Validate_GridButton()) return;
+                        //     var SchData = {
+                        //         "AccountCode": $('#AccountCode').val(),
+                        //         "Balance": roundVal($('#Balance').val()),
+                        //         "BankType": $('#BankType').val(),
+                        //         "DRCR": $('#DRCR').val(),
+                        //         "InsNo": $('#InsNo').val(),
+                        //         "InsDate": $('#InsDate').val(),
+                        //         "AdjustmentAmt": roundVal($('#AdjustmentAmt').val()),
+                        //         "AdjustmentAmtOthCur": roundVal($('#AdjustmentAmtOthCur').val()),
+                        //         "PartyWiseNaration": $('#PartyWiseNaration').val(),
+                        //         "AgainstVoucherNo": $('#AgainstVoucherNo').val(),
+                        //         "AgainstVoucherCode": $('#AgainstVoucherCode').val(),
+                        //         "AgainstVoucherDate": $('#AgainstVoucherDate').val(),
+                        //         "AgainstVoucherType": $('#AgainstVoucherType').val(),
+                        //         "AgainstVoucherEntryId": $('#AgainstVoucherEntryId').val(),
+                        //         "VoucherBillAmt": roundVal($('#VoucherBillAmt').val()),
+                        //         "PendBillAmt": roundVal($('#PendBillAmt').val()),
+                        //         "SeqNo": $('#SeqNo').val(),
+                        //         "CustOrderNo": $('#CustOrderNo').val(),
+                        //         "SoDate": $('#SoDate').val(),
+                        //         "SOYear": $('#SOYear').val(),
+                        //         "DrAmt": roundVal($('#DrAmt').val()),
+                        //         "CrAmt": roundVal($('#CrAmt').val()),
+                        //         "ActualEntryby": parseInt($('#ActualEntryby').val()),
+                        //         "UID": parseInt($('#UID').val()),
+                        //         "EntryByMachine": $('#EntryByMachine').val(),
+                        //         "CurrencyId": parseInt($('#CurrencyId').val()),
+                        //         "ActualEntryDate": $('#ActualEntryDate').val(),
+                        //         "Mode": $('#Mode').val(),
+                        //         "Type": $('#Type').find(":selected").text() == '-Select-' ? '' : $('#Type').find(":selected").text(),
+                        //         "LedgerName": $('#LedgerName').find(":selected").text() == '--Select--' ? '' : $('#LedgerName').find(":selected").text(),
+                        //         "Intrument": $('#Intrument').find(":selected").text() == '--Select--' ? '' : $('#Intrument').find(":selected").text(),
+                        //         "ModeOfAdjustment": $('#ModeOfAdjustment').find(":selected").text() == '--Select--' ? '' : $('#ModeOfAdjustment').find(":selected").text(),
+                        //         "CostCenterName": $('#CostCenterName').find(":selected").text() == '--Select--' ? '' : $('#CostCenterName').find(":selected").text(),
+                        //         "CostCenterId": $('#CostCenterId').val(),
+                        //     };
 
-                            const adjAmt = parseFloat(SchData.AdjustmentAmt) || 0;
-                            if (SchData.Type.toLowerCase() === "dr") {
-                                SchData.DrAmt = adjAmt.toFixed(2);
+                        //     const adjAmt = parseFloat(SchData.AdjustmentAmt) || 0;
+                        //     if (SchData.Type.toLowerCase() === "dr") {
+                        //         SchData.DrAmt = adjAmt.toFixed(2);
 
-                                SchData.CrAmt = "0.00";
-                            } else if (SchData.Type.toLowerCase() === "cr") {
-                                SchData.CrAmt = adjAmt.toFixed(2);
-                                SchData.DrAmt = "0.00";
-                            }
-                            $.ajax({
-                                type: "POST",
-                                url: '@Url.Action("AddAgainstAdjustVoucherDetail", "AgainstAdjustVoucher")',
-                                data: { model: SchData },
-                                success: function (result, status, xhr) {
-                                    if (xhr.status == 200 && xhr.responseText == result) {
-                                        $('#divBankReceiptDetail').html(result);
-                                        $.notify('Process Added To Grid', "success");
-                                        TotalNoOfRows();
-                                        calculateTotalBalance();
-                                        ClearGrid();
-                                    } else if (xhr.status == 207) {
-                                        $.notify('Cannot add duplicate item.!!', "info");
-                                    } else if (xhr.status == 208) {
-                                        $.notify('Cannot add duplicate item.!!', "info");
-                                    } else if (xhr.status == 209) {
-                                        $.notify('Cannot add duplicate item.!!', "info");
-                                    } else if (xhr.status == 210) {
-                                        $.notify('Cannot add multiple bank at a one time.!!', "info");
-                                    }
-                                    EditEachItem = false;
-                                },
-                                error: function () {
-                                    $.notify('Something Went Wrong, Please Try Again.', "error");
-                                }
-                            });
-                        };
+                        //         SchData.CrAmt = "0.00";
+                        //     } else if (SchData.Type.toLowerCase() === "cr") {
+                        //         SchData.CrAmt = adjAmt.toFixed(2);
+                        //         SchData.DrAmt = "0.00";
+                        //     }
+                        //     $.ajax({
+                        //         type: "POST",
+                        //         url: '@Url.Action("AddAgainstAdjustVoucherDetail", "AgainstAdjustVoucher")',
+                        //         data: { model: SchData },
+                        //         success: function (result, status, xhr) {
+                        //             if (xhr.status == 200 && xhr.responseText == result) {
+                        //                 $('#divBankReceiptDetail').html(result);
+                        //                 $.notify('Process Added To Grid', "success");
+                        //                 TotalNoOfRows();
+                        //                 calculateTotalBalance();
+                        //                 ClearGrid();
+                        //             } else if (xhr.status == 207) {
+                        //                 $.notify('Cannot add duplicate item.!!', "info");
+                        //             } else if (xhr.status == 208) {
+                        //                 $.notify('Cannot add duplicate item.!!', "info");
+                        //             } else if (xhr.status == 209) {
+                        //                 $.notify('Cannot add duplicate item.!!', "info");
+                        //             } else if (xhr.status == 210) {
+                        //                 $.notify('Cannot add multiple bank at a one time.!!', "info");
+                        //             }
+                        //             EditEachItem = false;
+                        //         },
+                        //         error: function () {
+                        //             $.notify('Something Went Wrong, Please Try Again.', "error");
+                        //         }
+                        //     });
+                        // };
+                            function Validate_GridButton() {
+            let Err = false;
+
+            $('#tblAgainstAdjustVoucher tbody tr').each(function () {
+                const row = $(this);
+                const type = row.find('.type-select').val() || '';
+                const ledger = row.find('.ledger-select').find(":selected").text()?.trim() || '';
+                const mode = row.find('.mode-select').find(":selected").text()?.trim() || '';
+                const adjAmt = parseFloat(row.find('.adjamt-input').val()) || 0;
+
+                if (!type) { AddErrorCls('Type'); Err = true; } else RemoveErrorCls('Type');
+                if (!ledger || ledger === '-Select-') { AddErrorCls('LedgerName'); Err = true; } else RemoveErrorCls('LedgerName');
+                if (!mode) { AddErrorCls('ModeOfAdjustment'); Err = true; }
+                else if (mode.toLowerCase().replace(/\s+/g,'') === 'againstref') { AddErrorCls('ModeOfAdjustment'); Err = true; }
+                else RemoveErrorCls('ModeOfAdjustment');
+                if (adjAmt <= 0) { AddErrorCls('AdjustmentAmt'); Err = true; } else RemoveErrorCls('AdjustmentAmt');
+            });
+
+            Err ? ShowErrorFld('H_SAGrid') : HideErrorFld('H_SAGrid');
+            return !Err;
+        }
+
+        function GridButton() {
+        //    if (!Validate_GridButton()) return;
+
+            const rows = [];
+
+                        $('#tblAgainstAdjustVoucher tbody tr').each(function () {
+            const type = $(this).find('.type-select').val() || '';
+            const adjAmt = parseFloat($(this).find('.adjamt-input').val()) || 0;
+
+            const rowData = {
+                AccountCode: $(this).find('input[name$="AccountCode"]').val() || 0,
+                Balance: parseFloat($(this).find('input[name$="Balance"]').val()) || 0,
+                BankType: $(this).find('input[name$="BankType"]').val() || '',
+                DRCR: $(this).find('input[name$="DRCR"]').val() || '',
+                InsNo: $(this).find('input[name$="InsNo"]').val() || '',
+                InsDate: $(this).find('input[name$="InsDate"]').val() || '',
+                AdjustmentAmt: adjAmt.toFixed(2),
+                AdjustmentAmtOthCur: parseFloat($(this).find('input[name$="AdjustmentAmtOthCur"]').val()) || 0,
+                PartyWiseNaration: $(this).find('input[name$="PartyWiseNaration"]').val() || '',
+                AgainstVoucherNo: $(this).find('input[name$="AgainstVoucherNo"]').val() || '',
+                AgainstVoucherCode: $(this).find('input[name$="AgainstVoucherCode"]').val() || '',
+                AgainstVoucherDate: $(this).find('input[name$="AgainstVoucherDate"]').val() || '',
+                AgainstVoucherType: $(this).find('input[name$="AgainstVoucherType"]').val() || '',
+                AgainstVoucherEntryId: $(this).find('input[name$="AgainstVoucherEntryId"]').val() || '',
+                VoucherBillAmt: parseFloat($(this).find('input[name$="VoucherBillAmt"]').val()) || 0,
+                PendBillAmt: parseFloat($(this).find('input[name$="PendBillAmt"]').val()) || 0,
+                SeqNo: $(this).find('input[name$="SeqNo"]').val() || 0,
+                CustOrderNo: $(this).find('input[name$="CustOrderNo"]').val() || '',
+                SoDate: $(this).find('input[name$="SoDate"]').val() || '',
+                SOYear: $(this).find('input[name$="SOYear"]').val() || 0,
+                DrAmt: type.toLowerCase() === 'dr' ? adjAmt.toFixed(2) : "0.00",
+                CrAmt: type.toLowerCase() === 'cr' ? adjAmt.toFixed(2) : "0.00",
+                ActualEntryby: parseInt($(this).find('input[name$="ActualEntryby"]').val()) || 0,
+                UID: parseInt($(this).find('input[name$="UID"]').val()) || 0,
+                EntryByMachine: $(this).find('input[name$="EntryByMachine"]').val() || '',
+                CurrencyId: parseInt($(this).find('input[name$="CurrencyId"]').val()) || 0,
+                ActualEntryDate: $(this).find('input[name$="ActualEntryDate"]').val() || '',
+                Mode: $(this).find('input[name$="Mode"]').val() || '',
+                Type: type === '-Select-' ? '' : type,
+                LedgerName: $(this).find('.ledger-select option:selected').text() === '--Select--' ? '' : $(this).find('.ledger-select option:selected').text(),
+                Intrument: $(this).find('select[name$="Intrument"] option:selected').text() === '--Select--' ? '' : $(this).find('select[name$="Intrument"] option:selected').text(),
+                ModeOfAdjustment: $(this).find('.mode-select option:selected').text() === '--Select--' ? '' : $(this).find('.mode-select option:selected').text(),
+                CostCenterName: $(this).find('.costcenter-select option:selected').text() === '--Select--' ? '' : $(this).find('.costcenter-select option:selected').text(),
+                CostCenterId: parseInt($(this).find('input[name$="CostCenterId"]').val()) || 0,
+                SrNO: $(this).data('srno') || 0
+            };
+
+            
+            rows.push(rowData); // ✅ add the row to the array
+        });
+
+            console.log(rows)
+            $.ajax({
+                   type: "POST",
+        url: '@Url.Action("AddAgainstAdjustVoucherDetail", "AgainstAdjustVoucher")',
+        data: JSON.stringify(rows),  // <-- send array directly
+        contentType: "application/json; charset=utf-8",
+                success: function (result, status, xhr) {
+                    $('#divBankReceiptDetail').html(result);
+                    $.notify('Process Added To Grid', "success");
+                    TotalNoOfRows();
+                    calculateTotalBalance();
+                    ClearGrid();
+                },
+                error: function () {
+                    $.notify('Something went wrong. Please try again.', "error");
+                }
+            });
+        }
 
                         function AdjustAmountForAddToGridForDRCR() {
 

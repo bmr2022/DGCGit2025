@@ -45,9 +45,13 @@ namespace eTactWeb.Data.BLL
         {
             return await _AgainstAdjustVoucherDAL.GetLedgerBalance(OpeningYearCode, AccountCode, VoucherDate);
         }
-        public async Task<AgainstAdjustVoucherModel> GetAdjustedData(int YearCode, string VoucherType, string VoucherNo, int AccountCode, string InvoiceNo, int AccEntryId)
+        //public async Task<AgainstAdjustVoucherModel> GetAdjustedData(int YearCode, string VoucherType, string VoucherNo, int AccountCode, string InvoiceNo, int AccEntryId)
+        //{
+        //    return await _AgainstAdjustVoucherDAL.GetAdjustedData(YearCode, VoucherType, VoucherNo, AccountCode, InvoiceNo, AccEntryId);
+        //}
+        public async Task<List<AgainstAdjustVoucherModel>> GetAdjustedData(int YearCode, string VoucherType, string VoucherNo, int AccountCode, string InvoiceNo, int AccEntryId)
         {
-            return await _AgainstAdjustVoucherDAL.GetAdjustedData(YearCode, VoucherType,VoucherNo,AccountCode,InvoiceNo,AccEntryId);
+            return await _AgainstAdjustVoucherDAL.GetAdjustedData(YearCode, VoucherType, VoucherNo, AccountCode, InvoiceNo, AccEntryId);
         }
         public async Task<ResponseResult> FillVoucherNo(int YearCode, string VoucherType, string FromDate, string ToDate, int AccountCode)
         {

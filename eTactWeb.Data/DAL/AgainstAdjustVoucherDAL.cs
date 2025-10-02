@@ -279,11 +279,9 @@ namespace eTactWeb.Data.DAL
             try
             {
                 var SqlParams = new List<dynamic>();
-                SqlParams.Add(new SqlParameter("@Flag", "NEWENTRY"));
-                SqlParams.Add(new SqlParameter("@VoucherType", "JOURNAL-VOUCHER"));
-                SqlParams.Add(new SqlParameter("@yearcode", YearCode));
-                SqlParams.Add(new SqlParameter("@VoucherDate", ParseFormattedDate(VoucherDate)));
-                _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpVoucherEntry", SqlParams);
+                SqlParams.Add(new SqlParameter("@Flag", "NewEntryId"));
+                SqlParams.Add(new SqlParameter("@AgainstRefYearCode", YearCode));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("AccAgainstRefAdjustmentOfVoucherAndBills", SqlParams);
             }
             catch (Exception ex)
             {
@@ -353,7 +351,7 @@ namespace eTactWeb.Data.DAL
                 sqlParams.Add(new SqlParameter("@intrument", model.Intrument));
                 sqlParams.Add(new SqlParameter("@intrumentdate", InsDate));
                 sqlParams.Add(new SqlParameter("@cc", model.CC));
-                sqlParams.Add(new SqlParameter("@ActualEntryBy", model.ActualEntryby));
+                sqlParams.Add(new SqlParameter("@ActualEntryBy", model.ActualEntryByEmp));
                 sqlParams.Add(new SqlParameter("@DTbooktrans", GIGrid));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpVoucherEntry", sqlParams);
@@ -389,11 +387,83 @@ namespace eTactWeb.Data.DAL
             }
             return responseResult;
         }
-        public async Task<AgainstAdjustVoucherModel> GetAdjustedData(int YearCode, string VoucherType, string VoucherNo, int AccountCode, string InvoiceNo, int AccEntryId)
+        //public async Task<AgainstAdjustVoucherModel> GetAdjustedData(int YearCode, string VoucherType, string VoucherNo, int AccountCode, string InvoiceNo, int AccEntryId)
+        //{
+        //    DataSet? oDataSet = new DataSet();
+        //    var model = new AgainstAdjustVoucherModel();
+
+        //    try
+        //    {
+        //        using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
+        //        {
+        //            SqlCommand oCmd = new SqlCommand("AccAgainstRefAdjustmentOfVoucherAndBills", myConnection)
+        //            {
+        //                CommandType = CommandType.StoredProcedure
+        //            };
+        //            oCmd.Parameters.AddWithValue("@Flag", "GetAdjustedData");
+        //            oCmd.Parameters.AddWithValue("@voucherType", VoucherType);
+        //            oCmd.Parameters.AddWithValue("@VoucherNo", VoucherNo);
+        //            oCmd.Parameters.AddWithValue("@InvoiceNo", InvoiceNo);
+        //            oCmd.Parameters.AddWithValue("@AccountCode", AccountCode);
+        //            oCmd.Parameters.AddWithValue("@VoucherYearcode", YearCode);
+        //            oCmd.Parameters.AddWithValue("@AccEntryId", AccEntryId);
+
+        //            await myConnection.OpenAsync();
+        //            using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
+        //            {
+        //                oDataAdapter.Fill(oDataSet);
+        //            }
+        //        }
+        //            if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+        //            {
+        //                var row = oDataSet.Tables[0].Rows[0];
+
+        //                model = new AgainstAdjustVoucherModel
+        //                {
+        //                    AccEntryId = Convert.ToInt32(row["AccEntryId"]),
+        //                    YearCode = Convert.ToInt32(row["AccYearCode"]),
+        //                    AccountCode = Convert.ToInt32(row["AccountCode"]),
+        //                    AccountName = (row["AccountName"].ToString()),
+        //                    VoucherNo = row["VoucherNo"].ToString(),
+        //                    VoucherType = row["VoucherType"].ToString(),
+        //                    VoucherDocNo = row["VoucherDocNoBillNo"].ToString(),
+        //                    DrAmt = Convert.ToDecimal(row["DrAmt"]),
+        //                    CrAmt = Convert.ToDecimal(row["CrAmt"]),
+        //                    VoucherBillAmt = Convert.ToDecimal(row["BillNetAmt"]),
+        //                    AdjustmentAmt = Convert.ToDecimal(row["BillNetAmt"]),
+        //                    AdjustmentAmtOthCur = Convert.ToDecimal(row["BillNetAmt"]),
+        //                    ModeOfAdjustment = row["ModOfAdjust"].ToString(),
+        //                    AgainstVoucherEntryId = Convert.ToInt32(row["AgainstAccEntryId"]),
+        //                    AgainstVoucherNo = row["AgainstVoucherNo"].ToString(),
+        //                    AgainstVoucherType = row["AgainstVoucherType"].ToString(),
+        //                    PendBillAmt = Convert.ToDecimal(row["RemainingBalanceAmt"]),
+        //                    SeqNo = Convert.ToInt32(row["SeqNo"]),
+        //                    Mode="Adjust",
+        //                  //  BillVouchNo = row["BillVouchNo"].ToString(),
+        //                    //DueDate = Convert.ToDateTime(row["DueDate"]),
+        //                    //VoucherDescription = row["VoucherDescription"].ToString(),
+        //                    SubVoucherName = row["SubVoucherName"].ToString()
+
+
+
+        //                };
+        //            }
+
+
+        //        }
+        //    catch (Exception ex)
+        //    {
+        //        dynamic Error = new ExpandoObject();
+        //        Error.Message = ex.Message;
+        //        Error.Source = ex.Source;
+        //    }
+
+        //    return model;
+        //}
+        public async Task<List<AgainstAdjustVoucherModel>> GetAdjustedData( int YearCode, string VoucherType, string VoucherNo, int AccountCode, string InvoiceNo, int AccEntryId)
         {
-            DataSet? oDataSet = new DataSet();
-            var model = new AgainstAdjustVoucherModel();
-          
+            var list = new List<AgainstAdjustVoucherModel>();
+
             try
             {
                 using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
@@ -413,55 +483,51 @@ namespace eTactWeb.Data.DAL
                     await myConnection.OpenAsync();
                     using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
                     {
+                        var oDataSet = new DataSet();
                         oDataAdapter.Fill(oDataSet);
-                    }
-                }
-                    if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
-                    {
-                        var row = oDataSet.Tables[0].Rows[0];
 
-                        model = new AgainstAdjustVoucherModel
+                        if (oDataSet.Tables.Count > 0)
                         {
-                            AccEntryId = Convert.ToInt32(row["AccEntryId"]),
-                            YearCode = Convert.ToInt32(row["AccYearCode"]),
-                            AccountCode = Convert.ToInt32(row["AccountCode"]),
-                            AccountName = (row["AccountName"].ToString()),
-                            VoucherNo = row["VoucherNo"].ToString(),
-                            VoucherType = row["VoucherType"].ToString(),
-                            VoucherDocNo = row["VoucherDocNoBillNo"].ToString(),
-                            DrAmt = Convert.ToDecimal(row["DrAmt"]),
-                            CrAmt = Convert.ToDecimal(row["CrAmt"]),
-                            VoucherBillAmt = Convert.ToDecimal(row["BillNetAmt"]),
-                            AdjustmentAmt = Convert.ToDecimal(row["BillNetAmt"]),
-                            AdjustmentAmtOthCur = Convert.ToDecimal(row["BillNetAmt"]),
-                            ModeOfAdjustment = row["ModOfAdjust"].ToString(),
-                            AgainstVoucherEntryId = Convert.ToInt32(row["AgainstAccEntryId"]),
-                            AgainstVoucherNo = row["AgainstVoucherNo"].ToString(),
-                            AgainstVoucherType = row["AgainstVoucherType"].ToString(),
-                            PendBillAmt = Convert.ToDecimal(row["RemainingBalanceAmt"]),
-                            SeqNo = Convert.ToInt32(row["SeqNo"]),
-                            Mode="Adjust",
-                          //  BillVouchNo = row["BillVouchNo"].ToString(),
-                            //DueDate = Convert.ToDateTime(row["DueDate"]),
-                            //VoucherDescription = row["VoucherDescription"].ToString(),
-                            SubVoucherName = row["SubVoucherName"].ToString()
+                            foreach (DataRow row in oDataSet.Tables[0].Rows)
+                            {
+                                var model = new AgainstAdjustVoucherModel
+                                {
+                                    AccEntryId = Convert.ToInt32(row["AccEntryId"]),
+                                    YearCode = Convert.ToInt32(row["AccYearCode"]),
+                                    AccountCode = Convert.ToInt32(row["AccountCode"]),
+                                    AccountName = row["AccountName"].ToString(),
+                                    VoucherNo = row["VoucherNo"].ToString(),
+                                    VoucherType = row["VoucherType"].ToString(),
+                                    VoucherDocNo = row["VoucherDocNoBillNo"].ToString(),
+                                    DrAmt = Convert.ToDecimal(row["DrAmt"]),
+                                    CrAmt = Convert.ToDecimal(row["CrAmt"]),
+                                    VoucherBillAmt = Convert.ToDecimal(row["BillNetAmt"]),
+                                    AdjustmentAmt = Convert.ToDecimal(row["BillNetAmt"]),
+                                    AdjustmentAmtOthCur = Convert.ToDecimal(row["BillNetAmt"]),
+                                    ModeOfAdjustment = row["ModOfAdjust"].ToString(),
+                                    AgainstVoucherEntryId = Convert.ToInt32(row["AgainstAccEntryId"]),
+                                    AgainstVoucherNo = row["AgainstVoucherNo"].ToString(),
+                                    AgainstVoucherType = row["AgainstvoucherType"].ToString(),
+                                    PendBillAmt = Convert.ToDecimal(row["RemainingBalanceAmt"]),
+                                    SeqNo = Convert.ToInt32(row["SeqNo"]),
+                                    SubVoucherName = row["SubVoucherName"].ToString(),
+                                    Mode = "Adjust"
+                                };
 
-
-                            
-                        };
+                                list.Add(model);
+                            }
+                        }
                     }
-
-
                 }
+            }
             catch (Exception ex)
             {
-                dynamic Error = new ExpandoObject();
-                Error.Message = ex.Message;
-                Error.Source = ex.Source;
+                // log ex
             }
 
-            return model;
+            return list;
         }
+
         public async Task<AgainstAdjustVoucherModel> GetDashBoardDetailData(string FromDate, string ToDate, string LedgerName, string VoucherNo, string AgainstBillno, string AgainstVoucherNo)
         {
             DataSet? oDataSet = new DataSet();
@@ -742,8 +808,8 @@ namespace eTactWeb.Data.DAL
             model.Currency = DS.Tables[0].Rows[0]["Currency"].ToString();
             model.CurrencyId = Convert.ToInt32(DS.Tables[0].Rows[0]["CurrencyId"].ToString());
             model.UID = Convert.ToInt32(DS.Tables[0].Rows[0]["uid"].ToString());
-            model.ActualEntryby = Convert.ToInt32(DS.Tables[0].Rows[0]["ActualEntryBy"].ToString());
-            model.ActualEntryBy = DS.Tables[0].Rows[0]["ActualEntryByEmp"].ToString();
+            model.ActualEntryBy = Convert.ToInt32(DS.Tables[0].Rows[0]["ActualEntryBy"].ToString());
+            model.ActualEntryByEmp = DS.Tables[0].Rows[0]["ActualEntryByEmp"].ToString();
             model.ActualEntryDate = string.IsNullOrEmpty(DS.Tables[0].Rows[0]["ActualEntryDate"].ToString()) ? DateTime.Now.ToString("dd/MM/yy") : DS.Tables[0].Rows[0]["ActualEntryDate"].ToString();
             model.EntryByMachine = DS.Tables[0].Rows[0]["EntryByMachine"].ToString();
             model.CC = DS.Tables[0].Rows[0]["CC"].ToString();
@@ -810,7 +876,7 @@ namespace eTactWeb.Data.DAL
                         AccountNarration = row["AccountNarration"].ToString(),
                         Description = row["Description"].ToString(),
                         VoucherRemark = row["VoucherRemark"].ToString(),
-                        ActualEntryby = Convert.ToInt32(row["ActualEntryBy"].ToString()),
+                        ActualEntryBy = Convert.ToInt32(row["ActualEntryBy"].ToString()),
                         BankType = row["UnderGroup"].ToString(),
                         DRCR = row["CRDDR"].ToString(),
                         Balance = Convert.ToDecimal(row["BalanceAmt"].ToString()),
