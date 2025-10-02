@@ -97,6 +97,8 @@ namespace eTactWeb.DOM.Models
     public class IssueNRGPDashboard
     {
         public string VendorName { get; set; }
+        public string ChallanEntryFrom { get; set; }
+
         
         public string ChallanDate { get; set; }
         public string ChallanNo { get; set; }

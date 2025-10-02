@@ -1141,6 +1141,8 @@ public static class CommonFunc
                         && typeProperty.PropertyInfo.Name != "AgainstChallanYearCode" && typeProperty.PropertyInfo.Name != "AgainstChallanType" && typeProperty.PropertyInfo.Name != "closed"
                         && typeProperty.PropertyInfo.Name != "ItemColor" && typeProperty.PropertyInfo.Name != "ItemSize" && typeProperty.PropertyInfo.Name != "ItemModel"
                         && typeProperty.PropertyInfo.Name != "PendQty" && typeProperty.PropertyInfo.Name != "PendAltQty"
+                        && typeProperty.PropertyInfo.Name != "SalesPersonEmailId" && typeProperty.PropertyInfo.Name != "eMailFromCC1"
+                        && typeProperty.PropertyInfo.Name != "eMailFromCC2" && typeProperty.PropertyInfo.Name != "eMailFromCC3"
                         && typeProperty.PropertyInfo.Name != "ActualEnteredEMpBy")
 
                     {
