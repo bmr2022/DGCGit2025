@@ -1659,7 +1659,7 @@ namespace eTactWeb.Data.DAL
                             //AdjAgnstModeOfAdjstment = row["AccEntryId"]?.ToString(),
                             //AdjAgnstModeOfAdjstmentName = row["AccEntryId"]?.ToString(),
                             //AdjAgnstNewRefNo = row["AccEntryId"]?.ToString(),
-                            AdjAgnstVouchNo = row["VoucherNo"]?.ToString(),
+                            AdjAgnstVouchNo = row["AgainstVoucherNo"]?.ToString(),
                             AdjAgnstVouchType = row["VoucherType"]?.ToString(),
                             //AdjAgnstDrCrName = row["AccEntryId"]?.ToString(),
                             AdjAgnstDrCr = row["DR/CR"]?.ToString(),
@@ -1670,8 +1670,8 @@ namespace eTactWeb.Data.DAL
                             AdjAgnstOpenEntryID = row["AgainstAccOpeningEntryId"] != DBNull.Value ? Convert.ToInt32(row["AgainstAccOpeningEntryId"]) : 0,
                             AdjAgnstOpeningYearCode = row["AgainstOpeningVoucheryearcode"] != DBNull.Value ? Convert.ToInt32(row["AgainstOpeningVoucheryearcode"]) : 0,
                             AdjAgnstVouchDate = row["voucherDate"] != DBNull.Value ? Convert.ToDateTime(row["voucherDate"]) : new DateTime(),
-                            AdjAgnstAccEntryID = row["AccEntryId"] != DBNull.Value ? Convert.ToInt32(row["AccEntryId"]) : 0,
-                            AdjAgnstAccYearCode = row["AccYearCode"] != DBNull.Value ? Convert.ToInt32(row["AccYearCode"]) : 0
+                            AdjAgnstAccEntryID = row["AgainstAccEntryId"] != DBNull.Value ? Convert.ToInt32(row["AgainstAccEntryId"]) : 0,
+                            AdjAgnstAccYearCode = row["AgainstVoucheryearcode"] != DBNull.Value ? Convert.ToInt32(row["AgainstVoucheryearcode"]) : 0
                             //AdjAgnstTransType = row["AccEntryId"]?.ToString()
                         });
                         cnt1++;
