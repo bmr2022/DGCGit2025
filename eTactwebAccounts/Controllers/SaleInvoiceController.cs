@@ -884,9 +884,86 @@ namespace eTactWeb.Controllers
             return View(model);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> SaleBillOnCounter(int ID, string Mode, int YearCode, string dashboardType = "", string fromDate = "", string toDate = "", string partCode = "", string itemName = "", string saleBillNo = "", string custName = "", string sono = "", string custOrderNo = "", string schNo = "", string performaInvNo = "", string saleQuoteNo = "", string domExportNEPZ = "", string Searchbox = "", string summaryDetail = "")
+        {
+            var model = new SaleBillModel(); // Create a new model instance for the view
 
+            ViewData["Title"] = "Sale Bill Details";
+            TempData.Clear();
+            HttpContext.Session.Remove("KeySaleBillGrid");
+            HttpContext.Session.Remove("SaleBillModel");
+            HttpContext.Session.Remove("KeyAdjGrid");
+            HttpContext.Session.Remove("KeyAdjChallanGrid");
+            var featuresoptions = _SaleBill.GetFeatureOption();
 
-        public async Task<IActionResult> SaleInvoiceMemoryGrid()
+            if (featuresoptions?.Result?.Result != null &&
+                featuresoptions.Result.Result.Rows.Count > 0)
+            {
+                model.AllowToChangeSaleBillStoreName =
+                    featuresoptions.Result.Result.Rows[0]["AllowToChangeSaleBillStoreName"]?.ToString() ?? "";
+            }
+            else
+            {
+                model.AllowToChangeSaleBillStoreName = "";
+            }
+
+            if (model.Mode != "U" && model.Mode != "V")
+            {
+                model.Uid = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                model.ActualEnteredBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                model.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
+            }
+            model.adjustmentModel = new AdjustmentModel();
+
+            if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
+            {
+                model = await _SaleBill.GetViewByID(ID, Mode, YearCode);
+                model.Mode = Mode;
+                model.ID = ID;
+            }
+            else
+            {
+                model.FinFromDate = HttpContext.Session.GetString("FromDate");
+                model.FinToDate = HttpContext.Session.GetString("ToDate");
+                model.SaleBillYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+                model.CC = HttpContext.Session.GetString("Branch");
+            }
+
+            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                SlidingExpiration = TimeSpan.FromMinutes(55),
+                Size = 1024,
+            };
+
+            model.CustomerJobWorkChallanAdj = model.CustomerJobWorkChallanAdj == null ? new List<CustomerJobWorkChallanAdj>() : model.CustomerJobWorkChallanAdj;
+            HttpContext.Session.SetString("KeySaleBillGrid", JsonConvert.SerializeObject(model.saleBillDetails));
+            HttpContext.Session.SetString("KeyAdjChallanGrid", JsonConvert.SerializeObject(model.CustomerJobWorkChallanAdj));
+            HttpContext.Session.SetString("KeyAdjGrid", JsonConvert.SerializeObject(model.adjustmentModel == null ? new AdjustmentModel() : model.adjustmentModel));
+            HttpContext.Session.SetString("KeyTaxGrid", JsonConvert.SerializeObject(model.TaxDetailGridd == null ? new List<TaxModel>() : model.TaxDetailGridd));
+            HttpContext.Session.SetString("SaleBillModel", JsonConvert.SerializeObject(model == null ? new SaleBillModel() : model));
+            HttpContext.Session.SetString("SaleInvoice", JsonConvert.SerializeObject(model));
+
+            model.FromDateBack = fromDate;
+            model.ToDateBack = toDate;
+            model.PartCodeBack = partCode;
+            model.ItemNameBack = itemName;
+            model.SaleBillNoBack = saleBillNo;
+            model.CustNameBack = custName;
+            model.SonoBack = sono;
+            model.CustOrderNoBack = custOrderNo;
+            model.SchNoBack = schNo;
+            model.PerformaInvNoBack = performaInvNo;
+            model.SaleQuoteNoBack = saleQuoteNo;
+            model.DomesticExportNEPZBack = domExportNEPZ;
+            model.SearchBoxBack = Searchbox;
+            model.SummaryDetailBack = summaryDetail;
+
+            return View(model);
+
+        }
+            public async Task<IActionResult> SaleInvoiceMemoryGrid()
         {
             
             HttpContext.Session.Remove("SaleBillListItem");

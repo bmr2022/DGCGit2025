@@ -206,6 +206,154 @@ namespace eTactWeb.Controllers
             return View(model);
         }
 
+
+        [Route("{controller}/IssueChallanOnCounter")]
+        //[HttpGet]
+        public async Task<ActionResult> IssueChallanOnCounter(int ID, string Mode, int YC, string FromDate = "", string ToDate = "", string VendorName = "", string RGPNRGP = "", string PartCode = "", string ItemName = "", string ChallanNo = "", string ChallanType = "", string DashboardType = "")
+        {
+            var model = new IssueNRGPModel();
+            model.RGPNRGP = "NRGP";
+            //model.EntryId = 4;
+            model.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+
+            var fillEntryChallanResult = await FillEntryandChallanNo(model.YearCode, model.RGPNRGP);
+            var fillChallanTypeResult = await FillChallanType(model.RGPNRGP);
+            // Extract JSON string from JsonResult
+            var jsonResult = fillEntryChallanResult.Value?.ToString();
+            var challanTypeJson = fillChallanTypeResult.Value?.ToString();
+
+            var featuresoptions = _IIssueNRGP.GetFeatureOption();
+
+            if (featuresoptions?.Result?.Result != null &&
+                featuresoptions.Result.Result.Rows.Count > 0)
+            {
+                model.AllowToChangeStore =
+                    featuresoptions.Result.Result.Rows[0]["AllowToChangeStore"]?.ToString() ?? "";
+            }
+            else
+            {
+                model.AllowToChangeStore = "";
+            }
+
+            // Deserialize JSON into a dynamic object or a specific class
+            if (!string.IsNullOrEmpty(jsonResult))
+            {
+                var entryChallanData = JsonConvert.DeserializeObject<dynamic>(jsonResult);
+
+                // Assign values to the model
+                model.EntryId = entryChallanData.Result[0].EntryId;
+                model.ChallanNo = entryChallanData.Result[0].ChallanNo;
+                //model.ChallanNo = entryChallanData.ChallanNo;
+            }
+
+
+            if (!string.IsNullOrEmpty(challanTypeJson))
+            {
+                var entryChallanData = JsonConvert.DeserializeObject<dynamic>(challanTypeJson);
+
+                // Assign values to the model
+                var _List = new List<TextValue>();
+
+                //foreach (var row in entryChallanData)
+                //{
+                //    _List.Add(new TextValue
+                //    {
+                //        Value = row["ChallanType"].ToString(),
+                //        Text = row["ChallanType"].ToString()
+                //    });
+                //}
+                //model.ChallanTypeList = _List;
+                foreach (var row in entryChallanData.Result)
+                {
+                    _List.Add(new TextValue
+                    {
+                        Value = row.ChallanType.ToString(),
+                        Text = row.ChallanType.ToString()
+                    });
+                }
+
+                model.ChallanTypeList = _List;
+            }
+
+            model.ActualEnteredEMpBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            model.ActualEnteredEmpByName = HttpContext.Session.GetString("EmpName");
+            model.FinFromDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString("FromDate"));
+            model.FinToDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString("ToDate"));
+            //model.FinToDate = HttpContext.Session.GetString("ToDate");
+            model.CC = HttpContext.Session.GetString("Branch");
+            HttpContext.Session.Remove("KeyIssueNRGPGrid");
+            HttpContext.Session.Remove("KeyIssueNRGPTaxGrid");
+            if (Mode != "U")
+            {
+                model.Uid = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                model.ActualEnteredEMpBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                model.ActualEnteredEmpByName = HttpContext.Session.GetString("EmpName");
+                model.IssByEmpCode = Convert.ToInt32(HttpContext.Session.GetString("EmployeeList"));
+            }
+
+            if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
+            {
+                model = await _IIssueNRGP.GetViewByID(ID, YC, Mode).ConfigureAwait(true);
+
+                model.Mode = Mode;
+                model.YearCode = YC;
+                model.EntryTime = model.EntryTime;
+                model.FinFromDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString("FromDate"));
+                model.FinToDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString("ToDate"));
+                model = await BindModel(model);
+
+                model.ID = ID;
+
+                if (model.IssueNRGPDetailGrid?.Count != 0 && model.IssueNRGPDetailGrid != null)
+                {
+                    HttpContext.Session.SetString("KeyIssueNRGPGrid", JsonConvert.SerializeObject(model.IssueNRGPDetailGrid));
+                }
+
+                if (model.IssueNRGPTaxGrid != null)
+                {
+                    //MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                    //{
+                    //    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                    //    SlidingExpiration = TimeSpan.FromMinutes(55),
+                    //    Size = 1024,
+                    //};
+                    HttpContext.Session.SetString("KeyIssueNRGPGrid", JsonConvert.SerializeObject(model.IssueNRGPDetailGrid));
+                    HttpContext.Session.SetString("KeyIssueNRGPTaxGrid", JsonConvert.SerializeObject(model.IssueNRGPTaxGrid));
+                    string modelNRGPJson = HttpContext.Session.GetString("KeyIssueNRGPTaxGrid");
+                    List<IssueNRGPDetail> TaxGrid11 = new List<IssueNRGPDetail>();
+                    if (string.IsNullOrEmpty(modelNRGPJson))
+                    {
+                        TaxGrid11 = JsonConvert.DeserializeObject<List<IssueNRGPDetail>>(modelNRGPJson);
+                    }
+                }
+            }
+            else
+            {
+                model = await BindModel(model);
+                //model.ChallanDate = ParseFormattedDate(DateTime.Now.ToString("yyyy-MM-dd"));
+                model.EntryTime = DateTime.Now.ToString("hh:mm:ss tt");
+            }
+            HttpContext.Session.SetString("IssueNRGP", JsonConvert.SerializeObject(model));
+            string modelJson = HttpContext.Session.GetString("KeyIssueNRGPTaxGrid");
+            List<IssueNRGPDetail> TaxGrid = new List<IssueNRGPDetail>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                TaxGrid = JsonConvert.DeserializeObject<List<IssueNRGPDetail>>(modelJson);
+            }
+            model.FromDateBack = FromDate;
+            model.ToDateBack = ToDate;
+            model.PartCodeBack = PartCode;
+            model.ItemNameBack = ItemName;
+            model.VendorNameBack = VendorName;
+            model.RGPNRGPBack = RGPNRGP;
+            model.ChallanNoBack = ChallanNo;
+            model.ChallanTypeBack = ChallanType;
+            model.DashboardTypeBack = DashboardType;
+            return View(model);
+        }
+
+
+
         public async Task<JsonResult> GetItemGroup()
         {
             var JSON = await _IIssueNRGP.GetItemGroup();
@@ -774,6 +922,13 @@ namespace eTactWeb.Controllers
                 return View("Error", ResponseResult);
             }
         }
+
+
+
+
+
+
+
         public async Task<IActionResult> GenerateEwayBill([FromBody] EInvoiceItemModel input)
         {
             try
