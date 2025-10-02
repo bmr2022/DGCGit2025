@@ -1404,7 +1404,61 @@ namespace eTactWeb.Controllers
                 model.IssueNRGPDetailGrid = IssueNRGPGrid;
             }
             return PartialView("_IssueNRGPGrid", model);
+
         }
+
+        public async Task<IActionResult> IssueChallanOnCounterDashboard(int ItemCode = 0, string PartCode = "", string ItemName = "", string VendorName = "", string RGPNRGP = "", string ChallanNo = "", string ChallanType = "", string FromDate = "", string ToDate = "")
+        {
+            HttpContext.Session.Remove("KeyIssueNRGPGrid");
+            HttpContext.Session.Remove("IssueNRGP");
+            HttpContext.Session.Remove("KeyIssueNRGPTaxGrid");
+            var model = new INDashboard();
+            DateTime now = DateTime.Now;
+            //DateTime firstDayOfMonth = new DateTime(now.Year, now.Month, 1);
+            if (FromDate == "" && ToDate == "")
+            {
+                model.FromDate = new DateTime(now.Year, now.Month, 1).ToString("dd/MM/yyyy").Replace("-", "/");
+                model.ToDate = new DateTime(DateTime.Today.Year + 1, 3, 31).ToString("dd/MM/yyyy").Replace("-", "/");
+            }
+            else
+            {
+                model.FromDate = FromDate;
+                model.ToDate = ToDate;
+            }
+            model.ChallanEntryFrom = "EntryFromCounter";
+            var Result = await _IIssueNRGP.GetDashboardData(model);
+
+            if (Result != null)
+            {
+                var _List = new List<TextValue>();
+                DataSet DS = Result.Result;
+
+                var DT = DS.Tables[0].DefaultView.ToTable(true, "VendorName", "ChallanNo",
+                    "ChallanDate", "EntryDate", "DeliveryAddress", "VendorStateCode",
+                                "Remarks", "Closed", "EntryId", "YearCode", "RGPNRGP",
+                                 "ChallanType", "ActualEnteredEmp", "ActualEntryDate",
+                               "UpdatedByEmpName", "UpdatedDate", "MachinName", "SalesPersonEmailId", "eMailFromCC1", "eMailFromCC2", "eMailFromCC3", "ChallanEntryFrom");
+
+                model.INNDashboard = CommonFunc.DataTableToList<IssueNRGPDashboard>(DT, "IssueNRGPDetail");
+                model.FromDate1 = FromDate;
+                model.ToDate1 = ToDate;
+                model.PartCode = PartCode;
+                model.ItemCode = ItemCode;
+                model.ItemName = ItemName;
+                model.VendorName = VendorName;
+                model.RGPNRGP = RGPNRGP;
+                model.ChallanNo = ChallanNo;
+                model.ChallanType = ChallanType;
+            }
+
+            return View(model);
+        }
+
+
+
+
+
+
 
         public async Task<IActionResult> Dashboard(int ItemCode = 0, string PartCode = "", string ItemName = "", string VendorName = "", string RGPNRGP = "", string ChallanNo = "", string ChallanType = "", string FromDate = "", string ToDate = "")
         {
@@ -1413,7 +1467,7 @@ namespace eTactWeb.Controllers
             HttpContext.Session.Remove("KeyIssueNRGPTaxGrid");
             var model = new INDashboard();
             DateTime now = DateTime.Now;
-            //DateTime firstDayOfMonth = new DateTime(now.Year, now.Month, 1);
+            DateTime firstDayOfMonth = new DateTime(now.Year, now.Month, 1);
             if (FromDate == "" && ToDate == "")
             {
                 model.FromDate = new DateTime(now.Year, now.Month, 1).ToString("dd/MM/yyyy").Replace("-", "/");
@@ -1435,7 +1489,7 @@ namespace eTactWeb.Controllers
                     "ChallanDate", "EntryDate", "DeliveryAddress", "VendorStateCode",
                                 "Remarks", "Closed", "EntryId", "YearCode", "RGPNRGP",
                                  "ChallanType", "ActualEnteredEmp", "ActualEntryDate",
-                               "UpdatedByEmpName", "UpdatedDate", "MachinName", "SalesPersonEmailId", "eMailFromCC1", "eMailFromCC2", "eMailFromCC3");
+                               "UpdatedByEmpName", "UpdatedDate", "MachinName", "SalesPersonEmailId", "eMailFromCC1", "eMailFromCC2", "eMailFromCC3", "ChallanEntryFrom");
 
                 model.INNDashboard = CommonFunc.DataTableToList<IssueNRGPDashboard>(DT, "IssueNRGPDetail");
                 model.FromDate1 = FromDate;
@@ -1469,7 +1523,7 @@ namespace eTactWeb.Controllers
                                "UpdatedByEmpName", "UpdatedDate", "MachinName", "PONo", "PoYear", "PODate",
                                "POAmmendNo", "discper", "discamt", "AgainstChallanNoEntryId", "AgainstChallanNo",
                                "AgainstChallanYearCode", "AgainstChallanType", "ItemColor", "ItemSize",
-                               "ItemModel", "PendQty", "PendAltQty");
+                               "ItemModel", "PendQty", "PendAltQty", "ChallanEntryFrom");
                 model.INNDashboard = CommonFunc.DataTableToList<IssueNRGPDashboard>(DT, "IssueNRGP");
 
             }
@@ -1479,7 +1533,7 @@ namespace eTactWeb.Controllers
                    "ChallanDate", "EntryDate", "DeliveryAddress", "VendorStateCode",
                                "Remarks", "Closed", "EntryId", "YearCode", "RGPNRGP",
                                 "ChallanType", "ActualEnteredEmp", "ActualEntryDate",
-                               "UpdatedByEmpName", "UpdatedDate", "MachinName","SalesPersonEmailId", "eMailFromCC1", "eMailFromCC2", "eMailFromCC3");
+                               "UpdatedByEmpName", "UpdatedDate", "MachinName","SalesPersonEmailId", "eMailFromCC1", "eMailFromCC2", "eMailFromCC3", "ChallanEntryFrom");
                 model.INNDashboard = CommonFunc.DataTableToList<IssueNRGPDashboard>(DT, "IssueNRGPDetail");
             }
 

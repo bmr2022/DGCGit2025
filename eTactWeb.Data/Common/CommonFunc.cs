@@ -1141,6 +1141,8 @@ public static class CommonFunc
                         && typeProperty.PropertyInfo.Name != "AgainstChallanYearCode" && typeProperty.PropertyInfo.Name != "AgainstChallanType" && typeProperty.PropertyInfo.Name != "closed"
                         && typeProperty.PropertyInfo.Name != "ItemColor" && typeProperty.PropertyInfo.Name != "ItemSize" && typeProperty.PropertyInfo.Name != "ItemModel"
                         && typeProperty.PropertyInfo.Name != "PendQty" && typeProperty.PropertyInfo.Name != "PendAltQty"
+                        && typeProperty.PropertyInfo.Name != "SalesPersonEmailId" && typeProperty.PropertyInfo.Name != "eMailFromCC1"
+                        && typeProperty.PropertyInfo.Name != "eMailFromCC2" && typeProperty.PropertyInfo.Name != "eMailFromCC3"
                         && typeProperty.PropertyInfo.Name != "ActualEnteredEMpBy")
 
                     {
@@ -1619,6 +1621,7 @@ public static class CommonFunc
                         && typeProperty.PropertyInfo.Name != "CashDisPer" && typeProperty.PropertyInfo.Name != "CashDisRs" && typeProperty.PropertyInfo.Name != "SoDelTime" && typeProperty.PropertyInfo.Name != "TypeJob"
                         && typeProperty.PropertyInfo.Name != "CurrencyId" && typeProperty.PropertyInfo.Name != "Shippingdate" && typeProperty.PropertyInfo.Name != "Cancelreason"
                         && typeProperty.PropertyInfo.Name != "BankName"
+                        && typeProperty.PropertyInfo.Name != "AllowToAddNegativeStockInStore"
                         && typeProperty.PropertyInfo.Name != "SOType" && typeProperty.PropertyInfo.Name != "EntryByempId" && typeProperty.PropertyInfo.Name != "ActualEnteredBy" && typeProperty.PropertyInfo.Name != "LastUpdatedByName"
                         && typeProperty.PropertyInfo.Name != "ChallanNo" && typeProperty.PropertyInfo.Name != "ChallanDate" && typeProperty.PropertyInfo.Name != "ChallanEntryid" && typeProperty.PropertyInfo.Name != "ChallanYearCode"
                         && typeProperty.PropertyInfo.Name != "SaleQuotEntryID" && typeProperty.PropertyInfo.Name != "TotalRoundOff" && typeProperty.PropertyInfo.Name != "TotalDiscountPercentage" && typeProperty.PropertyInfo.Name != "FinToDate"
@@ -1761,6 +1764,7 @@ public static class CommonFunc
                          && typeProperty.PropertyInfo.Name != "PrivateMark"
                         && typeProperty.PropertyInfo.Name != "GRNo"
                         && typeProperty.PropertyInfo.Name != "GRDate"
+                        && typeProperty.PropertyInfo.Name != "AllowToAddNegativeStockInStore"
                         && typeProperty.PropertyInfo.Name != "AllowToAdjZeroAmt"
                         )
                     {

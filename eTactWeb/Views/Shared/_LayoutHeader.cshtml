@@ -1694,13 +1694,7 @@
                                         New Challan
                                     </a>
                                 </li> 
-                                <li>
-                                    <a class="dropdown-item" asp-action="IssueChallanOnCounter" asp-controller="NRGP" id="IssueChallanOnCounter">
-                                        <i class="fa-solid fa-money-check-dollar fa-fw fa-lg" aria-hidden="true"
-                                           style="--fa-secondary-opacity: 1.0; --fa-primary-color: red; --fa-secondary-color: limegreen;"></i>
-                                        Issue Challan On Counter
-                                    </a>
-                                </li>
+                              
                                 <li>
                                     <a class="dropdown-item IssueChallan" asp-action="Dashboard" asp-controller="NRGP" asp-route-Flag="True">
                                         <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
@@ -1730,6 +1724,31 @@
                                 <li>
                             </ul>
                         </li>
+
+
+
+                        <li>
+                            <a class="dropdown-item" href="#">Issue Challan On Counter &raquo; </a>
+                            <ul class="submenu dropdown-menu">
+                              
+                                <li>
+                                    <a class="dropdown-item" asp-action="IssueChallanOnCounter" asp-controller="NRGP" id="IssueChallanOnCounter">
+                                        <i class="fa-solid fa-money-check-dollar fa-fw fa-lg" aria-hidden="true"
+                                           style="--fa-secondary-opacity: 1.0; --fa-primary-color: red; --fa-secondary-color: limegreen;"></i>
+                                        Issue Challan On Counter
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item IssueChallanOnCounter" asp-action="IssueChallanOnCounterDashboard" asp-controller="NRGP" asp-route-Flag="True">
+                                        <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
+                                    </a>
+                                    <input class="userRightsPermission" type="hidden" value="IssueChallanOnCounter" />
+
+                                </li>
+                                <li>
+                            </ul>
+                        </li>
+
                         <li><hr class="dropdown-divider"></li>
                        @*  <li>
                             <a class="dropdown-item" href="#">Requisition Without BOM &raquo; </a>
@@ -2402,13 +2421,7 @@
                                            style="--fa-secondary-opacity: 1.0; --fa-primary-color: red; --fa-secondary-color: limegreen;"></i> New Sale Bill
                                     </a>
                                 </li>
-                                <li>
-                                    @*  <a class="dropdown-item" href="/FinancialManagement">New DPB</a> *@
-                                    <a class="dropdown-item" asp-controller="SaleInvoice" asp-action="SaleBillOnCounter" id="SaleBillOnCounter">
-                                        <i class="fa-solid fa-money-check-dollar fa-fw fa-lg" aria-hidden="true"
-                                           style="--fa-secondary-opacity: 1.0; --fa-primary-color: red; --fa-secondary-color: limegreen;"></i>  Sale Bill ON Counter
-                                    </a>
-                                </li>
+                               
                                 <li>
                                     <a class="dropdown-item SaleBill" asp-controller="SaleInvoice" asp-action="SBDashBoard">
                                         <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i>DashBoard
@@ -2417,6 +2430,28 @@
                                 <input class="userRightsPermission" type="hidden" value="Sale Bill" />
                             </ul>
                         </li>
+
+
+                        <li>
+                            <a class="dropdown-item" href="#">Sale Bill ON Counter &raquo; </a>
+                            <ul class="submenu dropdown-menu">
+                              
+                                <li>
+                                    @*  <a class="dropdown-item" href="/FinancialManagement">New DPB</a> *@
+                                    <a class="dropdown-item" asp-controller="SaleInvoice" asp-action="SaleBillOnCounter" id="SaleBillOnCounter">
+                                        <i class="fa-solid fa-money-check-dollar fa-fw fa-lg" aria-hidden="true"
+                                           style="--fa-secondary-opacity: 1.0; --fa-primary-color: red; --fa-secondary-color: limegreen;"></i>  Sale Bill ON Counter
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item SaleBillOnCounter" asp-controller="SaleInvoice" asp-action="SaleBillOnCounterDashboard">
+                                        <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i>DashBoard
+                                    </a>
+                                </li>
+                                <input class="userRightsPermission" type="hidden" value="SaleBillOnCounter" />
+                            </ul>
+                        </li>
+
                         <li>
                             <a class="dropdown-item" href="#">Jobwork Sale Invoice &raquo; </a>
                             <ul class="submenu dropdown-menu">

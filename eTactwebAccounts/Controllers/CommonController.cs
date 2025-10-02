@@ -52,12 +52,12 @@ namespace eTactWeb.Controllers
         }
 
         #region For Dbit Credit Grid
-        public async Task<JsonResult> GetDbCrDataGrid(string PageName,int docAccountCode, int AccountCode, decimal? BillAmt, decimal? NetAmt)
+        public async Task<JsonResult> GetDbCrDataGrid(string PageName, int docAccountCode, int AccountCode, decimal? BillAmt, decimal? NetAmt)
         {
             dynamic MainModel = new DirectPurchaseBillModel();
             dynamic TaxGrid = new List<TaxModel>();
             dynamic TdsGrid = new List<TDSModel>();
-           
+
             string modelTaxJson = HttpContext.Session.GetString("KeyTaxGrid");
             if (!string.IsNullOrEmpty(modelTaxJson))
             {
@@ -94,6 +94,10 @@ namespace eTactWeb.Controllers
             {
                 MainModel = new SaleBillModel();
             }
+            else if (PageName == "SaleBillOnCounter")
+            {
+                MainModel = new SaleBillModel();
+            }
             else if (PageName == "CreditNote")
             {
                 MainModel = new AccCreditNoteModel();
@@ -111,93 +115,104 @@ namespace eTactWeb.Controllers
                 MainModel = new JobWorkIssueModel();
             }
 
-            if (HttpContext.Session.GetString(PageName) != null)
+            //if (HttpContext.Session.GetString(PageName) != null)
+            //{
+            if (PageName == "ItemList")
             {
-                if (PageName == "ItemList")
-                {
-                    MainModel.ItemDetailGrid = JsonConvert.DeserializeObject<List<ItemDetail>>(HttpContext.Session.GetString(PageName));
-                }
-                else if (PageName == "PurchaseOrder")
-                {
-                    string modelJson = HttpContext.Session.GetString("PurchaseOrder");
-                    if (!string.IsNullOrEmpty(modelJson))
-                    {
-                        MainModel = JsonConvert.DeserializeObject<PurchaseOrderModel>(modelJson);
-                    }
-                }
-                else if (PageName == "DirectPurchaseBill")
-                {
-                    string modelJson = HttpContext.Session.GetString("DirectPurchaseBill");
-                    if (!string.IsNullOrEmpty(modelJson))
-                    {
-                        MainModel = JsonConvert.DeserializeObject<DirectPurchaseBillModel>(modelJson);
-                    }
-                    DbCrGridd = GetDbCrDetailTable(MainModel);
-                    TdsGridd = GetTDSDetailTableForDPB(TdsGrid, MainModel);
-                }
-                else if (PageName == "PurchaseBill")
-                {
-                    string modelJson = HttpContext.Session.GetString("PurchaseBill");
-                    if (!string.IsNullOrEmpty(modelJson))
-                    {
-                        MainModel = JsonConvert.DeserializeObject<PurchaseBillModel>(modelJson);
-                    }
-                    DbCrGridd = GetPbDbCrDetailTable(MainModel);
-                    TdsGridd = GetTDSDetailTableForPB(TdsGrid, MainModel);
-                }
-                else if (PageName == "SaleInvoice")
-                {
-                    string modelJson = HttpContext.Session.GetString("SaleBillModel");
-                    if (!string.IsNullOrEmpty(modelJson))
-                    {
-                        MainModel = JsonConvert.DeserializeObject<SaleBillModel>(modelJson);
-                    }
-
-                    DbCrGridd = GetSbDbCrDetailTable(MainModel);
-                    //TdsGridd = GetTDSDetailTableForDPB(TdsGrid, MainModel);
-                }
-                else if (PageName == "CreditNote")
-                {
-                    string modelJson = HttpContext.Session.GetString("CreditNoteModel");    
-                    if (!string.IsNullOrEmpty(modelJson))
-                    {
-                        MainModel = JsonConvert.DeserializeObject<AccCreditNoteModel>(modelJson);
-                    }
-                    MainModel.AccountCode = AccountCode;
-                    DbCrGridd = GetCNDbCrDetailTable(MainModel);
-                    HttpContext.Session.SetString("CreditNoteModel", JsonConvert.SerializeObject((AccCreditNoteModel)MainModel));
-                    //TdsGridd = GetTDSDetailTableForDPB(TdsGrid, MainModel);
-                }
-                else if (PageName == "PurchaseRejection")
-                {
-                    string modelJson = HttpContext.Session.GetString("PurchaseRejectionModel");
-                    if (!string.IsNullOrEmpty(modelJson))
-                    {
-                        MainModel = JsonConvert.DeserializeObject<AccPurchaseRejectionModel>(modelJson);
-                    }
-                    DbCrGridd = GetPRDbCrDetailTable(MainModel);
-                    //TdsGridd = GetTDSDetailTableForDPB(TdsGrid, MainModel);
-                }
-                else if (PageName == "SaleRejection")
-                {
-                    string modelJson = HttpContext.Session.GetString("SaleRejectionModel");
-                    if (!string.IsNullOrEmpty(modelJson))
-                    {
-                        MainModel = JsonConvert.DeserializeObject<SaleRejectionModel>(modelJson);
-                    }
-                    DbCrGridd = GetSRDbCrDetailTable(MainModel);
-                }
-                else if (PageName == "JobWorkIssue")
-                {
-                    string modelJson = HttpContext.Session.GetString("JobWorkIssue");
-                    if (!string.IsNullOrEmpty(modelJson))
-                    {
-                        MainModel = JsonConvert.DeserializeObject<JobWorkIssueModel>(modelJson);
-                    }
-                }
-               // TaxGrid=JsonConvert.SerializeObject(MainModel.TaxDetailGridd);
-                TaxGridd = GetTaxDetailTable(TaxGrid);
+                MainModel.ItemDetailGrid = JsonConvert.DeserializeObject<List<ItemDetail>>(HttpContext.Session.GetString(PageName));
             }
+            else if (PageName == "PurchaseOrder")
+            {
+                string modelJson = HttpContext.Session.GetString("PurchaseOrder");
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    MainModel = JsonConvert.DeserializeObject<PurchaseOrderModel>(modelJson);
+                }
+            }
+            else if (PageName == "DirectPurchaseBill")
+            {
+                string modelJson = HttpContext.Session.GetString("DirectPurchaseBill");
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    MainModel = JsonConvert.DeserializeObject<DirectPurchaseBillModel>(modelJson);
+                }
+                DbCrGridd = GetDbCrDetailTable(MainModel);
+                TdsGridd = GetTDSDetailTableForDPB(TdsGrid, MainModel);
+            }
+            else if (PageName == "PurchaseBill")
+            {
+                string modelJson = HttpContext.Session.GetString("PurchaseBill");
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    MainModel = JsonConvert.DeserializeObject<PurchaseBillModel>(modelJson);
+                }
+                DbCrGridd = GetPbDbCrDetailTable(MainModel);
+                TdsGridd = GetTDSDetailTableForPB(TdsGrid, MainModel);
+            }
+            else if (PageName == "SaleInvoice")
+            {
+                string modelJson = HttpContext.Session.GetString("SaleBillModel");
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    MainModel = JsonConvert.DeserializeObject<SaleBillModel>(modelJson);
+                }
+
+                DbCrGridd = GetSbDbCrDetailTable(MainModel);
+                //TdsGridd = GetTDSDetailTableForDPB(TdsGrid, MainModel);
+            }
+            else if (PageName == "SaleBillOnCounter")
+            {
+                string modelJson = HttpContext.Session.GetString("SaleBillModel");
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    MainModel = JsonConvert.DeserializeObject<SaleBillModel>(modelJson);
+                }
+
+                DbCrGridd = GetSbDbCrDetailTable(MainModel);
+                //TdsGridd = GetTDSDetailTableForDPB(TdsGrid, MainModel);
+            }
+            else if (PageName == "CreditNote")
+            {
+                string modelJson = HttpContext.Session.GetString("CreditNoteModel");
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    MainModel = JsonConvert.DeserializeObject<AccCreditNoteModel>(modelJson);
+                }
+                MainModel.AccountCode = AccountCode;
+                DbCrGridd = GetCNDbCrDetailTable(MainModel);
+                HttpContext.Session.SetString("CreditNoteModel", JsonConvert.SerializeObject((AccCreditNoteModel)MainModel));
+                //TdsGridd = GetTDSDetailTableForDPB(TdsGrid, MainModel);
+            }
+            else if (PageName == "PurchaseRejection")
+            {
+                string modelJson = HttpContext.Session.GetString("PurchaseRejectionModel");
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    MainModel = JsonConvert.DeserializeObject<AccPurchaseRejectionModel>(modelJson);
+                }
+                DbCrGridd = GetPRDbCrDetailTable(MainModel);
+                //TdsGridd = GetTDSDetailTableForDPB(TdsGrid, MainModel);
+            }
+            else if (PageName == "SaleRejection")
+            {
+                string modelJson = HttpContext.Session.GetString("SaleRejectionModel");
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    MainModel = JsonConvert.DeserializeObject<SaleRejectionModel>(modelJson);
+                }
+                DbCrGridd = GetSRDbCrDetailTable(MainModel);
+            }
+            else if (PageName == "JobWorkIssue")
+            {
+                string modelJson = HttpContext.Session.GetString("JobWorkIssue");
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    MainModel = JsonConvert.DeserializeObject<JobWorkIssueModel>(modelJson);
+                }
+            }
+            // TaxGrid=JsonConvert.SerializeObject(MainModel.TaxDetailGridd);
+            TaxGridd = GetTaxDetailTable(TaxGrid);
+        //}
 
 
             var JSON = await IDataLogic.GetDbCrDataGrid(DbCrGridd, TaxGridd, TdsGridd, PageName.ToUpper().ToString(), docAccountCode, AccountCode, BillAmt, NetAmt);
@@ -837,6 +852,10 @@ namespace eTactWeb.Controllers
             {
                 MainModel = new SaleBillModel();
             }
+            else if (model.AdjPageName == "SaleBillOnCounter")
+            {
+                MainModel = new SaleBillModel();
+            }
             else if (model.AdjPageName == "SaleRejection")
             {
                 MainModel = new SaleRejectionModel();
@@ -862,8 +881,7 @@ namespace eTactWeb.Controllers
                 AdjGrid = JsonConvert.DeserializeObject<AdjustmentModel>(modelJson);
             }
 
-            if (HttpContext.Session.GetString(model.AdjPageName) != null)
-            {
+            
                 if (model.AdjPageName == "ItemList")
                 {
                     MainModel.ItemDetailGrid = JsonConvert.DeserializeObject<List<ItemDetail>>(HttpContext.Session.GetString(model.AdjPageName));
@@ -894,6 +912,14 @@ namespace eTactWeb.Controllers
                     }
                 }
                 else if (model.AdjPageName == "SaleInvoice")
+                {
+                    string modelJsonData = HttpContext.Session.GetString("SaleBillModel");
+                    if (!string.IsNullOrEmpty(modelJsonData))
+                    {
+                        MainModel = JsonConvert.DeserializeObject<SaleBillModel>(modelJsonData);
+                    }
+                }
+                else if (model.AdjPageName == "SaleBillOnCounter")
                 {
                     string modelJsonData = HttpContext.Session.GetString("SaleBillModel");
                     if (!string.IsNullOrEmpty(modelJsonData))
@@ -977,11 +1003,8 @@ namespace eTactWeb.Controllers
                     Console.WriteLine("adjustmentModel is NULL");
                     return StatusCode(500, "Adjustment model is null.");
                 }
-            }
-            else
-            {
-                return StatusCode(501, "Please Add Data In Adjustment Detail Grid");
-            }
+            
+           
 
             return PartialView("_AdjGrid", MainModel.adjustmentModel);
         }

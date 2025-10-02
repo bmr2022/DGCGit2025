@@ -736,6 +736,11 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@SaleQuotyearCode", model.SaleQuotyearCode));
                 SqlParams.Add(new SqlParameter("@PrivateMark", model.PrivateMark));
                 SqlParams.Add(new SqlParameter("@GRNo", model.GRNo));
+                SqlParams.Add(new SqlParameter("@AllowToAddNegativeStockInStore", model.AllowToAddNegativeStockInStore));
+                if (model.AllowToAddNegativeStockInStore == "Y")
+                {
+                    SqlParams.Add(new SqlParameter("@SaleBillEntryFrom", "EntryFromCounter"));
+                }
                 SqlParams.Add(new SqlParameter("@GRDate",CommonFunc.ParseFormattedDate( model.GRDate)));
                 SqlParams.Add(new SqlParameter("@SaleQuotDate", SaleQuotDate == default ? string.Empty : SaleQuotDate));
                 //SqlParams.Add(new SqlParameter("@BooktrnsEntryId", model.SaleBillEntryId));
@@ -1030,7 +1035,7 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        public async Task<ResponseResult> GetDashboardData(string summaryDetail, string partCode, string itemName, string saleBillno, string customerName, string sono, string custOrderNo, string schNo, string performaInvNo, string saleQuoteNo, string domensticExportNEPZ, string fromdate, string toDate)
+        public async Task<ResponseResult> GetDashboardData(string summaryDetail, string partCode, string itemName, string saleBillno, string customerName, string sono, string custOrderNo, string schNo, string performaInvNo, string saleQuoteNo, string domensticExportNEPZ, string fromdate, string toDate,string SaleBillEntryFrom)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -1045,6 +1050,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@salebillno", saleBillno ?? ""));
                 SqlParams.Add(new SqlParameter("@customerName", customerName ?? ""));
                 SqlParams.Add(new SqlParameter("@SOno", sono));
+                SqlParams.Add(new SqlParameter("@SaleBillEntryFrom", SaleBillEntryFrom));
                 SqlParams.Add(new SqlParameter("@custOrderNo", custOrderNo ?? ""));
                 SqlParams.Add(new SqlParameter("@ScheduleNo", schNo ?? ""));
                 SqlParams.Add(new SqlParameter("@PerformaInvNo", performaInvNo ?? ""));

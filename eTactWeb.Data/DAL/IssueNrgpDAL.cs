@@ -611,6 +611,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@RGPNRGP", model.RGPNRGP));
                 SqlParams.Add(new SqlParameter("@ItemName", model.ItemName));
                 SqlParams.Add(new SqlParameter("@PartCode", model.PartCode));
+                SqlParams.Add(new SqlParameter("@ChallanEntryFrom", model.ChallanEntryFrom));
                 SqlParams.Add(new SqlParameter("@FromDate", ParseFormattedDate((model.FromDate).Split(" ")[0])));
                 SqlParams.Add(new SqlParameter("@ToDate", ParseFormattedDate((model.ToDate).Split(" ")[0])));
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_IssueNRGP", SqlParams);
@@ -899,6 +900,15 @@ namespace eTactWeb.Data.DAL
                 if (model.Mode == "U")
                 {
                     SqlParams.Add(new SqlParameter("@UpdatedByEmpId", model.UpdatedByEmpId));
+                }
+                if (model.AllowToAddNegativeStockInStore == "Y")
+                {
+                    SqlParams.Add(new SqlParameter("@ChallanEntryFrom", "EntryFromCounter"));
+                }
+                else
+                {
+
+                   
                 }
 
                 SqlParams.Add(new SqlParameter("@DTItemGrid", INGrid));
