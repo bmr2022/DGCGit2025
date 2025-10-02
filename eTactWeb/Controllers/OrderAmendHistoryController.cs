@@ -32,9 +32,15 @@ namespace eTactWeb.Controllers
             model.OrderAmendHistoryGrid = new List<OrderAmendHistoryModel>();
             return View(model);
         }
-        public async Task<JsonResult> FillPONO(string FromDate, string ToDate)
+        public async Task<JsonResult> FillPONO(string FromDate, string ToDate,int AccountCode,string HistoryReportMode)
         {
-            var JSON = await _IOrderAmendHistory.FillPONO(FromDate, ToDate);
+            var JSON = await _IOrderAmendHistory.FillPONO(FromDate, ToDate, AccountCode,HistoryReportMode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> FillPONOAmendNo(string FromDate, string ToDate, int AccountCode,string PONO, string HistoryReportMode)
+        {
+            var JSON = await _IOrderAmendHistory.FillPONOAmendNo(FromDate, ToDate,AccountCode, PONO,HistoryReportMode);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
@@ -57,11 +63,11 @@ namespace eTactWeb.Controllers
             return Json(JsonString);
         }
 
-        public async Task<IActionResult> GetOrderAmendHistoryData(string FromDate, string ToDate, string ReportType, int AccountCode, string PartCode, string ItemName, string PONO, int ItemCode,string HistoryReportMode, int pageNumber = 1, int pageSize = 20, string SearchBox = "")
+        public async Task<IActionResult> GetOrderAmendHistoryData(string FromDate, string ToDate, string ReportType, int AccountCode, string PartCode, string ItemName, string PONO,string AmmNo, int ItemCode,string HistoryReportMode,int pageNumber = 1, int pageSize = 20, string SearchBox = "")
         {
             var YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
             var model = new OrderAmendHistoryModel();
-            model = await _IOrderAmendHistory.GetOrderAmendHistoryData( FromDate,  ToDate,  ReportType,  AccountCode,  PartCode,  ItemName,  PONO,  ItemCode, HistoryReportMode);
+            model = await _IOrderAmendHistory.GetOrderAmendHistoryData( FromDate,  ToDate,  ReportType,  AccountCode,  PartCode,  ItemName,  PONO,  ItemCode, HistoryReportMode, AmmNo);
             model.ReportMode = ReportType;
             model.HistoryReportMode = HistoryReportMode;
             var modelList = model?.OrderAmendHistoryGrid ?? new List<OrderAmendHistoryModel>();
