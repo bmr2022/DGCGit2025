@@ -74,8 +74,8 @@ namespace eTactwebAccounts.Controllers
             var MainModel = new AgainstAdjustVoucherModel();
             MainModel.CC = HttpContext.Session.GetString("Branch");
             MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-            MainModel.ActualEntryby = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-            MainModel.ActualEntryBy = HttpContext.Session.GetString("EmpName");
+            MainModel.ActualEntryBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+            MainModel.ActualEntryByEmp = HttpContext.Session.GetString("EmpName");
             MainModel.ActualEntryDate = DateTime.Now.ToString("dd/MM/yy");
             MainModel.UID = Convert.ToInt32(HttpContext.Session.GetString("UID"));
             MainModel.FromDate = HttpContext.Session.GetString("FromDate");
@@ -130,8 +130,8 @@ namespace eTactwebAccounts.Controllers
                     AgainstAdjustVoucherGridEdit = JsonConvert.DeserializeObject<List<AgainstAdjustVoucherModel>>(modelEditJson);
                 }
 
-                model.ActualEntryby = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                model.ActualEntryBy = HttpContext.Session.GetString("UID");
+                model.ActualEntryBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                model.ActualEntryByEmp = HttpContext.Session.GetString("UID");
                 if (model.Mode == "U")
                 {
                     GIGrid = GetDetailTable(AgainstAdjustVoucherGridEdit);
@@ -355,7 +355,7 @@ namespace eTactwebAccounts.Controllers
                 Item.ProjectNo ,
                 Item.ProjectYearcode ,
                 Item.ProjectDate = DateTime.Now.ToString("dd/MMM/yyyy"),
-                Item.ActualEntryby ,
+                Item.ActualEntryBy ,
                 Item.ActualEntryDate = DateTime.Now.ToString("dd/MMM/yyyy"),
                 Item.UpdatedBy ,
                 Item.UpdatedOn ,
@@ -393,12 +393,25 @@ namespace eTactwebAccounts.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+        //public async Task<IActionResult> GetAdjustedData(int YearCode, string VoucherType, string VoucherNo, int AccountCode, string InvoiceNo, int AccEntryId)
+        //{
+        //    //var model = new AgainstAdjustVoucherModel();
+        //    //model = await _IAgainstAdjustVoucher.GetAdjustedData(YearCode, VoucherType, VoucherNo, AccountCode, InvoiceNo, AccEntryId);
+        //    //return PartialView("_AgainstAdjustVoucher", model);
+        //    var models = await _IAgainstAdjustVoucher.GetAdjustedData(YearCode, VoucherType, VoucherNo, AccountCode, InvoiceNo, AccEntryId);
+        //    return PartialView("_AgainstAdjustVoucher", models);
+        //}
+
         public async Task<IActionResult> GetAdjustedData(int YearCode, string VoucherType, string VoucherNo, int AccountCode, string InvoiceNo, int AccEntryId)
         {
             var model = new AgainstAdjustVoucherModel();
-            model = await _IAgainstAdjustVoucher.GetAdjustedData(YearCode, VoucherType, VoucherNo, AccountCode, InvoiceNo, AccEntryId);
+            model.Mode = "Adjust";
+            model.AgainstAdjustVoucherList = await _IAgainstAdjustVoucher.GetAdjustedData(YearCode, VoucherType, VoucherNo, AccountCode, InvoiceNo, AccEntryId);
             return PartialView("_AgainstAdjustVoucher", model);
         }
+
+
+
         public async Task<JsonResult> GetLedgerBalance(int OpeningYearCode, int AccountCode, string VoucherDate)
         {
             var JSON = await _IAgainstAdjustVoucher.GetLedgerBalance(OpeningYearCode, AccountCode, VoucherDate);
@@ -424,6 +437,274 @@ namespace eTactwebAccounts.Controllers
             var JSON = await _IAgainstAdjustVoucher.FillLedgerName(VoucherType, ShowAll);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
+        }
+        //public IActionResult AddAgainstAdjustVoucherDetail(AgainstAdjustVoucherModel model)
+        //{
+        //    try
+        //    {
+        //        if (model.Mode == "U" || model.Mode == "V")
+        //        {
+        //            string modelJson = HttpContext.Session.GetString("KeyAgainstAdjustVoucherGridEdit");
+        //            List<AgainstAdjustVoucherModel> AgainstAdjustVoucherGrid = new List<AgainstAdjustVoucherModel>();
+        //            if (!string.IsNullOrEmpty(modelJson))
+        //            {
+        //                AgainstAdjustVoucherGrid = JsonConvert.DeserializeObject<List<AgainstAdjustVoucherModel>>(modelJson);
+        //            }
+
+        //            var MainModel = new AgainstAdjustVoucherModel();
+        //            var AgainstAdjustVchGrid = new List<AgainstAdjustVoucherModel>();
+        //            var AgainstAdjustGrid = new List<AgainstAdjustVoucherModel>();
+        //            var ssGrid = new List<AgainstAdjustVoucherModel>();
+
+        //            var count = 0;
+        //            if (model != null)
+        //            {
+        //                if (AgainstAdjustVoucherGrid == null)
+        //                {
+        //                    model.SrNO = 1;
+        //                    AgainstAdjustGrid.Add(model);
+        //                }
+        //                else
+        //                {
+        //                    if (model.BankType.ToLower() == "bank")
+        //                    {
+        //                        if (AgainstAdjustVoucherGrid.Any(x => (x.LedgerName == model.LedgerName) || x.BankType == "Bank"))
+        //                        {
+        //                            return StatusCode(210, "Duplicate");
+        //                        }
+        //                        else
+        //                        {
+        //                            model.SrNO = AgainstAdjustVoucherGrid.Count + 1;
+        //                            AgainstAdjustGrid = AgainstAdjustVoucherGrid.Where(x => x != null).ToList();
+        //                            ssGrid.AddRange(AgainstAdjustGrid);
+        //                            AgainstAdjustGrid.Add(model);
+
+        //                        }
+        //                    }
+        //                    else if (model.ModeOfAdjustment.ToLower() == "newref")
+        //                    {
+        //                        if (AgainstAdjustVoucherGrid.Any(x => (x.LedgerName == model.LedgerName) && (x.ModeOfAdjustment == model.ModeOfAdjustment)))
+        //                        {
+        //                            return StatusCode(207, "Duplicate");
+        //                        }
+        //                        else
+        //                        {
+        //                            model.SrNO = AgainstAdjustVoucherGrid.Count + 1;
+        //                            AgainstAdjustGrid = AgainstAdjustVoucherGrid.Where(x => x != null).ToList();
+        //                            ssGrid.AddRange(AgainstAdjustGrid);
+        //                            AgainstAdjustGrid.Add(model);
+
+        //                        }
+        //                    }
+        //                    else if (model.ModeOfAdjustment.ToLower() == "advance")
+        //                    {
+        //                        if (AgainstAdjustVoucherGrid.Any(x => (x.LedgerName == model.LedgerName) && (x.ModeOfAdjustment == model.ModeOfAdjustment)))
+        //                        {
+        //                            return StatusCode(208, "Duplicate");
+        //                        }
+        //                        else
+        //                        {
+        //                            model.SrNO = AgainstAdjustVoucherGrid.Count + 1;
+        //                            AgainstAdjustGrid = AgainstAdjustVoucherGrid.Where(x => x != null).ToList();
+        //                            ssGrid.AddRange(AgainstAdjustGrid);
+        //                            AgainstAdjustGrid.Add(model);
+
+        //                        }
+        //                    }
+        //                    else if (model.ModeOfAdjustment.ToLower() == "againstref")
+        //                    {
+        //                        if (AgainstAdjustVoucherGrid.Any(x => (x.LedgerName == model.LedgerName) && x.AgainstVoucherNo == model.AgainstVoucherNo))
+        //                        {
+        //                            return StatusCode(209, "Duplicate");
+        //                        }
+        //                        else
+        //                        {
+        //                            model.SrNO = AgainstAdjustVoucherGrid.Count + 1;
+        //                            AgainstAdjustGrid = AgainstAdjustVoucherGrid.Where(x => x != null).ToList();
+        //                            ssGrid.AddRange(AgainstAdjustGrid);
+        //                            AgainstAdjustGrid.Add(model);
+
+        //                        }
+        //                    }
+
+        //                }
+
+        //                MainModel.AgainstAdjustVoucherList = AgainstAdjustGrid.OrderBy(x => x.SrNO).ToList();
+
+        //                string serializedGrid = JsonConvert.SerializeObject(MainModel.AgainstAdjustVoucherList);
+        //                HttpContext.Session.SetString("KeyAgainstAdjustVoucherGridEdit", serializedGrid);
+        //            }
+        //            else
+        //            {
+        //                ModelState.TryAddModelError("Error", "Schedule List Cannot Be Empty...!");
+        //            }
+        //            return PartialView("_AgainstAdjustVoucherGrid", MainModel);
+        //        }
+        //        else
+        //        {
+        //            string modelJson = HttpContext.Session.GetString("KeyAgainstAdjustVoucherGrid");
+        //            List<AgainstAdjustVoucherModel> AgainstAdjustVoucherGrid = new List<AgainstAdjustVoucherModel>();
+        //            if (!string.IsNullOrEmpty(modelJson))
+        //            {
+        //                AgainstAdjustVoucherGrid = JsonConvert.DeserializeObject<List<AgainstAdjustVoucherModel>>(modelJson);
+        //            }
+
+        //            var MainModel = new AgainstAdjustVoucherModel();
+        //            var AgainstAdjustVchGrid = new List<AgainstAdjustVoucherModel>();
+        //            var AgainstAdjustGrid = new List<AgainstAdjustVoucherModel>();
+        //            var ssGrid = new List<AgainstAdjustVoucherModel>();
+
+        //            if (model != null)
+        //            {
+        //                if (AgainstAdjustVoucherGrid == null)
+        //                {
+        //                    model.SrNO = 1;
+        //                    AgainstAdjustGrid.Add(model);
+        //                }
+        //                else
+        //                {
+        //                    //if (model.BankType.ToLower() == "bank")
+        //                    //{
+        //                    //    if (AgainstAdjustVoucherGrid.Any(x => (x.LedgerName == model.LedgerName) || x.BankType == "Bank"))
+        //                    //    {
+        //                    //        return StatusCode(210, "Duplicate");
+        //                    //    }
+        //                    //    else
+        //                    //    {
+        //                    //        model.SrNO = AgainstAdjustVoucherGrid.Count + 1;
+        //                    //        AgainstAdjustGrid = AgainstAdjustVoucherGrid.Where(x => x != null).ToList();
+        //                    //        ssGrid.AddRange(AgainstAdjustGrid);
+        //                    //        AgainstAdjustGrid.Add(model);
+
+        //                    //    }
+        //                    //}
+        //                    //else 
+        //                    if (model.ModeOfAdjustment.ToLower() == "newref")
+        //                    {
+        //                        if (AgainstAdjustVoucherGrid.Any(x => (x.LedgerName == model.LedgerName) && (x.ModeOfAdjustment == model.ModeOfAdjustment)))
+        //                        {
+        //                            return StatusCode(207, "Duplicate");
+        //                        }
+        //                        else
+        //                        {
+        //                            model.SrNO = AgainstAdjustVoucherGrid.Count + 1;
+        //                            AgainstAdjustGrid = AgainstAdjustVoucherGrid.Where(x => x != null).ToList();
+        //                            ssGrid.AddRange(AgainstAdjustGrid);
+        //                            AgainstAdjustGrid.Add(model);
+
+        //                        }
+        //                    }
+        //                    else if (model.ModeOfAdjustment.ToLower() == "advance")
+        //                    {
+        //                        if (AgainstAdjustVoucherGrid.Any(x => (x.LedgerName == model.LedgerName) && (x.ModeOfAdjustment == model.ModeOfAdjustment)))
+        //                        {
+        //                            return StatusCode(208, "Duplicate");
+        //                        }
+        //                        else
+        //                        {
+        //                            model.SrNO = AgainstAdjustVoucherGrid.Count + 1;
+        //                            AgainstAdjustGrid = AgainstAdjustVoucherGrid.Where(x => x != null).ToList();
+        //                            ssGrid.AddRange(AgainstAdjustGrid);
+        //                            AgainstAdjustGrid.Add(model);
+
+        //                        }
+        //                    }
+        //                    else if (model.ModeOfAdjustment.ToLower() == "againstref")
+        //                    {
+        //                        if (AgainstAdjustVoucherGrid.Any(x => (x.LedgerName == model.LedgerName) && x.AgainstVoucherNo == model.AgainstVoucherNo))
+        //                        {
+        //                            return StatusCode(209, "Duplicate");
+        //                        }
+        //                        else
+        //                        {
+        //                            model.SrNO = AgainstAdjustVoucherGrid.Count + 1;
+        //                            AgainstAdjustGrid = AgainstAdjustVoucherGrid.Where(x => x != null).ToList();
+        //                            ssGrid.AddRange(AgainstAdjustGrid);
+        //                            AgainstAdjustGrid.Add(model);
+
+        //                        }
+        //                    }
+        //                }
+
+        //                MainModel.AgainstAdjustVoucherList = AgainstAdjustGrid.OrderBy(x => x.SrNO).ToList();
+
+        //                string serializedGrid = JsonConvert.SerializeObject(MainModel.AgainstAdjustVoucherList);
+        //                HttpContext.Session.SetString("KeyAgainstAdjustVoucherGrid", serializedGrid);
+        //            }
+        //            else
+        //            {
+        //                ModelState.TryAddModelError("Error", "Schedule List Cannot Be Empty...!");
+        //            }
+        //            return PartialView("_AgainstAdjustVoucherGrid", MainModel);
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw ex;
+        //    }
+        //}
+        [HttpPost]
+        public IActionResult AddAgainstAdjustVoucherDetail([FromBody] List<AgainstAdjustVoucherModel> models)
+        {
+            try
+            {
+                if (models == null || !models.Any())
+                    return BadRequest("No rows to add.");
+
+                // Decide which session key to use
+                string sessionKey = (models.First().Mode == "U" || models.First().Mode == "V")
+                                    ? "KeyAgainstAdjustVoucherGridEdit"
+                                    : "KeyAgainstAdjustVoucherGrid";
+
+                // Get existing grid from session
+                var existingGridJson = HttpContext.Session.GetString(sessionKey);
+                var gridList = string.IsNullOrEmpty(existingGridJson)
+                    ? new List<AgainstAdjustVoucherModel>()
+                    : JsonConvert.DeserializeObject<List<AgainstAdjustVoucherModel>>(existingGridJson);
+
+                foreach (var model in models)
+                {
+                    var mode = model.ModeOfAdjustment?.Replace(" ", "").ToLower();
+
+                    bool isDuplicate = mode switch
+                    {
+                        "newref" => gridList.Any(x => x.LedgerName == model.LedgerName && x.ModeOfAdjustment.Replace(" ", "").ToLower() == mode),
+                        "advance" => gridList.Any(x => x.LedgerName == model.LedgerName && x.ModeOfAdjustment.Replace(" ", "").ToLower() == mode),
+                        "againstref" => gridList.Any(x => x.LedgerName == model.LedgerName && x.AgainstVoucherNo == model.AgainstVoucherNo),
+                        _ => model.BankType?.ToLower() == "bank" && gridList.Any(x => x.BankType == "Bank" || x.LedgerName == model.LedgerName)
+                    };
+
+                    if (isDuplicate)
+                    {
+                        return mode switch
+                        {
+                            "newref" => StatusCode(207, "Duplicate"),
+                            "advance" => StatusCode(208, "Duplicate"),
+                            "againstref" => StatusCode(209, "Duplicate"),
+                            _ => StatusCode(210, "Duplicate")
+                        };
+                    }
+
+                    // Assign SrNO and add to list
+                    model.SrNO = gridList.Count + 1;
+                    gridList.Add(model);
+                }
+
+                // Save updated grid in session
+                HttpContext.Session.SetString(sessionKey, JsonConvert.SerializeObject(gridList));
+
+                // Return ordered list in main model
+                var mainModel = new AgainstAdjustVoucherModel
+                {
+                    AgainstAdjustVoucherList = gridList.OrderBy(x => x.SrNO).ToList()
+                };
+
+                return PartialView("_AgainstAdjustVoucherGrid", mainModel);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
     }

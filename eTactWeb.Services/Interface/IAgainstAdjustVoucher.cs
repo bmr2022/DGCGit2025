@@ -18,7 +18,8 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetAccEntryId(int YearCode, string VoucherType, string VoucherNo, int AccountCode, string InvoiceNo);
         Task<ResponseResult> FillModeofAdjust(string VoucherType);
         Task<ResponseResult> GetLedgerBalance(int OpeningYearCode, int AccountCode, string VoucherDate);
-        Task<AgainstAdjustVoucherModel> GetAdjustedData(int YearCode, string VoucherType, string VoucherNo, int AccountCode, string InvoiceNo, int AccEntryId);
+        //Task<AgainstAdjustVoucherModel> GetAdjustedData(int YearCode, string VoucherType, string VoucherNo, int AccountCode, string InvoiceNo, int AccEntryId);
+        Task<List<AgainstAdjustVoucherModel>> GetAdjustedData(int YearCode, string VoucherType, string VoucherNo, int AccountCode, string InvoiceNo, int AccEntryId);
         Task<ResponseResult> FillCostCenterName();
         Task<ResponseResult> FillEntryID(int YearCode, string VoucherDate);
         Task<ResponseResult> FillCurrency();

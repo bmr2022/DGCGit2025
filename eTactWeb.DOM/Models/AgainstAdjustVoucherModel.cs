@@ -66,7 +66,7 @@ namespace eTactWeb.DOM.Models
         public decimal DrAmt { get; set; }
         public decimal CrAmt { get; set; }
         public double VoucherAmt { get; set; }
-        public IList<JournalVoucherModel> AgainstAdjustVoucherList { get; set; }
+        public IList<AgainstAdjustVoucherModel> AgainstAdjustVoucherList { get; set; }
         public List<PopUpDataTableAgainstRef> DataTable { get; set; }
         public int BooktrnsEntryId { get; set; }
         public int DocEntryId { get; set; }
@@ -141,8 +141,8 @@ namespace eTactWeb.DOM.Models
         public string ProjectNo { get; set; }
         public int ProjectYearcode { get; set; }
         public string ProjectDate { get; set; }
-        public string ActualEntryBy { get; set; }
-        public int ActualEntryby { get; set; }
+        public int ActualEntryBy { get; set; }
+        public string ActualEntryByEmp { get; set; }
         public string? ActualEntryDate { get; set; }
         public string? UpdatedByEmp { get; set; }
         public string EntryByMachine { get; set; }
