@@ -36,6 +36,7 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@flag", HistoryReportMode));
                 SqlParams.Add(new SqlParameter("@Dashboardflag", "FillPONOAmendNo"));
+                SqlParams.Add(new SqlParameter("@reportType", ""));
                 SqlParams.Add(new SqlParameter("@FromDate", CommonFunc.ParseFormattedDate(FromDate)));
                 SqlParams.Add(new SqlParameter("@ToDate", CommonFunc.ParseFormattedDate(ToDate)));
                 //SqlParams.Add(new SqlParameter("@CurrentDate", CurrentDate));

@@ -12,6 +12,7 @@ using System.Net;
 using FastReport.Web;
 using FastReport;
 using System.Globalization;
+using NuGet.Packaging;
 
 
 namespace eTactwebAccounts.Controllers
@@ -410,8 +411,135 @@ namespace eTactwebAccounts.Controllers
             return PartialView("_AgainstAdjustVoucher", model);
         }
 
+        [HttpPost]
+        public IActionResult AddAgnstRefToAdjstmntDetail([FromBody] AgainstAdjustVoucherModel model)
+        {
+            if (model == null || model.AdjAdjustmentDetailGrid == null || !model.AdjAdjustmentDetailGrid.Any())
+            {
+                return BadRequest("No adjustment data provided.");
+            }
 
+            // Get existing model from session
+            string modelJson = HttpContext.Session.GetString("KeyAdjGrid");
+            var existingGrid = !string.IsNullOrEmpty(modelJson)
+                ? JsonConvert.DeserializeObject<AgainstAdjustVoucherModel>(modelJson)
+                : new AgainstAdjustVoucherModel { AdjAdjustmentDetailGrid = new List<AdjustmentModel>() };
 
+            if (existingGrid.AdjAdjustmentDetailGrid == null)
+                existingGrid.AdjAdjustmentDetailGrid = new List<AdjustmentModel>();
+
+            // Force mode = AgainstRef
+            foreach (var row in model.AdjAdjustmentDetailGrid)
+            {
+                row.AdjModeOfAdjstment = "AgainstRef";
+            }
+
+            // Duplicate check (based on Mode + RefNo)
+            foreach (var newRow in model.AdjAdjustmentDetailGrid)
+            {
+                bool isDuplicate = existingGrid.AdjAdjustmentDetailGrid.Any(a =>
+                    a.AdjModeOfAdjstment != null &&
+                    a.AdjModeOfAdjstment.Equals(newRow.AdjModeOfAdjstment, StringComparison.OrdinalIgnoreCase) &&
+                    a.AdjNewRefNo != null &&
+                    a.AdjNewRefNo.Equals(newRow.AdjNewRefNo, StringComparison.OrdinalIgnoreCase)
+                );
+
+                if (isDuplicate)
+                {
+                    return Conflict("Duplicate adjustment found.");
+                }
+            }
+
+            // Assign sequence numbers
+            int seqStart = existingGrid.AdjAdjustmentDetailGrid.Count + 1;
+            foreach (var row in model.AdjAdjustmentDetailGrid)
+            {
+                row.AdjSeqNo = seqStart++;
+                existingGrid.AdjAdjustmentDetailGrid.Add(row);
+            }
+
+            // Save back into session
+            string updatedJson = JsonConvert.SerializeObject(existingGrid);
+            HttpContext.Session.SetString("KeyAdjGrid", updatedJson);
+
+            return Json(existingGrid.AdjAdjustmentDetailGrid);
+        }
+
+        public IActionResult GetUpdatedAdjGridData()
+        {
+            // Retrieve the updated data from the cache
+            string modelJson = HttpContext.Session.GetString("KeyAdjGrid");
+            AgainstAdjustVoucherModel AdjGrid = new AgainstAdjustVoucherModel();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                AdjGrid = JsonConvert.DeserializeObject<AgainstAdjustVoucherModel>(modelJson);
+            }
+
+            if (AdjGrid != null)
+            {
+                return Json(AdjGrid.AdjAdjustmentDetailGrid);
+            }
+            return Json(new List<AgainstAdjustVoucherModel>());
+        }
+        public void StoreInSession(string sessionKey, object sessionObject)
+        {
+            string serializedObject = JsonConvert.SerializeObject(sessionObject);
+            HttpContext.Session.SetString(sessionKey, serializedObject);
+        }
+        public IList<AgainstAdjustVoucherModel> Add2List(AgainstAdjustVoucherModel model, IList<AgainstAdjustVoucherModel> AdjGrid, bool? IsAgnstRefPopupData = false)
+        {
+            var _List = new List<AgainstAdjustVoucherModel>();
+            if (IsAgnstRefPopupData != true)
+            {
+                _List.Add(new AgainstAdjustVoucherModel
+                {
+                    AdjSeqNo = AdjGrid == null ? 1 : AdjGrid.Count + 1,
+                    AdjModeOfAdjstment = model.AdjModeOfAdjstment,
+                    AdjModeOfAdjstmentName = model.AdjModeOfAdjstmentName,
+                    AdjDescription = model.AdjDescription,
+                    AdjDueDate = model.AdjDueDate,
+                    AdjNewRefNo = model.AdjNewRefNo,
+                    AdjPendAmt = model.AdjPendAmt,
+                    AdjDrCr = model.AdjDrCr,
+                    AdjDrCrName = model.AdjDrCrName,
+                    AdjPurchOrderNo = model.AdjPurchOrderNo,
+                    AdjPOYear = model.AdjPOYear,
+                    AdjPODate = model.AdjPODate,
+                    AdjOpenEntryID = model.AdjOpenEntryID ?? 0,
+                    AdjOpeningYearCode = model.AdjOpeningYearCode ?? 0,
+                    AdjAgnstAccEntryID = model.AdjAgnstAccEntryID ?? 0,
+                    AdjAgnstAccYearCode = model.AdjAgnstAccYearCode ?? 0,
+                });
+            }
+            else
+            {
+                foreach (var item in model.AdjAdjustmentDetailGrid)
+                {
+                    _List.Add(new AgainstAdjustVoucherModel
+                    {
+                        AdjSeqNo = AdjGrid == null ? 1 : AdjGrid.Count + 1,
+                        AdjModeOfAdjstment = "AgainstRef",
+                        AdjModeOfAdjstmentName = "Against Ref",
+                        AdjDescription = item.AdjDescription,
+                        AdjDueDate = item.AdjAgnstVouchDate,
+                        AdjNewRefNo = item.AdjNewRefNo,
+                        AdjPendAmt = Convert.ToDecimal(item.AdjAgnstAdjstedAmt),
+                        AdjDrCr = item.AdjAgnstDrCr,
+                        AdjDrCrName = item.AdjAgnstDrCr,
+                        AdjPurchOrderNo = string.Empty,
+                        AdjPOYear = 0,
+                        AdjPODate = null,
+                        AdjAgnstVouchNo = item.AdjAgnstVouchNo,
+                        AdjAgnstVouchType = item.AdjAgnstVouchType,
+                        AdjOpenEntryID = item.AdjAgnstOpenEntryID ?? 0,
+                        AdjOpeningYearCode = item.AdjAgnstOpeningYearCode ?? 0,
+                        AdjAgnstAccEntryID = item.AdjAgnstAccEntryID ?? 0,
+                        AdjAgnstAccYearCode = item.AdjAgnstAccYearCode ?? 0,
+                    });
+                }
+            }
+            return _List;
+        }
         public async Task<JsonResult> GetLedgerBalance(int OpeningYearCode, int AccountCode, string VoucherDate)
         {
             var JSON = await _IAgainstAdjustVoucher.GetLedgerBalance(OpeningYearCode, AccountCode, VoucherDate);
@@ -644,68 +772,70 @@ namespace eTactwebAccounts.Controllers
         //    }
         //}
         [HttpPost]
-        public IActionResult AddAgainstAdjustVoucherDetail([FromBody] List<AgainstAdjustVoucherModel> models)
+        public IActionResult AddAgainstAdjustVoucherDetail([FromBody] AgainstAdjustVoucherModel models)
         {
             try
             {
-                if (models == null || !models.Any())
+                if (models == null || models.AgainstAdjustVoucherList == null || !models.AgainstAdjustVoucherList.Any())
                     return BadRequest("No rows to add.");
 
-                // Decide which session key to use
-                string sessionKey = (models.First().Mode == "U" || models.First().Mode == "V")
+                string sessionKey = (models.AgainstAdjustVoucherList.First().Mode == "U" ||
+                                     models.AgainstAdjustVoucherList.First().Mode == "V")
                                     ? "KeyAgainstAdjustVoucherGridEdit"
                                     : "KeyAgainstAdjustVoucherGrid";
 
-                // Get existing grid from session
                 var existingGridJson = HttpContext.Session.GetString(sessionKey);
                 var gridList = string.IsNullOrEmpty(existingGridJson)
                     ? new List<AgainstAdjustVoucherModel>()
                     : JsonConvert.DeserializeObject<List<AgainstAdjustVoucherModel>>(existingGridJson);
 
-                foreach (var model in models)
+                foreach (var model in models.AgainstAdjustVoucherList)
                 {
                     var mode = model.ModeOfAdjustment?.Replace(" ", "").ToLower();
 
                     bool isDuplicate = mode switch
                     {
-                        "newref" => gridList.Any(x => x.LedgerName == model.LedgerName && x.ModeOfAdjustment.Replace(" ", "").ToLower() == mode),
-                        "advance" => gridList.Any(x => x.LedgerName == model.LedgerName && x.ModeOfAdjustment.Replace(" ", "").ToLower() == mode),
+                        "newref" => gridList.Any(x => x.LedgerName == model.LedgerName && x.ModeOfAdjustment?.Replace(" ", "").ToLower() == mode),
+                        "advance" => gridList.Any(x => x.LedgerName == model.LedgerName && x.ModeOfAdjustment?.Replace(" ", "").ToLower() == mode),
                         "againstref" => gridList.Any(x => x.LedgerName == model.LedgerName && x.AgainstVoucherNo == model.AgainstVoucherNo),
                         _ => model.BankType?.ToLower() == "bank" && gridList.Any(x => x.BankType == "Bank" || x.LedgerName == model.LedgerName)
                     };
 
-                    if (isDuplicate)
-                    {
-                        return mode switch
-                        {
-                            "newref" => StatusCode(207, "Duplicate"),
-                            "advance" => StatusCode(208, "Duplicate"),
-                            "againstref" => StatusCode(209, "Duplicate"),
-                            _ => StatusCode(210, "Duplicate")
-                        };
-                    }
+                    //if (isDuplicate)
+                    //{
+                    //    return mode switch
+                    //    {
+                    //        "newref" => StatusCode(207, "Duplicate"),
+                    //        "advance" => StatusCode(208, "Duplicate"),
+                    //        "againstref" => StatusCode(209, "Duplicate"),
+                    //        _ => StatusCode(210, "Duplicate")
+                    //    };
+                    //}
 
-                    // Assign SrNO and add to list
                     model.SrNO = gridList.Count + 1;
                     gridList.Add(model);
                 }
 
-                // Save updated grid in session
                 HttpContext.Session.SetString(sessionKey, JsonConvert.SerializeObject(gridList));
 
-                // Return ordered list in main model
                 var mainModel = new AgainstAdjustVoucherModel
                 {
                     AgainstAdjustVoucherList = gridList.OrderBy(x => x.SrNO).ToList()
                 };
 
-                return PartialView("_AgainstAdjustVoucherGrid", mainModel);
+                return PartialView("_AgainstAdjustVoucherGrid", mainModel); // or Json(mainModel)
             }
             catch (Exception ex)
             {
                 return StatusCode(500, ex.Message);
             }
         }
-
+        public async Task<JsonResult> GetPendVouchBillAgainstRefPopupByID(int AC, int? YC, int? PayRecEntryId, int? PayRecYearcode, string DRCR, string TransVouchType, string TransVouchDate)
+        {
+            string Flag = "";
+            var JSON = await _IDataLogic.GetPendVouchBillAgainstRefPopupByID(AC, YC, PayRecEntryId, PayRecYearcode, DRCR, TransVouchType, TransVouchDate, Flag);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
     }
 }
