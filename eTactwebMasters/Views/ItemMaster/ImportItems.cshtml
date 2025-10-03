@@ -4,6 +4,40 @@
     ViewData["Title"] = Model.Item_Code == 0 ? "Item Master" : "Update/Edit Item Master";
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
+<style>
+#loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255,255,255,0.7);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    color: #333;
+}
+
+.spinner {
+    border: 8px solid #f3f3f3; /* Light gray */
+    border-top: 8px solid #3498db; /* Blue */
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 1s linear infinite;
+    margin-bottom: 10px;
+}
+
+@@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+</style>
 
 <div class="rounded shadow-lg">
     <form enctype="multipart/form-data" autocomplete="off" class="form-horizontal">
@@ -11,6 +45,10 @@
         <input type="hidden" asp-for="Act">
         <input type="hidden" asp-for="ImageURL">
         <input type="hidden" asp-for="Mode">
+        <div id="loader" style="display:none;">
+            <div class="spinner"></div>
+            <p>Processing your file... Please wait</p>
+        </div>
         <div class="card border-light bg-gradient rounded shadow-lg">
             <div class="card-header card-headerBG text-light justify-content-center bg-gradient">
                 <h4>
@@ -207,19 +245,31 @@
 
             var formData = new FormData();
             formData.append("excelFile", file);
-             
+
             $.ajax({
                 url: "/ItemMaster/UploadExcel",
                 type: "POST",
                 data: formData,
                 processData: false,
                 contentType: false,
+
+                beforeSend: function () {
+                    $("#loader").show();  // show spinner
+                },
+
                 success: function (result) {
                     if (result.startsWith("Invalid Unit")) {
                         $.notify(result, "error");
                     }
                     $('#divItemList').html(result);
-                    //CheckBeforeSubmit();
+                },
+
+                complete: function () {
+                    $("#loader").hide();  // hide spinner
+                },
+
+                error: function (xhr, status, error) {
+                    $.notify("Upload failed: " + error, "error");
                 }
             });
         }

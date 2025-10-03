@@ -1999,7 +1999,9 @@ public class ItemMasterController : Controller
                 if (cellValue == null || string.IsNullOrWhiteSpace(cellValue.ToString()))
                     break; // Stop when column 1 is empty
                 var itemGroupCode = _IItemMaster.GetItemGroupCode(worksheet.Cells[row, 5].Value.ToString().Trim() ?? "");
-                var itemCatCode = _IItemMaster.GetItemCatCode(worksheet.Cells[row, 6].Value.ToString().Trim()?? "");
+                var itemCatCode = _IItemMaster.GetItemCatCode(
+                    worksheet.Cells[row, 6].Value?.ToString().Trim() ?? ""
+                );
                 var dupPartCode = worksheet.Cells[row, 1].Value?.ToString().Trim() ?? "";
                 var duplicatePartCode = _IDataLogic.isDuplicate(dupPartCode, "PartCode", "Item_Master");
                 //var duplicatePartCode = _IDataLogic.isDuplicate(worksheet.Cells[row, 1].Value.ToString().Trim() ?? "", "PartCode", "Item_Master");
