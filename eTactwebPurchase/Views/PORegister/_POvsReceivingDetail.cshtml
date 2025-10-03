@@ -121,6 +121,9 @@
                        <th class="sortCol" data-sortorder="asc" data-columnno="36">
                                 <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>POType
                             </th>
+                       <th class="sortCol" data-sortorder="asc" data-columnno="36">
+                                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Active
+                            </th>
                        
                    
 
@@ -153,7 +156,7 @@
                             <th>@srNo</th>
                             <td>@item.VendorName</td>
                             <td style="background-color: #e09ef0;">@item.PONO</td>
-                            <td>@item.POYearCode</td>
+                            <td>@item.PoYear</td>
                             <td>@item.PODate.Split(" ")[0]</td>
                             <td>@item.POFOR</td>
                             <td class="sch-fields">@item.SchNO</td>
@@ -189,6 +192,7 @@
                             <td>@item.GSTAmt</td>
                             <td>@item.GSTPer</td>
                             <td class ="POtype" style="background-color:#ebd9c6">@item.POtype</td>
+                            <td>@item.Active</td>
 
 
                                                       
