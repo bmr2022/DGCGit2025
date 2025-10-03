@@ -384,83 +384,77 @@
 
                 }
             });
-            $("#ReportMode").change(function () {
-                var selectedMode = $(this).val();
-                togglePOSections(selectedMode);
-                setTimeout(function () {
-                    $(".showPOFilter:checked").trigger("change");
-                    $(".showClosedPO:checked").trigger("change");
-                    $("input[name='showOnlyActivePO']:checked").trigger("change");
-                }, 300);
-            });
-            function togglePOSections(reportMode) {
-                if (reportMode === "LIST OF PO") {
-                    $("#activePOSection").show();      
-                    $("#closedPOSection").show();     
-                    $("#completedPOSection").hide();   
-                }
-
-                else if (reportMode === "List of PO With Item") {
-                    $("#activePOSection").show();      
-                    $("#closedPOSection").show();     
-                    $("#completedPOSection").hide();   
-                }
-                else if (reportMode === "LISTOFSCHEDULE") {
-                    $("#activePOSection").show();      
-                    $("#closedPOSection").hide();     
-                    $("#completedPOSection").hide();   
-                }
-                else if (reportMode === "PO vs Receiving Detail ( GateMRNQC)") {
-                    $("#activePOSection").show();      
-                    $("#closedPOSection").show();     
-                    $("#completedPOSection").show();   
-                }
-                else if (reportMode === "PO+Sch Vs Receiving Summary") {
-                    $("#activePOSection").show();      
-                    $("#closedPOSection").show();     
-                    $("#completedPOSection").show();   
-                }
-                else if (reportMode === "CONSOLIDATED ( Part+Item Wise)") {
-                    $("#activePOSection").hide();
-                    $("#closedPOSection").hide();
-                    $("#completedPOSection").show();
-                }
-                else if (reportMode === "Order vs Dispatch") {
-                    $("#activePOSection").show();
-                    $("#closedPOSection").show();
-                    $("#completedPOSection").show();
-                }
-
-                else if (reportMode === "DETAIL") {
-                    $("#activePOSection").show();      
-                    $("#closedPOSection").hide();     
-                    $("#completedPOSection").hide();   
-                }
-                
-                else if (reportMode === "PARTYWISECONSOLIDATED") {
-                    $("#activePOSection").hide();      
-                    $("#closedPOSection").hide();     
-                    $("#completedPOSection").show();   
-                }
-                else if (reportMode === "ITEMWISECONSOLIDATED") {
-                    $("#activePOSection").hide();      
-                    $("#closedPOSection").hide();     
-                    $("#completedPOSection").show();   
-                }
-                
-                else {
-                    $("#activePOSection").hide();      
-                    $("#closedPOSection").hide();
-                    $("#completedPOSection").hide();
-                }
-            }
-            $(".showPOFilter:checked").trigger("change");
-            $(".showClosedPO:checked").trigger("change");
-            $("input[name='showOnlyActivePO']:checked").trigger("change");
-
+            
+           
+           /*  $(".showPOFilter:checked").trigger("change"); */
+            /* $(".showClosedPO:checked").trigger("change"); */
+            /* $("input[name='showOnlyActivePO']:checked").trigger("change"); */
+           
         });
+        function togglePOSections(reportMode) {
+            if (reportMode === "LIST OF PO") {
+                $("#activePOSection").show();
+                $("#closedPOSection").show();
+                $("#completedPOSection").hide();
+            }
+
+            else if (reportMode === "List of PO With Item") {
+                $("#activePOSection").show();
+                $("#closedPOSection").show();
+                $("#completedPOSection").hide();
+            }
+            else if (reportMode === "LISTOFSCHEDULE") {
+                $("#activePOSection").show();
+                $("#closedPOSection").hide();
+                $("#completedPOSection").hide();
+            }
+            else if (reportMode === "PO vs Receiving Detail ( GateMRNQC)") {
+                $("#activePOSection").show();
+                $("#closedPOSection").show();
+                $("#completedPOSection").show();
+            }
+            else if (reportMode === "PO+Sch Vs Receiving Summary") {
+                $("#activePOSection").show();
+                $("#closedPOSection").show();
+                $("#completedPOSection").show();
+            }
+            else if (reportMode === "CONSOLIDATED ( Part+Item Wise)") {
+                $("#activePOSection").hide();
+                $("#closedPOSection").hide();
+                $("#completedPOSection").show();
+            }
+            else if (reportMode === "Order vs Dispatch") {
+                $("#activePOSection").show();
+                $("#closedPOSection").show();
+                $("#completedPOSection").show();
+            }
+
+            else if (reportMode === "DETAIL") {
+                $("#activePOSection").show();
+                $("#closedPOSection").hide();
+                $("#completedPOSection").hide();
+            }
+
+            else if (reportMode === "PARTYWISECONSOLIDATED") {
+                $("#activePOSection").hide();
+                $("#closedPOSection").hide();
+                $("#completedPOSection").show();
+            }
+            else if (reportMode === "ITEMWISECONSOLIDATED") {
+                $("#activePOSection").hide();
+                $("#closedPOSection").hide();
+                $("#completedPOSection").show();
+            }
+
+            else {
+                $("#activePOSection").hide();
+                $("#closedPOSection").hide();
+                $("#completedPOSection").hide();
+            }
+        }
         $("#ReportMode").change(function () {
-           debugger
+            var reportMode = $(this).val();
+            togglePOSections(reportMode);
             setTimeout(function () {
                 $(".showPOFilter:checked").trigger("change");
                 $(".showClosedPO:checked").trigger("change");
@@ -468,67 +462,147 @@
             }, 300);
         });
 
-        // For PO Filter
+
         $(document).on("change", ".showPOFilter", function () {
-            applyPOFilter($(this).val());
+            let val = $(".showPOFilter:checked").val();
+            applyPOFilterServer(val);
         });
 
-        function applyPOFilter(filter) {
-            var srNo = 1;
-            $('#divStockRegisterBody .po-row').each(function () {
-                var pendQty = parseFloat($(this).find('.PendQty').text());
+        function applyPOFilterServer(showOnlyCompletedPO) {
+            $.ajax({
+                url: '/PORegister/GetPORegisterData', // your controller action
+                type: 'POST',
+                data: {
+                    FromDate: $('#FromDate').val(),
+                    ToDate: $('#ToDate').val(),
+                    ReportType: $('#ReportMode').val(),
+                    Partyname: $('#PartyName').val(),
+                    partcode: $('#PartCode').val(),
+                    itemName: $('#ItemName').val(),
+                    POno: $('#PONO').val(),
+                    SchNo: $('#SchNo').val(),
+                    OrderType: $('#OrderType').val(),
+                    POFor: $('#POFor').val(),
+                    ItemType: $('#ItemType').val(),
+                    ItemGroup: $('#ItemGroup').val(),
+                    showOnlyCompletedPO: showOnlyCompletedPO,
+                    showClosedPO: $("input[name='showClosedPO']:checked").val(),
+                    showOnlyActivePO: $("input[name='showOnlyActivePO']:checked").val(),
+                    pageNumber: 1,
+                    pageSize: 50
+                },
+                success: function (result) {
+                    // Replace table body with filtered data
+                    $("#divPORegister").html(result);
 
-                if (filter === "Y" && pendQty === 0) {
-                    $(this).show();
-                    $(this).find('.sr-no').text(srNo++);
-                }
-                else if (filter === "N" && pendQty !== 0) {
-                    $(this).show();
-                    $(this).find('.sr-no').text(srNo++);
-                }
-                else if (filter === "A") {
-                    $(this).show();
-                    $(this).find('.sr-no').text(srNo++);
-                }
-                else {
-                    $(this).hide();
+                    // Optional: row coloring, etc.
+                    $('tr.po-row').each(function () {
+                        if ($(this).data('active') === 'N') $(this).css('color', 'red');
+                    });
+                },
+                error: function (err) {
+                    console.error(err);
                 }
             });
         }
+
 
         // For Closed PO
-        $(document).on("change", ".showClosedPO", function () {
-            applyClosedPO($(this).val());
+        $(document).on("change", "input[name='showClosedPO']", function () {
+            let val = $("input[name='showClosedPO']:checked").val();
+            applyClosedPOServer(val);
         });
 
-        function applyClosedPO(filter) {
-            var srNo = 1;
-            $('#divStockRegisterBody .po-row').each(function () {
-                var POtype = $(this).find('.POtype').text().trim();
-
-                if ((filter === "Y" && POtype === "Close") ||
-                    (filter === "N" && POtype === "Open") ||
-                    filter === "A") {
-                    $(this).show();
-                    $(this).find('.sr-no').text(srNo++);
-
-                    if (POtype === "Close") {
-                         $('.sch-fields').hide();
-                    } else {
-                        $('.sch-fields').show();
-                    }
-                } else {
-                    $(this).hide();
+        function applyClosedPOServer(showClosedPO) {
+            $.ajax({
+                url: '/PORegister/GetPORegisterData',
+                type: 'POST',
+                data: {
+                    FromDate: $('#FromDate').val(),
+                    ToDate: $('#ToDate').val(),
+                    ReportType: $('#ReportMode').val(),
+                    Partyname: $('#PartyName').val(),
+                    partcode: $('#PartCode').val(),
+                    itemName: $('#ItemName').val(),
+                    POno: $('#PONO').val(),
+                    SchNo: $('#SchNo').val(),
+                    OrderType: $('#OrderType').val(),
+                    POFor: $('#POFor').val(),
+                    ItemType: $('#ItemType').val(),
+                    ItemGroup: $('#ItemGroup').val(),
+                    showOnlyCompletedPO: $("input[name='showOnlyCompletedPO']:checked").val(),
+                    showClosedPO: showClosedPO,
+                    showOnlyActivePO: $("input[name='showOnlyActivePO']:checked").val(),
+                    pageNumber: 1,
+                    pageSize: 50
+                },
+                success: function (result) {
+                    $("#divPORegister").html(result);
+                    let val = $("input[name='showClosedPO']:checked").val();
+                    $('tr.po-row').each(function () {
+                        var POtype = $(this).find('.POtype').text().trim();
+                        if ($(this).data('active') === 'N') $(this).css('color', 'red');
+                        if (val === "Y" && POtype === "Close") {
+                            $('.sch-fields').hide();
+                        } else {
+                            $('.sch-fields').show();
+                        }
+                    });
+                },
+                error: function (err) {
+                    console.error(err);
                 }
             });
         }
 
-        // For Active PO
+
+
         $(document).on("change", "input[name='showOnlyActivePO']", function () {
-            applyActivePO($(this).val());
+           
+            let val = $("input[name='showOnlyActivePO']:checked").val();
+            console.log(val);
+            applyActivePO(val);
         });
 
-        function applyActivePO(selectedVal) {
+        function applyActivePO(showOnlyActivePO) {
+            $.ajax({
+                url: '/PORegister/GetPORegisterData',
+                type: 'POST', // make it POST if your server expects POST
+                data: {
+                    FromDate: $('#FromDate').val(),
+                    ToDate: $('#ToDate').val(),
+                    ReportType: $('#ReportMode').val(),
+                    Partyname: $('#PartyName').val(),
+                    partcode: $('#PartCode').val(),
+                    itemName: $('#ItemName').val(),
+                    POno: $('#PONO').val(),
+                    SchNo: $('#SchNo').val(),
+                    OrderType: $('#OrderType').val(),
+                    POFor: $('#POFor').val(),
+                    ItemType: $('#ItemType').val(),
+                    ItemGroup: $('#ItemGroup').val(),
+                    showOnlyCompletedPO: $("input[name='showOnlyCompletedPO']:checked").val(),
+                    showClosedPO: $("input[name='showClosedPO']:checked").val(),
+                    showOnlyActivePO: showOnlyActivePO,
+                    pageNumber: 1, // reset to first page
+                    pageSize: 50
+                },
+                success: function (result) {
+                    $("#divPORegister").html(result);
+                    $('tr.po-row').each(function () {
+                        if ($(this).data('active') === 'N') {
+                            $(this).css('color', 'red');
+                        }
+                    });
+                },
+                error: function (err) {
+                    console.error(err);
+                }
+            });
+        }
+
+
+        /* function applyActivePO(selectedVal) {
             $('#divStockRegisterBody .po-row').each(function () {
                 var rowActive = $(this).data('active'); // Y / N
 
@@ -542,7 +616,7 @@
                     $(this).hide();
                 }
             });
-        }
+        } */
 
 
         function UpdateAccordionHeader() {
@@ -591,6 +665,11 @@
                 success: function (result) {
                     $('#divPORegister').empty();
                     $('#divPORegister').html(result);
+                    $('tr.po-row').each(function () {
+                        if ($(this).data('active') === 'N') {
+                            $(this).css('color', 'red');
+                        }
+                    });
                     $('#totalRows').text($('#divPORegister tr').length);
                     //countAllTotal();
                 }
@@ -608,6 +687,11 @@
 
                     $('#divPORegister').empty();
                     $('#divPORegister').html(data);
+                    $('tr.po-row').each(function () {
+                        if ($(this).data('active') === 'N') {
+                            $(this).css('color', 'red');
+                        }
+                    });
                     $('#totalRows').text($('#divPORegister tr').length);
                     //countAllTotal();
                 },
@@ -685,52 +769,42 @@
 
             // Handle report type logic
             switch (reportTypeValue) {
-                case 'SUMM':/*done*/
+                case 'PO vs Receiving Detail ( GateMRNQC)':/*done*/
                      headers = [
-                        "#Sr","Vendor", "PONO", "PO Effective Date", "PO End Date", "PO For", "Schedule No", "Schedule Date", "Schedule Year",
-                        "Part Code", "Item Name", "Currency", "PO Rate", "PO Qty", "PO Value", "Received Qty", "QC OK Qty",
-                        "Pending Qty", "Min Level", "Unit", "Min Level Days", "Item Group", "Item Category"
-                    ];
+                        "#Sr", "Vendor", "PONO", "PO Year", "PO Effective Date", "PO For", "Schedule No", "Schedule Date", "Schedule Year", "Part Code", "Item Name", "Currency", "PO Rate", "PO Qty", "Pending Qty", "Discount %", "Discount Amount", "PO Amount", "Old Rate", "MRN No", "MRN Date", "Gate No", "Gate Year Code", "Gate Date", "Bill Qty", "Received Qty", "Accepted Qty", "Invoice No", "Invoice Date", "MIR No", "MIR Date", "Batch No", "Unique Batch No", "Item Group", "Item Category", "Domestic / Import", "GST Amount", "GST %", "PO Type", "Active"
 
+                    ];
                     console.log("Data:", rows);
                     body = rows.map((item, i) => [
-                        i + 1, item.vendor, item.poNO, item.poEffDate?.split(" ")[0] || '', item.poEndDate?.split(" ")[0] || '',
-                        item.poFOR, item.schNO, item.schdate?.split(" ")[0] || '', item.schYear, item.partCode,
-                        item.itemName, item.currency, item.poRate, item.poQty, item.poValue,
-                        item.recQty, item.qcOKQty, item.pendQty, item.minLevel, item.unit,
-                        item.minlvlDays, item.itemGroup, item.itemCategory
+                        i + 1, item.vendor, item.poNO, item.poYear, item.poEffDate?.split(" ")[0] || '', item.poFor, item.schNo, item.schDate?.split(" ")[0] || '', item.schYear, item.partCode, item.itemName, item.currency, item.poRate, item.poQty, item.pendQty, item.disPer, item.disAmt, item.poAmount, item.oldRate, item.mrnNo, item.mrnDate?.split(" ")[0] || '', item.gateNo, item.gateYearCode, item.gateDate?.split(" ")[0] || '', item.billQty, item.recQty, item.acceptedQty, item.invNo, item.invDate?.split(" ")[0] || '', item.mirNo, item.mirDate?.split(" ")[0] || '', item.batchNo, item.uniqueBatchNo, item.itemGroup, item.itemCategory, item.domesticImport, item.gstAmt, item.gstPer, item.poType, item.active
+
                     ]);
-                    break;
-                case 'LISTOFPO':
+                break;
+                case 'LIST OF PO':
                      headers = [
-                        "#Sr","PONO", "PO Date", "PO Type", "PO Qty", "PO Effective Date", "PO Close Date", "POEffective Date",
-                        "Order Type", "Vendor", "Part Code", "Item Name", "Unit", "Rate", "Discount %", "Discount Amt",
-                        "Item Amount", "Amendt No", "Amend Date", "Ass Rate", "Delivery Terms", "Delivery Date",
-                        "PO Qty", "PO For", "Currency"
+                        "#Sr", "Vendor", "PONO", "PO Date", "PO Type", "PO Effective Date", "PO Close Date", "Amendment No", "Amendment Effective Date", "Order Type", "PO For", "Currency", "Active"
+
                     ];
 
                     console.log("Data:", rows);
                     body = rows.map((item, i) => [
-                        i + 1, item.pono, item.poDate ? item.poDate.split(" ")[0] : '', item.pOtype, item.poQty,
-                        item.poEffDate ? item.poEffDate.split(" ")[0] : '', item.pOclosedate ? item.pOclosedate.split(" ")[0] : '', item.poAmmeffdate ? item.poAmmeffdate.split(" ")[0] : '', item.ordertype, item.vendor,
-                        item.partCode, item.itemName, item.unit, item.rate, item.disPer, item.disAmt, item.itemAmount, item.ammendmentno, item.ammendmentdate ? item.ammendmentdate.split(" ")[0] : '', item.assrate,
-                        item.deliveryTerms, item.deliveryDate ? item.deliveryDate.split(" ")[0] : '', item.poQty, item.pofor, item.currency
+                        i + 1, item.vendorName, item.poNO, item.poDate?.split(" ")[0] || '', item.poType, item.poEffDate?.split(" ")[0] || '', item.poCloseDate?.split(" ")[0] || '', item.ammNo, item.poAmmEffDate?.split(" ")[0] || '', item.orderType, item.poFor, item.currency, item.active
                     ]);
 
 
 
                 break;
-                case 'SUMMRATEING':
+                case 'PO+Sch Vs Receiving Summary':
                      headers = [
-                        "#Sr", "Item Name", "Part Code", "Currency", "PO Qty", "PO Value", "Received Qty",
-                        "Received Value", "QC OK Qty", "Balance Qty", "Balance Value", "Rating", "Party Name"
+                        "#Sr", "Item Name", "Part Code", "Currency", "PO Rate", "PO Qty", "PO Value", "Received Qty", "QC OK Qty", "Pending Qty", "Min Level", "Unit", "Min Level Days", "Item Group", "Item Category", "GST %", "GST Amount", "Vendor", "PONO", "PO Effective Date", "PO End Date", "PO For", "Domestic / Import", "Schedule No", "Schedule Date", "Schedule Year", "PO Type"
+
                     ];
 
 
                     console.log("Data:", rows);
                     body = rows.map((item, i) => [
-                        i + 1, item.itemName,item.partCode,item.currency,item.poQty,item.poValue,item.recQty, item.recValue,
-                        item.qcOKQty, item.balQty, item.balValue,item.rating,item.partyName
+                        i + 1, item.itemName, item.partCode, item.currency, item.poRate, item.poQty, item.poValue, item.recQty, item.qcOKQty, item.pendQty, item.minLevel, item.unit, item.minLvlDays, item.itemGroup, item.itemCategory, item.gstPer, item.gstAmt, item.vendor, item.poNO, item.poEffDate?.split(" ")[0] || '', item.poEndDate?.split(" ")[0] || '', item.poFor, item.domesticImport, item.schNo, item.schDate?.split(" ")[0] || '', item.schYear, item.poType
+
                     ]);
 
 
@@ -778,7 +852,7 @@
                     ]);
 
                 break;
-                case 'CONSOLIDATED':
+                case 'CONSOLIDATED ( Part+Item Wise)':
                      headers = [
                         "#Sr", "Account Name", "Part Code", "Item Name", "PO Qty", "Received Qty",
                         "QC OK Qty", "Pending Qty", "Min Level", "Unit", "Min Level Days",
@@ -1073,12 +1147,18 @@
                 data: {
                     FromDate: $('#FromDate').val(), ToDate: $('#ToDate').val(), ReportType: $('#ReportMode').val(), Partyname: $('#PartyName').val(), partcode: $('#PartCode').val(), itemName: $('#ItemName').val(), POno: $('#PONO').val(), SchNo: $('#SchNo').val(), OrderType: $('#OrderType').val(), POFor: $('#POFor').val(), ItemType: $('#ItemType').val(), ItemGroup: $('#ItemGroup').val(), showOnlyActivePO: showOnlyActivePO,
                     showClosedPO: showClosedPO,
-                    showOnlyCompletedPO: showOnlyCompletedPO
+                    showOnlyCompletedPO: showOnlyCompletedPO,
+                    showOnlyActivePO: showOnlyActivePO,
                 },
                 success: function (result, status, error) {
 
                     $('#divPORegister').empty();
                     $('#divPORegister').html(result);
+                    $('tr.po-row').each(function () {
+                        if ($(this).data('active') === 'N') {
+                            $(this).css('color', 'red');
+                        }
+                    });
                     $('#totalRows').text($('#divPORegister tr').length - 1);
                     countAllTotal();
                 }

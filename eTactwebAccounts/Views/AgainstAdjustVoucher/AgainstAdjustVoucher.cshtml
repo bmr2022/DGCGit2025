@@ -247,6 +247,12 @@
                                     <label asp-for="NetAmount" class="form-label">Net Amount</label>
                                     <input asp-for="NetAmount" class="form-control" readonly />
                                 </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <button type="button" class="btn btn-outline-success btn-sm mt-3 Adjarbtn" onclick="Openagnstrefpopup()" >
+                                        <i class="fa-solid fa-angles-down me-1"></i>
+                                        Add More <br> Against Ref
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -582,11 +588,322 @@
         </div>
     </div>
 </div>
-
+<partial name="_AgainstAdjustPopup" />
 @section Scripts {
     <script>
+                function Openagnstrefpopup() {
+            $('#DisplayAdjDetailModal').modal('show');
+            DisplayAdjustmentRefDetail();
+        }
+                    function DisplayAdjustmentRefDetail() {
 
-                                       function Validate_Submit() {
+            var DbCrPageName = $('#VoucherType').val();
+            var DbCrPageData;
+            var AccountCode = 0;
+            var TransVouchType = "";
+            if (DbCrPageName.indexOf('Sale Order') === 0) {
+                DbCrPageData = 'ItemList';
+            }
+            else if (DbCrPageName.indexOf('Purchase Order') == 0) {
+                DbCrPageData = 'PurchaseOrder';
+            }
+            else if (DbCrPageName.indexOf('Issue NonRetuanable') == 0) {
+                DbCrPageData = 'IssueNRGP';
+            }
+            else if (DbCrPageName.indexOf('Direct Purchase Bill') == 0) {
+                DbCrPageData = 'DirectPurchaseBill';
+                AccountCode = $('#AccountCode').find(":selected").val();
+                TransVouchType = "PURCHASE-DIRECT";
+            }
+            else if (DbCrPageName.indexOf('Purchase Bill') == 0) {
+                DbCrPageData = 'PurchaseBill';
+                AccountCode = $('#AccountCode').find(":selected").val();
+                TransVouchType = "PURCHASE-DIRECT";
+            }
+            else if (DbCrPageName.indexOf('SALE-BILL') == 0) {
+                DbCrPageData = 'SALE-BILL';
+                AccountCode = $('#LedgerName').find(":selected").val();
+                TransVouchType = "SaleInvoice";
+            }
+            else {
+                DbCrPageData = '';
+            }
+            DbCrPageName = DbCrPageData;
+
+            var yearCode = 0;
+            var DRCR = "";
+            var VouchDate = "";
+            if (DbCrPageName.indexOf('SALE-BILL') == 0) {
+                yearCode = $('#YearCode').val();
+                DRCR = "DR";
+                VouchDate = $('#EntryDate').val();
+            } else {
+                yearCode = $('#YearCode').val();
+                DRCR = $('#AdjDrCr').val();
+                VouchDate = $('#EntryDate').val();
+            }
+            if (DbCrPageData != null && DbCrPageData != undefined && DbCrPageData != '') {
+
+                $('#DisplayAdjDetailModal').modal('show');
+                $.ajax({
+                    type: "POST",
+                    url: "/Common/GetPendVouchBillAgainstRefPopupByID",
+                    dataType: "json",
+                    data: {
+                        "AC": AccountCode, "YC": yearCode, "PayRecEntryId": 0, "PayRecYearcode": 0, "DRCR": DRCR, "TransVouchType": TransVouchType, "TransVouchDate": VouchDate
+                    },
+                    success: function (result, status, error) {
+                        if (result != null) {
+                            var obj = $.parseJSON(result);
+                            var html = '';
+                            $('#divDisplayAdjustmntDetail').empty();
+                            var i = 1;
+                            if (obj.AdjAdjustmentDetailGrid != null) {
+                                $.each(obj.AdjAdjustmentDetailGrid, function (index, val) {
+                                    html += '<tr id="DisplayAdjustmntRow-' + index + '">' +
+                                        /*'<input type="hidden" value="' + val.AdjAgnstAccEntryID + '" id="AdjAgnstAccEntryID_' + index + '" />' +*/
+                                        '<td>' + i + '</td>' +
+                                        '<td><input id="AgnstRefCheckbox_' + index + '"  type="checkbox" onclick="onAgnstcheckcliclunclick(' + index + ')"></td>' +
+                                        '<td><span class="edit-icon" id="AdjAgnstRefEdit_' + index + '" onclick="AdjAgnstRefEdit(this)" data-index="' + index + '">&#9998;</span><span class="save-button" id="AdjAgnstRefSave_' + index + '" onclick="AdjAgnstRefOnGridSave(this)" data-index="' + index + '" style="display:none;background: none; border: none;">&#10004;</span></td>' +
+                                        '<td><input id="AdjAgnstVouchNo_' + index + '" value=' + val.AdjAgnstVouchNo + ' readonly style="width:190px;background: none;border: none;white-space: break-spaces;text-overflow: ellipsis;"></td>' +
+                                        '<td><input id="AdjAgnstVouchDate_' + index + '" value=' + formatDateToDDMMYYYY(val.AdjAgnstVouchDate) + ' readonly style="width:120px;background: none;border: none;"></td>' +
+                                        '<td><input id="AdjAgnstModeOfAdjstment_' + index + '" value="' + val.AdjAgnstModeOfAdjstment + '" readonly style="width:120px;background: none;border: none;white-space: break-spaces;text-overflow: ellipsis;"></td>' +
+                                        '<td><input id="AdjAgnstVouchType_' + index + '" value=' + val.AdjAgnstVouchType + ' readonly style="width:125px;background: none;border: none;white-space: break-spaces;text-overflow: ellipsis;"></td>' +
+                                        '<td><input id="AdjAgnstPendAmt_' + index + '" value="' + val.AdjAgnstPendAmt + '" ' +
+                                        'data-original="' + val.AdjAgnstPendAmt + '" readonly style="width:50px;background: none;border: none;"></td>' +
+                                        '<td><input  id="AdjAgnstRemainingAmt_' + index + '" value=' + val.AdjAgnstRemainingAmt + ' readonly style="width:50px;background: none;border: none;"></td>' +
+                                        '<td><input class="adjstedamt" id="AdjAgnstAdjstedAmt_' + index + '" value=' + val.AdjAgnstAdjstedAmt + ' style="width:50px;background: none;border: none;" onchange="ChangeAdjustAmt(' + index + ')"></td>' +
+                                        '<td><input id="AdjAgnstDrCr_' + index + '" value=' + val.AdjAgnstDrCr + ' readonly style="width:40px;background: none;border: none;"></td>' +
+                                        '<td><input id="AdjAgnstAccEntryIDVal_' + index + '" value=' + val.AdjAgnstAccEntryID + ' readonly style="width:50px;background: none;border: none;"></td>' +
+                                        '<td><input id="AdjAgnstAccYearCode_' + index + '" value=' + val.AdjAgnstAccYearCode + ' readonly style="width:50px;background: none;border: none;"></td>' +
+                                        '<td><input id="AdjAgnstOpenEntryID_' + index + '" value=' + val.AdjAgnstOpenEntryID + ' readonly style="width:50px;background: none;border: none;"></td>' +
+                                        '<td><input id="AdjAgnstOpeningYearCode_' + index + '" value=' + val.AdjAgnstOpeningYearCode + ' readonly style="width:50px;background: none;border: none;"></td>' +
+                                        '</tr>';
+                                    i++;
+                                });
+                            }
+                            else {
+                                html += '<tr class="text-center"><td colspan="12" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>'
+                            }
+                            $('#divDisplayAdjustmntDetail').append(html);
+                            $('#AdjustmentHeaderError').hide();
+                            var totals = CalculateTotals();
+                            $('#TotalBillAmount').val(parseFloat($('#NetTotal').val()));
+                            $('#TotalRemainingAmount').val(totals)
+                            $('#PendingToAdjustAmount').val(parseFloat($('#AdjRemainingAmt1').text()))
+                            var RowCount = $('#divDisplayAdjustmntDetail tr').length;
+                            var TdRow = $('#divDisplayAdjustmntDetail tr td').length;
+
+                            if (TdRow > 1) {
+                                $('#AdjlblTotalNoOfItems').text(RowCount);
+                            }
+                        }
+                    }
+                });
+            }
+        }
+                                      function Agnstrefonsave() {
+            var AdjPageName = $('#VoucherType').val();
+            var PaymentDays = ($('#PaymentDays').val()) ? parseInt($('#PaymentDays').val()) : 0;
+            var AdjPageData = '';
+
+            if (AdjPageName.indexOf('Sale Order') === 0) AdjPageData = 'ItemList';
+            else if (AdjPageName.indexOf('Purchase Order') === 0) AdjPageData = 'PurchaseOrder';
+            else if (AdjPageName.indexOf('Issue NonRetuanable') === 0) AdjPageData = 'IssueNRGP';
+            else if (AdjPageName.indexOf('SALE-BILL') === 0) AdjPageData = 'SaleInvoice';
+            else if (AdjPageName.indexOf('Direct Purchase Bill') === 0) AdjPageData = 'DirectPurchaseBill';
+            else if (AdjPageName.indexOf('Purchase Bill') === 0) AdjPageData = 'PurchaseBill';
+            else AdjPageData = 'JobWorkIssue';
+
+            var selectedItems1 = [];
+
+            $('tr[id^="DisplayAdjustmntRow-"]').each(function () {
+                var rowIndex = $(this).attr('id').split('-')[1];
+                if ($('#AgnstRefCheckbox_' + rowIndex).is(':checked')) {
+                    var rawDate = $('#AdjAgnstVouchDate_' + rowIndex).val();
+                    var formattedDate = null;
+
+                    if (rawDate) {
+                        // Assume rawDate is in 'DD/MM/YYYY' format
+                        var parts = rawDate.split('/');
+                        if (parts.length === 3) {
+                            // Create a valid date: months are 0-based in JS
+                            var day = parseInt(parts[0], 10);
+                            var month = parseInt(parts[1], 10) - 1;
+                            var year = parseInt(parts[2], 10);
+
+                            var dateObj = new Date(year, month, day);
+                            if (!isNaN(dateObj.getTime())) {
+                                formattedDate = dateObj.toISOString();
+                            }
+                        }
+                    }
+
+                    console.log(formattedDate);
+
+                    // Push a full AdjustmentModel object into the list
+                    selectedItems1.push({
+                        AdjAgnstAccEntryID: parseInt($('#AdjAgnstAccEntryIDVal_' + rowIndex).val()),
+                        AdjAgnstAccYearCode: parseInt($('#AdjAgnstAccYearCode_' + rowIndex).val()),
+                        AdjAgnstOpenEntryID: parseInt($('#AdjAgnstOpenEntryID_' + rowIndex).val()),
+                        AdjAgnstOpeningYearCode: parseInt($('#AdjAgnstOpeningYearCode_' + rowIndex).val()),
+                        AdjAgnstVouchNo: $('#AdjAgnstVouchNo_' + rowIndex).val(),
+                        AdjAgnstVouchDate: formattedDate,
+                        AdjDescription: $('#AdjDescription').val(),
+                        AdjNewRefNo: $('#AdjNewRefNo').val(),
+                        AdjAgnstModeOfAdjstment: "AgainstRef",
+                        AdjAgnstVouchType: $('#AdjAgnstVouchType_' + rowIndex).val(),
+                        AdjAgnstPendAmt: parseFloat($('#AdjAgnstPendAmt_' + rowIndex).val()) || 0,
+                        AdjAgnstRemainingAmt: parseFloat($('#AdjAgnstRemainingAmt_' + rowIndex).val()) || 0,
+                        AdjAgnstAdjstedAmt: parseFloat($('#AdjAgnstAdjstedAmt_' + rowIndex).val()) || 0,
+                        AdjAgnstDrCr: $('#AdjAgnstDrCr_' + rowIndex).val(),
+                        AdjPageName: AdjPageData
+                    });
+                }
+            });
+
+            // Parent AdjustmentModel
+            var model = {
+                AdjPageName: AdjPageData,
+                AdjAgnstModeOfAdjstment: "AgainstRef",
+                AdjAdjustmentDetailGrid: selectedItems1
+            };
+
+            console.log("Payload:", JSON.stringify(model, null, 2));
+
+            $.ajax({
+                type: "POST",
+                url: '/AgainstAdjustVoucher/AddAgnstRefToAdjstmntDetail',
+                data: JSON.stringify(model),
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                        success: function (resp) {
+            console.log('Saved successfully', resp);
+            $('#DisplayAdjDetailModal').modal('hide');
+            $('#AdjModeOfAdjstment').val("NewRef").trigger('change');
+
+            // Clear current table body
+            
+
+            // Populate table dynamically from returned JSON
+            if (resp && resp.length > 0) {
+        //         resp.forEach(function (item, index) {
+        //             var voucherDate = item.AdjAgnstVouchDate ? new Date(item.AdjAgnstVouchDate).toLocaleDateString() : '';
+        //                     var ledgerVal = $("#LedgerName").val(); // get selected value
+        // var ledgerText = $("#LedgerName option:selected").text(); // get selected text
+        //             var rowHtml = '<tr class="small" style="white-space:nowrap" data-srno="' + (index + 1) + '">' +
+        //                 '<td><select class="form-control type-select" style="width:50px;">' +
+        //                 '<option value="DR"' + (item.adjAgnstDrCr === 'DR' ? ' selected' : '') + '>DR</option>' +
+        //                 '<option value="CR"' + (item.adjAgnstDrCr === 'CR' ? ' selected' : '') + '>CR</option>' +
+        //                 '</select></td>' +
+
+        //                 '<td>' +
+        //                 '<input type="hidden" value="' + (ledgerVal|| '') + '" />' +
+        //                 '<input type="hidden" value="' + (item.BankType || '') + '" />' +
+        //                   '<select class="form-control ledger-select" style="width:250px;">' +
+        //                     '<option value="' + ledgerVal + '" selected>' + ledgerText + '</option>' +
+        //                     '</select></td>' +
+        //                 '<td>' +
+        //                 '<div class="d-flex align-items-center">' +
+        //                 '<input class="form-control me-2" style="width:70px;" readonly value="' + (item.Balance || 0) + '" />' +
+        //                 '<input class="form-control" style="width:50px;" readonly value="' + (item.DRCR || '') + '" />' +
+        //                 '</div></td>' +
+
+        //                 '<td><select class="form-control mode-select" style="width:100px;">' +
+        //                 '<option value="' + (item.adjModeOfAdjstment || '') + '" selected>' + (item.adjModeOfAdjstment || '') + '</option>' +
+        //                 '</select></td>' +
+
+        //                 '<td><input class="form-control adjamt-input" type="number" min="0" style="width:70px;" value="' + (item.adjAgnstPendAmt || 0) + '" /></td>' +
+        //                 '<td><input class="form-control" readonly value="' + (item.adjAgnstPendAmt || 0) + '" /></td>' +
+
+        //                 '<td><input type="hidden" value="' + (item.CostCenterId || 0) + '" />' +
+        //                 '<select class="form-control costcenter-select" style="width:140px;">' +
+        //                 '<option value="' + (item.CostCenterId || 0) + '">' + (item.CostCenterName || '') + '</option>' +
+        //                 '</select></td>' +
+
+        //                 '<td><input class="form-control" value="' + (item.PartyWiseNaration || '') + '" /></td>' +
+        //                 '<td><input class="form-control" readonly value="' + (item.adjAgnstVouchNo || '') + '" /></td>' +
+        //                 '<td><input class="form-control" readonly value="' + (item.adjAgnstAccYearCode || 0) + '" /></td>' +
+        //                 '<td><input class="form-control" readonly value="' + (item.adjAgnstVouchDate || '')  + '" /></td>' +
+        //                 '<td><input class="form-control" readonly value="' + (item.adjAgnstVouchType || '') + '" /></td>' +
+        //                 '<td><input class="form-control" readonly value="' + (item.adjAgnstAccEntryID || 0) + '" /></td>' +
+        //                 '<td><input class="form-control" readonly value="' + (item.VoucherBillAmt || 0) + '" /></td>' +
+        //                 '<td><input class="form-control" readonly value="' + (item.PendBillAmt || 0) + '" /></td>' +
+        //                 '</tr>';
+
+        //             $('#divBankReceipt').append(rowHtml);
+        //         });
+                resp.forEach(function (item, index) {
+            var voucherDate = item.AdjAgnstVouchDate ? new Date(item.AdjAgnstVouchDate).toLocaleDateString() : '';
+            var ledgerVal = $("#LedgerName").val(); // get selected value
+            var ledgerText = $("#LedgerName option:selected").text(); // get selected text
+
+            var rowHtml = '<tr class="small" style="white-space:nowrap" data-srno="' + (index + 1) + '">' +
+                // DR/CR select
+                '<td><select class="form-control type-select" style="width:50px;" name="AgainstAdjustVoucherList[' + index + '].Type">' +
+                '<option value="DR"' + (item.adjAgnstDrCr === 'DR' ? ' selected' : '') + '>DR</option>' +
+                '<option value="CR"' + (item.adjAgnstDrCr === 'CR' ? ' selected' : '') + '>CR</option>' +
+                '</select></td>' +
+
+                // Ledger & BankType
+                '<td>' +
+                '<input type="hidden" name="AgainstAdjustVoucherList[' + index + '].LedgerName" value="' + (ledgerVal || '') + '" />' +
+                '<input type="hidden" name="AgainstAdjustVoucherList[' + index + '].BankType" value="' + (item.BankType || '') + '" />' +
+                '<select class="form-control ledger-select" style="width:250px;" name="AgainstAdjustVoucherList[' + index + '].LedgerName">' +
+                '<option value="' + ledgerVal + '" selected>' + ledgerText + '</option>' +
+                '</select></td>' +
+
+                // Balance & DRCR
+                '<td>' +
+                '<div class="d-flex align-items-center">' +
+                '<input class="form-control me-2" style="width:70px;" readonly name="AgainstAdjustVoucherList[' + index + '].Balance" value="' + (item.Balance || 0) + '" />' +
+                '<input class="form-control" style="width:50px;" readonly name="AgainstAdjustVoucherList[' + index + '].DRCR" value="' + (item.DRCR || '') + '" />' +
+                '</div></td>' +
+
+                // ModeOfAdjustment
+                '<td><select class="form-control mode-select" style="width:100px;" name="AgainstAdjustVoucherList[' + index + '].ModeOfAdjustment">' +
+                '<option value="' + (item.adjModeOfAdjstment || '') + '" selected>' + (item.adjModeOfAdjstment || '') + '</option>' +
+                '</select></td>' +
+
+                // AdjustmentAmt
+                '<td><input class="form-control adjamt-input" type="number" min="0" style="width:70px;" name="AgainstAdjustVoucherList[' + index + '].AdjustmentAmt" value="' + (item.adjAgnstPendAmt || 0) + '" /></td>' +
+                '<td><input class="form-control" readonly name="AgainstAdjustVoucherList[' + index + '].AdjustmentAmtOthCur" value="' + (item.adjAgnstPendAmt || 0) + '" /></td>' +
+
+                // CostCenter
+                '<td>' +
+                '<input type="hidden" name="AgainstAdjustVoucherList[' + index + '].CostCenterId" value="' + (item.CostCenterId || 0) + '" />' +
+                '<select class="form-control costcenter-select" style="width:140px;" name="AgainstAdjustVoucherList[' + index + '].CostCenterName">' +
+                '<option value="' + (item.CostCenterId || 0) + '">' + (item.CostCenterName || '') + '</option>' +
+                '</select></td>' +
+
+                // PartyWiseNaration
+                '<td><input class="form-control" name="AgainstAdjustVoucherList[' + index + '].PartyWiseNaration" value="' + (item.PartyWiseNaration || '') + '" /></td>' +
+
+                // Readonly fields
+                '<td><input class="form-control" readonly name="AgainstAdjustVoucherList[' + index + '].AgainstVoucherNo" value="' + (item.adjAgnstVouchNo || '') + '" /></td>' +
+                '<td><input class="form-control" readonly name="AgainstAdjustVoucherList[' + index + '].AgainstVoucherCode" value="' + (item.adjAgnstAccYearCode || 0) + '" /></td>' +
+                '<td><input class="form-control" readonly name="AgainstAdjustVoucherList[' + index + '].AgainstVoucherDate" value="' + (item.adjAgnstVouchDate || '') + '" /></td>' +
+                '<td><input class="form-control" readonly name="AgainstAdjustVoucherList[' + index + '].AgainstVoucherType" value="' + (item.adjAgnstVouchType || '') + '" /></td>' +
+                '<td><input class="form-control" readonly name="AgainstAdjustVoucherList[' + index + '].AgainstVoucherEntryId" value="' + (item.adjAgnstAccEntryID || 0) + '" /></td>' +
+                '<td><input class="form-control" readonly name="AgainstAdjustVoucherList[' + index + '].VoucherBillAmt" value="' + (item.adjAgnstPendAmt || 0) + '" /></td>' +
+                '<td><input class="form-control" readonly name="AgainstAdjustVoucherList[' + index + '].PendBillAmt" value="' + (item.adjAgnstPendAmt || 0) + '" /></td>' +
+                '</tr>';
+
+            $('#divBankReceipt').append(rowHtml);
+        });
+
+            } else {
+                $('#divBankReceipt').html('<tr><td colspan="15" class="text-center">No adjustment details found</td></tr>');
+            }
+        },
+
+                error: function (error) {
+                    console.log('Save failed', error);
+                }
+            });
+        }
+
+                function Validate_Submit() {
 
                             var Err = 0;
                             var DrAmt = parseFloat($('#DrAmt').val()) || 0;
@@ -2098,6 +2415,7 @@
                             $.ajax({
                                 type: "POST",
                                 url: '@Url.Action("AddAgainstAdjustVoucherAdjustDetail", "AgainstAdjustVoucher")',
+
                                 data: { model: ItemData, "Mode": $('#Mode').val() },
                                 success: function (result, status, xhr) {
                                     if (xhr.status == 200 && xhr.responseText == result) {
@@ -2277,72 +2595,156 @@
             return !Err;
         }
 
-        function GridButton() {
-        //    if (!Validate_GridButton()) return;
+        // function GridButton() {
+        // //    if (!Validate_GridButton()) return;
 
+        //     const rows = [];
+
+        //                 $('#tblAgainstAdjustVoucher tbody tr').each(function () {
+        //     const type = $(this).find('.type-select').val() || '';
+        //     const adjAmt = parseFloat($(this).find('.adjamt-input').val()) || 0;
+
+        //     const rowData = {
+        //         AccountCode: $(this).find('input[name$="AccountCode"]').val() || 0,
+        //         Balance: parseFloat($(this).find('input[name$="Balance"]').val()) || 0,
+        //         BankType: $(this).find('input[name$="BankType"]').val() || '',
+        //         DRCR: $(this).find('input[name$="DRCR"]').val() || '',
+        //         InsNo: $(this).find('input[name$="InsNo"]').val() || '',
+        //         InsDate: $(this).find('input[name$="InsDate"]').val() || '',
+        //         AdjustmentAmt: adjAmt.toFixed(2),
+        //         AdjustmentAmtOthCur: parseFloat($(this).find('input[name$="AdjustmentAmtOthCur"]').val()) || 0,
+        //         PartyWiseNaration: $(this).find('input[name$="PartyWiseNaration"]').val() || '',
+        //         AgainstVoucherNo: $(this).find('input[name$="AgainstVoucherNo"]').val() || '',
+        //         AgainstVoucherCode: $(this).find('input[name$="AgainstVoucherCode"]').val() || '',
+        //         AgainstVoucherDate: $(this).find('input[name$="AgainstVoucherDate"]').val() || '',
+        //         AgainstVoucherType: $(this).find('input[name$="AgainstVoucherType"]').val() || '',
+        //         AgainstVoucherEntryId: $(this).find('input[name$="AgainstVoucherEntryId"]').val() || '',
+        //         VoucherBillAmt: parseFloat($(this).find('input[name$="VoucherBillAmt"]').val()) || 0,
+        //         PendBillAmt: parseFloat($(this).find('input[name$="PendBillAmt"]').val()) || 0,
+        //         SeqNo: $(this).find('input[name$="SeqNo"]').val() || 0,
+        //         CustOrderNo: $(this).find('input[name$="CustOrderNo"]').val() || '',
+        //         SoDate: $(this).find('input[name$="SoDate"]').val() || '',
+        //         SOYear: $(this).find('input[name$="SOYear"]').val() || 0,
+        //         DrAmt: type.toLowerCase() === 'dr' ? adjAmt.toFixed(2) : "0.00",
+        //         CrAmt: type.toLowerCase() === 'cr' ? adjAmt.toFixed(2) : "0.00",
+        //         ActualEntryby: parseInt($(this).find('input[name$="ActualEntryby"]').val()) || 0,
+        //         UID: parseInt($(this).find('input[name$="UID"]').val()) || 0,
+        //         EntryByMachine: $(this).find('input[name$="EntryByMachine"]').val() || '',
+        //         CurrencyId: parseInt($(this).find('input[name$="CurrencyId"]').val()) || 0,
+        //         ActualEntryDate: $(this).find('input[name$="ActualEntryDate"]').val() || '',
+        //         Mode: $(this).find('input[name$="Mode"]').val() || '',
+        //         Type: type === '-Select-' ? '' : type,
+        //         LedgerName: $(this).find('.ledger-select option:selected').text() === '--Select--' ? '' : $(this).find('.ledger-select option:selected').text(),
+        //         Intrument: $(this).find('select[name$="Intrument"] option:selected').text() === '--Select--' ? '' : $(this).find('select[name$="Intrument"] option:selected').text(),
+        //         ModeOfAdjustment: $(this).find('.mode-select option:selected').text() === '--Select--' ? '' : $(this).find('.mode-select option:selected').text(),
+        //         CostCenterName: $(this).find('.costcenter-select option:selected').text() === '--Select--' ? '' : $(this).find('.costcenter-select option:selected').text(),
+        //         CostCenterId: parseInt($(this).find('input[name$="CostCenterId"]').val()) || 0,
+        //         SrNO: $(this).data('srno') || 0
+        //     };
+
+            
+        //     rows.push(rowData); // ✅ add the row to the array
+        // });
+        //     let model = {};
+        // $.each($("form").serializeArray(), function () {
+        //     model[this.name] = this.value;
+        // });
+
+        // // 🔹 add grid list
+        // model.AgainstAdjustVoucherList = rows;
+            
+        //     $.ajax({
+        //            type: "POST",
+        // url: '@Url.Action("AddAgainstAdjustVoucherDetail", "AgainstAdjustVoucher")',
+        //   type: "POST",
+        //         data: JSON.stringify(model),
+        //         contentType: 'application/json',
+      
+        //         success: function (result, status, xhr) {
+        //             $('#divBankReceiptDetail').html(result);
+        //             $.notify('Process Added To Grid', "success");
+        //             TotalNoOfRows();
+        //             calculateTotalBalance();
+        //             ClearGrid();
+        //         },
+        //         error: function () {
+        //             $.notify('Something went wrong. Please try again.', "error");
+        //         }
+        //     });
+        // }
+                     function GridButton() {
             const rows = [];
 
-                        $('#tblAgainstAdjustVoucher tbody tr').each(function () {
-            const type = $(this).find('.type-select').val() || '';
-            const adjAmt = parseFloat($(this).find('.adjamt-input').val()) || 0;
-
-            const rowData = {
-                AccountCode: $(this).find('input[name$="AccountCode"]').val() || 0,
+              $('#tblAgainstAdjustVoucher tbody tr').each(function () {
+            rows.push({
+                AccountCode: parseInt($(this).find('input[name$="AccountCode"]').val()) || 0,
                 Balance: parseFloat($(this).find('input[name$="Balance"]').val()) || 0,
                 BankType: $(this).find('input[name$="BankType"]').val() || '',
                 DRCR: $(this).find('input[name$="DRCR"]').val() || '',
+                Ins: $(this).find('input[name$="Ins"]').val() || '',
                 InsNo: $(this).find('input[name$="InsNo"]').val() || '',
                 InsDate: $(this).find('input[name$="InsDate"]').val() || '',
-                AdjustmentAmt: adjAmt.toFixed(2),
+                AdjustmentAmt: parseFloat($(this).find('input[name$="AdjustmentAmt"]').val()) || 0,
                 AdjustmentAmtOthCur: parseFloat($(this).find('input[name$="AdjustmentAmtOthCur"]').val()) || 0,
                 PartyWiseNaration: $(this).find('input[name$="PartyWiseNaration"]').val() || '',
                 AgainstVoucherNo: $(this).find('input[name$="AgainstVoucherNo"]').val() || '',
                 AgainstVoucherCode: $(this).find('input[name$="AgainstVoucherCode"]').val() || '',
                 AgainstVoucherDate: $(this).find('input[name$="AgainstVoucherDate"]').val() || '',
                 AgainstVoucherType: $(this).find('input[name$="AgainstVoucherType"]').val() || '',
-                AgainstVoucherEntryId: $(this).find('input[name$="AgainstVoucherEntryId"]').val() || '',
+                AgainstVoucherEntryId: parseInt($(this).find('input[name$="AgainstVoucherEntryId"]').val()) || 0,
                 VoucherBillAmt: parseFloat($(this).find('input[name$="VoucherBillAmt"]').val()) || 0,
                 PendBillAmt: parseFloat($(this).find('input[name$="PendBillAmt"]').val()) || 0,
-                SeqNo: $(this).find('input[name$="SeqNo"]').val() || 0,
+                SeqNo: parseInt($(this).find('input[name$="SeqNo"]').val()) || 0,
                 CustOrderNo: $(this).find('input[name$="CustOrderNo"]').val() || '',
                 SoDate: $(this).find('input[name$="SoDate"]').val() || '',
-                SOYear: $(this).find('input[name$="SOYear"]').val() || 0,
-                DrAmt: type.toLowerCase() === 'dr' ? adjAmt.toFixed(2) : "0.00",
-                CrAmt: type.toLowerCase() === 'cr' ? adjAmt.toFixed(2) : "0.00",
+                SOYear: parseInt($(this).find('input[name$="SOYear"]').val()) || 0,
+                DrAmt: $(this).find('.type-select').val() === 'DR' ? parseFloat($(this).find('.adjamt-input').val()) || 0 : 0,
+                CrAmt: $(this).find('.type-select').val() === 'CR' ? parseFloat($(this).find('.adjamt-input').val()) || 0 : 0,
                 ActualEntryby: parseInt($(this).find('input[name$="ActualEntryby"]').val()) || 0,
                 UID: parseInt($(this).find('input[name$="UID"]').val()) || 0,
                 EntryByMachine: $(this).find('input[name$="EntryByMachine"]').val() || '',
                 CurrencyId: parseInt($(this).find('input[name$="CurrencyId"]').val()) || 0,
                 ActualEntryDate: $(this).find('input[name$="ActualEntryDate"]').val() || '',
                 Mode: $(this).find('input[name$="Mode"]').val() || '',
-                Type: type === '-Select-' ? '' : type,
-                LedgerName: $(this).find('.ledger-select option:selected').text() === '--Select--' ? '' : $(this).find('.ledger-select option:selected').text(),
-                Intrument: $(this).find('select[name$="Intrument"] option:selected').text() === '--Select--' ? '' : $(this).find('select[name$="Intrument"] option:selected').text(),
-                ModeOfAdjustment: $(this).find('.mode-select option:selected').text() === '--Select--' ? '' : $(this).find('.mode-select option:selected').text(),
-                CostCenterName: $(this).find('.costcenter-select option:selected').text() === '--Select--' ? '' : $(this).find('.costcenter-select option:selected').text(),
+                Type: $(this).find('.type-select').val() || '',
+                LedgerName: $(this).find('.ledger-select option:selected').text() || '',
+                Intrument: $(this).find('select[name$="Intrument"] option:selected').text() || '',
+                ModeOfAdjustment: $(this).find('.mode-select option:selected').text() || '',
+                CostCenterName: $(this).find('.costcenter-select option:selected').text() || '',
                 CostCenterId: parseInt($(this).find('input[name$="CostCenterId"]').val()) || 0,
                 SrNO: $(this).data('srno') || 0
-            };
-
-            
-            rows.push(rowData); // ✅ add the row to the array
+            });
         });
 
-            console.log(rows)
+            // Manually build the top-level object
+            const model = {
+                FromDateBack: $('#FromDateBack').val() || '',
+                ToDateBack: $('#ToDateBack').val() || '',
+                LedgerNameBack: $('#LedgerNameBack').val() || '',
+                VoucherNoBack: $('#VoucherNoBack').val() || '',
+                AccEntryId: parseInt($('#AccEntryId').val()) || 0,
+                VoucherType: $('#VoucherType').val() || '',
+                VoucherNo: $('#VoucherNo').val() || '',
+                SrNO: parseInt($('#SrNO').val()) || 0,
+                CC: $('#CC').val() || '',
+                EntryId: parseInt($('#EntryId').val()) || 0,
+                EntryDate: $('#EntryDate').val() || '',
+                YearCode: parseInt($('#YearCode').val()) || 0,
+                AgainstAdjustVoucherList: rows  // ✅ this must be an array of objects
+            };
+
             $.ajax({
-                   type: "POST",
-        url: '@Url.Action("AddAgainstAdjustVoucherDetail", "AgainstAdjustVoucher")',
-        data: JSON.stringify(rows),  // <-- send array directly
-        contentType: "application/json; charset=utf-8",
-                success: function (result, status, xhr) {
+                type: "POST",
+                url: '@Url.Action("AddAgainstAdjustVoucherDetail", "AgainstAdjustVoucher")',
+                data: JSON.stringify(model),  // JSON.stringify is required
+                contentType: 'application/json',
+                success: function (result) {
                     $('#divBankReceiptDetail').html(result);
                     $.notify('Process Added To Grid', "success");
-                    TotalNoOfRows();
-                    calculateTotalBalance();
-                    ClearGrid();
                 },
-                error: function () {
-                    $.notify('Something went wrong. Please try again.', "error");
+                error: function (err) {
+                    console.log(err);
+                    $.notify('Something went wrong.', "error");
                 }
             });
         }

@@ -34,7 +34,7 @@ namespace eTactWeb.DOM.Models
         public string Account_name { get; set; }
         public string DOMESTICIMPORT { get; set; }
         public string PONO { get; set; }
-        public int POYearCode { get; set; }
+        public int PoYear { get; set; }
         public int HSNNO { get; set; }
         public string PODate { get; set; }
         public string POtype { get; set; }
@@ -83,7 +83,7 @@ namespace eTactWeb.DOM.Models
         public string POEndDate { get; set; }
         public string POValue { get; set; }
         public string QCOKQty { get; set; }
-        public string PendQty { get; set; }
+        public decimal PendQty { get; set; }
         public string MinLevel { get; set; }
         public string unit { get; set; }
         public string Rate { get; set; }

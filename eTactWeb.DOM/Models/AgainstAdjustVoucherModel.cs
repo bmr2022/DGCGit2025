@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -158,5 +159,65 @@ namespace eTactWeb.DOM.Models
         public decimal TotalPopCrAmt { get; set; }
         public decimal PopAdjustmentAmt { get; set; }
         public string? Bank { get; set; }
+        public List<AdjustmentModel>? AdjAdjustmentDetailGrid { get; set; }
+        public IList<SelectListItem> AdjModeOfAdjustmentList { get; set; } = new List<SelectListItem>()
+        {
+            new() { Value = "NewRef", Text = "New Ref", Selected = true  },
+            new() { Value = "AgainstRef", Text = "Against Ref" },
+            new() { Value = "Advance", Text = "Advance" },
+        };
+        public IList<SelectListItem> AdjDrCrList { get; set; } = new List<SelectListItem>()
+        {
+            new() { Value = "DR", Text = "DR" },
+            new() { Value = "CR", Text = "CR", Selected = true },
+        };
+        public IList<SelectListItem> AdjPurchOrderNoList { get; set; } = new List<SelectListItem>()
+        {
+            new() { Value = "1", Text = "1" },
+            new() { Value = "2", Text = "2" },
+        };
+        public int? AdjSeqNo { get; set; }
+        public string? AdjModeOfAdjstment { get; set; }
+        public string? AdjModeOfAdjstmentName { get; set; }
+        public string? AdjNewRefNo { get; set; }
+        public string? AdjDescription { get; set; }
+        public string? AdjDrCrName { get; set; }
+        public string? AdjDrCr { get; set; }
+        //[Column(TypeName = "decimal(18, 6)")]
+        public decimal? AdjPendAmt { get; set; }
+        public float? AdjAdjstedAmt { get; set; }
+        public float? AdjTotalAmt { get; set; }
+        public float? AdjRemainingAmt { get; set; }
+        public int? AdjOpenEntryID { get; set; }
+        public int? AdjOpeningYearCode { get; set; }
+        public DateTime? AdjDueDate { get; set; }
+        
+        public string? AdjPurchOrderNo { get; set; }
+        public int? AdjPOYear { get; set; }
+        public DateTime? AdjPODate { get; set; }
+        public string? AdjPageName { get; set; }
+        public int? AdjAgnstAccEntryID { get; set; }
+        public int? AdjAgnstAccYearCode { get; set; }
+        public string? AdjAgnstModeOfAdjstment { get; set; }
+        public string? AdjAgnstModeOfAdjstmentName { get; set; }
+        public string? AdjAgnstNewRefNo { get; set; }
+        public string? AdjAgnstVouchNo { get; set; }
+        public string? AdjAgnstVouchType { get; set; }
+        public string? AdjAgnstDrCrName { get; set; }
+        public string? AdjAgnstDrCr { get; set; }
+        [Column(TypeName = "decimal(18, 6)")]
+        public float? AdjAgnstPendAmt { get; set; }
+        public float? AdjAgnstAdjstedAmt { get; set; }
+        public float? AdjAgnstTotalAmt { get; set; }
+        public float? AdjAgnstRemainingAmt { get; set; }
+        public int? AdjAgnstOpenEntryID { get; set; }
+        public int? AdjAgnstOpeningYearCode { get; set; }
+        public DateTime? AdjAgnstVouchDate { get; set; }
+        public string? AdjAgnstTransType { get; set; }
+        public float TotalBillAmount { get; set; }
+        public float TotalRemainingAmount { get; set; }
+        public float TotalAdjustAmount { get; set; }
+        public float? PendingToAdjustAmount { get; set; }
     }
+   
 }
