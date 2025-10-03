@@ -138,6 +138,7 @@ else @* List Of PO with Item Detail(Open +close) *@
             <tbody id="divStockRegisterBody">
                 @{
                     var @Cntr = 0;
+                  
                     int srNoStart = (Model.PageNumber - 1) * Model.PageSize;
                     int srNo = srNoStart + 1;
                     if (Model.PORegisterDetails == null)
@@ -148,9 +149,10 @@ else @* List Of PO with Item Detail(Open +close) *@
                     {
                         foreach (var item in Model.PORegisterDetails)
                         {
+                            var rowClass = item.Active == "N" ? "color:red;" : ""; ;
                             Cntr = Cntr + 1;
 
-                            <tr id="SAGridRow-@Cntr" onclick="selection(this)" class="po-row" data-active="@item.Active">
+                            <tr id="SAGridRow-@Cntr" onclick="selection(this)" class="po-row @(rowClass)" data-active="@item.Active">
                                 <td>
                                     <a class="table-link link-danger" onclick="DeleteRow(this.id)" id="@Cntr">
                                         <span class="fa-stack">
