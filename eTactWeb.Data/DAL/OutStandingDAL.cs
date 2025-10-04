@@ -25,7 +25,7 @@ namespace eTactWeb.Data.DAL
             _IDataLogic = iDataLogic;
         }
 
-        public async Task<ResponseResult> GetPartyName(string outstandingType, string TillDate)
+        public async Task<ResponseResult> GetPartyName(string outstandingType, string TillDate, int? GroupCode)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -33,6 +33,7 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "FillAccountName"));
                 SqlParams.Add(new SqlParameter("@outstandingType", outstandingType));
+                SqlParams.Add(new SqlParameter("@GroupCode", GroupCode.HasValue ? (object)GroupCode.Value : DBNull.Value));
                 SqlParams.Add(new SqlParameter("@ReportCallingFrom", "OutstandingForm"));
                 SqlParams.Add(new SqlParameter("@TillDate", ParseFormattedDate(TillDate)));
 
