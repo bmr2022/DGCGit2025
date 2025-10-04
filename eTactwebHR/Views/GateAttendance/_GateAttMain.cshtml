@@ -24,11 +24,11 @@
             <input type="hidden" asp-for="NFromDate" />
             <input type="hidden" asp-for="NToDate" />
             <label asp-for="GateAttEntryId" class="form-label">Entry ID</label>
-            <input asp-for="GateAttEntryId" class="form-control" readonly />
+            <input asp-for="GateAttEntryId" value="@Model.GateAttEntryId" class="form-control" readonly />
         </div>
         <div class="col-xxl-1 col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
             <label asp-for="GateAttEntryDate" class="form-label">Entry Date</label>
-            <input asp-for="GateAttEntryDate" class="form-control " readonly />
+            <input asp-for="GateAttEntryDate" value="@Model.GateAttEntryDate" class="form-control " readonly />
         </div>
         <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
             <label asp-for="GateAttYearCode" class="form-label">Year</label>

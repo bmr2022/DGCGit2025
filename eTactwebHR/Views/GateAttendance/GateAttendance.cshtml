@@ -38,18 +38,11 @@
                     @* <partial name="_FormsButton" /> *@
                     <div class="row justify-content-between g-2">
                         <div class="col-auto">
-                            @* <input asp-for="FromDateBack" type="hidden" value="@Model.FromDateBack" />
+                            <input asp-for="FromDateBack" type="hidden" value="@Model.FromDateBack" />
                             <input asp-for="ToDateBack" type="hidden" value="@Model.ToDateBack" />
-                            <input asp-for="DashboardTypeBack" type="hidden" value="@Model.DashboardTypeBack" />
-                            <input asp-for="TypeITEMSERVASSETSBack" type="hidden" value="@Model.TypeITEMSERVASSETSBack" />
-                            <input asp-for="DocumentTypeBack" type="hidden" value="@Model.DocumentTypeBack" />
-                            <input asp-for="VendorNameBack" type="hidden" value="@Model.VendorNameBack" />
-                            <input asp-for="PurchVouchNoBack" type="hidden" value="@Model.PurchVouchNoBack" />
-                            <input asp-for="InvoiceNoBack" type="hidden" value="@Model.InvoiceNoBack" />
-                            <input asp-for="PartCodeBack" type="hidden" value="@Model.PartCodeBack" />
-                            <input asp-for="ItemNameBack" type="hidden" value="@Model.ItemNameBack" />
-                            <input asp-for="HSNNoBack" type="hidden" value="@Model.HSNNoBack" />
-                            <input asp-for="GlobalSearchBack" type="hidden" value="@Model.GlobalSearchBack" /> *@
+                            @* <input asp-for="DashboardTypeBack" type="hidden" value="@Model.DashboardTypeBack" />
+                            <input asp-for="AttendanceEntryMethodTypeBack" type="hidden" value="@Model.AttendanceEntryMethodTypeBack" /> *@
+                            <input asp-for="GlobalSearchBack" type="hidden" value="@Model.GlobalSearchBack" />
 
                             <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
                                 <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
@@ -166,18 +159,11 @@
                     @* <partial name="_FormsButton" /> *@
                     <div class="row justify-content-between g-2">
                         <div class="col-auto">
-                            @* <input asp-for="FromDateBack" type="hidden" value="@Model.FromDateBack" />
+                            <input asp-for="FromDateBack" type="hidden" value="@Model.FromDateBack" />
                             <input asp-for="ToDateBack" type="hidden" value="@Model.ToDateBack" />
-                            <input asp-for="DashboardTypeBack" type="hidden" value="@Model.DashboardTypeBack" />
-                            <input asp-for="TypeITEMSERVASSETSBack" type="hidden" value="@Model.TypeITEMSERVASSETSBack" />
-                            <input asp-for="DocumentTypeBack" type="hidden" value="@Model.DocumentTypeBack" />
-                            <input asp-for="VendorNameBack" type="hidden" value="@Model.VendorNameBack" />
-                            <input asp-for="PurchVouchNoBack" type="hidden" value="@Model.PurchVouchNoBack" />
-                            <input asp-for="InvoiceNoBack" type="hidden" value="@Model.InvoiceNoBack" />
-                            <input asp-for="PartCodeBack" type="hidden" value="@Model.PartCodeBack" />
-                            <input asp-for="ItemNameBack" type="hidden" value="@Model.ItemNameBack" />
-                            <input asp-for="HSNNoBack" type="hidden" value="@Model.HSNNoBack" />
-                            <input asp-for="GlobalSearchBack" type="hidden" value="@Model.GlobalSearchBack" /> *@
+                            @* <input asp-for="DashboardTypeBack" type="hidden" value="@Model.DashboardTypeBack" />
+                            <input asp-for="AttendanceEntryMethodTypeBack" type="hidden" value="@Model.AttendanceEntryMethodTypeBack" /> *@
+                            <input asp-for="GlobalSearchBack" type="hidden" value="@Model.GlobalSearchBack" />
 
                             <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
                                 <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
@@ -790,6 +776,14 @@
             });
         }
         document.addEventListener('DOMContentLoaded', initItemGridResize);
+        function PressBack() {
+            sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());
+            sessionStorage.setItem('ToDateBack', $('#ToDateBack').val());
+            // sessionStorage.setItem('DashboardTypeBack', $('#DashboardTypeBack').val());
+            // sessionStorage.setItem('AttendanceEntryMethodTypeBack', $('#AttendanceEntryMethodTypeBack').val());
+            sessionStorage.setItem('GlobalSearchBack', $('#GlobalSearchBack').val());
+            window.history.back();
+        }
     </script>
 }
 <!-- jQuery FIRST -->

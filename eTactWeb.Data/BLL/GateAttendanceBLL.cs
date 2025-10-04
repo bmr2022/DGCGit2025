@@ -42,9 +42,13 @@ namespace eTactWeb.Data.BLL
         {
             return _GateAttendanceDAL.SaveGateAtt(model, itemgrid);
         }
-        async Task<GateAttDashBoard> IGateAttendance.GetDashBoardData()
+        async Task<GateAttDashBoard> IGateAttendance.GetDashBoardData(GateAttDashBoard model)
         {
-            return await _GateAttendanceDAL.GetDashBoardData();
+            return await _GateAttendanceDAL.GetDashBoardData(model);
+        }
+        async Task<GateAttendanceModel> IGateAttendance.GetViewByID(int ID, int YearCode)
+        {
+            return await _GateAttendanceDAL.GetViewByID(ID, YearCode);
         }
     }
 }

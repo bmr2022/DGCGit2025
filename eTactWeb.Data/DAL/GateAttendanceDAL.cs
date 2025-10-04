@@ -295,7 +295,7 @@ public class GateAttendanceDAL
 
         return _ResponseResult;
     }
-    internal async Task<GateAttDashBoard> GetDashBoardData()
+    internal async Task<GateAttDashBoard> GetDashBoardData(GateAttDashBoard model)
     {
         var DashBoardData = new GateAttDashBoard();
         var SqlParams = new List<dynamic>();
@@ -307,14 +307,27 @@ public class GateAttendanceDAL
             {
                 DateTime now = DateTime.Now;
                 DateTime firstDayOfMonth = new DateTime(now.Year, now.Month, 1);
-                var firstdayofMonthh = CommonFunc.ParseFormattedDate(firstDayOfMonth.ToString("dd/MM/yyyy"));
-                var today = CommonFunc.ParseFormattedDate(DateTime.Now.ToString("dd/MM/yyyy"));
+                string firstdayofMonthh = string.Empty;
+                string today = string.Empty;
+                if (model != null)
+                {
+                    firstdayofMonthh = CommonFunc.ParseFormattedDate(model.FromDate);
+                    today = CommonFunc.ParseFormattedDate(model.ToDate);
+                }
+                else
+                {
+                    firstdayofMonthh = CommonFunc.ParseFormattedDate(firstDayOfMonth.ToString("dd/MM/yyyy"));
+                    today = CommonFunc.ParseFormattedDate(DateTime.Now.ToString("dd/MM/yyyy"));
+                }
                 SqlCommand oCmd = new SqlCommand("HRSPGateAttendanceMainDetail", myConnection)
                 {
                     CommandType = CommandType.StoredProcedure
                 };
                 oCmd.Parameters.AddWithValue("@Flag", "Dashboard");
-                //oCmd.Parameters.AddWithValue("@YearCode", now.Year);
+                if(model != null)
+                {
+                    //oCmd.Parameters.AddWithValue("@YearCode", now.Year);
+                }
                 oCmd.Parameters.AddWithValue("@FromDate", firstdayofMonthh);
                 oCmd.Parameters.AddWithValue("@ToDate", today);
                 await myConnection.OpenAsync();
@@ -353,7 +366,7 @@ public class GateAttendanceDAL
 
         return DashBoardData;
     }
-    public async Task<GateAttendanceModel> GetViewByID(int ID, int YC, string Flag)
+    public async Task<GateAttendanceModel> GetViewByID(int ID, int YC)
     {
         var oDataSet = new DataSet();
         var MainModel = new GateAttendanceModel();
@@ -368,7 +381,7 @@ public class GateAttendanceDAL
 
             var ResponseResult = await _IDataLogic.ExecuteDataSet("HRSPGateAttendanceMainDetail", SqlParams);
 
-            if (((DataSet)ResponseResult.Result).Tables.Count > 0 && ((DataSet)ResponseResult.Result).Tables[0].Rows.Count > 0)
+            if (ResponseResult.Result != null && ((DataSet)ResponseResult.Result).Tables.Count > 0 && ((DataSet)ResponseResult.Result).Tables[0].Rows.Count > 0)
             {
                 oDataSet = ResponseResult.Result;
                 oDataSet.Tables[0].TableName = "GateAttandance";

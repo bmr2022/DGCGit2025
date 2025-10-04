@@ -129,6 +129,12 @@ public class GateAttendanceModel : TimeStamp
     public Dictionary<string, string> Attendance { get; set; } = new(); // dynamic day-wise In/Out
     public List<GateAttendanceModel> GateAttDetailsList { get; set; }
     public List<GateAttendanceHolidayModel> HolidayList { get; set; }
+    //for dashboard back
+    public string FromDateBack { get; set; }
+    public string ToDateBack { get; set; }
+    public string AttendanceEntryMethodTypeBack { get; set; }
+    public string DashboardTypeBack { get; set; }
+    public string GlobalSearchBack { get; set; }
 }
 
 [Serializable]
@@ -151,6 +157,8 @@ public class GateAttDashBoard : TimeStamp
     public int? GateAttYearCode { get; set; }
     public string? FromDate { get; set; }
     public string? ToDate { get; set; }
+    public string? FromDate1 { get; set; }
+    public string? ToDate1 { get; set; }
     //public IList<TextValue>? PONoList { get; set; }
     //pagintion
     public int PageNumber { get; set; }
