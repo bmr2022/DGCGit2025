@@ -2008,6 +2008,8 @@ public class ItemMasterController : Controller
                 var duplicateItemName = _IDataLogic.isDuplicate(worksheet.Cells[row, 2].Value.ToString().Trim() ?? "", "Item_Name", "Item_Master");
                 var workCenter = worksheet.Cells[row, 15].Value?.ToString().Trim() ?? "";
                 var Store = worksheet.Cells[row, 16].Value?.ToString().Trim() ?? "";
+                var RackId = worksheet.Cells[row, 17].Value?.ToString().Trim() ?? "";
+                var Barcode = worksheet.Cells[row, 18].Value?.ToString().Trim() ?? "";
 
                 //var workCenter = worksheet.Cells[row, headersMap["WorkCenterDescription"]].Text?.Trim();
                 //var Store = worksheet.Cells[row, headersMap["Store"]].Text?.Trim();
@@ -2098,10 +2100,10 @@ public class ItemMasterController : Controller
                 }
 
                 bool StoreExists = false;
-                if (string.IsNullOrWhiteSpace(Store))
-                {
-                    return StatusCode(207, $"Store is mandatory at row: {Store} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
-                }
+                //if (string.IsNullOrWhiteSpace(Store))
+                //{
+                //    return StatusCode(207, $"Store is mandatory at row: {Store} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
+                //}
                 var StoreList = _IItemMaster.GetStoreList();
                     var Storedataset = StoreList.Result.Result;
                     var StoreTable = Storedataset.Tables[0];
@@ -2196,6 +2198,8 @@ public class ItemMasterController : Controller
                     NeedPO = GetCellValue(worksheet, row, 11),
                     QcReq = GetCellValue(worksheet, row, 12),
                     StdPkg = GetCellIntValue(worksheet, row, 13),
+                    RackID = GetCellValue(worksheet, row, 17),
+                    Barcode = GetCellValue(worksheet, row, 18),
                     ItemGroupCode = itemGCode,
                     ItemCategoryCode = itemCCode,
                     ItemServAssets = GetCellValue(worksheet, row, 14),
@@ -2828,6 +2832,7 @@ public class ItemMasterController : Controller
         MRGrid.Columns.Add("Active", typeof(string));
         MRGrid.Columns.Add("ItemServAssets", typeof(string));
         MRGrid.Columns.Add("ProdInWorkcenter", typeof(string));
+        MRGrid.Columns.Add("Barcode", typeof(string));
 
         foreach (var Item in DetailList)
         {
@@ -2861,7 +2866,7 @@ public class ItemMasterController : Controller
                                         0,                           // 24. ReorderLevel (float)
                                        "2025",                           // 25. YearCode (float)
                                         "",                          // 26. AlternateUnit (string)
-                                        "",                          // 27. RackID (string)
+                                        Item.RackID,                          // 27. RackID (string)
                                         "",                          // 28. BinNo (string)
                                         "",                          // 29. ItemSize (string)
                                         "",                          // 30. Colour (string)
@@ -2893,7 +2898,8 @@ public class ItemMasterController : Controller
                                         today.ToString("yyyy-MM-dd").Split(" ")[0], // 55. UpdatedOn (string) - EXTRA VALUE
                                         "Y",                          // 56. Active (string) - EXTRA VALUE
                                         Item.ItemServAssets      ,    // 57. ItemServAssets (string) - EXTRA VALUE
-                                        Item.ProdInWorkcenter          // 57. ItemServAssets (string) - EXTRA VALUE
+                                        Item.ProdInWorkcenter   ,       // 57. ItemServAssets (string) - EXTRA VALUE,
+                                        Item.Barcode
                                     }
 
                 );

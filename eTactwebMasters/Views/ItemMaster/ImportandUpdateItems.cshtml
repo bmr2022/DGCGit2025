@@ -599,7 +599,10 @@
                     mapping[dbColumn] = selectedExcelColumn;
                 }
             });
-
+                 if (!mapping["PartCode"] || mapping["PartCode"].trim() === "") {
+            $.notify(" PartCode mapping is mandatory!", "error");
+            return; // stop execution
+        }
             // 2. Extract Excel Table Headers
             let excelHeaders = [];
             $('#MultiexcelTable table thead th').each(function () {

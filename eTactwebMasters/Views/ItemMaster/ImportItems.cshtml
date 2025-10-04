@@ -144,6 +144,8 @@
                                                         <th>ItemServAssets</th>
                                                         <th>WorkCenter</th>
                                                         <th>Store</th>
+                                                        <th>Rack Id</th>
+                                                        <th>Barcode</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody id="divItemList">
@@ -386,7 +388,9 @@
                         "StdPkg": parseInt($('#StdPkg-' + i).text()),
                         "ItemServAssets": $('#ItemServAssets-' + i).text(),
                         "ProdInWorkcenter": $('#ProdInWorkcenter-' + i).val(),
-                        "Store": $('#Store-' + i).val()
+                        "Store": $('#Store-' + i).val(),
+                        "RackID": $('#RackID-' + i).text(),
+                        "Barcode": $('#Barcode-' + i).text()
                     });
                 }
             }

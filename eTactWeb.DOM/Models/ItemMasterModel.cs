@@ -368,6 +368,8 @@ namespace eTactWeb.DOM.Models
         public string? Store { get; set; }
         public string? WorkCenter { get; set; }
         public string? StoreName { get; set; }
+        public string? RackID { get; set; }
+        public string? Barcode { get; set; }
         public int? ProdInWorkcenter { get; set; }
         public int StdPkg { get; set; }
         public int SeqNo { get; set; }
