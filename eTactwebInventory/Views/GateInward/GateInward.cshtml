@@ -1733,7 +1733,7 @@
                             $('#PoYear').empty();
                             $('#PoYear').append('<option disabled selected>-Select-</option>');
                             $.each(obj.Result, function (key, val) {
-                                $('#PoYear').append('<option value="' + val.YearCode + '" data-po-date="' + formatJSONDate(val.PODate) + '" data-po-type="' + val.POType + '" data-po-entryid="' + val.Entryid + '">' + val.YearCode + '</option>');
+                                $('#PoYear').append('<option value="' + val.YearCode + '" data-po-date="' + (val.PODate) + '" data-po-type="' + val.POType + '" data-po-entryid="' + val.Entryid + '">' + val.YearCode + '</option>');
                             });
                         }
                     }
@@ -1939,13 +1939,13 @@
                             $('#SchYearCode').empty();
                             $('#SchYearCode').append('<option disabled selected>-Select-</option>');
                             $.each(obj.Result, function (index, val) {
-                                $('#SchNo').append('<option value="' + val.ScheduleNo + '" data-sch-date="' + formatJSONDate(val.ScheduleDate) + '" data-sch-entryid="' + val.SchEntryID + '">' + val.ScheduleNo + '</option>');
+                                $('#SchNo').append('<option value="' + val.ScheduleNo + '" data-sch-date="' + (val.ScheduleDate) + '" data-sch-entryid="' + val.SchEntryID + '">' + val.ScheduleNo + '</option>');
                                 if ($("#SchYearCode option[value='" + val.YearCode + "']").length == 0) {
                                     $('#SchYearCode').append('<option value="' + val.YearCode + '" >' + val.YearCode + '</option>');
 
                                 }
                             });
-                            //$('#ScheduleDate').val(formatJSONDate(obj.Result[0].ScheduleDate));
+                            //$('#ScheduleDate').val((obj.Result[0].ScheduleDate));
                             $("#SchNo").bind("change", function () { CheckAndFillItem() });
                             $("#SchYearCode").bind("change", function () { CheckAndFillItem() });
                         }
