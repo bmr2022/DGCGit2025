@@ -451,6 +451,10 @@
             }
         }
 
+        $('#GroupName').change(function(){
+            FillPartyName();
+        })
+
         function selection(CurrentRow) {
 
             $(CurrentRow).css({ 'background-color': '#00bcd4' });
@@ -465,7 +469,6 @@
         });
 
         function GetDetailDataForPartyWise(td) {
-            ;
             let accountCode = $(td).find(".hdnAccountCode").val();
             let ledgerDescription = $(td).data("id");
             $('#BackButton').show();
@@ -500,12 +503,14 @@
             var isMulti = $('#multiPartySwitch').is(':checked');
             var PartynameSingleDropdown = $('#PartyNameSingle');
             var PartynameMultiDropdown = $('#PartyNameMulti');
+            var GroupCode = $('#GroupName').val();
 
             $.ajax({
                 url: '@Url.Action("GetPartyName", "OutStanding")',
                 data: {
                     "OutStandingType": OutStandingType,
-                    "TillDate": TillDate
+                    "TillDate": TillDate,
+                    "GroupCode": GroupCode
                 },
                 type: 'GET',
                 success: function (response) {
@@ -562,7 +567,7 @@
                     PartynameDropdown.append('<option value="">--Select--</option>');
 
                     $.each(obj.Result, function (index, item) {
-                        PartynameDropdown.append('<option value="' + item.ParentGroupName + '">' + item.ParentGroupName + '</option>');
+                        PartynameDropdown.append('<option value="' + item.ParentCode + '">' + item.ParentGroupName + '</option>');
                     });
 
                 },
