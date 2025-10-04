@@ -2220,6 +2220,7 @@ public class ItemMasterController : Controller
     public async Task<IActionResult> UpdateFromExcel([FromBody] ExcelUpdateRequest request)
     {
         var response = new ResponseResult();
+        var flag = request.Flag;
 
         try
         {
@@ -2415,7 +2416,7 @@ public class ItemMasterController : Controller
                 dt.Rows.Add(row);
             }
 
-            response = await _IItemMaster.UpdateMultipleItemDataFromExcel(dt, "UpdateDataFromExcel");
+            response = await _IItemMaster.UpdateMultipleItemDataFromExcel(dt, flag);
 
             if (response != null)
             {
