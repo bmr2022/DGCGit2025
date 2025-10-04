@@ -499,6 +499,7 @@ namespace eTactWeb.Data.DAL
                                     VoucherNo = row["VoucherNo"].ToString(),
                                     VoucherType = row["VoucherType"].ToString(),
                                     VoucherDocNo = row["VoucherDocNoBillNo"].ToString(),
+                                    VoucherDocDate = row["VoucherDate"].ToString(),
                                     DrAmt = Convert.ToDecimal(row["DrAmt"]),
                                     CrAmt = Convert.ToDecimal(row["CrAmt"]),
                                     VoucherBillAmt = Convert.ToDecimal(row["BillNetAmt"]),
