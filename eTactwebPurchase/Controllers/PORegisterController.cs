@@ -300,6 +300,7 @@ namespace eTactWeb.Controllers
             {
                 { "LISTOFSCHEDULESUMMARY", EXPORTLISTOFSCHEDULESUMMARY },
                 { "LIST OF PO", EXPORTLISTOFPO },
+                { "List of PO With Item", EXPORTLISTOFPOWITHITEM },
 
                 { "LISTOFSCHEDULE", EXPORTLISTOFSCHEDULE },
                 { "PO vs Receiving Detail ( GateMRNQC)",  EXPORTLISTOFPOvsReceivingDetail },
@@ -400,6 +401,53 @@ namespace eTactWeb.Controllers
                 sheet.Cell(row, 11).Value = item.POFOR;
                 sheet.Cell(row, 12).Value = item.Currency;
                 sheet.Cell(row, 13).Value = item.Active;
+                row++;
+            }
+        }
+        private void EXPORTLISTOFPOWITHITEM(IXLWorksheet sheet, IList<PORegisterDetail> list)
+        {
+            string[] headers = {
+            "srNo","PO No", "PO Date", "PO Type", "PO Effective Date", "PO Close Date", "PO Amendment Effective Date",
+                        "Order Type", "Vendor Name", "Part Code", "Item Name", "Unit", "Rate", "Discount (%)", "Discount Amount",
+                        "Item Amount", "Amendment No", "Amendment Date", "Assessment Rate", "Delivery Terms", "Delivery Date",
+                        "PO Qty", "PO For", "Currency", "HSN No", "Active"
+            };
+
+
+            for (int i = 0; i < headers.Length; i++)
+                sheet.Cell(1, i + 1).Value = headers[i];
+
+            int row = 2, srNo = 1;
+            foreach (var item in list)
+            {
+                sheet.Cell(row, 1).Value = srNo++;
+                sheet.Cell(row, 2).Value = item.PONO;
+                sheet.Cell(row, 3).Value = item.PODate.Split(" ")[0];
+                sheet.Cell(row, 4).Value = item.POtype;
+                sheet.Cell(row, 5).Value = item.POEffDate.Split(" ")[0];
+                sheet.Cell(row, 6).Value = item.POclosedate.Split(" ")[0];
+                sheet.Cell(row, 7).Value = item.poAmmeffdate.Split(" ")[0];
+                sheet.Cell(row, 8).Value = item.ordertype;
+                sheet.Cell(row, 9).Value = item.VendorName;
+                sheet.Cell(row, 10).Value = item.PartCode;
+                sheet.Cell(row, 11).Value = item.ItemName;
+                sheet.Cell(row, 12).Value = item.unit;
+                sheet.Cell(row, 13).Value = item.Rate;
+                sheet.Cell(row, 14).Value = item.DisPer;
+                sheet.Cell(row, 15).Value = item.DisAmt;
+                sheet.Cell(row, 16).Value = item.ItemAmount;
+                sheet.Cell(row, 17).Value = item.Ammno;
+                sheet.Cell(row, 18).Value = item.AmmDate.Split(" ")[0];
+                sheet.Cell(row, 19).Value = item.Assrate;
+                sheet.Cell(row, 20).Value = item.Deliveryterms;
+                sheet.Cell(row, 21).Value = item.deliveryDate.Split(" ")[0];
+                sheet.Cell(row, 22).Value = item.POQty;
+                sheet.Cell(row, 23).Value = item.POFOR;
+                sheet.Cell(row, 24).Value = item.Currency;
+                sheet.Cell(row, 25).Value = item.AmmDate.Split(" ")[0];
+                sheet.Cell(row, 26).Value = item.HSNNO;
+                sheet.Cell(row, 27).Value = item.Active;
+
                 row++;
             }
         }
