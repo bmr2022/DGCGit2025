@@ -278,8 +278,13 @@
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="H_BasicParameter">
                         <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_BasicParameter" aria-expanded="true" aria-controls="B_UpdateMultiItem">
-                            <strong style="text-transform:uppercase"><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Update From Excel Parameter</strong>
+                            <strong style="text-transform:uppercase"><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Insert/Update From Excel Parameter</strong>
                         </button>
+                        <select id="Insert_Update">
+                            <option value="InsertDataFromExcel">Insert</option>
+                            <option value="UpdateDataFromExcel">Update</option>
+                        </select>
+                        
                     </h2>
                     <div id="B_BasicParameter" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_BasicParameter">
                         <div class="accordion-body">
@@ -590,6 +595,7 @@
 
 
         $('#BtnUpdate').click(function () {
+            var flag = $('#Insert_Update').val();
             // 1. Build mapping object (DB column -> Excel column name)
             let mapping = {};
             $('#MappingTable tr').each(function () {
@@ -629,7 +635,10 @@
                 type: 'POST',
                 contentType: 'application/json',
                 dataType: 'json',
-                data: JSON.stringify({ Mapping: mapping, ExcelData: excelData }),
+                data: JSON.stringify({ Mapping: mapping, ExcelData: excelData, Flag: flag }),
+                beforeSend: function () {
+                    $('#ajaxLoader').show(); // ✅ Show loader
+                },
                 success: function (data, status, xhr) {
                     $('#ajaxLoader').hide();
                     $.notify("Data Update Successfully!!", "info");

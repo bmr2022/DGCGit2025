@@ -2220,6 +2220,7 @@ public class ItemMasterController : Controller
     public async Task<IActionResult> UpdateFromExcel([FromBody] ExcelUpdateRequest request)
     {
         var response = new ResponseResult();
+        var flag = request.Flag;
 
         try
         {
@@ -2356,6 +2357,39 @@ public class ItemMasterController : Controller
                                 }
                                    
                             }
+
+                            if (dbCol == "ItemType")  // <-- Special handling for ParentCode
+                            {
+                                string ItemCat = value.ToString().Trim();
+
+                                int ItemType = 0;
+                                var CatCode = _IItemMaster.GetItemCatCode(ItemCat);
+
+                                if (CatCode.Result.Result != null && CatCode.Result.Result.Rows.Count > 0)
+                                {
+                                    ItemType = (int)CatCode.Result.Result.Rows[0].ItemArray[0];
+                                }
+
+                                else
+                                {
+                                    ItemType = 0;
+                                }
+
+                                if (ItemType != 0)
+                                    value = ItemType;   // replace with code
+                                else
+                                {
+                                    return Json(new
+                                    {
+                                        StatusCode = 200,
+                                        StatusText = "Please Enter valid group"
+
+                                    });
+                                }
+
+                            }
+
+
                             if (columnType == typeof(int))
                                 value = int.Parse(value.ToString());
                             else if (columnType == typeof(decimal))
@@ -2382,7 +2416,7 @@ public class ItemMasterController : Controller
                 dt.Rows.Add(row);
             }
 
-            response = await _IItemMaster.UpdateMultipleItemDataFromExcel(dt, "UpdateDataFromExcel");
+            response = await _IItemMaster.UpdateMultipleItemDataFromExcel(dt, flag);
 
             if (response != null)
             {
