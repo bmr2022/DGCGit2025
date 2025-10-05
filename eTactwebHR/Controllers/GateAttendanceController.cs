@@ -19,6 +19,8 @@ using System.Runtime.Caching;
 using eTactwebHR.Models;
 using System.Xml.Linq;
 using System.Threading.Tasks;
+using DocumentFormat.OpenXml.Wordprocessing;
+using PdfSharp.Drawing.BarCodes;
 
 namespace eTactwebHR.Controllers
 {
@@ -52,7 +54,7 @@ namespace eTactwebHR.Controllers
             return View();
         }
         [HttpGet]
-        public async Task<IActionResult> GateAttendance(int ID, int YearCode, string Mode)
+        public async Task<IActionResult> GateAttendance(int ID, int YearCode, string Mode, string? AttendanceEntryMethodType, string FromDate = "", string ToDate = "", string DashboardType = "", string Searchbox = "")
         {
             HttpContext.Session.Remove("GateAttendance");
             var MainModel = new GateAttendanceModel();
@@ -73,7 +75,7 @@ namespace eTactwebHR.Controllers
 
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
             {
-                //MainModel = await IGateAttendance.GetViewByID(ID, YearCode, "ViewByID").ConfigureAwait(false);
+                MainModel = await IGateAttendance.GetViewByID(ID, YearCode).ConfigureAwait(false);
                 MainModel.Mode = Mode;
                 MainModel.ID = ID;
                 MainModel.GateAttYearCode = YearCode;
@@ -113,6 +115,12 @@ namespace eTactwebHR.Controllers
                 MainModel.UpdatedByName = GetEmpByMachineName();
                 MainModel.UpdatedOn = DateTime.Now;
             }
+
+            MainModel.FromDateBack = FromDate;
+            MainModel.ToDateBack = ToDate;
+            //MainModel.AttendanceEntryMethodTypeBack = AttendanceEntryMethodType != null && AttendanceEntryMethodType != "0" && AttendanceEntryMethodType != "undefined" ? AttendanceEntryMethodType : "";
+            //MainModel.DashboardTypeBack = DashboardType != null && DashboardType != "0" && DashboardType != "undefined" ? DashboardType : "";
+            MainModel.GlobalSearchBack = Searchbox != null && Searchbox != "0" && Searchbox != "undefined" ? Searchbox : "";
 
             string serializedGateAttendance = JsonConvert.SerializeObject(MainModel);
             HttpContext.Session.SetString("GateAttendance", serializedGateAttendance);
@@ -610,11 +618,65 @@ namespace eTactwebHR.Controllers
         {
             HttpContext.Session.Remove("GateAttendance");
             var _List = new List<TextValue>();
-            var MainModel = await IGateAttendance.GetDashBoardData();
+            var MainModel = await IGateAttendance.GetDashBoardData(null);
             MainModel.FromDate = new DateTime(DateTime.Today.Year, 1, 1).ToString("dd/MM/yyyy").Replace("-", "/");
             MainModel.ToDate = new DateTime(DateTime.Today.Year + 1, 12, 31).ToString("dd/MM/yyyy").Replace("-", "/");// Last day in December this year
 
             return View(MainModel);
+        }
+        public async Task<IActionResult> GetSearchData(GateAttDashBoard model, int pageNumber = 1, int pageSize = 25, string SearchBox = "")
+        {
+            model.Mode = "SEARCH";
+            model = await IGateAttendance.GetDashBoardData(model);
+            //model.DashboardType = "Summary";
+            var modelList = model?.GateAttDashboard ?? new List<GateAttDashBoard>();
+
+
+            if (string.IsNullOrWhiteSpace(SearchBox))
+            {
+                model.TotalRecords = modelList.Count();
+                model.PageNumber = pageNumber;
+                model.PageSize = pageSize;
+                model.GateAttDashboard = modelList
+                .Skip((pageNumber - 1) * pageSize)
+                   .Take(pageSize)
+                   .ToList();
+            }
+            else
+            {
+                List<GateAttDashBoard> filteredResults;
+                if (string.IsNullOrWhiteSpace(SearchBox))
+                {
+                    filteredResults = modelList.ToList();
+                }
+                else
+                {
+                    filteredResults = modelList
+                        .Where(i => i.GetType().GetProperties()
+                            .Where(p => p.PropertyType == typeof(string))
+                            .Select(p => p.GetValue(i)?.ToString())
+                            .Any(value => !string.IsNullOrEmpty(value) &&
+                                          value.Contains(SearchBox, StringComparison.OrdinalIgnoreCase)))
+                        .ToList();
+                    if (filteredResults.Count == 0)
+                    {
+                        filteredResults = modelList.ToList();
+                    }
+                }
+                model.TotalRecords = filteredResults.Count;
+                model.GateAttDashboard = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+                model.PageNumber = pageNumber;
+                model.PageSize = pageSize;
+            }
+            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                SlidingExpiration = TimeSpan.FromMinutes(55),
+                Size = 1024,
+            };
+
+            _MemoryCache.Set("KeyGateAttList", modelList, cacheEntryOptions);
+            return PartialView("_DashBoardGrid", model);
         }
         public async Task<JsonResult> GetFormRights()
         {

@@ -10,7 +10,7 @@ namespace eTactWeb.Services.Interface
 {
     public interface IOutStanding
     {
-        Task<ResponseResult> GetPartyName(string outstandingType,string TillDate);
+        Task<ResponseResult> GetPartyName(string outstandingType,string TillDate, int? GroupCode);
 
         Task<ResponseResult> GetGroupName(string outstandingType, string TillDate);
 

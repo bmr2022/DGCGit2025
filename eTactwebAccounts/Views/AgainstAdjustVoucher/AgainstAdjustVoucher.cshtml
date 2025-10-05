@@ -1,4 +1,5 @@
-﻿ @model eTactWeb.DOM.Models.AgainstAdjustVoucherModel;
+﻿@using eTactWeb.DOM.Models
+ @model eTactWeb.DOM.Models.AgainstAdjustVoucherModel;
 @{
     ViewData["Title"] = "Against Adjust Voucher";
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
@@ -279,34 +280,27 @@
                                     <div style="overflow-x:auto; overflow-y:auto; max-height:340px; border:1px solid #ccc;">
                                         <table class="table table-hover table-bordered table-striped" id="tblAgainstAdjustVoucher">
                                             <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap" id="dashGateThead">
-                                                <tr>
-                                                    <th style="color:yellow">Type*</th>
-                                                    <th style="color: yellow; vertical-align: middle;">
-                                                        <div style="display: flex; align-items: center; gap: 5px;">
-                                                            Ledger Name*
-                                                            <label class="tiny-switch">
-                                                                <input type="checkbox" id="ShowAll" onchange="FillAccountName()()">
-                                                                <span class="tiny-slider"></span>
-                                                            </label>
-                                                            <span style="font-size: 12px; color: white;">Show All</span>
-                                                        </div>
-                                                    </th>
-                                                    <th style="color:yellow">Balance* &nbsp;&nbsp; DR/CR*</th>
-                                                    <th style="color:yellow">Mode of Adjustment*</th>
-                                                    <th style="color:yellow">Amount*</th>
-                                                    <th>Amount (OC)</th>
-                                                    <th>Cost Center</th>
-                                                    <th>Party-Wise Narration</th>
-                                                    <th>Against Voucher No</th>
-                                                    <th>Against Voucher Code</th>
-                                                    <th>Against Voucher Date</th>
-                                                    <th>Against Voucher Type</th>
-                                                    <th>Against Voucher Entry ID</th>
-                                                    <th>Voucher Bill Amount</th>
-                                                    <th>Pending Bill Amount</th>
+                                                <tr id="headerRow">
+                                                    <th>Action</th>
+                                                    <th>Sr#</th>
+                                                    <th>Mode Of Adjustment</th>
+                                                    <th>Description</th>
+                                                    <th>Due Date</th>
+                                                    <th>New Ref No</th>
+                                                    <th>Adjusted Amount</th>
+                                                    <th>Dr/Cr</th>
+                                                    <th>Purch Order No</th>
+                                                    <th>PO Year</th>
+                                                    <th>PO Date</th>
+                                                    <th>Voucher No</th>
+                                                    <th>Voucher Type</th>
+                                                    <th>OpenEntryID</th>
+                                                    <th>Opening YearCode</th>
+                                                    <th>Acc Entry ID</th>
+                                                    <th>Acc YearCode</th>
                                                 </tr>
                                             </thead>
-                                            <tbody id="divBankReceipt">
+                                            <tbody id="divAdjItemList">
                                                 <partial name="_AgainstAdjustVoucher" />
                                             </tbody>
                                         </table>
@@ -322,7 +316,7 @@
                                 <div style="overflow-x:auto; overflow-y:auto; max-height:190px; border:1px solid #ccc;">
                                     <table class="table table-hover table-bordered table-striped">
                                         <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap" id="dashGateThead">
-                                            <tr>
+                                            @* <tr>
                                                 <th>Action</th>
                                                 <th>Sr NO</th>
                                                 <th>Ledger Name</th>
@@ -339,6 +333,25 @@
                                                 <th title="Against Voucher Entry ID">Agst Vch ID</th>
                                                 <th title="Voucher Bill Amount">Vch Bill Amt</th>
                                                 <th title="Pending Bill Amount">Pending Bill Amt</th>
+                                            </tr> *@
+                                            <tr id="headerRow">
+                                                <th>Action</th>
+                                                <th>Sr#</th>
+                                                <th>Mode Of Adjustment</th>
+                                                <th>Description</th>
+                                                <th>Due Date</th>
+                                                <th>New Ref No</th>
+                                                <th>Adjusted Amount</th>
+                                                <th>Dr/Cr</th>
+                                                <th>Purch Order No</th>
+                                                <th>PO Year</th>
+                                                <th>PO Date</th>
+                                                <th>Voucher No</th>
+                                                <th>Voucher Type</th>
+                                                <th>OpenEntryID</th>
+                                                <th>Opening YearCode</th>
+                                                <th>Acc Entry ID</th>
+                                                <th>Acc YearCode</th>
                                             </tr>
                                         </thead>
                                         <tbody id="divBankReceiptDetail">
@@ -484,9 +497,13 @@
                     </div>
                 </div>
     </form>
+    <div class="accordion-item">
+        @await Html.PartialAsync("_AdjAgnstPopup", Model.adjustmentModel ?? new Common.AdjustmentModel())
+        @*  <partial name="_AdjustmentGrid" /> *@
+    </div>
 </div>
 
-<div class="modal fade" style="padding-right:100px;" id="DisplayRoutingDetailModal" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel">
+@*<div class="modal fade" style="padding-right:100px;" id="DisplayRoutingDetailModal" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel">
     <div class="modal-dialog modal-xl">
         <div class="modal-content" style="width:1280px;">
             <div class="modal-header">
@@ -545,7 +562,7 @@
                                             </tr>
                                         </thead>
                                         <tbody id="divDisplayPopupForPendingVouchersDetail">
-                                            @*   <partial name="_DisplayPopupForPendingVouchers" /> *@
+                                        
                                         </tbody>
                                     </table>
                                 </div>
@@ -584,324 +601,326 @@
                     </button>
                     <button type="button" class="btn btn-sm btn-danger" style="padding:3px;height:30px;width:100px;margin-top: 25px;" data-bs-dismiss="modal">Close</button>
                 </div>
-            </div>
+            </div> 
         </div>
     </div>
-</div>
-<partial name="_AgainstAdjustPopup" />
+  
+    
+</div>*@
+
 @section Scripts {
     <script>
-                function Openagnstrefpopup() {
-            $('#DisplayAdjDetailModal').modal('show');
-            DisplayAdjustmentRefDetail();
-        }
-                    function DisplayAdjustmentRefDetail() {
+        //         function Openagnstrefpopup() {
+        //     $('#DisplayAdjDetailModal').modal('show');
+        //     DisplayAdjustmentRefDetail();
+        // }
+        //             function DisplayAdjustmentRefDetail() {
 
-            var DbCrPageName = $('#VoucherType').val();
-            var DbCrPageData;
-            var AccountCode = 0;
-            var TransVouchType = "";
-            if (DbCrPageName.indexOf('Sale Order') === 0) {
-                DbCrPageData = 'ItemList';
-            }
-            else if (DbCrPageName.indexOf('Purchase Order') == 0) {
-                DbCrPageData = 'PurchaseOrder';
-            }
-            else if (DbCrPageName.indexOf('Issue NonRetuanable') == 0) {
-                DbCrPageData = 'IssueNRGP';
-            }
-            else if (DbCrPageName.indexOf('Direct Purchase Bill') == 0) {
-                DbCrPageData = 'DirectPurchaseBill';
-                AccountCode = $('#AccountCode').find(":selected").val();
-                TransVouchType = "PURCHASE-DIRECT";
-            }
-            else if (DbCrPageName.indexOf('Purchase Bill') == 0) {
-                DbCrPageData = 'PurchaseBill';
-                AccountCode = $('#AccountCode').find(":selected").val();
-                TransVouchType = "PURCHASE-DIRECT";
-            }
-            else if (DbCrPageName.indexOf('SALE-BILL') == 0) {
-                DbCrPageData = 'SALE-BILL';
-                AccountCode = $('#LedgerName').find(":selected").val();
-                TransVouchType = "SaleInvoice";
-            }
-            else {
-                DbCrPageData = '';
-            }
-            DbCrPageName = DbCrPageData;
+        //     var DbCrPageName = $('#VoucherType').val();
+        //     var DbCrPageData;
+        //     var AccountCode = 0;
+        //     var TransVouchType = "";
+        //     if (DbCrPageName.indexOf('Sale Order') === 0) {
+        //         DbCrPageData = 'ItemList';
+        //     }
+        //     else if (DbCrPageName.indexOf('Purchase Order') == 0) {
+        //         DbCrPageData = 'PurchaseOrder';
+        //     }
+        //     else if (DbCrPageName.indexOf('Issue NonRetuanable') == 0) {
+        //         DbCrPageData = 'IssueNRGP';
+        //     }
+        //     else if (DbCrPageName.indexOf('Direct Purchase Bill') == 0) {
+        //         DbCrPageData = 'DirectPurchaseBill';
+        //         AccountCode = $('#AccountCode').find(":selected").val();
+        //         TransVouchType = "PURCHASE-DIRECT";
+        //     }
+        //     else if (DbCrPageName.indexOf('Purchase Bill') == 0) {
+        //         DbCrPageData = 'PurchaseBill';
+        //         AccountCode = $('#AccountCode').find(":selected").val();
+        //         TransVouchType = "PURCHASE-DIRECT";
+        //     }
+        //     else if (DbCrPageName.indexOf('SALE-BILL') == 0) {
+        //         DbCrPageData = 'SALE-BILL';
+        //         AccountCode = $('#LedgerName').find(":selected").val();
+        //         TransVouchType = "SaleInvoice";
+        //     }
+        //     else {
+        //         DbCrPageData = '';
+        //     }
+        //     DbCrPageName = DbCrPageData;
 
-            var yearCode = 0;
-            var DRCR = "";
-            var VouchDate = "";
-            if (DbCrPageName.indexOf('SALE-BILL') == 0) {
-                yearCode = $('#YearCode').val();
-                DRCR = "DR";
-                VouchDate = $('#EntryDate').val();
-            } else {
-                yearCode = $('#YearCode').val();
-                DRCR = $('#AdjDrCr').val();
-                VouchDate = $('#EntryDate').val();
-            }
-            if (DbCrPageData != null && DbCrPageData != undefined && DbCrPageData != '') {
+        //     var yearCode = 0;
+        //     var DRCR = "";
+        //     var VouchDate = "";
+        //     if (DbCrPageName.indexOf('SALE-BILL') == 0) {
+        //         yearCode = $('#YearCode').val();
+        //         DRCR = "DR";
+        //         VouchDate = $('#EntryDate').val();
+        //     } else {
+        //         yearCode = $('#YearCode').val();
+        //         DRCR = $('#AdjDrCr').val();
+        //         VouchDate = $('#EntryDate').val();
+        //     }
+        //     if (DbCrPageData != null && DbCrPageData != undefined && DbCrPageData != '') {
 
-                $('#DisplayAdjDetailModal').modal('show');
-                $.ajax({
-                    type: "POST",
-                    url: "/Common/GetPendVouchBillAgainstRefPopupByID",
-                    dataType: "json",
-                    data: {
-                        "AC": AccountCode, "YC": yearCode, "PayRecEntryId": 0, "PayRecYearcode": 0, "DRCR": DRCR, "TransVouchType": TransVouchType, "TransVouchDate": VouchDate
-                    },
-                    success: function (result, status, error) {
-                        if (result != null) {
-                            var obj = $.parseJSON(result);
-                            var html = '';
-                            $('#divDisplayAdjustmntDetail').empty();
-                            var i = 1;
-                            if (obj.AdjAdjustmentDetailGrid != null) {
-                                $.each(obj.AdjAdjustmentDetailGrid, function (index, val) {
-                                    html += '<tr id="DisplayAdjustmntRow-' + index + '">' +
-                                        /*'<input type="hidden" value="' + val.AdjAgnstAccEntryID + '" id="AdjAgnstAccEntryID_' + index + '" />' +*/
-                                        '<td>' + i + '</td>' +
-                                        '<td><input id="AgnstRefCheckbox_' + index + '"  type="checkbox" onclick="onAgnstcheckcliclunclick(' + index + ')"></td>' +
-                                        '<td><span class="edit-icon" id="AdjAgnstRefEdit_' + index + '" onclick="AdjAgnstRefEdit(this)" data-index="' + index + '">&#9998;</span><span class="save-button" id="AdjAgnstRefSave_' + index + '" onclick="AdjAgnstRefOnGridSave(this)" data-index="' + index + '" style="display:none;background: none; border: none;">&#10004;</span></td>' +
-                                        '<td><input id="AdjAgnstVouchNo_' + index + '" value=' + val.AdjAgnstVouchNo + ' readonly style="width:190px;background: none;border: none;white-space: break-spaces;text-overflow: ellipsis;"></td>' +
-                                        '<td><input id="AdjAgnstVouchDate_' + index + '" value=' + formatDateToDDMMYYYY(val.AdjAgnstVouchDate) + ' readonly style="width:120px;background: none;border: none;"></td>' +
-                                        '<td><input id="AdjAgnstModeOfAdjstment_' + index + '" value="' + val.AdjAgnstModeOfAdjstment + '" readonly style="width:120px;background: none;border: none;white-space: break-spaces;text-overflow: ellipsis;"></td>' +
-                                        '<td><input id="AdjAgnstVouchType_' + index + '" value=' + val.AdjAgnstVouchType + ' readonly style="width:125px;background: none;border: none;white-space: break-spaces;text-overflow: ellipsis;"></td>' +
-                                        '<td><input id="AdjAgnstPendAmt_' + index + '" value="' + val.AdjAgnstPendAmt + '" ' +
-                                        'data-original="' + val.AdjAgnstPendAmt + '" readonly style="width:50px;background: none;border: none;"></td>' +
-                                        '<td><input  id="AdjAgnstRemainingAmt_' + index + '" value=' + val.AdjAgnstRemainingAmt + ' readonly style="width:50px;background: none;border: none;"></td>' +
-                                        '<td><input class="adjstedamt" id="AdjAgnstAdjstedAmt_' + index + '" value=' + val.AdjAgnstAdjstedAmt + ' style="width:50px;background: none;border: none;" onchange="ChangeAdjustAmt(' + index + ')"></td>' +
-                                        '<td><input id="AdjAgnstDrCr_' + index + '" value=' + val.AdjAgnstDrCr + ' readonly style="width:40px;background: none;border: none;"></td>' +
-                                        '<td><input id="AdjAgnstAccEntryIDVal_' + index + '" value=' + val.AdjAgnstAccEntryID + ' readonly style="width:50px;background: none;border: none;"></td>' +
-                                        '<td><input id="AdjAgnstAccYearCode_' + index + '" value=' + val.AdjAgnstAccYearCode + ' readonly style="width:50px;background: none;border: none;"></td>' +
-                                        '<td><input id="AdjAgnstOpenEntryID_' + index + '" value=' + val.AdjAgnstOpenEntryID + ' readonly style="width:50px;background: none;border: none;"></td>' +
-                                        '<td><input id="AdjAgnstOpeningYearCode_' + index + '" value=' + val.AdjAgnstOpeningYearCode + ' readonly style="width:50px;background: none;border: none;"></td>' +
-                                        '</tr>';
-                                    i++;
-                                });
-                            }
-                            else {
-                                html += '<tr class="text-center"><td colspan="12" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>'
-                            }
-                            $('#divDisplayAdjustmntDetail').append(html);
-                            $('#AdjustmentHeaderError').hide();
-                            var totals = CalculateTotals();
-                            $('#TotalBillAmount').val(parseFloat($('#NetTotal').val()));
-                            $('#TotalRemainingAmount').val(totals)
-                            $('#PendingToAdjustAmount').val(parseFloat($('#AdjRemainingAmt1').text()))
-                            var RowCount = $('#divDisplayAdjustmntDetail tr').length;
-                            var TdRow = $('#divDisplayAdjustmntDetail tr td').length;
+        //         $('#DisplayAdjDetailModal').modal('show');
+        //         $.ajax({
+        //             type: "POST",
+        //             url: "/Common/GetPendVouchBillAgainstRefPopupByID",
+        //             dataType: "json",
+        //             data: {
+        //                 "AC": AccountCode, "YC": yearCode, "PayRecEntryId": 0, "PayRecYearcode": 0, "DRCR": DRCR, "TransVouchType": TransVouchType, "TransVouchDate": VouchDate
+        //             },
+        //             success: function (result, status, error) {
+        //                 if (result != null) {
+        //                     var obj = $.parseJSON(result);
+        //                     var html = '';
+        //                     $('#divDisplayAdjustmntDetail').empty();
+        //                     var i = 1;
+        //                     if (obj.AdjAdjustmentDetailGrid != null) {
+        //                         $.each(obj.AdjAdjustmentDetailGrid, function (index, val) {
+        //                             html += '<tr id="DisplayAdjustmntRow-' + index + '">' +
+        //                                 /*'<input type="hidden" value="' + val.AdjAgnstAccEntryID + '" id="AdjAgnstAccEntryID_' + index + '" />' +*/
+        //                                 '<td>' + i + '</td>' +
+        //                                 '<td><input id="AgnstRefCheckbox_' + index + '"  type="checkbox" onclick="onAgnstcheckcliclunclick(' + index + ')"></td>' +
+        //                                 '<td><span class="edit-icon" id="AdjAgnstRefEdit_' + index + '" onclick="AdjAgnstRefEdit(this)" data-index="' + index + '">&#9998;</span><span class="save-button" id="AdjAgnstRefSave_' + index + '" onclick="AdjAgnstRefOnGridSave(this)" data-index="' + index + '" style="display:none;background: none; border: none;">&#10004;</span></td>' +
+        //                                 '<td><input id="AdjAgnstVouchNo_' + index + '" value=' + val.AdjAgnstVouchNo + ' readonly style="width:190px;background: none;border: none;white-space: break-spaces;text-overflow: ellipsis;"></td>' +
+        //                                 '<td><input id="AdjAgnstVouchDate_' + index + '" value=' + formatDateToDDMMYYYY(val.AdjAgnstVouchDate) + ' readonly style="width:120px;background: none;border: none;"></td>' +
+        //                                 '<td><input id="AdjAgnstModeOfAdjstment_' + index + '" value="' + val.AdjAgnstModeOfAdjstment + '" readonly style="width:120px;background: none;border: none;white-space: break-spaces;text-overflow: ellipsis;"></td>' +
+        //                                 '<td><input id="AdjAgnstVouchType_' + index + '" value=' + val.AdjAgnstVouchType + ' readonly style="width:125px;background: none;border: none;white-space: break-spaces;text-overflow: ellipsis;"></td>' +
+        //                                 '<td><input id="AdjAgnstPendAmt_' + index + '" value="' + val.AdjAgnstPendAmt + '" ' +
+        //                                 'data-original="' + val.AdjAgnstPendAmt + '" readonly style="width:50px;background: none;border: none;"></td>' +
+        //                                 '<td><input  id="AdjAgnstRemainingAmt_' + index + '" value=' + val.AdjAgnstRemainingAmt + ' readonly style="width:50px;background: none;border: none;"></td>' +
+        //                                 '<td><input class="adjstedamt" id="AdjAgnstAdjstedAmt_' + index + '" value=' + val.AdjAgnstAdjstedAmt + ' style="width:50px;background: none;border: none;" onchange="ChangeAdjustAmt(' + index + ')"></td>' +
+        //                                 '<td><input id="AdjAgnstDrCr_' + index + '" value=' + val.AdjAgnstDrCr + ' readonly style="width:40px;background: none;border: none;"></td>' +
+        //                                 '<td><input id="AdjAgnstAccEntryIDVal_' + index + '" value=' + val.AdjAgnstAccEntryID + ' readonly style="width:50px;background: none;border: none;"></td>' +
+        //                                 '<td><input id="AdjAgnstAccYearCode_' + index + '" value=' + val.AdjAgnstAccYearCode + ' readonly style="width:50px;background: none;border: none;"></td>' +
+        //                                 '<td><input id="AdjAgnstOpenEntryID_' + index + '" value=' + val.AdjAgnstOpenEntryID + ' readonly style="width:50px;background: none;border: none;"></td>' +
+        //                                 '<td><input id="AdjAgnstOpeningYearCode_' + index + '" value=' + val.AdjAgnstOpeningYearCode + ' readonly style="width:50px;background: none;border: none;"></td>' +
+        //                                 '</tr>';
+        //                             i++;
+        //                         });
+        //                     }
+        //                     else {
+        //                         html += '<tr class="text-center"><td colspan="12" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>'
+        //                     }
+        //                     $('#divDisplayAdjustmntDetail').append(html);
+        //                     $('#AdjustmentHeaderError').hide();
+        //                     var totals = CalculateTotals();
+        //                     $('#TotalBillAmount').val(parseFloat($('#NetTotal').val()));
+        //                     $('#TotalRemainingAmount').val(totals)
+        //                     $('#PendingToAdjustAmount').val(parseFloat($('#AdjRemainingAmt1').text()))
+        //                     var RowCount = $('#divDisplayAdjustmntDetail tr').length;
+        //                     var TdRow = $('#divDisplayAdjustmntDetail tr td').length;
 
-                            if (TdRow > 1) {
-                                $('#AdjlblTotalNoOfItems').text(RowCount);
-                            }
-                        }
-                    }
-                });
-            }
-        }
-                                      function Agnstrefonsave() {
-            var AdjPageName = $('#VoucherType').val();
-            var PaymentDays = ($('#PaymentDays').val()) ? parseInt($('#PaymentDays').val()) : 0;
-            var AdjPageData = '';
+        //                     if (TdRow > 1) {
+        //                         $('#AdjlblTotalNoOfItems').text(RowCount);
+        //                     }
+        //                 }
+        //             }
+        //         });
+        //     }
+        // }
+        //                               function Agnstrefonsave() {
+        //     var AdjPageName = $('#VoucherType').val();
+        //     var PaymentDays = ($('#PaymentDays').val()) ? parseInt($('#PaymentDays').val()) : 0;
+        //     var AdjPageData = '';
 
-            if (AdjPageName.indexOf('Sale Order') === 0) AdjPageData = 'ItemList';
-            else if (AdjPageName.indexOf('Purchase Order') === 0) AdjPageData = 'PurchaseOrder';
-            else if (AdjPageName.indexOf('Issue NonRetuanable') === 0) AdjPageData = 'IssueNRGP';
-            else if (AdjPageName.indexOf('SALE-BILL') === 0) AdjPageData = 'SaleInvoice';
-            else if (AdjPageName.indexOf('Direct Purchase Bill') === 0) AdjPageData = 'DirectPurchaseBill';
-            else if (AdjPageName.indexOf('Purchase Bill') === 0) AdjPageData = 'PurchaseBill';
-            else AdjPageData = 'JobWorkIssue';
+        //     if (AdjPageName.indexOf('Sale Order') === 0) AdjPageData = 'ItemList';
+        //     else if (AdjPageName.indexOf('Purchase Order') === 0) AdjPageData = 'PurchaseOrder';
+        //     else if (AdjPageName.indexOf('Issue NonRetuanable') === 0) AdjPageData = 'IssueNRGP';
+        //     else if (AdjPageName.indexOf('SALE-BILL') === 0) AdjPageData = 'SaleInvoice';
+        //     else if (AdjPageName.indexOf('Direct Purchase Bill') === 0) AdjPageData = 'DirectPurchaseBill';
+        //     else if (AdjPageName.indexOf('Purchase Bill') === 0) AdjPageData = 'PurchaseBill';
+        //     else AdjPageData = 'JobWorkIssue';
 
-            var selectedItems1 = [];
+        //     var selectedItems1 = [];
 
-            $('tr[id^="DisplayAdjustmntRow-"]').each(function () {
-                var rowIndex = $(this).attr('id').split('-')[1];
-                if ($('#AgnstRefCheckbox_' + rowIndex).is(':checked')) {
-                    var rawDate = $('#AdjAgnstVouchDate_' + rowIndex).val();
-                    var formattedDate = null;
+        //     $('tr[id^="DisplayAdjustmntRow-"]').each(function () {
+        //         var rowIndex = $(this).attr('id').split('-')[1];
+        //         if ($('#AgnstRefCheckbox_' + rowIndex).is(':checked')) {
+        //             var rawDate = $('#AdjAgnstVouchDate_' + rowIndex).val();
+        //             var formattedDate = null;
 
-                    if (rawDate) {
-                        // Assume rawDate is in 'DD/MM/YYYY' format
-                        var parts = rawDate.split('/');
-                        if (parts.length === 3) {
-                            // Create a valid date: months are 0-based in JS
-                            var day = parseInt(parts[0], 10);
-                            var month = parseInt(parts[1], 10) - 1;
-                            var year = parseInt(parts[2], 10);
+        //             if (rawDate) {
+        //                 // Assume rawDate is in 'DD/MM/YYYY' format
+        //                 var parts = rawDate.split('/');
+        //                 if (parts.length === 3) {
+        //                     // Create a valid date: months are 0-based in JS
+        //                     var day = parseInt(parts[0], 10);
+        //                     var month = parseInt(parts[1], 10) - 1;
+        //                     var year = parseInt(parts[2], 10);
 
-                            var dateObj = new Date(year, month, day);
-                            if (!isNaN(dateObj.getTime())) {
-                                formattedDate = dateObj.toISOString();
-                            }
-                        }
-                    }
+        //                     var dateObj = new Date(year, month, day);
+        //                     if (!isNaN(dateObj.getTime())) {
+        //                         formattedDate = dateObj.toISOString();
+        //                     }
+        //                 }
+        //             }
 
-                    console.log(formattedDate);
+        //             console.log(formattedDate);
 
-                    // Push a full AdjustmentModel object into the list
-                    selectedItems1.push({
-                        AdjAgnstAccEntryID: parseInt($('#AdjAgnstAccEntryIDVal_' + rowIndex).val()),
-                        AdjAgnstAccYearCode: parseInt($('#AdjAgnstAccYearCode_' + rowIndex).val()),
-                        AdjAgnstOpenEntryID: parseInt($('#AdjAgnstOpenEntryID_' + rowIndex).val()),
-                        AdjAgnstOpeningYearCode: parseInt($('#AdjAgnstOpeningYearCode_' + rowIndex).val()),
-                        AdjAgnstVouchNo: $('#AdjAgnstVouchNo_' + rowIndex).val(),
-                        AdjAgnstVouchDate: formattedDate,
-                        AdjDescription: $('#AdjDescription').val(),
-                        AdjNewRefNo: $('#AdjNewRefNo').val(),
-                        AdjAgnstModeOfAdjstment: "AgainstRef",
-                        AdjAgnstVouchType: $('#AdjAgnstVouchType_' + rowIndex).val(),
-                        AdjAgnstPendAmt: parseFloat($('#AdjAgnstPendAmt_' + rowIndex).val()) || 0,
-                        AdjAgnstRemainingAmt: parseFloat($('#AdjAgnstRemainingAmt_' + rowIndex).val()) || 0,
-                        AdjAgnstAdjstedAmt: parseFloat($('#AdjAgnstAdjstedAmt_' + rowIndex).val()) || 0,
-                        AdjAgnstDrCr: $('#AdjAgnstDrCr_' + rowIndex).val(),
-                        AdjPageName: AdjPageData
-                    });
-                }
-            });
+        //             // Push a full AdjustmentModel object into the list
+        //             selectedItems1.push({
+        //                 AdjAgnstAccEntryID: parseInt($('#AdjAgnstAccEntryIDVal_' + rowIndex).val()),
+        //                 AdjAgnstAccYearCode: parseInt($('#AdjAgnstAccYearCode_' + rowIndex).val()),
+        //                 AdjAgnstOpenEntryID: parseInt($('#AdjAgnstOpenEntryID_' + rowIndex).val()),
+        //                 AdjAgnstOpeningYearCode: parseInt($('#AdjAgnstOpeningYearCode_' + rowIndex).val()),
+        //                 AdjAgnstVouchNo: $('#AdjAgnstVouchNo_' + rowIndex).val(),
+        //                 AdjAgnstVouchDate: formattedDate,
+        //                 AdjDescription: $('#AdjDescription').val(),
+        //                 AdjNewRefNo: $('#AdjNewRefNo').val(),
+        //                 AdjAgnstModeOfAdjstment: "AgainstRef",
+        //                 AdjAgnstVouchType: $('#AdjAgnstVouchType_' + rowIndex).val(),
+        //                 AdjAgnstPendAmt: parseFloat($('#AdjAgnstPendAmt_' + rowIndex).val()) || 0,
+        //                 AdjAgnstRemainingAmt: parseFloat($('#AdjAgnstRemainingAmt_' + rowIndex).val()) || 0,
+        //                 AdjAgnstAdjstedAmt: parseFloat($('#AdjAgnstAdjstedAmt_' + rowIndex).val()) || 0,
+        //                 AdjAgnstDrCr: $('#AdjAgnstDrCr_' + rowIndex).val(),
+        //                 AdjPageName: AdjPageData
+        //             });
+        //         }
+        //     });
 
-            // Parent AdjustmentModel
-            var model = {
-                AdjPageName: AdjPageData,
-                AdjAgnstModeOfAdjstment: "AgainstRef",
-                AdjAdjustmentDetailGrid: selectedItems1
-            };
+        //     // Parent AdjustmentModel
+        //     var model = {
+        //         AdjPageName: AdjPageData,
+        //         AdjAgnstModeOfAdjstment: "AgainstRef",
+        //         AdjAdjustmentDetailGrid: selectedItems1
+        //     };
 
-            console.log("Payload:", JSON.stringify(model, null, 2));
+        //     console.log("Payload:", JSON.stringify(model, null, 2));
 
-            $.ajax({
-                type: "POST",
-                url: '/AgainstAdjustVoucher/AddAgnstRefToAdjstmntDetail',
-                data: JSON.stringify(model),
-                contentType: 'application/json; charset=utf-8',
-                dataType: 'json',
-                        success: function (resp) {
-            console.log('Saved successfully', resp);
-            $('#DisplayAdjDetailModal').modal('hide');
-            $('#AdjModeOfAdjstment').val("NewRef").trigger('change');
+        //     $.ajax({
+        //         type: "POST",
+        //         url: '/AgainstAdjustVoucher/AddAgnstRefToAdjstmntDetail',
+        //         data: JSON.stringify(model),
+        //         contentType: 'application/json; charset=utf-8',
+        //         dataType: 'json',
+        //                 success: function (resp) {
+        //     console.log('Saved successfully', resp);
+        //     $('#DisplayAdjDetailModal').modal('hide');
+        //     $('#AdjModeOfAdjstment').val("NewRef").trigger('change');
 
-            // Clear current table body
+        //     // Clear current table body
             
 
-            // Populate table dynamically from returned JSON
-            if (resp && resp.length > 0) {
+        //     // Populate table dynamically from returned JSON
+        //     if (resp && resp.length > 0) {
+        // //         resp.forEach(function (item, index) {
+        // //             var voucherDate = item.AdjAgnstVouchDate ? new Date(item.AdjAgnstVouchDate).toLocaleDateString() : '';
+        // //                     var ledgerVal = $("#LedgerName").val(); // get selected value
+        // // var ledgerText = $("#LedgerName option:selected").text(); // get selected text
+        // //             var rowHtml = '<tr class="small" style="white-space:nowrap" data-srno="' + (index + 1) + '">' +
+        // //                 '<td><select class="form-control type-select" style="width:50px;">' +
+        // //                 '<option value="DR"' + (item.adjAgnstDrCr === 'DR' ? ' selected' : '') + '>DR</option>' +
+        // //                 '<option value="CR"' + (item.adjAgnstDrCr === 'CR' ? ' selected' : '') + '>CR</option>' +
+        // //                 '</select></td>' +
+
+        // //                 '<td>' +
+        // //                 '<input type="hidden" value="' + (ledgerVal|| '') + '" />' +
+        // //                 '<input type="hidden" value="' + (item.BankType || '') + '" />' +
+        // //                   '<select class="form-control ledger-select" style="width:250px;">' +
+        // //                     '<option value="' + ledgerVal + '" selected>' + ledgerText + '</option>' +
+        // //                     '</select></td>' +
+        // //                 '<td>' +
+        // //                 '<div class="d-flex align-items-center">' +
+        // //                 '<input class="form-control me-2" style="width:70px;" readonly value="' + (item.Balance || 0) + '" />' +
+        // //                 '<input class="form-control" style="width:50px;" readonly value="' + (item.DRCR || '') + '" />' +
+        // //                 '</div></td>' +
+
+        // //                 '<td><select class="form-control mode-select" style="width:100px;">' +
+        // //                 '<option value="' + (item.adjModeOfAdjstment || '') + '" selected>' + (item.adjModeOfAdjstment || '') + '</option>' +
+        // //                 '</select></td>' +
+
+        // //                 '<td><input class="form-control adjamt-input" type="number" min="0" style="width:70px;" value="' + (item.adjAgnstPendAmt || 0) + '" /></td>' +
+        // //                 '<td><input class="form-control" readonly value="' + (item.adjAgnstPendAmt || 0) + '" /></td>' +
+
+        // //                 '<td><input type="hidden" value="' + (item.CostCenterId || 0) + '" />' +
+        // //                 '<select class="form-control costcenter-select" style="width:140px;">' +
+        // //                 '<option value="' + (item.CostCenterId || 0) + '">' + (item.CostCenterName || '') + '</option>' +
+        // //                 '</select></td>' +
+
+        // //                 '<td><input class="form-control" value="' + (item.PartyWiseNaration || '') + '" /></td>' +
+        // //                 '<td><input class="form-control" readonly value="' + (item.adjAgnstVouchNo || '') + '" /></td>' +
+        // //                 '<td><input class="form-control" readonly value="' + (item.adjAgnstAccYearCode || 0) + '" /></td>' +
+        // //                 '<td><input class="form-control" readonly value="' + (item.adjAgnstVouchDate || '')  + '" /></td>' +
+        // //                 '<td><input class="form-control" readonly value="' + (item.adjAgnstVouchType || '') + '" /></td>' +
+        // //                 '<td><input class="form-control" readonly value="' + (item.adjAgnstAccEntryID || 0) + '" /></td>' +
+        // //                 '<td><input class="form-control" readonly value="' + (item.VoucherBillAmt || 0) + '" /></td>' +
+        // //                 '<td><input class="form-control" readonly value="' + (item.PendBillAmt || 0) + '" /></td>' +
+        // //                 '</tr>';
+
+        // //             $('#divBankReceipt').append(rowHtml);
+        // //         });
         //         resp.forEach(function (item, index) {
-        //             var voucherDate = item.AdjAgnstVouchDate ? new Date(item.AdjAgnstVouchDate).toLocaleDateString() : '';
-        //                     var ledgerVal = $("#LedgerName").val(); // get selected value
-        // var ledgerText = $("#LedgerName option:selected").text(); // get selected text
-        //             var rowHtml = '<tr class="small" style="white-space:nowrap" data-srno="' + (index + 1) + '">' +
-        //                 '<td><select class="form-control type-select" style="width:50px;">' +
-        //                 '<option value="DR"' + (item.adjAgnstDrCr === 'DR' ? ' selected' : '') + '>DR</option>' +
-        //                 '<option value="CR"' + (item.adjAgnstDrCr === 'CR' ? ' selected' : '') + '>CR</option>' +
-        //                 '</select></td>' +
+        //     var voucherDate = item.AdjAgnstVouchDate ? new Date(item.AdjAgnstVouchDate).toLocaleDateString() : '';
+        //     var ledgerVal = $("#LedgerName").val(); // get selected value
+        //     var ledgerText = $("#LedgerName option:selected").text(); // get selected text
 
-        //                 '<td>' +
-        //                 '<input type="hidden" value="' + (ledgerVal|| '') + '" />' +
-        //                 '<input type="hidden" value="' + (item.BankType || '') + '" />' +
-        //                   '<select class="form-control ledger-select" style="width:250px;">' +
-        //                     '<option value="' + ledgerVal + '" selected>' + ledgerText + '</option>' +
-        //                     '</select></td>' +
-        //                 '<td>' +
-        //                 '<div class="d-flex align-items-center">' +
-        //                 '<input class="form-control me-2" style="width:70px;" readonly value="' + (item.Balance || 0) + '" />' +
-        //                 '<input class="form-control" style="width:50px;" readonly value="' + (item.DRCR || '') + '" />' +
-        //                 '</div></td>' +
+        //     var rowHtml = '<tr class="small" style="white-space:nowrap" data-srno="' + (index + 1) + '">' +
+        //         // DR/CR select
+        //         '<td><select class="form-control type-select" style="width:50px;" name="AgainstAdjustVoucherList[' + index + '].Type">' +
+        //         '<option value="DR"' + (item.adjAgnstDrCr === 'DR' ? ' selected' : '') + '>DR</option>' +
+        //         '<option value="CR"' + (item.adjAgnstDrCr === 'CR' ? ' selected' : '') + '>CR</option>' +
+        //         '</select></td>' +
 
-        //                 '<td><select class="form-control mode-select" style="width:100px;">' +
-        //                 '<option value="' + (item.adjModeOfAdjstment || '') + '" selected>' + (item.adjModeOfAdjstment || '') + '</option>' +
-        //                 '</select></td>' +
+        //         // Ledger & BankType
+        //         '<td>' +
+        //         '<input type="hidden" name="AgainstAdjustVoucherList[' + index + '].LedgerName" value="' + (ledgerVal || '') + '" />' +
+        //         '<input type="hidden" name="AgainstAdjustVoucherList[' + index + '].BankType" value="' + (item.BankType || '') + '" />' +
+        //         '<select class="form-control ledger-select" style="width:250px;" name="AgainstAdjustVoucherList[' + index + '].LedgerName">' +
+        //         '<option value="' + ledgerVal + '" selected>' + ledgerText + '</option>' +
+        //         '</select></td>' +
 
-        //                 '<td><input class="form-control adjamt-input" type="number" min="0" style="width:70px;" value="' + (item.adjAgnstPendAmt || 0) + '" /></td>' +
-        //                 '<td><input class="form-control" readonly value="' + (item.adjAgnstPendAmt || 0) + '" /></td>' +
+        //         // Balance & DRCR
+        //         '<td>' +
+        //         '<div class="d-flex align-items-center">' +
+        //         '<input class="form-control me-2" style="width:70px;" readonly name="AgainstAdjustVoucherList[' + index + '].Balance" value="' + (item.Balance || 0) + '" />' +
+        //         '<input class="form-control" style="width:50px;" readonly name="AgainstAdjustVoucherList[' + index + '].DRCR" value="' + (item.DRCR || '') + '" />' +
+        //         '</div></td>' +
 
-        //                 '<td><input type="hidden" value="' + (item.CostCenterId || 0) + '" />' +
-        //                 '<select class="form-control costcenter-select" style="width:140px;">' +
-        //                 '<option value="' + (item.CostCenterId || 0) + '">' + (item.CostCenterName || '') + '</option>' +
-        //                 '</select></td>' +
+        //         // ModeOfAdjustment
+        //         '<td><select class="form-control mode-select" style="width:100px;" name="AgainstAdjustVoucherList[' + index + '].ModeOfAdjustment">' +
+        //         '<option value="' + (item.adjModeOfAdjstment || '') + '" selected>' + (item.adjModeOfAdjstment || '') + '</option>' +
+        //         '</select></td>' +
 
-        //                 '<td><input class="form-control" value="' + (item.PartyWiseNaration || '') + '" /></td>' +
-        //                 '<td><input class="form-control" readonly value="' + (item.adjAgnstVouchNo || '') + '" /></td>' +
-        //                 '<td><input class="form-control" readonly value="' + (item.adjAgnstAccYearCode || 0) + '" /></td>' +
-        //                 '<td><input class="form-control" readonly value="' + (item.adjAgnstVouchDate || '')  + '" /></td>' +
-        //                 '<td><input class="form-control" readonly value="' + (item.adjAgnstVouchType || '') + '" /></td>' +
-        //                 '<td><input class="form-control" readonly value="' + (item.adjAgnstAccEntryID || 0) + '" /></td>' +
-        //                 '<td><input class="form-control" readonly value="' + (item.VoucherBillAmt || 0) + '" /></td>' +
-        //                 '<td><input class="form-control" readonly value="' + (item.PendBillAmt || 0) + '" /></td>' +
-        //                 '</tr>';
+        //         // AdjustmentAmt
+        //         '<td><input class="form-control adjamt-input" type="number" min="0" style="width:70px;" name="AgainstAdjustVoucherList[' + index + '].AdjustmentAmt" value="' + (item.adjAgnstPendAmt || 0) + '" /></td>' +
+        //         '<td><input class="form-control" readonly name="AgainstAdjustVoucherList[' + index + '].AdjustmentAmtOthCur" value="' + (item.adjAgnstPendAmt || 0) + '" /></td>' +
 
-        //             $('#divBankReceipt').append(rowHtml);
-        //         });
-                resp.forEach(function (item, index) {
-            var voucherDate = item.AdjAgnstVouchDate ? new Date(item.AdjAgnstVouchDate).toLocaleDateString() : '';
-            var ledgerVal = $("#LedgerName").val(); // get selected value
-            var ledgerText = $("#LedgerName option:selected").text(); // get selected text
+        //         // CostCenter
+        //         '<td>' +
+        //         '<input type="hidden" name="AgainstAdjustVoucherList[' + index + '].CostCenterId" value="' + (item.CostCenterId || 0) + '" />' +
+        //         '<select class="form-control costcenter-select" style="width:140px;" name="AgainstAdjustVoucherList[' + index + '].CostCenterName">' +
+        //         '<option value="' + (item.CostCenterId || 0) + '">' + (item.CostCenterName || '') + '</option>' +
+        //         '</select></td>' +
 
-            var rowHtml = '<tr class="small" style="white-space:nowrap" data-srno="' + (index + 1) + '">' +
-                // DR/CR select
-                '<td><select class="form-control type-select" style="width:50px;" name="AgainstAdjustVoucherList[' + index + '].Type">' +
-                '<option value="DR"' + (item.adjAgnstDrCr === 'DR' ? ' selected' : '') + '>DR</option>' +
-                '<option value="CR"' + (item.adjAgnstDrCr === 'CR' ? ' selected' : '') + '>CR</option>' +
-                '</select></td>' +
+        //         // PartyWiseNaration
+        //         '<td><input class="form-control" name="AgainstAdjustVoucherList[' + index + '].PartyWiseNaration" value="' + (item.PartyWiseNaration || '') + '" /></td>' +
 
-                // Ledger & BankType
-                '<td>' +
-                '<input type="hidden" name="AgainstAdjustVoucherList[' + index + '].LedgerName" value="' + (ledgerVal || '') + '" />' +
-                '<input type="hidden" name="AgainstAdjustVoucherList[' + index + '].BankType" value="' + (item.BankType || '') + '" />' +
-                '<select class="form-control ledger-select" style="width:250px;" name="AgainstAdjustVoucherList[' + index + '].LedgerName">' +
-                '<option value="' + ledgerVal + '" selected>' + ledgerText + '</option>' +
-                '</select></td>' +
+        //         // Readonly fields
+        //         '<td><input class="form-control" readonly name="AgainstAdjustVoucherList[' + index + '].AgainstVoucherNo" value="' + (item.adjAgnstVouchNo || '') + '" /></td>' +
+        //         '<td><input class="form-control" readonly name="AgainstAdjustVoucherList[' + index + '].AgainstVoucherCode" value="' + (item.adjAgnstAccYearCode || 0) + '" /></td>' +
+        //         '<td><input class="form-control" readonly name="AgainstAdjustVoucherList[' + index + '].AgainstVoucherDate" value="' + (item.adjAgnstVouchDate || '') + '" /></td>' +
+        //         '<td><input class="form-control" readonly name="AgainstAdjustVoucherList[' + index + '].AgainstVoucherType" value="' + (item.adjAgnstVouchType || '') + '" /></td>' +
+        //         '<td><input class="form-control" readonly name="AgainstAdjustVoucherList[' + index + '].AgainstVoucherEntryId" value="' + (item.adjAgnstAccEntryID || 0) + '" /></td>' +
+        //         '<td><input class="form-control" readonly name="AgainstAdjustVoucherList[' + index + '].VoucherBillAmt" value="' + (item.adjAgnstPendAmt || 0) + '" /></td>' +
+        //         '<td><input class="form-control" readonly name="AgainstAdjustVoucherList[' + index + '].PendBillAmt" value="' + (item.adjAgnstPendAmt || 0) + '" /></td>' +
+        //         '</tr>';
 
-                // Balance & DRCR
-                '<td>' +
-                '<div class="d-flex align-items-center">' +
-                '<input class="form-control me-2" style="width:70px;" readonly name="AgainstAdjustVoucherList[' + index + '].Balance" value="' + (item.Balance || 0) + '" />' +
-                '<input class="form-control" style="width:50px;" readonly name="AgainstAdjustVoucherList[' + index + '].DRCR" value="' + (item.DRCR || '') + '" />' +
-                '</div></td>' +
+        //     $('#divBankReceipt').append(rowHtml);
+        // });
 
-                // ModeOfAdjustment
-                '<td><select class="form-control mode-select" style="width:100px;" name="AgainstAdjustVoucherList[' + index + '].ModeOfAdjustment">' +
-                '<option value="' + (item.adjModeOfAdjstment || '') + '" selected>' + (item.adjModeOfAdjstment || '') + '</option>' +
-                '</select></td>' +
+        //     } else {
+        //         $('#divBankReceipt').html('<tr><td colspan="15" class="text-center">No adjustment details found</td></tr>');
+        //     }
+        // },
 
-                // AdjustmentAmt
-                '<td><input class="form-control adjamt-input" type="number" min="0" style="width:70px;" name="AgainstAdjustVoucherList[' + index + '].AdjustmentAmt" value="' + (item.adjAgnstPendAmt || 0) + '" /></td>' +
-                '<td><input class="form-control" readonly name="AgainstAdjustVoucherList[' + index + '].AdjustmentAmtOthCur" value="' + (item.adjAgnstPendAmt || 0) + '" /></td>' +
-
-                // CostCenter
-                '<td>' +
-                '<input type="hidden" name="AgainstAdjustVoucherList[' + index + '].CostCenterId" value="' + (item.CostCenterId || 0) + '" />' +
-                '<select class="form-control costcenter-select" style="width:140px;" name="AgainstAdjustVoucherList[' + index + '].CostCenterName">' +
-                '<option value="' + (item.CostCenterId || 0) + '">' + (item.CostCenterName || '') + '</option>' +
-                '</select></td>' +
-
-                // PartyWiseNaration
-                '<td><input class="form-control" name="AgainstAdjustVoucherList[' + index + '].PartyWiseNaration" value="' + (item.PartyWiseNaration || '') + '" /></td>' +
-
-                // Readonly fields
-                '<td><input class="form-control" readonly name="AgainstAdjustVoucherList[' + index + '].AgainstVoucherNo" value="' + (item.adjAgnstVouchNo || '') + '" /></td>' +
-                '<td><input class="form-control" readonly name="AgainstAdjustVoucherList[' + index + '].AgainstVoucherCode" value="' + (item.adjAgnstAccYearCode || 0) + '" /></td>' +
-                '<td><input class="form-control" readonly name="AgainstAdjustVoucherList[' + index + '].AgainstVoucherDate" value="' + (item.adjAgnstVouchDate || '') + '" /></td>' +
-                '<td><input class="form-control" readonly name="AgainstAdjustVoucherList[' + index + '].AgainstVoucherType" value="' + (item.adjAgnstVouchType || '') + '" /></td>' +
-                '<td><input class="form-control" readonly name="AgainstAdjustVoucherList[' + index + '].AgainstVoucherEntryId" value="' + (item.adjAgnstAccEntryID || 0) + '" /></td>' +
-                '<td><input class="form-control" readonly name="AgainstAdjustVoucherList[' + index + '].VoucherBillAmt" value="' + (item.adjAgnstPendAmt || 0) + '" /></td>' +
-                '<td><input class="form-control" readonly name="AgainstAdjustVoucherList[' + index + '].PendBillAmt" value="' + (item.adjAgnstPendAmt || 0) + '" /></td>' +
-                '</tr>';
-
-            $('#divBankReceipt').append(rowHtml);
-        });
-
-            } else {
-                $('#divBankReceipt').html('<tr><td colspan="15" class="text-center">No adjustment details found</td></tr>');
-            }
-        },
-
-                error: function (error) {
-                    console.log('Save failed', error);
-                }
-            });
-        }
+        //         error: function (error) {
+        //             console.log('Save failed', error);
+        //         }
+        //     });
+        // }
 
                 function Validate_Submit() {
 
@@ -2110,8 +2129,8 @@
                      success: function (data, status, xhr) {
                             if (data != null) {
 
-                                $('#divBankReceipt').empty();
-                                $('#divBankReceipt').append(data);
+                                $('#divAdjItemList').empty();
+                                $('#divAdjItemList').append(data);
                                 GetLedgerBalance() ;
 
                             }

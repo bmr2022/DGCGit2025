@@ -20,6 +20,7 @@ namespace eTactWeb.DOM.Models
 
         // Excel rows data (Header -> Value)
         public List<Dictionary<string, string>> ExcelData { get; set; }
+        public string Flag { get; set; }
     }
 
     [Serializable()]

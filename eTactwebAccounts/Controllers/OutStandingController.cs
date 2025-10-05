@@ -39,9 +39,9 @@ namespace eTactWeb.Controllers
             return View(MainModel); // Pass the model with old data to the view
         }
 
-        public async Task<JsonResult> GetPartyName(string outstandingType, string TillDate)
+        public async Task<JsonResult> GetPartyName(string outstandingType, string TillDate, int? GroupCode)
         {
-            var JSON = await _OutStanding.GetPartyName(outstandingType, TillDate);
+            var JSON = await _OutStanding.GetPartyName(outstandingType, TillDate, GroupCode);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }

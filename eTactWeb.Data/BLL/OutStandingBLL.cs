@@ -23,9 +23,9 @@ namespace eTactWeb.Data.BLL
             _DataLogicDAL = dataLogicDAL;
         }
 
-        public async Task<ResponseResult> GetPartyName(string outstandingType, string TillDate)
+        public async Task<ResponseResult> GetPartyName(string outstandingType, string TillDate, int? GroupCode)
         {
-            return await _OutStandingDAL.GetPartyName( outstandingType,TillDate);
+            return await _OutStandingDAL.GetPartyName( outstandingType,TillDate, GroupCode);
         }
         public async Task<ResponseResult> GetGroupName(string outstandingType, string TillDate)
         {

@@ -7,7 +7,107 @@
 }
 else
 {
-    var @Cntr = 0;
+   @* 
+    <input type="hidden" asp-for="AdjTotalAmt" class="form-control" />
+    <input type="hidden" asp-for="AdjAdjstedAmt" class="form-control" />
+    <input type="hidden" asp-for="AdjRemainingAmt" class="form-control" /> *@
+
+    foreach (var item in Model.AgainstAdjustVoucherList)
+    {
+        <tr class="small @item.SeqNo adjGridRow" style="white-space:nowrap">
+            <td style="white-space:nowrap;">
+                @if (Model.Mode == "V" && Model.ID > 0)
+                {
+                    <a class="table-link link-primary noCursor" disabled>
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                    <a class="table-link link-danger noCursor" disabled>
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                }
+                else
+                {
+                    <a class="table-link link-primary" onclick="EditAdjRow(@item.SeqNo);">
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                    <a class="table-link link-danger" onclick="DeleteAdjRow(@item.SeqNo);">
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                }
+            </td>
+
+            <td>@item.SeqNo</td>
+            <td>@item.ModeOfAdjustment</td>
+            <td>@item.Description</td>
+
+            <!-- Format VoucherDocDate (string) -->
+            <td>
+                @{
+                    string formattedDate = "";
+                    if (!string.IsNullOrEmpty(item.VoucherDocDate)
+                    && DateTime.TryParse(item.VoucherDocDate, out var adjDueDate))
+                    {
+                        formattedDate = adjDueDate.ToString("MM/dd/yyyy");
+                    }
+                }
+                @formattedDate
+            </td>
+
+            <td>@item.VoucherNo</td>
+
+            <!-- Fix AdjustAmount (decimal not nullable) -->
+            <td id="GridAdjPendAmount-@item.SeqNo">
+                @(item.AdjustAmount.ToString("F6"))
+            </td>
+
+            <td class="GridAdjDrCr">
+                @if (!string.IsNullOrEmpty(item.ActualDrCr) && !item.ActualDrCr.Contains("Select"))
+                {
+                    @item.ActualDrCr
+                }
+            </td>
+
+            <td>@item.PONo</td>
+            <td>@item.POYear</td>
+
+            <!-- Format PoDate (string) -->
+            <td>
+                @{
+                    string formattedPODate = "";
+                    if (!string.IsNullOrEmpty(item.PoDate)
+                    && DateTime.TryParse(item.PoDate, out var adjPODate))
+                    {
+                        formattedPODate = adjPODate.ToString("MM/dd/yyyy");
+                    }
+                }
+                @formattedPODate
+            </td>
+
+            <td>@(item.AgainstVoucherNo ?? string.Empty)</td>
+            <td>@item.AgainstVoucherType</td>
+
+            <!-- int values (no ?? needed since they are not nullable) -->
+            <td>@item.AgainstVoucherEntryId</td>
+            <td>@item.AgainstVoucheryearCode</td>
+            <td>@item.AgainstVoucherEntryId</td>
+            <td>@item.ProjectYearcode</td>
+        </tr>
+    }
+}
+
+   @*  var @Cntr = 0;
     foreach (var item in Model.AgainstAdjustVoucherList)
     {
         Cntr = Cntr + 1;
@@ -48,7 +148,7 @@ else
             <td>@item.VoucherBillAmt</td>
             <td>@item.PendBillAmt</td>
         </tr>
-    }
+    } *@
 }
 <style>
     .inline-text {

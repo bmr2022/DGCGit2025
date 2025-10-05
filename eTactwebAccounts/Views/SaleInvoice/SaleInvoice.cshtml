@@ -3956,12 +3956,9 @@
             if (GST > 0) {
                 $('.btnAddTax2Grid').trigger('click');
             }
-
-
-
-
         }
         function recalcNetTotal() {
+            // Base totals
             let baseTotal = parseFloat($('#lblItemNetAmount').text()) || 0;
             let packing = parseFloat($('#PackingCharges').val()) || 0;
             let forwarding = parseFloat($('#ForwardingCharges').val()) || 0;
@@ -3970,7 +3967,15 @@
             let CashDisRs = parseFloat($('#CashDisRs').val()) || 0;
             let AdditionalDiscount = parseFloat($('#AdditionalDiscount').val()) || 0;
 
-            let net = baseTotal + packing + forwarding + courier + gst - CashDisRs - AdditionalDiscount;
+            // Calculate tax total
+            let taxTotal = 0;
+            $('[id^="txGridAmount-"]').each(function () {
+                let val = parseFloat($(this).text()) || 0;
+                taxTotal += val;
+            });
+
+            // Final Net Total
+            let net = baseTotal + packing + forwarding + courier + gst + taxTotal - CashDisRs - AdditionalDiscount;
 
             $('#NetTotal').val(net.toFixed(2));
         }

@@ -375,6 +375,14 @@
             $('#BackButton').show();
         }
 
+        function formatDate1(date) {
+            var day = ("0" + date.getDate()).slice(-2);
+            var month = ("0" + (date.getMonth() + 1)).slice(-2);
+            var year = date.getFullYear();
+            var dateString = day + "/" + month + "/" + year;
+            return dateString;
+        }
+
         // MonthlySummary → MonthWiseData
         function GetMonthWiseData(monthNo) {
             let fromDate = formatDate1(new Date(new Date().getFullYear(), monthNo - 1, 1));

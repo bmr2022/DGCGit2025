@@ -15,6 +15,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetFormRights(int uId);
         Task<ResponseResult> FillEntryId(int YearCode);
         Task<ResponseResult> SaveGateAtt(GateAttendanceModel model, DataTable itemgrid);
-        Task<GateAttDashBoard> GetDashBoardData();
+        Task<GateAttDashBoard> GetDashBoardData(GateAttDashBoard model);
+        Task<GateAttendanceModel> GetViewByID(int ID, int YearCode);
     }
 }

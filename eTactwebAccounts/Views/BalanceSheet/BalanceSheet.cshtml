@@ -363,16 +363,21 @@
             let curentLedgerCode = $('#AccountName').val();
             saveHistory('BalanceSheetDetailByParentCode', { FromDate: currentFromDate, ToDate: currentToDate, ReportType: currentReportType, LiabilitiesAndAssets: currentLiabilitiesAndAssets, ParentCode: currentParentCode, AccountCode: curentLedgerCode });
 
-            // Apply NEW state
-            var FromDate = $('#FromDate').val();
-            var ToDate = $('#ToDate').val();
-            var BalParentCode = $(td).find(".hdnBalParentAccountCode").val();
-            var ParentCode = $(td).find(".hdnParentAccountCode").val();
-            var AccountCode = $(td).find(".hdnAccountCode").val();
-            $('#AccountName').val(AccountCode).trigger("change");
-            $('#ReportType').val("DETAIL").trigger("change");
+            // Save for TransactionLedger page
+            let groupCode = $("hdnBalParentAccountCode").val();
+            let parentCode = $("hdnParentAccountCode").val();
+            let accountName = $('#hdnAccountCode').val();
 
-            $('#BackButton').show();
+            sessionStorage.setItem('GroupCode', groupCode);     // ✅ Added
+            sessionStorage.setItem('ParentCode', parentCode);
+            sessionStorage.setItem('AccountName', accountName);
+            sessionStorage.setItem('ReportType', "MonthlySummary");
+
+            // Mark current page
+            sessionStorage.setItem('CurrentPage', 'BalanceSheetLedger');
+
+            // Go to TransactionLedger
+            window.location.href = '/TransactionLedger/Index';
         }
 
         function GetLiabilitiesAndAssetsData(selectedGroupCode = null) {
