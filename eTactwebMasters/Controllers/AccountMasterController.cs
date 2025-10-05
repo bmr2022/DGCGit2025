@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Globalization;
+using System.Data;
 
 namespace eTactWeb.Controllers
 {
@@ -234,5 +235,267 @@ namespace eTactWeb.Controllers
             var Result = _IDataLogic.isDuplicate(ColVal, ColName, "Account_Head_Master");
             return Result;
         }
+        public async Task<IActionResult> ImportandUpdateAccount(
+     string? Item_Name = "",
+     string? PartCode = "",
+     string? ParentCode = "",
+     string? ItemType = "",
+     string? HSNNO = "",
+     string? UniversalPartCode = "",
+     string? Flag = "")
+        {
+            var model = new AccountMasterModel();
+            model.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+
+            //model.MasterList = await _IItemMaster.GetDashBoardData(Item_Name, PartCode, ParentCode, ItemType, HSNNO, UniversalPartCode, Flag);
+
+            //HttpContext.Session.SetString("KeyItemListSearch", JsonConvert.SerializeObject(model.MasterList));
+
+            return View(model);
+        }
+        [HttpPost]
+        public async Task<IActionResult> UpdateFromExcel([FromBody] ExcelUpdateRequest request)
+        {
+            var response = new ResponseResult();
+            var flag = request.Flag;
+
+            try
+            {
+                DataTable dt = new DataTable();
+
+
+                dt.Columns.Add("Account_Code", typeof(long));
+                dt.Columns.Add("DebCredCode", typeof(string));
+                dt.Columns.Add("Party_Code", typeof(string));
+                dt.Columns.Add("Entry_Date", typeof(DateTime));
+                dt.Columns.Add("Account_Name", typeof(string));
+                dt.Columns.Add("DisplayName", typeof(string));
+                dt.Columns.Add("ParentAccountCode", typeof(long));
+                dt.Columns.Add("MainGroup", typeof(string));
+                dt.Columns.Add("AccountType", typeof(string));
+                dt.Columns.Add("SubGroup", typeof(string));
+                dt.Columns.Add("SubSubGroup", typeof(string));
+                dt.Columns.Add("UnderGroup", typeof(string));
+                dt.Columns.Add("ComAddress", typeof(string));
+                dt.Columns.Add("ComAddress1", typeof(string));
+                dt.Columns.Add("PinCode", typeof(string));
+                dt.Columns.Add("City", typeof(string));
+                dt.Columns.Add("State", typeof(string));
+                dt.Columns.Add("Country", typeof(string));
+                dt.Columns.Add("PhoneNo", typeof(string));
+                dt.Columns.Add("MobileNo", typeof(string));
+                dt.Columns.Add("ContactPerson", typeof(string));
+                dt.Columns.Add("PartyType", typeof(string));
+                dt.Columns.Add("GSTRegistered", typeof(string));
+                dt.Columns.Add("GSTNO", typeof(string));
+                dt.Columns.Add("GSTPartyTypes", typeof(string));
+                dt.Columns.Add("GSTTAXTYPE", typeof(string));
+                dt.Columns.Add("Segment", typeof(string));
+                dt.Columns.Add("SSLNo", typeof(string));
+                dt.Columns.Add("PANNO", typeof(string));
+                dt.Columns.Add("TDS", typeof(string));
+                dt.Columns.Add("TDSRate", typeof(double));
+                dt.Columns.Add("TDSPartyCategery", typeof(string));
+                dt.Columns.Add("ResponsibleEmployee", typeof(string));
+                dt.Columns.Add("ResponsibleEmpContactNo", typeof(string));
+                dt.Columns.Add("SalesPersonName", typeof(string));
+                dt.Columns.Add("SalesPersonEmailId", typeof(string));
+                dt.Columns.Add("SalesPersonMobile", typeof(string));
+                dt.Columns.Add("PurchPersonName", typeof(string));
+                dt.Columns.Add("PurchasePersonEmailId", typeof(string));
+                dt.Columns.Add("PurchMobileNo", typeof(string));
+                dt.Columns.Add("QCPersonEmailId", typeof(string));
+                dt.Columns.Add("WebSite_Add", typeof(string));
+                dt.Columns.Add("EMail", typeof(string));
+                dt.Columns.Add("RANGE", typeof(string));
+                dt.Columns.Add("Division", typeof(string));
+                dt.Columns.Add("Commodity", typeof(string));
+                dt.Columns.Add("WorkingAdd1", typeof(string));
+                dt.Columns.Add("WorkingAdd2", typeof(string));
+                dt.Columns.Add("RateOfInt", typeof(double));
+                dt.Columns.Add("CreditLimit", typeof(double));
+                dt.Columns.Add("CreditDays", typeof(string));
+                dt.Columns.Add("SSL", typeof(string));
+                dt.Columns.Add("BankAccount_No", typeof(string));
+                dt.Columns.Add("BankAddress", typeof(string));
+                dt.Columns.Add("BankIFSCCode", typeof(string));
+                dt.Columns.Add("BankSwiftCode", typeof(string));
+                dt.Columns.Add("InterbranchSaleBILL", typeof(string));
+                dt.Columns.Add("OursalespersonId", typeof(string));
+                dt.Columns.Add("salesemailid", typeof(string));
+                dt.Columns.Add("salesmobileno", typeof(string));
+                dt.Columns.Add("Approved_By", typeof(string));
+                dt.Columns.Add("Approved", typeof(string));
+                dt.Columns.Add("ApprovalDate", typeof(DateTime));
+                dt.Columns.Add("BlackListed", typeof(string));
+                dt.Columns.Add("BlackListed_By", typeof(string));
+                dt.Columns.Add("YearCode", typeof(long));
+                dt.Columns.Add("Uid", typeof(string));
+                dt.Columns.Add("CC", typeof(string));
+                dt.Columns.Add("CreatedBy", typeof(long));
+                dt.Columns.Add("CreatedOn", typeof(DateTime));
+                dt.Columns.Add("UpdatedBy", typeof(long));
+                dt.Columns.Add("UpdatedOn", typeof(DateTime));
+                dt.Columns.Add("Active", typeof(string));
+                dt.Columns.Add("BranchCompany", typeof(string));
+                dt.Columns.Add("trailbalanceGroupid", typeof(long));
+                dt.Columns.Add("SalePersonEmpId", typeof(long));
+                dt.Columns.Add("MSMENo", typeof(string));
+                dt.Columns.Add("MSMEType", typeof(string));
+                dt.Columns.Add("Region", typeof(string));
+                dt.Columns.Add("DiscountCategory", typeof(string));
+                dt.Columns.Add("DiscCategoryEntryId", typeof(long));
+                dt.Columns.Add("GroupDiscountCategory", typeof(long));
+
+                foreach (var excelRow in request.ExcelData)
+                {
+                    DataRow row = dt.NewRow();
+
+                    foreach (var map in request.Mapping)
+                    {
+                        string dbCol = map.Key;          // DB column
+                        string excelCol = map.Value;     // Excel column name
+
+                        object value = DBNull.Value;     // default
+
+                        if (excelRow.ContainsKey(excelCol) && !string.IsNullOrEmpty(excelRow[excelCol]))
+                        {
+                            value = excelRow[excelCol];
+
+                            // Convert types for numeric/boolean/date columns if needed
+                            Type columnType = dt.Columns[dbCol].DataType;
+
+                            try
+                            {
+                                if (dbCol == "ParentCode")  // <-- Special handling for ParentCode
+                                {
+                                    string groupName = value.ToString().Trim();
+
+                                    int ParentCode = 0;
+                                    var groupCode = _IAccountMaster.GetItemGroupCode(groupName);
+
+                                    if (groupCode.Result.Result != null && groupCode.Result.Result.Rows.Count > 0)
+                                    {
+                                        ParentCode = (int)groupCode.Result.Result.Rows[0].ItemArray[0];
+                                    }
+
+                                    else
+                                    {
+                                        ParentCode = 0;
+                                    }
+
+                                    if (ParentCode != 0)
+                                        value = ParentCode;   // replace with code
+                                    else
+                                    {
+                                        return Json(new
+                                        {
+                                            StatusCode = 200,
+                                            StatusText = "Please Enter valid group"
+
+                                        });
+                                    }
+
+                                }
+
+                                if (dbCol == "ItemType")  // <-- Special handling for ParentCode
+                                {
+                                    string ItemCat = value.ToString().Trim();
+
+                                    int ItemType = 0;
+                                    var CatCode = _IAccountMaster.GetItemCatCode(ItemCat);
+
+                                    if (CatCode.Result.Result != null && CatCode.Result.Result.Rows.Count > 0)
+                                    {
+                                        ItemType = (int)CatCode.Result.Result.Rows[0].ItemArray[0];
+                                    }
+
+                                    else
+                                    {
+                                        ItemType = 0;
+                                    }
+
+                                    if (ItemType != 0)
+                                        value = ItemType;   // replace with code
+                                    else
+                                    {
+                                        return Json(new
+                                        {
+                                            StatusCode = 200,
+                                            StatusText = "Please Enter valid group"
+
+                                        });
+                                    }
+
+                                }
+
+
+                                if (columnType == typeof(int))
+                                    value = int.Parse(value.ToString());
+                                else if (columnType == typeof(decimal))
+                                    value = decimal.Parse(value.ToString());
+                                else if (columnType == typeof(bool))
+                                {
+                                    // Accept 1/0, true/false, Y/N
+                                    string s = value.ToString().Trim().ToLower();
+                                    value = (s == "1" || s == "true" || s == "y");
+                                }
+                                else if (columnType == typeof(DateTime))
+                                    value = DateTime.Parse(value.ToString());
+                                else
+                                    value = value.ToString();
+                            }
+                            catch
+                            {
+                                value = DBNull.Value; // fallback if conversion fails
+                            }
+                        }
+                        row[dbCol] = value;
+                    }
+
+                    dt.Rows.Add(row);
+                }
+
+                response = await _IAccountMaster.UpdateMultipleItemDataFromExcel(dt, flag);
+
+                if (response != null)
+                {
+                    if ((response.StatusText == "Success" || response.StatusText == "Updated") &&
+                         (response.StatusCode == HttpStatusCode.OK || response.StatusCode == HttpStatusCode.Accepted))
+                    {
+                        return Json(new
+                        {
+                            StatusCode = 200,
+                            StatusText = "Data imported successfully",
+                            RedirectUrl = Url.Action("ImportandUpdateAccount", "AccountMaster", new { Flag = "" })
+                        });
+                    }
+                    else
+                    {
+                        return Json(new
+                        {
+
+                            StatusText = response.StatusText,
+                            statusCode = 201,
+                            redirectUrl = ""
+                        });
+                    }
+                }
+
+                return Json(new
+                {
+                    StatusCode = 500,
+                    StatusText = "Unknown error occurred"
+                });
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+
+
+        }
+
     }
 }

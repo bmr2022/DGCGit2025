@@ -732,5 +732,64 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
+        public async Task<ResponseResult> GetItemCatCode(string CName)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetCategoryCode"));
+                SqlParams.Add(new SqlParameter("@TypeName", CName));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_AccountMaster", SqlParams);
+
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> GetItemGroupCode(string GName)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetGroupCode"));
+                SqlParams.Add(new SqlParameter("@GroupCodeName", GName));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_AccountMaster", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> UpdateMultipleItemDataFromExcel(DataTable ItemDetailGrid, string flag)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>
+        {
+            new SqlParameter("@Flag", flag),
+            new SqlParameter("@ExcelData", ItemDetailGrid)
+        };
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_AccountMaster", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
     }
 }
