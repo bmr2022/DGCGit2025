@@ -11,6 +11,8 @@ namespace eTactWeb.DOM.Models
         public string Flag { get; set; } 
         public string RequitionType { get; set; }
         public string ReqNo { get; set; }
+        public string VendorName { get; set; }
+        public string ApprovalType { get; set; }
         public int ReqYearCode { get; set; } 
         public string? ReqDate { get; set; }
         public string EntryByMachine { get; set; } 

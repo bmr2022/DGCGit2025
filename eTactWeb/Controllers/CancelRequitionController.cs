@@ -1,7 +1,6 @@
 ﻿using eTactWeb.Data.Common;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
-using eTactwebAdmin.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eTactwebAdmin.Controllers
@@ -25,17 +24,16 @@ namespace eTactwebAdmin.Controllers
             _connectionStringService = connectionStringService;
             _httpClient = httpClient;
         }
-
-
-        [Route("{controller}/Index")]
+        [Route("{controller}/CancelRequition")]
         [HttpGet]
-        public IActionResult CancelRequition()
+        public IActionResult CancelRequition(int ID)
         {
             var model = new CancelRequitionModel();
             model.CC = HttpContext.Session.GetString("Branch");
             model.FromDate = HttpContext.Session.GetString("FromDate");
             return View("CancelRequition", model);
         }
+
 
     }
 }
