@@ -1507,7 +1507,7 @@ namespace eTactWeb.Controllers
                         }
                     }
                     MainModel.OperatorDetailGrid = ProductionEntryGrid;
-                    string serializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
+                    string serializedGrid = JsonConvert.SerializeObject(MainModel.OperatorDetailGrid);
                     HttpContext.Session.SetString("KeyProductionEntryOperatordetail", serializedGrid);
                 }
 
@@ -2317,7 +2317,7 @@ namespace eTactWeb.Controllers
                 throw;
             }
         }
-        private static DataTable GetOperatorDetailTable(IList<ProductionEntryItemDetail> OperatorDetailList)
+        private static DataTable GetOperatorDetailTable(IList<ProductionEntryItemDetail> OperatorDetailGrid)
         {
             var OperatorGrid = new DataTable();
 
@@ -2338,9 +2338,9 @@ namespace eTactWeb.Controllers
             OperatorGrid.Columns.Add("MachineCharges", typeof(float));
             OperatorGrid.Columns.Add("SeqNo", typeof(int));
 
-            if (OperatorDetailList != null)
+            if (OperatorDetailGrid != null)
             {
-                foreach (var Item in OperatorDetailList)
+                foreach (var Item in OperatorDetailGrid)
                 {
                     OperatorGrid.Rows.Add(
                         new object[]
