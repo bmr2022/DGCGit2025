@@ -2390,6 +2390,39 @@ public class ItemMasterController : Controller
                             }
 
 
+                            if (dbCol == "StoreId")  // <-- Special handling for ParentCode
+                            {
+                                string StoreId = value.ToString().Trim();
+
+                                int StoreName = 0;
+                                var storeid = _IItemMaster.GetStoreCode(StoreId);
+
+                                if (storeid.Result.Result != null && storeid.Result.Result.Rows.Count > 0)
+                                {
+                                    StoreName = (int)storeid.Result.Result.Rows[0].ItemArray[0];
+                                }
+
+                                else
+                                {
+                                    StoreName = 0;
+                                }
+
+                                if (StoreName != 0)
+                                    value = StoreName;   // replace with code
+                                else
+                                {
+                                    return Json(new
+                                    {
+                                        StatusCode = 200,
+                                        StatusText = "Please Enter valid group"
+
+                                    });
+                                }
+
+                            }
+
+
+
                             if (columnType == typeof(int))
                                 value = int.Parse(value.ToString());
                             else if (columnType == typeof(decimal))
