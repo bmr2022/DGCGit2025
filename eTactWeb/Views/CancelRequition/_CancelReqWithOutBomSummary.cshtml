@@ -10,7 +10,8 @@
     <thead class="bg-gradient card-headerBG text-light">
         <tr>
             <th>Sr#</th>
-            <th>Action</th>
+            <th>Action<input type="checkbox" id="selectAll" /></th>
+           
             <th data-columnno="0" data-sortorder="asc" class="sortCol">
                 <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> REQ No
             </th>
@@ -87,18 +88,10 @@
                                    asp-route-Mode="U">
                                     <i class="fa fa-pencil"></i>
                                 </a>
-
-                                <!-- Delete -->
-                                <a class="btn-icon bg-danger"
-                                   onclick="confirmDelete(event)"
-                                   asp-action="DeleteByID">
-                                    <i class="fa fa-trash"></i>
-                                </a>
+                                <input type="checkbox" class="checkManual" />
                             </div>
+                        
                         </td>
-
-
-
 
                         <td>@item.ReqNo</td>
                         <td>@(item.ReqDate == null ? string.Empty : item.ReqDate.Split(" ")[0])</td>

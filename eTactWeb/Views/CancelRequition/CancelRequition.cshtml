@@ -58,7 +58,7 @@
                                 <label asp-for="PendCancelReq" class="form-label">Pending/Cancel Req</label>
                                 <select class="form-select" asp-for="PendCancelReq">
                                     <option value="" >-Select-</option>
-                                    <option value="Pending" selected>Pending </option>
+                                    <option value="Pending" selected>Pending  </option>
                                     <option value="Cancel">Cancel </option>
                                 </select>
                             </div>
@@ -130,11 +130,13 @@
                                 <label class="form-label">Global search</label>
                                 <input type="text" class="form-control" asp-for="Searchbox" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
                             </div>
-                        </div>
-                        <div class=" d-flex justify-content-center mt-3" width="inherit">
-                           
 
                         </div>
+                        <div class="d-flex align-items-center mb-2" style="width: inherit;">
+                            <input type="checkbox" class="rowCheck me-2" id="chk1">
+                            <span class="me-2">Click Here To Close</span>
+                        </div>
+                       
                     </form>
                 </div>
             </div>
@@ -200,6 +202,58 @@
             });
             $('#FromDate, #ToDate, #PendCancelReq, #RequitionType, #ReportType').on('change', function () {
                 GetSearchData();
+            });
+
+            var selectedMRN = [];
+            $(document).on('change', '.checkManual', function () {
+                var val = $(this).val();
+                if ($(this).is(':checked')) {
+                    if (selectedMRN.indexOf(val) === -1) selectedMRN.push(val);
+                } else {
+                    selectedMRN = selectedMRN.filter(v => v !== val);
+                }
+                updateSelectAllCheckbox();
+            });
+            $(document).on('change', '#selectAll', function () {
+                var isChecked = $(this).prop('checked');
+                $("#DashboardGrid .checkManual").prop('checked', isChecked);
+
+                if (isChecked) {
+                    selectedMRN = $("#DashboardGrid .checkManual").map(function () {
+                        return $(this).val();
+                    }).get();
+                } else {
+                    selectedMRN = [];
+                }
+            });
+            function updateSelectAllCheckbox() {
+                var total = $('#DashboardGrid .checkManual').length;
+                var checked = $('#DashboardGrid .checkManual:checked').length;
+                $('#selectAll').prop('checked', total > 0 && total === checked);
+            }
+            function reapplySelections() {
+                if (!selectedMRN.length) {
+                    updateSelectAllCheckbox();
+                    return;
+                }
+                selectedMRN.forEach(val => {
+                    $("#DashboardGrid .checkManual[value='" + val + "']").prop("checked", true);
+                });
+                updateSelectAllCheckbox();
+            }
+
+            $('.rowCheck').change(function () {
+                let parentDiv = $(this).closest('div');
+
+                if ($(this).is(':checked')) {
+                    // Add Close Reason textbox if not already present
+                    if (parentDiv.find('.closeReason').length === 0) {
+                        $('<input type="text" class="closeReason form-control ms-2" placeholder="Enter Close Reason">').appendTo(parentDiv).focus();
+                    }
+                } else {
+                    // Remove the Close Reason textbox when unchecked
+                    parentDiv.find('.closeReason').remove();
+                }
             });
         });
 
