@@ -255,8 +255,6 @@
     <script>
 
         $(document).ready(function () {
-             
-            console.log("Ready");
 
             // Initialize datepicker with today's date
             var currentDate = new Date();
@@ -283,9 +281,6 @@
             FillVoucherType();
             FillVoucherNo();
 
-            // Optional: Load values from URL parameters and set fields
-            setValuesFromUrl();
-
             // Handle ReportType change
             $("#ReportType").change(function () {
                 handleReportTypeChange();
@@ -300,55 +295,21 @@
                 }
             }
 
-            // Optional: Function to load values from URL parameters
-            function setValuesFromUrl() {
-                const params = new URLSearchParams(window.location.search);
+            // Check if previous state exists
+            const savedFilters = sessionStorage.getItem('LastListFilters');
+            if (savedFilters) {
+                const filters = JSON.parse(savedFilters);
 
-                // DashboardType
-                if (params.has("DashboardType")) {
-                    $('#ReportType').val(fullDecode(params.get("DashboardType")));
-                }
+                // Restore dropdowns and datepicker
+                $('#TillDate').val(filters.TillDate);
+                $('#GroupName').val(filters.GroupName).trigger('change');
+                $('#PartyNameSingle').val(filters.PartyNameSingle).trigger('change');
+                $('#ReportType').val(filters.ReportType).trigger('change');
+                $('#VoucherNo').val(filters.VoucherNo).trigger('change');
+                $('#VoucherType').val(filters.VoucherType).trigger('change');
 
-                // AccountCode
-                const accountCode = params.has("AccountCode") ? fullDecode(params.get("AccountCode")) : null;
-
-                // Fill dropdown
-                FillPartyName(function () {
-                    // 🔹 This runs AFTER AJAX fills the dropdown
-                    if (accountCode) {
-                        const PartynameSingleDropdown = $('#PartyNameSingle');
-                        PartynameSingleDropdown.val(accountCode);
-
-                        // If using normal select
-                        PartynameSingleDropdown.trigger('change');
-
-                        // If using Select2, also do this:
-                        if (PartynameSingleDropdown.hasClass('select2-hidden-accessible')) {
-                            PartynameSingleDropdown.trigger('change.select2');
-                        }
-                    }
-                });
-            }
-
-            function tryBase64Decode(str) {
-                try {
-                    return atob(str);
-                } catch {
-                    return str; // not base64
-                }
-            }
-
-            function fullDecode(val) {
-                 
-                if (!val) return "";
-                // 1) URL decode
-                let urlDecoded = decodeURIComponent(val);
-
-                // 2) Base64 decode (maybe 2 times)
-                let once = tryBase64Decode(urlDecoded);
-                let twice = tryBase64Decode(once);
-
-                return twice !== once ? twice : once;
+                // Optionally clear after using (if you don’t want it to persist)
+                // sessionStorage.removeItem('LastListFilters');
             }
 
             // Fetch details data
@@ -362,6 +323,22 @@
                 var year = date.getFullYear();
                 return day + "/" + month + "/" + year;
             }
+        });
+
+        // When navigating to details page, save current filter state
+        $(document).on('click', 'a[data-save-history]', function () {
+            const filters = {
+                TillDate: $('#TillDate').val(),
+                GroupName: $('#GroupName').val(),
+                PartyNameSingle: $('#PartyNameSingle').val(),
+                ReportType: $('#ReportType').val(),
+                VoucherNo: $('#VoucherNo').val(),
+                VoucherType: $('#VoucherType').val(),
+            };
+
+            // Save both filters and current URL
+            sessionStorage.setItem('LastListFilters', JSON.stringify(filters));
+            sessionStorage.setItem('LastListUrl', window.location.href);
         });
 
         var selectedPartyValues = [];
@@ -469,11 +446,24 @@
         });
 
         function GetDetailDataForPartyWise(td) {
+            // 🔹 Save state before anything changes
+            const filters = {
+                TillDate: $('#TillDate').val(),
+                GroupName: $('#GroupName').val(),
+                PartyNameSingle: $('#PartyNameSingle').val(),
+                ReportType: $('#ReportType').val(),
+                VoucherNo: $('#VoucherNo').val(),
+                VoucherType: $('#VoucherType').val(),
+                multiPartySwitch: $('#multiPartySwitch').is(':checked')
+            };
+            sessionStorage.setItem('LastListFilters', JSON.stringify(filters));
+            sessionStorage.setItem('LastListUrl', window.location.href);
+
+            // 🔹 Your existing logic
             let accountCode = $(td).find(".hdnAccountCode").val();
             let ledgerDescription = $(td).data("id");
             $('#BackButton').show();
 
-            // ReportType mapping
             let reportType = $('#ReportType').val();
             if (reportType === "Receive Outstanding Ageing") {
                 $('#ReportType').val("Receive Outstanding").trigger("change");
@@ -482,7 +472,6 @@
                 $('#ReportType').val("Payable Outstanding").trigger("change");
             }
 
-            // Call FillPartyName with callback
             FillPartyName(function () {
                 let isMulti = $('#multiPartySwitch').is(':checked');
                 if (!isMulti) {
@@ -492,7 +481,6 @@
                     $('#PartyNameMulti').multiselect('refresh');
                 }
 
-                // only after dropdown ready & party set
                 GetDetailsData();
             });
         }

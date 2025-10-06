@@ -498,9 +498,9 @@
 
 
             $('#SubVoucherName').change(function () {
-                 if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
+                if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
                     NewEntryId();
-                 }
+                }
             })
 
             $('#PartCode').select2();
@@ -670,7 +670,7 @@
 
                     if (result != null) {
                         var obj = $.parseJSON(result);
-                         
+
                         if (obj.Result != null) {
                             $('#SubVoucherName').empty();
                             $('#SubVoucherName').append('<option value="0">-Select-</option>');
@@ -1105,15 +1105,15 @@
                 let row = $('#CNPopUpRow-' + i);
                 if (row.length === 0) continue;
                 if ($('#chkCreditNote-' + i).is(':checked')) {
-                    
+
                     let dataObj = {
                         "CheckBoxNo": $('#chkCreditNote-' + i).val(),
                         "CreditNoteInvoiceNo": $('#CreditNoteEntryId').val() || "",
                         "CreditNoteVoucherNo": $('#CreditNoteVoucherNo').val() || "",
-                        "AgainstSaleBillBillNo": row.find('#SaleBillNo-'+i).text() || "",
-                        "AgainstSaleBillYearCode": row.find('#SaleBillYearCode-'+i).text() || "",
-                        "AgainstSaleBillDate": row.find('#SaleBillDate-'+i).text() || "",
-                        "AgainstSaleBillEntryId": row.find('#saleBillEntryId-'+i).text() || "",
+                        "AgainstSaleBillBillNo": row.find('#SaleBillNo-' + i).text() || "",
+                        "AgainstSaleBillYearCode": row.find('#SaleBillYearCode-' + i).text() || "",
+                        "AgainstSaleBillDate": row.find('#SaleBillDate-' + i).text() || "",
+                        "AgainstSaleBillEntryId": row.find('#saleBillEntryId-' + i).text() || "",
                         "AgainstSaleBillVoucherNo": row.find('#InvoiceNo-' + i).text() || "",
                         "SaleBillType": "",
                         "AgainstPurchaseBillBillNo": "",
@@ -1125,17 +1125,17 @@
                         "ItemCode": $('#ItemCode').val() || "",
                         "PartCode": $('#PartCode').find(':selected').text() !== '-Select-' ? $('#PartCode').find(':selected').text() : "",
                         "ItemName": $('#ItemName').find(':selected').text() !== '-Select-' ? $('#ItemName').find(':selected').text() : "",
-                        "BillQty": row.find('#BillQty-'+i).text() || "",
+                        "BillQty": row.find('#BillQty-' + i).text() || "",
                         "Unit": $('#Unit').val() || "",
-                        "BillRate": row.find('#BillRate-'+i).text() || "",
-                        "DiscountPer": row.find('#disPer-'+i).text() || "",
-                        "DiscountAmt": row.find('#DisAmt-'+i).text() || "",
+                        "BillRate": row.find('#BillRate-' + i).text() || "",
+                        "DiscountPer": row.find('#disPer-' + i).text() || "",
+                        "DiscountAmt": row.find('#DisAmt-' + i).text() || "",
                         "ItemSize": $('#ItemSize').val() || "",
-                        "Amount": $('#ItemAmount-'+i).val() || "",
-                        "PONO": row.find('#pono-'+i).text() || "",
-                        "PODate": row.find('#poDate-'+i).text() || "",
-                        "POEntryId": row.find('#poEntryId-'+i).text() || "",
-                        "POYearCode": row.find('#poYearCode-'+i).text() || "",
+                        "Amount": $('#ItemAmount-' + i).val() || "",
+                        "PONO": row.find('#pono-' + i).text() || "",
+                        "PODate": row.find('#poDate-' + i).text() || "",
+                        "POEntryId": row.find('#poEntryId-' + i).text() || "",
+                        "POYearCode": row.find('#poYearCode-' + i).text() || "",
                         "PoRate": 0,
                         "PoAmmNo": "",
                         "SONO": "",
@@ -1243,7 +1243,7 @@
         });
 
         function ValidateGrid() {
-             
+
             var Err = 0;
 
             if ($('#PartCode').prop('selectedIndex') == 0) {
@@ -1600,7 +1600,7 @@
                                 });
                                 if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
 
-                                    var AccountCode ="@Model.AccountCode";
+                                    var AccountCode = "@Model.AccountCode";
                                     $('#AccountCode').val(AccountCode).trigger("change");
                                 }
                             }
@@ -1701,41 +1701,13 @@
             $('#toBillDate').datepicker("option", "minDate", $('#fromBillDate').val());
         });
 
-        function PressBack(extraParams = {}) {
-            // Get previous page URL
-            let prevUrl = document.referrer;
-
-            if (!prevUrl) {
-                // Fallback: go to home page
-                prevUrl = `${window.location.protocol}//${window.location.host}/`;
+        function PressBack() {
+            const lastUrl = sessionStorage.getItem('LastListPage');
+            if (lastUrl) {
+                window.location.href = lastUrl;
+            } else {
+                history.back(); // fallback if nothing saved
             }
-
-            let url = new URL(prevUrl);
-
-            // Get current page params
-            let currentParams = new URLSearchParams(window.location.search);
-
-            // Helper to encode Base64
-            function encodeBase64(value) {
-                try {
-                    return window.btoa(unescape(encodeURIComponent(value)));
-                } catch {
-                    return value;
-                }
-            }
-
-            // Encode current page params
-            currentParams.forEach((val, key) => {
-                url.searchParams.set(key, encodeBase64(val));
-            });
-
-            // Add/override with extraParams if any
-            Object.keys(extraParams).forEach(key => {
-                url.searchParams.set(key, encodeBase64(extraParams[key]));
-            });
-
-            // Redirect to previous page with all params
-            window.location.href = url.toString();
         }
 
         function GetServerDate() {
