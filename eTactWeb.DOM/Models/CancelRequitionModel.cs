@@ -10,6 +10,8 @@ namespace eTactWeb.DOM.Models
     {
         public string Flag { get; set; } 
         public string RequitionType { get; set; }
+        public string ReportType { get; set; }
+        public string PendCancelReq { get; set; }
         public string ReqNo { get; set; }
         public string VendorName { get; set; }
         public string ApprovalType { get; set; }
@@ -50,8 +52,11 @@ namespace eTactWeb.DOM.Models
         public string ItemCanceled { get; set; } 
         public string ItemLocation { get; set; }
         public string ItemBinRackNo { get; set; }
+        public string Mode { get; set; }
+        public string Searchbox { get; set; }
 
         public int TotItemCt { get; set; }
         public int CanItemCt { get; set; }
+        public IList<CancelRequitionModel> CancelRequitionGrid { get; set; }
     }
 }

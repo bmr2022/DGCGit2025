@@ -2,6 +2,7 @@
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace eTactwebAdmin.Controllers
 {
@@ -33,7 +34,34 @@ namespace eTactwebAdmin.Controllers
             model.FromDate = HttpContext.Session.GetString("FromDate");
             return View("CancelRequition", model);
         }
+        public async Task<JsonResult> FillItemName(string Fromdate, string ToDate, string ReportType, string PendCancelReq, string RequitionType, string ReqNo, int ItemCode)
+        {
+            var JSON = await _ICancelRequition.FillItemName( Fromdate,  ToDate,  ReportType,  PendCancelReq,  RequitionType,  ReqNo,  ItemCode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+         public async Task<JsonResult> FillReqNo(string Fromdate, string ToDate, string ReportType, string PendCancelReq, string RequitionType, string ReqNo, int ItemCode)
+        {
+            var JSON = await _ICancelRequition.FillReqNo( Fromdate,  ToDate,  ReportType,  PendCancelReq,  RequitionType,  ReqNo,  ItemCode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> FillPartcode(string Fromdate, string ToDate, string ReportType, string PendCancelReq, string RequitionType, string ReqNo, int ItemCode)
+        {
+            var JSON = await _ICancelRequition.FillPartcode( Fromdate,  ToDate,  ReportType,  PendCancelReq,  RequitionType,  ReqNo,  ItemCode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        
+        public async Task<IActionResult> GetSearchData(string Fromdate, string ToDate, string ReportType, string PendCancelReq, string RequitionType, string ReqNo, int ItemCode)
+        {
+            //model.Mode = "Search";
+            var model = new CancelRequitionModel();
+            model = await _ICancelRequition.GetSearchData(Fromdate, ToDate, ReportType, PendCancelReq, RequitionType, ReqNo, ItemCode);
+            model.ReportType = ReportType;
+            model.RequitionType = RequitionType;
+            return PartialView("_CancelReqWithBomDetail", model);
 
-
+        }
     }
 }
