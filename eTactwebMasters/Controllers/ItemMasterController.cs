@@ -2382,7 +2382,7 @@ public class ItemMasterController : Controller
                                     return Json(new
                                     {
                                         StatusCode = 200,
-                                        StatusText = "Please Enter valid group"
+                                        StatusText = "Please Enter valid category"
 
                                     });
                                 }
@@ -2414,7 +2414,7 @@ public class ItemMasterController : Controller
                                     return Json(new
                                     {
                                         StatusCode = 200,
-                                        StatusText = "Please Enter valid group"
+                                        StatusText = "Please Enter valid Store"
 
                                     });
                                 }
