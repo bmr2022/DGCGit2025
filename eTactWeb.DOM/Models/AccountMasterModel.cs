@@ -122,6 +122,8 @@ namespace eTactWeb.DOM.Models
         public string? UpdatedByName { get; set; }
         public DateTime? UpdatedOn { get; set; }
         public string? DashboardType { get; set; }
+        public string? Act { get; set; }
+        public string? ImageURL { get; set; }
 
         public IList<SelectListItem> YesNo { get; set; } =
             new List<SelectListItem>()
