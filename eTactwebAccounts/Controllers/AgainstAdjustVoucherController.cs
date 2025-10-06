@@ -401,12 +401,35 @@ namespace eTactwebAccounts.Controllers
         //    var models = await _IAgainstAdjustVoucher.GetAdjustedData(YearCode, VoucherType, VoucherNo, AccountCode, InvoiceNo, AccEntryId);
         //    return PartialView("_AgainstAdjustVoucher", models);
         //}
+       
 
         public async Task<IActionResult> GetAdjustedData(int YearCode, string VoucherType, string VoucherNo, int AccountCode, string InvoiceNo, int AccEntryId)
         {
             var model = new AgainstAdjustVoucherModel();
             model.Mode = "Adjust";
             model.AgainstAdjustVoucherList = await _IAgainstAdjustVoucher.GetAdjustedData(YearCode, VoucherType, VoucherNo, AccountCode, InvoiceNo, AccEntryId);
+            foreach (var item in model.AgainstAdjustVoucherList)
+            {
+                var adjItem = new AdjustmentModel
+                {
+                    AdjAgnstVouchNo = item.AgainstVoucherNo,
+                    AdjAgnstVouchType = item.AgainstVoucherType,
+                    AdjAgnstAccEntryID = item.AgainstVoucherEntryId,
+                    AdjAgnstModeOfAdjstment = item.ModeOfAdjustment,
+                    AdjPendAmt = (decimal)item.PendBillAmt,
+                    AdjAdjstedAmt = (float)item.AdjustmentAmt,
+                    AdjTotalAmt = (float)item.VoucherBillAmt,
+                    AdjRemainingAmt = (float)item.PendBillAmt,
+                    AdjAgnstDrCr = item.DRCR,
+                    AdjDescription=item.VoucherNo,
+                    AdjAgnstPendAmt= (float?)item.AdjustmentAmt,
+                    AdjAgnstVouchDate = DateTime.TryParse(item.AgainstVoucherDate, out var dt) ? dt : (DateTime?)null
+                };
+
+                model.adjustmentModel.AdjAdjustmentDetailGrid.Add(adjItem);
+            }
+            string serializedObject = JsonConvert.SerializeObject(model.adjustmentModel);
+            HttpContext.Session.SetString("KeyAdjGrid", serializedObject);
             return PartialView("_AgainstAdjustVoucher", model);
         }
 
