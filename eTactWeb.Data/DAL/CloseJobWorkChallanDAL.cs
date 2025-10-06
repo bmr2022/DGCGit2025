@@ -56,6 +56,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@ChallanYear", ChallanYear));
 
 
+
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("SPCloseJobworkChallanManual", SqlParams);
             }
             catch (Exception ex)
@@ -120,7 +121,8 @@ namespace eTactWeb.Data.DAL
                                 PendAltQty = row["PendAltQty"] == DBNull.Value ? 0 : Convert.ToDecimal(row["PendAltQty"]),
 
                                 VendJWIssEntryId = row["VendJWIssEntryId"] == DBNull.Value ? 0 : Convert.ToInt32(row["VendJWIssEntryId"]),
-                                VendJWIssYearCode = row["VendJWIssYearCode"] == DBNull.Value ? 0 : Convert.ToInt32(row["VendJWIssYearCode"])
+                                VendJWIssYearCode = row["VendJWIssYearCode"] == DBNull.Value ? 0 : Convert.ToInt32(row["VendJWIssYearCode"]),
+                                
                             });
                         }
 
@@ -191,7 +193,7 @@ namespace eTactWeb.Data.DAL
 
         public async Task<ResponseResult> SaveActivation(int JWCloseEntryId, int JWCloseYearCode, string JWCloseEntryDate, int JWCloseEntryByEmpid, string VendJwCustomerJW, int AccountCode, int VendJWIssEntryId, int VendJWIssYearCode, string VendJWIssChallanNo,
            string VendJWIssChallanDate, int CustJwIssEntryid, int CustJwIssYearCode, string CustJwIssChallanNo, string CustJwIssChallanDate, float TotalChallanAmount, float NetAmount, string ClosingReason,
-           string CC, string ActualEntryDate, int ActualEnteredBy, string EntryByMachineName,string ShowClsoedPendingAll, string ChallanYear)
+           string CC, string ActualEntryDate, int ActualEnteredBy, string EntryByMachineName,string ShowClsoedPendingAll, string ChallanYear,string CloseAllItem, string itemcode)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -206,6 +208,8 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@JWCloseEntryId", JWCloseEntryId));
                 SqlParams.Add(new SqlParameter("@ShowClsoedPendingAll", ShowClsoedPendingAll));
                 SqlParams.Add(new SqlParameter("@ChallanYear", ChallanYear));
+                SqlParams.Add(new SqlParameter("@CloseAllItem", CloseAllItem));
+                SqlParams.Add(new SqlParameter("@itemcode", itemcode));
 
                 SqlParams.Add(new SqlParameter("@JWCloseYearCode", JWCloseYearCode));
                 SqlParams.Add(new SqlParameter("@JWCloseEntryDate", DateTime.Today));

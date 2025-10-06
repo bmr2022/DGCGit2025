@@ -18,7 +18,7 @@ namespace eTactWeb.Services.Interface
 
         Task<ResponseResult> SaveActivation(int JWCloseEntryId, int JWCloseYearCode, string JWCloseEntryDate, int JWCloseEntryByEmpid, string VendJwCustomerJW, int AccountCode,int VendJWIssEntryId,int  VendJWIssYearCode, string VendJWIssChallanNo,
            string VendJWIssChallanDate,int CustJwIssEntryid,int CustJwIssYearCode,string CustJwIssChallanNo,string CustJwIssChallanDate,float TotalChallanAmount,float NetAmount,string ClosingReason,
-           string CC,string ActualEntryDate,int ActualEnteredBy,string EntryByMachineName,string ShowClsoedPendingAll, string ChallanYear);
+           string CC,string ActualEntryDate,int ActualEnteredBy,string EntryByMachineName,string ShowClsoedPendingAll, string ChallanYear,string CloseAllItem, string itemcode);
 
 
 
