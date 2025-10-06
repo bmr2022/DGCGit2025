@@ -806,7 +806,7 @@ namespace eTactWeb.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> SaleInvoice(int ID, string Mode, int YearCode, string dashboardType = "", string fromDate = "", string toDate = "", string partCode = "", string itemName = "", string saleBillNo = "", string custName = "", string sono = "", string custOrderNo = "", string schNo = "", string performaInvNo = "", string saleQuoteNo = "", string domExportNEPZ = "", string Searchbox = "", string summaryDetail = "")
+        public async Task<IActionResult> SaleInvoice(int ID, string Mode, int YearCode, string DashboardType = "", string fromDate = "", string ToDate = "", string partCode = "", string itemName = "", string saleBillNo = "", string custName = "", string sono = "", string custOrderNo = "", string schNo = "", string performaInvNo = "", string saleQuoteNo = "", string domExportNEPZ = "", string Searchbox = "", string summaryDetail = "", int? GroupName = null, int? AccountCode = null)
         {
             var model = new SaleBillModel(); // Create a new model instance for the view
 
@@ -867,7 +867,7 @@ namespace eTactWeb.Controllers
             HttpContext.Session.SetString("SaleInvoice", JsonConvert.SerializeObject(model));
 
             model.FromDateBack = fromDate;
-            model.ToDateBack = toDate;
+            model.ToDateBack = ToDate;
             model.PartCodeBack = partCode;
             model.ItemNameBack = itemName;
             model.SaleBillNoBack = saleBillNo;
@@ -880,6 +880,9 @@ namespace eTactWeb.Controllers
             model.DomesticExportNEPZBack = domExportNEPZ;
             model.SearchBoxBack = Searchbox;
             model.SummaryDetailBack = summaryDetail;
+            model.DashboardTypeBack = DashboardType;
+            model.GroupCodeBack = GroupName;
+            model.AccountCodeBack = AccountCode;
 
             return View(model);
         }

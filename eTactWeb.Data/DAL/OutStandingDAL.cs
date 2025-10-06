@@ -135,6 +135,8 @@ namespace eTactWeb.Data.DAL
                                                               SalesPersonName = row["SalesPersonName"] == DBNull.Value ? string.Empty : row["SalesPersonName"].ToString(),
                                                               ReportType = outstandingType,
                                                               GroupName = GroupName,
+                                                              TillDate = tillDt,
+                                                              AccountNameList = AccountNameList
 														  }).ToList();
 						}
 						else
