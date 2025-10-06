@@ -32,11 +32,11 @@ namespace eTactWeb.Data.BLL
         }
         public async Task<ResponseResult> SaveActivation(int JWCloseEntryId, int JWCloseYearCode, string JWCloseEntryDate, int JWCloseEntryByEmpid, string VendJwCustomerJW, int AccountCode, int VendJWIssEntryId, int VendJWIssYearCode, string VendJWIssChallanNo,
            string VendJWIssChallanDate, int CustJwIssEntryid, int CustJwIssYearCode, string CustJwIssChallanNo, string CustJwIssChallanDate, float TotalChallanAmount, float NetAmount, string ClosingReason,
-           string CC, string ActualEntryDate, int ActualEnteredBy, string EntryByMachineName, string ShowClsoedPendingAll,string ChallanYear)
+           string CC, string ActualEntryDate, int ActualEnteredBy, string EntryByMachineName, string ShowClsoedPendingAll,string ChallanYear,string CloseAllItem, string itemcode)
         {
             return await _CloseJobWorkChallanDAL.SaveActivation( JWCloseEntryId,  JWCloseYearCode,  JWCloseEntryDate,  JWCloseEntryByEmpid,  VendJwCustomerJW,  AccountCode,  VendJWIssEntryId,   VendJWIssYearCode,  VendJWIssChallanNo,
             VendJWIssChallanDate,  CustJwIssEntryid,  CustJwIssYearCode,  CustJwIssChallanNo,  CustJwIssChallanDate,  TotalChallanAmount,  NetAmount,  ClosingReason,
-            CC,  ActualEntryDate,  ActualEnteredBy,  EntryByMachineName, ShowClsoedPendingAll, ChallanYear);
+            CC,  ActualEntryDate,  ActualEnteredBy,  EntryByMachineName, ShowClsoedPendingAll, ChallanYear, CloseAllItem, itemcode);
         }
 
         public async Task<ResponseResult> FillVendorList(string fromDate, string toDate, string ShowClsoedPendingAll,string ChallanYear)

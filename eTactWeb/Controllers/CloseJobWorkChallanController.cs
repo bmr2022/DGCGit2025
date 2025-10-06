@@ -103,7 +103,7 @@ namespace eTactWeb.Controllers
         [HttpGet]
         public async Task<IActionResult> SaveActivation(int JWCloseEntryId, string JWCloseEntryDate, string VendJwCustomerJW, int AccountCode, int VendJWIssEntryId, int VendJWIssYearCode, string VendJWIssChallanNo,
            string VendJWIssChallanDate, int CustJwIssEntryid, int CustJwIssYearCode, string CustJwIssChallanNo, string CustJwIssChallanDate, float TotalChallanAmount, float NetAmount, string ClosingReason,
-            string ActualEntryDate,string ShowClsoedPendingAll,string ChallanYear)
+            string ActualEntryDate,string ShowClsoedPendingAll,string ChallanYear,string CloseAllItem, string ItemCodes)
         {
             int JWCloseEntryByEmpid = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
             int ActualEnteredBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
@@ -112,7 +112,7 @@ namespace eTactWeb.Controllers
             string EntryByMachineName= Environment.MachineName;
             var Result = await _ICloseJobWorkChallan.SaveActivation(JWCloseEntryId, JWCloseYearCode, JWCloseEntryDate, JWCloseEntryByEmpid, VendJwCustomerJW, AccountCode, VendJWIssEntryId, VendJWIssYearCode, VendJWIssChallanNo,
             VendJWIssChallanDate, CustJwIssEntryid, CustJwIssYearCode, CustJwIssChallanNo, CustJwIssChallanDate, TotalChallanAmount, NetAmount, ClosingReason,
-            CC, ActualEntryDate, ActualEnteredBy, EntryByMachineName, ShowClsoedPendingAll, ChallanYear).ConfigureAwait(true);
+            CC, ActualEntryDate, ActualEnteredBy, EntryByMachineName, ShowClsoedPendingAll, ChallanYear, CloseAllItem, ItemCodes).ConfigureAwait(true);
             if (Result != null)
             {
                 if (Result.StatusText == "Success")
@@ -142,6 +142,7 @@ namespace eTactWeb.Controllers
                         TempData["302"] = message;
                     }
                     //return RedirectToAction("SOApproval", new { type = type, CustOrderNo = CustOrderNum, SONO = SONum, VendorName = VendorNm });
+                    
                     return Json(new { redirectUrl = Url.Action("CloseJobWorkChallan") });
                 }
             }

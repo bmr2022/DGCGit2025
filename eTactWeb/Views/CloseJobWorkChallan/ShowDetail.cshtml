@@ -32,7 +32,7 @@
     <div class="card overflow-auto">
         <div class="card-body">
             <form id="SParam">
-                <center><h4>Approval/Unapproval</h4></center>
+                <center><h4>Close JobWork</h4></center>
                 <div class="row">
                     <div class="col-xl-3 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                         <input id="approvePO" type="checkbox" style="margin-left:30px;width:15px !important;height:15px !important;" />
@@ -53,11 +53,11 @@
                         <input id="ClosingReason" style="display: inline-block;" class="form-control" />
                     </div>
                     <div class="col-xl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
-                        <label class="form-label">Approve Date</label>
+                        <label class="form-label">Closed Date</label>
                         <input id="approveDate" style="display: inline-block;" class="form-control" readonly />
                     </div>
                     <div class="col-xl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
-                        <label class="form-label">Approved By</label>
+                        <label class="form-label">Closed By</label>
                         <input type="hidden" id="approvedById" value="@EmpID" />
                         <input id="approvedBy" style="display: inline-block;" readonly value="@($"{empName} --> {EmpID}")" class="form-control" />
                     </div>
@@ -114,7 +114,7 @@
                         var @Cntr = 0;
                         if (Model == null || Model.Count == 0)
                         {
-                                <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                                    <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
                         }
                         else
                         {
@@ -122,25 +122,32 @@
                             {
 
                                 Cntr = Cntr + 1;
-                                    <tr id="dashTableGridRow-@Cntr">
-                                        <th>@Cntr</th>
-                                        <td>@item.VendJWIssChallanNo</td>
-                                        <td>@item.VendJWIssChallanDate]</td>
-                                        <td>@item.TolApprVal</td>
-                                        <td>@item.Closed</td>
-                                        <td>@item.TotalAmount</td>
-                                        <td>@item.PartCode</td>
-                                        <td>@item.Item_Name</td>
-                                        <td>@item.Rate</td>
-                                        <td>@item.Amount</td>
-                                        <td>@item.IssQty</td>
+                                        <tr id="dashTableGridRow-@Cntr">
+                                        <td>
+                                            <input type="checkbox"
+                                                   class="row-checkbox"
+                                                   value="@item.VendJWIssEntryId"
+                                                   data-yearcode="@item.VendJWIssYearCode"
+                                                   data-itemcode="@item.ItemCode" />
+                                            <span class="ms-1">@Cntr</span>
+                                        </td>
+                                            <td>@item.VendJWIssChallanNo</td>
+                                            <td>@item.VendJWIssChallanDate]</td>
+                                            <td>@item.TolApprVal</td>
+                                            <td>@item.Closed</td>
+                                            <td>@item.TotalAmount</td>
+                                            <td>@item.PartCode  </td>
+                                            <td>@item.Item_Name</td>
+                                            <td>@item.Rate</td>
+                                            <td>@item.Amount</td>
+                                            <td>@item.IssQty</td>
 
-                                        <td>@item.PendQty</td>
-                                        <td>@item.PendAltQty</td>
-                                        <td>@item.VendJWIssEntryId</td>
-                                        <td>@item.VendJWIssYearCode</td>
+                                            <td>@item.PendQty</td>
+                                            <td>@item.PendAltQty</td>
+                                            <td>@item.VendJWIssEntryId</td>
+                                            <td>@item.VendJWIssYearCode</td>
 
-                                    </tr>
+                                        </tr>
                             }
                         }
                     }
@@ -162,36 +169,56 @@
         });
 
         $('.btnSave').click(function () {
-            // // var VendJWIssEntryId = @Html.Raw(Json.Serialize(VendJWIssEntryId));
-            // var custOrderNo = @Html.Raw(Json.Serialize(CustOrderNo));
-            // var SONum = @Html.Raw(Json.Serialize(SONum));
-            // var CustOrderNum = @Html.Raw(Json.Serialize(CustOrderNum));
-            // var VendorNm = @Html.Raw(Json.Serialize(VendorNm));
-
             var typeOfApproval = @Html.Raw(Json.Serialize(typeOfApproval));
             var ChallanYear = @Html.Raw(Json.Serialize(ChallanYear));
             var ClosingReason = $('#ClosingReason').val();
 
             if (ClosingReason == '') {
-                $.notify("Please enter  reason", "error");
+                $.notify("Please enter reason", "error");
                 return false;
             }
 
-            if ($('#approvePO').is(":checked") == true) {
-                $.ajax({
-                    type: "GET",
-                    data: { "VendJWIssEntryId": @VendJWIssEntryId, "VendJWIssYearCode": @VendJWIssYearCode , "ShowClsoedPendingAll": typeOfApproval, "ClosingReason": ClosingReason, "ChallanYear": ChallanYear },
-                    url: "@Url.Action("SaveActivation", "CloseJobWorkChallan")",
-                    success: function (response, status, error) {
+            // Collect all checked item codes
+            var checkedItems = [];
+            $('.row-checkbox:checked').each(function () {
+                checkedItems.push($(this).data('itemcode'));
+            });
 
-                        if (response.redirectUrl) {
-                            window.location.href = response.redirectUrl;
-                        }
-                    }
-                });
-            } else {
-                $.notify("Please checked items", "error");
+           
+
+            if ($('#approvePO').is(":checked") !== true) {
+                $.notify("Please check 'Approve PO'", "error");
+                return false;
             }
+
+            // Prepare data object dynamically
+            var dataObj = {
+                VendJWIssEntryId: @VendJWIssEntryId,
+                VendJWIssYearCode: @VendJWIssYearCode,
+                ShowClsoedPendingAll: typeOfApproval,
+                ClosingReason: ClosingReason,
+                ChallanYear: ChallanYear,
+                ItemCodes: checkedItems.join(',')
+            };
+
+            dataObj.CloseAllItem = checkedItems.length > 0 ? 'N' : undefined;
+            // AJAX call
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("SaveActivation", "CloseJobWorkChallan")",
+                traditional: true, // ensures array is sent correctly
+                data: dataObj,
+                success: function (response, status, error) {
+                    if (response.redirectUrl) 
+                    { window.location.href = response.redirectUrl; }
+                    else 
+                    { $.notify("Items processed successfully.", "success"); }
+                    },
+
+                error: function (xhr, status, error) {
+                    $.notify("Error while closing items: " + error, "error");
+                }
+            });
         });
         function colorRates() {
             var size = $('#gateDashboardtable tr').length;
@@ -226,6 +253,63 @@
                 return false;
             }
         }
+
+
+        // $(document).off('change', '.row-checkbox').on('change', '.row-checkbox', function () {
+        //     const checkbox = $(this);
+
+        //     if (checkbox.is(':checked')) {
+        //         if (confirm("Are you sure you want to close this item?")) {
+
+        //             const entryId = checkbox.val();
+        //             const yearCode = checkbox.data('yearcode');
+        //             const itemCode = checkbox.data('itemcode');
+        //             const typeOfApproval = @Html.Raw(Json.Serialize(typeOfApproval));
+        //             const ChallanYear = @Html.Raw(Json.Serialize(ChallanYear));
+        //             const ClosingReason = "Closed by user";
+
+        //             $.ajax({
+        //                 type: "GET",
+        //                 url: "@Url.Action("SaveActivation", "CloseJobWorkChallan")",
+        //                 data: {
+        //                     JWCloseEntryId: 0,
+        //                     JWCloseEntryDate: new Date().toISOString().split('T')[0],
+        //                     VendJwCustomerJW: "",
+        //                     AccountCode: 0,
+        //                     VendJWIssEntryId: entryId,
+        //                     VendJWIssYearCode: yearCode,
+        //                     VendJWIssChallanNo: "",
+        //                     VendJWIssChallanDate: "",
+        //                     CustJwIssEntryid: 0,
+        //                     CustJwIssYearCode: 0,
+        //                     CustJwIssChallanNo: "",
+        //                     CustJwIssChallanDate: "",
+        //                     TotalChallanAmount: 0,
+        //                     NetAmount: 0,
+        //                     ClosingReason: ClosingReason,
+        //                     ActualEntryDate: new Date().toISOString().split('T')[0],
+        //                     ShowClsoedPendingAll: typeOfApproval,
+        //                     ChallanYear: ChallanYear,
+        //                     CloseAllItem: "N",
+        //                     itemcode: itemCode
+        //                 },
+        //                 success: function () {
+        //                     // ✅ Reload current page safely
+        //                     checkbox.prop('checked', false);
+        //                     window.location.href = window.location.href; // reload same page
+        //                 },
+        //                 error: function (xhr, status, error) {
+        //                     alert("Error while closing item: " + error);
+        //                     checkbox.prop('checked', false);
+        //                 }
+        //             });
+
+        //         } else {
+        //             // If cancelled, uncheck it
+        //             checkbox.prop('checked', false);
+        //         }
+        //     }
+        // });
     </script>
 }
 
