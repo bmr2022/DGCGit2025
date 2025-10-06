@@ -1507,7 +1507,7 @@ namespace eTactWeb.Controllers
                         }
                     }
                     MainModel.OperatorDetailGrid = ProductionEntryGrid;
-                    string serializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
+                    string serializedGrid = JsonConvert.SerializeObject(MainModel.OperatorDetailGrid);
                     HttpContext.Session.SetString("KeyProductionEntryOperatordetail", serializedGrid);
                 }
 
