@@ -263,9 +263,9 @@
                         <button id="H_SAGrid" class="accordion-button collapsed text-light pnl4BG " type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid" style="width: 90%;">
                             <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Against Adjust Voucher Grid</strong>
                         </button>
-                        <button class="btn btn-sm btn-outline-danger GridButton" style="width:150px;" type="button" onclick="GridButton()">
+                      @*   <button class="btn btn-sm btn-outline-danger GridButton" style="width:150px;" type="button" onclick="GridButton()">
                             <i class="fa-solid fa-angles-down fa-fw fa-lg "></i>ADD TO GRID
-                        </button>
+                        </button> *@
                     </h2>
 
                     <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
@@ -311,82 +311,7 @@
                         <div class="progress my-3 mb-3" style="height: 4px;">
                             <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
-                        <div class="card">
-                            <div class="card-body overflow-auto pb-0">
-                                <div style="overflow-x:auto; overflow-y:auto; max-height:190px; border:1px solid #ccc;">
-                                    <table class="table table-hover table-bordered table-striped">
-                                        <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap" id="dashGateThead">
-                                            @* <tr>
-                                                <th>Action</th>
-                                                <th>Sr NO</th>
-                                                <th>Ledger Name</th>
-                                                <th>Balance&nbsp;DR/CR</th>
-                                                <th title="Mode of Adjustment">Mode of Adj</th>
-                                                <th>Amount&nbsp;Type</th>
-                                                <th>Amount (OC)</th>
-                                                <th>Cost Center</th>
-                                                <th>Party-Wise Narr</th>
-                                                <th title="Against Voucher No">Agst Vch No</th>
-                                                <th title="Against Voucher Code">Agst Vch Code</th>
-                                                <th title="Against Voucher Date">Agst Vch Date</th>
-                                                <th title="Against Voucher Type">Agst Vch Type</th>
-                                                <th title="Against Voucher Entry ID">Agst Vch ID</th>
-                                                <th title="Voucher Bill Amount">Vch Bill Amt</th>
-                                                <th title="Pending Bill Amount">Pending Bill Amt</th>
-                                            </tr> *@
-                                            <tr id="headerRow">
-                                                <th>Action</th>
-                                                <th>Sr#</th>
-                                                <th>Mode Of Adjustment</th>
-                                                <th>Description</th>
-                                                <th>Due Date</th>
-                                                <th>New Ref No</th>
-                                                <th>Adjusted Amount</th>
-                                                <th>Dr/Cr</th>
-                                                <th>Purch Order No</th>
-                                                <th>PO Year</th>
-                                                <th>PO Date</th>
-                                                <th>Voucher No</th>
-                                                <th>Voucher Type</th>
-                                                <th>OpenEntryID</th>
-                                                <th>Opening YearCode</th>
-                                                <th>Acc Entry ID</th>
-                                                <th>Acc YearCode</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="divBankReceiptDetail">
-                                            <partial name="_AgainstAdjustVoucherGrid" />
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div class="d-flex flex-wrap align-items-center gap-3">
-                                    <div class="text-center">
-                                        <strong>Total No Of Items: <span id="lblTotalNoOfBelowItems"></span></strong>
-                                    </div>
-
-                                    <div style="width:170px;">
-                                        <label asp-for="Naration" class="form-label">Naration</label>
-                                        <input asp-for="Naration" class="form-control" data-val="false" />
-                                    </div>
-
-                                    <div style="width:170px;">
-                                        <label asp-for="DrAmt" class="form-label">Dr Amt</label>
-                                        <input asp-for="DrAmt" class="form-control" readonly />
-                                    </div>
-
-                                    <div style="width:170px;">
-                                        <label asp-for="CrAmt" class="form-label">Cr Amt</label>
-                                        <input asp-for="CrAmt" class="form-control" readonly data-val="false" />
-                                    </div>
-
-                                    <div style="width:170px;">
-                                        <label asp-for="VoucherAmt" class="form-label">Voucher Amt</label>
-                                        <input asp-for="VoucherAmt" class="form-control" data-val="false" readonly />
-                                    </div>
-                                </div>
-                                <br />
-                            </div>
-                        </div>
+                     
                         <div class="progress my-2 mb-3" style="height: 4px;">
                             <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
