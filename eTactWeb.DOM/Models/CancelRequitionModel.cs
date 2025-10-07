@@ -59,4 +59,13 @@ namespace eTactWeb.DOM.Models
         public int CanItemCt { get; set; }
         public IList<CancelRequitionModel> CancelRequitionGrid { get; set; }
     }
+    public class CancelRequisitionRequest
+    {
+        public string PendCancelReq { get; set; }
+        public string? FromDate { get; set; }
+        public string? ToDate { get; set; }
+        public string RequitionType { get; set; }
+        public List<CancelRequitionModel> Requisitions { get; set; }
+    }
+
 }
