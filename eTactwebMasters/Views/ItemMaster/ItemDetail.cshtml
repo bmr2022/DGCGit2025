@@ -663,9 +663,16 @@
                                         <div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
                                             @if (Model.Mode == "U" || Model.Mode == "V")
                                             {
-                                                foreach (var branch in @Model.Branch)
+                                             @*    foreach (var branch in @Model.Branch)
                                                 {
                                                     <input type="hidden" class="hiddenBranch" value="@branch" />
+                                                } *@
+                                                if (Model.Branch != null && Model.Branch.Any())
+                                                {
+                                                    foreach (var branch in Model.Branch)
+                                                    {
+                                                        <input type="hidden" class="hiddenBranch" value="@branch" />
+                                                    }
                                                 }
                                             }
 
