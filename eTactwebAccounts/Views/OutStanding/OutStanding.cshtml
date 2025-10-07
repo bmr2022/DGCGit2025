@@ -289,21 +289,6 @@
 
                 $('#TillDate').val(tillDateBack);
                 $('#GroupName').val(groupCodeBack).trigger('change');
-                FillPartyName(function () {
-                    let isMulti = $('#multiPartySwitch').is(':checked');
-                    if (!isMulti) {
-                        $('#PartyNameSingle').val(accountCodeBack).trigger('change');
-
-                        // If using select2
-                        if ($('#PartyNameSingle').hasClass('select2-hidden-accessible')) {
-                            $('#PartyNameSingle').trigger('change.select2');
-                        }
-
-                    } else {
-                        $('#PartyNameMulti').val(accountCodeBack).trigger('change');
-                        $('#PartyNameMulti').multiselect('rebuild'); // or 'refresh' depending on plugin
-                    }
-                });
                 $('#ReportType').val(reportTypeBack).trigger('change');
             }
 
@@ -321,9 +306,6 @@
                 }
             }
 
-            // Fetch details data
-            GetDetailsData();
-
             // Optional: Helper function to format date
             function formatDate(date) {
                 var day = ("0" + date.getDate()).slice(-2);
@@ -332,6 +314,9 @@
                 var year = date.getFullYear();
                 return day + "/" + month + "/" + year;
             }
+
+            // Fetch details data
+            GetDetailsData();
         });
 
         var selectedPartyValues = [];
@@ -465,17 +450,7 @@
                 $('#ReportType').val("Payable Outstanding").trigger("change");
             }
 
-            FillPartyName(function () {
-                let isMulti = $('#multiPartySwitch').is(':checked');
-                if (!isMulti) {
-                    $('#PartyNameSingle').val(accountCode).trigger('change');
-                } else {
-                    $('#PartyNameMulti').val(accountCode).trigger('change');
-                    $('#PartyNameMulti').multiselect('refresh');
-                }
-
-                GetDetailsData();
-            });
+            GetDetailsData();
         }
 
         function FillPartyName(callback) {
@@ -485,6 +460,9 @@
             var PartynameSingleDropdown = $('#PartyNameSingle');
             var PartynameMultiDropdown = $('#PartyNameMulti');
             var GroupCode = $('#GroupName').val();
+
+            // If you want a specific party selected by default
+            var selectedPartyCode = $('#SomeHiddenFieldOrVariable').val(); // set your selected code here
 
             $.ajax({
                 url: '@Url.Action("GetPartyName", "OutStanding")',
@@ -500,18 +478,18 @@
                     if (!isMulti) {
                         PartynameSingleDropdown.empty();
                         PartynameSingleDropdown.append('<option value="">--Select--</option>');
-
+                        var accountCodeBack = sessionStorage.getItem('AccountCodeBack');
                         $.each(obj.Result, function (index, item) {
-                            PartynameSingleDropdown.append('<option value="' + item.Account_Code + '">' + item.PartyName + '</option>');
+                            var isSelected = (item.Account_Code == accountCodeBack) ? ' selected' : '';
+                            PartynameSingleDropdown.append('<option value="' + item.Account_Code + '"' + isSelected + '>' + item.PartyName + '</option>');
                         });
                     } else {
                         PartynameMultiDropdown.empty();
 
                         $.each(obj.Result, function (index, item) {
-
-                            PartynameMultiDropdown.append('<option value="' + item.Account_Code + '">' + item.PartyName + '</option>');
+                            var isSelected = (item.Account_Code == accountCodeBack) ? ' selected' : '';
+                            PartynameMultiDropdown.append('<option value="' + item.Account_Code + '"' + isSelected + '>' + item.PartyName + '</option>');
                         });
-
                         PartynameMultiDropdown.multiselect('rebuild');
                     }
 
@@ -546,9 +524,10 @@
                     var obj = $.parseJSON(response);
                     PartynameDropdown.empty();
                     PartynameDropdown.append('<option value="">--Select--</option>');
-
+                    var groupCodeBack = sessionStorage.getItem('GroupCodeBack');
                     $.each(obj.Result, function (index, item) {
-                        PartynameDropdown.append('<option value="' + item.ParentCode + '">' + item.ParentGroupName + '</option>');
+                        var isSelected = (item.ParentCode == groupCodeBack) ? ' selected' : '';
+                        PartynameDropdown.append('<option value="' + item.ParentCode + '"' + isSelected + '>' + item.ParentGroupName + '</option>');
                     });
 
                 },
@@ -656,12 +635,13 @@
             var GroupName = $('#GroupName').val();
             var AccountNameList = $('#PartyNameMulti').val();
             var AccountCode = 0;
+            var accountCodeBack = sessionStorage.getItem('AccountCodeBack');
 
             if (AccountNameList && AccountNameList.length > 0) {
                 AccountCode = 0;
             }
             else {
-                AccountCode = $('#PartyNameSingle').val();
+                AccountCode = accountCodeBack ? accountCodeBack : ($('#PartyNameSingle').val() || 0);
             }
 
             var ShowOnlyApprovedBill = $("input[name='Status']:checked").val();

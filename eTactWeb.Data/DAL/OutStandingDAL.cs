@@ -75,7 +75,7 @@ namespace eTactWeb.Data.DAL
 
         }
 
-        public async Task<OutStandingModel> GetDetailsData(string outstandingType, string TillDate, string GroupName, string[] AccountNameList, int AccountCode, string ShowOnlyApprovedBill, bool ShowZeroBal)
+        public async Task<OutStandingModel> GetDetailsData(string outstandingType, string TillDate, int? GroupName, string[] AccountNameList, int AccountCode, string ShowOnlyApprovedBill, bool ShowZeroBal)
         {
             var resultList = new OutStandingModel();
             DataSet oDataSet = new DataSet();

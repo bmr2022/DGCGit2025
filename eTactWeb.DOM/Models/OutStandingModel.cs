@@ -16,7 +16,7 @@ namespace eTactWeb.DOM.Models
         public string Flag { get; set; }
         public string ReportType { get; set; }
         public string PartyName { get; set; }
-        public string GroupName { get; set; }
+        public int? GroupName { get; set; }
         public string FromDate { get; set; }
         public string TillDate { get; set; }
         public int currYearcode { get; set; }
