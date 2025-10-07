@@ -925,6 +925,7 @@ public class PurchaseOrderDAL
                             PartCode = Convert.ToInt32(row["ItemCode"]),
                             PartText = row["PartText"].ToString(),
                             POQty = Convert.ToDecimal(row["POQty"]),
+                            PendQty = Convert.ToDecimal(row["PendQty"]),
                             Rate = Convert.ToDecimal(row["Rate"]),
                             OldRate = Convert.ToDecimal(row["OldRate"]),
                             Unit = row["Unit"].ToString(),

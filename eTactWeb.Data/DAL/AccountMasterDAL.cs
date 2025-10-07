@@ -25,6 +25,43 @@ namespace eTactWeb.Data.DAL
             DBConnectionString = _connectionStringService.GetConnectionString();
         }
 
+        public async Task<ResponseResult> GetStateCode(string State)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetStateCode"));
+                SqlParams.Add(new SqlParameter("@State", State));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_AccountMaster", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        } 
+        public async Task<ResponseResult> GetAccountGroupDetail(string AccountName)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetAccountGroupDetail"));
+                SqlParams.Add(new SqlParameter("@Account_Name", AccountName));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_AccountMaster", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+
         public async Task<ResponseResult> DeleteByID(int ID)
         {
             dynamic _ResponseResult = null;

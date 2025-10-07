@@ -367,68 +367,91 @@ namespace eTactWeb.Controllers
 
                             try
                             {
-                                if (dbCol == "ParentCode")  // <-- Special handling for ParentCode
+                                if (dbCol == "State")  // <-- Special handling for ParentCode
                                 {
-                                    string groupName = value.ToString().Trim();
+                                    string StateName = value.ToString().Trim();
 
-                                    int ParentCode = 0;
-                                    var groupCode = _IAccountMaster.GetItemGroupCode(groupName);
+                                    string StateCode = "";
+                                    var groupCode = _IAccountMaster.GetStateCode(StateName);
 
                                     if (groupCode.Result.Result != null && groupCode.Result.Result.Rows.Count > 0)
                                     {
-                                        ParentCode = (int)groupCode.Result.Result.Rows[0].ItemArray[0];
+                                        StateCode = groupCode.Result.Result.Rows[0].ItemArray[0];
                                     }
 
                                     else
                                     {
-                                        ParentCode = 0;
+                                        StateCode = "";
                                     }
 
-                                    if (ParentCode != 0)
-                                        value = ParentCode;   // replace with code
+                                    if (StateCode != "")
+                                        value = StateCode;   // replace with code
                                     else
                                     {
                                         return Json(new
                                         {
                                             StatusCode = 200,
-                                            StatusText = "Please Enter valid group"
+                                            StatusText = "Please Enter valid State"
 
                                         });
                                     }
 
                                 }
 
-                                if (dbCol == "ItemType")  // <-- Special handling for ParentCode
+
+
+
+                                                                else if (dbCol == "ParentAccountCode")  // <-- Special handling for ParentCode
                                 {
-                                    string ItemCat = value.ToString().Trim();
+                                    string ParentAccName = value.ToString().Trim();
 
-                                    int ItemType = 0;
-                                    var CatCode = _IAccountMaster.GetItemCatCode(ItemCat);
-
-                                    if (CatCode.Result.Result != null && CatCode.Result.Result.Rows.Count > 0)
+                                    long ParentAccCode = 0;
+                                    var groupCode = _IAccountMaster.GetAccountGroupDetail(ParentAccName);
+                                    if (groupCode.Result.Result != null && groupCode.Result.Result.Rows.Count > 0)
                                     {
-                                        ItemType = (int)CatCode.Result.Result.Rows[0].ItemArray[0];
+                                        var rowData = groupCode.Result.Result.Rows[0];
+
+                                        ParentAccCode = Convert.ToInt64(rowData["Parent_Account_Code"]);
+
+                                        // Optional: use other details if needed
+                                        string mainGroup = rowData["Main_Group"].ToString();
+                                        string subGroup = rowData["SubGroup"].ToString();
+                                        string subSubGroup = rowData["SubSubGroup"].ToString();
+                                        string underGroup = rowData["UnderGroup"].ToString();
+                                        string accountType = rowData["Account_Type"].ToString();
+
+                                        // Example: store in your DataTable
+                                        row["MainGroup"] = mainGroup;
+                                        row["SubGroup"] = subGroup;
+                                        row["SubSubGroup"] = subSubGroup;
+                                        row["UnderGroup"] = underGroup;
+                                        row["AccountType"] = accountType;
                                     }
 
                                     else
                                     {
-                                        ItemType = 0;
+                                        ParentAccCode = 0;
                                     }
 
-                                    if (ItemType != 0)
-                                        value = ItemType;   // replace with code
+                                    if (ParentAccCode != 0)
+                                        value = ParentAccCode;   // replace with code
                                     else
                                     {
                                         return Json(new
                                         {
                                             StatusCode = 200,
-                                            StatusText = "Please Enter valid group"
+                                            StatusText = "Please Enter valid Parent Account Name"
 
                                         });
                                     }
 
                                 }
 
+                                else if (columnType == typeof(long))
+                                    value = long.Parse(value.ToString());
+                                else
+
+                              
 
                                 if (columnType == typeof(int))
                                     value = int.Parse(value.ToString());
