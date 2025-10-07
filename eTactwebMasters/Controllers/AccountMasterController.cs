@@ -347,6 +347,7 @@ namespace eTactWeb.Controllers
                 dt.Columns.Add("DiscCategoryEntryId", typeof(long));
                 dt.Columns.Add("GroupDiscountCategory", typeof(long));
 
+                int rowIndex = 1;
                 foreach (var excelRow in request.ExcelData)
                 {
                     DataRow row = dt.NewRow();
@@ -391,7 +392,7 @@ namespace eTactWeb.Controllers
                                         return Json(new
                                         {
                                             StatusCode = 200,
-                                            StatusText = "Please Enter valid State"
+                                            StatusText = $"Please enter a valid State at Excel row {rowIndex + 1}"
 
                                         });
                                     }
@@ -440,7 +441,7 @@ namespace eTactWeb.Controllers
                                         return Json(new
                                         {
                                             StatusCode = 200,
-                                            StatusText = "Please Enter valid Parent Account Name"
+                                            StatusText = $"Please enter a valid ParentCode at Excel row {rowIndex + 1}"
 
                                         });
                                     }
