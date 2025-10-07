@@ -470,6 +470,7 @@ namespace eTactWeb.Controllers
         private static DataTable GetChallanTable(IList<JobWorkReceiveDetail> DetailList)
         {
             var ChallanGrid = new DataTable();
+            var todate = (DateTime.Today).ToString();
             //ChallanGrid.Columns.Add("SeqNo", typeof(int));
             ChallanGrid.Columns.Add("EntryDate", typeof(DateTime));
             ChallanGrid.Columns.Add("EntryIdIssJw", typeof(int));
@@ -515,27 +516,27 @@ namespace eTactWeb.Controllers
                 ChallanGrid.Rows.Add(
                     new object[]
                     {
-                    DateTime.Today,
+                  ParseFormattedDate (todate),
                     Item.EntryIdIssJw,
                     Item.YearCodeIssJw, //Item.IssYearCode,
                     Item.IssChallanNo ?? "",
-                    DateTime.Today,
+                    ParseFormattedDate (todate),
                     Item.ItemCode,
                     Item.EntryIdRecJw,
                     Item.YearCodeRecJw,
                     Item.PreRecChallanNo ?? "",
-                    DateTime.Today,
+                 ParseFormattedDate (todate),
                     Item.FinishItemCode,
                     Item.AccountCode,
                     Item.AdjQty,
                     Item.CC ?? "",
                     Item.AdjFormType ?? "",
-                    DateTime.Today,
+                   ParseFormattedDate (todate),
                     Item.TotalRecQty,
                     Item.PendQty,
                     Item.BOMQty,
                     Item.BOMrevno,
-                    DateTime.Today,
+                    ParseFormattedDate (todate),
                     Item.ProcessId,
                     Item.BOMInd ?? "",
                     Item.RecQty,

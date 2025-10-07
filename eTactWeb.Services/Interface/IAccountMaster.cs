@@ -13,6 +13,9 @@ namespace eTactWeb.Services.Interface
         Task<AccountMasterModel> GetDetailDashboardData(AccountMasterModel model);
 
         Task<IList<TextValue>> GetDropDownList(string Flag);
+        Task<ResponseResult> GetStateCode(string State);
+        Task<ResponseResult> GetAccountGroupDetail(string AccountName);
+
 
         Task<ResponseResult> GetParentGroupDetail(string iD);
 
