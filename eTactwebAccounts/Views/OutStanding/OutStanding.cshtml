@@ -274,12 +274,38 @@
             if ($('#divStockRegisterBody').length) {
                 $('#totalRows').text($('#divStockRegisterBody tr').length);
             }
+            var tillDateBack = sessionStorage.getItem('ToDateBack');
+            var reportTypeBack = sessionStorage.getItem('DashboardTypeBack');
+            var groupCodeBack = sessionStorage.getItem('GroupCodeBack');
+            var accountCodeBack = sessionStorage.getItem('AccountCodeBack');
 
             // Fill dropdowns
             FillGroupName();
             FillPartyName();
             FillVoucherType();
             FillVoucherNo();
+
+            if (tillDateBack != null && tillDateBack != '') {
+
+                $('#TillDate').val(tillDateBack);
+                $('#GroupName').val(groupCodeBack).trigger('change');
+                FillPartyName(function () {
+                    let isMulti = $('#multiPartySwitch').is(':checked');
+                    if (!isMulti) {
+                        $('#PartyNameSingle').val(accountCodeBack).trigger('change');
+
+                        // If using select2
+                        if ($('#PartyNameSingle').hasClass('select2-hidden-accessible')) {
+                            $('#PartyNameSingle').trigger('change.select2');
+                        }
+
+                    } else {
+                        $('#PartyNameMulti').val(accountCodeBack).trigger('change');
+                        $('#PartyNameMulti').multiselect('rebuild'); // or 'refresh' depending on plugin
+                    }
+                });
+                $('#ReportType').val(reportTypeBack).trigger('change');
+            }
 
             // Handle ReportType change
             $("#ReportType").change(function () {
@@ -295,23 +321,6 @@
                 }
             }
 
-            // Check if previous state exists
-            const savedFilters = sessionStorage.getItem('LastListFilters');
-            if (savedFilters) {
-                const filters = JSON.parse(savedFilters);
-
-                // Restore dropdowns and datepicker
-                $('#TillDate').val(filters.TillDate);
-                $('#GroupName').val(filters.GroupName).trigger('change');
-                $('#PartyNameSingle').val(filters.PartyNameSingle).trigger('change');
-                $('#ReportType').val(filters.ReportType).trigger('change');
-                $('#VoucherNo').val(filters.VoucherNo).trigger('change');
-                $('#VoucherType').val(filters.VoucherType).trigger('change');
-
-                // Optionally clear after using (if you don’t want it to persist)
-                // sessionStorage.removeItem('LastListFilters');
-            }
-
             // Fetch details data
             GetDetailsData();
 
@@ -323,22 +332,6 @@
                 var year = date.getFullYear();
                 return day + "/" + month + "/" + year;
             }
-        });
-
-        // When navigating to details page, save current filter state
-        $(document).on('click', 'a[data-save-history]', function () {
-            const filters = {
-                TillDate: $('#TillDate').val(),
-                GroupName: $('#GroupName').val(),
-                PartyNameSingle: $('#PartyNameSingle').val(),
-                ReportType: $('#ReportType').val(),
-                VoucherNo: $('#VoucherNo').val(),
-                VoucherType: $('#VoucherType').val(),
-            };
-
-            // Save both filters and current URL
-            sessionStorage.setItem('LastListFilters', JSON.stringify(filters));
-            sessionStorage.setItem('LastListUrl', window.location.href);
         });
 
         var selectedPartyValues = [];
@@ -428,7 +421,7 @@
             }
         }
 
-        $('#GroupName').change(function(){
+        $('#GroupName').change(function () {
             FillPartyName();
         })
 
@@ -656,7 +649,7 @@
         }
 
         function GetDetailsData() {
-             
+
             var OutStandingType = $('#ReportType').val();
             var ShowZeroBal = $('#ShowZeroBal').is(':checked');
             var TillDate = $('#TillDate').val();

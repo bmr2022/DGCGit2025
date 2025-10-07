@@ -77,6 +77,8 @@
                             <input asp-for="DomesticExportNEPZBack" type="hidden" value="@Model.DomesticExportNEPZBack" />
                             <input asp-for="SearchBoxBack" type="hidden" value="@Model.SearchBoxBack" />
                             <input asp-for="SummaryDetailBack" type="hidden" value="@Model.SummaryDetailBack" />
+                            <input asp-for="GroupCodeBack" type="hidden" value="@Model.GroupCodeBack" />
+                            <input asp-for="AccountCodeBack" type="hidden" value="@Model.AccountCodeBack" />
                             <input type="hidden" id="ShouldEinvoice" name="ShouldEinvoice" />
 
                             @if (Model.Mode == "U" || Model.Mode == "V")
@@ -6827,6 +6829,9 @@
             sessionStorage.setItem('DomesticExportNEPZBack', $('#DomesticExportNEPZBack').val());
             sessionStorage.setItem('SearchBoxBack', $('#SearchBoxBack').val());
             sessionStorage.setItem('SummaryDetailBack', $('#SummaryDetailBack').val());
+            sessionStorage.setItem('DashboardTypeBack', $('#DashboardTypeBack').val());
+            sessionStorage.setItem('GroupCodeBack', $('#GroupCodeBack').val());
+            sessionStorage.setItem('AccountCodeBack', $('#AccountCodeBack').val());
 
             window.history.back();
         }

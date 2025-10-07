@@ -307,6 +307,8 @@ namespace eTactWeb.DOM.Models
         public string? DomesticExportNEPZBack { get; set; }
         public string? SearchBoxBack { get; set; }
         public string? SummaryDetailBack { get; set; }
+        public int? GroupCodeBack { get; set; }
+        public int? AccountCodeBack { get; set; }
         public List<SaleBillDetail>? saleBillDetails { get; set; }
         public IList<SaleBillDetail>? ItemDetailGrid { get; set; }
         public IList<DPBItemDetail>? DPBItemDetails { get; set; }
