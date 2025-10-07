@@ -184,7 +184,7 @@
                 checkedItems.push($(this).data('itemcode'));
             });
 
-           
+            var totalItems = $('.row-checkbox').length;
 
             if ($('#approvePO').is(":checked") !== true) {
                 $.notify("Please check 'Approve PO'", "error");
@@ -201,7 +201,12 @@
                 ItemCodes: checkedItems.join(',')
             };
 
-            dataObj.CloseAllItem = checkedItems.length > 0 ? 'N' : undefined;
+            // dataObj.CloseAllItem = checkedItems.length > 0 ? 'N' : undefined;
+            if (checkedItems.length === totalItems && totalItems > 0) {
+                dataObj.CloseAllItem = 'Y';
+            } else if (checkedItems.length > 0) {
+                dataObj.CloseAllItem = 'N';
+            }
             // AJAX call
             $.ajax({
                 type: "GET",
