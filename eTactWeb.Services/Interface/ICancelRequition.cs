@@ -1,4 +1,5 @@
 ﻿using eTactWeb.DOM.Models;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,5 +15,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FillReqNo(string Fromdate,string ToDate,string ReportType,string PendCancelReq,string RequitionType,string ReqNo,int ItemCode);
         Task<ResponseResult> FillPartcode(string Fromdate,string ToDate,string ReportType,string PendCancelReq,string RequitionType,string ReqNo,int ItemCode);
         Task<CancelRequitionModel> GetSearchData(string Fromdate,string ToDate,string ReportType,string PendCancelReq,string RequitionType,string ReqNo,int ItemCode);
+        Task<ResponseResult> UpdateCompleteRequisitionMultiple([FromBody] CancelRequisitionRequest request);
+
     }
 }

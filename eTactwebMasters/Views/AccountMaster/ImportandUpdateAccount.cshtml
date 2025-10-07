@@ -462,14 +462,14 @@
                 $(this).find('td').each(function (i) {
                     row[excelHeaders[i]] = $(this).text().trim();
                 });
-                const requiredColumns = ["Account_Code", "Account_Name", "DisplayName", "ParentAccountCode", "MainGroup", "SubGroup", "SubSubGroup", "UnderGroup", "Entry_Date"];
-                for (let col of requiredColumns) {
-                    if (!row[col] || row[col] === "") {
-                        hasEmptyRequired = true;
-                        $.notify(`Row ${$(this).index() + 1}: ${col} is required!`, "error");
-                        break;
-                    }
-                }
+                // const requiredColumns = [ "Account_Name", "DisplayName", "ParentAccountCode", "State"];
+                // for (let col of requiredColumns) {
+                //     if (!row[col] || row[col] === "") {
+                //         hasEmptyRequired = true;
+                //         $.notify(`Row ${$(this).index() + 1}: ${col} is required!`, "error");
+                //         break;
+                //     }
+                // }
                 excelData.push(row);
             });
             
