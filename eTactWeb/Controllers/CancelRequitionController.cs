@@ -3,6 +3,7 @@ using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using static eTactWeb.DOM.Models.Common;
 
 namespace eTactwebAdmin.Controllers
 {
@@ -63,5 +64,23 @@ namespace eTactwebAdmin.Controllers
             return PartialView("_CancelReqWithBomDetail", model);
 
         }
+
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateCompleteRequisitionMultiple([FromBody] CancelRequisitionRequest request)
+        {
+            var result = await _ICancelRequition.UpdateCompleteRequisitionMultiple(request);
+
+            // Wrap result into the object your JS expects
+            return Json(new
+            {
+                isSuccess = result.IsSuccess,   // true/false from your BLL/DAL
+                message = result.Message        // your success/failure message
+            });
+        }
+
+
+
+
     }
 }

@@ -39,5 +39,11 @@ namespace eTactWeb.Data.BLL
             return await _CancelRequitionDAL.GetSearchData(Fromdate, ToDate, ReportType, PendCancelReq, RequitionType, ReqNo, ItemCode);
         }
 
+        public async Task<ResponseResult> UpdateCompleteRequisitionMultiple(CancelRequisitionRequest request)
+        {
+            return await _CancelRequitionDAL.UpdateCompleteRequisitionMultiple(request);
+        }
+
+
     }
 }

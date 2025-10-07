@@ -17,7 +17,7 @@ namespace eTactWeb.Data.DAL
         private readonly string DBConnectionString = string.Empty;
         private IDataReader? Reader;
         private readonly ConnectionStringService _connectionStringService;
-
+     
         public CancelRequitionDAL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
             _IDataLogic = iDataLogic;
@@ -272,6 +272,63 @@ namespace eTactWeb.Data.DAL
             }
             return model;
         }
+        public async Task<ResponseResult> UpdateCompleteRequisitionMultiple(CancelRequisitionRequest request)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                // Convert List to DataTable for SQL
+                DataTable ReqList = new DataTable();
+                ReqList.Columns.Add("REQEntryId", typeof(long));
+                ReqList.Columns.Add("ReqYearCode", typeof(long));
+                ReqList.Columns.Add("ReqTYpeThrBomWithoutBOM", typeof(string));
+                ReqList.Columns.Add("Reqno", typeof(string));
+                ReqList.Columns.Add("CancelReason", typeof(string));
+                foreach (var r in request.Requisitions)
+                {
+                    ReqList.Rows.Add(r.ReqEntryId, r.ReqYearCode,r.RequitionType,r.ReqNo, r.CancelReason);
+                }
+
+                // Prepare SQL parameters
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "UpdateCompleteRequisitionWithout"));
+                SqlParams.Add(new SqlParameter("@dt", ReqList));
+                SqlParams.Add(new SqlParameter("@PendCanceledReq", request.PendCancelReq));
+                SqlParams.Add(new SqlParameter("@Fromdate", request.FromDate));
+                SqlParams.Add(new SqlParameter("@Todate", request.ToDate));
+                SqlParams.Add(new SqlParameter("@RequtionType", request.RequitionType));
+
+                // Call your stored procedure (just like SaveControlPlan)
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SPCancelrequisition", SqlParams);
+                if (_ResponseResult.Result != null)
+                {
+                    var dt = _ResponseResult.Result as DataTable; // cast dynamic to DataTable
+                    if (dt != null && dt.Rows.Count > 0)
+                    {
+                        var row = dt.Rows[0];
+
+                        // Use the new column names from SQL
+                        bool isSuccess = dt.Columns.Contains("IsSuccess") && row["IsSuccess"].ToString() == "1";
+                        string message = dt.Columns.Contains("Message") ? row["Message"].ToString() : "No message";
+
+                        _ResponseResult.IsSuccess = isSuccess;
+                        _ResponseResult.StatusText = message;
+                        _ResponseResult.Message = message;
+                    }
+                }
+
+
+
+            }
+            catch (Exception ex)
+            {
+                _ResponseResult.IsSuccess = false;
+                _ResponseResult.Message = ex.Message;
+            }
+
+            return _ResponseResult;
+        }
+
 
     }
 }
