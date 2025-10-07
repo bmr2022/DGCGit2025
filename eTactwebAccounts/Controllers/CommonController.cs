@@ -212,7 +212,7 @@ namespace eTactWeb.Controllers
             }
             // TaxGrid=JsonConvert.SerializeObject(MainModel.TaxDetailGridd);
             TaxGridd = GetTaxDetailTable(TaxGrid);
-        //}
+            //}
 
 
             var JSON = await IDataLogic.GetDbCrDataGrid(DbCrGridd, TaxGridd, TdsGridd, PageName.ToUpper().ToString(), docAccountCode, AccountCode, BillAmt, NetAmt);
@@ -241,7 +241,7 @@ namespace eTactWeb.Controllers
             if (TaxDetailList != null && TaxDetailList.Count > 0)
             {
                 var groupedTaxDetails = TaxDetailList
-                .GroupBy(item =>new { item.TxItemCode, item.TxTaxType, item.TxAccountCode })
+                .GroupBy(item => new { item.TxItemCode, item.TxTaxType, item.TxAccountCode })
                 .Select(group => new
                 {
                     FirstItem = group.First(),
@@ -391,7 +391,7 @@ namespace eTactWeb.Controllers
                 Table.Columns.Add("BankYearCode", typeof(int));
                 Table.Columns.Add("RemainingAmt", typeof(float));
                 Table.Columns.Add("RoundoffAmt", typeof(float));
-                
+
                 if (TDSDetailList != null && TDSDetailList.Count > 0)
                 {
                     foreach (TDSModel Item in TDSDetailList)
@@ -657,7 +657,7 @@ namespace eTactWeb.Controllers
                 throw;
             }
         }
-        
+
         private static DataTable GetPRDbCrDetailTable(AccPurchaseRejectionModel MainModel)
         {
             try
@@ -881,130 +881,130 @@ namespace eTactWeb.Controllers
                 AdjGrid = JsonConvert.DeserializeObject<AdjustmentModel>(modelJson);
             }
 
-            
-                if (model.AdjPageName == "ItemList")
-                {
-                    MainModel.ItemDetailGrid = JsonConvert.DeserializeObject<List<ItemDetail>>(HttpContext.Session.GetString(model.AdjPageName));
-                }
-                else if (model.AdjPageName == "PurchaseOrder")
-                {
-                    string modelJsonData = HttpContext.Session.GetString("PurchaseOrder");
-                    if (!string.IsNullOrEmpty(modelJsonData))
-                    {
-                        MainModel = JsonConvert.DeserializeObject<PurchaseOrderModel>(modelJsonData);
-                    }
-                }
-                else if (model.AdjPageName == "DirectPurchaseBill")
-                {
-                    string modelJsonData = HttpContext.Session.GetString("DirectPurchaseBill");
-                    if (!string.IsNullOrEmpty(modelJsonData))
-                    {
-                        MainModel = JsonConvert.DeserializeObject<DirectPurchaseBillModel>(modelJsonData);
-                    }
-                }
-                else if (model.AdjPageName == "PurchaseBill")
-                {
 
-                    string modelJsonData = HttpContext.Session.GetString("PurchaseBill");
-                    if (!string.IsNullOrEmpty(modelJsonData))
-                    {
-                        MainModel = JsonConvert.DeserializeObject<PurchaseBillModel>(modelJsonData);
-                    }
-                }
-                else if (model.AdjPageName == "SaleInvoice")
+            if (model.AdjPageName == "ItemList")
+            {
+                MainModel.ItemDetailGrid = JsonConvert.DeserializeObject<List<ItemDetail>>(HttpContext.Session.GetString(model.AdjPageName));
+            }
+            else if (model.AdjPageName == "PurchaseOrder")
+            {
+                string modelJsonData = HttpContext.Session.GetString("PurchaseOrder");
+                if (!string.IsNullOrEmpty(modelJsonData))
                 {
-                    string modelJsonData = HttpContext.Session.GetString("SaleBillModel");
-                    if (!string.IsNullOrEmpty(modelJsonData))
-                    {
-                        MainModel = JsonConvert.DeserializeObject<SaleBillModel>(modelJsonData);
-                    }
+                    MainModel = JsonConvert.DeserializeObject<PurchaseOrderModel>(modelJsonData);
                 }
-                else if (model.AdjPageName == "SaleBillOnCounter")
+            }
+            else if (model.AdjPageName == "DirectPurchaseBill")
+            {
+                string modelJsonData = HttpContext.Session.GetString("DirectPurchaseBill");
+                if (!string.IsNullOrEmpty(modelJsonData))
                 {
-                    string modelJsonData = HttpContext.Session.GetString("SaleBillModel");
-                    if (!string.IsNullOrEmpty(modelJsonData))
-                    {
-                        MainModel = JsonConvert.DeserializeObject<SaleBillModel>(modelJsonData);
-                    }
+                    MainModel = JsonConvert.DeserializeObject<DirectPurchaseBillModel>(modelJsonData);
                 }
-                else if (model.AdjPageName == "SaleRejection")
+            }
+            else if (model.AdjPageName == "PurchaseBill")
+            {
+
+                string modelJsonData = HttpContext.Session.GetString("PurchaseBill");
+                if (!string.IsNullOrEmpty(modelJsonData))
                 {
-                    string modelJsonData = HttpContext.Session.GetString("SaleRejectionModel");
-                    if (!string.IsNullOrEmpty(modelJsonData))
-                    {
-                        MainModel = JsonConvert.DeserializeObject<SaleRejectionModel>(modelJsonData);
-                    }
+                    MainModel = JsonConvert.DeserializeObject<PurchaseBillModel>(modelJsonData);
                 }
-                else if (model.AdjPageName == "CreditNote")
+            }
+            else if (model.AdjPageName == "SaleInvoice")
+            {
+                string modelJsonData = HttpContext.Session.GetString("SaleBillModel");
+                if (!string.IsNullOrEmpty(modelJsonData))
                 {
-                    string modelJsonData = HttpContext.Session.GetString("CreditNoteModel");
-                    if (!string.IsNullOrEmpty(modelJsonData))
-                    {
-                        MainModel = JsonConvert.DeserializeObject<AccCreditNoteModel>(modelJsonData);
-                    }
+                    MainModel = JsonConvert.DeserializeObject<SaleBillModel>(modelJsonData);
                 }
-                else if (model.AdjPageName == "PurchaseRejection")
+            }
+            else if (model.AdjPageName == "SaleBillOnCounter")
+            {
+                string modelJsonData = HttpContext.Session.GetString("SaleBillModel");
+                if (!string.IsNullOrEmpty(modelJsonData))
                 {
-                    string modelJsonData = HttpContext.Session.GetString("PurchaseRejectionModel");
-                    if (!string.IsNullOrEmpty(modelJsonData))
-                    {
-                        MainModel = JsonConvert.DeserializeObject<AccPurchaseRejectionModel>(modelJsonData);
-                    }
+                    MainModel = JsonConvert.DeserializeObject<SaleBillModel>(modelJsonData);
                 }
-                else if (model.AdjPageName == "JobWorkIssue")
+            }
+            else if (model.AdjPageName == "SaleRejection")
+            {
+                string modelJsonData = HttpContext.Session.GetString("SaleRejectionModel");
+                if (!string.IsNullOrEmpty(modelJsonData))
                 {
-                    string modelJsonData = HttpContext.Session.GetString("JobWorkIssue");
-                    if (!string.IsNullOrEmpty(modelJsonData))
-                    {
-                        MainModel = JsonConvert.DeserializeObject<JobWorkIssueModel>(modelJsonData);
-                    }
+                    MainModel = JsonConvert.DeserializeObject<SaleRejectionModel>(modelJsonData);
                 }
+            }
+            else if (model.AdjPageName == "CreditNote")
+            {
+                string modelJsonData = HttpContext.Session.GetString("CreditNoteModel");
+                if (!string.IsNullOrEmpty(modelJsonData))
+                {
+                    MainModel = JsonConvert.DeserializeObject<AccCreditNoteModel>(modelJsonData);
+                }
+            }
+            else if (model.AdjPageName == "PurchaseRejection")
+            {
+                string modelJsonData = HttpContext.Session.GetString("PurchaseRejectionModel");
+                if (!string.IsNullOrEmpty(modelJsonData))
+                {
+                    MainModel = JsonConvert.DeserializeObject<AccPurchaseRejectionModel>(modelJsonData);
+                }
+            }
+            else if (model.AdjPageName == "JobWorkIssue")
+            {
+                string modelJsonData = HttpContext.Session.GetString("JobWorkIssue");
+                if (!string.IsNullOrEmpty(modelJsonData))
+                {
+                    MainModel = JsonConvert.DeserializeObject<JobWorkIssueModel>(modelJsonData);
+                }
+            }
+            if (AdjGrid?.AdjAdjustmentDetailGrid != null && AdjGrid?.AdjAdjustmentDetailGrid?.Count > 0)
+            {
+                MainModel.adjustmentModel = AdjGrid;
+                isDuplicate = AdjGrid.AdjAdjustmentDetailGrid.Any(a => (a.AdjModeOfAdjstment.Equals(model.AdjModeOfAdjstment) && a.AdjModeOfAdjstment == "NewRef" && a.AdjNewRefNo.Equals(model.AdjNewRefNo)) || (a.AdjModeOfAdjstment.Equals(model.AdjModeOfAdjstment) && a.AdjNewRefNo.Equals(model.AdjNewRefNo) && (a.AdjPurchOrderNo != null && a.AdjPurchOrderNo.Equals(model.AdjPurchOrderNo)) && (a.AdjPOYear != null && a.AdjPOYear.Equals(model.AdjPOYear)) && a.AdjAgnstAccEntryID.Equals(model.AdjAgnstAccEntryID) && a.AdjAgnstAccYearCode.Equals(model.AdjAgnstAccYearCode)));
+            }
+
+            if (!isDuplicate)
+            {
                 if (AdjGrid?.AdjAdjustmentDetailGrid != null && AdjGrid?.AdjAdjustmentDetailGrid?.Count > 0)
                 {
-                    MainModel.adjustmentModel = AdjGrid;
-                    isDuplicate = AdjGrid.AdjAdjustmentDetailGrid.Any(a => (a.AdjModeOfAdjstment.Equals(model.AdjModeOfAdjstment) && a.AdjModeOfAdjstment == "NewRef" && a.AdjNewRefNo.Equals(model.AdjNewRefNo)) || (a.AdjModeOfAdjstment.Equals(model.AdjModeOfAdjstment) && a.AdjNewRefNo.Equals(model.AdjNewRefNo) && (a.AdjPurchOrderNo != null && a.AdjPurchOrderNo.Equals(model.AdjPurchOrderNo)) && (a.AdjPOYear != null && a.AdjPOYear.Equals(model.AdjPOYear)) && a.AdjAgnstAccEntryID.Equals(model.AdjAgnstAccEntryID) && a.AdjAgnstAccYearCode.Equals(model.AdjAgnstAccYearCode)));
-                }
-
-                if (!isDuplicate)
-                {
-                    if (AdjGrid?.AdjAdjustmentDetailGrid != null && AdjGrid?.AdjAdjustmentDetailGrid?.Count > 0)
-                    {
-                        _List.AddRange(MainModel.adjustmentModel.AdjAdjustmentDetailGrid);
-                        _List.AddRange(Add2List(model, _List));
-                    }
-                    else
-                    {
-                        var AdjModelList = Add2List(model, _List);
-                        _List.AddRange(AdjModelList);
-                    }
+                    _List.AddRange(MainModel.adjustmentModel.AdjAdjustmentDetailGrid);
+                    _List.AddRange(Add2List(model, _List));
                 }
                 else
                 {
-                    return StatusCode(200);
+                    var AdjModelList = Add2List(model, _List);
+                    _List.AddRange(AdjModelList);
                 }
-                if (MainModel.adjustmentModel == null)
-                {
-                    MainModel.adjustmentModel = new AdjustmentModel();
-                }
-                MainModel.adjustmentModel.AdjAdjustmentDetailGrid = _List;
-                //AdjustmentModel = MainModel.adjustmentModel.AdjAdjustmentDetailGrid;
+            }
+            else
+            {
+                return StatusCode(200);
+            }
+            if (MainModel.adjustmentModel == null)
+            {
+                MainModel.adjustmentModel = new AdjustmentModel();
+            }
+            MainModel.adjustmentModel.AdjAdjustmentDetailGrid = _List;
+            //AdjustmentModel = MainModel.adjustmentModel.AdjAdjustmentDetailGrid;
 
-                //StoreInSession("KeyAdjGrid", MainModel.adjustmentModel);
+            //StoreInSession("KeyAdjGrid", MainModel.adjustmentModel);
 
-                if (MainModel.adjustmentModel != null)
-                {
-                    string serializedGrid = JsonConvert.SerializeObject(MainModel.adjustmentModel);
-                    HttpContext.Session.SetString("KeyAdjGrid", serializedGrid);
-                    await Task.Delay(100);
-                }
-                else
-                {
-                    // Log or debug
-                    Console.WriteLine("adjustmentModel is NULL");
-                    return StatusCode(500, "Adjustment model is null.");
-                }
-            
-           
+            if (MainModel.adjustmentModel != null)
+            {
+                string serializedGrid = JsonConvert.SerializeObject(MainModel.adjustmentModel);
+                HttpContext.Session.SetString("KeyAdjGrid", serializedGrid);
+                await Task.Delay(100);
+            }
+            else
+            {
+                // Log or debug
+                Console.WriteLine("adjustmentModel is NULL");
+                return StatusCode(500, "Adjustment model is null.");
+            }
+
+
 
             return PartialView("_AdjGrid", MainModel.adjustmentModel);
         }
@@ -1046,7 +1046,7 @@ namespace eTactWeb.Controllers
                         AdjDescription = item.AdjDescription,
                         AdjDueDate = item.AdjAgnstVouchDate,
                         AdjNewRefNo = item.AdjNewRefNo,
-                        AdjPendAmt =Convert.ToDecimal( item.AdjAgnstAdjstedAmt),
+                        AdjPendAmt = Convert.ToDecimal(item.AdjAgnstAdjstedAmt),
                         AdjDrCr = item.AdjAgnstDrCr,
                         AdjDrCrName = item.AdjAgnstDrCr,
                         AdjPurchOrderNo = string.Empty,
@@ -1103,11 +1103,11 @@ namespace eTactWeb.Controllers
             {
                 foreach (var Item in AdjDetailList)
                 {
-                      var  AdjOrderDt = ParseFormattedDate(DateTime.Today.ToString());
-                      var  AdjDueDt = ParseFormattedDate(DateTime.Today.ToString());
-                      var  fdt1 = ParseFormattedDate(DateTime.Today.ToString());
-                      var  fdt2 = ParseFormattedDate(DateTime.Today.ToString());
-                      var  fdt3 = ParseFormattedDate(DateTime.Today.ToString());
+                    var AdjOrderDt = ParseFormattedDate(DateTime.Today.ToString());
+                    var AdjDueDt = ParseFormattedDate(DateTime.Today.ToString());
+                    var fdt1 = ParseFormattedDate(DateTime.Today.ToString());
+                    var fdt2 = ParseFormattedDate(DateTime.Today.ToString());
+                    var fdt3 = ParseFormattedDate(DateTime.Today.ToString());
                     if (Item.AdjModeOfAdjstment != null && Item.AdjModeOfAdjstment != "AgainstRef")
                     {
                         Table.Rows.Add(
@@ -1130,7 +1130,11 @@ namespace eTactWeb.Controllers
                         0,//AgainstOpeningVoucheryearcode
                         Item.AdjNewRefNo,
                         Item.AdjDescription,
-                        Item.DueDate == null ? (Item.AdjDueDate != null ? ParseFormattedDate(Item.AdjDueDate.ToString()) :  AdjDueDt) : ParseFormattedDate(Item.DueDate.ToString()),
+                        Item.DueDate == null
+    ? (Item.AdjDueDate == null
+        ? AdjDueDt
+        : ParseFormattedDate(Item.AdjDueDate.ToString()))
+    : ParseFormattedDate(Item.DueDate.ToString()),
                         string.Empty,//AgainstOrderno
                         0,//AgainstOrderYeearCode
                         AdjOrderDt,//AgainstOrderDate
@@ -1277,7 +1281,7 @@ namespace eTactWeb.Controllers
 
         [Route("Common/GetPendVouchBillAgainstRefPopupByID")]
         public async Task<JsonResult> GetPendVouchBillAgainstRefPopupByID(int AC, int? YC, int? PayRecEntryId, int? PayRecYearcode, string DRCR, string TransVouchType, string TransVouchDate)
-             {
+        {
             string Flag = "";
             var JSON = await IDataLogic.GetPendVouchBillAgainstRefPopupByID(AC, YC, PayRecEntryId, PayRecYearcode, DRCR, TransVouchType, TransVouchDate, Flag);
             string JsonString = JsonConvert.SerializeObject(JSON);
@@ -1371,6 +1375,6 @@ namespace eTactWeb.Controllers
         }
         #endregion
 
-        
+
     }
 }
