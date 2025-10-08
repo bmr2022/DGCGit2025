@@ -640,11 +640,22 @@ namespace eTactWeb.Controllers
                 DataTable dt = ChechedData.Result;
 
                 List<string> errorMessages = new List<string>();
-
+                JsonConvert.SerializeObject(ChechedData);
                 foreach (DataRow row in dt.Rows)
                 {
                     string itemName = row["Item_Name"].ToString();
-                    decimal availableQty = Convert.ToDecimal(row["ActualAdjQty"]);
+                    decimal availableQty = 0;
+
+                    try
+                    {
+                        if (row["AdjQty"] != DBNull.Value && !string.IsNullOrWhiteSpace(row["AdjQty"].ToString()))
+                            availableQty = Convert.ToDecimal(row["AdjQty"]);
+                    }
+                    catch
+                    {
+                        availableQty = 0; // if column doesn't exist or conversion fails
+                    }
+                 //   decimal availableQty = Convert.ToDecimal(row["AdjQty"]);
 
                     string error = $"{itemName}  has only {availableQty} quantity available in stock.";
                     errorMessages.Add(error);
