@@ -407,7 +407,7 @@ namespace eTactWeb.Controllers
                                     {
                                         var rowData = groupCode.Result.Result.Rows[0];
 
-                                        ParentAccCode = Convert.ToInt64(rowData["Parent_Account_Code"]);
+                                        ParentAccCode = Convert.ToInt64(rowData["Account_Code"]);
 
                                         // Optional: use other details if needed
                                         string mainGroup = rowData["Main_Group"].ToString();
