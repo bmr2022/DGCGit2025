@@ -291,7 +291,15 @@ namespace eTactWeb.Data.DAL
 
                 // Prepare SQL parameters
                 var SqlParams = new List<dynamic>();
-                SqlParams.Add(new SqlParameter("@Flag", "UpdateCompleteRequisitionWithout"));
+                if (request.ReportType== "FillREquisitionDetail")
+                {
+                    SqlParams.Add(new SqlParameter("@Flag", "UpdateCompleteRequisitionWithoutDetail"));
+                }
+                else
+                {
+
+                    SqlParams.Add(new SqlParameter("@Flag", "UpdateCompleteRequisitionWithout"));
+                }
                 SqlParams.Add(new SqlParameter("@dt", ReqList));
                 SqlParams.Add(new SqlParameter("@PendCanceledReq", request.PendCancelReq));
                 SqlParams.Add(new SqlParameter("@Fromdate", request.FromDate));

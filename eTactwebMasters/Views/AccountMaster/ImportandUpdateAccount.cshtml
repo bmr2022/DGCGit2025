@@ -493,7 +493,11 @@
                     $.notify("Data Update Successfully!!", "info");
                     if (data && (data.statusCode === 200 || data.statusCode === 202)) {
                         window.location.href = data.RedirectUrl;
-                    } else {
+                    }
+                    else if (data && (data.statusCode === 205 || data.statusCode === 205)) {
+                        $.notify(data.statusText, "error");
+                    }
+                    else {
                         //    console.log(data);
                         //  alert(data.statusText);
                         // Show notify message if error-like StatusText is returned
