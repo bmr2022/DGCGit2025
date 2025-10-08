@@ -14,6 +14,7 @@ namespace eTactWeb.Services.Interface
  
 
         Task<ResponseResult> FillGateNo(string FromDate, string ToDate);
+        Task<ResponseResult> PENDGATEDETAILFORMRN(string GateNo, int Yearcode);
         Task<ResponseResult> FillDocument(string FromDate, string ToDate);
         Task<ResponseResult> FillVendor(string FromDate, string ToDate);
         Task<ResponseResult> FillInvoice(string FromDate, string ToDate);
