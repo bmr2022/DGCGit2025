@@ -74,7 +74,7 @@ namespace eTactWeb.Controllers
             return PartialView("_OutStandingPopUpData", model);
         }
 
-        public async Task<IActionResult> GetDetailsData( string outstandingType, string TillDate, string GroupName, string[] AccountNameList,  int AccountCode, string ShowOnlyApprovedBill, bool ShowZeroBal)
+        public async Task<IActionResult> GetDetailsData( string outstandingType, string TillDate, int? GroupName, string[] AccountNameList,  int AccountCode, string ShowOnlyApprovedBill, bool ShowZeroBal)
         {
             var model = new OutStandingModel();
             model = await _OutStanding.GetDetailsData(outstandingType, TillDate, GroupName, AccountNameList, AccountCode, ShowOnlyApprovedBill, ShowZeroBal);

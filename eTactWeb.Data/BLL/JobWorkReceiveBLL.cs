@@ -99,6 +99,11 @@ namespace eTactWeb.Data.BLL
         public async Task<ResponseResult> GetBomValidated(int RecItemCode, int BomRevNo, string BomRevDate, int RecQty)
         {
             return await _JobWorkReceiveDAL.GetBomValidated(RecItemCode, BomRevNo, BomRevDate, RecQty);
+        } 
+        public async Task<ResponseResult> CheckQtyBeforeInsertOrUpdate(DataTable JWRGrid, DataTable ChallanGrid)
+
+        {
+            return await _JobWorkReceiveDAL.CheckQtyBeforeInsertOrUpdate(JWRGrid, ChallanGrid);
         }
 
         public async Task<ResponseResult> GetDashboardData(string FromDate, string Todate, string Flag)

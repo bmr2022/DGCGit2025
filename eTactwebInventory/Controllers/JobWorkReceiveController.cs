@@ -615,6 +615,53 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+        public async Task<JsonResult> CheckQtyBeforeInsertOrUpdate()
+        {
+            var JWRGrid = new DataTable();
+            var ChallanGrid = new DataTable();
+            string serializedGrid = HttpContext.Session.GetString("KeyJobWorkRecieve");
+            List<JobWorkReceiveDetail> JobWorkReceiveDetail = new List<JobWorkReceiveDetail>();
+            if (!string.IsNullOrEmpty(serializedGrid))
+            {
+                JobWorkReceiveDetail = JsonConvert.DeserializeObject<List<JobWorkReceiveDetail>>(serializedGrid);
+            }
+            string modelReceiveGridJson = HttpContext.Session.GetString("KeyJobWorkRecieveGrid");
+            List<JobWorkReceiveItemDetail> JobWorkReceiveItemDetail = new List<JobWorkReceiveItemDetail>();
+            if (!string.IsNullOrEmpty(modelReceiveGridJson))
+            {
+                JobWorkReceiveItemDetail = JsonConvert.DeserializeObject<List<JobWorkReceiveItemDetail>>(modelReceiveGridJson);
+            }
+
+            JWRGrid = GetJWRTable(JobWorkReceiveItemDetail);
+            ChallanGrid = GetChallanTable(JobWorkReceiveDetail);
+            var ChechedData = await _IJobWorkReceive.CheckQtyBeforeInsertOrUpdate(JWRGrid, ChallanGrid);
+            if (ChechedData.StatusCode == HttpStatusCode.OK && ChechedData.StatusText == "Success")
+            {
+                DataTable dt = ChechedData.Result;
+
+                List<string> errorMessages = new List<string>();
+
+                foreach (DataRow row in dt.Rows)
+                {
+                    string itemName = row["Item_Name"].ToString();
+                    decimal availableQty = Convert.ToDecimal(row["ActualAdjQty"]);
+
+                    string error = $"{itemName}  has only {availableQty} quantity available in stock.";
+                    errorMessages.Add(error);
+                }
+
+                return Json(new
+                {
+                    success = false,
+                    errors = errorMessages
+                });
+            }
+            return Json(new
+            {
+                success = true,
+                message = "No errors found."
+            });
+        }
         public async Task<JsonResult> GetEmployeeList()
         {
             var JSON = await _IJobWorkReceive.GetEmployeeList("EMPLIST", "SP_JobworkRec");
