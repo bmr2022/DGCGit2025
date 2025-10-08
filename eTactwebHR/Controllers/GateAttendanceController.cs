@@ -21,6 +21,8 @@ using System.Xml.Linq;
 using System.Threading.Tasks;
 using DocumentFormat.OpenXml.Wordprocessing;
 using PdfSharp.Drawing.BarCodes;
+using DocumentFormat.OpenXml.EMMA;
+using DocumentFormat.OpenXml.VariantTypes;
 
 namespace eTactwebHR.Controllers
 {
@@ -82,6 +84,12 @@ namespace eTactwebHR.Controllers
                 MainModel.FinFromDate = HttpContext.Session.GetString("FromDate");
                 MainModel.FinToDate = HttpContext.Session.GetString("ToDate");
                 MainModel = await BindModels(MainModel).ConfigureAwait(false);
+                MainModel.HolidayList = GetHolidayList((!string.IsNullOrEmpty(MainModel.EmpCategoryId)) ? Convert.ToInt32(MainModel.EmpCategoryId) : 0, MainModel.EmpAttDate ?? new DateTime(MainModel.GateAttYearCode, 1, 1), YearCode)?.HolidayList ?? new List<GateAttendanceHolidayModel>();
+                ViewBag.DeptList = await IDataLogic.GetDropDownList("FillDepartment", "HRSPGateAttendanceMainDetail");
+                ViewBag.DesigList = await IDataLogic.GetDropDownList("FillDesignation", "HRSPGateAttendanceMainDetail");
+                //ViewBag.ShiftList = await IDataLogic.GetDropDownList("FillShift", "HRSPGateAttendanceMainDetail");
+                ViewBag.EmployeeList = await IDataLogic.GetDropDownList("FillEmployee", "HRSPGateAttendanceMainDetail");
+
                 string serializedGrid = JsonConvert.SerializeObject(MainModel);
                 HttpContext.Session.SetString("GateAttendance", serializedGrid);
                 //var taxGrid = MainModel.TaxDetailGridd == null ? new List<TaxModel>() : MainModel.TaxDetailGridd;
