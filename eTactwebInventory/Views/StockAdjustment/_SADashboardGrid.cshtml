@@ -7,14 +7,32 @@
 }
 
 <style>
+    /* Fix spacing between action icons */
     #container {
         display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0; /* no extra space between icons */
     }
 
         #container > div {
-            flex: 1;
-            margin-right: 10px; /* Adjust margin as needed */
+            margin: 0 !important;
+            padding: 0 !important;
+            display: inline-flex; /* keeps icons tightly aligned */
         }
+
+        #container a {
+            margin: 0 !important;
+            margin-top: 2px !important;
+            padding: 0 !important;
+            line-height: 1 !important;
+        }
+
+    .fa-stack {
+        margin: 0 !important;
+        padding: 0 !important;
+        line-height: 1 !important;
+    }
 
     #MRNTable {
         width: 100%;
@@ -48,18 +66,7 @@
         vertical-align: super;
     }
 
-    .SAGrid {
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-    .SSThead th {
-        background-color: #127387;
-        position: sticky;
-        top: 0;
-        height: 40px;
-        z-index: 1;
-    }
+    
 
 </style>
 @if (Model.SummaryDetail == "Detail")
