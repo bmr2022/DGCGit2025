@@ -277,7 +277,10 @@
             var tillDateBack = sessionStorage.getItem('ToDateBack');
             var reportTypeBack = sessionStorage.getItem('DashboardTypeBack');
             var groupCodeBack = sessionStorage.getItem('GroupCodeBack');
-            var accountCodeBack = sessionStorage.getItem('AccountCodeBack');
+            var accountCodeBack = sessionStorage.getItem('AccountNameBack');
+            var voucherNoBack = sessionStorage.getItem('VoucherNoBack');
+            var voucherTypeBack = sessionStorage.getItem('VoucherTypeBack');
+            var accountList = sessionStorage.getItem('AccountList');
 
             // Fill dropdowns
             FillGroupName();
@@ -290,6 +293,8 @@
                 $('#TillDate').val(tillDateBack);
                 $('#GroupName').val(groupCodeBack).trigger('change');
                 $('#ReportType').val(reportTypeBack).trigger('change');
+                $('#VoucherNo').val(voucherNoBack).trigger('change');
+                $('#VoucherType').val(voucherTypeBack).trigger('change');
             }
 
             // Handle ReportType change
@@ -456,44 +461,73 @@
         function FillPartyName(callback) {
             var OutStandingType = $('#ReportType').val();
             var TillDate = $('#TillDate').val();
-            var isMulti = $('#multiPartySwitch').is(':checked');
+            var isMulti = $('#multiPartySwitch').is(':checked'); // detect single/multiple
             var PartynameSingleDropdown = $('#PartyNameSingle');
             var PartynameMultiDropdown = $('#PartyNameMulti');
             var GroupCode = $('#GroupName').val();
 
-            // If you want a specific party selected by default
-            var selectedPartyCode = $('#SomeHiddenFieldOrVariable').val(); // set your selected code here
+            // 🔹 Get AccountList from sessionStorage
+            var accountListStr = sessionStorage.getItem('AccountList');
+            var accountArray = [];
+
+            if (accountListStr) {
+                try {
+                    accountArray = JSON.parse(accountListStr); // JSON array
+                } catch {
+                    accountArray = accountListStr.split(','); // comma-separated
+                }
+            }
 
             $.ajax({
                 url: '@Url.Action("GetPartyName", "OutStanding")',
                 data: {
-                    "OutStandingType": OutStandingType,
-                    "TillDate": TillDate,
-                    "GroupCode": GroupCode
+                    OutStandingType: OutStandingType,
+                    TillDate: TillDate,
+                    GroupCode: GroupCode
                 },
                 type: 'GET',
                 success: function (response) {
                     var obj = $.parseJSON(response);
 
                     if (!isMulti) {
+                        // 🟢 Single select
                         PartynameSingleDropdown.empty();
                         PartynameSingleDropdown.append('<option value="">--Select--</option>');
-                        var accountCodeBack = sessionStorage.getItem('AccountCodeBack');
+
                         $.each(obj.Result, function (index, item) {
-                            var isSelected = (item.Account_Code == accountCodeBack) ? ' selected' : '';
+                            var isSelected = (item.Account_Code.toString() === accountArray[0]) ? ' selected' : '';
                             PartynameSingleDropdown.append('<option value="' + item.Account_Code + '"' + isSelected + '>' + item.PartyName + '</option>');
                         });
-                    } else {
+
+                        // Optional: trigger change for Select2
+                        PartynameSingleDropdown.trigger('change');
+
+                        // ✅ Return single AccountCode
+                        var selectedAccountCode = PartynameSingleDropdown.val();
+                        console.log("Selected AccountCode (single):", selectedAccountCode);
+                    }
+                    else {
+                        // 🟢 Multi select
                         PartynameMultiDropdown.empty();
 
                         $.each(obj.Result, function (index, item) {
-                            var isSelected = (item.Account_Code == accountCodeBack) ? ' selected' : '';
+                            var isSelected = accountArray.includes(item.Account_Code.toString()) ? ' selected' : '';
                             PartynameMultiDropdown.append('<option value="' + item.Account_Code + '"' + isSelected + '>' + item.PartyName + '</option>');
                         });
+
+                        // Bootstrap Multiselect
                         PartynameMultiDropdown.multiselect('rebuild');
+                        PartynameMultiDropdown.val(accountArray);
+                        PartynameMultiDropdown.multiselect('refresh');
+
+                        // If using Select2 instead: PartynameMultiDropdown.val(accountArray).trigger('change');
+
+                        // ✅ Return array of selected AccountCodes
+                        var selectedAccounts = PartynameMultiDropdown.val();
+                        console.log("Selected AccountCodes (multiple):", selectedAccounts);
                     }
 
-                    // ✅ callback call after dropdown filled
+                    // Callback after dropdown is filled
                     if (typeof callback === "function") {
                         callback();
                     }
@@ -635,7 +669,7 @@
             var GroupName = $('#GroupName').val();
             var AccountNameList = $('#PartyNameMulti').val();
             var AccountCode = 0;
-            var accountCodeBack = sessionStorage.getItem('AccountCodeBack');
+            var accountCodeBack = sessionStorage.getItem('AccountNameBack');
 
             if (AccountNameList && AccountNameList.length > 0) {
                 AccountCode = 0;
@@ -662,7 +696,7 @@
                 },
                 success: function (response) {
                     $('#divStockMainRegister').html(response);
-
+                    sessionStorage.removeItem('AccountNameBack');
                     var totalRows = $('#divStockMainRegister tr').length;
                     $('#totalRows').text(totalRows);
                     countAllTotal();

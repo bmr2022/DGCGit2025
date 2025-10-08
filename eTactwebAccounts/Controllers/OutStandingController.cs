@@ -74,10 +74,10 @@ namespace eTactWeb.Controllers
             return PartialView("_OutStandingPopUpData", model);
         }
 
-        public async Task<IActionResult> GetDetailsData( string outstandingType, string TillDate, int? GroupName, string[] AccountNameList,  int AccountCode, string ShowOnlyApprovedBill, bool ShowZeroBal)
+        public async Task<IActionResult> GetDetailsData( string outstandingType, string TillDate, int? GroupName, string[] AccountNameList,  int AccountCode, string ShowOnlyApprovedBill, bool ShowZeroBal, string VoucherNo, string VoucherType)
         {
             var model = new OutStandingModel();
-            model = await _OutStanding.GetDetailsData(outstandingType, TillDate, GroupName, AccountNameList, AccountCode, ShowOnlyApprovedBill, ShowZeroBal);
+            model = await _OutStanding.GetDetailsData(outstandingType, TillDate, GroupName, AccountNameList, AccountCode, ShowOnlyApprovedBill, ShowZeroBal, VoucherNo, VoucherType);
             if (outstandingType == "Receive Outstanding Ageing" || outstandingType == "Payable Outstanding Ageing")
             {
                 return PartialView("_OutStandingAgeingGrid", model);

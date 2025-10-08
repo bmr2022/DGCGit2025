@@ -309,6 +309,9 @@ namespace eTactWeb.DOM.Models
         public string? SummaryDetailBack { get; set; }
         public int? GroupCodeBack { get; set; }
         public int? AccountCodeBack { get; set; }
+        public int? AccountNameBack { get; set; }
+        public string? VoucherTypeBack {  get; set; }
+        public string[] AccountList {  get; set; }
         public List<SaleBillDetail>? saleBillDetails { get; set; }
         public IList<SaleBillDetail>? ItemDetailGrid { get; set; }
         public IList<DPBItemDetail>? DPBItemDetails { get; set; }
