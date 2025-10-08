@@ -13,6 +13,7 @@ using FastReport.Web;
 using FastReport;
 using System.Globalization;
 using NuGet.Packaging;
+using Newtonsoft.Json.Linq;
 
 namespace eTactwebAccounts.Controllers
 {
@@ -117,17 +118,23 @@ namespace eTactwebAccounts.Controllers
             try
             {
                 var GIGrid = new DataTable();
-                string modelJson = HttpContext.Session.GetString("KeyAgainstAdjustVoucherGrid");
+                string modelJson = HttpContext.Session.GetString("KeyAdjGrid");
                 List<AgainstAdjustVoucherModel> AgainstAdjustVoucherGrid = new List<AgainstAdjustVoucherModel>();
+                List<AgainstAdjustVoucherModel> AgainstAdjustVoucherGridEdit = new List<AgainstAdjustVoucherModel>();
+
+                // Deserialize JSON for new entries
                 if (!string.IsNullOrEmpty(modelJson))
                 {
-                    AgainstAdjustVoucherGrid = JsonConvert.DeserializeObject<List<AgainstAdjustVoucherModel>>(modelJson);
+                    var jObject = JObject.Parse(modelJson);
+                    var array = jObject["AdjAdjustmentDetailGrid"];
+                    AgainstAdjustVoucherGrid = array?.ToObject<List<AgainstAdjustVoucherModel>>() ?? new List<AgainstAdjustVoucherModel>();
                 }
-                string modelEditJson = HttpContext.Session.GetString("KeyAgainstAdjustVoucherGridEdit");
-                List<AgainstAdjustVoucherModel> AgainstAdjustVoucherGridEdit = new List<AgainstAdjustVoucherModel>();
+                string modelEditJson = HttpContext.Session.GetString("KeyAdjGrid");
                 if (!string.IsNullOrEmpty(modelEditJson))
                 {
-                    AgainstAdjustVoucherGridEdit = JsonConvert.DeserializeObject<List<AgainstAdjustVoucherModel>>(modelEditJson);
+                    var jObjectEdit = JObject.Parse(modelEditJson);
+                    var arrayEdit = jObjectEdit["AdjAdjustmentDetailGrid"];
+                    AgainstAdjustVoucherGridEdit = arrayEdit?.ToObject<List<AgainstAdjustVoucherModel>>() ?? new List<AgainstAdjustVoucherModel>();
                 }
 
                 model.ActualEntryBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
@@ -140,31 +147,31 @@ namespace eTactwebAccounts.Controllers
                 {
                     GIGrid = GetDetailTable(AgainstAdjustVoucherGrid);
                 }
-                //var Result = await _IAgainstAdjustVoucher.SaveAgainstAdjustVoucher(model, GIGrid);
-                //if (Result != null)
-                //{
-                //    if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
-                //    {
-                //        ViewBag.isSuccess = true;
-                //        TempData["200"] = "200";
-                //        HttpContext.Session.Remove("KeyAgainstAdjustVoucherGrid");
-                //        HttpContext.Session.Remove("KeyAgainstAdjustVoucherGridEdit");
-                //    }
-                //    else if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
-                //    {
-                //        ViewBag.isSuccess = true;
-                //        TempData["202"] = "202";
-                //        HttpContext.Session.Remove("KeyAgainstAdjustVoucherGrid");
-                //        HttpContext.Session.Remove("KeyAgainstAdjustVoucherGridEdit");
-                //    }
-                //    else if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
-                //    {
-                //        ViewBag.isSuccess = false;
-                //        TempData["500"] = "500";
-                //        _logger.LogError($"\n \n ********** LogError ********** \n {JsonConvert.SerializeObject(Result)}\n \n");
-                //        return View("Error", Result);
-                //    }
-                //}
+                var Result = await _IAgainstAdjustVoucher.SaveAgainstAdjustVoucher(model, GIGrid);
+                if (Result != null)
+                {
+                    if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
+                    {
+                        ViewBag.isSuccess = true;
+                        TempData["200"] = "200";
+                        HttpContext.Session.Remove("KeyAgainstAdjustVoucherGrid");
+                        HttpContext.Session.Remove("KeyAdjGrid");
+                    }
+                    else if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
+                    {
+                        ViewBag.isSuccess = true;
+                        TempData["202"] = "202";
+                        HttpContext.Session.Remove("KeyAgainstAdjustVoucherGrid");
+                        HttpContext.Session.Remove("KeyAdjGrid");
+                    }
+                    else if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
+                    {
+                        ViewBag.isSuccess = false;
+                        TempData["500"] = "500";
+                        _logger.LogError($"\n \n ********** LogError ********** \n {JsonConvert.SerializeObject(Result)}\n \n");
+                        return View("Error", Result);
+                    }
+                }
                 return RedirectToAction(nameof(AgainstAdjustVoucher));
             }
             catch (Exception ex)
@@ -180,200 +187,74 @@ namespace eTactwebAccounts.Controllers
                 return View("Error", ResponseResult);
             }
         }
-        private static DataTable GetDetailTable(IList<AgainstAdjustVoucherModel> DetailList)
+        private DataTable GetDetailTable(List<AgainstAdjustVoucherModel> list)
         {
-            try
+            // Create DataTable matching the SQL Type_AccAgainstRefAdjustmentVoucherDetail
+            DataTable dt = new DataTable();
+
+            dt.Columns.Add("AgainstRefEntryId", typeof(long));
+            dt.Columns.Add("AgainstRefYearCode", typeof(long));
+            dt.Columns.Add("SeqNo", typeof(long));
+            dt.Columns.Add("ModOfAdjust", typeof(string));
+            dt.Columns.Add("VoucherDate", typeof(DateTime));
+            dt.Columns.Add("VoucherType", typeof(string));
+            dt.Columns.Add("DrAmt", typeof(decimal));
+            dt.Columns.Add("CrAmt", typeof(decimal));
+            dt.Columns.Add("BillNetAmt", typeof(decimal));
+            dt.Columns.Add("AgainstAccEntryId", typeof(long));
+            dt.Columns.Add("AgainstVoucheryearcode", typeof(long));
+            dt.Columns.Add("AgainstvoucherType", typeof(string));
+            dt.Columns.Add("AgainstVoucherNo", typeof(string));
+            dt.Columns.Add("AgainstAccOpeningEntryId", typeof(long));
+            dt.Columns.Add("AgainstOpeningVoucheryearcode", typeof(long));
+            dt.Columns.Add("RemainingBalanceAmt", typeof(decimal));
+            dt.Columns.Add("DueDate", typeof(DateTime));
+            dt.Columns.Add("RemainingAmountInOtherCurrency", typeof(decimal));
+            dt.Columns.Add("AdjAmountInOtherCurrency", typeof(decimal));
+            dt.Columns.Add("AddAmountInOtherCurr", typeof(decimal));
+            dt.Columns.Add("AmountInothercurrency", typeof(decimal));
+            dt.Columns.Add("OursalespersonId", typeof(long));
+            dt.Columns.Add("VoucherDescription", typeof(string));
+            dt.Columns.Add("NewrefNo", typeof(string));
+            dt.Columns.Add("SubVoucherName", typeof(string));
+
+            // Populate rows
+            foreach (var item in list)
             {
-                var GIGrid = new DataTable();
-                GIGrid.Columns.Add("AccEntryId", typeof(int));
-                GIGrid.Columns.Add("AccYearCode", typeof(int));
-                GIGrid.Columns.Add("EntryDate", typeof(DateTime));
-                GIGrid.Columns.Add("DocEntryId", typeof(int));
-                GIGrid.Columns.Add("VoucherDocNo", typeof(string));
-                GIGrid.Columns.Add("BillVouchNo", typeof(string));
-                GIGrid.Columns.Add("VoucherDocDate", typeof(DateTime));
-                GIGrid.Columns.Add("BillInvoiceDate", typeof(DateTime));
-                GIGrid.Columns.Add("BillYearCode", typeof(int));
-                GIGrid.Columns.Add("VoucherRefNo", typeof(string));
-                GIGrid.Columns.Add("SeqNo", typeof(int));
-                GIGrid.Columns.Add("Accountcode", typeof(int));
-                GIGrid.Columns.Add("BankCashAccountCode", typeof(int));
-                GIGrid.Columns.Add("AccountGroupType", typeof(string));
-                GIGrid.Columns.Add("Description", typeof(string));
-                GIGrid.Columns.Add("VoucherRemark", typeof(string));
-                GIGrid.Columns.Add("DrAmt", typeof(decimal));
-                GIGrid.Columns.Add("CrAmt", typeof(decimal));
-                GIGrid.Columns.Add("entryBankCash", typeof(string));
-                GIGrid.Columns.Add("Vouchertype", typeof(string));
-                GIGrid.Columns.Add("chequeDate", typeof(DateTime));
-                GIGrid.Columns.Add("chequeClearDate", typeof(DateTime));
-                GIGrid.Columns.Add("UID", typeof(int));
-                GIGrid.Columns.Add("CC", typeof(string));
-                GIGrid.Columns.Add("TDSNatureOfPayment", typeof(string));
-                GIGrid.Columns.Add("RoundDr", typeof(decimal));
-                GIGrid.Columns.Add("RoundCr", typeof(decimal));
-                GIGrid.Columns.Add("AgainstEntryid", typeof(int));
-                GIGrid.Columns.Add("AgainstVoucheryearcode", typeof(int));
-                GIGrid.Columns.Add("AgainstVoucherType", typeof(string));
-                GIGrid.Columns.Add("againstVoucherRefNo", typeof(string));
-                GIGrid.Columns.Add("AgainstVoucherNo", typeof(string));
-                GIGrid.Columns.Add("AgainstBillno", typeof(string));
-                GIGrid.Columns.Add("PONo", typeof(string));
-                GIGrid.Columns.Add("PoDate", typeof(DateTime));
-                GIGrid.Columns.Add("POYear", typeof(int));
-                GIGrid.Columns.Add("SONo", typeof(int));
-                GIGrid.Columns.Add("CustOrderNo", typeof(string));
-                GIGrid.Columns.Add("SoDate", typeof(DateTime));
-                GIGrid.Columns.Add("SOYear", typeof(int));
-                GIGrid.Columns.Add("ApprovedBy", typeof(int));
-                GIGrid.Columns.Add("ApprovedDate", typeof(DateTime));
-                GIGrid.Columns.Add("Approved", typeof(string));
-                GIGrid.Columns.Add("AccountNarration", typeof(string));
-                GIGrid.Columns.Add("CurrencyId", typeof(int));
-                GIGrid.Columns.Add("CurrentValue", typeof(decimal));
-                GIGrid.Columns.Add("AdjAmountInOtherCurrency", typeof(decimal));
-                GIGrid.Columns.Add("AmountInOtherCurr", typeof(decimal));
-                GIGrid.Columns.Add("ItemCode", typeof(int));
-                GIGrid.Columns.Add("VoucherNo", typeof(string));
-                GIGrid.Columns.Add("ChequePrintAC", typeof(string));
-                GIGrid.Columns.Add("EmpCode", typeof(int));
-                GIGrid.Columns.Add("DeptCode", typeof(int));
-                GIGrid.Columns.Add("MRNNO", typeof(string));
-                GIGrid.Columns.Add("MRNDate", typeof(DateTime));
-                GIGrid.Columns.Add("MRNYearCode", typeof(int));
-                GIGrid.Columns.Add("CostCenterId", typeof(int));
-                GIGrid.Columns.Add("PaymentMode", typeof(string));
-                GIGrid.Columns.Add("EntryTypebankcashLedger", typeof(string));
-                GIGrid.Columns.Add("TDSApplicable", typeof(string));
-                GIGrid.Columns.Add("TDSChallanNo", typeof(string));
-                GIGrid.Columns.Add("TDSChallanDate", typeof(DateTime));
-                GIGrid.Columns.Add("PreparedByEmpId", typeof(int));
-                GIGrid.Columns.Add("CGSTAccountCode", typeof(int));
-                GIGrid.Columns.Add("CGSTPer", typeof(decimal));
-                GIGrid.Columns.Add("CGSTAmt", typeof(decimal));
-                GIGrid.Columns.Add("SGSTAccountCode", typeof(int));
-                GIGrid.Columns.Add("SGSTPer", typeof(decimal));
-                GIGrid.Columns.Add("SGSTAmt", typeof(decimal));
-                GIGrid.Columns.Add("IGSTAccountCode", typeof(int));
-                GIGrid.Columns.Add("IGSTPer", typeof(decimal));
-                GIGrid.Columns.Add("IGSTAmt", typeof(decimal));
-                GIGrid.Columns.Add("ModeOfAdjustment", typeof(string));
-                GIGrid.Columns.Add("NameOnCheque", typeof(string));
-                GIGrid.Columns.Add("BalanceSheetClosed", typeof(string));
-                GIGrid.Columns.Add("ProjectNo", typeof(string));
-                GIGrid.Columns.Add("ProjectYearcode", typeof(int));
-                GIGrid.Columns.Add("ProjectDate", typeof(DateTime));
-                GIGrid.Columns.Add("ActualEntryBy", typeof(int));
-                GIGrid.Columns.Add("ActualEntryDate", typeof(DateTime));
-                GIGrid.Columns.Add("UpdatedBy", typeof(int));
-                GIGrid.Columns.Add("LastUpdatedDate", typeof(DateTime));
-                GIGrid.Columns.Add("EntryByMachine", typeof(string));
-                GIGrid.Columns.Add("OursalespersonId", typeof(int));
-                GIGrid.Columns.Add("SubVoucherName", typeof(string));
+                var row = dt.NewRow();
 
+                row["AgainstRefEntryId"] = item.EntryId;
+                row["AgainstRefYearCode"] = item.YearCode;
+                row["SeqNo"] = item.SeqNo;
+                row["ModOfAdjust"] = item.ModeOfAdjustment ?? string.Empty;
+                row["VoucherDate"] = item.VoucherDate ?? (object)DBNull.Value;
+                row["VoucherType"] = item.VoucherType ?? string.Empty;
+                row["DrAmt"] = item.DrAmt;
+                row["CrAmt"] = item.CrAmt;
+                row["BillNetAmt"] = item.BillAmount??0;
+                row["AgainstAccEntryId"] = item.AgainstVoucherEntryId;
+                row["AgainstVoucheryearcode"] = item.AgainstVoucheryearCode;
+                row["AgainstvoucherType"] = item.AgainstVoucherType ?? string.Empty;
+                row["AgainstVoucherNo"] = item.AgainstVoucherNo ?? string.Empty;
+                row["AgainstAccOpeningEntryId"] = item.AgainstAccOpeningEntryId;
+                row["AgainstOpeningVoucheryearcode"] = item.AgainstOpeningVoucheryearcode;
+                row["RemainingBalanceAmt"] = item.PendBillAmt;
+                row["DueDate"] = item.DueDate ?? (object)DBNull.Value;
+                row["RemainingAmountInOtherCurrency"] = item.PendBillAmt;
+                row["AdjAmountInOtherCurrency"] = item.AdjAmountInOtherCurrency;
+                row["AddAmountInOtherCurr"] = item.AdjustAmount;
+                row["AmountInothercurrency"] = item.AdjustAmount;
+                row["OursalespersonId"] = item.OursalespersonId;
+                row["VoucherDescription"] = item.Description ?? string.Empty;
+                row["NewrefNo"] = item.NewrefNo ?? string.Empty;
+                row["SubVoucherName"] = item.SubVoucherName ?? string.Empty;
 
-                foreach (var Item in DetailList)
-                {
-                    GIGrid.Rows.Add(
-                        new object[]
-                        {
-                Item.AccEntryId ,
-                Item.YearCode ,
-                Item.EntryDate=DateTime.Now.ToString("dd/MMM/yyyy") ,
-                Item.DocEntryId ,
-                Item.VoucherDocNo ?? string.Empty,
-                Item.BillVouchNo ?? string.Empty,
-                Item.VoucherDocDate=DateTime.Now.ToString("dd/MMM/yyyy") ,
-                Item.BillInvoiceDate=DateTime.Now.ToString("dd/MMM/yyyy",CultureInfo.InvariantCulture) ,
-                Item.BillYearCode ,
-                Item.VoucherRefNo ?? string.Empty,
-                Item.SrNO ,
-                Item.AccountCode,
-                Item.BankCashAccountCode ,
-                Item.AccountGroupType ?? string.Empty,
-                Item.Description ?? string.Empty,
-                Item.VoucherRemark ?? string.Empty,
-                Item.DrAmt,
-                Item.CrAmt ,
-                Item.EntryBankCash,
-                Item.VoucherType ?? string.Empty,
-                Item.ChequeDate != null ? Item.ChequeDate : null,
-                Item.BankRECO != null ? Item.ChequeDate : null,
-                Item.UID ,
-                Item.CC ?? string.Empty,
-                Item.TDSNatureOfPayment ?? string.Empty,
-                Item.RoundDr ,
-                Item.RoundCr ,
-                Item.AgainstVoucherEntryId ,
-                Item.AgainstVoucheryearCode ,
-                Item.AgainstVoucherType ?? string.Empty,
-                Item.AgainstVoucherRefNo ?? string.Empty,
-                Item.AgainstVoucherNo ?? string.Empty,
-                Item.AgainstBillno ?? string.Empty,
-                Item.PONo ?? string.Empty,
-                Item.PoDate =DateTime.Now.ToString("dd/MMM/yyyy"),
-                Item.POYear ,
-                Item.SONo ,
-                Item.CustOrderNo ?? string.Empty,
-                Item.SoDate  =DateTime.Now.ToString("dd/MMM/yyyy"),
-                Item.SOYear ,
-                Item.ApprovedBy,
-                Item.ApprovedDate = DateTime.Now.ToString("dd/MMM/yyyy"),
-                Item.Approved ,
-                Item.AccountNarration ?? string.Empty,
-                Item.CurrencyId ,
-                Item.CurrentValue ,
-                Item.AdjustmentAmtOthCur ,
-                Item.AdjustmentAmt ,
-                Item.ItemCode ,
-                Item.VoucherNo ?? string.Empty,
-                Item.ChequePrintAC ?? string.Empty,
-                Item.EmpCode ,
-                Item.DeptCode,
-                Item.MRNO ?? string.Empty,
-                Item.MRNDate =DateTime.Now.ToString("dd/MMM/yyyy") ,
-                Item.MRNYearCode ,
-                Item.CostCenterId ,
-                Item.PaymentMode ?? string.Empty,
-                Item.EntryTypebankcashLedger ?? string.Empty,
-                Item.TDSApplicable ?? string.Empty,
-                Item.TDSChallanNo ?? string.Empty,
-                Item.TDSChallanDate = DateTime.Now.ToString("dd/MMM/yyyy") ,
-                Item.PreparedByEmpId ,
-                Item.CGSTAccountCode ,
-                Item.CGSTPer ,
-                Item.CGSTAmt,
-                Item.SGSTAccountCode ,
-                Item.SGSTPer,
-                Item.SGSTAmt ,
-                Item.IGSTAccountCode ,
-                Item.IGSTPer,
-                Item.IGSTAmt ,
-                Item.ModeOfAdjustment ?? string.Empty,
-                Item.NameOnCheque ?? string.Empty,
-                Item.BalanceSheetClosed ?? string.Empty,
-                Item.ProjectNo ,
-                Item.ProjectYearcode ,
-                Item.ProjectDate = DateTime.Now.ToString("dd/MMM/yyyy"),
-                Item.ActualEntryBy ,
-                Item.ActualEntryDate = DateTime.Now.ToString("dd/MMM/yyyy"),
-                Item.UpdatedBy ,
-                Item.UpdatedOn ,
-                Item.EntryByMachine ?? string.Empty,
-                Item.OursalespersonId ,
-                Item.SubVoucher ?? string.Empty,
-
-
-                        });
-                }
-                GIGrid.Dispose();
-                return GIGrid;
+                dt.Rows.Add(row);
             }
-            catch (Exception ex)
-            {
-                throw;
-            }
+
+            return dt;
         }
+
         public async Task<JsonResult> FillEntryID(int YearCode, string VoucherDate)
         {
             var JSON = await _IAgainstAdjustVoucher.FillEntryID(YearCode, VoucherDate);
@@ -393,45 +274,7 @@ namespace eTactwebAccounts.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        //public async Task<IActionResult> justedData(int YearCode, string VoucherType, string VoucherNo, int AccountCode, string InvoiceNo, int AccEntryId)
-        //{
-        //    //var model = new AgainstAdjustVoucherModel();
-        //    //model = await _IAgainstAdjustVoucher.GetAdjustedData(YearCode, VoucherType, VoucherNo, AccountCode, InvoiceNo, AccEntryId);
-        //    //return PartialView("_AgainstAdjustVoucher", model);
-        //    var models = await _IAgainstAdjustVoucher.GetAdjustedData(YearCode, VoucherType, VoucherNo, AccountCode, InvoiceNo, AccEntryId);
-        //    return PartialView("_AgainstAdjustVoucher", models);
-        //}
-
-
-        //public async Task<IActionResult> GetAdjustedData(int YearCode, string VoucherType, string VoucherNo, int AccountCode, string InvoiceNo, int AccEntryId)
-        //{
-        //    var model = new AgainstAdjustVoucherModel();
-        //    model.Mode = "Adjust";
-        //    model.AgainstAdjustVoucherList = await _IAgainstAdjustVoucher.GetAdjustedData(YearCode, VoucherType, VoucherNo, AccountCode, InvoiceNo, AccEntryId);
-        //    foreach (var item in model.AgainstAdjustVoucherList)
-        //    {
-        //        var adjItem = new AdjustmentModel
-        //        {
-        //            AdjAgnstVouchNo = item.AgainstVoucherNo,
-        //            AdjAgnstVouchType = item.AgainstVoucherType,
-        //            AdjAgnstAccEntryID = item.AgainstVoucherEntryId,
-        //            AdjAgnstModeOfAdjstment = item.ModeOfAdjustment,
-        //            AdjPendAmt = (decimal)item.PendBillAmt,
-        //            AdjAdjstedAmt = (float)item.AdjustmentAmt,
-        //            AdjTotalAmt = (float)item.VoucherBillAmt,
-        //            AdjRemainingAmt = (float)item.PendBillAmt,
-        //            AdjAgnstDrCr = item.DRCR,
-        //            AdjDescription=item.VoucherNo,
-        //            AdjAgnstPendAmt= (float?)item.AdjustmentAmt,
-        //            AdjAgnstVouchDate = DateTime.TryParse(item.AgainstVoucherDate, out var dt) ? dt : (DateTime?)null
-        //        };
-
-        //        model.adjustmentModel.AdjAdjustmentDetailGrid.Add(adjItem);
-        //    }
-        //    string serializedObject = JsonConvert.SerializeObject(model.adjustmentModel);
-        //    HttpContext.Session.SetString("KeyAdjGrid", serializedObject);
-        //    return PartialView("_AgainstAdjustVoucher", model);
-        //}
+        
         public async Task<IActionResult> GetAdjustedData(int YearCode, string VoucherType, string VoucherNo, int AccountCode, string InvoiceNo, int AccEntryId)
         {
             var model = new AgainstAdjustVoucherModel
@@ -630,211 +473,7 @@ namespace eTactwebAccounts.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        //public IActionResult AddAgainstAdjustVoucherDetail(AgainstAdjustVoucherModel model)
-        //{
-        //    try
-        //    {
-        //        if (model.Mode == "U" || model.Mode == "V")
-        //        {
-        //            string modelJson = HttpContext.Session.GetString("KeyAgainstAdjustVoucherGridEdit");
-        //            List<AgainstAdjustVoucherModel> AgainstAdjustVoucherGrid = new List<AgainstAdjustVoucherModel>();
-        //            if (!string.IsNullOrEmpty(modelJson))
-        //            {
-        //                AgainstAdjustVoucherGrid = JsonConvert.DeserializeObject<List<AgainstAdjustVoucherModel>>(modelJson);
-        //            }
-
-        //            var MainModel = new AgainstAdjustVoucherModel();
-        //            var AgainstAdjustVchGrid = new List<AgainstAdjustVoucherModel>();
-        //            var AgainstAdjustGrid = new List<AgainstAdjustVoucherModel>();
-        //            var ssGrid = new List<AgainstAdjustVoucherModel>();
-
-        //            var count = 0;
-        //            if (model != null)
-        //            {
-        //                if (AgainstAdjustVoucherGrid == null)
-        //                {
-        //                    model.SrNO = 1;
-        //                    AgainstAdjustGrid.Add(model);
-        //                }
-        //                else
-        //                {
-        //                    if (model.BankType.ToLower() == "bank")
-        //                    {
-        //                        if (AgainstAdjustVoucherGrid.Any(x => (x.LedgerName == model.LedgerName) || x.BankType == "Bank"))
-        //                        {
-        //                            return StatusCode(210, "Duplicate");
-        //                        }
-        //                        else
-        //                        {
-        //                            model.SrNO = AgainstAdjustVoucherGrid.Count + 1;
-        //                            AgainstAdjustGrid = AgainstAdjustVoucherGrid.Where(x => x != null).ToList();
-        //                            ssGrid.AddRange(AgainstAdjustGrid);
-        //                            AgainstAdjustGrid.Add(model);
-
-        //                        }
-        //                    }
-        //                    else if (model.ModeOfAdjustment.ToLower() == "newref")
-        //                    {
-        //                        if (AgainstAdjustVoucherGrid.Any(x => (x.LedgerName == model.LedgerName) && (x.ModeOfAdjustment == model.ModeOfAdjustment)))
-        //                        {
-        //                            return StatusCode(207, "Duplicate");
-        //                        }
-        //                        else
-        //                        {
-        //                            model.SrNO = AgainstAdjustVoucherGrid.Count + 1;
-        //                            AgainstAdjustGrid = AgainstAdjustVoucherGrid.Where(x => x != null).ToList();
-        //                            ssGrid.AddRange(AgainstAdjustGrid);
-        //                            AgainstAdjustGrid.Add(model);
-
-        //                        }
-        //                    }
-        //                    else if (model.ModeOfAdjustment.ToLower() == "advance")
-        //                    {
-        //                        if (AgainstAdjustVoucherGrid.Any(x => (x.LedgerName == model.LedgerName) && (x.ModeOfAdjustment == model.ModeOfAdjustment)))
-        //                        {
-        //                            return StatusCode(208, "Duplicate");
-        //                        }
-        //                        else
-        //                        {
-        //                            model.SrNO = AgainstAdjustVoucherGrid.Count + 1;
-        //                            AgainstAdjustGrid = AgainstAdjustVoucherGrid.Where(x => x != null).ToList();
-        //                            ssGrid.AddRange(AgainstAdjustGrid);
-        //                            AgainstAdjustGrid.Add(model);
-
-        //                        }
-        //                    }
-        //                    else if (model.ModeOfAdjustment.ToLower() == "againstref")
-        //                    {
-        //                        if (AgainstAdjustVoucherGrid.Any(x => (x.LedgerName == model.LedgerName) && x.AgainstVoucherNo == model.AgainstVoucherNo))
-        //                        {
-        //                            return StatusCode(209, "Duplicate");
-        //                        }
-        //                        else
-        //                        {
-        //                            model.SrNO = AgainstAdjustVoucherGrid.Count + 1;
-        //                            AgainstAdjustGrid = AgainstAdjustVoucherGrid.Where(x => x != null).ToList();
-        //                            ssGrid.AddRange(AgainstAdjustGrid);
-        //                            AgainstAdjustGrid.Add(model);
-
-        //                        }
-        //                    }
-
-        //                }
-
-        //                MainModel.AgainstAdjustVoucherList = AgainstAdjustGrid.OrderBy(x => x.SrNO).ToList();
-
-        //                string serializedGrid = JsonConvert.SerializeObject(MainModel.AgainstAdjustVoucherList);
-        //                HttpContext.Session.SetString("KeyAgainstAdjustVoucherGridEdit", serializedGrid);
-        //            }
-        //            else
-        //            {
-        //                ModelState.TryAddModelError("Error", "Schedule List Cannot Be Empty...!");
-        //            }
-        //            return PartialView("_AgainstAdjustVoucherGrid", MainModel);
-        //        }
-        //        else
-        //        {
-        //            string modelJson = HttpContext.Session.GetString("KeyAgainstAdjustVoucherGrid");
-        //            List<AgainstAdjustVoucherModel> AgainstAdjustVoucherGrid = new List<AgainstAdjustVoucherModel>();
-        //            if (!string.IsNullOrEmpty(modelJson))
-        //            {
-        //                AgainstAdjustVoucherGrid = JsonConvert.DeserializeObject<List<AgainstAdjustVoucherModel>>(modelJson);
-        //            }
-
-        //            var MainModel = new AgainstAdjustVoucherModel();
-        //            var AgainstAdjustVchGrid = new List<AgainstAdjustVoucherModel>();
-        //            var AgainstAdjustGrid = new List<AgainstAdjustVoucherModel>();
-        //            var ssGrid = new List<AgainstAdjustVoucherModel>();
-
-        //            if (model != null)
-        //            {
-        //                if (AgainstAdjustVoucherGrid == null)
-        //                {
-        //                    model.SrNO = 1;
-        //                    AgainstAdjustGrid.Add(model);
-        //                }
-        //                else
-        //                {
-        //                    //if (model.BankType.ToLower() == "bank")
-        //                    //{
-        //                    //    if (AgainstAdjustVoucherGrid.Any(x => (x.LedgerName == model.LedgerName) || x.BankType == "Bank"))
-        //                    //    {
-        //                    //        return StatusCode(210, "Duplicate");
-        //                    //    }
-        //                    //    else
-        //                    //    {
-        //                    //        model.SrNO = AgainstAdjustVoucherGrid.Count + 1;
-        //                    //        AgainstAdjustGrid = AgainstAdjustVoucherGrid.Where(x => x != null).ToList();
-        //                    //        ssGrid.AddRange(AgainstAdjustGrid);
-        //                    //        AgainstAdjustGrid.Add(model);
-
-        //                    //    }
-        //                    //}
-        //                    //else 
-        //                    if (model.ModeOfAdjustment.ToLower() == "newref")
-        //                    {
-        //                        if (AgainstAdjustVoucherGrid.Any(x => (x.LedgerName == model.LedgerName) && (x.ModeOfAdjustment == model.ModeOfAdjustment)))
-        //                        {
-        //                            return StatusCode(207, "Duplicate");
-        //                        }
-        //                        else
-        //                        {
-        //                            model.SrNO = AgainstAdjustVoucherGrid.Count + 1;
-        //                            AgainstAdjustGrid = AgainstAdjustVoucherGrid.Where(x => x != null).ToList();
-        //                            ssGrid.AddRange(AgainstAdjustGrid);
-        //                            AgainstAdjustGrid.Add(model);
-
-        //                        }
-        //                    }
-        //                    else if (model.ModeOfAdjustment.ToLower() == "advance")
-        //                    {
-        //                        if (AgainstAdjustVoucherGrid.Any(x => (x.LedgerName == model.LedgerName) && (x.ModeOfAdjustment == model.ModeOfAdjustment)))
-        //                        {
-        //                            return StatusCode(208, "Duplicate");
-        //                        }
-        //                        else
-        //                        {
-        //                            model.SrNO = AgainstAdjustVoucherGrid.Count + 1;
-        //                            AgainstAdjustGrid = AgainstAdjustVoucherGrid.Where(x => x != null).ToList();
-        //                            ssGrid.AddRange(AgainstAdjustGrid);
-        //                            AgainstAdjustGrid.Add(model);
-
-        //                        }
-        //                    }
-        //                    else if (model.ModeOfAdjustment.ToLower() == "againstref")
-        //                    {
-        //                        if (AgainstAdjustVoucherGrid.Any(x => (x.LedgerName == model.LedgerName) && x.AgainstVoucherNo == model.AgainstVoucherNo))
-        //                        {
-        //                            return StatusCode(209, "Duplicate");
-        //                        }
-        //                        else
-        //                        {
-        //                            model.SrNO = AgainstAdjustVoucherGrid.Count + 1;
-        //                            AgainstAdjustGrid = AgainstAdjustVoucherGrid.Where(x => x != null).ToList();
-        //                            ssGrid.AddRange(AgainstAdjustGrid);
-        //                            AgainstAdjustGrid.Add(model);
-
-        //                        }
-        //                    }
-        //                }
-
-        //                MainModel.AgainstAdjustVoucherList = AgainstAdjustGrid.OrderBy(x => x.SrNO).ToList();
-
-        //                string serializedGrid = JsonConvert.SerializeObject(MainModel.AgainstAdjustVoucherList);
-        //                HttpContext.Session.SetString("KeyAgainstAdjustVoucherGrid", serializedGrid);
-        //            }
-        //            else
-        //            {
-        //                ModelState.TryAddModelError("Error", "Schedule List Cannot Be Empty...!");
-        //            }
-        //            return PartialView("_AgainstAdjustVoucherGrid", MainModel);
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw ex;
-        //    }
-        //}
+   
         [HttpPost]
         public IActionResult AddAgainstAdjustVoucherDetail([FromBody] AgainstAdjustVoucherModel models)
         {
@@ -845,7 +484,7 @@ namespace eTactwebAccounts.Controllers
 
                 string sessionKey = (models.AgainstAdjustVoucherList.First().Mode == "U" ||
                                      models.AgainstAdjustVoucherList.First().Mode == "V")
-                                    ? "KeyAgainstAdjustVoucherGridEdit"
+                                    ? "KeyAdjGrid"
                                     : "KeyAgainstAdjustVoucherGrid";
 
                 var existingGridJson = HttpContext.Session.GetString(sessionKey);

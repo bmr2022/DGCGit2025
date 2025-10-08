@@ -174,7 +174,55 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-      
+        public async Task<ResponseResult> SaveAgainstAdjustVoucher(AgainstAdjustVoucherModel model, DataTable GIGrid)
+        {
+            var _ResponseResult = new ResponseResult();
+
+            try
+            {
+                
+                var entryDate = CommonFunc.ParseFormattedDate(model.EntryDate);
+                var actualEntryDate = CommonFunc.ParseFormattedDate(model.ActualEntryDate);
+                var voucherDate = CommonFunc.ParseFormattedDate(model.VoucherDate);
+                var InsDate = CommonFunc.ParseFormattedDate(model.InsDate);
+
+                var sqlParams = new List<dynamic>();
+                
+                sqlParams.Add(new SqlParameter("@Flag", model.Mode == "U" ? "UPDATE" : "INSERT"));
+                sqlParams.Add(new SqlParameter("@voucherType", model.VoucherType));
+                sqlParams.Add(new SqlParameter("@VoucherNo", model.VoucherNo ?? string.Empty));
+                sqlParams.Add(new SqlParameter("@VoucherYearcode", model.YearCode));
+                sqlParams.Add(new SqlParameter("@InvoiceNo", model.InVoiceNo ?? string.Empty));
+                sqlParams.Add(new SqlParameter("@AccEntryId", model.AccEntryId));
+                sqlParams.Add(new SqlParameter("@DocEntryId", model.DocEntryId));
+                sqlParams.Add(new SqlParameter("@AccYearCode", model.YearCode));
+                sqlParams.Add(new SqlParameter("@EntryByEmpId", model.EntryByMachine));
+                sqlParams.Add(new SqlParameter("@ActualEntryDate", CommonFunc.ParseFormattedDate(model.ActualEntryDate) ?? (object)DBNull.Value));
+                sqlParams.Add(new SqlParameter("@EntryDate", CommonFunc.ParseFormattedDate(model.EntryDate) ?? (object)DBNull.Value));
+                sqlParams.Add(new SqlParameter("@VoucherDate", CommonFunc.ParseFormattedDate(model.VoucherDate) ?? (object)DBNull.Value));
+                sqlParams.Add(new SqlParameter("@LastUpdatedBy", model.UpdatedBy));
+                sqlParams.Add(new SqlParameter("@LastUpdatationDate", (model.UpdatedOn) ?? (object)DBNull.Value));
+                sqlParams.Add(new SqlParameter("@CC", model.CC ?? string.Empty));
+                sqlParams.Add(new SqlParameter("@EntryByMachine", model.EntryByMachine ?? string.Empty));
+                sqlParams.Add(new SqlParameter("@BillAmt", model.BillAmount??0));
+                sqlParams.Add(new SqlParameter("@NetAmt", model.NetAmount ?? 0));
+                sqlParams.Add(new SqlParameter("@UID", model.UID));
+
+                sqlParams.Add(new SqlParameter("@Dt", GIGrid));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("AccAgainstRefAdjustmentOfVoucherAndBills", sqlParams);
+
+            }
+            catch (Exception ex)
+            {
+                _ResponseResult.StatusCode = HttpStatusCode.InternalServerError;
+                _ResponseResult.StatusText = "Error";
+                _ResponseResult.Result = new { ex.Message, ex.StackTrace };
+            }
+
+            return _ResponseResult;
+        }
+
         public async Task<ResponseResult> GetAccEntryId(int YearCode, string VoucherType, string VoucherNo, int AccountCode,string InvoiceNo)
         {
             var _ResponseResult = new ResponseResult();

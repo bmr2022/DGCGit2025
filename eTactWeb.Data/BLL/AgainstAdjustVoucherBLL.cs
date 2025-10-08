@@ -37,6 +37,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _AgainstAdjustVoucherDAL.FillInvoiceNo(YearCode, VoucherType,FromDate,ToDate,VoucherNo,AccountCode);
         }
+        public async Task<ResponseResult> SaveAgainstAdjustVoucher(AgainstAdjustVoucherModel model, DataTable GIGrid)
+        {
+            return await _AgainstAdjustVoucherDAL.SaveAgainstAdjustVoucher(model, GIGrid);
+        }
         public async Task<ResponseResult> GetAccEntryId(int YearCode, string VoucherType, string VoucherNo, int AccountCode, string InvoiceNo)
         {
             return await _AgainstAdjustVoucherDAL.GetAccEntryId(YearCode, VoucherType,VoucherNo,AccountCode,InvoiceNo);

@@ -95,6 +95,8 @@ namespace eTactWeb.DOM.Models
         public int AgainstVoucheryearCode { get; set; }
         public string AgainstVoucherType { get; set; }
         public int AgainstVoucherEntryId { get; set; }
+        public int AgainstAccOpeningEntryId { get; set; }
+        public int AgainstOpeningVoucheryearcode { get; set; }
         public string AgainstVoucherRefNo { get; set; }
         public decimal VoucherBillAmt { get; set; }
         public decimal PendBillAmt { get; set; }
