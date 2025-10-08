@@ -90,6 +90,30 @@ namespace eTactWeb.Data.DAL
 
             return responseResult;
         }
+
+        public async Task<ResponseResult> CheckBeforeUpdate(int AccountCode)
+        {
+            var responseResult = new ResponseResult();
+            try
+            {
+                var sqlParams = new List<dynamic>
+        {
+            new SqlParameter("@Flag", "CheckBeforeUpdate"),
+            new SqlParameter("@AccountCode", AccountCode)
+        };
+
+                responseResult = await _IDataLogic.ExecuteDataTable("AccSpPrimaryAccountHeadMaster", sqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic error = new ExpandoObject();
+                error.Message = ex.Message;
+                error.Source = ex.Source;
+            }
+
+            return responseResult;
+        }
+
         public async Task<ResponseResult> SavePrimaryAccountGroupMaster(PrimaryAccountGroupMasterModel model)
         {
             var _ResponseResult = new ResponseResult();

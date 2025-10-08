@@ -161,6 +161,14 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> CheckBeforeUpdate(int AccountCode)
+        {
+            var JSON = await _IPrimaryAccountGroupMaster.CheckBeforeUpdate(AccountCode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
         public async Task<IActionResult> PrimaryAccountGroupMasterDashBoard(string FromDate = "", string ToDate = "", string Flag = "DASHBOARD")
         {
             try

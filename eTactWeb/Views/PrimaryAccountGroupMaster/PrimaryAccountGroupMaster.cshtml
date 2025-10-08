@@ -84,10 +84,7 @@
                                         <label asp-for="Parent_Account_Code" class="form-label">Parent Group</label>
                                         <select asp-for="Parent_Account_Code" id="Account_Code" class="form-control">
                                             <option value="@Model.Account_Code">-Select-</option>
-                                            @if (Model.Mode == "U" || Model.Mode == "V")
-                                            {
-                                                <option value="@Model.Parent_Account_Code" selected>@Model.ParentAccountName</option>
-                                            }
+                                           
                                         </select>
                                     </div>
                                     <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
@@ -211,13 +208,14 @@
             $('#Account_Code').rules("remove", "required"); 
             $('#Account_Code').select2();
 
-            if ($('#Mode').val() !== 'U' && $('#Mode').val() !== 'V') {
+           
                 GetParentGroup();
-            }
-            if ($('#Mode').val() == 'U' && $('#Mode').val() == 'V') {
+            
+            if ($('#Mode').val() == 'U' || $('#Mode').val() == 'V') {
                  
                 var AccountCode = "@Model.Account_Code";
                 $('#AccountCode').val(AccountCode);
+                CheckBeforeUpdate();
             }
         });
 
@@ -286,33 +284,33 @@
             }
         }
 
-        function CheckBeforeUpdate() {
-            $.ajax({
-                url: '@Url.Action("CheckBeforeUpdate")',
-                type: "POST",
-                data: { "Type": $('#Entry_id').val() },
-                success: function (data) {
-                    console.log("success");
-                    if (data != null) {
-                        var obj = $.parseJSON(data);
-                        if (obj.Result != null) {
-                            if (obj.Result.Table[0].Column1 > 0) {
-                                $.notify("You cannot update this Category as Item with this category already exists", "error");
-                            }
-                            else {
-                                $('form').submit();
-                            }
-                        }
-                    }
-                },
-                error: function (response) {
-                    alert(response.responseText);
-                },
-                failure: function (response) {
-                    alert(response.responseText);
-                }
-            });
-        }
+        // function CheckBeforeUpdate() {
+        //     $.ajax({
+        //         url: '@Url.Action("CheckBeforeUpdate")',
+        //         type: "POST",
+        //         data: { "Type": $('#Entry_id').val() },
+        //         success: function (data) {
+        //             console.log("success");
+        //             if (data != null) {
+        //                 var obj = $.parseJSON(data);
+        //                 if (obj.Result != null) {
+        //                     if (obj.Result.Table[0].Column1 > 0) {
+        //                         $.notify("You cannot update this Category as Item with this category already exists", "error");
+        //                     }
+        //                     else {
+        //                         $('form').submit();
+        //                     }
+        //                 }
+        //             }
+        //         },
+        //         error: function (response) {
+        //             alert(response.responseText);
+        //         },
+        //         failure: function (response) {
+        //             alert(response.responseText);
+        //         }
+        //     });
+        // }
 
         function GetParentGroup() {
              
@@ -366,6 +364,29 @@
                 }
             });
         });
+
+        function CheckBeforeUpdate() {
+            var AccountCode = $('#AccountCode').val();
+
+            $.ajax({
+                url: '@Url.Action("CheckBeforeUpdate")',
+                type: 'GET',
+                data: { AccountCode: AccountCode },
+                success: function (data) {
+
+                    console.log(data);
+                    var response = JSON.parse(data);
+                    if (response.Result && response.Result.length > 0) {
+                        $('#Account_Code').attr('disabled', 'disabled');
+                        $("#Account_Code").prop("disabled", true);
+                    }
+
+                },
+                error: function () {
+                    alert("Failed to retrieve data. Please check the Parent Group code.");
+                }
+            });
+        }
 
         // $('#GroupName').change(function () {
         //      
