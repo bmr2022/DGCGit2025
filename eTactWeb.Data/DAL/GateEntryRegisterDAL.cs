@@ -426,5 +426,25 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
+        public async Task<ResponseResult> PENDGATEDETAILFORMRN(string GateNo, int Yearcode)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "PENDGATEDETAILFORMRN"));
+                SqlParams.Add(new SqlParameter("@gateno", GateNo));
+                SqlParams.Add(new SqlParameter("@gateYearCOde", Yearcode));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SpReportGate", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
     }
 }

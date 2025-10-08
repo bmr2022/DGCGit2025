@@ -302,6 +302,12 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+        public async Task<JsonResult> PENDGATEDETAILFORMRN(string GateNo, int Yearcode)
+        {
+            var JSON = await _IGateEntryRegister.PENDGATEDETAILFORMRN(GateNo, Yearcode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
         private void EXPORT_GateEntryRegisterItemSummGrid(IXLWorksheet sheet, IList<GateEntryRegisterDetail> list)
         {
             string[] headers = {

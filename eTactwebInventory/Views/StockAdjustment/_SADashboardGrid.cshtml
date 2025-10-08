@@ -7,14 +7,32 @@
 }
 
 <style>
+    /* Fix spacing between action icons */
     #container {
         display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0; /* no extra space between icons */
     }
 
         #container > div {
-            flex: 1;
-            margin-right: 10px; /* Adjust margin as needed */
+            margin: 0 !important;
+            padding: 0 !important;
+            display: inline-flex; /* keeps icons tightly aligned */
         }
+
+        #container a {
+            margin: 0 !important;
+            margin-top: 2px !important;
+            padding: 0 !important;
+            line-height: 1 !important;
+        }
+
+    .fa-stack {
+        margin: 0 !important;
+        padding: 0 !important;
+        line-height: 1 !important;
+    }
 
     #MRNTable {
         width: 100%;
@@ -48,18 +66,7 @@
         vertical-align: super;
     }
 
-    .SAGrid {
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-    .SSThead th {
-        background-color: #127387;
-        position: sticky;
-        top: 0;
-        height: 40px;
-        z-index: 1;
-    }
+    
 
 </style>
 @if (Model.SummaryDetail == "Detail")
@@ -130,7 +137,14 @@ else
                                             </span>
                                         </a>
                                         </div>
-                                        
+                                            <div id="printData-@Cntr">
+                                                <a class="table-link link-dark" asp-action="PrintReport" target="_blank" asp-route-EntryId="@item.EntryId" asp-route-YearCode="@item.YearCode" >
+                                                    <span class="fa-stack">
+                                                        <i class="fa fa-square fa-stack-2x"></i>
+                                                        <i class="fa-solid fa-print fa-stack-1x fa-inverse"></i>
+                                                    </span>
+                                                </a>
+                                            </div>
                                     }
                                     else
                                     {
