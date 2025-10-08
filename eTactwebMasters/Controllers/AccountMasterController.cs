@@ -389,12 +389,7 @@ namespace eTactWeb.Controllers
                                         value = StateCode;   // replace with code
                                     else
                                     {
-                                        return Json(new
-                                        {
-                                            StatusCode = 200,
-                                            StatusText = $"Please enter a valid State at Excel row {rowIndex + 1}"
-
-                                        });
+                                        value = "";
                                     }
 
                                 }
@@ -421,12 +416,22 @@ namespace eTactWeb.Controllers
                                         string underGroup = rowData["UnderGroup"].ToString();
                                         string accountType = rowData["Account_Type"].ToString();
 
+                                        int yearcode= Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+                                        int CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                                        int Uid= Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                                        string CC= HttpContext.Session.GetString("Branch");
+
                                         // Example: store in your DataTable
                                         row["MainGroup"] = mainGroup;
                                         row["SubGroup"] = subGroup;
                                         row["SubSubGroup"] = subSubGroup;
                                         row["UnderGroup"] = underGroup;
                                         row["AccountType"] = accountType;
+                                        row["YearCode"] = yearcode;
+                                        row["CreatedBy"] = CreatedBy;
+                                        row["Uid"] = Uid;
+                                        row["CC"] = CC;
+                                        row["Active"] = "Y";
                                     }
 
                                     else
@@ -440,8 +445,8 @@ namespace eTactWeb.Controllers
                                     {
                                         return Json(new
                                         {
-                                            StatusCode = 200,
-                                            StatusText = $"Please enter a valid ParentCode at Excel row {rowIndex + 1}"
+                                            StatusCode = 205,
+                                            StatusText = $"Please enter a valid ParentCode at Excel row {ParentAccName}"
 
                                         });
                                     }
