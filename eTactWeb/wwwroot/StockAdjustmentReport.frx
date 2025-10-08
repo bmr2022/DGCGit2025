@@ -1,0 +1,118 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="10/08/2025 13:14:21" ReportInfo.Modified="10/08/2025 15:01:54" ReportInfo.CreatorVersion="2023.2.0.0">
+  <Dictionary>
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqwYf2D6LPIs5GRi9VfJb9gu9ucqaRfzVvUaVne08cIFURWyyEsxwQsmngwHHahRU5IBf1gWxFxthjvCI+9BjhcR8BjTz2iHCnSBTgRKTkqutDkjIRRL0Lr+gAV5vh4t47BklN+Df+gZ1BDy0zz0wKb0g/WPqy0Hcayyj73OOFm6Ic7fe5MHln6orQgvyZyUENlrSPSn/QpNX9UKyt6mkB+g==">
+      <TableDataSource Name="Table" Alias="SPReportPringStockAdjustment" DataType="System.Int32" Enabled="true" SelectCommand="exec SPReportPringStockAdjustment @EntryId=@entryparam,@YearCode=@yearparam">
+        <Column Name="StkAdjEntryId" DataType="System.Int64"/>
+        <Column Name="StkAdjYearCode" DataType="System.Int64"/>
+        <Column Name="SlipNo" DataType="System.String"/>
+        <Column Name="EntryDate" DataType="System.DateTime"/>
+        <Column Name="Column1" DataType="System.String"/>
+        <Column Name="StoreId" DataType="System.Int64"/>
+        <Column Name="StoreName" DataType="System.String"/>
+        <Column Name="WCID" DataType="System.Int64"/>
+        <Column Name="Workcenetr" DataType="System.String"/>
+        <Column Name="seqno" DataType="System.Int64"/>
+        <Column Name="PartCode" DataType="System.String"/>
+        <Column Name="ItemName" DataType="System.String"/>
+        <Column Name="LotStock" DataType="System.Double"/>
+        <Column Name="TotalStock" DataType="System.Double"/>
+        <Column Name="AdjQty" DataType="System.Double"/>
+        <Column Name="AdjType" DataType="System.String"/>
+        <Column Name="Unit" DataType="System.String"/>
+        <Column Name="UpdatedOn" DataType="System.DateTime"/>
+        <Column Name="MachineNo" DataType="System.String"/>
+        <Column Name="BatchNo" DataType="System.String"/>
+        <Column Name="Uniquebatchno" DataType="System.String"/>
+        <Column Name="reasonOfAdjutment" DataType="System.String"/>
+        <Column Name="ActualEmployee" DataType="System.String"/>
+        <Column Name="Remark" DataType="System.String"/>
+        <Column Name="Uid" DataType="System.Int64"/>
+        <Column Name="CC" DataType="System.String"/>
+        <Column Name="entryByEmp" DataType="System.Int64"/>
+        <Column Name="UpdatedByEmployee" DataType="System.String"/>
+        <Column Name="ActualEntryDate" DataType="System.DateTime"/>
+        <Column Name="UpdatedbyEmp" DataType="System.Int64"/>
+        <Column Name="CompanyName" DataType="System.String"/>
+        <Column Name="Branch" DataType="System.String"/>
+        <CommandParameter Name="entryparam" Expression="entryparam"/>
+        <CommandParameter Name="yearparam" Expression="yearparam"/>
+      </TableDataSource>
+    </MsSqlDataConnection>
+    <Parameter Name="MyParameter" DataType="System.String" Expression="MyParameter"/>
+  </Dictionary>
+  <ReportPage Name="Page1" Watermark.Font="Arial, 60pt">
+    <ReportTitleBand Name="ReportTitle1" Width="718.2" Height="132.3">
+      <LineObject Name="Line1" Left="9.45" Top="9.45" Width="689.85"/>
+      <LineObject Name="Line2" Left="699.3" Top="9.45" Height="122.85"/>
+      <LineObject Name="Line3" Left="9.45" Top="9.45" Height="122.85"/>
+      <TextObject Name="Text1" Left="226.8" Top="18.9" Width="226.8" Height="18.9" Text="Stock Adjustment" HorzAlign="Center" Font="Arial, 14pt"/>
+      <TextObject Name="Text2" Left="94.5" Top="47.25" Width="500.85" Height="18.9" Text="[SPReportPringStockAdjustment.CompanyName]" HorzAlign="Center" Font="Arial, 12pt"/>
+      <TextObject Name="Text3" Left="18.9" Top="75.6" Width="56.7" Height="18.9" Text="Slip No:" Font="Arial, 9pt"/>
+      <TextObject Name="Text4" Left="75.6" Top="75.6" Width="236.25" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportPringStockAdjustment.SlipNo]" Font="Arial, 9pt"/>
+      <TextObject Name="Text5" Left="311.85" Top="75.6" Width="85.05" Height="18.9" Text="Entry Date:" Font="Arial, 9pt"/>
+      <TextObject Name="Text6" Left="396.9" Top="75.6" Width="207.9" Height="18.9" Text="[SPReportPringStockAdjustment.EntryDate]" Format="Date" Format.Format="d" Font="Arial, 9pt"/>
+      <TextObject Name="Text7" Left="18.9" Top="103.95" Width="66.15" Height="18.9" Text="Store/WC:" Font="Arial, 9pt"/>
+      <TextObject Name="Text8" Left="85.05" Top="103.95" Width="226.8" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportPringStockAdjustment.Column1]" Font="Arial, 9pt"/>
+      <LineObject Name="Line4" Left="9.45" Top="132.3" Width="689.85"/>
+      <LineObject Name="Line32" Left="9.45" Top="66.15" Width="689.85"/>
+    </ReportTitleBand>
+    <PageHeaderBand Name="PageHeader1" Top="135.5" Width="718.2" Height="37.8">
+      <LineObject Name="Line5" Left="9.45" Height="37.8"/>
+      <LineObject Name="Line6" Left="699.3" Height="37.8"/>
+      <TextObject Name="Text9" Left="9.45" Width="28.35" Height="28.35" Text="Sr No" Font="Arial, 9pt"/>
+      <TextObject Name="Text10" Left="37.8" Width="85.05" Height="18.9" Text="PartCode" HorzAlign="Center" Font="Arial, 9pt"/>
+      <TextObject Name="Text11" Left="122.85" Width="170.1" Height="18.9" Text="ItemName" HorzAlign="Center" Font="Arial, 9pt"/>
+      <TextObject Name="Text12" Left="378" Width="47.25" Height="18.9" Text="Unit" HorzAlign="Center" Font="Arial, 9pt"/>
+      <TextObject Name="Text13" Left="292.95" Width="85.05" Height="18.9" Text="Store/Wc" HorzAlign="Center" Font="Arial, 9pt"/>
+      <TextObject Name="Text14" Left="425.25" Width="37.8" Height="37.8" Text="Lot Stock" HorzAlign="Center" Font="Arial, 8pt"/>
+      <TextObject Name="Text15" Left="463.05" Width="66.15" Height="28.35" Text="Tot Stock" HorzAlign="Center" Font="Arial, 9pt"/>
+      <TextObject Name="Text16" Left="529.2" Width="37.8" Height="37.8" Text="Adj Qty" HorzAlign="Center" Font="Arial, 9pt"/>
+      <TextObject Name="Text17" Left="567" Width="37.8" Height="37.8" Text="Adj Type" HorzAlign="Center" Font="Arial, 9pt"/>
+      <TextObject Name="Text18" Left="604.8" Width="94.5" Height="18.9" Text="Reason" HorzAlign="Center" Font="Arial, 9pt"/>
+      <LineObject Name="Line7" Left="9.45" Top="37.8" Width="689.85"/>
+      <LineObject Name="Line8" Left="37.8" Height="37.8"/>
+      <LineObject Name="Line9" Left="122.85" Height="37.8"/>
+      <LineObject Name="Line10" Left="292.95" Height="37.8"/>
+      <LineObject Name="Line11" Left="378" Height="37.8"/>
+      <LineObject Name="Line12" Left="425.25" Height="37.8"/>
+      <LineObject Name="Line13" Left="463.05" Height="37.8"/>
+      <LineObject Name="Line14" Left="529.2" Height="37.8"/>
+      <LineObject Name="Line15" Left="567" Height="37.8"/>
+      <LineObject Name="Line16" Left="604.8" Height="37.8"/>
+    </PageHeaderBand>
+    <GroupHeaderBand Name="GroupHeader1" Top="176.5" Width="718.2" Height="37.8" CanGrow="true" Condition="[SPReportPringStockAdjustment.PartCode]">
+      <LineObject Name="Line17" Left="9.45" Height="37.8"/>
+      <LineObject Name="Line18" Left="699.3" Height="37.8"/>
+      <LineObject Name="Line20" Left="37.8" Height="37.8"/>
+      <LineObject Name="Line21" Left="122.85" Height="37.8"/>
+      <LineObject Name="Line22" Left="292.95" Height="37.8"/>
+      <LineObject Name="Line23" Left="378" Height="37.8"/>
+      <LineObject Name="Line24" Left="425.25" Height="37.8"/>
+      <LineObject Name="Line25" Left="463.05" Height="37.8"/>
+      <LineObject Name="Line26" Left="529.2" Height="37.8"/>
+      <LineObject Name="Line27" Left="567" Height="37.8"/>
+      <LineObject Name="Line28" Left="604.8" Height="37.8"/>
+      <LineObject Name="Line19" Left="9.45" Top="37.8" Width="689.85"/>
+      <TextObject Name="Text19" Left="37.8" Width="85.05" Height="28.35" CanGrow="true" CanBreak="false" Text="[SPReportPringStockAdjustment.PartCode]" HorzAlign="Center" Font="Arial, 9pt"/>
+      <TextObject Name="Text20" Left="122.85" Width="170.1" Height="37.8" CanGrow="true" CanBreak="false" Text="[SPReportPringStockAdjustment.ItemName]" HorzAlign="Center" Font="Arial, 9pt"/>
+      <TextObject Name="Text24" Left="378" Width="47.25" Height="28.35" CanGrow="true" CanBreak="false" Text="[SPReportPringStockAdjustment.Unit]" HorzAlign="Center" Font="Arial, 9pt"/>
+      <TextObject Name="Text25" Left="425.25" Width="37.8" Height="28.35" CanGrow="true" CanBreak="false" Text="[SPReportPringStockAdjustment.LotStock]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 7pt" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text26" Left="463.05" Width="66.15" Height="37.8" CanGrow="true" CanBreak="false" Text="[SPReportPringStockAdjustment.TotalStock]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 7pt" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text27" Left="529.2" Width="37.8" Height="28.35" CanGrow="true" CanBreak="false" Text="[SPReportPringStockAdjustment.AdjQty]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 7pt" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text28" Left="567" Width="37.8" Height="28.35" CanGrow="true" CanBreak="false" Text="[SPReportPringStockAdjustment.AdjType]" HorzAlign="Center" Font="Arial, 9pt"/>
+      <TextObject Name="Text29" Left="604.8" Width="94.5" Height="28.35" CanGrow="true" CanBreak="false" Text="[SPReportPringStockAdjustment.reasonOfAdjutment]" HorzAlign="Center" Font="Arial, 9pt"/>
+      <TextObject Name="Text30" Left="292.95" Width="85.05" Height="37.8" Text="[IIf([SPReportPringStockAdjustment.Column1] == &quot;W&quot;, [SPReportPringStockAdjustment.Workcenetr], [SPReportPringStockAdjustment.StoreName])]&#13;&#10;&#13;&#10;" HorzAlign="Center" Font="Arial, 9pt"/>
+      <TextObject Name="Text31" Left="9.45" Width="28.35" Height="37.8" CanGrow="true" CanBreak="false" Text="[Row#]" HorzAlign="Center" Font="Arial, 9pt"/>
+      <DataBand Name="Data1" Top="217.5" Width="718.2" DataSource="Table"/>
+      <GroupFooterBand Name="GroupFooter1" Top="220.7" Width="718.2"/>
+    </GroupHeaderBand>
+    <ReportSummaryBand Name="ReportSummary1" Top="223.9" Width="718.2" Height="28.35">
+      <LineObject Name="Line31" Left="9.45" Top="28.35" Width="689.85"/>
+      <LineObject Name="Line29" Left="9.45" Height="28.35"/>
+      <LineObject Name="Line30" Left="699.3" Height="28.35"/>
+      <TextObject Name="Text32" Left="9.45" Width="113.4" Height="18.9" Text="Employee Name:" HorzAlign="Center" Font="Arial, 9pt"/>
+      <TextObject Name="Text33" Left="122.85" Width="302.4" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportPringStockAdjustment.ActualEmployee]" HorzAlign="Center" Font="Arial, 9pt"/>
+    </ReportSummaryBand>
+  </ReportPage>
+</Report>

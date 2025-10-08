@@ -4,6 +4,11 @@
     ViewData["Title"] = "Cancel Requition";
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
+<head>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/notifyjs@0.4.2/notify.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/notifyjs@0.4.2/notify.min.js"></script>
+</head>
 <input type="hidden" id="pdfurl" value="@ViewBag.pdfUrl" />
 <input type="hidden" id="responseContent" value="@ViewBag.responseContent" />
 <div class="shadow-lg">
@@ -184,6 +189,13 @@
             $('#ItemName').rules("remove", "required");
             $('#search-box').rules("remove", "required");
 
+            let msg = sessionStorage.getItem('notifyMessage');
+            if (msg) {
+                $.notify(msg, "success");
+
+                sessionStorage.removeItem('notifyMessage');
+            }
+
             var CurrentDate = new Date();
             $("#search-box").val($('#search-box').val()).trigger('keyup');
             var currentDate = new Date();
@@ -288,6 +300,7 @@
                     ReqYearCode: $(this).data('yearcode'),
                     RequitionType: $(this).data('requitiontype'),
                     ReqNo: $(this).data('reqno'),
+                    ReportType: $(this).data('reporttype'),
                     CancelReason: $('#cancelReasonText').val() || ''
                 });
             });
@@ -321,17 +334,12 @@
                 data: JSON.stringify(dataToSend),
                 success: function (response) {
                     if (response.isSuccess) {
-                        $.notify({
-                            text: response.message,  
-                            type: 'success',         
-                            position: 'top-right',  
-                            autoHide: true,          
-                            delay: 3000              
-                        });
-                        location.reload();           
+                        // Store message before reload
+                        sessionStorage.setItem('notifyMessage', response.message || 'Data saved successfully.');
+                        location.reload();
                     } else {
                         $.notify({
-                            text: response.message,    
+                            text: response.message || 'Failed to update.',
                             type: 'error',
                             position: 'top-right',
                             autoHide: true,
@@ -1021,8 +1029,7 @@
     <script src="~/Scripts/table2excel.js"></script>
 
 }
-    <link href="https://cdn.jsdelivr.net/npm/notifyjs@0.4.2/notify.min.css" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/notifyjs@0.4.2/notify.min.js"></script>
+ 
 
 <style>
     #poAppTable {

@@ -65,6 +65,7 @@ namespace eTactWeb.DOM.Models
         public string? FromDate { get; set; }
         public string? ToDate { get; set; }
         public string RequitionType { get; set; }
+        public string ReportType { get; set; }
         public List<CancelRequitionModel> Requisitions { get; set; }
     }
 
