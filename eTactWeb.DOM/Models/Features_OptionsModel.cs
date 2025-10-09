@@ -487,6 +487,13 @@ namespace eTactWeb.DOM.Models
 			set => POClosePOAlwaysAgainstIndent = value ? "Y" : "N";
 		}
 		public string POClosePOAlwaysAgainstIndent { get; set; }
+		[NotMapped]
+		public bool allowtostartdateindashboarddateBool
+		{
+			get => allowtostartdateindashboarddate == "Y";
+			set => allowtostartdateindashboarddate = value ? "Y" : "N";
+		}
+		public string allowtostartdateindashboarddate { get; set; }
 
 		public string AccPurchaseVoucherPrintoutFileName { get; set; }
 		public string AccPurchaseBillInvoicePrintoutFileName { get; set; }
@@ -513,6 +520,144 @@ namespace eTactWeb.DOM.Models
         public string ToDate { get; set; }
         public string Searchbox { get; set; }
         public string Type { get; set; }
-        public IList<Features_OptionsModel> features_OptionsModelsGrid { get; set; }
+
+
+		public string AccPurchaseBillInvoicePrintoutfilename { get; set; }
+		public string ShowHideDirectPurchaseBillEntryDetail { get; set; }
+		[NotMapped]
+		public bool ShowHideDirectPurchaseBillEntryDetailBool
+		{
+			get => ShowHideDirectPurchaseBillEntryDetail?.Trim() == "Y";
+			set => ShowHideDirectPurchaseBillEntryDetail = value ? "Y" : "N";
+		}
+
+		public string ShowHideDirectPurchaseBillCustomerDetail { get; set; }
+		[NotMapped]
+		public bool ShowHideDirectPurchaseBillCustomerDetailBool
+		{
+			get => ShowHideDirectPurchaseBillCustomerDetail?.Trim() == "Y";
+			set => ShowHideDirectPurchaseBillCustomerDetail = value ? "Y" : "N";
+		}
+
+		public string ShowHideDirectPurchaseBillOtherRequiredDetail { get; set; }
+		[NotMapped]
+		public bool ShowHideDirectPurchaseBillOtherRequiredDetailBool
+		{
+			get => ShowHideDirectPurchaseBillOtherRequiredDetail?.Trim() == "Y";
+			set => ShowHideDirectPurchaseBillOtherRequiredDetail = value ? "Y" : "N";
+		}
+
+		public string ShowHideDirectPurchaseBillCurrency { get; set; }
+		[NotMapped]
+		public bool ShowHideDirectPurchaseBillCurrencyBool
+		{
+			get => ShowHideDirectPurchaseBillCurrency?.Trim() == "Y";
+			set => ShowHideDirectPurchaseBillCurrency = value ? "Y" : "N";
+		}
+
+		public string ShowHideDirectPurchaseBillConsignee { get; set; }
+		[NotMapped]
+		public bool ShowHideDirectPurchaseBillConsigneeBool
+		{
+			get => ShowHideDirectPurchaseBillConsignee?.Trim() == "Y";
+			set => ShowHideDirectPurchaseBillConsignee = value ? "Y" : "N";
+		}
+
+		public string ShowHideDirectPurchaseBillScheduleDetail { get; set; }
+		[NotMapped]
+		public bool ShowHideDirectPurchaseBillScheduleDetailBool
+		{
+			get => ShowHideDirectPurchaseBillScheduleDetail?.Trim() == "Y";
+			set => ShowHideDirectPurchaseBillScheduleDetail = value ? "Y" : "N";
+		}
+
+		public string HideOtherFieldOFDirectPurchaseBillDetailTable { get; set; }
+		[NotMapped]
+		public bool HideOtherFieldOFDirectPurchaseBillDetailTableBool
+		{
+			get => HideOtherFieldOFDirectPurchaseBillDetailTable?.Trim() == "Y";
+			set => HideOtherFieldOFDirectPurchaseBillDetailTable = value ? "Y" : "N";
+		}
+
+		public string ShowHideDirectPurchaseBillOtherDetails { get; set; }
+		[NotMapped]
+		public bool ShowHideDirectPurchaseBillOtherDetailsBool
+		{
+			get => ShowHideDirectPurchaseBillOtherDetails?.Trim() == "Y";
+			set => ShowHideDirectPurchaseBillOtherDetails = value ? "Y" : "N";
+		}
+
+		public string ShowHidePurchaseBillEntryDetail { get; set; }
+		[NotMapped]
+		public bool ShowHidePurchaseBillEntryDetailBool
+		{
+			get => ShowHidePurchaseBillEntryDetail?.Trim() == "Y";
+			set => ShowHidePurchaseBillEntryDetail = value ? "Y" : "N";
+		}
+
+		public string ShowHidePurchaseBillCustomerDetail { get; set; }
+		[NotMapped]
+		public bool ShowHidePurchaseBillCustomerDetailBool
+		{
+			get => ShowHidePurchaseBillCustomerDetail?.Trim() == "Y";
+			set => ShowHidePurchaseBillCustomerDetail = value ? "Y" : "N";
+		}
+
+		public string ShowHidePurchaseBillOtherRequiredDetail { get; set; }
+		[NotMapped]
+		public bool ShowHidePurchaseBillOtherRequiredDetailBool
+		{
+			get => ShowHidePurchaseBillOtherRequiredDetail?.Trim() == "Y";
+			set => ShowHidePurchaseBillOtherRequiredDetail = value ? "Y" : "N";
+		}
+
+		public string ShowHidePurchaseBillCurrency { get; set; }
+		[NotMapped]
+		public bool ShowHidePurchaseBillCurrencyBool
+		{
+			get => ShowHidePurchaseBillCurrency?.Trim() == "Y";
+			set => ShowHidePurchaseBillCurrency = value ? "Y" : "N";
+		}
+
+		public string ShowHidePurchaseBillConsignee { get; set; }
+		[NotMapped]
+		public bool ShowHidePurchaseBillConsigneeBool
+		{
+			get => ShowHidePurchaseBillConsignee?.Trim() == "Y";
+			set => ShowHidePurchaseBillConsignee = value ? "Y" : "N";
+		}
+
+		public string ShowHidePurchaseBillScheduleDetail { get; set; }
+		[NotMapped]
+		public bool ShowHidePurchaseBillScheduleDetailBool
+		{
+			get => ShowHidePurchaseBillScheduleDetail?.Trim() == "Y";
+			set => ShowHidePurchaseBillScheduleDetail = value ? "Y" : "N";
+		}
+
+		public string HideOtherFieldOFPurchaseBillDetailTable { get; set; }
+		[NotMapped]
+		public bool HideOtherFieldOFPurchaseBillDetailTableBool
+		{
+			get => HideOtherFieldOFPurchaseBillDetailTable?.Trim() == "Y";
+			set => HideOtherFieldOFPurchaseBillDetailTable = value ? "Y" : "N";
+		}
+
+		public string ShowHidePurchaseBillOtherDetails { get; set; }
+		[NotMapped]
+		public bool ShowHidePurchaseBillOtherDetailsBool
+		{
+			get => ShowHidePurchaseBillOtherDetails?.Trim() == "Y";
+			set => ShowHidePurchaseBillOtherDetails = value ? "Y" : "N";
+		}
+
+		public string AddInventoryByDirectPurchaseBill { get; set; }
+		[NotMapped]
+		public bool AddInventoryByDirectPurchaseBillBool
+		{
+			get => AddInventoryByDirectPurchaseBill?.Trim() == "Y";
+			set => AddInventoryByDirectPurchaseBill = value ? "Y" : "N";
+		}
+		public IList<Features_OptionsModel> features_OptionsModelsGrid { get; set; }
     }
 }
