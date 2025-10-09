@@ -733,6 +733,7 @@
                       type: "POST",
                       url: "@Url.Action("CheckQtyBeforeInsertOrUpdate")",
                       dataType: "json",
+                        data: { TypesBOMIND: $('#TypesBOMIND').val() },
                       success: function (response) {
                           if (response.success === false) {
                               response.errors.forEach(function (err) {

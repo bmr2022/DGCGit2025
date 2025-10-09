@@ -119,29 +119,35 @@ namespace eTactwebAccounts.Controllers
             {
                 var GIGrid = new DataTable();
                 string modelJson = HttpContext.Session.GetString("KeyAdjGrid");
-                List<AgainstAdjustVoucherModel> AgainstAdjustVoucherGrid = new List<AgainstAdjustVoucherModel>();
-                List<AgainstAdjustVoucherModel> AgainstAdjustVoucherGridEdit = new List<AgainstAdjustVoucherModel>();
 
-                // Deserialize JSON for new entries
+                List<AgainstAdjustVoucherModel> AgainstAdjustVoucherGrid = new List<AgainstAdjustVoucherModel>();
+
                 if (!string.IsNullOrEmpty(modelJson))
                 {
                     var jObject = JObject.Parse(modelJson);
                     var array = jObject["AdjAdjustmentDetailGrid"];
-                    AgainstAdjustVoucherGrid = array?.ToObject<List<AgainstAdjustVoucherModel>>() ?? new List<AgainstAdjustVoucherModel>();
+                    var adjustmentList = array?.ToObject<List<AdjustmentModel>>() ?? new List<AdjustmentModel>();
+                    var againstAdjustVoucher = new AgainstAdjustVoucherModel
+                    {
+                        AdjAdjustmentDetailGrid = adjustmentList
+                    };
+
+                    // Add to list if you need a list of parent models
+                    AgainstAdjustVoucherGrid.Add(againstAdjustVoucher);
                 }
-                string modelEditJson = HttpContext.Session.GetString("KeyAdjGrid");
-                if (!string.IsNullOrEmpty(modelEditJson))
-                {
-                    var jObjectEdit = JObject.Parse(modelEditJson);
-                    var arrayEdit = jObjectEdit["AdjAdjustmentDetailGrid"];
-                    AgainstAdjustVoucherGridEdit = arrayEdit?.ToObject<List<AgainstAdjustVoucherModel>>() ?? new List<AgainstAdjustVoucherModel>();
-                }
+                //string modelEditJson = HttpContext.Session.GetString("KeyAdjGrid");
+                //if (!string.IsNullOrEmpty(modelEditJson))
+                //{
+                //    var jObjectEdit = JObject.Parse(modelEditJson);
+                //    var arrayEdit = jObjectEdit["AdjAdjustmentDetailGrid"];
+                //    AgainstAdjustVoucherGridEdit = arrayEdit?.ToObject<List<AgainstAdjustVoucherModel>>() ?? new List<AgainstAdjustVoucherModel>();
+                //}
 
                 model.ActualEntryBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                 model.ActualEntryByEmp = HttpContext.Session.GetString("UID");
                 if (model.Mode == "U")
                 {
-                    GIGrid = GetDetailTable(AgainstAdjustVoucherGridEdit);
+                    //GIGrid = GetDetailTable(AgainstAdjustVoucherGridEdit);
                 }
                 else
                 {
@@ -274,9 +280,11 @@ namespace eTactwebAccounts.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        
-        public async Task<IActionResult> GetAdjustedData(int YearCode, string VoucherType, string VoucherNo, int AccountCode, string InvoiceNo, int AccEntryId)
+
+        [HttpGet]
+        public async Task<IActionResult> GetAdjustedData(int YearCode,string VoucherType,string VoucherNo,int AccountCode,string InvoiceNo,int AccEntryId)
         {
+          
             var model = new AgainstAdjustVoucherModel
             {
                 Mode = "Adjust",
@@ -286,35 +294,52 @@ namespace eTactwebAccounts.Controllers
                 }
             };
 
-            model.AgainstAdjustVoucherList = await _IAgainstAdjustVoucher.GetAdjustedData(YearCode, VoucherType, VoucherNo, AccountCode, InvoiceNo, AccEntryId);
-            int seqNo = 1;
-            foreach (var item in model.AgainstAdjustVoucherList)
+            // Fetch data from service
+            var adjustedList = await _IAgainstAdjustVoucher.GetAdjustedData(
+                YearCode, VoucherType, VoucherNo, AccountCode, InvoiceNo, AccEntryId);
+
+            // Defensive check
+            if (adjustedList == null || !adjustedList.Any())
             {
+                HttpContext.Session.Remove("KeyAdjGrid");
+                return PartialView("_AgainstAdjustVoucher", model);
+            }
+
+            int seqNo = 1;
+            foreach (var item in adjustedList)
+            {
+                // Safe date parsing
+                DateTime? voucherDate = DateTime.TryParse(item.VoucherDocDate, out var dt) ? dt : null;
+                DateTime? againstVoucherDate = DateTime.TryParse(item.AgainstVoucherDate, out var adt) ? adt : null;
+
+                // Map fields cleanly
                 var adjItem = new AdjustmentModel
                 {
                     AdjSeqNo = seqNo++,
                     AdjAgnstVouchNo = item.AgainstVoucherNo,
                     AdjNewRefNo = item.VoucherNo,
-                    AdjDueDate = DateTime.TryParse(item.VoucherDocDate, out var dt) ? dt : (DateTime?)null ,
+                    AdjDueDate = voucherDate,
                     AdjAgnstVouchType = item.AgainstVoucherType,
                     AdjAgnstAccEntryID = item.AgainstVoucherEntryId,
                     AdjModeOfAdjstment = item.ModeOfAdjustment,
-                    AdjPendAmt = (decimal)item.AdjustmentAmt,
-                    AdjTotalAmt = (float)item.VoucherBillAmt,
-                    AdjRemainingAmt = (float)item.PendBillAmt,
+                    AdjPendAmt = item.AdjustmentAmt,
+                    AdjTotalAmt = (float?)item.VoucherBillAmt,
+                    AdjRemainingAmt = (float?)item.PendBillAmt,
                     AdjAgnstDrCr = item.DRCR,
                     AdjDescription = item.VoucherNo,
                     AdjAgnstPendAmt = (float?)item.AdjustmentAmt,
-                    AdjAgnstAccYearCode=item.AgainstVoucheryearCode,
-                    AdjAgnstVouchDate = DateTime.TryParse(item.AgainstVoucherDate, out var date) ? date : (DateTime?)null
+                    AdjAgnstAccYearCode = item.AgainstVoucheryearCode,
+                    AdjAgnstVouchDate = againstVoucherDate
                 };
 
                 model.adjustmentModel.AdjAdjustmentDetailGrid.Add(adjItem);
             }
 
-            string serializedObject = JsonConvert.SerializeObject(model.adjustmentModel);
-            HttpContext.Session.SetString("KeyAdjGrid", serializedObject);
+            // Store minimal serialized model safely in session
+            string serializedModel = JsonConvert.SerializeObject(model.adjustmentModel);
+            HttpContext.Session.SetString("KeyAdjGrid", serializedModel);
 
+            // Return partial view with populated model
             return PartialView("_AgainstAdjustVoucher", model);
         }
 

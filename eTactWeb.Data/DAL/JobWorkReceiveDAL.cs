@@ -103,13 +103,14 @@ namespace eTactWeb.Data.DAL
 
             return Result;
         }
-        public async Task<ResponseResult> CheckQtyBeforeInsertOrUpdate(DataTable JWRGrid, DataTable ChallanGrid)
+        public async Task<ResponseResult> CheckQtyBeforeInsertOrUpdate(string TypesBOMIND,DataTable JWRGrid, DataTable ChallanGrid)
         {
             var _ResponseResult = new ResponseResult();
             try
             {
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "CheckQtyBeforeInsertOrUpdate"));
+                SqlParams.Add(new SqlParameter("@TypesBOMIND", TypesBOMIND));
                 SqlParams.Add(new SqlParameter("@DTSSGrid", JWRGrid));
                 SqlParams.Add(new SqlParameter("@DTSSGridAdjust", ChallanGrid));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_JobworkRec", SqlParams);
