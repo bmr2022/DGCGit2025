@@ -615,7 +615,7 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> CheckQtyBeforeInsertOrUpdate()
+        public async Task<JsonResult> CheckQtyBeforeInsertOrUpdate(string TypesBOMIND)
         {
             var JWRGrid = new DataTable();
             var ChallanGrid = new DataTable();
@@ -634,7 +634,7 @@ namespace eTactWeb.Controllers
 
             JWRGrid = GetJWRTable(JobWorkReceiveItemDetail);
             ChallanGrid = GetChallanTable(JobWorkReceiveDetail);
-            var ChechedData = await _IJobWorkReceive.CheckQtyBeforeInsertOrUpdate(JWRGrid, ChallanGrid);
+            var ChechedData = await _IJobWorkReceive.CheckQtyBeforeInsertOrUpdate(TypesBOMIND,JWRGrid, ChallanGrid);
             if (ChechedData.StatusCode == HttpStatusCode.OK && ChechedData.StatusText == "Success")
             {
                 DataTable dt = ChechedData.Result;

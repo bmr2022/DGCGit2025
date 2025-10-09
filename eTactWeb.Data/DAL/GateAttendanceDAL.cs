@@ -3,6 +3,7 @@ using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using PdfSharp.Drawing.BarCodes;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -385,6 +386,7 @@ public class GateAttendanceDAL
             {
                 oDataSet = ResponseResult.Result;
                 oDataSet.Tables[0].TableName = "GateAttandance";
+                oDataSet.Tables[1].TableName = "GateAttandanceDetail";
 
                 if (oDataSet.Tables.Count != 0 && oDataSet.Tables[0].Rows.Count > 0)
                 {
@@ -395,19 +397,95 @@ public class GateAttendanceDAL
                     MainModel.DayOrMonthType = oDataSet.Tables[0].Rows[0]["DailyMonthlyAttendance"].ToString();
                     MainModel.AttendanceEntryMethodType = oDataSet.Tables[0].Rows[0]["AttendanceEntryMethod"].ToString();
                     MainModel.strEmpAttMonth = oDataSet.Tables[0].Rows[0]["AttMonthName"].ToString();
+                    MainModel.EmpCategory = oDataSet.Tables[0].Rows[0]["EmpCateg"].ToString();
+                    MainModel.EmpCategoryId = oDataSet.Tables[0].Rows[0]["EmpcategoryId"].ToString();
                     MainModel.EntryByMachineName = oDataSet.Tables[0].Rows[0]["EntryByMachineName"].ToString();
                     MainModel.CC = oDataSet.Tables[0].Rows[0]["CC"].ToString();
                     MainModel.CreatedByName = oDataSet.Tables[0].Rows[0]["EntryByEmp"].ToString();
                     MainModel.UpdatedByName = oDataSet.Tables[0].Rows[0]["EntryByEmp1"].ToString();
 
                     MainModel.Branch = oDataSet.Tables[0].Rows[0]["CC"].ToString();
-                    MainModel.CreatedBy = Convert.ToInt32(oDataSet.Tables[0].Rows[0]["ActualEntryBy"].ToString());
-                    MainModel.CreatedByName = oDataSet.Tables[0].Rows[0]["EntryByMachine"].ToString();
-                    MainModel.CreatedOn = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[0]["LastUpdatedDate"].ToString()) ? new DateTime() : Convert.ToDateTime(oDataSet.Tables[0].Rows[0]["LastUpdatedDate"]);
-                    if (!string.IsNullOrEmpty(oDataSet.Tables[0].Rows[0]["UpdatedBy"].ToString()))
+                    MainModel.CreatedBy = Convert.ToInt32(oDataSet.Tables[0].Rows[0]["EntryByEmpId"].ToString());
+                    MainModel.CreatedByName = oDataSet.Tables[0].Rows[0]["EntryByEmp"].ToString();
+                    MainModel.CreatedOn = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[0]["ActualEntryDate"].ToString()) ? new DateTime() : Convert.ToDateTime(oDataSet.Tables[0].Rows[0]["ActualEntryDate"]);
+                    if (!string.IsNullOrEmpty(oDataSet.Tables[0].Rows[0]["EntryByEmp"].ToString()))
                     {
-                        MainModel.UpdatedBy = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[0]["UpdatedBy"].ToString()) ? 0 : Convert.ToInt32(oDataSet.Tables[0].Rows[0]["UpdatedBy"]);
-                        MainModel.UpdatedOn = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[0]["LastUpdatedDate"].ToString()) ? new DateTime() : Convert.ToDateTime(oDataSet.Tables[0].Rows[0]["LastUpdatedDate"]);
+                        MainModel.UpdatedBy = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[0]["EntryByEmpId1"].ToString()) ? 0 : Convert.ToInt32(oDataSet.Tables[0].Rows[0]["EntryByEmpId1"]);
+                        MainModel.UpdatedByName = oDataSet.Tables[0].Rows[0]["EntryByEmp"].ToString();
+                        MainModel.UpdatedOn = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[0]["LastUpdationdate"].ToString()) ? new DateTime() : Convert.ToDateTime(oDataSet.Tables[0].Rows[0]["LastUpdationdate"]);
+                    }
+                }
+
+                if (oDataSet.Tables.Count > 1 && oDataSet.Tables[1].Rows.Count > 0)
+                {
+                    MainModel.GateAttDetailsList = new List<GateAttendanceModel>();
+
+                    var allColumns = oDataSet.Tables[1].Columns.Cast<DataColumn>().Select(c => c.ColumnName).ToList();
+
+                    int daysInMonth = 1;
+                    if (string.Equals(MainModel.DayOrMonthType, "Daily", StringComparison.OrdinalIgnoreCase))
+                    {
+                        MainModel.DayHeaders = new List<string> { "FromTime", "ToTime" };
+                    }
+                    else if (string.Equals(MainModel.DayOrMonthType, "Monthly", StringComparison.OrdinalIgnoreCase))
+                    {
+                        int month = DateTime.ParseExact(MainModel.strEmpAttMonth, new[] { "MMM", "MMMM" }, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None).Month;
+                        daysInMonth = DateTime.DaysInMonth(MainModel.GateAttYearCode, month);
+                        MainModel.DayHeaders = new List<string>();
+                        MainModel.strEmpAttMonth = new DateTime(MainModel.GateAttYearCode, month, 1).ToString("MMM");
+
+                        for (int d = 1; d <= daysInMonth; d++)
+                        {
+                            MainModel.DayHeaders.Add($"{d}(InTime)");
+                            MainModel.DayHeaders.Add($"{d}(OutTime)");
+                        }
+                    }
+
+                    foreach (DataRow dr in oDataSet.Tables[1].Rows)
+                    {
+                        var detail = new GateAttendanceModel
+                        {
+                            EmployeeName = dr["EmployeeName"].ToString(),
+                            EmployeeCode = dr["Emp_Code"].ToString(),
+                            EmpId = dr["EmpId"] != DBNull.Value ? Convert.ToInt32(dr["EmpId"]) : 0,
+                            EmpAttYear = dr["EmpAttYear"] != DBNull.Value ? Convert.ToInt32(dr["EmpAttYear"]) : 0,
+                            ActualEmpShiftName = dr["ShiftName" + 1].ToString(),
+                            EmpCategory = dr["CategoryCode" + 1].ToString(),
+                            DeptName = dr["DeptName" + 1].ToString(),
+                            DesignationName = dr["DesigName" + 1].ToString(),
+                            DeptId = dr["DeptId" + 1] != DBNull.Value ? Convert.ToInt32(dr["DeptId" + 1]) : 0,
+                            DesignationEntryId = dr["DesigId" + 1] != DBNull.Value ? Convert.ToInt32(dr["DesigId" + 1]) : 0,
+                            ActualEmpShiftId = dr["ShiftId" + 1] != DBNull.Value ? Convert.ToInt32(dr["ShiftId" + 1]) : 0,
+                            Attendance = new Dictionary<string, string>()
+                        };
+
+                        if (MainModel.DayOrMonthType == "Daily")
+                        {
+                            // directly pick FromTime/ToTime style columns
+                            foreach (var col in allColumns.Where(c =>
+                                c.Equals("FromTime", StringComparison.OrdinalIgnoreCase) ||
+                                c.Equals("ToTime", StringComparison.OrdinalIgnoreCase)))
+                            {
+                                detail.Attendance[col.ToLower()] = dr[col]?.ToString();
+                            }
+                        }
+                        else if (MainModel.DayOrMonthType == "Monthly")
+                        {
+                            //var col in allColumns.Where(c => c.StartsWith("attintime", StringComparison.OrdinalIgnoreCase) || c.StartsWith("attouttime", StringComparison.OrdinalIgnoreCase) || c.StartsWith("AttendanceDate", StringComparison.OrdinalIgnoreCase) || c.StartsWith("AttendStatus", StringComparison.OrdinalIgnoreCase) || c.StartsWith("TotalNoOfHour", StringComparison.OrdinalIgnoreCase))
+                            for (int d = 1; d <= daysInMonth; d++)
+                            {
+                                string inCol = $"attintime{d}";
+                                string outCol = $"attouttime{d}";
+
+                                if (allColumns.Contains(inCol, StringComparer.OrdinalIgnoreCase))
+                                    detail.Attendance[$"{d}(InTime)"] = dr[inCol]?.ToString();
+
+                                if (allColumns.Contains(outCol, StringComparer.OrdinalIgnoreCase))
+                                    detail.Attendance[$"{d}(OutTime)"] = dr[outCol]?.ToString();
+                            }
+                        }
+
+                        MainModel.GateAttDetailsList.Add(detail);
                     }
                 }
             }

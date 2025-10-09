@@ -45,6 +45,7 @@ namespace eTactWeb.DOM.Models
         public List<string> ColumnNames { get; set; } = new(); // for dynamic header rendering
         public IList<OutStandingModel> OutStandingGrid { get; set; }
         public List<OutStandingPopUpData> OutStandingPopUpDatas { get; set; }   
+        public int AccountCodeBack {  get; set; }
         public string[] AccountNameList {  get; set; }
     }
     public class OutStandingPopUpData

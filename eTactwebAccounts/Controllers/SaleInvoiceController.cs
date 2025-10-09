@@ -806,7 +806,7 @@ namespace eTactWeb.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> SaleInvoice(int ID, string Mode, int YearCode, string DashboardType = "", string fromDate = "", string ToDate = "", string partCode = "", string itemName = "", string saleBillNo = "", string custName = "", string sono = "", string custOrderNo = "", string schNo = "", string performaInvNo = "", string saleQuoteNo = "", string domExportNEPZ = "", string Searchbox = "", string summaryDetail = "", int? GroupName = null, int? AccountCode = null)
+        public async Task<IActionResult> SaleInvoice(int ID, string Mode, int YearCode, string DashboardType = "", string fromDate = "", string ToDate = "", string partCode = "", string itemName = "", string saleBillNo = "", string custName = "", string sono = "", string custOrderNo = "", string schNo = "", string performaInvNo = "", string saleQuoteNo = "", string domExportNEPZ = "", string Searchbox = "", string summaryDetail = "", int? GroupName = null, int? AccountCode = null, int? AccountCodeBack = null, string VoucherTypeBack = "", string[] AccountList = null)
         {
             var model = new SaleBillModel(); // Create a new model instance for the view
 
@@ -883,12 +883,14 @@ namespace eTactWeb.Controllers
             model.DashboardTypeBack = DashboardType;
             model.GroupCodeBack = GroupName;
             model.AccountCodeBack = AccountCode;
-
+            model.AccountNameBack = AccountCodeBack;
+            model.VoucherTypeBack = VoucherTypeBack;
+            model.AccountList = AccountList;
             return View(model);
         }
 
         [HttpGet]
-        public async Task<IActionResult> SaleBillOnCounter(int ID, string Mode, int YearCode, string dashboardType = "", string fromDate = "", string toDate = "", string partCode = "", string itemName = "", string saleBillNo = "", string custName = "", string sono = "", string custOrderNo = "", string schNo = "", string performaInvNo = "", string saleQuoteNo = "", string domExportNEPZ = "", string Searchbox = "", string summaryDetail = "")
+        public async Task<IActionResult> SaleBillOnCounter(int ID, string Mode, int YearCode, string dashboardType = "", string fromDate = "", string toDate = "", string partCode = "", string itemName = "", string VoucherNo = "", string custName = "", string sono = "", string custOrderNo = "", string schNo = "", string performaInvNo = "", string saleQuoteNo = "", string domExportNEPZ = "", string Searchbox = "", string summaryDetail = "")
         {
             var model = new SaleBillModel(); // Create a new model instance for the view
 
@@ -952,7 +954,7 @@ namespace eTactWeb.Controllers
             model.ToDateBack = toDate;
             model.PartCodeBack = partCode;
             model.ItemNameBack = itemName;
-            model.SaleBillNoBack = saleBillNo;
+            model.SaleBillNoBack = VoucherNo;
             model.CustNameBack = custName;
             model.SonoBack = sono;
             model.CustOrderNoBack = custOrderNo;

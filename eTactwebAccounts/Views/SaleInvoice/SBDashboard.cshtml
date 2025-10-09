@@ -169,7 +169,7 @@
             var toDateBack = sessionStorage.getItem('ToDateBack');
             var partCodeBack = sessionStorage.getItem('PartCodeBack');
             var itemNameBack = sessionStorage.getItem('ItemNameBack');
-            var saleBillNoBack = sessionStorage.getItem('SaleBillNoBack');
+            var saleBillNoBack = sessionStorage.getItem('VoucherNoBack');
             var custNameBack = sessionStorage.getItem('CustNameBack');
             var sonoBack = sessionStorage.getItem('SonoBack');
             var custOrderNoBack = sessionStorage.getItem('CustOrderNoBack');
@@ -216,7 +216,7 @@
             sessionStorage.removeItem('ToDateBack');
             sessionStorage.removeItem('PartCodeBack');
             sessionStorage.removeItem('ItemNameBack');
-            sessionStorage.removeItem('SaleBillNoBack');
+            sessionStorage.removeItem('VoucherNoBack');
             sessionStorage.removeItem('CustNameBack');
             sessionStorage.removeItem('SonoBack');
             sessionStorage.removeItem('CustOrderNoBack');
@@ -607,7 +607,7 @@
         else{
         var urlHref = $(event.currentTarget).attr("href");
             var linkUrl = urlHref;
-            linkUrl = linkUrl + "&summaryDetail=" + $('#SummaryDetail').val() + "&partCode=" + $('#PartCode').val() + "&itemName=" + $('#ItemName').val() + "&saleBillno=" + $('#SaleBillNo').val() + "&custName=" + $('#AccountName').val() + "&sono=" + $('#SONO').val() + "&schNo=" + $('#SchNo').val() + "&custOrderNo=" + $('#CustOrderNo').val() + "&performaInvNo=" + $('#PerformaInvNo').val() + "&saleQuoteNo=" + $('#SaleQuotNo').val() + "&domensticExportNEPZ=" + $('#DomesticExportNEPZ').val() + "&fromdate=" + $('#FinFromDate').val() + "&toDate=" + $('#FinToDate').val() + "&searchBox=" + $('#search-box').val();
+                linkUrl = linkUrl + "&summaryDetail=" + $('#SummaryDetail').val() + "&partCode=" + $('#PartCode').val() + "&itemName=" + $('#ItemName').val() + "&VoucherNo=" + $('#SaleBillNo').val() + "&custName=" + $('#AccountName').val() + "&sono=" + $('#SONO').val() + "&schNo=" + $('#SchNo').val() + "&custOrderNo=" + $('#CustOrderNo').val() + "&performaInvNo=" + $('#PerformaInvNo').val() + "&saleQuoteNo=" + $('#SaleQuotNo').val() + "&domensticExportNEPZ=" + $('#DomesticExportNEPZ').val() + "&fromdate=" + $('#FinFromDate').val() + "&toDate=" + $('#FinToDate').val() + "&searchBox=" + $('#search-box').val();
             window.location.href = linkUrl;
             }
         }
@@ -617,7 +617,7 @@
             event.preventDefault();
             var urlHref = $(event.currentTarget).attr("href");
             var linkUrl = urlHref;
-            linkUrl = linkUrl + "&summaryDetail=" + $('#SummaryDetail').val() + "&partCode=" + $('#PartCode').val() + "&itemName=" + $('#ItemName').val() + "&saleBillno=" + $('#SaleBillNo').val() + "&custName=" + $('#AccountName').val() + "&sono=" + $('#SONO').val() + "&schNo=" + $('#SchNo').val() + "&custOrderNo=" + $('#CustOrderNo').val() + "&performaInvNo=" + $('#PerformaInvNo').val() + "&saleQuoteNo=" + $('#SaleQuotNo').val() + "&domensticExportNEPZ=" + $('#DomesticExportNEPZ').val() + "&fromdate=" + $('#FinFromDate').val() + "&toDate=" + $('#FinToDate').val() + "&searchBox=" + $('#search-box').val();
+            linkUrl = linkUrl + "&summaryDetail=" + $('#SummaryDetail').val() + "&partCode=" + $('#PartCode').val() + "&itemName=" + $('#ItemName').val() + "&VoucherNo=" + $('#SaleBillNo').val() + "&custName=" + $('#AccountName').val() + "&sono=" + $('#SONO').val() + "&schNo=" + $('#SchNo').val() + "&custOrderNo=" + $('#CustOrderNo').val() + "&performaInvNo=" + $('#PerformaInvNo').val() + "&saleQuoteNo=" + $('#SaleQuotNo').val() + "&domensticExportNEPZ=" + $('#DomesticExportNEPZ').val() + "&fromdate=" + $('#FinFromDate').val() + "&toDate=" + $('#FinToDate').val() + "&searchBox=" + $('#search-box').val();
             window.location.href = linkUrl;
         }
 

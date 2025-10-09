@@ -79,6 +79,9 @@
                             <input asp-for="SummaryDetailBack" type="hidden" value="@Model.SummaryDetailBack" />
                             <input asp-for="GroupCodeBack" type="hidden" value="@Model.GroupCodeBack" />
                             <input asp-for="AccountCodeBack" type="hidden" value="@Model.AccountCodeBack" />
+                            <input asp-for="AccountNameBack" type="hidden" value="@Model.AccountNameBack" />
+                            <input asp-for="AccountList" type="hidden" 
+       value="@string.Join(",", Model.AccountList ?? new string[0])" />
                             <input type="hidden" id="ShouldEinvoice" name="ShouldEinvoice" />
 
                             @if (Model.Mode == "U" || Model.Mode == "V")
@@ -2360,16 +2363,9 @@
                             $.notify('amount can not be 0 ' + $('#PartCode-' + i).val(), 'error');
                             return;
                         }
-
-
-
-
                     }
                 }
             }
-
-
-
 
             for (var i = 1; i <= RowCount; i++) {
                 if ($('#AcceptedQtySHA-' + i).prop("checked")) {
@@ -6819,7 +6815,7 @@
             sessionStorage.setItem('ToDateBack', $('#ToDateBack').val());
             sessionStorage.setItem('PartCodeBack', $('#PartCodeBack').val());
             sessionStorage.setItem('ItemNameBack', $('#ItemNameBack').val());
-            sessionStorage.setItem('SaleBillNoBack', $('#SaleBillNoBack').val());
+            sessionStorage.setItem('VoucherNoBack', $('#SaleBillNoBack').val());
             sessionStorage.setItem('CustNameBack', $('#CustNameBack').val());
             sessionStorage.setItem('SonoBack', $('#SonoBack').val());
             sessionStorage.setItem('CustOrderNoBack', $('#CustOrderNoBack').val());
@@ -6832,6 +6828,9 @@
             sessionStorage.setItem('DashboardTypeBack', $('#DashboardTypeBack').val());
             sessionStorage.setItem('GroupCodeBack', $('#GroupCodeBack').val());
             sessionStorage.setItem('AccountCodeBack', $('#AccountCodeBack').val());
+            sessionStorage.setItem('AccountNameBack', $('#AccountNameBack').val());
+            sessionStorage.setItem('VoucherTypeBack', $('#VoucherTypeBack').val());
+            sessionStorage.setItem('AccountList', $('#AccountList').val());
 
             window.history.back();
         }
