@@ -11,6 +11,8 @@ namespace eTactWeb.DOM.Models
     {
         public int Itemcode { get; set; }
         public string FGPartCode { get; set; }
+        public string ProdDate { get; set; }
+        public string FGunit { get; set; }
         public string FGItemName { get; set; }
         public string RMPartCode { get; set; }
         public string RMItemName { get; set; }

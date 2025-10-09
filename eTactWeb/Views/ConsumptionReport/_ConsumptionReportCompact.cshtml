@@ -1,0 +1,101 @@
+﻿@model eTactWeb.DOM.Models.ConsumptionReportModel;
+
+<div class="table-responsive" style="max-height:300px;overflow-y:auto;">
+    <table class="table table-responsive table-hover table-bordered PMRPGrid TbCss text-nowrap mb-0" id="ReportTable">
+        <thead class="bg-gradient card-headerBG text-light PMRPThead" style="position:static;" id="dashRThead">
+            <tr>
+                <th>Action</th>
+                <th>Sr#</th>
+                <th data-columnno="1" data-sortorder="asc" class="sortCol">
+                    <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RM Part Code
+                </th>
+                <th data-columnno="2" data-sortorder="asc" class="sortCol">
+                    <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RM Item Name
+                </th>
+                <th data-columnno="3" data-sortorder="asc" class="sortCol">
+                    <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Consumed RM Qty
+                </th>
+                <th data-columnno="4" data-sortorder="asc" class="sortCol">
+                    <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RM Unit
+                </th>
+                <th data-columnno="5" data-sortorder="asc" class="sortCol">
+                    <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>FG Part Code
+                </th>
+                <th data-columnno="6" data-sortorder="asc" class="sortCol">
+                    <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>FG Item Name
+                </th>
+                <th data-columnno="7" data-sortorder="asc" class="sortCol">
+                    <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>FG Prod Qty
+                </th>
+                <th data-columnno="8" data-sortorder="asc" class="sortCol">
+                    <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unit
+                </th>
+
+            </tr>
+        </thead>
+        <tbody id="divStockRegisterBody">
+            @{
+                var @Cntr = 0;
+                if (Model.ConsumptionReportGrid == null)
+                {
+                    <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                }
+                else
+                {
+                    foreach (var item in Model.ConsumptionReportGrid)
+                    {
+                        Cntr = Cntr + 1;
+
+                        <tr id="@Cntr" onclick="selection(this)">
+                            <td>
+                                <a class="table-link link-danger" onclick="DeleteRow(this.id)" id="@Cntr">
+                                    <span class="fa-stack">
+                                        <i class="fa fa-square fa-stack-2x"></i>
+                                        <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </td>
+                            <th>@Cntr</th>
+                            <td>@item.RMPartCode</td>
+                            <td>@item.RMItemName</td>
+                            <td>@item.ConsumedRMQty</td>
+                            <td>@item.ConsumedRMUnit</td>
+                            <td>@item.FGPartCode</td>
+                            <td>@item.FGItemName</td>
+                            <td>@item.FGProdQty</td>
+                            <td>@item.Unit</td>
+
+                        </tr>
+                    }
+                }
+            }
+
+        </tbody>
+    </table>
+</div>
+<center><strong>TOTAL ROWS : <span id="totalRows"></span></strong></center>
+<style>
+
+    .sort-icon {
+        padding: 5px;
+        margin: 5px;
+        vertical-align: top;
+    }
+
+    .ascCol {
+        font-size: 15px;
+        vertical-align: bottom;
+    }
+
+    .descCol {
+        font-size: 15px;
+        vertical-align: super;
+    }
+
+    #dashRThead th {
+        background-color: #127387;
+        position: sticky;
+        top: -18px;
+        z-index: 1;
+    }
+</style>
