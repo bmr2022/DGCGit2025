@@ -396,7 +396,7 @@ namespace eTactWeb.Controllers
                     }
                     else
                     {
-                        if (MaterialConversionGrid.Any(x => (x.OriginalPartCode == model.OriginalPartCode)))
+                        if (MaterialConversionGrid.Any(x => (x.OriginalPartCode == model.OriginalPartCode && x.BatchNo == model.BatchNo && x.UniqueBatchNo==model.UniqueBatchNo)))
                         {
                             return StatusCode(207, "Duplicate");
                         }
