@@ -118,8 +118,11 @@
                                    asp-route-GroupName="@item.GroupName"
                                    asp-route-DashboardType="@item.ReportType"
                                    asp-route-AccountCode="@item.AccountCode"
+                                   asp-route-AccountCodeBack="@item.AccountCodeBack"
+                                   asp-route-VoucherNo="@item.VoucherNo"
                                    asp-route-ToDate ="@item.TillDate"
-                                   data-save-history="true">
+                                   asp-route-VoucherTypeBack="@item.VoucherType"
+                                   asp-route-AccountList="@string.Join(",", item.AccountNameList)">
                                     @item.VoucherNo
                                 </a>
                             </td>

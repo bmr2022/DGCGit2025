@@ -13,6 +13,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetFormRights(int userID);
         Task<ResponseResult> GetParentGroup();
         Task<ResponseResult> GetAccountGroupDetailsByParentCode(int parentAccountCode);
+        Task<ResponseResult> CheckBeforeUpdate(int AccountCode);
         Task<ResponseResult> SavePrimaryAccountGroupMaster(PrimaryAccountGroupMasterModel model);
         Task<ResponseResult> UpdatePrimaryAccountGroupMaster(PrimaryAccountGroupMasterModel model);
         

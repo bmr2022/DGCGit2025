@@ -34,6 +34,12 @@ namespace eTactWeb.Data.BLL
         {
             return await _PrimaryAccountGroupMasterDAL.GetAccountGroupDetailsByParentCode( parentAccountCode);
         }
+
+        public async Task<ResponseResult> CheckBeforeUpdate(int AccountCode)
+        {
+            return await _PrimaryAccountGroupMasterDAL.CheckBeforeUpdate(AccountCode);
+        }
+
         public async Task<ResponseResult> SavePrimaryAccountGroupMaster(PrimaryAccountGroupMasterModel model)
         {
             return await _PrimaryAccountGroupMasterDAL.SavePrimaryAccountGroupMaster(model);

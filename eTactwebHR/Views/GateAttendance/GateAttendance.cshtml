@@ -574,18 +574,31 @@
                 if (obj && obj.toLowerCase() === "daily") {
                     $('.dvEmpAttDate').show();
                     $('.dvGateAttEntryDay').show();
+                    if($('#Mode').val() != 'V' && $('#Mode').val() != 'U') {
+                        $('#strEmpAttDate').select(0);
+                    }
                     $('.dvEmpAttMonth').hide();
                     $('#strEmpAttMonth').prop("selectedIndex", 0);
                 }
                 else if (obj && obj.toLowerCase() === "monthly") {
                     $('.dvEmpAttMonth').show();
                     $('.dvEmpAttDate').hide();
+                    if($('#Mode').val() != 'V' && $('#Mode').val() != 'U') {
+                        $('#strEmpAttMonth').val('');
+                    }
+                    else {
+                        $('#strEmpAttMonth').prop("selectedIndex", $('#intEmpAttMonth').val());
+                        $('#CategoryCode').val($('#EmpCategory').val());
+                    }
                     $('.dvGateAttEntryDay').hide();
                     $('#strEmpAttDate').val("");
                 }
                 else {
                     $('.dvEmpAttDate').show();
                     $('.dvGateAttEntryDay').show();
+                    if($('#Mode').val() != 'V' && $('#Mode').val() != 'U') {
+                        $('#strEmpAttDate').select(0);
+                    }
                     $('.dvEmpAttMonth').hide();
                     $('#strEmpAttMonth').prop("selectedIndex", 0);
                 }
@@ -652,10 +665,12 @@
                     dataType: "json",
                     data: { "YearCode": $('#GateAttYearCode').val() },
                     success: function (result, status, error) {
-                        if (result != null) {
-                            var obj = $.parseJSON(result);
-                            var EntryId = obj.Result.Table[0] != null ? obj.Result.Table[0].EntryId : (obj.Result.Table1[0] != null ? obj.Result.Table1[0].EntryId : 0);
-                            $('#GateAttEntryId').val(EntryId);
+                        if($('#Mode').val() != 'V' && $('#Mode').val() != 'U') {
+                            if (result != null) {
+                                var obj = $.parseJSON(result);
+                                var EntryId = obj.Result.Table[0] != null ? obj.Result.Table[0].EntryId : (obj.Result.Table1[0] != null ? obj.Result.Table1[0].EntryId : 0);
+                                $('#GateAttEntryId').val(EntryId);
+                            }
                         }
                     }
                 });

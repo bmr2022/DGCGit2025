@@ -100,10 +100,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _JobWorkReceiveDAL.GetBomValidated(RecItemCode, BomRevNo, BomRevDate, RecQty);
         } 
-        public async Task<ResponseResult> CheckQtyBeforeInsertOrUpdate(DataTable JWRGrid, DataTable ChallanGrid)
+        public async Task<ResponseResult> CheckQtyBeforeInsertOrUpdate(string TypesBOMIND,DataTable JWRGrid, DataTable ChallanGrid)
 
         {
-            return await _JobWorkReceiveDAL.CheckQtyBeforeInsertOrUpdate(JWRGrid, ChallanGrid);
+            return await _JobWorkReceiveDAL.CheckQtyBeforeInsertOrUpdate(TypesBOMIND,JWRGrid, ChallanGrid);
         }
 
         public async Task<ResponseResult> GetDashboardData(string FromDate, string Todate, string Flag)
