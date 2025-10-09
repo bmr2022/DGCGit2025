@@ -402,9 +402,11 @@
                                         <div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
                                             <input asp-for="PN1" class="form-check-input" type="checkbox" role="switch" />Show All
                                         </div>
-                                        <select class="form-select" asp-for="AccountCode" asp-items="@(new SelectList(Model.AccountList,"Value","Text"))">
+                                      @*   <select class="form-select" asp-for="AccountCode" asp-items="@(new SelectList(Model.AccountList,"Value","Text"))">
                                             <option value="">-Select-</option>
-                                        </select>
+                                        </select> *@
+                                        <input type="text" asp-for="AccountName" id="AccountCodeText" class="form-control" value="@Model.AccountName" placeholder="Type Item Name..." />
+                                        <input type="hidden" asp-for="AccountCode" id="AccountCode" />
                                         <input type="hidden" value="@Model.AccountCode" id="hiddenAccountCode" />
                                     </div>
                                     <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-12 ">
@@ -792,7 +794,7 @@
                                             <input asp-for="IN1" class="form-check-input" type="checkbox" role="switch" tabindex="-1" />
                                         </div>
                                         <div class="col-xl-12">
-                                            <input type="text" id="ItemNameText" class="form-control" placeholder="Type Item Name..." />
+                                            <input type="text" id="ItemNameText" class="form-control" tabindex="-1" placeholder="Type Item Name..." />
                                             <input type="hidden" asp-for="ItemCode" id="ItemCode" />
                                            @*  <select class="form-select" style="height:190px;width:290px;" asp-for="ItemCode" asp-items="@(new SelectList(Model.ItemNameList,"Text","Value"))"  tabindex="-1">
                                                 <option value="0">-Select-</option>
@@ -2056,13 +2058,14 @@
         });
         $(document).ready(function () {
             // alert('inside load');
-            $('#AccountCode').select2();
+            // $('#AccountCode').select2();
             //$('#MBillToAccountCode').select2();
             // $('#PartCode').select2();
             // $('#ItemCode').select2();
             $('#Group_Code').select2();
 
             FillItems();
+            AutoFillPARTYNAMELIST();
             // $('#Group_Code1').select2();
 
             //fillSaleBill();
@@ -2387,7 +2390,10 @@
                         if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
                             let filtered = obj.Result.Table.filter(function (item) {
                                 let term = request.term.toLowerCase();
-                                return item.PartCode.toLowerCase().includes(term);
+                                return (
+                                    (item.PartCode && item.PartCode.toLowerCase().includes(term)) ||
+                                    (item.Barcode && item.Barcode.toLowerCase().includes(term))
+                                );
                             });
 
                             response($.map(filtered, function (item) {
@@ -2477,6 +2483,75 @@
                 minLength: 2
             });
         }
+
+
+
+        function AutoFillPARTYNAMELIST() {
+            // Source for PartCodeText
+            const AccountCodeSourse = function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("AutoFillPARTYNAMELIST")',
+                    type: 'POST',
+                    data: {
+
+                        SearchAccount: request.term
+                    },
+                    success: function (result) {
+                        let obj = typeof result === "string" ? JSON.parse(result) : result;
+
+                        if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
+                            let filtered = obj.Result.Table.filter(function (item) {
+                                let term = request.term.toLowerCase();
+                                return item.Account_Name.toLowerCase().includes(term);
+                            });
+
+                            response($.map(filtered, function (item) {
+                                return {
+                                    label: item.Account_Name,
+                                    value: item.Account_Name,
+                                    accountCode: item.Account_Code,
+                                   
+                                };
+                            }));
+                        } else {
+                            response([]);
+                        }
+                    }
+                });
+            };
+
+          
+
+            // Autocomplete for PartCodeText
+            $("#AccountCodeText").autocomplete({
+                source: AccountCodeSourse,
+                select: function (event, ui) {
+                    $("#AccountCodeText").val(ui.item.value).data("Account_Code", ui.item.accountCode);
+
+                    $('#AccountCode').val(ui.item.accountCode);
+                    CheckOrderNo();
+                    onchangeaccountcode();
+                  
+                
+                    return false;
+                },
+                focus: function (event, ui) {
+                    $("#AccountCodeText").val(ui.item.value);
+
+                    return false;
+                },
+                minLength: 2
+            });
+
+            
+        }
+
+
+
+
+
+
+
 
         function GetlastSaleOrderDetail() {
 
@@ -3999,6 +4074,51 @@
                 }
             });
         });
+
+
+        function onchangeaccountcode()
+        {
+            ClearTxGrid();
+            if ($('#AccountCode').prop('selectedIndex') != 0) {
+                $.getJSON({
+                    url: "@Url.Action("GetAddress")",
+                    data: { Code: $('#AccountCode').val() },
+                    success: function (result, status, xhr) {
+                        $('#Address').val(result.result.address);
+                        $('#Gstregistered').val(result.result.gstregistered);
+                        if ($('#Address').val()) {
+                            $('#DeliveryAddress').val($('#Address').val());
+                        }
+                    }
+                });
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("GetEmails", "NRGP")",
+                    data: { AccountCode: $('#AccountCode').val() },
+                    dataType: "json",
+                    async: false,
+                    success: function (result, status, error) {
+                        if (result != null) {
+                            var obj = $.parseJSON(result);
+                            if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                                $.each(obj.Result, function (index, val) {
+                                    $('#Email').val(val.EmailId);
+                                    $('#CC1').val(val.CC1);
+                                    $('#CC2').val(val.CC2);
+                                    $('#CC3').val(val.CC3);
+                                });
+                            }
+                        }
+                    },
+                    error: function (req, status, error) {
+                        alert(error);
+                    }
+                });
+            }
+            else $('#Address').val(''), $('#DeliveryAddress').val('');
+            $('#PartyName').val($('#AccountCode option:selected').text());
+            GetlastSaleOrderDetail();
+        }
 
         $('#AccountCode').change(function () {
             ClearTxGrid();

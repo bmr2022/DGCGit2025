@@ -651,8 +651,14 @@ public class SaleOrderController : Controller
 
 		return model;
 	}
+    public async Task<JsonResult> AutoFillPARTYNAMELIST(string SearchAccount)
+    {
+        var JSON = await _ISaleOrder.AutoFillPARTYNAMELIST(SearchAccount);
+        string JsonString = JsonConvert.SerializeObject(JSON);
+        return Json(JsonString);
+    }
 
-	public async Task<IActionResult> Dashboard()
+    public async Task<IActionResult> Dashboard()
 	{
 		HttpContext.Session.Remove("ItemList");
 		HttpContext.Session.Remove("TaxGrid");

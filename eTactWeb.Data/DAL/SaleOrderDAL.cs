@@ -29,6 +29,27 @@ namespace eTactWeb.Data.DAL
             DBConnectionString = _connectionStringService.GetConnectionString();
             _IDataLogic = iDataLogic;
         }
+        public async Task<ResponseResult> AutoFillPARTYNAMELIST(string SearchAccount)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "AutoFillPARTYNAMELIST"));
+               
+                SqlParams.Add(new SqlParameter("@SearchAccount", SearchAccount ?? ""));
+              
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_GetDropDownList", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+
         public async Task<SaleOrderModel> GetlastSaleOrderDetail(string EntryDate, int currentYearcode, int AccountCode, int ItemCode)
         {
             var resultList = new SaleOrderModel();
@@ -1745,6 +1766,7 @@ namespace eTactWeb.Data.DAL
                             model.CurrencyID = Convert.ToInt32(oDataSet.Tables[0].Rows[0]["CurrencyID"]);
                             model.AccountCode = Convert.ToInt32(oDataSet.Tables[0].Rows[0]["AccountCode"]);
                             model.Address = oDataSet.Tables[0].Rows[0]["Address"].ToString();
+                            model.AccountName = oDataSet.Tables[0].Rows[0]["Account_Name"].ToString();
                             model.DeliveryAddress = oDataSet.Tables[0].Rows[0]["DeliveryAddress"].ToString();
                             model.OrderType = oDataSet.Tables[0].Rows[0]["OrderType"].ToString();
                             model.CustOrderNo = oDataSet.Tables[0].Rows[0]["CustOrderNo"].ToString();
