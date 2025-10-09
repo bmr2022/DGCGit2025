@@ -1,12 +1,114 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="10/08/2025 15:36:56" ReportInfo.Modified="10/08/2025 15:56:54" ReportInfo.CreatorVersion="2023.2.0.0">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="10/08/2025 15:36:56" ReportInfo.Modified="10/09/2025 13:26:06" ReportInfo.CreatorVersion="2023.2.0.0">
   <Dictionary>
-    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqwYf2D6LPIs5GRi9VfJb9gu9ucqaRfzVvUaVne08cIFURWyyEsxwQsmngwHHahRU5IBf1gWxFxthjvCI+9BjhcR8BjTz2iHCnSBTgRKTkqutDkjIRRL0Lr+gAV5vh4t47BklN+Df+gZ1BDy0zz0wKb8ihM9loU9dXTaRaB3iM7MkRkKOWKZEyucGuTvDipndFjGTWf0pucRX4nWtDEt5RlA=="/>
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqwYf2D6LPIs5GRi9VfJb9gu9ucqaRfzVvUaVne08cIFURWyyEsxwQsmngwHHahRU5IBf1gWxFxthjvCI+9BjhcR8BjTz2iHCnSBTgRKTkqutDkjIRRL0Lr+gAV5vh4t47BklN+Df+gZ1BDy0zz0wKb8ihM9loU9dXTaRaB3iM7MkRkKOWKZEyucGuTvDipndFOxURXPm52C6IGjmrEMCwTA==">
+      <TableDataSource Name="Table" Alias="SPSummaryStockReportPrint" DataType="System.Int32" Enabled="true" SelectCommand="exec [SPSummaryStockReportPrint]  @FromDate=@FromDateparam ,@ToDate=@ToDateparam,&#13;&#10;@PartCode=@PartCodeparam,@ItemName=@ItemNameparam,@GroupName=@ItemGroupNameparam,@CatName=@ItemTypeparam,@Storeid=@StoreIdparam,@BatchNo=@BatchNoparam,@Uniquebatchno=@UniqueBatchNoparam">
+        <Column Name="storeName" DataType="System.String"/>
+        <Column Name="Part_Code" DataType="System.String"/>
+        <Column Name="item_name" DataType="System.String"/>
+        <Column Name="opn" DataType="System.Decimal"/>
+        <Column Name="TotalRec" DataType="System.Decimal"/>
+        <Column Name="TotalIss" DataType="System.Decimal"/>
+        <Column Name="TotalStock" DataType="System.Decimal"/>
+        <Column Name="unit" DataType="System.String"/>
+        <Column Name="Minimum_Level" DataType="System.Int64"/>
+        <Column Name="AltUnit" DataType="System.String"/>
+        <Column Name="AltStock" DataType="System.Double"/>
+        <Column Name="Rate" DataType="System.Double"/>
+        <Column Name="Group_name" DataType="System.String"/>
+        <Column Name="StdPacking" DataType="System.Double"/>
+        <Column Name="BinNo" DataType="System.String"/>
+        <Column Name="maxlevel" DataType="System.Double"/>
+        <Column Name="ReorderLvl" DataType="System.Double"/>
+        <Column Name="DateFrom" DataType="System.DateTime"/>
+        <Column Name="Todate" DataType="System.DateTime"/>
+        <Column Name="CompanyName" DataType="System.String"/>
+        <Column Name="Address1" DataType="System.String"/>
+        <Column Name="Address2" DataType="System.String"/>
+        <Column Name="SeqNo" DataType="System.Int64"/>
+        <CommandParameter Name="ToDateparam" DataType="22" Size="200" Expression="ToDateparam"/>
+        <CommandParameter Name="FromDateparam" DataType="22" Size="200" Expression="FromDateparam"/>
+        <CommandParameter Name="StoreIdparam" Expression="StoreIdparam"/>
+        <CommandParameter Name="PartCodeparam" DataType="22" Size="200" Expression="PartCodeparam"/>
+        <CommandParameter Name="ItemNameparam" DataType="22" Size="200" Expression="ItemNameparam"/>
+        <CommandParameter Name="ItemGroupNameparam" DataType="22" Size="200" Expression="ItemGroupNameparam"/>
+        <CommandParameter Name="ItemTypeparam" DataType="22" Size="200" Expression="ItemTypeparam"/>
+        <CommandParameter Name="BatchNoparam" DataType="22" Size="200" Expression="BatchNoparam"/>
+        <CommandParameter Name="UniqueBatchNoparam" DataType="22" Size="200" Expression="UniqueBatchNoparam"/>
+      </TableDataSource>
+    </MsSqlDataConnection>
+    <Parameter Name="MyParameter" DataType="System.String" Expression="MyParameter"/>
   </Dictionary>
-  <ReportPage Name="Page1" Watermark.Font="Arial, 60pt">
-    <ReportTitleBand Name="ReportTitle1" Width="718.2" Height="37.8"/>
-    <PageHeaderBand Name="PageHeader1" Top="41" Width="718.2" Height="28.35"/>
-    <DataBand Name="Data1" Top="72.55" Width="718.2" Height="75.6"/>
-    <PageFooterBand Name="PageFooter1" Top="151.35" Width="718.2" Height="18.9"/>
+  <ReportPage Name="Page1" Landscape="true" PaperWidth="297" PaperHeight="210" RawPaperSize="9" Watermark.Font="Arial, 60pt">
+    <ReportTitleBand Name="ReportTitle1" Width="1047.06" Height="151.2">
+      <TextObject Name="Text1" Left="425.25" Top="18.9" Width="217.35" Height="18.9" Text="Stock Register Report" HorzAlign="Center" Font="Arial, 12pt, style=Bold"/>
+      <LineObject Name="Line1" Left="9.45" Top="9.45" Width="1030.05"/>
+      <LineObject Name="Line2" Left="1039.5" Top="9.45" Height="141.75"/>
+      <LineObject Name="Line3" Left="9.45" Top="9.45" Height="141.75"/>
+      <TextObject Name="Text2" Left="311.85" Top="47.25" Width="406.35" Height="18.9" Text="[SPSummaryStockReportPrint.CompanyName]" HorzAlign="Center" Font="Arial, 12pt, style=Bold"/>
+      <TextObject Name="Text3" Left="368.55" Top="75.6" Width="292.95" Height="18.9" Text="[SPSummaryStockReportPrint.Address1]" HorzAlign="Center" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text4" Left="18.9" Top="103.95" Width="75.6" Height="18.9" Text="From Date:" Font="Arial, 9pt"/>
+      <TextObject Name="Text5" Left="94.5" Top="103.95" Width="255.15" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPSummaryStockReportPrint.DateFrom]" Format="Date" Format.Format="d" Font="Arial, 9pt"/>
+      <TextObject Name="Text6" Left="359.1" Top="103.95" Width="56.7" Height="18.9" Text="ToDate:" Font="Arial, 9pt"/>
+      <TextObject Name="Text7" Left="415.8" Top="103.95" Width="292.95" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPSummaryStockReportPrint.Todate]" Format="Date" Format.Format="d" Font="Arial, 9pt"/>
+      <LineObject Name="Line4" Left="9.45" Top="151.2" Width="1030.05"/>
+      <TextObject Name="Text32" Left="18.9" Top="122.85" Width="75.6" Height="18.9" Text="Print Date:" Font="Arial, 9pt"/>
+      <TextObject Name="Text33" Left="94.5" Top="122.85" Width="94.5" Height="18.9" Text="[Date]" Format="Date" Format.Format="d" Font="Arial, 9pt"/>
+    </ReportTitleBand>
+    <PageHeaderBand Name="PageHeader1" Top="154.4" Width="1047.06" Height="37.8">
+      <LineObject Name="Line5" Left="9.45" Height="37.8"/>
+      <LineObject Name="Line6" Left="1039.5" Height="37.8"/>
+      <TextObject Name="Text10" Left="9.45" Width="47.25" Height="28.35" Text="Sr No" HorzAlign="Center" Font="Arial, 9pt"/>
+      <TextObject Name="Text11" Left="207.9" Width="245.7" Height="18.9" Text="Item Name" HorzAlign="Center" Font="Arial, 9pt"/>
+      <TextObject Name="Text12" Left="56.7" Width="151.2" Height="18.9" Text="PartCode" HorzAlign="Center" Font="Arial, 9pt"/>
+      <TextObject Name="Text13" Left="529.2" Width="47.25" Height="18.9" Text="Unit" HorzAlign="Center" Font="Arial, 9pt"/>
+      <TextObject Name="Text14" Left="576.45" Width="66.15" Height="37.8" Text="Open Stock" HorzAlign="Center" Font="Arial, 9pt"/>
+      <TextObject Name="Text15" Left="661.5" Width="66.15" Height="37.8" Text="Recive Stock" HorzAlign="Center" Font="Arial, 9pt"/>
+      <TextObject Name="Text16" Left="727.65" Width="66.15" Height="37.8" Text="Issue Stock" HorzAlign="Center" Font="Arial, 9pt"/>
+      <TextObject Name="Text17" Left="793.8" Width="85.05" Height="37.8" Text="Total Stock" HorzAlign="Center" Font="Arial, 9pt"/>
+      <TextObject Name="Text18" Left="878.85" Width="66.15" Height="37.8" Text="Std Packing" HorzAlign="Center" Font="Arial, 9pt"/>
+      <TextObject Name="Text19" Left="945" Width="94.5" Height="18.9" Text="Bin No" HorzAlign="Center" Font="Arial, 9pt"/>
+      <LineObject Name="Line7" Left="9.45" Top="37.8" Width="1030.05"/>
+      <LineObject Name="Line8" Left="56.7" Height="37.8"/>
+      <LineObject Name="Line9" Left="207.9" Height="37.8"/>
+      <LineObject Name="Line10" Left="529.2" Height="37.8"/>
+      <LineObject Name="Line11" Left="576.45" Height="37.8"/>
+      <LineObject Name="Line12" Left="652.05" Height="37.8"/>
+      <LineObject Name="Line13" Left="727.65" Height="37.8"/>
+      <LineObject Name="Line14" Left="793.8" Height="37.8"/>
+      <LineObject Name="Line15" Left="878.85" Height="37.8"/>
+      <LineObject Name="Line16" Left="945" Height="37.8"/>
+      <LineObject Name="Line29" Left="453.6" Height="37.8"/>
+      <TextObject Name="Text30" Left="453.6" Width="75.6" Height="37.8" Text="Group" HorzAlign="Center" Font="Arial, 9pt"/>
+    </PageHeaderBand>
+    <GroupHeaderBand Name="GroupHeader1" Top="195.4" Width="1047.06" Height="37.8" Condition="[SPSummaryStockReportPrint.Part_Code]">
+      <LineObject Name="Line18" Left="1039.5" Height="37.8"/>
+      <LineObject Name="Line17" Left="9.45" Height="37.8"/>
+      <LineObject Name="Line19" Left="56.7" Height="37.8"/>
+      <LineObject Name="Line20" Left="207.9" Height="37.8"/>
+      <LineObject Name="Line21" Left="529.2" Height="37.8"/>
+      <LineObject Name="Line22" Left="576.45" Height="37.8"/>
+      <LineObject Name="Line23" Left="652.05" Height="37.8"/>
+      <LineObject Name="Line24" Left="727.65" Height="37.8"/>
+      <LineObject Name="Line25" Left="793.8" Height="37.8"/>
+      <LineObject Name="Line26" Left="878.85" Height="37.8"/>
+      <LineObject Name="Line27" Left="945" Height="37.8"/>
+      <LineObject Name="Line28" Left="9.45" Top="37.8" Width="1030.05"/>
+      <TextObject Name="Text20" Left="945" Width="94.5" Height="37.8" CanGrow="true" CanBreak="false" Text="[SPSummaryStockReportPrint.BinNo]" HorzAlign="Center" Font="Arial, 9pt"/>
+      <TextObject Name="Text21" Left="878.85" Width="66.15" Height="37.8" CanGrow="true" CanBreak="false" Text="[SPSummaryStockReportPrint.StdPacking]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 7pt" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text22" Left="793.8" Width="85.05" Height="37.8" CanGrow="true" CanBreak="false" Text="[SPSummaryStockReportPrint.TotalStock]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 7pt" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text23" Left="727.65" Width="66.15" Height="37.8" CanGrow="true" CanBreak="false" Text="[SPSummaryStockReportPrint.TotalIss]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 7pt" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text24" Left="652.05" Width="75.6" Height="37.8" CanGrow="true" CanBreak="false" Text="[SPSummaryStockReportPrint.TotalRec]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 7pt" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text25" Left="576.45" Width="75.6" Height="37.8" CanGrow="true" CanBreak="false" Text="[SPSummaryStockReportPrint.opn]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 7pt" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text26" Left="529.2" Width="47.25" Height="37.8" CanGrow="true" CanBreak="false" Text="[SPSummaryStockReportPrint.unit]" HorzAlign="Center" Font="Arial, 9pt"/>
+      <TextObject Name="Text27" Left="207.9" Width="236.25" Height="37.8" CanGrow="true" CanBreak="false" Text="[SPSummaryStockReportPrint.item_name]" HorzAlign="Center" Font="Arial, 9pt"/>
+      <TextObject Name="Text28" Left="56.7" Width="151.2" Height="37.8" CanGrow="true" CanBreak="false" Text="[SPSummaryStockReportPrint.Part_Code]" HorzAlign="Center" Font="Arial, 9pt"/>
+      <TextObject Name="Text29" Left="9.45" Width="47.25" Height="37.8" CanGrow="true" CanBreak="false" Text="[Row#]" HorzAlign="Center" Font="Arial, 9pt"/>
+      <LineObject Name="Line30" Left="453.6" Height="37.8"/>
+      <TextObject Name="Text31" Left="453.6" Width="75.6" Height="37.8" CanGrow="true" CanBreak="false" Text="[SPSummaryStockReportPrint.Group_name]" HorzAlign="Center" Font="Arial, 9pt"/>
+      <DataBand Name="Data1" Top="236.4" Width="1047.06" DataSource="Table"/>
+      <GroupFooterBand Name="GroupFooter1" Top="239.6" Width="1047.06"/>
+    </GroupHeaderBand>
+    <PageFooterBand Name="PageFooter1" Top="242.8" Width="1047.06" Height="18.9"/>
   </ReportPage>
 </Report>
