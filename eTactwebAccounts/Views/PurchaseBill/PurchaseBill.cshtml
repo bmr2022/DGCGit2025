@@ -2296,11 +2296,12 @@
             }
 
             if (minDate && vouchDate) {
-                    var minDateObj = parseDateToFormat(minDate);
+                    
                 var vouchDateObj = new Date(vouchDate);
+                    var minDateObj = new Date(minDate);
 
 
-                if (minDateObj > vouchDate) {
+                    if (minDateObj > vouchDateObj) {
                     $.notify("Vouch Date should be greater than MRN/MIR Date", "error");
                     isError = true;
                     return;
@@ -2338,7 +2339,7 @@
                 }
             }
 
-            if (minDate && vouchDate) {
+          /*   if (minDate && vouchDate) {
                     var minDateObj = parseDateToFormat(minDate);
                     var vouchDateObj = parseDateToFormat(vouchDate);
 
@@ -2347,7 +2348,21 @@
                     isError = true;
                     return;
                 }
-            }
+            } */
+
+
+                if (minDate && vouchDate) {
+
+                    var vouchDateObj = new Date(vouchDate);
+                    var minDateObj = new Date(minDate);
+
+
+                    if (minDateObj > vouchDateObj) {
+                        $.notify("Vouch Date should be greater than MRN/MIR Date", "error");
+                        isError = true;
+                        return;
+                    }
+                }
 
             // No tax grid requirement → directly allow submit
             if (!isError) {
