@@ -32,3 +32,11 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.IOTimeout = TimeSpan.FromSeconds(10);
+});
+app.UseSession();
+
+

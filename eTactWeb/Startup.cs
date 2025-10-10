@@ -300,5 +300,8 @@ namespace eTactWeb
             services.TryAddTransient<ICustSaleNewRate , CustSaleNewRateBLL>();
             services.TryAddTransient<IVendorMater , VendorUserBLL>();
         }
+
+
+
     }
 }

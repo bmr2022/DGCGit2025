@@ -462,6 +462,7 @@
 				});
 			}
 			console.log(data);
+			FillMRPSOList();
 
 
 			$.ajax({
@@ -478,7 +479,9 @@
 							//if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
 							//}
 							var url = '@Url.Action("MRP", "MRP")';
-							window.location.href = url;
+							setTimeout(function () {
+								window.location.href = '@Url.Action("MRP", "MRP")';
+							}, 300);  // wait 300ms for session write to complete
 						} else {
 							$.notify("Something went Worng....!", "error");
 						}
@@ -486,7 +489,7 @@
 				}
 			});
 
-			FillMRPSOList();
+			
 		});
 
 		function FillMRPSOList() {
