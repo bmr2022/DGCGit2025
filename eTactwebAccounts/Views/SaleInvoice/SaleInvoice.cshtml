@@ -1038,7 +1038,78 @@
             }
             $('#lblTotalNoOfItems').text(TotalNoOfRows);
         });
+         function AutoFillPARTYNAMELIST() {
+            // Source for PartCodeText
+            const AccountCodeSourse = function (request, response) {
+                $.ajax({
+                     url: '@Url.Action("AutoFillPARTYNAMELIST", "SaleOrder")',
+                 //   url: '@Url.Action("AutoFillPARTYNAMELIST")',
+                    type: 'POST',
+                    data: {
 
+                        SearchAccount: request.term
+                    },
+                    success: function (result) {
+                        let obj = typeof result === "string" ? JSON.parse(result) : result;
+
+                        if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
+                            let filtered = obj.Result.Table.filter(function (item) {
+                                let term = request.term.toLowerCase();
+                                return item.Account_Name.toLowerCase().includes(term);
+                            });
+
+                            response($.map(filtered, function (item) {
+                                return {
+                                    label: item.Account_Name,
+                                    value: item.Account_Name,
+                                    accountCode: item.Account_Code,
+
+                                };
+                            }));
+                        } else {
+                            response([]);
+                        }
+                    }
+                });
+            };
+
+
+
+            // Autocomplete for PartCodeText
+            $("#AccountCodeText").autocomplete({
+                source: AccountCodeSourse,
+                select: function (event, ui) {
+                    $("#AccountCodeText").val(ui.item.value).data("Account_Code", ui.item.accountCode);
+
+                    $('#AccountCode').val(ui.item.accountCode);
+                    // CheckOrderNo();
+                    // onchangeaccountcode();
+                     FillSONO();
+            FillCurrency();
+            FillCustomerAddress();
+
+            if ($('#divTaxGrid tr td').length > 1) {
+                btnClearTax();
+            }
+            if ($('#divSaleBillList tr td').length > 1) {
+                //ClearGrid();
+            }
+            if ($('#divdbCrItemList tr td').length > 1) {
+                ClearDRCRGrid();
+            }
+
+                    return false;
+                },
+                focus: function (event, ui) {
+                    $("#AccountCodeText").val(ui.item.value);
+
+                    return false;
+                },
+                minLength: 2
+            });
+
+
+        }
 
         $(document).ready(function () {
             const mode = $('#Mode').val(); // Get current mode: U = Update, V = View
@@ -1046,8 +1117,23 @@
             // $('#Group_Code1').select2();
             GetItemGroup();
             AutoFillItems();
-            EditableRateAndDiscountONSaleInvoice();
+              $("#SONO").change(function () {
+            const sonoVal = $(this).val();
 
+            if (sonoVal && sonoVal !== "0") {
+                // SONO selected → enable Select2 mode
+                enableSelect2Mode();
+            } else {
+                // SONO = 0 or empty → enable Autocomplete mode
+                enableAutocompleteMode();
+            }
+        });
+
+        // Initialize autocomplete mode by default
+        enableAutocompleteMode();
+              FillItems($('#TypeItemServAssets').val());
+            EditableRateAndDiscountONSaleInvoice();
+               AutoFillPARTYNAMELIST();
             const domesticExport = $('#DomesticExportNEPZ').val();
             const $supplyType = $('#SupplyType');
             GetSONoFormRights();
@@ -2641,9 +2727,9 @@
         FillStore();
         FillDistance();
         FillTransporter();
-        $('#PartCode').select2();
-        $('#ItemCode').select2();
-        $('#AccountCode').select2();
+        // $('#PartCode').select2();
+        // $('#ItemCode').select2();
+        // $('#AccountCode').select2();
         $('#DocTypeAccountCode').select2();
         // $('#TransporterName').select2();
         $('.AF').fadeOut();
@@ -3363,7 +3449,8 @@
         });
         var isAccountCodeClear = false;
         $('#AccountCode').change(function () {
-            $('#PartyName').val($('#AccountCode option:selected').text());
+            $('#PartyName').val(  $("#AccountCodeText").val());
+        //    $('#PartyName').val($('#AccountCode option:selected').text());
 
 
             $.getJSON({
@@ -3456,28 +3543,47 @@
             });
         }
 
-        $(document).on('select2:select', '#PartCode,#ItemCode', function (e) {
+        // $(document).on('select2:select', '#PartCode,#ItemCode', function (e) {
 
-            var cntId = e.target.id;
-            if (cntId == 'PartCode') {
+        //     var cntId = e.target.id;
+        //     if (cntId == 'PartCode') {
+        //         SetPartCodeItemName('PartCode');
+        //     }
+        //     else {
+        //         SetPartCodeItemName('ItemCode');
+        //     }
+
+        //     // FillSOSchedule();
+        //     fillBomRevNo();
+        //     FillCurrentBatchINStore();
+        //     // $('#StoreId').val(0);
+        //     FillSOPendQty();
+        //     FillTotalStock();
+        //     FillSOItemRate();
+        //     DisableDiscountFields();
+        //     CalculateAmount();
+        //     GetlastBillDetail();
+        // });
+        $(document).on('select2:select', '#PartCode,#ItemCode', function (e) {
+            const cntId = e.target.id;
+            onItemSelected(cntId);
+        });
+           function onItemSelected(idType) {
+            if (idType === 'PartCode') {
                 SetPartCodeItemName('PartCode');
-            }
-            else {
+            } else {
                 SetPartCodeItemName('ItemCode');
             }
 
-            // FillSOSchedule();
             fillBomRevNo();
             FillCurrentBatchINStore();
-            // $('#StoreId').val(0);
             FillSOPendQty();
             FillTotalStock();
             FillSOItemRate();
             DisableDiscountFields();
             CalculateAmount();
             GetlastBillDetail();
-        });
-
+        }
         function DisableDiscountFields() {
 
             var rowCount = $('#divSaleBillList tr').length;
@@ -3515,14 +3621,27 @@
 
             var Err = 0;
             $('#Batchno').find(':selected').prop("disabled", false)
-            if ($('#PartCode').prop('selectedIndex') == 0) {
-                AddErrorCls('PartCode');
-                $.notify('please select Partcode...!', "error");
-                Err = 1;
-            }
-            else {
-                RemoveErrorCls('PartCode');
-            }
+            // if ($('#PartCode').prop('selectedIndex') == 0) {
+            //     AddErrorCls('PartCode');
+            //     $.notify('please select Partcode...!', "error");
+            //     Err = 1;
+            // }
+            // else {
+            //     RemoveErrorCls('PartCode');
+            // }
+                let partCodeValue = "";
+        if ($("#PartCode").is("select")) {
+            partCodeValue = $('#PartCode').find(':selected').val();
+        } else {
+            partCodeValue = $('#PartCodeText').val();
+        }
+        if (!partCodeValue || partCodeValue === "0" || partCodeValue === "-Select-") {
+            AddErrorCls('PartCode');
+            $.notify('Please select or enter a valid Part Code!', "error");
+            Err = 1;
+        } else {
+            RemoveErrorCls('PartCode');
+        }
 
             if ($('#SaleBillJobwork').val() == "J") {
                 if ($('#BOMInd').prop('selectedIndex') == 0) {
@@ -3555,14 +3674,30 @@
 
             }
 
-            if ($('#ItemCode').prop('selectedIndex') == 0) {
-                AddErrorCls('ItemCode');
-                $.notify('please select ItemName...!', "error");
-                Err = 1;
-            }
-            else {
-                RemoveErrorCls('ItemCode');
-            }
+            // if ($('#ItemCode').prop('selectedIndex') == 0) {
+            //     AddErrorCls('ItemCode');
+            //     $.notify('please select ItemName...!', "error");
+            //     Err = 1;
+            // }
+            // else {
+            //     RemoveErrorCls('ItemCode');
+            // }
+             if ($("#ItemCode").is("select")) {
+            // Select2 or normal dropdown mode
+            itemCodeValue = $('#ItemCode').find(':selected').val();
+        } else {
+            // Autocomplete mode (text inputs)
+            itemCodeValue = $('#ItemNameText').val();
+        }
+
+        // Validation
+        if (!itemCodeValue || itemCodeValue === "0" || itemCodeValue === "-Select-") {
+            AddErrorCls('ItemCode');
+            $.notify('Please select Item Name...!', "error");
+            Err = 1;
+        } else {
+            RemoveErrorCls('ItemCode');
+        }
 
 
             if ($('#Rate').val() == 0) {
@@ -4225,7 +4360,25 @@
             var batchNoo = $('#Batchno').val();
             var uniquebatchnoo = $('#Uniquebatchno').val();
             var sono = parseInt($('#SONO').val());
+                let partCodeVal = "";
+            let itemCodeVal = "";
+            let itemNameVal = "";
 
+            if ($("#PartCode").is("select")) {
+                    let selectedPartText = $('#PartCode').find(':selected').text();
+                    partCodeVal = (selectedPartText === "-Select-") ? "" : selectedPartText;
+                } else {
+                    partCodeVal = $("#PartCodeText").val() || "";
+                }
+
+                if ($("#ItemCode").is("select")) {
+                    itemCodeVal = $('#ItemCode').val() || "";
+                    let selectedItemText = $('#ItemCode').find(':selected').text();
+                    itemNameVal = (selectedItemText === "-Select-") ? "" : selectedItemText;
+                } else {
+                    itemCodeVal = $("#ItemCode").val() || "";
+                    itemNameVal = $("#ItemNameText").val() || "";
+                }
             var SchData = {
                 "SONO": parseInt($('#SONO').val()),
                 "SOYearCode": $('#SOYearCode').val(),
@@ -4233,9 +4386,12 @@
                 "CustOrderNo": $('#CustOrderNo').val(),
                 "Group_Code": $('#Group_Code').val(),
                 "Group_name": $('#Group_Code option:selected').text(),
-                "PartCode": $('#PartCode').find(':selected').text() == "-Select-" ? "" : $('#PartCode').find(':selected').text(),
-                "ItemCode": $('#ItemCode').val(),
-                "ItemName": $('#ItemCode').find(':selected').text() == '-Select-' ? "" : $('#ItemCode').find(':selected').text(),
+                // "PartCode": $('#PartCode').find(':selected').text() == "-Select-" ? "" : $('#PartCode').find(':selected').text(),
+                // "ItemCode": $('#ItemCode').val(),
+                // "ItemName": $('#ItemCode').find(':selected').text() == '-Select-' ? "" : $('#ItemCode').find(':selected').text(),
+                   "PartCode": partCodeVal,
+                    "ItemCode": itemCodeVal,
+                    "ItemName": itemNameVal,
                 "SchNo": $('#SchNo').val(),
                 "SaleSchYearCode": $('#SaleSchYearCode').val(),
                 "Schdate": $('#Schdate').val(),
@@ -4616,43 +4772,197 @@
                 }
             });
         }
+          function enableSelect2Mode() {
+            $("#PartCodeText, #ItemNameText").hide();
+            if (!$("#PartCode").is("select")) {
+                $("#PartCode").remove();
+                $("#ItemCode").remove();
+                $("<select id='PartCode' class='form-control'></select>").insertAfter("#PartCodeText");
+                $("<select id='ItemCode' class='form-control'></select>").insertAfter("#ItemNameText");
 
+                $("#PartCode").select2({
+                    placeholder: "Select Part Code",
+                    width: "100%"
+                }).on("select2:select", function (e) {
+                    onItemSelected("PartCode");
+                });
+
+                $("#ItemCode").select2({
+                    placeholder: "Select Item Name",
+                    width: "100%"
+                }).on("select2:select", function (e) {
+                    onItemSelected("ItemCode");
+                });
+            }
+        }
+
+        function enableAutocompleteMode() {
+            if ($("#PartCode").data("select2")) {
+                $("#PartCode").select2("destroy");
+            }
+            if ($("#ItemCode").data("select2")) {
+                $("#ItemCode").select2("destroy");
+            }
+            $("#PartCode, #ItemCode").remove();
+
+            $("<input type='hidden' id='PartCode' name='PartCode' value='0' />").insertAfter("#PartCodeText");
+            $("<input type='hidden' id='ItemCode' name='ItemCode' value='0' />").insertAfter("#ItemNameText");
+
+            $("#PartCodeText, #ItemNameText").show();
+
+             FillItems($('#TypeItemServAssets').val());
+        }
+
+        // function enableAutocompleteMode() {
+        //     // Remove select2 if exists
+        //     $("#PartCode, #ItemCode").remove();
+
+        //     // Show autocomplete inputs
+        //     $("#PartCodeText, #ItemNameText").show();
+
+        //     // Activate autocomplete
+        //     FillItems("Item");
+        // }
         // var sonoItems = [];
         function FillItems(itemType) {
             var showAll = $('#ItemSA').prop('checked') ? 'T' : 'F';
-            $.ajax({
-                type: "POST",
-                data: { "showAll": showAll, "TypeItemServAssets": itemType, "sbJobWork": "SaleBill" },
-                url: "@Url.Action("FillItems")",
-                dataType: "json",
-                async: false,
-                success: function (result, status, error) {
+                const partCodeSource = function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("FillItems")',
+                    type: 'POST',
+                     data: { "showAll": showAll, "TypeItemServAssets": itemType, "sbJobWork": "SaleBill",
+                        SearchItemCode: '',
+                        SearchPartCode: request.term
+                    },
+                    success: function (result) {
+                        let obj = typeof result === "string" ? JSON.parse(result) : result;
 
-                    if (result != null) {
-                        var obj = $.parseJSON(result);
-
-                        $('#PartCode').empty();
-                        $('#PartCode').append('<option value="0">-Select-</option>');
-                        if (obj.StatusCode != 500) {
-                            $.each(obj.Result, function (index, val) {
-                                // sonoItems.push({
-                                //     itemCode: val.itemcode
-                                // });
-                                $('#PartCode').append("<option value=" + val.Item_Code + " data-stockable=" + val.Stockable + ">" + val.PartCode + "</option>");
+                        if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
+                            let filtered = obj.Result.Table.filter(function (item) {
+                                let term = request.term.toLowerCase();
+                                return item.PartCode.toLowerCase().includes(term);
                             });
-                        }
 
-                        $('#ItemCode').empty();
-                        $('#ItemCode').append('<option value="0">-Select-</option>');
-                        if (obj.StatusCode != 500) {
-                            $.each(obj.Result, function (index, val) {
-                                $('#ItemCode').append("<option value=" + val.Item_Code + " data-stockable=" + val.Stockable + ">" + val.ItemName + "</option>");
-                            });
+                            response($.map(filtered, function (item) {
+                                return {
+                                    label: item.PartCode ,
+                                    value: item.PartCode,
+                                    itemName: item.ItemName,
+                                    itemCode: item.Item_Code
+                                };
+                            }));
+                        } else {
+                            response([]);
                         }
                     }
-                }
+                });
+            };
+            // Source for ItemNameText
+            const itemNameSource = function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("FillItems")',
+                    type: 'POST',
+                    data: { "showAll": showAll, "TypeItemServAssets": itemType, "sbJobWork": "SaleBill",
+                        SearchItemCode: request.term,
+                        SearchPartCode: ''
+                    },
+                    success: function (result) {
+                        let obj = typeof result === "string" ? JSON.parse(result) : result;
+
+                        if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
+                            let filtered = obj.Result.Table.filter(function (item) {
+                                let term = request.term.toLowerCase();
+                                return item.ItemName.toLowerCase().includes(term);
+                            });
+
+                            response($.map(filtered, function (item) {
+                                return {
+                                    label: item.ItemName ,
+                                    value: item.Item_Code,
+                                    itemName: item.ItemName,
+                                    itemCode: item.Item_Code,
+                                    partCode: item.PartCode
+                                };
+                            }));
+                        } else {
+                            response([]);
+                        }
+                    }
+                });
+            };
+            // Autocomplete for PartCodeText
+            $("#PartCodeText").autocomplete({
+                source: partCodeSource,
+                select: function (event, ui) {
+                   $("#PartCodeText").val(ui.item.value).data("itemcode", ui.item.itemCode);
+                    $("#ItemNameText").val(ui.item.itemName);
+                    $('#ItemCode').val(ui.item.itemCode);
+                    $('#PartCode').val(ui.item.itemCode);
+                   onItemSelected('PartCode');
+                    return false;
+                },
+                focus: function (event, ui) {
+                    $("#PartCodeText").val(ui.item.value);
+                    return false;
+                },
+                minLength:2
             });
-        }
+            // Autocomplete for ItemNameText
+            $("#ItemNameText").autocomplete({
+                source: itemNameSource,
+                select: function (event, ui) {
+                    $("#ItemNameText").val(ui.item.itemName).data("itemcode", ui.item.itemCode);
+                    $("#PartCodeText").val(ui.item.partCode);
+                    $('#ItemCode').val(ui.item.itemCode);
+                    $('#PartCode').val(ui.item.itemCode);
+                    onItemSelected("ItemCode");
+                    return false;
+                },
+                focus: function (event, ui) {
+                    $("#ItemNameText").val(ui.item.itemName);
+                    return false;
+                },
+                minLength:2
+            });
+
+            }
+
+        // var sonoItems = [];
+        // function FillItems(itemType) {
+        //     var showAll = $('#ItemSA').prop('checked') ? 'T' : 'F';
+        //     $.ajax({
+        //         type: "POST",
+        //         data: { "showAll": showAll, "TypeItemServAssets": itemType, "sbJobWork": "SaleBill" },
+        //         url: "@Url.Action("FillItems")",
+        //         dataType: "json",
+        //         async: false,
+        //         success: function (result, status, error) {
+
+        //             if (result != null) {
+        //                 var obj = $.parseJSON(result);
+
+        //                 $('#PartCode').empty();
+        //                 $('#PartCode').append('<option value="0">-Select-</option>');
+        //                 if (obj.StatusCode != 500) {
+        //                     $.each(obj.Result, function (index, val) {
+        //                         // sonoItems.push({
+        //                         //     itemCode: val.itemcode
+        //                         // });
+        //                         $('#PartCode').append("<option value=" + val.Item_Code + " data-stockable=" + val.Stockable + ">" + val.PartCode + "</option>");
+        //                     });
+        //                 }
+
+        //                 $('#ItemCode').empty();
+        //                 $('#ItemCode').append('<option value="0">-Select-</option>');
+        //                 if (obj.StatusCode != 500) {
+        //                     $.each(obj.Result, function (index, val) {
+        //                         $('#ItemCode').append("<option value=" + val.Item_Code + " data-stockable=" + val.Stockable + ">" + val.ItemName + "</option>");
+        //                     });
+        //                 }
+        //             }
+        //         }
+        //     });
+        // }
 
         function NewEntryId() {
 
@@ -5025,21 +5335,21 @@
             }
         });
 
-        $(document).on('select2:select', '#AccountCode', function (e) {
-            FillSONO();
-            FillCurrency();
-            FillCustomerAddress();
+        // $(document).on('select2:select', '#AccountCode', function (e) {
+        //     FillSONO();
+        //     FillCurrency();
+        //     FillCustomerAddress();
 
-            if ($('#divTaxGrid tr td').length > 1) {
-                btnClearTax();
-            }
-            if ($('#divSaleBillList tr td').length > 1) {
-                //ClearGrid();
-            }
-            if ($('#divdbCrItemList tr td').length > 1) {
-                ClearDRCRGrid();
-            }
-        });
+        //     if ($('#divTaxGrid tr td').length > 1) {
+        //         btnClearTax();
+        //     }
+        //     if ($('#divSaleBillList tr td').length > 1) {
+        //         //ClearGrid();
+        //     }
+        //     if ($('#divdbCrItemList tr td').length > 1) {
+        //         ClearDRCRGrid();
+        //     }
+        // });
 
         function ClearDRCRGrid() {
             $.ajax({
@@ -5120,7 +5430,7 @@
         $('.SODetail').click(function () {
 
             $('#PopupModel').modal("show");
-            var accountName = $('#AccountCode').find(':selected').text() == '-Select-' ? '' : $('#AccountCode').find(':selected').text();
+            var accountName =$("#AccountCodeText").val() == '-Select-' ? '' : $("#AccountCodeText").val() ;
             var itemName = $('#ItemCode').find(':selected').text() == '-Select-' ? '' : $('#ItemCode').find(':selected').text().split("--->")[0]
             var partCode = $('#PartCode').find(':selected').text() == '-Select-' ? '' : $('#PartCode').find(':selected').text();
             var sono = $('#SONO').find(':selected').text() == '-Select-' ? '' : $('#SONO').find(':selected').text();
@@ -5452,14 +5762,33 @@
                                 JWItemList($('#TypeItemServAssets').val());
                             }
 
-                            if ($('#SONO').val() == '' || $('#SONO').val() == '0') {
-                                FillItems($('#TypeItemServAssets').val());
-                            } else {
-                                FillSOWiseItems();
-                            }
+                            // if ($('#SONO').val() == '' || $('#SONO').val() == '0') {
+                            //     FillItems($('#TypeItemServAssets').val());
+                            // } else {
+                            //     FillSOWiseItems();
+                            // }
 
-                            $('#ItemCode').val(obj[0].ItemCode).trigger("change");
-                            $('#PartCode').val(obj[0].ItemCode).trigger("change");
+                            // $('#ItemCode').val(obj[0].ItemCode).trigger("change");
+                            // $('#PartCode').val(obj[0].ItemCode).trigger("change");
+                              if ($('#SONO').val() == '' || $('#SONO').val() == '0') {
+                // Autocomplete mode
+                enableAutocompleteMode();
+                FillItems($('#TypeItemServAssets').val());
+
+                $("#ItemCode").val(obj[0].ItemCode);
+                $("#PartCode").val(obj[0].ItemCode);
+
+                $("#ItemNameText").val(obj[0].ItemName);
+                $("#PartCodeText").val(obj[0].PartCode);
+
+                //GetItemPartCode("ItemCode");
+            } else {
+                // Select2 mode
+                enableSelect2Mode();
+                FillSOWiseItems();
+                $('#ItemCode').append('<option value="' + obj[0].ItemCode + '"  selected> '+obj[0].ItemName+'</option>').val(obj[0].ItemCode).trigger("change");
+                $('#PartCode').append('<option value="' + obj[0].ItemCode + '"  selected> '+obj[0].PartCode+'</option>') .val(obj[0].ItemCode) .trigger("change");
+            }
                             FillCurrentBatchINStore();
                             if (obj[0].Batchno != '0' && obj[0].Batchno != null && obj[0].Batchno != 0) {
                                 $('#Batchno').append('<option value="' + obj[0].Batchno + '" selected>' + obj[0].Batchno + '</option>');
@@ -5818,8 +6147,8 @@
                         }
                     }
                     if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-                        // $('#AccountCode').val($('#hiddenAccountCode').val()).trigger("change");
-                        $('#AccountCode').val($('#hiddenAccountCode').val()).trigger('change.select2');
+                         $('#AccountCode').val($('#hiddenAccountCode').val()).trigger("change");
+                       // $('#AccountCode').val($('#hiddenAccountCode').val()).trigger('change.select2');
                     }
                 }
             });
@@ -5846,8 +6175,8 @@
                         }
                     }
                     if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-                        // $('#AccountCode').val($('#hiddenAccountCode').val()).trigger("change");
-                        $('#AccountCode').val($('#hiddenAccountCode').val()).trigger('change.select2');
+                        $('#AccountCode').val($('#hiddenAccountCode').val()).trigger("change");
+                       // $('#AccountCode').val($('#hiddenAccountCode').val()).trigger('change.select2');
                     }
                 }
             });
@@ -6217,7 +6546,7 @@
                 LowestStock = 'pendQty';
             }
 
-
+             if ($('#SONO').val() != '' && $('#CustOrderNo').val() != '0') {
             if (parseFloat($('#Qty').val()) > MinQtyVal) {
                 AddErrorCls('Qty');
                 Err = 1;
@@ -6227,6 +6556,7 @@
             else {
                 RemoveErrorCls('Qty');
             }
+             }
 
             return true;
         }

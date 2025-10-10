@@ -1215,7 +1215,7 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        public async Task<ResponseResult> FillItems(string showAll, string TypeItemServAssets, string sbJobwok)
+        public async Task<ResponseResult> FillItems(string showAll, string TypeItemServAssets, string sbJobwok, string SearchItemCode, string SearchPartCode)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -1226,8 +1226,10 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@ShowAll", showAll));
                 SqlParams.Add(new SqlParameter("@TypeItemServAssets", TypeItemServAssets));
                 SqlParams.Add(new SqlParameter("@SaleBillJobwork", sbJobwok));
+                SqlParams.Add(new SqlParameter("@SearchItemCode", SearchItemCode));
+                SqlParams.Add(new SqlParameter("@SearchPartCode", SearchPartCode));
 
-                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_SaleBillMainDetail", SqlParams);
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_SaleBillMainDetail", SqlParams);
             }
             catch (Exception ex)
             {
