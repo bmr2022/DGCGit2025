@@ -2307,61 +2307,216 @@ public class ItemMasterController : Controller
             dt.Columns.Add("usedinMachorVehicle", typeof(string));
             dt.Columns.Add("Barcode", typeof(string));
 
+            HashSet<string> partCodeSet = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+            //int rowIndex = 0; // For user-friendly error messages
+
+            //foreach (var excelRow in request.ExcelData)
+            //{
+            //    DataRow row = dt.NewRow();
+
+            //    foreach (var map in request.Mapping)
+            //    {
+            //        string dbCol = map.Key;          // DB column
+            //        string excelCol = map.Value;     // Excel column name
+
+            //        object value = DBNull.Value;     // default
+
+            //        if (excelRow.ContainsKey(excelCol) && !string.IsNullOrEmpty(excelRow[excelCol]))
+            //        {
+            //            value = excelRow[excelCol];
+
+            //            // Convert types for numeric/boolean/date columns if needed
+            //            Type columnType = dt.Columns[dbCol].DataType;
+
+            //            try
+            //            {
+            //                if (dbCol == "ParentCode")  // <-- Special handling for ParentCode
+            //                {
+            //                    string groupName = value.ToString().Trim();
+
+            //                    int ParentCode = 0;
+            //                    var groupCode = _IItemMaster.GetItemGroupCode(groupName);
+
+            //                    if (groupCode.Result.Result != null && groupCode.Result.Result.Rows.Count > 0)
+            //                    {
+            //                        ParentCode = (int)groupCode.Result.Result.Rows[0].ItemArray[0];
+            //                    }
+
+            //                    else
+            //                    {
+            //                        ParentCode = 0;
+            //                    }
+
+            //                    if (ParentCode != 0)
+            //                        value = ParentCode;   // replace with code
+            //                    else
+            //                    {
+            //                        return Json(new
+            //                        {
+            //                            StatusCode = 201,
+            //                            StatusText = "Please Enter valid group"
+
+            //                        });
+            //                    }
+
+            //                }
+
+            //                if (dbCol == "ItemType")  // <-- Special handling for ParentCode
+            //                {
+            //                    string ItemCat = value.ToString().Trim();
+
+            //                    int ItemType = 0;
+            //                    var CatCode = _IItemMaster.GetItemCatCode(ItemCat);
+
+            //                    if (CatCode.Result.Result != null && CatCode.Result.Result.Rows.Count > 0)
+            //                    {
+            //                        ItemType = (int)CatCode.Result.Result.Rows[0].ItemArray[0];
+            //                    }
+
+            //                    else
+            //                    {
+            //                        ItemType = 0;
+            //                    }
+
+            //                    if (ItemType != 0)
+            //                        value = ItemType;   // replace with code
+            //                    else
+            //                    {
+            //                        return Json(new
+            //                        {
+            //                            StatusCode = 201,
+            //                            StatusText = "Please Enter valid category"
+
+            //                        });
+            //                    }
+
+            //                }
+
+
+            //                if (dbCol == "Store")  // <-- Special handling for ParentCode
+            //                {
+            //                    string StoreId = value.ToString().Trim();
+
+            //                    int StoreName = 0;
+            //                    var storeid = _IItemMaster.GetStoreCode(StoreId);
+
+            //                    if (storeid.Result.Result != null && storeid.Result.Result.Rows.Count > 0)
+            //                    {
+            //                        StoreName = (int)storeid.Result.Result.Rows[0].ItemArray[0];
+            //                    }
+
+            //                    else
+            //                    {
+            //                        StoreName = 0;
+            //                    }
+
+            //                    if (StoreName != 0)
+            //                        value = StoreName;   // replace with code
+            //                    else
+            //                    {
+            //                        return Json(new
+            //                        {
+            //                            StatusCode = 201,
+            //                            StatusText = "Please Enter valid Store"
+
+            //                        });
+            //                    }
+
+            //                }
+
+
+
+            //                if (columnType == typeof(int))
+            //                    value = int.Parse(value.ToString());
+            //                else if (columnType == typeof(decimal))
+            //                    value = decimal.Parse(value.ToString());
+            //                else if (columnType == typeof(bool))
+            //                {
+            //                    // Accept 1/0, true/false, Y/N
+            //                    string s = value.ToString().Trim().ToLower();
+            //                    value = (s == "1" || s == "true" || s == "y");
+            //                }
+            //                else if (columnType == typeof(DateTime))
+            //                    value = DateTime.Parse(value.ToString());
+            //                else
+            //                    value = value.ToString();
+            //            }
+            //            catch
+            //            {
+            //                value = DBNull.Value; // fallback if conversion fails
+            //            }
+            //        }
+            //        row[dbCol] = value;
+            //    }
+
+            //    // ✅ Validate PartCode before adding the row
+            //    string partCode = row["PartCode"]?.ToString()?.Trim();
+
+            //    if (string.IsNullOrEmpty(partCode))
+            //    {
+            //        return Json(new
+            //        {
+            //            StatusCode = 201,
+            //            StatusText = $"PartCode cannot be blank (Row {rowIndex})"
+            //        });
+            //    }
+
+            //    if (!partCodeSet.Add(partCode))
+            //    {
+            //        return Json(new
+            //        {
+            //            StatusCode = 201,
+            //            StatusText = $"Duplicate PartCode '{partCode}' found (Row {rowIndex})"
+            //        });
+            //    }
+
+            //    dt.Rows.Add(row);
+            //}
+            int rowIndex = 2; // Assuming first row in Excel is header
+
             foreach (var excelRow in request.ExcelData)
             {
                 DataRow row = dt.NewRow();
 
                 foreach (var map in request.Mapping)
                 {
-                    string dbCol = map.Key;          // DB column
-                    string excelCol = map.Value;     // Excel column name
+                    string dbCol = map.Key;
+                    string excelCol = map.Value;
 
-                    object value = DBNull.Value;     // default
+                    object value = DBNull.Value;
 
                     if (excelRow.ContainsKey(excelCol) && !string.IsNullOrEmpty(excelRow[excelCol]))
                     {
                         value = excelRow[excelCol];
-
-                        // Convert types for numeric/boolean/date columns if needed
                         Type columnType = dt.Columns[dbCol].DataType;
 
                         try
                         {
-                            if (dbCol == "ParentCode")  // <-- Special handling for ParentCode
+                            if (dbCol == "ParentCode")
                             {
                                 string groupName = value.ToString().Trim();
-
                                 int ParentCode = 0;
-                                var groupCode =  _IItemMaster.GetItemGroupCode(groupName);
+                                var groupCode = _IItemMaster.GetItemGroupCode(groupName);
 
                                 if (groupCode.Result.Result != null && groupCode.Result.Result.Rows.Count > 0)
                                 {
                                     ParentCode = (int)groupCode.Result.Result.Rows[0].ItemArray[0];
                                 }
-                               
-                                else
-                                {
-                                    ParentCode = 0;
-                                }
 
-                                if (ParentCode!=0)
-                                    value = ParentCode;   // replace with code
+                                if (ParentCode != 0)
+                                    value = ParentCode;
                                 else
-                                {
                                     return Json(new
                                     {
-                                        StatusCode = 200,
-                                        StatusText = "Please Enter valid group"
-                                       
+                                        StatusCode = 201,
+                                        StatusText = $"Please Enter valid group at Row {rowIndex}"
                                     });
-                                }
-                                   
                             }
 
-                            if (dbCol == "ItemType")  // <-- Special handling for ParentCode
+                            if (dbCol == "ItemType")
                             {
                                 string ItemCat = value.ToString().Trim();
-
                                 int ItemType = 0;
                                 var CatCode = _IItemMaster.GetItemCatCode(ItemCat);
 
@@ -2370,30 +2525,19 @@ public class ItemMasterController : Controller
                                     ItemType = (int)CatCode.Result.Result.Rows[0].ItemArray[0];
                                 }
 
-                                else
-                                {
-                                    ItemType = 0;
-                                }
-
                                 if (ItemType != 0)
-                                    value = ItemType;   // replace with code
+                                    value = ItemType;
                                 else
-                                {
                                     return Json(new
                                     {
-                                        StatusCode = 200,
-                                        StatusText = "Please Enter valid category"
-
+                                        StatusCode = 201,
+                                        StatusText = $"Please Enter valid category at Row {rowIndex}"
                                     });
-                                }
-
                             }
 
-
-                            if (dbCol == "StoreId")  // <-- Special handling for ParentCode
+                            if (dbCol == "Store")
                             {
                                 string StoreId = value.ToString().Trim();
-
                                 int StoreName = 0;
                                 var storeid = _IItemMaster.GetStoreCode(StoreId);
 
@@ -2402,34 +2546,23 @@ public class ItemMasterController : Controller
                                     StoreName = (int)storeid.Result.Result.Rows[0].ItemArray[0];
                                 }
 
-                                else
-                                {
-                                    StoreName = 0;
-                                }
-
                                 if (StoreName != 0)
-                                    value = StoreName;   // replace with code
+                                    value = StoreName;
                                 else
-                                {
                                     return Json(new
                                     {
-                                        StatusCode = 200,
-                                        StatusText = "Please Enter valid Store"
-
+                                        StatusCode = 201,
+                                        StatusText = $"Please Enter valid Store at Row {rowIndex}"
                                     });
-                                }
-
                             }
 
-
-
+                            // Type conversions
                             if (columnType == typeof(int))
                                 value = int.Parse(value.ToString());
                             else if (columnType == typeof(decimal))
                                 value = decimal.Parse(value.ToString());
                             else if (columnType == typeof(bool))
                             {
-                                // Accept 1/0, true/false, Y/N
                                 string s = value.ToString().Trim().ToLower();
                                 value = (s == "1" || s == "true" || s == "y");
                             }
@@ -2440,14 +2573,38 @@ public class ItemMasterController : Controller
                         }
                         catch
                         {
-                            value = DBNull.Value; // fallback if conversion fails
+                            value = DBNull.Value;
                         }
                     }
+
                     row[dbCol] = value;
                 }
 
+                string partCode = row["PartCode"]?.ToString()?.Trim();
+
+                if (string.IsNullOrEmpty(partCode))
+                {
+                    return Json(new
+                    {
+                        StatusCode = 201,
+                        StatusText = $"PartCode cannot be blank (Row {rowIndex})"
+                    });
+                }
+
+                if (!partCodeSet.Add(partCode))
+                {
+                    return Json(new
+                    {
+                        StatusCode = 201,
+                        StatusText = $"Duplicate PartCode '{partCode}' found at Row {rowIndex}"
+                    });
+                }
+
                 dt.Rows.Add(row);
+                rowIndex++;
             }
+
+
 
             response = await _IItemMaster.UpdateMultipleItemDataFromExcel(dt, flag);
 
@@ -2487,10 +2644,11 @@ public class ItemMasterController : Controller
             return Json(new { success = false, message = ex.Message });
         }
 
-        
+
     }
 
-    
+
+
 
     public async Task<IActionResult> AddItemListdata(List<ItemViewModel> model)
     {
