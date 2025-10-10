@@ -130,6 +130,11 @@
                                     <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="StockRegister" asp-action="StockRegister">
                                         <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
                                     </a>
+                                    <a href="#" id="printBtn"
+                                       class="btn btn-sm btn-dark bg-gradient d-flex align-items-center justify-content-center"
+                                       style="padding: 3px 10px; height: 36px; width: 120px;">
+                                        <i class="fa fa-pencil-square fa-fw fa-lg me-2" aria-hidden="true"></i>PRINT
+                                    </a>
                                 </div>
                             </div>
                             <div class="progress my-2 mb-3" style="height: 4px;">
@@ -213,6 +218,42 @@
             AutoComplete('VItemMaster', 'ItemName', 'Item_Name', null);
             AutoComplete('VItemMaster', 'PartCode', 'PartCode', null);
             /* GetStockRegisterData(); */
+        });
+        document.getElementById('printBtn').addEventListener('click', function (e) {
+            e.preventDefault();
+
+            // Get all form values safely
+            var fromDate = document.getElementById('FromDate').value;
+            var toDate = document.getElementById('ToDate').value;
+            var storeId = document.getElementById('StoreId').value;
+            var partCode = document.getElementById('PartCode').value;
+            var itemName = document.getElementById('ItemName').value;
+            var itemGroupName = document.getElementById('ItemGroupName').value;
+            var itemType = document.getElementById('ItemType').value;
+            var batchNo = document.getElementById('BatchNo').value;
+            var uniqueBatchNo = document.getElementById('UniqueBatchNo').value;
+
+            // If you have extra hidden fields (optional)
+            var storeid = document.querySelector('[name="Storeid"]')?.value || '';
+         
+
+            // Construct the URL
+            var url = `/StockRegister/PrintReport?` +
+                `FromDate=${encodeURIComponent(fromDate)}` +
+                `&ToDate=${encodeURIComponent(toDate)}` +
+                `&StoreId=${encodeURIComponent(storeId)}` +
+                `&PartCode=${encodeURIComponent(partCode)}` +
+                `&ItemName=${encodeURIComponent(itemName)}` +
+                `&ItemGroupName=${encodeURIComponent(itemGroupName)}` +
+                `&ItemType=${encodeURIComponent(itemType)}` +
+                `&BatchNo=${encodeURIComponent(batchNo)}` +
+                `&UniqueBatchNo=${encodeURIComponent(uniqueBatchNo)}` +
+                `&Storeid=${encodeURIComponent(storeid)}` ;  
+
+            console.log("Opening report URL:", url);
+
+            // Open in new tab
+            window.open(url, '_blank');
         });
 
         function loadPage(pageNumber) {

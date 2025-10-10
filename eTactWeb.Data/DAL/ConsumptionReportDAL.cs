@@ -298,6 +298,49 @@ namespace eTactWeb.Data.DAL
                                                     }).ToList();
                     }
                 }
+              else if (ReportType.ToString() == "COMPACT")
+                {
+                    if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                    {
+
+
+                        resultList.ConsumptionReportGrid = (from DataRow row in oDataSet.Tables[0].Rows
+                                                    select new ConsumptionReportModel
+                                                    {
+                                                        RMPartCode = row["RMPartCode"] != DBNull.Value ? row["RMPartCode"].ToString() : string.Empty,
+                                                        RMItemName = row["RMItemName"] != DBNull.Value ? row["RMItemName"].ToString() : string.Empty,
+                                                        ConsumedRMQty = row["ConsumedRMQty"] != DBNull.Value ? Convert.ToDecimal(row["ConsumedRMQty"]) : 0,
+                                                        ConsumedRMUnit = row["RmUnit"] != DBNull.Value ? row["RmUnit"].ToString() : string.Empty,
+                                                        FGPartCode = row["FGPartCode"] != DBNull.Value ? row["FGPartCode"].ToString() : string.Empty,
+                                                        FGItemName = row["FGItemName"] != DBNull.Value ? row["FGItemName"].ToString() : string.Empty,
+                                                        FGProdQty = row["FGProdQty"] != DBNull.Value ? Convert.ToDecimal(row["FGProdQty"]) : 0,
+                                                        Unit = row["Unit"] != DBNull.Value ? row["Unit"].ToString() : string.Empty
+
+                                                    }).ToList();
+                    }
+                }
+              else if (ReportType.ToString() == "Prod Date Wise Consumption")
+                {
+                    if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                    {
+
+
+                        resultList.ConsumptionReportGrid = (from DataRow row in oDataSet.Tables[0].Rows
+                                                    select new ConsumptionReportModel
+                                                    {
+                                                        ProdDate = row["ProdDate"] != DBNull.Value ? row["ProdDate"].ToString() : string.Empty,
+                                                        FGPartCode = row["FGPartCode"] != DBNull.Value ? row["FGPartCode"].ToString() : string.Empty,
+                                                        FGItemName = row["FGItemName"] != DBNull.Value ? row["FGItemName"].ToString() : string.Empty,
+                                                        FGProdQty = row["FGProdQty"] != DBNull.Value ? Convert.ToDecimal(row["FGProdQty"]) : 0,
+                                                        FGunit = row["FGunit"] != DBNull.Value ? row["FGunit"].ToString() : string.Empty,
+                                                        RMPartCode = row["RMPartCode"] != DBNull.Value ? row["RMPartCode"].ToString() : string.Empty,
+                                                        RMItemName = row["RMItemName"] != DBNull.Value ? row["RMItemName"].ToString() : string.Empty,
+                                                        ConsumedRMQty = row["ConsumedRMQty"] != DBNull.Value ? Convert.ToDecimal(row["ConsumedRMQty"]) : 0,
+                                                        ConsumedRMUnit = row["ConsumedRMUnit"] != DBNull.Value ? row["ConsumedRMUnit"].ToString() : string.Empty
+
+                                                    }).ToList();
+                    }
+                }
               
 
             }

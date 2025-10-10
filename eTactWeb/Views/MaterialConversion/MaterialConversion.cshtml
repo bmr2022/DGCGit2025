@@ -819,6 +819,7 @@
 
 			FillLotStock();
 			FillLotStockWC();
+			GetWIPStockBatchWise();
 			if ($('#IssueToStoreWC').val() == 'S') {
 				FillStoreName();
 				$('#WorkCenterName').val('');
@@ -988,6 +989,7 @@
 			if ($('#IssueToStoreWC').val() == 'W'){
 				FillLotStockWC();
 				FillCurrentWIPUniqueBatchINStore();
+				GetWIPStockBatchWise();
 			}
 			else{
 			FillStockUniqueBatchNo();
@@ -997,6 +999,7 @@
 		 $('#UniqueBatchNo').change(function () {
 			if ($('#IssueToStoreWC').val() == 'W') {
 				FillLotStockWC();
+				GetWIPStockBatchWise();
 			}
 			else {
 
@@ -2039,14 +2042,41 @@
 				success: function (result, status, error) {
 					if (result != null) {
 						var obj = $.parseJSON(result);
-						$('#BatchStock').val("");
-						$('#BatchStock').val(obj.Result[0].STOCK);
+						
 						$('#TotalStock').val("");
 						$('#TotalStock').val(obj.Result[0].STOCK);
 					}
 				}
 			});
 		}
+
+
+		function GetWIPStockBatchWise() {
+
+			var ItemCode = parseInt($('#OriginalItemCode').val());
+			var WCID = parseInt($('#WcId').val());
+			var uniqbatchno = $('#UniqueBatchNo').val();
+			var BatchNo = $('#BatchNo ').val();
+			$.ajax({
+				type: "POST",
+				data: { "ItemCode": ItemCode, "WCID": WCID, "uniquebatchno": uniqbatchno, "batchno": BatchNo },
+				url: "@Url.Action("GetWIPStockBatchWise", "StockAdjustment")",
+				dataType: "json",
+				async: false,
+				success: function (result, status, error) {
+
+					if (result != null) {
+						var obj = $.parseJSON(result);
+						if (obj.StatusCode != 500) {
+							$('#BatchStock').val(0);
+							$('#BatchStock').val(obj.Result[0].STOCK);
+						}
+						
+					}
+				}
+			});
+		}
+
 		function GetUnitAltUnit(ItemCode) {
 
 			$.ajax({

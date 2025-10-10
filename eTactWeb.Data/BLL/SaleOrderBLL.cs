@@ -25,7 +25,10 @@ public class SaleOrderBLL : ISaleOrder
     {
         return await _SaleOrderDAL.GetReportName();
     }
-
+    public async Task<ResponseResult> AutoFillPARTYNAMELIST( string SearchAccount)
+    {
+        return await _SaleOrderDAL.AutoFillPARTYNAMELIST(SearchAccount);
+    }
     public async Task<ResponseResult> CheckOrderNo(int year, int accountcode, int entryid, string custorderno)
     {
         return await _SaleOrderDAL.CheckOrderNo( year,  accountcode,  entryid,  custorderno);

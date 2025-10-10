@@ -1064,7 +1064,10 @@
 
         function NewEntryId() {
             var YearCode = $('#PurchaseRejYearCode').val();
-            var SubVoucherName = $('#SubVoucherName').find(':selected').text();
+            var selectedValue = $('#SubVoucherName').val();
+            var SubVoucherName = (selectedValue == "0" || selectedValue == 0)
+                ? ''
+                : $('#SubVoucherName').find(':selected').text();
             $.ajax({
                 type: "POST",
                 data: { "YearCode": YearCode, "SubVoucherName": SubVoucherName },

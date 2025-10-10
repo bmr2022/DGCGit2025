@@ -90,27 +90,30 @@
 
 										<div class="d-flex align-items-center mb-1" style="margin:0; padding:0;">
 											<label title="AllowBackDateSALEBILL" asp-for="AllowBackDateSALEBILLBool" class="form-label me-2" style="width:230px; margin:0;">
-												Allow Backdate Sale Bill
+												Click To Allow Backdate Sale Bill
 											</label>
 											<input type="checkbox" class="form-check-input" asp-for="AllowBackDateSALEBILLBool" style="margin:0;" />
+											(Uncheck To Not Allowed)
 										</div>
 
 										<div class="d-flex align-items-center mb-1" style="margin:0; padding:0;">
 											<label title="salebillShowItemBatchFIFOBased" asp-for="salebillShowItemBatchFIFOBasedBool" class="form-label me-2" style="width:230px; margin:0;">
-												Show Item Batch FIFO Based
+												Click To Show Item Batch FIFO Based
 											</label>
 											<input type="checkbox" class="form-check-input" asp-for="salebillShowItemBatchFIFOBasedBool" style="margin:0;" />
+											(Uncheck To Hide)
 										</div>
 
 										<div class="d-flex align-items-center mb-1" style="margin:0; padding:0;">
 											<label title="ShowHideEntryDetail" asp-for="ShowHideEntryDetailBool" class="form-label me-2" style="width:230px; margin:0;">
-												Show Hide Entry Detail
+												Click To Show Entry Detail
 											</label>
 											<input type="checkbox" class="form-check-input" asp-for="ShowHideEntryDetailBool" style="margin:0;" />
+											(Uncheck To Hide)
 										</div>
 										<div class="d-flex align-items-center mb-1" style="margin:0; padding:0;">
 											<label title="AccSaleBillManualTaxAlloweed" asp-for="AccSaleBillManualTaxAllowedBool" class="form-label me-2" style="width:230px; margin:0;">
-												 Manual Tax Allowed
+												Click To Manual Tax Allowed
 											</label>
 											<input type="checkbox" class="form-check-input" asp-for="AccSaleBillManualTaxAllowedBool" style="margin:0;" />
 										</div>
@@ -121,15 +124,17 @@
 
 										<div class="d-flex align-items-center mb-1" style="margin:0; padding:0;">
 											<label title="EditableRateAndDiscountONSaleInvoice" asp-for="EditableRateAndDiscountONSaleInvoiceBool" class="form-label me-2" style="width:230px; margin:0;">
-												Editable Rate & Discount
+												Click To Editable Rate & Discount
 											</label>
 											<input type="checkbox" class="form-check-input" asp-for="EditableRateAndDiscountONSaleInvoiceBool" style="margin:0;" />
+											(Uncheck To Not Editable)
 										</div>
 										<div class="d-flex align-items-center mb-1" style="margin:0; padding:0;">
 											<label title="ShowHideCustomerDetail" asp-for="ShowHideCustomerDetailBool" class="form-label me-2" style="width:230px; margin:0;">
-												Show Hide Customer Detail
+												Click To Show Customer Detail
 											</label>
 											<input type="checkbox" class="form-check-input" asp-for="ShowHideCustomerDetailBool" style="margin:0;" />
+											(Uncheck To Hide)
 										</div>
 
 									</div>
@@ -137,69 +142,79 @@
 									<!-- Right Column -->
 									<div class="col-md-6">
 										<div class="d-flex align-items-center mb-1" style="margin:0; padding:0;">
-											<label title="ShowHideOtherRequiredDetail" asp-for="ShowHideOtherRequiredDetailBool" class="form-label me-2" style="width:230px; margin:0;">
-												Show Hide Other Required Detail
+											<label title="ShowHideOtherRequiredDetail" asp-for="ShowHideOtherRequiredDetailBool" class="form-label me-2" style="width:280px; margin:0;">
+												Click To Show Other Required Detail
 											</label>
 											<input type="checkbox" class="form-check-input" asp-for="ShowHideOtherRequiredDetailBool" style="margin:0;" />
+											(Uncheck To Hide)
 										</div>
 
 										<div class="d-flex align-items-center mb-1" style="margin:0; padding:0;">
-											<label title="ShowHideCurrency" asp-for="ShowHideCurrencyBool" class="form-label me-2" style="width:230px; margin:0;">
-												Show Hide Currency
+											<label title="ShowHideCurrency" asp-for="ShowHideCurrencyBool" class="form-label me-2" style="width:280px; margin:0;">
+												Click To Show Currency
 											</label>
 											<input type="checkbox" class="form-check-input" asp-for="ShowHideCurrencyBool" style="margin:0;" />
+											(Uncheck To Hide)
 										</div>
 
 										<div class="d-flex align-items-center mb-1" style="margin:0; padding:0;">
-											<label title="ShowHideConsignee" asp-for="ShowHideConsigneeBool" class="form-label me-2" style="width:230px; margin:0;">
-												Show Hide Consignee
+											<label title="ShowHideConsignee" asp-for="ShowHideConsigneeBool" class="form-label me-2" style="width:280px; margin:0;">
+												Click To Show Consignee
 											</label>
 											<input type="checkbox" class="form-check-input" asp-for="ShowHideConsigneeBool" style="margin:0;" />
+											(Uncheck To Hide)
 										</div>
 
 										<div class="d-flex align-items-center mb-1" style="margin:0; padding:0;">
-											<label title="ShowHideScheduleDetail" asp-for="ShowHideScheduleDetailBool" class="form-label me-2" style="width:230px; margin:0;">
-												Show Hide Schedule Detail
+											<label title="ShowHideScheduleDetail" asp-for="ShowHideScheduleDetailBool" class="form-label me-2" style="width:280px; margin:0;">
+												Click To Show Schedule Detail
 											</label>
 											<input type="checkbox" class="form-check-input" asp-for="ShowHideScheduleDetailBool" style="margin:0;" />
+											(Uncheck To Hide)
 										</div>
 
 										<div class="d-flex align-items-center mb-1" style="margin:0; padding:0;">
-											<label title="AllowToChangeStoreName" asp-for="AllowToChangeStoreNameBool" class="form-label me-2" style="width:230px; margin:0;">
-												Allow To Change Store Name
+											<label title="AllowToChangeStoreName" asp-for="AllowToChangeStoreNameBool" class="form-label me-2" style="width:280px; margin:0;">
+												Click To Allow Change Store Name
 											</label>
 											<input type="checkbox" class="form-check-input" asp-for="AllowToChangeStoreNameBool" style="margin:0;" />
+											(Uncheck To Hide)
 										</div>
 
 										<div class="d-flex align-items-center mb-1" style="margin:0; padding:0;">
-											<label title="HideOtherFieldOFDetailTable" asp-for="HideOtherFieldOFDetailTableBool" class="form-label me-2" style="width:230px; margin:0;">
-												Hide Other Field Of Detail Table
+											<label title="HideOtherFieldOFDetailTable" asp-for="HideOtherFieldOFDetailTableBool" class="form-label me-2" style="width:280px; margin:0;">
+												Click To Show Other Field Of Detail Table
 											</label>
 											<input type="checkbox" class="form-check-input" asp-for="HideOtherFieldOFDetailTableBool" style="margin:0;" />
+											(Uncheck To Hide)
 										</div>
 										<div class="d-flex align-items-center mb-1" style="margin:0; padding:0;">
-											<label title="ApproveSOForGenerateSaleInvoiceOrNot" asp-for="ApproveSOForGenerateSaleInvoiceOrNotBool" class="form-label me-2" style="width:230px; margin:0;">
-												Approve SO For Generate Sale Invoice
+											<label title="ApproveSOForGenerateSaleInvoiceOrNot" asp-for="ApproveSOForGenerateSaleInvoiceOrNotBool" class="form-label me-2" style="width:280px; margin:0;">
+												Click To Approve SO For Generate Sale Invoice
 											</label>
 											<input type="checkbox" class="form-check-input" asp-for="ApproveSOForGenerateSaleInvoiceOrNotBool" style="margin:0;" />
+											(Uncheck To Not Approved)
 										</div>
 										<div class="d-flex align-items-center mb-1" style="margin:0; padding:0;">
-											<label title="AllowMultipleBuyerInSaleOrder" asp-for="AllowMultipleBuyerInSaleOrderBool" class="form-label me-2" style="width:230px; margin:0;">
-												Allow Multiple Buyer
+											<label title="AllowMultipleBuyerInSaleOrder" asp-for="AllowMultipleBuyerInSaleOrderBool" class="form-label me-2" style="width:280px; margin:0;">
+												Click To Allow Multiple Buyer
 											</label>
 											<input type="checkbox" class="form-check-input" asp-for="AllowMultipleBuyerInSaleOrderBool" style="margin:0;" />
+											(Uncheck To Not Allow)
 										</div>
 										<div class="d-flex align-items-center mb-1" style="margin:0; padding:0;">
-											<label title="ShowHideOtherDetails" asp-for="ShowHideOtherDetailsBool" class="form-label me-2" style="width:230px; margin:0;">
-												Show Other Details
+											<label title="ShowHideOtherDetails" asp-for="ShowHideOtherDetailsBool" class="form-label me-2" style="width:280px; margin:0;">
+												Click To Show Other Details
 											</label>
 											<input type="checkbox" class="form-check-input" asp-for="ShowHideOtherDetailsBool" style="margin:0;" />
+											(Uncheck To Hide)
 										</div>
 										<div class="d-flex align-items-center mb-1" style="margin:0; padding:0;">
-											<label title="HideShowOtherDiscount" asp-for="HideShowOtherDiscountBool" class="form-label me-2" style="width:230px; margin:0;">
-												Show Other Discount
+											<label title="HideShowOtherDiscount" asp-for="HideShowOtherDiscountBool" class="form-label me-2" style="width:280px; margin:0;">
+												Click To Show Other Discount
 											</label>
 											<input type="checkbox" class="form-check-input" asp-for="HideShowOtherDiscountBool" style="margin:0;" />
+											(Uncheck To Hide)
 										</div>
 
 									</div>
@@ -320,10 +335,19 @@
 
 				$('form').submit();
 			});
-
+			togglePasswordReadonly();
+			$('#AccSaleBillManualTaxAllowedBool').change(function () {
+				togglePasswordReadonly();
+			});
 		});
-		
 
+		function togglePasswordReadonly() {
+			if ($('#AccSaleBillManualTaxAllowedBool').is(':checked')) {
+				$('#AccPasswordToAllowManualTax').prop('readonly', false);
+			} else {
+				$('#AccPasswordToAllowManualTax').prop('readonly', true).val(''); 
+			}
+		}
 
 
 		function setFormattedDate() {

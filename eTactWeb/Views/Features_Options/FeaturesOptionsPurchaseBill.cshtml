@@ -102,32 +102,9 @@
 											</label>
 											<input readonly asp-for="DirectPurchBillVoucherPrintReportName" class="form-control" style="max-width:350px;" />
 										</div>
-
-										
-									</div>
-									
-									<div class="col-md-6">
-										<div class="d-flex align-items-center mb-2">
-											<label title="AccAllowtochangeDocumnetinPurchaseBill" asp-for="AccAllowtochangeDocumnetinPurchaseBillBool" class="form-label me-2" style="width:230px;">
-												Allow to change Document
-											</label>
-											<input type="checkbox" class="form-check-input" asp-for="AccAllowtochangeDocumnetinPurchaseBillBool" />
-										</div>
-										<div class="d-flex align-items-center mb-2">
-											<label title="AccAllowTochangeVoucherDateInPurchBill" asp-for="AccAllowTochangeVoucherDateInPurchBillBool" class="form-label me-2" style="width:230px;">
-												Allow To change VoucherDate
-											</label>
-											<input type="checkbox" class="form-check-input" asp-for="AccAllowTochangeVoucherDateInPurchBillBool" />
-										</div>
-										<div class="d-flex align-items-center mb-2">
-											<label title="AccAllowtochangeInvoiceNoDateinPurchaseBill" asp-for="AccAllowtochangeInvoiceNoDateinPurchaseBillBool" class="form-label me-2" style="width:230px;">
-												Allow to Change Invoice Date
-											</label>
-											<input type="checkbox" class="form-check-input" asp-for="AccAllowtochangeInvoiceNoDateinPurchaseBillBool" />
-										</div>
 										<div class="d-flex align-items-center mb-2" style="margin-left:0;">
 											<label title="AccPurchaseVoucherPrintoutFileName" asp-for="AccPurchaseVoucherPrintoutFileName" class="form-label me-2" style="width:230px;">
-												 Voucher PrintOut FileName
+												Voucher PrintOut FileName
 											</label>
 											<input readonly asp-for="AccPurchaseVoucherPrintoutFileName" class="form-control" style="max-width:400px;" />
 										</div>
@@ -136,6 +113,172 @@
 												Invoice PrintOut FileName
 											</label>
 											<input readonly asp-for="AccPurchaseBillInvoicePrintoutFileName" class="form-control" style="max-width:400px;" />
+										</div>
+										<div class="d-flex align-items-center mb-2" style="margin-left:0;">
+											<label title="AccPurchaseBillInvoicePrintoutfilename" asp-for="AccPurchaseBillInvoicePrintoutfilename" class="form-label me-2" style="width:230px;">
+												Purchase Bill Invoice Print filename
+											</label>
+											<input readonly asp-for="AccPurchaseBillInvoicePrintoutFileName" class="form-control" style="max-width:400px;" />
+										</div>
+
+										<div class="d-flex align-items-center mb-2">
+											<label title="ShowHideDirectPurchaseBillEntryDetail" asp-for="ShowHideDirectPurchaseBillEntryDetailBool" class="form-label me-2" style="width:340px;">
+												Click To Show Direct Purchase Bill Entry Detail
+											</label>
+											<input type="checkbox" class="form-check-input" asp-for="ShowHideDirectPurchaseBillEntryDetailBool" />
+											(Uncheck To Hide)
+										</div>
+
+										<div class="d-flex align-items-center mb-2">
+											<label title="ShowHideDirectPurchaseBillCustomerDetail" asp-for="ShowHideDirectPurchaseBillCustomerDetailBool" class="form-label me-2" style="width:340px;">
+												Click To Show Direct Purchase Bill Customer Detail
+											</label>
+											<input type="checkbox" class="form-check-input" asp-for="ShowHideDirectPurchaseBillCustomerDetailBool" />
+											(Uncheck To Hide)
+										</div>
+
+										<div class="d-flex align-items-center mb-2">
+											<label title="ShowHideDirectPurchaseBillOtherRequiredDetail" asp-for="ShowHideDirectPurchaseBillOtherRequiredDetailBool" class="form-label me-2" style="width:340px;">
+												Click To Show Direct Purchase Bill Other Required Detail
+											</label>
+											<input type="checkbox" class="form-check-input" asp-for="ShowHideDirectPurchaseBillOtherRequiredDetailBool" />
+											(Uncheck To Hide)
+										</div>
+
+										<div class="d-flex align-items-center mb-2">
+											<label title="ShowHideDirectPurchaseBillCurrency" asp-for="ShowHideDirectPurchaseBillCurrencyBool" class="form-label me-2" style="width:340px;">
+												Click To Show Direct Purchase Bill Currency
+											</label>
+											<input type="checkbox" class="form-check-input" asp-for="ShowHideDirectPurchaseBillCurrencyBool" />
+											(Uncheck To Hide)
+										</div>
+
+										<div class="d-flex align-items-center mb-2">
+											<label title="ShowHideDirectPurchaseBillConsignee" asp-for="ShowHideDirectPurchaseBillConsigneeBool" class="form-label me-2" style="width:340px;">
+												Click To Show Direct Purchase Bill Consignee
+											</label>
+											<input type="checkbox" class="form-check-input" asp-for="ShowHideDirectPurchaseBillConsigneeBool" />
+											(Uncheck To Hide)
+										</div>
+										<div class="d-flex align-items-center mb-2">
+											<label title="AccAllowtochangeDocumnetinPurchaseBill" asp-for="AccAllowtochangeDocumnetinPurchaseBillBool" class="form-label me-2" style="width:340px;">
+												Click To Allow to change Document
+											</label>
+											<input type="checkbox" class="form-check-input" asp-for="AccAllowtochangeDocumnetinPurchaseBillBool" />
+											(Uncheck To Not Allow)
+										</div>
+										<div class="d-flex align-items-center mb-2">
+											<label title="AccAllowTochangeVoucherDateInPurchBill" asp-for="AccAllowTochangeVoucherDateInPurchBillBool" class="form-label me-2" style="width:340px;">
+												Click To Allow To change VoucherDate
+											</label>
+											<input type="checkbox" class="form-check-input" asp-for="AccAllowTochangeVoucherDateInPurchBillBool" />
+											(Uncheck To Not Allow)
+										</div>
+									</div>
+									
+									<div class="col-md-6">
+										
+										<div class="d-flex align-items-center mb-2">
+											<label title="AccAllowtochangeInvoiceNoDateinPurchaseBill" asp-for="AccAllowtochangeInvoiceNoDateinPurchaseBillBool" class="form-label me-2" style="width:380px;">
+												Click To Allow to Change Invoice Date
+											</label>
+											<input type="checkbox" class="form-check-input" asp-for="AccAllowtochangeInvoiceNoDateinPurchaseBillBool" />
+											(Uncheck To Not Allow)
+										</div>
+										<div class="d-flex align-items-center mb-2">
+											<label title="ShowHideDirectPurchaseBillScheduleDetail" asp-for="ShowHideDirectPurchaseBillScheduleDetailBool" class="form-label me-2" style="width:380px;">
+												Click To Show Direct Purchase Bill Schedule Detail
+											</label>
+											<input type="checkbox" class="form-check-input" asp-for="ShowHideDirectPurchaseBillScheduleDetailBool" />
+											(Uncheck To Hide)
+										</div>
+
+										<div class="d-flex align-items-center mb-2">
+											<label title="HideOtherFieldOFDirectPurchaseBillDetailTable" asp-for="HideOtherFieldOFDirectPurchaseBillDetailTableBool" class="form-label me-2" style="width:380px;">
+												Click To Show Other Field Of Direct Purchase Bill Detail Table
+											</label>
+											<input type="checkbox" class="form-check-input" asp-for="HideOtherFieldOFDirectPurchaseBillDetailTableBool" />
+											(Uncheck To Hide)
+										</div>
+
+										<div class="d-flex align-items-center mb-2">
+											<label title="ShowHideDirectPurchaseBillOtherDetails" asp-for="ShowHideDirectPurchaseBillOtherDetailsBool" class="form-label me-2" style="width:380px;">
+												Click To Show Direct Purchase Bill Other Details
+											</label>
+											<input type="checkbox" class="form-check-input" asp-for="ShowHideDirectPurchaseBillOtherDetailsBool" />
+											(Uncheck To Hide)
+										</div>
+
+										<div class="d-flex align-items-center mb-2">
+											<label title="ShowHidePurchaseBillEntryDetail" asp-for="ShowHidePurchaseBillEntryDetailBool" class="form-label me-2" style="width:380px;">
+												Click To Show Purchase Bill Entry Detail
+											</label>
+											<input type="checkbox" class="form-check-input" asp-for="ShowHidePurchaseBillEntryDetailBool" />
+											(Uncheck To Hide)
+										</div>
+
+										<div class="d-flex align-items-center mb-2">
+											<label title="ShowHidePurchaseBillCustomerDetail" asp-for="ShowHidePurchaseBillCustomerDetailBool" class="form-label me-2" style="width:380px;">
+												Click To Show Purchase Bill Customer Detail
+											</label>
+											<input type="checkbox" class="form-check-input" asp-for="ShowHidePurchaseBillCustomerDetailBool" />
+											(Uncheck To Hide)
+										</div>
+
+										<div class="d-flex align-items-center mb-2">
+											<label title="ShowHidePurchaseBillOtherRequiredDetail" asp-for="ShowHidePurchaseBillOtherRequiredDetailBool" class="form-label me-2" style="width:380px;">
+												Click To Show Purchase Bill Other Required Detail
+											</label>
+											<input type="checkbox" class="form-check-input" asp-for="ShowHidePurchaseBillOtherRequiredDetailBool" />
+											(Uncheck To Hide)
+										</div>
+
+										<div class="d-flex align-items-center mb-2">
+											<label title="ShowHidePurchaseBillCurrency" asp-for="ShowHidePurchaseBillCurrencyBool" class="form-label me-2" style="width:380px;">
+												Click To Show Purchase Bill Currency
+											</label>
+											<input type="checkbox" class="form-check-input" asp-for="ShowHidePurchaseBillCurrencyBool" />
+											(Uncheck To Hide)
+										</div>
+
+										<div class="d-flex align-items-center mb-2">
+											<label title="ShowHidePurchaseBillConsignee" asp-for="ShowHidePurchaseBillConsigneeBool" class="form-label me-2" style="width:380px;">
+												Click To Show Purchase Bill Consignee
+											</label>
+											<input type="checkbox" class="form-check-input" asp-for="ShowHidePurchaseBillConsigneeBool" />
+											(Uncheck To Hide)
+										</div>
+
+										<div class="d-flex align-items-center mb-2">
+											<label title="ShowHidePurchaseBillScheduleDetail" asp-for="ShowHidePurchaseBillScheduleDetailBool" class="form-label me-2" style="width:380px;">
+												Click To Show Purchase Bill Schedule Detail
+											</label>
+											<input type="checkbox" class="form-check-input" asp-for="ShowHidePurchaseBillScheduleDetailBool" />
+											(Uncheck To Hide)
+										</div>
+
+										<div class="d-flex align-items-center mb-2">
+											<label title="HideOtherFieldOFPurchaseBillDetailTable" asp-for="HideOtherFieldOFPurchaseBillDetailTableBool" class="form-label me-2" style="width:380px;">
+												Click To Show Other Field Of Purchase Bill Detail Table
+											</label>
+											<input type="checkbox" class="form-check-input" asp-for="HideOtherFieldOFPurchaseBillDetailTableBool" />
+											(Uncheck To Hide)
+										</div>
+
+										<div class="d-flex align-items-center mb-2">
+											<label title="ShowHidePurchaseBillOtherDetails" asp-for="ShowHidePurchaseBillOtherDetailsBool" class="form-label me-2" style="width:380px;">
+												Click To Show Purchase Bill Other Details
+											</label>
+											<input type="checkbox" class="form-check-input" asp-for="ShowHidePurchaseBillOtherDetailsBool" />
+											(Uncheck To Hide)
+										</div>
+
+										<div class="d-flex align-items-center mb-2">
+											<label title="AddInventoryByDirectPurchaseBill" asp-for="AddInventoryByDirectPurchaseBillBool" class="form-label me-2" style="width:380px;">
+												Click To Add Inventory By Direct Purchase Bill
+											</label>
+											<input type="checkbox" class="form-check-input" asp-for="AddInventoryByDirectPurchaseBillBool" />
+											(Uncheck To Disable)
 										</div>
 
 									</div>

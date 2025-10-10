@@ -87,6 +87,15 @@ namespace eTactWeb.Controllers
             {
                 return PartialView("_ConsumptionReportCONSOLIDATEDGrid", model);
             }
+            if (ReportType == "COMPACT")
+            {
+                return PartialView("_ConsumptionReportCompact", model);
+            }
+            if (ReportType == "Prod Date Wise Consumption")
+            {
+                return PartialView("_ConsumptionReportProdDateWiseConsumption", model);
+            }
+
             return null;
         }
     }
