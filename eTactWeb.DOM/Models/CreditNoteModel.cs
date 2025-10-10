@@ -60,7 +60,12 @@ namespace eTactWeb.DOM.Models
         public string DashboardTypeBack {  get; set; }
         public string FromDateBack {  get; set; }
         public string ToDateBack { get; set; }
-        public int AccountCodeBack {  get; set; }
+        public int? AccountCodeBack {  get; set; }
+        public int? GroupCodeBack {  get; set; }
+        public int? AccountNameBack { get; set; }
+        public string? VoucherTypeBack { get; set; }
+        public string? VoucherNoBack {  get; set; }
+        public string[] AccountList { get; set; }
         private IList<SelectListItem> _YesNo = new List<SelectListItem>()
         {
             new() { Value = "Y", Text = "Yes" },

@@ -49,10 +49,12 @@
 						<tr id="@Cntr" onclick="selection(this)" style="background-color:#8ec8db">
 							<td style="text-align:center;white-space: nowrap;">
 								<div id="container" style="display: flex; gap: 5px; justify-content: center;">
+								@{
+									var ControllerName = "";
+									var ActionName = "";
+								}
 									@if (item.AccEntryYearCode == yearCode)
 									{
-										var ControllerName = "";
-										var ActionName = "";
 										var VoucherType = item.VoucherType;
 										switch (VoucherType.ToUpper())
 										{
@@ -105,58 +107,6 @@
 												ActionName = "PurchaseRejection";
 												break;
 										}
-										<div id="viewCursorDiv-@Cntr">
-											@if (item.VoucherType == "PURCHASE-REJECTION")
-											{
-												<a class="table-link link-success" asp-route-ID="@item.DocEntryId" asp-controller="@ControllerName" asp-action="@ActionName" asp-route-Mode="V" asp-route-YC="@item.AccEntryYearCode" asp-route-VoucherNo="@item.VchNo" onclick="BackButtonData(event);">
-													<span class="fa-stack">
-														<i class="fa fa-square fa-stack-2x"></i>
-														<i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
-													</span>
-												</a>
-											}
-											else
-											{
-												<a class="table-link link-success" asp-route-ID="@item.DocEntryId" asp-controller="@ControllerName" asp-action="@ActionName" asp-route-Mode="V" asp-route-YearCode="@item.AccEntryYearCode" asp-route-VoucherNo="@item.VchNo" onclick="BackButtonData(event);">
-													<span class="fa-stack">
-														<i class="fa fa-square fa-stack-2x"></i>
-														<i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
-													</span>
-												</a>
-											}
-										</div>
-
-										@*<div id="editCursorDiv-@Cntr">
-											<a class="table-link link-primary" id="editCursor-@Cntr" asp-action="@ActionName" asp-controller="@ControllerName" asp-route-Mode="U" asp-route-ID="@item.DocEntryId" asp-route-YearCode="@item.AccEntryYearCode" asp-route-VoucherNo="@item.VchNo">
-												<span class="fa-stack">
-													<i class="fa fa-square fa-stack-2x"></i>
-													<i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-												</span>
-											</a>
-										</div>
-										*@
-										<div id="editCursorDiv-@Cntr">
-											@if (item.VoucherType == "PURCHASE-REJECTION")
-											{
-												<a class="table-link link-primary" id="editCursor-@Cntr"
-												   asp-route-ID="@item.DocEntryId" asp-controller="@ControllerName" asp-action="@ActionName" asp-route-Mode="U" asp-route-YC="@item.AccEntryYearCode" asp-route-VoucherNo="@item.VchNo" onclick="confirmEdit(event)">
-													<span class="fa-stack">
-														<i class="fa fa-square fa-stack-2x"></i>
-														<i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-													</span>
-												</a>
-											}
-											else
-											{
-												<a class="table-link link-primary" id="editCursor-@Cntr"
-												   asp-route-ID="@item.DocEntryId" asp-controller="@ControllerName" asp-action="@ActionName" asp-route-Mode="U" asp-route-YearCode="@item.AccEntryYearCode" asp-route-VoucherNo="@item.VchNo" onclick="confirmEdit(event)">
-													<span class="fa-stack">
-														<i class="fa fa-square fa-stack-2x"></i>
-														<i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-													</span>
-												</a>
-											}
-										</div>
 										<div id="deleteCursorDiv-@Cntr">
 											<a class="table-link link-danger" onclick="DeleteRow(this.id)" id="@Cntr">
 												<span class="fa-stack">
@@ -191,7 +141,22 @@
 							<td>@item.VoucherDocDate</td>
 							<td>@item.Particulars</td>
 							<td>@item.VoucherType</td>
-							<td>@item.InvoiceVoucherNo</td>
+							<td>
+								<a asp-controller="@ControllerName"
+								   asp-action="@ActionName"
+								   asp-route-Mode="U"
+								   asp-route-ID="@item.DocEntryId"
+								   asp-route-YearCode="@item.AccEntryYearCode"
+								   asp-route-GroupName="@item.GroupName"
+								   asp-route-DashboardType="@item.ReportType"
+								   asp-route-AccountCode="@item.AccountCode"
+								   asp-route-AccountCodeBack="@item.AccountCode"
+								   asp-route-VoucherNo="@item.VoucherNo"
+								   asp-route-ToDate="@item.ToDate"
+								   asp-route-VoucherTypeBack="@item.VoucherType">
+									@item.InvoiceVoucherNo
+								</a>
+							</td>
 							<td id="totDrG-@Cntr">@item.DrAmt</td>
 							<td id="totCrG-@Cntr">@item.CrAmt</td>
 							<td id="totBalG-@Cntr">@item.Balance</td>
