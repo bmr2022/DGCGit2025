@@ -184,7 +184,8 @@ namespace eTactWeb.Data.DAL
                                                              Cancel = dr["Cancel"] != DBNull.Value ? Convert.ToString(dr["Cancel"]) : string.Empty,
                                                              CancelReason = dr["CancelReason"] != DBNull.Value ? Convert.ToString(dr["CancelReason"]) : string.Empty,
                                                              ReqEntryId = dr["ReqEntryId"] != DBNull.Value ? Convert.ToInt32(dr["ReqEntryId"]) : 0,
-                                                             ReqYearCode = dr["ReqYearCode"] != DBNull.Value ? Convert.ToInt32(dr["ReqYearCode"]) : 0
+                                                             ReqYearCode = dr["ReqYearCode"] != DBNull.Value ? Convert.ToInt32(dr["ReqYearCode"]) : 0,
+                                                             ItemCode = dr["ItemCode"] != DBNull.Value ? Convert.ToInt32(dr["ItemCode"]) : 0
 
                                                          }).ToList();
                         }
@@ -284,22 +285,32 @@ namespace eTactWeb.Data.DAL
                 ReqList.Columns.Add("ReqTYpeThrBomWithoutBOM", typeof(string));
                 ReqList.Columns.Add("Reqno", typeof(string));
                 ReqList.Columns.Add("CancelReason", typeof(string));
+                ReqList.Columns.Add("ItemCode", typeof(long));
                 foreach (var r in request.Requisitions)
                 {
-                    ReqList.Rows.Add(r.ReqEntryId, r.ReqYearCode,r.RequitionType,r.ReqNo, r.CancelReason);
+                    ReqList.Rows.Add(r.ReqEntryId, r.ReqYearCode,r.RequitionType,r.ReqNo, r.CancelReason,r.ItemCode);
                 }
 
                 // Prepare SQL parameters
                 var SqlParams = new List<dynamic>();
-                if (request.ReportType== "FillREquisitionDetail")
+                if (request.ReportType== "FillREquisitionDetail"&&request.RequitionType== "RequisitionWithoutBOM")
                 {
                     SqlParams.Add(new SqlParameter("@Flag", "UpdateCompleteRequisitionWithoutDetail"));
                 }
-                else
+                else if (request.ReportType == "FillREquisitionSummary" && request.RequitionType == "RequisitionWithoutBOM")
                 {
 
                     SqlParams.Add(new SqlParameter("@Flag", "UpdateCompleteRequisitionWithout"));
                 }
+                else if (request.ReportType == "FillREquisitionSummary" && request.RequitionType == "RequisitionWithBOM")
+                {
+                    SqlParams.Add(new SqlParameter("@Flag", "UpdateRequisitionWithBom"));
+                }
+                else
+                {
+                    SqlParams.Add(new SqlParameter("@Flag", "UpdateRequisitionWithBomDetail"));
+                }
+
                 SqlParams.Add(new SqlParameter("@dt", ReqList));
                 SqlParams.Add(new SqlParameter("@PendCanceledReq", request.PendCancelReq));
                 SqlParams.Add(new SqlParameter("@Fromdate", request.FromDate));

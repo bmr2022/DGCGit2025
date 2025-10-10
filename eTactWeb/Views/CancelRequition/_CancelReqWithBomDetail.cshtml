@@ -25,7 +25,7 @@ else
         <thead class="bg-gradient card-headerBG text-light">
             <tr>
                 <th>Sr#</th>
-                <th>Action</th>
+                <th>Action<input type="checkbox" id="selectAll" /></th>
                 <th data-columnno="1" data-sortorder="asc" class="sortCol">
                     <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Req No
                 </th>
@@ -148,6 +148,7 @@ else
                                        asp-action="DeleteByID">
                                         <i class="fa fa-trash"></i>
                                     </a>
+                                    <input type="checkbox" class="checkManual" data-entryid="@item.ReqEntryId" data-yearcode="@item.ReqYearCode" data-reqno="@item.ReqNo" data-requitiontype="@item.RequitionType" data-reporttype="@item.ReportType" data-itemcode="@item.ItemCode" />
                                 </div>
                             </td>
 

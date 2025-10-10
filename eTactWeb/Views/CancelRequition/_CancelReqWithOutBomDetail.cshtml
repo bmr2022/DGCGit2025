@@ -130,7 +130,7 @@
                                 </a>
 
                                
-                                <input type="checkbox" class="checkManual" data-entryid="@item.ReqEntryId" data-yearcode="@item.ReqYearCode" data-reqno="@item.ReqNo" data-requitiontype="@item.RequitionType" data-reporttype="@item.ReportType" />
+                                <input type="checkbox" class="checkManual" data-entryid="@item.ReqEntryId" data-yearcode="@item.ReqYearCode" data-reqno="@item.ReqNo" data-requitiontype="@item.RequitionType" data-reporttype="@item.ReportType"  data-itemcode="@item.ItemCode" />
                             </div>
                         </td>
 
@@ -141,6 +141,7 @@
                         <td>@item.SeqNo</td>
                         <td>@item.PartCode</td>
                         <td>@item.ItemName</td>
+                       
                         <td>@item.ReqQty</td>
                         <td>@(item.ExpectedDate == null ? string.Empty : item.ExpectedDate.Split(" ")[0])</td>
                         <td>@item.PendQty</td>
