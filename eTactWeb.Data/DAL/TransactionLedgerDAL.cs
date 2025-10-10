@@ -45,7 +45,7 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
 
         }
-        public async Task<TransactionLedgerModel> GetDetailsData(string FromDate, string ToDate, int AccountCode, string ReportType,int Ledger,string VoucherType)
+        public async Task<TransactionLedgerModel> GetDetailsData(string FromDate, string ToDate, string ReportType, string GroupOrLedger, int? ParentAccountCode, int AccountCode, string VoucherType, string VoucherNo, string InvoiceNo, string Narration, float? Amount, string? DR, string? CR, string Ledger)
         {
             var resultList = new TransactionLedgerModel();
             DataSet oDataSet = new DataSet();
@@ -102,7 +102,20 @@ namespace eTactWeb.Data.DAL
                                                             AccountCode = row["ACCOUNTCODE"] == DBNull.Value ? 0 : Convert.ToInt32(row["ACCOUNTCODE"]),
                                                             ReportType = row["REPORTTYPE"] == DBNull.Value ? string.Empty : row["REPORTTYPE"].ToString(),
                                                             VchNo = row["VCH NO"] == DBNull.Value ? string.Empty : row["VCH NO"].ToString(),
-                                                            INVNo = row["InvoiceNo"] == DBNull.Value ? string.Empty : row["InvoiceNo"].ToString()
+                                                            INVNo = row["InvoiceNo"] == DBNull.Value ? string.Empty : row["InvoiceNo"].ToString(),
+                                                            FromDate = FromDate,
+                                                            ToDate = ToDate,
+                                                            ReportTypeBack = ReportType,
+                                                            GroupOrLedger = GroupOrLedger,
+                                                            ParentAccountCodeBack = ParentAccountCode,
+                                                            AccountCodeBack = AccountCode,
+                                                            VoucherTypeBack = VoucherType,
+                                                            VoucherNoBack = VoucherNo,
+                                                            InvoiceNoBack = InvoiceNo,
+                                                            NarrationBack = Narration,
+                                                            AmountBack = Amount,
+                                                            DRBack = DR,
+                                                            CRBack = CR,
                                                         }).ToList();
                 }
             }
