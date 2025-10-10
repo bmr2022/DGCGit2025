@@ -1596,17 +1596,12 @@ public class SaleOrderController : Controller
                         }
 						else
 						{
-							dynamic jsonObj = JsonConvert.DeserializeObject(stringResponse);
-							if (jsonObj.Result != null && jsonObj.Result.Count > 0)
-							{
-								int resultValue = jsonObj.Result[0].Result;
-								int YearCodeVal = jsonObj.Result[0].YearCode;
+							
+								int resultValue = model.EntryID;
+								int YearCodeVal =model.YearCode;
 								return RedirectToAction("OrderDetail", new { ID = resultValue, YC = YearCodeVal, Mode = "U" });
-							}
-							else
-							{
-								ErrList.Add("ItemDetailGrid", "Something went Wrong");
-							}
+							
+							
 						}
 					}
 				}
