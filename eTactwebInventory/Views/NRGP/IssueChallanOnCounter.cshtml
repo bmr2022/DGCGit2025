@@ -230,9 +230,10 @@
                                     <div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
                                         <input asp-for="AC1" class="form-check-input" type="checkbox" role="switch" tabindex="-1" />Show All
                                     </div>
-                                    <select class="form-select" asp-for="AccountCode">
-                                        <option value="">-Select-</option>
-                                    </select>
+                                   
+
+                                    <input type="text"  id="AccountCodeText" class="form-control"  placeholder="Type Party Name..." />
+                                    <input type="hidden" asp-for="AccountCode" id="AccountCode" />
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 ShowHideEntryDetail">
                                     <label asp-for="RemovalTime" class="form-label">Time</label>
@@ -1393,13 +1394,15 @@
 
         $(document).ready(function () {
             GetFormRights();
+            AutoFillPARTYNAMELIST();
 
             /*  $('#ItemCode').select2();
              $('#PartCode').select2(); */
-            $('#AccountCode').select2();
-            FillVendorList();
+           /*  $('#AccountCode').select2();
+            FillVendorList(); */
             $('.AF').fadeOut();
             IssueChaallanTaxIsMandatory();
+
 
 
 
@@ -1598,6 +1601,69 @@
              $('#EntryDate').css('color', 'rgb(248 255 178)'); */
 
         });
+
+
+
+        function AutoFillPARTYNAMELIST() {
+            // Source for PartCodeText
+            const AccountCodeSourse = function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("AutoFillPARTYNAMELIST","SaleOrder")',
+                    type: 'POST',
+                    data: {
+
+                        SearchAccount: request.term
+                    },
+                    success: function (result) {
+                        let obj = typeof result === "string" ? JSON.parse(result) : result;
+
+                        if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
+                            let filtered = obj.Result.Table.filter(function (item) {
+                                let term = request.term.toLowerCase();
+                                return item.Account_Name.toLowerCase().includes(term);
+                            });
+
+                            response($.map(filtered, function (item) {
+                                return {
+                                    label: item.Account_Name,
+                                    value: item.Account_Name,
+                                    accountCode: item.Account_Code,
+
+                                };
+                            }));
+                        } else {
+                            response([]);
+                        }
+                    }
+                });
+            };
+
+
+
+            // Autocomplete for PartCodeText
+            $("#AccountCodeText").autocomplete({
+                source: AccountCodeSourse,
+                select: function (event, ui) {
+                    $("#AccountCodeText").val(ui.item.value).data("Account_Code", ui.item.accountCode);
+
+                    $('#AccountCode').val(ui.item.accountCode);
+                 /*    CheckOrderNo();*/
+                    onchangeaccountcode(); 
+
+
+                    return false;
+                },
+                focus: function (event, ui) {
+                    $("#AccountCodeText").val(ui.item.value);
+
+                    return false;
+                },
+                minLength: 2
+            });
+
+
+        }
+
 
 
 
@@ -2452,7 +2518,7 @@
                         if ($('#AllowToChangeStore').val() == "N") {
                             var firstBatch = $('#BatchNo option:eq(1)').val(); // first real batch (skip -Select-)
                             if (firstBatch) {
-                                $('#BatchNo').val(firstBatch);
+                                $('#BatchNo').val('1');
                                 $('#BatchNo').prop("disabled", true);
                             }
                             $('#uniquebatchno').empty();
@@ -3085,34 +3151,22 @@
             });
         }
 
-        $('#AccountCode').change(function () {
-            copyToClipboardForDropdown(this);
+        function onchangeaccountcode()
+{           
+    copyToClipboardForDropdown(this);
 
             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
 
             } else {
                 ClearTaxGrid();
             }
-            if ($('#ChangeEventTriggered').val() != "Y") {
-
-                //$.ajax({
-                //    type: "POST",
-                //    url: "@Url.Action("ClearTaxGrid")",
-                //    data: { AccountCode: $('#AccountCode').val() },
-                //    dataType: "json",
-                //    success: function (result, status, error) {
-                //        $('#divTaxGrid').empty();
-                //    },
-                //    error: function (req, status, error) {
-                //        alert(error);
-                //    }
-                //})
+           
                 GetPONOByAccount();
                 FillAgainstChallanNo();
                 var dataParams = {
                     "AccountCode": $('#AccountCode').val()
                 }
-                if ($('#AccountCode').prop('selectedIndex') != 0) {
+              
                     $.ajax({
                         type: "POST",
                         url: "@Url.Action("GetAddressDetails")",
@@ -3124,8 +3178,12 @@
                                 var obj = $.parseJSON(result);
                                 if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                                     $.each(obj.Result, function (index, val) {
+                                $('#DeliveryAddress').val('');
+
                                         $('#DeliveryAddress').val(val.Address);
+                                $('#VendorStateCode').val('');
                                         $('#VendorStateCode').val(val.statecode);
+                                $('#GSTType').val('');
                                         $('#GSTType').val(val.GSTPartyTypes);
                                     });
                                 }
@@ -3147,6 +3205,11 @@
                                 var obj = $.parseJSON(result);
                                 if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                                     $.each(obj.Result, function (index, val) {
+
+                                $('#Email').val('');
+                                $('#CC1').val('');
+                                $('#CC2').val('');
+                                $('#CC3').val('');
                                         $('#Email').val(val.EmailId);
                                         $('#CC1').val(val.CC1);
                                         $('#CC2').val(val.CC2);
@@ -3159,13 +3222,10 @@
                             alert(error);
                         }
                     });
-                }
-                else $('#DeliveryAdd').val('');
-            }
+             
+           
 
-            $('#ChangeEventTriggered').val("N");
-
-        });
+        };
 
 
         $('#StoreId').change(function () {

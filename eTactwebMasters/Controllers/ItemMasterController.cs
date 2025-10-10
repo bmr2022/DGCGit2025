@@ -2307,6 +2307,11 @@ public class ItemMasterController : Controller
             dt.Columns.Add("usedinMachorVehicle", typeof(string));
             dt.Columns.Add("Barcode", typeof(string));
 
+
+            HashSet<string> partCodeSet = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+            int rowIndex = 0; // For user-friendly error messages
+
             foreach (var excelRow in request.ExcelData)
             {
                 DataRow row = dt.NewRow();
@@ -2446,8 +2451,31 @@ public class ItemMasterController : Controller
                     row[dbCol] = value;
                 }
 
+                // ✅ Validate PartCode before adding the row
+                string partCode = row["PartCode"]?.ToString()?.Trim();
+
+                if (string.IsNullOrEmpty(partCode))
+                {
+                    return Json(new
+                    {
+                        StatusCode = 200,
+                        StatusText = $"PartCode cannot be blank (Row {rowIndex})"
+                    });
+                }
+
+                if (!partCodeSet.Add(partCode))
+                {
+                    return Json(new
+                    {
+                        StatusCode = 200,
+                        StatusText = $"Duplicate PartCode '{partCode}' found (Row {rowIndex})"
+                    });
+                }
+
                 dt.Rows.Add(row);
             }
+
+        
 
             response = await _IItemMaster.UpdateMultipleItemDataFromExcel(dt, flag);
 
