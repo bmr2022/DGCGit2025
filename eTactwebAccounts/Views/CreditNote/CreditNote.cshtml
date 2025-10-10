@@ -77,6 +77,11 @@
                     <input asp-for="FromDateBack" type="hidden" value="@Model.FromDateBack" />
                     <input asp-for="ToDateBack" type="hidden" value="@Model.ToDateBack" />
                     <input asp-for="AccountCodeBack" type="hidden" value="@Model.AccountCodeBack" />
+                    <input asp-for="GroupCodeBack" type="hidden" value="@Model.GroupCodeBack" />
+                    <input asp-for="AccountNameBack" type="hidden" value="@Model.AccountNameBack" />
+                    <input asp-for="VoucherNoBack" type="hidden" value="@Model.VoucherNoBack" />
+                    <input asp-for="AccountList" type="hidden"
+                           value="@string.Join(",", Model.AccountList ?? new string[0])" />
                     <partial name="_AddCreditNotePopUp" />
                     @* <partial name="_FormsButton" /> *@
                     <div class="row justify-content-between g-2">
@@ -1703,12 +1708,17 @@
         });
 
         function PressBack() {
-            const lastUrl = sessionStorage.getItem('LastListPage');
-            if (lastUrl) {
-                window.location.href = lastUrl;
-            } else {
-                history.back(); // fallback if nothing saved
-            }
+            sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());
+            sessionStorage.setItem('ToDateBack', $('#ToDateBack').val());
+            sessionStorage.setItem('DashboardTypeBack', $('#DashboardTypeBack').val());
+            sessionStorage.setItem('GroupCodeBack', $('#GroupCodeBack').val());
+            sessionStorage.setItem('AccountCodeBack', $('#AccountCodeBack').val());
+            sessionStorage.setItem('AccountNameBack', $('#AccountNameBack').val());
+            sessionStorage.setItem('VoucherTypeBack', $('#VoucherTypeBack').val());
+            sessionStorage.setItem('AccountList', $('#AccountList').val());
+            sessionStorage.setItem('VoucherNoBack', $('#VoucherNoBack').val());
+
+            window.history.back();
         }
 
         function GetServerDate() {

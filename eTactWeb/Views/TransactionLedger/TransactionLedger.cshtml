@@ -309,6 +309,10 @@
                 GetTransactionLedgerGroupSummaryDetailsData();
             }
             else {
+                if ($('#LedgerName').prop('selectedIndex') == 0) {
+                    $.notify("Please select PartyName first..!", "error");
+                    return false;
+                }
                 GetTransactionLedgerMonthlySummaryDetailsData();
             }
         }

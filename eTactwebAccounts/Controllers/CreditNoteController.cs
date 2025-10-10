@@ -28,7 +28,7 @@ namespace eTactWeb.Controllers
         }
         [HttpGet]
         [Route("{controller}/Index")]
-        public async Task<IActionResult> CreditNote( int ID, string Mode, int YearCode, string FromDate = "", string ToDate = "", int GroupCode=0,string VoucherNo = "", string VoucherType = "", string DashboardType = "", int AccountCode = 0)
+        public async Task<IActionResult> CreditNote( int ID, string Mode, int YearCode, string FromDate = "", string ToDate = "", int? GroupName = null, int? AccountCode = null, string VoucherNo = "", string VoucherType = "", string DashboardType = "", int? AccountCodeBack=null, string VoucherTypeBack = "", string[] AccountList = null)
         {
             AccCreditNoteModel model = new AccCreditNoteModel();
             ViewData["Title"] = "Credit Note Details";
@@ -75,6 +75,15 @@ namespace eTactWeb.Controllers
             HttpContext.Session.SetString("CreditNoteModel", JsonConvert.SerializeObject(model == null ? new AccCreditNoteModel() : model));
             HttpContext.Session.SetString("CreditNote", JsonConvert.SerializeObject(model));
 
+            model.FromDateBack = FromDate;
+            model.ToDateBack = ToDate;
+            model.DashboardTypeBack = DashboardType;
+            model.GroupCodeBack = GroupName;
+            model.AccountCodeBack = AccountCode;
+            model.AccountNameBack = AccountCodeBack;
+            model.VoucherTypeBack = VoucherTypeBack;
+            model.AccountList = AccountList;
+            model.VoucherNoBack = VoucherNo;
             //string serializedGrid = JsonConvert.SerializeObject(model.AccCreditNoteDetails);
             //HttpContext.Session.SetString("KeyCreditNoteGrid", serializedGrid);
             //var adjGrid = model.adjustmentModel == null ? new AdjustmentModel() : model.adjustmentModel;

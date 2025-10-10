@@ -256,53 +256,45 @@
 
         $(document).ready(function () {
 
-            // Initialize datepicker with today's date
+            // Initialize datepicker
             var currentDate = new Date();
             $('#TillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", currentDate);
 
-            // Initialize select2
-            $('#GroupName').select2();
-            $('#PartyNameSingle').select2();
-            $('#ReportType').select2();
-            $('#VoucherNo').select2();
-            $('#VoucherType').select2();
-
-            // Hide back button initially
+            // Initialize other dropdowns
+            $('#GroupName, #ReportType, #VoucherNo, #VoucherType').select2();
             $('#BackButton').hide();
 
-            // Set total rows if table exists
-            if ($('#divStockRegisterBody').length) {
-                $('#totalRows').text($('#divStockRegisterBody tr').length);
-            }
+            // Fill dropdowns that are not dynamic
+            FillGroupName();
+            FillVoucherType();
+            FillVoucherNo();
+
+            // Restore values from session storage
             var tillDateBack = sessionStorage.getItem('ToDateBack');
             var reportTypeBack = sessionStorage.getItem('DashboardTypeBack');
             var groupCodeBack = sessionStorage.getItem('GroupCodeBack');
             var accountCodeBack = sessionStorage.getItem('AccountNameBack');
             var voucherNoBack = sessionStorage.getItem('VoucherNoBack');
             var voucherTypeBack = sessionStorage.getItem('VoucherTypeBack');
-            var accountList = sessionStorage.getItem('AccountList');
 
-            // Fill dropdowns
-            FillGroupName();
-            FillPartyName();
-            FillVoucherType();
-            FillVoucherNo();
-
-            if (tillDateBack != null && tillDateBack != '') {
-
+            if (tillDateBack) {
                 $('#TillDate').val(tillDateBack);
-                $('#GroupName').val(groupCodeBack).trigger('change');
-                $('#ReportType').val(reportTypeBack).trigger('change');
-                $('#VoucherNo').val(voucherNoBack).trigger('change');
-                $('#VoucherType').val(voucherTypeBack).trigger('change');
             }
+
+            // Initialize PartyName dropdown based on toggle
+            toggleMultiSelect(); // This will call FillPartyName internally
+
+            // Restore other dropdowns
+            if (groupCodeBack) $('#GroupName').val(groupCodeBack).trigger('change');
+            if (reportTypeBack) $('#ReportType').val(reportTypeBack).trigger('change');
+            if (voucherNoBack) $('#VoucherNo').val(voucherNoBack).trigger('change');
+            if (voucherTypeBack) $('#VoucherType').val(voucherTypeBack).trigger('change');
 
             // Handle ReportType change
             $("#ReportType").change(function () {
                 handleReportTypeChange();
             });
 
-            // Function to handle ReportType changes
             function handleReportTypeChange() {
                 var reportType = $("#ReportType").val().trim();
                 var reportTypesToCheck = ["Summary", "Detail", "IndentWithPODetail"];
@@ -311,16 +303,7 @@
                 }
             }
 
-            // Optional: Helper function to format date
-            function formatDate(date) {
-                var day = ("0" + date.getDate()).slice(-2);
-                var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-                var month = monthNames[date.getMonth()];
-                var year = date.getFullYear();
-                return day + "/" + month + "/" + year;
-            }
-
-            // Fetch details data
+            // Fetch details
             GetDetailsData();
         });
 
@@ -331,21 +314,20 @@
             var PartynameSingleDropdown = $('#PartyNameSingle');
             var PartynameMultiDropdown = $('#PartyNameMulti');
 
+            // Get appropriate back value
+            var accountCodeBack = isMulti
+                ? sessionStorage.getItem('AccountList') // multi-select
+                : sessionStorage.getItem('AccountNameBack'); // single-select
+
             if (isMulti) {
-                // Hide single, show multi
                 PartynameSingleDropdown.hide();
                 PartynameMultiDropdown.show();
 
-                // Destroy Select2 if exists
                 if (PartynameSingleDropdown.hasClass("select2-hidden-accessible")) {
                     PartynameSingleDropdown.select2('destroy');
                 }
 
-                // Fill options first
-                FillPartyName();
-
-                // Initialize multiselect if not already
-                if (!PartynameMultiDropdown.data('multiselect')) {
+                FillPartyName(function () {
                     PartynameMultiDropdown.attr('multiple', 'multiple');
 
                     PartynameMultiDropdown.multiselect({
@@ -360,8 +342,6 @@
                         nonSelectedText: 'Select Party',
                         allSelectedText: 'All selected',
                         numberDisplayed: 2,
-
-                        // Update selectedPartyValues on individual change
                         onChange: function (option, checked) {
                             var value = $(option).val();
                             if (checked) {
@@ -372,41 +352,45 @@
                                 selectedPartyValues = selectedPartyValues.filter(v => v !== value);
                             }
                         },
-
-                        // Update selectedPartyValues when Select All is clicked
                         onSelectAll: function () {
                             selectedPartyValues = $('#PartyNameMulti option:visible').map(function () {
                                 return $(this).val();
                             }).get();
                         },
-
-                        // Clear selectedPartyValues when Deselect All is clicked
                         onDeselectAll: function () {
                             selectedPartyValues = [];
                         }
                     });
-                }
+
+                    // Pre-select multi values
+                    if (accountCodeBack) {
+                        var selectedValues = accountCodeBack.split(',');
+                        PartynameMultiDropdown.val(selectedValues).multiselect('refresh');
+                        selectedPartyValues = selectedValues;
+                    }
+                });
 
             } else {
-                // Hide multi, show single
                 PartynameMultiDropdown.hide();
                 PartynameSingleDropdown.show();
 
-                // Destroy multiselect if exists
                 if (PartynameMultiDropdown.data('multiselect')) {
                     PartynameMultiDropdown.multiselect('destroy');
                 }
 
                 selectedPartyValues = [];
 
-                // Fill options
-                FillPartyName();
+                FillPartyName(function () {
+                    PartynameSingleDropdown.select2({
+                        width: '100%',
+                        placeholder: 'Select Party',
+                        allowClear: true
+                    });
 
-                // Initialize Select2
-                PartynameSingleDropdown.select2({
-                    width: '100%',
-                    placeholder: 'Select Party',
-                    allowClear: true
+                    // Pre-select single value
+                    if (accountCodeBack) {
+                        PartynameSingleDropdown.val(accountCodeBack).trigger('change');
+                    }
                 });
             }
         }
@@ -459,75 +443,86 @@
         }
 
         function FillPartyName(callback) {
-            var OutStandingType = $('#ReportType').val();
-            var TillDate = $('#TillDate').val();
-            var isMulti = $('#multiPartySwitch').is(':checked'); // detect single/multiple
-            var PartynameSingleDropdown = $('#PartyNameSingle');
-            var PartynameMultiDropdown = $('#PartyNameMulti');
-            var GroupCode = $('#GroupName').val();
-
-            // 🔹 Get AccountList from sessionStorage
-            var accountListStr = sessionStorage.getItem('AccountList');
-            var accountArray = [];
-
-            if (accountListStr) {
-                try {
-                    accountArray = JSON.parse(accountListStr); // JSON array
-                } catch {
-                    accountArray = accountListStr.split(','); // comma-separated
-                }
-            }
-
             $.ajax({
-                url: '@Url.Action("GetPartyName", "OutStanding")',
-                data: {
-                    OutStandingType: OutStandingType,
-                    TillDate: TillDate,
-                    GroupCode: GroupCode
-                },
+                url: '@Url.Action("GetPartyName", "OutStanding")', // your API endpoint
                 type: 'GET',
+                dataType: 'json',
                 success: function (response) {
                     var obj = $.parseJSON(response);
 
-                    if (!isMulti) {
-                        // 🟢 Single select
-                        PartynameSingleDropdown.empty();
-                        PartynameSingleDropdown.append('<option value="">--Select--</option>');
+                    var PartynameSingleDropdown = $('#PartyNameSingle');
+                    var PartynameMultiDropdown = $('#PartyNameMulti');
 
-                        $.each(obj.Result, function (index, item) {
-                            var isSelected = (item.Account_Code.toString() === accountArray[0]) ? ' selected' : '';
-                            PartynameSingleDropdown.append('<option value="' + item.Account_Code + '"' + isSelected + '>' + item.PartyName + '</option>');
+                    // Check which dropdown should be active
+                    var isMulti = $('#multiPartySwitch').is(':checked');
+
+                    // Get back values from sessionStorage
+                    var accountCodeBackSingle = sessionStorage.getItem('AccountNameBack'); // single-select
+                    var accountCodeBackMulti = sessionStorage.getItem('AccountList');      // multi-select
+
+                    if (isMulti) {
+                        // Build multi-select options with selected
+                        var multiOptions = '<option value="">--Select--</option>';
+                        $.each(obj.Result, function (i, item) {
+                            var selectedMulti = (accountCodeBackMulti && accountCodeBackMulti.split(',').includes(item.Account_Code)) ? ' selected' : '';
+                            multiOptions += `<option value="${item.Account_Code}"${selectedMulti}>${item.PartyName}</option>`;
                         });
 
-                        // Optional: trigger change for Select2
-                        PartynameSingleDropdown.trigger('change');
+                        // Fill multi-select dropdown
+                        PartynameMultiDropdown.html(multiOptions);
+                        PartynameSingleDropdown.hide();
+                        PartynameMultiDropdown.show();
 
-                        // ✅ Return single AccountCode
-                        var selectedAccountCode = PartynameSingleDropdown.val();
-                        console.log("Selected AccountCode (single):", selectedAccountCode);
-                    }
-                    else {
-                        // 🟢 Multi select
-                        PartynameMultiDropdown.empty();
-
-                        $.each(obj.Result, function (index, item) {
-                            var isSelected = accountArray.includes(item.Account_Code.toString()) ? ' selected' : '';
-                            PartynameMultiDropdown.append('<option value="' + item.Account_Code + '"' + isSelected + '>' + item.PartyName + '</option>');
+                        // Initialize multi-select
+                        PartynameMultiDropdown.attr('multiple', 'multiple');
+                        PartynameMultiDropdown.multiselect({
+                            templates: {
+                                button: '<button type="button" class="multiselect btn btn-sm btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><span class="multiselect-selected-text"></span></button>',
+                            },
+                            enableFiltering: true,
+                            enableCaseInsensitiveFiltering: true,
+                            includeSelectAllOption: false,
+                            buttonWidth: '100%',
+                            maxHeight: 300,
+                            nonSelectedText: 'Select Party',
+                            allSelectedText: 'All selected',
+                            numberDisplayed: 2
                         });
 
-                        // Bootstrap Multiselect
-                        PartynameMultiDropdown.multiselect('rebuild');
-                        PartynameMultiDropdown.val(accountArray);
-                        PartynameMultiDropdown.multiselect('refresh');
+                        // Pre-select multi values
+                        if (accountCodeBackMulti) {
+                            var selectedValues = accountCodeBackMulti.split(',');
+                            PartynameMultiDropdown.val(selectedValues).multiselect('refresh');
+                            selectedPartyValues = selectedValues;
+                        }
 
-                        // If using Select2 instead: PartynameMultiDropdown.val(accountArray).trigger('change');
+                    } else {
+                        // Build single-select options with selected
+                        var singleOptions = '<option value="">--Select--</option>';
+                        $.each(obj.Result, function (i, item) {
+                            var selectedSingle = (item.Account_Code == accountCodeBackSingle) ? ' selected' : '';
+                            singleOptions += `<option value="${item.Account_Code}"${selectedSingle}>${item.PartyName}</option>`;
+                        });
 
-                        // ✅ Return array of selected AccountCodes
-                        var selectedAccounts = PartynameMultiDropdown.val();
-                        console.log("Selected AccountCodes (multiple):", selectedAccounts);
+                        // Fill single-select dropdown
+                        PartynameSingleDropdown.html(singleOptions);
+                        PartynameMultiDropdown.hide();
+                        PartynameSingleDropdown.show();
+
+                        // Initialize Select2
+                        PartynameSingleDropdown.select2({
+                            width: '100%',
+                            placeholder: 'Select Party',
+                            allowClear: true
+                        });
+
+                        // Pre-select single value
+                        if (accountCodeBackSingle) {
+                            PartynameSingleDropdown.val(accountCodeBackSingle).trigger('change');
+                        }
                     }
 
-                    // Callback after dropdown is filled
+                    // Run callback if provided
                     if (typeof callback === "function") {
                         callback();
                     }

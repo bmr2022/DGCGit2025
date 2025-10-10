@@ -47,6 +47,8 @@ namespace eTactWeb.DOM.Models
         public List<OutStandingPopUpData> OutStandingPopUpDatas { get; set; }   
         public int AccountCodeBack {  get; set; }
         public string[] AccountNameList {  get; set; }
+        public string? VoucherNoBack { get; set; }
+        public string? VoucherTypeBack {  get; set; }
     }
     public class OutStandingPopUpData
     {
