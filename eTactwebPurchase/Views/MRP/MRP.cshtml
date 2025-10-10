@@ -402,9 +402,13 @@
             //$('#MrpFirstDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
 
             if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
-                FillSaleOrderMRPGrid();
                 FillMRPDetailGrid();
-                FillFGMRPDetailGrid();
+                setTimeout(function () {
+                    FillFGMRPDetailGrid();
+                    setTimeout(function () {
+                        FillSaleOrderMRPGrid();
+                    }, 500);
+                }, 500);
                 
             }
 
@@ -533,6 +537,7 @@
                         }
                     }
                 }
+          
             });
         }
 
@@ -550,6 +555,7 @@
 
                     }
                 }
+           
             });
         }
 

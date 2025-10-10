@@ -260,7 +260,7 @@ namespace eTactWeb.Controllers
                     HttpContext.Session.SetString("KeyPendingFGRMMRP", JsonConvert.SerializeObject(ListOfMRPFGRMGrid));
                 }
 
-
+                await HttpContext.Session.CommitAsync();
                 return Json("done");
             }
             catch (Exception ex)

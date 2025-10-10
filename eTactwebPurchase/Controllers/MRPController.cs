@@ -534,57 +534,116 @@ namespace eTactWeb.Controllers
             return Json(JsonString);
         }
 
+        //public IActionResult FillMRPGridDetail()
+        //{
+        //    try
+        //    {
+        //        string modelJson = HttpContext.Session.GetString("KeyPendingMRPToMRPDetail");
+        //        IList<MRPDetail> PendingMRPDetail = new List<MRPDetail>();
+        //        if (modelJson != null)
+        //        {
+        //            PendingMRPDetail = JsonConvert.DeserializeObject<IList<MRPDetail>>(modelJson);
+        //        }
+
+        //        var model = new MRPDetail();
+        //        var MainModel = new MRPMain();
+        //        var MRPGrid = new List<MRPDetail>();
+        //        var MRPdetailGrid = new List<MRPDetail>();
+
+
+        //        foreach (var item in PendingMRPDetail)
+        //        {
+        //            string MRPDetailJson = HttpContext.Session.GetString("KeyMRPDetail");
+        //            IList<MRPDetail> MRPDetail = new List<MRPDetail>();
+        //            if (MRPDetailJson != null)
+        //            {
+        //                MRPDetail = JsonConvert.DeserializeObject<IList<MRPDetail>>(MRPDetailJson);
+        //            }
+
+        //            if (MRPDetail == null)
+        //            {
+        //                model.SeqNo = 1;
+        //                MRPGrid.Add(item);
+        //            }
+        //            else
+        //            {
+        //                model.SeqNo = MRPDetail.Count + 1;
+        //                //   MRPGrid = PendingMRPDetail.Where(x => x != null).ToList();
+        //                MRPdetailGrid.AddRange(MRPGrid);
+        //                MRPGrid.Add(item);
+
+        //            }
+
+        //            MainModel.MRPGrid = MRPGrid;
+        //            MainModel.EntryID = item.MRPEntryId;
+        //            MainModel.MRPNo = item.MRPNo;
+
+        //            HttpContext.Session.SetString("KeyMRPDetail", JsonConvert.SerializeObject(MainModel.MRPGrid));
+        //        }
+        //        return PartialView("_MRPGrid", MainModel);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw ex;
+        //    }
+        //}
+
+
         public IActionResult FillMRPGridDetail()
         {
             try
             {
+                // 1️⃣ Read Pending MRP Details (from KeyPendingMRPToMRPDetail)
                 string modelJson = HttpContext.Session.GetString("KeyPendingMRPToMRPDetail");
-                IList<MRPDetail> PendingMRPDetail = new List<MRPDetail>();
-                if (modelJson != null)
+                IList<MRPDetail> pendingMRPDetail = new List<MRPDetail>();
+                if (!string.IsNullOrEmpty(modelJson))
                 {
-                    PendingMRPDetail = JsonConvert.DeserializeObject<IList<MRPDetail>>(modelJson);
+                    pendingMRPDetail = JsonConvert.DeserializeObject<IList<MRPDetail>>(modelJson);
                 }
 
-                var model = new MRPDetail();
-                var MainModel = new MRPMain();
-                var MRPGrid = new List<MRPDetail>();
-                var MRPdetailGrid = new List<MRPDetail>();
-
-
-                foreach (var item in PendingMRPDetail)
+                // 2️⃣ Read existing MRP Details (if any)
+                string existingMRPJson = HttpContext.Session.GetString("KeyMRPDetail");
+                IList<MRPDetail> existingMRPDetail = new List<MRPDetail>();
+                if (!string.IsNullOrEmpty(existingMRPJson))
                 {
-                    string MRPDetailJson = HttpContext.Session.GetString("KeyMRPDetail");
-                    IList<MRPDetail> MRPDetail = new List<MRPDetail>();
-                    if (MRPDetailJson != null)
-                    {
-                        MRPDetail = JsonConvert.DeserializeObject<IList<MRPDetail>>(MRPDetailJson);
-                    }
-
-                    if (MRPDetail == null)
-                    {
-                        model.SeqNo = 1;
-                        MRPGrid.Add(item);
-                    }
-                    else
-                    {
-                        model.SeqNo = MRPDetail.Count + 1;
-                        //   MRPGrid = PendingMRPDetail.Where(x => x != null).ToList();
-                        MRPdetailGrid.AddRange(MRPGrid);
-                        MRPGrid.Add(item);
-
-                    }
-
-                    MainModel.MRPGrid = MRPGrid;
-                    MainModel.EntryID = item.MRPEntryId;
-                    MainModel.MRPNo = item.MRPNo;
-
-                    HttpContext.Session.SetString("KeyMRPDetail", JsonConvert.SerializeObject(MainModel.MRPGrid));
+                    existingMRPDetail = JsonConvert.DeserializeObject<IList<MRPDetail>>(existingMRPJson);
                 }
-                return PartialView("_MRPGrid", MainModel);
+
+                // 3️⃣ Compute starting sequence number
+                int nextSeqNo = (existingMRPDetail?.Count ?? 0) + 1;
+
+                // 4️⃣ Assign sequence numbers and prepare merged list
+                int seq = nextSeqNo;
+                foreach (var item in pendingMRPDetail)
+                {
+                    item.SeqNo = seq++;
+                }
+
+                // Merge existing + pending details
+                var mergedList = new List<MRPDetail>();
+                if (existingMRPDetail != null && existingMRPDetail.Any())
+                {
+                    mergedList.AddRange(existingMRPDetail);
+                }
+                mergedList.AddRange(pendingMRPDetail);
+
+                // 5️⃣ Build main model for view
+                var mainModel = new MRPMain
+                {
+                    MRPGrid = mergedList,
+                    EntryID = pendingMRPDetail.FirstOrDefault()?.MRPEntryId ?? 0,
+                    MRPNo = pendingMRPDetail.FirstOrDefault()?.MRPNo
+                };
+
+                // 6️⃣ Save merged data back to session once
+                HttpContext.Session.SetString("KeyMRPDetail", JsonConvert.SerializeObject(mergedList));
+
+                // 7️⃣ Return partial view
+                return PartialView("_MRPGrid", mainModel);
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw;
             }
         }
 
@@ -688,59 +747,142 @@ namespace eTactWeb.Controllers
 
 
 
+        //public IActionResult FillSaleOrderMRPGrid(string Month, int ForMonthYear)
+        //{
+        //    try
+        //    {
+        //        string modelJson = HttpContext.Session.GetString("KeyMRPSaleOrderDetail");
+        //        IList<MRPSaleOrderDetail> MRPSODetail = new List<MRPSaleOrderDetail>();
+        //        if (modelJson != null)
+        //        {
+        //            MRPSODetail = JsonConvert.DeserializeObject<IList<MRPSaleOrderDetail>>(modelJson);
+        //        }
+        //        var model = new MRPSaleOrderDetail();
+        //        var MainModel = new MRPMain();
+        //        var MRPGrid = new List<MRPSaleOrderDetail>();
+        //        var MRPSOdetailGrid = new List<MRPSaleOrderDetail>();
+
+
+
+        //        foreach (var item in MRPSODetail)
+        //        {
+        //            string MRPDetailJson = HttpContext.Session.GetString("KeyMRPSODetail");
+        //            IList<MRPDetail> MRPDetail = new List<MRPDetail>();
+        //            if (MRPDetailJson != null)
+        //            {
+        //                MRPDetail = JsonConvert.DeserializeObject<IList<MRPDetail>>(MRPDetailJson);
+        //            }
+        //            item.Months = Month;
+        //            item.MonthYear = ForMonthYear;
+
+        //            if (MRPDetail == null)
+        //            {
+        //                model.SeqNo = 1;
+        //                MRPGrid.Add(item);
+        //            }
+        //            else
+        //            {
+        //                model.SeqNo = MRPDetail.Count + 1;
+        //                //   MRPGrid = PendingMRPDetail.Where(x => x != null).ToList();
+        //                MRPSOdetailGrid.AddRange(MRPGrid);
+        //                MRPGrid.Add(item);
+
+        //            }
+
+        //            MainModel.MRPSOGrid = MRPGrid;
+
+        //            HttpContext.Session.SetString("KeyMRPSODetail", JsonConvert.SerializeObject(MainModel.MRPSOGrid));
+        //        }
+        //        return PartialView("_MRPSOGrid", MainModel);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw ex;
+        //    }
+        //}
         public IActionResult FillSaleOrderMRPGrid(string Month, int ForMonthYear)
         {
             try
             {
-                string modelJson = HttpContext.Session.GetString("KeyMRPSaleOrderDetail");
+                // Retrieve Sale Order Details
+                //string modelJson = HttpContext.Session.GetString("KeyMRPSaleOrderDetail");
+                //IList<MRPSaleOrderDetail> MRPSODetail = new List<MRPSaleOrderDetail>();
+
+                // Wait for session data (max 1 second)
+                string modelJson = null;
+                int retryCount = 0;
+                while (retryCount < 10)
+                {
+                    modelJson = HttpContext.Session.GetString("KeyMRPSaleOrderDetail");
+                    if (!string.IsNullOrEmpty(modelJson))
+                        break;
+
+                    // Wait 100ms before retry
+                    System.Threading.Thread.Sleep(1000);
+                    retryCount++;
+                }
                 IList<MRPSaleOrderDetail> MRPSODetail = new List<MRPSaleOrderDetail>();
-                if (modelJson != null)
+                if (!string.IsNullOrEmpty(modelJson))
                 {
                     MRPSODetail = JsonConvert.DeserializeObject<IList<MRPSaleOrderDetail>>(modelJson);
                 }
-                var model = new MRPSaleOrderDetail();
-                var MainModel = new MRPMain();
-                var MRPGrid = new List<MRPSaleOrderDetail>();
-                var MRPSOdetailGrid = new List<MRPSaleOrderDetail>();
 
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    MRPSODetail = JsonConvert.DeserializeObject<IList<MRPSaleOrderDetail>>(modelJson);
+                }
 
+                // Retrieve existing MRP Details (if any)
+                string MRPDetailJson = HttpContext.Session.GetString("KeyMRPSODetail");
+                IList<MRPDetail> existingMRPDetail = new List<MRPDetail>();
+
+                if (!string.IsNullOrEmpty(MRPDetailJson))
+                {
+                    existingMRPDetail = JsonConvert.DeserializeObject<IList<MRPDetail>>(MRPDetailJson);
+                }
+
+                // Update all MRPSODetail records with Month & Year
+                foreach (var item in MRPSODetail)
+                {
+                    item.Months = Month;
+                    item.MonthYear = ForMonthYear;
+                }
+
+                // Assign sequence number (next number after existing records)
+                int nextSeqNo = (existingMRPDetail?.Count ?? 0) + 1;
+                int seq = nextSeqNo;
 
                 foreach (var item in MRPSODetail)
                 {
-                    string MRPDetailJson = HttpContext.Session.GetString("KeyMRPSODetail");
-                    IList<MRPDetail> MRPDetail = new List<MRPDetail>();
-                    if (MRPDetailJson != null)
-                    {
-                        MRPDetail = JsonConvert.DeserializeObject<IList<MRPDetail>>(MRPDetailJson);
-                    }
-                    item.Months = Month;
-                    item.MonthYear = ForMonthYear;
-
-                    if (MRPDetail == null)
-                    {
-                        model.SeqNo = 1;
-                        MRPGrid.Add(item);
-                    }
-                    else
-                    {
-                        model.SeqNo = MRPDetail.Count + 1;
-                        //   MRPGrid = PendingMRPDetail.Where(x => x != null).ToList();
-                        MRPSOdetailGrid.AddRange(MRPGrid);
-                        MRPGrid.Add(item);
-
-                    }
-
-                    MainModel.MRPSOGrid = MRPGrid;
-
-                    HttpContext.Session.SetString("KeyMRPSODetail", JsonConvert.SerializeObject(MainModel.MRPSOGrid));
+                    item.SeqNo = seq++;
                 }
-                return PartialView("_MRPSOGrid", MainModel);
+
+                // Merge the lists (cast if types are compatible)
+                var mergedList = new List<MRPSaleOrderDetail>();
+                if (existingMRPDetail != null && existingMRPDetail.Any())
+                {
+                    // Assuming MRPDetail can be cast or converted to MRPSaleOrderDetail if they represent the same structure
+                    mergedList.AddRange(existingMRPDetail.Cast<MRPSaleOrderDetail>());
+                }
+                mergedList.AddRange(MRPSODetail);
+
+                // Save updated list in session
+                HttpContext.Session.SetString("KeyMRPSODetail", JsonConvert.SerializeObject(mergedList));
+
+                // Prepare main model for view
+                var mainModel = new MRPMain
+                {
+                    MRPSOGrid = mergedList
+                };
+
+                return PartialView("_MRPSOGrid", mainModel);
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw;
             }
         }
+
 
         public async Task<JsonResult> NewEntryId(int YearCode)
         {
