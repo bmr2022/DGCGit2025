@@ -2376,7 +2376,7 @@
             // Source for PartCodeText
             const partCodeSource = function (request, response) {
                 $.ajax({
-                    url: '@Url.Action("FillItems","PurchaseOrder")',
+                    url: '@Url.Action("FillItems", "PurchaseOrder")',
                     type: 'POST',
                     data: {
                         Type: $('#POTypeServItem').val(),
@@ -2414,7 +2414,7 @@
             // Source for ItemNameText
             const itemNameSource = function (request, response) {
                 $.ajax({
-                    url: '@Url.Action("FillItems","PurchaseOrder")',
+                    url: '@Url.Action("FillItems", "PurchaseOrder")',
                     type: 'POST',
                     data: {
                         Type: $('#POTypeServItem').val(),
@@ -2465,6 +2465,43 @@
                 minLength: 2
             });
 
+            // 🔹 Focusout event for PartCodeText (manual entry validation)
+            $("#PartCodeText").on("focusout", function () {
+                let partCode = $(this).val().trim();
+                if (partCode !== "") {
+                    $.ajax({
+                        url: '@Url.Action("FillItems", "PurchaseOrder")',
+                        type: 'POST',
+                        data: {
+                            Type: $('#POTypeServItem').val(),
+                            ShowAllItem: 'N',
+                            SearchItemCode: '',
+                            SearchPartCode: partCode
+                        },
+                        success: function (result) {
+                            let obj = typeof result === "string" ? JSON.parse(result) : result;
+
+                            if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
+                                let match = obj.Result.Table.find(item => item.PartCode.toLowerCase() === partCode.toLowerCase());
+                                if (match) {
+                                    $("#PartCodeText").val(match.PartCode).data("itemcode", match.Item_Code);
+                                    $("#ItemNameText").val(match.ItemName);
+                                    $('#ItemCode').val(match.Item_Code);
+                                    $('#PartCode').val(match.Item_Code);
+                                    GetItemPartCode("PartCode");
+                                } else {
+                                    alert("Invalid PartCode entered!");
+                                    $("#PartCodeText").val("").focus();
+                                }
+                            } else {
+                                alert("Invalid PartCode entered!");
+                                $("#PartCodeText").val("").focus();
+                            }
+                        }
+                    });
+                }
+            });
+
             // Autocomplete for ItemNameText
             $("#ItemNameText").autocomplete({
                 source: itemNameSource,
@@ -2481,6 +2518,43 @@
                     return false;
                 },
                 minLength: 2
+            });
+
+            // 🔹 Focusout event for ItemNameText (manual entry validation)
+            $("#ItemNameText").on("focusout", function () {
+                let itemName = $(this).val().trim();
+                if (itemName !== "") {
+                    $.ajax({
+                        url: '@Url.Action("FillItems", "PurchaseOrder")',
+                        type: 'POST',
+                        data: {
+                            Type: $('#POTypeServItem').val(),
+                            ShowAllItem: 'N',
+                            SearchItemCode: itemName,
+                            SearchPartCode: ''
+                        },
+                        success: function (result) {
+                            let obj = typeof result === "string" ? JSON.parse(result) : result;
+
+                            if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
+                                let match = obj.Result.Table.find(item => item.ItemName.toLowerCase() === itemName.toLowerCase());
+                                if (match) {
+                                    $("#ItemNameText").val(match.ItemName).data("itemcode", match.Item_Code);
+                                    $("#PartCodeText").val(match.PartCode);
+                                    $('#ItemCode').val(match.Item_Code);
+                                    $('#PartCode').val(match.Item_Code);
+                                    GetItemPartCode("ItemCode");
+                                } else {
+                                    alert("Invalid Item Name entered!");
+                                    $("#ItemNameText").val("").focus();
+                                }
+                            } else {
+                                alert("Invalid Item Name entered!");
+                                $("#ItemNameText").val("").focus();
+                            }
+                        }
+                    });
+                }
             });
         }
 
