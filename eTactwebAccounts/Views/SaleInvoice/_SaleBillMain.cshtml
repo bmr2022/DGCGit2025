@@ -66,7 +66,7 @@
                 <option value="J">SaleBill JobWork</option>
             </select>
         </div>
-        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+      @*   <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
             <label asp-for="AccountCode" class="form-label" style="color: red;">Customer Name*</label>
             <div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
                 <input asp-for="PN1" class="form-check-input" type="checkbox" role="switch" />Show All
@@ -78,7 +78,20 @@
             {
                 <input type="hidden" asp-for="AccountCode" id="hiddenAccountCode" />
             }
+        </div> *@
+        <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+            <label asp-for="AccountCode" class="form-label" style="color:  red;">Customer Name</label>
+            <div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
+                <input asp-for="PN1" class="form-check-input" type="checkbox" role="switch" />Show All
+            </div>
+            @*   <select class="form-select" asp-for="AccountCode" asp-items="@(new SelectList(Model.AccountList,"Value","Text"))">
+                                            <option value="">-Select-</option>
+                                        </select> *@
+            <input type="text" asp-for="AccountName" id="AccountCodeText" class="form-control" value="@Model.AccountName" placeholder="Type Item Name..." />
+            <input type="hidden" asp-for="AccountCode" id="AccountCode" />
+            <input type="hidden" value="@Model.AccountCode" id="hiddenAccountCode" />
         </div>
+
         <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 SaleBillCustomerDetail">
             <label asp-for="GSTNO" class="form-label" style="color: blue;">GST No</label>
             <input asp-for="GSTNO" class="form-control" />

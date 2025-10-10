@@ -1662,6 +1662,7 @@ public static class CommonFunc
                         && typeProperty.PropertyInfo.Name != "TxItemCode" && typeProperty.PropertyInfo.Name != "VendJwAdjustmentMandatory" && typeProperty.PropertyInfo.Name != "StockableNonStockable"
                         && typeProperty.PropertyInfo.Name != "TxItemName" && typeProperty.PropertyInfo.Name != "CustJwAdjustmentMandatory"
                         && typeProperty.PropertyInfo.Name != "TxOnExp"
+                        && typeProperty.PropertyInfo.Name != "AccountList"
                         && typeProperty.PropertyInfo.Name != "TxPartCode"
                         && typeProperty.PropertyInfo.Name != "TxPartName"
                         && typeProperty.PropertyInfo.Name != "TxPercentg"

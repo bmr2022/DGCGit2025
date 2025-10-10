@@ -1905,9 +1905,9 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> FillItems(string showAll, string TypeItemServAssets, string sbJobWork)
+        public async Task<JsonResult> FillItems(string showAll, string TypeItemServAssets, string sbJobWork,string SearchItemCode, string SearchPartCode)
         {
-            var JSON = await _SaleBill.FillItems(showAll, TypeItemServAssets, sbJobWork);
+            var JSON = await _SaleBill.FillItems(showAll, TypeItemServAssets, sbJobWork ,SearchItemCode, SearchPartCode);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
