@@ -909,6 +909,13 @@
         </div>
     </div>
 </div> *@
+<div id="ajaxLoader" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(255,255,255,0.7); z-index:9999; text-align:center;">
+    <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%);">
+        <span class="spinner-border text-primary" role="status"></span>
+        <br />
+        <span>Processing...</span>
+    </div>
+</div>
 <style>
     .modal-fullscreen .modal-content {
         height: 80%;
@@ -1257,7 +1264,11 @@
                     data: formData,
                     processData: false,
                     contentType: false,
+                       beforeSend: function () {
+                    $('#ajaxLoader').show(); // ✅ Show loader
+                },
                     success: function (res) {
+                           $('#ajaxLoader').hide();
                         if (res && res.status === "Success") {
                             if (ShouldEinvoice && res.entryId && res.yearCode) {
                                 const payload = {
@@ -1390,7 +1401,11 @@
                     method: 'POST',
                     contentType: 'application/json',
                     data: JSON.stringify(model),
+                    beforeSend: function () {
+                    $('#ajaxLoader').show(); // ✅ Show loader
+                },
                     success: function (res) {
+                           $('#ajaxLoader').hide();
                         // if (res.redirectUrl) {
                         //     window.location.href = res.redirectUrl;
                         // }

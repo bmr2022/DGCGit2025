@@ -671,7 +671,13 @@
         </div>
     </form>
 </div>
-
+<div id="ajaxLoader" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(255,255,255,0.7); z-index:9999; text-align:center;">
+    <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%);">
+        <span class="spinner-border text-primary" role="status"></span>
+        <br />
+        <span>Processing...</span>
+    </div>
+</div>
 <style>
     .toggle-btn {
         border: none;
@@ -1072,8 +1078,12 @@
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("GetBomMultiLevelGrid")",
+                           beforeSend: function () {
+                            $('#ajaxLoader').show(); // ✅ Show loader
+                        },
                 success: function (response) {
-                     if($.parseJSON(response).Result.length > 0){
+                            $('#ajaxLoader').hide();
+                             if($.parseJSON(response).Result.length > 0){
                         $.notify('Bom refresh successfully.', 'success');
                      }else{
                           $.notify('Bom not refresh properly.', 'error');
