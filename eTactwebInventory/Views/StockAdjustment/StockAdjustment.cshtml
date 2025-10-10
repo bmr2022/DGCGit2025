@@ -1558,6 +1558,8 @@
                         $('#EntryId').val(obj.Result[0].EntryId);
                         $('#SlipNo').val("");
                         $('#SlipNo').val(obj.Result[0].slipno);
+                        $('#batchno').val("");
+                        $('#batchno').val(obj.Result[0].slipno);
                     }
                 }
             });
@@ -1799,6 +1801,14 @@
             }
             else {
                 RemoveErrorCls('batchno');
+            }
+
+            if ($('#Unit').val() == '') {
+                AddErrorCls('Unit');
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('Unit');
             }
 
              if ($('#StoreWorkCenter').val() == 'S') {

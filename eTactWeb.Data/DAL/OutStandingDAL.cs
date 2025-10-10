@@ -137,7 +137,7 @@ namespace eTactWeb.Data.DAL
                                                               GroupName = GroupName,
                                                               TillDate = tillDt,
                                                               AccountCodeBack = AccountCode,
-                                                              AccountNameList = AccountNameList
+                                                              AccountNameList = AccountNameList,
 														  }).ToList();
 						}
 						else

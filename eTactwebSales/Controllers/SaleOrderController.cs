@@ -32,6 +32,7 @@ using System.Drawing;
 using System.Security.Cryptography;
 using Newtonsoft.Json.Linq;
 using eTactWeb.Services;
+using DocumentFormat.OpenXml.EMMA;
 
 
 
@@ -807,11 +808,22 @@ public class SaleOrderController : Controller
 	{
 		bool exists = false;
 		var model = new SaleOrderModel();
-		_MemoryCache.TryGetValue("KeyTaxGrid", out List<TaxModel> TaxGrid);
+		string modelJson = HttpContext.Session.GetString("ItemList");
+		List<ItemDetail> ItemDetailGrid = new List<ItemDetail>();
+		if (!string.IsNullOrEmpty(modelJson))
+		{
+			ItemDetailGrid = JsonConvert.DeserializeObject<List<ItemDetail>>(modelJson);
+		}
+		string modelJson1 = HttpContext.Session.GetString("KeyTaxGrid");
+		List<TaxModel> TaxGrid = new List<TaxModel>();
+		if (!string.IsNullOrEmpty(modelJson1))
+        {
+            TaxGrid = JsonConvert.DeserializeObject<List<TaxModel>>(modelJson1);
+        }
+		
 		int Indx = Convert.ToInt32(SeqNo) - 1;
 
-		if (_MemoryCache.TryGetValue("ItemList", out List<ItemDetail> ItemDetailGrid) != null)
-		{
+		
 			model.ItemDetailGrid = ItemDetailGrid;
 
 			var itemfound = model.ItemDetailGrid.FirstOrDefault(item => item.SeqNo == Convert.ToInt32(SeqNo)).PartCode;
@@ -848,9 +860,9 @@ public class SaleOrderController : Controller
 			}
 			else
 			{
-				HttpContext.Session.SetString("ItemList", JsonConvert.SerializeObject(model.ItemDetailGrid));
-			}
-		}
+            HttpContext.Session.SetString("ItemList", JsonConvert.SerializeObject(model.ItemDetailGrid));
+        }
+		
 		return PartialView("_SaleItemGrid", model);
 	}
 
@@ -861,9 +873,21 @@ public class SaleOrderController : Controller
 
 		int Indx = Convert.ToInt32(model.SeqNo) - 1;
 
-		if (_MemoryCache.TryGetValue("ItemList" , out List<ItemDetail> ItemDetailGrid) != null)
-		{
-			_MemoryCache.TryGetValue("KeyTaxGrid", out List<TaxModel> TaxGrid);
+       
+        string modelJson = HttpContext.Session.GetString("ItemList");
+        List<ItemDetail> ItemDetailGrid = new List<ItemDetail>();
+        if (!string.IsNullOrEmpty(modelJson))
+        {
+            ItemDetailGrid = JsonConvert.DeserializeObject<List<ItemDetail>>(modelJson);
+        }
+        string modelJson1 = HttpContext.Session.GetString("KeyTaxGrid");
+        List<TaxModel> TaxGrid = new List<TaxModel>();
+        if (!string.IsNullOrEmpty(modelJson1))
+        {
+            TaxGrid = JsonConvert.DeserializeObject<List<TaxModel>>(modelJson1);
+        }
+
+        //_MemoryCache.TryGetValue("KeyTaxGrid", out List<TaxModel> TaxGrid);
 			model.ItemDetailGrid = ItemDetailGrid;
 
 			var ItmPartCode = model.ItemDetailGrid.FirstOrDefault(item => item.SeqNo == Convert.ToInt32(model.SeqNo)).PartCode;
@@ -887,21 +911,22 @@ public class SaleOrderController : Controller
 				item.SeqNo = Indx;
 			}
 
-			//if (model.ItemDetailGrid.Count > 0)
-			//{
-			//	HttpContext.Session.SetString
-			//	(
-			//		"ItemList",
-			//		JsonConvert.SerializeObject(model.ItemDetailGrid)
-			//	);
-			//}
-			//else
-			//{
-			//	HttpContext.Session.Remove("ItemList");
-			//}
-		}
+        //if (model.ItemDetailGrid.Count > 0)
+        //{
+        //	HttpContext.Session.SetString
+        //	(
+        //		"ItemList",
+        //		JsonConvert.SerializeObject(model.ItemDetailGrid)
+        //	);
+        //}
+        //else
+        //{
+        //	HttpContext.Session.Remove("ItemList");
+        //}
+        HttpContext.Session.SetString("ItemList", JsonConvert.SerializeObject(model.ItemDetailGrid));
 
-		return Json(JsonConvert.SerializeObject(Result));
+
+        return Json(JsonConvert.SerializeObject(Result));
 	}
 	public JsonResult ResetGridItems()
 	{
@@ -1156,8 +1181,24 @@ public class SaleOrderController : Controller
 			var MainModel = new SaleOrderModel();
 			var _List = new List<ItemDetail>();
 			var SSGrid = new List<ItemDetail>();
-			_MemoryCache.TryGetValue("ItemList", out List<ItemDetail> ItemDetailGrid);
-			_MemoryCache.TryGetValue("KeyTaxGrid", out List<TaxModel> TaxGrid);
+            string modelJson = HttpContext.Session.GetString("ItemList");
+            List<ItemDetail> ItemDetailGrid = new List<ItemDetail>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                ItemDetailGrid = JsonConvert.DeserializeObject<List<ItemDetail>>(modelJson);
+            }
+
+            string modelJson1 = HttpContext.Session.GetString("KeyTaxGrid");
+            List<TaxModel> POTaxGrid = new List<TaxModel>();
+            if (!string.IsNullOrEmpty(modelJson1))
+            {
+                POTaxGrid = JsonConvert.DeserializeObject<List<TaxModel>>(modelJson1);
+            }
+
+
+
+            //_MemoryCache.TryGetValue("ItemList", out List<ItemDetail> ItemDetailGrid);
+            //_MemoryCache.TryGetValue("KeyTaxGrid", out List<TaxModel> TaxGrid);
 			if (model != null)
 			{
 				if (ItemDetailGrid == null)
@@ -1188,7 +1229,7 @@ public class SaleOrderController : Controller
 					Size = 1024,
 				};
 
-				_MemoryCache.Set("ItemList", MainModel.ItemDetailGrid, cacheEntryOptions);
+				//_MemoryCache.Set("ItemList", MainModel.ItemDetailGrid, cacheEntryOptions);
 				HttpContext.Session.SetString("ItemList", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
 			}
 			else
@@ -1296,6 +1337,7 @@ public class SaleOrderController : Controller
 				};
 
 				_MemoryCache.Set("KeyTaxGrid", model.TaxDetailGridd, cacheEntryOptions);
+				HttpContext.Session.SetString("KeyTaxGrid", JsonConvert.SerializeObject(model.TaxDetailGridd));
 			}
 			if (model.SaleOrderBillToShipTo != null)
 			{
@@ -1307,12 +1349,14 @@ public class SaleOrderController : Controller
 				};
 
 				_MemoryCache.Set("KeySaleBillToShipTo", model.SaleOrderBillToShipTo, cacheEntryOptions);
+
 			}
+
 		}
 		else
 		{
 			model = await BindModels(null);
-			//HttpContext.Session.Remove("ItemList");
+			HttpContext.Session.Remove("ItemList");
 			_MemoryCache.Remove("ItemList");
 			HttpContext.Session.Remove("TaxGrid");
 			_MemoryCache.Remove("KeyTaxGrid");
@@ -1361,12 +1405,53 @@ public class SaleOrderController : Controller
 			_MemoryCache.TryGetValue("KeySaleBillToShipTo", out List<SaleOrderBillToShipTo> SaleOrderBillToShipToGrid);
 
 
-			var ItemDetailList = JsonConvert.DeserializeObject<List<ItemDetail>>(HttpContext.Session.GetString("ItemList") ?? string.Empty);
+			//var ItemDetailList = JsonConvert.DeserializeObject<List<ItemDetail>>(HttpContext.Session.GetString("ItemList") ?? string.Empty);
 
-			_logger.LogInformation("ItemDetailList session Data done", DateTime.UtcNow);
 
-			_MemoryCache.TryGetValue("KeyTaxGrid", out List<TaxModel> TaxGrid);
-			var MainModel = new SaleOrderModel();
+            //string modelJson = HttpContext.Session.GetString("ItemList");
+            //List<PurchaseOrderModel> PSDetail = new List<PurchaseOrderModel>();
+           var MainModel = new SaleOrderModel();
+       //     if (!string.IsNullOrEmpty(modelJson))
+       //     {
+       //         //PSDetail = JsonConvert.DeserializeObject<List<PurchaseOrderModel>>(modelJson);
+
+       //         MainModel = string.IsNullOrEmpty(modelJson)
+       //? new SaleOrderModel()
+       //: JsonConvert.DeserializeObject<SaleOrderModel>(modelJson);
+
+
+            string modelJson = HttpContext.Session.GetString("ItemList");
+            //List<TaxModel> TaxDetail = new List<TaxModel>();
+            List<ItemDetail> ItemDetailList = new List<ItemDetail>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                //TaxDetail = JsonConvert.DeserializeObject<List<TaxModel>>(modelTaxJson);
+                ItemDetailList = string.IsNullOrEmpty(modelJson)
+      ? new List<ItemDetail>()
+      : JsonConvert.DeserializeObject<List<ItemDetail>>(modelJson);
+
+            }
+
+
+
+            _logger.LogInformation("ItemDetailList session Data done", DateTime.UtcNow);
+
+
+
+            string modelTaxJson = HttpContext.Session.GetString("KeyTaxGrid");
+            //List<TaxModel> TaxDetail = new List<TaxModel>();
+            List<TaxModel> TaxGrid = new List<TaxModel>();
+            if (!string.IsNullOrEmpty(modelTaxJson))
+            {
+                //TaxDetail = JsonConvert.DeserializeObject<List<TaxModel>>(modelTaxJson);
+                TaxGrid = string.IsNullOrEmpty(modelTaxJson)
+      ? new List<TaxModel>()
+      : JsonConvert.DeserializeObject<List<TaxModel>>(modelTaxJson);
+
+            }
+
+            //_MemoryCache.TryGetValue("KeyTaxGrid", out List<TaxModel> TaxGrid);
+		
 			//_MemoryCache.TryGetValue("ItemList", out List<ItemDetail> ItemDetailList);
 
 			ModelState.Clear();
