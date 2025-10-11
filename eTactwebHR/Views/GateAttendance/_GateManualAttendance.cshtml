@@ -94,8 +94,14 @@
                             {
                                 @if (Model.DayOrMonthType == "Daily")
                                 {
-                                    var Fromvalue = Model.GateAttDetailsList[i].Attendance.ContainsKey("fromtime") ? Model.GateAttDetailsList[i].Attendance["fromtime"] : "";
-                                    var Tovalue = Model.GateAttDetailsList[i].Attendance.ContainsKey("totime") ? Model.GateAttDetailsList[i].Attendance["totime"] : "";
+                                    var fromkey = Model.GateAttDetailsList[i].Attendance.FirstOrDefault(x => string.Equals(x.Key, "fromtime", StringComparison.OrdinalIgnoreCase)).Key;
+                                    var tokey = Model.GateAttDetailsList[i].Attendance.FirstOrDefault(x => string.Equals(x.Key, "totime", StringComparison.OrdinalIgnoreCase)).Key;
+                                    var Fromvalue = fromkey != null ? Model.GateAttDetailsList[i].Attendance[fromkey] : "";
+                                    var Tovalue = tokey != null ? Model.GateAttDetailsList[i].Attendance[tokey] : "";
+                                    Fromvalue = string.IsNullOrWhiteSpace(Fromvalue) ? "" : (DateTime.TryParse(Fromvalue.Trim(), out var dt) ? dt.ToString("HH\\:mm") : "");
+                                    Tovalue = string.IsNullOrWhiteSpace(Tovalue) ? "" : (DateTime.TryParse(Tovalue.Trim(), out var tdt) ? tdt.ToString("HH\\:mm") : "");
+                                    //var Fromvalue = Model.GateAttDetailsList[i].Attendance.ContainsKey("fromtime") ? Model.GateAttDetailsList[i].Attendance["fromtime"] : "";
+                                    //var Tovalue = Model.GateAttDetailsList[i].Attendance.ContainsKey("totime") ? Model.GateAttDetailsList[i].Attendance["totime"] : "";
                                     <td><input type="time" id='@("txt_" + Model.GateAttDetailsList[i].EmpId + "_InTime")' name="Attendance[@Model.GateAttDetailsList[i].EmpId][InTime]" value="@Fromvalue" class="form-control form-control-sm att-input timepicker" data-empid="@Model.GateAttDetailsList[i].EmpId" data-type="InTime" /></td>
                                     <td><input type="time" id='@("txt_" + Model.GateAttDetailsList[i].EmpId + "_OutTime")' name="Attendance[@Model.GateAttDetailsList[i].EmpId][OutTime]" value="@Tovalue" class="form-control form-control-sm att-input timepicker" data-empid="@Model.GateAttDetailsList[i].EmpId" data-type="OutTime" /></td>
                                 }
@@ -103,7 +109,8 @@
                                 {
                                     @foreach (var dayCol in Model.DayHeaders)
                                     {
-                                        var value = Model.GateAttDetailsList[i].Attendance.ContainsKey(dayCol.ToLower()) ? Model.GateAttDetailsList[i].Attendance[dayCol.ToLower()] : "";
+                                        var attkey = Model.GateAttDetailsList[i].Attendance.FirstOrDefault(x => string.Equals(x.Key, dayCol, StringComparison.OrdinalIgnoreCase)).Key;
+                                        var value = attkey != null ? Model.GateAttDetailsList[i].Attendance[attkey] : "";
                                         var parts = dayCol.Split('('); var dayNo = parts[0]; var type = parts[1].Replace(")", "");
                                         // int monthNo = DateTime.ParseExact(Model.strEmpAttMonth, "MMM", System.Globalization.CultureInfo.InvariantCulture).Month;
                                         int monthNo = (Model.intEmpAttMonth != null) ? Convert.ToInt32(Model.intEmpAttMonth) : 1;
@@ -115,15 +122,21 @@
                                         string cssClass = isWeekoff ? "weekoff-time" : (isHoliday ? "holiday-time" : "");
                                         bool allowEdit = (holiday != null && isHoliday && string.Equals(holiday?.AllowedCompOff, "YES", StringComparison.OrdinalIgnoreCase)) || !isHoliday;
                                         if(isWeekoff) { allowEdit = false; }
-                                        value = allowEdit ? value : "";
+                                        value = allowEdit ? (string.IsNullOrWhiteSpace(value) ? "" : (DateTime.TryParse(value.Trim(), out var dt) ? dt.ToString("HH\\:mm") : "")) : "";
                                         <td><input type="time" id='@("txt_" + Model.GateAttDetailsList[i].EmpId + "_" + dayNo + "_" + type)' name="Attendance[@Model.GateAttDetailsList[i].EmpId][@dayCol]" value="@value" class="form-control form-control-sm att-input timepicker @cssClass" data-empid="@Model.GateAttDetailsList[i].EmpId" data-day="@dayNo" data-type="@type" @(allowEdit ? "" : "disabled") /></td>
                                     }
                                 }
                             }
                             else
                             {
-                                var Fromvalue = Model.GateAttDetailsList[i].Attendance.ContainsKey("fromtime") ? Model.GateAttDetailsList[i].Attendance["fromtime"] : "";
-                                var Tovalue = Model.GateAttDetailsList[i].Attendance.ContainsKey("totime") ? Model.GateAttDetailsList[i].Attendance["totime"] : "";
+                                var fromkey = Model.GateAttDetailsList[i].Attendance.FirstOrDefault(x => string.Equals(x.Key, "fromtime", StringComparison.OrdinalIgnoreCase)).Key;
+                                var tokey = Model.GateAttDetailsList[i].Attendance.FirstOrDefault(x => string.Equals(x.Key, "totime", StringComparison.OrdinalIgnoreCase)).Key;
+                                var Fromvalue = fromkey != null ? Model.GateAttDetailsList[i].Attendance[fromkey] : "";
+                                var Tovalue = tokey != null ? Model.GateAttDetailsList[i].Attendance[tokey] : "";
+                                Fromvalue = string.IsNullOrWhiteSpace(Fromvalue) ? "" : (DateTime.TryParse(Fromvalue.Trim(), out var dt) ? dt.ToString("HH\\:mm") : "");
+                                Tovalue = string.IsNullOrWhiteSpace(Tovalue) ? "" : (DateTime.TryParse(Tovalue.Trim(), out var tdt) ? tdt.ToString("HH\\:mm") : "");
+                                //var Fromvalue = Model.GateAttDetailsList[i].Attendance.ContainsKey("fromtime") ? Model.GateAttDetailsList[i].Attendance["fromtime"] : "";
+                                //var Tovalue = Model.GateAttDetailsList[i].Attendance.ContainsKey("totime") ? Model.GateAttDetailsList[i].Attendance["totime"] : "";
                                 <td><input type="time" id='@("txt_" + Model.GateAttDetailsList[i].EmpId + "_InTime")' name="Attendance[@Model.GateAttDetailsList[i].EmpId][InTime]" value="@Fromvalue" class="form-control form-control-sm att-input timepicker" data-empid="@Model.GateAttDetailsList[i].EmpId" data-type="InTime" /></td>
                                 <td><input type="time" id='@("txt_" + Model.GateAttDetailsList[i].EmpId + "_OutTime")' name="Attendance[@Model.GateAttDetailsList[i].EmpId][OutTime]" value="@Tovalue" class="form-control form-control-sm att-input timepicker" data-empid="@Model.GateAttDetailsList[i].EmpId" data-type="OutTime" /></td>
                             }

@@ -23,6 +23,7 @@ using DocumentFormat.OpenXml.Wordprocessing;
 using PdfSharp.Drawing.BarCodes;
 using DocumentFormat.OpenXml.EMMA;
 using DocumentFormat.OpenXml.VariantTypes;
+using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace eTactwebHR.Controllers
 {
@@ -83,6 +84,7 @@ namespace eTactwebHR.Controllers
                 MainModel.GateAttYearCode = YearCode;
                 MainModel.FinFromDate = HttpContext.Session.GetString("FromDate");
                 MainModel.FinToDate = HttpContext.Session.GetString("ToDate");
+                MainModel.intEmpAttMonth = string.IsNullOrWhiteSpace(MainModel.strEmpAttMonth) ? 0 : new[] { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" }.Select((m, i) => new { m, i }).FirstOrDefault(x => MainModel.strEmpAttMonth.StartsWith(x.m, StringComparison.OrdinalIgnoreCase))?.i + 1 ?? 0;
                 MainModel = await BindModels(MainModel).ConfigureAwait(false);
                 MainModel.HolidayList = GetHolidayList((!string.IsNullOrEmpty(MainModel.EmpCategoryId)) ? Convert.ToInt32(MainModel.EmpCategoryId) : 0, MainModel.EmpAttDate ?? new DateTime(MainModel.GateAttYearCode, 1, 1), YearCode)?.HolidayList ?? new List<GateAttendanceHolidayModel>();
                 ViewBag.DeptList = await IDataLogic.GetDropDownList("FillDepartment", "HRSPGateAttendanceMainDetail");
@@ -521,6 +523,8 @@ namespace eTactwebHR.Controllers
                 Table.Columns.Add($"TotalNoOfHours", typeof(decimal));
             }
             Table.Columns.Add("AttShiftId", typeof(int));
+            Table.Columns.Add("DesigId", typeof(int));
+            Table.Columns.Add("DeptId", typeof(int));
             Table.Columns.Add("CC", typeof(string));
             Table.Columns.Add("CategoryCode", typeof(int));
             Table.Columns.Add("EmpAttTime", typeof(DateTime));
@@ -588,6 +592,8 @@ namespace eTactwebHR.Controllers
                 }
 
                 rowValues.Add(Item.ActualEmpShiftId ?? 0);
+                rowValues.Add(Item.DesignationEntryId ?? 0);
+                rowValues.Add(Item.DeptId ?? 0);
                 rowValues.Add(itemDetailList.CC ?? string.Empty);
                 rowValues.Add(itemDetailList.EmpCategoryId);
                 rowValues.Add(currentDt);

@@ -587,8 +587,13 @@
                         $('#strEmpAttMonth').val('');
                     }
                     else {
-                        $('#strEmpAttMonth').prop("selectedIndex", $('#intEmpAttMonth').val());
-                        $('#CategoryCode').val($('#EmpCategory').val());
+                        if(ValidateNull($('#intEmpAttMonth').val())) {
+                            $('#strEmpAttMonth').prop("selectedIndex", $('#intEmpAttMonth').val());
+                        }
+                        else{
+                            $('#strEmpAttMonth').val($('#strEmpAttMonth').val());
+                        }
+                        $('#CategoryCode').val($('#EmpCategoryId').val());
                     }
                     $('.dvGateAttEntryDay').hide();
                     $('#strEmpAttDate').val("");

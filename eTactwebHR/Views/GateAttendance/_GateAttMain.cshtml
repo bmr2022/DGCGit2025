@@ -82,7 +82,7 @@
             <select class="form-select" asp-for="CategoryCode" tabindex="5" asp-items="@(new SelectList(Model.CategoryList ?? new List<eTactWeb.DOM.Models.Common.TextValue>(), "Value", "Text"))">
                 <option value="0">-Select-</option>
             </select>
-            <input type="hidden" value="@Model.EmpCategoryId" />
+            <input asp-for="EmpCategoryId" type="hidden" />
         </div>
         <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-xs-12 col-sm-auto" style="align-self: anchor-center;padding-top: 15px;">
             <div class="row g-3 justify-content-around">
