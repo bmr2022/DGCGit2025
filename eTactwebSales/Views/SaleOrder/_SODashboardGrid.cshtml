@@ -180,9 +180,9 @@
                                 <td class="SaleOrderOtherRequiredDetail">@item.DeliveryAddress</td>
                                 <td class="SaleOrderOtherRequiredDetail">@item.Consignee</td>
                                 <td class="SaleOrderOtherRequiredDetail">@item.ConsigneeAddress</td>
-                                <td>@item.OrderAmt</td>
-                                <td>@item.OrderNetAmt</td>
-                                <td>@item.pendingAmt</td>
+                                <td id="hiddenOrderAmt-@Cntr">@item.OrderAmt</td>
+                                <td id="hiddenOrderNetAmt-@Cntr">@item.OrderNetAmt</td>
+                                <td id="hiddenPendingAmt-@Cntr">@item.pendingAmt</td>
                                 <td class="SaleOrderOtherRequiredDetail">@item.SOConfirmDate.Split(" ")[0]</td>
                                 <td class="SaleOrderOtherRequiredDetail">@item.Approved</td>
                                 <td class="">@item.SOComplete</td>

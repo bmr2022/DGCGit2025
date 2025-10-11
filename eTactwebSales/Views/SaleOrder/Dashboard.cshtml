@@ -159,6 +159,9 @@
             </div>
             <div class="row g-2 gx-3 totalrows">
                 <div class="col-12 text-center">
+                    <strong class="me-3">Total Amount : <span id="OrderAmt"></span></strong>
+                    <strong class="me-3">Total NetAmount : <span id="OrderNetAmt"></span></strong>
+                    <strong class="me-3">Total PendAmount : <span id="pendingAmt"></span></strong>
                     <strong>Total No Of Rows : <span id="lblTotalNoOfItems"></span></strong>
                 </div>
             </div>
@@ -409,6 +412,22 @@
             } else {
                 $('#lblTotalNoOfItems').text(0);
             }
+
+            var totalOrderAmt = 0;
+            var totalOrderNetAmt = 0;
+            var totalPendingAmt = 0;
+            for (var i = 1; i <= soGridrow; i++) {
+                var orderAmt = parseFloat($('#hiddenOrderAmt-' + i).text().trim()) || 0;
+                var orderNetAmt = parseFloat($('#hiddenOrderNetAmt-' + i).text().trim()) || 0;
+                var pendingAmt = parseFloat($('#hiddenPendingAmt-' + i).text().trim()) || 0;
+
+                totalOrderAmt += isNaN(orderAmt) ? 0 : orderAmt;
+                totalOrderNetAmt += isNaN(orderNetAmt) ? 0 : orderNetAmt;
+                totalPendingAmt += isNaN(pendingAmt) ? 0 : pendingAmt;
+            }
+            $('#OrderAmt').text(totalOrderAmt.toFixed(6));
+            $('#OrderNetAmt').text(totalOrderNetAmt.toFixed(6));
+            $('#pendingAmt').text(totalPendingAmt.toFixed(6));
         }
 
         function GetFeatureOption() {
