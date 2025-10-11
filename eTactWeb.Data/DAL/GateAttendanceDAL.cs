@@ -459,17 +459,17 @@ public class GateAttendanceDAL
                             Attendance = new Dictionary<string, string>()
                         };
 
-                        if (MainModel.DayOrMonthType == "Daily")
+                        if (string.Equals(MainModel.DayOrMonthType, "Daily", StringComparison.OrdinalIgnoreCase))
                         {
                             // directly pick FromTime/ToTime style columns
                             foreach (var col in allColumns.Where(c =>
                                 c.Equals("FromTime", StringComparison.OrdinalIgnoreCase) ||
                                 c.Equals("ToTime", StringComparison.OrdinalIgnoreCase)))
                             {
-                                detail.Attendance[col.ToLower()] = dr[col]?.ToString();
+                                detail.Attendance[col.ToLower()] = dr[col]?.ToString() ?? string.Empty;
                             }
                         }
-                        else if (MainModel.DayOrMonthType == "Monthly")
+                        else if (string.Equals(MainModel.DayOrMonthType,"Monthly", StringComparison.OrdinalIgnoreCase))
                         {
                             //var col in allColumns.Where(c => c.StartsWith("attintime", StringComparison.OrdinalIgnoreCase) || c.StartsWith("attouttime", StringComparison.OrdinalIgnoreCase) || c.StartsWith("AttendanceDate", StringComparison.OrdinalIgnoreCase) || c.StartsWith("AttendStatus", StringComparison.OrdinalIgnoreCase) || c.StartsWith("TotalNoOfHour", StringComparison.OrdinalIgnoreCase))
                             for (int d = 1; d <= daysInMonth; d++)
@@ -478,10 +478,13 @@ public class GateAttendanceDAL
                                 string outCol = $"attouttime{d}";
 
                                 if (allColumns.Contains(inCol, StringComparer.OrdinalIgnoreCase))
-                                    detail.Attendance[$"{d}(InTime)"] = dr[inCol]?.ToString();
-
+                                    detail.Attendance[$"{d}(InTime)"] = dr[inCol]?.ToString() ?? string.Empty;
+                                else
+                                    detail.Attendance[$"{d}(InTime)"] = string.Empty;
                                 if (allColumns.Contains(outCol, StringComparer.OrdinalIgnoreCase))
-                                    detail.Attendance[$"{d}(OutTime)"] = dr[outCol]?.ToString();
+                                    detail.Attendance[$"{d}(OutTime)"] = dr[outCol]?.ToString() ?? string.Empty;
+                                else
+                                    detail.Attendance[$"{d}(OutTime)"] = string.Empty;
                             }
                         }
 

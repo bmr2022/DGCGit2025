@@ -769,13 +769,7 @@
                         <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
                             <div class="accordion-body">
                                 <div class="row g-2 gx-3" id="_ItemGrid">
-                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:180px">
-                                        <label asp-for="Group_Code" class="form-label">Group Name</label>
-
-                                        <select class="form-select" asp-for="Group_Code" style="width:170px" tabindex="-1">
-                                            <option value="0">-Select-</option>
-                                        </select>
-                                    </div>
+                                  
                                     <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px">
                                         <label asp-for="PartCode" class="form-label" style="color:  red;">Part Code*</label>
                                         <input type="hidden" id="validPartCodes" value="@string.Join(",", Model.PartCodeList.Select(p => p.Value))" />
@@ -880,6 +874,11 @@
                                     <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="Vehicle" class="form-label">Vehicle</label>
                                         <input asp-for="Vehicle" class="form-control" tabindex="-1" readonly disabled />
+                                    </div>
+                                     <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="Group_Code" class="form-label">Vehicle</label>
+                                        <input asp-for="Group_name" class="form-control" tabindex="-1" readonly disabled />
+                                        <input type="hidden" asp-for="Group_Code" class="form-control" tabindex="-1" readonly disabled />
                                     </div>
 
                                     <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12 text-center" style="width:150px">
@@ -1478,6 +1477,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" id="btnClose">Save</button>
+                    <button type="button" class="btn btn-danger" id="btnSaveAndDashBoard">Save & DashBoard</button>
                     <a href="#" class="btn btn-primary" id="btnPrint">
                         <i class="fa fa-print"></i> Save & Print
                     </a>
@@ -2062,7 +2062,7 @@
             //$('#MBillToAccountCode').select2();
             // $('#PartCode').select2();
             // $('#ItemCode').select2();
-            $('#Group_Code').select2();
+            // $('#Group_Code').select2();
 
             FillItems();
             AutoFillPARTYNAMELIST();
@@ -2392,7 +2392,8 @@
                                 let term = request.term.toLowerCase();
                                 return (
                                     (item.PartCode && item.PartCode.toLowerCase().includes(term)) ||
-                                    (item.Barcode && item.Barcode.toLowerCase().includes(term))
+                                    (item.Barcode && item.Barcode.toLowerCase().includes(term)) ||
+                                    (item.ItemName && item.ItemName.toLowerCase().includes(term))
                                 );
                             });
 
@@ -2467,39 +2468,46 @@
 
             // 🔹 Focusout event for PartCodeText (manual entry validation)
             $("#PartCodeText").on("focusout", function () {
-                let partCode = $(this).val().trim();
-                if (partCode !== "") {
-                    $.ajax({
-                        url: '@Url.Action("FillItems", "PurchaseOrder")',
-                        type: 'POST',
-                        data: {
-                            Type: $('#POTypeServItem').val(),
-                            ShowAllItem: 'N',
-                            SearchItemCode: '',
-                            SearchPartCode: partCode
-                        },
-                        success: function (result) {
-                            let obj = typeof result === "string" ? JSON.parse(result) : result;
+                let entered = $(this).val().trim().toLowerCase();
+                if (entered === "") return;
 
-                            if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
-                                let match = obj.Result.Table.find(item => item.PartCode.toLowerCase() === partCode.toLowerCase());
-                                if (match) {
-                                    $("#PartCodeText").val(match.PartCode).data("itemcode", match.Item_Code);
-                                    $("#ItemNameText").val(match.ItemName);
-                                    $('#ItemCode').val(match.Item_Code);
-                                    $('#PartCode').val(match.Item_Code);
-                                    GetItemPartCode("PartCode");
-                                } else {
-                                    alert("Invalid PartCode entered!");
-                                    $("#PartCodeText").val("").focus();
-                                }
-                            } else {
-                                alert("Invalid PartCode entered!");
-                                $("#PartCodeText").val("").focus();
+                $.ajax({
+                    url: '@Url.Action("FillItems", "PurchaseOrder")',
+                    type: 'POST',
+                    data: {
+                        Type: $('#POTypeServItem').val(),
+                        ShowAllItem: 'N',
+                        SearchItemCode: '',
+                        SearchPartCode: entered
+                    },
+                    success: function (result) {
+                        let obj = typeof result === "string" ? JSON.parse(result) : result;
+
+                        if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
+                            // 🔹 Partial match: includes()
+                            let match = obj.Result.Table.find(item => {
+                                let real = (item.RealPartCode || "").toLowerCase();
+                                let name = (item.Item_Name || "").toLowerCase();
+                                let barcode = (item.Barcode || "").toLowerCase();
+
+                                return real.includes(entered) || name.includes(entered) || barcode.includes(entered);
+                            });
+
+                            if (match) {
+                                $("#PartCodeText").val(match.PartCode).data("itemcode", match.Item_Code);
+                                $("#ItemNameText").val(match.Item_Name);
+                                $("#ItemCode").val(match.Item_Code);
+                                $("#PartCode").val(match.Item_Code);
+                                GetItemPartCode("PartCode");
+
                             }
                         }
-                    });
-                }
+
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("AJAX Error:", error);
+                    }
+                });
             });
 
             // Autocomplete for ItemNameText
@@ -3321,7 +3329,7 @@
             $('#SubmitionForm').modal("hide");
 
             setTimeout(() => {
-                submitForm(true, false, false, printWindow, null); // Send true and window object
+                submitForm(true, false, false, printWindow, null, false); // Send true and window object
             }, 300);
         });
 
@@ -3333,7 +3341,7 @@
             $('#SubmitionForm').modal("hide");
 
             setTimeout(() => {
-                submitForm(true, true, false, printWindow, sendWindow); // Send true and window object
+                submitForm(true, true, false, printWindow, sendWindow, false); // Send true and window object
             }, 300);
         });
 
@@ -3342,11 +3350,19 @@
             $('#SubmitionForm').modal("hide");
 
             setTimeout(() => {
-                submitForm(false, false, false, null, null); // no print
+                submitForm(false, false, false, null, null,false); // no print
             }, 300);
         });
 
-        function submitForm(shouldPrint, shouldSend, ShouldEway, printWindow, sendWindow) {
+        $('#btnSaveAndDashBoard').click(function () {
+            $('#SubmitionForm').modal("hide");
+
+            setTimeout(() => {
+                submitForm(false, false, false, null, null,true); // no print
+            }, 300);
+        });
+
+        function submitForm(shouldPrint, shouldSend, ShouldEway, printWindow, sendWindow,GoToDashBoard) {
             $('#ShouldPrint').val(shouldPrint); // Set hidden input
             $('#ShouldEway').val(ShouldEway); // Set hidden input
             const formData = $('form').serialize(); // Properly serialize full form
@@ -3365,79 +3381,84 @@
                     console.log("Server response:", res);
 
                     if (res && res.status === "Success") {
-                        if (shouldPrint && res.entryId && res.yearCode && printWindow && !shouldSend) {
-                            const printUrl = '/SaleOrder/PrintReport?EntryId=' + res.entryId + '&YearCode=' + res.yearCode;
-
-                            printWindow.location.replace(printUrl); // navigate to report
-                            printWindow.onload = function () {
-                                printWindow.document.title = "Sale Order Report";
-                            };
+                        if (GoToDashBoard) {
+                            window.location.href = '/SaleOrder/Dashboard';
                         }
-                        else if (shouldPrint && shouldSend) {
-                            const printUrl = '/SaleOrder/PrintReport?EntryId=' + res.entryId + '&YearCode=' + res.yearCode;
-                            const sendUrl = '/SaleOrder/SendReport?EntryId=' + res.entryId + '&YearCode=' + res.yearCode +
-                                '&EmailTo=' + Email + '&CC1=' + CC1 + '&CC2=' + CC2 + '&CC3=' + CC3 + '&Sono=' + CustOrderNo;
+                        else {
 
-                            // Print popup
-                            printWindow.location.replace(printUrl);
-                            printWindow.onload = function () {
-                                printWindow.document.title = "Sale Order Report";
-                            };
+                            if (shouldPrint && res.entryId && res.yearCode && printWindow && !shouldSend) {
+                                const printUrl = '/SaleOrder/PrintReport?EntryId=' + res.entryId + '&YearCode=' + res.yearCode;
 
-                            // Send popup
-                            sendWindow.location.replace(sendUrl);
-                            sendWindow.onload = function () {
-                                sendWindow.document.title = "Send Sale Order Report";
-                            };
-                        }
+                                printWindow.location.replace(printUrl); // navigate to report
+                                printWindow.onload = function () {
+                                    printWindow.document.title = "Sale Order Report";
+                                };
+                            }
+                            else if (shouldPrint && shouldSend) {
+                                const printUrl = '/SaleOrder/PrintReport?EntryId=' + res.entryId + '&YearCode=' + res.yearCode;
+                                const sendUrl = '/SaleOrder/SendReport?EntryId=' + res.entryId + '&YearCode=' + res.yearCode +
+                                    '&EmailTo=' + Email + '&CC1=' + CC1 + '&CC2=' + CC2 + '&CC3=' + CC3 + '&Sono=' + CustOrderNo;
 
-                        else if (ShouldEway) {
-                            const ewayModel = {
-                                EntryId: res.entryId,
-                                InvoiceNo: res.challanNo,
-                                YearCode: res.yearCode,
-                                saleBillType: '', // already correct
-                                customerPartCode: res.partCode,
-                                transporterName: res.transporterName,
-                                vehicleNo: res.vehicleNo,
-                                distanceKM: String(res.distance),
-                                EntrybyId: res.enteredByEmpid,
-                                MachineName: res.enterByMachineName,
-                                generateEway: 'Eway'
-                            };
-                            $.ajax({
-                                url: '/NRGP/GenerateEwayBill',
-                                method: 'POST',
-                                contentType: 'application/json',
-                                data: JSON.stringify(ewayModel),
-                                success: function (res) {
-                                    if (res.redirectUrl) {
-                                        const fullUrl = res.redirectUrl.startsWith("http")
-                                            ? res.redirectUrl
-                                            : "https://" + res.redirectUrl;
-                                        window.open(fullUrl, '_blank');
-                                    }
+                                // Print popup
+                                printWindow.location.replace(printUrl);
+                                printWindow.onload = function () {
+                                    printWindow.document.title = "Sale Order Report";
+                                };
 
-                                    if (res.rawResponse) {
-                                        try {
-                                            const formattedJson = JSON.stringify(JSON.parse(res.rawResponse), null, 4);
-                                            $('#ewayResponseBox').val(formattedJson);
-                                        } catch (e) {
-                                            $('#ewayResponseBox').val(res.rawResponse);
+                                // Send popup
+                                sendWindow.location.replace(sendUrl);
+                                sendWindow.onload = function () {
+                                    sendWindow.document.title = "Send Sale Order Report";
+                                };
+                            }
+
+                            else if (ShouldEway) {
+                                const ewayModel = {
+                                    EntryId: res.entryId,
+                                    InvoiceNo: res.challanNo,
+                                    YearCode: res.yearCode,
+                                    saleBillType: '', // already correct
+                                    customerPartCode: res.partCode,
+                                    transporterName: res.transporterName,
+                                    vehicleNo: res.vehicleNo,
+                                    distanceKM: String(res.distance),
+                                    EntrybyId: res.enteredByEmpid,
+                                    MachineName: res.enterByMachineName,
+                                    generateEway: 'Eway'
+                                };
+                                $.ajax({
+                                    url: '/NRGP/GenerateEwayBill',
+                                    method: 'POST',
+                                    contentType: 'application/json',
+                                    data: JSON.stringify(ewayModel),
+                                    success: function (res) {
+                                        if (res.redirectUrl) {
+                                            const fullUrl = res.redirectUrl.startsWith("http")
+                                                ? res.redirectUrl
+                                                : "https://" + res.redirectUrl;
+                                            window.open(fullUrl, '_blank');
                                         }
-                                        $('#PasswordAllowPopup').modal("hide");
-                                    } else {
-                                        $.notify('E-Way Bill generation failed.', 'error');
+
+                                        if (res.rawResponse) {
+                                            try {
+                                                const formattedJson = JSON.stringify(JSON.parse(res.rawResponse), null, 4);
+                                                $('#ewayResponseBox').val(formattedJson);
+                                            } catch (e) {
+                                                $('#ewayResponseBox').val(res.rawResponse);
+                                            }
+                                            $('#PasswordAllowPopup').modal("hide");
+                                        } else {
+                                            $.notify('E-Way Bill generation failed.', 'error');
+                                        }
+                                    },
+                                    error: function () {
+                                        $.notify('An error occurred while generating the E-Way Bill.', 'error');
                                     }
-                                },
-                                error: function () {
-                                    $.notify('An error occurred while generating the E-Way Bill.', 'error');
-                                }
-                            });
+                                });
+                            }
+
+                            window.location.href = '/SaleOrder/Index';
                         }
-
-
-                        window.location.href = '/SaleOrder/Index';
                     } else {
                         alert(res.message || "Something went wrong.");
                     }
@@ -3627,9 +3648,14 @@
                             $('#OtherRateCurr').val("");
                             $('#OtherRateCurr').val(obj.Result[0].SalePrice);
                             $('#AltUnit').val("");
-                            $('#AltUnit').val("");
+                          
                             $('#AltUnit').val(obj.Result[0].AltUnit == null ? 'NA' : obj.Result[0].AltUnit);
                             !$('#AltUnit').val() ? $('#UnitRate').prop('disabled', true) : $('#UnitRate').prop('disabled', false);
+                             $('#Group_Code').val("");
+                            $('#Group_Code').val(obj.Result[0].Group_Code);
+                             $('#Group_name').val("");
+                            $('#Group_name').val(obj.Result[0].Group_name);
+
                         }
                     }
                 },
@@ -3641,7 +3667,7 @@
 
         function ClearItem() {
             $('#PartCodeText').val('').removeClass('is-invalid'),	$('#PartCode').val('').change(),$('#ItemNameText').val('').removeClass('is-invalid'),$('#ItemCode').val('').change()
-            , $('#HSNNo').val('0'), $('#Qty').val('0'), $('#Rate').val('0'), $('#Unit').val('0'), $('#AltQty').val(0),
+            , $('#HSNNo').val('0'), $('#Qty').val('0'), $('#Rate').val('0'), $('#Unit').val('0'), $('#AltQty').val(0), $('#Group_name').val(''), $('#Group_Code').val(0),
                 $('#AltUnit').val('NA'), $('#OtherRateCurr').val('0'), $('#UnitRate').val('Unit'), $('#DiscPer').val('0'), $('#DiscRs').val('0.00'), $('#Amount').val('0.00'), $('#TolLimit').val(0),
                 $('#Remark').val(''), $('#Description').val(''), $('#StoreName').prop('selectedIndex', 0), $('#StockQty').val('0'), $('#AmendmentNo').val(''), $('#AmendmentDate').val(''),
                 $('#AmendmentReason').val(''), $('#Color').val(''), $('#Rejper').val('0'), $('#Excessper').val('0'), $('#ProjQty1').val('0'), $('#ProjQty1').val('0');
@@ -4467,7 +4493,7 @@
                 "ItemCode": $('#ItemCode').val(),
                 "ItemText":  $('#ItemNameText').val(),
                 "Group_Code": $('#Group_Code').val(),
-                "Group_name": $('#Group_Code option:selected').text(),
+                "Group_name": $('#Group_name').val(),
                 "HSNNo": $('#HSNNo').val(),
                 "Qty": $('#Qty').val(),
                 "Unit": $('#Unit').val(),
@@ -4745,9 +4771,11 @@
 
                             // $('#PartCode').val(obj[0].PartCode).trigger("change");
                             // $('#ItemCode').val(obj[0].ItemCode).trigger("change");
-                            $('#Group_Code').val(obj[0].Group_Code).trigger('select2:select');
+                            // $('#Group_Code').val(obj[0].Group_Code).trigger('select2:select');
                             // $('#PartCode').val(obj[0].PartCode).trigger('select2:select');
                             // $('#ItemCode').val(obj[0].ItemCode).trigger('select2:select');
+                                $('#Group_Code').val(obj[0].Group_Code);
+                                $('#Group_name').val(obj[0].Group_name);
 
                                 $('#PartCode').val(obj[0].PartCode);
                                 $('#ItemCode').val(obj[0].ItemCode);

@@ -145,11 +145,11 @@
                 </div>
                 <div class="col-lg-1 col-md-4 col-sm-6 col-xs-12">
                     <label asp-for="GrossWt" class="form-label">Gross Weight</label>
-                    <input asp-for="GrossWt" class="form-control" type="text" min="0" />
+                <input asp-for="GrossWt" class="form-control" type="text" min="0" onfocusout="calculateScrap()" />
                 </div>
                 <div class="col-lg-1 col-md-4 col-sm-6 col-xs-12">
                     <label asp-for="NetWt" class="form-label">Net Weight</label>
-                    <input asp-for="NetWt" class="form-control" type="text" min="0" />
+                <input asp-for="NetWt" class="form-control" type="text" min="0" onfocusout="calculateScrap()" />
                 </div>
                 <div class="col-lg-1 col-md-4 col-sm-6 col-xs-12">
                     <label asp-for="Scrap" class="form-label">Scrap</label>
