@@ -33,7 +33,12 @@ namespace eTactWeb.Controllers
         public async Task<ActionResult> HRSalaryHeadMaster(int ID, string Mode)//, ILogger logger)
         {
             //_logger.LogInformation("\n \n ********** Page Gate Inward ********** \n \n " + IWebHostEnvironment.EnvironmentName.ToString() + "\n \n");
-            TempData.Clear();
+            //TempData.Clear();
+            if (TempData["Error"] != null)
+            {
+                ViewBag.Error = TempData["Error"].ToString();
+            }
+
             var MainModel = new HRSalaryHeadMasterModel();
             MainModel.SalHeadEntryId = ID;
             MainModel.Mode = Mode;
@@ -268,6 +273,12 @@ namespace eTactWeb.Controllers
                             ViewBag.isSuccess = true;
                             TempData["200"] = "200";
                         }
+                        if (Result.StatusText == "Unsuccess")
+                        {
+                            TempData["Error"] = "Please Enter Unique HeadName";
+                            TempData.Keep("Error");
+                        }
+
                         if (Result.StatusText == "Updated" && Result.StatusCode == HttpStatusCode.Accepted)
                         {
                             ViewBag.isSuccess = true;
@@ -282,7 +293,7 @@ namespace eTactWeb.Controllers
                         }
                     }
                 }
-                return RedirectToAction(nameof(DashBoard));
+                return RedirectToAction(nameof(HRSalaryHeadMaster));
             }
             catch (Exception ex)
             {
