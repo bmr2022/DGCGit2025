@@ -395,8 +395,10 @@
             if (Gross > 0 && net > 0) {
                 scrap = Gross - net;
                 $('#Scrap').val(scrap.toFixed(6));
+                $('#RunnerQty').val(scrap.toFixed(6));
             } else {
                 $('#Scrap').val('0.00');
+                $('#RunnerQty').val('0.00');
             }
         }
         $('#Byprodpartcode1').change(function () {
