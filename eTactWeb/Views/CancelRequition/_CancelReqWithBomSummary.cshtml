@@ -10,7 +10,7 @@
     <thead class="bg-gradient card-headerBG text-light">
         <tr>
             <th>Sr#</th>
-            <th>Action</th>
+            <th>Action<input type="checkbox" id="selectAll" /></th>
             <th data-columnno="0" data-sortorder="asc" class="sortCol">
                 <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> REQ No
             </th>
@@ -93,6 +93,7 @@
                                    asp-action="DeleteByID">
                                     <i class="fa fa-trash"></i>
                                 </a>
+                                <input type="checkbox" class="checkManual" data-entryid="@item.ReqEntryId" data-yearcode="@item.ReqYearCode" data-reqno="@item.ReqNo" data-requitiontype="@item.RequitionType" />
                             </div>
                         </td>
 

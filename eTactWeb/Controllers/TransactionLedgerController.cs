@@ -46,10 +46,10 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<IActionResult> GetDetailsData(string FromDate, string ToDate, int AccountCode, string ReportType, int Ledger, string VoucherType)
+        public async Task<IActionResult> GetDetailsData(string FromDate, string ToDate, string ReportType, string GroupOrLedger, int? ParentAccountCode, int AccountCode, string VoucherType, string VoucherNo, string InvoiceNo, string Narration, float? Amount, string? DR, string? CR, string Ledger)
         {
             var model = new TransactionLedgerModel();
-            model = await _TransactionLedger.GetDetailsData(FromDate, ToDate, AccountCode,  ReportType,Ledger,VoucherType);
+            model = await _TransactionLedger.GetDetailsData(FromDate, ToDate, ReportType,  GroupOrLedger,ParentAccountCode,AccountCode,VoucherType, VoucherNo, InvoiceNo, Narration, Amount,DR,CR,Ledger);
             var sessionData = JsonConvert.SerializeObject(model);
             HttpContext.Session.SetString("TransactionLedgerData", sessionData);
             return PartialView("_TransactionLedgerGrid", model);

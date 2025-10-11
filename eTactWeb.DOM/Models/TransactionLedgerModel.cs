@@ -61,6 +61,20 @@ namespace eTactWeb.DOM.Models
         public decimal NetCurrentAmt {  get; set; }
         public decimal NetAmount {  get; set; }
         public string? GroupLedger {  get; set; }
+        public string? FromDateBack {  get; set; }
+        public string? ToDateBack {  get; set; }
+        public string? ReportTypeBack {  get; set; }
+        public string? GroupOrLedger {  get; set; }
+        public int? ParentAccountCodeBack {  get; set; }
+        public int? AccountCodeBack { get; set; }
+        public string? VoucherTypeBack {  get; set; }
+        public string? VoucherNoBack {  get; set; }
+        public string? InvoiceNoBack {  get; set; }
+        public string? NarrationBack { get; set; }
+        public float? AmountBack { get; set; }
+        public string? DRBack {  get; set; }
+        public string? CRBack { get; set; }
+        public string? GlobalSearchBack {  get; set; }
 		public IList<TransactionLedgerModel> TransactionLedgerGrid{ get;set; }
     } 
 }

@@ -119,14 +119,6 @@
 									else
 									{
 										<div>
-											<a class="table-link link-primary noCursor">
-												<span class="fa-stack">
-													<i class="fa fa-square fa-stack-2x"></i>
-													<i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-												</span>
-											</a>
-										</div>
-										<div>
 											<a class="table-link link-danger noCursor">
 												<span class="fa-stack">
 													<i class="fa fa-square fa-stack-2x"></i>
@@ -142,20 +134,34 @@
 							<td>@item.Particulars</td>
 							<td>@item.VoucherType</td>
 							<td>
-								<a asp-controller="@ControllerName"
-								   asp-action="@ActionName"
-								   asp-route-Mode="U"
-								   asp-route-ID="@item.DocEntryId"
-								   asp-route-YearCode="@item.AccEntryYearCode"
-								   asp-route-GroupName="@item.GroupName"
-								   asp-route-DashboardType="@item.ReportType"
-								   asp-route-AccountCode="@item.AccountCode"
-								   asp-route-AccountCodeBack="@item.AccountCode"
-								   asp-route-VoucherNo="@item.VoucherNo"
-								   asp-route-ToDate="@item.ToDate"
-								   asp-route-VoucherTypeBack="@item.VoucherType">
+								@if (item.VoucherType != null && item.VoucherType.Contains("Opening"))
+								{
 									@item.InvoiceVoucherNo
-								</a>
+								}
+								else
+								{
+									<a asp-controller="@ControllerName"
+									   asp-action="@ActionName"
+									   asp-route-Mode="U"
+									   asp-route-ID="@item.DocEntryId"
+									   asp-route-YearCode="@item.AccEntryYearCode"
+									   asp-route-AccountCode="@item.AccountCode"
+									   asp-route-FromDate="@item.FromDateBack"
+									   asp-route-ToDate="@item.ToDateBack"
+									   asp-route-DashboardType="@item.ReportTypeBack"
+									   asp-route-GroupOrLedger="@item.GroupOrLedger"
+									   asp-route-ParentLedger="@item.ParentAccountCodeBack"
+									   asp-route-AccountName = "@item.AccountCodeBack"
+									   asp-route-VoucherTypeBack="@item.VoucherTypeBack"
+									   asp-route-VoucherNo="@item.VoucherNoBack"
+									   asp-route-InvoiceNo="@item.InvoiceNoBack"
+									   asp-route-Narration="@item.NarrationBack"
+									   asp-route-Amount ="@item.AmountBack"
+									   asp-route-DR="@item.DRBack"
+									   asp-route-CR="@item.CRBack">
+										@item.InvoiceVoucherNo
+									</a>
+								}
 							</td>
 							<td id="totDrG-@Cntr">@item.DrAmt</td>
 							<td id="totCrG-@Cntr">@item.CrAmt</td>
