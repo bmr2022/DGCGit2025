@@ -386,7 +386,19 @@
             $('#Mode').rules("remove", "required");
             //$('#element').keyup(myFunction).keypress(myFunction).blur(myFunction).change(myFunction)
         });
-       
+
+        function calculateScrap() {
+            var Gross = parseFloat($('#GrossWt').val()) || 0;
+            var net = parseFloat($('#NetWt').val()) || 0;
+            var scrap = 0;
+
+            if (Gross > 0 && net > 0) {
+                scrap = Gross - net;
+                $('#Scrap').val(scrap.toFixed(6));
+            } else {
+                $('#Scrap').val('0.00');
+            }
+        }
         $('#Byprodpartcode1').change(function () {
             
             $('#ByprodItemCode1').val($('#Byprodpartcode1').val());  
