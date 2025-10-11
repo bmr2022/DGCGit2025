@@ -2183,7 +2183,12 @@ public class SaleOrderController : Controller
 					string unit = itemData.Rows[0]["Unit"].ToString();
 					string altUnit = itemData.Rows[0]["AltUnit"].ToString();
 					string itemName = itemData.Rows[0]["Item_Name"].ToString();
+					string Location = itemData.Rows[0]["Location"].ToString();
+					string Group_name = itemData.Rows[0]["Group_name"].ToString();
+					
 					int itemCode = Convert.ToInt32(itemData.Rows[0]["Item_Code"]);
+					int Group_Code = Convert.ToInt32(itemData.Rows[0]["Group_Code"]);
+					decimal SalePrice = Convert.ToDecimal(itemData.Rows[0]["SalePrice"]);
 
 
                     string soType = Request.Form["SOType"];
@@ -2211,6 +2216,11 @@ public class SaleOrderController : Controller
 					decimal rate = decimal.TryParse(worksheet.Cells[row, 3].Value?.ToString(), out decimal tempRate) ? tempRate : 0;
 					if(rate == 0)
 					{
+						rate = SalePrice;
+                        
+                    }
+					 if (rate == 0)
+					{
                         errors.Add($"Enter rate more then 0 at row {row}: {partCode}");
                     }
 
@@ -2219,43 +2229,47 @@ public class SaleOrderController : Controller
 						errors.Add($"Qty should be greater than 0 at row {row} ");
 						continue; // Skip processing this row
 					}
+                    // **Delivery Date Validation**
+                    string deliveryDateStr = worksheet.Cells[row, 5].Value?.ToString();
+					var deliveryDate = (DateTime?)null;
 
-					// **Delivery Date Validation**
-					string deliveryDateStr = worksheet.Cells[row, 5].Value?.ToString();
-
-                    if (isSOTypeClose && deliveryDateStr == "")
-					{
-                        errors.Add($"DeliveryDate is manadatory {row} ");
-                        continue;
-                    }
-
-                        deliveryDateStr = ParseFormattedDate(deliveryDateStr);
-					DateTime? deliveryDate = null;
-
-                    deliveryDate = DateTime.Parse(deliveryDateStr);
-                    DateTime wefDate = DateTime.Parse(wef);
-                    DateTime soClose = DateTime.Parse(soCloseDate);
-
-                    if (deliveryDate < wefDate || deliveryDate > soClose)
+                    // Only validate if a value is provided
+                    if (!string.IsNullOrWhiteSpace(deliveryDateStr))
                     {
-                        errors.Add($"DeliveryDate must between of wefDate and socloseDate at Row - {row} ");
-                        continue;
+                        // Parse the date (use helper if needed)
+                        deliveryDateStr = ParseFormattedDate(deliveryDateStr);
+
+                        if (!DateTime.TryParse(deliveryDateStr, out DateTime tempDeliveryDate))
+                        {
+                            errors.Add($"DeliveryDate format is invalid at row {row}");
+                            continue;
+                        }
+
+                        // Range validation
+                        DateTime wefDateTime = DateTime.Parse(wef);
+                        DateTime soCloseDateTime = DateTime.Parse(soCloseDate);
+
+                        if (tempDeliveryDate < wefDateTime || tempDeliveryDate > soCloseDateTime)
+                        {
+                            errors.Add($"DeliveryDate must be between {wefDateTime:dd/MMM/yyyy} and {soCloseDateTime:dd/MMM/yyyy} at row {row}");
+                            continue;
+                        }
+
+                        // Today validation
+                        if (tempDeliveryDate < DateTime.Today)
+                        {
+                            errors.Add($"Delivery Date at row {row} must be greater than today ({DateTime.Today:dd/MMM/yyyy})");
+                            continue;
+                        }
+						deliveryDate = tempDeliveryDate;
+
+                        // Assign the valid date
+                       
                     }
 
-                    if (DateTime.TryParse(deliveryDateStr, out DateTime tempDeliveryDate))
-					{
-						if (tempDeliveryDate < DateTime.Today)
-						{
-							errors.Add($"Delivery Date at row {row} must be greater than today ({DateTime.Today:dd/MMM/yyyy}).");
-						}
-						else
-						{
-							deliveryDate = tempDeliveryDate;
-						}
-					}
 
-					// **Calculate Amount (Qty * Rate)**
-					decimal amount = qty * rate;
+                    // **Calculate Amount (Qty * Rate)**
+                    decimal amount = qty * rate;
 
 					// **Add to SaleGridList**
 					SaleGridList.Add(new ItemDetail
@@ -2268,6 +2282,9 @@ public class SaleOrderController : Controller
 						HSNNo = int.TryParse(hsnNo, out int tempHSN) ? tempHSN : 0, // Fetched from DB
 						Qty = qty,
 						Unit = unit, // Fetched from DB
+						Location = Location, // Fetched from DB
+						Group_Code = Group_Code, // Fetched from DB
+						Group_name = Group_name, // Fetched from DB
 						DeliveryDate = deliveryDate?.ToString("dd/MMM/yyyy") ?? "", // Store in required format
 						AltQty = decimal.TryParse(worksheet.Cells[row, 8].Value?.ToString(), out decimal tempAltQty) ? tempAltQty : 0,
 						AltUnit = altUnit, // Fetched from DB
