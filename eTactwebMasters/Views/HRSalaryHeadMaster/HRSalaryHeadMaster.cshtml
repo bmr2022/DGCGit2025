@@ -71,6 +71,9 @@
             </div>
         </div>
         @*<div asp-validation-summary="All" class="text-danger"></div>*@
+        <span id="TempError" style="display:none;">@ViewBag.Error</span>
+        <div id="ErrorDiv" class="text-danger"></div>
+
         <div class="card rounded shadow-lg">
             <div class="card-body bg-light">
                 <div class="accordion shadow-lg" id="accordionAccountMaster">
@@ -97,7 +100,7 @@
 
 
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                        <label asp-for="SalaryHead" class="form-label">Head Name<span><label class="mandatoryField">*</label></span></label>
+                                        <label asp-for="SalaryHead" class="form-label" style="color:red;">Head Name<span><label class="mandatoryField">*</label></span></label>
                                     <input asp-for="SalaryHead" class="form-control" value="@Model.SalaryHead"  />
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12">
@@ -109,7 +112,7 @@
                                     <input asp-for="SalHeadEffectiveDate" class="form-control"  />
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                        <label id="Types" class="form-label">Type Of Salary Head<span><label class="mandatoryField">*</label></span></label>
+                                        <label id="Types" class="form-label" style="color:red;">Type Of Salary Head<span><label class="mandatoryField">*</label></span></label>
                                     <select asp-for="TypeOfSalary" class="form-control">
                                         @* <option value="@Model.AccountCode">-Select-</option> *@
                                        @*  <option value="@Model.TypeOfSalary">-Select-</option> *@
@@ -124,7 +127,7 @@
                                     <input asp-for="ShortForm" class="form-control" value="@Model.ShortForm" />
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                    <label id="Types" class="form-label">Calculation Type</label>
+                                        <label id="Types" class="form-label" style="color:red;">Calculation Type</label>
                                     <select asp-for="CalculationType" class="form-control">
                                         @* <option value="@Model.AccountCode">-Select-</option> *@
                                       @*   <option value="@Model.CalculationType">-Select-</option> *@
@@ -135,7 +138,7 @@
                                     </select>
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                        <label id="Types" class="form-label">Part Of GrossBasic<span><label class="mandatoryField">*</label></span></label>
+                                        <label id="Types" class="form-label" style="color:red;">Part Of GrossBasic<span><label class="mandatoryField">*</label></span></label>
                                     <select asp-for="PartOfGrossBasic" class="form-control">
                                         @* <option value="@Model.AccountCode">-Select-</option> *@
                                         <option value="@Model.PartOfGrossBasic">-Select-</option>
@@ -236,7 +239,7 @@
                                     </select>
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                        <label asp-for="FrequencyOfPayment" class="form-label">Frequency<span><label class="mandatoryField">*</label></span></label>
+                                        <label asp-for="FrequencyOfPayment" class="form-label" style="color:red;">Frequency<span><label class="mandatoryField">*</label></span></label>
                                     <select asp-for="FrequencyOfPayment" class="form-control">
                                         @* <option value="@Model.AccountCode">-Select-</option> *@
                                         <option value="@Model.FrequencyOfPayment">-Select-</option>
@@ -335,7 +338,7 @@
 
                                 
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                        <label asp-for="PFApplicable" class="form-label">Provident Fund Applicable<span><label class="mandatoryField">*</label></span></label>
+                                        <label asp-for="PFApplicable" class="form-label" style="color:red;">Provident Fund Applicable<span><label class="mandatoryField">*</label></span></label>
                                     <select asp-for="PFApplicable" class="form-select">
                                         <option value="" disabled>-Select-</option>
                                         <option value="YES" selected>YES</option>
@@ -344,7 +347,7 @@
                                     </select>
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                    <label asp-for="ESIApplicable" class="form-label">ESI Applicable</label>
+                                        <label asp-for="ESIApplicable" class="form-label" style="color:red;">ESI Applicable</label>
                                     <select asp-for="ESIApplicable" class="form-select">
                                         <option value="" disabled>-Select-</option>
                                         <option value="YES" selected>YES</option>
@@ -364,7 +367,7 @@
                                     </select>
                                 </div>
                                   
-                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                     <label asp-for="Taxpercentage" class="form-label">Tax Percentage</label>
                                         <input asp-for="Taxpercentage" class="form-control numbers" value="@Model.Taxpercentage" disabled max="50"/>
                                 </div>
@@ -532,28 +535,71 @@
         $('.submitBTN').click(function (e) {
              
             e.preventDefault();
+            let typeOfSalary = $('#TypeOfSalary').val()?.trim();
+            let calculationType = $('#CalculationType').val()?.trim();
+            let partOfGrossBasic = $('#PartOfGrossBasic').val()?.trim();
+            let frequencyOfPayment = $('#FrequencyOfPayment').val()?.trim();
+            let pfApplicable = $('#PFApplicable').val()?.trim();
+            let esiApplicable = $('#ESIApplicable').val()?.trim();
+            let salaryHead = $('#SalaryHead').val()?.trim();
+
+            if (!typeOfSalary) {
+                $.notify("Please select Type Of Salary Head", "error");
+                $('#TypeOfSalary').focus();
+                return false;
+            }
+            if (!calculationType) {
+                $.notify("Please select Calculation Type", "error");
+                $('#CalculationType').focus();
+                return false;
+            }
+            if (!partOfGrossBasic) {
+                $.notify("Please select Part Of Gross Basic", "error");
+                $('#PartOfGrossBasic').focus();
+                return false;
+            }
+            if (!frequencyOfPayment) {
+                $.notify("Please select Frequency Of Payment", "error");
+                $('#FrequencyOfPayment').focus();
+                return false;
+            }
+            if (!pfApplicable) {
+                $.notify("Please select PF Applicable option", "error");
+                $('#PFApplicable').focus();
+                return false;
+            }
+            if (!esiApplicable) {
+                $.notify("Please select ESI Applicable option", "error");
+                $('#ESIApplicable').focus();
+                return false;
+            }
+            if (!salaryHead) {
+                $.notify("Please Write SalaryHead ", "error");
+                $('#SalaryHead').focus();
+                return false;
+            }
+            if (!validateAmounts()) {
+                return false; 
+            }
             maxTaxPercentage();
+
             $('form').submit();
         });
 
-      
-        $('.numbers').on('input', function () {
-            // Remove non-numeric characters except for decimal point
-            $(this).val($(this).val().replace(/[^0-9.]/g, ''));
+       
+        // $('.numbers').on('input', function () {
+        //     // Remove non-numeric characters except for decimal point
+        //     $(this).val($(this).val().replace(/[^0-9.]/g, ''));
 
-            // Prevent negative values
-            if ($(this).val() < 0) {
-                $(this).val('');
-            }
-        });
+        //     // Prevent negative values
+        //     if ($(this).val() < 0) {
+        //         $(this).val('');
+        //     }
+        // });
 
         
         $(function () {
            
-           
-
-           
-
             $('#TypeOfSalary').select2();
             $('#CalculationType').select2();
             $('#PartOfGrossBasic').select2();
@@ -574,7 +620,63 @@
 
             
         });
+          
+            // $('#CalculationPercentage, #MaxAmountofCarryForward, #ContributionAmount, #MinAmount, #MaxAmount, #TaxAmount').on('input', function () {
+            //     var val = $(this).val();
+            //     if (val < 0) {
+            //         $(this).val(''); 
+            //         $.notify("Amount cannot be negative", "error");
+            //     }
+            // });
 
+            // $('#CalculationPercentage, #ContributionPercentage, #Taxpercentage').on('input', function () {
+            //     var val = $(this).val();
+            //     if (val > 100) {
+            //         $(this).val(''); 
+            //         $.notify("Percentage cannot exceed 100", "error");
+            //     }
+            // });
+        $('#CalculationPercentage, #MaxAmountofCarryForward, #ContributionAmount, #MinAmount, #MaxAmount, #TaxAmount, #ContributionPercentage, #Taxpercentage')
+            .on('input', function () {
+                var val = $(this).val();
+
+               
+                if (!/^\d*\.?\d*$/.test(val)) {
+                    $(this).val(val.replace(/[^0-9.]/g, '')); // Remove non-numeric chars
+                    $.notify("Only numeric values allowed", "error");
+                    return;
+                }
+
+               
+                var num = parseFloat(val);
+
+                
+                if (num <= 0) {
+                    $(this).val('');
+                    $.notify("Value cannot be zero or negative", "error");
+                    return;
+                }
+
+               
+                if ($(this).is('#CalculationPercentage, #ContributionPercentage, #Taxpercentage') && num > 100) {
+                    $(this).val('');
+                    $.notify("Percentage cannot exceed 100", "error");
+                    return;
+                }
+            });
+
+        $('#DisplayOrder').on('input', function () {
+            var val = $(this).val();
+            if (val < 0) {
+                $(this).val(''); // remove invalid value
+                $.notify("DisplayOrder cannot be negative", "error");
+            } else if (val > 30) {
+                $(this).val(''); // remove invalid value
+                $.notify("DisplayOrder cannot exceed 30", "error");
+            }
+        });
+            
+   
         if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
             FillEntryID();
         }
@@ -773,6 +875,10 @@
 
                
             });
+            var error = $("#TempError").text().trim();
+            if (error) {
+                $.notify(error, "error");
+            }
             $("#DeptName").multiselect({
                 // Bootstrap 5 compatibility
                 templates: {
@@ -863,19 +969,32 @@
 
         });
 
+        // function validateAmounts() {
+        //     // Get the values from the input fields
+        //     const minAmount = document.getElementById('MinAmount').value;
+        //     const maxAmount = document.getElementById('MaxAmount').value;
+
+        //     // Check if max amount is less than min amount
+        //     if (parseFloat(maxAmount) < parseFloat(minAmount)) {
+        //         // Show alert if condition is met
+        //         $.notify("Max amount cannot be less than Min amount!", "error");
+        //         event.preventDefault();
+        //     } 
+        // }
         function validateAmounts() {
-            // Get the values from the input fields
-            const minAmount = document.getElementById('MinAmount').value;
-            const maxAmount = document.getElementById('MaxAmount').value;
+            const minAmount = parseFloat($('#MinAmount').val());
+            const maxAmount = parseFloat($('#MaxAmount').val());
 
-            // Check if max amount is less than min amount
-            if (parseFloat(maxAmount) < parseFloat(minAmount)) {
-                // Show alert if condition is met
-                alert("Max amount cannot be less than Min amount!");
-                event.preventDefault();
-            } 
+            // If both values exist
+            if (!isNaN(minAmount) && !isNaN(maxAmount)) {
+                if (maxAmount < minAmount) {
+                    $.notify("Max amount cannot be less than Min amount!", "error");
+                    $('#MaxAmount').focus();
+                    return false; 
+                }
+            }
+            return true; 
         }
-
         function FillEntryID() {
             $.ajax({
                 url: '@Url.Action("FillEntryId", "HRSalaryHeadMaster")',
@@ -1285,7 +1404,7 @@
 
 <style>
     .mandatoryField {
-        color: red;
+        color: red !important;
         font-size: small;
     }
 </style>

@@ -603,50 +603,54 @@ namespace eTactWeb.Data.DAL
                     {
                         CommandType = CommandType.StoredProcedure
                     };
+                    var salheadDate = CommonFunc.ParseFormattedDate(model.SalHeadEntryDate);
+                    var salheadEffDate = CommonFunc.ParseFormattedDate(model.SalHeadEffectiveDate);
 
-                    oCmd.Parameters.AddWithValue("@flag", model.Mode);
-                    oCmd.Parameters.AddWithValue("@SalHeadEntryId", model.SalHeadEntryId);
+
+                    oCmd.Parameters.AddWithValue("@flag", string.IsNullOrEmpty(model.Mode) ? " " : model.Mode);
+                    oCmd.Parameters.AddWithValue("@SalHeadEntryId", model.SalHeadEntryId == 0 ? 0 : model.SalHeadEntryId);
                     // oCmd.Parameters.AddWithValue("@SalHeadEntryDate", string.IsNullOrEmpty(model.SalHeadEntryDate) ? DBNull.Value : model.SalHeadEntryDate);
                     //// oCmd.Parameters.AddWithValue("@SalHeadEntryDate", model.SalHeadEntryDate);
                     // oCmd.Parameters.AddWithValue("@SalHeadEffectiveDate", model.SalHeadEffectiveDate);
-                    oCmd.Parameters.AddWithValue("@SalHeadEntryDate",
-                 string.IsNullOrEmpty(model.SalHeadEntryDate) ? DBNull.Value : DateTime.Parse(model.SalHeadEntryDate).ToString("dd/MMM/yyyy"));
-                    oCmd.Parameters.AddWithValue("@SalHeadEffectiveDate",
-                        string.IsNullOrEmpty(model.SalHeadEffectiveDate) ? DBNull.Value : DateTime.Parse(model.SalHeadEffectiveDate).ToString("dd/MMM/yyyy"));
-                    oCmd.Parameters.AddWithValue("@SalaryHead", model.SalaryHead);
-                    oCmd.Parameters.AddWithValue("@SalaryCode", model.SalaryCode);
-                    oCmd.Parameters.AddWithValue("@ShortForm", model.ShortForm);
-                    oCmd.Parameters.AddWithValue("@TypeOfSalary", model.TypeOfSalary);
-                    oCmd.Parameters.AddWithValue("@PartOfGrossBasic", model.PartOfGrossBasic);
-                    oCmd.Parameters.AddWithValue("@CurrencyId", model.CurrencyId);
-                    oCmd.Parameters.AddWithValue("@PaymentMode", model.SalaryPaymentMode);
-                    oCmd.Parameters.AddWithValue("@CalculationType", model.CalculationType);
-                    oCmd.Parameters.AddWithValue("@PercentageOfSalaryHeadID", model.PercentageOfSalaryHeadID);
-                    oCmd.Parameters.AddWithValue("@CalculationPercentage", model.CalculationPercentage);
-                    oCmd.Parameters.AddWithValue("@CalculationFormula", model.CalculationFormula);
-                    oCmd.Parameters.AddWithValue("@RoundOffMethod", model.RoundOffMethod);
-                    oCmd.Parameters.AddWithValue("@FrequencyOfPayment", model.FrequencyOfPayment);
-                    oCmd.Parameters.AddWithValue("@CarryForward", model.CarryForward);
-                    oCmd.Parameters.AddWithValue("@MaxAmountofCarryForward", model.MaxAmountofCarryForward);
-                    oCmd.Parameters.AddWithValue("@EmployerContribution", model.EmployerContribution);
-                    oCmd.Parameters.AddWithValue("@ContributionPerOfSalaryHeadId", model.ContributionPerOfSalaryHeadId);
-                    oCmd.Parameters.AddWithValue("@ContributionPercentage", model.ContributionPercentage);
-                    oCmd.Parameters.AddWithValue("@ContributionAmount", model.ContributionAmount);
-                    oCmd.Parameters.AddWithValue("@PFApplicable", model.PFApplicable);
-                    oCmd.Parameters.AddWithValue("@ESIApplicable", model.ESIApplicable);
-                    oCmd.Parameters.AddWithValue("@IncomeTaxApplicable", model.IncomeTaxApplicable);
-                    oCmd.Parameters.AddWithValue("@Taxpercentage", model.Taxpercentage);
-                    oCmd.Parameters.AddWithValue("@TaxAmount", model.TaxAmount);
-                    oCmd.Parameters.AddWithValue("@DeductionMorY", model.DeductionMorY);
-                    oCmd.Parameters.AddWithValue("@ActiveStatus", model.ActiveStatus);
-                    oCmd.Parameters.AddWithValue("@DisplayOrder", model.DisplayOrder);
-                    oCmd.Parameters.AddWithValue("@Remarks", model.Remarks);
-                    oCmd.Parameters.AddWithValue("@ActualEntryby", model.ActualEntryby);                  
-                    oCmd.Parameters.AddWithValue("@EntryByMachine", model.EntryByMachine);
-                    oCmd.Parameters.AddWithValue("@MinAmount", model.MinAmount);
-                    oCmd.Parameters.AddWithValue("@MaxAmount", model.MaxAmount);
-                    oCmd.Parameters.AddWithValue("@PartOfPayslip", model.PartOfPayslip);
-                    oCmd.Parameters.AddWithValue("@AmountPercentage", model.AmountOrPercentage);
+                
+                    oCmd.Parameters.AddWithValue("@SalaryHead", string.IsNullOrEmpty(model.SalaryHead) ? " " : model.SalaryHead);
+                    oCmd.Parameters.AddWithValue("@SalaryCode", string.IsNullOrEmpty(model.SalaryCode) ? " " : model.SalaryCode);
+                    oCmd.Parameters.AddWithValue("@SalHeadEntryDate", string.IsNullOrEmpty(salheadDate) ? " " : salheadDate);
+                    oCmd.Parameters.AddWithValue("@SalHeadEffectiveDate", string.IsNullOrEmpty(salheadEffDate) ? " " : salheadEffDate);
+                    oCmd.Parameters.AddWithValue("@ShortForm", string.IsNullOrEmpty(model.ShortForm) ? " " : model.ShortForm);
+                    oCmd.Parameters.AddWithValue("@TypeOfSalary", string.IsNullOrEmpty(model.TypeOfSalary) ? " " : model.TypeOfSalary);
+                    oCmd.Parameters.AddWithValue("@PartOfGrossBasic", string.IsNullOrEmpty(model.PartOfGrossBasic) ? " " : model.PartOfGrossBasic);
+                    oCmd.Parameters.AddWithValue("@CurrencyId", string.IsNullOrEmpty(model.CurrencyId) ? " " : model.CurrencyId);
+                    oCmd.Parameters.AddWithValue("@PaymentMode", string.IsNullOrEmpty(model.SalaryPaymentMode) ? " " : model.SalaryPaymentMode);
+                    oCmd.Parameters.AddWithValue("@CalculationType", string.IsNullOrEmpty(model.CalculationType) ? " " : model.CalculationType);
+                    oCmd.Parameters.AddWithValue("@PercentageOfSalaryHeadID", string.IsNullOrEmpty(model.PercentageOfSalaryHeadID) ? " " : model.PercentageOfSalaryHeadID);
+ 
+                    oCmd.Parameters.AddWithValue("@CalculationPercentage", model.CalculationPercentage == 0 ? 0 : model.CalculationPercentage);
+                    oCmd.Parameters.AddWithValue("@CalculationFormula", string.IsNullOrEmpty(model.CalculationFormula) ? " " : model.CalculationFormula);
+                    oCmd.Parameters.AddWithValue("@RoundOffMethod", string.IsNullOrEmpty(model.RoundOffMethod) ? " " : model.RoundOffMethod);
+                    oCmd.Parameters.AddWithValue("@FrequencyOfPayment", string.IsNullOrEmpty(model.FrequencyOfPayment) ? " " : model.FrequencyOfPayment);
+                    oCmd.Parameters.AddWithValue("@CarryForward", string.IsNullOrEmpty(model.CarryForward) ? " " : model.CarryForward);
+                    oCmd.Parameters.AddWithValue("@MaxAmountofCarryForward", model.MaxAmountofCarryForward == 0 ? 0 : model.MaxAmountofCarryForward);
+                    oCmd.Parameters.AddWithValue("@EmployerContribution", string.IsNullOrEmpty(model.EmployerContribution) ? " " : model.EmployerContribution);
+                    oCmd.Parameters.AddWithValue("@ContributionPerOfSalaryHeadId", model.ContributionPerOfSalaryHeadId == 0 ? 0 : model.ContributionPerOfSalaryHeadId);
+                    oCmd.Parameters.AddWithValue("@ContributionPercentage", model.ContributionPercentage == 0 ? 0 : model.ContributionPercentage);
+                    oCmd.Parameters.AddWithValue("@ContributionAmount", model.ContributionAmount == 0 ? 0 : model.ContributionAmount);
+                    oCmd.Parameters.AddWithValue("@PFApplicable", string.IsNullOrEmpty(model.PFApplicable) ? " " : model.PFApplicable);
+                    oCmd.Parameters.AddWithValue("@ESIApplicable", string.IsNullOrEmpty(model.ESIApplicable) ? " " : model.ESIApplicable);
+                    oCmd.Parameters.AddWithValue("@IncomeTaxApplicable", string.IsNullOrEmpty(model.IncomeTaxApplicable) ? " " : model.IncomeTaxApplicable);
+                    oCmd.Parameters.AddWithValue("@Taxpercentage", model.Taxpercentage == 0 ? 0 : model.Taxpercentage);
+                    oCmd.Parameters.AddWithValue("@TaxAmount", model.TaxAmount == 0 ? 0 : model.TaxAmount);
+                    oCmd.Parameters.AddWithValue("@DeductionMorY", string.IsNullOrEmpty(model.DeductionMorY) ? " " : model.DeductionMorY);
+                    oCmd.Parameters.AddWithValue("@ActiveStatus", string.IsNullOrEmpty(model.ActiveStatus) ? " " : model.ActiveStatus);
+                    oCmd.Parameters.AddWithValue("@DisplayOrder", model.DisplayOrder == 0 ? 0 : model.DisplayOrder);
+                    oCmd.Parameters.AddWithValue("@Remarks", string.IsNullOrEmpty(model.Remarks) ? " " : model.Remarks);
+                    oCmd.Parameters.AddWithValue("@ActualEntryby", model.ActualEntryby == 0 ? 0 : model.ActualEntryby);
+                    oCmd.Parameters.AddWithValue("@EntryByMachine", string.IsNullOrEmpty(model.EntryByMachine) ? " " : model.EntryByMachine);
+                    oCmd.Parameters.AddWithValue("@MinAmount", model.MinAmount == 0 ? 0 : model.MinAmount);
+                    oCmd.Parameters.AddWithValue("@MaxAmount", model.MaxAmount == 0 ? 0 : model.MaxAmount);
+                    oCmd.Parameters.AddWithValue("@PartOfPayslip", string.IsNullOrEmpty(model.PartOfPayslip) ? " " : model.PartOfPayslip);
+                    oCmd.Parameters.AddWithValue("@AmountPercentage", string.IsNullOrEmpty(model.AmountOrPercentage) ? " " : model.AmountOrPercentage);
+
                     oCmd.Parameters.AddWithValue("@catDt", HRSalaryMasterDT);
                     oCmd.Parameters.AddWithValue("@DepDt", HRSalaryMasterDeptWiseDT);
 
@@ -668,7 +672,8 @@ namespace eTactWeb.Data.DAL
                             _ResponseResult = new ResponseResult()
                             {
                                 StatusCode = (HttpStatusCode)Reader["StatusCode"],
-                                StatusText = "Success",
+                                //StatusText = "Success",
+                                StatusText = Reader["StatusCode"] != DBNull.Value && Convert.ToInt32(Reader["StatusCode"]) == 200? "Success": "Unsuccess",
                                 Result = Reader["Result"].ToString()
                             };
                         }
