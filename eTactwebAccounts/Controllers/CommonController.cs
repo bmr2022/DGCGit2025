@@ -19,10 +19,12 @@ namespace eTactWeb.Controllers
     {
         private readonly IWebHostEnvironment _IWebHostEnvironment;
         private readonly IConfiguration iconfiguration;
-        public CommonController(ILogger<CommonController> logger, IDataLogic iDataLogic)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public CommonController(ILogger<CommonController> logger, IDataLogic iDataLogic, IHttpContextAccessor httpContextAccessor)
         {
             Logger = logger;
             IDataLogic = iDataLogic;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public IDataLogic IDataLogic { get; }
@@ -50,7 +52,17 @@ namespace eTactWeb.Controllers
             string serializedObject = JsonConvert.SerializeObject(sessionObject);
             HttpContext.Session.SetString(sessionKey, serializedObject);
         }
+        public IActionResult Back()
+        {
+            var prevState = NavigationHelper.Pop(_httpContextAccessor.HttpContext);
 
+            if (prevState != null)
+            {
+                return RedirectToAction(prevState.Action, prevState.Controller, prevState.RouteValues);
+            }
+
+            return RedirectToAction("Index", "Home");
+        }
         #region For Dbit Credit Grid
         public async Task<JsonResult> GetDbCrDataGrid(string PageName, int docAccountCode, int AccountCode, decimal? BillAmt, decimal? NetAmt)
         {

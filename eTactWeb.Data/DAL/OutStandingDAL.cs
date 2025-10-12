@@ -138,6 +138,8 @@ namespace eTactWeb.Data.DAL
                                                               TillDate = tillDt,
                                                               AccountCodeBack = AccountCode,
                                                               AccountNameList = AccountNameList,
+                                                              VoucherNoBack = VoucherNo,
+                                                              VoucherTypeBack = VoucherType,
 														  }).ToList();
 						}
 						else

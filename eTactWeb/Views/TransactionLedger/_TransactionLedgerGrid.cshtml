@@ -140,25 +140,16 @@
 								}
 								else
 								{
-									<a asp-controller="@ControllerName"
-									   asp-action="@ActionName"
-									   asp-route-Mode="U"
-									   asp-route-ID="@item.DocEntryId"
-									   asp-route-YearCode="@item.AccEntryYearCode"
-									   asp-route-AccountCode="@item.AccountCode"
-									   asp-route-FromDate="@item.FromDateBack"
-									   asp-route-ToDate="@item.ToDateBack"
-									   asp-route-DashboardType="@item.ReportTypeBack"
-									   asp-route-GroupOrLedger="@item.GroupOrLedger"
-									   asp-route-ParentLedger="@item.ParentAccountCodeBack"
-									   asp-route-AccountName = "@item.AccountCodeBack"
-									   asp-route-VoucherTypeBack="@item.VoucherTypeBack"
-									   asp-route-VoucherNo="@item.VoucherNoBack"
-									   asp-route-InvoiceNo="@item.InvoiceNoBack"
-									   asp-route-Narration="@item.NarrationBack"
-									   asp-route-Amount ="@item.AmountBack"
-									   asp-route-DR="@item.DRBack"
-									   asp-route-CR="@item.CRBack">
+									<a href="javascript:void(0);"
+									   class="drillDownLink"
+									   data-controller="SaleInvoice"
+									   data-action="SaleInvoice"
+									   data-docid="@item.DocEntryId"
+									   data-fromdate="@item.FromDateBack"
+									   data-todate="@item.ToDateBack"
+									   data-accountcode="@item.AccountCodeBack"
+									   data-yearcode="@item.AccEntryYearCode"
+									   onclick="callDrillDown(this)">
 										@item.InvoiceVoucherNo
 									</a>
 								}

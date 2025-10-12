@@ -74,8 +74,6 @@
                                     <label asp-for="TillDate" class="form-label">OutStanding Upto</label>
                                     <input asp-for="TillDate" class="form-control" />
                                 </div>
-
-
                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                     <label asp-for="GroupName" class="form-label">Group Name</label>
                                     <select asp-for="GroupName" class="form-control">
@@ -447,6 +445,7 @@
                 url: '@Url.Action("GetPartyName", "OutStanding")', // your API endpoint
                 type: 'GET',
                 dataType: 'json',
+                async: false,
                 success: function (response) {
                     var obj = $.parseJSON(response);
 
@@ -657,28 +656,37 @@
         }
 
         function GetDetailsData() {
-
+            debugger
             var OutStandingType = $('#ReportType').val();
             var ShowZeroBal = $('#ShowZeroBal').is(':checked');
             var TillDate = $('#TillDate').val();
             var GroupName = $('#GroupName').val();
-            var AccountNameList = $('#PartyNameMulti').val();
+            var isMulti = $('#multiPartySwitch').is(':checked'); // check toggle state
+            var AccountNameList = isMulti ? $('#PartyNameMulti').val() : null;
             var AccountCode = 0;
             var accountCodeBack = sessionStorage.getItem('AccountNameBack');
 
-            if (AccountNameList && AccountNameList.length > 0) {
-                AccountCode = 0;
+            // ✅ if multi-select OFF, clear AccountNameList and selectedPartyValues
+            if (!isMulti) {
+                AccountNameList = null;
+                selectedPartyValues = []; // or = null if you prefer
             }
-            else {
+
+            // ✅ logic for AccountCode
+            if (isMulti && AccountNameList && AccountNameList.length > 0) {
+                AccountCode = 0; // multi mode, send list
+            } else {
                 AccountCode = accountCodeBack ? accountCodeBack : ($('#PartyNameSingle').val() || 0);
             }
 
             var ShowOnlyApprovedBill = $("input[name='Status']:checked").val();
-
+            var VoucherNo = $('#VoucherNo').val();
+            var VoucherType = $('#VoucherType').val();
 
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("GetDetailsData", "OutStanding")',
+                async: false,
                 data: {
                     "OutStandingType": OutStandingType,
                     "TillDate": TillDate,
@@ -686,8 +694,9 @@
                     "AccountNameList": AccountNameList,
                     "AccountCode": AccountCode,
                     "ShowOnlyApprovedBill": ShowOnlyApprovedBill,
-                    "ShowZeroBal": ShowZeroBal
-
+                    "ShowZeroBal": ShowZeroBal,
+                    "VoucherNo": VoucherNo,
+                    "VoucherType": VoucherType
                 },
                 success: function (response) {
                     $('#divStockMainRegister').html(response);

@@ -983,6 +983,28 @@
             countAllTotal();
             $('#totalRows').text($('#divStockMainRegister tr').length - 1);
         }
+        function callDrillDown(anchor) {
+            var controllerName = $(anchor).data('controller');
+            var actionName = $(anchor).data('action');
+            var docId = $(anchor).data('docid');
+            var fromDate = $(anchor).data('fromdate');
+            var toDate = $(anchor).data('todate');
+            var accountCode = $(anchor).data('accountcode');
+            var yearCode = $(anchor).data('yearcode');
+
+            // Redirect to DrillDown server action
+            var url = '/TransactionLedger/DrillDown' +
+                '?controllerName=' + controllerName +
+                '&actionName=' + actionName +
+                '&ID=' + docId +
+                '&Mode=' + "U" +
+                '&FromDate=' + fromDate +
+                '&ToDate=' + toDate +
+                '&AccountCode=' + accountCode +
+                '&YearCode=' + yearCode;
+
+            window.location.href = url;
+        }
 
     </script>
 
