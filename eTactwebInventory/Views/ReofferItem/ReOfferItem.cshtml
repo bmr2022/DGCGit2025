@@ -2412,6 +2412,27 @@ $('#DivDetailGrid').on('click', '.deleteRowBtn', function () {
                          $.notify('sum of all qty must be same as RecQty' + partcode, "error");
                          Err = 1;
                      }
+
+                      if($('#OkRecStore' + i).val()==$('#PrevOkRecStore' + i).val() && PrevAcceptedQty==AcceptedQty)
+                     {
+                            $.notify('Please Delete the raw Which is not for reoffer for PartCode ' + partcode, "error");
+                            Err = 1;
+                        }
+                         if($('#RejRecStore' + i).val()==$('#PrevRejRecStore' + i).val() && PreviousRejectedQty==RejectedQty)
+                     {
+                            $.notify('Please Delete the raw Which is not for reoffer for PartCode ' + partcode, "error");
+                            Err = 1;
+                        }
+                         if($('#HoldStoreId' + i).val()==$('#PrevHoldStoreId' + i).val() && HoldQty==PreviousHoldQty)
+                     {
+                            $.notify('Please Delete the raw Which is not for reoffer for PartCode ' + partcode, "error");
+                            Err = 1;
+                        }
+                         if($('#RewokStoreId' + i).val()==$('#PrevRewokStoreId' + i).val() && Reworkqty==PreviousReworkqty)
+                     {
+                            $.notify('Please Delete the raw Which is not for reoffer for PartCode ' + partcode, "error");
+                            Err = 1;
+                        }
                  
 
                  if (AccLotStock < PrevAcceptedQty) {
@@ -2444,6 +2465,7 @@ $('#DivDetailGrid').on('click', '.deleteRowBtn', function () {
                          $.notify('Please Select Ok Rec Store for PartCode ' + partcode, "error");
                          Err = 1;
                      }
+                    
 
                  }
                  if ($('#RejectedQty' + i).val() > 0) {
@@ -2451,6 +2473,7 @@ $('#DivDetailGrid').on('click', '.deleteRowBtn', function () {
                          $.notify('Please Select Rej Rec Store for PartCode ' + partcode, "error");
                          Err = 1;
                      }
+
 
                  }
                  if ($('#HoldQty' + i).val() > 0) {
