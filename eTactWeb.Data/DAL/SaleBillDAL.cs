@@ -362,7 +362,7 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        public async Task<ResponseResult> ShowPendingSaleorderforBill(string Flag, int CurrentYear, string FromDate, string Todate, string InvoiceDate, int BillFromStoreId, int accountCode, string SONo, string PartCode)
+        public async Task<ResponseResult> ShowPendingSaleorderforBill(string Flag, int CurrentYear, string FromDate, string Todate, string InvoiceDate, int BillFromStoreId, int accountCode, string SONo, string PartCode, string CompanyType)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -388,8 +388,14 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@SONo", SONo));
                 SqlParams.Add(new SqlParameter("@partcode", PartCode));
                 
+                if(CompanyType=="Retailer")
 
-                _ResponseResult = await _IDataLogic.ExecuteDataSet("AccPendingSaleOrderForSalebill", SqlParams);
+                { _ResponseResult = await _IDataLogic.ExecuteDataSet("AccPendingSaleOrderForSalebillForRetailer", SqlParams); }
+                else
+                {
+                    _ResponseResult = await _IDataLogic.ExecuteDataSet("AccPendingSaleOrderForSalebill", SqlParams);
+                }
+               
             }
             catch (Exception ex)
             {
@@ -511,6 +517,26 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
+
+        public async Task<ResponseResult> GetCompanyType()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            { var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetCompanyType"));
+               
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("AccPendingSaleOrderForSalebillForRetailer", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+
 
         public async Task<ResponseResult> EditableRateAndDiscountONSaleInvoice()
         {

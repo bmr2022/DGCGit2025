@@ -18,9 +18,9 @@ namespace eTactWeb.Data.BLL
         private readonly IDataLogic _DataLogicDAL;
 
         private readonly SaleBillDAL _SaleBillDAL;
-        public async Task<ResponseResult> ShowPendingSaleorderforBill(string Flag, int CurrentYear, string FromDate, string Todate, string InvoiceDate, int BillFromStoreId, int accountCode, string SONo, string PartCode)
+        public async Task<ResponseResult> ShowPendingSaleorderforBill(string Flag, int CurrentYear, string FromDate, string Todate, string InvoiceDate, int BillFromStoreId, int accountCode, string SONo, string PartCode,string CompanyType)
         {
-            return await _SaleBillDAL.ShowPendingSaleorderforBill( Flag,  CurrentYear,  FromDate,  Todate,  InvoiceDate,  BillFromStoreId,  accountCode,  SONo,  PartCode);
+            return await _SaleBillDAL.ShowPendingSaleorderforBill( Flag,  CurrentYear,  FromDate,  Todate,  InvoiceDate,  BillFromStoreId,  accountCode,  SONo,  PartCode, CompanyType);
         }
         public async Task<ResponseResult> AutoFillitem(string Flag, string SearchPartCode)
         {
@@ -61,6 +61,11 @@ namespace eTactWeb.Data.BLL
         public async Task<ResponseResult> NewEntryId(int YearCode)
         {
             return await _SaleBillDAL.NewEntryId(YearCode);
+        }
+
+        public async Task<ResponseResult> GetCompanyType()
+        {
+            return await _SaleBillDAL.GetCompanyType();
         }
 
         public async Task<ResponseResult> EditableRateAndDiscountONSaleInvoice()

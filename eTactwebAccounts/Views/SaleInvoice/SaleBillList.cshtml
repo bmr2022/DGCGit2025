@@ -85,6 +85,7 @@
                                         <label class="form-label">From Date</label>
                                         <input type="hidden" value="@Model.FromDate" id="finFromDate" />
                                         <input type="hidden" value="@Model.ToDate" id="finToDate" />
+                                        <input type="hidden"  id="Companytype" />
                                         <input asp-for="FromDate" maxlength="10" class="form-control" value="@Model.FromDate"  />
                                     </div>
                                     <div class="col">
@@ -262,7 +263,7 @@
             $('#SONo').select2();
             $('#PartCode').select2();
 
-
+            GetCompanyType();
             GetServerDate();
             FillStoreList();
             FillCustomerList();
@@ -271,6 +272,31 @@
             
             
         });
+
+
+        function GetCompanyType() {
+
+           
+            $.ajax({
+                type: "POST",
+
+                url: "@Url.Action("GetCompanyType")",
+                dataType: "json",
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.Result != null) {
+                            $('#Companytype').val('');
+                            $('#Companytype').val(obj.Result.Table[0].RetailerOrManufacturar);
+                           
+
+                        }
+                    }
+                }
+            });
+        }
+
 
         $(document).on('mouseover', 'input[type="text"]', function () {
             $(this).attr('title', $(this).val());
@@ -418,7 +444,8 @@
                 "BillFromStoreId": $('#BillFromStoreId').val(),
                 "accountCode": $('#accountCode').val(),
                 "SONo": $('#SONo').val(),
-                "PartCode": $('#PartCode').val()
+                "PartCode": $('#PartCode').val(),
+                "CompanyType": $('#Companytype').val()
                 
             }
 
@@ -557,7 +584,14 @@
                 contentType: 'application/json',
                 data: JSON.stringify(selectedData),
                 success: function (response) {
-                    var redirectUrl = '@Url.Action("SaleInvoice", "SaleInvoice")';
+                    var redirectUrl = '';
+                    if ($('#Companytype').val() == 'Retailer') {
+                        redirectUrl = '@Url.Action("SaleBillOnCounter", "SaleInvoice")';
+                    }
+                    else {
+                        redirectUrl = '@Url.Action("SaleInvoice", "SaleInvoice")';
+                    }
+                    
                     window.location.href = redirectUrl;
                 },
                 error: function (xhr, status, error) {

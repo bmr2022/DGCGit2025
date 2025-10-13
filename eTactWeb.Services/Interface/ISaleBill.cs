@@ -13,6 +13,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetItemGroup();
         Task<ResponseResult> GETGROUPWISEITEM(int Group_Code);
         Task<ResponseResult> GetReportName();
+        Task<ResponseResult> GetCompanyType();
         Task<SaleBillModel> ShowGroupWiseItems(int Group_Code, int AccountCode,int storeid,string GroupName,string ToDate,string FromDate,string PartCode);
         Task<SaleBillModel> GetlastBillDetail(string invoicedate, int currentYearcode, int AccountCode, int ItemCode);
         Task<ResponseResult> getdiscCategoryName(int Group_Code, int AccountCode);
@@ -55,7 +56,7 @@ namespace eTactWeb.Services.Interface
 
         Task<AdjChallanDetail> GetAdjustedChallanDetailsData(DataTable adjustedData, int YearCode, string EntryDate, string ChallanDate, int AccountCode);
         //Task<ResponseResult> GetReportName();
-        Task<ResponseResult> ShowPendingSaleorderforBill(string Flag, int CurrentYear, string FromDate, string Todate, string InvoiceDate, int BillFromStoreId,int accountCode, string SONo, string PartCode);
+        Task<ResponseResult> ShowPendingSaleorderforBill(string Flag, int CurrentYear, string FromDate, string Todate, string InvoiceDate, int BillFromStoreId,int accountCode, string SONo, string PartCode,string CompanyType);
         Task<ResponseResult> FILLPendingSONO();
         Task<ResponseResult> FillPendingPartCOde();
         Task<ResponseResult> GetFeatureOption();

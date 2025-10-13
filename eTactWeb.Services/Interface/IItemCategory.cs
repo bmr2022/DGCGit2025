@@ -22,5 +22,6 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetFormRights(int uId);
 
         Task<ResponseResult> SaveItemCategoryMaster(ItemCategoryModel model);
+        Task<ResponseResult> UpdateMultipleItemDataFromExcel(DataTable ItemDetailGrid, string flag);
     }
 }

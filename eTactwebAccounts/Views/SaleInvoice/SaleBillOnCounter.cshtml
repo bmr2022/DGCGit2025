@@ -2084,12 +2084,15 @@
 
                         if (firstAccountCode) {
                             // ✅ Fill your #WCID dropdown with only that one value
-                            $('#AccountCode').empty().append(
-                                $('<option>', {
-                                    value: firstAccountCode,
-                                    text: AccountName
-                                })
-                            );
+                            // $('#AccountCode').empty().append(
+                            //     $('<option>', {
+                            //         value: firstAccountCode,
+                            //         text: AccountName
+                            //     })
+                            // );
+                            $('#AccountCode').val(firstAccountCode);
+                            $('#AccountCodeText').val(AccountName);
+
                             // $('#AccountCode').prop('disabled', true);
                             $.getJSON({
                                 url: '@Url.Action("GetGstRegister", "PurchaseOrder")',
@@ -2162,24 +2165,7 @@
             /* if (!Validate_TransferGrid()) return; */
             var ItemData = [];
             var RowCount = $('#divMultiItemGrid tr').length;
-            // for (var i = 1; i <= RowCount; i++) {
-            //     if ($('#AcceptedQtySHA-' + i).prop("checked") == false) continue;
-            //     var Partcode= $('#PartCode-' + i).val();
-            //     if (parseFloat($('#Qty-' + i).val()) > parseFloat($('#BatchWisePendQty-' + i).val()) )
-            //     {
-            //         $.notify('Qty should not be greater than Pending Qty or Stock for partcode:' + Partcode, "info");
-            //         return;
-            //     }
-            //     if (parseFloat($('#Rate-' + i).val()) <=0 || ($('#Rate-' + i).val()) =='') {
-            //         $.notify('Please Enter valid rate for :' + Partcode, "info");
-            //         return;
-            //     }
-            //     if (parseFloat($('#Qty-' + i).val()) <= 0 || ($('#Qty-' + i).val()) == '') {
-            //         $.notify('Please Enter valid rate for :' + Partcode, "info");
-            //         return;
-            //     }
-            // }
-
+           
 
 
 
@@ -2196,10 +2182,7 @@
                     $.notify('Please enter quantity for ' + $('#PartCode-' + i).val(), 'error');
                     return;
                 }
-                if (parseFloat($('#Qty-' + i).val()) > parseFloat($('#LotStock-' + i).val())) {
-                    $.notify('Please enter Valid quantity for ' + $('#PartCode-' + i).val(), 'error');
-                    return;
-                }
+              
 
                 if (parseFloat($('#Qty-' + i).val()) > parseFloat($('#SOPendQty-' + i).val())) {
                     $.notify('Please enter Valid quantity for ' + $('#PartCode-' + i).val(), 'error');
@@ -2213,10 +2196,7 @@
                     $.notify('Please select unit for ' + $('#PartCode-' + i).val(), 'error');
                     return;
                 }
-                if ($('#HSNNo-' + i).val() == '') {
-                    $.notify('Please enter HSN for ' + $('#PartCode-' + i).val(), 'error');
-                    return;
-                }
+               
                 if ($('#Amount-' + i).val() == '') {
                     $.notify('amount can not be 0 ' + $('#PartCode-' + i).val(), 'error');
                     return;
@@ -6547,31 +6527,16 @@
         function SetminQty() {
             var TotalStock = parseFloat($('#TotalStock').val());
             var LotStock = parseFloat($('#LotStock').val());
-            var pendQty = parseFloat($('#SOPendQty').val());
+            var LowestStock = parseFloat($('#SOPendQty').val());
 
-            var MinValue = 0;
-            MinValue = Math.min(TotalStock, LotStock, pendQty);
-            MinQtyVal = MinValue;
-
-            // if (TotalStock > LotStock) {
-            //     LowestStock = "LotStock";
-            // } else {
-            //     LowestStock = "TotalStock";
-            // }
-
-            if (MinValue === TotalStock) {
-                LowestStock = 'TotalStock';
-            } else if (MinValue === LotStock) {
-                LowestStock = 'LotStock';
-            } else if (MinValue === pendQty) {
-                LowestStock = 'pendQty';
-            }
+          
+           
 
              if ($('#SONO').val() != '' && $('#CustOrderNo').val() != '0') {
-            if (parseFloat($('#Qty').val()) > MinQtyVal) {
+                if (parseFloat($('#Qty').val()) > LowestStock) {
                 AddErrorCls('Qty');
                 Err = 1;
-                $.notify("Qty should more then " + LowestStock + "  ...!", "error");
+                $.notify("Qty should less then " + LowestStock + "  ...!", "error");
                 return false;
             }
             else {
