@@ -5,6 +5,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services;
+using eTactWeb.DOM;
 
 namespace eTactWeb.Controllers
 {
@@ -228,6 +229,30 @@ namespace eTactWeb.Controllers
                 stream.ToArray(),
                 "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             );
+        }
+        [HttpGet]
+        [HttpGet]
+        public IActionResult DrillDown(
+    string controllerName,
+    string actionName,
+    int ID,
+    int YearCode,
+    string Mode, int AccountCode)
+        {
+            // Capture all query parameters dynamically
+            var queryParams = HttpContext.Request.Query
+                .ToDictionary(q => q.Key, q => (object)q.Value.ToString());
+
+            // Save current page state
+            NavigationHelper.Push(HttpContext, new NavigationState
+            {
+                Controller = "TransactionLedger", // current page
+                Action = "Index",                 // current action
+                RouteValues = queryParams         // dynamic filters
+            });
+
+            // Redirect to target page
+            return RedirectToAction(actionName, controllerName, new { ID, YearCode, Mode, AccountCode });
         }
     }
 }

@@ -77,4 +77,24 @@ namespace eTactWeb.DOM.Models
         public string? GlobalSearchBack {  get; set; }
 		public IList<TransactionLedgerModel> TransactionLedgerGrid{ get;set; }
     } 
+    public class DrillDownFilterModel
+    {
+        public string Mode { get; set; }
+        public int ID { get; set; }
+        public string YearCode { get; set; }
+        public string AccountCode { get; set; }
+        public string FromDateBack { get; set; }
+        public string ToDateBack { get; set; }
+        public string DashboardTypeBack { get; set; }
+        public string GroupOrLedgerBack { get; set; }
+        public string GroupNameBack { get; set; }
+        public string AccountCodeBack { get; set; }
+        public string VoucherTypeBack { get; set; }
+        public string VoucherNoBack { get; set; }
+        public string PerformaInvNoBack { get; set; }
+        public string NarrationBack { get; set; }
+        public decimal AmountBack { get; set; }
+        public decimal DRBack { get; set; }
+        public decimal CRBack { get; set; }
+    }
 }
