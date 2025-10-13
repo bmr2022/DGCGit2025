@@ -10,6 +10,11 @@ namespace eTactWeb.DOM
     {
         public string Controller { get; set; }
         public string Action { get; set; }
-        public object RouteValues { get; set; } = new();
+
+        // Optional route values (for URL-safe parameters like ID, Mode, etc.)
+        public Dictionary<string, object> RouteValues { get; set; }
+
+        // Internal filters you don't want in URL (FromDate, ToDate, etc.)
+        public Dictionary<string, object> Filters { get; set; }
     }
 }

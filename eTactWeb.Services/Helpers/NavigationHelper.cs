@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Linq;
 
 public static class NavigationHelper
 {
@@ -12,21 +13,35 @@ public static class NavigationHelper
     {
         var stack = GetStack(httpContext);
         stack.Add(state);
-        httpContext.Session.SetString(DrillDownSessionKey, JsonConvert.SerializeObject(stack));
+        SaveStack(httpContext, stack);
     }
 
-    // Pop the last page state from the stack
+    // Pop the last page state
     public static NavigationState Pop(HttpContext httpContext)
     {
         var stack = GetStack(httpContext);
         if (stack.Count == 0) return null;
 
-        var state = stack[stack.Count - 1];
+        var state = stack.Last();
         stack.RemoveAt(stack.Count - 1);
-
-        httpContext.Session.SetString(DrillDownSessionKey, JsonConvert.SerializeObject(stack));
+        SaveStack(httpContext, stack);
         return state;
     }
+
+    // Peek the current page state (without removing)
+    public static NavigationState Peek(HttpContext httpContext)
+    {
+        var stack = GetStack(httpContext);
+        return stack.LastOrDefault();
+    }
+
+    // Clear the stack completely
+    public static void Clear(HttpContext httpContext)
+    {
+        httpContext.Session.Remove(DrillDownSessionKey);
+    }
+
+    // ===== Private Helpers =====
     private static List<NavigationState> GetStack(HttpContext httpContext)
     {
         var json = httpContext.Session.GetString(DrillDownSessionKey);
@@ -35,9 +50,8 @@ public static class NavigationHelper
             : JsonConvert.DeserializeObject<List<NavigationState>>(json);
     }
 
-    // Optional: Clear the whole stack
-    public static void Clear(HttpContext httpContext)
+    private static void SaveStack(HttpContext httpContext, List<NavigationState> stack)
     {
-        httpContext.Session.Remove(DrillDownSessionKey);
+        httpContext.Session.SetString(DrillDownSessionKey, JsonConvert.SerializeObject(stack));
     }
 }

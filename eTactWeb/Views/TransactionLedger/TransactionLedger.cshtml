@@ -258,45 +258,10 @@
             FillVoucherName();
             FillParentLedgerName();
 
-            // Restore state from TrailBalance after dropdowns are filled
-            setTimeout(function () {
-                let groupCode = sessionStorage.getItem('GroupCode');
-                let parentCode = sessionStorage.getItem('ParentCode');
-                let accountName = sessionStorage.getItem('AccountName');
-                let reportType = sessionStorage.getItem('ReportType');
-
-                if (groupCode) $('#Group_Ledger').val(groupCode).trigger('change');
-                if (parentCode) $('#ParentLedgerName').val(parentCode).trigger('change');
-                if (accountName) $('#LedgerName').val(accountName).trigger('change');
-                if (reportType) $('#ReportType').val(reportType).trigger('change');
-            }, 10); // wait 0.5s to ensure dropdowns are filled
-
-            // Show back button if any previous state exists
-            let history = JSON.parse(sessionStorage.getItem('HistoryStack')) || [];
-            if (history.length > 0
-                || sessionStorage.getItem('GroupCode')
-                || sessionStorage.getItem('ParentCode')
-                || sessionStorage.getItem('AccountName')
-                || sessionStorage.getItem('ReportType')) {
-                $('#BackButton').show();
-            } else {
-                $('#BackButton').hide();
-            }
-
-            // Restore full ledger state if exists
-            let ledgerStateBack = JSON.parse(sessionStorage.getItem('LedgerStateBack'));
-            if (ledgerStateBack) {
-                Object.keys(ledgerStateBack).forEach(key => {
-                    $('#' + key).val(ledgerStateBack[key]);
-                });
-                $('#AccountCode').val($('#LedgerName').val());
-                GetDetailsData();
-                $('#BackButton').show();
-                sessionStorage.removeItem('LedgerStateBack');
-            }
+            GetDetailsData();
         });
 
-        function GetValidateData(){
+        function GetValidateData() {
             if ($('#ReportType').val() == "TransactionLedgerSummary" || $('#ReportType').val() == "TransactionLedgerDetail") {
                 if ($('#LedgerName').val() == 0 || $('#LedgerName').prop('selectedIndex') == 0) {
                     $.notify('Account Code is mandatory to display details data', "error");
@@ -318,7 +283,7 @@
         }
 
         $('#ReportType').on('change', function () {
-             
+
             var selectedText = $(this).find("option:selected").text();
             $('#reportTitle').text(selectedText === "-Select-" ? "Report" : selectedText);
             GetValidateData();
@@ -404,11 +369,10 @@
             });
 
             $('#ReportType').val('TransactionLedgerSummary').trigger('change');
-            GetDetailsData();
         }
 
         function GetDataByGroupSummary(Cntr) {
-             
+
             // Save OLD state first
             let currentGroup = $('#ParentLedgerName').val();
             let currentReportType = $('#ReportType').val();
@@ -426,7 +390,7 @@
         }
 
         function GetDataByAccountSummary(Cntr) {
-             
+
             // Save OLD state first
             let currentGroup = $('#ParentLedgerName').val();
             let currentReportType = $('#ReportType').val();
@@ -447,7 +411,7 @@
         }
 
         function PressBack() {
-             
+
             let history = JSON.parse(sessionStorage.getItem('HistoryStack')) || [];
 
             if (history.length === 0) {
@@ -983,27 +947,42 @@
             countAllTotal();
             $('#totalRows').text($('#divStockMainRegister tr').length - 1);
         }
+
         function callDrillDown(anchor) {
             var controllerName = $(anchor).data('controller');
             var actionName = $(anchor).data('action');
             var docId = $(anchor).data('docid');
-            var fromDate = $(anchor).data('fromdate');
-            var toDate = $(anchor).data('todate');
             var accountCode = $(anchor).data('accountcode');
             var yearCode = $(anchor).data('yearcode');
 
-            // Redirect to DrillDown server action
-            var url = '/TransactionLedger/DrillDown' +
-                '?controllerName=' + controllerName +
-                '&actionName=' + actionName +
-                '&ID=' + docId +
-                '&Mode=' + "U" +
-                '&FromDate=' + fromDate +
-                '&ToDate=' + toDate +
-                '&AccountCode=' + accountCode +
-                '&YearCode=' + yearCode;
+            // Gather filter values
+            var params = {
+                controllerName: controllerName,
+                actionName: actionName,
+                ID: docId,
+                Mode: "U",
+                AccountCode: accountCode,
+                YearCode: yearCode,
+                FromDate: $('#FromDate').val(),
+                ToDate: $('#ToDate').val(),
+                ReportType: $('#ReportType').val(),
+                GroupOrLedger: $('#Group_Ledger').val(),
+                ParentLedger: $('#ParentLedgerName').val(),
+                VoucherType: $('#VoucherType').val(),
+                VoucherNo: $('#VoucherNo').val(),
+                INVNo: $('#INVNo').val(),
+                Narration: $('#Narration').val(),
+                Amount: $('#Amount').val(),
+                Dr: $('#Dr').val(),
+                Cr: $('#CR').val(),
+                GlobalSearch: $('#search-box').val()
+            };
 
-            window.location.href = url;
+            // Build query string dynamically
+            var queryString = $.param(params);
+
+            // Redirect to DrillDown action
+            window.location.href = '/TransactionLedger/DrillDown?' + queryString;
         }
 
     </script>

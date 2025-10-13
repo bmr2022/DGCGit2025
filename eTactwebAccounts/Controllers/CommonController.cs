@@ -58,11 +58,22 @@ namespace eTactWeb.Controllers
 
             if (prevState != null)
             {
-                return RedirectToAction(prevState.Action, prevState.Controller, prevState.RouteValues);
+                // Filters session ma store karo
+                if (prevState.Filters != null && prevState.Filters.Any())
+                {
+                    HttpContext.Session.SetString(
+                        "TransactionLedgerFilters",
+                        JsonConvert.SerializeObject(prevState.Filters)
+                    );
+                }
+
+                // Redirect to previous action/controller
+                return RedirectToAction(prevState.Action, prevState.Controller);
             }
 
             return RedirectToAction("Index", "Home");
         }
+
         #region For Dbit Credit Grid
         public async Task<JsonResult> GetDbCrDataGrid(string PageName, int docAccountCode, int AccountCode, decimal? BillAmt, decimal? NetAmt)
         {

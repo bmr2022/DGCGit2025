@@ -47,14 +47,44 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<IActionResult> GetDetailsData(string FromDate, string ToDate, string ReportType, string GroupOrLedger, int? ParentAccountCode, int AccountCode, string VoucherType, string VoucherNo, string InvoiceNo, string Narration, float? Amount, string? DR, string? CR, string Ledger)
-        {
-            var model = new TransactionLedgerModel();
-            model = await _TransactionLedger.GetDetailsData(FromDate, ToDate, ReportType,  GroupOrLedger,ParentAccountCode,AccountCode,VoucherType, VoucherNo, InvoiceNo, Narration, Amount,DR,CR,Ledger);
-            var sessionData = JsonConvert.SerializeObject(model);
-            HttpContext.Session.SetString("TransactionLedgerData", sessionData);
+        public async Task<IActionResult> GetDetailsData(
+            string FromDate = null, string ToDate = null, string ReportType = null,
+            string GroupOrLedger = null, int? ParentAccountCode = null, int AccountCode = 0,
+            string VoucherType = null, string VoucherNo = null, string InvoiceNo = null,
+            string Narration = null, float? Amount = null, string? DR = null,
+            string? CR = null, string Ledger = null)
+         {
+            // Check session for stored filters
+            if (!string.IsNullOrEmpty(FromDate) && HttpContext.Session.GetString("TransactionLedgerFilters") != null)
+            {
+                var savedFilters = JsonConvert.DeserializeObject<dynamic>(
+                    HttpContext.Session.GetString("TransactionLedgerFilters")
+                );
+
+                FromDate = savedFilters.FromDate;
+                ToDate = savedFilters.ToDate;
+                ReportType = savedFilters.ReportType;
+                GroupOrLedger = savedFilters.GroupOrLedger;
+                ParentAccountCode = savedFilters.ParentAccountCode;
+                AccountCode = savedFilters.AccountCode;
+                VoucherType = savedFilters.VoucherType;
+                VoucherNo = savedFilters.VoucherNo;
+                InvoiceNo = savedFilters.InvoiceNo;
+                Narration = savedFilters.Narration;
+                Amount = savedFilters.Amount;
+                DR = savedFilters.DR;
+                CR = savedFilters.CR;
+            }
+
+            var model = await _TransactionLedger.GetDetailsData(
+                FromDate, ToDate, ReportType, GroupOrLedger, ParentAccountCode, AccountCode,
+                VoucherType, VoucherNo, InvoiceNo, Narration, Amount, DR, CR, Ledger
+            );
+
+            HttpContext.Session.SetString("TransactionLedgerData", JsonConvert.SerializeObject(model));
+
             return PartialView("_TransactionLedgerGrid", model);
-        } 
+        }
         public async Task<IActionResult> GetTransactionLedgerMonthlySummaryDetailsData(string FromentryDate, string ToEntryDate, int AccountCode)
         {
             var model = new TransactionLedgerModel();
@@ -231,27 +261,27 @@ namespace eTactWeb.Controllers
             );
         }
         [HttpGet]
-        [HttpGet]
         public IActionResult DrillDown(
-    string controllerName,
-    string actionName,
-    int ID,
-    int YearCode,
-    string Mode, int AccountCode)
+            string controllerName,
+            string actionName,
+            int ID,
+            int YearCode,
+            string Mode,
+            int AccountCode)
         {
-            // Capture all query parameters dynamically
+            // Capture all query parameters (filters) dynamically
             var queryParams = HttpContext.Request.Query
                 .ToDictionary(q => q.Key, q => (object)q.Value.ToString());
 
-            // Save current page state
+            // Push current page state into session (filters stored internally)
             NavigationHelper.Push(HttpContext, new NavigationState
             {
                 Controller = "TransactionLedger", // current page
-                Action = "Index",                 // current action
-                RouteValues = queryParams         // dynamic filters
+                Action = "Index",
+                Filters = queryParams // store filters safely (not in URL)
             });
 
-            // Redirect to target page
+            // Redirect to the target controller/action (only essential params in URL)
             return RedirectToAction(actionName, controllerName, new { ID, YearCode, Mode, AccountCode });
         }
     }
