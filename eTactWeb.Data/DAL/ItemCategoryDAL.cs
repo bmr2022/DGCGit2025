@@ -397,5 +397,29 @@ namespace eTactWeb.Data.DAL
         {
             throw new NotImplementedException();
         }
+
+
+        public async Task<ResponseResult> UpdateMultipleItemDataFromExcel(DataTable ItemDetailGrid, string flag)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>
+        {
+            new SqlParameter("@Flag", flag),
+            new SqlParameter("@ExcelData", ItemDetailGrid)
+        };
+
+                _ResponseResult = await _DataLogicDAL.ExecuteDataTable("SPItemCategory", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+
     }
 }

@@ -225,9 +225,9 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> ShowPendingSaleorderforBill(string Flag, int CurrentYear, string FromDate, string Todate, string InvoiceDate, int BillFromStoreId, int accountCode,string SONo,string PartCode)
+        public async Task<JsonResult> ShowPendingSaleorderforBill(string Flag, int CurrentYear, string FromDate, string Todate, string InvoiceDate, int BillFromStoreId, int accountCode,string SONo,string PartCode,string CompanyType)
         {
-            var JSON = await _SaleBill.ShowPendingSaleorderforBill(Flag, CurrentYear, FromDate, Todate, InvoiceDate, BillFromStoreId, accountCode,  SONo,  PartCode);
+            var JSON = await _SaleBill.ShowPendingSaleorderforBill(Flag, CurrentYear, FromDate, Todate, InvoiceDate, BillFromStoreId, accountCode,  SONo,  PartCode, CompanyType);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
@@ -1284,6 +1284,14 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+
+        public async Task<JsonResult> GetCompanyType()
+        {
+            var JSON = await _SaleBill.GetCompanyType();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
 
         public async Task<JsonResult> EditableRateAndDiscountONSaleInvoice()
         {

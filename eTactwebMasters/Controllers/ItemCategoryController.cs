@@ -4,6 +4,7 @@ using static eTactWeb.DOM.Models.Common;
 using eTactWeb.DOM.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using System.Data;
 
 namespace eTactWeb.Controllers
 {
@@ -140,6 +141,145 @@ namespace eTactWeb.Controllers
                 return RedirectToAction(nameof(Form), new { ID = 0 });
             }
         }
+
+
+
+        public async Task<IActionResult> UpdateFromExcel([FromBody] ExcelUpdateRequest request)
+        {
+            var response = new ResponseResult();
+            var flag = request.Flag;
+
+            try
+            {
+                DataTable dt = new DataTable();
+
+
+                dt.Columns.Add("Entry_id", typeof(long));
+                dt.Columns.Add("Entry_Date", typeof(DateTime));
+                dt.Columns.Add("Year_code", typeof(long));
+                dt.Columns.Add("Type_Item", typeof(string));
+                dt.Columns.Add("Main_Category_Type", typeof(string));
+                dt.Columns.Add("CC", typeof(string));
+                dt.Columns.Add("Uid", typeof(long));
+                dt.Columns.Add("Category_Code", typeof(string));
+               
+
+                int rowIndex = 1;
+                foreach (var excelRow in request.ExcelData)
+                {
+                    DataRow row = dt.NewRow();
+
+                    foreach (var map in request.Mapping)
+                    {
+                        string dbCol = map.Key;          // DB column
+                        string excelCol = map.Value;     // Excel column name
+
+                        object value = DBNull.Value;     // default
+
+                        if (excelRow.ContainsKey(excelCol) && !string.IsNullOrEmpty(excelRow[excelCol]))
+                        {
+                            value = excelRow[excelCol];
+
+                            // Convert types for numeric/boolean/date columns if needed
+                            Type columnType = dt.Columns[dbCol].DataType;
+
+                            try
+                            {
+
+
+
+
+                              
+                                        int yearcode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+                                       
+                                        int Uid = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                                        string CC = HttpContext.Session.GetString("Branch");
+
+                                       
+                                      
+                                        row["Year_code"] = yearcode;
+                                       
+                                        row["Uid"] = Uid;
+                                        row["CC"] = CC;
+                                       
+                                    
+
+                                  
+                                
+
+                                 if (columnType == typeof(long))
+                                    value = long.Parse(value.ToString());
+                                else
+
+
+
+                                if (columnType == typeof(int))
+                                    value = int.Parse(value.ToString());
+                                else if (columnType == typeof(decimal))
+                                    value = decimal.Parse(value.ToString());
+                                else if (columnType == typeof(bool))
+                                {
+                                    // Accept 1/0, true/false, Y/N
+                                    string s = value.ToString().Trim().ToLower();
+                                    value = (s == "1" || s == "true" || s == "y");
+                                }
+                                else if (columnType == typeof(DateTime))
+                                    value = DateTime.Parse(value.ToString());
+                                else
+                                    value = value.ToString();
+                            }
+                            catch
+                            {
+                                value = DBNull.Value; // fallback if conversion fails
+                            }
+                        }
+                        row[dbCol] = value;
+                    }
+
+                    dt.Rows.Add(row);
+                }
+
+                response = await _IItemCategory.UpdateMultipleItemDataFromExcel(dt, flag);
+
+                if (response != null)
+                {
+                    if ((response.StatusText == "Success" || response.StatusText == "Updated") &&
+                         (response.StatusCode == HttpStatusCode.OK || response.StatusCode == HttpStatusCode.Accepted))
+                    {
+                        return Json(new
+                        {
+                            StatusCode = 200,
+                            StatusText = "Data imported successfully",
+                            RedirectUrl = Url.Action("ImportandUpdateAccount", "AccountMaster", new { Flag = "" })
+                        });
+                    }
+                    else
+                    {
+                        return Json(new
+                        {
+
+                            StatusText = response.StatusText,
+                            statusCode = 201,
+                            redirectUrl = ""
+                        });
+                    }
+                }
+
+                return Json(new
+                {
+                    StatusCode = 500,
+                    StatusText = "Unknown error occurred"
+                });
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+
+
+        }
+
     }
 }
 
