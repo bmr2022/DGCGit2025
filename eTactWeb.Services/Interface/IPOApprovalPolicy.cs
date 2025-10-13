@@ -1,4 +1,5 @@
-﻿using System;
+﻿using eTactWeb.DOM.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,5 +16,6 @@ namespace eTactWeb.Services.Interface
 		Task<ResponseResult> FillCatName();
 		Task<ResponseResult> FillGroupName();
 		Task<ResponseResult> FillEntryID();
+		Task<ResponseResult> SavePOApprovalPolicy(POApprovalPolicyModel model);
 	}
 }

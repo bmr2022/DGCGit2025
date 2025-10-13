@@ -43,6 +43,10 @@ namespace eTactWeb.DOM.Models
         public int EmpidForMgmtApproval12 { get; set; }
         public int EmpidForMgmtApproval13 { get; set; }
 
+        public int EmpidForDirectorApproval { get; set; }
+        public int EmpidForFirstApproval { get; set; }
+        public int EmpidForFinalApproval { get; set; }
+
       
         public string EntryByMachine { get; set; }
         public int ActualEntryByEmpId { get; set; }

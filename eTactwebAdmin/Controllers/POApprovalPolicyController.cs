@@ -4,6 +4,9 @@ using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using static eTactWeb.Data.Common.CommonFunc;
+using static eTactWeb.DOM.Models.Common;
+using System.Net;
 
 namespace eTactwebAdmin.Controllers
 {
@@ -35,6 +38,7 @@ namespace eTactwebAdmin.Controllers
 			MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
 			MainModel.ActualEntryByEmpId = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
 			MainModel.ActualEntryByName = HttpContext.Session.GetString("EmpName");
+			MainModel.CC = HttpContext.Session.GetString("Branch");
 			MainModel.ActualEntryDate = DateTime.Today.ToString("MM/dd/yyyy").Replace("-", "/");
 			
 			if (!string.IsNullOrEmpty(Mode) && ID > 0 && Mode == "U")
@@ -55,6 +59,49 @@ namespace eTactwebAdmin.Controllers
 				}
 			}
 			return View(MainModel); 
+		}
+		[Route("{controller}/Index")]
+		[HttpPost]
+		public async Task<IActionResult> POApprovalPolicy(POApprovalPolicyModel model)
+		{
+			try
+			{
+				var Result = await _IPOApprovalPolicy.SavePOApprovalPolicy(model);
+				if (Result != null)
+				{
+					if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
+					{
+						ViewBag.isSuccess = true;
+						TempData["200"] = "200";
+					}
+					else if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
+					{
+						ViewBag.isSuccess = true;
+						TempData["202"] = "202";
+					}
+					else if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
+					{
+						ViewBag.isSuccess = false;
+						TempData["500"] = "500";
+						_logger.LogError($"\n \n ********** LogError ********** \n {JsonConvert.SerializeObject(Result)}\n \n");
+						return View("Error", Result);
+					}
+				}
+
+				return RedirectToAction(nameof(POApprovalPolicy));
+
+			}
+			catch (Exception ex)
+			{
+				LogException<POApprovalPolicyController>.WriteException(_logger, ex);
+				var ResponseResult = new ResponseResult
+				{
+					StatusCode = HttpStatusCode.InternalServerError,
+					StatusText = "Error",
+					Result = ex
+				};
+				return View("Error", ResponseResult);
+			}
 		}
 		public async Task<JsonResult> FillItemName()
 		{

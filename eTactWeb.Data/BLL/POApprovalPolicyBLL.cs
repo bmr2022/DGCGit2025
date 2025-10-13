@@ -1,5 +1,6 @@
 ﻿using eTactWeb.Data.Common;
 using eTactWeb.Data.DAL;
+using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -45,6 +46,9 @@ namespace eTactWeb.Data.BLL
 		{
 			return await _POApprovalPolicyDAL.FillEntryID();
 		}
-
+		public async Task<ResponseResult> SavePOApprovalPolicy(POApprovalPolicyModel model)
+		{
+			return await _POApprovalPolicyDAL.SavePOApprovalPolicy(model);
+		}
 	}
 }

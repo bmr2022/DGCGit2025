@@ -94,12 +94,21 @@
 									</div>
 									
 									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
+										<label asp-for="POTYPE" class="form-label" >PO Type</label>
+										<select class="form-select" asp-for="POTYPE">
+											<option value="">-Select-</option>
+											<option value="Open">Open</option>
+											<option value="Close">Close</option>
+										</select>
+									</div>
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:240px;">
 										<label asp-for="GroupName" class="form-label" >Group Name</label>
 										<input type="hidden" asp-for="GroupCode" />
-										<select class="form-select" asp-for="GroupName">
+										<select class="form-select" asp-for="GroupName" style="width:230px;">
 											<option value="">-Select-</option>
 										</select>
 									</div>
+
 									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
 										<label asp-for="CatName" class="form-label" >Category Name</label>
 										<input type="hidden" asp-for="CatId" />
@@ -111,14 +120,14 @@
 									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:240px;">
 										<label asp-for="PartCode" class="form-label" >Part Code</label>
 										<input type="hidden" asp-for="ItemCode" />
-										<select class="form-select" asp-for="PartCode" style="width:230px;">
+										<select class="form-select" asp-for="PartCode" id="PartCode" style="width:230px;">
 											<option value="">-Select-</option>
 										</select>
 									</div>
 									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:240px;">
 										<label asp-for="ItemName" class="form-label">Item Name</label>
-										<input type="hidden" asp-for="ItemCode" />
-										<select class="form-select" asp-for="ItemName" style="width:230px;">
+										
+										<select class="form-select" asp-for="ItemName" id="ItemName" style="width:230px;">
 											<option value="">-Select-</option>
 										</select>
 									</div>
@@ -130,13 +139,113 @@
 											<option value="">-Select-</option>
 										</select>
 									</div>
-
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+										<label asp-for="FromAmt" class="form-label">From Amt</label>
+										<input asp-for="FromAmt" class="form-control"  />
+									</div>
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+										<label asp-for="ToAmt" class="form-label">To Amt</label>
+										<input asp-for="ToAmt" class="form-control"  />
+									</div>
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
+										<label asp-for="FirstApprovalRequired" class="form-label" style="color:red">First Approval Required*</label>
+										<select class="form-select" asp-for="FirstApprovalRequired">
+											<option value="Y">Yes</option>
+											<option value="N">No</option>
+										</select>
+									</div>
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
+										<label asp-for="FinalApprovalRequired1" class="form-label" style="color:red">Final Approval Required*</label>
+										<select class="form-select" asp-for="FinalApprovalRequired1">
+											<option value="Y">Yes</option>
+											<option value="N">No</option>
+										</select>
+									</div>
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px;">
+										<label asp-for="OnlyDirectorApproval" class="form-label" style="color:red">Only Director Approval Required*</label>
+										<select class="form-select" asp-for="OnlyDirectorApproval">
+											<option value="Y">Yes</option>
+											<option value="N">No</option>
+										</select>
+									</div>
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
+										<label asp-for="ONLY1stApprovalRequired" class="form-label">Only First Approval Required</label>
+										<select class="form-select" asp-for="ONLY1stApprovalRequired">
+											<option value="Y">Yes</option>
+											<option value="N">No</option>
+										</select>
+									</div>
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
+										<label asp-for="OnlyFinalApprovalRequired" class="form-label">Only Final Approval Required</label>
+										<select class="form-select" asp-for="OnlyFinalApprovalRequired">
+											<option value="Y">Yes</option>
+											<option value="N">No</option>
+										</select>
+									</div>
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
+										<label asp-for="All3ApprovalRequired" class="form-label">All 3 Approval Required</label>
+										<select class="form-select" asp-for="All3ApprovalRequired">
+											<option value="Y">Yes</option>
+											<option value="N">No</option>
+										</select>
+									</div>
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+										<label asp-for="EmpidForFirstApproval1" class="form-label" style="color:red">Emp id For First Approval 1*</label>
+										<input asp-for="EmpidForFirstApproval1" class="form-control"  />
+									</div>
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+										<label asp-for="EmpidForFirstApproval2" class="form-label">Emp id For First Approval 2</label>
+										<input asp-for="EmpidForFirstApproval2" class="form-control"  />
+									</div>
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+										<label asp-for="EmpidForFirstApproval3" class="form-label">Emp id For First Approval 3</label>
+										<input asp-for="EmpidForFirstApproval3" class="form-control"  />
+									</div>
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+										<label asp-for="EmpidForFinalApproval1" class="form-label" style="color:red">Emp id For Final Approval 1*</label>
+										<input asp-for="EmpidForFinalApproval1" class="form-control"  />
+									</div>
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+										<label asp-for="EmpidForFinalApproval2" class="form-label">Emp id For Final Approval 2</label>
+										<input asp-for="EmpidForFinalApproval2" class="form-control"  />
+									</div>
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+										<label asp-for="EmpidForFinalApproval3" class="form-label">Emp id For Final Approval 3</label>
+										<input asp-for="EmpidForFinalApproval3" class="form-control"  />
+									</div>
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+										<label asp-for="EmpidForMgmtApproval1" class="form-label" style="color:red">Emp id For Mgmt Approval 1*</label>
+										<input asp-for="EmpidForMgmtApproval1" class="form-control"  />
+									</div>
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+										<label asp-for="EmpidForMgmtApproval12" class="form-label">Emp id For Mgmt Approval 2</label>
+										<input asp-for="EmpidForMgmtApproval12" class="form-control"  />
+									</div>
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+										<label asp-for="EmpidForMgmtApproval13" class="form-label">Emp id For Mgmt Approval 3</label>
+										<input asp-for="EmpidForMgmtApproval13" class="form-control"  />
+									</div>
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+										<label asp-for="EmpidForDirectorApproval" class="form-label">Emp id For Director Approval</label>
+										<input asp-for="EmpidForDirectorApproval" class="form-control"  />
+									</div>
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+										<label asp-for="EmpidForFirstApproval" class="form-label">Emp id For First Approval</label>
+										<input asp-for="EmpidForFirstApproval" class="form-control"  />
+									</div>
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+										<label asp-for="EmpidForFinalApproval" class="form-label">Emp id For Final Approval</label>
+										<input asp-for="EmpidForFinalApproval" class="form-control"  />
+									</div>
 									
+
 								</div>
 							</div>
 							<div class="accordion-item">
-								<h2 class="accordion-header" id="HPanel2">
-									<button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#ODGrid" aria-expanded="false" aria-controls="ODGrid">
+								
+
+								<h2 class="accordion-header" id="H_SAGrid">
+									<button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#ODGrid" aria-expanded="true" aria-controls="ODGrid">
 										<strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Other Detail</strong>
 									</button>
 								</h2>
@@ -247,10 +356,11 @@
 	<script>
 		$(document).ready(function () {
 			//GetFormRights();
+			console.log(" Document Ready Fired");
 			if ($('#Mode').val() !== "U" && $('#Mode').val() !== "V") {
 				setFormattedDate();
 				FillEntryID();
-				TotalNoOfRows();
+				
 			}
 			FillItemName();
 			FillPartCode();
@@ -258,49 +368,19 @@
 			FillCatName();
 			FillGroupName();
 
-			$('#Mode').rules("remove", "required");
-			$('#EntryByMachine').rules("remove", "required");
-			$('#GroupCode').rules("remove", "required");
-			$('#CatId').rules("remove", "required");
-			$('#ItemCode').rules("remove", "required");
-			$('#EmpId').rules("remove", "required");
-			$('#EntryId').rules("remove", "required");
-			$('#EntryDate').rules("remove", "required");
-			$('#YearCode').rules("remove", "required");
-			$('#GroupName').rules("remove", "required");
-			$('#CatName').rules("remove", "required");
-			$('#PartCode').rules("remove", "required");
-			$('#ItemName').rules("remove", "required");
-			$('#EmpName').rules("remove", "required");
-
-			$('#Uid').rules("remove", "required");
-			$('#ApprovedByEmpId').rules("remove", "required");
-			$('#ApprovedByEmpName').rules("remove", "required");
-			$('#CC').rules("remove", "required");
-			$('#ActualEntryByEmpId').rules("remove", "required");
-			$('#ActualEntryByEmpName').rules("remove", "required");
-			$('#ActualEntryDate').rules("remove", "required");
-			$('#LastUpdatedbyEmpId').rules("remove", "required");
-			$('#LastUpdatedbyEmpName').rules("remove", "required");
-			$('#LastupDationDate').rules("remove", "required");
-			$('#EntryByMachine').rules("remove", "required");
-			$('#CustoidianEmpName').rules("remove", "required");
-			$('#ActualEntryByName').rules("remove", "required");
-			$('#ActualEntryByEmpId').rules("remove", "required");
-			$('#ActualEntryDate').rules("remove", "required");
-			$('#CC').rules("remove", "required");
-			$('#EntryByMachine').rules("remove", "required");
-			$('#LastUpdatedByName').rules("remove", "required");
-			$('#LastUpdatedByEmpId').rules("remove", "required");
-			$('#LastUpdatedDate').rules("remove", "required");
-
-
 
 			$('#CatName').select2();
 			$('#PartCode').select2();
 			$('#ItemName').select2();
 			$('#GroupName').select2();
 			$('#EmpName').select2();
+			$('#FirstApprovalRequired').select2();
+			$('#FinalApprovalRequired1').select2();
+			$('#OnlyDirectorApproval').select2();
+			$('#ONLY1stApprovalRequired').select2();
+			$('#OnlyFinalApprovalRequired').select2();
+			$('#All3ApprovalRequired').select2();
+			$('#POTYPE').select2();
 
 			$('#totalRows').text($('#divStockGrid tr').length);
 
@@ -308,25 +388,178 @@
 			$('.submitBTN').click(function (e) {
 				e.preventDefault();
 
+				var firstApproval = $('#FirstApprovalRequired').val();
+				var finalApproval = $('#FinalApprovalRequired1').val();
+				var directorApproval = $('#OnlyDirectorApproval').val();
+
+				var empFirst = $('#EmpidForFirstApproval1').val();
+				var empFinal = $('#EmpidForFinalApproval1').val();
+				var empMgmt = $('#EmpidForMgmtApproval1').val();
+
+				var valid = true;
+				var errorMsg = "";
+				if(firstApproval !== 'Y') {
+					valid = false;
+					errorMsg += "First Approval must be 'Yes'\n";
+				}
+				if (finalApproval !== 'Y') {
+					valid = false;
+					errorMsg += "Final Approval must be 'Yes'\n";
+				}
+				if (directorApproval !== 'Y') {
+					valid = false;
+					errorMsg += "Only Director Approval must be 'Yes'\n";
+				}
+				if (!empFirst || parseInt(empFirst) <= 0) {
+					valid = false;
+					errorMsg += "Emp id For First Approval must be greater than 0\n";
+				}
+				if (!empFinal || parseInt(empFinal) <= 0) {
+					valid = false;
+					errorMsg += "Emp id For Final Approval must be greater than 0\n";
+				}
+				if (!empMgmt || parseInt(empMgmt) <= 0) {
+					valid = false;
+					errorMsg += "Emp id For Mgmt Approval must be greater than 0\n";
+				}
+
+				if (!valid) {
+					$.notify(errorMsg, "error");
+					return false;
+				}
 				console.log("SubmitButton Click - Validation passed");
 				$('form').submit();
 			});
+			var validator = $("form").data("validator");
+			if (validator) {
+				$('#Mode').rules("remove", "required");
+				$('#EntryByMachine').rules("remove", "required");
+				$('#GroupCode').rules("remove", "required");
+				$('#CatId').rules("remove", "required");
+				$('#ItemCode').rules("remove", "required");
+				$('#EmpId').rules("remove", "required");
+				$('#EntryId').rules("remove", "required");
+				$('#EntryDate').rules("remove", "required");
+				$('#YearCode').rules("remove", "required");
+				$('#GroupName').rules("remove", "required");
+				$('#CatName').rules("remove", "required");
+				$('#PartCode').rules("remove", "required");
+				$('#ItemName').rules("remove", "required");
+				$('#EmpName').rules("remove", "required");
+
+				$('#Uid').rules("remove", "required");
+				$('#ApprovedByEmpId').rules("remove", "required");
+				$('#ApprovedByEmpName').rules("remove", "required");
+				$('#CC').rules("remove", "required");
+				$('#ActualEntryByEmpId').rules("remove", "required");
+				$('#ActualEntryByEmpName').rules("remove", "required");
+				$('#ActualEntryDate').rules("remove", "required");
+				$('#LastUpdatedbyEmpId').rules("remove", "required");
+				$('#LastUpdatedbyEmpName').rules("remove", "required");
+				$('#LastupDationDate').rules("remove", "required");
+				$('#EntryByMachine').rules("remove", "required");
+				$('#CustoidianEmpName').rules("remove", "required");
+				$('#ActualEntryByName').rules("remove", "required");
+				$('#ActualEntryByEmpId').rules("remove", "required");
+				$('#ActualEntryDate').rules("remove", "required");
+				$('#CC').rules("remove", "required");
+				$('#EntryByMachine').rules("remove", "required");
+				$('#LastUpdatedByName').rules("remove", "required");
+				$('#LastUpdatedByEmpId').rules("remove", "required");
+				$('#LastUpdatedDate').rules("remove", "required");
+
+				$('#FirstApprovalRequired').rules("remove", "required");
+				$('#FinalApprovalRequired1').rules("remove", "required");
+				$('#OnlyDirectorApproval').rules("remove", "required");
+				$('#ONLY1stApprovalRequired').rules("remove", "required");
+				$('#OnlyFinalApprovalRequired').rules("remove", "required");
+				$('#All3ApprovalRequired').rules("remove", "required");
+
+				$('#EmpidForFirstApproval1').rules("remove", "required");
+				$('#EmpidForFirstApproval2').rules("remove", "required");
+				$('#EmpidForFirstApproval3').rules("remove", "required");
+				$('#EmpidForFinalApproval1').rules("remove", "required");
+				$('#EmpidForFinalApproval2').rules("remove", "required");
+				$('#EmpidForFinalApproval3').rules("remove", "required");
+				$('#EmpidForMgmtApproval1').rules("remove", "required");
+				$('#EmpidForMgmtApproval12').rules("remove", "required");
+				$('#EmpidForMgmtApproval13').rules("remove", "required");
+				$('#EmpidForDirectorApproval').rules("remove", "required");
+				$('#EmpidForFirstApproval').rules("remove", "required");
+				$('#EmpidForFinalApproval').rules("remove", "required");
+			}
+
+
+			$('#ItemName').change(function () {
+				$('#ItemCode').val($('#ItemName').val());
+			});
+			$('#PartCode').change(function () {
+				$('#ItemCode').val($('#PartCode').val());
+			});
+			$('#EmpName').change(function () {
+				$('#EmpId').val($('#EmpName').val());
+			});
+			$('#GroupName').change(function () {
+				$('#GroupCode').val($('#GroupName').val());
+			});
+			$('#CatName').change(function () {
+				$('#CatId').val($('#CatName').val());
+			});
+			$(document).on('change', '#ItemName,#PartCode', function (e) {
+
+				var cntId = e.target.id;
+				if (cntId == 'ItemName') {
+					AltItemNameChange(cntId);
+				}
+				else {
+					AltPartCodeChange(cntId);
+				}
+			});
+
+			function AltItemNameChange(ID) {
+				SetAltPartCodeItemName(ID);
+			}
+
+			function AltPartCodeChange(ID) {
+				$.when(SetAltPartCodeItemName(ID)).done(function () {
+				});
+			}
+			function SetAltPartCodeItemName(ID) {
+				if (!ID) return;
+				var v = $('#' + ID).val();
+				if (ID == "PartCode") {
+					$("#ItemName").val(v).trigger("change.select2");
+				}
+				if (ID == "ItemName") {
+					$("#PartCode").val(v).trigger("change.select2");
+				}
+			}
+
+
+			$('#FromAmt, #ToAmt').on('input', function () {
+				var value = this.value;
+
+				var numericValue = value.replace(/[^0-9.]/g, '');
+
+				if ((numericValue.match(/\./g) || []).length > 1) {
+					numericValue = numericValue.slice(0, -1);
+				}
+
+				if (numericValue < 0) {
+					numericValue = '';
+					$.notify("Negative values are not allowed!", "error");
+				}
+
+				if (value !== numericValue && value !== '') {
+					$.notify("Only numeric values are allowed!", "error");
+				}
+
+				this.value = numericValue;
+			});
+
+
 		});
-		$('#ItemName').change(function () {
-			$('#ItemCode').val($('#ItemName').val());
-		});
-		$('#PartCode').change(function () {
-			$('#ItemCode').val($('#PartCode').val());
-		});
-		$('#EmpName').change(function () {
-			$('#EmpId').val($('#EmpName').val());
-		});
-		$('#GroupName').change(function () {
-			$('#GroupCode').val($('#GroupName').val());
-		});
-		$('#CatName').change(function () {
-			$('#CatId').val($('#CatName').val());
-		});
+		
 		function parseCustomDate(val) {
 			if (!val) return null;
 			var parts = val.split('/');
@@ -437,7 +670,6 @@
 					var obj = $.parseJSON(data);
 					if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
 						$('#EntryId').val(obj.Result[0].EntryId || 0);
-
 					}
 				},
 				error: function (xhr, status, error) {
@@ -539,40 +771,23 @@
 				}
 			});
 		}
-		$(document).on('select2:select', '#AltItemName,#AltPartCode', function (e) {
+		
 
-			var cntId = e.target.id;
-			if (cntId == 'AltItemName') {
-				AltItemNameChange(cntId);
-			}
-			else {
-				AltPartCodeChange(cntId);
-			}
-		});
+		// function SetAltPartCodeItemName(ID) {
+		// 	if (!ID) return;
+		// 	else {
+		// 		var v = $('#' + ID).select2('val');
+		// 		if (ID == "PartCode") {
+		// 			$("#ItemName").val(v).trigger("change");
+		// 		}
 
-		function AltItemNameChange(ID) {
-			SetAltPartCodeItemName(ID);
-		}
+		// 		if (ID == "ItemName") {
+		// 			$("#PartCode").val(v).trigger("change");
+		// 		}
+		// 	}
+		// }
 
-		function AltPartCodeChange(ID) {
-			$.when(SetAltPartCodeItemName(ID)).done(function () {
-			});
-		}
-
-		function SetAltPartCodeItemName(ID) {
-			if (!ID) return;
-			else {
-				var v = $('#' + ID).select2('val');
-				if (ID == "AltPartCode") {
-					$("#AltItemName").val(v).trigger("change");
-				}
-
-				if (ID == "AltItemName") {
-					$("#AltPartCode").val(v).trigger("change");
-				}
-			}
-		}
-
+		
 
 
 		
@@ -591,13 +806,19 @@
 	</script>
 		<script src="https://code.jquery.com/jquery-3.6.0.min.js" ></script>
 
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+
 	<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+	<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+	<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+	<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
 
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
 
-	<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
+	
 }
 
 
