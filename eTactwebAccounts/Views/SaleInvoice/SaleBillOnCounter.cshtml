@@ -5411,6 +5411,11 @@
                         $('#PaymentCreditDay').empty();
                         $('#PaymentCreditDay').val(obj.Result.Table[0].CreditDays);
 
+                        if($('#PaymentCreditDay').val()=='' || $('#PaymentCreditDay').val()==0)
+                        {
+                            $('#PaymentCreditDay').val(1);
+                        }
+
                         DueDateCalculation();
 
                         // if ($('#StateCode').val() == "") {
