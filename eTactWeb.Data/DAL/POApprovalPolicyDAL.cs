@@ -164,14 +164,14 @@ namespace eTactWeb.Data.DAL
 				sqlParams.Add(new SqlParameter("@EntryByMachine", model.EntryByMachine ?? Environment.MachineName));
 				sqlParams.Add(new SqlParameter("@ActualEntryByEmpId", model.ActualEntryByEmpId));
 				sqlParams.Add(new SqlParameter("@ActualEntryDate", model.ActualEntryDate));
-				sqlParams.Add(new SqlParameter("@LastUpdatedByEmpId", model.LastUpdatedByEmpId));
-				sqlParams.Add(new SqlParameter("@LastUpdatedDate", DateTime.Now));
 				sqlParams.Add(new SqlParameter("@CC", model.CC));
 
 				if (model.Mode == "U") 
 				{
 					sqlParams.Add(new SqlParameter("@Flag", "Update"));
 					sqlParams.Add(new SqlParameter("@POApprovalEntryId", model.POApprovalEntryId));
+					sqlParams.Add(new SqlParameter("@LastUpdatedByEmpId", model.LastUpdatedByEmpId));
+					sqlParams.Add(new SqlParameter("@LastUpdatedDate", model.LastUpdatedDate));
 				}
 				else 
 				{
