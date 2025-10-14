@@ -951,6 +951,16 @@
             visibility: visible;
             opacity: 1;
         }
+
+    .card.PendingItem {
+        background-color: #fff7e6; /* soft yellow */
+        border: 1px solid #ffcc80;
+    }
+
+    #IssueThrBom {
+        background-color: #343a40; /* dark grey */
+        color: white;
+    }
 </style>
 
 @section Scripts
@@ -5403,13 +5413,13 @@
 
                         DueDateCalculation();
 
-                        if ($('#StateCode').val() == "") {
-                            $.notify('StateCode is manadatory...!', "error");
-                            alert("StateCode is manadatory...!");
-                            $('#AccountCode').val('0');
-                            $('#AccountCode').trigger("change");
+                        // if ($('#StateCode').val() == "") {
+                        //     $.notify('StateCode is manadatory...!', "error");
+                        //     alert("StateCode is manadatory...!");
+                        //     $('#AccountCode').val('0');
+                        //     $('#AccountCode').trigger("change");
 
-                        }
+                        // }
                     }
                 }
             });
