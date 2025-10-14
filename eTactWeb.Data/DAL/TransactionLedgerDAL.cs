@@ -156,7 +156,7 @@ namespace eTactWeb.Data.DAL
                         resultList.TransactionLedgerGrid = (from DataRow row in oDataSet.Tables[0].Rows
                                                             select new TransactionLedgerModel
                                                             {
-                                                                MOnthFullName = row["MOnthFullName"] == DBNull.Value ? string.Empty : row["MOnthFullName"].ToString(),
+                                                                MonthFullName = row["MOnthFullName"] == DBNull.Value ? string.Empty : row["MOnthFullName"].ToString(),
                                                                 TotalCr = row["TotalCr"] == DBNull.Value ? 0 : Convert.ToDecimal(row["TotalCr"]),
                                                                 TotalDr = row["TotalDr"] == DBNull.Value ? 0 : Convert.ToDecimal(row["TotalDr"]),
                                                                 ClosingAmt = row["ClosingAmt"] == DBNull.Value ? 0 : Convert.ToDecimal(row["ClosingAmt"]),

@@ -39,7 +39,13 @@
                                 </a>
                             </td>
                             <th>@Cntr</th>
-                            <td onclick="GetMonthWiseData('@item.MonthNo')" style="cursor: pointer;color:blue">@item.MOnthFullName</td>
+                            <td href="javascript:void(0);" class="drillDownLink"
+                                data-controller="TransactionLedger"
+                                data-action="Index"
+                                data-month="@item.MonthNo"
+                                onclick="callDrillDown(this)" style="cursor: pointer;color:blue">
+                                @item.MonthFullName
+                            </td>
                             <td id="totDrG-@Cntr">@item.TotalDr</td>
                             <td id="totCrG-@Cntr">@item.TotalCr</td>
                             <td>@item.ClosingAmt</td>
