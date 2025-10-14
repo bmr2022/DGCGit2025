@@ -81,6 +81,7 @@
                             <input type="hidden" id="CC1" asp-for="CC1" />
                             <input type="hidden" id="CC2" asp-for="CC2"/>
         <input type="hidden" id="CC3" asp-for="CC3" />
+        <input type="hidden" id="SeqNo" name="SeqNo" value="0">
         <div class="card-header card-headerBG text-light bg-gradient">
             <h5>
                 @if (Model.Mode != "SOA" && Model.Mode != "SAU")
@@ -882,7 +883,7 @@
                                     </div>
 
                                     <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12 text-center" style="width:150px">
-                                        <button type="button" class="ItemBtn btn btn-sm btn-outline-danger mt-3">
+                                        <button type="button" class="ItemBtn btn btn-sm btn-outline-danger mt-3" id="btnAddToGrid" onclick="ItemBtn()">
                                             <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
                                         </button>
                                     </div>
@@ -1964,6 +1965,7 @@
                 success: function (result) {
 
                     $('#divSaleItemGrid').html(result);
+                    GetFeatureOption(); 
                     calculateTotalAmount();
                     GetTaxPartItem();
 
@@ -2370,6 +2372,13 @@
 
 
         });//ready end here
+
+        document.getElementById("btnAddToGrid").addEventListener("keydown", function (event) {
+            if (event.key === "Enter") {
+                event.preventDefault(); // prevent accidental form submit if inside form
+                ItemBtn();
+            }
+        });
 
         var isItemSelected = false;
         function FillItems() {
@@ -4392,7 +4401,7 @@
             });
         });
 
-        $('.ItemBtn').click(function () {
+        function ItemBtn() {
                     EditEachItem = false;
             // if ($('#PartCode').prop('selectedIndex') == 0) {
             //     AddErrorCls('PartCode');
@@ -4486,8 +4495,11 @@
             // add spinner to button
             $(this).html('Calculating... <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
 
+            
+
             var ItemData =
             {
+                "SeqNo": $('#SeqNo').val(),
                 "PartCode": $('#PartCode').val(),
                     "PartText": $('#PartCodeText').val(),
                 "ItemCode": $('#ItemCode').val(),
@@ -4555,6 +4567,7 @@
                             $('#divSaleItemGrid ."' + DelSeqNo + "'").remove();
                         }
                         $('#divSaleItemGrid').html(data);
+                        $('#SeqNo').val('0');
                         GetFeatureOption();
                         $.notify('Item Added To Grid.', "success");
                         ClearItem();
@@ -4624,7 +4637,7 @@
             }).always(function () {
                 console.log(4);
             });
-        });
+        };
 
         async function QuotChange(ID) {
             $.getJSON({
@@ -4813,8 +4826,10 @@
                             $('#OtherRateCurr').val(obj[0].OtherRateCurr);
                                 $('#Location').val(obj[0].Location);
                                 $('#Vehicle').val(obj[0].Vehicle);
+                                $('#SeqNo').val(obj[0].SeqNo);
                             DelSeqNo = SeqNo;
-                            $('#divSaleItemGrid .' + DelSeqNo).remove();
+                            // $('#divSaleItemGrid .' + DelSeqNo).remove();
+                            $('#soItemRow-' + DelSeqNo).remove();
                             if ($('#divSaleItemGrid').children().length == 0) {
                                 var NoData = '<tr class="text-center"><td colspan="28" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
                                 $('#divSaleItemGrid').html(NoData);
