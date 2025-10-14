@@ -904,12 +904,12 @@ public class SaleOrderController : Controller
 			Result = model.ItemDetailGrid.Where(m => m.SeqNo == model.SeqNo).ToList();
 			model.ItemDetailGrid.RemoveAt(Convert.ToInt32(Indx));
 
-			Indx = 0;
-			foreach (ItemDetail item in model.ItemDetailGrid)
-			{
-				Indx++;
-				item.SeqNo = Indx;
-			}
+			//Indx = 0;
+			//foreach (ItemDetail item in model.ItemDetailGrid)
+			//{
+			//	Indx++;
+			//	item.SeqNo = Indx;
+			//}
 
         //if (model.ItemDetailGrid.Count > 0)
         //{
@@ -1214,15 +1214,19 @@ public class SaleOrderController : Controller
 					}
 					else
 					{
-						model.SeqNo = ItemDetailGrid.Count + 1;	
-						_List = ItemDetailGrid.Where(x=>x!=null).ToList();
+                        if (model.SeqNo==0)
+                        {
+                            model.SeqNo = ItemDetailGrid.Count + 1;	
+                        }
+
+                        _List = ItemDetailGrid.Where(x=>x!=null).ToList();
 						SSGrid.AddRange(_List);
 						_List.Add(model);	
 					}
 				}
-				MainModel.ItemDetailGrid = _List;
+                MainModel.ItemDetailGrid = _List.OrderBy(x => x.SeqNo).ToList();
 
-				MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
 				{
 					AbsoluteExpiration = DateTime.Now.AddMinutes(60),
 					SlidingExpiration = TimeSpan.FromMinutes(55),

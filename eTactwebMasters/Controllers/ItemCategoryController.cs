@@ -143,7 +143,13 @@ namespace eTactWeb.Controllers
         }
 
 
+        public async Task<IActionResult> ImportandUpdateItemCategory()
+        { 
+            var model = new ItemCategoryModel();
+           
 
+            return View(model);
+        }
         public async Task<IActionResult> UpdateFromExcel([FromBody] ExcelUpdateRequest request)
         {
             var response = new ResponseResult();
