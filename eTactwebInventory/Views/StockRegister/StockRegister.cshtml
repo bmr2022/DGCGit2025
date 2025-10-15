@@ -59,6 +59,21 @@
                                     </select>
                                 </div>
                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="PartCode" class="form-label">PartCode </label>
+                                    <input type="text" id="PartCodeText" class="form-control" placeholder="Type Part Code..." />
+                                    <input type="hidden"  asp-for="PartCode" id="PartCode" class="form-control" />
+                                </div>
+                               
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="ItemName" class="form-label">ItemName</label>
+                                    <input type="text" id="ItemNameText" class="form-control" placeholder="Type Item Name..." />
+                                    <input type="hidden" asp-for="ItemName" id="PartCode" class="form-control" />
+                                    @*   <select class="form-select" asp-for="ItemCode" style="heigt:190px;width:300px;">
+													<option value="0">-Select-</option>
+													</select> *@
+
+                                </div>
+                              @*   <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                     <label asp-for="PartCode" class="form-label">Part Code</label>
                                     <select asp-for="PartCode" class="form-select">
                                         <option value="@Model.ItemCode">-Select-</option>
@@ -69,7 +84,7 @@
                                     <select asp-for="ItemName" class="form-select">
                                         <option value="@Model.ItemCode">-Select-</option>
                                     </select>
-                                </div>
+                                </div> *@
 
 
                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
@@ -204,19 +219,20 @@
             $('#totalRows').text($('#divStockRegisterBody tr').length);
             $('#StoreId').select2();
             $('#ReportType').select2();
-            $('#ItemName').select2();
-            $('#PartCode').select2();
+           /*  $('#ItemName').select2();
+            $('#PartCode').select2(); */
             $('#ItemGroupName').select2();
             $('#ItemType').select2();
             FillItemGroup(); 
             FillItemType();
-            FillItemName();
-            FillPartCode();
+          /*   FillItemName();
+            FillPartCode(); */
             FillStore();
+                FillItems();
             AutoCompleteRawMaterial('Raw_Material_Stock_Ledger', 'BatchNo', 'BatchNo', null, $('#FromDate').val(), $('#ToDate').val(), 0, $('#StoreId').val());
             AutoCompleteRawMaterial('Raw_Material_Stock_Ledger', 'UniqueBatchNo', 'UniqueBatchNo', null, $('#FromDate').val(), $('#ToDate').val(), 0, $('#StoreId').val());
-            AutoComplete('VItemMaster', 'ItemName', 'Item_Name', null);
-            AutoComplete('VItemMaster', 'PartCode', 'PartCode', null);
+          /*   AutoComplete('VItemMaster', 'ItemName', 'Item_Name', null);
+            AutoComplete('VItemMaster', 'PartCode', 'PartCode', null); */
             /* GetStockRegisterData(); */
         });
         document.getElementById('printBtn').addEventListener('click', function (e) {
@@ -226,8 +242,8 @@
             var fromDate = document.getElementById('FromDate').value;
             var toDate = document.getElementById('ToDate').value;
             var storeId = document.getElementById('StoreId').value;
-            var partCode = document.getElementById('PartCode').value;
-            var itemName = document.getElementById('ItemName').value;
+            var partCode = document.getElementById('PartCodeText').value;
+            var itemName = document.getElementById('ItemNameText').value;
             var itemGroupName = document.getElementById('ItemGroupName').value;
             var itemType = document.getElementById('ItemType').value;
             var batchNo = document.getElementById('BatchNo').value;
@@ -399,7 +415,7 @@
                 type: "GET",
                 url: "@Url.Action("GetStockRegisterData")",
                 async: false,
-                data: { "FromDate": $('#FromDate').val(), "ToDate": $('#ToDate').val(), PartCode: $('#PartCode option:selected').text().trim(), "ItemName": $('#ItemName').val(), "ItemGroup": $('#ItemGroupName').val(), "ItemType": $('#ItemType').val(), "StoreId": $('#StoreId').val(), "ReportType": $('#ReportType').val(), "BatchNo": $('#BatchNo').val(), "UniqueBatchNo": $('#UniqueBatchNo').val() },
+                data: { "FromDate": $('#FromDate').val(), "ToDate": $('#ToDate').val(), PartCode: $('#PartCodeText').val(), "ItemName": $('#ItemNameText').val(), "ItemGroup": $('#ItemGroupName').val(), "ItemType": $('#ItemType').val(), "StoreId": $('#StoreId').val(), "ReportType": $('#ReportType').val(), "BatchNo": $('#BatchNo').val(), "UniqueBatchNo": $('#UniqueBatchNo').val() },
                 success: function (result, status, error) {
 
                     $('#divStockMainRegister').empty();
@@ -557,6 +573,112 @@
                     $("#PartCode").val(v).trigger("change");
                 }
             }
+        }
+            function FillItems() {
+            // Source for PartCodeText
+            const partCodeSource = function (request, response) {
+                $.ajax({
+                       url: '@Url.Action("FillItems", "WIPStockRegister")',
+                    type: 'POST',
+                    data: {
+
+                        SearchItemCode: '',
+                        SearchPartCode: request.term
+                    },
+                    success: function (result) {
+                        let obj = typeof result === "string" ? JSON.parse(result) : result;
+
+                        if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
+                            let filtered = obj.Result.Table.filter(function (item) {
+                                let term = request.term.toLowerCase();
+                                return item.PartCode.toLowerCase().includes(term);
+                            });
+
+                            response($.map(filtered, function (item) {
+                                return {
+                                    label: item.PartCode,
+                                    value: item.PartCode,
+                                    itemName: item.ItemName,
+                                    itemCode: item.Item_Code
+                                };
+                            }));
+                        } else {
+                            response([]);
+                        }
+                    }
+                });
+            };
+
+            // Source for ItemNameText
+            const itemNameSource = function (request, response) {
+                $.ajax({
+                      url: '@Url.Action("FillItems", "WIPStockRegister")',
+                    type: 'POST',
+                    data: {
+
+                        SearchItemCode: request.term,
+                        SearchPartCode: ''
+                    },
+                    success: function (result) {
+                        let obj = typeof result === "string" ? JSON.parse(result) : result;
+
+                        if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
+                            let filtered = obj.Result.Table.filter(function (item) {
+                                let term = request.term.toLowerCase();
+                                return item.ItemName.toLowerCase().includes(term);
+                            });
+
+                            response($.map(filtered, function (item) {
+                                return {
+                                    label: item.ItemName,
+                                    value: item.Item_Code,
+                                    itemName: item.ItemName,
+                                    itemCode: item.Item_Code,
+                                    partCode: item.PartCode
+                                };
+                            }));
+                        } else {
+                            response([]);
+                        }
+                    }
+                });
+            };
+
+            // Autocomplete for PartCodeText
+            $("#PartCodeText").autocomplete({
+                source: partCodeSource,
+                select: function (event, ui) {
+                    $("#PartCodeText").val(ui.item.value).data("itemcode", ui.item.itemCode);
+                    $("#ItemNameText").val(ui.item.itemName);
+                    $('#ItemName').val(ui.item.itemName);
+                    $('#PartCode').val(ui.item.partCode);
+                    /* GetItemPartCode("PartCode"); */
+                    return false;
+                },
+                focus: function (event, ui) {
+                    $("#PartCodeText").val(ui.item.value);
+                    return false;
+                },
+                minLength: 2
+            });
+
+            // Autocomplete for ItemNameText
+            $("#ItemNameText").autocomplete({
+                source: itemNameSource,
+                select: function (event, ui) {
+                    $("#ItemNameText").val(ui.item.itemName).data("itemcode", ui.item.itemCode);
+                    $("#PartCodeText").val(ui.item.partCode);
+                    $('#ItemName').val(ui.item.itemName);
+                    $('#PartCode').val(ui.item.partCode);
+
+                    return false;
+                },
+                focus: function (event, ui) {
+                    $("#ItemNameText").val(ui.item.itemName);
+                    return false;
+                },
+                minLength: 2
+            });
         }
 
         function FillStore() {
