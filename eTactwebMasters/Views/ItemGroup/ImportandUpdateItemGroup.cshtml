@@ -1,0 +1,505 @@
+﻿@model eTactWeb.DOM.Models.ItemGroupModel
+
+@{
+    ViewData["Title"] = "Import Item Group";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+<style>
+    #selecteditemtable tbody tr:hover td {
+        background-color: #2E7D32;
+        color: #fff; /* optional: makes text readable on cyan */
+    }
+</style>
+<div class="rounded shadow-lg">
+    <form enctype="multipart/form-data" autocomplete="off" class="form-horizontal">
+        @Html.AntiForgeryToken()
+        @*  <input type="hidden" asp-for="Act">
+        <input type="hidden" asp-for="ImageURL"> *@
+        <input type="hidden" asp-for="Mode">
+        <div class="card border-light bg-gradient rounded shadow-lg">
+            <div class="card-header card-headerBG text-light justify-content-center bg-gradient">
+                <h4>
+                   @*  @ViewData["Title"] - @Model.Year_code *@
+                    <span class="d-flex float-end" style="margin-top:-2px;">
+
+                        <div class="row justify-content-between g-2">
+                            <div class="col-auto">
+                                @*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
+                                <a href="#" class=" btn btn-primary btn-sm" onclick="back();">
+                                    <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                                    BACK
+                                </a>
+                            </div>
+                            @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+                            {
+                                <div class="col-auto">
+                                    @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                                    <a class="btn btn-secondary btn-sm" onclick="window.location.reload()">
+                                        @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                        <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                        REFRESH
+                                    </a>
+                                </div>
+
+                                <div class="col-auto">
+                                    @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
+                                    <button class="btn btn-primary btn-sm BtnSubmit" id="BtnSubmit">
+                                        <i class="fa-solid fa-chevron-circle-right fa-fw fa-lg"></i>
+                                        SUBMIT
+                                    </button>
+                                </div>
+                            }
+                        </div>
+                    </span>
+                </h4>
+            </div>
+        </div>
+        @*<div asp-validation-summary="All" class="text-danger"></div>*@
+        <div class="card rounded shadow-lg">
+
+            <div class="card-body bg-light">
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="H_BasicParameter">
+                      
+                        <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_BasicParameter" aria-expanded="true" aria-controls="B_UpdateMultiItem">
+                            <strong style="text-transform:uppercase"><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Insert/Update From Excel Parameter</strong>
+                        </button>
+                        <div class="d-flex gap-2 align-items-center ms-3">
+                            <select class="form-select form-select-sm w-auto"  id="Insert_Update">
+                            <option value="InsertDataFromExcel">Insert</option>
+                            <option value="UpdateDataFromExcel">Update</option>
+                        </select>
+                        </div>
+                    </h2>
+                    <div id="B_BasicParameter" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_BasicParameter">
+                        <div class="accordion-body">
+                            <div class="card">
+                                <div class="card-body overflow-auto pb-0">
+                                    <input type="file" id="MultiexcelFile" class="form-control w-auto mb-3" />
+                                    <div class="table-responsive" style="max-height:350px;">
+                                        <div id="MultiexcelTable"></div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="card-footer p-3">
+                <div class="row justify-content-between g-2">
+                    @*<div class="col-auto">
+                    <a class="btn btn-sm btn-secondary" href="#" onclick="back();">
+                    <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                    BACK
+                    </a>
+                    </div>*@
+                    <div class="card border-light bg-gradient rounded shadow-lg">
+                        <div class="card-header card-headerBG text-light justify-content-center bg-gradient">
+                            <h4>
+                            @*     @ViewData["Title"] - @Model.Year *@
+                                <span class="d-flex float-end" style="margin-top:-2px;">
+                                    @*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                                    <i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
+                                    Dashboard
+                                    </a>*@
+
+
+                                    <div class="row justify-content-between g-2">
+                                        <div class="col-auto">
+                                            @*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
+                                            <a href="#" class=" btn btn-primary btn-sm" onclick="back();">
+                                                <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                                                BACK
+                                            </a>
+                                        </div>
+                                        @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+                                        {
+                                            <div class="col-auto">
+                                                @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                                                <a class="btn btn-secondary btn-sm" onclick="window.location.reload()">
+                                                    @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                                    <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                                    REFRESH
+                                                </a>
+                                            </div>
+
+                                            <div class="col-auto">
+                                                @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
+                                                <button class="btn btn-primary btn-sm BtnSubmit" id="BtnSubmit">
+                                                    <i class="fa-solid fa-chevron-circle-right fa-fw fa-lg"></i>
+                                                    SUBMIT
+                                                </button>
+                                            </div>
+                                        }
+                                    </div>
+                                </span>
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </form>
+</div>
+<div id="ajaxLoader" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(255,255,255,0.7); z-index:9999; text-align:center;">
+    <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%);">
+        <span class="spinner-border text-primary" role="status"></span>
+        <br />
+        <span>Processing...</span>
+    </div>
+</div>
+
+
+
+
+<div class="modal fade" style="display:none" id="ColumnNameModel" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Column Selection Model</h5>
+
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row g-2 gx-3">
+
+                            <div class="card-body text-center overflow-auto pb-0   ">
+
+                                <div class="table-responsive" style="max-height:350px;">
+                                    <div style="width:500px">
+                                        <table class="table table-bordered table-striped text-center" id="MappingTable">
+                                            <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+                                                <tr>
+
+                                                    <th>Table Column</th>
+                                                    <th>Excel Mapping</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="ColumnNameBody">
+                                                <tr>
+                                                    <td>Group_Code</td>
+                                                    <td><select class="multicolumns"></select></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Group_name</td>
+                                                    <td><select class="multicolumns"></select></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Under_GroupCode</td>
+                                                    <td><select class="multicolumns"></select></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Entry_date</td>
+                                                    <td><select class="multicolumns"></select></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>GroupPrefix</td>
+                                                    <td><select class="multicolumns"></select></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>UnderCategoryId</td>
+                                                    <td><select class="multicolumns"></select></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>seqNo</td>
+                                                    <td><select class="multicolumns"></select></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>ItemAssetsService</td>
+                                                    <td><select class="multicolumns"></select></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>CategoryPrefix</td>
+                                                    <td><select class="multicolumns"></select></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>ItemPrefix</td>
+                                                    <td><select class="multicolumns"></select></td>
+                                                </tr>
+                                            </tbody>
+
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="progress my-2" style="height: 4px;">
+                        <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <div class="row g-2 gx-3">
+                        <div class="col-12 text-center">
+                            <strong>Total No Of Items : <span id="lblTotalNoOfItems1"></span></strong>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class=" btn btn-sm btn-outline-success me-2" id="BtnUpdate">
+                        <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> Save
+                    </button>
+
+                    <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- In HTML -->
+<div class="spinner"></div>
+
+@section Scripts
+{
+    <script>
+        $(document).ready(function () {
+            GetFormRights();
+        });
+
+        let excelHeaders = [];
+
+        document.getElementById('MultiexcelFile').addEventListener('change', function (e) {
+            let file = e.target.files[0];
+            if (!file) return;
+
+            let reader = new FileReader();
+            reader.onload = function (event) {
+                let data = new Uint8Array(event.target.result);
+                let workbook = XLSX.read(data, { type: 'array' });
+
+                // Read first sheet
+                let sheetName = workbook.SheetNames[0];
+                let worksheet = workbook.Sheets[sheetName];
+
+                // Convert to JSON (header row automatically used), read dates as JS Date
+                let jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: "", raw: false, cellDates: true });
+
+                // Set headers
+                excelHeaders = jsonData[0];
+
+                let table = "<table class='table table-bordered table-striped'>";
+                table += "<thead><tr>";
+                excelHeaders.forEach(cell => {
+                    table += `<th style="background-color:#4CAF50; color:white;">${cell}</th>`;
+                });
+                table += "</tr></thead>";
+
+                table += "<tbody>";
+                // Start from index 1 to skip header row
+                for (let i = 1; i < jsonData.length; i++) {
+                    let row = jsonData[i];
+                    table += "<tr>";
+
+                    row.forEach((cell, index) => {
+                        // Convert JS Date objects or Excel string dates to YYYY-MM-DD format
+                        if (cell instanceof Date) {
+                            cell = cell.toISOString().split('T')[0]; // "2025-10-05"
+                        } else if (/^\d{2}\/[A-Za-z]{3}\/\d{4}$/.test(cell)) {
+                            // Handle Excel string like "05/Oct/2025"
+                            let parts = cell.split('/');
+                            let day = parts[0];
+                            let month = new Date(`${parts[1]} 1, 2000`).getMonth() + 1; // "Oct" -> 10
+                            let year = parts[2];
+                            cell = `${year}-${month.toString().padStart(2, '0')}-${day.padStart(2, '0')}`;
+                        }
+                        table += `<td>${cell}</td>`;
+                    });
+
+                    table += "</tr>";
+                }
+                table += "</tbody></table>";
+
+                document.getElementById('MultiexcelTable').innerHTML = table;
+            };
+
+            reader.readAsArrayBuffer(file);
+        });
+
+
+        document.getElementById("MultiexcelFile").addEventListener("change", function (e) {
+            let file = e.target.files[0];
+            let reader = new FileReader();
+
+            reader.onload = function (event) {
+                let data = new Uint8Array(event.target.result);
+                let workbook = XLSX.read(data, { type: "array" });
+
+                // Get first sheet
+                let sheetName = workbook.SheetNames[0];
+                let worksheet = workbook.Sheets[sheetName];
+
+                // Convert to JSON with header
+                let jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+                // First row = headers
+                excelHeaders = jsonData[0];
+
+                console.log("Excel Headers:", excelHeaders);
+
+                // Now fill all dropdowns
+                populateDropdowns();
+            };
+
+            reader.readAsArrayBuffer(file);
+        });
+
+
+
+        $('#BtnUpdate').click(function () {
+            var flag = $('#Insert_Update').val();
+            // 1. Build mapping object (DB column -> Excel column name)
+            let mapping = {};
+            $('#MappingTable tr').each(function () {
+                let dbColumn = $(this).find('td:first').text().trim();
+                let selectedExcelColumn = $(this).find('select.multicolumns').val();
+                if (selectedExcelColumn) {
+                    mapping[dbColumn] = selectedExcelColumn;
+                }
+            });
+            // if (!mapping["Category_Code"] ) {
+            //     $.notify(" Category_Code mapping is mandatory!", "error");
+            //     return; // stop execution
+            // }
+            // 2. Extract Excel Table Headers
+            let excelHeaders = [];
+            $('#MultiexcelTable table thead th').each(function () {
+                excelHeaders.push($(this).text().trim());
+            });
+
+            // 3. Extract Excel Table Data
+            let excelData = [];
+            let hasEmptyRequired = false;
+            $('#MultiexcelTable table tbody tr').each(function () {
+                let row = {};
+                $(this).find('td').each(function (i) {
+                    row[excelHeaders[i]] = $(this).text().trim();
+                });
+
+                excelData.push(row);
+            });
+
+            if (hasEmptyRequired) return;
+            // 🟢 Debug: check mapping and extracted data
+            console.log("Mapping object:", mapping);
+            console.log("Excel data array:", excelData);
+
+            // 4. Send AJAX to Controller
+            $.ajax({
+                url: '/ItemGroup/UpdateFromExcel',
+                type: 'POST',
+                contentType: 'application/json',
+                dataType: 'json',
+                data: JSON.stringify({ Mapping: mapping, ExcelData: excelData, Flag: flag }),
+                beforeSend: function () {
+                    $('#ajaxLoader').show(); // ✅ Show loader
+                },
+                success: function (data, status, xhr) {
+                    $('#ajaxLoader').hide();
+                    $.notify("Data Update Successfully!!", "info");
+                    if (data && (data.statusCode === 200 || data.statusCode === 202)) {
+                        window.location.href = data.RedirectUrl;
+                    }
+                    else if (data && (data.statusCode === 205 || data.statusCode === 205)) {
+                        $.notify(data.statusText, "error");
+                    }
+                    else {
+
+                        $.notify(data.statusText, "error");
+                    }
+
+                },
+                error: function (err) {
+                    alert("Error updating data");
+                }
+            });
+        });
+
+
+
+        // Function to populate all dropdowns
+        function populateDropdowns() {
+            // Get all selects with class multicolumns
+            document.querySelectorAll("select.multicolumns").forEach(function (select) {
+                // Clear existing options
+                select.innerHTML = "";
+
+                // Add default option
+                var defaultOpt = document.createElement("option");
+                defaultOpt.value = "";
+                defaultOpt.text = "-- Select Column --";
+                select.appendChild(defaultOpt);
+
+                // Append Excel headers as options
+                excelHeaders.forEach(function (header) {
+                    var opt = document.createElement("option");
+                    opt.value = header;
+                    opt.text = header;
+                    select.appendChild(opt);
+                });
+            });
+        }
+
+
+        $('.BtnSubmit').click(function (e) {
+            e.preventDefault();
+            // check if excel table has rows (excluding header)
+            if ($('#MultiexcelTable table tr').length > 1) {
+                // Bootstrap 5 way to open modal
+                let myModal = new bootstrap.Modal(document.getElementById('ColumnNameModel'));
+                myModal.show();
+            } else {
+
+            }
+        });
+
+
+
+
+
+        function GetFormRights() {
+            $.ajax({
+                url: "@Url.Action("GetFormRights")",
+                type: "POST",
+                success: function (data) {
+                    if (data != null) {
+                        var obj = $.parseJSON(data);
+                        if (obj.Result.Table.length == 0) {
+                            $("#BtnSubmit").prop("disabled", true);
+                        } else {
+                            // console.log(obj);
+                            var optAll = obj.Result.Table[0].OptAll;
+                            var optSave = obj.Result.Table[0].OptSave;
+                            var optUpdate = obj.Result.Table[0].OptUpdate;
+                            var optDelete = obj.Result.Table[0].OptDelete;
+                            var optView = obj.Result.Table[0].OptView;
+                            if (!optAll) {
+                                if (!optSave) {
+                                    $("#BtnSubmit").prop("disabled", true);
+
+                                }
+                            }
+                        }
+                    }
+                },
+                error: function (errMsg) {
+                    $.notify(errMsg, { position: "top center", className: "error" });
+                }
+            });
+        }
+
+
+
+
+
+    </script>
+    <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+}
