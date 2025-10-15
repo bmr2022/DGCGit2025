@@ -7,51 +7,58 @@
                 <th>Action</th>
                 <th>Sr#</th>
                 <th class="sortCol" data-sortorder="asc" data-columnno="1">
-                    <span style="padding:5px;margin:5px" class="sort-icon">
-                        <i class="fa" aria-hidden="true"></i>
-                    </span>IssueChallanNo
-                </th>
-                <th class="sortCol" data-sortorder="asc" data-columnno="2">
-                    <span style="padding:5px;margin:5px" class="sort-icon">
-                        <i class="fa" aria-hidden="true"></i>
-                    </span>ChallanDate
-                </th>
-                <th class="sortCol" data-sortorder="asc" data-columnno="3">
-                    <span style="padding:5px;margin:5px" class="sort-icon">
-                        <i class="fa" aria-hidden="true"></i>
-                    </span>Vendore Name
-                </th>
-                <th class="sortCol" data-sortorder="asc" data-columnno="4">
-                    <span style="padding:5px;margin:5px" class="sort-icon">
-                        <i class="fa" aria-hidden="true"></i>
-                    </span>IssuePartCode
-                </th>
-                <th class="sortCol" data-sortorder="asc" data-columnno="5">
-                    <span style="padding:5px;margin:5px" class="sort-icon">
-                        <i class="fa" aria-hidden="true"></i>
-                    </span>IssueItemName
-                </th>
-                <th class="sortCol" data-sortorder="asc" data-columnno="6">
-                    <span style="padding:5px;margin:5px" class="sort-icon">
-                        <i class="fa" aria-hidden="true"></i>
-                    </span>IssQty
-                </th>
-                <th class="sortCol" data-sortorder="asc" data-columnno="7">
-                    <span style="padding:5px;margin:5px" class="sort-icon">
-                        <i class="fa" aria-hidden="true"></i>
-                    </span>PendQty
-                </th>
-                <th class="sortCol" data-sortorder="asc" data-columnno="8">
-                    <span style="padding:5px;margin:5px" class="sort-icon">
-                        <i class="fa" aria-hidden="true"></i>
-                    </span>AdjQty
-                </th>
-                <th class="sortCol" data-sortorder="asc" data-columnno="9">
-                    <span style="padding:5px;margin:5px" class="sort-icon">
-                        <i class="fa" aria-hidden="true"></i>
-                    </span>ActualPendqty
-                </th>
+            <span style="padding:5px;margin:5px" class="sort-icon">
+                <i class="fa" aria-hidden="true"></i>
+            </span>IssueChallanNo
+        </th>
 
+        <th class="sortCol" data-sortorder="asc" data-columnno="2">
+            <span style="padding:5px;margin:5px" class="sort-icon">
+                <i class="fa" aria-hidden="true"></i>
+            </span>ChallanDate
+        </th>
+
+        <th class="sortCol" data-sortorder="asc" data-columnno="3">
+            <span style="padding:5px;margin:5px" class="sort-icon">
+                <i class="fa" aria-hidden="true"></i>
+            </span>Vendore Name
+        </th>
+
+        <th class="sortCol" data-sortorder="asc" data-columnno="4">
+            <span style="padding:5px;margin:5px" class="sort-icon">
+                <i class="fa" aria-hidden="true"></i>
+            </span>IssuePartCode
+        </th>
+
+        <th class="sortCol" data-sortorder="asc" data-columnno="5">
+            <span style="padding:5px;margin:5px" class="sort-icon">
+                <i class="fa" aria-hidden="true"></i>
+            </span>IssueItemName
+        </th>
+
+        <th class="sortCol" data-sortorder="asc" data-columnno="6">
+            <span style="padding:5px;margin:5px" class="sort-icon">
+                <i class="fa" aria-hidden="true"></i>
+            </span>IssQty
+        </th>
+
+        <th class="sortCol" data-sortorder="asc" data-columnno="7">
+            <span style="padding:5px;margin:5px" class="sort-icon">
+                <i class="fa" aria-hidden="true"></i>
+            </span>PendQty
+        </th>
+
+        <th class="sortCol" data-sortorder="asc" data-columnno="8">
+            <span style="padding:5px;margin:5px" class="sort-icon">
+                <i class="fa" aria-hidden="true"></i>
+            </span>AdjQty
+        </th>
+
+        <th class="sortCol" data-sortorder="asc" data-columnno="9">
+            <span style="padding:5px;margin:5px" class="sort-icon">
+                <i class="fa" aria-hidden="true"></i>
+            </span>ActualPendqty
+        </th>
 
             </tr>
         </thead>
@@ -81,16 +88,16 @@
                             </td>
                             <th id="StickyHearder-@Cntr">@srNo</th>
                           
-                            <td>@item.IssueChallanNo</td>
-                            <td>@(item.ChallanDate == null ? string.Empty : item.ChallanDate.Split(" ")[0])</td>
-                            
-                            <td>@item.Account_Name</td>
-                            <td>@item.IssuePartCode</td>
-                            <td>@item.IssueItemName</td>
-                            <td id="TotalIssQtyReco">@item.IssQty</td>
+                             <td>@item.IssueChallanNo</td>
+                <td>@(item.ChallanDate == null ? string.Empty : item.ChallanDate.Split(" ")[0])</td>
+                <td>@item.Account_Name</td>
+                <td>@item.IssuePartCode</td>
+                <td>@item.IssueItemName</td>
+                <td id="TotalIssQtyReco">@item.IssQty</td>
                             <td id="TotalPendQtyReco">@item.pendqty</td>
                             <td id="TotalAdjqTYReco">@item.AdjqTY</td>
                             <td id="TotalActualpendqtyReco">@item.Actualpendqty</td>
+
 
                         </tr>
                         srNo++;
