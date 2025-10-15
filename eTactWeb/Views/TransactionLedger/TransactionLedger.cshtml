@@ -49,6 +49,13 @@
                     <div class="card-body">
                         <form id="SParam">
                             <div class="row">
+                                <input type="hidden" id="Hidden_FromDate" value="@Model.FromDate" />
+                                <input type="hidden" id="Hidden_ToDate" value="@Model.ToDate" />
+                                <input type="hidden" id="Hidden_ReportType" value="@Model.ReportType" />
+                                <input type="hidden" id="Hidden_GroupLedger" value="@Model.GroupOrLedger" />
+                                <input type="hidden" id="Hidden_VoucherType" value="@Model.VoucherType" />
+                                <input type="hidden" id="Hidden_AccountCode" value="@Model.AccountCode" />
+                                <input type="hidden" id="Hidden_ParentLedger" value="@Model.ParentAccountCode" />
                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12">
                                     <div class="row">
                                         <div class="col">
@@ -150,7 +157,7 @@
                                     <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="TransactionLedger" asp-action="TransactionLedger">
                                         <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
                                     </a>
-                                    <a href="#" class="btn btn-primary btn-sm ms-3" onclick="PressBack();" id="BackButton">
+                                    <a href="#" class="btn btn-primary btn-sm ms-3" onclick="window.location.href='@Url.Action("Back", "Common")'"  id="BackButton">
                                         <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
                                         BACK
                                     </a>
@@ -250,21 +257,19 @@
 
             $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' })
                 .datepicker("setDate", 'now');
-
             $('#LedgerName, #ParentLedgerName, #ReportType, #VoucherType, #Group_Ledger').select2();
 
-            // Fill dropdowns (no callbacks, just your original way)
             FillLedgerName();
             FillVoucherName();
             FillParentLedgerName();
-
-            GetDetailsData();
+            GetValidateData();
         });
 
         function GetValidateData() {
             if ($('#ReportType').val() == "TransactionLedgerSummary" || $('#ReportType').val() == "TransactionLedgerDetail") {
                 if ($('#LedgerName').val() == 0 || $('#LedgerName').prop('selectedIndex') == 0) {
                     $.notify('Account Code is mandatory to display details data', "error");
+                    $('#BackButton').hide();
                 }
                 else {
                     GetDetailsData();
@@ -350,25 +355,6 @@
             var year = date.getFullYear();
             var dateString = day + "/" + month + "/" + year;
             return dateString;
-        }
-
-        // MonthlySummary → MonthWiseData
-        function GetMonthWiseData(monthNo) {
-            let fromDate = formatDate1(new Date(new Date().getFullYear(), monthNo - 1, 1));
-            let toDate = formatDate1(new Date(new Date().getFullYear(), monthNo, 0));
-
-            $('#FromDate').datepicker("setDate", fromDate);
-            $('#ToDate').datepicker("setDate", toDate);
-
-            saveHistory('MonthlySummary', {
-                parentCode: $('#ParentLedgerName').val(),
-                accountCode: $('#LedgerName').val(),
-                monthNo,
-                fromDate,
-                toDate
-            });
-
-            $('#ReportType').val('TransactionLedgerSummary').trigger('change');
         }
 
         function GetDataByGroupSummary(Cntr) {
@@ -594,26 +580,22 @@
         }
 
         function GetDetailsData() {
-
-            var ReportType = $('#ReportType').val();
-            var FromDate = $('#FromDate').val();
-            var ToDate = $('#ToDate').val();
-            var AccountCode = $('#AccountCode').val();
-            var Ledger = $('#ParentLedgerName').val();
-            var VoucherType = $('#VoucherType').val();
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("GetDetailsData", "TransactionLedger")',
                 data: {
-                    "FromDate": FromDate,
-                    "ToDate": ToDate,
-                    "AccountCode": AccountCode,
-                    "ReportType": ReportType,
-                    "Ledger": Ledger,
-                    "VoucherType": VoucherType,
+                    FromDate: $('#FromDate').val(),
+                    ToDate: $('#ToDate').val(),
+                    ReportType: $('#ReportType').val(),
+                    GroupOrLedger: $('#Group_Ledger').val(),
+                    ParentAccountCode: $('#ParentLedgerName').val(),
+                    AccountCode: $('#LedgerName').val(),
+                    VoucherType: $('#VoucherType').val()
+                    // add other filter fields as required
                 },
-                success: function (response) {
-                    $('#divStockMainRegister').html(response);
+                success: function (partialHtml) {
+                    // 1) Inject partial HTML
+                    $('#divStockMainRegister').html(partialHtml);
                     $('#opnDRDiv').show();
                     $('#opnCRDiv').show();
                     $('#opnTBDiv').show();
@@ -623,9 +605,58 @@
                     var totalRows = $('#divStockMainRegister tr').length;
                     $('#totalRows').text(totalRows);
                     countAllTotal();
+
+                    // 2) Read hidden fields from the newly-inserted partial
+                    let savedFilters = {
+                        toDate: $('#Hidden_ToDate').val(),
+                        reportType: $('#Hidden_ReportType').val(),
+                        groupLedger: $('#Hidden_GroupLedger').val(),
+                        voucherType: $('#Hidden_VoucherType').val(),
+                        accountCode: $('#Hidden_AccountCode').val(),
+                        parentLedger: $('#Hidden_ParentLedger').val()
+                    };
+
+                    // 3) Set/restore UI controls (only if values exist)
+                    // datepickers must already be initialized before this call
+                    if (savedFilters.toDate && savedFilters.toDate.trim() !== '') {
+                        $('#ToDate').datepicker('setDate', convertServerDateToDDMMYYYY(savedFilters.toDate));
+                    } // else keep whatever ToDate already has (e.g., todays date)
+
+                    if (savedFilters.reportType && savedFilters.reportType.trim() !== '') {
+                        $('#ReportType').val(savedFilters.reportType).trigger('change');
+                    }
+
+                    if (savedFilters.groupLedger && savedFilters.groupLedger.trim() !== '') {
+                        $('#Group_Ledger').val(savedFilters.groupLedger).trigger('change');
+                    }
+
+                    if (savedFilters.voucherType && savedFilters.voucherType.trim() !== '') {
+                        $('#VoucherType').val(savedFilters.voucherType).trigger('change');
+                    }
+
+                    if (savedFilters.accountCode && savedFilters.accountCode !== '0' && savedFilters.accountCode.trim() !== '') {
+                        $('#LedgerName').val(savedFilters.accountCode).trigger('change');
+                    }
+
+                    if (savedFilters.parentLedger && savedFilters.parentLedger !== '0' && savedFilters.parentLedger.trim() !== '') {
+                        $('#ParentLedgerName').val(savedFilters.parentLedger).trigger('change');
+                    }
+
+                    // 4) Show/hide Back button (exclude FromDate)
+                    const hasAnyFilter =
+                        (savedFilters.toDate && savedFilters.toDate.trim() !== '') ||
+                        (savedFilters.reportType && savedFilters.reportType.trim() !== '') ||
+                        (savedFilters.groupLedger && savedFilters.groupLedger.trim() !== '') ||
+                        (savedFilters.voucherType && savedFilters.voucherType.trim() !== '') ||
+                        (savedFilters.accountCode && savedFilters.accountCode !== '0') ||
+                        (savedFilters.parentLedger && savedFilters.parentLedger !== '0');
+
+                    if (hasAnyFilter) $('#BackButton').show(); else $('#BackButton').hide();
+
+                    // Optional: re-run any JS plugins needed for grid elements inside partial (e.g., tooltips)
                 },
-                error: function (xhr, status, error) {
-                    console.error("Error fetching BOM tree data:", error);
+                error: function (xhr, status, err) {
+                    console.error('GetDetailsData failed:', err);
                 }
             });
         }
@@ -864,7 +895,6 @@
 
         function countAllTotal() {
             var rowCount = $('#divStockRegisterBody tr').length;
-
             var TotCr = 0;
             var TotDr = 0;
 
@@ -872,11 +902,7 @@
                 TotCr += $('#totCrG-' + i).text() == '' ? 0 : parseFloat($('#totCrG-' + i).text());
                 TotDr += $('#totDrG-' + i).text() == '' ? 0 : parseFloat($('#totDrG-' + i).text());
             }
-
-
             var TotBal = TotDr - TotCr;
-
-
             $('#totCr').val(0);
             $('#totDr').val(0);
             $('#totBal').val(0);
@@ -900,7 +926,6 @@
                 NetCurrentAmt += $('#NetCurrentAmt-' + i).text() == '' ? 0 : parseFloat($('#NetCurrentAmt-' + i).text());
                 NetAmt += $('#NetAmt-' + i).text() == '' ? 0 : parseFloat($('#NetAmt-' + i).text());
             }
-
 
             $('#totOpen').val(isNaN(TotOpen) ? 0 : TotOpen.toFixed(2));
             $('#netCurrentAmt').val(isNaN(NetCurrentAmt) ? 0 : NetCurrentAmt.toFixed(2));
@@ -951,38 +976,81 @@
         function callDrillDown(anchor) {
             var controllerName = $(anchor).data('controller');
             var actionName = $(anchor).data('action');
-            var docId = $(anchor).data('docid');
-            var accountCode = $(anchor).data('accountcode');
-            var yearCode = $(anchor).data('yearcode');
+            var ReportType = $('#ReportType').val();
+            if (ReportType == "TransactionLedgerSummary" || ReportType == "TransactionLedgerDetail") {
+                var docId = $(anchor).data('docid');
+                var accountCode = $(anchor).data('accountcode');
+                var yearCode = $(anchor).data('yearcode');
 
-            // Gather filter values
-            var params = {
-                controllerName: controllerName,
-                actionName: actionName,
-                ID: docId,
-                Mode: "U",
-                AccountCode: accountCode,
-                YearCode: yearCode,
-                FromDate: $('#FromDate').val(),
-                ToDate: $('#ToDate').val(),
-                ReportType: $('#ReportType').val(),
-                GroupOrLedger: $('#Group_Ledger').val(),
-                ParentLedger: $('#ParentLedgerName').val(),
-                VoucherType: $('#VoucherType').val(),
-                VoucherNo: $('#VoucherNo').val(),
-                INVNo: $('#INVNo').val(),
-                Narration: $('#Narration').val(),
-                Amount: $('#Amount').val(),
-                Dr: $('#Dr').val(),
-                Cr: $('#CR').val(),
-                GlobalSearch: $('#search-box').val()
-            };
+                // Gather filter values
+                var params = {
+                    controllerName: controllerName,
+                    actionName: actionName,
+                    ID: docId,
+                    Mode: "U",
+                    AccountCode: accountCode,
+                    YearCode: yearCode,
+                    FromDate: $('#FromDate').val(),
+                    ToDate: $('#ToDate').val(),
+                    ReportType: ReportType,
+                    GroupOrLedger: $('#Group_Ledger').val(),
+                    ParentLedger: $('#ParentLedgerName').val(),
+                    VoucherType: $('#VoucherType').val(),
+                    VoucherNo: $('#VoucherNo').val(),
+                    INVNo: $('#INVNo').val(),
+                    Narration: $('#Narration').val(),
+                    Amount: $('#Amount').val(),
+                    Dr: $('#Dr').val(),
+                    Cr: $('#CR').val(),
+                    GlobalSearch: $('#search-box').val()
+                };
+                // Build query string dynamically
+                var queryString = $.param(params);
 
-            // Build query string dynamically
-            var queryString = $.param(params);
+                // Redirect to DrillDown action
+                window.location.href = '/TransactionLedger/DrillDown?' + queryString;
+            }
+            if (ReportType == "MonthlySummary") {
+                var month = $(anchor).data('month');
 
-            // Redirect to DrillDown action
-            window.location.href = '/TransactionLedger/DrillDown?' + queryString;
+                let fromDate = formatDate1(new Date(new Date().getFullYear(), month - 1, 1));
+                let toDate = formatDate1(new Date(new Date().getFullYear(), month, 0));
+
+                $('#FromDate').datepicker("setDate", fromDate);
+                $('#ToDate').datepicker("setDate", toDate);
+
+                var params = {
+                   controllerName: controllerName,
+                    actionName: actionName,
+                    AccountCode: $('#LedgerName').val(),
+                    FromDate: $('#FromDate').val(),
+                   ToDate: $('#ToDate').val(),
+                   ReportType: ReportType,
+                    GroupOrLedger: $('#Group_Ledger').val(),
+                   ParentLedger: $('#ParentLedgerName').val(),
+                   VoucherType: $('#VoucherType').val(),
+                   VoucherNo: $('#VoucherNo').val(),
+                   INVNo: $('#INVNo').val(),
+                   Narration: $('#Narration').val(),
+                   Amount: $('#Amount').val(),
+                   Dr: $('#Dr').val(),
+                   Cr: $('#CR').val(),
+                   GlobalSearch: $('#search-box').val()
+                };
+
+                $.ajax({
+                    url: '/TransactionLedger/DrillDown',
+                    type: 'GET',
+                    data: params,
+                    success: function (response) {
+                        $('#ReportType').val('TransactionLedgerSummary').trigger('change');
+                        $('#BackButton').show();
+                    },
+                    error: function (err) {
+                        console.error('Error loading DrillDown:', err);
+                    }
+                });
+            }
         }
 
     </script>

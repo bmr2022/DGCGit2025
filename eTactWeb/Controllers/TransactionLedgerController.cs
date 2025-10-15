@@ -65,13 +65,13 @@ namespace eTactWeb.Controllers
                 ToDate = savedFilters.ToDate;
                 ReportType = savedFilters.ReportType;
                 GroupOrLedger = savedFilters.GroupOrLedger;
-                ParentAccountCode = savedFilters.ParentAccountCode;
-                AccountCode = savedFilters.AccountCode;
+                ParentAccountCode = savedFilters.ParentAccountCode != null ? (int?)savedFilters.ParentAccountCode : null;
+                AccountCode = savedFilters.AccountCode != null ? (int)savedFilters.AccountCode : 0; // fallback to 0
                 VoucherType = savedFilters.VoucherType;
                 VoucherNo = savedFilters.VoucherNo;
                 InvoiceNo = savedFilters.InvoiceNo;
                 Narration = savedFilters.Narration;
-                Amount = savedFilters.Amount;
+                Amount = savedFilters.Amount != null ? (float?)savedFilters.Amount : null;
                 DR = savedFilters.DR;
                 CR = savedFilters.CR;
             }
@@ -191,7 +191,7 @@ namespace eTactWeb.Controllers
                 {
                     dt.Rows.Add(
                         sr++,
-                        row.MOnthFullName,
+                        row.MonthFullName,
                         row.TotalDr,
                         row.TotalCr,
                         row.ClosingAmt,
@@ -261,28 +261,54 @@ namespace eTactWeb.Controllers
             );
         }
         [HttpGet]
-        public IActionResult DrillDown(
-            string controllerName,
-            string actionName,
-            int ID,
-            int YearCode,
-            string Mode,
-            int AccountCode)
+        public async Task<IActionResult> DrillDown(
+      string controllerName = "TransactionLedger",
+      string actionName = "Index",
+      int ID = 0,
+      int YearCode = 0,
+      string Mode = "U",
+      int AccountCode = 0,
+      string FromDate = null,
+      string ToDate = null,
+      string ReportType = null,
+      string GroupOrLedger = null,
+      int? ParentAccountCode = null,
+      string VoucherType = null,
+      string VoucherNo = null,
+      string InvoiceNo = null,
+      string Narration = null,
+      float? Amount = null,
+      string DR = null,
+      string CR = null,
+      string Ledger = null)
         {
-            // Capture all query parameters (filters) dynamically
+            // Capture all query parameters dynamically
             var queryParams = HttpContext.Request.Query
                 .ToDictionary(q => q.Key, q => (object)q.Value.ToString());
 
-            // Push current page state into session (filters stored internally)
-            NavigationHelper.Push(HttpContext, new NavigationState
-            {
-                Controller = "TransactionLedger", // current page
-                Action = "Index",
-                Filters = queryParams // store filters safely (not in URL)
-            });
+            // Save filters in session
+            HttpContext.Session.SetString("TransactionLedgerFilters", JsonConvert.SerializeObject(queryParams));
 
-            // Redirect to the target controller/action (only essential params in URL)
-            return RedirectToAction(actionName, controllerName, new { ID, YearCode, Mode, AccountCode });
+            // Determine flow based on ReportType
+            if (ReportType == "MonthlySummary")
+            {
+                // For MonthlySummary, fetch TransactionLedgerDetail data
+                var model = await _TransactionLedger.GetDetailsData(
+                    FromDate, ToDate, "TransactionLedgerDetail", GroupOrLedger, ParentAccountCode,
+                    AccountCode, VoucherType, VoucherNo, InvoiceNo, Narration, Amount, DR, CR, Ledger
+                );
+
+                // Store data in session if needed
+                HttpContext.Session.SetString("TransactionLedgerData", JsonConvert.SerializeObject(model));
+
+                // Return partial view for AJAX
+                return PartialView("_TransactionLedgerGrid", model);
+            }
+            else
+            {
+                // For Summary/Detail, redirect to voucher form
+                return RedirectToAction(actionName, controllerName, new { ID, YearCode, Mode, AccountCode });
+            }
         }
     }
 }
