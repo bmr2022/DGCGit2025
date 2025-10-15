@@ -278,6 +278,21 @@ namespace eTactWeb.Controllers
                                             StatusText = $"Please Enter valid UnderCategoryId at Row {rowIndex}"
                                         });
                                 }
+                                if (dbCol == "ItemAssetsService")
+                                {
+                                    string itemType = value?.ToString().Trim() ?? string.Empty;
+                                    if (string.IsNullOrEmpty(itemType) ||
+                                        !(itemType.Equals("Item", StringComparison.OrdinalIgnoreCase) ||
+                                          itemType.Equals("Service", StringComparison.OrdinalIgnoreCase) ||
+                                          itemType.Equals("Asset", StringComparison.OrdinalIgnoreCase)))
+                                    {
+                                        return Json(new
+                                        {
+                                            StatusCode = 201,
+                                            StatusText = $"Invalid Item/Service/Asset type at Row {rowIndex}"
+                                        });
+                                    }
+                                }
 
 
 

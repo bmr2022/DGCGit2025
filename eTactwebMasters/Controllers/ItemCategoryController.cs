@@ -207,13 +207,52 @@ namespace eTactWeb.Controllers
                                        
                                         row["Uid"] = Uid;
                                         row["CC"] = CC;
-                                       
-                                    
 
-                                  
-                                
 
-                                 if (columnType == typeof(long))
+
+                                if (dbCol == "Main_Category_Type")
+                                {
+                                    string itemCat = value?.ToString().Trim() ?? string.Empty;
+
+                                    // ✅ Fetch category dataset
+                                    var catCodeResponse = await _IItemCategory.GetAllItemCategory();
+                                    var categoryDataSet = catCodeResponse?.Result as DataSet;
+
+                                    // ✅ Validate that dataset and table exist
+                                    if (categoryDataSet == null || categoryDataSet.Tables.Count == 0)
+                                    {
+                                        return Json(new
+                                        {
+                                            StatusCode = 500,
+                                            StatusText = "Error: Could not fetch main category list from database."
+                                        });
+                                    }
+
+                                    var categoryTable = categoryDataSet.Tables[0];
+
+                                    // ✅ Extract allowed category names
+                                    var allowedTypes = categoryTable.AsEnumerable()
+                                        .Select(r => r["Main_Category_Type"].ToString().Trim())
+                                        .Where(s => !string.IsNullOrEmpty(s))
+                                        .Distinct(StringComparer.OrdinalIgnoreCase)
+                                        .ToList();
+
+                                    // ✅ Check if input matches any allowed type
+                                    bool isValid = allowedTypes.Any(t =>
+                                        t.Equals(itemCat, StringComparison.OrdinalIgnoreCase));
+
+                                    if (!isValid)
+                                    {
+                                        return Json(new
+                                        {
+                                            StatusCode = 201,
+                                            StatusText = $"Invalid Main_Category_Type '{itemCat}' at Row {rowIndex}. " +
+                                                         $"Allowed types: {string.Join(", ", allowedTypes)}"
+                                        });
+                                    }
+                                }
+
+                                if (columnType == typeof(long))
                                     value = long.Parse(value.ToString());
                                 else
 
