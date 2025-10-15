@@ -58,9 +58,9 @@ namespace eTactWeb.Data.BLL
             _SaleBillDAL = new SaleBillDAL(configuration, iDataLogic,connectionStringService);
             _DataLogicDAL = iDataLogic;
         }
-        public async Task<ResponseResult> NewEntryId(int YearCode)
+        public async Task<ResponseResult> NewEntryId(int YearCode, string SubInvoicetype)
         {
-            return await _SaleBillDAL.NewEntryId(YearCode);
+            return await _SaleBillDAL.NewEntryId(YearCode, SubInvoicetype);
         }
 
         public async Task<ResponseResult> GetCompanyType()

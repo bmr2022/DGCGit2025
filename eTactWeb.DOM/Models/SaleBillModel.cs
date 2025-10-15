@@ -155,7 +155,8 @@ namespace eTactWeb.DOM.Models
         public int SaleBillYearCode { get; set; }
         public string? SaleBillEntryDate { get; set; }
         public string? AllowToAddNegativeStockInStore { get; set; }
-        public string? @SaleBillEntryFrom { get; set; }
+        public string? SaleBillEntryFrom { get; set; }
+        public string? SubInvoicetype { get; set; }
         public string? InvPrefix { get; set; }
         public string? SaleBillJobwork { get; set; }
         public string? AgainstVoucherNo { get; set; }

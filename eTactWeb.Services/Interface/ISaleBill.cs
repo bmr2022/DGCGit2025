@@ -20,7 +20,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> AutoFillStore( string SearchStoreName);
         Task<ResponseResult> GetFormRights(int uId);
         Task<ResponseResult> GetMaxSaleInvoiceEntryDate(int YearCode);
-        Task<ResponseResult> NewEntryId(int YearCode);
+        Task<ResponseResult> NewEntryId(int YearCode,string SubInvoicetype);
         Task<ResponseResult> EditableRateAndDiscountONSaleInvoice();
         Task<ResponseResult> GetBatchInventory();
         Task<ResponseResult> GetCustomerBasedDetails(int Code);

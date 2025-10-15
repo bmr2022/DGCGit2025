@@ -4982,9 +4982,10 @@
         function NewEntryId() {
 
             var YearCode = parseInt($('#SaleBillYearCode').val());
+            var SubInvoicetype = ($('#SubInvoicetype option:selected').text().trim());
             $.ajax({
                 type: "POST",
-                data: { "YearCode": YearCode },
+                data: { "YearCode": YearCode, "SubInvoicetype": SubInvoicetype },
                 url: "@Url.Action("NewEntryId")",
                 dataType: "json",
                 success: function (result, status, error) {

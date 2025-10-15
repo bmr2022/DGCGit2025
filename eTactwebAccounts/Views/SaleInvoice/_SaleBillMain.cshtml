@@ -58,7 +58,7 @@
             <label asp-for="RemovalTime" class="form-label">Time</label>
             <input asp-for="RemovalTime" type="time" class="form-control" />
         </div>
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 SaleBillEntryDetail">
             <label asp-for="SaleBillJobwork" class="form-label">Bill Type</label>
             <select asp-for="SaleBillJobwork" class="form-control">
                 <option value="">-select-</option>
@@ -66,6 +66,17 @@
                 <option value="J">SaleBill JobWork</option>
             </select>
         </div>
+
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+            <label asp-for="SubInvoicetype" class="form-label">Invoice Type</label>
+            <select asp-for="SubInvoicetype" class="form-control" onchange="NewEntryId()">
+                <option value="">-select-</option>
+                <option value="SALE BILL" selected>SALE BILL</option>
+                <option value="ACCURATE SALE">ACCURATE SALE</option>
+                <option value="OUTSTATION SALE">OUTSTATION SALE</option>
+            </select>
+        </div>
+
       @*   <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
             <label asp-for="AccountCode" class="form-label" style="color: red;">Customer Name*</label>
             <div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
