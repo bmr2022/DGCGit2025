@@ -35,9 +35,9 @@ namespace eTactWeb.Controllers
             //MainModel.ToDate = HttpContext.Session.GetString("ToDate");
             return View(MainModel); 
         }
-        public async Task<JsonResult> GetLedgerName()
+        public async Task<JsonResult> GetLedgerName(int? ParentAccountCode)
         {
-            var JSON = await _TransactionLedger.GetLedgerName();
+            var JSON = await _TransactionLedger.GetLedgerName(ParentAccountCode);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
@@ -48,39 +48,55 @@ namespace eTactWeb.Controllers
             return Json(JsonString);
         }
         public async Task<IActionResult> GetDetailsData(
-            string FromDate = null, string ToDate = null, string ReportType = null,
-            string GroupOrLedger = null, int? ParentAccountCode = null, int AccountCode = 0,
-            string VoucherType = null, string VoucherNo = null, string InvoiceNo = null,
-            string Narration = null, float? Amount = null, string? DR = null,
-            string? CR = null, string Ledger = null)
-         {
-            // Check session for stored filters
-            if (!string.IsNullOrEmpty(FromDate) && HttpContext.Session.GetString("TransactionLedgerFilters") != null)
-            {
-                var savedFilters = JsonConvert.DeserializeObject<dynamic>(
-                    HttpContext.Session.GetString("TransactionLedgerFilters")
-                );
+      string FromDate = null, string ToDate = null, string ReportType = null,
+      string GroupOrLedger = null, int? ParentAccountCode = null, int? AccountCode = null,
+      string VoucherType = null, string VoucherNo = null, string InvoiceNo = null,
+      string Narration = null, float? Amount = null, string? DR = null,
+      string? CR = null, string Ledger = null)
+        {
+            // Load saved filters if present
+            var savedFilterString = HttpContext.Session.GetString("TransactionLedgerFilters");
+            dynamic savedFilters = null;
+            if (savedFilterString != null)
+                savedFilters = JsonConvert.DeserializeObject<dynamic>(savedFilterString);
 
-                FromDate = savedFilters.FromDate;
-                ToDate = savedFilters.ToDate;
-                ReportType = savedFilters.ReportType;
-                GroupOrLedger = savedFilters.GroupOrLedger;
-                ParentAccountCode = savedFilters.ParentAccountCode != null ? (int?)savedFilters.ParentAccountCode : null;
-                AccountCode = savedFilters.AccountCode != null ? (int)savedFilters.AccountCode : 0; // fallback to 0
-                VoucherType = savedFilters.VoucherType;
-                VoucherNo = savedFilters.VoucherNo;
-                InvoiceNo = savedFilters.InvoiceNo;
-                Narration = savedFilters.Narration;
-                Amount = savedFilters.Amount != null ? (float?)savedFilters.Amount : null;
-                DR = savedFilters.DR;
-                CR = savedFilters.CR;
+            // Use parameter if provided, else fall back to saved filter
+            FromDate ??= savedFilters?.FromDate;
+            ToDate ??= savedFilters?.ToDate;
+            ReportType ??= savedFilters?.ReportType;
+            GroupOrLedger ??= savedFilters?.GroupOrLedger;
+
+            ParentAccountCode ??= savedFilters?.ParentAccountCode != null
+                ? (int?)savedFilters.ParentAccountCode
+                : null;
+
+            // Handle AccountCode specially (empty string → null)
+            if (AccountCode == null || AccountCode == 0)
+            {
+                var accCodeStr = savedFilters?.AccountCode?.ToString();
+                if (!string.IsNullOrEmpty(accCodeStr))
+                    AccountCode = Convert.ToInt32(accCodeStr);
             }
 
+            VoucherType ??= savedFilters?.VoucherType;
+            VoucherNo ??= savedFilters?.VoucherNo;
+            InvoiceNo ??= savedFilters?.InvoiceNo;
+            Narration ??= savedFilters?.Narration;
+
+            if (Amount == null && savedFilters?.Amount != null)
+                Amount = (float?)savedFilters.Amount;
+
+            DR ??= savedFilters?.DR;
+            CR ??= savedFilters?.CR;
+
+            // Now call your service
             var model = await _TransactionLedger.GetDetailsData(
-                FromDate, ToDate, ReportType, GroupOrLedger, ParentAccountCode, AccountCode,
-                VoucherType, VoucherNo, InvoiceNo, Narration, Amount, DR, CR, Ledger
+                FromDate, ToDate, ReportType, GroupOrLedger,
+                ParentAccountCode, AccountCode, VoucherType, VoucherNo,
+                InvoiceNo, Narration, Amount, DR, CR, Ledger
             );
 
+            // Save latest data in session
             HttpContext.Session.SetString("TransactionLedgerData", JsonConvert.SerializeObject(model));
 
             return PartialView("_TransactionLedgerGrid", model);
@@ -94,10 +110,10 @@ namespace eTactWeb.Controllers
             return PartialView("_TransactionLedgerMonthlySummaryGrid", model);
 
         }
-		public async Task<IActionResult> GetTransactionLedgerGroupSummaryDetailsData(string FromDate, string ToDate, string ReportType, int LedgerGroup, int AccountCode, string VoucherType)
+		public async Task<IActionResult> GetTransactionLedgerGroupSummaryDetailsData(string FromDate, string ToDate, string ReportType, string GroupOrLedger, int? ParentAccountCode = null, int AccountCode = 0, string? VoucherType = null, string? VoucherNo = null, string? InvoiceNo = null, string? Narration = null, float? Amount = null, string? DR = null, string? CR = null, string? Ledger = null)
 		{
 			var model = new TransactionLedgerModel();
-			model = await _TransactionLedger.GetTransactionLedgerGroupSummaryDetailsData(FromDate, ToDate, ReportType, LedgerGroup, AccountCode, VoucherType);
+			model = await _TransactionLedger.GetTransactionLedgerGroupSummaryDetailsData(FromDate, ToDate, ReportType, GroupOrLedger,ParentAccountCode, AccountCode, VoucherType,VoucherNo,InvoiceNo,Narration,Amount,DR,CR,Ledger);
             var sessionData = JsonConvert.SerializeObject(model);
             HttpContext.Session.SetString("TransactionLedgerData", sessionData);
             return PartialView("_TransactionLedgerGroupSummaryGrid", model);
@@ -261,16 +277,7 @@ namespace eTactWeb.Controllers
             );
         }
         [HttpGet]
-        public async Task<IActionResult> DrillDown(
-      string controllerName = "TransactionLedger",
-      string actionName = "Index",
-      int ID = 0,
-      int YearCode = 0,
-      string Mode = "U",
-      int AccountCode = 0,
-      string FromDate = null,
-      string ToDate = null,
-      string ReportType = null,
+        public async Task<IActionResult> DrillDown(string controllerName = "TransactionLedger", string actionName = "Index", int ID = 0, int YearCode = 0, string Mode = "U", int AccountCode = 0, string FromDate = null, string ToDate = null, string ReportType = null,
       string GroupOrLedger = null,
       int? ParentAccountCode = null,
       string VoucherType = null,
@@ -280,7 +287,7 @@ namespace eTactWeb.Controllers
       float? Amount = null,
       string DR = null,
       string CR = null,
-      string Ledger = null)
+      string Ledger = null, string ClickName = null)
         {
             // Capture all query parameters dynamically
             var queryParams = HttpContext.Request.Query
@@ -303,6 +310,28 @@ namespace eTactWeb.Controllers
 
                 // Return partial view for AJAX
                 return PartialView("_TransactionLedgerGrid", model);
+            }
+            if (ReportType == "GROUPSUMMARY")
+            {
+                // For MonthlySummary, fetch TransactionLedgerDetail data
+                var model = await _TransactionLedger.GetTransactionLedgerGroupSummaryDetailsData(
+                    FromDate, ToDate, ReportType, GroupOrLedger, ParentAccountCode,
+                    AccountCode, VoucherType, VoucherNo, InvoiceNo, Narration, Amount, DR, CR, Ledger
+                );
+
+                // Store data in session if needed
+                HttpContext.Session.SetString("TransactionLedgerData", JsonConvert.SerializeObject(model));
+
+                if(ClickName == "ParentLedgerClick")
+                {
+                    // Return partial view for AJAX
+                    return PartialView("_TransactionLedgerGroupSummaryGrid", model);
+                }
+                else
+                {
+                    // Return partial view for AJAX
+                    return PartialView("_TransactionLedgerGrid", model);
+                }
             }
             else
             {

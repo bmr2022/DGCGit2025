@@ -42,8 +42,20 @@
                                 </a>
                             </td>
                             <th>@Cntr</th>
-                            <td style="color:blue;cursor:pointer;" onclick="GetDataByGroupSummary(@Cntr)">@item.ParentLedgerName<input type="hidden" value="@item.ParentAccountCode" id="ParentCode-@Cntr" /></td>
-                            <td style="color:blue;cursor:pointer;" onclick="GetDataByAccountSummary(@Cntr)">@item.AccountName<input type="hidden" value="@item.AccountCode" id="AccountCode-@Cntr" /></td>
+                            <td href="javascript:void(0);" class="drillDownLink" style="color:blue;cursor:pointer;" onclick="callDrillDown(this)"
+                                data-controller="TransactionLedger"
+                                data-action="Index"
+                                data-seqno="@Cntr"
+                                data-clickname="ParentLedgerClick">
+                                @item.ParentLedgerName<input type="hidden" value="@item.ParentAccountCode" id="ParentCode-@Cntr" />
+                            </td>
+                            <td href="javascript:void(0);" class="drillDownLink" style="color:blue;cursor:pointer;" onclick="callDrillDown(this)"
+                                data-controller="TransactionLedger"
+                                data-action="Index"
+                                data-seqno="@Cntr"
+                                data-clickname="LedgerClick">
+                                @item.AccountName<input type="hidden" value="@item.AccountCode" id="AccountCode-@Cntr" />
+                            </td>
                             <td id="OpnDr-@Cntr">@item.OpnDr</td>
                             <td id="OpnCr-@Cntr">@item.OpnCr</td>
                             <td id="TotOpen-@Cntr">@item.TotalOpening</td>

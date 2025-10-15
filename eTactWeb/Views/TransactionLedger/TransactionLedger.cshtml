@@ -357,24 +357,6 @@
             return dateString;
         }
 
-        function GetDataByGroupSummary(Cntr) {
-
-            // Save OLD state first
-            let currentGroup = $('#ParentLedgerName').val();
-            let currentReportType = $('#ReportType').val();
-            let currentFromDate = $('#FromDate').val();
-            let currentToDate = $('#ToDate').val();
-            saveHistory('GroupSummary', { ParentCode: currentGroup, ReportType: currentReportType, FromDate: currentFromDate, ToDate: currentToDate });
-
-            // Apply NEW state
-            var FromDate = $('#FromDate').val();
-            var ToDate = $('#ToDate').val();
-            var ParentCode = $('#ParentCode-' + Cntr).val();
-            $('#ParentLedgerName').val(ParentCode).trigger("change");
-            $('#ReportType').val("GROUPDETAIL").trigger("change");
-            $('#BackButton').show();
-        }
-
         function GetDataByAccountSummary(Cntr) {
 
             // Save OLD state first
@@ -514,6 +496,7 @@
 
         $('#ParentLedgerName').change(function () {
             $('#ParentAccountCode').val($('#ParentLedgerName').val());
+            FillLedgerName();
         });
 
         $('#LedgerName').change(function () {
@@ -533,6 +516,7 @@
             $.ajax({
                 url: '@Url.Action("GetLedgerName", "TransactionLedger")',
                 type: 'GET',
+                data: { "ParentAccountCode": $('#ParentLedgerName').val() },
                 async: false,
                 success: function (response, status, error) {
 
@@ -699,7 +683,7 @@
             var FromDate = $('#FromDate').val();
             var ToDate = $('#ToDate').val();
             var ReportType = $('#ReportType').val();
-            var LedgerGroup = parseInt($('#ParentLedgerName').val());
+            var ParentAccountCode = parseInt($('#ParentLedgerName').val());
             var AccountCode = parseInt($('#LedgerName').val());
             var VoucherType = $('#VoucherType').val();
 
@@ -710,7 +694,7 @@
                     FromDate: FromDate,
                     ToDate: ToDate,
                     ReportType: ReportType,
-                    LedgerGroup: LedgerGroup,
+                    ParentAccountCode: ParentAccountCode,
                     AccountCode: AccountCode,
                     VoucherType: VoucherType
                 },
@@ -1044,6 +1028,55 @@
                     data: params,
                     success: function (response) {
                         $('#ReportType').val('TransactionLedgerSummary').trigger('change');
+                        $('#BackButton').show();
+                    },
+                    error: function (err) {
+                        console.error('Error loading DrillDown:', err);
+                    }
+                });
+            }
+            if (ReportType == "GROUPSUMMARY" || ReportType == "GROUPDETAIL") {
+                var Cntr = $(anchor).data('seqno');
+                var ClickName = $(anchor).data('clickname');
+
+                var params = {
+                   controllerName: controllerName,
+                    actionName: actionName,
+                    AccountCode: $('#LedgerName').val(),
+                    FromDate: $('#FromDate').val(), 
+                    ToDate: $('#ToDate').val(),
+                    ReportType: ReportType,
+                     GroupOrLedger: $('#Group_Ledger').val(),
+                    ParentLedger: $('#ParentLedgerName').val(),
+                    VoucherType: $('#VoucherType').val(),
+                    VoucherNo: $('#VoucherNo').val(),
+                    INVNo: $('#INVNo').val(),
+                    Narration: $('#Narration').val(),
+                    Amount: $('#Amount').val(),
+                    Dr: $('#Dr').val(),
+                    Cr: $('#CR').val(),
+                    ClickName:ClickName,
+                    GlobalSearch: $('#search-box').val()
+                };
+
+                $.ajax({
+                    url: '/TransactionLedger/DrillDown',
+                    type: 'GET',
+                    data: params,
+                    success: function (response) {
+                        if (ClickName == "ParentLedgerClick") {
+                            var ParentCode = $('#ParentCode-' + Cntr).val();
+                            $('#ParentLedgerName').val(ParentCode).trigger("change");
+                            $('#ReportType').val("GROUPSUMMARY").trigger("change");
+                        }
+                        if (ClickName == "LedgerClick") {
+                            var ParentCode = $('#ParentCode-' + Cntr).val();
+                            $('#ParentLedgerName').val(ParentCode).trigger("change");
+                            var AccountCode = $('#AccountCode-' + Cntr).val();
+                            $('#LedgerName').val(AccountCode).trigger("change");
+                            $('#ReportType').val("TransactionLedgerDetail").trigger("change");
+                        }
+                        
                         $('#BackButton').show();
                     },
                     error: function (err) {

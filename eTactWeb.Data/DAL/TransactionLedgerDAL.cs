@@ -26,13 +26,14 @@ namespace eTactWeb.Data.DAL
             DBConnectionString = _connectionStringService.GetConnectionString();
             _IDataLogic = iDataLogic;
         }
-        public async Task<ResponseResult> GetLedgerName()
+        public async Task<ResponseResult> GetLedgerName(int? ParentAccountCode)
         {
             var _ResponseResult = new ResponseResult();
             try
             {
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "GetLedgerName"));
+                SqlParams.Add(new SqlParameter("@ParentAccountCode", ParentAccountCode));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpTRansactionLedgerAndGroupList", SqlParams);
             }
             catch (Exception ex)
@@ -45,7 +46,7 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
 
         }
-        public async Task<TransactionLedgerModel> GetDetailsData(string FromDate, string ToDate, string ReportType, string GroupOrLedger, int? ParentAccountCode, int AccountCode, string VoucherType, string VoucherNo, string InvoiceNo, string Narration, float? Amount, string? DR, string? CR, string Ledger)
+        public async Task<TransactionLedgerModel> GetDetailsData(string FromDate, string ToDate, string ReportType, string GroupOrLedger, int? ParentAccountCode, int? AccountCode, string VoucherType, string VoucherNo, string InvoiceNo, string Narration, float? Amount, string? DR, string? CR, string Ledger)
         {
             var resultList = new TransactionLedgerModel();
             DataSet oDataSet = new DataSet();
@@ -178,7 +179,7 @@ namespace eTactWeb.Data.DAL
 
             return resultList;
         }
-		public async Task<TransactionLedgerModel> GetTransactionLedgerGroupSummaryDetailsData(string FromDate, string ToDate, string ReportType, int LedgerGroup,int AccountCode, string VoucherType)
+		public async Task<TransactionLedgerModel> GetTransactionLedgerGroupSummaryDetailsData(string FromDate, string ToDate, string ReportType, string GroupOrLedger, int? ParentAccountCode = null, int AccountCode = 0, string? VoucherType = null, string? VoucherNo = null, string? InvoiceNo = null, string? Narration = null, float? Amount = null, string? DR = null, string? CR = null, string? Ledger = null)
 		{
 			var resultList = new TransactionLedgerModel();
 			DataSet oDataSet = new DataSet();
@@ -194,9 +195,9 @@ namespace eTactWeb.Data.DAL
 					command.Parameters.AddWithValue("@FromDate", ParseFormattedDate(FromDate));
 					command.Parameters.AddWithValue("@ToDate", ParseFormattedDate(ToDate));
 					command.Parameters.AddWithValue("@ReportTypeSummDetail", ReportType);
-					if (LedgerGroup > 0)
+					if (ParentAccountCode > 0)
 					{
-						command.Parameters.AddWithValue("@GroupCode", LedgerGroup);
+						command.Parameters.AddWithValue("@GroupCode", ParentAccountCode);
 					}
 					command.Parameters.AddWithValue("@FromFormName", "GROUPSUMMARYFORM");
 
