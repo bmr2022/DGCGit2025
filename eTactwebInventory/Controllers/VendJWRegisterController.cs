@@ -101,7 +101,12 @@ namespace eTactWeb.Controllers
             {
                 return PartialView("_VenderJWReceiveGrid", model);
             }
-            else
+   //         else if (IssueChallanType == "RECO" && ReportMode== "RECO SUMMARY")
+   //         {
+			//	return PartialView("_VendorRecoSummaryGrid", model);
+			//}
+
+			else
             {
                 return PartialView("_VendorRecoIssueReceiveGrid", model);
             }

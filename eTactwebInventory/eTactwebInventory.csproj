@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <Content Remove="Views\NRGP\_NRGPShowAllItemGrid1.cshtml" />
+    <Content Remove="Views\VendJWRegister\_VendorRecoSummaryGrid.cshtml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -40,6 +41,15 @@
 
   <ItemGroup>
     <None Include="Views\NRGP\_NRGPShowAllItemGrid1.cshtml" />
+    <None Include="Views\VendJWRegister\_VendorRecoSummaryGrid.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\VendJWRegister\_VendorRecoSummaryGrid.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Views\VendJWRegister\_VendorRecoSummaryGrid.cshtml" />
   </ItemGroup>
 
 </Project>

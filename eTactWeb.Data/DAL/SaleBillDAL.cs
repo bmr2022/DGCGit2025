@@ -496,7 +496,7 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
-        public async Task<ResponseResult> NewEntryId(int YearCode)
+        public async Task<ResponseResult> NewEntryId(int YearCode,string SubInvoicetype)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -505,6 +505,7 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "NewEntryId"));
                 SqlParams.Add(new SqlParameter("@YearCode", YearCode));
+                SqlParams.Add(new SqlParameter("@SubInvoicetype", SubInvoicetype));
                 SqlParams.Add(new SqlParameter("@SaleBillEntryDate", billDate));
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_SaleBillMainDetail", SqlParams);
             }
@@ -763,6 +764,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@PrivateMark", model.PrivateMark));
                 SqlParams.Add(new SqlParameter("@GRNo", model.GRNo));
                 SqlParams.Add(new SqlParameter("@AllowToAddNegativeStockInStore", model.AllowToAddNegativeStockInStore));
+                SqlParams.Add(new SqlParameter("@SubInvoicetype", model.SubInvoicetype));
                 if (model.AllowToAddNegativeStockInStore == "Y")
                 {
                     SqlParams.Add(new SqlParameter("@SaleBillEntryFrom", "EntryFromCounter"));
@@ -1472,6 +1474,7 @@ namespace eTactWeb.Data.DAL
                 model.SaleQuotNo = DS.Tables[0].Rows[0]["SaleQuotNo"]?.ToString();
                 model.PrivateMark = DS.Tables[0].Rows[0]["PrivateMark"]?.ToString();
                 model.GRNo = DS.Tables[0].Rows[0]["GRNo"]?.ToString();
+                model.SubInvoicetype = DS.Tables[0].Rows[0]["SubInvoicetype"]?.ToString();
                 model.GRDate = DS.Tables[0].Rows[0]["GRDate"]?.ToString();
                 model.SaleQuotEntryID = Convert.ToInt32(DS.Tables[0].Rows[0]["SaleQuotEntryID"]);
                 model.SaleQuotyearCode = Convert.ToInt32(DS.Tables[0].Rows[0]["SaleQuotyearCode"]);

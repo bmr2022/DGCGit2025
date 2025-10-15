@@ -118,7 +118,7 @@ namespace eTactWeb.Data.DAL
                     }
                     else if(IssueChallanType == "RECO")
                     {
-                        if (ReportMode == "JOBWORKRecoDETAIL" || ReportMode == "JOBWORKRecoSummary"|| ReportMode == "ONLY PENDING CHALLAN")
+                        if (ReportMode == "JOBWORKRecoDETAIL" || ReportMode == "JOBWORKRecoSummary"|| ReportMode == "ONLY PENDING CHALLAN"|| ReportMode == "RECO SUMMARY")
                         {
                             if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
                             {

@@ -139,9 +139,13 @@
                                                @*  <partial name="_BOMReportGrid" /> *@
                                             </div>
                                         </div>
-                                        <div class="d-flex justify-content-end mt-2" id="reportFields">
-                                                    
-                                                   
+                                            <div class="row" id="TOTALDetail">
+                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                                    <label class="form-label">Total Consumed Qty</label>
+                                                <input id="TotalConsumedRMQty" class="form-control" readonly />
+                                                </div>
+                                               
+
                                         </div>
                                        
                                     </div>
@@ -186,6 +190,7 @@
             FillRMItemName();
             FillWorkCenterName();
             FillStoreName();
+            countAllTotal();
             //GetConsumptionDetailsData();
             // handleReportType();
         });
@@ -204,7 +209,18 @@
             $(CurrentRow).css({ 'background-color': '#00bcd4' });
             $("#divStockRegisterBody tr").not(CurrentRow).css({ 'background-color': '' });
         }
+        function countAllTotal() {
+            var TotalConsumedRMQty = 0;
 
+            $('#divStockRegisterBody tr').each(function () {
+                var val = $(this).find('.GridConsumedRMQty').text().trim();
+                if (val !== '') {
+                    TotalConsumedRMQty += parseFloat(val) || 0;
+                }
+            });
+
+            $('#TotalConsumedRMQty').val(TotalConsumedRMQty.toFixed(2));
+        }
         function FillFGItemName() {
              
             $.ajax({
@@ -462,7 +478,7 @@
                     }
                     var totalRows = $('#divStockMainRegister tr').length;
                     $('#totalRows').text(totalRows);
-                    //countAllTotal();
+                    countAllTotal();
                 },
                 error: function (xhr, status, error) {
                     console.error("Error fetching BOM tree data:", error);
@@ -621,31 +637,7 @@
                 table.children('#divStockRegisterBody').append(row);
             });
         }
-        function countAllTotal() {
-             
-            var rowCount = $('#divStockRegisterBody tr').length;
-           
-            var TotQty = 0;
-            var TotStoreStock = 0;
-            var TotWIPStock = 0;
-            var TotAmount = 0;
-            for (var i = 1; i <= rowCount; i++) {
-
-                TotQty += $('#totQtyG-' + i).text() == '' ? 0 : parseFloat($('#totQtyG-' + i).text());
-                TotStoreStock += $('#totStoreStockG-' + i).text() == '' ? 0 : parseFloat($('#totStoreStockG-' + i).text());
-                TotWIPStock += $('#totWIPStockG-' + i).text() == '' ? 0 : parseFloat($('#totWIPStockG-' + i).text());
-                TotAmount += $('#totAmountG-' + i).text() == '' ? 0 : parseFloat($('#totAmountG-' + i).text());
-                //if(totAmount < 0){
-                //    $('#SAGridRow-' + i).css('background-color', 'red');
-                //}
-            }
-
-
-            $('#totQty').val(isNaN(TotQty) ? 0 : TotQty.toFixed(2));
-            $('#totStoreStock').val(isNaN(TotStoreStock) ? 0 : TotStoreStock.toFixed(2));
-            $('#totWIPStock').val(isNaN(TotWIPStock) ? 0 : TotWIPStock.toFixed(2));
-            $('#totAmount').val(isNaN(TotAmount) ? 0 : TotAmount.toFixed(2));
-        }
+     
         var currentSearchColumn = null;
 
         $("#search-box").on("keyup", function () {

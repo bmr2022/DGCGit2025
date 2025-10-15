@@ -105,9 +105,9 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> NewEntryId(int YearCode)
+        public async Task<JsonResult> NewEntryId(int YearCode,string SubInvoicetype)
         {
-            var JSON = await _SaleBill.NewEntryId(YearCode);
+            var JSON = await _SaleBill.NewEntryId(YearCode, SubInvoicetype);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
