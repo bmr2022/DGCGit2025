@@ -47,7 +47,8 @@
                             </div>
                             <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:160px">
                                 <label asp-for="InProcQcSlipNo" class="form-label">Qc slip No</label>
-                                <input asp-for="InProcQcSlipNo" class="form-control" />
+                                <select asp-for="InProcQcSlipNo" class="form-select">
+                                </select>
                             </div>
                             <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:160px">
                                 <label asp-for="ItemName" class="form-label">Item Name</label>
@@ -57,11 +58,12 @@
                                 <label asp-for="PartCode" class="form-label">Part Code</label>
                                 <input asp-for="PartCode" class="form-control" />
                             </div>
-                            <div class="col-xxl-1 col-xl-2 col-lg-2 col-md-3 col-sm-6 col-xs-12">
+                            <div class="col-xxl-1 col-xl-2 col-lg-2 col-md-3 col-sm-6 col-xs-12" style="width:200px">
                                 <label asp-for="ProdSlipNo" class="form-label">Prod Slip No</label>
-                                <input asp-for="ProdSlipNo" class="form-control" />
+                                <select asp-for="ProdSlipNo" class="form-select">
+                                </select>
                             </div>
-                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:160px">
+                           @*  <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:160px">
                                 <label asp-for="Workcenter" class="form-label">Workcenter</label>
                                 <input asp-for="Workcenter" class="form-control" />
                             </div>
@@ -76,7 +78,7 @@
                             <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:160px">
                                 <label asp-for="ProdPlanNo" class="form-label">Prod Plan No</label>
                                 <input asp-for="ProdPlanNo" class="form-control" />
-                            </div>
+                            </div> *@
                            
                             <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2" style="width:200px">
                                 <label class="form-label">Global search</label>
@@ -163,6 +165,12 @@
                 $('#search-box').val(GlobalSearchBack);
                 $('#DashboardType').val(DashboardTypeBack);
             }
+                 $('#InProcQcSlipNo').select2();
+        $('#ProdSlipNo').select2();
+
+        FillInProcQCSlipNo();
+        BindProdSlip();
+            FillItems();
             GetSearchData();
             $("#search-box").val($('#search-box').val()).trigger('keyup');
 
@@ -180,6 +188,188 @@
             sessionStorage.removeItem('DashboardTypeBack');
 
         });
+                        function FillInProcQCSlipNo() {
+            $.ajax({
+                url: '@Url.Action("FillInProcQCSlipNo")',
+                type: 'POST',
+                success: function (result) {
+                    console.log("FillInProcQCSlipNo result:", result);
+
+                    // Parse only if string
+                    var obj = (typeof result === "string") ? JSON.parse(result) : result;
+
+                    // Validate response
+                    if (obj && obj.StatusCode === 200 && obj.StatusText === "Success") {
+                        var data = obj.Result && obj.Result.Table ? obj.Result.Table : [];
+
+                        // Clear old options
+                        $('#InProcQcSlipNo').empty();
+
+                        if (data.length > 0) {
+                            $('#InProcQcSlipNo').append('<option value="" selected>-Select-</option>');
+                            $.each(data, function (index, val) {
+                                $('#InProcQcSlipNo').append(
+                                    '<option value="' + val.InProcQCSlipNo + '">' + val.InProcQCSlipNo + '</option>'
+                                );
+                            });
+                        } else {
+                            $('#InProcQcSlipNo').append('<option value="" selected>No results found</option>');
+                        }
+                    } else {
+                        $('#InProcQcSlipNo').empty();
+                    }
+                },
+                error: function (err) {
+                    console.error('Error:', err);
+                    $('#InProcQcSlipNo').empty();
+                }
+            });
+        }
+        function BindProdSlip() {
+            $.ajax({
+                url: '@Url.Action("BindProdSlip")',
+                type: 'POST',
+                success: function (result) {
+                    console.log("BindProdSlip result:", result);
+
+                    // Parse only if string
+                    var obj = (typeof result === "string") ? JSON.parse(result) : result;
+
+                    // Validate response
+                    if (obj && obj.StatusCode === 200 && obj.StatusText === "Success") {
+                        var data = obj.Result && obj.Result.Table ? obj.Result.Table : [];
+
+                        // Clear old options
+                        $('#ProdSlipNo').empty();
+
+                        if (data.length > 0) {
+                            $('#ProdSlipNo').append('<option value="0" selected>-Select-</option>');
+                            $.each(data, function (index, val) {
+                                $('#ProdSlipNo').append(
+                                    '<option value="' + val.ProdSlipNo + '">' + val.ProdSlipNo + '</option>'
+                                );
+                            });
+                        } else {
+                            $('#ProdSlipNo').append('<option value="0" selected>No results found</option>');
+                        }
+
+                        // Refresh Select2
+                        $('#ProdSlipNo').trigger('change');
+                    } else {
+                        $('#ProdSlipNo').empty().append('<option value="0">No results found</option>');
+                    }
+                },
+                error: function (err) {
+                    console.error('Error:', err);
+                    $('#ProdSlipNo').empty().append('<option value="0">Error loading data</option>');
+                }
+            });
+        }
+
+            function FillItems() {
+            // Source for PartCodeText
+            const partCodeSource = function (request, response) {
+                $.ajax({
+                       url: '@Url.Action("FillItems")',
+                    type: 'POST',
+                    data: {
+
+                        SearchItemCode: '',
+                        SearchPartCode: request.term
+                    },
+                    success: function (result) {
+                        let obj = typeof result === "string" ? JSON.parse(result) : result;
+
+                        if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
+                            let filtered = obj.Result.Table.filter(function (item) {
+                                let term = request.term.toLowerCase();
+                                return item.PartCode.toLowerCase().includes(term);
+                            });
+
+                            response($.map(filtered, function (item) {
+                                return {
+                                    label: item.PartCode,
+                                    value: item.PartCode,
+                                    itemName: item.ItemName,
+                                    itemCode: item.Item_Code
+                                };
+                            }));
+                        } else {
+                            response([]);
+                        }
+                    }
+                });
+            };
+
+            // Source for ItemNameText
+            const itemNameSource = function (request, response) {
+                $.ajax({
+                      url: '@Url.Action("FillItems")',
+                    type: 'POST',
+                    data: {
+
+                        SearchItemCode: request.term,
+                        SearchPartCode: ''
+                    },
+                    success: function (result) {
+                        let obj = typeof result === "string" ? JSON.parse(result) : result;
+
+                        if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
+                            let filtered = obj.Result.Table.filter(function (item) {
+                                let term = request.term.toLowerCase();
+                                return item.ItemName.toLowerCase().includes(term);
+                            });
+
+                            response($.map(filtered, function (item) {
+                                return {
+                                    label: item.ItemName,
+                                    value: item.Item_Code,
+                                    itemName: item.ItemName,
+                                    itemCode: item.Item_Code,
+                                    partCode: item.PartCode
+                                };
+                            }));
+                        } else {
+                            response([]);
+                        }
+                    }
+                });
+            };
+
+            // Autocomplete for PartCodeText
+            $("#PartCode").autocomplete({
+                source: partCodeSource,
+                select: function (event, ui) {
+                   
+                    $('#ItemName').val(ui.item.itemName);
+                    $('#PartCode').val(ui.item.partCode);
+                    /* GetItemPartCode("PartCode"); */
+                    return false;
+                },
+                focus: function (event, ui) {
+                    $("#PartCode").val(ui.item.value);
+                    return false;
+                },
+                minLength: 2
+            });
+
+            // Autocomplete for ItemNameText
+            $("#ItemName").autocomplete({
+                source: itemNameSource,
+                select: function (event, ui) {
+                    
+                    $('#ItemName').val(ui.item.itemName);
+                    $('#PartCode').val(ui.item.partCode);
+
+                    return false;
+                },
+                focus: function (event, ui) {
+                    $("#ItemName").val(ui.item.itemName);
+                    return false;
+                },
+                minLength: 2
+            });
+        }
 
         function GetSearchData() {
             if ($('#DashboardType').val() == "Summary") {
@@ -219,7 +409,7 @@
             $.ajax({
                 url: '@Url.Action("GetDetailData")',
                 type: "POST",
-                data: $('#SParam').serializeArray(),
+                 data: $('#SParam').serializeArray(),
                 async: false,
                 success: function (data) {
                     $('#divDashboardGrid').empty().append(data);
