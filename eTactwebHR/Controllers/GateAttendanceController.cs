@@ -86,7 +86,7 @@ namespace eTactwebHR.Controllers
                 MainModel.FinToDate = HttpContext.Session.GetString("ToDate");
                 MainModel.intEmpAttMonth = string.IsNullOrWhiteSpace(MainModel.strEmpAttMonth) ? 0 : new[] { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" }.Select((m, i) => new { m, i }).FirstOrDefault(x => MainModel.strEmpAttMonth.StartsWith(x.m, StringComparison.OrdinalIgnoreCase))?.i + 1 ?? 0;
                 MainModel = await BindModels(MainModel).ConfigureAwait(false);
-                MainModel.HolidayList = GetHolidayList((!string.IsNullOrEmpty(MainModel.EmpCategoryId)) ? Convert.ToInt32(MainModel.EmpCategoryId) : 0, MainModel.EmpAttDate ?? new DateTime(MainModel.GateAttYearCode, 1, 1), YearCode)?.HolidayList ?? new List<GateAttendanceHolidayModel>();
+                MainModel.HolidayList = (!string.IsNullOrEmpty(MainModel.EmpCategoryId) && MainModel.EmpAttDate != null) ? GetHolidayList(Convert.ToInt32(MainModel.EmpCategoryId), MainModel.EmpAttDate ?? new DateTime(MainModel.GateAttYearCode, 1, 1), YearCode)?.HolidayList ?? new List<GateAttendanceHolidayModel>() : null;
                 ViewBag.DeptList = await IDataLogic.GetDropDownList("FillDepartment", "HRSPGateAttendanceMainDetail");
                 ViewBag.DesigList = await IDataLogic.GetDropDownList("FillDesignation", "HRSPGateAttendanceMainDetail");
                 //ViewBag.ShiftList = await IDataLogic.GetDropDownList("FillShift", "HRSPGateAttendanceMainDetail");
@@ -594,7 +594,7 @@ namespace eTactwebHR.Controllers
                 rowValues.Add(Item.ActualEmpShiftId ?? 0);
                 rowValues.Add(Item.DesignationEntryId ?? 0);
                 rowValues.Add(Item.DeptId ?? 0);
-                rowValues.Add(itemDetailList.CC ?? string.Empty);
+                rowValues.Add(!string.IsNullOrEmpty(itemDetailList.CC) ? itemDetailList.CC : (!string.IsNullOrEmpty(itemDetailList.Branch) ? itemDetailList.Branch : string.Empty));
                 rowValues.Add(itemDetailList.EmpCategoryId);
                 rowValues.Add(currentDt);
                 rowValues.Add(itemDetailList.ActualEmpShiftId ?? 0);

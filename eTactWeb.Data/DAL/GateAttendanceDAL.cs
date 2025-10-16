@@ -275,8 +275,9 @@ public class GateAttendanceDAL
             if (model.Mode == "UPDATE")
             {
                 SqlParams.Add(new SqlParameter("@UpdatedByEmpId", model.UpdatedBy ?? 0));
-                SqlParams.Add(new SqlParameter("@EneterdBy", model.UpdatedBy ?? 0));
+                //SqlParams.Add(new SqlParameter("@EneterdBy", model.UpdatedBy ?? 0));
                 SqlParams.Add(new SqlParameter("@LastUpdationDate", CurrentDateTime == default ? null : CurrentDateTime));
+                SqlParams.Add(new SqlParameter("@ActualEntryDate", EntryDt == default ? null : EntryDt));
             }
             else if (model.Mode == "INSERT")
             {
@@ -449,13 +450,13 @@ public class GateAttendanceDAL
                             EmployeeCode = dr["Emp_Code"].ToString(),
                             EmpId = dr["EmpId"] != DBNull.Value ? Convert.ToInt32(dr["EmpId"]) : 0,
                             EmpAttYear = dr["EmpAttYear"] != DBNull.Value ? Convert.ToInt32(dr["EmpAttYear"]) : 0,
-                            ActualEmpShiftName = dr["ShiftName" + 1].ToString(),
-                            EmpCategory = dr["CategoryCode" + 1].ToString(),
-                            DeptName = dr["DeptName" + 1].ToString(),
-                            DesignationName = dr["DesigName" + 1].ToString(),
-                            DeptId = dr["DeptId" + 1] != DBNull.Value ? Convert.ToInt32(dr["DeptId" + 1]) : 0,
-                            DesignationEntryId = dr["DesigId" + 1] != DBNull.Value ? Convert.ToInt32(dr["DesigId" + 1]) : 0,
-                            ActualEmpShiftId = dr["ShiftId" + 1] != DBNull.Value ? Convert.ToInt32(dr["ShiftId" + 1]) : 0,
+                            ActualEmpShiftName = dr["ShiftName"].ToString(),
+                            EmpCategory = dr["CategoryCode"].ToString(),
+                            DeptName = dr["DeptName"].ToString(),
+                            DesignationName = dr["DesigName"].ToString(),
+                            DeptId = dr["DeptId"] != DBNull.Value ? Convert.ToInt32(dr["DeptId"]) : 0,
+                            DesignationEntryId = dr["DesigId"] != DBNull.Value ? Convert.ToInt32(dr["DesigId"]) : 0,
+                            ActualEmpShiftId = dr["ShiftId"] != DBNull.Value ? Convert.ToInt32(dr["ShiftId"]) : 0,
                             Attendance = new Dictionary<string, string>()
                         };
 
