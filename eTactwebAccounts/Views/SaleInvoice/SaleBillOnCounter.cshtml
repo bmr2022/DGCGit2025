@@ -44,6 +44,11 @@
                             GENARATE EINVOICE
                         </a>
                     }
+                    <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="SaleBillList"
+                       asp-controller="SaleInvoice">
+                        <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                        Pending SO
+                    </a>
 
                     <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="PrintVoucher"
                        asp-controller="DirectPurchaseBill" asp-route-EntryId="@Model.SaleBillEntryId" asp-route-YearCode="@Model.SaleBillYearCode">
