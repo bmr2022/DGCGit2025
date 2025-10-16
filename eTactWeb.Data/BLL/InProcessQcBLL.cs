@@ -30,6 +30,22 @@ namespace eTactWeb.Data.BLL
         {
             return await _InProcessQcDAL.FillEntryId(Flag, YearCode, SPName);
         }
+        public async Task<ResponseResult> FillItems(string SearchItemCode, string SearchPartCode)
+        {
+            return await _InProcessQcDAL.FillItems(SearchItemCode, SearchPartCode);
+        }
+        public async Task<ResponseResult> FillInProcQCSlipNo()
+        {
+            return await _InProcessQcDAL.FillInProcQCSlipNo();
+        }
+        public async Task<ResponseResult> BindProdPlanNo()
+        {
+            return await _InProcessQcDAL.BindProdPlanNo();
+        } 
+        public async Task<ResponseResult> BindProdSlip()
+        {
+            return await _InProcessQcDAL.BindProdSlip();
+        }
         public async Task<DataSet> BindEmpList(string Flag)
         {
             return await _InProcessQcDAL.BindEmpList(Flag);
@@ -46,9 +62,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _InProcessQcDAL.GetDashboardData(FromDate, ToDate, QcSlipNo, ItemName, PartCode, ProdPlanNo, ProdSchNo, ProdSlipNo, DashboardType);
         }
-        public async Task<InProcessDashboard> GetDashboardDetailData(string FromDate, string ToDate)
+        public async Task<InProcessDashboard> GetDashboardDetailData(string FromDate, string ToDate, string QcSlipNo, string ItemName, string PartCode, string ProdPlanNo, string ProdSchNo, string ProdSlipNo, string DashboardType)
         {
-            return await _InProcessQcDAL.GetDashboardDetailData(FromDate, ToDate);
+            return await _InProcessQcDAL.GetDashboardDetailData(FromDate, ToDate, QcSlipNo, ItemName, PartCode, ProdPlanNo, ProdSchNo, ProdSlipNo, DashboardType);
         }
         public async Task<ResponseResult> DeleteByID(int ID, int YC, string CC, string EntryByMachineName, string EntryDate)
         {

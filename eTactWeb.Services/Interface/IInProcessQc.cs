@@ -1,4 +1,5 @@
 ﻿using eTactWeb.DOM.Models;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,10 @@ namespace eTactWeb.Services.Interface
     {
         Task<InProcessQc> GetViewByID(int ID, int YearCode);
         Task<ResponseResult> FillEntryId(string Flag, int YearCode, string SPName);
+        Task<ResponseResult> FillItems(string SearchItemCode, string SearchPartCode);
+        Task<ResponseResult> FillInProcQCSlipNo();
+        Task<ResponseResult> BindProdPlanNo();
+        Task<ResponseResult> BindProdSlip();
         Task<DataSet> BindEmpList(string Flag);
         Task<ResponseResult> SaveInprocessQc(InProcessQc model, DataTable InProcessQcGrid);
         Task<ResponseResult> GetDashboardData();
@@ -20,7 +25,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FillReworkreason();
         Task<ResponseResult> FillRejectionreason();
         Task<InProcessDashboard> GetDashboardData(string FromDate, string ToDate, string QcSlipNo, string ItemName, string PartCode, string ProdPlanNo, string ProdSchNo, string ProdSlipNo, string DashboardType);
-        Task<InProcessDashboard> GetDashboardDetailData(string FromDate, string ToDate);
+        Task<InProcessDashboard> GetDashboardDetailData(string FromDate, string ToDate, string QcSlipNo, string ItemName, string PartCode, string ProdPlanNo, string ProdSchNo, string ProdSlipNo, string DashboardType);
         Task<ResponseResult> DeleteByID(int ID, int YC, string CC, string EntryByMachineName, string EntryDate);
     }
 }
