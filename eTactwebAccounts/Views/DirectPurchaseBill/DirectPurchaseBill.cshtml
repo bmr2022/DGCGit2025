@@ -731,7 +731,12 @@
             // }
         });
 
-
+        document.getElementById("btnAddToGrid").addEventListener("keydown", function (event) {
+            if (event.key === "Enter") {
+                event.preventDefault(); // prevent accidental form submit if inside form
+                ItemBtn();
+            }
+        });
 
 
 
@@ -2684,9 +2689,9 @@
             }
             AddAdjstmntDetail1();
         });
-             
 
-        $('.ItemBtn').click(function () {
+
+       function ItemBtn() {
              
             let IsError = 0;
               EditEachItem = false;
@@ -2960,7 +2965,7 @@
                 }).always(function () {
                 });
             }
-        });
+        };
 
         var isEditAllowed = "false";
          var EditEachItem = false;
