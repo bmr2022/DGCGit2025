@@ -16,22 +16,17 @@
     </div>
     <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-6" id="PartCodeDiv">
         <label asp-for="PartCode" class="form-label">Part Code*</label>
-        <div class="col-xl-6  col-lg-6 col-md-6 col-sm-6 col-xs-12">
-            <select class="form-select" asp-for="PartCode" style="height:190px;width:190px;" asp-items="@(new SelectList(Model.PartCodeList,"Value","Text"))">
-                <option value="0">-Select-</option>
-            </select>
+        <div class="col-xl-12  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+            <input type="text" id="PartCodeText" class="form-control" placeholder="Type Part Code..." />
+            <input type="hidden" asp-for="PartCode" id="PartCode" />
         </div>
     </div>
     <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-xs-6">
         <label asp-for="ItemCode" class="form-label">Item Name*</label>
-        <div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
-            <label id="IN12" class="form-label">Show All</label>
-            <input asp-for="IN1" class="form-check-input" type="checkbox" tabindex="-1" role="switch" />
-        </div>
+       
         <div class="col-xl-12">
-            <select class="form-select" asp-for="ItemCode" style="height:190px;width:430px;" tabindex="-1" asp-items="@(new SelectList(Model.ItemNameList,"Value","Text"))">
-                <option value="0">-Select-</option>
-            </select>
+            <input type="text" id="ItemNameText" class="form-control" tabindex="-1" placeholder="Type Item Name..." />
+            <input type="hidden" asp-for="ItemCode" id="ItemCode" />
         </div>
     </div>
     <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-6 DirectPurchaseBillScheduleDetail" id="PONoDiv">
@@ -132,7 +127,7 @@
     <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-xs-12 col-sm-auto">
         <div class="row g-3 justify-content-around">
             <div class="col-auto">
-                <button type="button" class="ItemBtn btn btn-sm btn-outline-danger">
+                <button type="button" class="ItemBtn btn btn-sm btn-outline-danger" id="btnAddToGrid" onclick="ItemBtn()">
                     <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
                 </button>
             </div>

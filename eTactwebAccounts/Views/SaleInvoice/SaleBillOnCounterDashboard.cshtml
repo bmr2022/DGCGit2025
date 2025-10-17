@@ -10,6 +10,11 @@
             <h5>
                 Sale Bill - <strong>Dashboard</strong>
                 <span class="d-flex float-end" style="margin-top:-2px;">
+                    <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="SaleBillList"
+                       asp-controller="SaleInvoice">
+                        <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                        Pending SO
+                    </a>
                     <a asp-action="SaleBillOnCounter" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient" id="savebtn" onclick="location.href=$('form')[0].action">
                         <i class="fa fa-plus-circle fafw fa-lg" aria-hidden="true"></i>
                         Add New

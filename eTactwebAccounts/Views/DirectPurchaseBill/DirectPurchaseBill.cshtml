@@ -476,14 +476,15 @@
                     event.target.value = ""; // Clear the input value if it's not a valid number or greater than 100
                 }
             });
-            $('#AccountCode').select2();
+            // $('#AccountCode').select2();
             $('#docTypeId').select2();
-            $('#PartCode').select2();
-            $('#ItemCode').select2();
+            // $('#PartCode').select2();
+            // $('#ItemCode').select2();
             $('#PONo').select2();
             $('#ScheduleNo').select2();
                     GetFeatureOption();
-
+            AutoFillPARTYNAMELIST();
+          
             GetFormRights();
             CalculateRate();
             LockedFinancialYear();
@@ -729,6 +730,210 @@
             //     }
             // }
         });
+
+        document.getElementById("btnAddToGrid").addEventListener("keydown", function (event) {
+            if (event.key === "Enter") {
+                event.preventDefault(); // prevent accidental form submit if inside form
+                ItemBtn();
+            }
+        });
+
+
+
+        function FillItems() {
+            // Source for PartCodeText
+            const partCodeSource = function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("FillItems", "PurchaseOrder")',
+                    type: 'POST',
+                    data: {
+                        Type: $('#POTypeServItem').val(),
+                        ShowAllItem: 'N',
+                        SearchItemCode: '',
+                        SearchPartCode: request.term
+                    },
+                    success: function (result) {
+                        let obj = typeof result === "string" ? JSON.parse(result) : result;
+
+                        if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
+                            let filtered = obj.Result.Table.filter(function (item) {
+                                let term = request.term.toLowerCase();
+                                return (
+                                    (item.PartCode && item.PartCode.toLowerCase().includes(term)) ||
+                                    (item.Barcode && item.Barcode.toLowerCase().includes(term)) ||
+                                    (item.ItemName && item.ItemName.toLowerCase().includes(term))
+                                );
+                            });
+
+                            response($.map(filtered, function (item) {
+                                return {
+                                    label: item.PartCode,
+                                    value: item.PartCode,
+                                    itemName: item.ItemName,
+                                    itemCode: item.Item_Code
+                                };
+                            }));
+                        } else {
+                            response([]);
+                        }
+                    }
+                });
+            };
+
+            // Source for ItemNameText
+            const itemNameSource = function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("FillItems", "PurchaseOrder")',
+                    type: 'POST',
+                    data: {
+                        Type: $('#POTypeServItem').val(),
+                        ShowAllItem: 'N',
+                        SearchItemCode: request.term,
+                        SearchPartCode: ''
+                    },
+                    success: function (result) {
+                        let obj = typeof result === "string" ? JSON.parse(result) : result;
+
+                        if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
+                            let filtered = obj.Result.Table.filter(function (item) {
+                                let term = request.term.toLowerCase();
+                                return item.ItemName.toLowerCase().includes(term);
+                            });
+
+                            response($.map(filtered, function (item) {
+                                return {
+                                    label: item.ItemName,
+                                    value: item.Item_Code,
+                                    itemName: item.ItemName,
+                                    itemCode: item.Item_Code,
+                                    partCode: item.PartCode
+                                };
+                            }));
+                        } else {
+                            response([]);
+                        }
+                    }
+                });
+            };
+
+            // Autocomplete for PartCodeText
+            $("#PartCodeText").autocomplete({
+                source: partCodeSource,
+                select: function (event, ui) {
+                    $("#PartCodeText").val(ui.item.value).data("itemcode", ui.item.itemCode);
+                    $("#ItemNameText").val(ui.item.itemName);
+                    $('#ItemCode').val(ui.item.itemCode);
+                    $('#PartCode').val(ui.item.itemCode);
+                    GetItemPartCode("PartCode");
+                    return false;
+                },
+                focus: function (event, ui) {
+                    $("#PartCodeText").val(ui.item.value);
+                    return false;
+                },
+                minLength: 2
+            });
+
+            // 🔹 Focusout event for PartCodeText (manual entry validation)
+            $("#PartCodeText").on("focusout", function () {
+                let entered = $(this).val().trim().toLowerCase();
+                if (entered === "") return;
+
+                $.ajax({
+                    url: '@Url.Action("FillItems", "PurchaseOrder")',
+                    type: 'POST',
+                    data: {
+                        Type: $('#POTypeServItem').val(),
+                        ShowAllItem: 'N',
+                        SearchItemCode: '',
+                        SearchPartCode: entered
+                    },
+                    success: function (result) {
+                        let obj = typeof result === "string" ? JSON.parse(result) : result;
+
+                        if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
+                            // 🔹 Partial match: includes()
+                            let match = obj.Result.Table.find(item => {
+                                let real = (item.RealPartCode || "").toLowerCase();
+                                let name = (item.Item_Name || "").toLowerCase();
+                                let barcode = (item.Barcode || "").toLowerCase();
+
+                                return real.includes(entered) || name.includes(entered) || barcode.includes(entered);
+                            });
+
+                            if (match) {
+                                $("#PartCodeText").val(match.PartCode).data("itemcode", match.Item_Code);
+                                $("#ItemNameText").val(match.Item_Name);
+                                $("#ItemCode").val(match.Item_Code);
+                                $("#PartCode").val(match.Item_Code);
+                                GetItemPartCode("PartCode");
+
+                            }
+                        }
+
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("AJAX Error:", error);
+                    }
+                });
+            });
+
+            // Autocomplete for ItemNameText
+            $("#ItemNameText").autocomplete({
+                source: itemNameSource,
+                select: function (event, ui) {
+                    $("#ItemNameText").val(ui.item.itemName).data("itemcode", ui.item.itemCode);
+                    $("#PartCodeText").val(ui.item.partCode);
+                    $('#ItemCode').val(ui.item.itemCode);
+                    $('#PartCode').val(ui.item.itemCode);
+                    GetItemPartCode("ItemCode");
+                    return false;
+                },
+                focus: function (event, ui) {
+                    $("#ItemNameText").val(ui.item.itemName);
+                    return false;
+                },
+                minLength: 2
+            });
+
+            // 🔹 Focusout event for ItemNameText (manual entry validation)
+            $("#ItemNameText").on("focusout", function () {
+                let itemName = $(this).val().trim();
+                if (itemName !== "") {
+                    $.ajax({
+                        url: '@Url.Action("FillItems", "PurchaseOrder")',
+                        type: 'POST',
+                        data: {
+                            Type: $('#POTypeServItem').val(),
+                            ShowAllItem: 'N',
+                            SearchItemCode: itemName,
+                            SearchPartCode: ''
+                        },
+                        success: function (result) {
+                            let obj = typeof result === "string" ? JSON.parse(result) : result;
+
+                            if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
+                                let match = obj.Result.Table.find(item => item.ItemName.toLowerCase() === itemName.toLowerCase());
+                                if (match) {
+                                    $("#ItemNameText").val(match.ItemName).data("itemcode", match.Item_Code);
+                                    $("#PartCodeText").val(match.PartCode);
+                                    $('#ItemCode').val(match.Item_Code);
+                                    $('#PartCode').val(match.Item_Code);
+                                    GetItemPartCode("ItemCode");
+                                } else {
+                                    alert("Invalid Item Name entered!");
+                                    $("#ItemNameText").val("").focus();
+                                }
+                            } else {
+                                alert("Invalid Item Name entered!");
+                                $("#ItemNameText").val("").focus();
+                            }
+                        }
+                    });
+                }
+            });
+        }
+
 
            $('#AdjModeOfAdjstment').change(function () {
             $('#AdjNewRefNo').val($('#PurchVouchNo').val());
@@ -1011,29 +1216,29 @@
             });
         }
 
-        function FillItems() {
-            $.ajax({
-                type: "GET",
-                url: "@Url.Action("FillItems")",
-                dataType: "json",
-                data: { Type: $('#DPBTypeServItem').val(), ShowAllItem: $('#IN1').is(":checked") == true ? 'Y' : 'N' },
-                success: function (result, status, error) {
-                    if (result != null) {
-                        var obj = $.parseJSON(result);
-                        if (obj.StatusCode == 200 && obj.StatusText == "Success") {
-                            $('#PartCode,#ItemCode').empty();
-                            $('#PartCode, #ItemCode').append("<option selected disabled>-Select-</option>");
-                            $.each(obj.Result.Table, function (index, val) {
-                                $('#PartCode').append("<option value=" + val.Item_Code + ">" + val.PartCode + "</option>");
-                                $('#ItemCode').append("<option value=" + val.Item_Code + ">" + val.ItemName + "</option>");
-                                //+ " data-unipartcode = " + val.UniversalPartCode + " data-unidesc = " + val.UniversalDescription
-                            });
-                        }
+        // function FillItems() {
+        //     $.ajax({
+        //         type: "GET",
+        //         url: "@Url.Action("FillItems")",
+        //         dataType: "json",
+        //         data: { Type: $('#DPBTypeServItem').val(), ShowAllItem: $('#IN1').is(":checked") == true ? 'Y' : 'N' },
+        //         success: function (result, status, error) {
+        //             if (result != null) {
+        //                 var obj = $.parseJSON(result);
+        //                 if (obj.StatusCode == 200 && obj.StatusText == "Success") {
+        //                     $('#PartCode,#ItemCode').empty();
+        //                     $('#PartCode, #ItemCode').append("<option selected disabled>-Select-</option>");
+        //                     $.each(obj.Result.Table, function (index, val) {
+        //                         $('#PartCode').append("<option value=" + val.Item_Code + ">" + val.PartCode + "</option>");
+        //                         $('#ItemCode').append("<option value=" + val.Item_Code + ">" + val.ItemName + "</option>");
+        //                         //+ " data-unipartcode = " + val.UniversalPartCode + " data-unidesc = " + val.UniversalDescription
+        //                     });
+        //                 }
 
-                    }
-                }
-            });
-        }
+        //             }
+        //         }
+        //     });
+        // }
 
         function FillDocumentType() {
             $.ajax({
@@ -1667,7 +1872,7 @@
             $temp.remove();
         }
 
-        $('#AccountCode').change(function () {
+      function  onchangeaccountcode(){ 
             copyToClipboardForDropdown(this);
             if($('#divTaxGrid tr td').length>1){
                btnClearTax();
@@ -1680,7 +1885,7 @@
             if ($('#TxTaxType').val() != '-Select-') {
                 GetTaxAccountName("TAX");
             }
-            if ($('#AccountCode').prop('selectedIndex') > 0) {
+           
                 $.getJSON({
                     url: '@Url.Action("GetStateGST", "DirectPurchaseBill")',
                     data: { Code: $('#AccountCode').val() },
@@ -1727,13 +1932,69 @@
                         }
                     }
                 });
-            }
-            else {
-                $('#VendorAddress').val('');
-                $('#GstType').val('');
-                $('#VendorStateName').val('');
-            }
-        });
+           
+        };
+
+        function AutoFillPARTYNAMELIST() {
+            // Source for PartCodeText
+            const AccountCodeSourse = function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("AutoFillPARTYNAMELIST","SaleOrder")',
+                    type: 'POST',
+                    data: {
+
+                        SearchAccount: request.term
+                    },
+                    success: function (result) {
+                        let obj = typeof result === "string" ? JSON.parse(result) : result;
+
+                        if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
+                            let filtered = obj.Result.Table.filter(function (item) {
+                                let term = request.term.toLowerCase();
+                                return item.Account_Name.toLowerCase().includes(term);
+                            });
+
+                            response($.map(filtered, function (item) {
+                                return {
+                                    label: item.Account_Name,
+                                    value: item.Account_Name,
+                                    accountCode: item.Account_Code,
+
+                                };
+                            }));
+                        } else {
+                            response([]);
+                        }
+                    }
+                });
+            };
+
+
+
+            // Autocomplete for PartCodeText
+            $("#AccountCodeText").autocomplete({
+                source: AccountCodeSourse,
+                select: function (event, ui) {
+                    $("#AccountCodeText").val(ui.item.value).data("Account_Code", ui.item.accountCode);
+
+                    $('#AccountCode').val(ui.item.accountCode);
+                    // CheckOrderNo();
+                    onchangeaccountcode();
+
+
+                    return false;
+                },
+                focus: function (event, ui) {
+                    $("#AccountCodeText").val(ui.item.value);
+
+                    return false;
+                },
+                minLength: 2
+            });
+
+
+        }
+
 
 
         $('#PN1').change(function () {
@@ -2428,16 +2689,16 @@
             }
             AddAdjstmntDetail1();
         });
-             
 
-        $('.ItemBtn').click(function () {
+
+       function ItemBtn() {
              
             let IsError = 0;
               EditEachItem = false;
 
          //   $(this).html('Calculating... <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>').prop("disabled", true);
 
-            if ($('#AccountCode').prop('selectedIndex') <= 0) {
+            if ($('#AccountCode').val() <= 0) {
                 $.notify("Vendor Name is required", "error");
                 AddErrorCls('AccountCode');
                 IsError = 1;
@@ -2489,7 +2750,7 @@
                 RemoveErrorCls('docTypeId');
             }
 
-            if ($('#PartCode').prop('selectedIndex') <= 0) {
+            if ($('#PartCode').val() <= 0) {
                 $.notify("Part Code is required", "error");
                 AddErrorCls('PartCode');
                 IsError = 1;
@@ -2498,7 +2759,7 @@
                 RemoveErrorCls('PartCode');
             }
 
-            if ($('#ItemCode').prop('selectedIndex') <= 0) {
+            if ($('#ItemCode').val() <= 0) {
                 $.notify("Item Code is required", "error");
                 AddErrorCls('ItemCode');
                 IsError = 1;
@@ -2592,10 +2853,10 @@
                 var ItemData = {
                     'docTypeId': $('#docTypeId').val(),
                     'DocTypeText': $('#docTypeId option:selected').text(),
-                    'PartCode': $('#PartCode').val(),
-                    'PartText': $('#PartCode option:selected').text(),
-                    'ItemCode': $('#ItemCode').val(),
-                    'ItemText': $('#ItemCode option:selected').text(),
+                    "PartCode": $('#PartCode').val(),
+                    "PartText": $('#PartCodeText').val(),
+                    "ItemCode": $('#ItemCode').val(),
+                    "ItemText": $('#ItemNameText').val(),
                     'PONo': $('#PONo').val(),
                     'POYear': $('#POYear').val(),
                     'PODate': $('#PODate').val(),
@@ -2676,7 +2937,7 @@
                         $('#TotalDiscountPercentage').val(0);
                         $('#TotalAmtAftrDiscount').val(0);
                         $('#TotalRoundOffAmt').val(0.00);
-                        $('#PartCode').select2('open').select2('focus');
+                        // $('#PartCode').select2('open').select2('focus');
                         CalculateRate();
                     },
                     error: function (result, status, xhr) {
@@ -2704,7 +2965,7 @@
                 }).always(function () {
                 });
             }
-        });
+        };
 
         var isEditAllowed = "false";
          var EditEachItem = false;
@@ -2749,8 +3010,13 @@
                                 $('#Unit').val(obj[0].Unit);
                                     $('#ItemLocation').val(obj[0].ItemLocation);
                                 updateForm(obj);
+                                    $('#PartCode').val(obj[0].PartCode);
+                                    $('#ItemCode').val(obj[0].ItemCode);
+                                    $('#PartCodeText').val(obj[0].PartText);
+                                    $('#ItemNameText').val(obj[0].ItemText);
                                 $('#PONo').val(obj[0].PONo).trigger('change');
                                 $('#ScheduleNo').val(obj[0].ScheduleNo).trigger('change');
+
                             }
                         }
                     }
@@ -2811,8 +3077,8 @@
         // Define the asynchronous function to handle the changes sequentially
         function updateForm(data) {
             try {
-                changePartCode(data);
-                changeItemCode(data);
+                // changePartCode(data);
+                // changeItemCode(data);
                 changePOYear(data);
                 changePODate(data);
                 changeScheduleYear(data);
@@ -3003,7 +3269,7 @@
 
 
         function ClearItem() {
-            $('#PartCode').prop('selectedIndex', 0).removeClass('is-invalid').change(), $('#ItemCode').prop('selectedIndex', 0).removeClass('is-invalid').change(), $('#HSNNo').val('0'), $('#POQty').val('0'), $('#DPBQty').val('0'), $('#BillQty').val('0'), $('#Rate').val('0.00'), $('#Unit').val('0.00'),
+  $('#PartCodeText').val('').removeClass('is-invalid'),	$('#PartCode').val('').change(),$('#ItemNameText').val('').removeClass('is-invalid'),$('#ItemCode').val('').change(),            $('#HSNNo').val('0'), $('#POQty').val('0'), $('#DPBQty').val('0'), $('#BillQty').val('0'), $('#Rate').val('0.00'), $('#Unit').val('0.00'),
                 $('#PONo').prop('selectedIndex', 0).removeClass('is-invalid').change(),
                 $('#ScheduleNo').prop('selectedIndex', 0).removeClass('is-invalid').change(),
                 $('#AltPOQty').val(0), $('#AltUnit').val('NA'), $('#OtherRateCurr').val('0'), $('#UnitRate').val('Unit'), $('#DiscPer').val('0'), $('#DiscRs').val('0.00'), $('#Amount').val('0.00'), $('#TolLimit').val(0),

@@ -289,6 +289,24 @@ namespace eTactWeb.Controllers
                 throw;
             }
         }
+        public async Task<JsonResult> FillItems(string SearchItemCode, string SearchPartCode)
+        {
+            var JSON = await _IInProcessQc.FillItems(SearchItemCode, SearchPartCode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        } 
+        public async Task<JsonResult> FillInProcQCSlipNo()
+        {
+            var JSON = await _IInProcessQc.FillInProcQCSlipNo();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        } 
+        public async Task<JsonResult> BindProdSlip()
+        {
+            var JSON = await _IInProcessQc.BindProdSlip();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
         public async Task<JsonResult> FillEntryId(int YearCode)
         {
             var JSON = await _IInProcessQc.FillEntryId("NewEntryId", YearCode, "SP_InProcessQC");
@@ -627,11 +645,11 @@ namespace eTactWeb.Controllers
             model.DashboardType = "Summary";
             return PartialView("_InProcessQcDashboardGrid", model);
         }
-        public async Task<IActionResult> GetDetailData(string FromDate, string ToDate)
+        public async Task<IActionResult> GetDetailData(string FromDate, string ToDate, string InProcQcSlipNo, string ItemName, string PartCode, string ProdSlipNo, string WorkCenter, string ProcessName, string ProdSchNo, string ProdPlanNo, string DashboardType)
         {
             //model.Mode = "Search";
             var model = new InProcessDashboard();
-            model = await _IInProcessQc.GetDashboardDetailData(FromDate, ToDate);
+            model = await _IInProcessQc.GetDashboardDetailData(FromDate, ToDate, InProcQcSlipNo, ItemName, PartCode, ProdPlanNo, ProdSchNo, ProdSlipNo, DashboardType);
             model.DashboardType = "Detail";
             return PartialView("_InProcessQcDashboardGrid", model);
         }
