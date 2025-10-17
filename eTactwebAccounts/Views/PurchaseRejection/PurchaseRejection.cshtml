@@ -1039,7 +1039,6 @@
                 $(this).val(inputValue.substring(0, 10));
             }
         });
-
         function GetCostCenter() {
             $.ajax({
                 type: "POST",
@@ -1063,7 +1062,6 @@
                 }
             });
         }
-
         function NewEntryId() {
             var YearCode = $('#PurchaseRejYearCode').val();
             var selectedValue = $('#SubVoucherName').val();
@@ -1094,182 +1092,174 @@
                 }
             });
         }
-
         $('#SubVoucherName').change(function () {
             NewEntryId();
         })
-                function FillPurchaseRejectionPopUp() {
-            var showAllBill = $('#ShowAllBill').is(':checked') ? 'Y' : 'N';
-            var DebitNotePurchaseRejection = $('#DebitNotePurchaseRejection').val();
-                var currentItemCode = $('#ItemCode').val();
-            $.ajax({
-                type: "POST",
-                url: "@Url.Action("FillPurchaseRejectionPopUp")",
-                data: {
-                    "DebitNotePurchaseRejection": DebitNotePurchaseRejection,
-                    "fromBillDate": $('#fromBillDate').val(),
-                    "toBillDate": $('#toBillDate').val(),
-                    "itemCode": $('#ItemCode').val(),
-                    "accountCode": $('#AccountCode').val(),
-                    "yearCode": $('#PurchaseRejYearCode').val(),
-                    "showAllBill": showAllBill
-                },
-                dataType: "json",
-                async: false,
-                success: function (result, status, error) {
-                    if (result != null) {
-                        var obj = $.parseJSON(result);
-                        var i = 1;
-                        var html = '';
+        function FillPurchaseRejectionPopUp() {
+        var showAllBill = $('#ShowAllBill').is(':checked') ? 'Y' : 'N';
+        var DebitNotePurchaseRejection = $('#DebitNotePurchaseRejection').val();
+            var currentItemCode = $('#ItemCode').val();
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("FillPurchaseRejectionPopUp")",
+            data: {
+                "DebitNotePurchaseRejection": DebitNotePurchaseRejection,
+                "fromBillDate": $('#fromBillDate').val(),
+                "toBillDate": $('#toBillDate').val(),
+                "itemCode": $('#ItemCode').val(),
+                "accountCode": $('#AccountCode').val(),
+                "yearCode": $('#PurchaseRejYearCode').val(),
+                "showAllBill": showAllBill
+            },
+            dataType: "json",
+            async: false,
+            success: function (result, status, error) {
+                if (result != null) {
+                    var obj = $.parseJSON(result);
+                    var i = 1;
+                    var html = '';
 
-                        $('#divPurchaseRejectionDataGrid').empty();
+                    $('#divPurchaseRejectionDataGrid').empty();
 
-                        if (obj.Result != null) {
-                            $.each(obj.Result.Table, function (index, val) {
+                    if (obj.Result != null) {
+                        $.each(obj.Result.Table, function (index, val) {
 
-                                var invoiceDate = val.InvoiceDate == null ? "" : val.InvoiceDate.split("T")[0];
-                                var dueDate = val.DueDate == null ? "" : val.DueDate.split("T")[0];
+                            var invoiceDate = val.InvoiceDate == null ? "" : val.InvoiceDate.split("T")[0];
+                            var dueDate = val.DueDate == null ? "" : val.DueDate.split("T")[0];
 
-                                var isChecked = "";
+                            var isChecked = "";
 
-                                if (typeof purchaseRejectionPopupGrid !== "undefined" && purchaseRejectionPopupGrid.length > 0) {
-                                    var alreadySelected = purchaseRejectionPopupGrid.some(function (x) {
-                                        return (
-                                            (x.InvoiceNo == val.InvoiceNo || x.PurchInvoiceNo == val.InvoiceNo) &&
-                                            (x.AgainstPurchaseBillEntryId == val.PurchBillEntryId || x.PurchBillEntryId == val.PurchBillEntryId) &&
-                                            (x.PurchBillItemCode == val.ItemCode || x.ItemCode == val.ItemCode)
-                                        );
-                                    });
-                                    if (alreadySelected) {
-                                        isChecked = "checked";
-                                    }
+                            if (typeof purchaseRejectionPopupGrid !== "undefined" && purchaseRejectionPopupGrid.length > 0) {
+                                var alreadySelected = purchaseRejectionPopupGrid.some(function (x) {
+                                    return (
+                                        (x.InvoiceNo == val.InvoiceNo || x.PurchInvoiceNo == val.InvoiceNo) &&
+                                        (x.AgainstPurchaseBillEntryId == val.PurchBillEntryId || x.PurchBillEntryId == val.PurchBillEntryId) &&
+                                        (x.PurchBillItemCode == val.ItemCode || x.ItemCode == val.ItemCode)
+                                    );
+                                });
+                                if (alreadySelected) {
+                                    isChecked = "checked";
                                 }
+                            }
 
-                                html +=
-                                    '<tr id="PRPopUpRow-' + i + '" style="font-size: 12px;">' +
-                                    '<td><input type="checkBox" id="chkPurchaseRejection-' + i + '" value="' + i + '" ' + isChecked + ' onchange="BasicPopUpItemGrid()"/></td>' +
-                                    '<td>' + i + '</td>' +
-                                    '<td id="PurchBillEntryId-' + i + '">' + val.PurchBillEntryId + ' <input type="hidden" id="itemCode-' + i + '" value="' + val.ItemCode + '"/></td>' +
-                                    '<td id="PurchBillYearCode-' + i + '">' + val.PurchBillYearCode + '</td>' +
-                                    '<td id="InvoiceNo-' + i + '">' + val.InvoiceNo + '</td>' +
-                                    '<td id="InvoiceDate-' + i + '">' + invoiceDate + '</td>' +
-                                    '<td id="ItemName-' + i + '">' + val.item_Name + '</td>' +
-                                    '<td id="PartCode-' + i + '">' + val.PartCode + '</td>' +
-                                    '<td id="INVNetAmt-' + i + '">' + val.INVNetAmt + '</td>' +
-                                    '<td id="DueDate-' + i + '">' + dueDate + '</td>' +
-                                    '<td id="PaidAmt-' + i + '">' + val.PaidAmt + '</td>' +
-                                    '<td id="RemainingAmt-' + i + '">' + val.RemainingAmt + '</td>' +
-                                    '<td id="BillQty-' + i + '">' + val.BillQty + '</td>' +
-                                    '<td id="BillRate-' + i + '">' + val.BillRate + '</td>' +
-                                    '<td id="ItemAmount-' + i + '">' + val.ItemAmount + '</td>' +
-                                    '<td id="disPer-' + i + '">' + val.disPer + '</td>' +
-                                    '<td id="DisAmt-' + i + '">' + val.DisAmt + '</td>' +
-                                    '</tr>';
+                            html +=
+                                '<tr id="PRPopUpRow-' + i + '" style="font-size: 12px;">' +
+                                '<td><input type="checkBox" id="chkPurchaseRejection-' + i + '" value="' + i + '" ' + isChecked + ' onchange="BasicPopUpItemGrid()"/></td>' +
+                                '<td>' + i + '</td>' +
+                                '<td id="PurchBillEntryId-' + i + '">' + val.PurchBillEntryId + ' <input type="hidden" id="itemCode-' + i + '" value="' + val.ItemCode + '"/></td>' +
+                                '<td id="PurchBillYearCode-' + i + '">' + val.PurchBillYearCode + '</td>' +
+                                '<td id="InvoiceNo-' + i + '">' + val.InvoiceNo + '</td>' +
+                                '<td id="InvoiceDate-' + i + '">' + invoiceDate + '</td>' +
+                                '<td id="ItemName-' + i + '">' + val.item_Name + '</td>' +
+                                '<td id="PartCode-' + i + '">' + val.PartCode + '</td>' +
+                                '<td id="INVNetAmt-' + i + '">' + val.INVNetAmt + '</td>' +
+                                '<td id="DueDate-' + i + '">' + dueDate + '</td>' +
+                                '<td id="PaidAmt-' + i + '">' + val.PaidAmt + '</td>' +
+                                '<td id="RemainingAmt-' + i + '">' + val.RemainingAmt + '</td>' +
+                                '<td id="BillQty-' + i + '">' + val.BillQty + '</td>' +
+                                '<td id="BillRate-' + i + '">' + val.BillRate + '</td>' +
+                                '<td id="ItemAmount-' + i + '">' + val.ItemAmount + '</td>' +
+                                '<td id="disPer-' + i + '">' + val.disPer + '</td>' +
+                                '<td id="DisAmt-' + i + '">' + val.DisAmt + '</td>' +
+                                '</tr>';
 
-                                i++;
-                            });
-                        } else {
-                          /*   html +=
-                                '<tr id="Row-' + i + '">' +
-                                '<td colspan="10" class="text-black-50 text-center">' +
-                                '<strong class="text-danger">NO DATA ADDED</strong></td>' +
-                                '</tr>'; */
-                        }
+                            i++;
+                        });
+                    } else {
+                        /*   html +=
+                            '<tr id="Row-' + i + '">' +
+                            '<td colspan="10" class="text-black-50 text-center">' +
+                            '<strong class="text-danger">NO DATA ADDED</strong></td>' +
+                            '</tr>'; */
+                    }
 
-                        // ✅ Inject HTML into grid
-                        $('#divPurchaseRejectionDataGrid').append(html);
+                    $('#divPurchaseRejectionDataGrid').append(html);
 
-                        // ✅ Extra safety: if EditEachItem is true, ensure all previously checked are rechecked
-                          /*    if (typeof EditEachItem !== "undefined" && EditEachItem && purchaseRejectionPopupGrid && purchaseRejectionPopupGrid.length > 0) {
-             SyncPopupToMainGrid();
-        } */
-                SyncPopupToMainGrid(currentItemCode);
-
-
-                        // ✅ Handle field visibility
-                        if ($('#AgainstSalePurchase').val() == 'SALE') {
-                            $('.hnPOfields').hide();
-                            $('.hnSOfields').show();
-                        } else {
-                            $('.hnSOfields').hide();
-                            $('.hnPOfields').show();
-                        }
+                        /*    if (typeof EditEachItem !== "undefined" && EditEachItem && purchaseRejectionPopupGrid && purchaseRejectionPopupGrid.length > 0) {
+            SyncPopupToMainGrid();
+    } */
+            SyncPopupToMainGrid(currentItemCode);
+                    if ($('#AgainstSalePurchase').val() == 'SALE') {
+                        $('.hnPOfields').hide();
+                        $('.hnSOfields').show();
+                    } else {
+                        $('.hnSOfields').hide();
+                        $('.hnPOfields').show();
                     }
                 }
-            });
-        }
-               function SyncPopupToMainGrid(editItemCode) {
-            // Loop only through popup rows that match the current editing ItemCode
-            $('#divAddPurchaseRejectionPopupDataGrid tr').each(function () {
-                var $popupRow = $(this);
+            }
+        });
+    }
+        function SyncPopupToMainGrid(editItemCode) {
+        // Loop only through popup rows that match the current editing ItemCode
+        $('#divAddPurchaseRejectionPopupDataGrid tr').each(function () {
+            var $popupRow = $(this);
 
-                // Skip non-data rows
-                if (!$popupRow.attr('id') || !$popupRow.attr('id').startsWith('PRPopUpDataRow-')) return;
+            // Skip non-data rows
+            if (!$popupRow.attr('id') || !$popupRow.attr('id').startsWith('PRPopUpDataRow-')) return;
 
-                var popupItemCode = $popupRow.find('[id^="popupItemCode-"]').val();
+            var popupItemCode = $popupRow.find('[id^="popupItemCode-"]').val();
 
-                // Only process rows for the current ItemCode being edited
-                if (popupItemCode !== editItemCode) return;
+            // Only process rows for the current ItemCode being edited
+            if (popupItemCode !== editItemCode) return;
 
-                var popupInvoiceNo = $popupRow.find('[id^="popUpInvoiceNo-"]').text().trim();
-                var popupEntryId = $popupRow.find('[id^="popUpPurchBillEntryId-"]').text().trim();
+            var popupInvoiceNo = $popupRow.find('[id^="popUpInvoiceNo-"]').text().trim();
+            var popupEntryId = $popupRow.find('[id^="popUpPurchBillEntryId-"]').text().trim();
 
-                // Check if row already exists in main grid
-                var existsInMain = false;
-                $('#divPurchaseRejectionDataGrid tr').each(function () {
-                    var $mainRow = $(this);
-                    if (!$mainRow.attr('id') || !$mainRow.attr('id').startsWith('PRPopUpRow-')) return;
+            // Check if row already exists in main grid
+            var existsInMain = false;
+            $('#divPurchaseRejectionDataGrid tr').each(function () {
+                var $mainRow = $(this);
+                if (!$mainRow.attr('id') || !$mainRow.attr('id').startsWith('PRPopUpRow-')) return;
 
-                    var invoiceNo = $mainRow.find('[id^="InvoiceNo-"]').text().trim();
-                    var entryId = $mainRow.find('[id^="PurchBillEntryId-"]').text().trim();
-                    var mainItemCode = $mainRow.find('[id^="itemCode-"]').val();
+                var invoiceNo = $mainRow.find('[id^="InvoiceNo-"]').text().trim();
+                var entryId = $mainRow.find('[id^="PurchBillEntryId-"]').text().trim();
+                var mainItemCode = $mainRow.find('[id^="itemCode-"]').val();
 
-                    if (popupInvoiceNo === invoiceNo && popupEntryId === entryId && mainItemCode === popupItemCode) {
-                        existsInMain = true;
+                if (popupInvoiceNo === invoiceNo && popupEntryId === entryId && mainItemCode === popupItemCode) {
+                    existsInMain = true;
 
-                        // Ensure checkbox is checked
-                        $mainRow.find('input[type="checkbox"]').prop('checked', true);
-                        return false; // break loop
-                    }
-                });
-
-                if (!existsInMain) {
-                    // Add new row to main grid
-                    var newIndex = $('#divPurchaseRejectionDataGrid tr').length + 1;
-                    var invoiceDate = $popupRow.find('[id^="popUpInvoiceDate-"]').text();
-                    var dueDate = $popupRow.find('[id^="popUpDueDate-"]').text();
-
-                    var mainHtml =
-                        '<tr id="PRPopUpRow-' + newIndex + '" style="font-size:12px;">' +
-                        '<td><input type="checkbox" id="chkPurchaseRejection-' + newIndex + '" value="' + newIndex + '" checked onchange="BasicPopUpItemGrid()"/></td>' +
-                        '<td>' + newIndex + '</td>' +
-                        '<td id="PurchBillEntryId-' + newIndex + '">' + popupEntryId +
-                            ' <input type="hidden" id="itemCode-' + newIndex + '" value="' + popupItemCode + '"/></td>' +
-                        '<td id="PurchBillYearCode-' + newIndex + '">' + $popupRow.find('[id^="popUpPurchBillYearCode-"]').text() + '</td>' +
-                        '<td id="InvoiceNo-' + newIndex + '">' + popupInvoiceNo + '</td>' +
-                        '<td id="InvoiceDate-' + newIndex + '">' + invoiceDate + '</td>' +
-                        '<td id="ItemName-' + newIndex + '">' + $popupRow.find('[id^="popUpItemName-"]').text() + '</td>' +
-                        '<td id="PartCode-' + newIndex + '">' + $popupRow.find('[id^="popUpPartCode-"]').text() + '</td>' +
-                        '<td id="INVNetAmt-' + newIndex + '">' + $popupRow.find('[id^="popUpINVNetAmt-"]').text() + '</td>' +
-                        '<td id="DueDate-' + newIndex + '">' + dueDate + '</td>' +
-                        '<td id="PaidAmt-' + newIndex + '">' + $popupRow.find('[id^="popUpPaidAmt-"]').text() + '</td>' +
-                        '<td id="RemainingAmt-' + newIndex + '">' + $popupRow.find('[id^="popUpRemainingAmt-"]').text() + '</td>' +
-                        '<td id="BillQty-' + newIndex + '">' + $popupRow.find('[id^="popUpBillQty-"]').text() + '</td>' +
-                        '<td id="BillRate-' + newIndex + '">' + $popupRow.find('[id^="popUpBillRate-"]').text() + '</td>' +
-                        '<td id="ItemAmount-' + newIndex + '">' + $popupRow.find('[id^="popUpItemAmount-"]').text() + '</td>' +
-                        '<td id="disPer-' + newIndex + '">' + $popupRow.find('[id^="popUpdisPer-"]').text() + '</td>' +
-                        '<td id="DisAmt-' + newIndex + '">' + $popupRow.find('[id^="popUpDisAmt-"]').text() + '</td>' +
-                        '</tr>';
-
-                    $('#divPurchaseRejectionDataGrid').append(mainHtml);
+                    // Ensure checkbox is checked
+                    $mainRow.find('input[type="checkbox"]').prop('checked', true);
+                    return false; // break loop
                 }
             });
 
-            // Keep popup open
-            $('#addPurchaseRejectionPopupModel').modal("show");
-        }
+            if (!existsInMain) {
+                // Add new row to main grid
+                var newIndex = $('#divPurchaseRejectionDataGrid tr').length + 1;
+                var invoiceDate = $popupRow.find('[id^="popUpInvoiceDate-"]').text();
+                var dueDate = $popupRow.find('[id^="popUpDueDate-"]').text();
 
+                var mainHtml =
+                    '<tr id="PRPopUpRow-' + newIndex + '" style="font-size:12px;">' +
+                    '<td><input type="checkbox" id="chkPurchaseRejection-' + newIndex + '" value="' + newIndex + '" checked onchange="BasicPopUpItemGrid()"/></td>' +
+                    '<td>' + newIndex + '</td>' +
+                    '<td id="PurchBillEntryId-' + newIndex + '">' + popupEntryId +
+                        ' <input type="hidden" id="itemCode-' + newIndex + '" value="' + popupItemCode + '"/></td>' +
+                    '<td id="PurchBillYearCode-' + newIndex + '">' + $popupRow.find('[id^="popUpPurchBillYearCode-"]').text() + '</td>' +
+                    '<td id="InvoiceNo-' + newIndex + '">' + popupInvoiceNo + '</td>' +
+                    '<td id="InvoiceDate-' + newIndex + '">' + invoiceDate + '</td>' +
+                    '<td id="ItemName-' + newIndex + '">' + $popupRow.find('[id^="popUpItemName-"]').text() + '</td>' +
+                    '<td id="PartCode-' + newIndex + '">' + $popupRow.find('[id^="popUpPartCode-"]').text() + '</td>' +
+                    '<td id="INVNetAmt-' + newIndex + '">' + $popupRow.find('[id^="popUpINVNetAmt-"]').text() + '</td>' +
+                    '<td id="DueDate-' + newIndex + '">' + dueDate + '</td>' +
+                    '<td id="PaidAmt-' + newIndex + '">' + $popupRow.find('[id^="popUpPaidAmt-"]').text() + '</td>' +
+                    '<td id="RemainingAmt-' + newIndex + '">' + $popupRow.find('[id^="popUpRemainingAmt-"]').text() + '</td>' +
+                    '<td id="BillQty-' + newIndex + '">' + $popupRow.find('[id^="popUpBillQty-"]').text() + '</td>' +
+                    '<td id="BillRate-' + newIndex + '">' + $popupRow.find('[id^="popUpBillRate-"]').text() + '</td>' +
+                    '<td id="ItemAmount-' + newIndex + '">' + $popupRow.find('[id^="popUpItemAmount-"]').text() + '</td>' +
+                    '<td id="disPer-' + newIndex + '">' + $popupRow.find('[id^="popUpdisPer-"]').text() + '</td>' +
+                    '<td id="DisAmt-' + newIndex + '">' + $popupRow.find('[id^="popUpDisAmt-"]').text() + '</td>' +
+                    '</tr>';
 
+                $('#divPurchaseRejectionDataGrid').append(mainHtml);
+            }
+        });
+
+        // Keep popup open
+        //   $('#addPurchaseRejectionPopupModel').modal("show");
+    }
         function PopUpDataGrid() {
             $.ajax({
                 type: "POST",
@@ -1403,7 +1393,6 @@
                 });
             }
         }
-
         function ClearDRCRGrid() {
             $.ajax({
                 type: "POST",
@@ -1460,7 +1449,7 @@
             BasicTotal();
         }  */
 
-               function ClearPopupItemGrid() {
+             /*   function ClearPopupItemGrid() {
                    setUniqueKeysFromRenderedPopup();
 
             const existingItemKeys = [];
@@ -1481,20 +1470,54 @@
                 const $row = $(this);
                 const popupItemCode = ($row.find('#popupItemCode-' + i).val() || '').trim();
 
-                if (popupItemCode && !existingItemKeys.includes(popupItemCode)) {
-                    $row.remove(); // Remove only if not found in main grid
-                }
+                    if (popupItemCode && existingItemKeys.includes(popupItemCode)) {
+                $row.hide(); // Hide row if it already exists in main grid
+            } else {
+                $row.show(); // Ensure other rows are visible
+            }
             });
 
-         /*    if ($('#divAddPurchaseRejectionPopupDataGrid tr').length === 0) {
-                const NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
-                $('#divAddPurchaseRejectionPopupDataGrid').html(NoData); 
-            } */
+     
 
             BasicItemGridTotal();
             BasicTotal();
         }
- 
+  */
+          function ClearPopupItemGrid() {
+            setUniqueKeysFromRenderedPopup();
+
+            const currentItemCode = ($("#ItemCode").val() || "").trim();
+
+            const existingItemKeys = [];
+            $('#divAddPurchaseRejectionList').find('tr').each(function (index) {
+                const row = $(this);
+                const key = index + 1;
+                const uniqueKey = ($('#hdnuniquekey-' + key).val() || '').trim();
+                const parts = uniqueKey.split('_');
+                const itemCode = parts[parts.length - 1];
+
+                if (itemCode && !existingItemKeys.includes(itemCode)) {
+                    existingItemKeys.push(itemCode);
+                }
+            });
+
+            $('#divAddPurchaseRejectionPopupDataGrid').find('tr').each(function (index) {
+                const i = index + 1;
+                const $row = $(this);
+                const popupItemCode = ($row.find('#popupItemCode-' + i).val() || '').trim();
+
+                // Hide if popup item matches current item OR already exists in main grid
+                if (popupItemCode === currentItemCode ) {
+                    $row.hide();
+                } else {
+                    $row.show();
+                }
+            });
+
+            BasicItemGridTotal();
+            BasicTotal();
+        }
+
         function DeleteItemRow(itemCode, seq, IsDeleteAll) {
             $.ajax({
                 url: '@Url.Action("DeleteItemRow")',
@@ -2229,7 +2252,7 @@
             }
         }); */
 
-        $('.ItemBtn').click(function (e) {
+      /*   $('.ItemBtn').click(function (e) {
             AddToItemsGrid(e);
             if (isAddItem) {
                      let existingRows = $('#divAddPurchaseRejectionPopupDataGrid').html() || "";
@@ -2243,13 +2266,59 @@
                 $('#divAddPurchaseRejectionPopupDataGrid').append(html);
             }
             BasicTotal();
+        }); */
+                  $('.ItemBtn').click(function (e) {
+            e.preventDefault();
+                  AddToItemsGrid(e,$('#ItemCode').val());
+                       const currentItemCode = ($("#ItemCode").val() || "").trim();
+
+            if (isAddItem) {
+                if (isAddToPopgrid) {
+                                      $('#divAddPurchaseRejectionPopupDataGrid tr:hidden').remove();
+
+                   let existingRows = $('#divAddPurchaseRejectionPopupDataGrid').html() || "";
+                 if (popuphtml.trim() !== "") {
+                     html = existingRows + popuphtml;
+                 } else {
+                     html = existingRows;
+                 }
+                          $('#divAddPurchaseRejectionPopupDataGrid').empty();
+                      $('#divAddPurchaseRejectionPopupDataGrid').append(html);
+                      }
+
+                else {
+                   
+                    $('#divAddPurchaseRejectionPopupDataGrid tr').each(function (index) {
+                        const i = index + 1;
+                        const $row = $(this);
+                        const popupItemCode = ($row.find('#popupItemCode-' + i).val() || '').trim();
+
+                        // hide rows for current itemCode; show all others
+                        if (popupItemCode === currentItemCode) {
+                            $row.hide();
+                        } else {
+                            $row.show();
+                        }
+                    });
+
+                   
+                }
+                isAddToPopgrid =false;
+                // Always refresh totals
+                BasicItemGridTotal();
+                BasicTotal();
+            }
         });
 
+
         $('#AddPopDataInGrid').click(function (e) {
+            isAddToPopgrid=true;
             FillDetailFromPopupGrid(e);
         });
         var isAddItem = false;
-        function AddToItemsGrid(e) {
+        var isAddToPopgrid = false;
+
+        function AddToItemsGrid(e,  Itemcode) {
             e.preventDefault();
             EditEachItem = false;
             if (ValidateGrid()) {

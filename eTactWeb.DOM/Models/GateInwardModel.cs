@@ -85,6 +85,15 @@ public class PendingGateInwardDashboard
     public int seqno { get; set; }
     public string? Gateno { get; set; }
     public string? GDate { get; set; }
+    public string? Transporter { get; set; }
+    public string? Truck { get; set; }
+    public string? DriverName { get; set; }
+    public string? ModeOfTransport { get; set; }
+    public string? ActualEntryDate { get; set; }
+    public string? LastUpdatedDate { get; set; }
+    public int? VPSaleBillEntryId { get; set; }
+    public int? VPSaleBillYearCode { get; set; }
+    public int? DocTypeId { get; set; }
     public string? VendorName { get; set; }
     public string? PODate { get; set; }
     public string? SODate { get; set; }
@@ -95,7 +104,7 @@ public class PendingGateInwardDashboard
     public string? DocName { get; set; }
     public string? CompGateNo { get; set; }
     public string? POTypeServItem { get; set; }
-    public string? entryId { get; set; }
+    public int? entryId { get; set; }
     public int? yearcode { get; set; }
     public string? MrnNo { get; set; }
     public int? MRNYEARCODE { get; set; }
@@ -106,7 +115,7 @@ public class PendingGateInwardDashboard
     // Item details
     public string? PartCode { get; set; }
     public string? ItemName { get; set; }
-    public string? ItemCode { get; set; }
+    public int? ItemCode { get; set; }
     public string? Unit { get; set; }
     public string? AltUnit { get; set; }
     public float Rate { get; set; }
@@ -188,6 +197,7 @@ public class PendingGateEntryDashboard : PendingGateInwardDashboard
     public string? Searchbox { get; set; }
     public IList<TextValue>? AccountList { get; set; }
     public IList<TextValue>? DocumentList { get; set; }
+    public IList<TextValue>? InvoiceList { get; set; }
     //right
     //public IList<TextValue>? PONOList { get; set; }
     public IList<TextValue>? GateNOList { get; set; }
@@ -271,6 +281,7 @@ public class GateInwardModel : GateInwardItemDetail
     public int ID { get; set; }
     //public string? Mode { get; set; }
     public int EntryId { get; set; }
+    public int VPSaleBillEntryId { get; set; }
     public int YearCode { get; set; }
     public string? GateNo { get; set; }
     public string? CC { get; set; }

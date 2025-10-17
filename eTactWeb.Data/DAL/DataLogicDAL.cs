@@ -302,7 +302,16 @@ namespace eTactWeb.Data.DAL
                                     Value = Reader["DiscCategoryEntryId"].ToString()
                                 };
                             }
-                            else if (Flag == "GetRegion")
+
+							else if (Flag == "FillVPInvoiceNo")
+							{
+								Listval = new TextValue()
+								{
+									Text = Reader["VPSaleBillNo"].ToString(),
+									Value = Reader["VPSaleBillEntryId"].ToString()
+								};
+							}
+							else if (Flag == "GetRegion")
                             {
                                 Listval = new TextValue()
                                 {
