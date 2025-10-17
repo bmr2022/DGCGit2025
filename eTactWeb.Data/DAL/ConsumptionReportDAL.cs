@@ -133,8 +133,60 @@ namespace eTactWeb.Data.DAL
             }
 
             return _ResponseResult;
+         }
+        public async Task<DataSet> GetCategory()
+        {
+            var oDataSet = new DataSet();
+
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@flag", "FillItemCategory"));
+                var _ResponseResult = await _IDataLogic.ExecuteDataSet("SPRMConsumptionReport", SqlParams);
+                if (_ResponseResult.Result != null && _ResponseResult.StatusCode == HttpStatusCode.OK && _ResponseResult.StatusText == "Success")
+                {
+                    _ResponseResult.Result.Tables[0].TableName = "CategoryList";
+
+                    oDataSet = _ResponseResult.Result;
+                }
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return oDataSet;
         }
-        public async Task<ConsumptionReportModel> GetConsumptionDetailsData(string fromDate, string toDate, int WorkCenterid, string ReportType, int FGItemCode, int RMItemCode, int Storeid)
+         public async Task<DataSet> GetGroupName()
+        {
+            var oDataSet = new DataSet();
+
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@flag", "FillParentGroup"));
+                var _ResponseResult = await _IDataLogic.ExecuteDataSet("SPRMConsumptionReport", SqlParams);
+                if (_ResponseResult.Result != null && _ResponseResult.StatusCode == HttpStatusCode.OK && _ResponseResult.StatusText == "Success")
+                {
+                    _ResponseResult.Result.Tables[0].TableName = "GroupNameList";
+
+                    oDataSet = _ResponseResult.Result;
+                }
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return oDataSet;
+        }
+
+
+        public async Task<ConsumptionReportModel> GetConsumptionDetailsData(string fromDate, string toDate, int WorkCenterid, string ReportType, int FGItemCode, int RMItemCode, int Storeid,string GroupName, string ItemCateg)
         {
             var resultList = new ConsumptionReportModel();
             DataSet oDataSet = new DataSet();
@@ -158,6 +210,8 @@ namespace eTactWeb.Data.DAL
                         command.Parameters.AddWithValue("@WCID", WorkCenterid);
                         command.Parameters.AddWithValue("@FGItemcode", FGItemCode );
                         command.Parameters.AddWithValue("@RMItemcode", RMItemCode );
+                        command.Parameters.AddWithValue("@ItemCatEntryIdList", ItemCateg);
+                        command.Parameters.AddWithValue("@ParentGroupIdList", GroupName);
                     
 
                     // Open connection

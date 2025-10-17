@@ -16,7 +16,8 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FillRMPartCode();
         Task<ResponseResult> FillStoreName();
         Task<ResponseResult> FillWorkCenterName();
-        Task<ConsumptionReportModel> GetConsumptionDetailsData(string fromDate, string toDate, int WorkCenterid, string ReportType, int FGItemCode, int RMItemCode, int Storeid);
-
+        Task<ConsumptionReportModel> GetConsumptionDetailsData(string fromDate, string toDate, int WorkCenterid, string ReportType, int FGItemCode, int RMItemCode, int Storeid, string GroupName, string ItemCateg);
+        Task<DataSet> GetCategory();
+        Task<DataSet> GetGroupName();
     }
 }

@@ -47,9 +47,19 @@ namespace eTactWeb.Data.BLL
         {
             return await _ConsumptionReportDAL.FillWorkCenterName();
         }
-        public async Task<ConsumptionReportModel> GetConsumptionDetailsData(string fromDate, string toDate, int WorkCenterid, string ReportType, int FGItemCode, int RMItemCode, int Storeid)
+        public async Task<ConsumptionReportModel> GetConsumptionDetailsData(string fromDate, string toDate, int WorkCenterid, string ReportType, int FGItemCode, int RMItemCode, int Storeid, string GroupName, string ItemCateg)
         {
-            return await _ConsumptionReportDAL.GetConsumptionDetailsData(fromDate, toDate, WorkCenterid, ReportType, FGItemCode, RMItemCode, Storeid);
+            return await _ConsumptionReportDAL.GetConsumptionDetailsData(fromDate, toDate, WorkCenterid, ReportType, FGItemCode, RMItemCode, Storeid,  GroupName,  ItemCateg);
         }
+
+        public async Task<DataSet> GetCategory()
+        {
+            return await _ConsumptionReportDAL.GetCategory();
+        }
+        public async Task<DataSet> GetGroupName()
+        {
+            return await _ConsumptionReportDAL.GetGroupName();
+        }
+
     }
 }
