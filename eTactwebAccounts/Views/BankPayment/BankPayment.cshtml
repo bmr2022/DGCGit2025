@@ -24,7 +24,7 @@
                             <input asp-for="AgainstVoucherNoBack" type="hidden" value="@Model.AgainstVoucherNoBack" />
                             <input asp-for="GlobalSearchBack" type="hidden" value="@Model.GlobalSearchBack" />
                             <input asp-for="DashboardTypeBack" type="hidden" value="@Model.DashboardTypeBack" />
-                            <a href="#" class="btn btn-primary btn-sm" onclick="PressBack();">
+                            <a href="#" class="btn btn-primary btn-sm" onclick="PressBack();window.location.href='@Url.Action("Back", "Common")'">
                                 <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
                                 BACK
                             </a>
@@ -341,7 +341,7 @@
                                     @*<partial name="_FormsButton" />*@
                                     <div class="row justify-content-between g-2">
                                         <div class="col-auto">
-                                            <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
+                                            <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();window.location.href='@Url.Action("Back", "Common")'">
                                                 <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
                                                 BACK
                                             </a>
