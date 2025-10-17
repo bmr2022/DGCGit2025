@@ -157,7 +157,7 @@
                                     <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="TransactionLedger" asp-action="TransactionLedger">
                                         <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
                                     </a>
-                                    <a href="#" class="btn btn-primary btn-sm ms-3" onclick="window.location.href='@Url.Action("Back", "Common")'"  id="BackButton">
+                                    <a href="#" class="btn btn-primary btn-sm ms-3" onclick="window.location.href='@Url.Action("Back", "Common")'" id="BackButton">
                                         <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
                                         BACK
                                     </a>
@@ -357,27 +357,6 @@
             return dateString;
         }
 
-        function GetDataByAccountSummary(Cntr) {
-
-            // Save OLD state first
-            let currentGroup = $('#ParentLedgerName').val();
-            let currentReportType = $('#ReportType').val();
-            let currentFromDate = $('#FromDate').val();
-            let currentToDate = $('#ToDate').val();
-            let currentAccountCode = $('#LedgerName').val();
-            saveHistory('GroupDetail', { ParentCode: currentGroup, ReportType: currentReportType, FromDate: currentFromDate, ToDate: currentToDate, AccountCode: currentAccountCode });
-
-            // Apply NEW state
-            var FromDate = $('#FromDate').val();
-            var ToDate = $('#ToDate').val();
-            var ParentCode = $('#ParentCode-' + Cntr).val();
-            var AccountCode = $('#AccountCode-' + Cntr).val();
-            $('#ParentLedgerName').val(ParentCode).trigger("change");
-            $('#LedgerName').val(AccountCode).trigger("change");
-            $('#ReportType').val("TransactionLedgerDetail").trigger("change");
-            $('#BackButton').show();
-        }
-
         function PressBack() {
 
             let history = JSON.parse(sessionStorage.getItem('HistoryStack')) || [];
@@ -510,14 +489,12 @@
         }
 
         function FillLedgerName() {
-
-            //var FromDate = $('#FromDate').val();
-            //var ToDate = $('#ToDate').val();
+            debugger
             $.ajax({
                 url: '@Url.Action("GetLedgerName", "TransactionLedger")',
                 type: 'GET',
-                data: { "ParentAccountCode": $('#ParentLedgerName').val() },
                 async: false,
+                data: { "ParentAccountCode": $('#ParentLedgerName').val() },
                 success: function (response, status, error) {
 
                     var ledgerNameDropdown = $('#LedgerName');
@@ -1004,22 +981,22 @@
                 $('#ToDate').datepicker("setDate", toDate);
 
                 var params = {
-                   controllerName: controllerName,
+                    controllerName: controllerName,
                     actionName: actionName,
                     AccountCode: $('#LedgerName').val(),
                     FromDate: $('#FromDate').val(),
-                   ToDate: $('#ToDate').val(),
-                   ReportType: ReportType,
+                    ToDate: $('#ToDate').val(),
+                    ReportType: ReportType,
                     GroupOrLedger: $('#Group_Ledger').val(),
-                   ParentLedger: $('#ParentLedgerName').val(),
-                   VoucherType: $('#VoucherType').val(),
-                   VoucherNo: $('#VoucherNo').val(),
-                   INVNo: $('#INVNo').val(),
-                   Narration: $('#Narration').val(),
-                   Amount: $('#Amount').val(),
-                   Dr: $('#Dr').val(),
-                   Cr: $('#CR').val(),
-                   GlobalSearch: $('#search-box').val()
+                    ParentLedger: $('#ParentLedgerName').val(),
+                    VoucherType: $('#VoucherType').val(),
+                    VoucherNo: $('#VoucherNo').val(),
+                    INVNo: $('#INVNo').val(),
+                    Narration: $('#Narration').val(),
+                    Amount: $('#Amount').val(),
+                    Dr: $('#Dr').val(),
+                    Cr: $('#CR').val(),
+                    GlobalSearch: $('#search-box').val()
                 };
 
                 $.ajax({
@@ -1040,13 +1017,13 @@
                 var ClickName = $(anchor).data('clickname');
 
                 var params = {
-                   controllerName: controllerName,
+                    controllerName: controllerName,
                     actionName: actionName,
                     AccountCode: $('#LedgerName').val(),
-                    FromDate: $('#FromDate').val(), 
+                    FromDate: $('#FromDate').val(),
                     ToDate: $('#ToDate').val(),
                     ReportType: ReportType,
-                     GroupOrLedger: $('#Group_Ledger').val(),
+                    GroupOrLedger: $('#Group_Ledger').val(),
                     ParentLedger: $('#ParentLedgerName').val(),
                     VoucherType: $('#VoucherType').val(),
                     VoucherNo: $('#VoucherNo').val(),
@@ -1055,7 +1032,7 @@
                     Amount: $('#Amount').val(),
                     Dr: $('#Dr').val(),
                     Cr: $('#CR').val(),
-                    ClickName:ClickName,
+                    ClickName: ClickName,
                     GlobalSearch: $('#search-box').val()
                 };
 
@@ -1076,7 +1053,6 @@
                             $('#LedgerName').val(AccountCode).trigger("change");
                             $('#ReportType').val("TransactionLedgerDetail").trigger("change");
                         }
-                        
                         $('#BackButton').show();
                     },
                     error: function (err) {
