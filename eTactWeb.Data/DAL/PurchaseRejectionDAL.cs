@@ -180,6 +180,7 @@ namespace eTactWeb.Data.DAL
                         DocAccountCode = row["DocAccountCode"] != DBNull.Value ? Convert.ToInt32(row["DocAccountCode"]) : 0,
                         DocAccountName = row["DocumentName"]?.ToString(),
                         ItemAmount = row["ItemAmount"] != DBNull.Value ? Convert.ToDecimal(row["ItemAmount"]) : 0,
+                        Amount = row["ItemAmount"] != DBNull.Value ? Convert.ToDecimal(row["ItemAmount"]) : 0,
                         DiscountPer = row["DiscountPer"] != DBNull.Value ? Convert.ToSingle(row["DiscountPer"]) : 0,
                         DiscountAmt = row["DiscountAmt"] != DBNull.Value ? Convert.ToSingle(row["DiscountAmt"]) : 0,
                         StoreId = row["StoreId"] != DBNull.Value ? Convert.ToInt32(row["StoreId"]) : 0,

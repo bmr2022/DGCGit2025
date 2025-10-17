@@ -1356,42 +1356,93 @@ namespace eTactWeb.Controllers
           //  return Json(rslt);
             //return RedirectToAction(nameof(DashBoard));   
         }
-        [HttpPost]
-        public JsonResult MergePopupGridToSession([FromBody]  List<AccPurchaseRejectionAgainstBillDetail> model)
+        public JsonResult MergePopupGridToSession([FromBody] List<AccPurchaseRejectionAgainstBillDetail> model)
         {
-            List<AccPurchaseRejectionAgainstBillDetail> purchaseRejectionPopupGrid = new List<AccPurchaseRejectionAgainstBillDetail>();
-            string modelPRJson = HttpContext.Session.GetString("KeyPurchaseRejectionPopupGrid");
-            if (!string.IsNullOrEmpty(modelPRJson))
-            {
-                purchaseRejectionPopupGrid = JsonConvert.DeserializeObject<List<AccPurchaseRejectionAgainstBillDetail>>(modelPRJson);
-            }
-            if (model != null && purchaseRejectionPopupGrid != null)
-            {
-                if (purchaseRejectionPopupGrid.Any())
-                {
-                    foreach (var item in model)
-                    {
-                        var existing = purchaseRejectionPopupGrid.FirstOrDefault(x =>
-                            x.ItemCode == item.ItemCode &&
-                            x.PurchBillItemCode == item.PurchBillItemCode &&
-                            x.AgainstPurchaseBillEntryId == item.AgainstPurchaseBillEntryId &&
-                            x.AgainstPurchaseBillYearCode == item.AgainstPurchaseBillYearCode &&
-                            x.InvoiceNo == item.InvoiceNo);
+            // Initialize local lists
+            var purchaseRejectionPopupGrid = new List<AccPurchaseRejectionAgainstBillDetail>();
+            var purchaseRejectionDetail = new List<AccPurchaseRejectionDetail>();
 
-                        if (existing == null)
-                        {
-                            purchaseRejectionPopupGrid.Add(item);
-                        }
-                        else
-                        {
-                            UpdateBlankFields(existing, item);
-                        }
+            // Retrieve existing session data
+            string modelPRJson = HttpContext.Session.GetString("KeyPurchaseRejectionPopupGrid");
+            string modelRJson = HttpContext.Session.GetString("KeyPurchaseRejectionGrid");
+
+            if (!string.IsNullOrEmpty(modelPRJson))
+                purchaseRejectionPopupGrid = JsonConvert.DeserializeObject<List<AccPurchaseRejectionAgainstBillDetail>>(modelPRJson);
+
+            if (!string.IsNullOrEmpty(modelRJson))
+                purchaseRejectionDetail = JsonConvert.DeserializeObject<List<AccPurchaseRejectionDetail>>(modelRJson);
+
+            // Merge incoming model with session data
+            if (model != null && model.Any())
+            {
+                foreach (var item in model)
+                {
+                    var existing = purchaseRejectionPopupGrid.FirstOrDefault(x =>
+                        x.ItemCode == item.ItemCode &&
+                        x.PurchBillItemCode == item.PurchBillItemCode &&
+                        x.AgainstPurchaseBillEntryId == item.AgainstPurchaseBillEntryId &&
+                        x.AgainstPurchaseBillYearCode == item.AgainstPurchaseBillYearCode &&
+                        x.InvoiceNo == item.InvoiceNo);
+
+                    if (existing == null)
+                    {
+                        purchaseRejectionPopupGrid.Add(item);
+                    }
+                    else
+                    {
+                        UpdateBlankFields(existing, item);
                     }
                 }
+
+                // Filter only allowed items after merge
+             
             }
+            var allowedItemCodes = purchaseRejectionDetail.Select(x => x.ItemCode).Distinct().ToList();
+            purchaseRejectionPopupGrid = purchaseRejectionPopupGrid
+                .Where(p => allowedItemCodes.Contains(p.ItemCode))
+                .ToList();
+            // Save updated list back to session
             HttpContext.Session.SetString("KeyPurchaseRejectionPopupGrid", JsonConvert.SerializeObject(purchaseRejectionPopupGrid));
-            return Json(new { success = true, count = (model == null ? 0 : model.Count) });
+
+            return Json(new { success = true, count = model?.Count ?? 0 });
         }
+
+        //[HttpPost]
+        //public JsonResult MergePopupGridToSession([FromBody]  List<AccPurchaseRejectionAgainstBillDetail> model)
+        //{
+        //    List<AccPurchaseRejectionAgainstBillDetail> purchaseRejectionPopupGrid = new List<AccPurchaseRejectionAgainstBillDetail>();
+        //    string modelPRJson = HttpContext.Session.GetString("KeyPurchaseRejectionPopupGrid");
+        //    if (!string.IsNullOrEmpty(modelPRJson))
+        //    {
+        //        purchaseRejectionPopupGrid = JsonConvert.DeserializeObject<List<AccPurchaseRejectionAgainstBillDetail>>(modelPRJson);
+        //    }
+        //    if (model != null && purchaseRejectionPopupGrid != null)
+        //    {
+        //        if (purchaseRejectionPopupGrid.Any())
+        //        {
+        //            foreach (var item in model)
+        //            {
+        //                var existing = purchaseRejectionPopupGrid.FirstOrDefault(x =>
+        //                    x.ItemCode == item.ItemCode &&
+        //                    x.PurchBillItemCode == item.PurchBillItemCode &&
+        //                    x.AgainstPurchaseBillEntryId == item.AgainstPurchaseBillEntryId &&
+        //                    x.AgainstPurchaseBillYearCode == item.AgainstPurchaseBillYearCode &&
+        //                    x.InvoiceNo == item.InvoiceNo);
+
+        //                if (existing == null)
+        //                {
+        //                    purchaseRejectionPopupGrid.Add(item);
+        //                }
+        //                else
+        //                {
+        //                    UpdateBlankFields(existing, item);
+        //                }
+        //            }
+        //        }
+        //    }
+        //    HttpContext.Session.SetString("KeyPurchaseRejectionPopupGrid", JsonConvert.SerializeObject(purchaseRejectionPopupGrid));
+        //    return Json(new { success = true, count = (model == null ? 0 : model.Count) });
+        //}
         private void UpdateBlankFields<T>(T target, T source)
         {
             foreach (var prop in typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance))
