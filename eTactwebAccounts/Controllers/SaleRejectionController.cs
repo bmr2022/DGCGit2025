@@ -346,6 +346,7 @@ namespace eTactWeb.Controllers
                 DataTable AdjDetailDT = null;
                 DataTable DrCrDetailDT = null;
                 string modelJson = HttpContext.Session.GetString("SaleRejectionModel");
+                string modelAdjJson = HttpContext.Session.GetString("KeyAdjGrid");
                 SaleRejectionModel MainModel = new SaleRejectionModel();
                 if (!string.IsNullOrEmpty(modelJson))
                 {
@@ -368,6 +369,11 @@ namespace eTactWeb.Controllers
                 if (!string.IsNullOrEmpty(drCrGridJson))
                 {
                     DrCrGrid = JsonConvert.DeserializeObject<List<DbCrModel>>(drCrGridJson);
+                }
+                AdjustmentModel AdjGrid = new AdjustmentModel();
+                if (!string.IsNullOrEmpty(modelAdjJson))
+                {
+                    AdjGrid = JsonConvert.DeserializeObject<AdjustmentModel>(modelAdjJson);
                 }
                 if (saleRejectionDetail == null)
                 {
@@ -409,10 +415,23 @@ namespace eTactWeb.Controllers
                         DrCrDetailDT = CommonController.GetDrCrDetailTable(DrCrGrid);
                     }
 
-                    if (MainModel.adjustmentModel != null && MainModel.adjustmentModel.AdjAdjustmentDetailGrid != null && MainModel.adjustmentModel.AdjAdjustmentDetailGrid.Count > 0)
+
+                    if ((MainModel.adjustmentModel != null && MainModel.adjustmentModel.AdjAdjustmentDetailGrid != null && MainModel.adjustmentModel.AdjAdjustmentDetailGrid.Count > 0) || (AdjGrid != null && AdjGrid.AdjAdjustmentDetailGrid != null && AdjGrid.AdjAdjustmentDetailGrid.Count > 0))
                     {
-                        AdjDetailDT = CommonController.GetAdjDetailTable(MainModel.adjustmentModel.AdjAdjustmentDetailGrid.ToList(), model.SaleRejEntryId, model.SaleRejYearCode, model.AccountCode);
+                        if (MainModel.adjustmentModel != null && MainModel.adjustmentModel.AdjAdjustmentDetailGrid.Any())
+                        {
+                            AdjDetailDT = CommonController.GetAdjDetailTable(MainModel.adjustmentModel.AdjAdjustmentDetailGrid.ToList(), model.SaleRejEntryId, model.SaleRejYearCode, model.AccountCode);
+                        }
+                        if (AdjGrid != null && AdjGrid.AdjAdjustmentDetailGrid.Any())
+                        {
+                            AdjDetailDT = CommonController.GetAdjDetailTable(AdjGrid.AdjAdjustmentDetailGrid.ToList(), model.SaleRejEntryId, model.SaleRejYearCode, model.AccountCode);
+                        }
                     }
+
+                    //if (MainModel.adjustmentModel != null && MainModel.adjustmentModel.AdjAdjustmentDetailGrid != null && MainModel.adjustmentModel.AdjAdjustmentDetailGrid.Count > 0)
+                    //{
+                    //    AdjDetailDT = CommonController.GetAdjDetailTable(MainModel.adjustmentModel.AdjAdjustmentDetailGrid.ToList(), model.SaleRejEntryId, model.SaleRejYearCode, model.AccountCode);
+                    //}
 
                     var Result = await _saleRejection.SaveSaleRejection(model, SBGrid, TaxDetailDT, DrCrDetailDT, AdjDetailDT);
 
@@ -496,9 +515,9 @@ namespace eTactWeb.Controllers
                 //return View(model);
             }
         }
-        public async Task<IActionResult> DeleteByID(int ID, int YC, int accountCode, int createdBy, string machineName, string cc,string fromDate,string toDate,string custInvoiceNo,string accountName,string mrnNo,string gateNo,string partCode,string itemName,string againstBillNo,string voucherNo)
+        public async Task<IActionResult> DeleteByID(int ID, int YearCode, int accountCode, int createdBy, string machineName, string cc,string fromDate,string toDate,string custInvoiceNo,string accountName,string mrnNo,string gateNo,string partCode,string itemName,string againstBillNo,string voucherNo)
         {
-            var Result = await _saleRejection.DeleteByID(ID, YC, accountCode, createdBy, machineName, cc).ConfigureAwait(false);
+            var Result = await _saleRejection.DeleteByID(ID, YearCode, accountCode, createdBy, machineName, cc).ConfigureAwait(false);
 
             if (Result.StatusText == "Deleted" || Result.StatusCode == HttpStatusCode.Gone || Result.StatusText == "Success")
             {

@@ -759,33 +759,35 @@ namespace eTactWeb.Controllers
                 Table.Columns.Add("DiscountAmt", typeof(float));
                 Table.Columns.Add("AccountAmount", typeof(float));
                 Table.Columns.Add("DRCR", typeof(string));
-
-                IList<SaleRejectionDetail> itemDetailList = MainModel.ItemDetailGrid;
-                foreach (var Item in itemDetailList)
+                IList<SaleRejectionDetail> itemDetailList = MainModel.SaleRejectionDetails;
+                if (itemDetailList != null && itemDetailList.Any())
                 {
-                    Table.Rows.Add(
-                    new object[]
+                    foreach (var Item in itemDetailList)
                     {
+                        Table.Rows.Add(
+                        new object[]
+                        {
                     MainModel.SaleRejEntryId,
                     MainModel.SaleRejYearCode,
-                   1, //Item.SeqNo,
+                   1,
                     MainModel.CustInvoiceNo ?? string.Empty, //invoice no
-                    string.Empty, //MainModel.voucherNo ?? string.Empty,
-                    string.Empty,
-                    0,
+                    MainModel.adjustmentModel == null ? string.Empty : MainModel.adjustmentModel.AdjAgnstVouchNo, //MainModel.voucherNo ?? string.Empty,
+                    string.Empty, // AginstInvNo
+                    MainModel.AgainstBillYearCode, // AginstVoucherYearCode
                     MainModel.AccountCode,
-                    MainModel.DocTypeAccountCode,
+                    Item.DocTypeAccountCode,
                     Item.ItemCode,
-                    Math.Round(Item.RejQty, 2, MidpointRounding.AwayFromZero),
-                    Math.Round(Item.Rate, 2, MidpointRounding.AwayFromZero),
+                    Math.Round(Item.RejQty, 2, MidpointRounding.AwayFromZero), // qty
+                    Math.Round(Item.RejRate, 2, MidpointRounding.AwayFromZero), // PurchaseRejection rate
                     Math.Round(Item.DiscountPer, 2, MidpointRounding.AwayFromZero),
                     Math.Round(Item.DiscountAmt, 2, MidpointRounding.AwayFromZero), //DisRs
-                    Math.Round(Item.Amount, 2, MidpointRounding.AwayFromZero),
+                    Math.Round(Item.ItemNetAmount, 2, MidpointRounding.AwayFromZero),
                     "CR",
-                        });
+                            });
+                    }
                 }
-
                 return Table;
+                
             }
             catch (Exception ex)
             {

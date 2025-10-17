@@ -345,6 +345,7 @@
                 NewEntryId();
                 btnClearTax();
                 FillItems($('#TypeItemServAssets').val());
+                DueDateCalculation();
             } else {
                 $('#AdjNewRefNo').val($('#VoucherNo').val());
                 $('#AdjDescription').val($('#VoucherNo').val());
@@ -493,7 +494,7 @@
             $(this).val(inputValue);
         });
 
-        function DueDateCalculation() {
+       /*  function DueDateCalculation() {
 
             var dueDate = $('#AdjDueDate').val();
             alert('adjfdate'+$('#AdjDueDate').val());
@@ -507,7 +508,35 @@
 
             $('#AdjDueDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDueDate);
 
+        } */
+        function DueDateCalculation() {
+            var dueDate = $('#AdjDueDate').val();
+            /* // var SaleBillDate = new Date($('#SaleBillDate').val()); */
+
+            var dateStr = parseDateToFormat($('#CustInvoiceDate').val().split(" ")[0]);
+            var [day, month, year] = dateStr.split('/').map(Number);
+            var SaleBillDate = new Date(year, month - 1, day);
+
+            var creaditDays = $('#PaymentTerm').val() == "" ? 0 : parseInt($('#PaymentTerm').val(), 10);
+
+            SaleBillDate.setDate(SaleBillDate.getDate() + creaditDays);
+
+            var formattedDueDate = $.datepicker.formatDate('dd/mm/yy', SaleBillDate);
+            $('#AdjDueDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDueDate);
+            $('#AdjDueDate').datepicker("option", "minDate", ($('#CustInvoiceDate').val()).split(" ")[0]);
         }
+
+
+        $('#PaymentTerm').change(function () {
+            $('#divAdjItemList').empty();
+            var NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
+            $('#divAdjItemList').html(NoData);
+            CalculateAdjAmt('NetTotal');
+            DueDateCalculation();
+            AddAdjstmntDetail1();
+            ClearAdjustmentGrid();
+        });
+
 
         $('#SaleBillDate').change(function () {
             var saleBillDate = parseDateToFormat($(this).val());
@@ -807,7 +836,7 @@
                     var txAmt = $('#lblItemNetAmount').text();
                     $('#NetTotal').val(txAmt);
                     $('#AdjPendAmt').val($('#NetTotal').val());
-                    $('#AdjNewRefNo').val($('#NetTotal').val());
+                    $('#AdjNewRefNo').val($('#VoucherNo').val());
 
                 },
                 error: function (req, status, error) {
@@ -1872,15 +1901,30 @@
                 url: "@Url.Action("GetServerDate", "SaleOrder")",
                 async: false,
                 success: function (result, status, error) {
-
+                    result = parseDateToFormat(result);
                     var FinFromDate = parseDateToFormat($('#FinFromDate').val().split(" ")[0]);
                     var FinToDate = parseDateToFormat($('#FinToDate').val().split(" ")[0]);
 
+                    const [day, month, year] = result.split("/").map(Number);
+                    const currentDate = new Date(year, month - 1, day);
+                    var past2Month = currentDate.setMonth(currentDate.getMonth() - 2);
+                    var formattedPastDate = parseDateToFormat(new Date(past2Month).toISOString().split('T')[0]);
+
+                    var finFromDate = parseDateToFormat($('#FinFromDate').val().split(" ")[0]);
+
+                    var past2Year = currentDate.setYear(currentDate.getFullYear() - 2);
+                    var formattedYear = parseDateToFormat(new Date(past2Year).toISOString().split("T")[0]);
+
+                    $('#SaleRejEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result).datepicker("option", { changeMonth: true, changeYear: true });
                     $('#SaleRejEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                        $('#SaleRejEntryDate').datepicker("option", "minDate", formattedPastDate);
+                    $('#SaleRejEntryDate').datepicker("option", "maxDate", finToDate);
+
+                 /*    $('#SaleRejEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
                     // $('#GateDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
                     // $('#MRNDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
                     $('#SaleRejEntryDate').datepicker("option", "minDate", FinFromDate);
-                    $('#SaleRejEntryDate').datepicker("option", "maxDate", FinToDate);
+                    $('#SaleRejEntryDate').datepicker("option", "maxDate", FinToDate); */
                     var gateDate = $('#GateDate').val().split(" ")[0];
                     $('#GateDate').val(gateDate);
 
@@ -1889,11 +1933,11 @@
 
                     var saleBillEntryDate = parseDateToFormat($('#SaleRejEntryDate').val());
                     let dateParts = saleBillEntryDate.split("/");
-                    let day = parseInt(dateParts[0], 10);
-                    let month = parseInt(dateParts[1], 10) - 1;
-                    let year = parseInt(dateParts[2], 10);
+                    let day1 = parseInt(dateParts[0], 10);
+                    let month1 = parseInt(dateParts[1], 10) - 1;
+                    let year1 = parseInt(dateParts[2], 10);
 
-                    let date = new Date(year, month, day);
+                    let date = new Date(year1, month1, day1);
                     var minEntryDate = date.setDate(date.getDate() - 1);
                     var maxEntryDate = date.setDate(date.getDate() + 2);
 

@@ -242,10 +242,20 @@ public class TaxController : Controller
             }
             else if (model.TxPageName == "SaleRejection")
             {
-                _MemoryCache.TryGetValue("KeySaleRejectionGrid", out IList<SaleRejectionDetail> saleRejectionDetail);
-                var saleRejectionModel = new SaleRejectionModel();
-                saleRejectionModel.SaleRejectionDetails = saleRejectionDetail.ToList();
-                MainModel = saleRejectionModel;
+                _MemoryCache.TryGetValue("KeySaleRejectionGrid", out IList<SaleRejectionDetail> SaleRejectionDetail);
+                string modelPRGridJson = HttpContext.Session.GetString("KeySaleRejectionGrid");
+                if (!string.IsNullOrEmpty(modelPRGridJson))
+                {
+                    SaleRejectionDetail = JsonConvert.DeserializeObject<List<SaleRejectionDetail>>(modelPRGridJson);
+                }
+                var SaleRejectionDetailModel = new SaleRejectionModel();
+                SaleRejectionDetailModel.SaleRejectionDetails = SaleRejectionDetail.ToList();
+                MainModel = SaleRejectionDetailModel;
+
+                //_MemoryCache.TryGetValue("KeySaleRejectionGrid", out IList<SaleRejectionDetail> saleRejectionDetail);
+                //var saleRejectionModel = new SaleRejectionModel();
+                //saleRejectionModel.SaleRejectionDetails = saleRejectionDetail.ToList();
+                //MainModel = saleRejectionModel;
             }
             else if (model.TxPageName == "JobWorkIssue")
             {
@@ -602,8 +612,32 @@ public class TaxController : Controller
             }
             else if (TxModel.TxPageName == "SaleRejection")
             {
-                _MemoryCache.TryGetValue("KeySaleRejectionGrid", out IList<SaleRejectionDetail> saleRejectionDetail);
-                ItemDetailGrid = saleRejectionDetail;
+                _MemoryCache.TryGetValue("KeySaleRejectionGrid", out List<SaleRejectionDetail> purchaseRejectionDetail);
+                string modelPRGridJson = HttpContext.Session.GetString("KeySaleRejectionGrid");
+                List<SaleRejectionDetail> SaleRejectionDetail = new List<SaleRejectionDetail>();
+                if (!string.IsNullOrEmpty(modelPRGridJson) && purchaseRejectionDetail == null)
+                {
+                    SaleRejectionDetail = JsonConvert.DeserializeObject<List<SaleRejectionDetail>>(modelPRGridJson);
+                }
+                ItemDetailGrid = SaleRejectionDetail;
+                var _ItemGrid = new List<SaleRejectionDetail>();
+                _ItemGrid = ItemDetailGrid;
+                var Amount = 0.0;
+                var itemCodeArray = new List<int>();
+                _ItemGrid = _ItemGrid
+                 .GroupBy(item => item.ItemCode)
+                 .Select(group => new SaleRejectionDetail
+                 {
+                     Amount = group.Sum(item => item.Amount),
+                     ItemCode = group.Key,
+                     PartCode = group.Select(x => x.PartCode).FirstOrDefault(x => !string.IsNullOrEmpty(x)),
+                     ItemName = group.Select(x => x.ItemName).FirstOrDefault(x => !string.IsNullOrEmpty(x)),
+                 })
+                 .ToList();
+
+                ItemDetailGrid = _ItemGrid;
+                //_MemoryCache.TryGetValue("KeySaleRejectionGrid", out IList<SaleRejectionDetail> saleRejectionDetail);
+                //ItemDetailGrid = saleRejectionDetail;
             }
             else if (TxModel.TxPageName == "DirectPurchaseBill")
             {
@@ -1460,6 +1494,12 @@ public class TaxController : Controller
             {
                 //MainModel = JsonConvert.DeserializeObject<List<POItemDetail>>(HttpContext.Session.GetString(SN) ?? string.Empty);
                 _MemoryCache.TryGetValue("SaleRejectionModel", out SaleRejectionModel MainModel);
+                string modelPRJson = HttpContext.Session.GetString("SaleRejectionModel");
+                SaleRejectionModel SaleRejectionModel = new SaleRejectionModel();
+                if (!string.IsNullOrEmpty(modelPRJson))
+                {
+                    MainModel = JsonConvert.DeserializeObject<SaleRejectionModel>(modelPRJson);
+                }
                 ListOfItems = MainModel.ItemDetailGrid;
             }
             else if (SN == "IssueNRGP")
@@ -2360,8 +2400,13 @@ public class TaxController : Controller
 
             if (SessionName == "SaleRejection")
             {
-                _MemoryCache.TryGetValue("KeySaleRejectionGrid", out IList<SaleRejectionDetail> saleRejectionDetail);
-                ItemModel = saleRejectionDetail;
+                string modelPRGridJson = HttpContext.Session.GetString("KeySaleRejectionGrid");
+                List<SaleRejectionDetail> SaleRejectionDetail = new List<SaleRejectionDetail>();
+                if (!string.IsNullOrEmpty(modelPRGridJson))
+                {
+                    SaleRejectionDetail = JsonConvert.DeserializeObject<List<SaleRejectionDetail>>(modelPRGridJson);
+                }
+                ItemModel = SaleRejectionDetail;
 
                 if (ItemModel != null && ItemModel?.Count > 0)
                 {
@@ -2380,6 +2425,26 @@ public class TaxController : Controller
                         });
                     }
                 }
+                //_MemoryCache.TryGetValue("KeySaleRejectionGrid", out IList<SaleRejectionDetail> saleRejectionDetail);
+                //ItemModel = saleRejectionDetail;
+
+                //if (ItemModel != null && ItemModel?.Count > 0)
+                //{
+                //    foreach (var item in ItemModel)
+                //    {
+                //        PartCode.Add(new TextValue
+                //        {
+                //            Text = item.PartCode,
+                //            Value = item.ItemCode.ToString()
+                //        });
+
+                //        ItemCode.Add(new TextValue
+                //        {
+                //            Text = item.ItemName,
+                //            Value = item.ItemCode.ToString()
+                //        });
+                //    }
+                //}
             }
             if (SessionName == "PurchaseOrder")
             {

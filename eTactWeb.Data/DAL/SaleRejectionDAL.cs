@@ -529,7 +529,8 @@ namespace eTactWeb.Data.DAL
             //model.CustInvoiceTime = DS.Tables[0].Rows[0]["CustInvoiceTime"]?.ToString();
             model.AccountCode = Convert.ToInt32(DS.Tables[0].Rows[0]["Account_Code"]);
             model.Account_Name = DS.Tables[0].Rows[0]["Account_Name"]?.ToString();
-            model.PaymentTerm = Convert.ToInt32(DS.Tables[0].Rows[0]["PaymentTerms"]);
+            model.PaymentTerm = DS.Tables[0].Rows[0]["PaymentTerms"] != DBNull.Value && !string.IsNullOrEmpty(DS.Tables[0].Rows[0]["PaymentTerms"].ToString()) ? Convert.ToSingle(DS.Tables[0].Rows[0]["PaymentTerms"]) : 0f;
+            //model.PaymentTerm = Convert.ToInt32(DS.Tables[0].Rows[0]["PaymentTerms"]);
             model.GSTNO = DS.Tables[0].Rows[0]["GSTNO"]?.ToString();
             model.BillAmt = Convert.ToInt32(DS.Tables[0].Rows[0]["TotalAmt"]);
             model.InvNetAmt = Convert.ToInt32(DS.Tables[0].Rows[0]["NetAmt"]);
