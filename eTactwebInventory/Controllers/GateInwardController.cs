@@ -331,7 +331,7 @@ namespace eTactWeb.Controllers
         }
         //[Route("GateInward/Index")]
         [HttpGet]
-        public async Task<ActionResult> GateInward(int ID, string Mode, int YC, string FromDate = "", string ToDate = "", string VendorName = "", string GateNo = "", string PartCode = "", string ItemName = "", string DocName = "", string PONO = "", string ScheduleNo = "", string Searchbox = "", string DashboardType = "",string AccountCode="",string docTypeId="")//, ILogger logger)
+        public async Task<ActionResult> GateInward(int ID, string Mode, int YC, string FromDate = "", string ToDate = "", string VendorName = "", string GateNo = "", string PartCode = "", string ItemName = "", string DocName = "", string PONO = "", string ScheduleNo = "", string Searchbox = "", string DashboardType = "",string AccountCode="",string docTypeId="", string Invoiceno="",int VPSaleBillEntryId=0)//, ILogger logger)
         {
             _logger.LogInformation("\n \n ********** Page Gate Inward ********** \n \n " + _IWebHostEnvironment.EnvironmentName.ToString() + "\n \n");
             TempData.Clear();
@@ -347,7 +347,10 @@ namespace eTactWeb.Controllers
             {
                 MainModel.AccountCode = Convert.ToInt32(AccountCode.ToString());
                 MainModel.docTypeId = Convert.ToInt32( docTypeId.ToString());
-                var selectedJson = HttpContext.Session.GetString("KeyGateInwardGrid");
+                MainModel.Invoiceno= Invoiceno.ToString();
+                MainModel.VPSaleBillEntryId = Convert.ToInt32(VPSaleBillEntryId.ToString());
+
+				var selectedJson = HttpContext.Session.GetString("KeyGateInwardGrid");
                 if (!string.IsNullOrEmpty(selectedJson))
                 {
                     var selectedItems = JsonConvert.DeserializeObject<List<GateInwardItemDetail>>(selectedJson);
@@ -645,14 +648,17 @@ namespace eTactWeb.Controllers
     string DashboardType,
     string PartCode,
     string ItemName,
-    int pageNumber = 1,
+    string GetDataFrom,
+    string Invoiceno,
+
+	int pageNumber = 1,
     int pageSize = 10,
     string SearchBox = "")
 
         {
             //model.Mode = "Search";
             var model = new PendingGateInwardDashboard();
-            model = await _IGateInward.GetPendingGateEntryDashboardData(AccountCode , PoNo, PoYearCode, ItemCode, FromDate, ToDate, PartCode, ItemName);
+            model = await _IGateInward.GetPendingGateEntryDashboardData(AccountCode , PoNo, PoYearCode, ItemCode, FromDate, ToDate, PartCode, ItemName, GetDataFrom, Invoiceno);
            
             var modelList = model?.PendingGateEntryDashboard ?? new List<PendingGateInwardDashboard>();
 
@@ -704,7 +710,15 @@ namespace eTactWeb.Controllers
 
             string serializedGrid = JsonConvert.SerializeObject(modelList);
             HttpContext.Session.SetString("KeyPendingGateInwardList", serializedGrid);
-            return PartialView("_GateInwardDisplayDataDetail", model);
+            if (GetDataFrom == "PendingPO")
+            {
+				return PartialView("_GateInwardDisplayDataDetail", model);
+			}
+            else
+            {
+				return PartialView("_GateInwardDisplayVenderPortalDataSummery", model);
+			}
+            
             }
 
         [HttpGet]
@@ -909,6 +923,7 @@ namespace eTactWeb.Controllers
 
             model.AccountList = await _IDataLogic.GetDropDownList("PendingPOAccountList", "SP_GateMainDetail");
             model.DocumentList = await _IDataLogic.GetDropDownList("DocumentList", "SP_GetDropDownList");
+            model.InvoiceList = await _IDataLogic.GetDropDownList("FillVPInvoiceNo", "SP_GateMainDetail");
             //model.PONO = await _IDataLogic.GetDropDownList("PENDINGPOLIST","I", "SP_GateMainDetail");
 
 
@@ -1346,7 +1361,50 @@ namespace eTactWeb.Controllers
                 throw ex;
             }
         }
-        [HttpPost]
+
+
+		[HttpPost]
+		public async Task<IActionResult> GetPendingGateEntryVPDetailData(int AccountCode, string InvoiceNo)
+		{
+			try
+			{
+				// 1️⃣ Get data from DB
+				var dataResult = await _IGateInward.GetPendingGateEntryVPDetailData(AccountCode, InvoiceNo);
+
+				// Assuming the service returns a model containing a list named PendingGateEntryDashboard
+				var pendingDetails = dataResult?.PendingGateEntryDashboard ?? new List<PendingGateInwardDashboard>();
+
+				// 2️⃣ Remove any old session data
+				HttpContext.Session.Remove("KeyGateInwardGrid");
+
+				// 3️⃣ Serialize and store new data
+				var serializedData = JsonConvert.SerializeObject(pendingDetails);
+				HttpContext.Session.SetString("KeyGateInwardGrid", serializedData);
+
+				// 4️⃣ Optionally return data for confirmation/debug
+				return Json(new
+				{
+					message = "done",
+					count = pendingDetails.Count
+				});
+			}
+			catch (Exception ex)
+			{
+				return Json(new
+				{
+					message = "error",
+					details = ex.Message
+				});
+			}
+		}
+
+
+
+
+
+
+
+		[HttpPost]
         public IActionResult StoreCheckedRowsToSession(List<PendingGateInwardDashboard> model)
         {
             try

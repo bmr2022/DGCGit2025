@@ -31,8 +31,14 @@ public interface IGateInward
 
     Task<GateInwardDashboard> GetDashboardData(string VendorName, string Gateno, string ItemName, string PartCode,string DocName, string PONO, string ScheduleNo, string FromDate, string ToDate,string DashboardType);
     Task<PendingGateInwardDashboard> GetPendingGateEntryDashboardData(int AccountCode, string PoNo, int PoYearCode, int ItemCode,
-    string FromDate, string ToDatePartCode,string PartCode, string ItemName);
-    Task<GateInwardDashboard> GetDashboardDetailData(string VendorName, string Gateno, string ItemName, string PartCode,string DocName, string PONO, string ScheduleNo, string FromDate, string ToDate);
+    string FromDate, string ToDatePartCode,string PartCode, string ItemName,string GetDataFrom,string Invoiceno);
+
+
+	Task<PendingGateInwardDashboard> GetPendingGateEntryVPDetailData(int AccountCod,string InvoiceNo);
+
+
+
+	Task<GateInwardDashboard> GetDashboardDetailData(string VendorName, string Gateno, string ItemName, string PartCode,string DocName, string PONO, string ScheduleNo, string FromDate, string ToDate);
 
     Task<ResponseResult> GetSearchData(GateDashboard model);
     Task<ResponseResult> GetAccountCode(string AccountName );
