@@ -64,6 +64,33 @@ namespace eTactWeb.DOM.Models
         public decimal IssStockAdjustment { get; set; }
         public decimal IssueOther { get; set; }
         public decimal TotalIssue { get; set; }
+        public IList<string>? ItemCateg { get; set; }
+        public IList<CategDetail>? CategDetailList { get; set; }
+        public IList<CategDetail>? CategDetailList1 { get; set; }
+        public IList<TextValue>? CategList { get; set; }
+
+        public IList<string>? GroupName { get; set; }
+        public IList<GroupNameDetail>? GroupNameDetailList { get; set; }
+        public IList<GroupNameDetail>? GroupNameDetailList1 { get; set; }
+        public IList<TextValue>? GroupNameList { get; set; }
+
         public IList<ConsumptionReportModel>? ConsumptionReportGrid { get; set; }
     }
+    [Serializable()]
+    public class CategDetail
+    {
+        public int categId { get; set; }
+        public string? CategName { get; set; }
+
+
+    }
+
+    [Serializable()]
+    public class GroupNameDetail
+    {
+        public int GroupCode { get; set; }
+        public string? Groupname { get; set; }
+
+    }
+
 }
