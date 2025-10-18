@@ -3583,7 +3583,10 @@
                             });
                             $('#Operation option').filter(function () {
                                 return $(this).text() === "Assembly ";
+
+
                             }).first().prop('selected', true);
+                            $('#ProcessId').val($('#Operation').val());
                             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
 
                                 var operation = $('#ProcessId').val();
