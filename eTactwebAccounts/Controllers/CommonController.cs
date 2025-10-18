@@ -761,7 +761,7 @@ namespace eTactWeb.Controllers
                 Table.Columns.Add("DRCR", typeof(string));
                 IList<SaleRejectionDetail> itemDetailList = MainModel.SaleRejectionDetails;
                 if (itemDetailList != null && itemDetailList.Any())
-                {
+                { 
                     foreach (var Item in itemDetailList)
                     {
                         Table.Rows.Add(

@@ -346,7 +346,6 @@ namespace eTactWeb.Controllers
                 DataTable AdjDetailDT = null;
                 DataTable DrCrDetailDT = null;
                 string modelJson = HttpContext.Session.GetString("SaleRejectionModel");
-                string modelAdjJson = HttpContext.Session.GetString("KeyAdjGrid");
                 SaleRejectionModel MainModel = new SaleRejectionModel();
                 if (!string.IsNullOrEmpty(modelJson))
                 {
@@ -370,11 +369,7 @@ namespace eTactWeb.Controllers
                 {
                     DrCrGrid = JsonConvert.DeserializeObject<List<DbCrModel>>(drCrGridJson);
                 }
-                AdjustmentModel AdjGrid = new AdjustmentModel();
-                if (!string.IsNullOrEmpty(modelAdjJson))
-                {
-                    AdjGrid = JsonConvert.DeserializeObject<AdjustmentModel>(modelAdjJson);
-                }
+              
                 if (saleRejectionDetail == null)
                 {
                     ModelState.Clear();
@@ -414,20 +409,19 @@ namespace eTactWeb.Controllers
                     {
                         DrCrDetailDT = CommonController.GetDrCrDetailTable(DrCrGrid);
                     }
-
-
-                    if ((MainModel.adjustmentModel != null && MainModel.adjustmentModel.AdjAdjustmentDetailGrid != null && MainModel.adjustmentModel.AdjAdjustmentDetailGrid.Count > 0) || (AdjGrid != null && AdjGrid.AdjAdjustmentDetailGrid != null && AdjGrid.AdjAdjustmentDetailGrid.Count > 0))
+                    string serializedGrid = HttpContext.Session.GetString("KeyAdjGrid");
+                    var adjustmentModel = new AdjustmentModel();
+                    if (!string.IsNullOrEmpty(serializedGrid))
                     {
-                        if (MainModel.adjustmentModel != null && MainModel.adjustmentModel.AdjAdjustmentDetailGrid.Any())
-                        {
-                            AdjDetailDT = CommonController.GetAdjDetailTable(MainModel.adjustmentModel.AdjAdjustmentDetailGrid.ToList(), model.SaleRejEntryId, model.SaleRejYearCode, model.AccountCode);
-                        }
-                        if (AdjGrid != null && AdjGrid.AdjAdjustmentDetailGrid.Any())
-                        {
-                            AdjDetailDT = CommonController.GetAdjDetailTable(AdjGrid.AdjAdjustmentDetailGrid.ToList(), model.SaleRejEntryId, model.SaleRejYearCode, model.AccountCode);
-                        }
+                        adjustmentModel = JsonConvert.DeserializeObject<AdjustmentModel>(serializedGrid);
+                        // Use adjustmentModel as needed
                     }
 
+                    if (adjustmentModel.AdjAdjustmentDetailGrid != null && adjustmentModel.AdjAdjustmentDetailGrid.Count > 0)
+                    {
+                        AdjDetailDT = CommonController.GetAdjDetailTable(adjustmentModel.AdjAdjustmentDetailGrid.ToList(), model.SaleRejEntryId, model.SaleRejYearCode, model.AccountCode);
+                    }
+               
                     //if (MainModel.adjustmentModel != null && MainModel.adjustmentModel.AdjAdjustmentDetailGrid != null && MainModel.adjustmentModel.AdjAdjustmentDetailGrid.Count > 0)
                     //{
                     //    AdjDetailDT = CommonController.GetAdjDetailTable(MainModel.adjustmentModel.AdjAdjustmentDetailGrid.ToList(), model.SaleRejEntryId, model.SaleRejYearCode, model.AccountCode);

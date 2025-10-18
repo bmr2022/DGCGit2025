@@ -233,7 +233,7 @@ namespace eTactWeb.Data.DAL
             model.ActualEnteredBy = Convert.ToInt32(DS.Tables[0].Rows[0]["ActualEnteredBy"]);
             model.ActualEnteredByName = DS.Tables[0].Rows[0]["ActualEntryByName"]?.ToString();
             model.BalanceSheetClosed = Convert.ToChar(DS.Tables[0].Rows[0]["BalanceSheetClosed"]);
-
+            model.DocTypeAccountCode = Convert.ToInt32(DS.Tables[0].Rows[0]["DocTypeAccountCode"]);
             if (Mode == "U" || Mode == "V")
             {
                 if (DS.Tables[0].Rows[0]["UpdatedByName"].ToString() != "")
@@ -489,7 +489,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@SubVoucherName", model.VoucherNo ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@Currencyid", 0));
                 SqlParams.Add(new SqlParameter("@ExchangeRate", 0));
-
+                SqlParams.Add(new SqlParameter("@DocTypeAccountCode", model.DocTypeAccountCode));
                 SqlParams.Add(new SqlParameter("@DTGrid", SBGrid));
                 SqlParams.Add(new SqlParameter("@DTTaxGrid", TaxDetailDT));
 

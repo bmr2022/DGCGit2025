@@ -384,10 +384,11 @@
             AutoComplete("vehicleNo", "vehicleNo");
             AutoComplete("TransporterName", "TransporterName");
 
-            GetTaxPartItem();
-
+            /* GetTaxPartItem(); */
+            
             if ($('#Mode').val() == "V" || $('#Mode').val() == "U") { GetDbCrDetail(); }
-
+            GetTaxPartItem();
+            GetDbCrDetail();
             // DueDateCalculation();
 
             $('#DiscountPer').prop("readonly", false);
@@ -431,9 +432,7 @@
                 $('#rejAmount-' + i).text(rejRate * rejQty);
             }
         }
-
         async function GetTaxPartItem() {
-
             $.ajax({
                 type: "GET",
                 url: '@Url.Action("GetTaxPartItem", "Tax")',
@@ -474,6 +473,8 @@
                 }
             });
         }
+
+     
 
         document.addEventListener('DOMContentLoaded', function () {
             var now = new Date();
@@ -1918,7 +1919,7 @@
                     $('#SaleRejEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result).datepicker("option", { changeMonth: true, changeYear: true });
                     $('#SaleRejEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
                         $('#SaleRejEntryDate').datepicker("option", "minDate", formattedPastDate);
-                    $('#SaleRejEntryDate').datepicker("option", "maxDate", finToDate);
+                    $('#SaleRejEntryDate').datepicker("option", "maxDate", FinToDate);
 
                  /*    $('#SaleRejEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
                     // $('#GateDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
