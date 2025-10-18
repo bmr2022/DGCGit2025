@@ -73,6 +73,7 @@ namespace eTactWeb.DOM.Models
         public List<SaleRejectionDetail> SaleRejectionDetails { get; set; }
         public IList<SaleRejectionDetail>? ItemDetailGrid { get; set; }
         public IList<DPBItemDetail>? DPBItemDetails { get; set; }
+        public IList<DbCrModel>? DbCrGrid { get; set; }
         //public IList<DbCrModel>? DRCRGrid { get; set; }   
 
         private IList<SelectListItem> _YesNo = new List<SelectListItem>()

@@ -1718,6 +1718,7 @@ public class TaxController : Controller
             MainModel = SN == "JobWorkIssue" ? new JobWorkIssueModel() : "";
             MainModel = SN == "ItemList" ? new SaleOrderModel() : "";
             MainModel = SN == "PurchaseRejection" ? new AccPurchaseRejectionModel() : "";
+            MainModel = SN == "SaleRejection" ? new SaleRejectionModel() : "";
             MainModel = SN == "CreditNote" ? new AccCreditNoteModel() : "";
             //_MemoryCache.Remove("KeyTaxGrid");
             HttpContext.Session.Remove("KeyTaxGrid");
@@ -1759,6 +1760,10 @@ public class TaxController : Controller
         else if (SN == "PurchaseRejection")
         {
             MainModel = new AccPurchaseRejectionModel();
+        }
+        else if (SN == "SaleRejection")
+        {
+            MainModel = new SaleRejectionModel();
         }
         else if (SN == "JobWorkIssue")
         {
@@ -3034,6 +3039,7 @@ public class TaxController : Controller
         else if (SN == "SaleInvoice") MainModel = new SaleBillModel();
         else if (SN == "CreditNote") MainModel = new AccCreditNoteModel();
         else if (SN == "PurchaseRejection") MainModel = new AccPurchaseRejectionModel();
+        else if (SN == "SaleRejection") MainModel = new SaleRejectionModel();
         else if (SN == "JobWorkIssue") MainModel = new JobWorkIssueModel();
 
         // Get tax grid from session
