@@ -277,66 +277,84 @@ namespace eTactWeb.Controllers
             );
         }
         [HttpGet]
-        public async Task<IActionResult> DrillDown(string controllerName = "TransactionLedger", string actionName = "Index", int ID = 0, int YearCode = 0, string Mode = "U", int AccountCode = 0, string FromDate = null, string ToDate = null, string ReportType = null,
-      string GroupOrLedger = null,
-      int? ParentAccountCode = null,
-      string VoucherType = null,
-      string VoucherNo = null,
-      string InvoiceNo = null,
-      string Narration = null,
-      float? Amount = null,
-      string DR = null,
-      string CR = null,
-      string Ledger = null, string ClickName = null)
+        public async Task<IActionResult> DrillDown(
+            string controllerName = "TransactionLedger",
+            string actionName = "Index",
+            int ID = 0, int YearCode = 0, string Mode = "U", int AccountCode = 0,
+            string FromDate = null, string ToDate = null, string ReportType = null,
+            string GroupOrLedger = null, int? ParentAccountCode = null,
+            string VoucherType = null, string VoucherNo = null, string InvoiceNo = null,
+            string Narration = null, float? Amount = null,
+            string DR = null, string CR = null, string Ledger = null,
+            string ClickName = null)
         {
-            // Capture all query parameters dynamically
-            var queryParams = HttpContext.Request.Query
-                .ToDictionary(q => q.Key, q => (object)q.Value.ToString());
+            // Capture query params
+            var queryParams = HttpContext.Request.Query.ToDictionary(q => q.Key, q => (object)q.Value.ToString());
 
-            // Save filters in session
-            HttpContext.Session.SetString("TransactionLedgerFilters", JsonConvert.SerializeObject(queryParams));
-
-            // Determine flow based on ReportType
-            if (ReportType == "MonthlySummary")
+            // Push navigation state
+            var state = new NavigationState
             {
-                // For MonthlySummary, fetch TransactionLedgerDetail data
-                var model = await _TransactionLedger.GetDetailsData(
-                    FromDate, ToDate, "TransactionLedgerDetail", GroupOrLedger, ParentAccountCode,
-                    AccountCode, VoucherType, VoucherNo, InvoiceNo, Narration, Amount, DR, CR, Ledger
-                );
+                Controller = controllerName,
+                Action = actionName,
+                Filters = queryParams,
+                RouteValues = new Dictionary<string, object>
+        {
+            { "ID", ID },
+            { "AccountCode", AccountCode },
+            { "YearCode", YearCode },
+            { "Mode", Mode }
+        },
+                ReportType = ReportType
+            };
+            NavigationHelper.Push(HttpContext, state);
 
-                // Store data in session if needed
-                HttpContext.Session.SetString("TransactionLedgerData", JsonConvert.SerializeObject(model));
+            HttpContext.Session.SetString("LastPageFilters", JsonConvert.SerializeObject(queryParams));
 
-                // Return partial view for AJAX
-                return PartialView("_TransactionLedgerGrid", model);
-            }
-            if (ReportType == "GROUPSUMMARY")
+            // Handle data
+            switch (ReportType)
             {
-                // For MonthlySummary, fetch TransactionLedgerDetail data
-                var model = await _TransactionLedger.GetTransactionLedgerGroupSummaryDetailsData(
-                    FromDate, ToDate, ReportType, GroupOrLedger, ParentAccountCode,
-                    AccountCode, VoucherType, VoucherNo, InvoiceNo, Narration, Amount, DR, CR, Ledger
-                );
+                case "MonthlySummary":
+                    var monthlyModel = await _TransactionLedger.GetDetailsData(
+                        FromDate, ToDate, "TransactionLedgerDetail", GroupOrLedger, ParentAccountCode,
+                        AccountCode, VoucherType, VoucherNo, InvoiceNo, Narration, Amount, DR, CR, Ledger
+                    );
+                    HttpContext.Session.SetString("TransactionLedgerData", JsonConvert.SerializeObject(monthlyModel));
+                    return PartialView("_TransactionLedgerGrid", monthlyModel);
 
-                // Store data in session if needed
-                HttpContext.Session.SetString("TransactionLedgerData", JsonConvert.SerializeObject(model));
+                case "TransactionLedgerSummary":
+                case "TransactionLedgerDetail":
+                    var model = await _TransactionLedger.GetDetailsData(
+                        FromDate, ToDate, "TransactionLedgerDetail", GroupOrLedger, ParentAccountCode,
+                        AccountCode, VoucherType, VoucherNo, InvoiceNo, Narration, Amount, DR, CR, Ledger
+                    );
+                    HttpContext.Session.SetString("TransactionLedgerData", JsonConvert.SerializeObject(model));
 
-                if(ClickName == "ParentLedgerClick")
-                {
-                    // Return partial view for AJAX
-                    return PartialView("_TransactionLedgerGroupSummaryGrid", model);
-                }
-                else
-                {
-                    // Return partial view for AJAX
-                    return PartialView("_TransactionLedgerGrid", model);
-                }
-            }
-            else
-            {
-                // For Summary/Detail, redirect to voucher form
-                return RedirectToAction(actionName, controllerName, new { ID, YearCode, Mode, AccountCode });
+                    var routeValues = new RouteValueDictionary(state.RouteValues);
+                    foreach (var filter in state.Filters)
+                        if (!routeValues.ContainsKey(filter.Key))
+                            routeValues.Add(filter.Key, filter.Value);
+
+                    return RedirectToAction(actionName, controllerName, routeValues);
+
+                case "GROUPSUMMARY":
+                case "GROUPDETAIL":
+                    var groupModel = await _TransactionLedger.GetTransactionLedgerGroupSummaryDetailsData(
+                        FromDate, ToDate, ReportType, GroupOrLedger, ParentAccountCode,
+                        AccountCode, VoucherType, VoucherNo, InvoiceNo, Narration, Amount, DR, CR, Ledger
+                    );
+                    HttpContext.Session.SetString("TransactionLedgerData", JsonConvert.SerializeObject(groupModel));
+                    return PartialView(
+                        ClickName == "ParentLedgerClick" ? "_TransactionLedgerGroupSummaryGrid" : "_TransactionLedgerGrid",
+                        groupModel
+                    );
+
+                default:
+                    var defaultRouteValues = new RouteValueDictionary(state.RouteValues);
+                    foreach (var filter in state.Filters)
+                        if (!defaultRouteValues.ContainsKey(filter.Key))
+                            defaultRouteValues.Add(filter.Key, filter.Value);
+
+                    return RedirectToAction(actionName, controllerName, defaultRouteValues);
             }
         }
     }
