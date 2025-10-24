@@ -1230,7 +1230,8 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@SerialNo", model.SerialNo);
                     oCmd.Parameters.AddWithValue("@OldPartCode", model.OldPartCode);
                     oCmd.Parameters.AddWithValue("@package", model.Package);
-                    oCmd.Parameters.AddWithValue("@Branch", branchlist);
+                    oCmd.Parameters.AddWithValue("@Branch", model.CC);
+                    oCmd.Parameters.AddWithValue("@BranchList", branchlist);
                     oCmd.Parameters.AddWithValue("@NoOfCavity", model.NoOfCavity);
                     oCmd.Parameters.AddWithValue("@ProdInMachineGroup", model.ProdInMachineGroup);
                     oCmd.Parameters.AddWithValue("@ProdInMachine1", model.ProdInMachine1);

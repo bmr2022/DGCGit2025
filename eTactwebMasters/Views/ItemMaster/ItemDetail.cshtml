@@ -1005,7 +1005,6 @@
             });
         }
         function GetBranchList() {
-
             $.ajax({
                 url: "@Url.Action("GetBranchList")",
                 data: {},
@@ -1013,28 +1012,34 @@
                 async: false,
                 success: function (data) {
 
-                  var obj = $.parseJSON(data);
+                    var obj = $.parseJSON(data);
 
-            // Save selected values (if any) before refresh
-            var selectedValues = $('#Branch').val() || [];
+                    // Get selected value from model
+                    var selectedValues = [];
+        @* If CC is not empty, add it to the array *@
+        @if (!string.IsNullOrEmpty(Model.CC))
+        {
+            <text>selectedValues.push('@Model.CC'); </text>
+        }
 
-            $('#Branch').empty();
+                        $('#Branch').empty();
 
-            // Remove default -Select- if it's multi-select
-            for (var i = 0; i < obj.Result.Table.length; i++) {
-                var value = obj.Result.Table[i].BranchName;
-                $('#Branch').append('<option value="' + value + '">' + value + '</option>');
-            }
+                    // Populate options
+                    for (var i = 0; i < obj.Result.Table.length; i++) {
+                        var value = obj.Result.Table[i].BranchName;
+                        $('#Branch').append('<option value="' + value + '">' + value + '</option>');
+                    }
 
-            // Re-select previously selected values (if any)
-            $('#Branch').val(selectedValues);
-            $('#Branch').trigger('change');
+                    // Re-select value(s)
+                    $('#Branch').val(selectedValues);
+                    $('#Branch').trigger('change');
                 },
                 error: function (errMsg) {
                     $.notify(errMsg, { position: "top center", className: "error" });
                 }
             });
         }
+
         function ProdInMachineGroupList() {
 
             $.ajax({
