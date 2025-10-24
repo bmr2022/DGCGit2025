@@ -334,12 +334,7 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                <div class="row g-2 gx-3">
-                                    <div class="col-12 text-center">
-                                        <strong>BASIC TOTAL : <i class="fa-solid fa-indian-rupee-sign fa-fw fa-1x"></i><span id="lblItemGridNetAmount"></span></strong>
-                                        <strong>, TOTAL NO OF ITEMS : <span id="lblItemGridCount"></span></strong>
-                                    </div>
-                                </div>
+                                
 
                                 <div class="table-responsive" style="max-height:150px;">
                                     <table class="table table-hover table-bordered table-striped mt-3" id="poTable">
@@ -387,9 +382,15 @@
                         </div>
                         <div class="row g-2 gx-3">
                             <div class="col-12 text-center">
-                                <strong> TOTAL NO OF ITEMS : <span id="lblItemCount"></span></strong>
+                                <strong>BASIC TOTAL : <i class="fa-solid fa-indian-rupee-sign fa-fw fa-1x"></i><span id="lblItemGridNetAmount"></span></strong>
+                                <strong>, TOTAL NO OF ITEMS : <span id="lblItemGridCount"></span></strong>
                             </div>
                         </div>
+                        @* <div class="row g-2 gx-3">
+                            <div class="col-12 text-center">
+                                <strong> TOTAL NO OF ITEMS : <span id="lblItemCount"></span></strong>
+                            </div>
+                        </div> *@
                     </div>
                 </div>
                 <div class="accordion-item">
@@ -1085,6 +1086,7 @@
                             $('#PurchaseRejectionInvoiceNo').val(obj.Result.Table[0].InvoiceNo);
                             $('#VoucherNo').val("");
                             $('#VoucherNo').val(obj.Result.Table[0].VoucherNo);
+                                  $('#PurchaseRejectionVoucherNo').val(obj.Result.Table[0].VoucherNo);
                             $('#AdjDescription').val($('#PurchaseRejectionInvoiceNo').val());
                             $('#AdjNewRefNo').val($('#PurchaseRejectionInvoiceNo').val());
                         }

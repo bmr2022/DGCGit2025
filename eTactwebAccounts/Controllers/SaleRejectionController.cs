@@ -687,7 +687,7 @@ namespace eTactWeb.Controllers
                     1,//Item.AgainstOpenEntryId,
                     Item.AgainstOpnOrBill ?? string.Empty,
                     Item.AgainstBillYearCode, //openBillYearCode
-                    Item.DocTypeAccountCode,
+                    0,
                     Item.ItemCode,
                     Item.Unit ?? string.Empty,
                     Item.NoOfCase,

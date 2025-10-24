@@ -338,10 +338,33 @@
 @section Scripts
 {
     <script>
+        function calculateNetTotal() {
+              var saleTotal = 0;
+              var taxTotal = 0;
+
+
+               $('[id^="Amount-"]').each(function () {
+                  var val = parseFloat($(this).text()) || 0;
+                  saleTotal += val;
+              });
+
+              // Sum of txGridAmount-* (Tax Grid)
+               $('[id^="txGridAmount-"]').each(function () {
+                  var val = parseFloat($(this).text()) || 0;
+                  taxTotal += val;
+              });
+
+              // Net Total
+              var netTotal = saleTotal + taxTotal;
+
+              // Set NetTotal
+              $('#NetTotal').val(netTotal.toFixed(2)); // since it's text, not input
+          }
+
         $(document).ready(function () {
 
             GetServerDate();
-
+              
             if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
                 NewEntryId();
                 btnClearTax();
@@ -351,8 +374,12 @@
                 $('#AdjNewRefNo').val($('#VoucherNo').val());
                 $('#AdjDescription').val($('#VoucherNo').val());
                 SetminQty();
-              
+                    var sum = 0;
                 var taxRowCount = $('#divTaxGrid tr').length;
+                     $('[id^="Amount-"]').each(function () {
+                   var val = parseFloat($(this).text()) || 0;
+                    sum += val;
+               });
 
                 var txSum = 0;
                 if ($('#divTaxGrid tr td').length > 1) {
@@ -363,7 +390,7 @@
 
                 var txTotal = sum + txSum;
                 $('#NetTotal').val(txTotal.toFixed(2));
-                $('#AdjPendAmt').val($('#NetTotal').val());
+                /* $('#AdjPendAmt').val($('#NetTotal').val()); */
             }
 
 
@@ -423,7 +450,28 @@
                     "uniquebatchno": uniquebatchnoo
                 });
             }
-        });
+              if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
+                  if (rowCounter > 0) {
+                      $('.PendingItem').show();
+                      $('.newitems').hide();
+
+                  }
+                  else {
+                      $('.PendingItem').hide();
+                      $('.newitems').show();
+
+                      // FillWorkCenter();
+                  }
+              } else {
+
+                  $('.PendingItem').hide();
+                  $('.newitems').show();
+                  // FillWorkCenter();
+
+              }
+              calculateNetTotal();
+
+         });
 
         function CalculateRejAmount() {
             var rowCount = $('#divSaleRejectionList tr').length;
@@ -770,7 +818,7 @@
 
                              sum += parseFloat($('#Amount-' + i).text() == '.00' ? 0 : $('#Amount-' + i).text());
                          }
-                         $('#ItemNetAmount').val(sum);
+                         /* $('#ItemNetAmount').val(sum); */
 
                         var txSum = 0;
                         if ($('#divTaxGrid tr td').length > 1) {
