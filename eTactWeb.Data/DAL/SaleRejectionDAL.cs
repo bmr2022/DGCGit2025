@@ -224,6 +224,7 @@ namespace eTactWeb.Data.DAL
             model.ToatlDiscountPercent = Convert.ToInt32(DS.Tables[0].Rows[0]["ToatlDiscountPercent"]);
             model.TotalDiscountAmount = Convert.ToInt32(DS.Tables[0].Rows[0]["TotalDiscountAmount"]);
             model.InvNetAmt = Convert.ToInt32(DS.Tables[0].Rows[0]["InvNetAmt"]);
+            model.NetTotal = DS.Tables[0].Rows[0]["InvNetAmt"] != DBNull.Value ? Convert.ToDecimal(DS.Tables[0].Rows[0]["InvNetAmt"]) : 0;
             model.SalerejRemark = DS.Tables[0].Rows[0]["SalerejRemark"]?.ToString();
             model.CC = DS.Tables[0].Rows[0]["CC"]?.ToString();
             model.Uid = Convert.ToInt32(DS.Tables[0].Rows[0]["Uid"]);
@@ -255,7 +256,6 @@ namespace eTactWeb.Data.DAL
                         AgainstBillYearCode = row["AgainstBillYearCode"] != DBNull.Value ? Convert.ToInt32(row["AgainstBillYearCode"]) : 0,
                         AgainstBillEntryId = row["AgainstOpenBillEntryId"] != DBNull.Value ? Convert.ToInt32(row["AgainstOpenBillEntryId"]) : 0,
                         AgainstOpnOrBill = row["AgainstOpnOrBill"]?.ToString(),
-                        DocTypeAccountCode = row["DocTypeAccountCode"] != DBNull.Value ? Convert.ToInt32(row["DocTypeAccountCode"]) : 0,
                         ItemCode = row["ItemCode"] != DBNull.Value ? Convert.ToInt32(row["ItemCode"]) : 0,
                         ItemName = row["ItemName"]?.ToString(),
                         PartCode = row["PartCode"]?.ToString(),
@@ -503,13 +503,14 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@DomesticExportNEPZ", model.DomesticExportNEPZ ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@Transporter", model.Transporter ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@Vehicleno", model.Vehicleno ?? string.Empty));
-                SqlParams.Add(new SqlParameter("@BillAmt", model.BillAmt));
+                SqlParams.Add(new SqlParameter("@BillAmt", model.ItemNetAmount));
+
                 SqlParams.Add(new SqlParameter("@RoundOffAmt", model.RoundOffAmt));
                 SqlParams.Add(new SqlParameter("@RoundoffType", model.RoundoffType ?? string.Empty));
-                SqlParams.Add(new SqlParameter("@Taxableamt", model.Taxableamt));
+                SqlParams.Add(new SqlParameter("@Taxableamt", model.NetTotal));
                 SqlParams.Add(new SqlParameter("@ToatlDiscountPercent", model.TotalDiscountPercentage));
                 SqlParams.Add(new SqlParameter("@TotalDiscountAmount", model.TotalDiscountAmount));
-                SqlParams.Add(new SqlParameter("@InvNetAmt", model.InvNetAmt));
+                SqlParams.Add(new SqlParameter("@InvNetAmt", model.NetTotal));
                 SqlParams.Add(new SqlParameter("@SalerejRemark", model.SalerejRemark ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@CC", model.CC ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@Uid", model.Uid));
