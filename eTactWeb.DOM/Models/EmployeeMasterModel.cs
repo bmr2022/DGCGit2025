@@ -10,6 +10,8 @@ namespace eTactWeb.DOM.Models
         public IList<EmployeeMasterModel>? EmployeeMasterList { get; set; }
 
         public int EmpId { get; set; }
+        public List<string>? Branches { get; set; }
+        public string BranchName { get; set; }
         public string? EmpCode { get; set; }
         public string? ReportType { get; set; }
         public string Name { get; set; }
