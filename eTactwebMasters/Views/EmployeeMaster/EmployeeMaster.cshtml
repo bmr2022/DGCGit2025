@@ -99,12 +99,15 @@
                                     <select asp-for="Designation" class="form-select" asp-items="@(new SelectList(Model.DesignationList,"Value", "Text"))" onchange="GetEmpIdandEmpCode()" required>
                                         <option value="">-Select-</option>
                                     </select>
+                                    <input type="hidden" asp-for="DesignationName" />
                                 </div>
                                 <div class="col-lg-4">
                                     <label asp-for="Department" class="form-label" style="color:red">Department*</label>
                                     <select asp-for="Department" class="form-select" asp-items="@(new SelectList(Model.DepartmentList,"Value", "Text"))" onchange="GetEmpIdandEmpCode()" required>
                                         <option value="">-Select-</option>
                                     </select>
+                                    <input type="hidden" asp-for="DepartmentName" />
+                                   
                                 </div>
                                 <div class="col-lg-4">
                                     <label asp-for="Category" class="form-label" style="color:red">Category*</label>
@@ -1106,7 +1109,16 @@
                 }
             });
         });
-       
+
+        $('#Department').on('change', function () {
+            var selectedText = $(this).find('option:selected').text().trim();
+            $('#DepartmentName').val(selectedText);
+        });
+
+        $('#Designation').on('change', function () {
+            var selectedText = $(this).find('option:selected').text().trim();
+            $('#DesignationName').val(selectedText);
+        });
                 function GetBranchList() {
             $.ajax({
                 url: "@Url.Action("GetBranchList","ItemMaster")",
