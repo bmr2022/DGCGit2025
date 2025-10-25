@@ -156,6 +156,33 @@ namespace eTactWeb.Controllers
                 TempData["202"] = "202";
                 return RedirectToAction(nameof(DashBoard));
             }
+            if (Result.StatusText == "Error")
+            {
+                ViewBag.isSuccess = false;
+                var input = "";
+                if (Result?.Result != null)
+                {
+                    if (Result.Result is string str)
+                    {
+                        input = str;
+                    }
+                    else
+                    {
+                        input = JsonConvert.SerializeObject(Result.Result);
+                    }
+
+                    TempData["ErrorMessage"] = input;
+                }
+                else
+                {
+                    TempData["500"] = "500";
+                }
+
+
+               
+                //model.IsError = "true";
+                //return View("Error", Result);
+            }
             return RedirectToAction(nameof(EmployeeMaster), new { ID = 0 });
 
         }

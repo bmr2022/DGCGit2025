@@ -21,6 +21,7 @@ namespace eTactWeb.DOM.Models
         public string? Department { get; set; }
         public string? DepartmentName { get; set; }
         public string? DesignationName { get; set; }
+        public string? CategoryName { get; set; }
         public IList<TextValue>? DepartmentList { get; set; }
         public string? Category { get; set; }
         public string? CategoryId { get; set; }

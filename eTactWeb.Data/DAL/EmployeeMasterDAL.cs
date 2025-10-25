@@ -594,6 +594,9 @@ namespace eTactWeb.Data.DAL
                                 oCmd.Parameters.AddWithValue("@CategoryId", model.Category);
                                 oCmd.Parameters.AddWithValue("@Gender", model.Gender);
                                 oCmd.Parameters.AddWithValue("@NatureOfDuties", model.NatureOfDuties);
+                                oCmd.Parameters.AddWithValue("@DepartmentName", model.DepartmentName);
+                                oCmd.Parameters.AddWithValue("@DesignationName", model.DesignationName);
+                                oCmd.Parameters.AddWithValue("@CategoryName", model.CategoryName);
                                 oCmd.Parameters.AddWithValue("@branchlist", branchlist);
                                 oCmd.Parameters.AddWithValue("@active", "Y");
                                 oCmd.Parameters.AddWithValue("@ResignationDate", dorDt);
@@ -606,6 +609,9 @@ namespace eTactWeb.Data.DAL
                                 oCmd.Parameters.AddWithValue("@EmpCode", model.EmpCode);
                                 oCmd.Parameters.AddWithValue("@CC", model.Branch);
                                 oCmd.Parameters.AddWithValue("@EmpName", model.Name);
+                                oCmd.Parameters.AddWithValue("@DepartmentName", model.DepartmentName);
+                                oCmd.Parameters.AddWithValue("@DesignationName", model.DesignationName);
+                                oCmd.Parameters.AddWithValue("@CategoryName", model.CategoryName);
                                 oCmd.Parameters.AddWithValue("@EntryDate", entDt == null ? DBNull.Value : entDt);
                                 oCmd.Parameters.AddWithValue("@DOB", dobDt == null ? DBNull.Value : dobDt);
                                 oCmd.Parameters.AddWithValue("@DOJ", dojDt == null ? DBNull.Value : dojDt);
@@ -767,6 +773,9 @@ namespace eTactWeb.Data.DAL
                             oCmd.Parameters.AddWithValue("@branchlist", branchlist);
                             oCmd.Parameters.AddWithValue("@Gender", model.Gender);
                             oCmd.Parameters.AddWithValue("@NatureOfDuties", model.NatureOfDuties);
+                            oCmd.Parameters.AddWithValue("@DepartmentName", model.DepartmentName);
+                            oCmd.Parameters.AddWithValue("@DesignationName", model.DesignationName);
+                            oCmd.Parameters.AddWithValue("@CategoryName", model.CategoryName);
                             oCmd.Parameters.AddWithValue("@active", "Y");
                             oCmd.Parameters.AddWithValue("@ResignationDate", dorDt);
                         }
@@ -778,6 +787,9 @@ namespace eTactWeb.Data.DAL
                             oCmd.Parameters.AddWithValue("@EmpCode", model.EmpCode);
                             oCmd.Parameters.AddWithValue("@CC", model.Branch);
                             oCmd.Parameters.AddWithValue("@EmpName", model.Name);
+                            oCmd.Parameters.AddWithValue("@DepartmentName", model.DepartmentName);
+                            oCmd.Parameters.AddWithValue("@DesignationName", model.DesignationName);
+                            oCmd.Parameters.AddWithValue("@CategoryName", model.CategoryName);
                             oCmd.Parameters.AddWithValue("@EntryDate", entDt == null ? DBNull.Value : entDt);
                             oCmd.Parameters.AddWithValue("@DOB", dobDt == null ? DBNull.Value : dobDt);
                             oCmd.Parameters.AddWithValue("@DOJ", dojDt == null ? DBNull.Value : dojDt);

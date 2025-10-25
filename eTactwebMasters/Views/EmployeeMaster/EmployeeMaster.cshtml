@@ -114,6 +114,7 @@
                                     <select asp-for="Category" class="form-select" asp-items="@(new SelectList(Model.CategoryList,"Value", "Text"))" required>
                                         <option value="">-Select-</option>
                                     </select>
+                                    <input type="hidden" asp-for="CategoryName" />
                                 </div>
                                 <div class="col-lg-2">
                                     <label asp-for="DateOfJoining" class="form-label">DOJ</label>
@@ -1118,6 +1119,10 @@
         $('#Designation').on('change', function () {
             var selectedText = $(this).find('option:selected').text().trim();
             $('#DesignationName').val(selectedText);
+        });
+        $('#Category').on('change', function () {
+            var selectedText = $(this).find('option:selected').text().trim();
+            $('#CategoryName').val(selectedText);
         });
                 function GetBranchList() {
             $.ajax({
