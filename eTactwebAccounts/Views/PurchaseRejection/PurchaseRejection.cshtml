@@ -1165,6 +1165,9 @@
                                 '<td id="ItemAmount-' + i + '">' + val.ItemAmount + '</td>' +
                                 '<td id="disPer-' + i + '">' + val.disPer + '</td>' +
                                 '<td id="DisAmt-' + i + '">' + val.DisAmt + '</td>' +
+                                '<td id="MIRNo-' + i + '">' + val.MIRNO + '</td>' +
+                                '<td id="MIREntryId-' + i + '">' + val.MIREntryId + '</td>' +
+                                '<td id="MIRYEARCODE-' + i + '">' + val.MIRYEARCODE + '</td>' +
                                 '</tr>';
 
                             i++;
@@ -1255,6 +1258,9 @@
                     '<td id="ItemAmount-' + newIndex + '">' + $popupRow.find('[id^="popUpItemAmount-"]').text() + '</td>' +
                     '<td id="disPer-' + newIndex + '">' + $popupRow.find('[id^="popUpdisPer-"]').text() + '</td>' +
                     '<td id="DisAmt-' + newIndex + '">' + $popupRow.find('[id^="popUpDisAmt-"]').text() + '</td>' +
+                     '<td id="MIRNo-' + newIndex + '">' + $popupRow.find('[id^="popUpMIRNo-"]').text() + '</td>' +
+                     '<td id="MIREntryId-' + newIndex + '">' + $popupRow.find('[id^="popUpMIREntryId-"]').text() + '</td>' +
+                    '<td id="MIRYEARCODE-' + newIndex + '">' + $popupRow.find('[id^="popUpMIRYEARCODE-"]').text() + '</td>' +
                     '</tr>';
 
                 $('#divPurchaseRejectionDataGrid').append(mainHtml);

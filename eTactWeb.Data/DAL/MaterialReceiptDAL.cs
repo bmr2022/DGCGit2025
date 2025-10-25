@@ -391,6 +391,7 @@ namespace eTactWeb.Data.DAL
                         QCCompleted = row["QCCompleted"].ToString().Trim(),
                         RetChallanPendQty = string.IsNullOrEmpty(row["RetChallanPendQty"].ToString()) ? 0 : Convert.ToDecimal(row["RetChallanPendQty"].ToString()),
                         BatchWise = row["batchWise"].ToString().Trim(),
+                        SaleBillNo= row["Salebillno"].ToString().Trim(),
                         SaleBillYearCode = string.IsNullOrEmpty(row["salebillYearCode"].ToString()) ? 0 : Convert.ToInt32(row["salebillYearCode"].ToString()),
                         AgainstChallanNo = row["AgainstChallanNo"].ToString().Trim(),
                         BatchNo = row["Batchno"].ToString().Trim(),
