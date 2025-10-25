@@ -852,6 +852,26 @@ public class ItemMasterController : Controller
         {
             return RedirectToAction(nameof(Dashboard));
         }
+        if (Result.StatusText == "Error")
+        {
+            ViewBag.isSuccess = false;
+            var input = "";
+            if (Result?.Result != null)
+            {
+                if (Result.Result is string str)
+                {
+                    input = str;
+                }
+                else
+                {
+                    input = JsonConvert.SerializeObject(Result.Result);
+                }
+
+                TempData["ErrorMessage"] = input;
+               
+            }
+            return RedirectToAction(nameof(ItemDetail), new { ID = 0 });
+        }
         else
         {
             ViewBag.isSuccess = false;

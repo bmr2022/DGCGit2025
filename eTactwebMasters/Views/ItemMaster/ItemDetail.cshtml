@@ -143,6 +143,7 @@
                                             <select asp-for="ItemType" class="form-select" data-abcd="14" style="width:200px;" asp-items="@(new SelectList(Model.ItemTypeList,"Value", "Text"))">
                                                 <option value="">-Select-</option>
                                             </select>
+                                            <input type="hidden" asp-for="ItemTypeName" />
                                         </div>
                                     </div>
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
@@ -150,7 +151,9 @@
                                         <div class="col-xl-4  col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                             <select asp-for="ParentCode" class="form-select" data-abcd="14" style="width:200px;" asp-items="@(new SelectList(Model.ParentGroupList,"Value", "Text"))" onfocus=" setFocus()">
                                                 <option value="">-Select-</option>
+                                               
                                             </select>
+                                            <input type="hidden" asp-for="ParentName" />
                                         </div>
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12">
@@ -1165,6 +1168,15 @@
                 $('#ReUploadItem').is(':checked') == true ? $('.ReUploadItemFile').fadeIn() : ($('.ReUploadItemFile').fadeOut(), $('#UploadItemImage').val(''));
             });
 
+        });
+
+        $('#ParentCode').on('change', function () {
+            var selectedText = $(this).find('option:selected').text().trim();
+            $('#ParentName').val(selectedText);
+        });
+        $('#ItemType').on('change', function () {
+            var selectedText = $(this).find('option:selected').text().trim();
+            $('#ItemTypeName').val(selectedText);
         });
         function CheckDuplicate(n, v) {
              
