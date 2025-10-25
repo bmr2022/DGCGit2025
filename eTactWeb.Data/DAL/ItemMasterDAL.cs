@@ -1212,6 +1212,8 @@ namespace eTactWeb.Data.DAL
                             oCmd.Parameters.AddWithValue("@MinimumLevel", model.MinimumLevel);
                             oCmd.Parameters.AddWithValue("@MaximumLevel", model.MaximumLevel);
                             oCmd.Parameters.AddWithValue("@ReorderLevel", model.ReorderLevel);
+                            oCmd.Parameters.AddWithValue("@ParentName", model.ParentName);
+                            oCmd.Parameters.AddWithValue("@ItemTypeName", model.ItemTypeName);
                             oCmd.Parameters.AddWithValue("@YearCode", model.YearCode);
                             oCmd.Parameters.AddWithValue("@AlternateUnit", model.AlternateUnit);
                             oCmd.Parameters.AddWithValue("@RackID", model.RackID);
@@ -1281,7 +1283,7 @@ namespace eTactWeb.Data.DAL
                                     _ResponseResult = new ResponseResult()
                                     {
                                         StatusCode = (HttpStatusCode)Reader["StatusCode"],
-                                        StatusText = "Success",
+                                        StatusText = Reader["StatusText"].ToString(),
                                         Result = Reader["Result"].ToString()
                                     };
                                 }
@@ -1315,6 +1317,8 @@ namespace eTactWeb.Data.DAL
                         oCmd.Parameters.AddWithValue("@WastagePercent", model.WastagePercent);
                         oCmd.Parameters.AddWithValue("@WtSingleItem", model.WtSingleItem);
                         oCmd.Parameters.AddWithValue("@NoOfPcs", model.NoOfPcs);
+                        oCmd.Parameters.AddWithValue("@ParentName", model.ParentName);
+                        oCmd.Parameters.AddWithValue("@ItemTypeName", model.ItemTypeName);
                         oCmd.Parameters.AddWithValue("@QcReq", model.QcReq);
                         oCmd.Parameters.AddWithValue("@ItemType", model.ItemType);
                         oCmd.Parameters.AddWithValue("@UploadImage", model.ImageURL);
@@ -1388,7 +1392,14 @@ namespace eTactWeb.Data.DAL
                         if (Reader != null)
                         {
                             while (Reader.Read())
-                            { _ResponseResult = new ResponseResult() { StatusCode = (HttpStatusCode)Reader["StatusCode"], StatusText = "Success", Result = Reader["Result"].ToString() }; }
+                            {
+                                _ResponseResult = new ResponseResult()
+                                {
+                                    StatusCode = (HttpStatusCode)Reader["StatusCode"],
+                                    StatusText = Reader["StatusText"].ToString(),
+                                    Result = Reader["Result"].ToString()
+                                };
+                            }
 
                         }
                     }
