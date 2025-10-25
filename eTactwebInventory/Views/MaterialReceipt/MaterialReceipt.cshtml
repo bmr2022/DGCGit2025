@@ -2314,7 +2314,8 @@ $('#btnClose').click(function () {
                 const formattedDate = `${day}/${month < 10 ? '0' : ''}${month}/${year}`;
 
                 console.log(formattedDate); // Output: "17/08/2023"
-                //$('#EntryDate').datepicker("option", "minDate", formattedDate);
+                        $('#EntryDate').datepicker("option", "minDate", inputDate);
+                              $('#EntryDate').datepicker("option", "maxDate", new Date());
             }
 
             $('.GridButton').click(function () {
