@@ -11,6 +11,10 @@ namespace eTactWeb.DOM.Models
     {
         public string? FromDate {  get; set; }
         public string? ToDate { get; set; } 
+        public string? FromTime { get; set; } 
+        public DateTime? ToTime { get; set; } 
+        public DateTime? FromSlipNo { get; set; } 
+        public string? ToSlipNo { get; set; } 
         public string? FGPartCode {  get; set; }
         public string? FGItemName {  get; set; }
         public string? RMPartCode {  get; set; }

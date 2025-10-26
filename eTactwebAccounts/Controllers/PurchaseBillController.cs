@@ -1763,6 +1763,7 @@ public class PurchaseBillController : Controller
         Table.Columns.Add("POType", typeof(string));
         Table.Columns.Add("MIRNO", typeof(string));
         Table.Columns.Add("MIRYearCode", typeof(int));
+        Table.Columns.Add("MIREntryId", typeof(int));
         Table.Columns.Add("MIRDate", typeof(DateTime));
         Table.Columns.Add("AllowDebitNote", typeof(string));
         Table.Columns.Add("DebitNotePending", typeof(string));
@@ -1777,6 +1778,7 @@ public class PurchaseBillController : Controller
         Table.Columns.Add("AcceptedQty", typeof(float));
         Table.Columns.Add("ReworkQty", typeof(float));
         Table.Columns.Add("HoldQty", typeof(float));
+        Table.Columns.Add("ItemLocation", typeof(string));
         #endregion
 
         foreach (PBItemDetail Item in itemDetailList)
@@ -1834,6 +1836,7 @@ public class PurchaseBillController : Controller
                 string.Empty,
                 Item.MIRNO ?? string.Empty,
                 Item.MIRYEARCODE > 0 ? Convert.ToInt32(Item.MIRYEARCODE) : 0,
+                Item.MIREntryId> 0 ? Convert.ToInt32(Item.MIREntryId) : 0,
                 mirDate,
                 string.Empty,
                 string.Empty,
@@ -1847,7 +1850,9 @@ public class PurchaseBillController : Controller
                 Item.HSNNO.ToString(),
                 Item.AcceptedQty > 0 ? Math.Round(Convert.ToDecimal(Item.AcceptedQty ?? 0), 2) : 0,
                 Item.ReworkQty > 0 ? Math.Round(Convert.ToDecimal(Item.ReworkQty ?? 0), 2) : 0,
-                Item.HoldQty > 0 ? Math.Round(Convert.ToDecimal(Item.HoldQty ?? 0), 2) : 0
+                Item.HoldQty > 0 ? Math.Round(Convert.ToDecimal(Item.HoldQty ?? 0), 2) : 0,
+                  Item.ItemLocation ?? string.Empty,
+               
             });
         }
 

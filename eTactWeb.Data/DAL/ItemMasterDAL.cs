@@ -30,6 +30,21 @@ namespace eTactWeb.Data.DAL
             DBConnectionString = _connectionStringService.GetConnectionString();
         }
 
+        public string GetBranchConnectionString(string branchDatabaseName)
+        {
+            // Base template (from appsettings)
+            string baseConnection = _connectionStringService.GetConnectionString(); // e.g., "Data Source=ServerName;Initial Catalog=CompanyInfoDetailWEB;User Id=sa;Password=786nazhuss;"
+
+            // Replace Initial Catalog with selected branch database
+            var builder = new SqlConnectionStringBuilder(baseConnection)
+            {
+                InitialCatalog = branchDatabaseName
+            };
+
+            return builder.ConnectionString;
+        }
+
+
         public async Task<ResponseResult> GetFormRights(int userId)
         {
             var _ResponseResult = new ResponseResult();
@@ -1156,114 +1171,241 @@ namespace eTactWeb.Data.DAL
         {
             try
             {
-                using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
+                string branchlist = string.Join(",", model.Branch ?? new List<string>());
+                if (!string.IsNullOrWhiteSpace(branchlist))
                 {
-                    SqlCommand oCmd = new SqlCommand("SP_ItemMasterData", myConnection)
+                    foreach (var branchDb in model.Branch ?? new List<string>())
                     {
-                        CommandType = CommandType.StoredProcedure
-                    };
-                    string branchlist = string.Join(",", model.Branch   ?? new List<string>());
+                        // Generate dynamic connection string for this branch
+                        string branchConnectionString = GetBranchConnectionString(branchDb);
 
-                    oCmd.Parameters.AddWithValue("@Flag", model.Mode);
-                    oCmd.Parameters.AddWithValue("@Item_Code", model.Item_Code);
-                    oCmd.Parameters.AddWithValue("@PartCode", model.PartCode);
-                    oCmd.Parameters.AddWithValue("@Item_Name", model.Item_Name);
-                    oCmd.Parameters.AddWithValue("@ParentCode", model.ParentCode);
-                    oCmd.Parameters.AddWithValue("@EntryDate", model.EntryDate);
-                    oCmd.Parameters.AddWithValue("@LastUpdatedDate", model.LastUpdatedDate);
-                    oCmd.Parameters.AddWithValue("@LeadTime", model.LeadTime);
-                    oCmd.Parameters.AddWithValue("@CC", model.CC);
-                    oCmd.Parameters.AddWithValue("@Unit", model.Unit);
-                    oCmd.Parameters.AddWithValue("@SalePrice", model.SalePrice);
-                    oCmd.Parameters.AddWithValue("@PurchasePrice", model.PurchasePrice);
-                    oCmd.Parameters.AddWithValue("@CostPrice", model.CostPrice);
-                    oCmd.Parameters.AddWithValue("@WastagePercent", model.WastagePercent);
-                    oCmd.Parameters.AddWithValue("@WtSingleItem", model.WtSingleItem);
-                    oCmd.Parameters.AddWithValue("@NoOfPcs", model.NoOfPcs);
-                    oCmd.Parameters.AddWithValue("@QcReq", model.QcReq);
-                    oCmd.Parameters.AddWithValue("@ItemType", model.ItemType);
-                    oCmd.Parameters.AddWithValue("@UploadImage", model.ImageURL);
-                    oCmd.Parameters.AddWithValue("@UploadItemImage", model.ItemImageURL);
-                    oCmd.Parameters.AddWithValue("@UID", model.UID);
-                    oCmd.Parameters.AddWithValue("@DrawingNo", model.DrawingNo);
-                    oCmd.Parameters.AddWithValue("@MinimumLevel", model.MinimumLevel);
-                    oCmd.Parameters.AddWithValue("@MaximumLevel", model.MaximumLevel);
-                    oCmd.Parameters.AddWithValue("@ReorderLevel", model.ReorderLevel);
-                    oCmd.Parameters.AddWithValue("@YearCode", model.YearCode);
-                    oCmd.Parameters.AddWithValue("@AlternateUnit", model.AlternateUnit);
-                    oCmd.Parameters.AddWithValue("@RackID", model.RackID);
-                    oCmd.Parameters.AddWithValue("@BinNo", model.BinNo);
-                    oCmd.Parameters.AddWithValue("@ItemSize", model.ItemSize);
-                    oCmd.Parameters.AddWithValue("@Colour", model.Colour);
-                    oCmd.Parameters.AddWithValue("@NeedPO", model.NeedPO);
-                    oCmd.Parameters.AddWithValue("@StdPacking", model.StdPacking);
-                    oCmd.Parameters.AddWithValue("@PackingType", model.PackingType);
-                    oCmd.Parameters.AddWithValue("@ModelNo", model.ModelNo);
-                    oCmd.Parameters.AddWithValue("@YearlyConsumedQty", model.YearlyConsumedQty);
-                    oCmd.Parameters.AddWithValue("@DispItemName", model.DispItemName);
-                    oCmd.Parameters.AddWithValue("@PurchaseAccountcode", model.PurchaseAccountcode);
-                    oCmd.Parameters.AddWithValue("@SaleAccountcode", model.SaleAccountcode);
-                    oCmd.Parameters.AddWithValue("@MinLevelDays", model.MinLevelDays);
-                    oCmd.Parameters.AddWithValue("@MaxLevelDays", model.MaxLevelDays);
-                    oCmd.Parameters.AddWithValue("@EmpName", model.EmpName);
-                    oCmd.Parameters.AddWithValue("@DailyRequirment", model.DailyRequirment);
-                    oCmd.Parameters.AddWithValue("@Stockable", model.Stockable);
-                    oCmd.Parameters.AddWithValue("@WipStockable", model.WipStockable);
-                    oCmd.Parameters.AddWithValue("@Store", model.Store);
-                    oCmd.Parameters.AddWithValue("@ProductLifeInus", model.ProductLifeInus);
-                    oCmd.Parameters.AddWithValue("@ItemDesc", model.ItemDesc);
-                    oCmd.Parameters.AddWithValue("@MaxWipStock", model.MaxWipStock);
-                    oCmd.Parameters.AddWithValue("@NeedSo", model.NeedSo);
-                    oCmd.Parameters.AddWithValue("@BomRequired", model.BomRequired);
-                    oCmd.Parameters.AddWithValue("@ChildBom", model.ChildBom);
-                    oCmd.Parameters.AddWithValue("@JobWorkItem", model.JobWorkItem);
-                    oCmd.Parameters.AddWithValue("@HsnNo", model.HSNNO);
-                    oCmd.Parameters.AddWithValue("@Active", model.Active);
-                    oCmd.Parameters.AddWithValue("@ItemServAssets", model.ItemServAssets);
-                    oCmd.Parameters.AddWithValue("@EntryByMachineName", model.EntryByMachineName);
-                    oCmd.Parameters.AddWithValue("@UniversalPartCode", model.UniversalPartCode);
-                    oCmd.Parameters.AddWithValue("@UniversalDescription", model.UniversalDescription);
-                    oCmd.Parameters.AddWithValue("@ProdInWorkcenter", model.ProdInWorkcenter);
-                    oCmd.Parameters.AddWithValue("@ProdInhouseJW", model.ProdInhouseJW);
-                    oCmd.Parameters.AddWithValue("@BatchNO", model.BatchNO);
-                    oCmd.Parameters.AddWithValue("@VoltageValue", model.VoltageVlue);
-                    oCmd.Parameters.AddWithValue("@SerialNo", model.SerialNo);
-                    oCmd.Parameters.AddWithValue("@OldPartCode", model.OldPartCode);
-                    oCmd.Parameters.AddWithValue("@package", model.Package);
-                    oCmd.Parameters.AddWithValue("@Branch", branchlist);
-                    oCmd.Parameters.AddWithValue("@NoOfCavity", model.NoOfCavity);
-                    oCmd.Parameters.AddWithValue("@ProdInMachineGroup", model.ProdInMachineGroup);
-                    oCmd.Parameters.AddWithValue("@ProdInMachine1", model.ProdInMachine1);
-                    oCmd.Parameters.AddWithValue("@ProdInMachine2", model.ProdInMachine2);
-                    oCmd.Parameters.AddWithValue("@ProdInMachine3", model.ProdInMachine3);
-                    oCmd.Parameters.AddWithValue("@ProdInMachine4", model.ProdInMachine4);
-                    oCmd.Parameters.AddWithValue("@NoOfshotsHours", model.NoOfshotsHours);
-                    oCmd.Parameters.AddWithValue("@usedinMachorVehicle", model.usedinMachorVehicle);
-                    oCmd.Parameters.AddWithValue("@Barcode", model.Barcode);
-                    oCmd.Parameters.AddWithValue("@CreatedBy", model.CreatedBy);
-                    oCmd.Parameters.AddWithValue("@BatchWiseInventory", model.BatchWiseInventory);
-                    if (model.Mode == "Update")
-                    {
-                        oCmd.Parameters.AddWithValue("@UpdatedBy", model.UpdatedBy);
+                        using (SqlConnection conn = new SqlConnection(branchConnectionString))
+                        {
+                            SqlCommand oCmd = new SqlCommand("SP_ItemMasterData", conn)
+                            {
+                                CommandType = CommandType.StoredProcedure
+                            };
 
+
+                            oCmd.Parameters.AddWithValue("@Flag", model.Mode);
+                            oCmd.Parameters.AddWithValue("@Item_Code", model.Item_Code);
+                            oCmd.Parameters.AddWithValue("@PartCode", model.PartCode);
+                            oCmd.Parameters.AddWithValue("@Item_Name", model.Item_Name);
+                            oCmd.Parameters.AddWithValue("@ParentCode", model.ParentCode);
+                            oCmd.Parameters.AddWithValue("@EntryDate", model.EntryDate);
+                            oCmd.Parameters.AddWithValue("@LastUpdatedDate", model.LastUpdatedDate);
+                            oCmd.Parameters.AddWithValue("@LeadTime", model.LeadTime);
+                            oCmd.Parameters.AddWithValue("@CC", model.CC);
+                            oCmd.Parameters.AddWithValue("@Unit", model.Unit);
+                            oCmd.Parameters.AddWithValue("@SalePrice", model.SalePrice);
+                            oCmd.Parameters.AddWithValue("@PurchasePrice", model.PurchasePrice);
+                            oCmd.Parameters.AddWithValue("@CostPrice", model.CostPrice);
+                            oCmd.Parameters.AddWithValue("@WastagePercent", model.WastagePercent);
+                            oCmd.Parameters.AddWithValue("@WtSingleItem", model.WtSingleItem);
+                            oCmd.Parameters.AddWithValue("@NoOfPcs", model.NoOfPcs);
+                            oCmd.Parameters.AddWithValue("@QcReq", model.QcReq);
+                            oCmd.Parameters.AddWithValue("@ItemType", model.ItemType);
+                            oCmd.Parameters.AddWithValue("@UploadImage", model.ImageURL);
+                            oCmd.Parameters.AddWithValue("@UploadItemImage", model.ItemImageURL);
+                            oCmd.Parameters.AddWithValue("@UID", model.UID);
+                            oCmd.Parameters.AddWithValue("@DrawingNo", model.DrawingNo);
+                            oCmd.Parameters.AddWithValue("@MinimumLevel", model.MinimumLevel);
+                            oCmd.Parameters.AddWithValue("@MaximumLevel", model.MaximumLevel);
+                            oCmd.Parameters.AddWithValue("@ReorderLevel", model.ReorderLevel);
+                            oCmd.Parameters.AddWithValue("@ParentName", model.ParentName);
+                            oCmd.Parameters.AddWithValue("@ItemTypeName", model.ItemTypeName);
+                            oCmd.Parameters.AddWithValue("@YearCode", model.YearCode);
+                            oCmd.Parameters.AddWithValue("@AlternateUnit", model.AlternateUnit);
+                            oCmd.Parameters.AddWithValue("@RackID", model.RackID);
+                            oCmd.Parameters.AddWithValue("@BinNo", model.BinNo);
+                            oCmd.Parameters.AddWithValue("@ItemSize", model.ItemSize);
+                            oCmd.Parameters.AddWithValue("@Colour", model.Colour);
+                            oCmd.Parameters.AddWithValue("@NeedPO", model.NeedPO);
+                            oCmd.Parameters.AddWithValue("@StdPacking", model.StdPacking);
+                            oCmd.Parameters.AddWithValue("@PackingType", model.PackingType);
+                            oCmd.Parameters.AddWithValue("@ModelNo", model.ModelNo);
+                            oCmd.Parameters.AddWithValue("@YearlyConsumedQty", model.YearlyConsumedQty);
+                            oCmd.Parameters.AddWithValue("@DispItemName", model.DispItemName);
+                            oCmd.Parameters.AddWithValue("@PurchaseAccountcode", model.PurchaseAccountcode);
+                            oCmd.Parameters.AddWithValue("@SaleAccountcode", model.SaleAccountcode);
+                            oCmd.Parameters.AddWithValue("@MinLevelDays", model.MinLevelDays);
+                            oCmd.Parameters.AddWithValue("@MaxLevelDays", model.MaxLevelDays);
+                            oCmd.Parameters.AddWithValue("@EmpName", model.EmpName);
+                            oCmd.Parameters.AddWithValue("@DailyRequirment", model.DailyRequirment);
+                            oCmd.Parameters.AddWithValue("@Stockable", model.Stockable);
+                            oCmd.Parameters.AddWithValue("@WipStockable", model.WipStockable);
+                            oCmd.Parameters.AddWithValue("@Store", model.Store);
+                            oCmd.Parameters.AddWithValue("@ProductLifeInus", model.ProductLifeInus);
+                            oCmd.Parameters.AddWithValue("@ItemDesc", model.ItemDesc);
+                            oCmd.Parameters.AddWithValue("@MaxWipStock", model.MaxWipStock);
+                            oCmd.Parameters.AddWithValue("@NeedSo", model.NeedSo);
+                            oCmd.Parameters.AddWithValue("@BomRequired", model.BomRequired);
+                            oCmd.Parameters.AddWithValue("@ChildBom", model.ChildBom);
+                            oCmd.Parameters.AddWithValue("@JobWorkItem", model.JobWorkItem);
+                            oCmd.Parameters.AddWithValue("@HsnNo", model.HSNNO);
+                            oCmd.Parameters.AddWithValue("@Active", model.Active);
+                            oCmd.Parameters.AddWithValue("@ItemServAssets", model.ItemServAssets);
+                            oCmd.Parameters.AddWithValue("@EntryByMachineName", model.EntryByMachineName);
+                            oCmd.Parameters.AddWithValue("@UniversalPartCode", model.UniversalPartCode);
+                            oCmd.Parameters.AddWithValue("@UniversalDescription", model.UniversalDescription);
+                            oCmd.Parameters.AddWithValue("@ProdInWorkcenter", model.ProdInWorkcenter);
+                            oCmd.Parameters.AddWithValue("@ProdInhouseJW", model.ProdInhouseJW);
+                            oCmd.Parameters.AddWithValue("@BatchNO", model.BatchNO);
+                            oCmd.Parameters.AddWithValue("@VoltageValue", model.VoltageVlue);
+                            oCmd.Parameters.AddWithValue("@SerialNo", model.SerialNo);
+                            oCmd.Parameters.AddWithValue("@OldPartCode", model.OldPartCode);
+                            oCmd.Parameters.AddWithValue("@package", model.Package);
+                            oCmd.Parameters.AddWithValue("@Branch", model.CC);
+                            oCmd.Parameters.AddWithValue("@BranchList", branchlist);
+                            oCmd.Parameters.AddWithValue("@NoOfCavity", model.NoOfCavity);
+                            oCmd.Parameters.AddWithValue("@ProdInMachineGroup", model.ProdInMachineGroup);
+                            oCmd.Parameters.AddWithValue("@ProdInMachine1", model.ProdInMachine1);
+                            oCmd.Parameters.AddWithValue("@ProdInMachine2", model.ProdInMachine2);
+                            oCmd.Parameters.AddWithValue("@ProdInMachine3", model.ProdInMachine3);
+                            oCmd.Parameters.AddWithValue("@ProdInMachine4", model.ProdInMachine4);
+                            oCmd.Parameters.AddWithValue("@NoOfshotsHours", model.NoOfshotsHours);
+                            oCmd.Parameters.AddWithValue("@usedinMachorVehicle", model.usedinMachorVehicle);
+                            oCmd.Parameters.AddWithValue("@Barcode", model.Barcode);
+                            oCmd.Parameters.AddWithValue("@CreatedBy", model.CreatedBy);
+                            oCmd.Parameters.AddWithValue("@BatchWiseInventory", model.BatchWiseInventory);
+                            if (model.Mode == "Update")
+                            {
+                                oCmd.Parameters.AddWithValue("@UpdatedBy", model.UpdatedBy);
+
+                            }
+
+                            await conn.OpenAsync();
+                            Reader = await oCmd.ExecuteReaderAsync();
+                            if (Reader != null)
+                            {
+                                while (Reader.Read())
+                                {
+                                    _ResponseResult = new ResponseResult()
+                                    {
+                                        StatusCode = (HttpStatusCode)Reader["StatusCode"],
+                                        StatusText = Reader["StatusText"].ToString(),
+                                        Result = Reader["Result"].ToString()
+                                    };
+                                }
+                            }
+                        }
                     }
 
-                    myConnection.Open();
-                    Reader = await oCmd.ExecuteReaderAsync();
-                    if (Reader != null)
+                }
+                else
+                {
+
+                    using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
                     {
-                        while (Reader.Read())
+                        SqlCommand oCmd = new SqlCommand("SP_ItemMasterData", myConnection)
                         {
-                            _ResponseResult = new ResponseResult()
+                            CommandType = CommandType.StoredProcedure
+                        };
+                        oCmd.Parameters.AddWithValue("@Flag", model.Mode);
+                        oCmd.Parameters.AddWithValue("@Item_Code", model.Item_Code);
+                        oCmd.Parameters.AddWithValue("@PartCode", model.PartCode);
+                        oCmd.Parameters.AddWithValue("@Item_Name", model.Item_Name);
+                        oCmd.Parameters.AddWithValue("@ParentCode", model.ParentCode);
+                        oCmd.Parameters.AddWithValue("@EntryDate", model.EntryDate);
+                        oCmd.Parameters.AddWithValue("@LastUpdatedDate", model.LastUpdatedDate);
+                        oCmd.Parameters.AddWithValue("@LeadTime", model.LeadTime);
+                        oCmd.Parameters.AddWithValue("@CC", model.CC);
+                        oCmd.Parameters.AddWithValue("@Unit", model.Unit);
+                        oCmd.Parameters.AddWithValue("@SalePrice", model.SalePrice);
+                        oCmd.Parameters.AddWithValue("@PurchasePrice", model.PurchasePrice);
+                        oCmd.Parameters.AddWithValue("@CostPrice", model.CostPrice);
+                        oCmd.Parameters.AddWithValue("@WastagePercent", model.WastagePercent);
+                        oCmd.Parameters.AddWithValue("@WtSingleItem", model.WtSingleItem);
+                        oCmd.Parameters.AddWithValue("@NoOfPcs", model.NoOfPcs);
+                        oCmd.Parameters.AddWithValue("@ParentName", model.ParentName);
+                        oCmd.Parameters.AddWithValue("@ItemTypeName", model.ItemTypeName);
+                        oCmd.Parameters.AddWithValue("@QcReq", model.QcReq);
+                        oCmd.Parameters.AddWithValue("@ItemType", model.ItemType);
+                        oCmd.Parameters.AddWithValue("@UploadImage", model.ImageURL);
+                        oCmd.Parameters.AddWithValue("@UploadItemImage", model.ItemImageURL);
+                        oCmd.Parameters.AddWithValue("@UID", model.UID);
+                        oCmd.Parameters.AddWithValue("@DrawingNo", model.DrawingNo);
+                        oCmd.Parameters.AddWithValue("@MinimumLevel", model.MinimumLevel);
+                        oCmd.Parameters.AddWithValue("@MaximumLevel", model.MaximumLevel);
+                        oCmd.Parameters.AddWithValue("@ReorderLevel", model.ReorderLevel);
+                        oCmd.Parameters.AddWithValue("@YearCode", model.YearCode);
+                        oCmd.Parameters.AddWithValue("@AlternateUnit", model.AlternateUnit);
+                        oCmd.Parameters.AddWithValue("@RackID", model.RackID);
+                        oCmd.Parameters.AddWithValue("@BinNo", model.BinNo);
+                        oCmd.Parameters.AddWithValue("@ItemSize", model.ItemSize);
+                        oCmd.Parameters.AddWithValue("@Colour", model.Colour);
+                        oCmd.Parameters.AddWithValue("@NeedPO", model.NeedPO);
+                        oCmd.Parameters.AddWithValue("@StdPacking", model.StdPacking);
+                        oCmd.Parameters.AddWithValue("@PackingType", model.PackingType);
+                        oCmd.Parameters.AddWithValue("@ModelNo", model.ModelNo);
+                        oCmd.Parameters.AddWithValue("@YearlyConsumedQty", model.YearlyConsumedQty);
+                        oCmd.Parameters.AddWithValue("@DispItemName", model.DispItemName);
+                        oCmd.Parameters.AddWithValue("@PurchaseAccountcode", model.PurchaseAccountcode);
+                        oCmd.Parameters.AddWithValue("@SaleAccountcode", model.SaleAccountcode);
+                        oCmd.Parameters.AddWithValue("@MinLevelDays", model.MinLevelDays);
+                        oCmd.Parameters.AddWithValue("@MaxLevelDays", model.MaxLevelDays);
+                        oCmd.Parameters.AddWithValue("@EmpName", model.EmpName);
+                        oCmd.Parameters.AddWithValue("@DailyRequirment", model.DailyRequirment);
+                        oCmd.Parameters.AddWithValue("@Stockable", model.Stockable);
+                        oCmd.Parameters.AddWithValue("@WipStockable", model.WipStockable);
+                        oCmd.Parameters.AddWithValue("@Store", model.Store);
+                        oCmd.Parameters.AddWithValue("@ProductLifeInus", model.ProductLifeInus);
+                        oCmd.Parameters.AddWithValue("@ItemDesc", model.ItemDesc);
+                        oCmd.Parameters.AddWithValue("@MaxWipStock", model.MaxWipStock);
+                        oCmd.Parameters.AddWithValue("@NeedSo", model.NeedSo);
+                        oCmd.Parameters.AddWithValue("@BomRequired", model.BomRequired);
+                        oCmd.Parameters.AddWithValue("@ChildBom", model.ChildBom);
+                        oCmd.Parameters.AddWithValue("@JobWorkItem", model.JobWorkItem);
+                        oCmd.Parameters.AddWithValue("@HsnNo", model.HSNNO);
+                        oCmd.Parameters.AddWithValue("@Active", model.Active);
+                        oCmd.Parameters.AddWithValue("@ItemServAssets", model.ItemServAssets);
+                        oCmd.Parameters.AddWithValue("@EntryByMachineName", model.EntryByMachineName);
+                        oCmd.Parameters.AddWithValue("@UniversalPartCode", model.UniversalPartCode);
+                        oCmd.Parameters.AddWithValue("@UniversalDescription", model.UniversalDescription);
+                        oCmd.Parameters.AddWithValue("@ProdInWorkcenter", model.ProdInWorkcenter);
+                        oCmd.Parameters.AddWithValue("@ProdInhouseJW", model.ProdInhouseJW);
+                        oCmd.Parameters.AddWithValue("@BatchNO", model.BatchNO);
+                        oCmd.Parameters.AddWithValue("@VoltageValue", model.VoltageVlue);
+                        oCmd.Parameters.AddWithValue("@SerialNo", model.SerialNo);
+                        oCmd.Parameters.AddWithValue("@OldPartCode", model.OldPartCode);
+                        oCmd.Parameters.AddWithValue("@package", model.Package);
+                        oCmd.Parameters.AddWithValue("@Branch", model.CC);
+                        oCmd.Parameters.AddWithValue("@BranchList", branchlist);
+                        oCmd.Parameters.AddWithValue("@NoOfCavity", model.NoOfCavity);
+                        oCmd.Parameters.AddWithValue("@ProdInMachineGroup", model.ProdInMachineGroup);
+                        oCmd.Parameters.AddWithValue("@ProdInMachine1", model.ProdInMachine1);
+                        oCmd.Parameters.AddWithValue("@ProdInMachine2", model.ProdInMachine2);
+                        oCmd.Parameters.AddWithValue("@ProdInMachine3", model.ProdInMachine3);
+                        oCmd.Parameters.AddWithValue("@ProdInMachine4", model.ProdInMachine4);
+                        oCmd.Parameters.AddWithValue("@NoOfshotsHours", model.NoOfshotsHours);
+                        oCmd.Parameters.AddWithValue("@usedinMachorVehicle", model.usedinMachorVehicle);
+                        oCmd.Parameters.AddWithValue("@Barcode", model.Barcode);
+                        oCmd.Parameters.AddWithValue("@CreatedBy", model.CreatedBy);
+                        oCmd.Parameters.AddWithValue("@BatchWiseInventory", model.BatchWiseInventory);
+                        if (model.Mode == "Update")
+                        {
+                            oCmd.Parameters.AddWithValue("@UpdatedBy", model.UpdatedBy);
+
+                        }
+                        myConnection.Open();
+                        Reader = await oCmd.ExecuteReaderAsync();
+                        if (Reader != null)
+                        {
+                            while (Reader.Read())
                             {
-                                StatusCode = (HttpStatusCode)Reader["StatusCode"],
-                                StatusText = "Success",
-                                Result = Reader["Result"].ToString()
-                            };
+                                _ResponseResult = new ResponseResult()
+                                {
+                                    StatusCode = (HttpStatusCode)Reader["StatusCode"],
+                                    StatusText = Reader["StatusText"].ToString(),
+                                    Result = Reader["Result"].ToString()
+                                };
+                            }
+
                         }
                     }
                 }
             }
+
             catch (Exception ex)
             {
                 dynamic Error = new ExpandoObject();

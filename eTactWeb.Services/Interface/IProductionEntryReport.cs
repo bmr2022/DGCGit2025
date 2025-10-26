@@ -26,6 +26,6 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FillMachinName(string FromDate, string ToDate);
         Task<ResponseResult> FillOperatorName(string FromDate, string ToDate);
         Task<ResponseResult> FillProcess(string FromDate, string ToDate);
-        Task<ProductionEntryReportModel> GetProductionEntryReport(string ReportType, string FromDate, string ToDate, string FGPartCode, string FGItemName, string RMPartCode, string RMItemName, string ProdSlipNo, string ProdPlanNo, string ProdSchNo, string ReqNo, string WorkCenter, string MachineName, string OperatorName, string Process, string ShiftName,int StoreID,int WCID);
+        Task<ProductionEntryReportModel> GetProductionEntryReport(string ReportType, string FromDate, string ToDate, string FGPartCode, string FGItemName, string RMPartCode, string RMItemName, string ProdSlipNo, string ProdPlanNo, string ProdSchNo, string ReqNo, string WorkCenter, string MachineName, string OperatorName, string Process, string ShiftName,int StoreID,int WCID, string FromSlipNo, string ToSlipNo, DateTime FromTime, DateTime ToTime);
     }
 }

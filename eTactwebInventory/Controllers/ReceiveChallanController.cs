@@ -304,7 +304,7 @@ namespace eTactWeb.Controllers
                         }
                         else
                         {
-                            if (RCDetail.Any(x => x.ItemCode == item.ItemCode && x.BatchNo == item.BatchNo && x.Storeid == item.Storeid && x.IssueChallanNo==item.IssueChallanNo))
+                            if (RCDetail.Any(x => x.ItemCode == item.ItemCode && x.BatchNo == item.BatchNo && x.Storeid == item.Storeid && x.IssueChallanNo==item.IssueChallanNo && x.UniqueBatchno == item.UniqueBatchno))
                             {
                                 
                                 var duplicateInfo = new

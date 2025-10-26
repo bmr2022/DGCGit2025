@@ -10,11 +10,30 @@ namespace eTactWeb.DOM
     {
         public string Controller { get; set; }
         public string Action { get; set; }
+        public Dictionary<string, object> RouteValues { get; set; } = new();
+        public Dictionary<string, object> Filters { get; set; } = new();
+        public string ReportType { get; set; }
 
-        // Optional route values (for URL-safe parameters like ID, Mode, etc.)
-        public Dictionary<string, object> RouteValues { get; set; }
+        public override bool Equals(object obj)
+        {
+            if (obj is not NavigationState other) return false;
 
-        // Internal filters you don't want in URL (FromDate, ToDate, etc.)
-        public Dictionary<string, object> Filters { get; set; }
+            bool routeEqual = RouteValues.Count == other.RouteValues.Count &&
+                              !RouteValues.Except(other.RouteValues).Any();
+
+            bool filterEqual = Filters.Count == other.Filters.Count &&
+                               !Filters.Except(other.Filters).Any();
+
+            return Controller == other.Controller &&
+                   Action == other.Action &&
+                   routeEqual &&
+                   filterEqual &&
+                   ReportType == other.ReportType;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Controller, Action, RouteValues, Filters, ReportType);
+        }
     }
 }

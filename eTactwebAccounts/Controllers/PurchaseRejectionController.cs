@@ -1205,85 +1205,85 @@ namespace eTactWeb.Controllers
                 //_MemoryCache.Set("KeyPurchaseRejectionGrid", MainModel.AccPurchaseRejectionDetails, cacheEntryOptions);
                 HttpContext.Session.SetString("KeyPurchaseRejectionGrid", JsonConvert.SerializeObject(MainModel.AccPurchaseRejectionDetails));
             }
-            if (PRPopupGrid != null && PRPopupGrid.Count > 0)
-            {
-                int EntryId = 0;
-                int YearCode = 0;
-                var InvoiceNo = string.Empty;
-                var PurchBillItemCode = 0;
-                if (!string.IsNullOrEmpty(uniquekey))
-                {
-                    var uniquekeyArray = uniquekey.Split("_").ToArray();
-                    EntryId = !string.IsNullOrEmpty(uniquekeyArray[0]) ? Convert.ToInt32(uniquekeyArray[0]) : 0;
-                    YearCode = !string.IsNullOrEmpty(uniquekeyArray[1]) ? Convert.ToInt32(uniquekeyArray[1]) : 0;
-                    InvoiceNo = uniquekeyArray[2];
-                    PurchBillItemCode = !string.IsNullOrEmpty(uniquekeyArray[3]) ? Convert.ToInt32(uniquekeyArray[3]) : 0;
-                }
-                var PopupGrid = PRPopupGrid;
-                if (!IsDeleteAll)
-                {
-                    if (MainModel != null && MainModel.AccPurchaseRejectionDetails != null)
-                    {
-                        if (MainModel.AccPurchaseRejectionDetails.Any())
-                        {
-                            bool IsExistsSameItem = MainModel.AccPurchaseRejectionDetails.Exists(a => a.ItemCode == itemCode && a.hdnuniquekey == uniquekey); // && a.AgainstPurchaseBillEntryId == EntryId && a.AgainstPurchaseBillYearCode == YearCode
-                            if (!IsExistsSameItem)
-                            {
-                                foreach (var item in PRPopupGrid.ToList())
-                                {
-                                    if (item.ItemCode == itemCode && item.PurchBillItemCode == PurchBillItemCode)
-                                    {
-                                        PopupGrid.Remove(item);
-                                    }
-                                    //if (item.ItemCode == itemCode && item.AgainstPurchaseBillEntryId == EntryId && item.AgainstPurchaseBillYearCode == YearCode && item.InvoiceNo == InvoiceNo && item.PurchBillItemCode == PurchBillItemCode)
-                                    //{
-                                    //    PopupGrid.Remove(item);
-                                    //}
-                                }
-                            }
-                        }
-                        else
-                        {
-                            foreach (var item in PRPopupGrid.ToList())
-                            {
-                                if (item.ItemCode == itemCode  && item.PurchBillItemCode == PurchBillItemCode)
-                                {
-                                    PopupGrid.Remove(item);
-                                }
-                                //if (item.ItemCode == itemCode && item.AgainstPurchaseBillEntryId == EntryId && item.AgainstPurchaseBillYearCode == YearCode && item.InvoiceNo == InvoiceNo && item.PurchBillItemCode == PurchBillItemCode)
-                                //{
-                                //    PopupGrid.Remove(item);
-                                //}
-                            }
-                        }
-                    }
-                    else
-                    {
-                        foreach (var item in PRPopupGrid.ToList())
-                        {
-                            if (item.ItemCode == itemCode && item.AgainstPurchaseBillEntryId == EntryId && item.AgainstPurchaseBillYearCode == YearCode && item.InvoiceNo == InvoiceNo && item.PurchBillItemCode == PurchBillItemCode)
-                            {
-                                PopupGrid.Remove(item);
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    PopupGrid = new List<AccPurchaseRejectionAgainstBillDetail>();
-                }
-                MainModel.AccPurchaseRejectionAgainstBillDetails = PopupGrid;
+            //if (PRPopupGrid != null && PRPopupGrid.Count > 0)
+            //{
+            //    int EntryId = 0;
+            //    int YearCode = 0;
+            //    var InvoiceNo = string.Empty;
+            //    var PurchBillItemCode = 0;
+            //    if (!string.IsNullOrEmpty(uniquekey))
+            //    {
+            //        var uniquekeyArray = uniquekey.Split("_").ToArray();
+            //        EntryId = !string.IsNullOrEmpty(uniquekeyArray[0]) ? Convert.ToInt32(uniquekeyArray[0]) : 0;
+            //        YearCode = !string.IsNullOrEmpty(uniquekeyArray[1]) ? Convert.ToInt32(uniquekeyArray[1]) : 0;
+            //        InvoiceNo = uniquekeyArray[2];
+            //        PurchBillItemCode = !string.IsNullOrEmpty(uniquekeyArray[3]) ? Convert.ToInt32(uniquekeyArray[3]) : 0;
+            //    }
+            //    var PopupGrid = PRPopupGrid;
+            //    if (!IsDeleteAll)
+            //    {
+            //        if (MainModel != null && MainModel.AccPurchaseRejectionDetails != null)
+            //        {
+            //            if (MainModel.AccPurchaseRejectionDetails.Any())
+            //            {
+            //                bool IsExistsSameItem = MainModel.AccPurchaseRejectionDetails.Exists(a => a.ItemCode == itemCode && a.hdnuniquekey == uniquekey); // && a.AgainstPurchaseBillEntryId == EntryId && a.AgainstPurchaseBillYearCode == YearCode
+            //                if (!IsExistsSameItem)
+            //                {
+            //                    foreach (var item in PRPopupGrid.ToList())
+            //                    {
+            //                        if (item.ItemCode == itemCode && item.PurchBillItemCode == PurchBillItemCode)
+            //                        {
+            //                            PopupGrid.Remove(item);
+            //                        }
+            //                        //if (item.ItemCode == itemCode && item.AgainstPurchaseBillEntryId == EntryId && item.AgainstPurchaseBillYearCode == YearCode && item.InvoiceNo == InvoiceNo && item.PurchBillItemCode == PurchBillItemCode)
+            //                        //{
+            //                        //    PopupGrid.Remove(item);
+            //                        //}
+            //                    }
+            //                }
+            //            }
+            //            else
+            //            {
+            //                foreach (var item in PRPopupGrid.ToList())
+            //                {
+            //                    if (item.ItemCode == itemCode  && item.PurchBillItemCode == PurchBillItemCode)
+            //                    {
+            //                        PopupGrid.Remove(item);
+            //                    }
+            //                    //if (item.ItemCode == itemCode && item.AgainstPurchaseBillEntryId == EntryId && item.AgainstPurchaseBillYearCode == YearCode && item.InvoiceNo == InvoiceNo && item.PurchBillItemCode == PurchBillItemCode)
+            //                    //{
+            //                    //    PopupGrid.Remove(item);
+            //                    //}
+            //                }
+            //            }
+            //        }
+            //        else
+            //        {
+            //            foreach (var item in PRPopupGrid.ToList())
+            //            {
+            //                if (item.ItemCode == itemCode && item.AgainstPurchaseBillEntryId == EntryId && item.AgainstPurchaseBillYearCode == YearCode && item.InvoiceNo == InvoiceNo && item.PurchBillItemCode == PurchBillItemCode)
+            //                {
+            //                    PopupGrid.Remove(item);
+            //                }
+            //            }
+            //        }
+            //    }
+            //    else
+            //    {
+            //        PopupGrid = new List<AccPurchaseRejectionAgainstBillDetail>();
+            //    }
+            //    MainModel.AccPurchaseRejectionAgainstBillDetails = PopupGrid;
 
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024,
-                };
+            //    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+            //    {
+            //        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+            //        SlidingExpiration = TimeSpan.FromMinutes(55),
+            //        Size = 1024,
+            //    };
 
-                //_MemoryCache.Set("KeyPurchaseRejectionGrid", MainModel.AccPurchaseRejectionDetails, cacheEntryOptions);
-                HttpContext.Session.SetString("KeyPurchaseRejectionPopupGrid", JsonConvert.SerializeObject(MainModel.AccPurchaseRejectionAgainstBillDetails));
-            }
+            //    //_MemoryCache.Set("KeyPurchaseRejectionGrid", MainModel.AccPurchaseRejectionDetails, cacheEntryOptions);
+            //    HttpContext.Session.SetString("KeyPurchaseRejectionPopupGrid", JsonConvert.SerializeObject(MainModel.AccPurchaseRejectionAgainstBillDetails));
+            //}
 
             return PartialView("_PurchaseRejectionGrid", MainModel);
         }
@@ -1356,42 +1356,93 @@ namespace eTactWeb.Controllers
           //  return Json(rslt);
             //return RedirectToAction(nameof(DashBoard));   
         }
-        [HttpPost]
-        public JsonResult MergePopupGridToSession([FromBody]  List<AccPurchaseRejectionAgainstBillDetail> model)
+        public JsonResult MergePopupGridToSession([FromBody] List<AccPurchaseRejectionAgainstBillDetail> model)
         {
-            List<AccPurchaseRejectionAgainstBillDetail> purchaseRejectionPopupGrid = new List<AccPurchaseRejectionAgainstBillDetail>();
-            string modelPRJson = HttpContext.Session.GetString("KeyPurchaseRejectionPopupGrid");
-            if (!string.IsNullOrEmpty(modelPRJson))
-            {
-                purchaseRejectionPopupGrid = JsonConvert.DeserializeObject<List<AccPurchaseRejectionAgainstBillDetail>>(modelPRJson);
-            }
-            if (model != null && purchaseRejectionPopupGrid != null)
-            {
-                if (purchaseRejectionPopupGrid.Any())
-                {
-                    foreach (var item in model)
-                    {
-                        var existing = purchaseRejectionPopupGrid.FirstOrDefault(x =>
-                            x.ItemCode == item.ItemCode &&
-                            x.PurchBillItemCode == item.PurchBillItemCode &&
-                            x.AgainstPurchaseBillEntryId == item.AgainstPurchaseBillEntryId &&
-                            x.AgainstPurchaseBillYearCode == item.AgainstPurchaseBillYearCode &&
-                            x.InvoiceNo == item.InvoiceNo);
+            // Initialize local lists
+            var purchaseRejectionPopupGrid = new List<AccPurchaseRejectionAgainstBillDetail>();
+            var purchaseRejectionDetail = new List<AccPurchaseRejectionDetail>();
 
-                        if (existing == null)
-                        {
-                            purchaseRejectionPopupGrid.Add(item);
-                        }
-                        else
-                        {
-                            UpdateBlankFields(existing, item);
-                        }
+            // Retrieve existing session data
+            string modelPRJson = HttpContext.Session.GetString("KeyPurchaseRejectionPopupGrid");
+            string modelRJson = HttpContext.Session.GetString("KeyPurchaseRejectionGrid");
+
+            if (!string.IsNullOrEmpty(modelPRJson))
+                purchaseRejectionPopupGrid = JsonConvert.DeserializeObject<List<AccPurchaseRejectionAgainstBillDetail>>(modelPRJson);
+
+            if (!string.IsNullOrEmpty(modelRJson))
+                purchaseRejectionDetail = JsonConvert.DeserializeObject<List<AccPurchaseRejectionDetail>>(modelRJson);
+
+            // Merge incoming model with session data
+            if (model != null && model.Any())
+            {
+                foreach (var item in model)
+                {
+                    var existing = purchaseRejectionPopupGrid.FirstOrDefault(x =>
+                        x.ItemCode == item.ItemCode &&
+                        x.PurchBillItemCode == item.PurchBillItemCode &&
+                        x.AgainstPurchaseBillEntryId == item.AgainstPurchaseBillEntryId &&
+                        x.AgainstPurchaseBillYearCode == item.AgainstPurchaseBillYearCode &&
+                        x.InvoiceNo == item.InvoiceNo);
+
+                    if (existing == null)
+                    {
+                        purchaseRejectionPopupGrid.Add(item);
+                    }
+                    else
+                    {
+                        UpdateBlankFields(existing, item);
                     }
                 }
+
+                // Filter only allowed items after merge
+             
             }
+            var allowedItemCodes = purchaseRejectionDetail.Select(x => x.ItemCode).Distinct().ToList();
+            purchaseRejectionPopupGrid = purchaseRejectionPopupGrid
+                .Where(p => allowedItemCodes.Contains(p.ItemCode))
+                .ToList();
+            // Save updated list back to session
             HttpContext.Session.SetString("KeyPurchaseRejectionPopupGrid", JsonConvert.SerializeObject(purchaseRejectionPopupGrid));
-            return Json(new { success = true, count = (model == null ? 0 : model.Count) });
+
+            return Json(new { success = true, count = model?.Count ?? 0 });
         }
+
+        //[HttpPost]
+        //public JsonResult MergePopupGridToSession([FromBody]  List<AccPurchaseRejectionAgainstBillDetail> model)
+        //{
+        //    List<AccPurchaseRejectionAgainstBillDetail> purchaseRejectionPopupGrid = new List<AccPurchaseRejectionAgainstBillDetail>();
+        //    string modelPRJson = HttpContext.Session.GetString("KeyPurchaseRejectionPopupGrid");
+        //    if (!string.IsNullOrEmpty(modelPRJson))
+        //    {
+        //        purchaseRejectionPopupGrid = JsonConvert.DeserializeObject<List<AccPurchaseRejectionAgainstBillDetail>>(modelPRJson);
+        //    }
+        //    if (model != null && purchaseRejectionPopupGrid != null)
+        //    {
+        //        if (purchaseRejectionPopupGrid.Any())
+        //        {
+        //            foreach (var item in model)
+        //            {
+        //                var existing = purchaseRejectionPopupGrid.FirstOrDefault(x =>
+        //                    x.ItemCode == item.ItemCode &&
+        //                    x.PurchBillItemCode == item.PurchBillItemCode &&
+        //                    x.AgainstPurchaseBillEntryId == item.AgainstPurchaseBillEntryId &&
+        //                    x.AgainstPurchaseBillYearCode == item.AgainstPurchaseBillYearCode &&
+        //                    x.InvoiceNo == item.InvoiceNo);
+
+        //                if (existing == null)
+        //                {
+        //                    purchaseRejectionPopupGrid.Add(item);
+        //                }
+        //                else
+        //                {
+        //                    UpdateBlankFields(existing, item);
+        //                }
+        //            }
+        //        }
+        //    }
+        //    HttpContext.Session.SetString("KeyPurchaseRejectionPopupGrid", JsonConvert.SerializeObject(purchaseRejectionPopupGrid));
+        //    return Json(new { success = true, count = (model == null ? 0 : model.Count) });
+        //}
         private void UpdateBlankFields<T>(T target, T source)
         {
             foreach (var prop in typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance))

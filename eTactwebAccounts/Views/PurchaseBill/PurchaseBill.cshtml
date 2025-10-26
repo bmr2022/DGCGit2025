@@ -73,7 +73,7 @@
                             <input asp-for="HSNNoBack" type="hidden" value="@Model.HSNNoBack" />
                             <input asp-for="GlobalSearchBack" type="hidden" value="@Model.GlobalSearchBack" />
 
-                            <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
+                            <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();window.location.href='@Url.Action("Back", "Common")'">
                                 <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
                                 BACK
                             </a>
@@ -1221,6 +1221,7 @@
                         "PoAmendNo": $('#' + idsuffix + 'PoAmendNo' + '-' + i).val(),
                         "PORate": $('#' + idsuffix + 'PORate' + '-' + i).val(),
                         "MIRNO": $('#' + idsuffix + 'MIRNO' + '-' + i).val(),
+                           "MIREntryId": $('#' + idsuffix + 'MIREntryId' + '-' + i).val(),
                         "MIRYEARCODE": $('#' + idsuffix + 'MIRYEARCODE' + '-' + i).val(),
                         "MIRDATE": $('#' + idsuffix + 'MIRDATE' + '-' + i).val(),
                         "ProjectNo": $('#' + idsuffix + 'ProjectNo' + '-' + i).val(),
@@ -2754,7 +2755,7 @@
                  if (AdjGrid >= 1 ) {
               ClearAdjustmentGrid();
                  }
-                     //    ClearAdjustmentGrid();
+                        //    ClearAdjustmentGridsubmit
                          AddAdjstmntDetail1();
                 },
                 error: function (req, status, error) {

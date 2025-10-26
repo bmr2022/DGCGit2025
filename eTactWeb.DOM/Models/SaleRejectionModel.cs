@@ -56,6 +56,7 @@ namespace eTactWeb.DOM.Models
         public char? BalanceSheetClosed { get; set; }
         public string? FinFromDate { get; set; }
         public string? FinToDate { get; set; }
+        public int DocTypeAccountCode { get; set; }
 
         [Column(TypeName = "decimal(10, 4)")]
         public decimal NetTotal { get; set; }
@@ -73,6 +74,7 @@ namespace eTactWeb.DOM.Models
         public List<SaleRejectionDetail> SaleRejectionDetails { get; set; }
         public IList<SaleRejectionDetail>? ItemDetailGrid { get; set; }
         public IList<DPBItemDetail>? DPBItemDetails { get; set; }
+        public IList<DbCrModel>? DbCrGrid { get; set; }
         //public IList<DbCrModel>? DRCRGrid { get; set; }   
 
         private IList<SelectListItem> _YesNo = new List<SelectListItem>()
@@ -96,7 +98,7 @@ namespace eTactWeb.DOM.Models
         public long AgainstBillYearCode { get; set; }
         public long AgainstBillEntryId { get; set; }
         public string AgainstOpnOrBill { get; set; }
-        public int DocTypeAccountCode { get; set; }
+
         public int ItemCode { get; set; }
         public string ItemName { get; set; }
         public string PartCode { get; set; }

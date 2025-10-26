@@ -80,6 +80,24 @@
 													<option value="" disabled selected>-select-</option>
 												</select>
 											</div>
+
+											<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+												<label class="form-label" style="color: red;">
+													GetDataFrom*
+												</label>
+
+												<select class="form-select" data-abcd="4" id="GetDataFrom">
+													<option value="" disabled selected>-select-</option>
+													<option value="PendingPO">Pending PO List</option>
+													<option value="VendorPortal">VendorPortal</option>
+												</select>
+											</div>
+											<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+												<label asp-for="Invoiceno" class="form-label">Invoiceno</label>
+												<select class="form-select" asp-for="Invoiceno" data-abcd="1" asp-items="@(new SelectList(Model.InvoiceList,"Value","Text"))">
+													<option value="" disabled selected>-Select-</option>
+												</select>
+											</div>
 											<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
 												<label asp-for="PONo" class="form-label" >PO NO</label>
 												@*  <input asp-for="NeedPo" type="hidden"/> *@
@@ -88,6 +106,7 @@
 												</select>
 												
 											</div>
+
 											
 											<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
 												<label asp-for="PartCode" class="form-label">PartCode</label>
@@ -114,7 +133,7 @@
 													<i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
 												</a>
 												<div class="col-sm-2 col-md-6 col-lg-4 col-xl-2">
-													<button class="btn btn-sm btn-outline-primary" style="margin-top:15px;height:30px;width:150px;margin-left:20px;" type="button" onclick="getCheckedRowData()">
+													<button class="btn btn-sm btn-outline-primary GotoMainPage" style="margin-top:15px;height:30px;width:150px;margin-left:20px;" type="button" >
 														<i class="fa fa-check-circle" aria-hidden="true"></i> Gate Entry
 													</button>
 												</div>
@@ -148,6 +167,20 @@
 @section Scripts
 {
 	<script>
+		$('.GotoMainPage').on('click', function () {
+			if ($('#GetDataFrom').val() == 'PendingPO') {
+				getCheckedRowData();
+			}
+            else if ($('#GetDataFrom').val() == 'VendorPortal') {
+                gotoMainGateForVendorPortal();
+            }
+            else {
+                alert("Please select GetDataFrom.");
+                $('#GetDataFrom').focus();
+                return;
+            }
+		});
+	 
 			  function getCheckedRowData() {
 						var selectedData = [];
 		var rows = document.querySelectorAll('#GateDataTable tbody tr');
@@ -220,6 +253,54 @@
 			});
 					
 		}
+
+
+		function gotoMainGateForVendorPortal() {
+
+			var AccountCode = document.getElementById("VendorName").value;
+            var docTypeId = document.getElementById("docTypeId").value;
+			var VPSaleBillEntryId = document.getElementById("Invoiceno").value;
+			var InvoiceNo = $("#Invoiceno option:selected").text().trim();
+			if (!AccountCode) {
+				alert("Please select Vendor Name.");
+				document.getElementById("VendorName").focus();
+				return;
+				}
+				if (!docTypeId) {
+					alert("Please select Document Type.");
+					document.getElementById("docTypeId").focus();
+					return;
+					}
+					if (!InvoiceNo) {
+						alert("Please enter Invoice No.");
+                        document.getElementById("Invoiceno").focus();
+                        return;
+                        }
+
+
+
+
+			$.ajax({
+				url: "@Url.Action("GetPendingGateEntryVPDetailData")",
+				type: "POST",
+				data: { AccountCode: AccountCode, InvoiceNo: InvoiceNo },
+				async: false,
+				success: function (response) {
+
+					window.location.href = `/GateInward/GateInward?Mode=I&AccountCode=${AccountCode}&docTypeId=${docTypeId}& &Invoiceno=${InvoiceNo}& &VPSaleBillEntryId=${VPSaleBillEntryId}`;
+
+				},
+				error: function (xhr, status, error) {
+					console.error("Failed to store in session:", error);
+				}
+			});
+
+
+			/* window.location.href = `/GateInward/GateInward?Mode=I&AccountCode=${accountCode}&docTypeId=${docTypeId}& &Invoiceno=${Invoiceno}`; */
+
+
+		}
+
 			function CheckacceptedQtySHA(i) {
 
 			var checkedtruevalues = [];
@@ -255,6 +336,10 @@
 		})
 		$(function ()
 		   {
+			$('#VendorName').select2();
+			$('#docTypeId').select2();
+			$('#Invoiceno').select2();
+
 				  GetServerDate();
 			  var currentDate = new Date();
 
@@ -440,6 +525,8 @@
 					FromDate: $('#FromDate').val(),
 					ToDate: $('#ToDate').val(),
 					ScheduleNo: $('#ScheduleNo').val(),
+				GetDataFrom: $('#GetDataFrom').val(),
+				 Invoiceno : $("#Invoiceno option:selected").text().trim(),
 					DashboardType: "", // Add if needed
 					
 					SearchBox: searchBox

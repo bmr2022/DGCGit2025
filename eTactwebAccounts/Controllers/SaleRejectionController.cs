@@ -88,14 +88,27 @@ namespace eTactWeb.Controllers
             HttpContext.Session.Remove("KeySaleRejectionGrid");
             HttpContext.Session.Remove("SaleRejectionModel");
             HttpContext.Session.Remove("KeyAdjGrid");
+            HttpContext.Session.Remove("KeyTaxGrid");
 
             if (model.Mode != "U")
             {
                 model.Uid = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                 model.ActualEnteredBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                model.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
+                model.ActualEnteredByName = GetEmpByMachineName();
+                model.ActualEntryDate = HttpContext.Session.GetString("ActualEntryDate") ?? ParseFormattedDate(DateTime.Today.ToString("dd/MM/yyyy"));
+                model.MachineName = GetEmpByMachineName();
             }
-            model.adjustmentModel = new AdjustmentModel();
+            else
+            {
+                model.ActualEnteredByName = GetEmpByMachineName();
+                model.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                model.LastUpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                model.LastUpdatedByName = GetEmpByMachineName();
+                model.LastUpdationDate = HttpContext.Session.GetString("LastUpdatedDate");
+                model.UpdatedOn = ParseSafeDate(HttpContext.Session.GetString("LastUpdatedDate"));
+                model.MachineName = GetEmpByMachineName();
+            }
+            //model.adjustmentModel = new AdjustmentModel();
 
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
             {
@@ -103,17 +116,69 @@ namespace eTactWeb.Controllers
                 model.Mode = Mode;
                 model.ID = ID;
             }
-
-            
+            if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
+            {
+                model = await _saleRejection.GetViewByID(ID, Mode, YearCode);
+                model.Mode = Mode;
+                model.ID = ID;
+              
+                model.FinFromDate = model.FinFromDate ?? HttpContext.Session.GetString("FromDate");
+                model.FinToDate = model.FinToDate ?? HttpContext.Session.GetString("ToDate");
+                model.SaleRejYearCode = model.SaleRejYearCode != null && model.SaleRejYearCode > 0 ? model.SaleRejYearCode : Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+                model.CC = model.CC ?? HttpContext.Session.GetString("Branch");
+            }
+            else
+            {
+                model.FinFromDate = HttpContext.Session.GetString("FromDate");
+                model.FinToDate = HttpContext.Session.GetString("ToDate");
+                model.SaleRejYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+                model.CC = HttpContext.Session.GetString("Branch");
+            }
+            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                SlidingExpiration = TimeSpan.FromMinutes(55),
+                Size = 1024,
+            };
             model.FinFromDate = HttpContext.Session.GetString("FromDate");
             model.FinToDate = HttpContext.Session.GetString("ToDate");
             model.SaleRejYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
             model.CC = HttpContext.Session.GetString("Branch");
+
+            HttpContext.Session.SetString("SaleRejectionModel", JsonConvert.SerializeObject(model));
+          
+            string serializedKeyAdjGrid = JsonConvert.SerializeObject(model.adjustmentModel == null ? new AdjustmentModel() : model.adjustmentModel);
+            string serializedKeyTaxGrid = JsonConvert.SerializeObject(model.TaxDetailGridd == null ? new List<TaxModel>() : model.TaxDetailGridd);
             HttpContext.Session.SetString("KeySaleRejectionGrid", JsonConvert.SerializeObject(model.SaleRejectionDetails));
-            HttpContext.Session.SetString("KeyAdjGrid", JsonConvert.SerializeObject(model.adjustmentModel == null ? new AdjustmentModel() : model.adjustmentModel));
+           // HttpContext.Session.SetString("KeyAdjGrid", JsonConvert.SerializeObject(model.adjustmentModel == null ? new AdjustmentModel() : model.adjustmentModel));
             HttpContext.Session.SetString("SaleRejectionModel", JsonConvert.SerializeObject(model));
             HttpContext.Session.SetString("SaleRejection", JsonConvert.SerializeObject(model));
+            string serializedKeyDbCrGrid = JsonConvert.SerializeObject(model.DbCrGrid == null ? new List<DbCrModel>() : model.DbCrGrid);
+            if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
+            {
+                HttpContext.Session.SetString("KeyDrCrGrid", serializedKeyDbCrGrid);
+            }
+            HttpContext.Session.SetString("KeyTaxGrid", serializedKeyTaxGrid);
+
+            //HttpContext.Session.SetString("KeySaleRejectionGrid", JsonConvert.SerializeObject(model.SaleRejectionDetails));
+            HttpContext.Session.SetString("KeyAdjGrid", JsonConvert.SerializeObject(model.adjustmentModel == null ? new AdjustmentModel() : model.adjustmentModel));
+            //HttpContext.Session.SetString("SaleRejectionModel", JsonConvert.SerializeObject(model));
+            //HttpContext.Session.SetString("SaleRejection", JsonConvert.SerializeObject(model));
             return View("SaleRejection", model);
+        }
+        public string GetEmpByMachineName()
+        {
+            try
+            {
+                string empname = string.Empty;
+                empname = HttpContext.Session.GetString("EmpName").ToString();
+                if (string.IsNullOrEmpty(empname)) { empname = Environment.UserDomainName; }
+                return empname;
+            }
+            catch
+            {
+                return "";
+            }
         }
         public IActionResult AddSaleRejectionDetail(List<SaleRejectionDetail> model)
         {
@@ -369,6 +434,7 @@ namespace eTactWeb.Controllers
                 {
                     DrCrGrid = JsonConvert.DeserializeObject<List<DbCrModel>>(drCrGridJson);
                 }
+              
                 if (saleRejectionDetail == null)
                 {
                     ModelState.Clear();
@@ -408,11 +474,23 @@ namespace eTactWeb.Controllers
                     {
                         DrCrDetailDT = CommonController.GetDrCrDetailTable(DrCrGrid);
                     }
-
-                    if (MainModel.adjustmentModel != null && MainModel.adjustmentModel.AdjAdjustmentDetailGrid != null && MainModel.adjustmentModel.AdjAdjustmentDetailGrid.Count > 0)
+                    string serializedGrid = HttpContext.Session.GetString("KeyAdjGrid");
+                    var adjustmentModel = new AdjustmentModel();
+                    if (!string.IsNullOrEmpty(serializedGrid))
                     {
-                        AdjDetailDT = CommonController.GetAdjDetailTable(MainModel.adjustmentModel.AdjAdjustmentDetailGrid.ToList(), model.SaleRejEntryId, model.SaleRejYearCode, model.AccountCode);
+                        adjustmentModel = JsonConvert.DeserializeObject<AdjustmentModel>(serializedGrid);
+                        // Use adjustmentModel as needed
                     }
+
+                    if (adjustmentModel.AdjAdjustmentDetailGrid != null && adjustmentModel.AdjAdjustmentDetailGrid.Count > 0)
+                    {
+                        AdjDetailDT = CommonController.GetAdjDetailTable(adjustmentModel.AdjAdjustmentDetailGrid.ToList(), model.SaleRejEntryId, model.SaleRejYearCode, model.AccountCode);
+                    }
+               
+                    //if (MainModel.adjustmentModel != null && MainModel.adjustmentModel.AdjAdjustmentDetailGrid != null && MainModel.adjustmentModel.AdjAdjustmentDetailGrid.Count > 0)
+                    //{
+                    //    AdjDetailDT = CommonController.GetAdjDetailTable(MainModel.adjustmentModel.AdjAdjustmentDetailGrid.ToList(), model.SaleRejEntryId, model.SaleRejYearCode, model.AccountCode);
+                    //}
 
                     var Result = await _saleRejection.SaveSaleRejection(model, SBGrid, TaxDetailDT, DrCrDetailDT, AdjDetailDT);
 
@@ -496,9 +574,9 @@ namespace eTactWeb.Controllers
                 //return View(model);
             }
         }
-        public async Task<IActionResult> DeleteByID(int ID, int YC, int accountCode, int createdBy, string machineName, string cc,string fromDate,string toDate,string custInvoiceNo,string accountName,string mrnNo,string gateNo,string partCode,string itemName,string againstBillNo,string voucherNo)
+        public async Task<IActionResult> DeleteByID(int ID, int YearCode, int accountCode, int createdBy, string machineName, string cc,string fromDate,string toDate,string custInvoiceNo,string accountName,string mrnNo,string gateNo,string partCode,string itemName,string againstBillNo,string voucherNo)
         {
-            var Result = await _saleRejection.DeleteByID(ID, YC, accountCode, createdBy, machineName, cc).ConfigureAwait(false);
+            var Result = await _saleRejection.DeleteByID(ID, YearCode, accountCode, createdBy, machineName, cc).ConfigureAwait(false);
 
             if (Result.StatusText == "Deleted" || Result.StatusCode == HttpStatusCode.Gone || Result.StatusText == "Success")
             {
@@ -609,7 +687,7 @@ namespace eTactWeb.Controllers
                     1,//Item.AgainstOpenEntryId,
                     Item.AgainstOpnOrBill ?? string.Empty,
                     Item.AgainstBillYearCode, //openBillYearCode
-                    Item.DocTypeAccountCode,
+                    0,
                     Item.ItemCode,
                     Item.Unit ?? string.Empty,
                     Item.NoOfCase,

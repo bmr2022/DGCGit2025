@@ -54,26 +54,45 @@ namespace eTactWeb.Controllers
         }
         public IActionResult Back()
         {
-            var prevState = NavigationHelper.Pop(_httpContextAccessor.HttpContext);
+            var stack = NavigationHelper.GetStack(HttpContext);
+
+            if (stack.Count <= 1)
+            {
+                // No previous step, go to home
+                NavigationHelper.Clear(HttpContext);
+                return RedirectToAction("Index", "Home");
+            }
+
+            // Remove current state
+            NavigationHelper.Pop(HttpContext);
+
+            // Get previous state
+            var prevState = NavigationHelper.Pop(HttpContext);
 
             if (prevState != null)
             {
-                // Filters session ma store karo
                 if (prevState.Filters != null && prevState.Filters.Any())
                 {
-                    HttpContext.Session.SetString(
-                        "TransactionLedgerFilters",
-                        JsonConvert.SerializeObject(prevState.Filters)
-                    );
+                    HttpContext.Session.SetString("LastPageFilters", JsonConvert.SerializeObject(prevState.Filters));
                 }
 
-                // Redirect to previous action/controller
-                return RedirectToAction(prevState.Action, prevState.Controller);
+                var routeValues = new RouteValueDictionary(prevState.RouteValues ?? new Dictionary<string, object>());
+                foreach (var filter in prevState.Filters ?? new Dictionary<string, object>())
+                {
+                    if (!routeValues.ContainsKey(filter.Key))
+                        routeValues.Add(filter.Key, filter.Value);
+                }
+
+                if (!string.IsNullOrEmpty(prevState.ReportType))
+                {
+                    routeValues["ReportType"] = prevState.ReportType;
+                }
+
+                return RedirectToAction(prevState.Action, prevState.Controller, routeValues);
             }
 
             return RedirectToAction("Index", "Home");
         }
-
         #region For Dbit Credit Grid
         public async Task<JsonResult> GetDbCrDataGrid(string PageName, int docAccountCode, int AccountCode, decimal? BillAmt, decimal? NetAmt)
         {
@@ -759,33 +778,35 @@ namespace eTactWeb.Controllers
                 Table.Columns.Add("DiscountAmt", typeof(float));
                 Table.Columns.Add("AccountAmount", typeof(float));
                 Table.Columns.Add("DRCR", typeof(string));
-
-                IList<SaleRejectionDetail> itemDetailList = MainModel.ItemDetailGrid;
-                foreach (var Item in itemDetailList)
-                {
-                    Table.Rows.Add(
-                    new object[]
+                IList<SaleRejectionDetail> itemDetailList = MainModel.SaleRejectionDetails;
+                if (itemDetailList != null && itemDetailList.Any())
+                { 
+                    foreach (var Item in itemDetailList)
                     {
+                        Table.Rows.Add(
+                        new object[]
+                        {
                     MainModel.SaleRejEntryId,
                     MainModel.SaleRejYearCode,
-                   1, //Item.SeqNo,
+                   1,
                     MainModel.CustInvoiceNo ?? string.Empty, //invoice no
-                    string.Empty, //MainModel.voucherNo ?? string.Empty,
-                    string.Empty,
-                    0,
+                    MainModel.adjustmentModel == null ? string.Empty : MainModel.adjustmentModel.AdjAgnstVouchNo, //MainModel.voucherNo ?? string.Empty,
+                    string.Empty, // AginstInvNo
+                    MainModel.AgainstBillYearCode, // AginstVoucherYearCode
                     MainModel.AccountCode,
                     MainModel.DocTypeAccountCode,
                     Item.ItemCode,
-                    Math.Round(Item.RejQty, 2, MidpointRounding.AwayFromZero),
-                    Math.Round(Item.Rate, 2, MidpointRounding.AwayFromZero),
+                    Math.Round(Item.RejQty, 2, MidpointRounding.AwayFromZero), // qty
+                    Math.Round(Item.RejRate, 2, MidpointRounding.AwayFromZero), // PurchaseRejection rate
                     Math.Round(Item.DiscountPer, 2, MidpointRounding.AwayFromZero),
                     Math.Round(Item.DiscountAmt, 2, MidpointRounding.AwayFromZero), //DisRs
-                    Math.Round(Item.Amount, 2, MidpointRounding.AwayFromZero),
+                    Math.Round(Item.ItemNetAmount, 2, MidpointRounding.AwayFromZero),
                     "CR",
-                        });
+                            });
+                    }
                 }
-
                 return Table;
+                
             }
             catch (Exception ex)
             {

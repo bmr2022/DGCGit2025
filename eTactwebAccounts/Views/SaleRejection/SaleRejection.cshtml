@@ -36,7 +36,6 @@
         @ViewBag.ResponseResult
         </div>
         } *@
-
         <input type="hidden" asp-for="Mode" value="@Model.Mode" />
         <input type="hidden" asp-for="EID" />
         <div class="card-header card-headerBG text-light bg-gradient">
@@ -89,6 +88,7 @@
                     </h2>
                     <div id="BPanel1" class="accordion-collapse collapse show pnl4 bg-gradient" aria-labelledby="HPanel1">
                         <partial name="_SaleRejectionMain" />
+                      
                     </div>
                 </div>
                 <div class="accordion-item">
@@ -154,6 +154,7 @@
                                             </thead>
                                             <tbody id="divSaleRejectionList">
                                                 <partial name="_LoadSaleRejectionGrid" />
+
                                             </tbody>
                                         </table>
                                     </div>
@@ -337,20 +338,48 @@
 @section Scripts
 {
     <script>
+        function calculateNetTotal() {
+              var saleTotal = 0;
+              var taxTotal = 0;
+
+
+               $('[id^="Amount-"]').each(function () {
+                  var val = parseFloat($(this).text()) || 0;
+                  saleTotal += val;
+              });
+
+              // Sum of txGridAmount-* (Tax Grid)
+               $('[id^="txGridAmount-"]').each(function () {
+                  var val = parseFloat($(this).text()) || 0;
+                  taxTotal += val;
+              });
+
+              // Net Total
+              var netTotal = saleTotal + taxTotal;
+
+              // Set NetTotal
+              $('#NetTotal').val(netTotal.toFixed(2)); // since it's text, not input
+          }
+
         $(document).ready(function () {
 
             GetServerDate();
-
+              
             if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
                 NewEntryId();
                 btnClearTax();
                 FillItems($('#TypeItemServAssets').val());
+                DueDateCalculation();
             } else {
                 $('#AdjNewRefNo').val($('#VoucherNo').val());
                 $('#AdjDescription').val($('#VoucherNo').val());
                 SetminQty();
-                BasicTotal();
+                    var sum = 0;
                 var taxRowCount = $('#divTaxGrid tr').length;
+                     $('[id^="Amount-"]').each(function () {
+                   var val = parseFloat($(this).text()) || 0;
+                    sum += val;
+               });
 
                 var txSum = 0;
                 if ($('#divTaxGrid tr td').length > 1) {
@@ -361,7 +390,7 @@
 
                 var txTotal = sum + txSum;
                 $('#NetTotal').val(txTotal.toFixed(2));
-                $('#AdjPendAmt').val($('#NetTotal').val());
+                /* $('#AdjPendAmt').val($('#NetTotal').val()); */
             }
 
 
@@ -383,10 +412,11 @@
             AutoComplete("vehicleNo", "vehicleNo");
             AutoComplete("TransporterName", "TransporterName");
 
-            GetTaxPartItem();
-
+            /* GetTaxPartItem(); */
+            BasicTotal();
             if ($('#Mode').val() == "V" || $('#Mode').val() == "U") { GetDbCrDetail(); }
-
+            GetTaxPartItem();
+            GetDbCrDetail();
             // DueDateCalculation();
 
             $('#DiscountPer').prop("readonly", false);
@@ -406,7 +436,7 @@
             $('#SaleBillremark').rules("remove", "required");
             $('#SaleorderRemark').rules("remove", "required");
             $('#SalerejRemark').rules("remove", "required");
-
+        
             var rowCount = $('#divSaleBillList tr').length;
             for (var i = 1; i <= rowCount; i++) {
                 var itemCodee = parseInt($('#GridIC-' + i).val());
@@ -420,7 +450,28 @@
                     "uniquebatchno": uniquebatchnoo
                 });
             }
-        });
+              if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
+                  if (rowCounter > 0) {
+                      $('.PendingItem').show();
+                      $('.newitems').hide();
+
+                  }
+                  else {
+                      $('.PendingItem').hide();
+                      $('.newitems').show();
+
+                      // FillWorkCenter();
+                  }
+              } else {
+
+                  $('.PendingItem').hide();
+                  $('.newitems').show();
+                  // FillWorkCenter();
+
+              }
+              calculateNetTotal();
+
+         });
 
         function CalculateRejAmount() {
             var rowCount = $('#divSaleRejectionList tr').length;
@@ -430,9 +481,7 @@
                 $('#rejAmount-' + i).text(rejRate * rejQty);
             }
         }
-
         async function GetTaxPartItem() {
-
             $.ajax({
                 type: "GET",
                 url: '@Url.Action("GetTaxPartItem", "Tax")',
@@ -474,6 +523,8 @@
             });
         }
 
+     
+
         document.addEventListener('DOMContentLoaded', function () {
             var now = new Date();
             var hours = ('0' + now.getHours()).slice(-2);
@@ -493,7 +544,7 @@
             $(this).val(inputValue);
         });
 
-        function DueDateCalculation() {
+       /*  function DueDateCalculation() {
 
             var dueDate = $('#AdjDueDate').val();
             alert('adjfdate'+$('#AdjDueDate').val());
@@ -507,7 +558,35 @@
 
             $('#AdjDueDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDueDate);
 
+        } */
+        function DueDateCalculation() {
+            var dueDate = $('#AdjDueDate').val();
+            /* // var SaleBillDate = new Date($('#SaleBillDate').val()); */
+
+            var dateStr = parseDateToFormat($('#CustInvoiceDate').val().split(" ")[0]);
+            var [day, month, year] = dateStr.split('/').map(Number);
+            var SaleBillDate = new Date(year, month - 1, day);
+
+            var creaditDays = $('#PaymentTerm').val() == "" ? 0 : parseInt($('#PaymentTerm').val(), 10);
+
+            SaleBillDate.setDate(SaleBillDate.getDate() + creaditDays);
+
+            var formattedDueDate = $.datepicker.formatDate('dd/mm/yy', SaleBillDate);
+            $('#AdjDueDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDueDate);
+            $('#AdjDueDate').datepicker("option", "minDate", ($('#CustInvoiceDate').val()).split(" ")[0]);
         }
+
+
+        $('#PaymentTerm').change(function () {
+            $('#divAdjItemList').empty();
+            var NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
+            $('#divAdjItemList').html(NoData);
+            CalculateAdjAmt('NetTotal');
+            DueDateCalculation();
+            AddAdjstmntDetail1();
+            ClearAdjustmentGrid();
+        });
+
 
         $('#SaleBillDate').change(function () {
             var saleBillDate = parseDateToFormat($(this).val());
@@ -733,13 +812,13 @@
 
                         BasicTotal();
 
-                        // var rowCount = $('#divSaleRejectionList tr').length;
+                         var rowCount = $('#divSaleRejectionList tr').length;
 
-                        // for (var i = 1; i <= rowCount; i++) {
+                         for (var i = 1; i <= rowCount; i++) {
 
-                        //     sum += parseFloat($('#GridAmount-' + i).text() == '.00' ? 0 : $('#GridAmount-' + i).text());
-                        // }
-                        // $('#ItemNetAmount').val(sum);
+                             sum += parseFloat($('#Amount-' + i).text() == '.00' ? 0 : $('#Amount-' + i).text());
+                         }
+                         /* $('#ItemNetAmount').val(sum); */
 
                         var txSum = 0;
                         if ($('#divTaxGrid tr td').length > 1) {
@@ -807,7 +886,7 @@
                     var txAmt = $('#lblItemNetAmount').text();
                     $('#NetTotal').val(txAmt);
                     $('#AdjPendAmt').val($('#NetTotal').val());
-                    $('#AdjNewRefNo').val($('#NetTotal').val());
+                    $('#AdjNewRefNo').val($('#VoucherNo').val());
 
                 },
                 error: function (req, status, error) {
@@ -1603,6 +1682,7 @@
         function BasicTotal() {
 
             var columnCount = $('#divAddSaleRejectionList tr td').length;
+            
             //var taxRowCount = $('#divTaxGrid tr').length;
             sum = 0;
             var rowCount = $('#divAddSaleRejectionList tr').length;
@@ -1872,15 +1952,30 @@
                 url: "@Url.Action("GetServerDate", "SaleOrder")",
                 async: false,
                 success: function (result, status, error) {
-
+                    result = parseDateToFormat(result);
                     var FinFromDate = parseDateToFormat($('#FinFromDate').val().split(" ")[0]);
                     var FinToDate = parseDateToFormat($('#FinToDate').val().split(" ")[0]);
 
+                    const [day, month, year] = result.split("/").map(Number);
+                    const currentDate = new Date(year, month - 1, day);
+                    var past2Month = currentDate.setMonth(currentDate.getMonth() - 2);
+                    var formattedPastDate = parseDateToFormat(new Date(past2Month).toISOString().split('T')[0]);
+
+                    var finFromDate = parseDateToFormat($('#FinFromDate').val().split(" ")[0]);
+
+                    var past2Year = currentDate.setYear(currentDate.getFullYear() - 2);
+                    var formattedYear = parseDateToFormat(new Date(past2Year).toISOString().split("T")[0]);
+
+                    $('#SaleRejEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result).datepicker("option", { changeMonth: true, changeYear: true });
                     $('#SaleRejEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                        $('#SaleRejEntryDate').datepicker("option", "minDate", formattedPastDate);
+                    $('#SaleRejEntryDate').datepicker("option", "maxDate", FinToDate);
+
+                 /*    $('#SaleRejEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
                     // $('#GateDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
                     // $('#MRNDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
                     $('#SaleRejEntryDate').datepicker("option", "minDate", FinFromDate);
-                    $('#SaleRejEntryDate').datepicker("option", "maxDate", FinToDate);
+                    $('#SaleRejEntryDate').datepicker("option", "maxDate", FinToDate); */
                     var gateDate = $('#GateDate').val().split(" ")[0];
                     $('#GateDate').val(gateDate);
 
@@ -1889,11 +1984,11 @@
 
                     var saleBillEntryDate = parseDateToFormat($('#SaleRejEntryDate').val());
                     let dateParts = saleBillEntryDate.split("/");
-                    let day = parseInt(dateParts[0], 10);
-                    let month = parseInt(dateParts[1], 10) - 1;
-                    let year = parseInt(dateParts[2], 10);
+                    let day1 = parseInt(dateParts[0], 10);
+                    let month1 = parseInt(dateParts[1], 10) - 1;
+                    let year1 = parseInt(dateParts[2], 10);
 
-                    let date = new Date(year, month, day);
+                    let date = new Date(year1, month1, day1);
                     var minEntryDate = date.setDate(date.getDate() - 1);
                     var maxEntryDate = date.setDate(date.getDate() + 2);
 
