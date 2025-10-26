@@ -124,7 +124,7 @@
                             </div>
                             <div class="row g-2 gx-3">
                                 <div class="col-12 text-center">
-                                    <strong>TOTAL NO OF ITEMS : <span id="lblItemCount"></span></strong>
+                                    <strong>TOTAL NO OF Employees : <span id="lblItemCount"></span></strong>
                                 </div>
                             </div>
                         </div>
@@ -407,6 +407,7 @@
             model.EmployeeCode = ($('#EmployeeCode').val() != "0" && $('#EmployeeCode').val() != null) ? $('#EmployeeCode :selected').text() : "0";
             model.EmpId = ($('#EmployeeCode').val() != "0" && $('#EmployeeCode').val() != null) ? parseInt($('#EmployeeCode').val()) : 0;
             model.CategoryCode = ($('#CategoryCode').val() != "0" && $('#CategoryCode').val() != null) ? $('#CategoryCode').val() : "0";
+            model.EmpCategoryId = ($('#EmpCategoryId').val() != "0" && $('#EmpCategoryId').val() != null) ? $('#EmpCategoryId').val() : "0";
             // collect selected employees
             model.GateAttDetailsList = [];
             document.querySelectorAll("input[name='selectedEmpIds']:checked").forEach(function (cb) {
@@ -654,6 +655,7 @@
                         data: { DayOrMonthType: DayOrMonthType, Attdate: date, AttMonth: attmonth, YearCode: yearcode, EmpCatId: EmpCatId  },
                         success: function (result) {
                                 $("#attendanceItemGrid").html(result);
+                                updateItemCount();
                                 $("#lblItemCount").text($("#rowitemcount").val());
                         },
                         error: function () {
@@ -662,6 +664,10 @@
                     });
                 }
             }
+         function updateItemCount() {
+            var count = $("#employeeTable tbody tr").length;
+            $("#lblItemCount").text("Total Rows: " + count);
+        }
             function fillEntryId() {
                 //ENTRYID
                 $.ajax({
