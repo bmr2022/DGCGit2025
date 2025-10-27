@@ -38,6 +38,7 @@ namespace eTactwebMasters.Controllers
             
             MainModel.LeaveId = ID;
             MainModel.Mode = Mode;
+            MainModel.CC = HttpContext.Session.GetString("Branch");
             ////MainModel.SalHeadEntryDate = SalHeadEntryDate;
             if (Mode != "U")
             {
@@ -130,8 +131,8 @@ namespace eTactwebMasters.Controllers
                 {
                     _List.Add(new TextValue
                     {
-                        Value = row["emp_id"].ToString(),
-                        Text = row["EmployeeName"].ToString()
+                        Value = row["LocationId"].ToString(),
+                        Text = row["Location"].ToString()
                     });
                 }
                 model.LocationList = _List;
@@ -229,8 +230,27 @@ namespace eTactwebMasters.Controllers
                     }
                     HRSalaryMasterDeptWiseDT = _DeptWiseCategDetail.Select(x => x.DeptId).ToList();
 
+                    var HRLocationDT = new List<string>();
+                    var _LocationDetail = new List<LeaveLocationDetail>();
+                    if (model.RestrictedToLocation != null)
+                    {
+                        foreach (var item in model.RestrictedToLocation)
+                        {
+                            var _Location = new LeaveLocationDetail()
+                            {
 
-                   
+                                LocationId = item.ToString(),
+                                LeaveEntryId = model.LeaveId
+
+
+                            };
+                            _LocationDetail.Add(_Location);
+                        }
+                    }
+                    HRLocationDT = _LocationDetail.Select(x => x.LocationId).ToList();
+
+
+
 
                     if (model.Mode == "UPDATE")
                     {
@@ -242,7 +262,7 @@ namespace eTactwebMasters.Controllers
                         model.UpdatedBy = 0;
 
                     }
-                    var Result = await _IHRLeaveMaster.SaveData(model, HREmpLeaveMasterTable, HRSalaryMasterDeptWiseDT).ConfigureAwait(false);
+                    var Result = await _IHRLeaveMaster.SaveData(model, HREmpLeaveMasterTable, HRSalaryMasterDeptWiseDT, HRLocationDT).ConfigureAwait(false);
 
                     if (Result != null)
                     {
@@ -292,6 +312,7 @@ namespace eTactwebMasters.Controllers
             {
                 var model = new HRLeaveMasterModel();
                 var result = await _IHRLeaveMaster.GetDashboardData().ConfigureAwait(true);
+
                 DateTime now = DateTime.Now;
 
                 if (result != null && result.Result != null)

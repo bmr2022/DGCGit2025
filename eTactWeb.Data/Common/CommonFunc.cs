@@ -625,6 +625,15 @@ public static class CommonFunc
                         typeProperty.PropertyInfo.SetValue(obj, safeValue, null);
                     }
                 }
+                else if (table.TableName == "HRLeaveMasterLocation")
+                {
+                    if (typeProperty.PropertyInfo.Name != "Mode")
+                    {
+                        object value = row[typeProperty.PropertyInfo.Name];
+                        object? safeValue = value == null || DBNull.Value.Equals(value) ? null : Convert.ChangeType(value, typeProperty.Type);
+                        typeProperty.PropertyInfo.SetValue(obj, safeValue, null);
+                    }
+                }
                 else if (table.TableName == "HRWeekEmpCategDetail")
                 {
                     if (typeProperty.PropertyInfo.Name != "Mode")

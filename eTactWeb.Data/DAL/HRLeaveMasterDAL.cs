@@ -169,7 +169,7 @@ namespace eTactWeb.Data.DAL
             try
             {
                 var SqlParams = new List<dynamic>();
-                SqlParams.Add(new SqlParameter("@flag", "EmployeeApproverList"));
+                SqlParams.Add(new SqlParameter("@flag", "LocationList"));
                 var _ResponseResult = await _DataLogicDAL.ExecuteDataSet("HRSPLeaveMaster", SqlParams);
                 if (_ResponseResult.Result != null && _ResponseResult.StatusCode == HttpStatusCode.OK && _ResponseResult.StatusText == "Success")
                 {
@@ -206,7 +206,7 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
-        public async Task<ResponseResult> SaveData(HRLeaveMasterModel model, List<string> HREmpCatDT, List<string> HRDeptCatDT)
+        public async Task<ResponseResult> SaveData(HRLeaveMasterModel model, List<string> HREmpCatDT, List<string> HRDeptCatDT,List<string> HRLocationDT)
         {
             try
             {
@@ -239,6 +239,8 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@EligibilityAfterMonths", model.EligibilityAfterMonths);
                     oCmd.Parameters.AddWithValue("@MinWorkDaysRequired", model.MinWorkDaysRequired);
                     oCmd.Parameters.AddWithValue("@AutoApproveLimitDays", model.AutoApproveLimitDays);
+                    oCmd.Parameters.AddWithValue("@MedicalCerificateReq", model.MedicalCerificateReq);
+                    oCmd.Parameters.AddWithValue("@CC", model.CC);
                     oCmd.Parameters.AddWithValue("@ApprovalLevel1", model.ApprovalLevel1);
                     oCmd.Parameters.AddWithValue("@ApprovalLevel2", model.ApprovalLevel2);
                     oCmd.Parameters.AddWithValue("@ApprovalLevel3", model.ApprovalLevel3);
@@ -252,16 +254,18 @@ namespace eTactWeb.Data.DAL
                     
                     string empCatCsv = string.Join(",", HREmpCatDT);
                     string deptCatCsv = string.Join(",", HRDeptCatDT);
+                    string LocationCsv = string.Join(",", HRLocationDT);
 
                     
                     oCmd.Parameters.AddWithValue("@CatIdList", empCatCsv);
                     oCmd.Parameters.AddWithValue("@DepartIdList", deptCatCsv);
+                    oCmd.Parameters.AddWithValue("@LocationList", LocationCsv);
 
 
                     if (model.Mode == "UPDATE")
                     {
                         oCmd.Parameters.AddWithValue("@UpdatedBy", model.UpdatedBy);
-                        oCmd.Parameters.AddWithValue("@UpdatedOnDate", string.IsNullOrEmpty(model.UpdatedOn) ? DBNull.Value : model.UpdatedOn);
+                        oCmd.Parameters.AddWithValue("@UpdatedOnDate", DateTime.Parse(model.UpdatedOn).ToString("dd/MMM/yyyy");
 
 
                     }
@@ -426,6 +430,7 @@ namespace eTactWeb.Data.DAL
                     var DTTaxMasterDetail = oDataSet.Tables[0];
                     var DEmpCategDetail = oDataSet.Tables[1];
                     var DDeptWiseCategDetail = oDataSet.Tables[2];
+                    var LocationDetail = oDataSet.Tables[3];
 
                     if (oDataSet.Tables.Count > 0 && DTTaxMasterDetail.Rows.Count > 0)
                     {
@@ -485,6 +490,14 @@ namespace eTactWeb.Data.DAL
                         model.DeptWiseCategDetailList = CommonFunc.DataTableToList<LeaveDeptWiseCategDetail>(DDeptWiseCategDetail);
                        
                         model.RestrictedToDepartment = model.DeptWiseCategDetailList.Select(x => x.DeptId).ToList();
+                    }
+
+                    if (oDataSet.Tables.Count > 0 && LocationDetail.Rows.Count > 0)
+                    {
+                        LocationDetail.TableName = "HRLeaveMasterLocation";
+                        model.LocationDetailList = CommonFunc.DataTableToList<LeaveLocationDetail>(LocationDetail);
+
+                        model.RestrictedToLocation = model.LocationDetailList.Select(x => x.LocationId).ToList();
                     }
 
 
