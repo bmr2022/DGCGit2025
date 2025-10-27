@@ -91,18 +91,18 @@
 
                                     </div>
                                     <div class="col-xl-1 col-sm-2 col-md-2 col-xs-16">
-                                        <label asp-for="LeaveCode" class="form-label">Leave Code</label>
+                                        <label asp-for="LeaveCode" class="form-label" style="color: red;">Leave Code*</label>
                                         <input asp-for="LeaveCode" class="form-control"  />
                                     </div>
 
 
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                        <label asp-for="LeaveName" class="form-label">Leave Name</label>
+                                        <label asp-for="LeaveName" class="form-label" style="color: red;">Leave Name*</label>
                                         <input asp-for="LeaveName" class="form-control" value="@Model.LeaveName" />
                                     </div>
                                     
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                        <label id="Types" class="form-label">Leave Type</label>
+                                        <label id="Types" class="form-label" style="color: red;">Leave Type*</label>
                                         <select asp-for="LeaveType" class="form-control">
                                             @* <option value="@Model.AccountCode">-Select-</option> *@
                                             @*  <option value="@Model.TypeOfSalary">-Select-</option> *@
@@ -114,7 +114,7 @@
                                     </div>
                                    
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                        <label id="Types" class="form-label">Leave Category</label>
+                                        <label id="Types" class="form-label" style="color: red;">Leave Category*</label>
                                         <select asp-for="LeaveCategory" class="form-control">
                                             @* <option value="@Model.AccountCode">-Select-</option> *@
                                             @*   <option value="@Model.CalculationType">-Select-</option> *@
@@ -126,7 +126,7 @@
                                     </div>
 
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                        <label asp-for="GenderApplicable" class="form-label">GenderApplicable</label>
+                                        <label asp-for="GenderApplicable" class="form-label" style="color: red;">GenderApplicable*</label>
                                         <select asp-for="GenderApplicable" class="form-select" >
                                             <option value="" selected>-Select-</option>
                                             <option value="Male" >Male</option>
@@ -173,8 +173,8 @@
                                         <label asp-for="Encashable" class="form-label">Encashable</label>
                                         <select asp-for="Encashable" class="form-select" >
                                             <option value="" disabled>-Select-</option>
-                                            <option value="YES" selected>YES</option>
-                                            <option value="NO">NO</option>
+                                            <option value="Y" selected>YES</option>
+                                            <option value="N">NO</option>
 
                                         </select>
                                     </div>
@@ -202,8 +202,8 @@
                                         <label asp-for="HalfDayAllowed" class="form-label">HalfDayAllowed</label>
                                         <select asp-for="HalfDayAllowed" class="form-select" >
                                             <option value="" disabled>-Select-</option>
-                                            <option value="YES" selected>YES</option>
-                                            <option value="NO">NO</option>
+                                            <option value="Y" selected>YES</option>
+                                            <option value="N">NO</option>
 
                                         </select>
                                     </div>
@@ -211,8 +211,8 @@
                                         <label asp-for="LeaveApprovalRequired" class="form-label">LeaveApprovalRequired</label>
                                         <select asp-for="LeaveApprovalRequired" class="form-select">
                                             <option value="" disabled>-Select-</option>
-                                            <option value="YES" selected>YES</option>
-                                            <option value="NO">NO</option>
+                                            <option value="Y" selected>YES</option>
+                                            <option value="N">NO</option>
 
                                         </select>
                                     </div>
@@ -221,8 +221,8 @@
                                         <label asp-for="CompensatoryOffRequired" class="form-label">CompensatoryOffRequired</label>
                                         <select asp-for="CompensatoryOffRequired" class="form-select">
                                             <option value="" disabled>-Select-</option>
-                                            <option value="YES" selected>YES</option>
-                                            <option value="NO">NO</option>
+                                            <option value="Y" selected>YES</option>
+                                            <option value="N">NO</option>
 
                                         </select>
                                     </div>
@@ -230,8 +230,17 @@
                                         <label asp-for="LeaveDeductionApplicable" class="form-label">LeaveDeductionApplicable</label>
                                         <select asp-for="LeaveDeductionApplicable" class="form-select">
                                             <option value="" disabled>-Select-</option>
-                                            <option value="YES" selected>YES</option>
-                                            <option value="NO">NO</option>
+                                            <option value="Y" selected>YES</option>
+                                            <option value="N">NO</option>
+
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="MedicalCerificateReq" class="form-label">Medical Cerificate Req</label>
+                                        <select asp-for="MedicalCerificateReq" class="form-select">
+                                            <option value="" disabled>-Select-</option>
+                                            <option value="Y" selected>YES</option>
+                                            <option value="N">NO</option>
 
                                         </select>
                                     </div>
@@ -257,7 +266,7 @@
                                     </div>
 
 
-                                    <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:260px">
                                         <label asp-for="RestrictedToEmployeeCategory" class="control-label">Restricted To EmployeeCategory</label>
                                         <br />
 
@@ -267,14 +276,14 @@
                                         @* <select class="form-select" multiple="multiple" asp-for="EmpCateg" asp-items="@(new SelectList(Model.EmpCategList,"Value","Text"))"></select> *@
                                     </div>
 
-                                    <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:260px">
                                         <label asp-for="RestrictedToDepartment" class="control-label">RestrictedToDepartment </label>
                                         <br />
 
                                         <select class="form-select" multiple="multiple" asp-for="RestrictedToDepartment" asp-items="@(new SelectList(Model.DeptWiseCategList,"Value","Text"))"></select>
                                     </div>
 
-                                    <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:260px">
                                         <label asp-for="RestrictedToLocation" class="control-label">RestrictedToLocation </label>
                                         <br />
 
@@ -371,13 +380,13 @@
                                             <option value="" disabled>-Select-</option>
                                             @if (Model.Mode == "U" || Model.Mode == "V")
                                             {
-                                                <option value="YES" selected>YES</option>
-                                                <option value="NO">NO</option>
+                                                <option value="Y" selected>YES</option>
+                                                <option value="N">NO</option>
                                             }
                                             else
                                             {
-                                                <option value="YES" selected>YES</option>
-                                                <option value="NO" disabled>NO</option>
+                                                <option value="Y" selected>YES</option>
+                                                <option value="N" disabled>NO</option>
                                             }
 
 
@@ -418,7 +427,7 @@
                                     </div>
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                         <label asp-for="CC" class="form-label">CC</label>
-                                        <input asp-for="CC" class="form-control " value="@Model.CC" />
+                                        <input asp-for="CC" class="form-control " value="@Model.CC" readonly />
                                     </div>
 
 
@@ -528,6 +537,7 @@
             $('#CarryForward').select2();
             $('#HalfDayAllowed').select2();
             $('#LeaveApprovalRequired').select2();
+            $('#MedicalCerificateReq').select2();
 
             $('#CompensatoryOffRequired').select2();
             $('#LeaveDeductionApplicable').select2();

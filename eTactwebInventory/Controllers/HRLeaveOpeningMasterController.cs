@@ -85,9 +85,9 @@ namespace eTactwebInventory.Controllers
             return Json(JsonString);
         }
 
-        public async Task<JsonResult> GetShiftName()
+        public async Task<JsonResult> GetShiftName(int EmpId)
         {
-            var JSON = await _IHRLeaveOpeningMaster.GetShiftName();
+            var JSON = await _IHRLeaveOpeningMaster.GetShiftName(EmpId);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }

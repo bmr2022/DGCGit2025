@@ -14,7 +14,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetDepartment(int empid);
         Task<ResponseResult> GetDesignation(int empid);
         Task<ResponseResult> GetLeaveName();
-        Task<ResponseResult> GetShiftName();
+        Task<ResponseResult> GetShiftName(int EmpId);
         Task<ResponseResult> GetEmpCode();
         Task<ResponseResult> FillEntryId();
         Task<ResponseResult> SaveMainData(HRLeaveOpeningMasterModel model, DataTable GIGrid);

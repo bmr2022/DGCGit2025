@@ -56,9 +56,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _HRLeaveMasterDAL.FillLeaveId();
         }
-        public async Task<ResponseResult> SaveData(HRLeaveMasterModel model, List<string> HREmpCatDT, List<string> HRDeptCatDT)
+        public async Task<ResponseResult> SaveData(HRLeaveMasterModel model, List<string> HREmpCatDT, List<string> HRDeptCatDT,List<string> HRLocationDT)
         {
-            return await _HRLeaveMasterDAL.SaveData(model, HREmpCatDT, HRDeptCatDT);
+            return await _HRLeaveMasterDAL.SaveData(model, HREmpCatDT, HRDeptCatDT, HRLocationDT);
         }
         public async Task<ResponseResult> GetDashboardData()
         {
@@ -75,6 +75,10 @@ namespace eTactWeb.Data.BLL
         public async Task<ResponseResult> GetFormRights(int uId)
         {
             return await _HRLeaveMasterDAL.GetFormRights(uId);
+        }
+        public async Task<ResponseResult> DeleteByID(int ID)
+        {
+            return await _HRLeaveMasterDAL.DeleteByID(ID);
         }
     }
 }

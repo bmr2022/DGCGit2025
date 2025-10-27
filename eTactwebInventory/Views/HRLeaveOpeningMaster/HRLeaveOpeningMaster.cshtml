@@ -559,6 +559,7 @@
                 
                 GetEmployeeDepartment();
                 GetEmployeeDesignation();
+                FillShift();
 
             });
 
@@ -566,6 +567,7 @@
                 SetEmpCodeEmpName(ID);
                 GetEmployeeDepartment();
                 GetEmployeeDesignation();
+                FillShift();
             }
 
             function EmpCodeChange(ID) {
@@ -574,6 +576,7 @@
                 });
                 GetEmployeeDepartment();
                 GetEmployeeDesignation();
+                FillShift();
             }
 
             function SetEmpCodeEmpName(ID) {
@@ -756,8 +759,10 @@
 
 
         function FillShift() {
+            var EmpId = $("#EmpName").val().trim();
             $.ajax({
                 url: '@Url.Action("GetShiftName", "HRLeaveOpeningMaster")',
+                data: { EmpId: EmpId },
 
                 type: 'GET',
                 async: false,
@@ -766,11 +771,11 @@
                     var ShiftDropdown = $('#Shift');
                     var obj = $.parseJSON(response);
                     ShiftDropdown.empty();
-                    ShiftDropdown.append('<option value="">--Select--</option>');
-
+                   
                     $.each(obj.Result, function (index, item) {
                         ShiftDropdown.append('<option value="' + item.ShiftId + '">' + item.ShiftName + '</option>');
                     });
+                    $('#ShiftId').val($('#Shift').val());
                     if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
                         var Shift = '@Model.ShiftId';
                         $('#Shift').val(Shift).trigger("change");

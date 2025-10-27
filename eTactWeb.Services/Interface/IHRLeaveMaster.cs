@@ -21,10 +21,11 @@ namespace eTactWeb.Services.Interface
 
         Task<ResponseResult> FillLeaveId();
 
-        Task<ResponseResult> SaveData(HRLeaveMasterModel model, List<string> HREmpCatDT, List<string> HRDeptCatDT);
+        Task<ResponseResult> SaveData(HRLeaveMasterModel model, List<string> HREmpCatDT, List<string> HRDeptCatDT, List<string> HRLocationDT);
 
         Task<ResponseResult> GetDashboardData();
         Task<HRLeaveMasterModel> GetDashboardDetailData();
         Task<HRLeaveMasterModel> GetViewByID(int Id);
+        Task<ResponseResult> DeleteByID(int ID);
     }
 }

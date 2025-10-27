@@ -173,14 +173,8 @@
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                     <label asp-for="Shift" class="form-label">Shift<span><label class="mandatoryField">*</label></span>  </label>
                                     <input asp-for="ShiftId" class="form-control" type="hidden" value="@Model.ShiftId" />
-                                    <select asp-for="Shift" class="form-control">
-                                        @* <option value="@Model.AccountCode">-Select-</option> *@
-                                        <option value="@Model.ShiftId">-Select-</option>
-                                        @if (Model.Mode == "U" || Model.Mode == "V")
-                                        {
-                                            <option value="@Model.ShiftId" selected>@Model.Shift</option>
-                                        }
-                                    </select>
+                                    <input asp-for="Shift" class="form-control" type="text" value="@Model.Shift" readonly />
+                                  
                                 </div>
 
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
@@ -229,11 +223,11 @@
                                 </div>
                                  <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="Approved" class="form-label">Approved</label>
-                                    <input asp-for="Approved " class="form-control" />
+                                    <input asp-for="Approved " class="form-control" readonly />
                                 </div>
                                  <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="Canceled" class="form-label">Canceled</label>
-                                    <input asp-for="Canceled " class="form-control" />
+                                    <input asp-for="Canceled " class="form-control" readonly />
                                 </div>
 
 
@@ -520,7 +514,7 @@
         });
         $("#EmpName").select2();
         $("#EmpCode").select2();
-        $("#Shift").select2();
+       
         $("#LeaveName").select2();
 
 
@@ -760,6 +754,8 @@
 
                         $("#Shift").prop("disabled", false).val(EmpData.ShiftName).trigger("input");
                         $("#ShiftId").prop("disabled", false).val(EmpData.ShiftId).trigger("input");
+                        $("#MobileNo").prop("disabled", false).val(EmpData.Mobileno1).trigger("input");
+                        $("#PhoneNo").prop("disabled", false).val(EmpData.MobileNo2).trigger("input");
                     } else {
 
                     }
