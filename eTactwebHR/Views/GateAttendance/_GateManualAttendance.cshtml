@@ -23,7 +23,6 @@
     background-color: #e0f2f1; /* Dropdown background color */
     color: #000;
     }
-
 </style>
 <div class="card-body overflow-auto pb-0">
     <div class="table-responsive" style="max-height:400px;">
@@ -72,8 +71,8 @@
                         <th style="min-width:60px resize: horizontal; width:70px;">In Time</th>
                         <th style="min-width:60px resize: horizontal; width:70px;">Out Time</th>
                     }
-                    <th style="min-width:120px; resize: horizontal; width:140px;">Department <input type="checkbox" id="checkDeptSync" /></th>
-                    <th style="min-width:120px; resize: horizontal; width:140px;">Designation <input type="checkbox" id="checkDesigSync" /></th>
+                    <th style="min-width:120px; resize: horizontal; width:140px;">Department @* <input type="checkbox" id="checkDeptSync" /> *@</th>
+                    <th style="min-width:120px; resize: horizontal; width:140px;">Designation @* <input type="checkbox" id="checkDesigSync" /> *@</th>
                 </tr>
             </thead>
             <tbody class="itemgridBody">
@@ -141,8 +140,8 @@
                                 <td><input type="time" id='@("txt_" + Model.GateAttDetailsList[i].EmpId + "_OutTime")' name="Attendance[@Model.GateAttDetailsList[i].EmpId][OutTime]" value="@Tovalue" class="form-control form-control-sm att-input timepicker" data-empid="@Model.GateAttDetailsList[i].EmpId" data-type="OutTime" /></td>
                             }
 
-                            <td>@Html.DropDownList($"dept_{Model.GateAttDetailsList[i].EmpId}", new SelectList(deptList, "Value", "Text", Model.GateAttDetailsList[i].DeptId), new { @class = "form-select form-select-sm dept-dd", data_empid = Model.GateAttDetailsList[i].EmpId, onchange = "ondeptlistchange(" + Model.GateAttDetailsList[i].EmpId + ")" })</td>
-                            <td>@Html.DropDownList($"desig_{Model.GateAttDetailsList[i].EmpId}", new SelectList(desigList, "Value", "Text", Model.GateAttDetailsList[i].DesignationEntryId), new { @class = "form-select form-select-sm desig-dd", data_empid = Model.GateAttDetailsList[i].EmpId, onchange = "ondesiglistchange(" + Model.GateAttDetailsList[i].EmpId + ")" })</td>
+                            <td>@Html.DropDownList($"dept_{Model.GateAttDetailsList[i].EmpId}", new SelectList(deptList, "Value", "Text", Model.GateAttDetailsList[i].DeptId), new { @class = "form-select form-select-sm dept-dd", @style = "pointer-events: none;", data_empid = Model.GateAttDetailsList[i].EmpId, onchange = "ondeptlistchange(" + Model.GateAttDetailsList[i].EmpId + ")" })</td>
+                            <td>@Html.DropDownList($"desig_{Model.GateAttDetailsList[i].EmpId}", new SelectList(desigList, "Value", "Text", Model.GateAttDetailsList[i].DesignationEntryId), new { @class = "form-select form-select-sm desig-dd", @style = "pointer-events: none;" , data_empid = Model.GateAttDetailsList[i].EmpId, onchange = "ondesiglistchange(" + Model.GateAttDetailsList[i].EmpId + ")" })</td>
                             <input type="hidden" name="GateAttDetailsList[@Model.GateAttDetailsList[i].EmpId].DeptId" value="@Model.GateAttDetailsList[i].DeptId" />
                             <input type="hidden" name="GateAttDetailsList[@Model.GateAttDetailsList[i].EmpId].EmpId" value="@Model.GateAttDetailsList[i].EmpId" />
                             <input type="hidden" name="GateAttDetailsList[@Model.GateAttDetailsList[i].EmpId].DesignationEntryId" value="@Model.GateAttDetailsList[i].DesignationEntryId" />
