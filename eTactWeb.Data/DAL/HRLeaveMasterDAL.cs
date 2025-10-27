@@ -114,6 +114,28 @@ namespace eTactWeb.Data.DAL
 
             return oDataSet;
         }
+        public async Task<ResponseResult> DeleteByID(int ID)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "Delete"));
+                SqlParams.Add(new SqlParameter("@LeaveEntryId", ID));
+                _ResponseResult = await _DataLogicDAL.ExecuteDataTable("HRSPLeaveMaster", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+                // Optional: log the error using a logger
+                Console.WriteLine($"Error: {Error.Message}");
+                Console.WriteLine($"Source: {Error.Source}");
+            }
+
+            return _ResponseResult;
+        }
         public async Task<ResponseResult> GetFormRights(int userId)
         {
             var _ResponseResult = new ResponseResult();
@@ -448,6 +470,8 @@ namespace eTactWeb.Data.DAL
                         model.CarryForward = DTTaxMasterDetail.Rows[0]["CarryForwad"].ToString();
                         model.MaxCarryForwardLimit = Convert.ToInt32(DTTaxMasterDetail.Rows[0]["MaxCarryForwardLimit"]);
                         model.HalfDayAllowed = DTTaxMasterDetail.Rows[0]["HalfDayAllowed"].ToString();
+                        model.MedicalCerificateReq = DTTaxMasterDetail.Rows[0]["MedicalCerificateReq"].ToString();
+                        model.CC = DTTaxMasterDetail.Rows[0]["CC"].ToString();
                         model.LeaveApprovalRequired = DTTaxMasterDetail.Rows[0]["LeaveApprovalRequired"].ToString();
                         model.LeaveDeductionApplicable = DTTaxMasterDetail.Rows[0]["LeaveDeductionApplicable"].ToString();
                         model.CompensatoryOffRequired = DTTaxMasterDetail.Rows[0]["CompensatoryOffRequired"].ToString();

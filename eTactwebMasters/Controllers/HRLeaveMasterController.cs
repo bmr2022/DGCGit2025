@@ -305,6 +305,31 @@ namespace eTactwebMasters.Controllers
             return View(model);
         }
 
+        public async Task<IActionResult> DeleteByID(int ID)
+        {
+            var Result = await _IHRLeaveMaster.DeleteByID(ID);
+
+            if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
+            {
+                ViewBag.isSuccess = true;
+                TempData["410"] = "410";
+                //TempData["Message"] = "Data deleted successfully.";
+            }
+            else if (Result.StatusText == "Error" || Result.StatusCode == HttpStatusCode.Accepted)
+            {
+                ViewBag.isSuccess = true;
+                TempData["423"] = "423";
+            }
+            else
+            {
+                ViewBag.isSuccess = false;
+                TempData["500"] = "500";
+            }
+
+            return RedirectToAction("HRLeaveMasterDashBoard");
+
+        }
+
         [HttpGet]
         public async Task<IActionResult> HRLeaveMasterDashBoard()
         {
