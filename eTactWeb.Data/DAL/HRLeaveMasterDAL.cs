@@ -265,7 +265,7 @@ namespace eTactWeb.Data.DAL
                     if (model.Mode == "UPDATE")
                     {
                         oCmd.Parameters.AddWithValue("@UpdatedBy", model.UpdatedBy);
-                        oCmd.Parameters.AddWithValue("@UpdatedOnDate", DateTime.Parse(model.UpdatedOn).ToString("dd/MMM/yyyy");
+                        oCmd.Parameters.AddWithValue("@UpdatedOnDate", DateTime.Parse(model.UpdatedOn).ToString("dd/MMM/yyyy"));
 
 
                     }
