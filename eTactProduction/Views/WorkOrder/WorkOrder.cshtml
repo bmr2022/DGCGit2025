@@ -654,6 +654,7 @@
                 //GetSearchData();
                 GetSaleOrderData();
                 fillAllStore();
+                fillWIPAllStore();
                // GetBomNo();
                highlightRowsWithEmptyBom();
             });
@@ -899,7 +900,7 @@
                 $('#Checkbox' + i).prop('checked', false).prop('disabled', false);
             } else {
                 fillAllStore();
-                //fillWIPAllStore();
+                fillWIPAllStore();
                 //GetBomNo();
                 GetMachineGroupName();
                 $('#WIPStore' + i).val(itemGridSeqNo.find('.WIPStore').text());
@@ -960,7 +961,7 @@
 
         function SaleOrderGridMethodCall() {
             fillAllStore();
-            //fillWIPAllStore();
+            fillWIPAllStore();
             //GetBomNo();
             GetMachineGroupName();
         }
@@ -1220,7 +1221,7 @@
                                     '<td><input id="SchYearCode' + i + '" value=' + val.schyearcode + ' readonly style="width:90px;" class="textbox"></td>' +
                                     '<td><input id="PartCode' + i + '" value=' + val.PartCode + ' readonly style="width:90px;" class="textbox"></td>' +
                                     '<td><input id="ItemName' + i + '" value="' + val.ItemName.replace(/"/g, '&quot;') + '" class="textbox" readonly></td>'+
-                                    '<td><select id="WIPStore' + i + '" onchange="WIPStoreChange(' + i + ');" onclick="fillWIPAllStore(' + i + ');" class="textbox" style="background-color:#ffd6dd;width:120px;">' +
+                                    '<td><select id="WIPStore' + i + '" onchange="WIPStoreChange(' + i + ');" class="WIPStore textbox" style="background-color:#ffd6dd;width:120px;">' +
                                     '<option value="' + val.WCID + '" selected>' + val.WorkCenter + '</option>' +
                                     '</select></td>'+
 
@@ -1543,20 +1544,30 @@
 
         function fillWIPAllStore(rowIndex) {
             var $dropdown = $('#WIPStore' + rowIndex); // Get the specific dropdown
-
+                
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("FillWorkCenter")",
                 dataType: "json",
                 async:false,
                 success: function (result) {
-                    if (result && result.StatusCode === 200 && result.StatusText === 'Success') {
-                        $dropdown.empty();
-                        $dropdown.append('<option disabled value="0" selected>-Select-</option>');
+                        if (typeof result === "string") {
+                    result = JSON.parse(result);
+                }
 
-                        $.each(result.Result, function (index, val) {
-                            $dropdown.append('<option value="' + val.EntryID + '">' + val.WorkCenterDescription + '</option>');
-                        });
+                    if (result && result.StatusCode === 200 && result.StatusText === 'Success') {
+                                 $('.WIPStore' ).empty();
+                                    $('.WIPStore').append('<option disabled value="0" selected>-Select-</option>');
+                                            $.each(result.Result, function (index, val) {
+                                                $('.WIPStore' ).append('<option value="' + val.EntryID +
+                                                    '">' + val.WorkCenterDescription + '</option>');
+                                        });
+                        // $dropdown.empty();
+                        // $dropdown.append('<option disabled value="0" selected>-Select-</option>');
+
+                        // $.each(result.Result, function (index, val) {
+                        //     $dropdown.append('<option value="' + val.EntryID + '">' + val.WorkCenterDescription + '</option>');
+                        // });
                     }
                 },
                 error: function (xhr, status, error) {
