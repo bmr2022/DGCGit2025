@@ -22,6 +22,7 @@
     .select2-container--default .select2-results > .select2-results__options {
         background-color: #e0f2f1; /* Dropdown background color */
         color: #000;
+    }
 </style>
 
 <div class="card bg-gradient mb-3 border-light shadow-lg">
@@ -362,6 +363,10 @@
                                                 <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Amount</th>
                                                 <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Disc Per</th>
                                                 <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Dis Amt</th>
+                                                <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MIR No</th>
+                                                <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MIR Date</th>
+                                                <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MIR EntryId</th>
+                                                <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MIR YearCode</th>
                                                 @* <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SONO</th>
                                                 <th data-columnno="18" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>CustOrderNo</th>
                                                 <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO Date</th>
@@ -371,7 +376,7 @@
                                                 <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Yearcode</th>*@
                                             </tr>
                                         </thead>
-                                        <tbody id="divAddPurchaseRejectionPopupDataGrid">
+                                        <tbody id="divAddPurchaseRejectionPopupDataGrid" style="background-color:lightgoldenrodyellow">
                                         </tbody>
                                     </table>
                                 </div>
@@ -613,10 +618,15 @@
     #divTaxGrid tr td {
         font-weight: 300;
     }
-
-   #divAddPurchaseRejectionList tr  {
+      #divAddPurchaseRejectionList tr td {
+        font-weight: 300;
+    }
+      #divAddPurchaseRejectionPopupDataGrid tr td {
+        font-weight: 300;
+    }
+  /*  #divAddPurchaseRejectionList tr  {
        background:#73bdd4;
-    } 
+    }  */
 </style>
 
 @section Scripts
@@ -854,6 +864,10 @@
                                 <td id="popUpItemAmount-` + j + `">${item.amount || 0}</td>
                                 <td id="popUpdisPer-` + j + `">${item.discountPer || 0}</td>
                                 <td id="popUpDisAmt-` + j + `">${item.discountAmt || 0}</td>
+                                            <td id="popUpMIRNo-` + j + `">${item.mirNo}</td>
+                                            <td id="popUpMIRDate-` + j + `">${item.mirDate}</td>
+                                                  <td id="popUpMIREntryId-` + j + `">${item.mirEntryId || 0}</td>
+                                            <td id="popUpMIRYearCode-` + j + `">${item.mirYearCode || 0}</td>
                             </tr>`;
                         billQty += parseFloat(item.BillQty) || 0;
                         billRate += parseFloat(item.BillRate) || 0;
@@ -1132,8 +1146,7 @@
                             var dueDate = val.DueDate == null ? "" : val.DueDate.split("T")[0];
 
                             var isChecked = "";
-
-                            if (typeof purchaseRejectionPopupGrid !== "undefined" && purchaseRejectionPopupGrid.length > 0) {
+                            if (purchaseRejectionPopupGrid.length > 0) {
                                 var alreadySelected = purchaseRejectionPopupGrid.some(function (x) {
                                     return (
                                         (x.InvoiceNo == val.InvoiceNo || x.PurchInvoiceNo == val.InvoiceNo) &&
@@ -1168,6 +1181,11 @@
                                 '<td id="MIRNo-' + i + '">' + val.MIRNO + '</td>' +
                                 '<td id="MIREntryId-' + i + '">' + val.MIREntryId + '</td>' +
                                 '<td id="MIRYEARCODE-' + i + '">' + val.MIRYEARCODE + '</td>' +
+                                '<td id="MIRDATE-' + i + '">' + val.MIRDATE + '</td>' +
+                                    '<td id="INProgressNo-' + i + '">' + val.INProgressNo + '</td>' +
+                                    '<td id="INProgressDate-' + i + '">' + val.INProgressDate + '</td>' +
+                                    '<td id="INProgressEntryId-' + i + '">' + val.INProgressEntryId + '</td>' +
+                                    '<td id="INProgressYearCode-' + i + '">' + val.INProgressYearCode+ '</td>' +
                                 '</tr>';
 
                             i++;
@@ -1363,7 +1381,7 @@
                             $('#TotalStock').val(obj[0].TotalStock);
                             $('#Remark').val(obj[0].Remark);
                             $('#MIRNo').val(obj[0].MIRNo);
-                            $('#MIREntryID').val(obj[0].MIREntryID);
+                            $('#MIREntryID').val(obj[0].MIREntryId);
                             $('#MIRYearCode').val(obj[0].MIRYearCode);
                             $('#MIRDate').val(obj[0].MIRDate);
                             $('#InprocessNo').val(obj[0].InprocessNo);
@@ -1860,6 +1878,11 @@
             });
         }
         var billQty = 0;
+         var MIRNo ="";
+               var MIRDATE ="";
+         var MIREntryId= 0;
+         var MIRYEARCODE = 0;
+         var mirDate= "";
         var billRate = 0;
         var popupbillQty = 0;
         var popupbillRate = 0;
@@ -1902,6 +1925,11 @@
                          "MIRNo": row.find('#MIRNo-' + i).text() || "",
                         "MIREntryId": row.find('#MIREntryId-' + i).text() || 0,
                          "MIRYEARCODE": row.find('#MIRYEARCODE-' + i).text() || 0,
+                         "MIRDate": row.find('#MIRDate-' + i).text() ,
+                                    "INProgressNo": row.find('#INProgressNo-' + i).text() || "",
+                          "INProgressEntryId": row.find('#INProgressEntryId-' + i).text() || 0,
+                                "INProgressYearCode": row.find('#INProgressYearCode-' + i).text() || 0,
+                                "INProgressDate": row.find('#INProgressDate-' + i).text() ,
                         "ItemSize": $('#ItemSize').val() || "",
                         "Amount": $('#ItemAmount-' + i).text() || "",
                         "PONO": row.find('#pono-' + i).text() || "",
@@ -1933,7 +1961,11 @@
                             $('#BillQty').text((obj.Result[i - 1] == null || obj.Result[i - 1] == undefined || obj.Result[i - 1].BillQty == null) ? 0 : (obj.Result[i - 1].BillQty).toFixed(2));
                             $('#DiscountPer').text((obj.Result[i - 1] == null || obj.Result[i - 1] == undefined || obj.Result[i - 1].DiscountPer == null) ? 0 : (obj.Result[i - 1].DiscountPer).toFixed(2));
                             $('#BillRate').text((obj.Result[i - 1] == null || obj.Result[i - 1] == undefined || obj.Result[i - 1].BillRate == null) ? 0 : (obj.Result[i - 1].BillRate).toFixed(2));
-                            /*$('#discAmt-' + i).text((obj.Result[i - 1] == null || obj.Result[i - 1] == undefined || obj.Result[i - 1].DiscountAmt == null) ? 0 : (obj.Result[i - 1].DiscountAmt).toFixed(2));
+                                $('#MIRNo').text(obj.Result[i - 1]?.MIRNo ?? '');
+                                $('#MIREntryID').text(obj.Result[i - 1]?.MIREntryId ?? '');
+                                $('#MIRYearCode').text(obj.Result[i - 1]?.MIRYearCode ?? 0);
+                                $('#MIRDate').text(obj.Result[i - 1]?.MIRDate ?? '');
+           /*$('#discAmt-' + i).text((obj.Result[i - 1] == null || obj.Result[i - 1] == undefined || obj.Result[i - 1].DiscountAmt == null) ? 0 : (obj.Result[i - 1].DiscountAmt).toFixed(2));
                             $('#billQty-' + i).text((obj.Result[i - 1] == null || obj.Result[i - 1] == undefined || obj.Result[i - 1].BillQty == null) ? 0 : (obj.Result[i - 1].BillQty).toFixed(2));
                             $('#discPer-' + i).text((obj.Result[i - 1] == null || obj.Result[i - 1] == undefined || obj.Result[i - 1].DiscountPer == null) ? 0 : (obj.Result[i - 1].DiscountPer).toFixed(2));
                             $('#billRate-' + i).text((obj.Result[i - 1] == null || obj.Result[i - 1] == undefined || obj.Result[i - 1].BillRate == null) ? 0 : (obj.Result[i - 1].BillRate).toFixed(2)); */
@@ -1982,6 +2014,14 @@
                     let invoiceNo = ($('#InvoiceNo-' + i).text() || '').trim();
                     let pbitemCode = $('#itemCode-' + i).val();
                     let itemCode = $('#ItemCode').val();
+                    let MIRNo=($('#MIRNo-' + i).text() || '').trim();
+                    let MIREntryId=($('#MIREntryId-' + i).text() || '').trim();
+                    let MIRYEARCODE=($('#MIRYEARCODE-' + i).text() || '').trim();
+                    let MIRDATE=($('#MIRDATE-' + i).text() || '').trim();
+                   let INProgressYearCode=($('#INProgressYearCode-' + i).text() || '').trim();
+                    let INProgressNo=($('#INProgressNo-' + i).text() || '').trim();
+                    let INProgressDate=($('#INProgressDate-' + i).text() || '').trim();
+                    let INProgressEntryId=($('#INProgressEntryId-' + i).text() || '').trim();
                     let uniqueKey = entryId + '_' + yearCode + '_' + invoiceNo + '_' + pbitemCode + '_' + itemCode;
 
                     // ✅ Prevent duplicate insertion
@@ -2000,9 +2040,14 @@
                                 <td id="popUpPurchBillYearCode-${j}">${yearCode}</td>
                                 <td id="popUpInvoiceNo-${j}">${invoiceNo}</td>
                                 <td id="popUpInvoiceDate-${j}">${$('#InvoiceDate-' + i).text()}</td>
+                                <td id="popUpMIRNo-${j}">${$('#MIRNo-' + i).text()}</td>
+                              <td id="popUpMIREntryId-${j}">${$('#MIREntryId-' + i).text()}</td>
+                              <td id="popUpMIRYEARCODE-${j}">${$('#MIRYEARCODE-' + i).text()}</td>
+                              <td id="popUpMIRDATE-${j}">${$('#MIRDATE-' + i).text()}</td>
                                 <td id="popUpBillQty-${j}">${$('#BillQty-' + i).text()}</td>
                                 <td id="popUpBillRate-${j}">${$('#BillRate-' + i).text()}</td>
-                                <td id="popUpItemAmount-${j}">${$('#ItemAmount-' + i).text()}</td>
+                                       
+                             
                             </tr>`;
                         j++;
                              popUpItems.push({ key: $('#ItemCode').val(), value: uniqueKey });
@@ -2048,14 +2093,25 @@
                                                 '<td id="popUpItemAmount-' + j + '">' + $('#ItemAmount-' + i).text() + '</td>' +
                                                 '<td id="popUpdisPer-' + j + '">' + $('#disPer-' + i).text() + '</td>' +
                                                 '<td id="popUpDisAmt-' + j + '">' + $('#DisAmt-' + i).text() + '</td>' +
+                                                 '<td id="popUpMIRNo-' + j + '">' + $('#MIRNo-' + i).text() + '</td>' +
+                                                  '<td id="popUpMIRDATE-' + j + '">' + $('#MIRDATE-' + i).text() + '</td>' +
+                                                  '<td id="popUpMIREntryId-' + j + '">' + $('#MIREntryId-' + i).text() + '</td>' +
+                                                  '<td id="popUpMIRYEARCODE-' + j + '">' + $('#MIRYEARCODE-' + i).text() + '</td>';
+                             
                                                 '</tr>';
                                         }
                                     /* } */
                                     billQty += ($('#BillQty-' + i).text() == '' ? 0 : parseFloat($('#BillQty-' + i).text()));
                                     billRate += ($('#BillRate-' + i).text() == '' ? 0 : parseFloat($('#BillRate-' + i).text()));
+                                    MIRNo = ($('#MIRNo-' + i).text());
+                                    MIREntryId =($('#MIREntryId-' + i).text());
+                                   MIRYEARCODE= ($('#MIRYEARCODE-' + i).text());
+                                   MIRDATE= ($('#MIRDATE-' + i).text());
+
                                 }
                             }
-                            $('#addPurchaseRejectionPopupModel').modal("hide");
+                                   purchaseRejectionPopupGrid = data;
+                                  $('#addPurchaseRejectionPopupModel').modal("hide");
                         } else {
                          /*    html += '<tr id="Row-' + i + '">' +
                                 '<td colspan="10" class="text-black-50 text-center"><strong class="text-danger">NO DATA ADDED</strong></td>' +
@@ -2065,6 +2121,10 @@
 
                         $('#BillQty').val(billQty.toFixed(2));
                         $('#BillRate').val(billRate.toFixed(2));
+                               $('#MIRNo').val(MIRNo);
+                              $('#MIREntryID').val(MIREntryId);
+                              $('#MIRYearCode').val(MIRYEARCODE );
+                              $('#MIRDate').val(MIRDATE);
 
                         $('#RejectedQty').val($('#BillQty').val());
                         $('#PRRate').val($('#BillRate').val());

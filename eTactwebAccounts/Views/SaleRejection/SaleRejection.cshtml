@@ -21,6 +21,19 @@
     .select2-container--default .select2-results > .select2-results__options {
         background-color: #e0f2f1; /* Dropdown background color */
         color: #000;
+    }
+        #divTaxGrid tr td
+    {
+        font-weight: 300;
+    }
+
+    #divSaleRejectionList tr td {
+        font-weight: 300;
+    }
+
+    #divAddSaleRejectionList tr td {
+        font-weight: 300;
+    }
 </style>
 <div class="card bg-gradient mb-3 border-light shadow-lg">
     <form asp-action="SaleRejection" autocomplete="off" class="form-horizontal" enctype="multipart/form-data">
@@ -96,6 +109,14 @@
                         <button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#BPanel2" aria-expanded="true" aria-controls="BPanel2">
                             <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Item Detail Grid</strong>
                         </button>
+                        <div class="d-flex justify-content-front align-items-center">
+                            <div class="col-auto">
+                                <button type="button" class="ItemBtn btn btn-sm btn-outline-danger">
+                                    <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
+                                </button>
+                            </div>
+                           
+                        </div>
                     </h2>
                     <div id="BPanel2" class="accordion-collapse collapse pnl1 bg-gradient" aria-labelledby="HPanel2">
                         <div class="accordion-body">
@@ -104,16 +125,7 @@
                                 <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
                             <div class="card">
-                                <div class="d-flex justify-content-end align-items-center mt-3">
-                                    <div class="col-auto">
-                                        <button type="button" class="ItemBtn btn btn-sm btn-outline-danger">
-                                            <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
-                                        </button>
-                                    </div>
-                                    <div class="col-auto ms-3">
-                                        <input type="text" class="form-control" id="search-box" style="background-color: #FFFACD;" placeholder="Search...">
-                                    </div>
-                                </div>
+                            
 
                                 <div class="card-body overflow-auto pb-0">
                                     <div class="table-responsive" style="max-height:150px;">
@@ -196,7 +208,7 @@
                                                     <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SaleBillremark</th>
                                                 </tr>
                                             </thead>
-                                            <tbody id="divAddSaleRejectionList">
+                                            <tbody id="divAddSaleRejectionList" style="background-color:lightgoldenrodyellow">
                                                 <partial name="_AddSaleRejectionGrid" />
                                             </tbody>
                                         </table>
@@ -228,7 +240,7 @@
                                 <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
                             <div class="row g-2 gx-3 justify-content-around">
-                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                              @*   <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="TotalRoundOff" class="form-label">RoundOff</label>
                                     <select class="form-select" asp-for="TotalRoundOff" asp-items="Model.YesNoList">
                                         <option value="">-Select-</option>
@@ -241,7 +253,7 @@
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="TotalAmtAftrDiscount" class="form-label">Amt Aftr Discount</label>
                                     <input asp-for="TotalAmtAftrDiscount" class="form-control" readonly />
-                                </div>
+                                </div> *@
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="NetTotal" class="form-label">Net Total</label>
                                     <input asp-for="NetTotal" class="form-control" readonly />
@@ -425,11 +437,12 @@
             // $('#NetTotal').val(txAmt);
             // $('#AdjPendAmt').val($('#NetTotal').val());
 
-            $('#SalerejCreditNoteVoucherNo').rules("remove", "required");
+            
             $('#VoucherNo').rules("remove", "required");
             $('#Vehicleno').rules("remove", "required");
             $('#Transporter').rules("remove", "required");
             $('#RoundoffType').rules("remove", "required");
+             $('#RoundOffAmt').rules("remove", "required");
             $('#ActualEnteredByName').rules("remove", "required");
             $('#LastUpdatedByName').rules("remove", "required");
             $('#LastUpdationDate').rules("remove", "required");
@@ -1003,7 +1016,8 @@
                             $('#SaleRejEntryId').val(obj.Result.Table[0].SaleRejEntryId);
                             $('#VoucherNo').val("");
                             $('#VoucherNo').val(obj.Result.Table[0].VoucherNo);
-
+                               $('#SalerejCreditNoteVoucherNo').val("");
+                              $('#SalerejCreditNoteVoucherNo').val(obj.Result.Table[0].VoucherNo);
                             $('#AdjNewRefNo').val($('#VoucherNo').val());
                             $('#AdjDescription').val($('#VoucherNo').val());
                         }
@@ -1167,27 +1181,116 @@
 
             }
         });
+           async function ValidateSubmit() {
+                  if ($('#Vehicleno').val() != '') {
+                  var inputValue = $('#Vehicleno').val();
+                  if (inputValue.length > 10) {
+                      $('#Vehicleno').val(inputValue.substring(0, 10));
+                  } else if (inputValue.length < 10) {
+                      $.notify("Please enter at least 10 characters in Vehicle No", "error");
+                      return false;
+                  }
+              }
+
+              if ($('#DistanceKM').val() > 3000) {
+                  $('#DistanceKM').val(0);
+                  $.notify("Distance KM should not greter then 3000 KM...!", "error");
+                  return false;
+              }
+
+              if ($('#AccountCode').val() == 0) {
+                  $.notify("Customer Name is manadatory...!", "error");
+                  return false;
+              }
+
+              if ($('#DocTypeAccountCode').val() == 0) {
+                  $.notify("DocType Name is manadatory...!", "error");
+                  return false;
+              }
+
+              if ($('#VoucherNo').val() == '') {
+                  $.notify("VoucherNo is manadatory...!", "error");
+                  return false;
+              }
+
+
+              var rowCount = $('#divdbCrItemList tr').length;
+              var drAmt = 0;
+              var crAmt = 0;
+
+              for (var i = 1; i <= rowCount; i++) {
+                  drAmt += $('#drcrRow-' + i + ' .dramt').text() == '' ? 0 : parseFloat($('#drcrRow-' + i + ' .dramt').text());
+                  crAmt += $('#drcrRow-' + i + ' .cramt').text() == '' ? 0 : parseFloat($('#drcrRow-' + i + ' .cramt').text());
+              }
+
+              if (drAmt != crAmt) {
+                  $.notify("Debit and Credit are not maintained...!", "error");
+                  return false;
+              }
+
+              if ($('#PaymentTerm').val() == '') {
+                 $.notify("Please enter payment Credit days..!", "error");
+                 return false;
+             }
+             let Err = 0;
+             const isGridEmpty = (gridSelector) => {
+                 const $rows = $(`${gridSelector} tr`);
+                 if ($rows.length === 0) return true;
+                 if ($rows.length === 1) {
+                     const $tds = $rows.first().find('td');
+                     const firstText = $tds.first().text().trim().toLowerCase();
+                     const colspan = $tds.first().attr('colspan');
+                     if ($tds.length === 1 && firstText === "no data added" && colspan) {
+                         return true;
+                     }
+                 }
+                 return false;
+             };
+              if (isGridEmpty('#divAddSaleRejectionList')) {
+                 Err = 1;
+                  $.notify('Sale Rejection Grid should have at least 1 item...!', "error");
+             }
+             if (isGridEmpty('#divAdjItemList')) {
+                 Err = 1;
+                 $.notify('Adjustment Grid should have at least 1 item...!', "error");
+             }
+             if (isGridEmpty('#divdbCrItemList')) {
+                 Err = 1;
+                 $.notify('DR/CR Grid should have at least 1 item...!', "error");
+             }
+             if ($('#GSTRegistered').val() === 'Y' && isGridEmpty('#divTaxGrid')) {
+                 Err = 1;
+                 $.notify('Tax Grid should have at least 1 item...!', "error");
+             }
+                
+            
+             if (Err === 1) {
+                 return false;
+             }
+             /* try {
+                 saveagainstbillgrid();
+                 if (Err === 1) {
+                     return false;
+                 }
+             } catch (err) {
+                 co
+                 nsole.error("Error during Against grid Save:", err);
+                 return false;
+             } */
+             return true;
+         }
 
 
         $('#submitBTN,#submitBTNfooter').click(function (e) {
 
             e.preventDefault();
 
-            if (!ValidateSubmit()) return;
-
-            if ($('#divAddSaleRejectionList tr td').length <= 1) {
-                $.notify('Sale rejection Grid Should Have Atleast 1 Item...!', "error");
-            }
-            else if ($('#GSTRegistered').val() == 'Y') {
-                if ($('#divTaxGrid tr td').length <= 1) {
-                    $.notify('Tax Grid Should Have Atleast 1 Item...!', "error");
-                } else {
+              const result =  ValidateSubmit();
+             if (result === true) {
                     $("form").submit();
                 }
-            }
-            else {
-                $("form").submit();
-            }
+            
+            
         });
 
 
@@ -1324,53 +1427,7 @@
 
 
         function ValidateSubmit() {
-            if ($('#Vehicleno').val() != '') {
-                var inputValue = $('#Vehicleno').val();
-                if (inputValue.length > 10) {
-                    $('#Vehicleno').val(inputValue.substring(0, 10));
-                } else if (inputValue.length < 10) {
-                    $.notify("Please enter at least 10 characters in Vehicle No", "error");
-                    return false;
-                }
-            }
-
-            if ($('#DistanceKM').val() > 3000) {
-                $('#DistanceKM').val(0);
-                $.notify("Distance KM should not greter then 3000 KM...!", "error");
-                return false;
-            }
-
-            if ($('#AccountCode').val() == 0) {
-                $.notify("Customer Name is manadatory...!", "error");
-                return false;
-            }
-
-            if ($('#DocTypeAccountCode').val() == 0) {
-                $.notify("DocType Name is manadatory...!", "error");
-                return false;
-            }
-
-            if ($('#VoucherNo').val() == '') {
-                $.notify("VoucherNo is manadatory...!", "error");
-                return false;
-            }
-
-
-            var rowCount = $('#divdbCrItemList tr').length;
-            var drAmt = 0;
-            var crAmt = 0;
-
-            for (var i = 1; i <= rowCount; i++) {
-                drAmt += $('#drcrRow-' + i + ' .dramt').text() == '' ? 0 : parseFloat($('#drcrRow-' + i + ' .dramt').text());
-                crAmt += $('#drcrRow-' + i + ' .cramt').text() == '' ? 0 : parseFloat($('#drcrRow-' + i + ' .cramt').text());
-            }
-
-            if (drAmt != crAmt) {
-                $.notify("Debit and Credit are not maintained...!", "error");
-                return false;
-            }
-
-            return true;
+        
         }
 
         $('#vehicleNo').on('input', function () {

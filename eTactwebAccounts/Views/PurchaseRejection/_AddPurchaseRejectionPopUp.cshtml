@@ -5,7 +5,7 @@
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdropLabel"></h5>
+                <h5 class="modal-title" id="staticBackdropLabel">Purchase Bill Details</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -29,6 +29,14 @@
                                                 <input asp-for="ShowAllBill" class="form-check-input" type="checkbox" role="switch" />
                                                 <label class="form-check-label ms-2">Show All</label>
                                             </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <label asp-for="fromBillDate" class="form-label">From PBill Date</label>
+                                            <input asp-for="fromBillDate" class="form-control" />
+                                        </div>
+                                        <div class="col-md-2">
+                                            <label asp-for="toBillDate" class="form-label">To PBill Date</label>
+                                            <input asp-for="toBillDate" class="form-control" />
                                         </div>
                                         <div class="col-auto ms-3">
                                             <input type="text" class="form-control" id="popup-search-box" style="background-color: #FFFACD;" placeholder="Search...">

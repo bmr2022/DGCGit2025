@@ -35,12 +35,15 @@ namespace eTactWeb.Controllers
             HttpContext.Session.Remove("SaleRejectionModel");
             HttpContext.Session.Remove("KeyAdjGrid");
 
-            model.Uid = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-            model.ActualEnteredBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-            model.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
+           
+
+            //model.Uid = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+            //model.ActualEnteredBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+            //model.ActualEnteredByName = GetEmpByMachineName();
+            //model.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
             model.MrnNo = mrnNo;
             model.Mrnyearcode = mrnYC;
-            model.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
+           // model.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
             model.SaleRejYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
 
             model = await _saleRejection.FillSaleRejectionGrid(mrnNo, mrnEntryId, mrnYC, model.SaleRejYearCode);
@@ -61,6 +64,11 @@ namespace eTactWeb.Controllers
             HttpContext.Session.SetString("KeyAdjGrid", JsonConvert.SerializeObject(model.adjustmentModel == null ? new AdjustmentModel() : model.adjustmentModel));
             HttpContext.Session.SetString("SaleRejectionModel", JsonConvert.SerializeObject(model));
             HttpContext.Session.SetString("SaleRejection", JsonConvert.SerializeObject(model));
+            model.Uid = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+            model.ActualEnteredBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+            model.ActualEnteredByName = GetEmpByMachineName();
+            model.ActualEntryDate = HttpContext.Session.GetString("ActualEntryDate") ?? ParseFormattedDate(DateTime.Today.ToString("dd/MM/yyyy"));
+            model.MachineName = GetEmpByMachineName();
             return View(model);
         }
         //public async Task<JsonResult> EditItemRows(int SeqNo)
@@ -78,6 +86,20 @@ namespace eTactWeb.Controllers
             var JSON = await _saleRejection.GetFormRights(userID);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
+        }
+        public string GetEmpByMachineName()
+        {
+            try
+            {
+                string empname = string.Empty;
+                empname = HttpContext.Session.GetString("EmpName").ToString();
+                if (string.IsNullOrEmpty(empname)) { empname = Environment.UserDomainName; }
+                return empname;
+            }
+            catch
+            {
+                return "";
+            }
         }
         [HttpGet]
         public async Task<IActionResult> SaleRejectionEdit(int ID, string Mode, int YearCode)
@@ -166,20 +188,7 @@ namespace eTactWeb.Controllers
             //HttpContext.Session.SetString("SaleRejection", JsonConvert.SerializeObject(model));
             return View("SaleRejection", model);
         }
-        public string GetEmpByMachineName()
-        {
-            try
-            {
-                string empname = string.Empty;
-                empname = HttpContext.Session.GetString("EmpName").ToString();
-                if (string.IsNullOrEmpty(empname)) { empname = Environment.UserDomainName; }
-                return empname;
-            }
-            catch
-            {
-                return "";
-            }
-        }
+        
         public IActionResult AddSaleRejectionDetail(List<SaleRejectionDetail> model)
         {
             try
