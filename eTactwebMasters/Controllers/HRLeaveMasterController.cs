@@ -320,6 +320,38 @@ namespace eTactwebMasters.Controllers
                 ViewBag.isSuccess = true;
                 TempData["423"] = "423";
             }
+            if (Result.StatusText == "Used" )
+            {
+                ViewBag.isSuccess = false;
+                var input = "";
+                if (Result != null)
+                {
+
+                    input = Result.Result.ToString();
+                    int index = input.IndexOf("#ERROR_MESSAGE");
+
+                    if (index != -1)
+                    {
+                        string errorMessage = input.Substring(index + "#ERROR_MESSAGE :".Length).Trim();
+                        TempData["ErrorMessage"] = errorMessage;
+
+                    }
+                    else
+                    {
+                        TempData["ErrorMessage"] = Result.Result?.ToString()
+                                ?? "Used record cannot be deleted.";
+                    }
+                }
+                else
+                {
+                    TempData["500"] = "500";
+                }
+
+
+                _logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
+                //model.IsError = "true";
+                //return View("Error", Result);
+            }
             else
             {
                 ViewBag.isSuccess = false;

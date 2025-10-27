@@ -42,9 +42,9 @@ namespace eTactWeb.Data.BLL
             return await _HRLeaveOpeningMasterDAL.GetLeaveName();
         }
 
-        public async Task<ResponseResult> GetShiftName()
+        public async Task<ResponseResult> GetShiftName(int EmpId)
         {
-            return await _HRLeaveOpeningMasterDAL.GetShiftName();
+            return await _HRLeaveOpeningMasterDAL.GetShiftName(EmpId);
         }
 
         public async Task<ResponseResult> GetEmpCode()
