@@ -21,6 +21,8 @@ namespace eTactWeb.DOM.Models
         [Required]
         [StringLength(100)]
         public string LeaveName { get; set; } // Casual Leave, Sick Leave	
+        public int LeaveYearcode { get; set; } // Casual Leave, Sick Leave	
+        public string EntryByMachine { get; set; } // Casual Leave, Sick Leave	
 
         [Required]
         [StringLength(50)]
