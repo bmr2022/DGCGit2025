@@ -26,6 +26,6 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetDashboardData();
         Task<HRLeaveMasterModel> GetDashboardDetailData();
         Task<HRLeaveMasterModel> GetViewByID(int Id);
-        Task<ResponseResult> DeleteByID(int ID);
+        Task<ResponseResult> DeleteByID(int ID,int LeaveYearcode,string EntryByMachine,int CreatedByEmpid,string CreationDate,string LeaveCode);
     }
 }

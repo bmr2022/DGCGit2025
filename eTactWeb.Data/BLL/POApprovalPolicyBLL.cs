@@ -50,5 +50,21 @@ namespace eTactWeb.Data.BLL
 		{
 			return await _POApprovalPolicyDAL.SavePOApprovalPolicy(model);
 		}
-	}
+        public async Task<ResponseResult> GetDashboardData(POApprovalPolicyModel model)
+        {
+            return await _POApprovalPolicyDAL.GetDashboardData(model);
+        }
+        public async Task<POApprovalPolicyModel> GetDashboardDetailData(string FromDate, string ToDate, string ReportType)
+        {
+            return await _POApprovalPolicyDAL.GetDashboardDetailData(FromDate, ToDate, ReportType);
+        }
+        public async Task<ResponseResult> DeleteByID(int EntryId, string EntryDate, int EntryByempId)
+        {
+            return await _POApprovalPolicyDAL.DeleteByID(EntryId, EntryDate, EntryByempId);
+        }
+        public async Task<POApprovalPolicyModel> GetViewByID(int ID, int YC, string FromDate, string ToDate)
+        {
+            return await _POApprovalPolicyDAL.GetViewByID(ID, YC, FromDate, ToDate);
+        }
+    }
 }

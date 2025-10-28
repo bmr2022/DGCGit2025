@@ -114,7 +114,7 @@ namespace eTactWeb.Data.DAL
 
             return oDataSet;
         }
-        public async Task<ResponseResult> DeleteByID(int ID)
+        public async Task<ResponseResult> DeleteByID(int ID,int LeaveYearcode,string EntryByMachine,int CreatedByEmpid,string CreationDate,string LeaveCode)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -122,6 +122,10 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "Delete"));
                 SqlParams.Add(new SqlParameter("@LeaveEntryId", ID));
+                SqlParams.Add(new SqlParameter("@LeaveYearcode", LeaveYearcode));
+                SqlParams.Add(new SqlParameter("@EntryByMachine", EntryByMachine));
+                SqlParams.Add(new SqlParameter("@CreationDate", CommonFunc.ParseFormattedDate(CreationDate)));
+                SqlParams.Add(new SqlParameter("@LeaveCode", LeaveCode));
                 _ResponseResult = await _DataLogicDAL.ExecuteDataTable("HRSPLeaveMaster", SqlParams);
             }
             catch (Exception ex)
@@ -382,6 +386,8 @@ namespace eTactWeb.Data.DAL
                                                
                                                    GenderApplicable = dr["Gender"].ToString(),
                                                    MaxLeavePerYear = Convert.ToInt32(dr["MaxleavePerYear"]),
+                                                   LeaveYearcode = dr["LeaveYearCode"] == DBNull.Value ? 0 : Convert.ToInt32(dr["LeaveYearCode"]),
+                                                  
                                                    MinDaysForApplication = Convert.ToInt32(dr["MinDayForApplication"]),
                                                    MaxConsecutiveDaysAllowed = Convert.ToInt32(dr["MaxConsecutiveDaysAllowed"]),
                                                   
