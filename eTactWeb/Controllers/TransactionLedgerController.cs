@@ -6,10 +6,11 @@ using Newtonsoft.Json;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services;
 using eTactWeb.DOM;
+using eTactWeb.Services.Helpers;
 
 namespace eTactWeb.Controllers
 {
-    public class TransactionLedgerController : Controller
+    public class TransactionLedgerController : BaseNavigationController
     {
         private readonly IDataLogic _IDataLogic;
         public ITransactionLedger _TransactionLedger { get; }
@@ -48,55 +49,47 @@ namespace eTactWeb.Controllers
             return Json(JsonString);
         }
         public async Task<IActionResult> GetDetailsData(
-      string FromDate = null, string ToDate = null, string ReportType = null,
-      string GroupOrLedger = null, int? ParentAccountCode = null, int? AccountCode = null,
-      string VoucherType = null, string VoucherNo = null, string InvoiceNo = null,
-      string Narration = null, float? Amount = null, string? DR = null,
-      string? CR = null, string Ledger = null)
+                string FromDate = null, string ToDate = null, string ReportType = null,
+                string GroupOrLedger = null, int? ParentAccountCode = null, int? AccountCode = null,
+                string VoucherType = null, string VoucherNo = null, string InvoiceNo = null,
+                string Narration = null, float? Amount = null, string DR = null,
+                string CR = null, string Ledger = null)
         {
-            // Load saved filters if present
-            var savedFilterString = HttpContext.Session.GetString("TransactionLedgerFilters");
-            dynamic savedFilters = null;
-            if (savedFilterString != null)
-                savedFilters = JsonConvert.DeserializeObject<dynamic>(savedFilterString);
+            const string filterKey = "TransactionLedgerFilters";
 
-            // Use parameter if provided, else fall back to saved filter
-            FromDate ??= savedFilters?.FromDate;
-            ToDate ??= savedFilters?.ToDate;
-            ReportType ??= savedFilters?.ReportType;
-            GroupOrLedger ??= savedFilters?.GroupOrLedger;
+            // load saved filters
+            var saved = FilterHelper.GetFilters(HttpContext, filterKey) ?? new FilterState();
 
-            ParentAccountCode ??= savedFilters?.ParentAccountCode != null
-                ? (int?)savedFilters.ParentAccountCode
-                : null;
-
-            // Handle AccountCode specially (empty string → null)
-            if (AccountCode == null || AccountCode == 0)
+            // merge (prefer incoming parameters)
+            var filters = new FilterState
             {
-                var accCodeStr = savedFilters?.AccountCode?.ToString();
-                if (!string.IsNullOrEmpty(accCodeStr))
-                    AccountCode = Convert.ToInt32(accCodeStr);
-            }
+                FromDate = FromDate ?? saved.FromDate,
+                ToDate = ToDate ?? saved.ToDate,
+                ReportType = ReportType ?? saved.ReportType,
+                GroupOrLedger = GroupOrLedger ?? saved.GroupOrLedger,
+                ParentAccountCode = ParentAccountCode ?? saved.ParentAccountCode,
+                AccountCode = (AccountCode == null || AccountCode == 0) ? saved.AccountCode : AccountCode,
+                VoucherType = VoucherType ?? saved.VoucherType,
+                VoucherNo = VoucherNo ?? saved.VoucherNo,
+                InvoiceNo = InvoiceNo ?? saved.InvoiceNo,
+                Narration = Narration ?? saved.Narration,
+                Amount = Amount ?? saved.Amount,
+                DR = DR ?? saved.DR,
+                CR = CR ?? saved.CR,
+                Ledger = Ledger ?? saved.Ledger
+            };
 
-            VoucherType ??= savedFilters?.VoucherType;
-            VoucherNo ??= savedFilters?.VoucherNo;
-            InvoiceNo ??= savedFilters?.InvoiceNo;
-            Narration ??= savedFilters?.Narration;
+            // save merged filters to session
+            FilterHelper.SaveFilters(HttpContext, filterKey, filters);
 
-            if (Amount == null && savedFilters?.Amount != null)
-                Amount = (float?)savedFilters.Amount;
-
-            DR ??= savedFilters?.DR;
-            CR ??= savedFilters?.CR;
-
-            // Now call your service
+            // call your service with the merged filters (convert types if needed)
             var model = await _TransactionLedger.GetDetailsData(
-                FromDate, ToDate, ReportType, GroupOrLedger,
-                ParentAccountCode, AccountCode, VoucherType, VoucherNo,
-                InvoiceNo, Narration, Amount, DR, CR, Ledger
+                filters.FromDate, filters.ToDate, filters.ReportType, filters.GroupOrLedger,
+                filters.ParentAccountCode, filters.AccountCode, filters.VoucherType, filters.VoucherNo,
+                filters.InvoiceNo, filters.Narration, filters.Amount, filters.DR, filters.CR, filters.Ledger
             );
 
-            // Save latest data in session
+            // cache data optionally
             HttpContext.Session.SetString("TransactionLedgerData", JsonConvert.SerializeObject(model));
 
             return PartialView("_TransactionLedgerGrid", model);
@@ -275,87 +268,6 @@ namespace eTactWeb.Controllers
                 stream.ToArray(),
                 "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             );
-        }
-        [HttpGet]
-        public async Task<IActionResult> DrillDown(
-            string controllerName = "TransactionLedger",
-            string actionName = "Index",
-            int ID = 0, int YearCode = 0, string Mode = "U", int AccountCode = 0,
-            string FromDate = null, string ToDate = null, string ReportType = null,
-            string GroupOrLedger = null, int? ParentAccountCode = null,
-            string VoucherType = null, string VoucherNo = null, string InvoiceNo = null,
-            string Narration = null, float? Amount = null,
-            string DR = null, string CR = null, string Ledger = null,
-            string ClickName = null)
-        {
-            // Capture query params
-            var queryParams = HttpContext.Request.Query.ToDictionary(q => q.Key, q => (object)q.Value.ToString());
-
-            // Push navigation state
-            var state = new NavigationState
-            {
-                Controller = controllerName,
-                Action = actionName,
-                Filters = queryParams,
-                RouteValues = new Dictionary<string, object>
-        {
-            { "ID", ID },
-            { "AccountCode", AccountCode },
-            { "YearCode", YearCode },
-            { "Mode", Mode }
-        },
-                ReportType = ReportType
-            };
-            NavigationHelper.Push(HttpContext, state);
-
-            HttpContext.Session.SetString("LastPageFilters", JsonConvert.SerializeObject(queryParams));
-
-            // Handle data
-            switch (ReportType)
-            {
-                case "MonthlySummary":
-                    var monthlyModel = await _TransactionLedger.GetDetailsData(
-                        FromDate, ToDate, "TransactionLedgerDetail", GroupOrLedger, ParentAccountCode,
-                        AccountCode, VoucherType, VoucherNo, InvoiceNo, Narration, Amount, DR, CR, Ledger
-                    );
-                    HttpContext.Session.SetString("TransactionLedgerData", JsonConvert.SerializeObject(monthlyModel));
-                    return PartialView("_TransactionLedgerGrid", monthlyModel);
-
-                case "TransactionLedgerSummary":
-                case "TransactionLedgerDetail":
-                    var model = await _TransactionLedger.GetDetailsData(
-                        FromDate, ToDate, "TransactionLedgerDetail", GroupOrLedger, ParentAccountCode,
-                        AccountCode, VoucherType, VoucherNo, InvoiceNo, Narration, Amount, DR, CR, Ledger
-                    );
-                    HttpContext.Session.SetString("TransactionLedgerData", JsonConvert.SerializeObject(model));
-
-                    var routeValues = new RouteValueDictionary(state.RouteValues);
-                    foreach (var filter in state.Filters)
-                        if (!routeValues.ContainsKey(filter.Key))
-                            routeValues.Add(filter.Key, filter.Value);
-
-                    return RedirectToAction(actionName, controllerName, routeValues);
-
-                case "GROUPSUMMARY":
-                case "GROUPDETAIL":
-                    var groupModel = await _TransactionLedger.GetTransactionLedgerGroupSummaryDetailsData(
-                        FromDate, ToDate, ReportType, GroupOrLedger, ParentAccountCode,
-                        AccountCode, VoucherType, VoucherNo, InvoiceNo, Narration, Amount, DR, CR, Ledger
-                    );
-                    HttpContext.Session.SetString("TransactionLedgerData", JsonConvert.SerializeObject(groupModel));
-                    return PartialView(
-                        ClickName == "ParentLedgerClick" ? "_TransactionLedgerGroupSummaryGrid" : "_TransactionLedgerGrid",
-                        groupModel
-                    );
-
-                default:
-                    var defaultRouteValues = new RouteValueDictionary(state.RouteValues);
-                    foreach (var filter in state.Filters)
-                        if (!defaultRouteValues.ContainsKey(filter.Key))
-                            defaultRouteValues.Add(filter.Key, filter.Value);
-
-                    return RedirectToAction(actionName, controllerName, defaultRouteValues);
-            }
         }
     }
 }

@@ -157,7 +157,7 @@
                                     <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="TransactionLedger" asp-action="TransactionLedger">
                                         <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
                                     </a>
-                                    <a href="#" class="btn btn-primary btn-sm ms-3" onclick="window.location.href='@Url.Action("Back", "Common")'" id="BackButton">
+                                    <a href="#" class="btn btn-primary btn-sm ms-3" onclick="PressBack()" id="BackButton">
                                         <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
                                         BACK
                                     </a>
@@ -969,7 +969,7 @@
                 var queryString = $.param(params);
 
                 // Redirect to DrillDown action
-                window.location.href = '/TransactionLedger/DrillDown?' + queryString;
+                window.location.href = '/BaseNavigation/DrillDown?' + queryString;
             }
             if (ReportType == "MonthlySummary") {
                 var month = $(anchor).data('month');
@@ -1060,6 +1060,10 @@
                     }
                 });
             }
+        }
+
+        function PressBack() {
+            window.location.href = '/BaseNavigation/Back';
         }
 
     </script>
