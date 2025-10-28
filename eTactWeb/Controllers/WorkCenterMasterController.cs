@@ -1,4 +1,5 @@
-﻿using eTactWeb.DOM.Models.Master;
+﻿using eTactWeb.DOM.Models;
+using eTactWeb.DOM.Models.Master;
 using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -49,6 +50,10 @@ namespace eTactWeb.Controllers
                 model = await _IWorkCenterMaster.ViewByID(id).ConfigureAwait(true);
                 model.Mode = mode;
             }
+            model.cc=HttpContext.Session.GetString("Branch");
+
+            model.EntryByMachineName = Environment.MachineName; ; 
+
 
             return View(model);
         }
@@ -70,6 +75,8 @@ namespace eTactWeb.Controllers
                     existingRecord.WorkCenterDescription = model.WorkCenterDescription;
                     existingRecord.WorkCenterType = model.WorkCenterType;
                     existingRecord.Mode = model.Mode;
+                    existingRecord.cc = model.cc;
+                    existingRecord.EntryByMachineName = model.EntryByMachineName;
                     //existingRecord.MachineId = model.MachineId;
 
                     // Save the updated record back to the database
@@ -89,6 +96,10 @@ namespace eTactWeb.Controllers
             else
             {
                 // Handle insert case if mode is not "U"
+                model.cc = HttpContext.Session.GetString("Branch");
+
+                model.EntryByMachineName = Environment.MachineName; ;
+
                 var result = await _IWorkCenterMaster.SaveData(model).ConfigureAwait(true);
                 if (result.StatusText == "Success")
                 {
