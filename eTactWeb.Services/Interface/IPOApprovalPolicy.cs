@@ -17,5 +17,10 @@ namespace eTactWeb.Services.Interface
 		Task<ResponseResult> FillGroupName();
 		Task<ResponseResult> FillEntryID();
 		Task<ResponseResult> SavePOApprovalPolicy(POApprovalPolicyModel model);
-	}
+
+        Task<ResponseResult> GetDashboardData(POApprovalPolicyModel model);
+        Task<POApprovalPolicyModel> GetDashboardDetailData(string FromDate, string ToDate, string ReportType);
+        Task<ResponseResult> DeleteByID(int EntryId, string EntryDate, int EntryByempId);
+        Task<POApprovalPolicyModel> GetViewByID(int ID, int YC, string FromDate, string TODate);
+    }
 }
