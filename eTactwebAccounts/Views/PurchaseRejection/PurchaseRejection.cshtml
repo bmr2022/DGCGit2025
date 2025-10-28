@@ -1278,7 +1278,15 @@
                     '<td id="DisAmt-' + newIndex + '">' + $popupRow.find('[id^="popUpDisAmt-"]').text() + '</td>' +
                      '<td id="MIRNo-' + newIndex + '">' + $popupRow.find('[id^="popUpMIRNo-"]').text() + '</td>' +
                      '<td id="MIREntryId-' + newIndex + '">' + $popupRow.find('[id^="popUpMIREntryId-"]').text() + '</td>' +
-                    '<td id="MIRYEARCODE-' + newIndex + '">' + $popupRow.find('[id^="popUpMIRYEARCODE-"]').text() + '</td>' +
+                          '<td id="MIRYEARCODE-' + newIndex + '">' + $popupRow.find('[id^="popUpMIRYearCode-"]').text() + '</td>' +
+                                  '<td id="MIRDATE-' + newIndex + '">' + $popupRow.find('[id^="popUpMIRDate-"]').text() + '</td>' +
+                                          '<td id="INProgressNo-' + newIndex + '">' + $popupRow.find('[id^="popUpINProgressNo-"]').text() + '</td>' +
+                                                '<td id="INProgressEntryId-' + newIndex + '">' + $popupRow.find('[id^="popUpINProgressEntryId-"]').text() + '</td>' +
+                                                         '<td id="INProgressYearCode-' + newIndex + '">' + $popupRow.find('[id^="popUpINProgressYearCode-"]').text() + '</td>' +
+                                       '<td id="INProgressDate-' + newIndex + '">' + $popupRow.find('[id^="popUpINProgressDate-"]').text() + '</td>' +
+                                                  
+                                               
+                          
                     '</tr>';
 
                 $('#divPurchaseRejectionDataGrid').append(mainHtml);
@@ -2097,7 +2105,10 @@
                                                   '<td id="popUpMIRDATE-' + j + '">' + $('#MIRDATE-' + i).text() + '</td>' +
                                                   '<td id="popUpMIREntryId-' + j + '">' + $('#MIREntryId-' + i).text() + '</td>' +
                                                   '<td id="popUpMIRYEARCODE-' + j + '">' + $('#MIRYEARCODE-' + i).text() + '</td>';
-                             
+                                                                '<td id="popUpINProgressNo-' + j + '">' + $('#INProgressNo-' + i).text() + '</td>' +
+                                                              '<td id="popUpINProgressDate-' + j + '">' + $('#INProgressDate-' + i).text() + '</td>' +
+                                                              '<td id="popUpINProgressEntryId-' + j + '">' + $('#INProgressEntryId-' + i).text() + '</td>' +
+                                                              '<td id="popUpINProgressYearCode-' + j + '">' + $('#INProgressYearCode-' + i).text() + '</td>';
                                                 '</tr>';
                                         }
                                     /* } */
@@ -3228,11 +3239,12 @@
         });
 
         $('#fromBillDate').change(function () {
-            $('#toBillDate').datepicker("option", "minDate", $('#fromBillDate').val());
+                  $('#toBillDate').datepicker("option", "minDate", $('#PurchaseRejectionVoucherDate').val());
         });
         /* #PurchaseRejEntryDate, #PurchaseRejInvoiceDate, #PurchaseRejectionVoucherDate, #ActualEntryDate, #LastUpdationDate, */
         $("#fromBillDate, #toBillDate").on("change", function () {
             validateDate(this);
+                    FillPurchaseRejectionPopUp();
         });
         function validateDate(e) {
             const today = new Date();
@@ -3331,8 +3343,9 @@
                     $('#fromBillDate').datepicker("option", "minDate", formattedYear);
                     $('#toBillDate').datepicker("option", "minDate", formattedYear);
                     $('#fromBillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", finFromDate);
-                    $('#toBillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", finToDate);
-
+                    
+                            var invoiceDate1 = $('#PurchaseRejectionInvoiceDate').val() != "" ? parseDateToFormat($('#PurchaseRejectionInvoiceDate').val()) : result;
+                                        $('#toBillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", invoiceDate1);
                     if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
                         var vouchDate = $('#PurchaseRejectionVoucherDate').val() != "" ? parseDateToFormat($('#PurchaseRejectionVoucherDate').val()) : result;
                         $('#PurchaseRejectionVoucherDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", vouchDate).datepicker("option", { changeMonth: true, changeYear: true });

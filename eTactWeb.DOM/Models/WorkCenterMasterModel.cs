@@ -10,6 +10,10 @@ namespace eTactWeb.DOM.Models.Master
    public  class WorkCenterMasterModel : TimeStamp
     {
         public int WCID { get; set; }
+
+        public string cc { get; set; }
+
+        public string EntryByMachineName { get; set; }
         public string? WorkCenterCode { get; set; }
         public string? WorkCenterDescription { get; set; }
         public string? WorkCenterType { get; set; }

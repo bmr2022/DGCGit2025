@@ -29,6 +29,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using DocumentFormat.OpenXml.EMMA;
 using eTactWeb.Data.DAL;
 using System.Data.SqlClient;
+using OfficeOpenXml.FormulaParsing.ExpressionGraph;
 
 namespace eTactWeb.Controllers;
 
@@ -2327,216 +2328,61 @@ public class ItemMasterController : Controller
             dt.Columns.Add("usedinMachorVehicle", typeof(string));
             dt.Columns.Add("Barcode", typeof(string));
 
-            HashSet<string> partCodeSet = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-
-            //int rowIndex = 0; // For user-friendly error messages
-
-            //foreach (var excelRow in request.ExcelData)
-            //{
-            //    DataRow row = dt.NewRow();
-
-            //    foreach (var map in request.Mapping)
-            //    {
-            //        string dbCol = map.Key;          // DB column
-            //        string excelCol = map.Value;     // Excel column name
-
-            //        object value = DBNull.Value;     // default
-
-            //        if (excelRow.ContainsKey(excelCol) && !string.IsNullOrEmpty(excelRow[excelCol]))
-            //        {
-            //            value = excelRow[excelCol];
-
-            //            // Convert types for numeric/boolean/date columns if needed
-            //            Type columnType = dt.Columns[dbCol].DataType;
-
-            //            try
-            //            {
-            //                if (dbCol == "ParentCode")  // <-- Special handling for ParentCode
-            //                {
-            //                    string groupName = value.ToString().Trim();
-
-            //                    int ParentCode = 0;
-            //                    var groupCode = _IItemMaster.GetItemGroupCode(groupName);
-
-            //                    if (groupCode.Result.Result != null && groupCode.Result.Result.Rows.Count > 0)
-            //                    {
-            //                        ParentCode = (int)groupCode.Result.Result.Rows[0].ItemArray[0];
-            //                    }
-
-            //                    else
-            //                    {
-            //                        ParentCode = 0;
-            //                    }
-
-            //                    if (ParentCode != 0)
-            //                        value = ParentCode;   // replace with code
-            //                    else
-            //                    {
-            //                        return Json(new
-            //                        {
-            //                            StatusCode = 201,
-            //                            StatusText = "Please Enter valid group"
-
-            //                        });
-            //                    }
-
-            //                }
-
-            //                if (dbCol == "ItemType")  // <-- Special handling for ParentCode
-            //                {
-            //                    string ItemCat = value.ToString().Trim();
-
-            //                    int ItemType = 0;
-            //                    var CatCode = _IItemMaster.GetItemCatCode(ItemCat);
-
-            //                    if (CatCode.Result.Result != null && CatCode.Result.Result.Rows.Count > 0)
-            //                    {
-            //                        ItemType = (int)CatCode.Result.Result.Rows[0].ItemArray[0];
-            //                    }
-
-            //                    else
-            //                    {
-            //                        ItemType = 0;
-            //                    }
-
-            //                    if (ItemType != 0)
-            //                        value = ItemType;   // replace with code
-            //                    else
-            //                    {
-            //                        return Json(new
-            //                        {
-            //                            StatusCode = 201,
-            //                            StatusText = "Please Enter valid category"
-
-            //                        });
-            //                    }
-
-            //                }
-
-
-            //                if (dbCol == "Store")  // <-- Special handling for ParentCode
-            //                {
-            //                    string StoreId = value.ToString().Trim();
-
-            //                    int StoreName = 0;
-            //                    var storeid = _IItemMaster.GetStoreCode(StoreId);
-
-            //                    if (storeid.Result.Result != null && storeid.Result.Result.Rows.Count > 0)
-            //                    {
-            //                        StoreName = (int)storeid.Result.Result.Rows[0].ItemArray[0];
-            //                    }
-
-            //                    else
-            //                    {
-            //                        StoreName = 0;
-            //                    }
-
-            //                    if (StoreName != 0)
-            //                        value = StoreName;   // replace with code
-            //                    else
-            //                    {
-            //                        return Json(new
-            //                        {
-            //                            StatusCode = 201,
-            //                            StatusText = "Please Enter valid Store"
-
-            //                        });
-            //                    }
-
-            //                }
-
-
-
-            //                if (columnType == typeof(int))
-            //                    value = int.Parse(value.ToString());
-            //                else if (columnType == typeof(decimal))
-            //                    value = decimal.Parse(value.ToString());
-            //                else if (columnType == typeof(bool))
-            //                {
-            //                    // Accept 1/0, true/false, Y/N
-            //                    string s = value.ToString().Trim().ToLower();
-            //                    value = (s == "1" || s == "true" || s == "y");
-            //                }
-            //                else if (columnType == typeof(DateTime))
-            //                    value = DateTime.Parse(value.ToString());
-            //                else
-            //                    value = value.ToString();
-            //            }
-            //            catch
-            //            {
-            //                value = DBNull.Value; // fallback if conversion fails
-            //            }
-            //        }
-            //        row[dbCol] = value;
-            //    }
-
-            //    // ✅ Validate PartCode before adding the row
-            //    string partCode = row["PartCode"]?.ToString()?.Trim();
-
-            //    if (string.IsNullOrEmpty(partCode))
-            //    {
-            //        return Json(new
-            //        {
-            //            StatusCode = 201,
-            //            StatusText = $"PartCode cannot be blank (Row {rowIndex})"
-            //        });
-            //    }
-
-            //    if (!partCodeSet.Add(partCode))
-            //    {
-            //        return Json(new
-            //        {
-            //            StatusCode = 201,
-            //            StatusText = $"Duplicate PartCode '{partCode}' found (Row {rowIndex})"
-            //        });
-            //    }
-
-            //    dt.Rows.Add(row);
-            //}
-            int rowIndex = 2; // Assuming first row in Excel is header
-
             foreach (var excelRow in request.ExcelData)
             {
                 DataRow row = dt.NewRow();
 
                 foreach (var map in request.Mapping)
                 {
-                    string dbCol = map.Key;
-                    string excelCol = map.Value;
+                    string dbCol = map.Key;          // DB column
+                    string excelCol = map.Value;     // Excel column name
 
-                    object value = DBNull.Value;
+                    object value = DBNull.Value;     // default
 
                     if (excelRow.ContainsKey(excelCol) && !string.IsNullOrEmpty(excelRow[excelCol]))
                     {
                         value = excelRow[excelCol];
+
+                        // Convert types for numeric/boolean/date columns if needed
                         Type columnType = dt.Columns[dbCol].DataType;
 
                         try
                         {
-                            if (dbCol == "ParentCode")
+                            if (dbCol == "ParentCode")  // <-- Special handling for ParentCode
                             {
                                 string groupName = value.ToString().Trim();
+
                                 int ParentCode = 0;
-                                var groupCode = _IItemMaster.GetItemGroupCode(groupName);
+                                var groupCode =  _IItemMaster.GetItemGroupCode(groupName);
 
                                 if (groupCode.Result.Result != null && groupCode.Result.Result.Rows.Count > 0)
                                 {
                                     ParentCode = (int)groupCode.Result.Result.Rows[0].ItemArray[0];
                                 }
-
-                                if (ParentCode != 0)
-                                    value = ParentCode;
+                               
                                 else
+                                {
+                                    ParentCode = 0;
+                                }
+
+                                if (ParentCode!=0)
+                                    value = ParentCode;   // replace with code
+                                else
+                                {
                                     return Json(new
                                     {
-                                        StatusCode = 201,
-                                        StatusText = $"Please Enter valid group at Row {rowIndex}"
+                                        StatusCode = 200,
+                                        StatusText = "Please Enter valid group"
+                                       
                                     });
+                                }
+                                   
                             }
 
-                            if (dbCol == "ItemType")
+                            if (dbCol == "ItemType")  // <-- Special handling for ParentCode
                             {
                                 string ItemCat = value.ToString().Trim();
+
                                 int ItemType = 0;
                                 var CatCode = _IItemMaster.GetItemCatCode(ItemCat);
 
@@ -2545,19 +2391,30 @@ public class ItemMasterController : Controller
                                     ItemType = (int)CatCode.Result.Result.Rows[0].ItemArray[0];
                                 }
 
-                                if (ItemType != 0)
-                                    value = ItemType;
                                 else
+                                {
+                                    ItemType = 0;
+                                }
+
+                                if (ItemType != 0)
+                                    value = ItemType;   // replace with code
+                                else
+                                {
                                     return Json(new
                                     {
-                                        StatusCode = 201,
-                                        StatusText = $"Please Enter valid category at Row {rowIndex}"
+                                        StatusCode = 200,
+                                        StatusText = "Please Enter valid category"
+
                                     });
+                                }
+
                             }
 
-                            if (dbCol == "Store")
+
+                            if (dbCol == "StoreId")  // <-- Special handling for ParentCode
                             {
                                 string StoreId = value.ToString().Trim();
+
                                 int StoreName = 0;
                                 var storeid = _IItemMaster.GetStoreCode(StoreId);
 
@@ -2566,23 +2423,34 @@ public class ItemMasterController : Controller
                                     StoreName = (int)storeid.Result.Result.Rows[0].ItemArray[0];
                                 }
 
-                                if (StoreName != 0)
-                                    value = StoreName;
                                 else
+                                {
+                                    StoreName = 0;
+                                }
+
+                                if (StoreName != 0)
+                                    value = StoreName;   // replace with code
+                                else
+                                {
                                     return Json(new
                                     {
-                                        StatusCode = 201,
-                                        StatusText = $"Please Enter valid Store at Row {rowIndex}"
+                                        StatusCode = 200,
+                                        StatusText = "Please Enter valid Store"
+
                                     });
+                                }
+
                             }
 
-                            // Type conversions
+
+
                             if (columnType == typeof(int))
                                 value = int.Parse(value.ToString());
                             else if (columnType == typeof(decimal))
                                 value = decimal.Parse(value.ToString());
                             else if (columnType == typeof(bool))
                             {
+                                // Accept 1/0, true/false, Y/N
                                 string s = value.ToString().Trim().ToLower();
                                 value = (s == "1" || s == "true" || s == "y");
                             }
@@ -2593,38 +2461,14 @@ public class ItemMasterController : Controller
                         }
                         catch
                         {
-                            value = DBNull.Value;
+                            value = DBNull.Value; // fallback if conversion fails
                         }
                     }
-
                     row[dbCol] = value;
                 }
 
-                string partCode = row["PartCode"]?.ToString()?.Trim();
-
-                if (string.IsNullOrEmpty(partCode))
-                {
-                    return Json(new
-                    {
-                        StatusCode = 201,
-                        StatusText = $"PartCode cannot be blank (Row {rowIndex})"
-                    });
-                }
-
-                if (!partCodeSet.Add(partCode))
-                {
-                    return Json(new
-                    {
-                        StatusCode = 201,
-                        StatusText = $"Duplicate PartCode '{partCode}' found at Row {rowIndex}"
-                    });
-                }
-
                 dt.Rows.Add(row);
-                rowIndex++;
             }
-
-
 
             response = await _IItemMaster.UpdateMultipleItemDataFromExcel(dt, flag);
 
@@ -2664,95 +2508,165 @@ public class ItemMasterController : Controller
             return Json(new { success = false, message = ex.Message });
         }
 
-
+        
     }
 
 
 
+    //public async Task<IActionResult> AddItemListdata(List<ItemViewModel> model)
+    //{
+    //    try
+    //    {
+    //        HttpContext.Session.Remove("KeyItemList");
 
-    public async Task<IActionResult> AddItemListdata(List<ItemViewModel> model)
+    //        string ItemList = HttpContext.Session.GetString("KeyItemList");
+    //        IList<ItemViewModel> ItemViewModel = new List<ItemViewModel>();
+    //        if (!string.IsNullOrEmpty(ItemList))
+    //        {
+    //            ItemViewModel = JsonConvert.DeserializeObject<IList<ItemViewModel>>(ItemList);
+    //        }
+
+    //        var MainModel = new ItemMasterModel();
+    //        var ItemDetailGrid = new List<ItemViewModel>();
+    //        var ItemGrid = new List<ItemViewModel>();
+    //        var SSGrid = new List<ItemViewModel>();
+
+    //        var seqNo = 0;
+    //        foreach (var item in model)
+    //        {
+    //            if (item != null)
+    //            {
+    //                if (ItemViewModel == null)
+    //                {
+    //                    item.SeqNo += seqNo + 1;
+    //                    ItemGrid.Add(item);
+    //                    seqNo++;
+    //                }
+    //                else
+    //                {
+    //                    if (ItemViewModel.Where(x => x.PartCode == item.PartCode).Any())
+    //                    {
+    //                        return StatusCode(207, "Duplicate");
+    //                    }
+    //                    else
+    //                    {
+    //                        item.SeqNo = ItemViewModel.Count + 1;
+    //                        //ItemGrid = ItemViewModel.Where(x => x != null).ToList();
+    //                        //SSGrid.AddRange(ItemGrid);
+    //                        ItemGrid.Add(item);
+    //                    }
+    //                }
+    //                MainModel.ExcelDataList = ItemGrid;
+
+    //                HttpContext.Session.SetString("KeyItemList", JsonConvert.SerializeObject(MainModel.ExcelDataList));
+    //            }
+    //        }
+
+    //        string modelData = HttpContext.Session.GetString("KeyItemList");
+    //        IList<ItemViewModel> ItemListt = new List<ItemViewModel>();
+    //        if (!string.IsNullOrEmpty(modelData))
+    //        {
+    //            ItemListt = JsonConvert.DeserializeObject<IList<ItemViewModel>>(modelData);
+    //        }
+    //        var CC = HttpContext.Session.GetString("Branch");
+    //        var EmpID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+    //        var ItemGridList = new DataTable();
+    //        ItemGridList = GetDetailTable(ItemListt, CC, EmpID);
+
+    //        var Result = await _IItemMaster.SaveMultipleItemData(ItemGridList);
+
+    //        if (Result != null)
+    //        {
+    //            if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
+    //            {
+    //                ViewBag.isSuccess = true;
+    //                TempData["200"] = "200";
+    //            }
+    //            if (Result.StatusText == "Updated" && Result.StatusCode == HttpStatusCode.Accepted)
+    //            {
+    //                ViewBag.isSuccess = true;
+    //                TempData["202"] = "202";
+    //            }
+    //            if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
+    //            {
+    //                ViewBag.isSuccess = false;
+    //                TempData["500"] = "500";
+    //                _logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
+    //                return View("Error", Result);
+    //            }
+    //        }
+
+
+    //        return RedirectToAction(nameof(ImportItems));
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        LogException<ItemMasterController>.WriteException(_logger, ex);
+
+    //        var ResponseResult = new ResponseResult()
+    //        {
+    //            StatusCode = HttpStatusCode.InternalServerError,
+    //            StatusText = "Error",
+    //            Result = ex
+    //        };
+
+    //        return View("Error", ResponseResult);
+    //    }
+    //}
+
+   public async Task<IActionResult> AddItemListdata(List<ItemViewModel> model)
+// public async Task<IActionResult> AddItemListdata([FromBody] List<ItemViewModel> model)
+
     {
+        int i=0;
         try
         {
-            HttpContext.Session.Remove("KeyItemList");
+            if (model == null || !model.Any())
+                return BadRequest("No data provided");
 
-            string ItemList = HttpContext.Session.GetString("KeyItemList");
-            IList<ItemViewModel> ItemViewModel = new List<ItemViewModel>();
-            if (!string.IsNullOrEmpty(ItemList))
-            {
-                ItemViewModel = JsonConvert.DeserializeObject<IList<ItemViewModel>>(ItemList);
-            }
-
-            var MainModel = new ItemMasterModel();
-            var ItemDetailGrid = new List<ItemViewModel>();
-            var ItemGrid = new List<ItemViewModel>();
-            var SSGrid = new List<ItemViewModel>();
-
-            var seqNo = 0;
-            foreach (var item in model)
-            {
-                if (item != null)
-                {
-                    if (ItemViewModel == null)
-                    {
-                        item.SeqNo += seqNo + 1;
-                        ItemGrid.Add(item);
-                        seqNo++;
-                    }
-                    else
-                    {
-                        if (ItemViewModel.Where(x => x.PartCode == item.PartCode).Any())
-                        {
-                            return StatusCode(207, "Duplicate");
-                        }
-                        else
-                        {
-                            item.SeqNo = ItemViewModel.Count + 1;
-                            //ItemGrid = ItemViewModel.Where(x => x != null).ToList();
-                            //SSGrid.AddRange(ItemGrid);
-                            ItemGrid.Add(item);
-                        }
-                    }
-                    MainModel.ExcelDataList = ItemGrid;
-
-                    HttpContext.Session.SetString("KeyItemList", JsonConvert.SerializeObject(MainModel.ExcelDataList));
-                }
-            }
-
-            string modelData = HttpContext.Session.GetString("KeyItemList");
-            IList<ItemViewModel> ItemListt = new List<ItemViewModel>();
-            if (!string.IsNullOrEmpty(modelData))
-            {
-                ItemListt = JsonConvert.DeserializeObject<IList<ItemViewModel>>(modelData);
-            }
+            const int batchSize = 100; // Process 100 records at a time
+            var results = new List<ResponseResult>();
             var CC = HttpContext.Session.GetString("Branch");
             var EmpID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
-            var ItemGridList = new DataTable();
-            ItemGridList = GetDetailTable(ItemListt, CC, EmpID);
 
-            var Result = await _IItemMaster.SaveMultipleItemData(ItemGridList);
-
-            if (Result != null)
+           // for (int i = 0; i < model.Count; i += batchSize)
+           while(i < model.Count)
             {
-                if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
+                var batch = model.Skip(i).Take(batchSize).ToList();
+
+                // Assign sequence numbers for this batch
+                //for (int j = 0; j < batch.Count; j++)
+                //{
+                //    if (batch[j] != null)
+                //    {
+                //        batch[j].SeqNo = i + j + 1;
+                //    }
+                //}
+
+                var dataTable = GetDetailTable(batch, CC, EmpID);
+                var result = await _IItemMaster.SaveMultipleItemData(dataTable);
+                results.Add(result);
+
+                // Optional: Add delay between batches to reduce server load
+                 if (i + batchSize <= model.Count)
+                //if (i  < model.Count)
                 {
-                    ViewBag.isSuccess = true;
-                    TempData["200"] = "200";
+                    await Task.Delay(1000);
                 }
-                if (Result.StatusText == "Updated" && Result.StatusCode == HttpStatusCode.Accepted)
-                {
-                    ViewBag.isSuccess = true;
-                    TempData["202"] = "202";
-                }
-                if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
-                {
-                    ViewBag.isSuccess = false;
-                    TempData["500"] = "500";
-                    _logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
-                    return View("Error", Result);
-                }
+                i += batchSize;
             }
 
+            // Check if all batches succeeded
+            if (results.All(r => r.StatusCode == HttpStatusCode.OK || r.StatusCode == HttpStatusCode.Accepted))
+            {
+                TempData["200"] = "200";
+            }
+            else
+            {
+                var failedBatches = results.Where(r => r.StatusCode == HttpStatusCode.InternalServerError);
+                _logger.LogError("Some batches failed: {Failures}", JsonConvert.SerializeObject(failedBatches));
+                TempData["500"] = "500";
+            }
 
             return RedirectToAction(nameof(ImportItems));
         }
@@ -2764,7 +2678,7 @@ public class ItemMasterController : Controller
             {
                 StatusCode = HttpStatusCode.InternalServerError,
                 StatusText = "Error",
-                Result = ex
+                Result = ex.Message
             };
 
             return View("Error", ResponseResult);
