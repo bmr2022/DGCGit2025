@@ -406,7 +406,7 @@ namespace eTactWeb.Controllers
             model.ActualEntryBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
             model.EntryDate = DateTime.Now.ToString();
             model.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-            var Result = await _IProductionSchedule.GetDashboardData(partCode, itemName, accountName, fromDate, toDate, model.YearCode).ConfigureAwait(true);
+            var Result = await _IProductionSchedule.GetDashboardData(partCode, itemName, accountName, fromDate, toDate, model.YearCode??0).ConfigureAwait(true);
             if (Result != null)
             {
                 var _List = new List<TextValue>();
@@ -450,7 +450,7 @@ namespace eTactWeb.Controllers
                 model.FinToDate = ParseFormattedDate( ToDate.ToString());
 
                 model.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-                var Result = await _IProductionSchedule.GetDashboardData(partCode, itemName, accountName, ParseFormattedDate(model.FinFromDate.Split(" ")[0]), ParseFormattedDate(model.FinToDate.Split(" ")[0]), model.YearCode).ConfigureAwait(true);
+                var Result = await _IProductionSchedule.GetDashboardData(partCode, itemName, accountName, ParseFormattedDate(model.FinFromDate.Split(" ")[0]), ParseFormattedDate(model.FinToDate.Split(" ")[0]), model.YearCode??0).ConfigureAwait(true);
                 if (Result != null)
                 {
                     var _List = new List<TextValue>();
@@ -461,7 +461,7 @@ namespace eTactWeb.Controllers
                                 "RevNo", "Revdate", "CC", "UID", "actualEntryDate", "ActualEntryBy", "LastUpdateDate", "EntryByMachineName",
                                 "Closed", "Completed", "ForTheMonth", "Remark", "ShowWOWithOrWOItem", "FromSchDate", "ToSchDate", "PlanForNoOFDays", "EntryID",
                                 "YearCode", "ItemCode", "PartCode", "ItemName", "BOMNO", "BOMEffDate", "SchDate", "ShiftID", "ShiftName",
-                                "ProdInWC","WorkCenter", "Qty", "Originalqty", "PlannedMachineid1", "PlannedMachineid2", "PlannedMachineid3", "SchForTheDate",
+                                "ProdInWC","WorkCenter", "Qty", "Originalqty", "PlannedMachineid1","PlannedMachineid2", "PlannedMachineid3", "SchForTheDate",
                                 "PlanNo", "PlanNoYearCode", "PlanNoDate", "CustOrderNo", "SOYearCode", "SODate", "SubBOM", "InhouseJOBProd",
                                 "DrawingNo", "RemarkItem", "ProdCompleted", "ProdCanceled", "QCMandatory", "ProdSeq",
                                 "AccountCode", "SaleSchNo", "SaleSchDate", "SaleSchYearCode", "ProdSchDate", "ActualEntryByName",
