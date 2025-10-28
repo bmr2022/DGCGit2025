@@ -10,15 +10,15 @@
             </select>
         </div>
         <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
-            <label asp-for="SaleBillQty" class="form-label" style="color: red;">Bill Qty*</label>
+            <label asp-for="SaleBillQty" class="form-label" >Bill Qty</label>
             <input asp-for="SaleBillQty" class="form-control" readonly />
         </div>
         <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
-            <label asp-for="BillAmt" class="form-label" style="color: red;">Bill Amt*</label>
+            <label asp-for="BillAmt" class="form-label" >Bill Amt</label>
             <input asp-for="BillAmt" class="form-control" readonly />
         </div>
         <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
-            <label asp-for="InvNetAmt" class="form-label" style="color: red;">Inv Net Amt*</label>
+            <label asp-for="InvNetAmt" class="form-label" >Inv Net Amt</label>
             <input asp-for="InvNetAmt" class="form-control" readonly />
         </div>
         <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
@@ -39,15 +39,14 @@
             <label asp-for="EntryByempId" class="form-label">Entry By EmpID</label>
             <input asp-for="EntryByempId" class="form-control" readonly />
         </div>
-        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-md-2">
             <label asp-for="ActualEntryDate" class="form-label">Actual Entry Date</label>
-            <input asp-for="ActualEntryDate" class="form-control" readonly />
+            <input asp-for="ActualEntryDate" class="form-control" readonly tabindex="-1" />
         </div>
-
-        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
-            <label asp-for="ActualEnteredByName" class="form-label">Actual Entered By</label>
-            <input asp-for="ActualEnteredByName" class="form-control" readonly />
-            <input type="hidden" asp-for="ActualEnteredBy" class="form-control" />
+        <div class="col-md-2">
+            <label asp-for="ActualEnteredByName" class="form-label">Actual Entered By Name</label>
+            <input asp-for="ActualEnteredBy" class="form-control" type="hidden" />
+            <input asp-for="ActualEnteredByName" class="form-control" readonly tabindex="-1" />
         </div>
         <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
             <label asp-for="Uid" class="form-label">UID</label>

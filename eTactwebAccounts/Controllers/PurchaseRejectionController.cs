@@ -502,7 +502,14 @@ namespace eTactWeb.Controllers
             DTSSGrid.Columns.Add("itemSize", typeof(string));
             DTSSGrid.Columns.Add("ItemDescription", typeof(string));
             DTSSGrid.Columns.Add("Remark", typeof(string));
-
+            DTSSGrid.Columns.Add("MIRNo", typeof(string));
+            DTSSGrid.Columns.Add("MIRDate", typeof(string));
+            DTSSGrid.Columns.Add("MIREntryId", typeof(int));
+            DTSSGrid.Columns.Add("MIRYEARCODE", typeof(int));
+            DTSSGrid.Columns.Add("INProgressNo", typeof(string));
+            DTSSGrid.Columns.Add("INProgressDate", typeof(string));
+            DTSSGrid.Columns.Add("INProgressEntryId", typeof(int));
+            DTSSGrid.Columns.Add("INProgressYEARCODE", typeof(int));
             foreach (var Item in DetailList)
             {
                 string uniqueString = Guid.NewGuid().ToString();
@@ -539,7 +546,15 @@ namespace eTactWeb.Controllers
                         Item.CostCenterId,
                         Item.ItemSize ?? string.Empty,
                         Item.ItemDescription ?? string.Empty,
-                        Item.Remark ?? string.Empty
+                        Item.Remark ?? string.Empty,
+                           Item.MIRNo ?? string.Empty,
+                   Item.MIRDate == null ? string.Empty : ParseFormattedDate(Item.MIRDate),
+                   Item.MIREntryId,
+                   Item.MIRYearCode,
+                   Item. INProgressNo ?? string.Empty,
+                   Item. INProgressDate == null ? string.Empty : ParseFormattedDate(Item. INProgressDate),
+                   Item. INProgressEntryId,
+                   Item. INProgressYearCode,
                     });
             }
             DTSSGrid.Dispose();
@@ -581,7 +596,14 @@ namespace eTactWeb.Controllers
             DTSSGrid.Columns.Add("BillAmount", typeof(float));
             DTSSGrid.Columns.Add("PaidAmt", typeof(float));
             DTSSGrid.Columns.Add("RemainingAmt", typeof(float));
-
+            DTSSGrid.Columns.Add("MIRNo", typeof(string));
+            DTSSGrid.Columns.Add("MIRDate", typeof(string));
+            DTSSGrid.Columns.Add("MIREntryId", typeof(int));
+            DTSSGrid.Columns.Add("MIRYEARCODE", typeof(int));
+            DTSSGrid.Columns.Add("INProgressNo", typeof(string));
+            DTSSGrid.Columns.Add("INProgressDate", typeof(string));
+            DTSSGrid.Columns.Add("INProgressEntryId", typeof(int));
+            DTSSGrid.Columns.Add("INProgressYEARCODE", typeof(int));
             foreach (var Item in DetailList)
             {
                 string uniqueString = Guid.NewGuid().ToString();
@@ -619,7 +641,15 @@ namespace eTactWeb.Controllers
                     Item.UniqueBatchNo ?? string.Empty,
                     Item.BillAmount,
                     Item.PaidAmt,
-                    Item.RemainingAmt
+                    Item.RemainingAmt,
+                    Item.MIRNo ?? string.Empty,
+                   Item.MIRDate == null ? string.Empty : ParseFormattedDate(Item.MIRDate),
+                   Item.MIREntryId,
+                   Item.MIRYearCode,
+                   Item. INProgressNo ?? string.Empty,
+                   Item. INProgressDate == null ? string.Empty : ParseFormattedDate(Item. INProgressDate),
+                   Item. INProgressEntryId,
+                   Item. INProgressYearCode,
                     });
             }
             DTSSGrid.Dispose();
@@ -989,7 +1019,14 @@ namespace eTactWeb.Controllers
                 table.Columns.Add("BillAmount", typeof(float));
                 table.Columns.Add("PaidAmt", typeof(float));
                 table.Columns.Add("RemainingAmt", typeof(float));
-
+                table.Columns.Add("MIRNo", typeof(string));
+                table.Columns.Add("MIRDate", typeof(string));
+                table.Columns.Add("MIREntryId", typeof(int));
+                table.Columns.Add("MIRYEARCODE", typeof(int)); 
+                table.Columns.Add("INProgressNo", typeof(string));
+                table.Columns.Add("INProgressDate", typeof(string));
+                table.Columns.Add("INProgressEntryId", typeof(int));
+                table.Columns.Add("INProgressYEARCODE", typeof(int));
                 foreach (AccPurchaseRejectionAgainstBillDetail Item in List)
                 {
                     table.Rows.Add(
@@ -1026,7 +1063,15 @@ namespace eTactWeb.Controllers
                    Item.UniqueBatchNo ?? string.Empty,
                    Item.BillAmount,
                    Item.PaidAmt,
-                   Item.RemainingAmt
+                   Item.RemainingAmt,
+                   Item.MIRNo ?? string.Empty,
+                   Item.MIRDate == null ? string.Empty : ParseFormattedDate(Item.MIRDate),
+                   Item.MIREntryId,
+                   Item.MIRYearCode,
+                     Item. INProgressNo ?? string.Empty,
+                   Item. INProgressDate == null ? string.Empty : ParseFormattedDate(Item. INProgressDate),
+                   Item. INProgressEntryId,
+                   Item. INProgressYearCode,
                         });
                 }
 

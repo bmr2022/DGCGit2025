@@ -196,6 +196,10 @@ namespace eTactWeb.Data.DAL
                         ItemSize = row["itemSize"]?.ToString(),
                         ItemDescription = row["ItemDescription"]?.ToString(),
                         Remark = row["Remark"]?.ToString(),
+                        MIREntryId = row["MIREntryId"] != DBNull.Value ? Convert.ToInt32(row["MIREntryId"]) : 0,
+                        MIRNo = row["MIRNo"]?.ToString(),
+                        MIRYearCode = row["MIRYearCode"] != DBNull.Value ? Convert.ToInt32(row["MIRYearCode"]) : 0,
+                        MIRDate = row["MIRDate"]?.ToString(),
                     });
                     cnt++;
                 }
@@ -326,6 +330,10 @@ namespace eTactWeb.Data.DAL
                         UniqueBatchNo = row["UniqueBatchNo"]?.ToString(),
                         AltQty = row["AltQty"] != DBNull.Value ? Convert.ToSingle(row["AltQty"]) : 0,
                         AltUnit = row["AltUnit"]?.ToString(),
+                        MIREntryId = row["MIREntryId"] != DBNull.Value ? Convert.ToInt32(row["MIREntryId"]) : 0,
+                        MIRNo = row["MIRNo"]?.ToString(),
+                        MIRYearCode = row["MIRYearCode"] != DBNull.Value ? Convert.ToInt32(row["MIRYearCode"]) : 0,
+                        MIRDate = row["MIRDate"]?.ToString(),
                     });
                 }
                 model.AccPurchaseRejectionAgainstBillDetails = purchaseRejectionAgainstBillGrid ?? new List<AccPurchaseRejectionAgainstBillDetail>();

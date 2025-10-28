@@ -302,7 +302,7 @@ namespace eTactWeb.Data.DAL
                 //    Text = m.ParentAccountName,
                 //    Value = m.ParentAccountCode.ToString()
                 //});
-                if (model.Mode != "Search")
+                if (model.Mode != "Search" && model.ItemGroupList != null && model.ItemGroupList.Any())
                 {
                     List<TextValue>? _list = new List<TextValue>();
                     foreach (ItemGroupModel? item in model.ItemGroupList)

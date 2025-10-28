@@ -625,6 +625,15 @@ public static class CommonFunc
                         typeProperty.PropertyInfo.SetValue(obj, safeValue, null);
                     }
                 }
+                else if (table.TableName == "HRLeaveMasterLocation")
+                {
+                    if (typeProperty.PropertyInfo.Name != "Mode")
+                    {
+                        object value = row[typeProperty.PropertyInfo.Name];
+                        object? safeValue = value == null || DBNull.Value.Equals(value) ? null : Convert.ChangeType(value, typeProperty.Type);
+                        typeProperty.PropertyInfo.SetValue(obj, safeValue, null);
+                    }
+                }
                 else if (table.TableName == "HRWeekEmpCategDetail")
                 {
                     if (typeProperty.PropertyInfo.Name != "Mode")
@@ -1804,6 +1813,7 @@ public static class CommonFunc
                          && typeProperty.PropertyInfo.Name != "SaleorderRemark" && typeProperty.PropertyInfo.Name != "SaleBillremark"
                          && typeProperty.PropertyInfo.Name != "ItemNetAmount"
                          && typeProperty.PropertyInfo.Name != "DbCrGrid"
+                         && typeProperty.PropertyInfo.Name != "SeqNo"
                         // && typeProperty.PropertyInfo.Name != "RoundOffAmt"
                         //&& typeProperty.PropertyInfo.Name != "Ewaybillno" && typeProperty.PropertyInfo.Name != "EInvNo" && typeProperty.PropertyInfo.Name != "Ewaybillno"
                         //&& typeProperty.PropertyInfo.Name != "EinvGenerated" && typeProperty.PropertyInfo.Name != "ActualEntryDate"

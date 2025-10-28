@@ -753,7 +753,7 @@ namespace eTactWeb.Controllers
                     string.Empty, // AginstInvNo
                     MainModel.AgainstBillYearCode, // AginstVoucherYearCode
                     MainModel.AccountCode,
-                    Item.DocTypeAccountCode,
+                    MainModel.DocTypeAccountCode,
                     Item.ItemCode,
                     Math.Round(Item.RejQty, 2, MidpointRounding.AwayFromZero), // qty
                     Math.Round(Item.RejRate, 2, MidpointRounding.AwayFromZero), // PurchaseRejection rate

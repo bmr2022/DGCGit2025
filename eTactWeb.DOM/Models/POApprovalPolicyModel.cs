@@ -82,5 +82,24 @@ namespace eTactWeb.DOM.Models
         public string EmpName { get; set; }
         public string FromDate { get; set; }
         public string ToDate { get; set; }
+
+        public string Searchbox { get; set; }
+
+        public string EmpNameForFirstApproval1 { get; set; }
+        public string EmpNameForFirstApproval2 { get; set; }
+        public string EmpNameForFirstApproval3 { get; set; }
+        public string EmpNameForFinalApproval1 { get; set; }
+        public string EmpNameForFinalApproval2 { get; set; }
+        public string EmpNameForFinalApproval3 { get; set; }
+        public string EmpNameForMgmtApproval1 { get; set; }
+        public string EmpNameForMgmtApproval12 { get; set; }
+        public string EmpNameForMgmtApproval13 { get; set; }
+        public string EmpNameForDirectorApproval { get; set; }
+        public string EmpNameForFinalApproval { get; set; }
+        public string EmpNameForFirstApproval { get; set; }
+
+
+        public IList<POApprovalPolicyModel> POApprovalPolicyDashBoardGrid { get; set; }
+
     }
 }

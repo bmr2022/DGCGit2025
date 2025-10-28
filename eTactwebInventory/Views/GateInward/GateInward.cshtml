@@ -164,9 +164,16 @@
                                         <option value="" disabled selected>-Select-</option>
                                     </select>
                                 </div>
-                                <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                     <label asp-for="Types" class="form-label" style="color: red;">Type</label>
                                     <select class="form-select" asp-for="Types" data-abcd="2" asp-items="@(new SelectList(Model.TypeList,"Value","Text"))"></select>
+                                </div>
+                                   <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 RecUnitgateentry">
+                                    <label asp-for="RecUnit" class="form-label">Rec Unit</label>
+                                    <select class="form-select" asp-for="RecUnit" data-abcd="4" asp-items="@(new SelectList(Model.RecUnitList,"Value","Text"))">
+                                        <option value="" disabled selected>-Select-</option>
+                                    </select>
+                                   
                                 </div>
                                 <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                     <label asp-for="Invoiceno" class="form-label" style="color: red;"> Invoice No*</label>
@@ -180,18 +187,12 @@
                                         <option value="" disabled selected>-Select-</option>
                                     </select>
                                 </div>
-                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12 RecUnitgateentry">
-                                    <label asp-for="RecUnit" class="form-label">Rec Unit</label>
-                                    <select class="form-select" asp-for="RecUnit" data-abcd="4" asp-items="@(new SelectList(Model.RecUnitList,"Value","Text"))">
-                                        <option value="" disabled selected>-Select-</option>
-                                    </select>
-                                   
-                                </div>
+                             
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-3 col-xs-12">
                                     <label asp-for="InvoiceDate" class="form-label" style="color: red;">Invoice date*</label>
                                     <input type="text" class="form-control" data-abcd="5" asp-for="InvoiceDate" readonly />
                                 </div>
-                                <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                     @if (Model.Mode == "U" || Model.Mode == "V")
                                     {
                                         <input type="hidden" id="hiddenAddress" value="@Model.Address" />
@@ -214,32 +215,27 @@
                                     <label asp-for="POType" class="form-label">PO Type</label>
                                     <input type="text" class="form-control" asp-for="POType" readonly />
                                 </div>
+                                @if (Model.Mode != "U" && Model.Mode != "V")
+                                {
+                                    
+                                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                                        <label for="ewayBillNo" class="form-label">E-Way Bill No</label>
+                                        <div class="input-group">
+                                                    <input type="text" class="form-control" id="ewayBillNo" placeholder="Enter E-Way Bill Number">
+                                                    <button class="btn btn-primary" type="button" id="fetchEwayBill">
+                                                        <i class="fa fa-search"></i> 
+                                                    </button>
+                                                    </div>
+                                                       <div id="ewayBillStatus" class="form-text"></div>
+                                                </div>
+                                             
+                                }
                             </div>
                         </div>
                     </div>
                 </div>
                      
-                    @if (Model.Mode != "U" && Model.Mode != "V")
-                  {
-                    <div class="card-body bg-light pt-0">
-                        <div class="row mb-3">
-                            <div class="col-md-4">
-                                <div class="input-group">
-                                    <input type="text" class="form-control" id="ewayBillNo" placeholder="Enter E-Way Bill Number">
-                                    <button class="btn btn-primary" type="button" id="fetchEwayBill">
-                                        <i class="fa fa-search"></i> Fetch Details
-                                    </button>
-                                </div>
-                                <div id="ewayBillStatus" class="form-text"></div>
-                            </div>
-                        </div>
-
-                        <!-- Rest of your existing form -->
-                        <div class="accordion shadow-lg">
-                            <!-- Your existing accordion items -->
-                        </div>
-                    </div>
-                }
+            
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="H_SAGrid">
                         <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
@@ -1091,7 +1087,7 @@
                 } else {
                     $(".ChallanElements").css("display", "none");
                 }
-
+                        $('#EntryDate').datepicker("option", "maxDate", new Date());
             }
             else 
             {
@@ -1139,6 +1135,7 @@
                               var EntryDate = parseDateToFormat($('#EntryDate').val());
 
                         $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
+                                $('#EntryDate').datepicker("option", "maxDate", new Date());
                       /*   alert("final"); */
             }
             $('#AccountCode').select2();

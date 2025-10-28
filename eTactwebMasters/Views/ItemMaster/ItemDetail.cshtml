@@ -143,6 +143,7 @@
                                             <select asp-for="ItemType" class="form-select" data-abcd="14" style="width:200px;" asp-items="@(new SelectList(Model.ItemTypeList,"Value", "Text"))">
                                                 <option value="">-Select-</option>
                                             </select>
+                                            <input type="hidden" asp-for="ItemTypeName" />
                                         </div>
                                     </div>
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
@@ -150,7 +151,9 @@
                                         <div class="col-xl-4  col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                             <select asp-for="ParentCode" class="form-select" data-abcd="14" style="width:200px;" asp-items="@(new SelectList(Model.ParentGroupList,"Value", "Text"))" onfocus=" setFocus()">
                                                 <option value="">-Select-</option>
+                                               
                                             </select>
+                                            <input type="hidden" asp-for="ParentName" />
                                         </div>
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12">
@@ -1005,36 +1008,48 @@
             });
         }
         function GetBranchList() {
-
             $.ajax({
                 url: "@Url.Action("GetBranchList")",
-                data: {},
                 type: "POST",
                 async: false,
                 success: function (data) {
+                    var obj = $.parseJSON(data);
 
-                  var obj = $.parseJSON(data);
+                    var selectedBranchName = '@Model.CC'; // branch name from model
+                    var selectedValue = null;
 
-            // Save selected values (if any) before refresh
-            var selectedValues = $('#Branch').val() || [];
+                    var $branchSelect = $('#Branch');
+                    $branchSelect.empty();
 
-            $('#Branch').empty();
+                    // Populate options: value = BranchDatabase, text = BranchName
+                    obj.Result.Table.forEach(function (item) {
+                        $branchSelect.append(
+                            $('<option>', {
+                                value: item.BranchDatabase,
+                                text: item.BranchName
+                            })
+                        );
 
-            // Remove default -Select- if it's multi-select
-            for (var i = 0; i < obj.Result.Table.length; i++) {
-                var value = obj.Result.Table[i].BranchName;
-                $('#Branch').append('<option value="' + value + '">' + value + '</option>');
-            }
+                        // If branch name matches CC, save the database name
+                        if (item.BranchName === selectedBranchName) {
+                            selectedValue = item.BranchDatabase;
+                        }
+                    });
 
-            // Re-select previously selected values (if any)
-            $('#Branch').val(selectedValues);
-            $('#Branch').trigger('change');
+                    // Pre-select using the database name
+                    if (selectedValue) {
+                        $branchSelect.val(selectedValue);
+                    }
+
+                    $branchSelect.trigger('change');
                 },
                 error: function (errMsg) {
                     $.notify(errMsg, { position: "top center", className: "error" });
                 }
             });
         }
+
+
         function ProdInMachineGroupList() {
 
             $.ajax({
@@ -1153,6 +1168,15 @@
                 $('#ReUploadItem').is(':checked') == true ? $('.ReUploadItemFile').fadeIn() : ($('.ReUploadItemFile').fadeOut(), $('#UploadItemImage').val(''));
             });
 
+        });
+
+        $('#ParentCode').on('change', function () {
+            var selectedText = $(this).find('option:selected').text().trim();
+            $('#ParentName').val(selectedText);
+        });
+        $('#ItemType').on('change', function () {
+            var selectedText = $(this).find('option:selected').text().trim();
+            $('#ItemTypeName').val(selectedText);
         });
         function CheckDuplicate(n, v) {
              
@@ -1313,7 +1337,7 @@
                      Err = 1;
         }
            var hsn = $('#HSNNO').val().trim();
-                if (hsn !== "" && hsn !== "0" && !/^\d{8}$/.test(hsn)) {
+                if (hsn !== "" && hsn !== "0" && !/^\d{6}$/.test(hsn)) {
             $('#HSNNO').removeClass('valid').addClass('is-invalid');
             Err = 1;
         }

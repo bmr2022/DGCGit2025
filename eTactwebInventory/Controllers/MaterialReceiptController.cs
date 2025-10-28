@@ -736,7 +736,7 @@ public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string MrnNo
                         }
                         else
                         {
-                            if (MaterialReceiptDetail.Where(x => x.ItemNumber == item.ItemNumber
+                            if (MaterialReceiptDetail.Where(x => x.ItemNumber == item.ItemNumber &&  x.SaleBillNo == item.SaleBillNo
                             && x.PONO == item.PONO
                  && x.SchNo == item.SchNo).Any())
                             {

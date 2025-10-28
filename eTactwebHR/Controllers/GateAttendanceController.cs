@@ -86,7 +86,7 @@ namespace eTactwebHR.Controllers
                 MainModel.FinToDate = HttpContext.Session.GetString("ToDate");
                 MainModel.intEmpAttMonth = string.IsNullOrWhiteSpace(MainModel.strEmpAttMonth) ? 0 : new[] { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" }.Select((m, i) => new { m, i }).FirstOrDefault(x => MainModel.strEmpAttMonth.StartsWith(x.m, StringComparison.OrdinalIgnoreCase))?.i + 1 ?? 0;
                 MainModel = await BindModels(MainModel).ConfigureAwait(false);
-                MainModel.HolidayList = GetHolidayList((!string.IsNullOrEmpty(MainModel.EmpCategoryId)) ? Convert.ToInt32(MainModel.EmpCategoryId) : 0, MainModel.EmpAttDate ?? new DateTime(MainModel.GateAttYearCode, 1, 1), YearCode)?.HolidayList ?? new List<GateAttendanceHolidayModel>();
+                MainModel.HolidayList = (!string.IsNullOrEmpty(MainModel.EmpCategoryId) && MainModel.EmpAttDate != null) ? GetHolidayList(Convert.ToInt32(MainModel.EmpCategoryId), MainModel.EmpAttDate ?? new DateTime(MainModel.GateAttYearCode, 1, 1), YearCode)?.HolidayList ?? new List<GateAttendanceHolidayModel>() : null;
                 ViewBag.DeptList = await IDataLogic.GetDropDownList("FillDepartment", "HRSPGateAttendanceMainDetail");
                 ViewBag.DesigList = await IDataLogic.GetDropDownList("FillDesignation", "HRSPGateAttendanceMainDetail");
                 //ViewBag.ShiftList = await IDataLogic.GetDropDownList("FillShift", "HRSPGateAttendanceMainDetail");
@@ -479,70 +479,104 @@ namespace eTactwebHR.Controllers
         {
             DataSet DS = new();
             DataTable Table = new();
-
-            int daysInMonth = 1;
-            Table.Columns.Add("GateAttEntryId", typeof(int));
-            Table.Columns.Add("GateAttYearCode", typeof(int));
-            Table.Columns.Add("EmpId", typeof(int));
-            Table.Columns.Add("EmpAttYear", typeof(int));
-            if (itemDetailList != null && string.Equals(itemDetailList.DayOrMonthType, "Monthly", StringComparison.OrdinalIgnoreCase))
+            if (itemDetailList != null && string.Equals(itemDetailList.DayOrMonthType, "daily", StringComparison.OrdinalIgnoreCase))
             {
-                if (YearCode > 0 && itemDetailList.intEmpAttMonth > 0) {
-                    daysInMonth = DateTime.DaysInMonth(Convert.ToInt32(YearCode), Convert.ToInt32(itemDetailList.intEmpAttMonth));
-                    daysInMonth = 31;
-                }
-                if (itemDetailList.DayHeaders == null || itemDetailList.DayHeaders.Count == 0 || itemDetailList.DayHeaders.Count != (31*4))
-                {
-                    itemDetailList.DayHeaders = new List<string>();
-                    itemDetailList.strEmpAttMonth = new DateTime(Convert.ToInt32(YearCode), Convert.ToInt32(itemDetailList.intEmpAttMonth), 1).ToString("MMM");
-                    for (int d = 1; d <= daysInMonth; d++)
-                    {
-                        itemDetailList.DayHeaders.Add($"AttendStatus{d}");
-                        itemDetailList.DayHeaders.Add($"AttInTime{d}");
-                        itemDetailList.DayHeaders.Add($"AttOutTime{d}");
-                        itemDetailList.DayHeaders.Add($"TotalNoOfHours{d}");
-                    }
-                }
-                for (int d = 1; d <= daysInMonth; d++)
-                {
-                    Table.Columns.Add($"AttendStatus{d}", typeof(string));
-                    Table.Columns.Add($"AttInTime{d}", typeof(DateTime));
-                    Table.Columns.Add($"AttOutTime{d}", typeof(DateTime));
-                    Table.Columns.Add($"TotalNoOfHours{d}", typeof(decimal));
-                }
+                Table.Columns.Add("GateAttEntryId", typeof(int));
+                Table.Columns.Add("GateAttYearCode", typeof(int));
+                Table.Columns.Add("EmpAttYear", typeof(int));
+                Table.Columns.Add("CardOrBiometricId", typeof(string));
+                Table.Columns.Add("AttendStatus", typeof(string));
+                Table.Columns.Add("EmpId", typeof(int));
+                Table.Columns.Add("AttInTime", typeof(DateTime));
+                Table.Columns.Add("AttOutTime", typeof(DateTime));
+                Table.Columns.Add("TotalNoOfHours", typeof(decimal));
+                Table.Columns.Add("LateEntry", typeof(string));
+                Table.Columns.Add("EarlyExit", typeof(string));
+                Table.Columns.Add("LeaveTypeId", typeof(int));
+                Table.Columns.Add("AttShiftId", typeof(int));
+                Table.Columns.Add("ApproveByDept", typeof(string));
+                Table.Columns.Add("DeptApprovalDate", typeof(DateTime));
+                Table.Columns.Add("DeptApprovalEmpId", typeof(int));
+                Table.Columns.Add("ApproveByHR", typeof(string));
+                Table.Columns.Add("HRApprovalDate", typeof(DateTime));
+                Table.Columns.Add("HRApprovalEmpId", typeof(int));
+                Table.Columns.Add("CC", typeof(string));
+                Table.Columns.Add("CategoryCode", typeof(int));
+                Table.Columns.Add("ActualEmpShift", typeof(int));
+                Table.Columns.Add("ActualShiftInTime", typeof(DateTime));
+                Table.Columns.Add("ActualShiftOutTime", typeof(DateTime));
+                Table.Columns.Add("Overtime", typeof(decimal));
+                Table.Columns.Add("DesigId", typeof(int));
+                Table.Columns.Add("DeptId", typeof(int));
             }
             else
             {
-                itemDetailList.DayHeaders.Add($"AttendStatus");
-                itemDetailList.DayHeaders.Add($"AttInTime");
-                itemDetailList.DayHeaders.Add($"AttOutTime");
-                itemDetailList.DayHeaders.Add($"TotalNoOfHours");
-                Table.Columns.Add($"AttendStatus", typeof(string));
-                Table.Columns.Add($"AttInTime", typeof(DateTime));
-                Table.Columns.Add($"AttOutTime", typeof(DateTime));
-                Table.Columns.Add($"TotalNoOfHours", typeof(decimal));
+                int daysInMonth = 1;
+                Table.Columns.Add("GateAttEntryId", typeof(int));
+                Table.Columns.Add("GateAttYearCode", typeof(int));
+                Table.Columns.Add("EmpId", typeof(int));
+                Table.Columns.Add("EmpAttYear", typeof(int));
+                if (itemDetailList != null && string.Equals(itemDetailList.DayOrMonthType, "Monthly", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (YearCode > 0 && itemDetailList.intEmpAttMonth > 0)
+                    {
+                        daysInMonth = DateTime.DaysInMonth(Convert.ToInt32(YearCode), Convert.ToInt32(itemDetailList.intEmpAttMonth));
+                        daysInMonth = 31;
+                    }
+                    if (itemDetailList.DayHeaders == null || itemDetailList.DayHeaders.Count == 0 || itemDetailList.DayHeaders.Count != (31 * 4))
+                    {
+                        itemDetailList.DayHeaders = new List<string>();
+                        itemDetailList.strEmpAttMonth = new DateTime(Convert.ToInt32(YearCode), Convert.ToInt32(itemDetailList.intEmpAttMonth), 1).ToString("MMM");
+                        for (int d = 1; d <= daysInMonth; d++)
+                        {
+                            itemDetailList.DayHeaders.Add($"AttendStatus{d}");
+                            itemDetailList.DayHeaders.Add($"AttInTime{d}");
+                            itemDetailList.DayHeaders.Add($"AttOutTime{d}");
+                            itemDetailList.DayHeaders.Add($"TotalNoOfHours{d}");
+                        }
+                    }
+                    for (int d = 1; d <= daysInMonth; d++)
+                    {
+                        Table.Columns.Add($"AttendStatus{d}", typeof(string));
+                        Table.Columns.Add($"AttInTime{d}", typeof(DateTime));
+                        Table.Columns.Add($"AttOutTime{d}", typeof(DateTime));
+                        Table.Columns.Add($"TotalNoOfHours{d}", typeof(decimal));
+                    }
+                }
+                Table.Columns.Add("AttShiftId", typeof(int));
+                Table.Columns.Add("DesigId", typeof(int));
+                Table.Columns.Add("DeptId", typeof(int));
+                Table.Columns.Add("CC", typeof(string));
+                Table.Columns.Add("CategoryCode", typeof(int));
+                Table.Columns.Add("EmpAttTime", typeof(DateTime));
+                Table.Columns.Add("ActualEmpShift", typeof(int));
+                Table.Columns.Add("ActualEmpInTime", typeof(DateTime));
+                Table.Columns.Add("ActualEmpOutTime", typeof(DateTime));
+                Table.Columns.Add("OvertTime", typeof(decimal));
             }
-            Table.Columns.Add("AttShiftId", typeof(int));
-            Table.Columns.Add("DesigId", typeof(int));
-            Table.Columns.Add("DeptId", typeof(int));
-            Table.Columns.Add("CC", typeof(string));
-            Table.Columns.Add("CategoryCode", typeof(int));
-            Table.Columns.Add("EmpAttTime", typeof(DateTime));
-            Table.Columns.Add("ActualEmpShift", typeof(int));
-            Table.Columns.Add("ActualEmpInTime", typeof(DateTime));
-            Table.Columns.Add("ActualEmpOutTime", typeof(DateTime));
-            Table.Columns.Add("OvertTime", typeof(decimal));
-
             foreach (GateAttendanceModel Item in itemDetailList?.GateAttDetailsList ?? new List<GateAttendanceModel>())
             {
                 var currentDt = CommonFunc.ParseSafeDate(DateTime.Now.ToString());
-                List<object> rowValues = new List<object>
+                List<object> rowValues = new List<object>();
                 {
-                    (itemDetailList.GateAttEntryId > 0 ? itemDetailList.GateAttEntryId : EntryID) ?? 0,
-                    (itemDetailList.GateAttYearCode > 0 ? itemDetailList.GateAttYearCode : YearCode) ?? 0,
-                    Item.EmpId,
-                    Item.EmpAttYear ?? Item.GateAttYearCode
-                };
+                    rowValues.Add((itemDetailList.GateAttEntryId > 0 ? itemDetailList.GateAttEntryId : EntryID) ?? 0);
+                    rowValues.Add((itemDetailList.GateAttYearCode > 0 ? itemDetailList.GateAttYearCode : YearCode) ?? 0);
+                    if (itemDetailList != null && string.Equals(itemDetailList.DayOrMonthType, "daily", StringComparison.OrdinalIgnoreCase))
+                    {
+                        rowValues.Add(string.Empty);
+                        rowValues.Add(string.Empty);
+                        rowValues.Add(string.Empty);
+                        rowValues.Add(0);
+                        rowValues.Add(string.Empty);
+                        rowValues.Add(null);
+                        rowValues.Add(0);
+                        rowValues.Add(string.Empty);
+                        rowValues.Add(null);
+                        rowValues.Add(0);
+                    }
+                    rowValues.Add(Item.EmpId);
+                    rowValues.Add(Item.EmpAttYear ?? Item.GateAttYearCode);
+                }
 
                 if (itemDetailList.DayHeaders != null)
                 {
@@ -552,7 +586,7 @@ namespace eTactwebHR.Controllers
                         { rowValues.Add(string.Empty); }
                         else if (!Item.Attendance.ContainsKey(header) && header.Contains("TotalNoOfHours"))
                         { rowValues.Add(0); } //Math.Round(Item.Attendance[header], 2, MidpointRounding.AwayFromZero)
-                        else if (Item.Attendance != null && Item.Attendance.ContainsKey(header) && (header.Contains("InTime") || header.Contains("OutTime")))
+                        else if (Item.Attendance != null && Item.Attendance.ContainsKey(header) && (header.Contains("InTime") || header.Contains("OutTime") || header.Contains("AttInTime") || header.Contains("AttOutTime")))
                         {
                             var time = CommonFunc.ParseSafeTime(Item.Attendance[header]);
 
@@ -566,9 +600,9 @@ namespace eTactwebHR.Controllers
                                 if (int.TryParse(dayPart, out int parsedDay))
                                     day = parsedDay;
                             }
-                            else 
+                            else
                             {
-                                day = itemDetailList.EmpAttDate != null  ? CommonFunc.ParseDate(Convert.ToDateTime(itemDetailList.EmpAttDate).Date.ToString()).Day : 1;
+                                day = itemDetailList.EmpAttDate != null ? CommonFunc.ParseDate(Convert.ToDateTime(itemDetailList.EmpAttDate).Date.ToString()).Day : 1;
                             }
                             if (time == null)
                             {
@@ -594,9 +628,12 @@ namespace eTactwebHR.Controllers
                 rowValues.Add(Item.ActualEmpShiftId ?? 0);
                 rowValues.Add(Item.DesignationEntryId ?? 0);
                 rowValues.Add(Item.DeptId ?? 0);
-                rowValues.Add(itemDetailList.CC ?? string.Empty);
+                rowValues.Add(!string.IsNullOrEmpty(itemDetailList.CC) ? itemDetailList.CC : (!string.IsNullOrEmpty(itemDetailList.Branch) ? itemDetailList.Branch : string.Empty));
                 rowValues.Add(itemDetailList.EmpCategoryId);
-                rowValues.Add(currentDt);
+                if (itemDetailList != null && !string.Equals(itemDetailList.DayOrMonthType, "daily", StringComparison.OrdinalIgnoreCase))
+                {
+                    rowValues.Add(currentDt);
+                }
                 rowValues.Add(itemDetailList.ActualEmpShiftId ?? 0);
                 rowValues.Add(currentDt);
                 rowValues.Add(currentDt);

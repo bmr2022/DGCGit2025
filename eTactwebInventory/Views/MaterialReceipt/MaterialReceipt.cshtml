@@ -169,11 +169,11 @@
                                 </div>
                                 <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                     <label class="form-label">From Date</label>
-                                    <input asp-for="FromDate" type="text" class="form-control" readonly />
+                                    <input asp-for="FromDate" type="text" class="form-control"  />
                                 </div>
                                 <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                     <label class="form-label">To Date</label>
-                                    <input asp-for="ToDate" type="text" class="form-control" readonly />
+                                    <input asp-for="ToDate" type="text" class="form-control"  />
                                 </div>
 
                                 <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
@@ -376,7 +376,7 @@
                                         </tbody>
                                        
                                     </table>
-                                    <center><lable>total rows:</lable><input type="text" id="TotalRows" /></center>
+                                   @*  <center><lable>total rows:</lable><input type="text" id="TotalRows" /></center> *@
                                 </div>
                                 <center><strong>TOTAL ROWS : <span id="totalRows"></span></strong>   <strong>Total Bill Qty: <span id="totalBillQty">0</span></strong></center>
                             </div>
@@ -402,42 +402,42 @@
                                             <tr>
                                                 <th>Action</th>
                                                 <th>SrNo</th>
-                                                <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO No</th>
-                                                <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Year</th>
-                                                <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch No</th>
-                                                <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch Year Code</th>
-                                                <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Type</th>
-                                                <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Date</th>
-                                                <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Name</th>
-                                                <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Part Code</th>
-                                                <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unit</th>
-                                                <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Qty</th>
-                                                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Qty</th>
-                                                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rate Unit</th>
-                                                <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Unit</th>
-                                                <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>No of case</th>
-                                                <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bill Qty</th>
-                                                <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rec Qty</th>
-                                                <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Rec Qty</th>
-                                                <th data-columnno="18" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ShortExcessQty</th>
-                                                <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rate</th>
-                                                <th data-columnno="20" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RateInOtherCurr</th>
-                                                <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Disc per</th>
-                                                <th data-columnno="20" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Disc Amt</th>
-                                                <th data-columnno="21" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Amount</th>
-                                                <th data-columnno="22" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Pend PO QTY</th>
-                                                <th data-columnno="23" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>QCCompleted</th>
-                                                <th data-columnno="24" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Ret Challan Pend Qty</th>
-                                                <th data-columnno="25" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BatchWise</th>
-                                                <th data-columnno="26" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SaleBillNo</th>
-                                                <th data-columnno="27" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SaleBillYearCode</th>
-                                                <th data-columnno="28" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AgainstChallanNo</th>
-                                                <th data-columnno="29" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BatchNo</th>
-                                                <th data-columnno="30" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unique Batch No</th>
-                                                <th data-columnno="31" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SupplierBatchNo</th>
-                                                <th data-columnno="32" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ShelfLife</th>
-                                                <th data-columnno="33" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Size</th>
-                                                <th data-columnno="34" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Color</th>
+                                                <th data-columnno="1" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO No</th>
+                                                <th data-columnno="2" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Year</th>
+                                                <th data-columnno="3" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch No</th>
+                                                <th data-columnno="4" data-sortorder="asc" class="sortCol"><span  class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch Year Code</th>
+                                                <th data-columnno="5" data-sortorder="asc" class="sortCol"><span  class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Type</th>
+                                                <th data-columnno="6" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Date</th>
+                                                <th data-columnno="7" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Name</th>
+                                                <th data-columnno="8" data-sortorder="asc" class="sortCol"><span  class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Part Code</th>
+                                                <th data-columnno="9" data-sortorder="asc" class="sortCol"><span  class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unit</th>
+                                                <th data-columnno="10" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Qty</th>
+                                                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Qty</th>
+                                                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span  class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rate Unit</th>
+                                                <th data-columnno="13" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Unit</th>
+                                                <th data-columnno="14" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>No of case</th>
+                                                <th data-columnno="15" data-sortorder="asc" class="sortCol"><span  class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bill Qty</th>
+                                                <th data-columnno="16" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rec Qty</th>
+                                                <th data-columnno="17" data-sortorder="asc" class="sortCol"><span  class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Rec Qty</th>
+                                                <th data-columnno="18" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ShortExcessQty</th>
+                                                <th data-columnno="19" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rate</th>
+                                                <th data-columnno="20" data-sortorder="asc" class="sortCol"><span  class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RateInOtherCurr</th>
+                                                <th data-columnno="19" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Disc per</th>
+                                                <th data-columnno="20" data-sortorder="asc" class="sortCol"><span  class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Disc Amt</th>
+                                                <th data-columnno="21" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Amount</th>
+                                                <th data-columnno="22" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Pend PO QTY</th>
+                                                <th data-columnno="23" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>QCCompleted</th>
+                                                <th data-columnno="24" data-sortorder="asc" class="sortCol"><span  class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Ret Challan Pend Qty</th>
+                                                <th data-columnno="25" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BatchWise</th>
+                                                <th data-columnno="26" data-sortorder="asc" class="sortCol"><span  class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SaleBillNo</th>
+                                                <th data-columnno="27" data-sortorder="asc" class="sortCol"><span  class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SaleBillYearCode</th>
+                                                <th data-columnno="28" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AgainstChallanNo</th>
+                                                <th data-columnno="29" data-sortorder="asc" class="sortCol"><span  class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BatchNo</th>
+                                                <th data-columnno="30" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unique Batch No</th>
+                                                <th data-columnno="31" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SupplierBatchNo</th>
+                                                <th data-columnno="32" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ShelfLife</th>
+                                                <th data-columnno="33" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Size</th>
+                                                <th data-columnno="34" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Color</th>
                                             </tr>
                                         </thead>
                                         <tbody id="divMRNGridAdd">
@@ -1225,10 +1225,11 @@ $('#btnClose').click(function () {
 
                 var formattedDate2 = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
             console.log("formattedDate2" + finToDate);
+            var EntryDate1= $('#EntryDate').val();
             $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(finFromDate));
-            $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(finToDate));
+                    $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate1);
             $('#FromDate').datepicker("option", "minDate", parseDateToFormat(finFromDate));
-            $('#ToDate').datepicker("option", "maxDate", parseDateToFormat(finToDate));
+                    $('#ToDate').datepicker("option", "maxDate", EntryDate1);
 
                 console.log($('#FromDate').val());
             console.log($('#ToDate').val());
@@ -2250,8 +2251,7 @@ $('#btnClose').click(function () {
                                     }
                                             console.log(JSON.stringify(val.PartCode ));
                                                        console.log((val.PartCode ));
-
-                                                                                                                        html += '<tr><td><input style="width:50px" readonly id="SeqNo' + i + '" value=' + val.SeqNo + '  ></td><td><input type="hidden" id="VendorBatchMand' + i + '" value=' + val.VendorBatchcodeMand + ' /><input readonly id="PONo' + i + '" value=' + val.PONo + '  ></td><td><input style="width:50px" id="POYearCode' + i + '" value=' + val.POYearCode + ' readonly ></td><td><input style="width:80px" id="SchNo' + i + '" value=' + val.SchNo + ' readonly ></td><td><input style="width:50px" id="SchYearCode' + i + '" value=' + val.SchYearCode + ' readonly ></td><td><input style="width:70px" id="POType' + i + '" readonly value=' + val.POType + '  ></td><td><input style="width:80px" id="PODate' + i + '" value=' + val.PODate + ' readonly ></td><td><input id="Item_Name' + i + '" value=' + JSON.stringify(val.Item_Name) + ' readonly ></td><td><input style="width:100px !important;" id="PartCode' + i + '" value="' + escapeHtml(val.PartCode) + '" readonly ></td><td><input style="width:50px" id="unit' + i + '" value=' + val.unit + ' readonly ></td><td><input style="width:50px" id="Qty' + i + '" value=' + val.Qty + ' readonly ></td><td><input style="width:50px" readonly id="BillQty' + i + '" onchange="BillQtyChange(' + i + ');" value=' + val.BillQty + ' ></td><td><input style="width:50px;background-color:#ffd6dd !important" id="RecQty' + i + '" onchange="RecQtyChange(' + i + ');" value=' + val.RecQty + ' ></td><td><input style="width:70px" id="altqty' + i + '" value=' + val.altqty + ' readonly ></td><td><input style="width:50px" id="RateUnit' + i + '" readonly value=' + val.RateUnit + ' ></td><td><input style="width:50px" id="altunit' + i + '" value="' + val.altunit + '" readonly ></td><td><input style="width:50px;background-color:#ffd6dd !important" id="NoofCase' + i + '" value=' + val.NoofCase + ' readonly ></td><td><input style="width:50px;background-color:#ffd6dd !important" id="AltRecQty' + i + '" value=' + val.AltRecQty + ' ></td><td><input style="width:50px;" id="ShortExcessQty' + i + '" readonly value=' + val.ShortExcessQty + ' ></td><td><input style="width:50px;"  id="Rate' + i + '" value=' + val.Rate + ' ></td><td><input style="width:50px;" id="RateInOtherCurr' + i + '" readonly value=' + val.RateInOtherCurr + ' ></td><td><input style="width:50px;"  id="DisPer' + i + '" value=' + val.DisPer + ' ></td><td><input style="width:50px;" id="DiscRs' + i + '" readonly value=' + val.DiscRs + ' ></td><td><input style="width:50px;" id="Amount' + i + '" readonly value=' + val.Amount + ' ></td><td><input style="width:50px;" id="PendPOQty' + i + '" readonly value=' + val.PendPOQty + ' > </td><td> <input style="width:50px;" id="QCCompleted' + i + '" readonly value=' + val.QCCompleted + ' ></td><td><input style="width:50px;" id="RetChallanPendQty' + i + '" readonly value=' + val.RetChallanPendQty + ' ></td><td><input style="width:50px;" id="BatchWise' + i + '" readonly value=' + val.Batchwise + ' ></td><td><input style="width:50px;" id="SaleBillNo' + i + '" readonly value=' + val.SaleBillNo + ' ></td><td><input style="width:50px;" id="SaleBillYearCode' + i + '" readonly value=' + val.SaleBillYearCode + ' ></td><td><input style="width:50px;" id="AgainstChallanNo' + i + '" readonly value=' + val.AgainstChallanNo + ' ></td><td><input id="BatchNo' + i + '" readonly value=' + val.BatchNo + ' ></td><td><input id="Uniquebatchno' + i + '" readonly value=' + val.Uniquebatchno + ' ></td><td><input id="SupplierBatchNo' + i + '" readonly value=' + val.SupplierBatchNo + ' > </td><td><input id="ShelfLife' + i + '" readonly value=' + val.ShelfLife + ' ></td><td> <input id="ItemSize' + i + '" readonly value=' + JSON.stringify(val.ItemSize) + ' ></td><td><input id="ItemColor' + i + '" readonly value=' + JSON.stringify(val.ItemColor) + ' ></td><td><input id="ItemCode' + i + '" type="hidden" value=' + val.ItemCode + ' ></td></tr > ';
+  html += '<tr><td><input style="width:50px" readonly id="SeqNo' + i + '" value=' + val.SeqNo + '  ></td><td><input type="hidden" id="VendorBatchMand' + i + '" value=' + val.VendorBatchcodeMand + ' /><input readonly id="PONo' + i + '" value=' + val.PONo + '  ></td><td><input style="width:50px" id="POYearCode' + i + '" value=' + val.POYearCode + ' readonly ></td><td><input style="width:80px" id="SchNo' + i + '" value=' + val.SchNo + ' readonly ></td><td><input style="width:50px" id="SchYearCode' + i + '" value=' + val.SchYearCode + ' readonly ></td><td><input style="width:70px" id="POType' + i + '" readonly value=' + val.POType + '  ></td><td><input style="width:80px" id="PODate' + i + '" value=' + val.PODate + ' readonly ></td><td><input id="Item_Name' + i + '" value=' + JSON.stringify(val.Item_Name) + ' readonly ></td><td><input style="width:100px !important;" id="PartCode' + i + '" value="' + escapeHtml(val.PartCode) + '" readonly ></td><td><input style="width:50px" id="unit' + i + '" value=' + val.unit + ' readonly ></td><td><input style="width:50px" id="Qty' + i + '" value=' + val.Qty + ' readonly ></td><td><input style="width:50px" readonly id="BillQty' + i + '" onchange="BillQtyChange(' + i + ');" value=' + val.BillQty + ' ></td><td><input style="width:50px;background-color:#ffd6dd !important" id="RecQty' + i + '" onchange="RecQtyChange(' + i + ');" value=' + val.RecQty + ' ></td><td><input style="width:70px" id="altqty' + i + '" value=' + val.altqty + ' readonly ></td><td><input style="width:50px" id="RateUnit' + i + '" readonly value=' + val.RateUnit + ' ></td><td><input style="width:50px" id="altunit' + i + '" value="' + val.altunit + '" readonly ></td><td><input style="width:50px;background-color:#ffd6dd !important" id="NoofCase' + i + '" value=' + val.NoofCase + ' readonly ></td><td><input style="width:50px;background-color:#ffd6dd !important" id="AltRecQty' + i + '" value=' + val.AltRecQty + ' ></td><td><input style="width:50px;" id="ShortExcessQty' + i + '" readonly value=' + val.ShortExcessQty + ' ></td><td><input style="width:50px;"  id="Rate' + i + '" value=' + val.Rate + ' ></td><td><input style="width:50px;" id="RateInOtherCurr' + i + '" readonly value=' + val.RateInOtherCurr + ' ></td><td><input style="width:50px;"  id="DisPer' + i + '" value=' + val.DisPer + ' ></td><td><input style="width:50px;" id="DiscRs' + i + '" readonly value=' + val.DiscRs + ' ></td><td><input style="width:50px;" id="Amount' + i + '" readonly value=' + val.Amount + ' ></td><td><input style="width:50px;" id="PendPOQty' + i + '" readonly value=' + val.PendPOQty + ' > </td><td> <input style="width:50px;" id="QCCompleted' + i + '" readonly value=' + val.QCCompleted + ' ></td><td><input style="width:50px;" id="RetChallanPendQty' + i + '" readonly value=' + val.RetChallanPendQty + ' ></td><td><input style="width:50px;" id="BatchWise' + i + '" readonly value=' + val.Batchwise + ' ></td><td><input  id="SaleBillNo' + i + '" readonly value=' + val.SaleBillNo + ' ></td><td><input style="width:50px;" id="SaleBillYearCode' + i + '" readonly value=' + val.SaleBillYearCode + ' ></td><td><input style="width:50px;" id="AgainstChallanNo' + i + '" readonly value=' + val.AgainstChallanNo + ' ></td><td><input id="BatchNo' + i + '" readonly value=' + val.BatchNo + ' ></td><td><input id="Uniquebatchno' + i + '" readonly value=' + val.Uniquebatchno + ' ></td><td><input id="SupplierBatchNo' + i + '" readonly value=' + val.SupplierBatchNo + ' > </td><td><input id="ShelfLife' + i + '" readonly value=' + val.ShelfLife + ' ></td><td> <input id="ItemSize' + i + '" readonly value=' + JSON.stringify(val.ItemSize) + ' ></td><td><input id="ItemColor' + i + '" readonly value=' + JSON.stringify(val.ItemColor) + ' ></td><td><input id="ItemCode' + i + '" type="hidden" value=' + val.ItemCode + ' ></td></tr > ';
                                     i++;
                                 });
                                 $('#divMRNGrid').append(html);
@@ -2314,7 +2314,8 @@ $('#btnClose').click(function () {
                 const formattedDate = `${day}/${month < 10 ? '0' : ''}${month}/${year}`;
 
                 console.log(formattedDate); // Output: "17/08/2023"
-                //$('#EntryDate').datepicker("option", "minDate", formattedDate);
+                        $('#EntryDate').datepicker("option", "minDate", inputDate);
+                              $('#EntryDate').datepicker("option", "maxDate", new Date());
             }
 
             $('.GridButton').click(function () {

@@ -425,7 +425,7 @@ public class PurchaseOrderController : Controller
 
                     //monika
                     //IMemoryCache.Set("PurchaseOrder", MainModel, DateTimeOffset.Now.AddMinutes(60));
-                    HttpContext.Session.SetString("PurchaseOrder", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
+                    HttpContext.Session.SetString("PurchaseOrder", JsonConvert.SerializeObject(MainModel));
                 }
             }
         }
@@ -910,11 +910,14 @@ public class PurchaseOrderController : Controller
 
 
 
-        string modelJson1 = HttpContext.Session.GetString("PurchaseOrder");
-         MainModel = new PurchaseOrderModel();
-        if (!string.IsNullOrEmpty(modelJson1))
+        // 🔹 Get model JSON from session
+        string? modelJson = HttpContext.Session.GetString("PurchaseOrder");
+
+        // 🔹 Deserialize session model (if exists)
+        if (!string.IsNullOrEmpty(modelJson))
         {
-            MainModel = JsonConvert.DeserializeObject<PurchaseOrderModel>(modelJson1);
+            // Expecting full PurchaseOrderModel object in session
+            MainModel = JsonConvert.DeserializeObject<PurchaseOrderModel>(modelJson);
         }
 
         if (MainModel.ItemDetailGrid != null && MainModel.ItemDetailGrid.Count > 0)

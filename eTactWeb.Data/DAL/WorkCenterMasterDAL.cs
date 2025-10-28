@@ -82,6 +82,8 @@ namespace eTactWeb.Data.DAL
                         _WorkCenterMasterModel.WorkCenterCode = dr["WorkCenterCode"].ToString();
                         _WorkCenterMasterModel.WorkCenterDescription = dr["WorkCenterDescription"].ToString();
                         _WorkCenterMasterModel.WorkCenterType = dr["WorkcenterType"].ToString();
+                        _WorkCenterMasterModel.cc = dr["cc"].ToString();
+                        _WorkCenterMasterModel.EntryByMachineName = dr["CreatedbyEmp"].ToString();
 
                     }
                 }
@@ -122,7 +124,8 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@WorkCenterCode", model.WorkCenterCode));
                 SqlParams.Add(new SqlParameter("@WCName", model.WorkCenterDescription));
                 SqlParams.Add(new SqlParameter("@WorkcenterType", model.WorkCenterType));
-
+                SqlParams.Add(new SqlParameter("@cc", model.cc));
+                SqlParams.Add(new SqlParameter("@EntryByMachineName", model.EntryByMachineName));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SPWorkCenterMaster", SqlParams);
 
             }
