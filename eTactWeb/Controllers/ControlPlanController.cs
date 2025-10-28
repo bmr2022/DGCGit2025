@@ -314,6 +314,7 @@ namespace eTactWeb.Controllers
 
                 model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                 model.ActualEntryBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+                model.EntryByMachine = Environment.MachineName;
 
                 var Result = await _IControlPlan.SaveControlPlan(model, GIGrid);
 

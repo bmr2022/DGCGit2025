@@ -22,7 +22,11 @@ namespace eTactWeb.Controllers
             var model = new ItemCategoryModel();
             model.Mode = "Dashboard";
             model = await _IItemCategory.GetDashboardData(model).ConfigureAwait(true);
-            model.ItemCatList = model.ItemCatList.DistinctBy(x => x.Entry_id).ToList();
+            if (model.ItemCatList != null)
+            {
+                model.ItemCatList = model.ItemCatList.DistinctBy(x => x.Entry_id).ToList();
+            }
+           // model.ItemCatList = model.ItemCatList.DistinctBy(x => x.Entry_id).ToList();
             return View(model);
         }
         public async Task<IActionResult> GetSearchData(string CategoryName, string TypeItem)
@@ -47,7 +51,11 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-
+        public ResponseResult isDuplicate(string ColVal, string ColName)
+        {
+            var Result = _IDataLogic.isDuplicate(ColVal, ColName, "Item_master_type");
+            return Result;
+        }
         public async Task<JsonResult> GetAllItemCategory()
         {
             var JSON = await _IItemCategory.GetAllItemCategory();

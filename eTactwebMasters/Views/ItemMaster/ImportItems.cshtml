@@ -398,10 +398,13 @@
             $.ajax({
                 url: "@Url.Action("AddItemListdata")",
                 type: "POST",
-                data: { model: ItemData },
-                beforeSend: function (xhr) {
+                // contentType: 'application/json; charset=utf-8',
+               data: { model: ItemData },
 
-                },
+                 //data: JSON.stringify(ItemData),
+                // beforeSend: function (xhr) {
+
+                // },
                
                 success: function (data, status, xhr) {
                     console.log("success");

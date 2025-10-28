@@ -77,7 +77,11 @@ namespace eTactWeb.Controllers
 
             model = await _IItemGroup.GetDashboardData(model).ConfigureAwait(false);
             //model.ItemCatList = model.ItemCatList.DistinctBy(x => x.Entry_id).ToList();
-            model.ItemGroupList = model.ItemGroupList.DistinctBy(x => x.Group_Code).ToList();
+            if (model.ItemGroupList != null)
+            {
+                model.ItemGroupList = model.ItemGroupList.DistinctBy(x => x.Group_Code).ToList();
+            }
+            //model.ItemGroupList = model.ItemGroupList.DistinctBy(x => x.Group_Code).ToList();
             return View(model);
         }
 
