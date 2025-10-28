@@ -39,6 +39,8 @@ namespace eTactwebMasters.Controllers
             MainModel.LeaveId = ID;
             MainModel.Mode = Mode;
             MainModel.CC = HttpContext.Session.GetString("Branch");
+            MainModel.LeaveYearcode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+            MainModel.EntryByMachine= Environment.MachineName;
             ////MainModel.SalHeadEntryDate = SalHeadEntryDate;
             if (Mode != "U")
             {
@@ -305,9 +307,11 @@ namespace eTactwebMasters.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> DeleteByID(int ID)
+        public async Task<IActionResult> DeleteByID(int ID, int LeaveYearcode, string EntryByMachine, int CreatedByEmpid, string CreationDate, string LeaveCode)
         {
-            var Result = await _IHRLeaveMaster.DeleteByID(ID);
+            EntryByMachine= Environment.MachineName;
+
+            var Result = await _IHRLeaveMaster.DeleteByID( ID,  LeaveYearcode,  EntryByMachine,  CreatedByEmpid,  CreationDate,  LeaveCode);
 
             if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
             {

@@ -76,9 +76,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _HRLeaveMasterDAL.GetFormRights(uId);
         }
-        public async Task<ResponseResult> DeleteByID(int ID)
+        public async Task<ResponseResult> DeleteByID(int ID, int LeaveYearcode, string EntryByMachine, int CreatedByEmpid, string CreationDate, string LeaveCode)
         {
-            return await _HRLeaveMasterDAL.DeleteByID(ID);
+            return await _HRLeaveMasterDAL.DeleteByID( ID,  LeaveYearcode,  EntryByMachine,  CreatedByEmpid,  CreationDate,  LeaveCode);
         }
     }
 }
