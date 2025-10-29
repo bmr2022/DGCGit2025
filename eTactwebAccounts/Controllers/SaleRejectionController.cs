@@ -11,6 +11,7 @@ using System.Net;
 using System.Data;
 using System.Globalization;
 using Microsoft.AspNetCore.Mvc;
+using DocumentFormat.OpenXml.EMMA;
 
 namespace eTactWeb.Controllers
 {
@@ -221,14 +222,21 @@ namespace eTactWeb.Controllers
 
                     if (SaleRejectionGrid.Count == 0)
                     {
+                        
                         HttpContext.Session.Remove("KeySaleRejectionGrid");
                     }
                     else
                     {
-                        HttpContext.Session.SetString("KeySaleRejectionGrid", JsonConvert.SerializeObject(SaleRejectionGrid));
+                        string serializedMainModel = JsonConvert.SerializeObject(SaleRejectionGrid);
+                        HttpContext.Session.SetString("KeySaleRejectionGrid", serializedMainModel);
+
+                        //HttpContext.Session.SetString("KeySaleRejectionGrid", JsonConvert.SerializeObject(SaleRejectionGrid));
+                        //string modelJson1 = HttpContext.Session.GetString("KeySaleRejectionGrid",);
+                        //HttpContext.Session.SetString("KeySalesRejectionGrid", JsonConvert.SerializeObject(SaleRejectionGrid));
                     }
                 }
                 return PartialView("_AddSaleRejectionGrid", MainModel);
+
             }
             catch (Exception ex)
             {
@@ -248,6 +256,43 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(SSGrid);
             return Json(JsonString);
         }
+
+        [HttpPost]
+        public IActionResult UpdateRejectionItem([FromBody] List<SaleRejectionDetail> model)
+        {
+            try
+            {
+                string modelJson = HttpContext.Session.GetString("KeySaleRejectionGrid");
+                if (string.IsNullOrEmpty(modelJson))
+                    return Json(new { success = false, message = "Session expired or empty." });
+
+                var saleRejectionList = JsonConvert.DeserializeObject<List<SaleRejectionDetail>>(modelJson);
+
+                foreach (var item in model)
+                {
+                    var existing = saleRejectionList.FirstOrDefault(x =>
+                        x.ItemCode == item.ItemCode &&
+                        x.AgainstBillEntryId == item.AgainstBillEntryId &&
+                        x.AgainstBillYearCode == item.AgainstBillYearCode);
+
+                    if (existing != null)
+                    {
+                        existing.RejRate = item.RejRate;
+                        existing.Amount = item.Amount;
+                    }
+                }
+
+                HttpContext.Session.SetString("KeySaleRejectionGrid",
+                    JsonConvert.SerializeObject(saleRejectionList));
+
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
         public IActionResult AddSaleRejectionDetail(List<SaleRejectionDetail> model)
         {
             try
@@ -717,6 +762,7 @@ namespace eTactWeb.Controllers
             DTSSGrid.Columns.Add("DocTypeAccountCode", typeof(int));
             DTSSGrid.Columns.Add("ItemCode", typeof(int));
             DTSSGrid.Columns.Add("Unit", typeof(string));
+            DTSSGrid.Columns.Add("HSNNo", typeof(int));
             DTSSGrid.Columns.Add("NoOfCase", typeof(float));
             DTSSGrid.Columns.Add("SaleBillQty", typeof(float));
             DTSSGrid.Columns.Add("RejQty", typeof(float));
@@ -762,11 +808,12 @@ namespace eTactWeb.Controllers
                     0,
                     Item.ItemCode,
                     Item.Unit ?? string.Empty,
+                    Item.HSNNo,
                     Item.NoOfCase,
                     Item.SaleBillQty,
                     Item.RejQty,
                     Item.RecQty, //MRNRecQty
-                    Item.Rate, //RejRate
+                    Item.RejRate, //RejRate
                     Item.Rate, //SaleBillRate
                     Item.DiscountPer,
                     Item.DiscountAmt,

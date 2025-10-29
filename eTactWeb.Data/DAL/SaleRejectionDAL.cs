@@ -587,6 +587,7 @@ namespace eTactWeb.Data.DAL
                         ItemName = row["ItemName"]?.ToString(),
                         RecQty = row["RecQty"] != DBNull.Value ? Convert.ToInt32(row["RecQty"]) : 0,
                         Unit   = row["Unit"]?.ToString(),
+                        SeqNo = row["SeqNo"] != DBNull.Value ? Convert.ToInt32(row["SeqNo"]) : 0,
                         AltQty = row["altQty"] != DBNull.Value ? Convert.ToInt32(row["altQty"]) : 0,
                         SaleBillQty = row["SaleBillQty"] != DBNull.Value ? Convert.ToInt32(row["SaleBillQty"]) : 0,
                         RejQty = row["RejQty"] != DBNull.Value ? Convert.ToInt32(row["RejQty"]) : 0,
@@ -608,7 +609,7 @@ namespace eTactWeb.Data.DAL
                         Amount = row["rejAmount"] != DBNull.Value ? Convert.ToDecimal(row["rejAmount"]) : 0
                     });
                 }
-                //model.SaleRejectionDetails = SaleRejectionGrid;
+                model.SaleRejectionDetails = SaleRejectionGrid;
                 model.SaleRejectionInputGrid = SaleRejectionGrid;
                 model.ItemDetailGrid = SaleRejectionGrid;
             }

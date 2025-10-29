@@ -4293,15 +4293,15 @@
                     },
                     success: function (result, status, xhr) {
                         if (xhr.status == 200 && xhr.responseText == result) {
-                            if ($('#SaleBillJobwork').val() == 'J') {
+                          
+                            $('#divSaleBillList').html(result);
+                              if ($('#SaleBillJobwork').val() == 'J') {
                                 $('.jobWorkChalln').show();
                                 $('.gridHiddenField').show();
                             } else {
                                 $('.jobWorkChalln').hide();
                                 $('.gridHiddenField').hide();
                             }
-                            $('#divSaleBillList').html(result);
-
                             $('#SaleOrderGroupWiseItem').modal('hide');
                             BasicTotal();
                             ClearAdjustmentGrid();
@@ -4318,6 +4318,19 @@
                                     txSum += parseFloat($('#txGridAmount-' + i).text() == '.00' ? 0 : $('#txGridAmount-' + i).text());
                                 }
                             }
+                            if ($('#SaleBillJobwork').val() == "J") {
+                               for (var i = 1; i <= rowCount; i++) {
+                                   if ($('#gridBomInd-' + i).text() == 'Bom') {
+                                       $('#saleBillRow-' + i).css("background-color", "#f1fab9");
+                                   } else {
+                                       $('#saleBillRow-' + i).css("background-color", "#fab9e1");
+                                   }
+                               }
+
+                               $('.gridHiddenField').show();
+                           } else {
+                               $('.gridHiddenField').hide();
+                           }
 
                             var txTotal = sum + txSum;
                             $('#NetTotal').val(txTotal.toFixed(6));
@@ -4476,7 +4489,7 @@
                 },
                 success: function (result, status, xhr) {
                     if (xhr.status == 200 && xhr.responseText == result) {
-
+                        GetFeatureOption();
                         $('#divSaleBillList').html(result);
                         var rowCount = $('#divSaleBillList tr').length;
 
@@ -6031,7 +6044,11 @@
 
 
         function ValidateSubmit() {
-            debugger
+        
+               if ($('#AccountCode').val() == 0) {
+                $.notify("Customer Name is mandatory...!", "error");
+                return false;
+            }
             var salebillRowCount = $('#divTaxGrid tr').length;
             if ($('#divTaxGrid tr td').length > 1) {
                 for (var i = 1; i < salebillRowCount; i++) {
@@ -6072,10 +6089,7 @@
                 return false;
             }
 
-            if ($('#AccountCode').val() == 0) {
-                $.notify("Customer Name is mandatory...!", "error");
-                return false;
-            }
+         
 
             if ($('#DocTypeAccountCode').val() == 0) {
                 $.notify("DocType Name is mandatory...!", "error");
