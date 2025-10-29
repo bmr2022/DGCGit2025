@@ -147,96 +147,135 @@
 										<label asp-for="ToAmt" class="form-label">To Amt</label>
 										<input asp-for="ToAmt" class="form-control"  />
 									</div>
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:160px;">
 										<label asp-for="FirstApprovalRequired" class="form-label" style="color:red">First Approval Required*</label>
-										<select class="form-select" asp-for="FirstApprovalRequired">
+										<select class="form-select" asp-for="FirstApprovalRequired" style="width:150px;">
 											<option value="Y">Yes</option>
 											<option value="N">No</option>
 										</select>
 									</div>
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:160px;">
 										<label asp-for="FinalApprovalRequired1" class="form-label" style="color:red">Final Approval Required*</label>
-										<select class="form-select" asp-for="FinalApprovalRequired1">
+										<select class="form-select" asp-for="FinalApprovalRequired1" style="width:150px;">
 											<option value="Y">Yes</option>
 											<option value="N">No</option>
 										</select>
 									</div>
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px;">
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:220px;">
 										<label asp-for="OnlyDirectorApproval" class="form-label" style="color:red">Only Director Approval Required*</label>
 										<select class="form-select" asp-for="OnlyDirectorApproval">
 											<option value="Y">Yes</option>
 											<option value="N">No</option>
 										</select>
 									</div>
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
 										<label asp-for="ONLY1stApprovalRequired" class="form-label">Only First Approval Required</label>
-										<select class="form-select" asp-for="ONLY1stApprovalRequired">
+										<select class="form-select" asp-for="ONLY1stApprovalRequired" style="width:190px;">
 											<option value="Y">Yes</option>
 											<option value="N">No</option>
 										</select>
 									</div>
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
 										<label asp-for="OnlyFinalApprovalRequired" class="form-label">Only Final Approval Required</label>
-										<select class="form-select" asp-for="OnlyFinalApprovalRequired">
+										<select class="form-select" asp-for="OnlyFinalApprovalRequired" style="width:190px;">
 											<option value="Y">Yes</option>
 											<option value="N">No</option>
 										</select>
 									</div>
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:220px;">
 										<label asp-for="All3ApprovalRequired" class="form-label">All 3 Approval Required</label>
-										<select class="form-select" asp-for="All3ApprovalRequired">
+										<select class="form-select" asp-for="All3ApprovalRequired" style="width:210px;">
 											<option value="Y">Yes</option>
 											<option value="N">No</option>
 										</select>
 									</div>
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-										<label asp-for="EmpidForFirstApproval1" class="form-label" style="color:red">Emp id For First Approval 1*</label>
-										<input asp-for="EmpidForFirstApproval1" class="form-control"  />
+									
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:240px;">
+										<label asp-for="EmpNameForFirstApproval" class="form-label" >Employee Name For First Approval </label>
+										<input type="hidden" asp-for="EmpidForFirstApproval" />
+										<select class="form-select" asp-for="EmpNameForFirstApproval" style="width:230px;">
+											<option value="">-Select-</option>
+										</select>
 									</div>
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-										<label asp-for="EmpidForFirstApproval2" class="form-label">Emp id For First Approval 2</label>
-										<input asp-for="EmpidForFirstApproval2" class="form-control"  />
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:240px;">
+										<label asp-for="EmpNameForFirstApproval1" class="form-label" style="color:red">Employee Name For First Approval 1*</label>
+										<input type="hidden" asp-for="EmpidForFirstApproval1" />
+										<select class="form-select" asp-for="EmpNameForFirstApproval1" style="width:230px;">
+											<option value="">-Select-</option>
+										</select>
 									</div>
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-										<label asp-for="EmpidForFirstApproval3" class="form-label">Emp id For First Approval 3</label>
-										<input asp-for="EmpidForFirstApproval3" class="form-control"  />
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:240px;">
+										<label asp-for="EmpNameForFirstApproval2" class="form-label" >Employee Name For First Approval 2*</label>
+										<input type="hidden" asp-for="EmpidForFirstApproval2" />
+										<select class="form-select" asp-for="EmpNameForFirstApproval2" style="width:230px;">
+											<option value="">-Select-</option>
+										</select>
 									</div>
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-										<label asp-for="EmpidForFinalApproval1" class="form-label" style="color:red">Emp id For Final Approval 1*</label>
-										<input asp-for="EmpidForFinalApproval1" class="form-control"  />
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:240px;">
+										<label asp-for="EmpNameForFirstApproval3" class="form-label">Employee Name For First Approval 3*</label>
+										<input type="hidden" asp-for="EmpidForFirstApproval3" />
+										<select class="form-select" asp-for="EmpNameForFirstApproval3" style="width:230px;">
+											<option value="">-Select-</option>
+										</select>
 									</div>
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-										<label asp-for="EmpidForFinalApproval2" class="form-label">Emp id For Final Approval 2</label>
-										<input asp-for="EmpidForFinalApproval2" class="form-control"  />
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:240px;">
+										<label asp-for="EmpNameForFinalApproval" class="form-label">Employee Name For Final Approval </label>
+										<input type="hidden" asp-for="EmpidForFinalApproval" />
+										<select class="form-select" asp-for="EmpNameForFinalApproval" style="width:230px;">
+											<option value="">-Select-</option>
+										</select>
 									</div>
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-										<label asp-for="EmpidForFinalApproval3" class="form-label">Emp id For Final Approval 3</label>
-										<input asp-for="EmpidForFinalApproval3" class="form-control"  />
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:240px;">
+										<label asp-for="EmpNameForFinalApproval1" class="form-label" style="color:red">Employee Name For Final Approval 1* </label>
+										<input type="hidden" asp-for="EmpidForFinalApproval1" />
+										<select class="form-select" asp-for="EmpNameForFinalApproval1" style="width:230px;">
+											<option value="">-Select-</option>
+										</select>
 									</div>
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-										<label asp-for="EmpidForMgmtApproval1" class="form-label" style="color:red">Emp id For Mgmt Approval 1*</label>
-										<input asp-for="EmpidForMgmtApproval1" class="form-control"  />
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:240px;">
+										<label asp-for="EmpNameForFinalApproval2" class="form-label" >Employee Name For Final Approval 2 </label>
+										<input type="hidden" asp-for="EmpidForFinalApproval2" />
+										<select class="form-select" asp-for="EmpNameForFinalApproval2" style="width:230px;">
+											<option value="">-Select-</option>
+										</select>
 									</div>
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-										<label asp-for="EmpidForMgmtApproval12" class="form-label">Emp id For Mgmt Approval 2</label>
-										<input asp-for="EmpidForMgmtApproval12" class="form-control"  />
+
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:240px;">
+										<label asp-for="EmpNameForFinalApproval3" class="form-label">Employee Name For Final Approval 3 </label>
+										<input type="hidden" asp-for="EmpidForFinalApproval3" />
+										<select class="form-select" asp-for="EmpNameForFinalApproval3" style="width:230px;">
+											<option value="">-Select-</option>
+										</select>
 									</div>
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-										<label asp-for="EmpidForMgmtApproval13" class="form-label">Emp id For Mgmt Approval 3</label>
-										<input asp-for="EmpidForMgmtApproval13" class="form-control"  />
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:240px;">
+										<label asp-for="EmpNameForMgmtApproval1" class="form-label" style="color:red"> Employee Name For Mgmt Approval 1* </label>
+										<input type="hidden" asp-for="EmpidForMgmtApproval1" />
+										<select class="form-select" asp-for="EmpNameForMgmtApproval1" style="width:230px;">
+											<option value="">-Select-</option>
+										</select>
 									</div>
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-										<label asp-for="EmpidForDirectorApproval" class="form-label">Emp id For Director Approval</label>
-										<input asp-for="EmpidForDirectorApproval" class="form-control"  />
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:240px;">
+										<label asp-for="EmpNameForMgmtApproval12" class="form-label" > Employee Name For Mgmt Approval 2 </label>
+										<input type="hidden" asp-for="EmpidForMgmtApproval12" />
+										<select class="form-select" asp-for="EmpNameForMgmtApproval12" style="width:230px;">
+											<option value="">-Select-</option>
+										</select>
 									</div>
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-										<label asp-for="EmpidForFirstApproval" class="form-label">Emp id For First Approval</label>
-										<input asp-for="EmpidForFirstApproval" class="form-control"  />
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:240px;">
+										<label asp-for="EmpNameForMgmtApproval13" class="form-label"> Employee Name For Mgmt Approval 3 </label>
+										<input type="hidden" asp-for="EmpidForMgmtApproval13" />
+										<select class="form-select" asp-for="EmpNameForMgmtApproval13" style="width:230px;">
+											<option value="">-Select-</option>
+										</select>
 									</div>
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-										<label asp-for="EmpidForFinalApproval" class="form-label">Emp id For Final Approval</label>
-										<input asp-for="EmpidForFinalApproval" class="form-control"  />
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:240px;">
+										<label asp-for="EmpNameForDirectorApproval" class="form-label"> Employee Name For Director Approval </label>
+										<input type="hidden" asp-for="EmpidForDirectorApproval" />
+										<select class="form-select" asp-for="EmpNameForDirectorApproval" style="width:230px;">
+											<option value="">-Select-</option>
+										</select>
 									</div>
+									
 									
 
 								</div>
@@ -381,9 +420,75 @@
 			$('#OnlyFinalApprovalRequired').select2();
 			$('#All3ApprovalRequired').select2();
 			$('#POTYPE').select2();
+			$('#EmpNameForFirstApproval').select2();
+			$('#EmpNameForFirstApproval1').select2();
+			$('#EmpNameForFirstApproval2').select2();
+			$('#EmpNameForFirstApproval3').select2();
+
+			$('#EmpNameForFinalApproval').select2();
+			$('#EmpNameForFinalApproval1').select2();
+			$('#EmpNameForFinalApproval2').select2();
+			$('#EmpNameForFinalApproval3').select2();
+
+			$('#EmpNameForMgmtApproval1').select2();
+			$('#EmpNameForMgmtApproval12').select2();
+			$('#EmpNameForMgmtApproval13').select2();
+			$('#EmpNameForDirectorApproval').select2();
+
 
 			$('#totalRows').text($('#divStockGrid tr').length);
 
+			function preventDuplicateSelection(groupSelectors, groupName) {
+				$(groupSelectors.join(',')).on('change', function () {
+					var selectedValues = [];
+					var duplicateShown = false; // flag to prevent multiple notifications
+
+					// Collect all selected values
+					groupSelectors.forEach(function (selector) {
+						var val = $(selector).val();
+						if (val !== "") selectedValues.push(val);
+					});
+
+					// Check duplicates
+					groupSelectors.forEach(function (selector) {
+						var currentVal = $(selector).val();
+						if (
+							currentVal !== "" &&
+							selectedValues.filter(v => v === currentVal).length > 1
+						) {
+							if (!duplicateShown) {
+								$.notify(
+									`Duplicate selection not allowed in ${groupName}!`,
+									{ className: "error", globalPosition: "top right" }
+								);
+								duplicateShown = true; // show only once
+							}
+
+							// Reset the duplicate selection in Select2
+							$(selector).val(null).trigger('change.select2');
+						}
+					});
+				});
+			}
+
+			// Initialize for each approval group
+			preventDuplicateSelection([
+				'#EmpNameForFirstApproval1',
+				'#EmpNameForFirstApproval2',
+				'#EmpNameForFirstApproval3'
+			], 'First Approval');
+
+			preventDuplicateSelection([
+				'#EmpNameForFinalApproval1',
+				'#EmpNameForFinalApproval2',
+				'#EmpNameForFinalApproval3'
+			], 'Final Approval');
+
+			preventDuplicateSelection([
+				'#EmpNameForMgmtApproval1',
+				'#EmpNameForMgmtApproval12',
+				'#EmpNameForMgmtApproval13'
+			], 'Management Approval');
 
 			$('.submitBTN').click(function (e) {
 				e.preventDefault();
@@ -412,15 +517,15 @@
 				}
 				if (!empFirst || parseInt(empFirst) <= 0) {
 					valid = false;
-					errorMsg += "Emp id For First Approval must be greater than 0\n";
+					errorMsg += "Emp Name For First Approval must be greater than 0\n";
 				}
 				if (!empFinal || parseInt(empFinal) <= 0) {
 					valid = false;
-					errorMsg += "Emp id For Final Approval must be greater than 0\n";
+					errorMsg += "Emp Name For Final Approval must be greater than 0\n";
 				}
 				if (!empMgmt || parseInt(empMgmt) <= 0) {
 					valid = false;
-					errorMsg += "Emp id For Mgmt Approval must be greater than 0\n";
+					errorMsg += "Emp Name For Mgmt Approval must be greater than 0\n";
 				}
 
 				if (!valid) {
@@ -505,6 +610,46 @@
 			$('#CatName').change(function () {
 				$('#CatId').val($('#CatName').val());
 			});
+			$('#EmpNameForFirstApproval').change(function () {
+				$('#EmpidForFirstApproval').val($('#EmpNameForFirstApproval').val());
+			});
+			$('#EmpNameForFirstApproval1').change(function () {
+				$('#EmpidForFirstApproval1').val($('#EmpNameForFirstApproval1').val());
+			});
+			$('#EmpNameForFirstApproval2').change(function () {
+				$('#EmpidForFirstApproval2').val($('#EmpNameForFirstApproval2').val());
+			});
+			$('#EmpNameForFirstApproval3').change(function () {
+				$('#EmpidForFirstApproval3').val($('#EmpNameForFirstApproval3').val());
+			});
+
+			$('#EmpNameForFinalApproval').change(function () {
+				$('#EmpidForFinalApproval').val($('#EmpNameForFinalApproval').val());
+			});
+			$('#EmpNameForFinalApproval1').change(function () {
+				$('#EmpidForFinalApproval1').val($('#EmpNameForFinalApproval1').val());
+			});
+			$('#EmpNameForFinalApproval2').change(function () {
+				$('#EmpidForFinalApproval2').val($('#EmpNameForFinalApproval2').val());
+			});
+			$('#EmpNameForFinalApproval3').change(function () {
+				$('#EmpidForFinalApproval3').val($('#EmpNameForFinalApproval3').val());
+			});
+
+			$('#EmpNameForMgmtApproval1').change(function () {
+				$('#EmpidForMgmtApproval1').val($('#EmpNameForMgmtApproval1').val());
+			});
+			$('#EmpNameForMgmtApproval12').change(function () {
+				$('#EmpidForMgmtApproval12').val($('#EmpNameForMgmtApproval12').val());
+			});
+			$('#EmpNameForMgmtApproval13').change(function () {
+				$('#EmpidForMgmtApproval13').val($('#EmpNameForMgmtApproval13').val());
+			});
+			$('#EmpNameForDirectorApproval').change(function () {
+				$('#EmpidForDirectorApproval').val($('#EmpNameForDirectorApproval').val());
+			});
+
+
 			$(document).on('change', '#ItemName,#PartCode', function (e) {
 
 				var cntId = e.target.id;
@@ -620,17 +765,106 @@
 				async: false,
 				success: function (response, status, error) {
 					var Dropdown = $('#EmpName');
+
+					var EmpNameForFirstApproval = $('#EmpNameForFirstApproval');
+					var EmpNameForFirstApproval1 = $('#EmpNameForFirstApproval1');
+					var EmpNameForFirstApproval2 = $('#EmpNameForFirstApproval2');
+					var EmpNameForFirstApproval3 = $('#EmpNameForFirstApproval3');
+
+					var EmpNameForFinalApproval = $('#EmpNameForFinalApproval');
+					var EmpNameForFinalApproval1 = $('#EmpNameForFinalApproval1');
+					var EmpNameForFinalApproval2 = $('#EmpNameForFinalApproval2');
+					var EmpNameForFinalApproval3 = $('#EmpNameForFinalApproval3');
+
+					var EmpNameForMgmtApproval1 = $('#EmpNameForMgmtApproval1');
+					var EmpNameForMgmtApproval12 = $('#EmpNameForMgmtApproval12');
+					var EmpNameForMgmtApproval13 = $('#EmpNameForMgmtApproval13');
+					var EmpNameForDirectorApproval = $('#EmpNameForDirectorApproval');
+
 					var obj = $.parseJSON(response);
+
 					Dropdown.empty();
+
+					EmpNameForFirstApproval.empty();
+					EmpNameForFirstApproval1.empty();
+					EmpNameForFirstApproval2.empty();
+					EmpNameForFirstApproval3.empty();
+
+					EmpNameForFinalApproval.empty();
+					EmpNameForFinalApproval1.empty();
+					EmpNameForFinalApproval2.empty();
+					EmpNameForFinalApproval3.empty();
+
+					EmpNameForMgmtApproval1.empty();
+					EmpNameForMgmtApproval12.empty();
+					EmpNameForMgmtApproval13.empty();
+					EmpNameForDirectorApproval.empty();
+
 					Dropdown.append('<option value="">--Select--</option>');
+					EmpNameForFirstApproval.append('<option value="">--Select--</option>');
+					EmpNameForFirstApproval1.append('<option value="">--Select--</option>');
+					EmpNameForFirstApproval2.append('<option value="">--Select--</option>');
+					EmpNameForFirstApproval3.append('<option value="">--Select--</option>');
+
+					EmpNameForFinalApproval.append('<option value="">--Select--</option>');
+					EmpNameForFinalApproval1.append('<option value="">--Select--</option>');
+					EmpNameForFinalApproval2.append('<option value="">--Select--</option>');
+					EmpNameForFinalApproval3.append('<option value="">--Select--</option>');
+
+					EmpNameForMgmtApproval1.append('<option value="">--Select--</option>');
+					EmpNameForMgmtApproval12.append('<option value="">--Select--</option>');
+					EmpNameForMgmtApproval13.append('<option value="">--Select--</option>');
+					EmpNameForDirectorApproval.append('<option value="">--Select--</option>');
+
+
 					$.each(obj.Result, function (index, Val) {
 						Dropdown.append('<option value="' + Val.EmpId + '">' + Val.EmpName + '</option>');
+						EmpNameForFirstApproval.append('<option value="' + Val.EmpId + '">' + Val.EmpName + '</option>');
+						EmpNameForFirstApproval1.append('<option value="' + Val.EmpId + '">' + Val.EmpName + '</option>');
+						EmpNameForFirstApproval2.append('<option value="' + Val.EmpId + '">' + Val.EmpName + '</option>');
+						EmpNameForFirstApproval3.append('<option value="' + Val.EmpId + '">' + Val.EmpName + '</option>');
+						EmpNameForFinalApproval.append('<option value="' + Val.EmpId + '">' + Val.EmpName + '</option>');
+						EmpNameForFinalApproval1.append('<option value="' + Val.EmpId + '">' + Val.EmpName + '</option>');
+						EmpNameForFinalApproval2.append('<option value="' + Val.EmpId + '">' + Val.EmpName + '</option>');
+						EmpNameForFinalApproval3.append('<option value="' + Val.EmpId + '">' + Val.EmpName + '</option>');
+						EmpNameForMgmtApproval1.append('<option value="' + Val.EmpId + '">' + Val.EmpName + '</option>');
+						EmpNameForMgmtApproval12.append('<option value="' + Val.EmpId + '">' + Val.EmpName + '</option>');
+						EmpNameForMgmtApproval13.append('<option value="' + Val.EmpId + '">' + Val.EmpName + '</option>');
+						EmpNameForDirectorApproval.append('<option value="' + Val.EmpId + '">' + Val.EmpName + '</option>');
 					});
 
 					if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
 						var EmpId = '@Model.EmpId';
 						$('#EmpName').val(EmpId);
-					}
+						var EmpidForFirstApproval = '@Model.EmpidForFirstApproval';
+						$('#EmpNameForFirstApproval').val(EmpidForFirstApproval);
+						var EmpidForFirstApproval1 = '@Model.EmpidForFirstApproval1';
+						$('#EmpNameForFirstApproval1').val(EmpidForFirstApproval1);
+						var EmpidForFirstApproval2 = '@Model.EmpidForFirstApproval2';
+						$('#EmpNameForFirstApproval2').val(EmpidForFirstApproval2);
+						var EmpidForFirstApproval3 = '@Model.EmpidForFirstApproval3';
+						$('#EmpNameForFirstApproval3').val(EmpidForFirstApproval3);
+
+						var EmpidForFinalApproval = '@Model.EmpidForFinalApproval';
+						$('#EmpNameForFinalApproval').val(EmpidForFinalApproval);
+						var EmpidForFinalApproval1 = '@Model.EmpidForFinalApproval1';
+						$('#EmpNameForFinalApproval1').val(EmpidForFinalApproval1);
+						var EmpidForFinalApproval2 = '@Model.EmpidForFinalApproval2';
+						$('#EmpNameForFinalApproval2').val(EmpidForFinalApproval2);
+						var EmpidForFinalApproval3 = '@Model.EmpidForFinalApproval3';
+						$('#EmpNameForFinalApproval3').val(EmpidForFinalApproval3);
+
+						var EmpidForMgmtApproval1 = '@Model.EmpidForMgmtApproval1';
+						$('#EmpNameForMgmtApproval1').val(EmpidForMgmtApproval1);
+						var EmpidForMgmtApproval12 = '@Model.EmpidForMgmtApproval12';
+						$('#EmpNameForMgmtApproval12').val(EmpidForMgmtApproval12);
+						var EmpidForMgmtApproval13 = '@Model.EmpidForMgmtApproval13';
+						$('#EmpNameForMgmtApproval13').val(EmpidForMgmtApproval13);
+						var EmpidForDirectorApproval = '@Model.EmpidForDirectorApproval';
+						$('#EmpNameForDirectorApproval').val(EmpidForDirectorApproval);
+
+
+					}	
 				},
 				error: function (xhr, status, error) {
 					alert('Failed to load groups.');

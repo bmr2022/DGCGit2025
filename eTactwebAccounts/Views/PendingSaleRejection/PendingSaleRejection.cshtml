@@ -260,25 +260,36 @@
                         $('#divSaleRejectionGrid').empty();
                         var i = 1;
                         $.each(obj.Result, function (index, val) {
-                            html += '<tr id="DisplayBomRow">' +
-                                '<td id="srNo">'+i+'</td>' +
-                                // '<td><a href="SaleBillRejection' + val.MRNNo + '">' + val.MRNNo + '</a></td>' +
-                                '<td><a href="/SaleRejection/Index?mrnNo=' + val.MRNNo + '&mrnEntryId=' + val.MRNEntryId + '&mrnYC=' + val.MRNYearCode + '">' + val.MRNNo + '</a></td>' +
-                                '<td>' + val.Account_Name + '</td>' +
-                                '<td>' + val.MRNEntryDate.split("T")[0] + '</td>' +
-                                '<td>' + val.GateNo + '</td>' +
-                                '<td>' + val.GateDate.split("T")[0] + '</td>' +
-                                '<td>' + val.InvNo + '</td>' +
-                                '<td>' + val.InvDate.split("T")[0] + '</td>' +
-                                '<td>' + val.TotalAmt + '</td>' +
-                                '<td>' + val.NetAmt + '</td>' +
-                                '<td>' + val.CheckQc + '</td>' +
-                                '<td>' + val.QCCompleted + '</td>' +
-                                '<td>' + val.Currency + '</td>' +
-                                '<td>' + val.ActualEntryDate.split("T")[0] + '</td>' +
-                                '<td>' + val.MRNEntryId + '</td>' +
-                                '<td>' + val.MRNYearCode + '</td>' +
-                            '</tr>';
+                                    html += '<tr id="DisplayBomRow">' +
+            '<td id="srNo">' + i + '</td>';
+
+        if (val.QCCompleted === "Y") {
+            // ✅ Allow navigation if QC completed
+            html += '<td><a href="/SaleRejection/Index?mrnNo=' + val.MRNNo +
+                '&mrnEntryId=' + val.MRNEntryId +
+                '&mrnYC=' + val.MRNYearCode + '" class="text-primary fw-bold">' + val.MRNNo + '</a></td>';
+        } else {
+            // ⚠️ Disable navigation, show notify message
+            html += '<td><a href="javascript:void(0);" onclick="$.notify(\'Please complete QC first!\', \'error\');" class="text-danger fw-bold">' + val.MRNNo + '</a></td>';
+        }
+
+        html +=
+            '<td>' + val.Account_Name + '</td>' +
+            '<td>' + val.MRNEntryDate.split("T")[0] + '</td>' +
+            '<td>' + val.GateNo + '</td>' +
+            '<td>' + val.GateDate.split("T")[0] + '</td>' +
+            '<td>' + val.InvNo + '</td>' +
+            '<td>' + val.InvDate.split("T")[0] + '</td>' +
+            '<td>' + val.TotalAmt + '</td>' +
+            '<td>' + val.NetAmt + '</td>' +
+            '<td>' + val.CheckQc + '</td>' +
+            '<td>' + val.QCCompleted + '</td>' +
+            '<td>' + val.Currency + '</td>' +
+            '<td>' + val.ActualEntryDate.split("T")[0] + '</td>' +
+            '<td>' + val.MRNEntryId + '</td>' +
+            '<td>' + val.MRNYearCode + '</td>' +
+        '</tr>';
+
                             i++;
                         });
                         $('#divSaleRejectionGrid').append(html);

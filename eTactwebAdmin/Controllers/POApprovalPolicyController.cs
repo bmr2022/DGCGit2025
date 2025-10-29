@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using static eTactWeb.Data.Common.CommonFunc;
 using static eTactWeb.DOM.Models.Common;
 using System.Net;
+using System.Data;
 
 namespace eTactwebAdmin.Controllers
 {
@@ -25,9 +26,38 @@ namespace eTactwebAdmin.Controllers
 			_IWebHostEnvironment = iWebHostEnvironment;
 			this.iconfiguration = iconfiguration;
 		}
-		[Route("{controller}/Index")]
+        public async Task<JsonResult> FillItems(string SearchItemCode)
+        {
+            var JSON = await _IPOApprovalPolicy.FillItems(SearchItemCode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+		public async Task<JsonResult> FillGroups(string SearchGroupName)
+        {
+            var JSON = await _IPOApprovalPolicy.FillGroups(SearchGroupName);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+		public async Task<JsonResult> FillCateName(string SearchCatName)
+        {
+            var JSON = await _IPOApprovalPolicy.FillCateName(SearchCatName);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
+        //[HttpPost]
+        //public JsonResult AutoComplete(string ColumnName, string prefix)
+        //{
+        //    IList<Common.TextValue> iList = _IDataLogic.AutoComplete("POApprovalPolicy", ColumnName, "", "", 0, 0);
+        //    var Result = (from item in iList where item.Text.Contains(prefix) select new { item.Text })
+        //        .Distinct()
+        //        .ToList();
+
+        //    return Json(Result);
+        //}
+        [Route("{controller}/Index")]
 		[HttpGet]
-		public async Task<ActionResult> POApprovalPolicy(int ID, string Mode)
+		public async Task<ActionResult> POApprovalPolicy(int ID, string Mode, int YC, string FromDate, string ToDate)
 		{
 			_logger.LogInformation("\n \n ********** Page  PO Approval Policy ********** \n \n " + _IWebHostEnvironment.EnvironmentName.ToString() + "\n \n");
 
@@ -40,13 +70,12 @@ namespace eTactwebAdmin.Controllers
 			MainModel.ActualEntryByName = HttpContext.Session.GetString("EmpName");
 			MainModel.CC = HttpContext.Session.GetString("Branch");
 			MainModel.ActualEntryDate = DateTime.Today.ToString("MM/dd/yyyy").Replace("-", "/");
-			
-			if (!string.IsNullOrEmpty(Mode) && ID > 0 && Mode == "U")
-			{
 
-				
-				//MainModel = await _IAlternateItemMaster.GetViewByID(MainItemCode, AlternateItemCode).ConfigureAwait(false);
-				MainModel.Mode = Mode; // Set Mode to Update
+            if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "U" || Mode == "V"))
+            {
+				MainModel = await _IPOApprovalPolicy.GetViewByID(ID, YC, FromDate, ToDate).ConfigureAwait(false);
+				MainModel.Mode = Mode; 
+				MainModel.YearCode = YC; 
 				
 				if (Mode == "U")
 				{
@@ -140,6 +169,57 @@ namespace eTactwebAdmin.Controllers
 			string JsonString = JsonConvert.SerializeObject(JSON);
 			return Json(JsonString);
 		}
+        public async Task<IActionResult> POApprovalPolicyDashBoard(string ReportType, string FromDate, string ToDate)
+        {
+            var model = new POApprovalPolicyModel();
+            var yearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+            DateTime now = DateTime.Now;
+            DateTime firstDayOfMonth = new DateTime(yearCode, now.Month, 1);
+            Dictionary<int, string> monthNames = new Dictionary<int, string>
+            {
+                {1, "Jan"}, {2, "Feb"}, {3, "Mar"}, {4, "Apr"}, {5, "May"}, {6, "Jun"},
+                {7, "Jul"}, {8, "Aug"}, {9, "Sep"}, {10, "Oct"}, {11, "Nov"}, {12, "Dec"}
+            };
 
-	}
+            model.FromDate = $"{firstDayOfMonth.Day}/{monthNames[firstDayOfMonth.Month]}/{firstDayOfMonth.Year}";
+            model.ToDate = $"{now.Day}/{monthNames[now.Month]}/{now.Year}";
+            
+            model.ActualEntryByEmpId = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+          
+            var Result = await _IPOApprovalPolicy.GetDashboardData(model);
+
+            return View(model);
+        }
+        public async Task<IActionResult> GetDetailData(string FromDate, string ToDate, string ReportType, string GroupName, string CateName, string ItemName)
+        {
+            var model = new POApprovalPolicyModel();
+            model = await _IPOApprovalPolicy.GetDashboardDetailData(FromDate, ToDate, ReportType,  GroupName,  CateName,  ItemName);
+            return PartialView("_POApprovalPolicyDashBoardGrid", model);
+
+        }
+
+        public async Task<IActionResult> DeleteByID(int EntryId, string EntryDate, int EntryByempId)
+        {
+            var Result = await _IPOApprovalPolicy.DeleteByID(EntryId, EntryDate, EntryByempId);
+
+            if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
+            {
+                ViewBag.isSuccess = true;
+                TempData["410"] = "410";
+            }
+            else if (Result.StatusText == "Error" || Result.StatusCode == HttpStatusCode.Accepted)
+            {
+                ViewBag.isSuccess = true;
+                TempData["423"] = "423";
+            }
+            else
+            {
+                ViewBag.isSuccess = false;
+                TempData["500"] = "500";
+            }
+
+            return RedirectToAction("POApprovalPolicyDashBoard");
+
+        }
+    }
 }

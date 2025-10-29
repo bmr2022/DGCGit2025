@@ -169,11 +169,11 @@
                                 </div>
                                 <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                     <label class="form-label">From Date</label>
-                                    <input asp-for="FromDate" type="text" class="form-control" readonly />
+                                    <input asp-for="FromDate" type="text" class="form-control"  />
                                 </div>
                                 <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                     <label class="form-label">To Date</label>
-                                    <input asp-for="ToDate" type="text" class="form-control" readonly />
+                                    <input asp-for="ToDate" type="text" class="form-control"  />
                                 </div>
 
                                 <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
@@ -376,7 +376,7 @@
                                         </tbody>
                                        
                                     </table>
-                                    <center><lable>total rows:</lable><input type="text" id="TotalRows" /></center>
+                                   @*  <center><lable>total rows:</lable><input type="text" id="TotalRows" /></center> *@
                                 </div>
                                 <center><strong>TOTAL ROWS : <span id="totalRows"></span></strong>   <strong>Total Bill Qty: <span id="totalBillQty">0</span></strong></center>
                             </div>
@@ -402,42 +402,42 @@
                                             <tr>
                                                 <th>Action</th>
                                                 <th>SrNo</th>
-                                                <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO No</th>
-                                                <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Year</th>
-                                                <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch No</th>
-                                                <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch Year Code</th>
-                                                <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Type</th>
-                                                <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Date</th>
-                                                <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Name</th>
-                                                <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Part Code</th>
-                                                <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unit</th>
-                                                <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Qty</th>
-                                                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Qty</th>
-                                                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rate Unit</th>
-                                                <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Unit</th>
-                                                <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>No of case</th>
-                                                <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bill Qty</th>
-                                                <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rec Qty</th>
-                                                <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Rec Qty</th>
-                                                <th data-columnno="18" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ShortExcessQty</th>
-                                                <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rate</th>
-                                                <th data-columnno="20" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RateInOtherCurr</th>
-                                                <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Disc per</th>
-                                                <th data-columnno="20" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Disc Amt</th>
-                                                <th data-columnno="21" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Amount</th>
-                                                <th data-columnno="22" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Pend PO QTY</th>
-                                                <th data-columnno="23" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>QCCompleted</th>
-                                                <th data-columnno="24" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Ret Challan Pend Qty</th>
-                                                <th data-columnno="25" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BatchWise</th>
-                                                <th data-columnno="26" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SaleBillNo</th>
-                                                <th data-columnno="27" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SaleBillYearCode</th>
-                                                <th data-columnno="28" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AgainstChallanNo</th>
-                                                <th data-columnno="29" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BatchNo</th>
-                                                <th data-columnno="30" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unique Batch No</th>
-                                                <th data-columnno="31" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SupplierBatchNo</th>
-                                                <th data-columnno="32" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ShelfLife</th>
-                                                <th data-columnno="33" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Size</th>
-                                                <th data-columnno="34" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Color</th>
+                                                <th data-columnno="1" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO No</th>
+                                                <th data-columnno="2" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Year</th>
+                                                <th data-columnno="3" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch No</th>
+                                                <th data-columnno="4" data-sortorder="asc" class="sortCol"><span  class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch Year Code</th>
+                                                <th data-columnno="5" data-sortorder="asc" class="sortCol"><span  class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Type</th>
+                                                <th data-columnno="6" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Date</th>
+                                                <th data-columnno="7" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Name</th>
+                                                <th data-columnno="8" data-sortorder="asc" class="sortCol"><span  class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Part Code</th>
+                                                <th data-columnno="9" data-sortorder="asc" class="sortCol"><span  class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unit</th>
+                                                <th data-columnno="10" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Qty</th>
+                                                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Qty</th>
+                                                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span  class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rate Unit</th>
+                                                <th data-columnno="13" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Unit</th>
+                                                <th data-columnno="14" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>No of case</th>
+                                                <th data-columnno="15" data-sortorder="asc" class="sortCol"><span  class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bill Qty</th>
+                                                <th data-columnno="16" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rec Qty</th>
+                                                <th data-columnno="17" data-sortorder="asc" class="sortCol"><span  class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Rec Qty</th>
+                                                <th data-columnno="18" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ShortExcessQty</th>
+                                                <th data-columnno="19" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rate</th>
+                                                <th data-columnno="20" data-sortorder="asc" class="sortCol"><span  class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RateInOtherCurr</th>
+                                                <th data-columnno="19" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Disc per</th>
+                                                <th data-columnno="20" data-sortorder="asc" class="sortCol"><span  class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Disc Amt</th>
+                                                <th data-columnno="21" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Amount</th>
+                                                <th data-columnno="22" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Pend PO QTY</th>
+                                                <th data-columnno="23" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>QCCompleted</th>
+                                                <th data-columnno="24" data-sortorder="asc" class="sortCol"><span  class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Ret Challan Pend Qty</th>
+                                                <th data-columnno="25" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BatchWise</th>
+                                                <th data-columnno="26" data-sortorder="asc" class="sortCol"><span  class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SaleBillNo</th>
+                                                <th data-columnno="27" data-sortorder="asc" class="sortCol"><span  class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SaleBillYearCode</th>
+                                                <th data-columnno="28" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AgainstChallanNo</th>
+                                                <th data-columnno="29" data-sortorder="asc" class="sortCol"><span  class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BatchNo</th>
+                                                <th data-columnno="30" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unique Batch No</th>
+                                                <th data-columnno="31" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SupplierBatchNo</th>
+                                                <th data-columnno="32" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ShelfLife</th>
+                                                <th data-columnno="33" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Size</th>
+                                                <th data-columnno="34" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Color</th>
                                             </tr>
                                         </thead>
                                         <tbody id="divMRNGridAdd">
@@ -1225,10 +1225,11 @@ $('#btnClose').click(function () {
 
                 var formattedDate2 = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
             console.log("formattedDate2" + finToDate);
+            var EntryDate1= $('#EntryDate').val();
             $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(finFromDate));
-            $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(finToDate));
+                    $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate1);
             $('#FromDate').datepicker("option", "minDate", parseDateToFormat(finFromDate));
-            $('#ToDate').datepicker("option", "maxDate", parseDateToFormat(finToDate));
+                    $('#ToDate').datepicker("option", "maxDate", EntryDate1);
 
                 console.log($('#FromDate').val());
             console.log($('#ToDate').val());

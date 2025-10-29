@@ -1,0 +1,565 @@
+﻿@model eTactWeb.DOM.Models.POApprovalPolicyModel        
+
+@{
+    ViewData["Title"] = "PO Approval Policy";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+<div class="shadow-lg">
+    <div class="card rounded border-light bg-gradient">
+        <div class="card-header card-headerBG text-light bg-gradient">
+            <h5>
+                PO Approval Policy - <strong>Dashboard</strong>
+                <span class="d-flex float-end" style="margin-top:-2px;">
+                    <a asp-action="POApprovalPolicy" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient" id="savebtn">
+                        <i class="fa fa-plus-circle fafw fa-lg" aria-hidden="true"></i>
+                        Add New
+                    </a>
+                </span>
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="card overflow-auto">
+                <div class="card-body">
+                    <form id="SParam">
+                        <div class="row">
+
+                            <div class="col-sm-3 col-md-6 col-lg-2 col-xl-2" style="width:250px;">
+                                <input type="hidden" asp-for="@Model.ActualEntryByEmpId" value="@Model.ActualEntryByEmpId" />
+                                
+                                <div class="row">
+                                    <div class="col">
+                                        <label class="form-label">From Date</label>
+                                        <input asp-for="FromDate" class="form-control" readonly />
+                                    </div>
+                                    <div class="col">
+                                        <label class="form-label">To Date</label>
+                                        <input asp-for="ToDate" class="form-control" readonly />
+                                    </div>
+                                   
+                                </div>
+                                
+                               
+
+                            </div>
+
+                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                <label asp-for="ItemName" class="form-label">ItemName</label>
+                                <input type="text" id="ItemNameText" class="form-control" placeholder="Type Item Name..." />
+                                <input type="hidden" asp-for="ItemName" id="ItemName" />
+                            </div>
+                            <div class="col col-auto col-md-2 col-sm-6 col-xs-6">
+                                <label asp-for="GroupName" class="control-label">Group Name</label>
+                                <input type="text" id="GroupNameText" class="form-control" placeholder="Type Group Name..." />
+                            </div>
+                            <div class="col col-auto col-md-2 col-sm-6 col-xs-6">
+                                <label asp-for="CatName" class="control-label">Category Name</label>
+                                <input type="text" id="CatNameText" class="form-control" placeholder="Type Category Name..." />
+                            </div>
+
+                           
+
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2" style="margin-left30px;">
+                                <label class="form-label">Global search</label>
+                                <input type="text" class="form-control" asp-for="Searchbox" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
+                            </div>
+
+                            <button class="btn btn-sm btn-outline-info" style="padding:3px;height:30px;width:100px;margin-left:20px;margin-top:20px;" type="button" onclick="GetDetailData();">
+                                <i class="fa-solid fa-magnifying-glass fa-fw fa-lg "></i>SEARCH
+                            </button>
+                            <button class="btn btn-sm btn-outline-success me-3" style="padding:3px;height:30px;width:100px;margin-left:20px;margin-top:20px;" type="button" id="btnGridExcel">
+                                <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
+                            </button>
+                            <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;margin-top:20px;" asp-controller="POApprovalPolicy" asp-action="POApprovalPolicyDashBoard">
+                                <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
+                            </a>
+                            
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="card-body pb-0 pt-0">
+            <div class="progress" style="height: 4px;">
+                <div class="progress-bar progress-bar-striped bg-info" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="card overflow-auto">
+                <div class="card-body" id="divDashboardGrid">
+                    <partial name="_POApprovalPolicyDashBoardGrid" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script>
+        $(document).ready(function () {
+            GetFormRights();
+
+            //$('#ReportType').select2();
+            FillItems();
+            FillGroups();
+            FillCateName();
+            GetDetailData();
+
+           // AutoComplete('Item_Master', 'Item_Name', 'Item_Name', null);
+            AutoComplete('Item_Master_Type', 'ItemTypeName', 'Type_Item', null);
+            AutoComplete('Itemgroup_master', 'Group_name', 'Group_name', null);
+            if ($('#ItemNameText').val() == '') {
+                $('#ItemName').val('');
+            }
+            var CurrentDate = new Date();
+
+            var currentDate = new Date();
+            var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+            $('#FromDate').datepicker({ dateFormat: 'dd/M/yy' }).datepicker("setDate", formatDate1(firstDayOfMonth));
+            $('#ToDate').datepicker({ dateFormat: 'dd/M/yy' }).datepicker("setDate", 'now');
+
+            $('#PartCode').rules('remove', 'required');
+
+            
+
+
+
+            $("#search-box").val($('#search-box').val()).trigger('keyup');
+
+            sessionStorage.removeItem('FromDateBack');
+            sessionStorage.removeItem('ToDateBack');
+            sessionStorage.removeItem('SlipNoBack');
+            sessionStorage.removeItem('BatchNoBack');
+            sessionStorage.removeItem('PartCodeBack');
+            sessionStorage.removeItem('ItemNameBack');
+            sessionStorage.removeItem('DocTypeBack');
+            sessionStorage.removeItem('GlobalSearchBack');
+            sessionStorage.removeItem('DashboardTypeBack');
+        });
+        function FillItems() {
+            // Source for ItemNameText
+            const itemNameSource = function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("FillItems")',
+                    type: 'POST',
+                    data: {
+
+                        SearchItemCode: request.term,
+                        SearchPartCode: ''
+                    },
+                    success: function (result) {
+                        let obj = typeof result === "string" ? JSON.parse(result) : result;
+
+                        if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
+                            let filtered = obj.Result.Table.filter(function (item) {
+                                let term = request.term.toLowerCase();
+                                return item.ItemName.toLowerCase().includes(term);
+                            });
+
+                            response($.map(filtered, function (item) {
+                                return {
+                                    label: item.ItemName,
+                                    value: item.Item_Code,
+                                    itemName: item.ItemName,
+                                    itemCode: item.Item_Code,
+                                    partCode: item.PartCode
+                                };
+                            }));
+                        } else {
+                            response([]);
+                        }
+                    }
+
+                });
+            };
+
+            
+
+            // Autocomplete for ItemNameText
+            $("#ItemNameText").autocomplete({
+                source: itemNameSource,
+                select: function (event, ui) {
+                    $("#ItemNameText").val(ui.item.itemName).data("itemcode", ui.item.itemCode);
+                   
+                    $('#ItemName').val(ui.item.itemName);
+                  
+
+                    return false;
+                },
+                focus: function (event, ui) {
+                    $("#ItemNameText").val(ui.item.itemName);
+                    return false;
+                },
+                minLength: 2
+            });
+        }
+
+        function FillGroups() {
+            // Source for GroupNameText
+            const groupNameSource = function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("FillGroups")',
+                    type: 'POST',
+                    data: {
+                        SearchGroupName: request.term
+                    },
+                    success: function (result) {
+                        let obj = typeof result === "string" ? JSON.parse(result) : result;
+
+                        if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
+                            let filtered = obj.Result.Table.filter(function (item) {
+                                let term = request.term.toLowerCase();
+                                return item.GroupName.toLowerCase().includes(term);
+                            });
+
+                            response($.map(filtered, function (item) {
+                                return {
+                                    label: item.GroupName,
+                                    value: item.GroupCode,
+                                    groupName: item.GroupName,
+                                    groupCode: item.GroupCode
+                                };
+                            }));
+                        } else {
+                            response([]);
+                        }
+                    }
+                });
+            };
+
+            // Autocomplete for GroupNameText
+            $("#GroupNameText").autocomplete({
+                source: groupNameSource,
+                select: function (event, ui) {
+                    $("#GroupNameText").val(ui.item.groupName).data("groupcode", ui.item.groupCode);
+                    return false;
+                },
+                focus: function (event, ui) {
+                    $("#GroupNameText").val(ui.item.groupName);
+                    return false;
+                },
+                minLength: 2
+            });
+        }
+        function FillCateName() {
+            // Source for CatNameText
+            const catNameSource = function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("FillCateName")',
+                    type: 'POST',
+                    data: {
+                        SearchCatName: request.term
+                    },
+                    success: function (result) {
+                        let obj = typeof result === "string" ? JSON.parse(result) : result;
+
+                        if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
+                            let filtered = obj.Result.Table.filter(function (item) {
+                                let term = request.term.toLowerCase();
+                                return item.CatName.toLowerCase().includes(term);
+                            });
+
+                            response($.map(filtered, function (item) {
+                                return {
+                                    label: item.CatName,
+                                    value: item.CatCode,
+                                    catName: item.CatName,
+                                    catCode: item.CatCode
+                                };
+                            }));
+                        } else {
+                            response([]);
+                        }
+                    }
+                });
+            };
+
+            // Autocomplete for CatNameText
+            $("#CatNameText").autocomplete({
+                source: catNameSource,
+                select: function (event, ui) {
+                    $("#CatNameText").val(ui.item.catName).data("catcode", ui.item.catCode);
+                    return false;
+                },
+                focus: function (event, ui) {
+                    $("#CatNameText").val(ui.item.catName);
+                    return false;
+                },
+                minLength: 2
+            });
+        }
+
+        function GetFormRights() {
+
+            $.ajax({
+                url: "@Url.Action("GetFormRights")",
+                type: "POST",
+                async: false,
+                success: function (data) {
+
+                    if (data != null) {
+                        var obj = $.parseJSON(data);
+                        if (obj.Result.Table.length == 0) {
+                            var rowCounter = $('#divDashboardGrid tr').length;
+                            for (var i = 0; i < rowCounter; i++) {
+                                $('#viewCursorDiv-' + i).empty();
+                                $('#viewCursorDiv-' + i).append(`<a class="table-link link-success noCursor" id="viewNoCursor"">
+                                                                                                                        <span class="fa-stack">
+                                                                                                                            <i class="fa fa-square fa-stack-2x"></i>
+                                                                                                                            <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                                                                                                        </span>
+                                                                                                                    </a>`);
+                            }
+                            for (var i = 0; i < rowCounter; i++) {
+                                $('#editCursorDiv-' + i).empty();
+                                $('#editCursorDiv-' + i).append(`<a class="table-link link-primary noCursor">
+                                                                                                                                <span class="fa-stack">
+                                                                                                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                                                                                                    <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                                                                                                </span>
+                                                                                                                            </a>`);
+                            }
+                            for (var i = 0; i < rowCounter; i++) {
+                                $('#deleteCursorDiv-' + i).empty();
+                                $('#deleteCursorDiv-' + i).append(`<a class="table-link link-danger noCursor">
+                                                                                                                                <span class="fa-stack">
+                                                                                                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                                                                                                    <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                                                                                                </span>
+                                                                                                                            </a>`);
+                            }
+                            $("#divDashboardGrid").css("display", "none");
+                            $(".totalrows").css("display", "none");
+                            $("#SParam").hide();
+                        } else {
+
+                            var optAll = obj.Result.Table[0].OptAll;
+                            var optSave = obj.Result.Table[0].OptSave;
+                            var optUpdate = obj.Result.Table[0].OptUpdate;
+                            var optDelete = obj.Result.Table[0].OptDelete;
+                            var optView = obj.Result.Table[0].OptView;
+                            var rowCounter = $('#divDashboardGrid tr').length;
+                            if (!optAll) {
+                                if (!optSave) {
+
+                                    $("#savebtn").css("pointer-events", "none");
+                                } else {
+                                    $("#savebtn").css("pointer-events", "");
+                                }
+                                if (!optView) {
+
+                                    for (var i = 0; i < rowCounter; i++) {
+                                        $('#viewCursorDiv-' + i).empty();
+                                        $('#viewCursorDiv-' + i).append(`<a class="table-link link-success noCursor" id="viewNoCursor"">
+                                                                                        <span class="fa-stack">
+                                                                                            <i class="fa fa-square fa-stack-2x"></i>
+                                                                                            <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                                                                        </span>
+                                                                                    </a>`);
+                                    }
+                                }
+                                if (!optUpdate) {
+                                    for (var i = 0; i < rowCounter; i++) {
+                                        $('#editCursorDiv-' + i).empty();
+                                        $('#editCursorDiv-' + i).append(`<a class="table-link link-primary noCursor">
+                                                                                        <span class="fa-stack">
+                                                                                            <i class="fa fa-square fa-stack-2x"></i>
+                                                                                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                                                        </span>
+                                                                                    </a>`);
+                                    }
+                                }
+                                if (!optDelete) {
+                                    for (var i = 0; i < rowCounter; i++) {
+                                        $('#deleteCursorDiv-' + i).empty();
+                                        $('#deleteCursorDiv-' + i).append(`<a class="table-link link-danger noCursor">
+                                                                                        <span class="fa-stack">
+                                                                                            <i class="fa fa-square fa-stack-2x"></i>
+                                                                                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                                                        </span>
+                                                                                    </a>`);
+                                    }
+                                }
+                                if (!(optUpdate || optDelete || optView)) {
+                                    $("#divDashboardGrid").css("display", "none");
+                                    $(".totalrows").css("display", "none");
+                                    $("#SParam").hide();
+                                }
+                            }
+                        }
+                    }
+                },
+                error: function (errMsg) {
+                    $.notify(errMsg, { position: "top center", className: "error" });
+                }
+            });
+        }
+
+
+        function GetDetailData() {
+
+            var fromDate = $('#FromDate').val();
+            var toDate = $('#ToDate').val();
+            var reportType = "SUMMARY";
+            var itemName = $('#ItemNameText').val();  
+
+            var groupName = $('#GroupNameText').val(); 
+            var catName = $('#CatNameText').val();     
+
+
+            //var data = $('#SParam').serialize();
+            $.ajax({
+                url: '@Url.Action("GetDetailData")',
+                type: "POST",
+                data: { FromDate: fromDate, ToDate: toDate, ReportType: reportType, GroupName: groupName, CateName: catName, ItemName: itemName },
+                async: false,
+               
+                success: function (data) {
+
+                    $('#divDashboardGrid').empty().append(data);
+                    var totalRows = $('#divDashboardGrid tbody tr').length;
+                    $('#totalRows').text(totalRows);
+                    GetFormRights();
+                    // RowCount();
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+        function confirmEdit(event) {
+
+            event.preventDefault();
+            var urlHref = $(event.currentTarget).attr("href");
+            var linkUrl = urlHref;
+            linkUrl = linkUrl + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val();
+            window.location.href = linkUrl;
+
+        }
+        function confirmDelete(event) {
+
+            event.preventDefault();
+            if (confirm("Are you sure you want to delete this entry?")) {
+                var urlHref = $(event.currentTarget).attr("href");
+                var linkUrl = urlHref;
+                window.location.href = linkUrl;
+            }
+        }
+        function formatDate1(date) {
+            var day = ("0" + date.getDate()).slice(-2);
+            var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            var month = monthNames[date.getMonth()];
+            var year = date.getFullYear();
+            var dateString = day + "/" + month + "/" + year;
+            return dateString;
+        }
+
+        var currentSearchColumn = null;
+
+        $("#search-box").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#DashboardGrid tr").filter(function () {
+                if (currentSearchColumn !== null) {
+                    var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
+                    $(this).toggle(columnText.indexOf(value) > -1);
+                } else {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                }
+            });
+        });
+
+
+        $(document).on("click", "th[data-columnno]", function () {
+            currentSearchColumn = $(this).data('columnno');
+            $("#search-box").val('').trigger('keyup');
+        });
+
+        $(document).on("click", ".sortCol", function () {
+            var $column = $(this).parent().closest("th");
+            var colno = $(this).data('columnno');
+            var currentOrder = $(this).data('sortorder');
+
+            $('.sortCol').css('color', 'white');
+            if (currentOrder === 'asc') {
+                sortTable('ISTDashboard', colno, false);
+                $(this).data('sortorder', 'desc');
+                $(this).css('color', 'yellow');
+                //$(this).css('font-size', 'larger');
+                $(this).find('i:first').removeClass('fa-arrow-up');
+                $(this).find('i:first').addClass('fa-arrow-down');
+            } else {
+                sortTable('ISTDashboard', colno, true);
+                $(this).data('sortorder', 'asc');
+                $(this).css('color', 'yellow');
+                // $(this).css('font-size', 'larger');
+                $(this).find('i:first').removeClass('fa-arrow-down');
+                $(this).find('i:first').addClass('fa-arrow-up');
+            }
+        });
+
+
+
+        function BackButtonData(event, EntryId, YearCode) {
+
+            event.preventDefault();
+            var urlHref = $(event.currentTarget).attr("href");
+            var linkUrl = urlHref;
+            linkUrl = linkUrl + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val();
+            window.location.href = linkUrl;
+        }
+
+
+
+
+        $("#btnGridExcel").click(function () {
+            const table = document.querySelector(".ISTDashboard");
+            const rows = table.querySelectorAll("tr");
+            const data = [];
+
+            const headerRow = rows[0];
+            const headerData = [];
+
+            headerRow.querySelectorAll("th").forEach((cell) => {
+                // cell.style.backgroundColor = "#fcba03";
+                headerData.push(cell.textContent);
+            });
+
+            data.push(headerData);
+
+            for (let i = 1; i < rows.length; i++) {
+                const rowData = [];
+                rows[i].querySelectorAll("td").forEach((cell) => {
+                    rowData.push(cell.textContent);
+                });
+                data.push(rowData);
+            }
+
+            const ws = XLSX.utils.aoa_to_sheet(data);
+
+            ws["!cols"] = [{ wch: 15 }, { wch: 15 }, { wch: 15 }, /* ... */];
+
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Sheet 1");
+
+
+            XLSX.writeFile(wb, "ISTDashboard.xlsx");
+        });
+
+        function selection(CurrentRow) {
+
+            $(CurrentRow).css({ 'background-color': '#00bcd4' });
+
+            $("#DashboardGrid tr").not(CurrentRow).css({ 'background-color': '' });
+        }
+
+    </script>
+
+
+    <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.2/xlsx.full.min.js"></script>
+}

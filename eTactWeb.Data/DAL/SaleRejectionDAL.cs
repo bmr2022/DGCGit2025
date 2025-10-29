@@ -261,13 +261,15 @@ namespace eTactWeb.Data.DAL
                         PartCode = row["PartCode"]?.ToString(),
                         Unit = row["Unit"]?.ToString(),
                         HSNNo = row["HSNNo"] != DBNull.Value ? Convert.ToInt32(row["HSNNo"]) : 0,
+                        SeqNo = row["SeqNo"] != DBNull.Value ? Convert.ToInt32(row["SeqNo"]) : 0,
                         NoOfCase = row["NoOfCase"] != DBNull.Value ? Convert.ToInt32(row["NoOfCase"]) : 0,
                         SaleBillQty = row["SaleBillQty"] != DBNull.Value ? Convert.ToInt32(row["SaleBillQty"]) : 0,
                         RejQty = row["RejQty"] != DBNull.Value ? Convert.ToInt32(row["RejQty"]) : 0,
                         RecQty = row["MRNRecQty"] != DBNull.Value ? Convert.ToInt32(row["MRNRecQty"]) : 0,
-                        Rate = row["RejRate"] != DBNull.Value ? Convert.ToInt32(row["RejRate"]) : 0,
-                        DiscountPer = row["DiscountPer"] != DBNull.Value ? Convert.ToInt32(row["DiscountPer"]) : 0,
-                        DiscountAmt = row["DiscountAmt"] != DBNull.Value ? Convert.ToInt32(row["DiscountAmt"]) : 0,
+                        RejRate = row["RejRate"] != DBNull.Value ? Convert.ToInt32(row["RejRate"]) : 0,
+                        Rate = row["SaleBillRate"] != DBNull.Value ? Convert.ToInt32(row["SaleBillRate"]) : 0,
+                        DiscountPer = row["DiscountPer"] != DBNull.Value ? Convert.ToDouble(row["DiscountPer"]) : 0,
+                        DiscountAmt = row["DiscountAmt"] != DBNull.Value ? Convert.ToDecimal(row["DiscountAmt"]) : 0,
                         SONO = row["SONO"]?.ToString(),
                         SOyearcode = row["SOyearcode"] != DBNull.Value ? Convert.ToInt32(row["SOyearcode"]) : 0,
                         SODate = row["SODate"]?.ToString(),
@@ -277,7 +279,7 @@ namespace eTactWeb.Data.DAL
                         RecStoreId = row["RecStoreId"] != DBNull.Value ? Convert.ToInt32(row["RecStoreId"]) : 0,
                         //RecStoreName = row["SONO"] != DBNull.Value ? Convert.ToInt32(row["SONO"]) : 0,
                         OtherDetail = row["OtherDetail"]?.ToString(),
-                        Amount = row["ItemAmount"] != DBNull.Value ? Convert.ToInt32(row["ItemAmount"]) : 0,
+                        Amount = row["ItemAmount"] != DBNull.Value ? Convert.ToDecimal(row["ItemAmount"]) : 0,
                         RejectionReason = row["RejectionReason"]?.ToString(),
                         SaleorderRemark = row["SaleorderRemark"]?.ToString(),
                         SaleBillremark = row["SaleBillremark"]?.ToString(),
@@ -518,8 +520,6 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@EntryByMachineName", model.MachineName));
                 SqlParams.Add(new SqlParameter("@ActualEntryDate", actualEntryDt == default ? string.Empty : actualEntryDt));
                 SqlParams.Add(new SqlParameter("@ActualEnteredBy", model.ActualEnteredBy));
-                SqlParams.Add(new SqlParameter("@LastUpdatedBy", model.LastUpdatedBy));
-                SqlParams.Add(new SqlParameter("@LastUpdationDate", lastUpdateDt == default ? string.Empty : lastUpdateDt));
                 SqlParams.Add(new SqlParameter("@BalanceSheetClosed", model.BalanceSheetClosed ?? 0));
                 SqlParams.Add(new SqlParameter("@SubVoucherName", model.VoucherNo ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@Currencyid", 0));
@@ -587,10 +587,12 @@ namespace eTactWeb.Data.DAL
                         ItemName = row["ItemName"]?.ToString(),
                         RecQty = row["RecQty"] != DBNull.Value ? Convert.ToInt32(row["RecQty"]) : 0,
                         Unit   = row["Unit"]?.ToString(),
+                        SeqNo = row["SeqNo"] != DBNull.Value ? Convert.ToInt32(row["SeqNo"]) : 0,
                         AltQty = row["altQty"] != DBNull.Value ? Convert.ToInt32(row["altQty"]) : 0,
                         SaleBillQty = row["SaleBillQty"] != DBNull.Value ? Convert.ToInt32(row["SaleBillQty"]) : 0,
                         RejQty = row["RejQty"] != DBNull.Value ? Convert.ToInt32(row["RejQty"]) : 0,
-                        Rate = row["Rate"] != DBNull.Value ? Convert.ToInt32(row["Rate"]) : 0,
+                        Rate = row["SaleRate"] != DBNull.Value ? Convert.ToInt32(row["SaleRate"]) : 0,
+                        RejRate = row["RejRate"] != DBNull.Value ? Convert.ToInt32(row["RejRate"]) : 0,
                         DiscountPer = row["DiscountPer"] != DBNull.Value ? Convert.ToInt32(row["DiscountPer"]) : 0,
                         DiscountAmt = row["DiscountAmt"] != DBNull.Value ? Convert.ToInt32(row["DiscountAmt"]) : 0,
                         SONO = row["SONO"]?.ToString(),
@@ -604,10 +606,10 @@ namespace eTactWeb.Data.DAL
                         Itemsize = row["ItemSize"]?.ToString(),
                         NoOfCase = row["NoOfCase"] != DBNull.Value ?  Convert.ToInt32( row["NoOfCase"]) : 0,
                         RecStoreName = row["ReceiveInStore"]?.ToString(),
-                        Amount = row["ItemAmount"] != DBNull.Value ? Convert.ToDecimal(row["ItemAmount"]) : 0
+                        Amount = row["rejAmount"] != DBNull.Value ? Convert.ToDecimal(row["rejAmount"]) : 0
                     });
                 }
-                //model.SaleRejectionDetails = SaleRejectionGrid;
+                model.SaleRejectionDetails = SaleRejectionGrid;
                 model.SaleRejectionInputGrid = SaleRejectionGrid;
                 model.ItemDetailGrid = SaleRejectionGrid;
             }

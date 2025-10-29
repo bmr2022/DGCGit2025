@@ -126,12 +126,12 @@
                                     </div>
 
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                        <label asp-for="GenderApplicable" class="form-label" style="color: red;">GenderApplicable*</label>
+                                        <label asp-for="GenderApplicable" class="form-label" style="color: red;">Gender Applicable*</label>
                                         <select asp-for="GenderApplicable" class="form-select" >
-                                            <option value="" selected>-Select-</option>
+                                            <option value="" >-Select-</option>
                                             <option value="Male" >Male</option>
                                             <option value="Female">Female</option>
-                                            <option value="All">All</option>
+                                            <option value="All" selected>All</option>
                                         </select>
                                     </div>
 
@@ -155,18 +155,18 @@
 
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
 
-                                        <label asp-for="MaxLeavePerYear" class="form-label">MaxLeavePerYear</label>
+                                        <label asp-for="MaxLeavePerYear" class="form-label">Max Leave PerYear</label>
                                         <input asp-for="MaxLeavePerYear" class="form-control numbers" value="@Model.MaxLeavePerYear" />
 
                                     </div>
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                        <label asp-for="MinDaysForApplication" class="form-label">MinDaysForApplication</label>
-                                        <input asp-for="MinDaysForApplication" class="form-control numbers" />
+                                        <label asp-for="MinDaysForApplication" class="form-label">Min Days For Application</label>
+                                        <input type="number" min="0" max="365" asp-for="MinDaysForApplication" class="form-control numbers" />
                                     </div>
 
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                        <label asp-for="MaxConsecutiveDaysAllowed" class="form-label">MaxConsecutiveDaysAllowed</label>
-                                        <input asp-for="MaxConsecutiveDaysAllowed" class="form-control numbers" />
+                                        <label asp-for="MaxConsecutiveDaysAllowed" class="form-label">Max ConsecutiveDays Allowed</label>
+                                        <input type="number" min="0" max="365" asp-for="MaxConsecutiveDaysAllowed" class="form-control numbers" />
                                     </div>
                                                  
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
@@ -195,7 +195,7 @@
 
 
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                        <label asp-for="MaxCarryForwardLimit" class="form-label">MaxCarryForwardLimit</label>
+                                        <label asp-for="MaxCarryForwardLimit" class="form-label">Max CarryForward Limit</label>
                                         <input asp-for="MaxCarryForwardLimit" class="form-control numbers" value="@Model.MaxCarryForwardLimit" />
                                     </div>
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
@@ -208,7 +208,7 @@
                                         </select>
                                     </div>
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                        <label asp-for="LeaveApprovalRequired" class="form-label">LeaveApprovalRequired</label>
+                                        <label asp-for="LeaveApprovalRequired" class="form-label">Leave Approval Required</label>
                                         <select asp-for="LeaveApprovalRequired" class="form-select">
                                             <option value="" disabled>-Select-</option>
                                             <option value="Y" selected>YES</option>
@@ -218,7 +218,7 @@
                                     </div>
 
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                        <label asp-for="CompensatoryOffRequired" class="form-label">CompensatoryOffRequired</label>
+                                        <label asp-for="CompensatoryOffRequired" class="form-label">CompensatoryOff Required</label>
                                         <select asp-for="CompensatoryOffRequired" class="form-select">
                                             <option value="" disabled>-Select-</option>
                                             <option value="Y" selected>YES</option>
@@ -227,7 +227,7 @@
                                         </select>
                                     </div>
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                        <label asp-for="LeaveDeductionApplicable" class="form-label">LeaveDeductionApplicable</label>
+                                        <label asp-for="LeaveDeductionApplicable" class="form-label">LeaveDeduction Applicable</label>
                                         <select asp-for="LeaveDeductionApplicable" class="form-select">
                                             <option value="" disabled>-Select-</option>
                                             <option value="Y" selected>YES</option>
@@ -238,8 +238,8 @@
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                         <label asp-for="MedicalCerificateReq" class="form-label">Medical Cerificate Req</label>
                                         <select asp-for="MedicalCerificateReq" class="form-select">
-                                            <option value="" disabled>-Select-</option>
-                                            <option value="Y" selected>YES</option>
+                                            <option value="" selected>-Select-</option>
+                                            <option value="Y" >YES</option>
                                             <option value="N">NO</option>
 
                                         </select>
@@ -261,8 +261,8 @@
                                 <div class="row g-3">
 
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                        <label asp-for="EligibilityAfterMonths" class="form-label">EligibilityAfterMonths</label>
-                                        <input asp-for="EligibilityAfterMonths" class="form-control numbers" value="@Model.EligibilityAfterMonths" max="50" />
+                                        <label asp-for="EligibilityAfterMonths" class="form-label">Eligibility After JoiningDays</label>
+                                        <input type="number" min="0" max="365" asp-for="EligibilityAfterMonths" class="form-control numbers" value="@Model.EligibilityAfterMonths"  />
                                     </div>
 
 
@@ -277,14 +277,14 @@
                                     </div>
 
                                     <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:260px">
-                                        <label asp-for="RestrictedToDepartment" class="control-label">RestrictedToDepartment </label>
+                                        <label asp-for="RestrictedToDepartment" class="control-label">Restricted To Department </label>
                                         <br />
 
                                         <select class="form-select" multiple="multiple" asp-for="RestrictedToDepartment" asp-items="@(new SelectList(Model.DeptWiseCategList,"Value","Text"))"></select>
                                     </div>
 
                                     <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:260px">
-                                        <label asp-for="RestrictedToLocation" class="control-label">RestrictedToLocation </label>
+                                        <label asp-for="RestrictedToLocation" class="control-label">Restricted To Location </label>
                                         <br />
 
                                         <select class="form-select" multiple="multiple" asp-for="RestrictedToLocation" asp-items="@(new SelectList(Model.LocationList,"Value","Text"))"></select>
@@ -293,8 +293,8 @@
 
 
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                        <label asp-for="MinWorkDaysRequired" class="form-label">MinWorkDaysRequired</label>
-                                        <input asp-for="MinWorkDaysRequired" class="form-control numbers" value="@Model.MinWorkDaysRequired" max="50" />
+                                        <label asp-for="MinWorkDaysRequired" class="form-label">Min WorkDays Required</label>
+                                        <input type="number" min="0" max="365" asp-for="MinWorkDaysRequired" class="form-control numbers" value="@Model.MinWorkDaysRequired"  />
                                     </div>
 
 
@@ -315,7 +315,7 @@
                                 <div class="row g-3">
 
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                        <label asp-for="AutoApproveLimitDays" class="form-label">AutoApproveLimitDays</label>
+                                        <label asp-for="AutoApproveLimitDays" class="form-label">Auto Approve LimitDays</label>
                                         <input asp-for="AutoApproveLimitDays" class="form-control numbers" value="@Model.AutoApproveLimitDays"  />
                                     </div>
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
@@ -512,8 +512,30 @@
     <script type="text/javascript">
         $('.submitBTN').click(function (e) {
             e.preventDefault();
+            if ($('#MinDaysForApplication').val() < 0 || $('#MinDaysForApplication').val() > 365) {
+
+                $.notify("Invalid Input for MinDaysForApplication Please enter a value between 0 and 365.", { position: "top center", className: "error" });
+                return false;
+            }
+            else if ($('#MaxConsecutiveDaysAllowed').val() < 0 || $('#MaxConsecutiveDaysAllowed').val() > 365) {
+                $.notify("Invalid Input for MaxConsecutiveDaysAllowed Please enter a value between 0 and 365.", { position: "top center", className: "error" });
+                return false;
+            }
+            else if ($('#EligibilityAfterMonths').val() < 0 || $('#EligibilityAfterMonths').val() > 365) {
+                $.notify("Invalid Input for EligibilityAfterMonths Please enter a value between 0 and 365.", { position: "top center", className: "error" });
+                return false;
+            }
+            else if ($('#MinWorkDaysRequired').val() < 0 || $('#MinWorkDaysRequired').val() > 365) {
+                $.notify("Invalid Input for MinWorkDaysRequired Please enter a value between 0 and 365.", { position: "top center", className: "error" });
+                return false;
+            }
+            else {
+            
+                $('form').submit();
+            }
+
            
-            $('form').submit();
+            
         });
 
 
@@ -599,11 +621,11 @@
             var dropdown = document.getElementById("CarryForward");
             var textbox1 = document.getElementById("MaxCarryForwardLimit");
 
-            if (dropdown.value == "YES") {
+            if (dropdown.value == "Y") {
                 textbox1.disabled = false;
             }
 
-            else if (dropdown.value == "NO") {
+            else if (dropdown.value == "N") {
                 textbox1.disabled = true;
                 textbox1.value = "0";
             }
@@ -694,6 +716,47 @@
 
         });
 
+        $('#LeaveCategory').change(function () {
+            var leaveCategory = $(this).val();
+
+            // ----- Medical Certificate Required -----
+            if (leaveCategory === "Sick" || leaveCategory === "Maternity") {
+                $('#MedicalCerificateReq')
+                    .val('Y')                // set value first
+                    .prop('disabled', false) // enable after setting
+                    .trigger('change');      // refresh (for Select2 or similar)
+            } else {
+                $('#MedicalCerificateReq')
+                    .val('')                 // clear selection
+                    .prop('disabled', true)
+                    .trigger('change');
+            }
+
+            // ----- Carry Forward -----
+            if (leaveCategory === "Earned") {
+                $('#CarryForward')
+                    .val('Y')
+                    .prop('disabled', false)
+                    .trigger('change');
+                $('#MaxCarryForwardLimit').prop('disabled', false);
+            } else if (leaveCategory === "Sick") {
+                $('#CarryForward')
+                    .val('') // clear selection
+                    .prop('disabled', false)
+                    .trigger('change');
+            } else {
+                $('#CarryForward')
+                    .val('N')
+                    .prop('disabled', true)
+                    .trigger('change');
+                $('#MaxCarryForwardLimit').prop('disabled', true);
+            }
+        });
+
+        // Ensure correct state on page load (especially for Edit forms)
+        $('#LeaveCategory').trigger('change');
+
+
         function FillLeaveID() {
             
             $.ajax({
@@ -754,8 +817,8 @@
                     var ApprovalDropdown = $('#CarryForward');
                     var obj = $.parseJSON(response);
                     ApprovalDropdown.empty();
-                     ApprovalDropdown.append('<option value="YES">YES</option>');
-                    ApprovalDropdown.append('<option value="NO">NO</option>');
+                     ApprovalDropdown.append('<option value="Y">YES</option>');
+                    ApprovalDropdown.append('<option value="N">NO</option>');
 
                     // $.each(obj.Result, function (index, item) {
                     //     ApprovalDropdown.append('<option value="' + item.emp_id + '">' + item.EmployeeName + '</option>');
@@ -871,7 +934,7 @@
                     var LeaveCategoryDropdown = $('#LeaveCategory');
                     var obj = $.parseJSON(response);
                     LeaveCategoryDropdown.empty();
-                    // TypeOfSalaryDropdown.append('<option value="">--Select--</option>');
+                    LeaveCategoryDropdown.append('<option value="">--Select--</option>');
 
                     $.each(obj.Result, function (index, item) {
                         LeaveCategoryDropdown.append('<option value="' + item.LeaveCategory + '">' + item.LeaveCategory + '</option>');

@@ -13,15 +13,31 @@ else
     foreach (var item in Model.SaleRejectionInputGrid)
     {
         Cntr = Cntr + 1;
+        
+        var bgColor = item.RejRate != item.Rate ? "red" : "#85f2ec"; // red if different, blue if same
         <tr class="small" id="saleRejectionRow-@Cntr" style="white-space:nowrap">
             @* <th>@Cntr <input type="hidden" id="SeqNo-@Cntr" value="@item.SeqNo" /></th> *@
             <td id="partCode-@Cntr"><input type="hidden" value="@item.ItemCode" id="itemCode-@Cntr" />@item.PartCode</td>
             <td id="itemName-@Cntr">@item.ItemName</td>
             <td id="recQty-@Cntr">@item.RecQty</td>
             <td id="saleBillQty-@Cntr">@item.SaleBillQty</td>
+            <td id="rate-@Cntr" style="background-color:#FFF3CD; font-weight:600;">@item.Rate</td>
             <td id="rejQty-@Cntr">@item.RejQty</td>
-            <td><input value="@item.RejRate" id="rejRate-@Cntr" class="form-control" onchange="CalculateRejAmount();" style="background-color:#85f2ec;" /></td>
+         @*    <td><input value="@item.RejRate" id="rejRate-@Cntr" class="form-control" onchange="CalculateRejAmount();" style="background-color:#85f2ec;" /></td> *@
+            <td>
+                <input value="@item.RejRate"
+                       id="rejRate-@Cntr"
+                       class="form-control text-center"
+                       onchange="CalculateRejAmount(); highlightRejRate(this, '@item.Rate');"
+                       style="background-color:@bgColor; font-weight:600;" />
+            </td>
+            <td id="discountPer-@Cntr">@item.DiscountPer</td>
+            <td id="DiscountAmt-@Cntr">@item.DiscountAmt</td>
             <td id="rejAmount-@Cntr">@item.Amount</td>
+            <td id="sono-@Cntr">@item.SONO</td>
+            <td id="soDate-@Cntr">@item.SODate</td>
+            <td id="soYearcode-@Cntr">@item.SOyearcode</td>
+            <td id="Unit-@Cntr">@item.Unit</td>
             <td id="altQty-@Cntr">@item.AltQty</td>
             <td id="againstBillTypeJWSALE-@Cntr">@item.AgainstBillTypeJWSALE</td>
             <td><input class="form-control" value="@item.AgainstBillNo" id="againstBillNo-@Cntr" readonly /></td>
@@ -33,14 +49,7 @@ else
             <td id="noOfCase-@Cntr">@item.NoOfCase</td>
             @* <td id="noOfCase-@Cntr>@item.NoOfCase</td> *@
             <td id="recStoreName-@Cntr">@item.RecStoreName</td>
-            <td id="Unit-@Cntr">@item.Unit</td>
-            <td id="rate-@Cntr">@item.Rate</td>
             <td id="Amount-@Cntr">@item.Amount</td>
-            <td id="discountPer-@Cntr">@item.DiscountPer</td>
-            <td id="DiscountAmt-@Cntr">@item.DiscountAmt</td>
-            <td id="sono-@Cntr">@item.SONO</td>
-            <td id="soDate-@Cntr">@item.SODate</td>
-            <td id="soYearcode-@Cntr">@item.SOyearcode</td>
             <td id="custOrderNo-@Cntr">@item.CustOrderNo</td>
             <td id="recStoreId-@Cntr">@item.RecStoreId</td>
             <td id="saleorderRemark-@Cntr">@item.SaleorderRemark</td>

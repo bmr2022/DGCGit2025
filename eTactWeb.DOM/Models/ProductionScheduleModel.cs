@@ -9,43 +9,43 @@ namespace eTactWeb.DOM.Models
 {
     public class ProductionScheduleModel : ProductionScheduleDetail
     {
-        public int EntryID { get; set; }
-        public int YearCode { get; set; }
-        public string EntryDate{ get; set; }
-        public int WCID{ get; set; }
-        public string ProdSchNo{ get; set; }
-        public string ProdSchDate{ get; set; }
-        public string EffectiveFrom{ get; set; }
-        public string EffectiveTill{ get; set; }
-        public string EffectiveTo{ get; set; }
-        public int PlanForNoOFDays { get; set; }
-        public int RevNo{ get; set; }
-        public string RevDate{ get; set; }
-        public string CC{ get; set; }
-        public int UID{ get; set; }
-        public string ActualEntryDate{ get; set; }
-        public int ActualEntryBy{ get; set; }
-        public string ActualEntryByName{ get; set; }
-        public string LastUpdatedDate{ get; set; }
-        public int LastUpdatedBy{ get; set; }
-        public string LastUpdatedByName{ get; set; }
-        public string EntryByMachineName{ get; set; }
-        public string Closed{ get; set; }
-        public string Completed{ get; set; }
-        public int ForTheMonth{ get; set; }
-        public string Remark{ get; set; }
-        public string FinFromDate{ get; set; }
-        public string FinToDate{ get; set; }
-        public string ShowWOWithOrWOItem{ get; set; }
-        public string FromDateBack { get; set; }
-        public string ToDateBack { get; set; }
-        public string PartCodeBack { get; set; }
-        public string ItemNameBack { get; set; }
-        public string AccountNameBack { get; set; }
-        public string ProdSchNoBack { get; set; }
-        public string WONOBack { get; set; }
-        public string SummaryDetailBack { get; set; }
-        public string SearchBoxBack { get; set; }
+        public int? EntryID { get; set; }
+        public int? YearCode { get; set; }
+        public string? EntryDate{ get; set; }
+        public int? WCID{ get; set; }
+        public string? ProdSchNo{ get; set; }
+        public string? ProdSchDate{ get; set; }
+        public string? EffectiveFrom{ get; set; }
+        public string? EffectiveTill{ get; set; }
+        public string? EffectiveTo{ get; set; }
+        public int? PlanForNoOFDays { get; set; }
+        public int? RevNo{ get; set; }
+        public string? RevDate{ get; set; }
+        public string? CC{ get; set; }
+        public int? UID{ get; set; }
+        public string? ActualEntryDate{ get; set; }
+        public int? ActualEntryBy{ get; set; }
+        public string? ActualEntryByName{ get; set; }
+        public string? LastUpdatedDate{ get; set; }
+        public int? LastUpdatedBy{ get; set; }
+        public string? LastUpdatedByName{ get; set; }
+        public string? EntryByMachineName{ get; set; }
+        public string? Closed{ get; set; }
+        public string? Completed{ get; set; }
+        public int? ForTheMonth{ get; set; }
+        public string? Remark{ get; set; }
+        public string? FinFromDate{ get; set; }
+        public string? FinToDate{ get; set; }
+        public string? ShowWOWithOrWOItem{ get; set; }
+        public string? FromDateBack { get; set; }
+        public string? ToDateBack { get; set; }
+        public string? PartCodeBack { get; set; }
+        public string? ItemNameBack { get; set; }
+        public string? AccountNameBack { get; set; }
+        public string? ProdSchNoBack { get; set; }
+        public string? WONOBack { get; set; }
+        public string? SummaryDetailBack { get; set; }
+        public string? SearchBoxBack { get; set; }
         public List<ProductionScheduleDetail> ProductionScheduleDetails { get; set; }
         public List<ProductionScheduleProdPlanDetail> prodPlanDetails{ get; set; }
         public ProductionScheduleBOMData BomDatamodel { get; set; } 

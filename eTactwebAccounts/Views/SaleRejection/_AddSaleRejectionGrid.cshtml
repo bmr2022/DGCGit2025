@@ -13,8 +13,10 @@ else
     foreach (var item in Model.SaleRejectionDetails)
     {
         Cntr = Cntr + 1;
+        var bgColor = item.RejRate != item.Rate ? "red" : "#85f2ec"; // red if different, blue if same
         <tr class="small" id="saleBillRow" style="white-space:nowrap">
-            <td style="width:4%">
+            
+           @*  <td style="width:4%">
                 @if (Model.Mode == "V" && Model.ID > 0)
                 {
                     <a class="table-link link-danger noCursor" disabled>
@@ -26,46 +28,56 @@ else
                 }
                 else
                 {
-                    <a class="table-link link-primary" style="border:none;" id="editItemGrid-@Cntr" onclick="EditItemRows(@Cntr);">
+                    <a class="table-link link-primary" style="border:none;" id="edititemgrid-@cntr" onclick="edititemrow(@cntr);">
                         <span class="fa-stack">
                             <i class="fa fa-square fa-stack-2x"></i>
                             <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
                         </span>
                     </a>
-                    <a class="table-link link-danger" onclick="DeleteItemRow(@Cntr);">
+                    <a class="table-link link-danger" onclick="deleteitemrow(@cntr);">
                         <span class="fa-stack">
                             <i class="fa fa-square fa-stack-2x"></i>
                             <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
                         </span>
                     </a>
                 }
+            </td> *@
+            <td >@item.SeqNo</td>
+            <td><input type="hidden" value="@item.ItemCode" id="itemCode-@Cntr" />@item.PartCode</td>
+            <td>@item.ItemName</td>
+            <td>@item.RecQty</td>
+            <td>@item.SaleBillQty</td>
+            <td id="rate-@Cntr" style="background-color:#FFF3CD; font-weight:600;">@item.Rate</td>
+            <td id="rejQty-@Cntr">@item.RejQty</td>
+            <td>
+                <input value="@item.RejRate"
+                       id="rejRate-@Cntr"
+                       class="form-control text-center"
+                       onchange="CalculateRejAmount(); highlightRejRate(this, '@item.Rate');"
+                       style="background-color:@bgColor; font-weight:600;" />
             </td>
+            @* <td>@item.RejRate</td> *@
+            <td id="discountPer-@Cntr">@item.DiscountPer</td>
+            <td id="DiscountAmt-@Cntr">@item.DiscountAmt</td>
+            <td id="Amount-@Cntr">@item.Amount</td>
+            <td>@item.SONO</td>
+
+            <td id="GridUniqueBatchNo-@Cntr">@item.SODate</td>
+            <td id="GridBatchNo-@Cntr">@item.SOyearcode</td>
+
+            <td>@item.Unit</td>
             @* <th>@Cntr <input type="hidden" id="SeqNo-@Cntr" value="@item.SeqNo" /></th> *@
             <td>@item.AgainstBillTypeJWSALE<input type="hidden" id="GridIC-@Cntr" value="@item.ItemCode" /></td>
             <td>@item.AgainstBillNo</td>
             <td>@item.AgainstBillYearCode</td>
             <td>@item.AgainstBillEntryId</td>
             <td>@item.AgainstOpnOrBill</td>
-            <td>@item.PartCode</td>
-            <td>@item.ItemName</td>
             <td>@item.HSNNo</td>
             <td>@item.Itemsize</td>
             <td>@item.NoOfCase</td>
             <td>@item.RecStoreName</td>
-            <td>@item.RecQty</td>
-            <td>@item.SaleBillQty</td>
-            <td>@item.RejQty</td>
-            <td>@item.RejRate</td>
-            <td id="Amount-@Cntr">@item.Amount</td>
-            <td>@item.Unit</td>
             <td>@item.AltQty</td>
-            <td>@item.Rate</td>
             <td>@item.Amount</td>
-            <td>@item.DiscountPer</td>
-            <td>@item.DiscountAmt</td>
-            <td>@item.SONO</td>
-            <td id="GridBatchNo-@Cntr">@item.SOyearcode</td>
-            <td id="GridUniqueBatchNo-@Cntr">@item.SODate</td>
             <td>@item.CustOrderNo</td>
             <td>@item.RecStoreId</td>
             <td>@item.SaleorderRemark</td>

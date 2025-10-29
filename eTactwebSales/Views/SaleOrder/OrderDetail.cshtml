@@ -2552,9 +2552,11 @@
                         },
                         success: function (result) {
                             let obj = typeof result === "string" ? JSON.parse(result) : result;
-
+                                     alert(JSON.stringify(obj.Result));
                             if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
+                                
                                 let match = obj.Result.Table.find(item => item.ItemName.toLowerCase() === itemName.toLowerCase());
+                           
                                 if (match) {
                                     $("#ItemNameText").val(match.ItemName).data("itemcode", match.Item_Code);
                                     $("#PartCodeText").val(match.PartCode);

@@ -2117,10 +2117,22 @@ public class TaxController : Controller
                 break;
             case "SaleRejection":
                 HttpContext.Session.Get(TxPageName);
-                _MemoryCache.TryGetValue("SaleRejectionModel", out MainModel);
+                //_MemoryCache.TryGetValue("SaleBillModel", out MainModel);
+                string modelSaleInvoiceJson1 = HttpContext.Session.GetString("SaleRejectionModel");
+                if (!string.IsNullOrEmpty(modelSaleInvoiceJson1))
+                {
+                    MainModel = JsonConvert.DeserializeObject<SaleRejectionModel>(modelSaleInvoiceJson1);
+                }
+
                 MainModel.AccountCode = AC;
                 MainModel.TxPageName = TxPageName;
                 TaxGrid = await GetHSNTaxList(MainModel);
+
+                //HttpContext.Session.Get(TxPageName);
+                //_MemoryCache.TryGetValue("SaleRejectionModel", out MainModel);
+                //MainModel.AccountCode = AC;
+                //MainModel.TxPageName = TxPageName;
+                //TaxGrid = await GetHSNTaxList(MainModel);
                 break;
             case "IssueNRGP":
                 HttpContext.Session.Get(TxPageName);

@@ -1,53 +1,50 @@
-﻿using eTactWeb.DOM;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 
 public static class NavigationHelper
 {
-    private const string DrillDownSessionKey = "DrillDownStack";
+    private const string SessionKey = "NavigationStack";
 
-    public static void Push(HttpContext httpContext, NavigationState state)
+    public static Stack<NavigationState> GetStack(HttpContext context)
     {
-        var stack = GetStack(httpContext);
+        var json = context.Session.GetString(SessionKey);
+        if (string.IsNullOrEmpty(json)) return new Stack<NavigationState>();
 
-        // Avoid consecutive duplicates
-        if (stack.Count == 0 || !stack.Last().Equals(state))
-            stack.Add(state);
-
-        SaveStack(httpContext, stack);
+        var list = JsonConvert.DeserializeObject<List<NavigationState>>(json);
+        return new Stack<NavigationState>(list.Reverse<NavigationState>()); // preserve order
     }
 
-    public static NavigationState Pop(HttpContext httpContext)
+    public static void SaveStack(HttpContext context, Stack<NavigationState> stack)
     {
-        var stack = GetStack(httpContext);
+        var list = stack.ToList();
+        var json = JsonConvert.SerializeObject(list);
+        context.Session.SetString(SessionKey, json);
+    }
+
+    public static void Push(HttpContext context, NavigationState state)
+    {
+        var stack = GetStack(context);
+
+        // Avoid duplicate push
+        if (stack.Count == 0 || !stack.Peek().Equals(state))
+        {
+            stack.Push(state);
+            SaveStack(context, stack);
+        }
+    }
+
+    public static NavigationState Pop(HttpContext context)
+    {
+        var stack = GetStack(context);
         if (stack.Count == 0) return null;
 
-        var state = stack.Last();
-        stack.RemoveAt(stack.Count - 1);
-        SaveStack(httpContext, stack);
-        return state;
+        var popped = stack.Pop();
+        SaveStack(context, stack);
+        return popped;
     }
 
-    public static NavigationState Peek(HttpContext httpContext)
+    public static void Clear(HttpContext context)
     {
-        return GetStack(httpContext).LastOrDefault();
-    }
-
-    public static List<NavigationState> GetStack(HttpContext httpContext)
-    {
-        var json = httpContext.Session.GetString(DrillDownSessionKey);
-        return string.IsNullOrEmpty(json)
-            ? new List<NavigationState>()
-            : JsonConvert.DeserializeObject<List<NavigationState>>(json);
-    }
-
-    private static void SaveStack(HttpContext httpContext, List<NavigationState> stack)
-    {
-        httpContext.Session.SetString(DrillDownSessionKey, JsonConvert.SerializeObject(stack));
-    }
-
-    public static void Clear(HttpContext httpContext)
-    {
-        httpContext.Session.Remove(DrillDownSessionKey);
+        context.Session.Remove(SessionKey);
     }
 }
