@@ -282,8 +282,8 @@ namespace eTactWeb.Data.DAL
                                                                    MaxAllowedLeave = Convert.ToDecimal(dr["MaxAllowedLeave"]),
                                                                    TraineePermanent = dr["TraineePermanent"].ToString(),
                                                                    BalanceAdvanceAmt = Convert.ToDecimal(dr["BalanceAdvanceAmt"]),
-                                                                   DepartHeadApprovedBy = Convert.ToInt32(dr["DepartHeadApprovedBy"]),
-                                                                   HRApprovedBy = Convert.ToInt32(dr["HRApprovedBy"]),
+                                                                   DepartHeadApprovedBy = dr["DepartHeadApprovedBy"].ToString(),
+                                                                   HRApprovedBy = dr["HRApprovedBy"].ToString(),
                                                                    DepartAppdate = dr["DepartAppdate"] == DBNull.Value ? string.Empty : Convert.ToDateTime(dr["DepartAppdate"]).ToString("dd-MM-yyyy"),
                                                                    HRAppDate = dr["HRAppDate"] == DBNull.Value ? string.Empty : Convert.ToDateTime(dr["HRAppDate"]).ToString("dd-MM-yyyy"),
 
@@ -365,8 +365,8 @@ namespace eTactWeb.Data.DAL
             model.BalanceMonthlyLeave = Convert.ToDecimal(DS.Tables[0].Rows[0]["BalanceMonthlyLeave"].ToString());
             model.MaxAllowedLeave = Convert.ToDecimal(DS.Tables[0].Rows[0]["MaxAllowedLeave"].ToString());
             model.BalanceAdvanceAmt = Convert.ToDecimal(DS.Tables[0].Rows[0]["BalanceAdvanceAmt"].ToString());
-            model.DepartHeadApprovedBy = Convert.ToInt32(DS.Tables[0].Rows[0]["DepartHeadApprovedBy"].ToString());
-            model.HRApprovedBy = Convert.ToInt32(DS.Tables[0].Rows[0]["HRApprovedBy"].ToString());
+            model.DepartHeadApprovedBy = DS.Tables[0].Rows[0]["DepartHeadApprovedBy"].ToString();
+            model.HRApprovedBy =DS.Tables[0].Rows[0]["HRApprovedBy"].ToString();
             model.DepartAppdate = DS.Tables[0].Rows[0]["DepartAppdate"].ToString();
             model.HRAppDate = DS.Tables[0].Rows[0]["HRAppDate"].ToString();
             model.ActualEntryBy = Convert.ToInt32(DS.Tables[0].Rows[0]["ActualEntryBy"].ToString());

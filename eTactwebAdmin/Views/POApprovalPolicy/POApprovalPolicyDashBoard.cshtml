@@ -35,10 +35,28 @@
                                         <label class="form-label">To Date</label>
                                         <input asp-for="ToDate" class="form-control" readonly />
                                     </div>
+                                   
                                 </div>
-                            </div>
-                           
+                                
+                               
 
+                            </div>
+
+                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                <label asp-for="ItemName" class="form-label">ItemName</label>
+                                <input type="text" id="ItemNameText" class="form-control" placeholder="Type Item Name..." />
+                                <input type="hidden" asp-for="ItemName" id="ItemName" />
+                            </div>
+                            <div class="col col-auto col-md-2 col-sm-6 col-xs-6">
+                                <label asp-for="GroupName" class="control-label">Group Name</label>
+                                <input type="text" id="GroupNameText" class="form-control" placeholder="Type Group Name..." />
+                            </div>
+                            <div class="col col-auto col-md-2 col-sm-6 col-xs-6">
+                                <label asp-for="CatName" class="control-label">Category Name</label>
+                                <input type="text" id="CatNameText" class="form-control" placeholder="Type Category Name..." />
+                            </div>
+
+                           
 
                             <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2" style="margin-left30px;">
                                 <label class="form-label">Global search</label>
@@ -83,11 +101,17 @@
             GetFormRights();
 
             //$('#ReportType').select2();
-
+            FillItems();
+            FillGroups();
+            FillCateName();
             GetDetailData();
 
-
-
+           // AutoComplete('Item_Master', 'Item_Name', 'Item_Name', null);
+            AutoComplete('Item_Master_Type', 'ItemTypeName', 'Type_Item', null);
+            AutoComplete('Itemgroup_master', 'Group_name', 'Group_name', null);
+            if ($('#ItemNameText').val() == '') {
+                $('#ItemName').val('');
+            }
             var CurrentDate = new Date();
 
             var currentDate = new Date();
@@ -97,13 +121,7 @@
 
             $('#PartCode').rules('remove', 'required');
 
-            AutoComplete('VWorkorderMainDetail', 'WONO', 'WONO', null);
-            AutoComplete('VWorkorderMainDetail', 'CC', 'cc', null);
-            AutoComplete('VWorkorderMainDetail', 'SONO', 'SONO', null);
-            AutoComplete('VWorkorderMainDetail', 'SchNo', 'SchNo', null);
-            AutoComplete('VWorkorderMainDetail', 'AccountName', 'Account_Name', null);
-            AutoComplete('VWorkorderMainDetail', 'PartCode', 'PartCode', null);
-            AutoComplete('VWorkorderMainDetail', 'ItemName', 'ItemName', null);
+            
 
 
 
@@ -119,7 +137,158 @@
             sessionStorage.removeItem('GlobalSearchBack');
             sessionStorage.removeItem('DashboardTypeBack');
         });
+        function FillItems() {
+            // Source for ItemNameText
+            const itemNameSource = function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("FillItems")',
+                    type: 'POST',
+                    data: {
 
+                        SearchItemCode: request.term,
+                        SearchPartCode: ''
+                    },
+                    success: function (result) {
+                        let obj = typeof result === "string" ? JSON.parse(result) : result;
+
+                        if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
+                            let filtered = obj.Result.Table.filter(function (item) {
+                                let term = request.term.toLowerCase();
+                                return item.ItemName.toLowerCase().includes(term);
+                            });
+
+                            response($.map(filtered, function (item) {
+                                return {
+                                    label: item.ItemName,
+                                    value: item.Item_Code,
+                                    itemName: item.ItemName,
+                                    itemCode: item.Item_Code,
+                                    partCode: item.PartCode
+                                };
+                            }));
+                        } else {
+                            response([]);
+                        }
+                    }
+
+                });
+            };
+
+            
+
+            // Autocomplete for ItemNameText
+            $("#ItemNameText").autocomplete({
+                source: itemNameSource,
+                select: function (event, ui) {
+                    $("#ItemNameText").val(ui.item.itemName).data("itemcode", ui.item.itemCode);
+                   
+                    $('#ItemName').val(ui.item.itemName);
+                  
+
+                    return false;
+                },
+                focus: function (event, ui) {
+                    $("#ItemNameText").val(ui.item.itemName);
+                    return false;
+                },
+                minLength: 2
+            });
+        }
+
+        function FillGroups() {
+            // Source for GroupNameText
+            const groupNameSource = function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("FillGroups")',
+                    type: 'POST',
+                    data: {
+                        SearchGroupName: request.term
+                    },
+                    success: function (result) {
+                        let obj = typeof result === "string" ? JSON.parse(result) : result;
+
+                        if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
+                            let filtered = obj.Result.Table.filter(function (item) {
+                                let term = request.term.toLowerCase();
+                                return item.GroupName.toLowerCase().includes(term);
+                            });
+
+                            response($.map(filtered, function (item) {
+                                return {
+                                    label: item.GroupName,
+                                    value: item.GroupCode,
+                                    groupName: item.GroupName,
+                                    groupCode: item.GroupCode
+                                };
+                            }));
+                        } else {
+                            response([]);
+                        }
+                    }
+                });
+            };
+
+            // Autocomplete for GroupNameText
+            $("#GroupNameText").autocomplete({
+                source: groupNameSource,
+                select: function (event, ui) {
+                    $("#GroupNameText").val(ui.item.groupName).data("groupcode", ui.item.groupCode);
+                    return false;
+                },
+                focus: function (event, ui) {
+                    $("#GroupNameText").val(ui.item.groupName);
+                    return false;
+                },
+                minLength: 2
+            });
+        }
+        function FillCateName() {
+            // Source for CatNameText
+            const catNameSource = function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("FillCateName")',
+                    type: 'POST',
+                    data: {
+                        SearchCatName: request.term
+                    },
+                    success: function (result) {
+                        let obj = typeof result === "string" ? JSON.parse(result) : result;
+
+                        if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
+                            let filtered = obj.Result.Table.filter(function (item) {
+                                let term = request.term.toLowerCase();
+                                return item.CatName.toLowerCase().includes(term);
+                            });
+
+                            response($.map(filtered, function (item) {
+                                return {
+                                    label: item.CatName,
+                                    value: item.CatCode,
+                                    catName: item.CatName,
+                                    catCode: item.CatCode
+                                };
+                            }));
+                        } else {
+                            response([]);
+                        }
+                    }
+                });
+            };
+
+            // Autocomplete for CatNameText
+            $("#CatNameText").autocomplete({
+                source: catNameSource,
+                select: function (event, ui) {
+                    $("#CatNameText").val(ui.item.catName).data("catcode", ui.item.catCode);
+                    return false;
+                },
+                focus: function (event, ui) {
+                    $("#CatNameText").val(ui.item.catName);
+                    return false;
+                },
+                minLength: 2
+            });
+        }
 
         function GetFormRights() {
 
@@ -233,14 +402,19 @@
             var fromDate = $('#FromDate').val();
             var toDate = $('#ToDate').val();
             var reportType = "SUMMARY";
+            var itemName = $('#ItemNameText').val();  
+
+            var groupName = $('#GroupNameText').val(); 
+            var catName = $('#CatNameText').val();     
+
 
             //var data = $('#SParam').serialize();
             $.ajax({
                 url: '@Url.Action("GetDetailData")',
                 type: "POST",
-                data: { FromDate: fromDate, ToDate: toDate, ReportType: reportType },
+                data: { FromDate: fromDate, ToDate: toDate, ReportType: reportType, GroupName: groupName, CateName: catName, ItemName: itemName },
                 async: false,
-                data: $('#SParam').serializeArray(),
+               
                 success: function (data) {
 
                     $('#divDashboardGrid').empty().append(data);

@@ -1,4 +1,5 @@
 ﻿using eTactWeb.DOM.Models;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,8 +20,11 @@ namespace eTactWeb.Services.Interface
 		Task<ResponseResult> SavePOApprovalPolicy(POApprovalPolicyModel model);
 
         Task<ResponseResult> GetDashboardData(POApprovalPolicyModel model);
-        Task<POApprovalPolicyModel> GetDashboardDetailData(string FromDate, string ToDate, string ReportType);
+        Task<POApprovalPolicyModel> GetDashboardDetailData(string FromDate, string ToDate, string ReportType,string GroupName,string CateName,string ItemName);
         Task<ResponseResult> DeleteByID(int EntryId, string EntryDate, int EntryByempId);
         Task<POApprovalPolicyModel> GetViewByID(int ID, int YC, string FromDate, string TODate);
+        Task<ResponseResult> FillItems(string SearchItemCode);
+        Task<ResponseResult>  FillGroups(string SearchGroupName);
+        Task<ResponseResult> FillCateName(string SearchCatName);
     }
 }

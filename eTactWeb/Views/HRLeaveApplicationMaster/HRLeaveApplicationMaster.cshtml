@@ -207,19 +207,19 @@
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="DepartHeadApprovedBy" class="form-label">DepartHeadApprovedBy</label>
-                                    <input asp-for="DepartHeadApprovedBy " class="form-control numbers" />
+                                    <input asp-for="DepartHeadApprovedBy " class="form-control readonly" />
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="HRApprovedBy" class="form-label">HRApprovedBy</label>
-                                    <input asp-for="HRApprovedBy " class="form-control" />
+                                    <input asp-for="HRApprovedBy " class="form-control"  readonly/>
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="DepartAppdate" class="form-label">DepartAppdate</label>
-                                    <input asp-for="DepartAppdate " class="form-control" />
+                                    <input asp-for="DepartAppdate " class="form-control" readonly />
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="HRAppDate" class="form-label">HRAppDate</label>
-                                    <input asp-for="HRAppDate " class="form-control" />
+                                    <input asp-for="HRAppDate " class="form-control" readonly />
                                 </div>
                                  <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="Approved" class="form-label">Approved</label>
@@ -287,8 +287,8 @@
                                             </thead>
                                             <tbody id="GridControls">
                                                 <tr>
-                                                    <td><input asp-for="FromDate" class="form-control" style="" /></td>
-                                                    <td><input asp-for="ToDate" class="form-control" style="" /></td>
+                                                    <td><input asp-for="FromDate" class="form-control" style="" onchange="CalculateLeaveDuration()" /></td>
+                                                    <td><input asp-for="ToDate" class="form-control" style="" onchange="CalculateLeaveDuration()" /></td>
 
 
                                                     <td>
@@ -303,11 +303,11 @@
                                                         </select>
                                                     </td>
 
-                                                    <td><input asp-for="Duration" class="form-control numbers" style="" /></td>
-                                                    <td><input asp-for="BalanceLeaveMonthly" class="form-control numbers" /></td>
+                                                    <td><input asp-for="Duration" class="form-control numbers" style="" readonly /></td>
+                                                    <td><input asp-for="BalanceLeaveMonthly" class="form-control numbers" readonly /></td>
 
-                                                    <td><input asp-for="BalanceLeaveYearly" class="form-control numbers" /></td>
-                                                    <td><input asp-for="MaxLeaveInMonth" class="form-control numbers" /></td>
+                                                    <td><input asp-for="BalanceLeaveYearly" class="form-control numbers" readonly/></td>
+                                                    <td><input asp-for="MaxLeaveInMonth" class="form-control numbers" readonly /></td>
 
 
                                                 </tr>
@@ -521,6 +521,24 @@
         if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
             FillEntryID();
         }
+
+        function CalculateLeaveDuration() { 
+            var FromDate= $('#FromDate').val();
+            var ToDate= $('#ToDate').val();
+            if (FromDate != "" && ToDate != "") {
+                var startDate = moment(FromDate, 'DD/MM/YYYY');
+                var endDate = moment(ToDate, 'DD/MM/YYYY');
+
+                var duration = endDate.diff(startDate, 'days') + 1; // +1 to include both start and end dates
+                if (duration < 0) {
+                    $.notify('To Date must be greater than or equal to From Date', "error");
+                    $('#Duration').val('');
+                }
+                else {
+                    $('#Duration').val(duration);
+                }
+            }
+        }
         
        
 
@@ -591,6 +609,7 @@
                 $('#ApplicationDate').datepicker({ dateFormat: 'dd/mm/yy' });
                 $('#LastUPdatedDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
             }
+            CalculateLeaveDuration();
                      
             $(document).on('select2:select', '#EmpName,#EmpCode', function (e) {
 
@@ -1291,7 +1310,7 @@
        
 
     </script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
 }
 
 <style>
