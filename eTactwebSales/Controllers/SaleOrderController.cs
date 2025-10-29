@@ -946,7 +946,7 @@ public class SaleOrderController : Controller
 		_MemoryCache.Set("ItemList", MainModel, DateTimeOffset.Now.AddMinutes(60));
 		HttpContext.Session.SetString("ItemList", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
 		_MemoryCache.Set("KeyTaxGrid", taxList, DateTimeOffset.Now.AddMinutes(60));
-		HttpContext.Session.SetString("ItemList", JsonConvert.SerializeObject(MainModel));
+		//HttpContext.Session.SetString("ItemList", JsonConvert.SerializeObject(MainModel));
 		_MemoryCache.TryGetValue("ItemList", out MainModel);
 		_MemoryCache.TryGetValue("KeyTaxGrid", out List<TaxModel> TaxGrid);
 
@@ -977,8 +977,12 @@ public class SaleOrderController : Controller
 	public async Task<JsonResult> GetClearItemGrid(string Code)
 	{
 		_MemoryCache.Remove("ItemList");
-		_MemoryCache.Remove("KeyTaxGrid");
-		ResponseResult JsonString = await _ISaleOrder.GetAddress(Code);
+        HttpContext.Session.Remove("ItemList");
+        _MemoryCache.Remove("KeyTaxGrid");
+        HttpContext.Session.Remove("KeyTaxGrid");
+
+
+        ResponseResult JsonString = await _ISaleOrder.GetAddress(Code);
 		_logger.LogError(JsonConvert.SerializeObject(JsonString));
 		return Json(JsonString);
 	}
