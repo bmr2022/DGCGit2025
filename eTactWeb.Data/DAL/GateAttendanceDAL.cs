@@ -256,7 +256,8 @@ public class GateAttendanceDAL
             SqlParams.Add(new SqlParameter("@fromdate", fromdate == default ? string.Empty : fromdate));
             SqlParams.Add(new SqlParameter("@todate", todate == default ? string.Empty : todate));
             SqlParams.Add(new SqlParameter("@ShiftId", model.ActualEmpShiftId != null ? model.ActualEmpShiftId : 1));
-            SqlParams.Add(new SqlParameter("@EmpCateid", model.EmpCategoryId != null ? model.EmpCategoryId : 0));
+            //SqlParams.Add(new SqlParameter("@EmpCateid", model.EmpCategoryId != null ? model.EmpCategoryId : 0));
+            SqlParams.Add(new SqlParameter("@EmpCateid", !string.IsNullOrEmpty(model.CategoryCode) ? Convert.ToInt32(model.EmpCategoryId) : 0));
             SqlParams.Add(new SqlParameter("@DepId", model.DeptId != null ? model.DeptId : 0));
             SqlParams.Add(new SqlParameter("@DesgId", model.DesignationEntryId != null ? model.DesignationEntryId : 0));
             SqlParams.Add(new SqlParameter("@EmpId", model.EmpId != null ? model.EmpId : 0));

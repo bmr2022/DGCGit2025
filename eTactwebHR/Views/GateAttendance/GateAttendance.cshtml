@@ -436,10 +436,18 @@
                 // });
                  row.querySelectorAll("input[name^='Attendance[" + empId + "]']").forEach(function (inp) {
                     var name = inp.getAttribute("name");
-                    var keyMatch = name.match(/\]\[(\d+)\((.*?)\)\]/);
+                    var keyMatch = name.match(/\]\[(\d+)\((.*?)\)\]/) || name.match(/\[(\d+)\]\[([A-Za-z]+)\)?]/);
                     if (keyMatch) {
-                        var day = keyMatch[1];
-                        var type = keyMatch[2]; 
+                        if($('#DayOrMonthType').val().toLowerCase() == 'daily') {
+                             let dateStr = document.getElementById("strEmpAttDate").value;
+                            let date = (dateStr) ? new Date(dateStr) : null;
+                            var day = (date != null) ? date.getDate() : 0;                            
+                            var type = keyMatch[2];
+                        }
+                        else {
+                            var day = keyMatch[1];
+                            var type = keyMatch[2]; 
+                        }
                         var dictKey = (type.toLowerCase() === "intime" ? "AttInTime" : "AttOutTime") + day;
                         empObj.Attendance[dictKey] = inp.value || "";
                     }

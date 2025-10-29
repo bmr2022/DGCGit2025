@@ -215,14 +215,14 @@ namespace eTactwebHR.Controllers
                         model.Branch = HttpContext.Session.GetString("Branch");
                         model.EntryByMachineName = HttpContext.Session.GetString("EmpName");
                         model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                        if(!string.IsNullOrEmpty(model.DayOrMonthType) && string.Equals(model.DayOrMonthType, "monthly", StringComparison.OrdinalIgnoreCase))
+                        if (!string.IsNullOrEmpty(model.DayOrMonthType) && string.Equals(model.DayOrMonthType, "monthly", StringComparison.OrdinalIgnoreCase))
                         {
                             DateTime fromDate = new DateTime(MainModel.GateAttYearCode, 1, 1);
                             DateTime toDate = new DateTime(MainModel.GateAttYearCode, 12, 31);
                             MainModel.NFromDate = CommonFunc.ParseFormattedDate(fromDate.ToString("dd/MM/yyyy"));
-                            MainModel.NToDate = CommonFunc.ParseFormattedDate(toDate.ToString("dd/MM/yyyy"));    
+                            MainModel.NToDate = CommonFunc.ParseFormattedDate(toDate.ToString("dd/MM/yyyy"));
                         }
-                        else 
+                        else
                         {
                             model.NFromDate = model.strEmpAttDate;
                             model.NToDate = model.strEmpAttDate;
@@ -464,13 +464,13 @@ namespace eTactwebHR.Controllers
             //ViewBag.DeptList = model.DeptList;
             //ViewBag.DesigList = model.DesignationList;
             //ViewBag.EmployeeList = model.EmployeeList;
-            
+
             string GateAttendanceJson = HttpContext.Session.GetString("GateAttendance");
             GateAttendanceModel MainModel = string.IsNullOrEmpty(GateAttendanceJson)
                 ? new GateAttendanceModel()
                 : JsonConvert.DeserializeObject<GateAttendanceModel>(GateAttendanceJson);
             SetEmptyOrNullFields<GateAttendanceModel>(MainModel, model);
-            
+
             string serializedGateAttendance = JsonConvert.SerializeObject(MainModel);
             HttpContext.Session.SetString("GateAttendance", serializedGateAttendance);
             return PartialView("_GateManualAttendance", model);
@@ -485,6 +485,16 @@ namespace eTactwebHR.Controllers
                 Table.Columns.Add("GateAttYearCode", typeof(int));
                 Table.Columns.Add("EmpAttYear", typeof(int));
                 Table.Columns.Add("CardOrBiometricId", typeof(string));
+                if (itemDetailList.DayHeaders == null || itemDetailList.DayHeaders.Count == 0 || itemDetailList.DayHeaders.Count != 4)
+                {
+                    itemDetailList.DayHeaders = new List<string>();
+                    var intday = itemDetailList.strEmpAttDate != null ? CommonFunc.ParseDate(itemDetailList.strEmpAttDate).Day : 1;
+                    itemDetailList.DayHeaders.Add($"AttendStatus");
+                    itemDetailList.DayHeaders.Add($"EmpId");
+                    itemDetailList.DayHeaders.Add($"AttInTime{intday}");
+                    itemDetailList.DayHeaders.Add($"AttOutTime{intday}");
+                    itemDetailList.DayHeaders.Add($"TotalNoOfHours");
+                }
                 Table.Columns.Add("AttendStatus", typeof(string));
                 Table.Columns.Add("EmpId", typeof(int));
                 Table.Columns.Add("AttInTime", typeof(DateTime));
@@ -563,19 +573,14 @@ namespace eTactwebHR.Controllers
                     rowValues.Add((itemDetailList.GateAttYearCode > 0 ? itemDetailList.GateAttYearCode : YearCode) ?? 0);
                     if (itemDetailList != null && string.Equals(itemDetailList.DayOrMonthType, "daily", StringComparison.OrdinalIgnoreCase))
                     {
-                        rowValues.Add(string.Empty);
-                        rowValues.Add(string.Empty);
-                        rowValues.Add(string.Empty);
-                        rowValues.Add(0);
-                        rowValues.Add(string.Empty);
-                        rowValues.Add(null);
-                        rowValues.Add(0);
-                        rowValues.Add(string.Empty);
-                        rowValues.Add(null);
-                        rowValues.Add(0);
+                        rowValues.Add(Item.EmpAttYear ?? Item.GateAttYearCode);
+                        rowValues.Add(Item.CardOrBiometricId ?? string.Empty);
                     }
-                    rowValues.Add(Item.EmpId);
-                    rowValues.Add(Item.EmpAttYear ?? Item.GateAttYearCode);
+                    else
+                    {
+                        rowValues.Add(Item.EmpId);
+                        rowValues.Add(Item.EmpAttYear ?? Item.GateAttYearCode);
+                    }
                 }
 
                 if (itemDetailList.DayHeaders != null)
@@ -584,6 +589,8 @@ namespace eTactwebHR.Controllers
                     {
                         if (!Item.Attendance.ContainsKey(header) && header.Contains("AttendStatus"))
                         { rowValues.Add(string.Empty); }
+                        else if (Item.EmpId > 0 && header.Contains("EmpId") && itemDetailList != null && string.Equals(itemDetailList.DayOrMonthType, "daily", StringComparison.OrdinalIgnoreCase))
+                        { rowValues.Add(Item.EmpId); }
                         else if (!Item.Attendance.ContainsKey(header) && header.Contains("TotalNoOfHours"))
                         { rowValues.Add(0); } //Math.Round(Item.Attendance[header], 2, MidpointRounding.AwayFromZero)
                         else if (Item.Attendance != null && Item.Attendance.ContainsKey(header) && (header.Contains("InTime") || header.Contains("OutTime") || header.Contains("AttInTime") || header.Contains("AttOutTime")))
@@ -602,7 +609,8 @@ namespace eTactwebHR.Controllers
                             }
                             else
                             {
-                                day = itemDetailList.EmpAttDate != null ? CommonFunc.ParseDate(Convert.ToDateTime(itemDetailList.EmpAttDate).Date.ToString()).Day : 1;
+                                day = itemDetailList.strEmpAttDate != null ? CommonFunc.ParseDate(itemDetailList.strEmpAttDate).Day : 1;
+                                month = itemDetailList.strEmpAttDate != null ? CommonFunc.ParseDate(itemDetailList.strEmpAttDate).Month : 1;
                             }
                             if (time == null)
                             {
@@ -625,20 +633,40 @@ namespace eTactwebHR.Controllers
                     }
                 }
 
-                rowValues.Add(Item.ActualEmpShiftId ?? 0);
-                rowValues.Add(Item.DesignationEntryId ?? 0);
-                rowValues.Add(Item.DeptId ?? 0);
-                rowValues.Add(!string.IsNullOrEmpty(itemDetailList.CC) ? itemDetailList.CC : (!string.IsNullOrEmpty(itemDetailList.Branch) ? itemDetailList.Branch : string.Empty));
-                rowValues.Add(itemDetailList.EmpCategoryId);
-                if (itemDetailList != null && !string.Equals(itemDetailList.DayOrMonthType, "daily", StringComparison.OrdinalIgnoreCase))
+                if (itemDetailList != null && string.Equals(itemDetailList.DayOrMonthType, "daily", StringComparison.OrdinalIgnoreCase))
                 {
+                    rowValues.Add(Item.LateEntry);
+                    rowValues.Add(Item.EarlyExit);
+                    rowValues.Add(Item.LeaveTypeId ?? 0);
+                    rowValues.Add(Item.ActualEmpShiftId ?? 0);
+                    rowValues.Add(Item.ApproveByDept);
+                    rowValues.Add(CommonFunc.ParseSafeDate(Item.DeptApprovaldate.ToString() ?? string.Empty));
+                    rowValues.Add(Item.DeptApprovalEmpId ?? 0);
+                    rowValues.Add(Item.ApproveByHR);
+                    rowValues.Add(CommonFunc.ParseSafeDate(Item.HRApprovaldate.ToString() ?? string.Empty));
+                    rowValues.Add(Item.HRApprovalEmpId ?? 0);
+                    rowValues.Add(!string.IsNullOrEmpty(itemDetailList.CC) ? itemDetailList.CC : (!string.IsNullOrEmpty(itemDetailList.Branch) ? itemDetailList.Branch : string.Empty));
+                    rowValues.Add(itemDetailList.EmpCategoryId);
+                    rowValues.Add(itemDetailList.ActualEmpShiftId ?? 0);
                     rowValues.Add(currentDt);
+                    rowValues.Add(currentDt);
+                    rowValues.Add(0);
+                    rowValues.Add(Item.DesignationEntryId ?? 0);
+                    rowValues.Add(Item.DeptId ?? 0);
                 }
-                rowValues.Add(itemDetailList.ActualEmpShiftId ?? 0);
-                rowValues.Add(currentDt);
-                rowValues.Add(currentDt);
-                rowValues.Add(0);
-
+                else
+                {
+                    rowValues.Add(Item.ActualEmpShiftId ?? 0);
+                    rowValues.Add(Item.DesignationEntryId ?? 0);
+                    rowValues.Add(Item.DeptId ?? 0);
+                    rowValues.Add(!string.IsNullOrEmpty(itemDetailList.CC) ? itemDetailList.CC : (!string.IsNullOrEmpty(itemDetailList.Branch) ? itemDetailList.Branch : string.Empty));
+                    rowValues.Add(itemDetailList.EmpCategoryId);
+                    rowValues.Add(currentDt);
+                    rowValues.Add(itemDetailList.ActualEmpShiftId ?? 0);
+                    rowValues.Add(currentDt);
+                    rowValues.Add(currentDt);
+                    rowValues.Add(0);
+                }
                 Table.Rows.Add(rowValues.ToArray());
             }
 
@@ -741,6 +769,6 @@ namespace eTactwebHR.Controllers
             var JSON = await IGateAttendance.FillEntryId(YearCode);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
-        } 
+        }
     }
 }
