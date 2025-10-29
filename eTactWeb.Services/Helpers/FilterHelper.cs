@@ -11,17 +11,20 @@ namespace eTactWeb.Services.Helpers
 {
     public static class FilterHelper
     {
-        public static void SaveFilters(HttpContext context, string key, FilterState filters)
+        public static void SaveFilters(HttpContext context, string key, ReportFilter filters)
         {
-            var json = JsonConvert.SerializeObject(filters);
-            context.Session.SetString(key, json);
+            context.Session.SetString(key, JsonConvert.SerializeObject(filters));
         }
 
-        public static FilterState GetFilters(HttpContext context, string key)
+        public static ReportFilter? GetFilters(HttpContext context, string key)
         {
             var json = context.Session.GetString(key);
-            if (string.IsNullOrEmpty(json)) return null;
-            return JsonConvert.DeserializeObject<FilterState>(json);
+            return string.IsNullOrEmpty(json) ? null : JsonConvert.DeserializeObject<ReportFilter>(json);
+        }
+
+        public static void ClearFilters(HttpContext context, string key)
+        {
+            context.Session.Remove(key);
         }
     }
 }

@@ -33,6 +33,31 @@ namespace eTactWeb.Controllers
             var MainModel = new TransactionLedgerModel();
             MainModel.TransactionLedgerGrid = new List<TransactionLedgerModel>();
             MainModel.FromDate = HttpContext.Session.GetString("FromDate");
+            const string filterKey = "TransactionLedgerFilters";
+
+            // Try to get previously saved filters from session
+            var savedFilters = FilterHelper.GetFilters(HttpContext, filterKey);
+
+            if (savedFilters != null)
+            {
+                MainModel.FromDate = savedFilters.FromDate;
+                MainModel.ToDate = savedFilters.ToDate;
+                MainModel.ReportType = savedFilters.ReportType;
+                MainModel.GroupOrLedger = savedFilters.GroupOrLedger;
+                MainModel.ParentAccountCode = savedFilters.ParentAccountCode;
+                MainModel.AccountCode = savedFilters.AccountCode;
+                MainModel.VoucherType = savedFilters.VoucherType;
+                MainModel.VoucherNo = savedFilters.VoucherNo;
+                MainModel.INVNo = savedFilters.InvoiceNo;
+                MainModel.Narration = savedFilters.Narration;
+                MainModel.Amount = savedFilters.Amount;
+                MainModel.Dr = savedFilters.DR;
+                MainModel.Cr = savedFilters.CR;
+                MainModel.LedgerName = savedFilters.Ledger;
+            }
+
+            // Empty grid initially
+            MainModel.TransactionLedgerGrid = new List<TransactionLedgerModel>();
             //MainModel.ToDate = HttpContext.Session.GetString("ToDate");
             return View(MainModel); 
         }
@@ -52,16 +77,16 @@ namespace eTactWeb.Controllers
                 string FromDate = null, string ToDate = null, string ReportType = null,
                 string GroupOrLedger = null, int? ParentAccountCode = null, int? AccountCode = null,
                 string VoucherType = null, string VoucherNo = null, string InvoiceNo = null,
-                string Narration = null, float? Amount = null, string DR = null,
-                string CR = null, string Ledger = null)
+                string Narration = null, float? Amount = null, string DR = null, string CR = null,
+                string Ledger = null)
         {
             const string filterKey = "TransactionLedgerFilters";
 
-            // load saved filters
-            var saved = FilterHelper.GetFilters(HttpContext, filterKey) ?? new FilterState();
+            // Get existing saved filters from session
+            var saved = FilterHelper.GetFilters(HttpContext, filterKey) ?? new ReportFilter();
 
-            // merge (prefer incoming parameters)
-            var filters = new FilterState
+            // Merge (prefer new incoming filters)
+            var filters = new ReportFilter
             {
                 FromDate = FromDate ?? saved.FromDate,
                 ToDate = ToDate ?? saved.ToDate,
@@ -79,17 +104,18 @@ namespace eTactWeb.Controllers
                 Ledger = Ledger ?? saved.Ledger
             };
 
-            // save merged filters to session
+            // Save merged filters back
             FilterHelper.SaveFilters(HttpContext, filterKey, filters);
 
-            // call your service with the merged filters (convert types if needed)
+            // Call your data service with unified filters
             var model = await _TransactionLedger.GetDetailsData(
                 filters.FromDate, filters.ToDate, filters.ReportType, filters.GroupOrLedger,
-                filters.ParentAccountCode, filters.AccountCode, filters.VoucherType, filters.VoucherNo,
-                filters.InvoiceNo, filters.Narration, filters.Amount, filters.DR, filters.CR, filters.Ledger
+                filters.ParentAccountCode, filters.AccountCode, filters.VoucherType,
+                filters.VoucherNo, filters.InvoiceNo, filters.Narration, filters.Amount,
+                filters.DR, filters.CR, filters.Ledger
             );
 
-            // cache data optionally
+            // Optional cache (useful for Back navigation)
             HttpContext.Session.SetString("TransactionLedgerData", JsonConvert.SerializeObject(model));
 
             return PartialView("_TransactionLedgerGrid", model);

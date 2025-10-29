@@ -8,84 +8,66 @@ public class BaseNavigationController : Controller
         if (state == null)
             return RedirectToAction("Index", "TransactionLedger");
 
-        // Push state to session stack
+        // Define your root page (controller + action)
+        const string rootController = "TransactionLedger";
+        const string rootAction = "Index";
+
+        // Push the navigation state into session stack
         NavigationHelper.Push(HttpContext, state);
 
-        // Redirect to target action (no query string needed)
-        return RedirectToAction(state.ActionName, state.ControllerName, new {ID = state.ID, YearCode = state.YearCode, AccountCode = state.AccountCode, Mode = state.Mode});
+        // Check if the target is NOT the root page
+        bool isRootPage = string.Equals(state.ControllerName, rootController, StringComparison.OrdinalIgnoreCase)
+                          && string.Equals(state.ActionName, rootAction, StringComparison.OrdinalIgnoreCase);
+
+        if (isRootPage)
+        {
+            // Stay on the same page — no redirect
+            return View(rootAction);
+        }
+        else
+        {
+            // Drill down into target page
+            return RedirectToAction(state.ActionName, state.ControllerName, new
+            {
+                ID = state.ID,
+                YearCode = state.YearCode,
+                AccountCode = state.AccountCode,
+                Mode = state.Mode
+            });
+        }
     }
     [HttpGet]
-    public IActionResult Back()
+    public IActionResult GoBack()
     {
-        var stack = NavigationHelper.GetStack(HttpContext);
-
-        if (stack.Count <= 1)
+        var previous = NavigationHelper.Pop(HttpContext);
+        if (previous == null)
         {
-            // Only one page left → create a state for TransactionLedger
-            var defaultState = new NavigationState
-            {
-                ControllerName = "TransactionLedger",
-                ActionName = "Index",
-                FromDate = "2025-10-01", // default or previous value
-                ToDate = "2025-10-19",
-                ReportType = "Summary",
-                GroupOrLedger = null,
-                ParentLedger = null,
-                VoucherType = null,
-                VoucherNo = null,
-                INVNo = null,
-                Narration = null,
-                Amount = null,
-                Dr = null,
-                Cr = null,
-                GlobalSearch = null,
-                AccountCode = 0
-            };
-
-            // Push default state to stack
-            NavigationHelper.Push(HttpContext, defaultState);
-
-            // Redirect to TransactionLedger/Index
-            return RedirectToAction("Index", "TransactionLedger");
+            return RedirectToAction("Index", "Home");
         }
 
-        // Pop current page
-        NavigationHelper.Pop(HttpContext);
+        // Always redirect to root page (TransactionLedger Index)
+        string rootController = "TransactionLedger";
+        string rootAction = "Index";
 
-        // Peek previous page
-        var previous = stack.Peek();
-        if (previous != null)
+        // Keep only filters
+        var filterValues = new
         {
-            return RedirectToAction(previous.ActionName, previous.ControllerName);
-        }
+            FromDate = previous.FromDate,
+            ToDate = previous.ToDate,
+            ReportType = previous.ReportType,
+            GroupOrLedger = previous.GroupOrLedger,
+            ParentLedger = previous.ParentLedger,
+            AccountCode = previous.AccountCode,
+            VoucherType = previous.VoucherType,
+            VoucherNo = previous.VoucherNo,
+            INVNo = previous.INVNo,
+            Narration = previous.Narration,
+            Amount = previous.Amount,
+            Dr = previous.Dr,
+            Cr = previous.Cr,
+            GlobalSearch = previous.GlobalSearch
+        };
 
-        // fallback
-        return RedirectToAction("Index", "TransactionLedger");
-    }
-
-    private string BuildQueryString(NavigationState state)
-    {
-        var query = new Dictionary<string, string>
-        {
-            { "FromDate", state.FromDate },
-            { "ToDate", state.ToDate },
-            { "ReportType", state.ReportType },
-            { "GroupOrLedger", state.GroupOrLedger },
-            { "LedgerName", state.ParentLedger },
-            { "VoucherType", state.VoucherType },
-            { "VoucherNo", state.VoucherNo },
-            { "INVNo", state.INVNo },
-            { "Narration", state.Narration },
-            { "Amount", state.Amount },
-            { "Dr", state.Dr },
-            { "Cr", state.Cr },
-            { "GlobalSearch", state.GlobalSearch },
-            { "AccountCode", state.AccountCode.ToString() },
-            { "YearCode", state.YearCode.ToString() },
-            { "ID", state.ID.ToString() },
-            { "Mode", state.Mode }
-        }.Where(kv => !string.IsNullOrEmpty(kv.Value));
-
-        return string.Join("&", query.Select(kv => $"{kv.Key}={Uri.EscapeDataString(kv.Value)}"));
+        return RedirectToAction(rootAction, rootController, filterValues);
     }
 }

@@ -229,43 +229,83 @@
     <script>
 
         $(document).ready(function () {
-
+             
             let currentDate = new Date();
 
-            // FromDate model thi value
-            let fromDateRaw = '@Model.FromDate'; // e.g. "01/Apr/2025 00:00:00"
+            // Get values from model (these will be filled when user comes back)
+            let fromDateRaw = '@Model.FromDate';  // e.g. "01/Apr/2025 00:00:00"
+            let toDateRaw = '@Model.ToDate';      // e.g. "30/Apr/2025 00:00:00"
 
             function convertToDDMMYYYY(dateStr) {
                 if (!dateStr) return '';
-                let parts = dateStr.split(" ");
-                let datePart = parts[0]; // "01/Apr/2025"
-                let [day, mon, year] = datePart.split("/");
+                try {
+                    let datePart = dateStr.trim().split(" ")[0];
+                    if (/^\d{2}\/\d{2}\/\d{4}$/.test(datePart)) return datePart;
 
-                const months = {
-                    Jan: "01", Feb: "02", Mar: "03", Apr: "04",
-                    May: "05", Jun: "06", Jul: "07", Aug: "08",
-                    Sep: "09", Oct: "10", Nov: "11", Dec: "12"
-                };
+                    let parts = datePart.includes('-') ? datePart.split('-') : datePart.split('/');
+                    if (parts.length !== 3) return '';
 
-                return `${day}/${months[mon]}/${year}`;
+                    let [day, mon, year] = parts;
+                    const months = {
+                        Jan: "01", Feb: "02", Mar: "03", Apr: "04",
+                        May: "05", Jun: "06", Jul: "07", Aug: "08",
+                        Sep: "09", Oct: "10", Nov: "11", Dec: "12"
+                    };
+
+                    let monthNum = months[mon] || mon.padStart(2, '0');
+                    return `${day}/${monthNum}/${year}`;
+                } catch (e) {
+                    console.error('Invalid dateStr format:', dateStr, e);
+                    return '';
+                }
             }
 
+            // Convert both dates
             let fromDateFormatted = convertToDDMMYYYY(fromDateRaw);
+            let toDateFormatted = convertToDDMMYYYY(toDateRaw);
 
-            $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' })
-                .datepicker("setDate", fromDateFormatted);
+            // Initialize datepickers
+            $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' });
+            $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' });
 
-            $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' })
-                .datepicker("setDate", 'now');
+            // Set dates (if exist)
+            $('#FromDate').datepicker("setDate", fromDateFormatted || currentDate);
+            $('#ToDate').datepicker("setDate", toDateFormatted || currentDate);
+
+            // Initialize Select2
             $('#LedgerName, #ParentLedgerName, #ReportType, #VoucherType, #Group_Ledger').select2();
 
-            FillLedgerName();
-            FillVoucherName();
+            // Refill dropdowns (Ajax)
             FillParentLedgerName();
+            FillVoucherName();
+            FillLedgerName();
+
+            // ✅ Apply saved filter values ONLY if they exist
+            let parentLedger = '@Model.ParentAccountCode';
+            let ledger = '@Model.AccountCode';
+            let reportType = '@Model.ReportType';
+            let voucherType = '@Model.VoucherType';
+            let groupLedger = '@Model.GroupOrLedger';
+
+            if (parentLedger) $('#ParentLedgerName').val(parentLedger).trigger('change');
+            if (voucherType) $('#VoucherType').val(voucherType).trigger('change');
+            if (groupLedger) $('#Group_Ledger').val(groupLedger).trigger('change');
+            if (reportType) $('#ReportType').val(reportType).trigger('change');
+
+            // ✅ Fill text fields if they have values
+            if ('@Model.Narration') $('#Narration').val('@Model.Narration');
+            if ('@Model.VoucherNo') $('#VoucherNo').val('@Model.VoucherNo');
+            if ('@Model.INVNo') $('#INVNo').val('@Model.INVNo');
+            if ('@Model.Amount') $('#Amount').val('@Model.Amount');
+            if ('@Model.Dr') $('#Dr').val('@Model.Dr');
+            if ('@Model.Cr') $('#Cr').val('@Model.Cr');
+
+            // Validation
             GetValidateData();
         });
 
         function GetValidateData() {
+             
             if ($('#ReportType').val() == "TransactionLedgerSummary" || $('#ReportType').val() == "TransactionLedgerDetail") {
                 if ($('#LedgerName').val() == 0 || $('#LedgerName').prop('selectedIndex') == 0) {
                     $.notify('Account Code is mandatory to display details data', "error");
@@ -273,7 +313,7 @@
                 }
                 else {
                     GetDetailsData();
-                }
+            }
             }
             else if ($('#ReportType').val() == "GROUPSUMMARY" || $('#ReportType').val() == "GROUPDETAIL") {
                 GetTransactionLedgerGroupSummaryDetailsData();
@@ -489,13 +529,12 @@
         }
 
         function FillLedgerName() {
-            debugger
             $.ajax({
                 url: '@Url.Action("GetLedgerName", "TransactionLedger")',
                 type: 'GET',
                 async: false,
                 data: { "ParentAccountCode": $('#ParentLedgerName').val() },
-                success: function (response, status, error) {
+                success: function (response) {
 
                     var ledgerNameDropdown = $('#LedgerName');
                     var obj = $.parseJSON(response);
@@ -506,8 +545,13 @@
                         ledgerNameDropdown.append('<option value="' + ledger.Account_Code + '">' + ledger.LedgerName + '</option>');
                     });
 
+                    // ✅ After options are loaded, set selected value from model
+                    var savedLedger = '@Model.AccountCode';
+                    if (savedLedger && savedLedger !== "0") {
+                        ledgerNameDropdown.val(savedLedger).trigger('change');
+                    }
                 },
-                error: function (xhr, status, error) {
+                error: function () {
                     alert('Failed to load groups.');
                 }
             });
@@ -544,6 +588,7 @@
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("GetDetailsData", "TransactionLedger")',
+                async: false,
                 data: {
                     FromDate: $('#FromDate').val(),
                     ToDate: $('#ToDate').val(),
@@ -566,55 +611,7 @@
                     var totalRows = $('#divStockMainRegister tr').length;
                     $('#totalRows').text(totalRows);
                     countAllTotal();
-
-                    // 2) Read hidden fields from the newly-inserted partial
-                    let savedFilters = {
-                        toDate: $('#Hidden_ToDate').val(),
-                        reportType: $('#Hidden_ReportType').val(),
-                        groupLedger: $('#Hidden_GroupLedger').val(),
-                        voucherType: $('#Hidden_VoucherType').val(),
-                        accountCode: $('#Hidden_AccountCode').val(),
-                        parentLedger: $('#Hidden_ParentLedger').val()
-                    };
-
-                    // 3) Set/restore UI controls (only if values exist)
-                    // datepickers must already be initialized before this call
-                    if (savedFilters.toDate && savedFilters.toDate.trim() !== '') {
-                        $('#ToDate').datepicker('setDate', convertServerDateToDDMMYYYY(savedFilters.toDate));
-                    } // else keep whatever ToDate already has (e.g., todays date)
-
-                    if (savedFilters.reportType && savedFilters.reportType.trim() !== '') {
-                        $('#ReportType').val(savedFilters.reportType).trigger('change');
-                    }
-
-                    if (savedFilters.groupLedger && savedFilters.groupLedger.trim() !== '') {
-                        $('#Group_Ledger').val(savedFilters.groupLedger).trigger('change');
-                    }
-
-                    if (savedFilters.voucherType && savedFilters.voucherType.trim() !== '') {
-                        $('#VoucherType').val(savedFilters.voucherType).trigger('change');
-                    }
-
-                    if (savedFilters.accountCode && savedFilters.accountCode !== '0' && savedFilters.accountCode.trim() !== '') {
-                        $('#LedgerName').val(savedFilters.accountCode).trigger('change');
-                    }
-
-                    if (savedFilters.parentLedger && savedFilters.parentLedger !== '0' && savedFilters.parentLedger.trim() !== '') {
-                        $('#ParentLedgerName').val(savedFilters.parentLedger).trigger('change');
-                    }
-
-                    // 4) Show/hide Back button (exclude FromDate)
-                    const hasAnyFilter =
-                        (savedFilters.toDate && savedFilters.toDate.trim() !== '') ||
-                        (savedFilters.reportType && savedFilters.reportType.trim() !== '') ||
-                        (savedFilters.groupLedger && savedFilters.groupLedger.trim() !== '') ||
-                        (savedFilters.voucherType && savedFilters.voucherType.trim() !== '') ||
-                        (savedFilters.accountCode && savedFilters.accountCode !== '0') ||
-                        (savedFilters.parentLedger && savedFilters.parentLedger !== '0');
-
-                    if (hasAnyFilter) $('#BackButton').show(); else $('#BackButton').hide();
-
-                    // Optional: re-run any JS plugins needed for grid elements inside partial (e.g., tooltips)
+                    $('#BackButton').hide();
                 },
                 error: function (xhr, status, err) {
                     console.error('GetDetailsData failed:', err);
@@ -937,133 +934,54 @@
         function callDrillDown(anchor) {
             var controllerName = $(anchor).data('controller');
             var actionName = $(anchor).data('action');
-            var ReportType = $('#ReportType').val();
-            if (ReportType == "TransactionLedgerSummary" || ReportType == "TransactionLedgerDetail") {
-                var docId = $(anchor).data('docid');
-                var accountCode = $(anchor).data('accountcode');
-                var yearCode = $(anchor).data('yearcode');
+            var reportType = $('#ReportType').val();
 
-                // Gather filter values
-                var params = {
-                    controllerName: controllerName,
-                    actionName: actionName,
-                    ID: docId,
-                    Mode: "U",
-                    AccountCode: accountCode,
-                    YearCode: yearCode,
-                    FromDate: $('#FromDate').val(),
-                    ToDate: $('#ToDate').val(),
-                    ReportType: ReportType,
-                    GroupOrLedger: $('#Group_Ledger').val(),
-                    ParentLedger: $('#ParentLedgerName').val(),
-                    VoucherType: $('#VoucherType').val(),
-                    VoucherNo: $('#VoucherNo').val(),
-                    INVNo: $('#INVNo').val(),
-                    Narration: $('#Narration').val(),
-                    Amount: $('#Amount').val(),
-                    Dr: $('#Dr').val(),
-                    Cr: $('#CR').val(),
-                    GlobalSearch: $('#search-box').val()
-                };
-                // Build query string dynamically
-                var queryString = $.param(params);
+            // Common filters
+            var baseParams = {
+                ControllerName: controllerName,
+                ActionName: actionName,
+                FromDate: $('#FromDate').val(),
+                ToDate: $('#ToDate').val(),
+                ReportType: reportType,
+                GroupOrLedger: $('#Group_Ledger').val(),
+                ParentLedger: $('#ParentLedgerName').val(),
+                VoucherType: $('#VoucherType').val(),
+                VoucherNo: $('#VoucherNo').val(),
+                INVNo: $('#INVNo').val(),
+                Narration: $('#Narration').val(),
+                Amount: $('#Amount').val(),
+                Dr: $('#Dr').val(),
+                Cr: $('#CR').val(),
+                GlobalSearch: $('#search-box').val(),
+                Mode: "U"
+            };
 
-                // Redirect to DrillDown action
-                window.location.href = '/BaseNavigation/DrillDown?' + queryString;
+            // Specific additions
+            if (reportType === "TransactionLedgerSummary" || reportType === "TransactionLedgerDetail") {
+                baseParams.ID = $(anchor).data('docid');
+                baseParams.AccountCode = $(anchor).data('accountcode');
+                baseParams.YearCode = $(anchor).data('yearcode');
             }
-            if (ReportType == "MonthlySummary") {
+            else if (reportType === "MonthlySummary") {
                 var month = $(anchor).data('month');
-
-                let fromDate = formatDate1(new Date(new Date().getFullYear(), month - 1, 1));
-                let toDate = formatDate1(new Date(new Date().getFullYear(), month, 0));
-
-                $('#FromDate').datepicker("setDate", fromDate);
-                $('#ToDate').datepicker("setDate", toDate);
-
-                var params = {
-                    controllerName: controllerName,
-                    actionName: actionName,
-                    AccountCode: $('#LedgerName').val(),
-                    FromDate: $('#FromDate').val(),
-                    ToDate: $('#ToDate').val(),
-                    ReportType: ReportType,
-                    GroupOrLedger: $('#Group_Ledger').val(),
-                    ParentLedger: $('#ParentLedgerName').val(),
-                    VoucherType: $('#VoucherType').val(),
-                    VoucherNo: $('#VoucherNo').val(),
-                    INVNo: $('#INVNo').val(),
-                    Narration: $('#Narration').val(),
-                    Amount: $('#Amount').val(),
-                    Dr: $('#Dr').val(),
-                    Cr: $('#CR').val(),
-                    GlobalSearch: $('#search-box').val()
-                };
-
-                $.ajax({
-                    url: '/TransactionLedger/DrillDown',
-                    type: 'GET',
-                    data: params,
-                    success: function (response) {
-                        $('#ReportType').val('TransactionLedgerSummary').trigger('change');
-                        $('#BackButton').show();
-                    },
-                    error: function (err) {
-                        console.error('Error loading DrillDown:', err);
-                    }
-                });
+                baseParams.FromDate = formatDate1(new Date(new Date().getFullYear(), month - 1, 1));
+                baseParams.ToDate = formatDate1(new Date(new Date().getFullYear(), month, 0));
+                baseParams.AccountCode = $('#LedgerName').val();
             }
-            if (ReportType == "GROUPSUMMARY" || ReportType == "GROUPDETAIL") {
+            else if (reportType === "GROUPSUMMARY" || reportType === "GROUPDETAIL") {
                 var Cntr = $(anchor).data('seqno');
-                var ClickName = $(anchor).data('clickname');
-
-                var params = {
-                    controllerName: controllerName,
-                    actionName: actionName,
-                    AccountCode: $('#LedgerName').val(),
-                    FromDate: $('#FromDate').val(),
-                    ToDate: $('#ToDate').val(),
-                    ReportType: ReportType,
-                    GroupOrLedger: $('#Group_Ledger').val(),
-                    ParentLedger: $('#ParentLedgerName').val(),
-                    VoucherType: $('#VoucherType').val(),
-                    VoucherNo: $('#VoucherNo').val(),
-                    INVNo: $('#INVNo').val(),
-                    Narration: $('#Narration').val(),
-                    Amount: $('#Amount').val(),
-                    Dr: $('#Dr').val(),
-                    Cr: $('#CR').val(),
-                    ClickName: ClickName,
-                    GlobalSearch: $('#search-box').val()
-                };
-
-                $.ajax({
-                    url: '/TransactionLedger/DrillDown',
-                    type: 'GET',
-                    data: params,
-                    success: function (response) {
-                        if (ClickName == "ParentLedgerClick") {
-                            var ParentCode = $('#ParentCode-' + Cntr).val();
-                            $('#ParentLedgerName').val(ParentCode).trigger("change");
-                            $('#ReportType').val("GROUPSUMMARY").trigger("change");
-                        }
-                        if (ClickName == "LedgerClick") {
-                            var ParentCode = $('#ParentCode-' + Cntr).val();
-                            $('#ParentLedgerName').val(ParentCode).trigger("change");
-                            var AccountCode = $('#AccountCode-' + Cntr).val();
-                            $('#LedgerName').val(AccountCode).trigger("change");
-                            $('#ReportType').val("TransactionLedgerDetail").trigger("change");
-                        }
-                        $('#BackButton').show();
-                    },
-                    error: function (err) {
-                        console.error('Error loading DrillDown:', err);
-                    }
-                });
+                var clickName = $(anchor).data('clickname');
+                baseParams.ClickName = clickName;
+                baseParams.AccountCode = $('#LedgerName').val();
             }
+
+            // Go to DrillDown (server handles redirect)
+            const queryString = $.param(baseParams);
+            window.location.href = '/BaseNavigation/DrillDown?' + queryString;
         }
 
         function PressBack() {
-            window.location.href = '/BaseNavigation/Back';
+            window.location.href = '/BaseNavigation/GoBack';
         }
 
     </script>

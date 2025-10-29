@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace eTactWeb.DOM.Models
 {
-    public class FilterState
+    public class ReportFilter
     {
         public string FromDate { get; set; }
         public string ToDate { get; set; }
@@ -21,7 +21,7 @@ namespace eTactWeb.DOM.Models
         public float? Amount { get; set; }
         public string DR { get; set; }
         public string CR { get; set; }
-        public string Ledger { get; set; }
+        public string Ledger {  get; set; }
         public string GlobalSearch { get; set; }
     }
 }
