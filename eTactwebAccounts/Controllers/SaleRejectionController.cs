@@ -67,6 +67,7 @@ namespace eTactWeb.Controllers
             model.Uid = Convert.ToInt32(HttpContext.Session.GetString("UID"));
             model.ActualEnteredBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
             model.ActualEnteredByName = GetEmpByMachineName();
+            model.EntryByempId = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
             model.ActualEntryDate = HttpContext.Session.GetString("ActualEntryDate") ?? ParseFormattedDate(DateTime.Today.ToString("dd/MM/yyyy"));
             model.MachineName = GetEmpByMachineName();
             return View(model);
@@ -188,7 +189,65 @@ namespace eTactWeb.Controllers
             //HttpContext.Session.SetString("SaleRejection", JsonConvert.SerializeObject(model));
             return View("SaleRejection", model);
         }
-        
+        public IActionResult DeleteItemRow(int SeqNo)
+        {
+            try
+            {
+                var MainModel = new SaleRejectionModel();
+
+                // ✅ Get existing list from session
+                string modelJson = HttpContext.Session.GetString("KeySaleRejectionGrid");
+                List<SaleRejectionDetail> SaleRejectionGrid = new List<SaleRejectionDetail>();
+
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    SaleRejectionGrid = JsonConvert.DeserializeObject<List<SaleRejectionDetail>>(modelJson);
+                }
+                if (SaleRejectionGrid != null && SaleRejectionGrid.Count > 0)
+                {
+                    int index = SeqNo - 1;
+                    if (index >= 0 && index < SaleRejectionGrid.Count)
+                    {
+                        SaleRejectionGrid.RemoveAt(index);
+                    }
+                    int newSeq = 1;
+                    foreach (var item in SaleRejectionGrid)
+                    {
+                        item.SeqNo = newSeq;
+                        newSeq++;
+                    }
+                    MainModel.SaleRejectionDetails = SaleRejectionGrid;
+                    MainModel.ItemDetailGrid = SaleRejectionGrid;
+
+                    if (SaleRejectionGrid.Count == 0)
+                    {
+                        HttpContext.Session.Remove("KeySaleRejectionGrid");
+                    }
+                    else
+                    {
+                        HttpContext.Session.SetString("KeySaleRejectionGrid", JsonConvert.SerializeObject(SaleRejectionGrid));
+                    }
+                }
+                return PartialView("_AddSaleRejectionGrid", MainModel);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { status = "error", message = ex.Message });
+            }
+        }
+        public IActionResult EditItemRow(int SeqNo)
+        {
+            string modelJson = HttpContext.Session.GetString("KeySaleRejectionGrid");
+            List<SaleRejectionDetail> MaterialGrid = new List<SaleRejectionDetail>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                MaterialGrid = JsonConvert.DeserializeObject<List<SaleRejectionDetail>>(modelJson);
+            }
+
+            var SSGrid = MaterialGrid.Where(x => x.SeqNo == SeqNo);
+            string JsonString = JsonConvert.SerializeObject(SSGrid);
+            return Json(JsonString);
+        }
         public IActionResult AddSaleRejectionDetail(List<SaleRejectionDetail> model)
         {
             try
@@ -215,6 +274,7 @@ namespace eTactWeb.Controllers
                     foreach (var item in model) {
                         if (SaleRejectionDetail == null)
                         {
+                            item.SeqNo = 1; 
                             //model.SeqNo = 1;
                             saleRejectionDetail.Add(item);
                         }
@@ -224,6 +284,9 @@ namespace eTactWeb.Controllers
                             {
                                 return Json("Duplicate");
                             }
+                            int nextSeqNo = SaleRejectionDetail.Count > 0 ? SaleRejectionDetail.Max(x => x.SeqNo) + 1 : 1;
+                            item.SeqNo = nextSeqNo;
+
 
                             //model.SeqNo = SaleRejectionDetail.Count + 1;
                             saleRejectionDetail = SaleRejectionDetail.Where(x => x != null).ToList();

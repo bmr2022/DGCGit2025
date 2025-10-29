@@ -15,18 +15,18 @@ namespace eTactWeb.DOM.Models
         public int YearCode { get; set; } 
         public string LedgerName { get; set; }
         public string Group_Ledger { get; set; }
-        public int AccountCode { get; set; } 
+        public int? AccountCode { get; set; } 
         public string ParentLedgerName { get; set; } 
         public string FillAllGroup { get; set; }
         public string GroupName { get; set; }
         public string ParentLedger { get; set; }
         public string ReportType { get; set; }
-        public int ParentAccountCode { get; set; }
+        public int? ParentAccountCode { get; set; }
         public string VoucherType { get; set; }
         public string VoucherNo { get; set; }
         public string INVNo { get; set; }
         public string Narration { get; set; }
-        public float Amount { get; set; }
+        public float? Amount { get; set; }
         public string Dr { get; set; }
         public string Cr { get; set; }
         public string Mode { get; set; }
@@ -77,24 +77,4 @@ namespace eTactWeb.DOM.Models
         public string? GlobalSearchBack {  get; set; }
 		public IList<TransactionLedgerModel> TransactionLedgerGrid{ get;set; }
     } 
-    public class DrillDownFilterModel
-    {
-        public string Mode { get; set; }
-        public int ID { get; set; }
-        public string YearCode { get; set; }
-        public string AccountCode { get; set; }
-        public string FromDateBack { get; set; }
-        public string ToDateBack { get; set; }
-        public string DashboardTypeBack { get; set; }
-        public string GroupOrLedgerBack { get; set; }
-        public string GroupNameBack { get; set; }
-        public string AccountCodeBack { get; set; }
-        public string VoucherTypeBack { get; set; }
-        public string VoucherNoBack { get; set; }
-        public string PerformaInvNoBack { get; set; }
-        public string NarrationBack { get; set; }
-        public decimal AmountBack { get; set; }
-        public decimal DRBack { get; set; }
-        public decimal CRBack { get; set; }
-    }
 }

@@ -52,47 +52,6 @@ namespace eTactWeb.Controllers
             string serializedObject = JsonConvert.SerializeObject(sessionObject);
             HttpContext.Session.SetString(sessionKey, serializedObject);
         }
-        public IActionResult Back()
-        {
-            var stack = NavigationHelper.GetStack(HttpContext);
-
-            if (stack.Count <= 1)
-            {
-                // No previous step, go to home
-                NavigationHelper.Clear(HttpContext);
-                return RedirectToAction("Index", "Home");
-            }
-
-            // Remove current state
-            NavigationHelper.Pop(HttpContext);
-
-            // Get previous state
-            var prevState = NavigationHelper.Pop(HttpContext);
-
-            if (prevState != null)
-            {
-                if (prevState.Filters != null && prevState.Filters.Any())
-                {
-                    HttpContext.Session.SetString("LastPageFilters", JsonConvert.SerializeObject(prevState.Filters));
-                }
-
-                var routeValues = new RouteValueDictionary(prevState.RouteValues ?? new Dictionary<string, object>());
-                foreach (var filter in prevState.Filters ?? new Dictionary<string, object>())
-                {
-                    if (!routeValues.ContainsKey(filter.Key))
-                        routeValues.Add(filter.Key, filter.Value);
-                }
-
-                if (!string.IsNullOrEmpty(prevState.ReportType))
-                {
-                    routeValues["ReportType"] = prevState.ReportType;
-                }
-
-                return RedirectToAction(prevState.Action, prevState.Controller, routeValues);
-            }
-
-            return RedirectToAction("Index", "Home");
-        }
         #region For Dbit Credit Grid
         public async Task<JsonResult> GetDbCrDataGrid(string PageName, int docAccountCode, int AccountCode, decimal? BillAmt, decimal? NetAmt)
         {

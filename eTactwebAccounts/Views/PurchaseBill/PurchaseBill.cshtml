@@ -73,7 +73,7 @@
                             <input asp-for="HSNNoBack" type="hidden" value="@Model.HSNNoBack" />
                             <input asp-for="GlobalSearchBack" type="hidden" value="@Model.GlobalSearchBack" />
 
-                            <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();window.location.href='@Url.Action("Back", "Common")'">
+                            <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack()">
                                 <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
                                 BACK
                             </a>
@@ -2900,23 +2900,7 @@
         }
 
         function PressBack() {
-
-            sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());
-            sessionStorage.setItem('ToDateBack', $('#ToDateBack').val());
-            sessionStorage.setItem('DashboardTypeBack', $('#DashboardTypeBack').val());
-            sessionStorage.setItem('MRNTypeBack', $('#MRNTypeBack').val());
-            sessionStorage.setItem('DocumentNameBack', $('#DocumentNameBack').val());
-            sessionStorage.setItem('VendorNameBack', $('#VendorNameBack').val());
-            sessionStorage.setItem('VoucherNoBack', $('#VoucherNoBack').val());
-            sessionStorage.setItem('InvoiceNoBack', $('#InvoiceNoBack').val());
-            sessionStorage.setItem('MRNNoBack', $('#MRNNoBack').val());
-            sessionStorage.setItem('GateNoBack', $('#GateNoBack').val());
-            sessionStorage.setItem('PartCodeBack', $('#PartCodeBack').val());
-            sessionStorage.setItem('ItemNameBack', $('#ItemNameBack').val());
-            sessionStorage.setItem('HSNNoBack', $('#HSNNoBack').val());
-            sessionStorage.setItem('GlobalSearchBack', $('#GlobalSearchBack').val());
-
-            window.history.back();
+            window.location.href = '/BaseNavigation/Back';
         }
 
         $(document).on('keypress', ':input:not(textarea):not([type=button])', function (e) {

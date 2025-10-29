@@ -1,0 +1,240 @@
+﻿@model eTactWeb.DOM.Models.POApprovalPolicyModel
+@using Microsoft.AspNetCore.Http
+@using System.Reflection.PortableExecutable
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    var ActualEntryByEmpid = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("EmpID"));
+    var YearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("YearCode"));
+}
+
+<table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0" id="ISTDashboard">
+    <thead class="bg-gradient card-headerBG text-light">
+        <tr>
+            <th>Sr#</th>
+            <th>Action</th>
+            
+            <th data-columnno="2" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> PO Type
+            </th>
+            <th data-columnno="3" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Group Name
+            </th>
+            <th data-columnno="4" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Category Name
+            </th>
+            <th data-columnno="5" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Item Name
+            </th>
+            <th data-columnno="6" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> From Amount
+            </th>
+            <th data-columnno="7" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> To Amount
+            </th>
+            <th data-columnno="8" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> First Approval Required
+            </th>
+            <th data-columnno="9" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Final Approval Required
+            </th>
+            <th data-columnno="10" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Only Director Approval
+            </th>
+            <th data-columnno="11" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Only 1st Approval Required
+            </th>
+            <th data-columnno="12" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Only Final Approval Required
+            </th>
+            <th data-columnno="13" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> All 3 Approval Required
+            </th>
+            <th data-columnno="14" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Emp Name For 1st Approval 1
+            </th>
+            <th data-columnno="15" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Emp Name For 1st Approval 2
+            </th>
+            <th data-columnno="16" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Emp Name For 1st Approval 3
+            </th>
+            <th data-columnno="17" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Emp Name For Final Approval 1
+            </th>
+            <th data-columnno="18" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Emp Name For Final Approval 2
+            </th>
+            <th data-columnno="19" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Emp Name For Final Approval 3
+            </th>
+            <th data-columnno="20" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Emp Name For Mgmt Approval 1
+            </th>
+            <th data-columnno="21" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Emp Name For Mgmt Approval 2
+            </th>
+            <th data-columnno="22" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Emp Name For Mgmt Approval 3
+            </th>
+            <th data-columnno="22" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Emp Name For Direct Approval
+            </th>
+             <th data-columnno="22" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Emp Name For Final Approval 
+            </th>
+             <th data-columnno="22" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Emp Name For First Approval 
+            </th>
+          
+
+            <th data-columnno="23" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Entry By Machine
+            </th>
+          
+            <th data-columnno="25" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Actual Entry By Name
+            </th>
+            <th data-columnno="26" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Actual Entry Date
+            </th>
+         
+            <th data-columnno="28" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Last Updated By Name
+            </th>
+            <th data-columnno="29" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Last Updated Date
+            </th>
+            <th data-columnno="30" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> CC
+            </th>
+
+
+        </tr>
+    </thead>
+    <tbody id="DashboardGrid">
+        @{
+            var @Cntr = 0;
+            if (Model.POApprovalPolicyDashBoardGrid == null || Model.POApprovalPolicyDashBoardGrid.Count == 0)
+            {
+                <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+            }
+            else
+            {
+                foreach (var item in Model.POApprovalPolicyDashBoardGrid)
+                {
+                    Cntr = Cntr + 1;
+                    <tr onclick="selection(this)">
+                        <th>@Cntr</th>
+                        <td class="action-col">
+                            <div class="action-buttons">
+                                <!-- View -->
+                                <a class="btn-icon bg-success"
+                                   asp-action="POApprovalPolicy"
+                                   asp-route-Mode="V"
+                                   asp-route-ID="@item.POApprovalEntryId"
+                                   asp-route-YC="@YearCode"
+                                   onclick="BackButtonData(event,'@item.POApprovalEntryId','@YearCode');">
+                                    <i class="fa fa-search"></i>
+                                </a>
+
+                                <!-- Edit -->
+                                <a class="btn-icon bg-primary"
+                                   asp-action="POApprovalPolicy"
+                                   onclick="confirmEdit(event)"
+                                   asp-route-Mode="U"
+                                   asp-route-ID="@item.POApprovalEntryId"
+                                   asp-route-YC="@YearCode">
+                                    <i class="fa fa-pencil"></i>
+                                </a>
+
+                                <!-- Delete -->
+                                <a class="btn-icon bg-danger"
+                                   onclick="confirmDelete(event)"
+                                   asp-action="DeleteByID"
+                                   asp-route-EntryId="@item.POApprovalEntryId"
+                                   asp-route-EntryDate="@item.ActualEntryDate"
+                                   asp-route-EntryByempId="@ActualEntryByEmpid">
+                                    <i class="fa fa-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+
+                        <td>@item.POTYPE</td>
+                        <td>@item.GroupName</td>
+                        <td>@item.CatName</td>
+                        <td>@item.ItemName</td>
+                        <td>@item.FromAmt</td>
+                        <td>@item.ToAmt</td>
+                        <td>@item.FirstApprovalRequired</td>
+                        <td>@item.FinalApprovalRequired1</td>
+                        <td>@item.OnlyDirectorApproval</td>
+                        <td>@item.ONLY1stApprovalRequired</td>
+                        <td>@item.OnlyFinalApprovalRequired</td>
+                        <td>@item.All3ApprovalRequired</td>
+
+                        <td>@item.EmpNameForFirstApproval1</td>
+                        <td>@item.EmpNameForFirstApproval2</td>
+                        <td>@item.EmpNameForFirstApproval3</td>
+                        <td>@item.EmpNameForFinalApproval1</td>
+                        <td>@item.EmpNameForFinalApproval2</td>
+                        <td>@item.EmpNameForFinalApproval3</td>
+                        <td>@item.EmpNameForMgmtApproval1</td>
+                        <td>@item.EmpNameForMgmtApproval12</td>
+                        <td>@item.EmpNameForMgmtApproval13</td>
+                        <td>@item.EmpNameForDirectorApproval</td>
+                        <td>@item.EmpNameForFinalApproval</td>
+                        <td>@item.EmpNameForFirstApproval</td>
+
+                        <td>@item.EntryByMachine</td>
+                        <td>@item.ActualEntryByName</td>
+
+                        <td>@(item.ActualEntryDate == null ? string.Empty : item.ActualEntryDate.Split(" ")[0])</td>
+
+                        <td>@item.LastUpdatedByName</td>
+
+                        <td>@(item.LastUpdatedDate == null ? string.Empty : item.LastUpdatedDate.Split(" ")[0])</td>
+
+                        <td>@item.CC</td>
+
+
+                    </tr>
+                }
+            }
+        }
+    </tbody>
+</table>
+<center><strong>TOTAL ROWS : <span id="totalRows"></span></strong></center>
+
+
+<style>
+
+    td.action-col, th.action-col {
+        width: 1%;
+        white-space: nowrap;
+        text-align: center;
+        padding: 0 2px;
+    }
+
+    .action-buttons {
+        display: inline-flex;
+        gap: 2px;
+    }
+
+    .btn-icon {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        width: 18px;
+        height: 18px;
+        border-radius: 3px;
+        color: #fff;
+        font-size: 12px;
+        line-height: 1;
+        text-decoration: none;
+    }
+
+
+    #DashboardGrid {
+        background-color: blanchedalmond;
+    }
+</style>

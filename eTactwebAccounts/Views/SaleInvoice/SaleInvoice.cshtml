@@ -88,7 +88,7 @@
                             {
                                 <input type="hidden" value="@Model.SaleBillNo" id="hiddenSaleBillNo" />
                             }
-                            <a href="#" class=" btn btn-primary btn-sm" onclick="window.location.href='@Url.Action("Back", "Common")'">
+                            <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack()">
                                 <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
                                 BACK
                             </a>
@@ -7157,28 +7157,7 @@
 
         function PressBack() {
 
-            sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());
-            sessionStorage.setItem('ToDateBack', $('#ToDateBack').val());
-            sessionStorage.setItem('PartCodeBack', $('#PartCodeBack').val());
-            sessionStorage.setItem('ItemNameBack', $('#ItemNameBack').val());
-            sessionStorage.setItem('VoucherNoBack', $('#SaleBillNoBack').val());
-            sessionStorage.setItem('CustNameBack', $('#CustNameBack').val());
-            sessionStorage.setItem('SonoBack', $('#SonoBack').val());
-            sessionStorage.setItem('CustOrderNoBack', $('#CustOrderNoBack').val());
-            sessionStorage.setItem('SchNoBack', $('#SchNoBack').val());
-            sessionStorage.setItem('PerformaInvNoBack', $('#PerformaInvNoBack').val());
-            sessionStorage.setItem('SaleQuoteNoBack', $('#SaleQuoteNoBack').val());
-            sessionStorage.setItem('DomesticExportNEPZBack', $('#DomesticExportNEPZBack').val());
-            sessionStorage.setItem('SearchBoxBack', $('#SearchBoxBack').val());
-            sessionStorage.setItem('SummaryDetailBack', $('#SummaryDetailBack').val());
-            sessionStorage.setItem('DashboardTypeBack', $('#DashboardTypeBack').val());
-            sessionStorage.setItem('GroupCodeBack', $('#GroupCodeBack').val());
-            sessionStorage.setItem('AccountCodeBack', $('#AccountCodeBack').val());
-            sessionStorage.setItem('AccountNameBack', $('#AccountNameBack').val());
-            sessionStorage.setItem('VoucherTypeBack', $('#VoucherTypeBack').val());
-            sessionStorage.setItem('AccountList', $('#AccountList').val());
-
-            window.history.back();
+            window.location.href = '/BaseNavigation/GoBack';
         }
 
     </script>
