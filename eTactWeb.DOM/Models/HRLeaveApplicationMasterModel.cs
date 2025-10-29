@@ -37,8 +37,8 @@ namespace eTactWeb.DOM.Models
         public decimal? MaxAllowedLeave { get; set; }
         public string? TraineePermanent { get; set; }
         public decimal? BalanceAdvanceAmt { get; set; }
-        public int? DepartHeadApprovedBy { get; set; }
-        public int? HRApprovedBy { get; set; }
+        public string? DepartHeadApprovedBy { get; set; }
+        public string? HRApprovedBy { get; set; }
         public string? DepartAppdate { get; set; }
         public string? HRAppDate { get; set; }
         public int? ActualEntryBy { get; set; }
@@ -96,8 +96,8 @@ namespace eTactWeb.DOM.Models
         public decimal? MaxAllowedLeave { get; set; }
         public string? TraineePermanent { get; set; }
         public decimal? BalanceAdvanceAmt { get; set; }
-        public int? DepartHeadApprovedBy { get; set; }
-        public int? HRApprovedBy { get; set; }
+        public string? DepartHeadApprovedBy { get; set; }
+        public string? HRApprovedBy { get; set; }
         public string? DepartAppdate { get; set; }
         public string? HRAppDate { get; set; }
         public int? ActualEntryBy { get; set; }

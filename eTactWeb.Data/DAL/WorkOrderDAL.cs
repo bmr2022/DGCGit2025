@@ -389,7 +389,7 @@ namespace eTactWeb.Data
                 SqlParams.Add(new SqlParameter("@ActualEntryBy", ActualEntryBy));
                 SqlParams.Add(new SqlParameter("@MachineName", MachineName));
                 SqlParams.Add(new SqlParameter("@WONO", WONO));
-                SqlParams.Add(new SqlParameter("@EntryDate", EntryDate));
+                SqlParams.Add(new SqlParameter("@EntryDate",CommonFunc.ParseFormattedDate(EntryDate)));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_WorkOrder", SqlParams);
             }
