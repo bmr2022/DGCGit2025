@@ -217,7 +217,7 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
-        public async Task<POApprovalPolicyModel> GetDashboardDetailData(string FromDate, string ToDate, string ReportType)
+        public async Task<POApprovalPolicyModel> GetDashboardDetailData(string FromDate, string ToDate, string ReportType, string GroupName, string CateName, string ItemName)
         {
             DataSet? oDataSet = new DataSet();
             var model = new POApprovalPolicyModel();
@@ -232,6 +232,9 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@Flag", "DASHBOARD");
                     oCmd.Parameters.AddWithValue("@Fromdate", FromDate);
                     oCmd.Parameters.AddWithValue("@Todate", ToDate);
+                    oCmd.Parameters.AddWithValue("@itemname", ItemName);
+                    oCmd.Parameters.AddWithValue("@GroupName", GroupName);
+                    oCmd.Parameters.AddWithValue("@CategoryName", CateName);
 
                     await myConnection.OpenAsync();
                     using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
@@ -425,5 +428,61 @@ namespace eTactWeb.Data.DAL
                 throw;
             }
         }
+        public async Task<ResponseResult> FillItems(string SearchItemCode)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "fillitem"));
+
+                SqlParams.Add(new SqlParameter("@ItemName", SearchItemCode ?? ""));
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SpPOApprovalPolicy", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> FillGroups(string SearchGroupName)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "fillgroupname"));
+                SqlParams.Add(new SqlParameter("@itemname", SearchGroupName ?? ""));
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SpPOApprovalPolicy", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> FillCateName(string SearchCatName)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "fillcategoryname"));
+                SqlParams.Add(new SqlParameter("@itemname", SearchCatName ?? ""));
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SpPOApprovalPolicy", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+
     }
 }

@@ -26,7 +26,36 @@ namespace eTactwebAdmin.Controllers
 			_IWebHostEnvironment = iWebHostEnvironment;
 			this.iconfiguration = iconfiguration;
 		}
-		[Route("{controller}/Index")]
+        public async Task<JsonResult> FillItems(string SearchItemCode)
+        {
+            var JSON = await _IPOApprovalPolicy.FillItems(SearchItemCode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+		public async Task<JsonResult> FillGroups(string SearchGroupName)
+        {
+            var JSON = await _IPOApprovalPolicy.FillGroups(SearchGroupName);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+		public async Task<JsonResult> FillCateName(string SearchCatName)
+        {
+            var JSON = await _IPOApprovalPolicy.FillCateName(SearchCatName);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
+        //[HttpPost]
+        //public JsonResult AutoComplete(string ColumnName, string prefix)
+        //{
+        //    IList<Common.TextValue> iList = _IDataLogic.AutoComplete("POApprovalPolicy", ColumnName, "", "", 0, 0);
+        //    var Result = (from item in iList where item.Text.Contains(prefix) select new { item.Text })
+        //        .Distinct()
+        //        .ToList();
+
+        //    return Json(Result);
+        //}
+        [Route("{controller}/Index")]
 		[HttpGet]
 		public async Task<ActionResult> POApprovalPolicy(int ID, string Mode, int YC, string FromDate, string ToDate)
 		{
@@ -161,10 +190,10 @@ namespace eTactwebAdmin.Controllers
 
             return View(model);
         }
-        public async Task<IActionResult> GetDetailData(string FromDate, string ToDate, string ReportType)
+        public async Task<IActionResult> GetDetailData(string FromDate, string ToDate, string ReportType, string GroupName, string CateName, string ItemName)
         {
             var model = new POApprovalPolicyModel();
-            model = await _IPOApprovalPolicy.GetDashboardDetailData(FromDate, ToDate, ReportType);
+            model = await _IPOApprovalPolicy.GetDashboardDetailData(FromDate, ToDate, ReportType,  GroupName,  CateName,  ItemName);
             return PartialView("_POApprovalPolicyDashBoardGrid", model);
 
         }
