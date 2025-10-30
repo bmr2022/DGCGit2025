@@ -226,7 +226,7 @@ namespace eTactWeb.Data.DAL
             }
             return responseResult;
         }
-        public async Task<HRLeaveApplicationDashBoard> GetDashboardDetailData(string ReportType, string FromDate, string ToDate)
+        public async Task<HRLeaveApplicationDashBoard> GetDashboardDetailData(string ReportType, string FromDate, string ToDate,int Empid,int LeaveEntryId)
         {
             DataSet? oDataSet = new DataSet();
             var model = new HRLeaveApplicationDashBoard();
@@ -242,6 +242,8 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@Fromdate", Convert.ToDateTime(FromDate));
                     oCmd.Parameters.AddWithValue("@todate", Convert.ToDateTime(ToDate));
                     oCmd.Parameters.AddWithValue("@ReportType", ReportType);
+                    oCmd.Parameters.AddWithValue("@Empid", Empid);
+                    oCmd.Parameters.AddWithValue("@LeaveEntryId", LeaveEntryId);
 
 
 
