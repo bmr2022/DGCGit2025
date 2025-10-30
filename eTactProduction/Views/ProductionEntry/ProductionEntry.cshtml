@@ -287,11 +287,11 @@
                                     <input asp-for="Stock" class="form-control" readonly />
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-9" style="width:150px">
-                                    <label asp-for="MachineGroup" class="form-label">Machine Group</label>
+                                    <label asp-for="MachineGroup" class="form-label" style="color:red;">Machine Group*</label>
                                     <select asp-for="MachineGroup" class="form-select"></select>
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-9" style="width:150px">
-                                    <label asp-for="MachineName" class="form-label">Machine Name</label>
+                                    <label asp-for="MachineName" class="form-label" style="color:red">Machine Name*</label>
                                     <input asp-for="MachineId" type="hidden" class="form-label" />
                                     <select asp-for="MachineName" class="form-select">
                                         <option value="">-Select-</option>
@@ -1175,7 +1175,12 @@
             if (!ValidateGI_Grid()) return;
             ChkWIPStockBeforeSaving(function (isValid) {
                 if (isValid) {
+                  
                     $('form').submit(); // proceed only if no stock errors
+                }
+                else
+                {
+                  
                 }
             });
         });
@@ -1275,6 +1280,22 @@
             }
             else {
                 RemoveErrorCls('SenToQc');
+            }
+                if ($('#MachineGroup').prop('selectedIndex') == 0) {
+                    AddErrorCls('MachineGroup');
+                    $.notify("MachineGroup Required", "error");
+                    Err = 1;
+                }
+                else {
+                    RemoveErrorCls('MachineGroup');
+                }
+                if ($('#MachineName').prop('selectedIndex') == 0) {
+                AddErrorCls('MachineName');
+                $.notify("MachineName Required", "error");
+                Err = 1;
+            }
+            else {
+                    RemoveErrorCls('MachineName');
             }
             if ($('#NextWorkCenter').prop('selectedIndex') <= 0) {
                 AddErrorCls('NextWorkCenter');
@@ -5008,6 +5029,7 @@
                         });
                         callback(false); // indicate failure
                     } else {
+                    
                         callback(true); // indicate success
                     }
                 },
