@@ -6036,6 +6036,11 @@
 
 
         function ValidateSubmit() {
+            debugger
+             if($('#DocTypeAccountCode').prop('selectedIndex') == -1){
+                 $.notify("DocTypeAccountCode is required...!", "error");
+                return false;
+            }
             var salebillRowCount = $('#divTaxGrid tr').length;
             if ($('#divTaxGrid tr td').length > 1) {
                 for (var i = 1; i < salebillRowCount; i++) {
