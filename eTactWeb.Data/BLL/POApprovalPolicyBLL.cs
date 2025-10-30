@@ -74,9 +74,13 @@ namespace eTactWeb.Data.BLL
         {
             return await _POApprovalPolicyDAL.FillGroups(SearchGroupName);
         }
-		 public async Task<ResponseResult> FillCateName(string SearchCatName)
+		public async Task<ResponseResult> FillCateName(string SearchCatName)
         {
             return await _POApprovalPolicyDAL.FillCateName(SearchCatName);
+        }
+        public async Task<ResponseResult> CheckGroupExists(string GroupName)
+        {
+            return await _POApprovalPolicyDAL.CheckGroupExists(GroupName);
         }
 
     }

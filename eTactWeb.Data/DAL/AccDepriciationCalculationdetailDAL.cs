@@ -199,7 +199,7 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
-        public async Task<AccDepriciationCalculationdetailModel> GetDashboardDetailData(string FromDate, string ToDate, string ReportType)
+        public async Task<AccDepriciationCalculationdetailModel> GetDashboardDetailData(string FromDate, string ToDate, string ReportType, string AssetsName)
         {
             DataSet? oDataSet = new DataSet();
             var model = new AccDepriciationCalculationdetailModel();
@@ -215,6 +215,7 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@reportType", ReportType);
                     oCmd.Parameters.AddWithValue("@fromdate", FromDate);
                     oCmd.Parameters.AddWithValue("@todate", ToDate);
+                    oCmd.Parameters.AddWithValue("@AssetsName", AssetsName);
 
                     await myConnection.OpenAsync();
                     using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))

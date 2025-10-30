@@ -1122,6 +1122,18 @@
                                     <input asp-for="CreatedByName" class="form-control" va/>
                                     <input type="hidden" asp-for="CreatedBy" />
                                 </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="PackingCharges" class="form-label">Packing Charges</label>
+                                    <input asp-for="PackingCharges" class="form-control"  type="number" />
+                                   
+                                </div>
+
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="ForwardingCharges" class="form-label">Forwarding Charges</label>
+                                    <input asp-for="ForwardingCharges" class="form-control" type="number" />
+
+                                </div>
+
 
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="UpdatedByName" class="form-label">Updated By</label>
@@ -2369,9 +2381,15 @@
 
                 CheckOrderNo();
             });
-
+            GetlastSaleOrderDetail();
 
         });//ready end here
+
+        $("#AccountCodeText").focusout(function () {
+            if ($("#AccountCodeText").val() == '') { $("#AccountCode").val(0); }
+             
+            GetlastSaleOrderDetail();
+        });
 
         function ChangeCurrencysign(){
 
@@ -2472,6 +2490,7 @@
                     $('#ItemCode').val(ui.item.itemCode);
                     $('#PartCode').val(ui.item.itemCode);
                     GetItemPartCode("PartCode");
+                    GetlastSaleOrderDetail();
                     return false;
                 },
                 focus: function (event, ui) {
@@ -2514,6 +2533,7 @@
                                 $("#ItemCode").val(match.Item_Code);
                                 $("#PartCode").val(match.Item_Code);
                                 GetItemPartCode("PartCode");
+                                GetlastSaleOrderDetail();
 
                             }
                         }
@@ -2534,7 +2554,9 @@
                     $('#ItemCode').val(ui.item.itemCode);
                     $('#PartCode').val(ui.item.itemCode);
                     GetItemPartCode("ItemCode");
+                    GetlastSaleOrderDetail()
                     return false;
+
                 },
                 focus: function (event, ui) {
                     $("#ItemNameText").val(ui.item.itemName);
@@ -2569,6 +2591,7 @@
                                     $('#ItemCode').val(match.Item_Code);
                                     $('#PartCode').val(match.Item_Code);
                                     GetItemPartCode("ItemCode");
+                                    GetlastSaleOrderDetail();
                                 } else {
                                     alert("Invalid Item Name entered!");
                                     $("#ItemNameText").val("").focus();
@@ -2630,6 +2653,7 @@
                     $('#AccountCode').val(ui.item.accountCode);
                     CheckOrderNo();
                     onchangeaccountcode();
+                    GetlastSaleOrderDetail();
                   
                 
                     return false;

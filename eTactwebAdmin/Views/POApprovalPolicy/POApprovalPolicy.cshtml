@@ -79,7 +79,7 @@
 									<input type="hidden" value="@Model.Mode" asp-for="Mode" />
 									<input type="hidden" value="@Environment.MachineName" asp-for="EntryByMachine" />
 
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:60px;">
 										<label asp-for="EntryId" class="form-label">Entry Id</label>
 										<input asp-for="EntryId" class="form-control" readonly />
 									</div>
@@ -88,25 +88,25 @@
 										<label asp-for="EntryDate" class="form-label">EntryDate</label>
 										<input asp-for="EntryDate" class="form-control" readonly />
 									</div>
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:70px;">
 										<label asp-for="YearCode" class="form-label">YearCode</label>
 										<input asp-for="YearCode" class="form-control" readonly />
 									</div>
 									
 									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
-										<label asp-for="POTYPE" class="form-label" >PO Type</label>
+										<label asp-for="POTYPE" class="form-label" style="color:red">PO Type</label>
 										<select class="form-select" asp-for="POTYPE">
 											<option value="">-Select-</option>
 											<option value="Open">Open</option>
 											<option value="Close">Close</option>
 										</select>
 									</div>
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:240px;">
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:220px;">
 										<label asp-for="GroupName" class="form-label" >Group Name</label>
 										<input type="hidden" asp-for="GroupCode" />
-										<select class="form-select" asp-for="GroupName" style="width:230px;">
+										<select class="form-select" asp-for="GroupName" style="width:210px;">
 											<option value="">-Select-</option>
-										</select>
+										</select>`
 									</div>
 
 									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
@@ -117,10 +117,10 @@
 										</select>
 									</div>
 
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:240px;">
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:190px;">
 										<label asp-for="PartCode" class="form-label" >Part Code</label>
 										<input type="hidden" asp-for="ItemCode" />
-										<select class="form-select" asp-for="PartCode" id="PartCode" style="width:230px;">
+										<select class="form-select" asp-for="PartCode" id="PartCode" style="width:180px;">
 											<option value="">-Select-</option>
 										</select>
 									</div>
@@ -182,96 +182,96 @@
 											<option value="N">No</option>
 										</select>
 									</div>
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:220px;">
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:240px;">
 										<label asp-for="All3ApprovalRequired" class="form-label">All 3 Approval Required</label>
-										<select class="form-select" asp-for="All3ApprovalRequired" style="width:210px;">
+										<select class="form-select" asp-for="All3ApprovalRequired" style="width:220px;">
 											<option value="Y">Yes</option>
 											<option value="N">No</option>
 										</select>
 									</div>
 									
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:240px;">
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:350px;">
 										<label asp-for="EmpNameForFirstApproval" class="form-label" >Employee Name For First Approval </label>
 										<input type="hidden" asp-for="EmpidForFirstApproval" />
-										<select class="form-select" asp-for="EmpNameForFirstApproval" style="width:230px;">
+										<select class="form-select" asp-for="EmpNameForFirstApproval" style="width:340px;">
 											<option value="">-Select-</option>
 										</select>
 									</div>
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:240px;">
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:350px;">
 										<label asp-for="EmpNameForFirstApproval1" class="form-label" style="color:red">Employee Name For First Approval 1*</label>
 										<input type="hidden" asp-for="EmpidForFirstApproval1" />
-										<select class="form-select" asp-for="EmpNameForFirstApproval1" style="width:230px;">
+										<select class="form-select" asp-for="EmpNameForFirstApproval1" style="width:340px;">
 											<option value="">-Select-</option>
 										</select>
 									</div>
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:240px;">
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:350px;">
 										<label asp-for="EmpNameForFirstApproval2" class="form-label" >Employee Name For First Approval 2*</label>
 										<input type="hidden" asp-for="EmpidForFirstApproval2" />
-										<select class="form-select" asp-for="EmpNameForFirstApproval2" style="width:230px;">
+										<select class="form-select" asp-for="EmpNameForFirstApproval2" style="width:340px;">
 											<option value="">-Select-</option>
 										</select>
 									</div>
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:240px;">
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:350px;">
 										<label asp-for="EmpNameForFirstApproval3" class="form-label">Employee Name For First Approval 3*</label>
 										<input type="hidden" asp-for="EmpidForFirstApproval3" />
-										<select class="form-select" asp-for="EmpNameForFirstApproval3" style="width:230px;">
+										<select class="form-select" asp-for="EmpNameForFirstApproval3" style="width:350px;">
 											<option value="">-Select-</option>
 										</select>
 									</div>
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:240px;">
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:350px;">
 										<label asp-for="EmpNameForFinalApproval" class="form-label">Employee Name For Final Approval </label>
 										<input type="hidden" asp-for="EmpidForFinalApproval" />
-										<select class="form-select" asp-for="EmpNameForFinalApproval" style="width:230px;">
+										<select class="form-select" asp-for="EmpNameForFinalApproval" style="width:340px;">
 											<option value="">-Select-</option>
 										</select>
 									</div>
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:240px;">
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:350px;">
 										<label asp-for="EmpNameForFinalApproval1" class="form-label" style="color:red">Employee Name For Final Approval 1* </label>
 										<input type="hidden" asp-for="EmpidForFinalApproval1" />
-										<select class="form-select" asp-for="EmpNameForFinalApproval1" style="width:230px;">
+										<select class="form-select" asp-for="EmpNameForFinalApproval1" style="width:340px;">
 											<option value="">-Select-</option>
 										</select>
 									</div>
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:240px;">
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:350px;">
 										<label asp-for="EmpNameForFinalApproval2" class="form-label" >Employee Name For Final Approval 2 </label>
 										<input type="hidden" asp-for="EmpidForFinalApproval2" />
-										<select class="form-select" asp-for="EmpNameForFinalApproval2" style="width:230px;">
+										<select class="form-select" asp-for="EmpNameForFinalApproval2" style="width:340px;">
 											<option value="">-Select-</option>
 										</select>
 									</div>
 
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:240px;">
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:350px;">
 										<label asp-for="EmpNameForFinalApproval3" class="form-label">Employee Name For Final Approval 3 </label>
 										<input type="hidden" asp-for="EmpidForFinalApproval3" />
-										<select class="form-select" asp-for="EmpNameForFinalApproval3" style="width:230px;">
+										<select class="form-select" asp-for="EmpNameForFinalApproval3" style="width:340px;">
 											<option value="">-Select-</option>
 										</select>
 									</div>
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:240px;">
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:350px;">
 										<label asp-for="EmpNameForMgmtApproval1" class="form-label" style="color:red"> Employee Name For Mgmt Approval 1* </label>
 										<input type="hidden" asp-for="EmpidForMgmtApproval1" />
-										<select class="form-select" asp-for="EmpNameForMgmtApproval1" style="width:230px;">
+										<select class="form-select" asp-for="EmpNameForMgmtApproval1" style="width:340px;">
 											<option value="">-Select-</option>
 										</select>
 									</div>
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:240px;">
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:350px;">
 										<label asp-for="EmpNameForMgmtApproval12" class="form-label" > Employee Name For Mgmt Approval 2 </label>
 										<input type="hidden" asp-for="EmpidForMgmtApproval12" />
-										<select class="form-select" asp-for="EmpNameForMgmtApproval12" style="width:230px;">
+										<select class="form-select" asp-for="EmpNameForMgmtApproval12" style="width:340px;">
 											<option value="">-Select-</option>
 										</select>
 									</div>
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:240px;">
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:350px;">
 										<label asp-for="EmpNameForMgmtApproval13" class="form-label"> Employee Name For Mgmt Approval 3 </label>
 										<input type="hidden" asp-for="EmpidForMgmtApproval13" />
-										<select class="form-select" asp-for="EmpNameForMgmtApproval13" style="width:230px;">
+										<select class="form-select" asp-for="EmpNameForMgmtApproval13" style="width:340px;">
 											<option value="">-Select-</option>
 										</select>
 									</div>
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:240px;">
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:350px;">
 										<label asp-for="EmpNameForDirectorApproval" class="form-label"> Employee Name For Director Approval </label>
 										<input type="hidden" asp-for="EmpidForDirectorApproval" />
-										<select class="form-select" asp-for="EmpNameForDirectorApproval" style="width:230px;">
+										<select class="form-select" asp-for="EmpNameForDirectorApproval" style="width:350px;">
 											<option value="">-Select-</option>
 										</select>
 									</div>
@@ -475,13 +475,15 @@
 			preventDuplicateSelection([
 				'#EmpNameForFirstApproval1',
 				'#EmpNameForFirstApproval2',
-				'#EmpNameForFirstApproval3'
+				'#EmpNameForFirstApproval3',
+				'#EmpNameForFirstApproval'
 			], 'First Approval');
 
 			preventDuplicateSelection([
 				'#EmpNameForFinalApproval1',
 				'#EmpNameForFinalApproval2',
-				'#EmpNameForFinalApproval3'
+				'#EmpNameForFinalApproval3',
+				'#EmpNameForFinalApproval'
 			], 'Final Approval');
 
 			preventDuplicateSelection([
@@ -500,6 +502,7 @@
 				var empFirst = $('#EmpidForFirstApproval1').val();
 				var empFinal = $('#EmpidForFinalApproval1').val();
 				var empMgmt = $('#EmpidForMgmtApproval1').val();
+				var POTYPE = $('#POTYPE').val();
 
 				var valid = true;
 				var errorMsg = "";
@@ -517,15 +520,19 @@
 				}
 				if (!empFirst || parseInt(empFirst) <= 0) {
 					valid = false;
-					errorMsg += "Emp Name For First Approval must be greater than 0\n";
+					errorMsg += "Emp Name For First Approval is Required \n";
 				}
 				if (!empFinal || parseInt(empFinal) <= 0) {
 					valid = false;
-					errorMsg += "Emp Name For Final Approval must be greater than 0\n";
+					errorMsg += "Emp Name For Final Approval is Required\n";
 				}
 				if (!empMgmt || parseInt(empMgmt) <= 0) {
 					valid = false;
-					errorMsg += "Emp Name For Mgmt Approval must be greater than 0\n";
+					errorMsg += "Emp Name For Mgmt Approval is Required\n";
+				}
+				if (!POTYPE || POTYPE === "") { 
+					valid = false;
+					errorMsg += "PO Type Is Mandatory";
 				}
 
 				if (!valid) {
@@ -679,7 +686,51 @@
 					$("#PartCode").val(v).trigger("change.select2");
 				}
 			}
+			// $('#GroupName').change(function () {
+			// 	var groupName = $("#GroupName option:selected").text();
+			// 	 if (groupName && groupName !== "-Select-") {
+			// 		$.ajax({
+			// 			url: '@Url.Action("CheckGroupExists", "POApprovalPolicy")',
+			// 			type: 'POST',
+			// 			data: { GroupName: groupName },
+			// 			success: function (response) {
+			// 				if (response.exists) {
+			// 					$.notify("Old record found — switched to Update mode.", "info");
+			// 					//FillFormWithExistingData(response.data); // your function to fill form fields
+			// 				} else {
+			// 					$.notify("No existing record found — new entry mode.", "success");
+			// 				}
+			// 			},
+			// 			error: function () {
+			// 				$.notify("Error while checking group data.", "error");
+			// 			}
+			// 		});
+			// 	}
+			// });
+			$('#GroupName').change(function () {
+				var groupName = $("#GroupName option:selected").text();
 
+				if (groupName && groupName !== "-Select-") {
+					$.ajax({
+						url: '@Url.Action("CheckGroupExists", "POApprovalPolicy")',
+						type: 'POST',
+						data: { GroupName: groupName },
+						success: function (response) {
+							if (response.exists) {
+								$.notify("Old record found — switched to Update mode.", "info");
+								var id = response.id;
+								window.location.href = `/POApprovalPolicy/Index?ID=${id}&Mode=U`;
+							}
+							else {
+								$.notify("No existing record found — new entry mode.", "success");
+							}
+						},
+						error: function () {
+							$.notify("Error while checking group data.", "error");
+						}
+					});
+				}
+			});
 
 			$('#FromAmt, #ToAmt').on('input', function () {
 				var value = this.value;

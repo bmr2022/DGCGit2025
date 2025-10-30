@@ -721,35 +721,7 @@
 			});
 		}
 
-		function FillCategoryName() {
-			$.ajax({
-				url: '@Url.Action("FillCategoryName", "PartyItemGroupDiscount")', // Action that returns FillGroup data
-				type: 'POST',
-				async: false,
-				success: function (response, status, error) {
-
-					var Dropdown = $('#CategoryName');
-					var obj = $.parseJSON(response);
-					Dropdown.empty();
-					Dropdown.append('<option value="">--Select--</option>');
-
-
-					$.each(obj.Result, function (index, Val) {
-						Dropdown.append('<option value="' + Val.DiscCategoryEntryId + '">' + Val.DiscCategoryName + '</option>');
-					});
-					if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-						var CategoryId = '';
-						$('#CategoryName').val(CategoryId).trigger("change");
-
-					}
-
-				},
-				error: function (xhr, status, error) {
-					alert('Failed to load groups.');
-				}
-			});
-		}
-
+		
 		function FillCategoryCode() {
 			$.ajax({
 				url: '@Url.Action("FillCategoryCode", "PartyItemGroupDiscount")', // Action that returns FillGroup data

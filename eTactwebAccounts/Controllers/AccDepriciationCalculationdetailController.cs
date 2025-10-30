@@ -280,11 +280,11 @@ namespace eTactwebAccounts.Controllers
 
             return View(model);
         }
-        public async Task<IActionResult> GetDetailData(string FromDate, string ToDate, string ReportType)
+        public async Task<IActionResult> GetDetailData(string FromDate, string ToDate, string ReportType,string AssetsName)
         {
             //model.Mode = "Search";
             var model = new AccDepriciationCalculationdetailModel();
-            model = await _IAccDepriciationCalculationdetail.GetDashboardDetailData(FromDate, ToDate, ReportType);
+            model = await _IAccDepriciationCalculationdetail.GetDashboardDetailData(FromDate, ToDate, ReportType, AssetsName);
             if (ReportType == "SUMMARY")
             {
                 return PartialView("_AccDepriciationCalculationdetailDashBoardSummaryGrid", model);

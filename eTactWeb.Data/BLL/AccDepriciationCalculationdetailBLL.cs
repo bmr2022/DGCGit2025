@@ -42,9 +42,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _AccDepriciationCalculationdetailDAL.GetDashboardData(model);
         }
-        public async Task<AccDepriciationCalculationdetailModel> GetDashboardDetailData(string FromDate, string ToDate, string ReportType)
+        public async Task<AccDepriciationCalculationdetailModel> GetDashboardDetailData(string FromDate, string ToDate, string ReportType, string AssetsName)
         {
-            return await _AccDepriciationCalculationdetailDAL.GetDashboardDetailData(FromDate, ToDate, ReportType);
+            return await _AccDepriciationCalculationdetailDAL.GetDashboardDetailData(FromDate, ToDate, ReportType, AssetsName);
         }
         public async Task<ResponseResult> DeleteByID(int EntryId, int YearCode)
         {
