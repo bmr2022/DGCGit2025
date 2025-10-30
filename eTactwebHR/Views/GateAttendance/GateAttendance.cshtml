@@ -396,12 +396,14 @@
                 var deptEl = row.querySelector("[name='dept_" + empId + "']");
                 var desigEl = row.querySelector("[name='desig_" + empId + "']");
                 var EmpShiftId = row.querySelector("[name='GateAttDetailsList[" + empId + "].ActualEmpShiftId']");
+                var CategoryId = row.querySelector("[name='GateAttDetailsList[" + empId + "].CategoryId']");
 
                 var empObj = {
                     EmpId: parseInt(empId, 10) || 0,
                     DeptId: deptEl ? parseInt(deptEl.value, 10) || 0 : 0,
                     DesignationEntryId: desigEl ? parseInt(desigEl.value, 10) || 0 : 0,
                     ActualEmpShiftId: EmpShiftId ? parseInt(EmpShiftId.value, 10) || 0 : 0,
+                    CategoryId: CategoryId ? parseInt(CategoryId.value, 10) || 0 : 0,
                     Attendance: {}
                 };
 
@@ -469,7 +471,7 @@
                             if (res != null && res.isSuccess == true) {
                                 $.notify(res?.message || "Attendance saved successfully!", "success");
                                 setTimeout(function () {
-                                    window.location.href = '@Url.Action("GateAttendance", "GateAttendance")' + '?ID=' + res.ID + '&Mode=' + $('#Mode').val();
+                                    window.location.href = '@Url.Action("GateAttendance", "GateAttendance")' + '?ID=' + res.ID + '&Mode=' + $('#Mode').val() + '&YearCode=' + $('#GateAttYearCode').val();
                                 }, 1500);       
                             }
                             else if (res != null && res.isSuccess == false) {
