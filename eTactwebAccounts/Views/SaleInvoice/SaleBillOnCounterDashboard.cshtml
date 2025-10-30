@@ -520,7 +520,8 @@
             event.preventDefault();
             if (confirm("are you sure you want to delete this entry?")) {
                 var linkurl = $(event.currentTarget).attr("href");
-                linkurl = linkurl + "&summaryDetail=" + $('#SummaryDetail').val() + "&partCode=" + $('#PartCode').val() + "&itemName=" + $('#ItemName').val() + "&saleBillno=" + $('#SaleBillNo').val() + "&customerName=" + $('#AccountName').val() + "&sono=" + $('#SONO').val() + "&schNo=" + $('#SchNo').val() + "&custOrderNo=" + $('#CustOrderNo').val() + "&performaInvNo=" + $('#PerformaInvNo').val() + "&saleQuoteNo=" + $('#SaleQuotNo').val() + "&domensticExportNEPZ=" + $('#DomesticExportNEPZ').val() + "&fromdate=" + $('#FinFromDate').val() + "&toDate=" + $('#FinToDate').val() + "&searchBox=" + $('#search-box').val();
+                linkurl = linkurl + "&summaryDetail=" + $('#SummaryDetail').val() + "&partCode=" + $('#PartCode').val() + "&itemName=" + $('#ItemName').val() + "&saleBillno=" + $('#SaleBillNo').val() + "&customerName=" + $('#AccountName').val() + "&sono=" + $('#SONO').val() + "&schNo=" + $('#SchNo').val() + "&custOrderNo=" + $('#CustOrderNo').val() + "&performaInvNo=" + $('#PerformaInvNo').val() + "&saleQuoteNo=" + $('#SaleQuotNo').val() + "&domensticExportNEPZ=" + $('#DomesticExportNEPZ').val() + "&fromdate=" + $('#FinFromDate').val() + "&toDate=" + $('#FinToDate').val() + "&searchBox=" + $('#search-box').val() +
+               "&Page=" + "SaleBillOnCounterDashboard"  ;
                 window.location.href = linkurl;
             }
         }

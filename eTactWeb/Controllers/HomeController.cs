@@ -1045,12 +1045,7 @@ public class HomeController : Controller
         string JsonString = JsonConvert.SerializeObject(JSON);
         return Json(JsonString);
     }  
-    public async Task<JsonResult> GetCompanyDetail()
-    {
-        var JSON = await _IDashboard.GetCompanyDetail();
-        string JsonString = JsonConvert.SerializeObject(JSON);
-        return Json(JsonString);
-    }
+  
     public async Task<JsonResult> FillInventoryDashboardForPendingData()
     {
         var JSON = await _IDashboard.FillInventoryDashboardForPendingData();
