@@ -378,11 +378,11 @@
                                     </div>
                                     <div class="col-xl-1 col-lg-1 col-md-3 col-sm-6 col-xs-12 SaleOrderEntryDetail">
                                         <label asp-for="OrderType" class="form-label" style="color:  red;">Order Type</label>
-                                        <select class="form-select" asp-for="OrderType" asp-items="Model.OrderTypeList"></select>
+                                        <select class="form-select" asp-for="OrderType" asp-items="Model.OrderTypeList" onchange="ChangeCurrencysign()"></select>
                                     </div>
                                     <div class="col-xl-1 col-lg-1 col-md-3 col-sm-6 col-xs-12 SaleOrderEntryDetail">
                                         <label asp-for="CurrencyID" class="form-label" style="color:  red;" `>Currency</label>
-                                        <select class="form-select" asp-for="CurrencyID"></select>
+                                        <select class="form-select" asp-for="CurrencyID" onchange="ChangeCurrencysign()"></select>
                                         @if (Model.Mode == "U" || Model.Mode == "V")
                                         {
                                             <input asp-for="CurrencyID" value="@Model.CurrencyID" type="hidden" id="hiddenCurrency" />
@@ -758,7 +758,7 @@
                                 </div>
                                 <div class="row g-2 gx-3">
                                     <div class="col-12 text-center">
-                                        <strong>BASIC TOTAL : <i class="fa-solid fa-indian-rupee-sign fa-fw fa-1x"></i><span id="lblItemNetAmount"></span></strong>
+                                        <strong>BASIC TOTAL : <i></i><span id="lblItemNetAmount"></span></strong>
                                         <strong>, Total No Of Items : <span id="lblTotalNoOfItems"></span></strong>
                                     </div>
                                 </div>
@@ -1036,7 +1036,7 @@
                                 </div>
                                 <div class="row g-2 gx-3">
                                     <div class="col-12 text-center">
-                                        <strong>BASIC TOTAL : <i class="fa-solid fa-indian-rupee-sign fa-fw fa-1x"></i><span id="lblItemNetAmount"></span></strong>,
+                                        <strong>BASIC TOTAL : <i></i><span id="lblItemNetAmount"></span></strong>,
                                         <strong>Total No Of Items : <span id="lblTotalNoOfItems"></span></strong>
                                     </div>
                                 </div>
@@ -2065,7 +2065,7 @@
             // $('#PartCode').select2();
             // $('#ItemCode').select2();
             // $('#Group_Code').select2();
-
+            ChangeCurrencysign();
             FillItems();
             AutoFillPARTYNAMELIST();
             // $('#Group_Code1').select2();
@@ -2372,6 +2372,12 @@
 
 
         });//ready end here
+
+        function ChangeCurrencysign(){
+
+            $('#CurrencySign').text($('#CurrencyID option:selected').text());
+
+        }
 
         document.getElementById("btnAddToGrid").addEventListener("keydown", function (event) {
             if (event.key === "Enter") {
