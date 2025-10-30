@@ -63,14 +63,14 @@
                                 <input type="text" class="form-control" asp-for="Searchbox" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
                             </div>
 
-                            <button class="btn btn-sm btn-outline-info" style="padding:3px;height:30px;width:100px;margin-left:20px;margin-top:20px;" type="button" onclick="GetDetailData();">
-                                <i class="fa-solid fa-magnifying-glass fa-fw fa-lg "></i>SEARCH
+                            <button class="btn btn-sm btn-outline-info" style="padding:3px;height:30px;width:50px;margin-left:20px;margin-top:20px;" type="button" onclick="GetDetailData();">
+                                <i class="fa-solid fa-magnifying-glass fa-fw fa-lg "></i>
                             </button>
-                            <button class="btn btn-sm btn-outline-success me-3" style="padding:3px;height:30px;width:100px;margin-left:20px;margin-top:20px;" type="button" id="btnGridExcel">
-                                <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
+                            <button class="btn btn-sm btn-outline-success me-3" style="padding:3px;height:30px;width:50px;margin-left:20px;margin-top:20px;" type="button" id="btnGridExcel">
+                                <i class="fa-solid fa-upload fa-fw fa-lg "></i>
                             </button>
-                            <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;margin-top:20px;" asp-controller="POApprovalPolicy" asp-action="POApprovalPolicyDashBoard">
-                                <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
+                            <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:50px;margin-left:20px;margin-top:20px;" asp-controller="POApprovalPolicy" asp-action="POApprovalPolicyDashBoard">
+                                <i class="fa-solid fa-rotate fa-fw fa-lg"></i>
                             </a>
                             
 
@@ -98,7 +98,7 @@
 {
     <script>
         $(document).ready(function () {
-            GetFormRights();
+            //GetFormRights();
 
             //$('#ReportType').select2();
             FillItems();
@@ -257,6 +257,8 @@
                         if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
                             let filtered = obj.Result.Table.filter(function (item) {
                                 let term = request.term.toLowerCase();
+                                //return item.CatName.toLowerCase().includes(term);
+
                                 return item.CatName.toLowerCase().includes(term);
                             });
 
@@ -420,8 +422,7 @@
                     $('#divDashboardGrid').empty().append(data);
                     var totalRows = $('#divDashboardGrid tbody tr').length;
                     $('#totalRows').text(totalRows);
-                    GetFormRights();
-                    // RowCount();
+                    
                 },
                 error: function (response) {
                     alert(response.responseText);

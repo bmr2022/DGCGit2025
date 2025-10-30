@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.Common;
+﻿using DocumentFormat.OpenXml.EMMA;
+using eTactWeb.Data.Common;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
@@ -475,6 +476,27 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@itemname", SearchCatName ?? ""));
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("SpPOApprovalPolicy", SqlParams);
             }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> CheckGroupExists(string GroupName)
+        {
+            var _ResponseResult = new ResponseResult();
+			var model = new POApprovalPolicyModel();
+			try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "CHECKGROUP"));
+                SqlParams.Add(new SqlParameter("@GroupName", GroupName ?? ""));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SpPOApprovalPolicy", SqlParams);
+				
+			}
             catch (Exception ex)
             {
                 dynamic Error = new ExpandoObject();

@@ -26,7 +26,34 @@ namespace eTactwebAdmin.Controllers
 			_IWebHostEnvironment = iWebHostEnvironment;
 			this.iconfiguration = iconfiguration;
 		}
-        public async Task<JsonResult> FillItems(string SearchItemCode)
+		//public async Task<JsonResult> CheckGroupExists(string GroupName)
+		//{
+		//    var JSON = await _IPOApprovalPolicy.CheckGroupExists(GroupName);
+		//    string JsonString = JsonConvert.SerializeObject(JSON);
+		//    return Json(JsonString);
+		//}
+		public async Task<JsonResult> CheckGroupExists(string GroupName)
+		{
+			var result = await _IPOApprovalPolicy.CheckGroupExists(GroupName);
+
+			if (result != null && result.StatusCode == HttpStatusCode.OK && result.StatusText == "Success")
+			{
+				// Assume you get an ID or any identifier from the DAL result dataset
+				var ds = (DataSet)result.Result;
+				int existingId = 0;
+
+				if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+				{
+					existingId = Convert.ToInt32(ds.Tables[0].Rows[0]["POApprovalEntryId"]);
+				}
+
+				return Json(new { exists = true, id = existingId });
+			}
+
+			return Json(new { exists = false });
+		}
+
+		public async Task<JsonResult> FillItems(string SearchItemCode)
         {
             var JSON = await _IPOApprovalPolicy.FillItems(SearchItemCode);
             string JsonString = JsonConvert.SerializeObject(JSON);

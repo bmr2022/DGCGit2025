@@ -65,14 +65,14 @@
                                 <input type="text" class="form-control" asp-for="Searchbox" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
                             </div>
 
-                            <button class="btn btn-sm btn-outline-info" style="padding:3px;height:30px;width:100px;margin-left:20px;margin-top:7px;" type="button" onclick="GetDetailData();">
-                                <i class="fa-solid fa-magnifying-glass fa-fw fa-lg "></i>SEARCH
+                            <button class="btn btn-sm btn-outline-info" style="padding:3px;height:30px;width:50px;margin-left:20px;margin-top:7px;" type="button" onclick="GetDetailData();">
+                                <i class="fa-solid fa-magnifying-glass fa-fw fa-lg "></i>
                             </button>
-                            <button class="btn btn-sm btn-outline-success me-3" style="padding:3px;height:30px;width:100px;margin-left:20px;margin-top:7px;" type="button" id="btnGridExcel">
-                                <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
+                            <button class="btn btn-sm btn-outline-success me-3" style="padding:3px;height:30px;width:50px;margin-left:20px;margin-top:7px;" type="button" id="btnGridExcel">
+                                <i class="fa-solid fa-upload fa-fw fa-lg "></i>
                             </button>
-                            <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;margin-top:7px;" asp-controller="AccDepriciationCalculationdetail" asp-action="AccDepriciationCalculationdetailDashBoard">
-                                <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
+                            <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:50px;margin-left:20px;margin-top:7px;" asp-controller="AccDepriciationCalculationdetail" asp-action="AccDepriciationCalculationdetailDashBoard">
+                                <i class="fa-solid fa-rotate fa-fw fa-lg"></i>
                             </a>
                             @*<div class="ms-auto d-flex align-items-center">
                             <div class="col-auto">
@@ -251,13 +251,14 @@
             var fromDate = $('#FromDate').val();
             var toDate = $('#ToDate').val();
             var reportType = $('#ReportType').val();
+            var AssetsName = $('#AssetsName').val();
            
             $.ajax({
                 url: '@Url.Action("GetDetailData")',
                 type: "POST",
-                data: { FromDate: fromDate, ToDate: toDate, ReportType: reportType },
+                data: { FromDate: fromDate, ToDate: toDate, ReportType: reportType, AssetsName: AssetsName },
                 async: false,
-                data: $('#SParam').serializeArray(),
+                //data: $('#SParam').serializeArray(),
                 success: function (data) {
 
                     $('#divDashboardGrid').empty().append(data);

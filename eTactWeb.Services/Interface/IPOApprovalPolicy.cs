@@ -26,5 +26,8 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FillItems(string SearchItemCode);
         Task<ResponseResult>  FillGroups(string SearchGroupName);
         Task<ResponseResult> FillCateName(string SearchCatName);
+        Task<ResponseResult> CheckGroupExists(string GroupName);
+
+
     }
 }
