@@ -2373,6 +2373,12 @@
 
         });//ready end here
 
+        $("#AccountCodeText").focusout(function () {
+
+             $("#AccountCode").val(0);
+            GetlastSaleOrderDetail();
+        });
+
         function ChangeCurrencysign(){
 
             $('#CurrencySign').text($('#CurrencyID option:selected').text());
@@ -2472,6 +2478,7 @@
                     $('#ItemCode').val(ui.item.itemCode);
                     $('#PartCode').val(ui.item.itemCode);
                     GetItemPartCode("PartCode");
+                    GetlastSaleOrderDetail();
                     return false;
                 },
                 focus: function (event, ui) {
@@ -2514,6 +2521,7 @@
                                 $("#ItemCode").val(match.Item_Code);
                                 $("#PartCode").val(match.Item_Code);
                                 GetItemPartCode("PartCode");
+                                GetlastSaleOrderDetail();
 
                             }
                         }
@@ -2534,7 +2542,9 @@
                     $('#ItemCode').val(ui.item.itemCode);
                     $('#PartCode').val(ui.item.itemCode);
                     GetItemPartCode("ItemCode");
+                    GetlastSaleOrderDetail()
                     return false;
+
                 },
                 focus: function (event, ui) {
                     $("#ItemNameText").val(ui.item.itemName);
@@ -2569,6 +2579,7 @@
                                     $('#ItemCode').val(match.Item_Code);
                                     $('#PartCode').val(match.Item_Code);
                                     GetItemPartCode("ItemCode");
+                                    GetlastSaleOrderDetail();
                                 } else {
                                     alert("Invalid Item Name entered!");
                                     $("#ItemNameText").val("").focus();
@@ -2630,6 +2641,7 @@
                     $('#AccountCode').val(ui.item.accountCode);
                     CheckOrderNo();
                     onchangeaccountcode();
+                    GetlastSaleOrderDetail();
                   
                 
                     return false;
