@@ -1029,6 +1029,8 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@DeliveryAddress", model.DeliveryAddress));
                 SqlParams.Add(new SqlParameter("@OrderType", model.OrderType));
                 SqlParams.Add(new SqlParameter("@CustOrderNo", model.CustOrderNo));
+                SqlParams.Add(new SqlParameter("@ForwardingCharges", model.ForwardingCharges));
+                SqlParams.Add(new SqlParameter("@PackingCharges", model.PackingCharges));
                 SqlParams.Add(new SqlParameter("@SONo", model.SONo));
                 SqlParams.Add(new SqlParameter("@ENTRYDATE", entDt));
                 //SqlParams.Add(new SqlParameter("@EntryDate", DateTime.ParseExact(model.EntryDate.ToString(), "dd-mm-yyyy", CultureInfo.InvariantCulture)));
@@ -1771,6 +1773,8 @@ namespace eTactWeb.Data.DAL
                             model.OrderType = oDataSet.Tables[0].Rows[0]["OrderType"].ToString();
                             model.CustOrderNo = oDataSet.Tables[0].Rows[0]["CustOrderNo"].ToString();
                             model.SONo = Convert.ToInt32(oDataSet.Tables[0].Rows[0]["SONo"]);
+                            model.PackingCharges = Convert.ToDecimal(oDataSet.Tables[0].Rows[0]["PackingCharges"]);
+                            model.ForwardingCharges = Convert.ToDecimal(oDataSet.Tables[0].Rows[0]["ForwardingCharges"]);
                             model.SODate = oDataSet.Tables[0].Rows[0]["SODate"].ToString();
                             model.WEF = oDataSet.Tables[0].Rows[0]["WEF"].ToString();
                             model.SOCloseDate = oDataSet.Tables[0].Rows[0]["SOCloseDate"].ToString();

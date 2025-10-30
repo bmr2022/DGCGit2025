@@ -1122,6 +1122,18 @@
                                     <input asp-for="CreatedByName" class="form-control" va/>
                                     <input type="hidden" asp-for="CreatedBy" />
                                 </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="PackingCharges" class="form-label">Packing Charges</label>
+                                    <input asp-for="PackingCharges" class="form-control"  type="number" />
+                                   
+                                </div>
+
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="ForwardingCharges" class="form-label">Forwarding Charges</label>
+                                    <input asp-for="ForwardingCharges" class="form-control" type="number" />
+
+                                </div>
+
 
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="UpdatedByName" class="form-label">Updated By</label>
@@ -2374,8 +2386,8 @@
         });//ready end here
 
         $("#AccountCodeText").focusout(function () {
-
-             $("#AccountCode").val(0);
+            if ($("#AccountCodeText").val() == '') { $("#AccountCode").val(0); }
+             
             GetlastSaleOrderDetail();
         });
 

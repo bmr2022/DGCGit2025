@@ -363,6 +363,8 @@ namespace eTactWeb.DOM.Models
 
         [Column(TypeName = "decimal(10, 2)")]
         public decimal TotalAmtAftrDiscount { get; set; }
+        public decimal ForwardingCharges { get; set; }
+        public decimal PackingCharges { get; set; }
 
         public decimal TotalDiscountPercentage { get; set; }
         public string? TotalRoundOff { get; set; }
