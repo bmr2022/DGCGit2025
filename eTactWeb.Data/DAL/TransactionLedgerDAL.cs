@@ -66,7 +66,7 @@ namespace eTactWeb.Data.DAL
                     var toDt = CommonFunc.ParseFormattedDate(ToDate);
                     command.Parameters.Add(new SqlParameter("@fromDate", fromDt));
                     command.Parameters.Add(new SqlParameter("@ToDate", toDt));
-                    command.Parameters.AddWithValue("@ACCOUNTCODE", AccountCode);
+                    command.Parameters.Add("@ACCOUNTCODE", SqlDbType.Int).Value = (object?)AccountCode ?? DBNull.Value;
                     command.Parameters.AddWithValue("@ReportType", ReportType);
                     command.Parameters.AddWithValue("@LedgerHead", Ledger);
                     command.Parameters.AddWithValue("@VoucherType", VoucherType);

@@ -10,7 +10,7 @@ using eTactWeb.Services.Helpers;
 
 namespace eTactWeb.Controllers
 {
-    public class TransactionLedgerController : BaseNavigationController
+    public class TransactionLedgerController : Controller
     {
         private readonly IDataLogic _IDataLogic;
         public ITransactionLedger _TransactionLedger { get; }
@@ -33,32 +33,6 @@ namespace eTactWeb.Controllers
             var MainModel = new TransactionLedgerModel();
             MainModel.TransactionLedgerGrid = new List<TransactionLedgerModel>();
             MainModel.FromDate = HttpContext.Session.GetString("FromDate");
-            const string filterKey = "TransactionLedgerFilters";
-
-            // Try to get previously saved filters from session
-            var savedFilters = FilterHelper.GetFilters(HttpContext, filterKey);
-
-            if (savedFilters != null)
-            {
-                MainModel.FromDate = savedFilters.FromDate;
-                MainModel.ToDate = savedFilters.ToDate;
-                MainModel.ReportType = savedFilters.ReportType;
-                MainModel.GroupOrLedger = savedFilters.GroupOrLedger;
-                MainModel.ParentAccountCode = savedFilters.ParentAccountCode;
-                MainModel.AccountCode = savedFilters.AccountCode;
-                MainModel.VoucherType = savedFilters.VoucherType;
-                MainModel.VoucherNo = savedFilters.VoucherNo;
-                MainModel.INVNo = savedFilters.InvoiceNo;
-                MainModel.Narration = savedFilters.Narration;
-                MainModel.Amount = savedFilters.Amount;
-                MainModel.Dr = savedFilters.DR;
-                MainModel.Cr = savedFilters.CR;
-                MainModel.LedgerName = savedFilters.Ledger;
-            }
-
-            // Empty grid initially
-            MainModel.TransactionLedgerGrid = new List<TransactionLedgerModel>();
-            //MainModel.ToDate = HttpContext.Session.GetString("ToDate");
             return View(MainModel); 
         }
         public async Task<JsonResult> GetLedgerName(int? ParentAccountCode)
@@ -74,49 +48,17 @@ namespace eTactWeb.Controllers
             return Json(JsonString);
         }
         public async Task<IActionResult> GetDetailsData(
-                string FromDate = null, string ToDate = null, string ReportType = null,
-                string GroupOrLedger = null, int? ParentAccountCode = null, int? AccountCode = null,
-                string VoucherType = null, string VoucherNo = null, string InvoiceNo = null,
-                string Narration = null, float? Amount = null, string DR = null, string CR = null,
-                string Ledger = null)
+            string FromDate = null, string ToDate = null, string ReportType = null,
+            string GroupOrLedger = null, int? ParentAccountCode = null, int? AccountCode = null,
+            string VoucherType = null, string VoucherNo = null, string InvoiceNo = null,
+            string Narration = null, float? Amount = null, string DR = null, string CR = null,
+            string Ledger = null)
         {
-            const string filterKey = "TransactionLedgerFilters";
-
-            // Get existing saved filters from session
-            var saved = FilterHelper.GetFilters(HttpContext, filterKey) ?? new ReportFilter();
-
-            // Merge (prefer new incoming filters)
-            var filters = new ReportFilter
-            {
-                FromDate = FromDate ?? saved.FromDate,
-                ToDate = ToDate ?? saved.ToDate,
-                ReportType = ReportType ?? saved.ReportType,
-                GroupOrLedger = GroupOrLedger ?? saved.GroupOrLedger,
-                ParentAccountCode = ParentAccountCode ?? saved.ParentAccountCode,
-                AccountCode = (AccountCode == null || AccountCode == 0) ? saved.AccountCode : AccountCode,
-                VoucherType = VoucherType ?? saved.VoucherType,
-                VoucherNo = VoucherNo ?? saved.VoucherNo,
-                InvoiceNo = InvoiceNo ?? saved.InvoiceNo,
-                Narration = Narration ?? saved.Narration,
-                Amount = Amount ?? saved.Amount,
-                DR = DR ?? saved.DR,
-                CR = CR ?? saved.CR,
-                Ledger = Ledger ?? saved.Ledger
-            };
-
-            // Save merged filters back
-            FilterHelper.SaveFilters(HttpContext, filterKey, filters);
-
-            // Call your data service with unified filters
             var model = await _TransactionLedger.GetDetailsData(
-                filters.FromDate, filters.ToDate, filters.ReportType, filters.GroupOrLedger,
-                filters.ParentAccountCode, filters.AccountCode, filters.VoucherType,
-                filters.VoucherNo, filters.InvoiceNo, filters.Narration, filters.Amount,
-                filters.DR, filters.CR, filters.Ledger
+                FromDate, ToDate, ReportType, GroupOrLedger,
+                ParentAccountCode, AccountCode, VoucherType,
+                VoucherNo, InvoiceNo, Narration, Amount, DR, CR, Ledger
             );
-
-            // Optional cache (useful for Back navigation)
-            HttpContext.Session.SetString("TransactionLedgerData", JsonConvert.SerializeObject(model));
 
             return PartialView("_TransactionLedgerGrid", model);
         }
@@ -294,6 +236,100 @@ namespace eTactWeb.Controllers
                 stream.ToArray(),
                 "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             );
+        }
+        [HttpGet]
+        public async Task<IActionResult> DrillDown(NavigationState state)
+        {
+            if (state == null)
+                return RedirectToAction("Index", "TransactionLedger");
+
+            const string rootController = "TransactionLedger";
+            const string rootAction = "Index";
+
+            NavigationHelper.Push(HttpContext, state);
+
+            bool isRootPage = string.Equals(state.ControllerName, rootController, StringComparison.OrdinalIgnoreCase)
+                              && string.Equals(state.ActionName, rootAction, StringComparison.OrdinalIgnoreCase);
+
+            // Get filters (for MonthlySummary case)
+            var filters = FilterHelper.GetFilters(HttpContext, "TransactionLedgerFilters");
+            bool isMonthlySummary = string.Equals(state.ReportType, "MonthlySummary", StringComparison.OrdinalIgnoreCase);
+
+            if (isRootPage)
+            {
+                if (isMonthlySummary)
+                {
+                    // ✅ Directly call GetDetailsData() from here
+                    var model = await _TransactionLedger.GetDetailsData(
+                        state.FromDate,
+                        state.ToDate,
+                        state.ReportType,
+                        state.GroupOrLedger,
+                        state.ParentLedger,
+                        state.AccountCode,
+                        state.VoucherType,
+                        state.VoucherNo,
+                        state.INVNo,
+                        state.Narration,
+                        state.Amount,
+                        state.Dr,
+                        state.Cr,
+                        state.Ledger
+                    );
+                    HttpContext.Session.SetString("TransactionLedgerData", JsonConvert.SerializeObject(model));
+
+                    return PartialView("_TransactionLedgerGrid", model);
+                }
+                else
+                {
+                    return View(rootAction);
+                }
+            }
+            else
+            {
+                // Normal navigation
+                return RedirectToAction(state.ActionName, state.ControllerName, new
+                {
+                    ID = state.ID,
+                    YearCode = state.YearCode,
+                    AccountCode = state.AccountCode,
+                    Mode = state.Mode
+                });
+            }
+        }
+        [HttpGet]
+        public IActionResult GoBack()
+        {
+            var previous = NavigationHelper.Pop(HttpContext);
+            if (previous == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            // Always redirect to root page (TransactionLedger Index)
+            string rootController = "TransactionLedger";
+            string rootAction = "Index";
+
+            // Keep only filters
+            var filterValues = new
+            {
+                FromDate = previous.FromDate,
+                ToDate = previous.ToDate,
+                ReportType = previous.ReportType,
+                GroupOrLedger = previous.GroupOrLedger,
+                ParentLedger = previous.ParentLedger,
+                AccountCode = previous.AccountCode,
+                VoucherType = previous.VoucherType,
+                VoucherNo = previous.VoucherNo,
+                INVNo = previous.INVNo,
+                Narration = previous.Narration,
+                Amount = previous.Amount,
+                Dr = previous.Dr,
+                Cr = previous.Cr,
+                GlobalSearch = previous.GlobalSearch
+            };
+
+            return RedirectToAction(rootAction, rootController, filterValues);
         }
     }
 }

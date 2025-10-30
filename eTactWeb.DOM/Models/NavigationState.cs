@@ -8,18 +8,19 @@
     public string ToDate { get; set; }
     public string ReportType { get; set; }
     public string GroupOrLedger { get; set; }
-    public string ParentLedger { get; set; }
+    public string Ledger { get; set; }
+    public int? ParentLedger { get; set; }
     public string VoucherType { get; set; }
     public string VoucherNo { get; set; }
     public string INVNo { get; set; }
     public string Narration { get; set; }
-    public string Amount { get; set; }
+    public float? Amount { get; set; }
     public string Dr { get; set; }
     public string Cr { get; set; }
     public string GlobalSearch { get; set; }
 
     // DrillDown context
-    public int AccountCode { get; set; }
+    public int? AccountCode { get; set; }
     public int YearCode { get; set; }
     public int ID { get; set; }
     public string Mode { get; set; }

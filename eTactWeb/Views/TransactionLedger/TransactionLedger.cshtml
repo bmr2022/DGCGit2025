@@ -35,7 +35,7 @@
 
     <div class="card-header card-headerBG text-light bg-gradient">
         <h5>
-            <strong>Transaction Ledger</strong>
+            <strong id="headerId">Transaction Ledger</strong>
             <span class="d-flex float-end" style="margin-top:-2px;">
             </span>
         </h5>
@@ -229,12 +229,21 @@
     <script>
 
         $(document).ready(function () {
-             
-            let currentDate = new Date();
 
-            // Get values from model (these will be filled when user comes back)
-            let fromDateRaw = '@Model.FromDate';  // e.g. "01/Apr/2025 00:00:00"
-            let toDateRaw = '@Model.ToDate';      // e.g. "30/Apr/2025 00:00:00"
+            // -------------------------------
+            // 🔹 Identify current form
+            // -------------------------------
+            var currentForm = $('#headerId').text().trim().replace(/\s+/g, '');
+
+            // -------------------------------
+            // 🔹 Initialize datepickers
+            // -------------------------------
+            $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' });
+            $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' });
+
+            // 🗓️ Set FromDate from model, ToDate = current date
+            let fromDateRaw = '@Model.FromDate';
+            let currentDate = new Date();
 
             function convertToDDMMYYYY(dateStr) {
                 if (!dateStr) return '';
@@ -260,47 +269,41 @@
                 }
             }
 
-            // Convert both dates
             let fromDateFormatted = convertToDDMMYYYY(fromDateRaw);
-            let toDateFormatted = convertToDDMMYYYY(toDateRaw);
 
-            // Initialize datepickers
-            $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' });
-            $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' });
-
-            // Set dates (if exist)
+            // Set dates
             $('#FromDate').datepicker("setDate", fromDateFormatted || currentDate);
-            $('#ToDate').datepicker("setDate", toDateFormatted || currentDate);
+            $('#ToDate').datepicker("setDate", currentDate);
 
-            // Initialize Select2
+            // -------------------------------
+            // 🔹 Restore saved filters (except FromDate & ToDate)
+            // -------------------------------
+            var savedFilters = DrilldownManager.restoreFilters(currentForm);
+            if (savedFilters) {
+                console.log('🔄 Restoring filters for:', currentForm, savedFilters);
+                for (const key in savedFilters) {
+                    const $el = $('#' + key);
+                    if ($el.length && key !== 'FromDate' && key !== 'ToDate') {
+                        $el.val(savedFilters[key]).trigger('change');
+                    }
+                }
+            }
+
+            // -------------------------------
+            // 🔹 Initialize Select2 dropdowns
+            // -------------------------------
             $('#LedgerName, #ParentLedgerName, #ReportType, #VoucherType, #Group_Ledger').select2();
 
-            // Refill dropdowns (Ajax)
+            // -------------------------------
+            // 🔹 Fill dropdown data
+            // -------------------------------
             FillParentLedgerName();
             FillVoucherName();
             FillLedgerName();
 
-            // ✅ Apply saved filter values ONLY if they exist
-            let parentLedger = '@Model.ParentAccountCode';
-            let ledger = '@Model.AccountCode';
-            let reportType = '@Model.ReportType';
-            let voucherType = '@Model.VoucherType';
-            let groupLedger = '@Model.GroupOrLedger';
-
-            if (parentLedger) $('#ParentLedgerName').val(parentLedger).trigger('change');
-            if (voucherType) $('#VoucherType').val(voucherType).trigger('change');
-            if (groupLedger) $('#Group_Ledger').val(groupLedger).trigger('change');
-            if (reportType) $('#ReportType').val(reportType).trigger('change');
-
-            // ✅ Fill text fields if they have values
-            if ('@Model.Narration') $('#Narration').val('@Model.Narration');
-            if ('@Model.VoucherNo') $('#VoucherNo').val('@Model.VoucherNo');
-            if ('@Model.INVNo') $('#INVNo').val('@Model.INVNo');
-            if ('@Model.Amount') $('#Amount').val('@Model.Amount');
-            if ('@Model.Dr') $('#Dr').val('@Model.Dr');
-            if ('@Model.Cr') $('#Cr').val('@Model.Cr');
-
-            // Validation
+            // -------------------------------
+            // 🔹 Load data after restore
+            // -------------------------------
             GetValidateData();
         });
 
@@ -600,6 +603,7 @@
                     // add other filter fields as required
                 },
                 success: function (partialHtml) {
+                    debugger
                     // 1) Inject partial HTML
                     $('#divStockMainRegister').html(partialHtml);
                     $('#opnDRDiv').show();
@@ -931,7 +935,8 @@
             $('#totalRows').text($('#divStockMainRegister tr').length - 1);
         }
 
-        function callDrillDown(anchor) {
+       /*  function callDrillDown(anchor) {
+            debugger;
             var controllerName = $(anchor).data('controller');
             var actionName = $(anchor).data('action');
             var reportType = $('#ReportType').val();
@@ -956,7 +961,7 @@
                 Mode: "U"
             };
 
-            // Specific additions
+            // Specific conditions
             if (reportType === "TransactionLedgerSummary" || reportType === "TransactionLedgerDetail") {
                 baseParams.ID = $(anchor).data('docid');
                 baseParams.AccountCode = $(anchor).data('accountcode');
@@ -975,13 +980,24 @@
                 baseParams.AccountCode = $('#LedgerName').val();
             }
 
-            // Go to DrillDown (server handles redirect)
-            const queryString = $.param(baseParams);
-            window.location.href = '/BaseNavigation/DrillDown?' + queryString;
-        }
+            // ✅ AJAX Call instead of redirect
+            $.ajax({
+                url: '/TransactionLedger/DrillDown',
+                type: 'GET', // or POST if your controller expects it
+                data: baseParams,
+                success: function (result) {
+                    // Replace the partial view content
+                    $('#divTransactionLedgerGrid').html(result);
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error loading drilldown:', error);
+                    alert('Something went wrong while loading details.');
+                }
+            });
+        } */
 
         function PressBack() {
-            window.location.href = '/BaseNavigation/GoBack';
+            window.location.href = '/TransactionLedger/GoBack';
         }
 
     </script>
