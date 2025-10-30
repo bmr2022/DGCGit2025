@@ -1,6 +1,6 @@
 ﻿@model eTactWeb.DOM.Models.HRLeaveApplicationDashBoard;
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "HRLeaveApplicationDashBoard";
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
 <div class="shadow-lg">
@@ -8,7 +8,7 @@
         <div class="card rounded border-light bg-gradient">
             <div class="card-header card-headerBG text-light bg-gradient">
                 <h5>
-                    Holidays Master - <strong>Dashboard</strong>
+                    HR Leave Application - <strong>Dashboard</strong>
                     <span class="d-flex float-end" style="margin-top:-2px;">
                         <a asp-action="HRLeaveApplicationMaster" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient" id="savebtn">
                             <i class="fa fa-plus-circle fafw fa-lg" aria-hidden="true"></i>
@@ -21,7 +21,7 @@
                 <div class="card overflow-auto">
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                            <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12">
                                 <div class="row">
 
                                     <div class="col">
@@ -39,11 +39,43 @@
                                         <label class="form-label">To Date</label>
                                         <input asp-for="DashToDate" class="form-control" />
                                     </div>
+
+
+
                                     @* <input asp-for="FromDate1" type="hidden" />
                                     <input asp-for="ToDate1" type="hidden" /> *@
                                     <input type="hidden" value="@Model.Mode" asp-for="Mode" />
 
                                 </div>
+                            </div>
+
+                            <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                <label asp-for="EmpName" class="form-label">Employee </label>
+                                <input asp-for="EmpId" class="form-control" type="hidden" value="@Model.EmpId" />
+                                <select asp-for="EmpName" class="form-control">
+                                    @* <option value="@Model.AccountCode">-Select-</option> *@
+                                    <option value="@Model.EmpId">-Select-</option>
+                                   
+                                </select>
+                            </div>
+                            <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                <label asp-for="EmpCode" class="form-label">EmpCode </label>
+
+                                <select asp-for="EmpCode" class="form-control">
+                                    @* <option value="@Model.AccountCode">-Select-</option> *@
+                                    <option value="@Model.EmpId">-Select-</option>
+                                   
+                                </select>
+                            </div>
+                              <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                <label asp-for="EmpCode" class="form-label">LeaveName </label>
+
+                                <input type="hidden" asp-for="LeaveEntryId" value="@Model.LeaveEntryId" />
+                                <select asp-for="LeaveName" class="form-select" >
+                                    @* <option value="@Model.AccountCode">-Select-</option> *@
+                                    <option value="@Model.LeaveEntryId">-Select-</option>
+                                   
+                                </select>
                             </div>
 
 
@@ -97,25 +129,167 @@
         });
 
         $(document).ready(function () {
+            $("#EmpName").select2();
+            $("#EmpCode").select2();
+            $("#LeaveName").select2();
 
             var currentDate = new Date();
             var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
             $('#totalRows').text($('#divStockRegisterBody tr').length);
             $('#DashFromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatDate1(firstDayOfMonth));
             $('#DashToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+            FillEmpName();
+            FillEmpcode();
+            FillLeaveName();
 
             GetDetailData();
 
 
 
+
         });
+
+        $(document).on('select2:select', '#LeaveName', function (e) {
+            $('#LeaveEntryId').val($('#LeaveName').val())
+        });
+
+        $(document).on('select2:select', '#EmpName,#EmpCode', function (e) {
+
+            var cntId = e.target.id;
+            if (cntId == 'EmpName') {
+                EmpNameChange(cntId);
+            }
+            else {
+                EmpCodeChange(cntId);
+            }
+            $('#EmpId').val($('#EmpName').val())
+
+            
+
+        });
+
+        function EmpNameChange(ID) {
+            SetEmpCodeEmpName(ID);
+          
+        }
+
+        function EmpCodeChange(ID) {
+
+            $.when(SetEmpCodeEmpName(ID)).done(function () {
+            });
+           
+        }
+
+        function SetEmpCodeEmpName(ID) {
+            if (!ID) return;
+            else {
+                var v = $('#' + ID).select2('val');
+                if (ID == "EmpCode") {
+                    $("#EmpName").val(v).trigger("change");
+                }
+
+                if (ID == "EmpName") {
+                    $("#EmpCode").val(v).trigger("change");
+                }
+            }
+        }
+        function FillEmpName() {
+            $.ajax({
+                url: '@Url.Action("GetEmpName", "HRLeaveApplicationMaster")',
+
+                type: 'GET',
+                async: false,
+                success: function (response, status, error) {
+
+                    var EmpCategDropdown = $('#EmpName');
+                    var obj = $.parseJSON(response);
+                    EmpCategDropdown.empty();
+                    EmpCategDropdown.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, item) {
+                        EmpCategDropdown.append('<option value="' + item.Emp_Id + '">' + item.EmpName + '</option>');
+                    });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                        var EmpCategoryId = '@Model.EmpId';
+                        $('#EmpName').val(EmpCategoryId).trigger("change");
+                        $('#EmpName').val(EmpCategoryId);
+                    }
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+
+        function FillEmpcode() {
+            $.ajax({
+                url: '@Url.Action("GetEmpCode", "HRLeaveOpeningMaster")',
+
+                type: 'GET',
+                async: false,
+                success: function (response, status, error) {
+
+                    var EmpCodeDropdown = $('#EmpCode');
+                    var obj = $.parseJSON(response);
+                    EmpCodeDropdown.empty();
+                    EmpCodeDropdown.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, item) {
+                        EmpCodeDropdown.append('<option value="' + item.Emp_Id + '">' + item.Empcode + '</option>');
+                    });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                        var EmpCode = '@Model.EmpId';
+                        $('#EmpCode').val(EmpCode).trigger("change");
+                        $('#EmpCode').val(EmpCode);
+                    }
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+
+        function FillLeaveName() {
+            $.ajax({
+                url: '@Url.Action("GetLeaveName", "HRLeaveApplicationMaster")',
+
+                type: 'GET',
+                async: false,
+                success: function (response, status, error) {
+
+                    var EmpCategDropdown = $('#LeaveName');
+                    var obj = $.parseJSON(response);
+                    EmpCategDropdown.empty();
+                    EmpCategDropdown.append('<option value=""></option>');
+
+                    $.each(obj.Result, function (index, item) {
+                        EmpCategDropdown.append('<option value="' + item.LeaveEntryid + '">' + item.LeaveName + '</option>');
+                    });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                        var LeaveName = '@Model.LeaveEntryId';
+                        $('#LeaveName').val(LeaveName).trigger("change");
+                        $('#LeaveName').val(LeaveName);
+                    }
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+
+
+
+
         $(function () {
 
-            if ($('#gateDashboardtable tr').length < 1) {
+            if ($('#divDashboardGrid tr').length < 1) {
                 var dashGrid = 0;
                 $('#totalRows').text(dashGrid);
             } else {
-                var dashGrid = $('#gateDashboardtable tr').length;
+                var dashGrid = $('#divDashboardGrid tr').length;
                 $('#totalRows').text(dashGrid);
             }
 
@@ -142,7 +316,7 @@
         $("#search-box").on("keyup", function () {
 
             var value = $(this).val().toLowerCase();
-            $("#gateDashboardtable tr").filter(function () {
+            $("#divStockRegisterBody tr").filter(function () {
                 if (currentSearchColumn !== null) {
                     var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
                     $(this).toggle(columnText.indexOf(value) > -1);
@@ -192,6 +366,8 @@
             var FromDate = $('#DashFromDate').val();
             var ToDate = $('#DashToDate').val();
             var ReportType = $('#ReportType').val();
+            var Empid = $('#EmpId').val();
+            var LeaveEntryId = $('#LeaveEntryId').val();
             $.ajax({
                 url: '@Url.Action("GetDetailData")',
                 type: "POST",
@@ -199,15 +375,17 @@
                     "FromDate": FromDate,
                     "ToDate": ToDate,
                     "ReportType": ReportType,
+                    "Empid": Empid,
+                    "LeaveEntryId": LeaveEntryId,
                 },
 
                 success: function (data) {
                     $('#divDashboardGrid').empty().append(data);
-                    if ($('#gateDashboardtable').val() == '') {
+                    if ($('#divDashboardGrid').val() == '') {
                         var dashGrid = 0;
                         $('#totalRows').text(dashGrid);
                     } else {
-                        var dashGrid = $('#gateDashboardtable tr').length;
+                        var dashGrid = $('#divDashboardGrid tr').length;
                         $('#totalRows').text(dashGrid);
                     }
                 },
