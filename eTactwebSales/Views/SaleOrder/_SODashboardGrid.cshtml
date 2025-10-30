@@ -64,6 +64,7 @@
                     <th data-columnno="18" data-sortorder="asc" class="sortCol"  style="color:  red;"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Pending Amt</th>
                     <th data-columnno="19" data-sortorder="asc" class="sortCol SaleOrderOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO Confirm Date</th>
                     <th data-columnno="20" data-sortorder="asc" class="sortCol SaleOrderOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Approved</th>
+                    <th data-columnno="20" data-sortorder="asc" class="sortCol "><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Created By</th>
                     <th data-columnno="21" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO Complete</th>
                     <th data-columnno="22" data-sortorder="asc" class="sortCol SaleOrderOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Approved Date</th>
                     <th data-columnno="23" data-sortorder="asc" class="sortCol SaleOrderOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>CC</th>
@@ -185,6 +186,7 @@
                                 <td id="hiddenPendingAmt-@Cntr">@item.pendingAmt</td>
                                 <td class="SaleOrderOtherRequiredDetail">@item.SOConfirmDate.Split(" ")[0]</td>
                                 <td class="SaleOrderOtherRequiredDetail">@item.Approved</td>
+                                <td class="">@item.CreatedByName</td>
                                 <td class="">@item.SOComplete</td>
                                 <td class="SaleOrderOtherRequiredDetail">
                                     @if (!string.IsNullOrEmpty(item.ApprovedDate))

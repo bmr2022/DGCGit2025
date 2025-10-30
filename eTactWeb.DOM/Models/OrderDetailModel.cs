@@ -92,6 +92,8 @@ namespace eTactWeb.DOM.Models
     public class SaleOrderDashboard
     {
         public string? AmmEffDate { get; set; }
+        public string? CreatedByName { get; set; }
+
         public int AmmNo { get; set; }
         public int AccountCode { get; set; }
         public string AmendmentDate { get; set; }

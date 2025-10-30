@@ -1426,7 +1426,7 @@ namespace eTactWeb.Data.DAL
                                 "AmmNo","AmmEffDate","Address","DeliveryAddress","ConsigneeAccountCode","OrderAmt","OrderNetAmt", "FreightPaidBy", "InsuApplicable", "ModeTransport","DeliverySch",
                                 "PackingChgApplicable", "DeliveryTerms", "SOComplete", "PreparedBy", "TotalDiscount", "SODeliveryDate", "TotalDisPercent", "TotalDiscAmt", "DespatchAdviseComplete", "PortToLoading", "PortOfDischarge",
                                 "ResponsibleSalesPersonID","CustContactPerson","SaleDocType","OtherDetail","SOConfirmDate","OrderDelayReason","Approved","ApprovedDate","ApprovedBy", "UID","UpdatedOn","UpdatedBy", "CreatedOn","RoundOff",
-                                "EntryByMachineName", "SalesPersonEmailId", "eMailFromCC1", "eMailFromCC2", "eMailFromCC3", "pendingAmt");
+                                "EntryByMachineName", "SalesPersonEmailId", "eMailFromCC1", "eMailFromCC2", "eMailFromCC3", "pendingAmt", "CreatedByName");
                         oDT.TableName = "SODASHBOARD";
 
                         Result.SODashboard = CommonFunc.DataTableToList<SaleOrderDashboard>(oDT);
@@ -1544,7 +1544,7 @@ namespace eTactWeb.Data.DAL
                               "AmmNo", "AmmEffDate", "Address", "DeliveryAddress", "ConsigneeAccountCode", "OrderAmt", "OrderNetAmt", "FreightPaidBy", "InsuApplicable", "ModeTransport", "DeliverySch",
                               "PackingChgApplicable", "DeliveryTerms", "SOComplete", "PreparedBy", "TotalDiscount", "SODeliveryDate", "TotalDisPercent", "TotalDiscAmt", "DespatchAdviseComplete", "PortToLoading", "PortOfDischarge",
                               "ResponsibleSalesPersonID", "CustContactPerson", "SaleDocType", "OtherDetail", "SOConfirmDate", "OrderDelayReason", "Approved", "ApprovedDate", "ApprovedBy", "UID", "UpdatedOn", "UpdatedBy", "CreatedOn", "RoundOff",
-                              "EntryByMachineName","SalesPersonEmailId", "eMailFromCC1", "eMailFromCC2", "eMailFromCC3", "pendingAmt");
+                              "EntryByMachineName","SalesPersonEmailId", "eMailFromCC1", "eMailFromCC2", "eMailFromCC3", "pendingAmt", "CreatedByName");
 
                             oDT.TableName = "SODASHBOARD";
 
