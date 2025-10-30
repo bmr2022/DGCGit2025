@@ -94,7 +94,7 @@ public class Common
         public int TxTaxType { get; set; }
         public string? TxTaxTypeName { get; set; }
         public string? TxType { get; set; }
-
+        public string ? Message { get; set; }
         public IList<SelectListItem> YesNo { get; set; } = new List<SelectListItem>()
         {
             new() { Value = "Y", Text = "Yes" },

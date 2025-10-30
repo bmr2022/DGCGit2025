@@ -1692,6 +1692,7 @@ public static class CommonFunc
                         && typeProperty.PropertyInfo.Name != "GRDate"
                         && typeProperty.PropertyInfo.Name != "BillNo"
                         && typeProperty.PropertyInfo.Name != "BillDate"
+                        && typeProperty.PropertyInfo.Name != "Message"
                         && typeProperty.PropertyInfo.Name != "CustomerName"
                         && typeProperty.PropertyInfo.Name != "AllowToAdjZeroAmt"
                         && typeProperty.PropertyInfo.Name != "SubInvoicetype"

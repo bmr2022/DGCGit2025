@@ -2043,6 +2043,8 @@ public class TaxController : Controller
                     return Content(isSuccess);
                 }
                 TaxGrid = await GetHSNTaxList(MainModel);
+                if (TaxGrid.Count == 1 && !string.IsNullOrEmpty(TaxGrid[0].Message))
+                    return Content(TaxGrid[0].Message);
                 break;
 
             case "PurchaseOrder":
@@ -2056,6 +2058,8 @@ public class TaxController : Controller
                 MainModel.AccountCode = AC;
                 MainModel.TxPageName = TxPageName;
                 TaxGrid = await GetHSNTaxList(MainModel);
+                if (TaxGrid.Count == 1 && !string.IsNullOrEmpty(TaxGrid[0].Message))
+                    return Content(TaxGrid[0].Message);
                 break;
             case "DirectPurchaseBill":
                 HttpContext.Session.Get(TxPageName);
@@ -2063,6 +2067,8 @@ public class TaxController : Controller
                 MainModel.AccountCode = AC;
                 MainModel.TxPageName = TxPageName;
                 TaxGrid = await GetHSNTaxList(MainModel);
+                if (TaxGrid.Count == 1 && !string.IsNullOrEmpty(TaxGrid[0].Message))
+                    return Content(TaxGrid[0].Message);
                 break;
             case "PurchaseBill":
                 HttpContext.Session.Get(TxPageName);
@@ -2075,6 +2081,8 @@ public class TaxController : Controller
                 MainModel.AccountCode = AC;
                 MainModel.TxPageName = TxPageName;
                 TaxGrid = await GetHSNTaxList(MainModel);
+                if (TaxGrid.Count == 1 && !string.IsNullOrEmpty(TaxGrid[0].Message))
+                    return Content(TaxGrid[0].Message);
                 break;
             case "SaleInvoice":
                 HttpContext.Session.Get(TxPageName);
@@ -2088,6 +2096,8 @@ public class TaxController : Controller
                 MainModel.AccountCode = AC;
                 MainModel.TxPageName = TxPageName;
                 TaxGrid = await GetHSNTaxList(MainModel);
+                if (TaxGrid.Count == 1 && !string.IsNullOrEmpty(TaxGrid[0].Message))
+                    return Content(TaxGrid[0].Message);
                 break;
             case "CreditNote":
                 HttpContext.Session.Get(TxPageName);
@@ -2101,6 +2111,8 @@ public class TaxController : Controller
                 MainModel.AccountCode = AC;
                 MainModel.TxPageName = TxPageName;
                 TaxGrid = await GetHSNTaxList(MainModel);
+                if (TaxGrid.Count == 1 && !string.IsNullOrEmpty(TaxGrid[0].Message))
+                    return Content(TaxGrid[0].Message);
                 break;
             case "PurchaseRejection":
                 HttpContext.Session.Get(TxPageName);
@@ -2114,6 +2126,8 @@ public class TaxController : Controller
                 MainModel.AccountCode = AC;
                 MainModel.TxPageName = TxPageName;
                 TaxGrid = await GetHSNTaxList(MainModel);
+                if (TaxGrid.Count == 1 && !string.IsNullOrEmpty(TaxGrid[0].Message))
+                    return Content(TaxGrid[0].Message);
                 break;
             case "SaleRejection":
                 HttpContext.Session.Get(TxPageName);
@@ -2127,6 +2141,8 @@ public class TaxController : Controller
                 MainModel.AccountCode = AC;
                 MainModel.TxPageName = TxPageName;
                 TaxGrid = await GetHSNTaxList(MainModel);
+                if (TaxGrid.Count == 1 && !string.IsNullOrEmpty(TaxGrid[0].Message))
+                    return Content(TaxGrid[0].Message);
 
                 //HttpContext.Session.Get(TxPageName);
                 //_MemoryCache.TryGetValue("SaleRejectionModel", out MainModel);
@@ -2146,6 +2162,7 @@ public class TaxController : Controller
                 MainModel.AccountCode = AC;
                 MainModel.TxPageName = TxPageName;
                 IssueTaxGrid = await GetHSNIssueTaxList(MainModel);
+
                 break;
             case "JobWorkIssue":
                 HttpContext.Session.Get(TxPageName);
@@ -2153,6 +2170,8 @@ public class TaxController : Controller
                 MainModel.AccountCode = AC;
                 MainModel.TxPageName = TxPageName;
                 TaxGrid = await GetHSNTaxList(MainModel);
+                if (TaxGrid.Count == 1 && !string.IsNullOrEmpty(TaxGrid[0].Message))
+                    return Content(TaxGrid[0].Message);
                 break;
 
             default:
@@ -2749,9 +2768,12 @@ public class TaxController : Controller
                     //if(TaxGrid.TxPartName == item.PartCode)
 
                     var paramResult = await ITaxModule.GetHSNTaxInfo(HSNTAXParam);
-
-                    if (paramResult.StatusText == "Success" && paramResult.Result != null && paramResult.Result?.Rows.Count > 0)
+                    
+                    if ( paramResult.Result != null && paramResult.Result?.Rows.Count > 0)
                     {
+                        if (paramResult.Result.Rows[0]["Status"] != "SuccessFull")
+                       return new List<TaxModel> { new TaxModel { Message = $"Error: {paramResult.Result.Rows[0]["Status"]}" } };
+
                         foreach (DataRow dataRow in paramResult.Result.Rows)
                         {
                             //HSNTaxDetail.AddInTaxable = dataRow["AddInTaxable"].ToString();

@@ -287,7 +287,9 @@ namespace eTactWeb.Controllers
                 MainModel = BindItem4Grid(MainModel);
                 MainModel.SaleRejectionDetails = saleRejectionList;
                 MainModel.ItemDetailGrid = saleRejectionList;
-                HttpContext.Session.SetString("SaleRejectionModel", JsonConvert.SerializeObject(MainModel));
+                    HttpContext.Session.SetString("SaleRejectionModel", JsonConvert.SerializeObject(MainModel));
+                string modelJson2 = HttpContext.Session.GetString("SaleRejectionModel");
+                string modelJson1 = HttpContext.Session.GetString("KeySaleRejectionGrid");
                 return Json(new { success = true });
             }
             catch (Exception ex)
