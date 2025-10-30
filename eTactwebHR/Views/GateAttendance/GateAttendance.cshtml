@@ -16,20 +16,9 @@
             <h5>
                 <strong>@ViewData["Title"] - @Model.GateAttYearCode</strong>
                 <span class="d-flex float-end" style="margin-top:-2px;">
-                    <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="PrintVoucher"
-                       asp-controller="GateAttendance" asp-route-EntryId="@Model.GateAttEntryId" asp-route-YearCode="@Model.GateAttYearCode">
-                        <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
-                        PRINT VOUCHER
-                    </a>
-                    <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="PrintReport"
-                       asp-controller="GateAttendance" asp-route-EntryId="@Model.GateAttEntryId" asp-route-GateAttYearCode="@Model.GateAttYearCode">
-                        <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
-                        PRINT INVOICE
-                    </a>
                     @if (Model.Mode == "U" && Model.Mode != "POC" && Model.Mode != "V")
                     {
                     }
-
                     <a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient" style="margin-right:5px;">
                         <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                         Dashboard
@@ -137,20 +126,9 @@
                 <strong>@ViewData["Title"] - @Model.GateAttYearCode</strong>
                 <span style="display:none;" id="GateAttYearCode">@Model.GateAttYearCode</span>
                 <span class="d-flex float-end" style="margin-top:-2px;">
-                    <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="PrintVoucher"
-                       asp-controller="GateAttendance" asp-route-EntryId="@Model.GateAttEntryId" asp-route-YearCode="@Model.GateAttYearCode">
-                        <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
-                        PRINT VOUCHER
-                    </a>
-                    <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="PrintReport"
-                       asp-controller="GateAttendance" asp-route-EntryId="@Model.GateAttEntryId" asp-route-YearCode="@Model.GateAttYearCode">
-                        <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
-                        PRINT INVOICE
-                    </a>
                     @if (Model.Mode == "U" && Model.Mode != "POC" && Model.Mode != "V")
                     {
                     }
-
                     <a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient" style="margin-right:5px;">
                         <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                         Dashboard
