@@ -58,6 +58,7 @@ public class HomeController : Controller
     [HttpGet]
     public async Task<IActionResult> Dashboard()
     {
+       
         return View();
     }
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -495,6 +496,7 @@ public class HomeController : Controller
         var EMPNAME = "";
         var DepId = 0;
         var DepName = "";
+        string RetailerOrManufacturar = string.Empty;
         string empName = "";
         var userRole = "";
         Constants.FinincialYear = model.YearCode;
@@ -726,7 +728,30 @@ public class HomeController : Controller
                     rdrAccount.Close();
                 }
                 conn.Close();
+                conn.Open();
+                
 
+                sql = "SELECT RetailerOrManufacturar FROM Company_Detail";
+
+                cmdAccountCode = new SqlCommand(sql, conn);
+                rdrAccount = cmdAccountCode.ExecuteReader();
+
+                if (rdrAccount.HasRows)
+                {
+                    IsDrOpen = true;
+                    while (rdrAccount.Read())
+                    {
+                        RetailerOrManufacturar = rdrAccount.GetString(0);
+                    }
+                }
+
+                if (IsDrOpen)
+                {
+                    IsDrOpen = false;
+                    rdrAccount.Close();
+                }
+
+                conn.Close();
                 conn.Open();
                 sql = "exec [GetUserDetail]   @Flage = 'GETUSERTYPE',@uname ='" + model.UserName + "', @Pass = '" + model.Password + "'";
                 // sql = "select UserType from UserMaster where UserName='" + model.UserName + "' and Password = '" + model.Password + "'";
@@ -895,6 +920,7 @@ public class HomeController : Controller
             HttpContext.Session.SetString("UserType", userRole);//done
             HttpContext.Session.SetString("DeptName", DepName);
             HttpContext.Session.SetString("DeptId", DepId.ToString());
+            HttpContext.Session.SetString("RetailerOrManufacturar", RetailerOrManufacturar);
             //Task login = HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
         }
@@ -917,9 +943,6 @@ public class HomeController : Controller
         }
 
         
-
-
-
 
         return RedirectToAction("Dashboard", "Home");
         
@@ -1019,6 +1042,12 @@ public class HomeController : Controller
     public async Task<JsonResult> FillInventoryDashboardData()
     {
         var JSON = await _IDashboard.FillInventoryDashboardData();
+        string JsonString = JsonConvert.SerializeObject(JSON);
+        return Json(JsonString);
+    }  
+    public async Task<JsonResult> GetCompanyDetail()
+    {
+        var JSON = await _IDashboard.GetCompanyDetail();
         string JsonString = JsonConvert.SerializeObject(JSON);
         return Json(JsonString);
     }

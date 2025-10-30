@@ -257,8 +257,7 @@ namespace eTactWeb.Controllers
             return Json(JsonString);
         }
 
-        [HttpPost]
-        public IActionResult UpdateRejectionItem([FromBody] List<SaleRejectionDetail> model)
+        public IActionResult UpdateRejectionItem(List<SaleRejectionDetail> model)
         {
             try
             {
@@ -267,7 +266,7 @@ namespace eTactWeb.Controllers
                     return Json(new { success = false, message = "Session expired or empty." });
 
                 var saleRejectionList = JsonConvert.DeserializeObject<List<SaleRejectionDetail>>(modelJson);
-
+                var MainModel = new SaleRejectionModel();
                 foreach (var item in model)
                 {
                     var existing = saleRejectionList.FirstOrDefault(x =>
@@ -279,12 +278,16 @@ namespace eTactWeb.Controllers
                     {
                         existing.RejRate = item.RejRate;
                         existing.Amount = item.Amount;
+                        existing.ItemNetAmount = item.Amount;
                     }
                 }
 
                 HttpContext.Session.SetString("KeySaleRejectionGrid",
                     JsonConvert.SerializeObject(saleRejectionList));
-
+                MainModel = BindItem4Grid(MainModel);
+                MainModel.SaleRejectionDetails = saleRejectionList;
+                MainModel.ItemDetailGrid = saleRejectionList;
+                HttpContext.Session.SetString("SaleRejectionModel", JsonConvert.SerializeObject(MainModel));
                 return Json(new { success = true });
             }
             catch (Exception ex)

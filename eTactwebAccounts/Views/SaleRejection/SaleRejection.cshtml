@@ -552,64 +552,10 @@
         //         $('#rejAmount-' + i).text(rejRate * rejQty);
         //     }
         // }
-        //         function CalculateRejAmount() {
-        //      var rowCount = $('#divAddSaleRejectionList tr').length;
-        //     for (var i = 1; i <= rowCount; i++) {
-
-        //         var rejRate = parseFloat($('#rejRate-' + i).val()) || 0;
-        //         var rejQty = parseFloat($('#rejQty-' + i).text()) || 0;
-        //         var discountPer = parseFloat($('#discountPer-' + i).text()) || 0;
-        //         var discountAmt = parseFloat($('#DiscountAmt-' + i).text()) || 0;
-        //         var rejAmount = rejRate * rejQty;
-
-        //         if (discountAmt > 0) {
-        //             rejAmount = rejAmount - discountAmt;
-        //         } else if (discountPer > 0) {
-        //             rejAmount = rejAmount - (rejAmount * discountPer / 100);
-        //         }
-        //         if (rejAmount < 0) rejAmount = 0;
-        //          $('#Amount-' + i).text(rejAmount.toFixed(2));
-        //     }
-        //       ClearDRCRGrid();
-        //     ClearAdjustmentGrid();
-        //     btnClearTax();
-        //              var schDataArr = [];
-        // var rowCount = $('#divAddSaleRejectionList tr').length;
-
-        // for (var i = 1; i <= rowCount; i++) {
-        //     var SchData = {
-        //            ItemCode: $('#itemCode-' + i).val(),
-        //      AgainstBillEntryId: $('#againstBillEntryId-' + i).text(),
-        //      AgainstBillYearCode: $('#againstBillYearCode-' + i).text(),
-        //          RejRate: parseFloat($('#rejRate-' + i).val()) || 0;
-        //         Amount: parseFloat($('#Amount-' + i).text()) || 0
-        //     };
-        //     schDataArr.push(SchData);
-        // }
-        //  console.log("schDataArr",schDataArr);
-        //     console.log("jsonschDataArr",JSON.stringify(schDataArr));
-        // $.ajax({
-        //     url: '@Url.Action("UpdateRejectionItem")',
-        //     type: "POST",
-        //     data: JSON.stringify(schDataArr), // ✅ send array directly
-        //     contentType: "application/json; charset=utf-8", // ✅ must match JSON body
-        //     dataType: "json",
-        //     success: function (response) {
-        //         console.log("Session updated successfully:", response);
-        //     },
-        //     error: function (xhr, status, error) {
-        //         console.error("Error updating session:", error);
-        //     }
-        // });
-
-        //     BasicTotal();
-        //        GetDbCrDetail();
-        // }
                 function CalculateRejAmount() {
-            var schDataArr = [];
-            var rowCount = $('#divAddSaleRejectionList tr').length;
-
+             var rowCount = $('#divAddSaleRejectionList tr').length;
             for (var i = 1; i <= rowCount; i++) {
+
                 var rejRate = parseFloat($('#rejRate-' + i).val()) || 0;
                 var rejQty = parseFloat($('#rejQty-' + i).text()) || 0;
                 var discountPer = parseFloat($('#discountPer-' + i).text()) || 0;
@@ -617,47 +563,105 @@
                 var rejAmount = rejRate * rejQty;
 
                 if (discountAmt > 0) {
-                    rejAmount -= discountAmt;
+                    rejAmount = rejAmount - discountAmt;
                 } else if (discountPer > 0) {
-                    rejAmount -= rejAmount * discountPer / 100;
+                    rejAmount = rejAmount - (rejAmount * discountPer / 100);
                 }
-
                 if (rejAmount < 0) rejAmount = 0;
-
-                $('#Amount-' + i).text(rejAmount.toFixed(2));
-
-                // ✅ collect row data
-                var SchData = {
-                       ItemCode: parseInt($('#itemCode-' + i).val()) || 0,
-        AgainstBillEntryId: parseInt($('#againstBillEntryId-' + i).text()) || 0,
-        AgainstBillYearCode: parseInt($('#againstBillYearCode-' + i).text()) || 0,
-        RejRate: parseFloat(rejRate) || 0,
-        Amount: parseFloat(rejAmount) || 0
-                };
-                schDataArr.push(SchData);
+                 $('#Amount-' + i).text(rejAmount.toFixed(2));
             }
-
-            // ✅ send to controller
-            $.ajax({
-                type: "POST",
-                url: '@Url.Action("UpdateRejectionItem")',
-                data: JSON.stringify(schDataArr), // send array directly
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                success: function (response) {
-                    console.log("Session updated successfully:", response);
-                },
-                error: function (xhr, status, error) {
-                    console.error("Error updating session:", error);
-                }
-            });
-
-            ClearDRCRGrid();
+              ClearDRCRGrid();
             ClearAdjustmentGrid();
             btnClearTax();
+                     var schDataArr = [];
+        var rowCount = $('#divAddSaleRejectionList tr').length;
+         for (var i = 1; i <= rowCount; i++) {
+             var SchData = {
+                 "AgainstBillYearCode": $('#againstBillYearCode-' + i).val(),
+                 "AgainstBillEntryId": $('#againstBillEntryId-' + i).text(),
+                 "ItemCode": $('#itemCode-' + i).val(),
+                 "RejRate": $('#rejRate-' + i).val(),
+                   "Amount": $('#Amount-' + i).text()
+             }
+
+             schDataArr.push(SchData);
+         }
+       
+         console.log("schDataArr",schDataArr);
+            console.log("jsonschDataArr",JSON.stringify(schDataArr));
+             $.ajax({
+             type: "POST",
+              url: '@Url.Action("UpdateRejectionItem")',
+             data: {model : schDataArr },
+             statusCode: {
+                 207: function () {
+                     $.notify('Duplicate Item...!', "info");
+                 }
+             },
+            success: function (response) {
+                console.log("Session updated successfully:", response);
+            },
+            error: function (xhr, status, error) {
+                console.error("Error updating session:", error);
+            }
+        });
+
             BasicTotal();
-            GetDbCrDetail();
+               GetDbCrDetail();
         }
+        //         function CalculateRejAmount() {
+        //     var schDataArr = [];
+        //     var rowCount = $('#divAddSaleRejectionList tr').length;
+
+        //     for (var i = 1; i <= rowCount; i++) {
+        //         var rejRate = parseFloat($('#rejRate-' + i).val()) || 0;
+        //         var rejQty = parseFloat($('#rejQty-' + i).text()) || 0;
+        //         var discountPer = parseFloat($('#discountPer-' + i).text()) || 0;
+        //         var discountAmt = parseFloat($('#DiscountAmt-' + i).text()) || 0;
+        //         var rejAmount = rejRate * rejQty;
+
+        //         if (discountAmt > 0) {
+        //             rejAmount -= discountAmt;
+        //         } else if (discountPer > 0) {
+        //             rejAmount -= rejAmount * discountPer / 100;
+        //         }
+
+        //         if (rejAmount < 0) rejAmount = 0;
+
+        //         $('#Amount-' + i).text(rejAmount.toFixed(2));
+
+        //         // ✅ collect row data
+        //         var SchData = {
+        //                ItemCode: parseInt($('#itemCode-' + i).val()) || 0,
+        // AgainstBillEntryId: parseInt($('#againstBillEntryId-' + i).text()) || 0,
+        // AgainstBillYearCode: parseInt($('#againstBillYearCode-' + i).text()) || 0,
+        // RejRate: parseFloat(rejRate) || 0,
+        // Amount: parseFloat(rejAmount) || 0
+        //         };
+        //         schDataArr.push(SchData);
+        //     }
+
+        //     // ✅ send to controller
+        //     $.ajax({
+        //         type: "POST",
+        //         url: '@Url.Action("UpdateRejectionItem")',
+        //         data: JSON.stringify(schDataArr), // send array directly
+        //         contentType: "application/json; charset=utf-8",
+        //         dataType: "json",
+        //         success: function (response) {
+        //             console.log("Session updated successfully:", response);
+        //         },
+        //         error: function (xhr, status, error) {
+        //             console.error("Error updating session:", error);
+        //         }
+        //     });
+
+        //     ClearDRCRGrid();
+        //     ClearAdjustmentGrid();
+        //     btnClearTax();
+        //     BasicTotal();
+        //     GetDbCrDetail();
+        // }
 
         async function GetTaxPartItem() {
             $.ajax({
@@ -1331,9 +1335,9 @@
         });
 
         $(document).on('select2:select', '#DocTypeAccountCode', function (e) {
-            if ($('#divSaleBillList tr td').length > 1) {
+            // if ($('#divSaleBillList tr td').length > 1) {
                 GetDbCrDetail();
-            }
+            // }
         });
                  function GetGstRegister() {
             var accountCode = $('#AccountCode').val();
@@ -1597,7 +1601,7 @@
                 }
 
                 if ($('#GSTRegistered').val() === 'Y') {
-                    if ($('#divTaxGrid tr td').length <= 1 && $('#DomesticExportNEPZ').val() === "DOMESTIC") {
+                     if ($('#divTaxGrid tr.data-row').length <= 1 && $('#DomesticExportNEPZ').val() === "DOMESTIC") {
                         $.notify('Tax Grid Should Have Atleast 1 Item...!', "error");
                         return;
                     }
