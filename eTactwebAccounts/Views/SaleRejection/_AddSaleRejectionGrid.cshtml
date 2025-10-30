@@ -69,8 +69,10 @@ else
             @* <th>@Cntr <input type="hidden" id="SeqNo-@Cntr" value="@item.SeqNo" /></th> *@
             <td>@item.AgainstBillTypeJWSALE<input type="hidden" id="GridIC-@Cntr" value="@item.ItemCode" /></td>
             <td>@item.AgainstBillNo</td>
-            <td>@item.AgainstBillYearCode</td>
-            <td>@item.AgainstBillEntryId</td>
+            <td><input class="form-control" value="@item.AgainstBillYearCode" id="againstBillYearCode-@Cntr" readonly /></td>
+            <td id="againstBillEntryId-@Cntr">@item.AgainstBillEntryId</td>
+           @*  <td>@item.AgainstBillYearCode</td>
+            <td>@item.AgainstBillEntryId</td> *@
             <td>@item.AgainstOpnOrBill</td>
             <td>@item.HSNNo</td>
             <td>@item.Itemsize</td>
