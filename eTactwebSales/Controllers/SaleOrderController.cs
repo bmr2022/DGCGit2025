@@ -33,6 +33,7 @@ using System.Security.Cryptography;
 using Newtonsoft.Json.Linq;
 using eTactWeb.Services;
 using DocumentFormat.OpenXml.EMMA;
+using OfficeOpenXml.Style;
 
 
 
@@ -2353,5 +2354,69 @@ public class SaleOrderController : Controller
 			return StatusCode(500, "An internal server error occurred. Please check the file format.");
 		}
 	}
+    [HttpGet]
+    public async Task<IActionResult> ExportToExcel(int SONo, string YearCode)
+    {
+        try
+        {
+            // Prepare model for DAL
+            var model = new SaleOrderDashboard
+            {
+                SummaryDetail = "Detail",
+                SONo = SONo,
+                FromDate = "",
+                ToDate = ""
+            };
+
+            // Call DAL
+            var result = await _ISaleOrder.GetSearchData(model);
+
+            // Filter by SONo
+            var data = result.SODashboard
+                             .Where(x => x.SONo == SONo)
+                             .ToList();
+
+            if (!data.Any())
+                return Content($"No data found for Sale Order No: {SONo}");
+
+            // Prepare Excel
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            using (var package = new ExcelPackage())
+            {
+                var ws = package.Workbook.Worksheets.Add("SaleOrder");
+
+                // Header
+                var props = typeof(SaleOrderDashboard).GetProperties();
+                for (int i = 0; i < props.Length; i++)
+                {
+                    ws.Cells[1, i + 1].Value = props[i].Name;
+                    ws.Cells[1, i + 1].Style.Font.Bold = true;
+                    ws.Cells[1, i + 1].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                    ws.Cells[1, i + 1].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightGray);
+                }
+
+                // Data
+                for (int row = 0; row < data.Count; row++)
+                {
+                    for (int col = 0; col < props.Length; col++)
+                    {
+                        ws.Cells[row + 2, col + 1].Value = props[col].GetValue(data[row]);
+                    }
+                }
+
+                ws.Cells.AutoFitColumns();
+
+                var excelBytes = package.GetAsByteArray();
+                return File(excelBytes,
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    $"SaleOrder_{SONo}.xlsx");
+            }
+        }
+        catch (Exception ex)
+        {
+            return Content($"Error generating Excel: {ex.Message}");
+        }
+    }
+
 
 }

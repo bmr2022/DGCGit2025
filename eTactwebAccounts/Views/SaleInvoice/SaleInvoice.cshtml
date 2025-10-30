@@ -6373,7 +6373,7 @@
                             $('#CustOrderNo').append('<option value="0">-Select-</option>');
                             if (obj.StatusCode != 500) {
                                 $.each(obj.Result, function (index, val) {
-                                    $('#CustOrderNo').append("<option value=" + val.CustOrderNo + " selected>" + val.CustOrderNo + "</option>");
+                                    $('#CustOrderNo').append('<option value="' + val.CustOrderNo + '" selected>' + val.CustOrderNo + '</option>');
                                 });
                             }
 
