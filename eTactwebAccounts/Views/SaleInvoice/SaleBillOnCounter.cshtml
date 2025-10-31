@@ -268,6 +268,12 @@
                                                     <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Name</th>
                                                     <th data-columnno="4" data-sortorder="asc" class="sortCol gridHiddenField"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bom/Ind</th> @*gridHiddenField*@
                                                     <th data-columnno="4" data-sortorder="asc" class="sortCol gridHiddenField"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Prod/UnProd</th> @*gridHiddenField*@
+
+                                                    <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bill Qty</th>
+                                                    <th data-columnno="20" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rate</th>
+                                                    <th data-columnno="22" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Dis Per</th>
+                                                    <th data-columnno="23" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Dis Amt</th>
+                                                    <th data-columnno="24" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Amt</th>
                                                     <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO No</th>
                                                     <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO Date</th>
                                                     <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Cust Order No</th>
@@ -275,11 +281,6 @@
                                                     <th data-columnno="10" data-sortorder="asc" class="sortCol SaleBillScheduleDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch Date</th>
                                                     <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>HSN No</th>
                                                     <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Store Name</th>
-                                                    <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bill Qty</th>
-                                                    <th data-columnno="20" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rate</th>
-                                                    <th data-columnno="22" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Dis Per</th>
-                                                    <th data-columnno="23" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Dis Amt</th>
-                                                    <th data-columnno="24" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Amt</th>
                                                     <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RackID</th>
 
                                                     <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Batch No</th>
@@ -402,6 +403,7 @@
                             <div class="row g-2 gx-3">
                                 <div class="col-12 text-center">
                                     <strong>BASIC TOTAL : <i class="fa-solid fa-indian-rupee-sign fa-fw fa-1x"></i><span id="lblItemNetAmount"></span></strong>
+                                    <strong>Total Qty : <span id="TotalQty"></span></strong>
                                     <input type="hidden" asp-for="BillAmt" />
                                     <strong>, TOTAL NO OF ITEMS : <span id="lblItemCount"></span></strong>
                                 </div>
@@ -1196,7 +1198,7 @@
             else {
                 GetServerDate();
             }
-
+            calculatetotalqty();
 
 
 
@@ -2321,6 +2323,7 @@
                     editingNow = false;
                     BasicTotal();
                     ClearAdjustmentGrid();
+                    calculatetotalqty();
                     // ResetPendQty();
 
                     // var rowCount = $('#divSaleBillList tr').length;
@@ -3614,6 +3617,19 @@
             FillSchYearCode();
         });
 
+        function calculatetotalqty() {
+            var totalQty = 0;
+
+            // Loop through each row inside tbody (to skip table header)
+            $('#divSaleBillList tr').each(function () {
+                var billQty = parseFloat($(this).find('.billQty').text()) || 0;
+                totalQty += billQty;
+            });
+
+            // Set total qty rounded to 2 decimals
+            $('#TotalQty').text(totalQty.toFixed(2));
+        }
+
         function ValidateGrid() {
 
             if (!SetminQty()) return;
@@ -3711,14 +3727,14 @@
                 RemoveErrorCls('Rate');
             }
 
-            if ($('#HSNNo').val() == 0 || $('#HSNNo').val() == '') {
-                AddErrorCls('HSNNo');
-                $.notify('please select HSNNo...!', "error");
-                Err = 1;
-            }
-            else {
-                RemoveErrorCls('HSNNo');
-            }
+            // if ($('#HSNNo').val() == 0 || $('#HSNNo').val() == '') {
+            //     AddErrorCls('HSNNo');
+            //     $.notify('please select HSNNo...!', "error");
+            //     Err = 1;
+            // }
+            // else {
+            //     RemoveErrorCls('HSNNo');
+            // }
 
             if ($('#ItemCode').find(':selected').data('stockable') == 'Y') {
                 if ($('#Batchno').val() == '0' || $('#Batchno').val() == null) {
@@ -4499,6 +4515,7 @@
                         ClearAdjustmentGrid();
                         // ResetPendQty();
                         FillSOPendQty();
+                        calculatetotalqty();
                         // var rowCount = $('#divSaleBillList tr').length;
 
                         // for (var i = 1; i <= rowCount; i++) {
@@ -4560,6 +4577,7 @@
             }).done(function () {
 
                 //alert('inside ajax');
+                GetFeatureOption();
                 GetTaxPartItem();
                 GetDbCrDetail();
                 AddAdjstmntDetail1();
