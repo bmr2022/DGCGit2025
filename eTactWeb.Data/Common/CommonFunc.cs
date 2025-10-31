@@ -530,6 +530,16 @@ public static class CommonFunc
                                  && typeProperty.PropertyInfo.Name != "UpdatedOn" && typeProperty.PropertyInfo.Name != "DRCRGrid"
                                   && typeProperty.PropertyInfo.Name != "PageNumber" && typeProperty.PropertyInfo.Name != "TotalRecords"
                                    && typeProperty.PropertyInfo.Name != "PageSize"
+                                   && typeProperty.PropertyInfo.Name != "DashboardTypeBack"
+                                   && typeProperty.PropertyInfo.Name != "FromDateBack"
+                                   && typeProperty.PropertyInfo.Name != "ToDateBack"
+                                   && typeProperty.PropertyInfo.Name != "AccountCodeBack"
+                                   && typeProperty.PropertyInfo.Name != "GroupCodeBack"
+                                   && typeProperty.PropertyInfo.Name != "AccountNameBack"
+                                   && typeProperty.PropertyInfo.Name != "VoucherTypeBack"
+                                   && typeProperty.PropertyInfo.Name != "VoucherNoBack"
+                                   && typeProperty.PropertyInfo.Name != "AccountList"
+                                   && typeProperty.PropertyInfo.Name != "Message"
                                     )
                     {
                         object value = row[typeProperty.PropertyInfo.Name];

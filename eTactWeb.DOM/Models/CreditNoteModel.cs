@@ -118,6 +118,7 @@ namespace eTactWeb.DOM.Models
     }
     public class AccCreditNoteAgainstBillDetail : TaxModel
     {
+        public int DocAccountCode { get; set; }
         public int CheckBoxNo { get; set; }
         public string CreditNoteInvoiceNo { get; set; } = string.Empty;
         public string CreditNoteVoucherNo { get; set; } = string.Empty;
