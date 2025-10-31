@@ -35,8 +35,8 @@ namespace eTactWeb.Controllers
             HttpContext.Session.Remove("KeySaleRejectionGrid");
             HttpContext.Session.Remove("SaleRejectionModel");
             HttpContext.Session.Remove("KeyAdjGrid");
+            HttpContext.Session.Remove("KeyTaxGrid");
 
-           
 
             //model.Uid = Convert.ToInt32(HttpContext.Session.GetString("UID"));
             //model.ActualEnteredBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
@@ -113,7 +113,6 @@ namespace eTactWeb.Controllers
             HttpContext.Session.Remove("SaleRejectionModel");
             HttpContext.Session.Remove("KeyAdjGrid");
             HttpContext.Session.Remove("KeyTaxGrid");
-
             if (model.Mode != "U")
             {
                 model.Uid = Convert.ToInt32(HttpContext.Session.GetString("UID"));
@@ -190,179 +189,249 @@ namespace eTactWeb.Controllers
             //HttpContext.Session.SetString("SaleRejection", JsonConvert.SerializeObject(model));
             return View("SaleRejection", model);
         }
-        public IActionResult DeleteItemRow(int SeqNo)
-        {
-            try
-            {
-                var MainModel = new SaleRejectionModel();
+        //public IActionResult DeleteItemRow(int SeqNo)
+        //{
+        //    try
+        //    {
+        //        var MainModel = new SaleRejectionModel();
 
-                // ✅ Get existing list from session
-                string modelJson = HttpContext.Session.GetString("KeySaleRejectionGrid");
-                List<SaleRejectionDetail> SaleRejectionGrid = new List<SaleRejectionDetail>();
+        //        // ✅ Get existing list from session
+        //        string modelJson = HttpContext.Session.GetString("KeySaleRejectionGrid");
+        //        List<SaleRejectionDetail> SaleRejectionGrid = new List<SaleRejectionDetail>();
 
-                if (!string.IsNullOrEmpty(modelJson))
-                {
-                    SaleRejectionGrid = JsonConvert.DeserializeObject<List<SaleRejectionDetail>>(modelJson);
-                }
-                if (SaleRejectionGrid != null && SaleRejectionGrid.Count > 0)
-                {
-                    int index = SeqNo - 1;
-                    if (index >= 0 && index < SaleRejectionGrid.Count)
-                    {
-                        SaleRejectionGrid.RemoveAt(index);
-                    }
-                    int newSeq = 1;
-                    foreach (var item in SaleRejectionGrid)
-                    {
-                        item.SeqNo = newSeq;
-                        newSeq++;
-                    }
-                    MainModel.SaleRejectionDetails = SaleRejectionGrid;
-                    MainModel.ItemDetailGrid = SaleRejectionGrid;
+        //        if (!string.IsNullOrEmpty(modelJson))
+        //        {
+        //            SaleRejectionGrid = JsonConvert.DeserializeObject<List<SaleRejectionDetail>>(modelJson);
+        //        }
+        //        if (SaleRejectionGrid != null && SaleRejectionGrid.Count > 0)
+        //        {
+        //            int index = SeqNo - 1;
+        //            if (index >= 0 && index < SaleRejectionGrid.Count)
+        //            {
+        //                SaleRejectionGrid.RemoveAt(index);
+        //            }
+        //            int newSeq = 1;
+        //            foreach (var item in SaleRejectionGrid)
+        //            {
+        //                item.SeqNo = newSeq;
+        //                newSeq++;
+        //            }
+        //            MainModel.SaleRejectionDetails = SaleRejectionGrid;
+        //            MainModel.ItemDetailGrid = SaleRejectionGrid;
 
-                    if (SaleRejectionGrid.Count == 0)
-                    {
-                        
-                        HttpContext.Session.Remove("KeySaleRejectionGrid");
-                    }
-                    else
-                    {
-                        string serializedMainModel = JsonConvert.SerializeObject(SaleRejectionGrid);
-                        HttpContext.Session.SetString("KeySaleRejectionGrid", serializedMainModel);
+        //            if (SaleRejectionGrid.Count == 0)
+        //            {
 
-                        //HttpContext.Session.SetString("KeySaleRejectionGrid", JsonConvert.SerializeObject(SaleRejectionGrid));
-                        //string modelJson1 = HttpContext.Session.GetString("KeySaleRejectionGrid",);
-                        //HttpContext.Session.SetString("KeySalesRejectionGrid", JsonConvert.SerializeObject(SaleRejectionGrid));
-                    }
-                }
-                return PartialView("_AddSaleRejectionGrid", MainModel);
+        //                HttpContext.Session.Remove("KeySaleRejectionGrid");
+        //            }
+        //            else
+        //            {
+        //                string serializedMainModel = JsonConvert.SerializeObject(SaleRejectionGrid);
+        //                HttpContext.Session.SetString("KeySaleRejectionGrid", serializedMainModel);
 
-            }
-            catch (Exception ex)
-            {
-                return Json(new { status = "error", message = ex.Message });
-            }
-        }
-        public IActionResult EditItemRow(int SeqNo)
-        {
-            string modelJson = HttpContext.Session.GetString("KeySaleRejectionGrid");
-            List<SaleRejectionDetail> MaterialGrid = new List<SaleRejectionDetail>();
-            if (!string.IsNullOrEmpty(modelJson))
-            {
-                MaterialGrid = JsonConvert.DeserializeObject<List<SaleRejectionDetail>>(modelJson);
-            }
+        //                //HttpContext.Session.SetString("KeySaleRejectionGrid", JsonConvert.SerializeObject(SaleRejectionGrid));
+        //                //string modelJson1 = HttpContext.Session.GetString("KeySaleRejectionGrid",);
+        //                //HttpContext.Session.SetString("KeySalesRejectionGrid", JsonConvert.SerializeObject(SaleRejectionGrid));
+        //            }
+        //        }
+        //        return PartialView("_AddSaleRejectionGrid", MainModel);
 
-            var SSGrid = MaterialGrid.Where(x => x.SeqNo == SeqNo);
-            string JsonString = JsonConvert.SerializeObject(SSGrid);
-            return Json(JsonString);
-        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return Json(new { status = "error", message = ex.Message });
+        //    }
+        //}
+        //public IActionResult EditItemRow(int SeqNo)
+        //{
+        //    string modelJson = HttpContext.Session.GetString("KeySaleRejectionGrid");
+        //    List<SaleRejectionDetail> MaterialGrid = new List<SaleRejectionDetail>();
+        //    if (!string.IsNullOrEmpty(modelJson))
+        //    {
+        //        MaterialGrid = JsonConvert.DeserializeObject<List<SaleRejectionDetail>>(modelJson);
+        //    }
 
+        //    var SSGrid = MaterialGrid.Where(x => x.SeqNo == SeqNo);
+        //    string JsonString = JsonConvert.SerializeObject(SSGrid);
+        //    return Json(JsonString);
+        //}
+        [HttpPost]
         public IActionResult UpdateRejectionItem(List<SaleRejectionDetail> model)
         {
             try
             {
+                // 🔹 Get the existing grid data from session
                 string modelJson = HttpContext.Session.GetString("KeySaleRejectionGrid");
-                if (string.IsNullOrEmpty(modelJson))
-                    return Json(new { success = false, message = "Session expired or empty." });
-
-                var saleRejectionList = JsonConvert.DeserializeObject<List<SaleRejectionDetail>>(modelJson);
-                var MainModel = new SaleRejectionModel();
-                foreach (var item in model)
-                {
-                    var existing = saleRejectionList.FirstOrDefault(x =>
-                        x.ItemCode == item.ItemCode &&
-                        x.AgainstBillEntryId == item.AgainstBillEntryId &&
-                        x.AgainstBillYearCode == item.AgainstBillYearCode);
-
-                    if (existing != null)
-                    {
-                        existing.RejRate = item.RejRate;
-                        existing.Amount = item.Amount;
-                        existing.ItemNetAmount = item.Amount;
-                    }
-                }
-
-                HttpContext.Session.SetString("KeySaleRejectionGrid",
-                    JsonConvert.SerializeObject(saleRejectionList));
-                MainModel = BindItem4Grid(MainModel);
-                MainModel.SaleRejectionDetails = saleRejectionList;
-                MainModel.ItemDetailGrid = saleRejectionList;
-                    HttpContext.Session.SetString("SaleRejectionModel", JsonConvert.SerializeObject(MainModel));
-                string modelJson2 = HttpContext.Session.GetString("SaleRejectionModel");
-                string modelJson1 = HttpContext.Session.GetString("KeySaleRejectionGrid");
-                return Json(new { success = true });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { success = false, message = ex.Message });
-            }
-        }
-
-        public IActionResult AddSaleRejectionDetail(List<SaleRejectionDetail> model)
-        {
-            try
-            {
-                string modelJson = HttpContext.Session.GetString("KeySaleRejectionGrid");
-                List<SaleRejectionDetail> SaleRejectionDetail = new List<SaleRejectionDetail>();
+                IList<SaleRejectionDetail> SaleBillDetail = new List<SaleRejectionDetail>();
                 if (!string.IsNullOrEmpty(modelJson))
                 {
-                    SaleRejectionDetail = JsonConvert.DeserializeObject<List<SaleRejectionDetail>>(modelJson);
+                    SaleBillDetail = JsonConvert.DeserializeObject<List<SaleRejectionDetail>>(modelJson);
                 }
-                string saleRejectionModelJson = HttpContext.Session.GetString("SaleRejectionModel");
-                SaleRejectionModel saleRejectionnModel = new SaleRejectionModel();
-                if (!string.IsNullOrEmpty(saleRejectionModelJson))
+
+                // 🔹 Get the main sale rejection model from session
+                string SaleBillModelJson = HttpContext.Session.GetString("SaleRejectionModel");
+                SaleRejectionModel saleBillModel = new SaleRejectionModel();
+                if (!string.IsNullOrEmpty(SaleBillModelJson))
                 {
-                    saleRejectionnModel = JsonConvert.DeserializeObject<SaleRejectionModel>(saleRejectionModelJson);
+                    saleBillModel = JsonConvert.DeserializeObject<SaleRejectionModel>(SaleBillModelJson);
                 }
 
                 var MainModel = new SaleRejectionModel();
-                var saleRejectionDetail = new List<SaleRejectionDetail>();
-                var rangeSaleRejectionGrid = new List<SaleRejectionDetail>();
+                var saleBillDetail = new List<SaleRejectionDetail>();
+                var rangeSaleBillGrid = new List<SaleRejectionDetail>();
 
+                // 🔹 Update only RejRate, Amount, and ItemNetAmount for matching items
                 if (model != null)
                 {
-                    foreach (var item in model) {
-                        if (SaleRejectionDetail == null)
-                        {
-                            item.SeqNo = 1; 
-                            //model.SeqNo = 1;
-                            saleRejectionDetail.Add(item);
-                        }
-                        else
-                        {
-                            if (SaleRejectionDetail.Any(x => x.ItemCode == item.ItemCode))
-                            {
-                                return Json("Duplicate");
-                            }
-                            int nextSeqNo = SaleRejectionDetail.Count > 0 ? SaleRejectionDetail.Max(x => x.SeqNo) + 1 : 1;
-                            item.SeqNo = nextSeqNo;
+                    foreach (var item in model)
+                    {
+                        var existing = SaleBillDetail.FirstOrDefault(x =>
+                            x.ItemCode == item.ItemCode &&
+                            x.AgainstBillEntryId == item.AgainstBillEntryId &&
+                            x.AgainstBillYearCode == item.AgainstBillYearCode);
 
-
-                            //model.SeqNo = SaleRejectionDetail.Count + 1;
-                            saleRejectionDetail = SaleRejectionDetail.Where(x => x != null).ToList();
-                            rangeSaleRejectionGrid.AddRange(saleRejectionDetail);
-                            saleRejectionDetail.Add(item);
+                        if (existing != null)
+                        {
+                            existing.RejRate = item.RejRate;
+                            existing.Amount = item.Amount;
+                            existing.ItemNetAmount = item.Amount;
                         }
                     }
-                        //MainModel = BindItem4Grid(model);
-                        MainModel.SaleRejectionDetails = saleRejectionDetail;
-                        MainModel.ItemDetailGrid = saleRejectionDetail;
-                    
+
+                    // 🔹 (You already had this sorting and assignment logic)
+                    saleBillDetail = SaleBillDetail.OrderBy(x => x.SeqNo).ToList();
+                    //saleBillDetail = saleBillDetail.OrderBy(item => item.SeqNo).ToList();
+                    MainModel.SaleRejectionDetails = saleBillDetail;
+                    MainModel.ItemDetailGrid = saleBillDetail;
+
                     HttpContext.Session.SetString("KeySaleRejectionGrid", JsonConvert.SerializeObject(MainModel.SaleRejectionDetails));
 
-                    MainModel = BindItem4Grid(MainModel);
-                    MainModel.SaleRejectionDetails = saleRejectionDetail;
-                    MainModel.ItemDetailGrid = saleRejectionDetail;
+                    MainModel.SaleRejectionDetails = saleBillDetail;
+                    MainModel.ItemDetailGrid = saleBillDetail;
+
+                    HttpContext.Session.SetString("KeySaleRejectionGrid", JsonConvert.SerializeObject(MainModel.SaleRejectionDetails));
                     HttpContext.Session.SetString("SaleRejectionModel", JsonConvert.SerializeObject(MainModel));
                 }
+                else
+                {
+                    ModelState.TryAddModelError("Error", "Sale Rejection List cannot be empty...!");
+                }
 
-                return PartialView("_AddSaleRejectionGrid", MainModel);
+                return Json(new { success = true });
             }
             catch (Exception ex)
             {
                 throw ex;
             }
         }
+
+        //public IActionResult UpdateRejectionItem(List<SaleRejectionDetail> model)
+        //{
+        //    try
+        //    {
+        //        string modelJson = HttpContext.Session.GetString("KeySaleRejectionGrid");
+        //        if (string.IsNullOrEmpty(modelJson))
+        //            return Json(new { success = false, message = "Session expired or empty." });
+
+        //        var saleRejectionList = JsonConvert.DeserializeObject<List<SaleRejectionDetail>>(modelJson);
+        //        var MainModel = new SaleRejectionModel();
+        //        foreach (var item in model)
+        //        {
+        //            var existing = saleRejectionList.FirstOrDefault(x =>
+        //                x.ItemCode == item.ItemCode &&
+        //                x.AgainstBillEntryId == item.AgainstBillEntryId &&
+        //                x.AgainstBillYearCode == item.AgainstBillYearCode);
+
+        //            if (existing != null)
+        //            {
+        //                existing.RejRate = item.RejRate;
+        //                existing.Amount = item.Amount;
+        //                existing.ItemNetAmount = item.Amount;
+        //            }
+        //        }
+        //        HttpContext.Session.Remove("KeySaleRejectionGrid");
+        //        HttpContext.Session.Remove("SaleRejectionModel");
+        //        HttpContext.Session.SetString("KeySaleRejectionGrid",
+        //            JsonConvert.SerializeObject(saleRejectionList));
+        //        MainModel = BindItem4Grid(MainModel);
+        //        MainModel.SaleRejectionDetails = saleRejectionList;
+        //        MainModel.ItemDetailGrid = saleRejectionList;
+        //        HttpContext.Session.SetString("SaleRejectionModel", JsonConvert.SerializeObject(MainModel));
+        //        string modelJson2 = HttpContext.Session.GetString("SaleRejectionModel");
+        //        string modelJson1 = HttpContext.Session.GetString("KeySaleRejectionGrid");
+        //        return Json(new { success = true });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return Json(new { success = false, message = ex.Message });
+        //    }
+        //}
+
+        //public IActionResult AddSaleRejectionDetail(List<SaleRejectionDetail> model)
+        //{
+        //    try
+        //    {
+        //        string modelJson = HttpContext.Session.GetString("KeySaleRejectionGrid");
+        //        List<SaleRejectionDetail> SaleRejectionDetail = new List<SaleRejectionDetail>();
+        //        if (!string.IsNullOrEmpty(modelJson))
+        //        {
+        //            SaleRejectionDetail = JsonConvert.DeserializeObject<List<SaleRejectionDetail>>(modelJson);
+        //        }
+        //        string saleRejectionModelJson = HttpContext.Session.GetString("SaleRejectionModel");
+        //        SaleRejectionModel saleRejectionnModel = new SaleRejectionModel();
+        //        if (!string.IsNullOrEmpty(saleRejectionModelJson))
+        //        {
+        //            saleRejectionnModel = JsonConvert.DeserializeObject<SaleRejectionModel>(saleRejectionModelJson);
+        //        }
+
+        //        var MainModel = new SaleRejectionModel();
+        //        var saleRejectionDetail = new List<SaleRejectionDetail>();
+        //        var rangeSaleRejectionGrid = new List<SaleRejectionDetail>();
+
+        //        if (model != null)
+        //        {
+        //            foreach (var item in model) {
+        //                if (SaleRejectionDetail == null)
+        //                {
+        //                    item.SeqNo = 1; 
+        //                    //model.SeqNo = 1;
+        //                    saleRejectionDetail.Add(item);
+        //                }
+        //                else
+        //                {
+        //                    if (SaleRejectionDetail.Any(x => x.ItemCode == item.ItemCode))
+        //                    {
+        //                        return Json("Duplicate");
+        //                    }
+        //                    int nextSeqNo = SaleRejectionDetail.Count > 0 ? SaleRejectionDetail.Max(x => x.SeqNo) + 1 : 1;
+        //                    item.SeqNo = nextSeqNo;
+
+
+        //                    //model.SeqNo = SaleRejectionDetail.Count + 1;
+        //                    saleRejectionDetail = SaleRejectionDetail.Where(x => x != null).ToList();
+        //                    rangeSaleRejectionGrid.AddRange(saleRejectionDetail);
+        //                    saleRejectionDetail.Add(item);
+        //                }
+        //            }
+        //                //MainModel = BindItem4Grid(model);
+        //                MainModel.SaleRejectionDetails = saleRejectionDetail;
+        //                MainModel.ItemDetailGrid = saleRejectionDetail;
+
+        //            HttpContext.Session.SetString("KeySaleRejectionGrid", JsonConvert.SerializeObject(MainModel.SaleRejectionDetails));
+
+        //            MainModel = BindItem4Grid(MainModel);
+        //            MainModel.SaleRejectionDetails = saleRejectionDetail;
+        //            MainModel.ItemDetailGrid = saleRejectionDetail;
+        //            HttpContext.Session.SetString("SaleRejectionModel", JsonConvert.SerializeObject(MainModel));
+        //        }
+
+        //        return PartialView("_AddSaleRejectionGrid", MainModel);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw ex;
+        //    }
+        //}
         [HttpGet]
         [Route("{controller}/Dashboard")]
         //public async Task<IActionResult> SRDashboard(string summaryDetail, string custInvoiceNo, string custName, string mrnNo, string gateNo, string partCode, string itemName, string againstBillNo, string docName, string voucherNo, string fromdate, string toDate)
@@ -876,6 +945,22 @@ namespace eTactWeb.Controllers
             fromDate = ParseFormattedDate(fromDate);
             toDate = ParseFormattedDate(toDate);
             var JSON = await _saleRejection.FillPartCode(fromDate, toDate);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        } 
+        public async Task<JsonResult> FillMRNNo(string fromDate, string toDate)
+        {
+            fromDate = ParseFormattedDate(fromDate);
+            toDate = ParseFormattedDate(toDate);
+            var JSON = await _saleRejection.FillMRNNo(fromDate, toDate);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        } 
+        public async Task<JsonResult> FillGateNo(string fromDate, string toDate)
+        {
+            fromDate = ParseFormattedDate(fromDate);
+            toDate = ParseFormattedDate(toDate);
+            var JSON = await _saleRejection.FillGateNo(fromDate, toDate);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }

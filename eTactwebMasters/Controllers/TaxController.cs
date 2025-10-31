@@ -242,15 +242,26 @@ public class TaxController : Controller
             }
             else if (model.TxPageName == "SaleRejection")
             {
-                _MemoryCache.TryGetValue("KeySaleRejectionGrid", out IList<SaleRejectionDetail> SaleRejectionDetail);
-                string modelPRGridJson = HttpContext.Session.GetString("KeySaleRejectionGrid");
-                if (!string.IsNullOrEmpty(modelPRGridJson))
+                string modelJson = HttpContext.Session.GetString("KeySaleRejectionGrid");
+                List<SaleRejectionDetail> SaleRejectionDetail = new();
+                if (!string.IsNullOrEmpty(modelJson))
                 {
-                    SaleRejectionDetail = JsonConvert.DeserializeObject<List<SaleRejectionDetail>>(modelPRGridJson);
+                    SaleRejectionDetail = JsonConvert.DeserializeObject<List<SaleRejectionDetail>>(modelJson);
                 }
-                var SaleRejectionDetailModel = new SaleRejectionModel();
-                SaleRejectionDetailModel.SaleRejectionDetails = SaleRejectionDetail.ToList();
-                MainModel = SaleRejectionDetailModel;
+
+                //var saleBillModel = new SaleBillModel();
+                //saleBillModel.saleBillDetails = saleBillDetail.ToList();
+                MainModel.SaleRejectionDetails = SaleRejectionDetail;
+
+                //_MemoryCache.TryGetValue("KeySaleRejectionGrid", out IList<SaleRejectionDetail> SaleRejectionDetail);
+                //string modelPRGridJson = HttpContext.Session.GetString("KeySaleRejectionGrid");
+                //if (!string.IsNullOrEmpty(modelPRGridJson))
+                //{
+                //    SaleRejectionDetail = JsonConvert.DeserializeObject<List<SaleRejectionDetail>>(modelPRGridJson);
+                //}
+                //var SaleRejectionDetailModel = new SaleRejectionModel();
+                //SaleRejectionDetailModel.SaleRejectionDetails = SaleRejectionDetail.ToList();
+                //MainModel = SaleRejectionDetailModel;
 
                 //_MemoryCache.TryGetValue("KeySaleRejectionGrid", out IList<SaleRejectionDetail> saleRejectionDetail);
                 //var saleRejectionModel = new SaleRejectionModel();
@@ -1492,15 +1503,16 @@ public class TaxController : Controller
             }
             else if (SN == "SaleRejection")
             {
-                //MainModel = JsonConvert.DeserializeObject<List<POItemDetail>>(HttpContext.Session.GetString(SN) ?? string.Empty);
-                _MemoryCache.TryGetValue("SaleRejectionModel", out SaleRejectionModel MainModel);
-                string modelPRJson = HttpContext.Session.GetString("SaleRejectionModel");
-                SaleRejectionModel SaleRejectionModel = new SaleRejectionModel();
-                if (!string.IsNullOrEmpty(modelPRJson))
+
+                SaleRejectionModel MainModel = new();
+                string modelJson = HttpContext.Session.GetString("SaleRejectionModel");
+                if (!string.IsNullOrEmpty(modelJson))
                 {
-                    MainModel = JsonConvert.DeserializeObject<SaleRejectionModel>(modelPRJson);
+                    MainModel = JsonConvert.DeserializeObject<SaleRejectionModel>(modelJson);
                 }
+
                 ListOfItems = MainModel.ItemDetailGrid;
+                
             }
             else if (SN == "IssueNRGP")
             {

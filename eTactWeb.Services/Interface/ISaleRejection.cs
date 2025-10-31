@@ -13,6 +13,8 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetFormRights(int uId);
         Task<ResponseResult> FillItemName(string fromDate, string toDate);
         Task<ResponseResult> FillPartCode(string fromDate, string toDate);
+        Task<ResponseResult> FillGateNo(string fromDate, string toDate);
+        Task<ResponseResult> FillMRNNo(string fromDate, string toDate);
         Task<ResponseResult> FillInvoiceNo(string fromDate, string toDate);
         Task<ResponseResult> FillVoucherNo(string fromDate, string toDate);
         Task<ResponseResult> FillDocument(string fromDate, string toDate);
