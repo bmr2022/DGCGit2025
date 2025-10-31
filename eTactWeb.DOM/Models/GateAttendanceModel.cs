@@ -61,6 +61,7 @@ public class GateAttendanceModel : TimeStamp
     public int? HRApprovalEmpId { get; set; }
     public string CC { get; set; }
     public string CategoryCode { get; set; }
+    public int? CategoryId { get; set; }
     public DateTime? EmpAttDate { get; set; }
     public int? EmpAttYear { get; set; }
     public DateTime? EmpAttTime { get; set; }

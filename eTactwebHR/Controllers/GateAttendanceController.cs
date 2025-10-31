@@ -82,6 +82,10 @@ namespace eTactwebHR.Controllers
                 MainModel.Mode = Mode;
                 MainModel.ID = ID;
                 MainModel.GateAttYearCode = YearCode;
+                fromDate = new DateTime(MainModel.GateAttYearCode, 1, 1);
+                toDate = new DateTime(MainModel.GateAttYearCode, 12, 31);
+                MainModel.NFromDate = CommonFunc.ParseFormattedDate(fromDate.ToString("dd/MM/yyyy"));
+                MainModel.NToDate = CommonFunc.ParseFormattedDate(toDate.ToString("dd/MM/yyyy"));
                 MainModel.FinFromDate = HttpContext.Session.GetString("FromDate");
                 MainModel.FinToDate = HttpContext.Session.GetString("ToDate");
                 MainModel.intEmpAttMonth = string.IsNullOrWhiteSpace(MainModel.strEmpAttMonth) ? 0 : new[] { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" }.Select((m, i) => new { m, i }).FirstOrDefault(x => MainModel.strEmpAttMonth.StartsWith(x.m, StringComparison.OrdinalIgnoreCase))?.i + 1 ?? 0;
@@ -635,18 +639,18 @@ namespace eTactwebHR.Controllers
 
                 if (itemDetailList != null && string.Equals(itemDetailList.DayOrMonthType, "daily", StringComparison.OrdinalIgnoreCase))
                 {
-                    rowValues.Add(Item.LateEntry);
-                    rowValues.Add(Item.EarlyExit);
+                    rowValues.Add(Item.LateEntry ?? string.Empty);
+                    rowValues.Add(Item.EarlyExit ?? string.Empty);
                     rowValues.Add(Item.LeaveTypeId ?? 0);
                     rowValues.Add(Item.ActualEmpShiftId ?? 0);
                     rowValues.Add(Item.ApproveByDept);
-                    rowValues.Add(CommonFunc.ParseSafeDate(Item.DeptApprovaldate.ToString() ?? string.Empty));
+                    rowValues.Add((Item.DeptApprovaldate != null) ? CommonFunc.ParseSafeDate(Item.DeptApprovaldate.ToString() ?? currentDt.ToString("MM/dd/yyyy")) : null);
                     rowValues.Add(Item.DeptApprovalEmpId ?? 0);
                     rowValues.Add(Item.ApproveByHR);
-                    rowValues.Add(CommonFunc.ParseSafeDate(Item.HRApprovaldate.ToString() ?? string.Empty));
+                    rowValues.Add((Item.HRApprovaldate != null) ? CommonFunc.ParseSafeDate(Item.HRApprovaldate.ToString() ?? currentDt.ToString("MM/dd/yyyy")) : null);
                     rowValues.Add(Item.HRApprovalEmpId ?? 0);
                     rowValues.Add(!string.IsNullOrEmpty(itemDetailList.CC) ? itemDetailList.CC : (!string.IsNullOrEmpty(itemDetailList.Branch) ? itemDetailList.Branch : string.Empty));
-                    rowValues.Add(itemDetailList.EmpCategoryId);
+                    rowValues.Add(itemDetailList.CategoryId != null ? Convert.ToInt32(itemDetailList.CategoryId) : 1);
                     rowValues.Add(itemDetailList.ActualEmpShiftId ?? 0);
                     rowValues.Add(currentDt);
                     rowValues.Add(currentDt);

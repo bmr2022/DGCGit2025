@@ -91,7 +91,7 @@
                             <td>@Model.GateAttDetailsList[i].EmpCategory</td>
                             @if (Model != null && Model.DayHeaders != null)
                             {
-                                @if (Model.DayOrMonthType == "Daily")
+                                @if (string.Equals(Model.DayOrMonthType, "Daily", StringComparison.OrdinalIgnoreCase))
                                 {
                                     var fromkey = Model.GateAttDetailsList[i].Attendance.FirstOrDefault(x => string.Equals(x.Key, "fromtime", StringComparison.OrdinalIgnoreCase)).Key;
                                     var tokey = Model.GateAttDetailsList[i].Attendance.FirstOrDefault(x => string.Equals(x.Key, "totime", StringComparison.OrdinalIgnoreCase)).Key;
@@ -146,6 +146,7 @@
                             <input type="hidden" name="GateAttDetailsList[@Model.GateAttDetailsList[i].EmpId].EmpId" value="@Model.GateAttDetailsList[i].EmpId" />
                             <input type="hidden" name="GateAttDetailsList[@Model.GateAttDetailsList[i].EmpId].DesignationEntryId" value="@Model.GateAttDetailsList[i].DesignationEntryId" />
                             <input type="hidden" name="GateAttDetailsList[@Model.GateAttDetailsList[i].EmpId].ActualEmpShiftId" value="@Model.GateAttDetailsList[i].ActualEmpShiftId" />
+                            <input type="hidden" name="GateAttDetailsList[@Model.GateAttDetailsList[i].EmpId].CategoryId" value="@Model.GateAttDetailsList[i].CategoryId" />
                         </tr>
                     }
                 }

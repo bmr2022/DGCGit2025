@@ -94,7 +94,8 @@ public class GateAttendanceDAL
                         DeptId = dr["deptId"] != DBNull.Value ? Convert.ToInt32(dr["deptId"]) : 0,
                         EmpId = dr["emp_id"] != DBNull.Value ? Convert.ToInt32(dr["emp_id"]) : 0,
                         DesignationEntryId = dr["DesigId"] != DBNull.Value ? Convert.ToInt32(dr["DesigId"]) : 0,
-                        ActualEmpShiftId = dr["ShiftId"] != DBNull.Value ? Convert.ToInt32(dr["ShiftId"]) : 0
+                        ActualEmpShiftId = dr["ShiftId"] != DBNull.Value ? Convert.ToInt32(dr["ShiftId"]) : 0,
+                        CategoryId = dr["CategoryId"] != DBNull.Value ? Convert.ToInt32(dr["CategoryId"]) : 0
                     };
 
                     for (int d = 1; d <= daysInMonth; d++)
@@ -257,7 +258,7 @@ public class GateAttendanceDAL
             SqlParams.Add(new SqlParameter("@todate", todate == default ? string.Empty : todate));
             SqlParams.Add(new SqlParameter("@ShiftId", model.ActualEmpShiftId != null ? model.ActualEmpShiftId : 1));
             //SqlParams.Add(new SqlParameter("@EmpCateid", model.EmpCategoryId != null ? model.EmpCategoryId : 0));
-            SqlParams.Add(new SqlParameter("@EmpCateid", !string.IsNullOrEmpty(model.CategoryCode) ? Convert.ToInt32(model.EmpCategoryId) : 0));
+            SqlParams.Add(new SqlParameter("@EmpCateid", !string.IsNullOrEmpty(model.CategoryCode) ? Convert.ToInt32(model.CategoryCode) : 0));
             SqlParams.Add(new SqlParameter("@DepId", model.DeptId != null ? model.DeptId : 0));
             SqlParams.Add(new SqlParameter("@DesgId", model.DesignationEntryId != null ? model.DesignationEntryId : 0));
             SqlParams.Add(new SqlParameter("@EmpId", model.EmpId != null ? model.EmpId : 0));
@@ -458,6 +459,7 @@ public class GateAttendanceDAL
                             DeptId = dr["DeptId"] != DBNull.Value ? Convert.ToInt32(dr["DeptId"]) : 0,
                             DesignationEntryId = dr["DesigId"] != DBNull.Value ? Convert.ToInt32(dr["DesigId"]) : 0,
                             ActualEmpShiftId = dr["ShiftId"] != DBNull.Value ? Convert.ToInt32(dr["ShiftId"]) : 0,
+                            //CategoryId = dr["CategoryId"] != DBNull.Value ? Convert.ToInt32(dr["CategoryId"]) : 0,
                             Attendance = new Dictionary<string, string>()
                         };
 

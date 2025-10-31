@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using static eTactWeb.Data.Common.CommonFunc;
 using static eTactWeb.DOM.Models.Common;
 using eTactWeb.DOM.Models;
+using MessagePack;
 
 namespace eTactWeb.Controllers
 {
@@ -488,11 +489,11 @@ namespace eTactWeb.Controllers
                 throw ex;
             }
         }
-        public async Task<IActionResult> GetDetailData(string ReportType, string FromDate, string ToDate)
+        public async Task<IActionResult> GetDetailData(string ReportType, string FromDate, string ToDate,int Empid,int LeaveEntryId)
         {
             //model.Mode = "Search";
             var model = new HRLeaveApplicationDashBoard();
-            model = await _IHRLeaveApplicationMaster.GetDashboardDetailData(ReportType, FromDate, ToDate);
+            model = await _IHRLeaveApplicationMaster.GetDashboardDetailData(ReportType, FromDate, ToDate, Empid, LeaveEntryId);
 
 
             if (ReportType == "SUMMARY")
