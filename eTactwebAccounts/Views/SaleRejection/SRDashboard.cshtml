@@ -92,13 +92,13 @@
                                 </select>
                                 <input type="hidden" value="@Model.AgainstBillNo" id="hiddenAgainstBillNo" />
                             </div>
-                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                            @* <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
                                 <label asp-for="Account_Name" class="form-label">Document Name</label>
                                 <select asp-for="Account_Name" id="DocumentName" class="form-control">
                                     <option value="">-Select-</option>
                                 </select>
-                                @* <input type="hidden" value="@Model.DocumentName" id="hiddenDocumentName" /> *@
-                            </div>
+                                <input type="hidden" value="@Model.DocumentName" id="hiddenDocumentName" /> 
+                            </div> *@
                             <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
                                 <label asp-for="VoucherNo" class="form-label">Voucher No</label>
                                 <select asp-for="VoucherNo" class="form-control">
@@ -162,7 +162,8 @@
             FillAgainstSaleBillNo();
             FillVoucherNo();
             FillInvoiceNo();
-
+            FillGateNo();
+            FillMRNNo();
             GetSearchData();
            
 
@@ -451,7 +452,7 @@
                             $('#CustInvoiceNo').append('<option value="">-Select-</option>');
                             if (obj.StatusCode != 500) {
                                 $.each(obj.Result.Table, function (index, val) {
-                                    $('#CustInvoiceNo').append("<option value=" + val.AccountCode + ">" + val.CustomerName + "</option>");
+                                    $('#CustInvoiceNo').append("<option value=" + val.CustInvoiceNo + ">" + val.CustInvoiceNo + "</option>");
                                 });
                             }
                         }
@@ -481,6 +482,62 @@
                             if (obj.StatusCode != 500) {
                                 $.each(obj.Result.Table, function (index, val) {
                                     $('#ItemName').append("<option value=" + val.ItemCode + ">" + val.ItemName + "</option>");
+                                });
+                            }
+                        }
+                    }
+                }
+            });
+        }
+          function FillGateNo() {
+
+            var fromDate = $('#FinFromDate').val();
+            var toDate = $('#FinToDate').val();
+            $.ajax({
+                type: "POST",
+                data: { "fromDate": fromDate, "toDate": toDate },
+                url: "@Url.Action("FillGateNo")",
+                dataType: "json",
+                async: false,
+                success: function (result, status, error) {
+
+                    if (result != null) {
+
+                        var obj = $.parseJSON(result);
+                        if (obj.Result != null) {
+                            $('#GateNo').empty();
+                            $('#GateNo').append('<option value="">-Select-</option>');
+                            if (obj.StatusCode != 500) {
+                                $.each(obj.Result.Table, function (index, val) {
+                                    $('#GateNo').append("<option value=" + val.GateNo + ">" + val.GateNo + "</option>");
+                                });
+                            }
+                        }
+                    }
+                }
+            });
+        }
+         function FillMRNNo() {
+
+            var fromDate = $('#FinFromDate').val();
+            var toDate = $('#FinToDate').val();
+            $.ajax({
+                type: "POST",
+                data: { "fromDate": fromDate, "toDate": toDate },
+                url: "@Url.Action("FillMRNNo")",
+                dataType: "json",
+                async: false,
+                success: function (result, status, error) {
+
+                    if (result != null) {
+
+                        var obj = $.parseJSON(result);
+                        if (obj.Result != null) {
+                            $('#MrnNo').empty();
+                            $('#MrnNo').append('<option value="">-Select-</option>');
+                            if (obj.StatusCode != 500) {
+                                $.each(obj.Result.Table, function (index, val) {
+                                    $('#MrnNo').append("<option value=" + val.MrnNo + ">" + val.MrnNo + "</option>");
                                 });
                             }
                         }

@@ -947,6 +947,22 @@ namespace eTactWeb.Controllers
             var JSON = await _saleRejection.FillPartCode(fromDate, toDate);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
+        } 
+        public async Task<JsonResult> FillMRNNo(string fromDate, string toDate)
+        {
+            fromDate = ParseFormattedDate(fromDate);
+            toDate = ParseFormattedDate(toDate);
+            var JSON = await _saleRejection.FillMRNNo(fromDate, toDate);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        } 
+        public async Task<JsonResult> FillGateNo(string fromDate, string toDate)
+        {
+            fromDate = ParseFormattedDate(fromDate);
+            toDate = ParseFormattedDate(toDate);
+            var JSON = await _saleRejection.FillGateNo(fromDate, toDate);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
         }
         public async Task<JsonResult> FillInvoiceNo(string fromDate, string toDate)
         {
