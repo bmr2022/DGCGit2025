@@ -17,6 +17,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FillEntryId(int YearCode);
 
         Task<ResponseResult> GetEmployeeDetail(int empid);
+        Task<ResponseResult> GetLeaveDetail(int empid,string LeaveAppEntryDate);
 
         Task<ResponseResult> SaveData(HRLeaveApplicationMasterModel model, DataTable DT);
 

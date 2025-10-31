@@ -900,6 +900,14 @@ namespace eTactWeb.Controllers
             HttpContext.Session.Remove("SaleBillModel");
             HttpContext.Session.Remove("KeyAdjGrid");
             HttpContext.Session.Remove("KeyAdjChallanGrid");
+
+            string referer = Request.Headers["Referer"].ToString();
+
+            // Remove session only if NOT coming from SaleBillList
+            if (string.IsNullOrEmpty(referer) || !referer.Contains("SaleBillList", StringComparison.OrdinalIgnoreCase))
+            {
+                HttpContext.Session.Remove("SaleBillListItem");
+            }
             var featuresoptions = _SaleBill.GetFeatureOption();
 
             if (featuresoptions?.Result?.Result != null &&

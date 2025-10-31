@@ -55,7 +55,7 @@ namespace eTactwebAccounts.Controllers
                 MainModel.ActualEntryBy = ActualEntryBy;
                 MainModel.ActualEntryDate = ActualEntryDate;
                 MainModel.LastUpdatedByEmpName = LastUpdatedByEmpName;
-                MainModel.LastUpdatedDate = LastUpdatedDate;
+                //MainModel.LastUpdatedDate = LastUpdatedDate;
                 MainModel.EntryByMachine = EntryByMachine;
                 MainModel.ForClosingOfFinancialYear = ForClosingOfFinancialYear;
                 MainModel.UID = UID;
@@ -88,6 +88,7 @@ namespace eTactwebAccounts.Controllers
 		{
 			try
 			{
+
 				string modelJson = HttpContext.Session.GetString("KeyAccDepriciationCalculationdetailGrid");
 				List<AccDepriciationCalculationdetailModel> DepriciationCalculationdetail = new List<AccDepriciationCalculationdetailModel>();
 
@@ -99,7 +100,8 @@ namespace eTactwebAccounts.Controllers
 				// Now use this list to build DataTable
 				model.ActualEntryBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
 				model.ForClosingOfFinancialYear = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-				var GIGrid = GetDetailTable(DepriciationCalculationdetail,  model.DepriciationEntryId,model.DepriciationYearCode,model.ForClosingOfFinancialYear);
+                model.LastUpdatedDate = DateTime.Today.ToString("MM/dd/yyyy").Replace("-", "/");
+                var GIGrid = GetDetailTable(DepriciationCalculationdetail,  model.DepriciationEntryId,model.DepriciationYearCode,model.ForClosingOfFinancialYear);
 				var Result = await _IAccDepriciationCalculationdetail.SaveDepriciationCalculationdetail(model, GIGrid);
 
 				if (Result != null)

@@ -179,35 +179,35 @@
 
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="TotalYearlyLeave" class="form-label">TotalYearlyLeave</label>
-                                    <input asp-for="TotalYearlyLeave " class="form-control numbers" />
+                                    <input asp-for="TotalYearlyLeave " class="form-control numbers" readonly />
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="TotalMonthlyLeave" class="form-label">TotalMonthlyLeave</label>
-                                    <input asp-for="TotalMonthlyLeave " class="form-control numbers" />
+                                    <input asp-for="TotalMonthlyLeave " class="form-control numbers" readonly />
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="GrossSalary" class="form-label">GrossSalary</label>
-                                    <input asp-for="GrossSalary " class="form-control" />
+                                    <input asp-for="GrossSalary " class="form-control" readonly />
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="BalanceMonthlyLeave" class="form-label">Balance Monthly Leave</label>
-                                    <input asp-for="BalanceMonthlyLeave " class="form-control numbers" />
+                                    <input asp-for="BalanceMonthlyLeave " class="form-control numbers" readonly />
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="MaxAllowedLeave" class="form-label">Max Allowed Leave</label>
-                                    <input asp-for="MaxAllowedLeave " class="form-control numbers" />
+                                    <input asp-for="MaxAllowedLeave " class="form-control numbers" readonly />
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="TraineePermanent" class="form-label">Trainee Permanent</label>
-                                    <input asp-for="TraineePermanent " class="form-control numbers" />
+                                    <input asp-for="TraineePermanent " class="form-control numbers" readonly />
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="BalanceAdvanceAmt" class="form-label">Balance Advance Amt</label>
-                                    <input asp-for="BalanceAdvanceAmt " class="form-control numbers" />
+                                    <input asp-for="BalanceAdvanceAmt " class="form-control numbers" readonly />
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="DepartHeadApprovedBy" class="form-label">DepartHeadApprovedBy</label>
-                                    <input asp-for="DepartHeadApprovedBy " class="form-control readonly" />
+                                    <input asp-for="DepartHeadApprovedBy " class="form-control " readonly />
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="HRApprovedBy" class="form-label">HRApprovedBy</label>
@@ -230,6 +230,15 @@
                                     <input asp-for="Canceled " class="form-control" readonly />
                                 </div>
 
+                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="totalpresentDaysTillYet" class="form-label">Total presentDays TillYet</label>
+                                    <input asp-for="totalpresentDaysTillYet " class="form-control" />
+                                </div> 
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="totalpresentDaysinCurrentMonth" class="form-label">Total presentDays in CurrentMonth</label>
+                                    <input asp-for="totalpresentDaysinCurrentMonth " class="form-control" />
+                                </div>
+
 
 
 
@@ -237,11 +246,6 @@
                             </div>
                         </div>
                     </div>
-
-
-
-
-
 
 
                     <div class="accordion-item" id="accordionItemCategory">
@@ -304,10 +308,10 @@
                                                     </td>
 
                                                     <td><input asp-for="Duration" class="form-control numbers" style="" readonly /></td>
-                                                    <td><input asp-for="BalanceLeaveMonthly" class="form-control numbers" readonly /></td>
+                                                    <td><input asp-for="BalanceLeaveMonthly" class="form-control numbers" value="4" readonly /></td>
 
-                                                    <td><input asp-for="BalanceLeaveYearly" class="form-control numbers" readonly/></td>
-                                                    <td><input asp-for="MaxLeaveInMonth" class="form-control numbers" readonly /></td>
+                                                    <td><input asp-for="BalanceLeaveYearly" class="form-control numbers" value="24" readonly/></td>
+                                                    <td><input asp-for="MaxLeaveInMonth" class="form-control numbers" value="4"  readonly /></td>
 
 
                                                 </tr>
@@ -358,7 +362,106 @@
                         </div>
                     </div>
 
+
+
+
+
+
+
+
+
                 </div>
+
+
+
+
+                <div class="accordion-item" id="LeaveDetail">
+                    <h2 class="accordion-header" id="H_LeaveDetail">
+                        <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_LeaveDetail"
+                                aria-expanded="true" aria-controls="B_LeaveDetail">
+
+                            <i class="fa-brands fa-wpforms fa-lg fa-fw pr-3"></i> Leave Detail
+
+
+                        </button>
+                    </h2>
+
+
+
+                    <div id="B_LeaveDetail" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_LeaveDetail">
+                        <div class="accordion-body">
+                            <div class="row g-2 gx-3" id="">
+                            </div>
+                            <h5 class="fw-bold text-primary mb-2 mt-2">Applied Leave Details</h5>
+                            <div class="card mb-3">
+                                <div class="card-body overflow-auto pb-0">
+                                    <table class="table table-hover table-bordered table-striped" id="LeaveDetailTable">
+                                        <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+                                            <tr>
+                                               
+                                                <th data-columnno="0" data-sortorder="asc" class="sortCol">SeqNo</th>
+                                                <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Leave Name</th>
+                                                <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px;width:10px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Leave Type</th>
+                                                <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>TotalNoOfLeaveApplied</th>
+
+                                                <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MaxleavePerYear</th>
+                                                <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>HalfDayAllowed</th>
+                                                <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MaxConsecutiveDaysAllowed</th>
+                                                <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MinDayForApplication</th>
+                                                <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Gender</th>
+                                                <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>CompensatoryOffRequired</th>
+
+
+                                            </tr>
+
+                                        </thead>
+                                        <tbody id="DivLeaveDetailGrid">
+                                          
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+
+                            <h5 class="fw-bold text-primary mb-2 mt-2">Approve Leave Details</h5>
+
+                            <div class="card mb-3">
+                                <div class="card-body overflow-auto pb-0">
+                                    <table class="table table-hover table-bordered table-striped" id="LeaveApproveDetailTable">
+                                        <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+                                            <tr>
+
+                                                <th data-columnno="0" data-sortorder="asc" class="sortCol">SeqNo</th>
+                                                <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Leave Name</th>
+                                                <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px;width:10px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Leave Type</th>
+                                                <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>TotalNoOfLeaveApproved</th>
+
+                                                <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MaxleavePerYear</th>
+                                                <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>HalfDayAllowed</th>
+                                                <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MaxConsecutiveDaysAllowed</th>
+                                                <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MinDayForApplication</th>
+                                                <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Gender</th>
+                                                <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>CompensatoryOffRequired</th>
+
+
+                                            </tr>
+
+                                        </thead>
+                                        <tbody id="DivLeaveApprovedDetailGrid">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="progress my-3 mb-3" style="height: 4px;">
+                            <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+
+                    </div>
+                </div>
+
+
 
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="OtherGrid">
@@ -629,6 +732,7 @@
             function EmpNameChange(ID) {
                 SetEmpCodeEmpName(ID);
                 GetEmployeeDetail();
+                GetLeaveDetail();
             }
 
             function EmpCodeChange(ID) {
@@ -636,6 +740,7 @@
                 $.when(SetEmpCodeEmpName(ID)).done(function () {
                 });
                 GetEmployeeDetail();
+                GetLeaveDetail();
             }
 
             function SetEmpCodeEmpName(ID) {
@@ -733,7 +838,7 @@
         }
 
         function GetEmployeeDetail() {
-             ;
+             
             var empId = $("#EmpName").val().trim();
             if (!empId) return;
 
@@ -775,13 +880,118 @@
                         $("#ShiftId").prop("disabled", false).val(EmpData.ShiftId).trigger("input");
                         $("#MobileNo").prop("disabled", false).val(EmpData.Mobileno1).trigger("input");
                         $("#PhoneNo").prop("disabled", false).val(EmpData.MobileNo2).trigger("input");
-                    } else {
+                        $("#GrossSalary").prop("disabled", false).val(EmpData.GrossSalary).trigger("input");
+                   } else {
 
                     }
                 },
                 error: function (xhr, status, error) {
                     console.error("Error fetching employee details:", xhr.responseText || error);
 
+                }
+            });
+        }
+
+
+
+
+
+
+
+        function GetLeaveDetail() {
+            var empId = $("#EmpName").val().trim();
+            var LeaveAppEntryDate = $("#LeaveAppEntryDate").val().trim();
+            if (!empId) return;
+
+            $.ajax({
+                url: '@Url.Action("GetLeaveDetail", "HRLeaveApplicationMaster")',
+                type: 'GET',
+                data: { empid: empId, LeaveAppEntryDate: LeaveAppEntryDate },
+                success: function (data) {
+                    // Parse JSON if response is string
+                    if (typeof data === "string") {
+                        try {
+                            data = JSON.parse(data);
+                        } catch (error) {
+                            console.error("Invalid JSON:", error);
+                            return;
+                        }
+                    }
+
+                    if (data && data.Result) {
+                        var result = data.Result;
+
+                        // ✅ 1️⃣ Fill Summary Info (Table)
+                        if (result.Table && result.Table.length > 0) {
+                            var summary = result.Table[0];
+                            $("#TotalYearlyLeave").prop("disabled", false).val(summary.TotalYearlyLeave ?? 0).trigger("input");
+                            $("#MaxAllowedLeave").prop("disabled", false).val(summary.MaxAllowedLeave ?? 0).trigger("input");
+                            $("#TotalMonthlyLeave").prop("disabled", false).val(summary.TotalMonthlyLeave ?? 0).trigger("input");
+                            $("#BalanceMonthlyLeave").prop("disabled", false).val(summary.BalanceMonthlyLeave ?? 0).trigger("input");
+                            $("#TraineePermanent").prop("disabled", false).val(summary.TraineePermanent ?? 0).trigger("input");
+                            $("#BalanceAdvanceAmt").prop("disabled", false).val(summary.BalanceAdvanceAmt ?? 0).trigger("input");
+                        }
+
+                        // ✅ 2️⃣ Fill Leave Details Grid (Table1)
+                        if (result.Table1 && result.Table1.length > 0) {
+                            var tbody = $("#DivLeaveDetailGrid");
+                            tbody.empty();
+
+                            $.each(result.Table1, function (index, row) {
+                                var tr = `
+                                    <tr>
+                                       
+                                        <td>${index + 1}</td>
+                                        <td>${row.LeaveName ?? ''}</td>
+                                        <td>${row.LeaveType ?? ''}</td>
+                                        <td>${row.TotalNoOfLeaveApplied ?? 0}</td>
+                                        <td>${row.MaxleavePerYear ?? 0}</td>
+                                        <td>${row.HalfDayAllowed ?? ''}</td>
+                                        <td>${row.MaxConsecutiveDaysAllowed ?? 0}</td>
+                                        <td>${row.MinDayForApplication ?? 0}</td>
+                                        <td>${row.Gender ?? ''}</td>
+                                        <td>${row.CompensatoryOffRequired ?? ''}</td>
+                                    </tr>`;
+                                tbody.append(tr);
+                            });
+                        } else {
+                            // No data case
+                            $("#DivLeaveDetailGrid").html("<tr><td colspan='11' class='text-center text-muted'>No leave details found</td></tr>");
+                        }
+
+
+                        // ✅ 2️⃣ Fill Leave Details Grid (Table1)
+                        if (result.Table2 && result.Table2.length > 0) {
+                            var tbody = $("#DivLeaveApprovedDetailGrid");
+                            tbody.empty();
+
+                            $.each(result.Table2, function (index, row) {
+                                var tr = `
+                                            <tr>
+                                               
+                                                <td>${index + 1}</td>
+                                                <td>${row.LeaveName ?? ''}</td>
+                                                <td>${row.LeaveType ?? ''}</td>
+                                                        <td>${row.TotalNoOfLeaveApproved ?? 0}</td>
+                                                <td>${row.MaxleavePerYear ?? 0}</td>
+                                                <td>${row.HalfDayAllowed ?? ''}</td>
+                                                <td>${row.MaxConsecutiveDaysAllowed ?? 0}</td>
+                                                <td>${row.MinDayForApplication ?? 0}</td>
+                                                <td>${row.Gender ?? ''}</td>
+                                                <td>${row.CompensatoryOffRequired ?? ''}</td>
+                                            </tr>`;
+                                tbody.append(tr);
+                            });
+                        } else {
+                            // No data case
+                            $("#DivLeaveApprovedDetailGrid").html("<tr><td colspan='10' class='text-center text-muted'>No leave details found</td></tr>");
+                        }
+                    } else {
+                        console.warn("No Result found in response.");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching leave details:", xhr.responseText || error);
                 }
             });
         }
@@ -1060,7 +1270,7 @@
                 RemoveErrorCls('Date');
             }
 
-            if ($("#Duration").val() >= $("#BalanceLeaveMonthly").val() || $("#Duration").val() >= $("#BalanceLeaveYearly").val() || $("#Duration").val() >= $("#MaxLeaveInMonth").val()) {
+            if (parseFloat($("#Duration").val()) > parseFloat($("#BalanceLeaveMonthly").val()) || parseFloat($("#Duration").val()) > parseFloat($("#BalanceLeaveYearly").val()) || parseFloat($("#Duration").val()) > parseFloat($("#MaxLeaveInMonth").val())) {
                
                 AddErrorCls('Duration');
                 $.notify("Duration is not greater than BalanceLeaveMonthly, BalanceLeaveYearly, MaxLeaveInMonth", "error");
