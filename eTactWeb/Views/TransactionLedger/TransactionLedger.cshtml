@@ -49,13 +49,6 @@
                     <div class="card-body">
                         <form id="SParam">
                             <div class="row">
-                                <input type="hidden" id="Hidden_FromDate" value="@Model.FromDate" />
-                                <input type="hidden" id="Hidden_ToDate" value="@Model.ToDate" />
-                                <input type="hidden" id="Hidden_ReportType" value="@Model.ReportType" />
-                                <input type="hidden" id="Hidden_GroupLedger" value="@Model.GroupOrLedger" />
-                                <input type="hidden" id="Hidden_VoucherType" value="@Model.VoucherType" />
-                                <input type="hidden" id="Hidden_AccountCode" value="@Model.AccountCode" />
-                                <input type="hidden" id="Hidden_ParentLedger" value="@Model.ParentAccountCode" />
                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12">
                                     <div class="row">
                                         <div class="col">
@@ -229,19 +222,16 @@
     <script>
 
         $(document).ready(function () {
+            debugger;
 
-            // -------------------------------
-            // 🔹 Identify current form
-            // -------------------------------
-            var currentForm = $('#headerId').text().trim().replace(/\s+/g, '');
+            // ✅ Identify current form
+            var currentForm = $("#ReportType").val();
 
-            // -------------------------------
-            // 🔹 Initialize datepickers
-            // -------------------------------
+            // ✅ Initialize datepickers
             $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' });
             $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' });
 
-            // 🗓️ Set FromDate from model, ToDate = current date
+            // ✅ Set default FromDate (from model) and ToDate (today)
             let fromDateRaw = '@Model.FromDate';
             let currentDate = new Date();
 
@@ -260,51 +250,80 @@
                         May: "05", Jun: "06", Jul: "07", Aug: "08",
                         Sep: "09", Oct: "10", Nov: "11", Dec: "12"
                     };
-
                     let monthNum = months[mon] || mon.padStart(2, '0');
                     return `${day}/${monthNum}/${year}`;
                 } catch (e) {
-                    console.error('Invalid dateStr format:', dateStr, e);
+                    console.error('Invalid date format:', dateStr, e);
                     return '';
                 }
             }
 
             let fromDateFormatted = convertToDDMMYYYY(fromDateRaw);
-
-            // Set dates
             $('#FromDate').datepicker("setDate", fromDateFormatted || currentDate);
             $('#ToDate').datepicker("setDate", currentDate);
 
-            // -------------------------------
-            // 🔹 Restore saved filters (except FromDate & ToDate)
-            // -------------------------------
-            var savedFilters = DrilldownManager.restoreFilters(currentForm);
-            if (savedFilters) {
-                console.log('🔄 Restoring filters for:', currentForm, savedFilters);
+            // ✅ Initialize Select2 elements
+            $('#LedgerName, #ParentLedgerName, #ReportType, #VoucherType, #Group_Ledger').select2();
+
+            // ✅ Load dropdown data (if these functions exist)
+            if (typeof FillParentLedgerName === 'function') FillParentLedgerName();
+            if (typeof FillVoucherName === 'function') FillVoucherName();
+            if (typeof FillLedgerName === 'function') FillLedgerName();
+
+            // ✅ Helper: Restore saved filters for a given form
+            function restoreFormFilters(formName) {
+                if (!formName) return;
+                const savedFilters = DrilldownManager.restoreFilters(formName);
+                if (!savedFilters) return;
+
+                console.log("🔄 Restoring filters for:", formName, savedFilters);
+
                 for (const key in savedFilters) {
-                    const $el = $('#' + key);
-                    if ($el.length && key !== 'FromDate' && key !== 'ToDate') {
-                        $el.val(savedFilters[key]).trigger('change');
+                    const $el = $(`#${key}`);
+                    if (!$el.length) continue;
+
+                    const type = $el.attr('type');
+                    if (type === 'checkbox') {
+                        $el.prop('checked', !!savedFilters[key]);
+                        $el.trigger('change');
+                        continue;
+                    }
+
+                    if (key === 'FromDate' || key === 'ToDate') {
+                        $el.datepicker("setDate", savedFilters[key]);
+                    } else {
+                        $el.val(savedFilters[key]);
+                    }
+
+                    if ($el.hasClass("select2") || $el.hasClass("custom-select2")) {
+                        $el.trigger("change.select2");
+                    } else {
+                        $el.trigger("change");
                     }
                 }
             }
 
-            // -------------------------------
-            // 🔹 Initialize Select2 dropdowns
-            // -------------------------------
-            $('#LedgerName, #ParentLedgerName, #ReportType, #VoucherType, #Group_Ledger').select2();
+            // ✅ Try restoring filters & state
+            try {
+                // 1️⃣ Restore current form filters
+                restoreFormFilters(currentForm);
 
-            // -------------------------------
-            // 🔹 Fill dropdown data
-            // -------------------------------
-            FillParentLedgerName();
-            FillVoucherName();
-            FillLedgerName();
+                // 2️⃣ Also restore filters for the "next" form in stack (for dependent drilldown)
+                const nextForm = DrilldownManager.getLastNextForm();
+                if (nextForm && nextForm !== currentForm) {
+                    restoreFormFilters(nextForm);
+                }
 
-            // -------------------------------
-            // 🔹 Load data after restore
-            // -------------------------------
-            GetValidateData();
+                // 3️⃣ Restore scroll/tab state if saved by goBack()
+                DrilldownManager.restoreIfAvailable(currentForm);
+            } catch (e) {
+                console.error("❌ Error restoring filters/state:", e);
+            }
+
+            // ✅ Finally: Load initial data if function exists
+            if (typeof GetValidateData === 'function') {
+                GetValidateData();
+            }
         });
 
         function GetValidateData() {
@@ -935,69 +954,83 @@
             $('#totalRows').text($('#divStockMainRegister tr').length - 1);
         }
 
-       /*  function callDrillDown(anchor) {
-            debugger;
-            var controllerName = $(anchor).data('controller');
-            var actionName = $(anchor).data('action');
-            var reportType = $('#ReportType').val();
-
-            // Common filters
-            var baseParams = {
-                ControllerName: controllerName,
-                ActionName: actionName,
-                FromDate: $('#FromDate').val(),
-                ToDate: $('#ToDate').val(),
-                ReportType: reportType,
-                GroupOrLedger: $('#Group_Ledger').val(),
-                ParentLedger: $('#ParentLedgerName').val(),
-                VoucherType: $('#VoucherType').val(),
-                VoucherNo: $('#VoucherNo').val(),
-                INVNo: $('#INVNo').val(),
-                Narration: $('#Narration').val(),
-                Amount: $('#Amount').val(),
-                Dr: $('#Dr').val(),
-                Cr: $('#CR').val(),
-                GlobalSearch: $('#search-box').val(),
-                Mode: "U"
-            };
-
-            // Specific conditions
-            if (reportType === "TransactionLedgerSummary" || reportType === "TransactionLedgerDetail") {
-                baseParams.ID = $(anchor).data('docid');
-                baseParams.AccountCode = $(anchor).data('accountcode');
-                baseParams.YearCode = $(anchor).data('yearcode');
-            }
-            else if (reportType === "MonthlySummary") {
-                var month = $(anchor).data('month');
-                baseParams.FromDate = formatDate1(new Date(new Date().getFullYear(), month - 1, 1));
-                baseParams.ToDate = formatDate1(new Date(new Date().getFullYear(), month, 0));
-                baseParams.AccountCode = $('#LedgerName').val();
-            }
-            else if (reportType === "GROUPSUMMARY" || reportType === "GROUPDETAIL") {
-                var Cntr = $(anchor).data('seqno');
-                var clickName = $(anchor).data('clickname');
-                baseParams.ClickName = clickName;
-                baseParams.AccountCode = $('#LedgerName').val();
-            }
-
-            // ✅ AJAX Call instead of redirect
-            $.ajax({
-                url: '/TransactionLedger/DrillDown',
-                type: 'GET', // or POST if your controller expects it
-                data: baseParams,
-                success: function (result) {
-                    // Replace the partial view content
-                    $('#divTransactionLedgerGrid').html(result);
-                },
-                error: function (xhr, status, error) {
-                    console.error('Error loading drilldown:', error);
-                    alert('Something went wrong while loading details.');
-                }
-            });
-        } */
-
         function PressBack() {
             window.location.href = '/TransactionLedger/GoBack';
+        }
+
+        // ==============================================
+        // 🔹 Common Drilldown Function
+        // ==============================================
+        function callDrillDown(elem) {
+            debugger;
+
+            const $link = $(elem);
+            const reportType = $("#ReportType").val();
+
+            // 🧩 Common click info
+            const drillData = {
+                DocId: $link.data("docid") || null,
+                AccountCode: $link.data("accountcode") || null,
+                YearCode: $link.data("yearcode") || null,
+                Mode: $link.data("mode") || null,
+                Month: $link.data("month") || null,
+                ReportType: reportType
+            };
+
+            // 💾 Collect all filters from current screen
+            const currentFilters = getCurrentFilters();
+            currentFilters.__drillData = drillData;
+
+            // 💾 Save filters for current form
+            DrilldownManager.saveFilters(reportType, currentFilters);
+
+            // 🧭 Determine Next ReportType (next step)
+            const nextForm = getNextFormByReportType(reportType);
+
+            // 💾 Save navigation info (for back navigation)
+            DrilldownManager.pushNavigation({
+                currentForm: reportType,
+                nextForm: nextForm,
+                controller: $link.data("controller"),
+                action: $link.data("action")
+            });
+
+            // 🚀 Go to next page — clean URL (no params)
+            const nextUrl = `/${$link.data("controller")}/${$link.data("action")}`;
+            window.location.href = nextUrl;
+        }
+
+        // ==============================================
+        // 🔹 Helper: Determine next report based on current one
+        // ==============================================
+        function getNextFormByReportType(currentType) {
+            switch (currentType) {
+                case "MonthlySummary": return "TransactionLedgerSummary";
+                case "TransactionLedgerSummary": return "TransactionLedgerDetail";
+                case "TransactionLedgerDetail": return "VoucherDetail";
+                case "GROUPSUMMARY": return "GROUPDETAIL";
+                case "GROUPDETAIL": return "GroupVoucherDetail";
+                case "BalanceConfirmation": return "BalanceDetail";
+                default: return currentType;
+            }
+        }
+
+        // ==============================================
+        // 🔹 Helper: Collect all filter values dynamically
+        // ==============================================
+        function getCurrentFilters() {
+            const filters = {};
+            $("input, select, textarea").each(function () {
+                const id = $(this).attr("id");
+                if (!id) return;
+
+                if ($(this).attr("type") === "checkbox") {
+                    filters[id] = $(this).prop("checked");
+                } else {
+                    filters[id] = $(this).val();
+                }
+            });
+            return filters;
         }
 
     </script>
