@@ -65,10 +65,7 @@
                     </a>
                     </div> *@
                     }
-                    <a asp-action="PendingSaleRejection" asp-controller="PendingSaleRejection" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
-                        <i class="fa fa-plus-circle fafw fa-lg" aria-hidden="true"></i>
-                        Add New
-                    </a>
+                 
                     <a asp-action="CNDashboard" class="btn btn-sm btn-outline-light bg-gradient" style="margin-right:5px;">
                         <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                         Dashboard
@@ -338,7 +335,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
             <div class="accordion-item">
                 <h2 class="accordion-header" id="H_TaxDetail">
                     <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_TaxDetail" aria-expanded="true" aria-controls="B_TaxDetail">
@@ -349,7 +345,7 @@
                     <div class="accordion-body">
                         <partial name="_TaxDetail" />
                         <div class="row g-2 gx-3 justify-content-around">
-                            <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                         @*    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                 <label asp-for="TotalRoundOff" class="form-label">RoundOff</label>
                                 <select class="form-select" asp-for="TotalRoundOff" asp-items="Model.YesNoList">
                                     <option value="">-Select-</option>
@@ -362,7 +358,7 @@
                             <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                 <label asp-for="TotalAmtAftrDiscount" class="form-label">Amt Aftr Discount</label>
                                 <input asp-for="TotalAmtAftrDiscount" class="form-control" readonly />
-                            </div>
+                            </div> *@
                             <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                 <label asp-for="NetTotal" class="form-label">Net Total</label>
                                 <input asp-for="NetTotal" class="form-control" readonly />
@@ -413,6 +409,7 @@
                     <partial name="_CreditNoteOtherDetail" />
                 </div>
 
+            </div>
             </div>
 
         </div>
@@ -1031,6 +1028,7 @@
                                     '<td id="poDate-' + i + '" class="hnPOfields">' + poDate + '</td>' +
                                     '<td id="poEntryId-' + i + '" class="hnPOfields">' + val.POEntryId + '</td>' +
                                     '<td id="poYearCode-' + i + '" class="hnPOfields">' + val.POYearcode + '</td>' +
+                                    '<td id="DocTypeAccountCode-' + i + '">' + val.DocTypeAccountCode + '</td>' +
                                     '</tr>';
                                 i++;
                             });
@@ -1101,6 +1099,7 @@
         }
         var billQty = 0;
         var billRate = 0;
+        var DocTypeAccountCode=0;
         var html = '';
         var popUpItems = [];
         function FillDetailFromPopupGrid(e) {
@@ -1142,6 +1141,7 @@
                         "PODate": row.find('#poDate-' + i).text() || "",
                         "POEntryId": row.find('#poEntryId-' + i).text() || "",
                         "POYearCode": row.find('#poYearCode-' + i).text() || "",
+                        "DocAccountCode": row.find('#DocAccountCode-' + i).text() || "",
                         "PoRate": 0,
                         "PoAmmNo": "",
                         "SONO": "",
@@ -1175,6 +1175,7 @@
                             $('#billQty-' + i).text((obj.Result[i - 1].BillQty) == null ? 0 : (obj.Result[i - 1].BillQty).toFixed(2));
                             $('#discPer-' + i).text((obj.Result[i - 1].DiscountPer) == null ? 0 : (obj.Result[i - 1].DiscountPer).toFixed(2));
                             $('#billRate-' + i).text((obj.Result[i - 1].BillRate) == null ? 0 : (obj.Result[i - 1].BillRate).toFixed(2));
+                              $('#DocTypeAccountCode').text(obj.Result[i - 1]?.DocTypeAccountCode ?? 0);
                         }
 
                         if (obj.Result != null) {
@@ -1212,10 +1213,13 @@
                                         '<td id="popUppoDate">' + $('#poDate-' + i).text() + '</td>' +
                                         '<td id="popUppoEntryId">' + $('#poEntryId-' + i).text() + '</td>' +
                                         '<td id="popUppoYearCode">' + $('#poYearCode-' + i).text() + '</td>' +
+                                        '<td id="popUpDocTypeAccountCode">' + $('#DocTypeAccountCode-' + i).text() + '</td>' +
+
                                         '</tr>';
                                     j++;
                                     billQty += ($('#BillQty-' + i).text() == '' ? 0 : parseFloat($('#BillQty-' + i).text()));
                                     billRate += ($('#BillRate-' + i).text() == '' ? 0 : parseFloat($('#BillRate-' + i).text()));
+                                      DocTypeAccountCode =($('#DocTypeAccountCode-' + i).text());
                                 }
                             }
                             $('#addCreditNotePopupModel').modal("hide");
@@ -1228,7 +1232,7 @@
 
                         $('#BillQty').val(billQty.toFixed(2));
                         $('#BillRate').val(billRate.toFixed(2));
-
+                           $('#DocAccountCode').val(DocTypeAccountCode);
                         $('#RejectedQty').val($('#BillQty').val());
                         $('#CRNRate').val($('#BillRate').val());
                         CalculateItemAmount();

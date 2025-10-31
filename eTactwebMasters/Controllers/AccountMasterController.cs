@@ -172,7 +172,7 @@ namespace eTactWeb.Controllers
                 {
                     ViewBag.isSuccess = true;
                     TempData["200"] = "200";
-                    return RedirectToAction("Dashboard", "AccountMaster");
+                    return RedirectToAction(nameof(Form), new { ID = 0 });
                 }
                 else if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.Ambiguous)
                 {
@@ -183,7 +183,8 @@ namespace eTactWeb.Controllers
                 {
                     ViewBag.isSuccess = true;
                     TempData["202"] = "202";
-                    return RedirectToAction(nameof(DashBoard));
+
+                    return RedirectToAction(nameof(Form), new { ID = 0 });
                 }
                 return RedirectToAction(nameof(Form), new { ID = 0 });
             }

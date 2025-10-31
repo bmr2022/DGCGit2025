@@ -730,6 +730,7 @@ namespace eTactWeb.Controllers
                 table.Columns.Add("SOEntryId", typeof(int));
                 table.Columns.Add("BatchNo", typeof(string));
                 table.Columns.Add("UniqueBatchNo", typeof(string));
+                table.Columns.Add("DocAccountCode", typeof(int));
 
                 foreach (AccCreditNoteAgainstBillDetail Item in List)
                 {
@@ -775,7 +776,8 @@ namespace eTactWeb.Controllers
                    Item.CustOrderNo ?? string.Empty,
                    Item.SOEntryId,
                    Item.BatchNo ?? string.Empty,
-                   Item.UniqueBatchNo ?? string.Empty
+                   Item.UniqueBatchNo ?? string.Empty,
+                   Item.DocAccountCode 
                         });
                 }
 

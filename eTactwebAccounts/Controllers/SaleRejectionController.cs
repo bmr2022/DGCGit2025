@@ -705,8 +705,9 @@ namespace eTactWeb.Controllers
                             model1.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                             HttpContext.Session.Remove("KeySaleRejectionGrid");
                             HttpContext.Session.Remove("SaleRejectionModel");
-                            return View(model1);
+                            return RedirectToAction("PendingSaleRejection", "PendingSaleRejection", new { id = 0 });
                         }
+
                         if (Result.StatusText == "Updated" && Result.StatusCode == HttpStatusCode.Accepted)
                         {
                             ViewBag.isSuccess = true;
@@ -722,8 +723,9 @@ namespace eTactWeb.Controllers
                             model1.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                             HttpContext.Session.Remove("KeySaleRejectionGrid");
                             HttpContext.Session.Remove("SaleRejectionModel");
-                            return View(model1);
+                            return RedirectToAction("PendingSaleRejection", "PendingSaleRejection", new { id = 0 });
                         }
+
                         if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
                         {
                             var errNum = Result.Result.Message.ToString().Split(":")[1];
