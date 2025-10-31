@@ -48,6 +48,11 @@ namespace eTactWeb.Data.BLL
             return await _HRLeaveApplicationMasterDAL.GetEmployeeDetail(empid);
         }
 
+        public async Task<ResponseResult> GetLeaveDetail(int empid, string LeaveAppEntryDate)
+        {
+            return await _HRLeaveApplicationMasterDAL.GetLeaveDetail(empid, LeaveAppEntryDate);
+        }
+
         public async Task<ResponseResult> SaveData(HRLeaveApplicationMasterModel model, DataTable DT)
         {
             //throw new NotImplementedException();

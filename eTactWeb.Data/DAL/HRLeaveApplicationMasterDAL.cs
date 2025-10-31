@@ -71,6 +71,28 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
+
+        public async Task<ResponseResult> GetLeaveDetail(int empid, string LeaveAppEntryDate)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@flag", "GetBalanceLeave"));
+                SqlParams.Add(new SqlParameter("@Empid", empid));
+                SqlParams.Add(new SqlParameter("@LeaveAppEntryDate",CommonFunc.ParseFormattedDate(LeaveAppEntryDate)));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("HRSPLeaveApplicationMain", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
         public async Task<ResponseResult> GetLeaveName()
         {
             var _ResponseResult = new ResponseResult();

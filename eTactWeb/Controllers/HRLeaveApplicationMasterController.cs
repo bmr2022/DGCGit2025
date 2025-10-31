@@ -123,6 +123,14 @@ namespace eTactWeb.Controllers
             return Json(JsonString);
         }
 
+        public async Task<JsonResult> GetLeaveDetail(int empid, string LeaveAppEntryDate)
+        {
+            var JSON = await _IHRLeaveApplicationMaster.GetLeaveDetail(empid, LeaveAppEntryDate);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
+
 
 
         public IActionResult AddDetailGrid(HRLeaveApplicationDetail model)
@@ -344,11 +352,13 @@ namespace eTactWeb.Controllers
                 GIGrid.Columns.Add("FromDate", typeof(DateTime));
                 GIGrid.Columns.Add("ToDate", typeof(DateTime));
                 GIGrid.Columns.Add("Duration", typeof(float));
+                GIGrid.Columns.Add("HalfDayFullDay", typeof(string));
                 GIGrid.Columns.Add("BalanceLeaveMonthly", typeof(float));
                 GIGrid.Columns.Add("BalanceLeaveYearly", typeof(float));
                 GIGrid.Columns.Add("MaxLeaveInMonth", typeof(float));
                 GIGrid.Columns.Add("Approved", typeof(string));
                 GIGrid.Columns.Add("Canceled", typeof(string));
+                
 
                 foreach (var Item in DetailList)
                 {
@@ -363,11 +373,13 @@ namespace eTactWeb.Controllers
                     Item.FromDate == null ? "" : DateTime.Parse(Item.FromDate),
                     Item.ToDate == null ? "" : DateTime.Parse(Item.ToDate),
                     Item.Duration == 0 ? 0:Item.Duration,
+                    Item.HalfDayFullDay == null ? "" : Item.HalfDayFullDay,
                     Item.BalanceLeaveMonthly == 0 ? 0 :Item.BalanceLeaveMonthly,
                     Item.BalanceLeaveYearly== 0 ? 0 : Item.BalanceLeaveYearly,
                     Item.MaxLeaveInMonth== 0 ? 0:Item.MaxLeaveInMonth,
                      Item.Approved == null ? "" : Item.Approved,
                       Item.Canceled == null ? "" : Item.Canceled,
+                      
                         });
                 }
                 GIGrid.Dispose();
