@@ -1889,20 +1889,20 @@
 
                     if ($("#MainGridStockable-" + i).val() == "Y") {
                         if ($('#MainGridBatchNo-' + i).val() == null) {
-                            $('MainGridBatchNo-' + i).css("border", "1px solid red");
+                            $('#MainGridBatchNo-' + i).css("border", "1px solid red");
                             $.notify("Batch No is required for " + $('#MainGridPartCode-' + i).val() + "", "error");
                             Err = 1;
                         }
                         else {
-                            $('MainGridBatchNo-' + i).css("border", "1px solid black");
+                            $('#MainGridBatchNo-' + i).css("border", "1px solid black");
                         }
                         if ($('#MainGridUniqueBatchNo-' + i).val() == null) {
-                            $('MainGridUniqueBatchNo-' + i).css("border", "1px solid red");
+                            $('#MainGridUniqueBatchNo-' + i).css("border", "1px solid red");
                             $.notify("Unique Batch No is required for " + $('#MainGridPartCode-' + i).val() + "", "error");
                             Err = 1;
                         }
                         else {
-                            $('MainGridUniqueBatchNo-' + i).css("border", "1px solid black");
+                            $('#MainGridUniqueBatchNo-' + i).css("border", "1px solid black");
                         }
                     }
                     if ($('#MainGridWorkCenter-'+i).val() == '') {
@@ -1911,7 +1911,7 @@
                     }
 
                     if (parseFloat($('#MainGridIssueQty-' + i).val()) <= 0) {
-                        $('MainGridIssueQty-' + i).css("border", "1px solid red");
+                        $('#MainGridIssueQty-' + i).css("border", "1px solid red");
                         $.notify("Issue Qty is required for " + $('#MainGridPartCode-' + i).val() + "", "error");
                         Err = 1;
                     }
@@ -1925,13 +1925,21 @@
                         //$('MainGridIssueQty-' + i).css("border", "1px solid black");
                         //}
                         if (parseFloat($('#MainGridIssueQty-' + i).val()) > parseFloat($('#MainGridReqQty-' + i).val())) {
-                            $('MainGridIssueQty-' + i).css("border", "1px solid red");
+                            $('#MainGridIssueQty-' + i).css("border", "1px solid red");
                             $.notify("Issue Qty cannot be greater than Req Qty", "error");
                             Err = 1;
                         }
                         else {
-                            $('MainGridIssueQty-' + i).css("border", "1px solid black");
+                            $('#MainGridIssueQty-' + i).css("border", "1px solid black");
                         }
+                if (parseFloat($('#MainGridIssueQty-' + i).val()) > parseFloat($('#MainGridLotStock-' + i).val()) || parseFloat($('#MainGridIssueQty-' + i).val()) > parseFloat($('#MainGridTotalStock-' + i).val())) {
+                    $('#MainGridIssueQty-' + i).css("border", "1px solid red");
+                    $.notify("Issue Qty cannot be greater than Stock", "error");
+                    Err = 1;
+                }
+                else {
+                    $('#MainGridIssueQty-' + i).css("border", "1px solid black");
+                }
                     }
 
                     Err == 1 ? ShowErrorFldwithAddtoGrid('H_SAGrid') : HideErrorFldwithAddtoGrid('H_SAGrid');

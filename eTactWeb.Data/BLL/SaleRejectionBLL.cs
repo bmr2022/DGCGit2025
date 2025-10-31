@@ -46,6 +46,14 @@ namespace eTactWeb.Data.BLL
         public async Task<ResponseResult> FillInvoiceNo(string fromDate, string toDate)
         {
             return await _SaleRejectionDAL.FillInvoiceNo(fromDate, toDate);
+        } 
+        public async Task<ResponseResult> FillMRNNo(string fromDate, string toDate)
+        {
+            return await _SaleRejectionDAL.FillMRNNo(fromDate, toDate);
+        }
+        public async Task<ResponseResult> FillGateNo(string fromDate, string toDate)
+        {
+            return await _SaleRejectionDAL.FillGateNo(fromDate, toDate);
         }
         public async Task<ResponseResult> FillVoucherNo(string fromDate, string toDate)
         {

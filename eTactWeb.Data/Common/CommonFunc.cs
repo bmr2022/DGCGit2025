@@ -1816,6 +1816,7 @@ public static class CommonFunc
                          && typeProperty.PropertyInfo.Name != "ItemNetAmount"
                          && typeProperty.PropertyInfo.Name != "DbCrGrid"
                          && typeProperty.PropertyInfo.Name != "SeqNo"
+                         && typeProperty.PropertyInfo.Name != "Message"
                         // && typeProperty.PropertyInfo.Name != "RoundOffAmt"
                         //&& typeProperty.PropertyInfo.Name != "Ewaybillno" && typeProperty.PropertyInfo.Name != "EInvNo" && typeProperty.PropertyInfo.Name != "Ewaybillno"
                         //&& typeProperty.PropertyInfo.Name != "EinvGenerated" && typeProperty.PropertyInfo.Name != "ActualEntryDate"

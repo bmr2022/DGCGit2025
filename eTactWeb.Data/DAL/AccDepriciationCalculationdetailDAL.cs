@@ -135,22 +135,24 @@ namespace eTactWeb.Data.DAL
 			{
 
 				var SqlParams = new List<dynamic>();
+                var depriciationDate = CommonFunc.ParseFormattedDate(model.DepriciationDate);
+                var actualEntryDate = CommonFunc.ParseFormattedDate(model.ActualEntryDate);
+                var lastUpdatedDate = CommonFunc.ParseFormattedDate(model.LastUpdatedDate);
 
-				if (model.Mode == "U" || model.Mode == "V")
+                if (model.Mode == "U" || model.Mode == "V")
 				{
 
 					SqlParams.Add(new SqlParameter("@Flag", "UPDATE"));
+                    SqlParams.Add(new SqlParameter("@LastUpdatedBy", model.LastupdatedBy));
+                    SqlParams.Add(new SqlParameter("@LastUpdatedDate", lastUpdatedDate));
 
-				}
+                }
 				else
 				{
 					SqlParams.Add(new SqlParameter("@Flag", "INSERT"));
 
 				}
-				var depriciationDate = CommonFunc.ParseFormattedDate(model.DepriciationDate);
-				var actualEntryDate = CommonFunc.ParseFormattedDate(model.ActualEntryDate);
-				var lastUpdatedDate = CommonFunc.ParseFormattedDate(model.LastUpdatedDate);
-
+				
 				SqlParams.Add(new SqlParameter("@DepriciationEntryId", model.DepriciationEntryId));
 				SqlParams.Add(new SqlParameter("@DepriciationYearCode", model.DepriciationYearCode));
 				SqlParams.Add(new SqlParameter("@ForClosingOfFinancialYear", model.ForClosingOfFinancialYear));
@@ -159,8 +161,7 @@ namespace eTactWeb.Data.DAL
 				SqlParams.Add(new SqlParameter("@CC", model.CC));
 				SqlParams.Add(new SqlParameter("@ActualEntryBy", model.ActualEntryBy));
 				SqlParams.Add(new SqlParameter("@ActualEntryDate", actualEntryDate));
-				SqlParams.Add(new SqlParameter("@LastUpdatedBy", model.LastupdatedBy));
-				SqlParams.Add(new SqlParameter("@LastUpdatedDate", lastUpdatedDate));
+				
 				SqlParams.Add(new SqlParameter("@EntryByMachine", model.EntryByMachine));
 				SqlParams.Add(new SqlParameter("@UID", model.UID));
 				SqlParams.Add(new SqlParameter("@BalanceSheetClosed", model.BalanceSheetClosed));

@@ -110,11 +110,11 @@
                             <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Item Detail Grid</strong>
                         </button>
                         <div class="d-flex justify-content-front align-items-center">
-                            <div class="col-auto">
+                            @* <div class="col-auto">
                                 <button type="button" class="ItemBtn btn btn-sm btn-outline-danger">
                                     <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
                                 </button>
-                            </div>
+                            </div> *@
                            
                         </div>
                     </h2>
@@ -517,7 +517,7 @@
         $('#TotalDiscountPercentage').val(0);
         $('#TotalAmtAftrDiscount').val(0);
            GetTaxPartItem();
-          GetDbCrDetail();
+       //   GetDbCrDetail();
            
 
             $('#DiscountPer').prop("readonly", false);
@@ -1594,46 +1594,36 @@
 
             ValidateSubmitWrapper(function (isValid) {
                 if (!isValid) return;
-
+                   var drCrGrid = $('#divdbCrItemList tr').length;
                 if ($('#divAddSaleRejectionList tr td').length <= 1) {
                     $.notify('Sale Rejection Grid Should Have Atleast 1 Item...!', "error");
                     return;
                 }
 
                 if ($('#GSTRegistered').val() === 'Y') {
-                     if ($('#divTaxGrid tr.data-row').length <= 1 && $('#DomesticExportNEPZ').val() === "DOMESTIC") {
+                     if ($('#divTaxGrid tr td').length <=1 && $('#DomesticExportNEPZ').val() === "DOMESTIC") {
                         $.notify('Tax Grid Should Have Atleast 1 Item...!', "error");
                         return;
                     }
 
-                    if ($('#divAdjItemList tr td').length <= 1) {
-                        $.notify('Adjust Grid Should Have Atleast 1 Item...!', "error");
-                        return;
-                    }
-
-                    if ($('#divdbCrItemList tr td').length <= 1) {
-                        $.notify('DRCR Grid Should Have Atleast 1 Item...!', "error");
-                        return;
-                    }
-
-                    // Check for CR in Adjustment Grid
-                    var hasCR = false;
-                    $('tr.adjGridRow').each(function () {
-                        $(this).find('.GridAdjDrCr').each(function () {
-                            if ($(this).text().trim().toUpperCase() === 'CR') {
-                                hasCR = true;
-                                return false;
-                            }
-                        });
-                        if (hasCR) return false;
-                    });
-
-                    if (hasCR) {
-                        $.notify('AdjGrid should not have CR value...!', "error");
-                        return;
-                    }
+                   
                 }
+                  if ($('#divAdjItemList tr td').length <= 1) {
+                         $.notify('Adjust Grid Should Have Atleast 1 Item...!', "error");
+                         return;
+                     }
 
+
+
+                     // Check for CR in Adjustment Grid
+                         if (drCrGrid <= 1) {
+                 $.notify("Debit And Credit Amount Status Grid should at least have one item", "error");
+                 return;
+             }
+                if (drCrGrid >= 1 && $('#TotalDr').text() != $('#TotalCr').text()) {
+                 $.notify("Total Debit And Total Credit Amount should be same", "error");
+                 return;
+             }
                 $("form").submit();
             });
         });
