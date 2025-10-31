@@ -1925,6 +1925,19 @@
             });
         }
 
+        function calculateNetTotal() {
+            // Safely parse all numeric fields (default 0 if empty)
+            let netTotal = parseFloat($('#NetTotal').val()) || 0;
+            let packingCharges = parseFloat($('#PackingCharges').val()) || 0;
+            let forwardingCharges = parseFloat($('#ForwardingCharges').val()) || 0;
+
+            // Calculate new total
+            let finalTotal = netTotal + packingCharges + forwardingCharges;
+
+            // Display final total (rounded to 2 decimals)
+            $('#NetTotal').val(finalTotal.toFixed(2));
+        }
+
         $('#sendToExcel').click(function () {
 
             //   TableToExcel.convert($("#poTable"), {
@@ -2087,6 +2100,9 @@
             GetItemGroup();
             ShowHideFields();
       GetFeatureOption();
+            $('#PackingCharges, #ForwardingCharges').on('focusout', function () {
+                calculateNetTotal();
+            });
 
             var SOClosedate = $('#SOCloseDate').val().split(" ")[0].replace(/-/g, "/");
             $('#SOCloseDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#SOCloseDate').val()));
