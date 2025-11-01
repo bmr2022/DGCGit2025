@@ -35,6 +35,7 @@ namespace eTactWeb.DOM.Models
         public string FromDate { get; set; }
         public string ToDate { get; set; }
         public string ReportType { get; set; }
+        public string BillType { get; set; }
         public string DocumentName { get; set; }
         public string PONO { get; set; }
         public string SchNo { get; set; }
@@ -50,11 +51,11 @@ namespace eTactWeb.DOM.Models
         public string ForTheDuration { get; set; }
         public string ForFinYear { get; set; }
        
-        public DateTime? InvoiceDate { get; set; }
+        public string? InvoiceDate { get; set; }
         public string VoucherNo { get; set; }
-        public DateTime? VoucherDate { get; set; }
+        public string? VoucherDate { get; set; }
         public string MRNNo { get; set; }
-        public DateTime? MRNDate { get; set; }
+        public string? MRNDate { get; set; }
         public decimal? BillAmt { get; set; }
         public decimal? TaxableAmt { get; set; }
     
@@ -71,7 +72,7 @@ namespace eTactWeb.DOM.Models
         public decimal? ExpenseAmt { get; set; }
         public decimal? InvAmt { get; set; }
         public string GSTType { get; set; }
-        public string GSTNO { get; set; }
+        
         public string VendorAddress { get; set; }
         public string State { get; set; }
         public string DirectPBOrAgainstMRN { get; set; }
@@ -82,11 +83,63 @@ namespace eTactWeb.DOM.Models
         public int PurchBillEntryId { get; set; }
         public int PurchBillYearCode { get; set; }
         public string ActualEntryByEmp { get; set; }
-        public DateTime? ActualEntryDate { get; set; }
+        public string? ActualEntryDate { get; set; }
         public string LastUpdatedByEmp { get; set; }
-        public DateTime? LastUpdatedDate { get; set; }
+        public string? LastUpdatedDate { get; set; }
         public string Remark { get; set; }
         public string Country { get; set; }
+        public string Unit { get; set; }
+        public double AprAmt { get; set; }
+        public double MayAmt { get; set; }
+        public double JunAmt { get; set; }
+        public double JulAmt { get; set; }
+        public double AugAmt { get; set; }
+        public double SepAmt { get; set; }
+        public double OctAmt { get; set; }
+        public double NovAmt { get; set; }
+        public double DecAmt { get; set; }
+        public double JanAmt { get; set; }
+        public double FebAmt { get; set; }
+        public double MarAmt { get; set; }
+        public double AprQty { get; set; }
+        public double MayQty { get; set; }
+        public double JunQty { get; set; }
+        public double JulQty { get; set; }
+        public double AugQty { get; set; }
+        public double SepQty { get; set; }
+        public double OctQty { get; set; }
+        public double NovQty { get; set; }
+        public double DecQty { get; set; }
+        public double JanQty { get; set; }
+        public double FebQty { get; set; }
+        public double MarQty { get; set; }
+
+        public string StateCode { get; set; }
+        public string InvDate { get; set; }
+        public string GateNo { get; set; }
+        public string GateDate { get; set; }
+
+        public decimal BillQty { get; set; }
+        public decimal RecQty { get; set; }
+        public decimal RejectedQty { get; set; }
+        public decimal BillRate { get; set; }
+        public decimal PoRate { get; set; }
+        public decimal DiscountPer { get; set; }
+        public decimal DisAmt { get; set; }
+        public decimal ItemAmount { get; set; }
+        public decimal TotalBillAmt { get; set; }
+        public decimal TotaltaxableAmt { get; set; }
+        public string MIRNO { get; set; }
+        public string MIRDate { get; set; }
+        public string ItemParentGroup { get; set; }
+        public string ItemCategory { get; set; }
+        public string PurchaseBillDirectPB { get; set; }
+        public string PurchaseBillTypeMRNJWChallan { get; set; }
+        
+        public string PaymentTerm { get; set; }
+        public string Approved { get; set; }
+        public string ApprovedDate { get; set; }
+        public string EntryByEmployee { get; set; }
         public IList<BillRegisterModel> BillRegisterList { get; set; }
     }
 }

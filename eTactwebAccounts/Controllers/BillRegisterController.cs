@@ -102,11 +102,48 @@ namespace eTactwebAccounts.Controllers
             {
                 return PartialView("_BillRegisterGrid", model);
             }
+            else if(ReportType== "PurchaseBillDetail")
+            {
+                return PartialView("_BillRegisterPurchaseBillDetailGrid", model);
+            }
             else if(ReportType== "PURCHASESUMMARYREG"||ReportType== "GSTSUMMARY")
             {
                 return PartialView("_BillRegisterGrid", model);
             }
+
+            else if(ReportType== "VendorItemWiseTrend" )
+            {
+                return PartialView("_BillRegisterVendorItemWiseTrendGrid", model);
+            }
+            else if(ReportType== "VendorWiseMonthlyTrend")
+            {
+                return PartialView("_BillRegisterVendorWiseMonthlyTrendGrid", model);
+            }
+             else if(ReportType== "VendorItemWiseMonthlyData")
+            {
+                return PartialView("_BillRegisterVendorItemWiseMonthlyDataGrid", model);
+            }
+            else if(ReportType== "ItemWiseMonthlyTrend")
+            {
+                return PartialView("_BillRegisterItemWiseMonthlyTrendGrid", model);
+            }
+             else if(ReportType== "VendorWiseMonthlyValueTrend")
+            {
+                return PartialView("_BillRegisterVendorWiseMonthlyValueTrendGrid", model);
+            }
+
             return null;
+        }
+        [HttpGet]
+        public IActionResult GetBillRegistergridPDFData()
+        {
+            string modelJson = HttpContext.Session.GetString("KeyBillRegisterList");
+            List<BillRegisterModel> billRegisterList = new List<BillRegisterModel>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                billRegisterList = JsonConvert.DeserializeObject<List<BillRegisterModel>>(modelJson);
+            }
+            return Json(billRegisterList);
         }
     }
 }

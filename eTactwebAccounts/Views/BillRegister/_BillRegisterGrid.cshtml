@@ -4,9 +4,27 @@
 {
     <partial name="_BillGSTRegisterGrid" />
 }
-else if (Model.ReportType == "SALEDETAIL")
+else if (Model.ReportType == "VendorItemWiseTrend")
 {
-    <partial name="_SaleBillRegisterSaleDetail" />
+    <partial name="_BillRegisterVendorItemWiseTrendGrid" />
+}
+else if (Model.ReportType == "VendorItemWiseMonthlyData")
+{
+    <partial name="_BillRegisterVendorItemWiseMonthlyDataGrid" />
+}
+
+else if (Model.ReportType == "ItemWiseMonthlyTrend")
+{
+    <partial name="_BillRegisterItemWiseMonthlyTrendGrid" />
+}
+else if (Model.ReportType == "VendorWiseMonthlyValueTrend")
+{
+    <partial name="_BillRegisterVendorWiseMonthlyValueTrendGrid" />
+}
+
+else if (Model.ReportType == "PurchaseBillDetail")
+{
+    <partial name="_BillRegisterPurchaseBillDetailGrid" />
 }
 
 

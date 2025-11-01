@@ -58,8 +58,28 @@
                                     <select asp-for="ReportType" class="form-select">
                                         <option disabled value="">-Select-</option>
                                         <option selected value="PurchaseSummary">Purchase Summary</option>
+                                        <option value="PurchaseBillDetail">PurchaseBill Detail </option>
                                         <option  value="PURCHASESUMMARYREG">Purchase Summary Reg</option>
                                         <option  value="GSTSUMMARY">GST Summary </option>
+                                        <option  value="VendorItemWiseTrend">Vendor Item Wise Trend </option>
+                                        <option  value="VendorWiseMonthlyTrend">Vendor Wise Monthly Trend </option>
+                                        <option value="VendorItemWiseMonthlyData">Vendor Item Wise Monthly Data </option>
+                                        <option value="ItemWiseMonthlyTrend">Item Wise Monthly Trend </option>
+                                        <option value="VendorWiseMonthlyValueTrend">Vendor Wise Monthly Value Trend </option>
+                                      
+                                        
+                                    </select>
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="BillType" class="form-label">Bill Type</label>
+                                    <select asp-for="BillType" class="form-select">
+                                        <option disabled value="">-Select-</option>
+                                        <option selected value="PurchaseBill">Purchase Bill</option>
+                                        <option value="PurchaseRejection">Purchase Rejection  </option>
+                                        <option value="DebitNote">Debit Note</option>
+                                        <option value="CreditNote">Credit Note,  </option>
+                                        <option value="SaleRejection">Sale Rejection </option>
+                                        
                                         
                                     </select>
                                 </div>
@@ -166,7 +186,7 @@
                                     <button class="btn btn-sm btn-outline-danger" style="padding:3px; height:30px; width:50px; margin-left:20px;" type="button" id="sendToPDF">
                                         <i class="fa-solid fa-file-pdf fa-fw fa-lg"></i> 
                                     </button>
-                                    <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:50px;margin-left:20px;" asp-controller="SaleBillRegister" asp-action="SaleBillRegister">
+                                    <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:50px;margin-left:20px;" asp-controller="BillRegister" asp-action="BillRegister">
                                         <i class="fa-solid fa-rotate fa-fw fa-lg"></i>
                                     </a>
                                 </div>
@@ -271,6 +291,20 @@
             FillPartCode();
 
             GetRegisterData();
+
+        $('#FromDate, #ToDate').change(function () {
+            FillVendoreList();
+            FillDocList();
+            FillPONOList();
+            FillSchNOList();
+            FillHsnNOList();
+            FillGstNOList();
+            FillInvoiceNOList();
+            FillItemName();
+            FillPartCode();
+            GetRegisterData();
+        });
+
         });
         function GetServerDate() {
             $.ajax({
@@ -390,7 +424,7 @@
             /* var resp = await fetch('/SaleBillRegister/GetSaleBillRegistergridData');
             va r rows = await resp.json();*/
 
-            var resp = await fetch('/SaleBillRegister/GetSaleBillRegistergridData');
+            var resp = await fetch('/BillRegister/GetBillRegistergridPDFData');
 
             if (!resp.ok) {
                 console.error("Fetch failed with status:", resp.status);
@@ -408,7 +442,7 @@
 
             // Handle report type logic
             switch (reportTypeValue) {
-                case 'SALESUMMARY':
+                case 'PurchaseSummary':
                     headers = ["#Sr", "Description", "For The Duration", "For Financial Year"];
 
                     console.log("Data:", rows);
@@ -416,129 +450,115 @@
                         i + 1, r.description, r.forTheDuration, r.forFinYear
                     ]);
                     break;
-                case 'SALEDETAIL':
-                    headers = ["#Sr", "Sale Bill No", "Sale Bill Date", "Customer Name", "GST No", "Customer Address",
-                        "State", "State Code", "Country", "Part Code", "Item Name", "HSN No", "Total Bill Qty", "Unit",
-                        "Rate", "Total Discount Amt", "Amount",
-                        "CGST %", "CGST Amount", "SGST %", "SGST Amount", "IGST %", "IGST Amount",
-                        "Expense Amount", "Bill Amount", "Taxable Amount", "GST Amount", "Currency",
-                        "Invoice Amount", "Cancel Bill", "Cancel Date", "Cancel Reason",
-                        "E-Way Bill No", "E-Invoice Generated", "E-Invoice No",
-                        "Type (Item/Service/Assets)", "Domestic/Export/NEPZ", "Supply Type",
-                        "Entry By Machine Name", "Entry Id", "Year Code"
+                case 'PURCHASESUMMARYREG':
+                    headers = ["#Sr", "Sale Bill No", "Sale Bill Date", "Customer Name", "Voucher No", "Voucher Date", "MRN No", "MRN Date", "Bill Amount", "Taxable Amount", "GST Amount", "Currency", "Total Bill Qty", "Total Discount Amount", "Total Item Amount", "CGST %", "CGST Amount", "SGST %", "SGST Amount", "IGST %", "IGST Amount", "Expense Amount", "Invoice Amount", "GST Type", "GST No", "Vendor Address", 
+                    "State", "Direct PB or Against MRN", "Entry Machine Name", "Item/Service/Asset Type", "Domestic/Import", "Payment Days", "Purchase Bill Entry ID", "Purchase Bill Year Code", "Entered By", 
+                    "Entry Date", "Updated By", "Update Date", "Remark", "Country"
                     ];
-
-
                     console.log("Data:", rows);
                     body = rows.map((r, i) => [
-                        i + 1, r.saleBillNo, r.saleBillDate, r.customerName, r.gstno, r.custAddress,
-                        r.state, r.stateCode, r.country, r.partCode, r.itemName, r.hsnno, r.totalBillQty, r.unit,
-                        r.rate, r.totalDisAmt, r.amount,
-                        r.cgstPer, r.cgstAmt, r.sgstPer, r.sgstAmt, r.igstPer, r.igstAmt,
-                        r.expenseAmt, r.billAmt, r.taxableAmt, r.gstAmount, r.currency,
-                        r.invAmt, r.cancelBill, r.canceldate, r.cancelReason,
-                        r.ewaybillno, r.einvGenerated, r.einvNo,
-                        r.typeItemServAssets, r.domesticExportNEPZ, r.supplyType,
-                        r.entryByMachineName, r.entryId, r.yearCode
+                        i + 1, r.vendorName, r.invoiceNo, r.invoiceDate, r.voucherNo, r.voucherDate, r.mrnNo, r.mrnDate, r.billAmt, r.taxableAmt, r.gstAmount, r.currency, r.totalBillQty, r.totalDisAmt, r.totalItemAmt, r.cgstPer, r.cgstAmt, r.sgstPer, r.sgstAmt, r.igstPer, r.igstAmt, 
+                        r.expenseAmt, r.invAmt, r.gstType, r.gstNo, r.vendorAddress, r.state, r.directPBOrAgainstMRN, r.entryByMachineName, r.typeItemServAssets, r.domesticImport, r.paymentDays, r.purchBillEntryId, r.purchBillYearCode, r.actualEntryByEmp, r.actualEntryDate, 
+                        r.lastUpdatedByEmp, r.lastUpdatedDate, r.remark, r.country
                     ]);
 
+                    break;
+                    case 'GSTSUMMARY':
+                    headers = ["#Sr", "SaleBillNo", "SaleBillDate", "CustomerName", "VoucherNo", "VoucherDate", "MRN No", "MRN Date", "Bill Amt", "Taxable Amt", "GST Amt", "Currency", "TotalBillQty", "Total Dis Amt", "Total Item Amt", "CGST %", "CGST Amt", "SGST %", "SGST Amt", "IGST %", "IGST Amount", "Expense Amt", "Invoice Amt", "GST Type", "GST No", "Vendor Address", 
+                    "State", "Against MRN", "Machine Name", "Asset Type", "Domestic/Import", "PaymentDays", "EntryID", "YearCode",
+                     "Remark", "Country"
+                    ];
+                    console.log("Data:", rows);
+                    body = rows.map((r, i) => [
+                        i + 1, r.vendorName, r.invoiceNo, r.invoiceDate, r.voucherNo, r.voucherDate, r.mrnNo, r.mrnDate, r.billAmt, r.taxableAmt, r.gstAmount, r.currency, r.totalBillQty, r.totalDisAmt, r.totalItemAmt, r.cgstPer, r.cgstAmt, r.sgstPer, r.sgstAmt, r.igstPer, r.igstAmt, 
+                        r.expenseAmt, r.invAmt, r.gstType, r.gstNo, r.vendorAddress, r.state, r.directPBOrAgainstMRN, r.entryByMachineName, r.typeItemServAssets, r.domesticImport, r.paymentDays, r.purchBillEntryId, r.purchBillYearCode,  
+                        r.remark, r.country
+                    ]);
 
                     break;
 
-                case 'CustomerItemWiseMonthlyData':
+               
+
+                case 'VendorItemWiseTrend':
                     headers = [
-                        "#Sr", "Customer Name", "Part Code", "Item Name", "Unit", "Month", "Total Bill Qty", "Total Item Amount"
+                        "#Sr", "VendorName","PartCode", "ItemName", "HsnNo", "TotalQty", "Unit", "TotalAmount"
                     ];
-
 
                     console.log("Data:", rows);
                     body = rows.map((r, i) => [
-                        i + 1, r.customerName, r.partCode, r.itemName, r.unit, r.monthName, r.totalBillQty, r.totalItemAmt
+                        i + 1, r.vendorName, r.partCode, r.itemName, r.hsnNo, r.totalQty, r.unit, r.totalAmount
                     ]);
 
-
                     break;
-                case 'CustomerWiseMonthlyTrend':
+
+                    case 'VendorWiseMonthlyTrend':
                     headers = [
-                        "#Sr", "Customer Name",
-                        "Apr Amt", "May Amt", "Jun Amt", "Jul Amt", "Aug Amt", "Sep Amt", "Oct Amt", "Nov Amt", "Dec Amt", "Jan Amt", "Feb Amt", "Mar Amt",
-                        "Apr Qty", "May Qty", "Jun Qty", "Jul Qty", "Aug Qty", "Sep Qty", "Oct Qty", "Nov Qty", "Dec Qty", "Jan Qty", "Feb Qty", "Mar Qty"
-                    ];
+                    "#Sr", "Vendor Name", "Apr Amt", "May Amt", "Jun Amt", "Jul Amt", "Aug Amt", "Sep Amt", "Oct Amt", "Nov Amt", "Dec Amt", 
+                    "Feb Amt", "Mar Amt", "Apr Qty", "May Qty", "Jun Qty", "Jul Qty", "Aug Qty", "Sep Qty", "Oct Qty", 
+                    "Nov Qty", "jan Qty", "Feb Qty", "Mar Qty"];
+
 
                     console.log("Data:", rows);
                     body = rows.map((r, i) => [
-                        i + 1, r.customerName,
-                        r.aprAmt, r.mayAmt, r.junAmt, r.julAmt, r.augAmt, r.sepAmt, r.octAmt, r.novAmt, r.decAmt, r.janAmt, r.febAmt, r.marAmt,
-                        r.aprQty, r.mayQty, r.junQty, r.julQty, r.augQty, r.sepQty, r.octQty, r.novQty, r.decQty, r.janQty, r.febQty, r.marQty
+                        i + 1, r.vendorName, r.aprAmt, r.mayAmt, r.junAmt, r.julAmt, r.augAmt, r.sepAmt, r.octAmt, r.novAmt, r.decAmt,
+                        r.janAmt, r.febAmt, r.marAmt, r.aprQty, r.mayQty, r.junQty, r.julQty, r.augQty, r.sepQty, r.octQty,
+                        r.novQty, r.decQty, r.janQty, r.febQty, r.marQty
                     ]);
 
                     break;
-                case 'SaleCompleteDetail':
+                 case 'VendorItemWiseMonthlyData':
                     headers = [
-                        "#Sr", "Sale Bill No", "Sale Bill Date", "Customer Name", "GST No", "Customer Address",
-                        "State", "State Code", "Country", "Consignee Name", "Consignee Address",
-                        "Part Code", "Item Name", "HSN No", "SO No", "Customer Order No", "SO Date", "Customer Part Code",
-                        "Total Bill Qty", "Unit", "Batch No", "Unique Batch No", "Rate", "Total Discount Amt", "Amount",
-                        "Item Remark", "From Store", "Total Stock", "Cost Center Name",
-                        "CGST %", "CGST Amount", "SGST %", "SGST Amount", "IGST %", "IGST Amount",
-                        "Expense Amount", "Bill Amount", "Taxable Amount", "GST Amount", "Currency", "Invoice Amount",
-                        "Cancel Bill", "Cancel Date", "Cancel Reason", "E-Way Bill No", "E-Invoice Generated", "E-Invoice No",
-                        "Type (Item/Service/Assets)", "Domestic/Export/NEPZ", "Supply Type", "Approved", "Bank Name",
-                        "Commodity", "Country of Supply", "Dispatch Delay Reason", "Dispatch Through", "Distance (KM)",
-                        "Actual Entry Date", "Actual Entry By", "Last Updated By", "Last Updated Date",
-                        "Entry ID", "Year Code"
+                        "#Sr", "VendorName", "Part Code", "ItemName", "Unit", "MonthName", "TotalQty", "TotalAmount"
                     ];
+
 
 
                     console.log("Data:", rows);
                     body = rows.map((r, i) => [
-                        i + 1, r.saleBillNo, r.saleBillDate, r.customerName, r.gstno, r.custAddress,
-                        r.state, r.stateCode, r.country, r.consigneeName, r.consigneeAddress,
-                        r.partCode, r.itemName, r.hsnno, r.soNo, r.custOrderNo, r.soDate, r.customerPartCode,
-                        r.totalBillQty, r.unit, r.batchNo, r.uniqueBatchno, r.rate, r.totalDisAmt, r.amount,
-                        r.itemRemark, r.fromStore, r.totStk, r.costcenterName,
-                        r.cgstPer, r.cgstAmt, r.sgstPer, r.sgstAmt, r.igstPer, r.igstAmt,
-                        r.expenseAmt, r.billAmt, r.taxableAmt, r.gstAmount, r.currency, r.invAmt,
-                        r.cancelBill, r.canceldate, r.cancelReason, r.ewaybillno, r.einvGenerated, r.einvNo,
-                        r.typeItemServAssets, r.domesticExportNEPZ, r.supplyType, r.approved, r.bankName,
-                        r.commodity, r.countryOfSupply, r.dispatchDelayReason, r.dispatchThrough, r.distanceKM,
-                        r.actualEntryDate, r.actualEntryByEMp, r.lastUpdatedByEmp,
-                        r.lastUpdatedDate, r.entryId, r.yearCode
+                        i + 1,r.vendorName, r.partCode, r.itemName,r.unit,  r.monthName, r.totalQty,  r.totalAmount
                     ]);
 
                     break;
-                case 'ItemWiseMonthlyTrend':
-                    headers = [
-                        "#Sr", "Item Name", "Part Code",
-                        "Apr Amt", "May Amt", "Jun Amt", "Jul Amt", "Aug Amt", "Sep Amt", "Oct Amt", "Nov Amt", "Dec Amt", "Jan Amt", "Feb Amt", "Mar Amt",
-                        "Apr Qty", "May Qty", "Jun Qty", "Jul Qty", "Aug Qty", "Sep Qty", "Oct Qty", "Nov Qty", "Dec Qty", "Jan Qty", "Feb Qty", "Mar Qty"
+
+                    case 'ItemWiseMonthlyTrend':
+                    headers = ["#Sr", "Item Name", "Part Code", "Apr Amt", "May Amt", "Jun Amt", "Jul Amt", "Aug Amt", "Sep Amt", "Oct Amt", "Nov Amt", "Dec Amt", "Jan Amt", "Feb Amt", "Mar Amt",
+                    "May Qty", "Jun Qty", "Jul Qty", "Aug Qty", "Sep Qty", "Oct Qty", "Nov Qty", "Dec Qty", "Jan Qty", "Feb Qty", "Mar Qty"
                     ];
-
-
 
                     console.log("Data:", rows);
                     body = rows.map((r, i) => [
-                        i + 1, r.itemName, r.partCode,
-                        r.aprAmt, r.mayAmt, r.junAmt, r.julAmt, r.augAmt, r.sepAmt, r.octAmt, r.novAmt, r.decAmt, r.janAmt, r.febAmt, r.marAmt,
-                        r.aprQty, r.mayQty, r.junQty, r.julQty, r.augQty, r.sepQty, r.octQty, r.novQty, r.decQty, r.janQty, r.febQty, r.marQty
+                        i + 1,r.itemName, r.partCode, r.aprAmt, r.mayAmt, r.junAmt, r.julAmt, r.augAmt, r.sepAmt, r.octAmt, r.novAmt, r.decAmt,
+                        r.janAmt, r.febAmt, r.marAmt, r.aprQty, r.mayQty, r.junQty, r.julQty, r.augQty, r.sepQty,
+                        r.octQty, r.novQty, r.decQty, r.janQty, r.febQty, r.marQty
                     ]);
 
                     break;
-                case 'CustomerSalesPersonWiseMonthlyTrend':
-                    headers = [
-                        "#Sr", "Customer Name", "Sales Person Name",
-                        "Apr Amt", "May Amt", "Jun Amt", "Jul Amt", "Aug Amt", "Sep Amt", "Oct Amt", "Nov Amt", "Dec Amt", "Jan Amt", "Feb Amt", "Mar Amt",
-                        "Apr Qty", "May Qty", "Jun Qty", "Jul Qty", "Aug Qty", "Sep Qty", "Oct Qty", "Nov Qty", "Dec Qty", "Jan Qty", "Feb Qty", "Mar Qty"
+                    case 'ItemWiseMonthlyTrend':
+                    headers = ["#Sr","Vendor Name", "Apr Amt", "May Amt", "Jun Amt", "Jul Amt", "Aug Amt", "Sep Amt", "Oct Amt", "Nov Amt", "Dec Amt",
+                        "Jan Amt", "Feb Amt", "Mar Amt", "Apr Qty", "May Qty", "Jun Qty", "Jul Qty", "Aug Qty", "Sep Qty",
+                        "Oct Qty", "Nov Qty", "Dec Qty", "Jan Qty", "Feb Qty", "Mar Qty"
                     ];
-
-
-
 
                     console.log("Data:", rows);
                     body = rows.map((r, i) => [
-                        i + 1, r.customerName, r.salesPersonName,
-                        r.aprAmt, r.mayAmt, r.junAmt, r.julAmt, r.augAmt, r.sepAmt, r.octAmt, r.novAmt, r.decAmt, r.janAmt, r.febAmt, r.marAmt,
-                        r.aprQty, r.mayQty, r.junQty, r.julQty, r.augQty, r.sepQty, r.octQty, r.novQty, r.decQty, r.janQty, r.febQty, r.marQty
+                        i + 1,r.vendorName, r.aprAmt, r.mayAmt, r.junAmt, r.julAmt, r.augAmt, r.sepAmt, r.octAmt, r.novAmt, r.decAmt,
+                        r.janAmt, r.febAmt, r.marAmt, r.aprQty, r.mayQty, r.junQty, r.julQty, r.augQty, r.sepQty,
+                        r.octQty, r.novQty, r.decQty, r.janQty, r.febQty, r.marQty
+                    ]);
+
+                    break;
+                     case 'VendorWiseMonthlyValueTrend':
+                    headers = ["#Sr","Vendor Name", "Apr Amt", "May Amt", "Jun Amt", "Jul Amt", "Aug Amt", 
+                            "Sep Amt", "Oct Amt", "Nov Amt", "Dec Amt", "Jan Amt", "Feb Amt", "Mar Amt"
+
+                    ];
+
+                    console.log("Data:", rows);
+                    body = rows.map((r, i) => [
+                        i + 1,r.vendorName, r.aprAmt, r.mayAmt, r.junAmt, r.julAmt, 
+                        r.augAmt, r.sepAmt, r.octAmt, r.novAmt, r.decAmt, 
+                        r.janAmt, r.febAmt, r.marAmt
+
                     ]);
 
                     break;
@@ -546,32 +566,16 @@
 
 
 
-                default:
-                    headers = ["#Sr", "Sale Bill No", "Sale Bill Date", "Customer Name", "GST No", "Customer Address",
-                        "State", "State Code", "Country", "Part Code", "Item Name", "HSN No", "Total Bill Qty", "Unit",
-                        "Rate", "Total Discount Amt", "Amount",
-                        "CGST %", "CGST Amount", "SGST %", "SGST Amount", "IGST %", "IGST Amount",
-                        "Expense Amount", "Bill Amount", "Taxable Amount", "GST Amount", "Currency",
-                        "Invoice Amount", "Cancel Bill", "Cancel Date", "Cancel Reason",
-                        "E-Way Bill No", "E-Invoice Generated", "E-Invoice No",
-                        "Type (Item/Service/Assets)", "Domestic/Export/NEPZ", "Supply Type"
-                    ];
+            default:
+            headers = ["#Sr", "Description", "For The Duration", "For Financial Year"];
 
+        console.log("Data:", rows);
+        body = rows.map((r, i) => [
+            i + 1, r.description, r.forTheDuration, r.forFinYear
+        ]); 
 
-                    console.log("Data:", rows);
-                    body = rows.map((r, i) => [
-                        i + 1, r.saleBillNo, r.saleBillDate, r.customerName, r.gstno, r.custAddress,
-                        r.state, r.stateCode, r.country, r.partCode, r.itemName, r.hsnno, r.totalBillQty, r.unit,
-                        r.rate, r.totalDisAmt, r.amount,
-                        r.cgstPer, r.cgstAmt, r.sgstPer, r.sgstAmt, r.igstPer, r.igstAmt,
-                        r.expenseAmt, r.billAmt, r.taxableAmt, r.gstAmount, r.currency,
-                        r.invAmt, r.cancelBill, r.canceldate, r.cancelReason,
-                        r.ewaybillno, r.einvGenerated, r.einvNo,
-                        r.typeItemServAssets, r.domesticExportNEPZ, r.supplyType
-                    ]);
-
-                    break;
-            }
+                     break;
+             }
 
             // Generate table with custom column width handling
             doc.autoTable({
@@ -998,28 +1002,7 @@
             countAllTotal();
             $('#totalRows').text($('#divStockMainRegister tr').length - 1);
         }
-        $('#FromDate').change(function () {
-            GetGateRegisterData();
-            FillCustomerList();
-            FillDocumentList();
-            FillSaleBillList();
-            FillItemNamePartcodeList();
-            FillSONOList();
-            FillSchNOList();
-            FillHSNNOList();
-            FillGSTList();
-        })
-        $('#ToDate').change(function () {
-            GetGateRegisterData();
-            FillCustomerList();
-            FillSaleBillList();
-            FillDocumentList();
-            FillItemNamePartcodeList();
-            FillSONOList();
-            FillSchNOList();
-            FillHSNNOList();
-            FillGSTList();
-        })
+        
 
     </script>
     <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
