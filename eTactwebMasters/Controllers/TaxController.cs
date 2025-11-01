@@ -623,32 +623,14 @@ public class TaxController : Controller
             }
             else if (TxModel.TxPageName == "SaleRejection")
             {
-                _MemoryCache.TryGetValue("KeySaleRejectionGrid", out List<SaleRejectionDetail> purchaseRejectionDetail);
-                string modelPRGridJson = HttpContext.Session.GetString("KeySaleRejectionGrid");
-                List<SaleRejectionDetail> SaleRejectionDetail = new List<SaleRejectionDetail>();
-                if (!string.IsNullOrEmpty(modelPRGridJson) && purchaseRejectionDetail == null)
+                string modelJson = HttpContext.Session.GetString("KeySaleRejectionGrid");
+                List<SaleRejectionDetail> SaleRejectionDetail = new();
+                if (!string.IsNullOrEmpty(modelJson))
                 {
-                    SaleRejectionDetail = JsonConvert.DeserializeObject<List<SaleRejectionDetail>>(modelPRGridJson);
+                    SaleRejectionDetail = JsonConvert.DeserializeObject<List<SaleRejectionDetail>>(modelJson);
                 }
                 ItemDetailGrid = SaleRejectionDetail;
-                var _ItemGrid = new List<SaleRejectionDetail>();
-                _ItemGrid = ItemDetailGrid;
-                var Amount = 0.0;
-                var itemCodeArray = new List<int>();
-                _ItemGrid = _ItemGrid
-                 .GroupBy(item => item.ItemCode)
-                 .Select(group => new SaleRejectionDetail
-                 {
-                     Amount = group.Sum(item => item.Amount),
-                     ItemCode = group.Key,
-                     PartCode = group.Select(x => x.PartCode).FirstOrDefault(x => !string.IsNullOrEmpty(x)),
-                     ItemName = group.Select(x => x.ItemName).FirstOrDefault(x => !string.IsNullOrEmpty(x)),
-                 })
-                 .ToList();
 
-                ItemDetailGrid = _ItemGrid;
-                //_MemoryCache.TryGetValue("KeySaleRejectionGrid", out IList<SaleRejectionDetail> saleRejectionDetail);
-                //ItemDetailGrid = saleRejectionDetail;
             }
             else if (TxModel.TxPageName == "DirectPurchaseBill")
             {

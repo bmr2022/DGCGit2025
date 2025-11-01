@@ -600,14 +600,15 @@
              },
             success: function (response) {
                 console.log("Session updated successfully:", response);
+                    BasicTotal();
+                    GetDbCrDetail();
             },
             error: function (xhr, status, error) {
                 console.error("Error updating session:", error);
             }
         });
 
-            BasicTotal();
-               GetDbCrDetail();
+            
         }
         //         function CalculateRejAmount() {
         //     var schDataArr = [];

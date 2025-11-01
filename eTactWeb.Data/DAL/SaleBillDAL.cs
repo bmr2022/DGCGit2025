@@ -1063,7 +1063,7 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        public async Task<ResponseResult> GetDashboardData(string summaryDetail, string partCode, string itemName, string saleBillno, string customerName, string sono, string custOrderNo, string schNo, string performaInvNo, string saleQuoteNo, string domensticExportNEPZ, string fromdate, string toDate,string SaleBillEntryFrom)
+        public async Task<ResponseResult> GetDashboardData(string summaryDetail, string partCode, string itemName, string saleBillno, string customerName, string sono, string custOrderNo, string schNo, string performaInvNo, string saleQuoteNo, string domensticExportNEPZ,string SubInvoicetype, string fromdate, string toDate,string SaleBillEntryFrom)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -1086,6 +1086,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@DomesticExportNEPZ", domensticExportNEPZ ?? ""));
                 SqlParams.Add(new SqlParameter("@FromDate", fromdate));
                 SqlParams.Add(new SqlParameter("@ToDate", toDate));
+                SqlParams.Add(new SqlParameter("@SubInvoicetype", SubInvoicetype));
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_SaleBillMainDetail", SqlParams);
             }
             catch (Exception ex)
