@@ -990,7 +990,7 @@ namespace eTactWeb.Controllers
 
         [HttpGet]
         [Route("{controller}/Dashboard")]
-        public async Task<IActionResult> SBDashboard(string summaryDetail = "", string Flag = "True", string partCode = "", string itemName = "", string saleBillno = "", string customerName = "", string sono = "", string custOrderNo = "", string schNo = "", string performaInvNo = "", string saleQuoteNo = "", string domensticExportNEPZ = "", string fromdate = "", string toDate = "", string searchBox = "",string SaleBillEntryFrom="")
+        public async Task<IActionResult> SBDashboard(string summaryDetail = "", string Flag = "True", string partCode = "", string itemName = "", string saleBillno = "", string customerName = "", string sono = "", string custOrderNo = "", string schNo = "", string performaInvNo = "", string saleQuoteNo = "", string domensticExportNEPZ = "",string SubInvoicetype="", string fromdate = "", string toDate = "", string searchBox = "",string SaleBillEntryFrom="")
         {
             try
             {
@@ -1007,7 +1007,7 @@ namespace eTactWeb.Controllers
                 model.SaleBillYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
                 model.SummaryDetail = "Summary";
                 model.SONO = "";
-                var Result = await _SaleBill.GetDashboardData(model.SummaryDetail, partCode, itemName, saleBillno, customerName, sono, custOrderNo, schNo, performaInvNo, saleQuoteNo, domensticExportNEPZ, ParseFormattedDate(model.FinFromDate.Split(" ")[0]), common.CommonFunc.ParseFormattedDate(model.FinToDate.Split(" ")[0]), SaleBillEntryFrom).ConfigureAwait(true);
+                var Result = await _SaleBill.GetDashboardData(model.SummaryDetail, partCode, itemName, saleBillno, customerName, sono, custOrderNo, schNo, performaInvNo, saleQuoteNo, domensticExportNEPZ, SubInvoicetype, ParseFormattedDate(model.FinFromDate.Split(" ")[0]), common.CommonFunc.ParseFormattedDate(model.FinToDate.Split(" ")[0]), SaleBillEntryFrom).ConfigureAwait(true);
                 if (Result != null)
                 {
                     var _List = new List<TextValue>();
@@ -1057,7 +1057,7 @@ namespace eTactWeb.Controllers
 
         [HttpGet]
         [Route("{controller}/SaleBillOnCounterDashboard")]
-        public async Task<IActionResult> SaleBillOnCounterDashboard(string summaryDetail = "", string Flag = "True", string partCode = "", string itemName = "", string saleBillno = "", string customerName = "", string sono = "", string custOrderNo = "", string schNo = "", string performaInvNo = "", string saleQuoteNo = "", string domensticExportNEPZ = "", string fromdate = "", string toDate = "", string searchBox = "",string SaleBillEntryFrom="")
+        public async Task<IActionResult> SaleBillOnCounterDashboard(string summaryDetail = "", string Flag = "True", string partCode = "", string itemName = "", string saleBillno = "", string customerName = "", string sono = "", string custOrderNo = "", string schNo = "", string performaInvNo = "", string saleQuoteNo = "", string domensticExportNEPZ = "",string SubInvoicetype="", string fromdate = "", string toDate = "", string searchBox = "",string SaleBillEntryFrom="")
         {
             try
             {
@@ -1074,7 +1074,7 @@ namespace eTactWeb.Controllers
                 model.SaleBillYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
                 model.SummaryDetail = "Summary";
                 model.SONO = "";
-                var Result = await _SaleBill.GetDashboardData(model.SummaryDetail, partCode, itemName, saleBillno, customerName, sono, custOrderNo, schNo, performaInvNo, saleQuoteNo, domensticExportNEPZ, ParseFormattedDate(model.FinFromDate.Split(" ")[0]), common.CommonFunc.ParseFormattedDate(model.FinToDate.Split(" ")[0]), SaleBillEntryFrom).ConfigureAwait(true);
+                var Result = await _SaleBill.GetDashboardData(model.SummaryDetail, partCode, itemName, saleBillno, customerName, sono, custOrderNo, schNo, performaInvNo, saleQuoteNo, domensticExportNEPZ, SubInvoicetype, ParseFormattedDate(model.FinFromDate.Split(" ")[0]), common.CommonFunc.ParseFormattedDate(model.FinToDate.Split(" ")[0]), SaleBillEntryFrom).ConfigureAwait(true);
                 if (Result != null)
                 {
                     var _List = new List<TextValue>();
@@ -1121,13 +1121,13 @@ namespace eTactWeb.Controllers
                 throw ex;
             }
         }
-        public async Task<IActionResult> GetSearchData(string summaryDetail, string partCode, string itemName, string saleBillno, string customerName, string sono, string custOrderNo, string schNo, string performaInvNo, string saleQuoteNo, string domensticExportNEPZ, string fromdate, string toDate,string SaleBillEntryFrom, int pageNumber = 1, int pageSize = 50, string SearchBox = "")
+        public async Task<IActionResult> GetSearchData(string summaryDetail, string partCode, string itemName, string saleBillno, string customerName, string sono, string custOrderNo, string schNo, string performaInvNo, string saleQuoteNo, string domensticExportNEPZ, string fromdate, string toDate,string SaleBillEntryFrom, string SubInvoicetype, int pageNumber = 1, int pageSize = 50, string SearchBox = "")
         {
             try
             {
                 var model = new SaleBillDashboard();
                 model.SaleBillYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-                var Result = await _SaleBill.GetDashboardData(summaryDetail, partCode, itemName, saleBillno, customerName, sono, custOrderNo, schNo, performaInvNo, saleQuoteNo, domensticExportNEPZ, ParseFormattedDate((fromdate).Split(" ")[0]), ParseFormattedDate(toDate.Split(" ")[0]), SaleBillEntryFrom).ConfigureAwait(true);
+                var Result = await _SaleBill.GetDashboardData(summaryDetail, partCode, itemName, saleBillno, customerName, sono, custOrderNo, schNo, performaInvNo, saleQuoteNo, domensticExportNEPZ, SubInvoicetype, ParseFormattedDate((fromdate).Split(" ")[0]), ParseFormattedDate(toDate.Split(" ")[0]), SaleBillEntryFrom).ConfigureAwait(true);
                 if (Result != null)
                 {
                     var _List = new List<TextValue>();
