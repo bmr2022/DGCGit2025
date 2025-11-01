@@ -268,11 +268,11 @@
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-9" style=" width:100px" id="plannedtarget">
                                     <label asp-for="TargetQty" class="form-label" style="color: blue;">Target Qty</label>
-                                    <input asp-for="TargetQty" class="form-control" readonly />
+                                    <input asp-for="TargetQty" class="form-control" readonly onfocusout="ClearGridAjax()" />
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-9" style=" width:100px" id="unplannedtarget">
                                     <label asp-for="TargetQtyUnplanned" class="form-label">Target Qty</label>
-                                    <input asp-for="TargetQtyUnplanned" class="form-control" id="unTarget" min="0" type="number" step="any" />
+                                    <input asp-for="TargetQtyUnplanned" class="form-control" onfocusout="ClearGridAjax()" id="unTarget" min="0" type="number" step="any" />
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-9" style=" width:100px">
                                     <label asp-for="ProdQty" class="form-label" style="color: red;">Prod Qty*</label>

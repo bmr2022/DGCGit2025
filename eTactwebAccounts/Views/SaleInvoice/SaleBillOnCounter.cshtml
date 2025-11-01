@@ -2200,11 +2200,13 @@
                     return;
                 }
               
-
-                if (parseFloat($('#Qty-' + i).val()) > parseFloat($('#SOPendQty-' + i).val())) {
-                    $.notify('Please enter Valid quantity for ' + $('#PartCode-' + i).val(), 'error');
-                    return;
+                if (AllowedToDispatchQtyMoreThenCloseSOPendQty != 'Y') {
+                    if (parseFloat($('#Qty-' + i).val()) > parseFloat($('#SOPendQty-' + i).val())) {
+                        $.notify('Please enter Valid quantity for ' + $('#PartCode-' + i).val(), 'error');
+                        return;
+                    }
                 }
+              
                 if ($('#Rate-' + i).val() == 0) {
                     $.notify('Please enter rate for ' + $('#PartCode-' + i).val(), 'error');
                     return;
@@ -5103,7 +5105,7 @@
             return isNaN(d.getTime()) ? null : d;
         }
 
-
+        var AllowedToDispatchQtyMoreThenCloseSOPendQty = '';
         function GetFeatureOption() {
 
             $.ajax({
@@ -5129,6 +5131,7 @@
 
                             $('#AllowBackDateSALEBILL').val(obj.Result[0].AllowBackDateSALEBILL);
                             $('#AllowToAdjZeroAmt').val(obj.Result[0].AllowToAdjZeroAmt);
+                            AllowedToDispatchQtyMoreThenCloseSOPendQty=obj.Result[0].AllowedToDispatchQtyMoreThenCloseSOPendQty;
                             // $('#ShowHideSaleBillEntryDetail').val(obj.Result[0].ShowHideSaleBillEntryDetail);
                             // $('#ShowHideSaleBillCustomerDetail').val(obj.Result[0].ShowHideSaleBillCustomerDetail);
                             // $('#ShowHideSaleBillOtherRequiredDetail').val(obj.Result[0].ShowHideSaleBillOtherRequiredDetail);
