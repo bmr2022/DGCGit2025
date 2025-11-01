@@ -308,7 +308,8 @@ namespace eTactWeb.Controllers
 
                     MainModel.SaleRejectionDetails = saleBillDetail;
                     MainModel.ItemDetailGrid = saleBillDetail;
-
+                    HttpContext.Session.Remove("KeySaleRejectionGrid");
+                    HttpContext.Session.Remove("SaleRejectionModel");
                     HttpContext.Session.SetString("KeySaleRejectionGrid", JsonConvert.SerializeObject(MainModel.SaleRejectionDetails));
                     HttpContext.Session.SetString("SaleRejectionModel", JsonConvert.SerializeObject(MainModel));
                 }

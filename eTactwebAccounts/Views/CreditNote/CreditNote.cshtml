@@ -519,7 +519,7 @@
             GetCostCenter();
             DueDateCalculation();
             FillSubVoucher();
-
+                 FillPopUpGridDetails($('#Mode').val());
             $('#GstRegUnreg').rules("remove", "required");
             $('#Transporter').rules("remove", "required");
             $('#HSNNo').rules("remove", "required");
@@ -1097,12 +1097,90 @@
                 }
             });
         }
+        
         var billQty = 0;
         var billRate = 0;
         var DocTypeAccountCode=0;
         var html = '';
         var popUpItems = [];
-        function FillDetailFromPopupGrid(e) {
+            function FillPopUpGridDetails(modeId) {
+                let html = '';
+                let billQty = 0;
+                let billRate = 0;
+                let j = 1;
+
+                if (modeId === 'U' || modeId === 'V') {
+
+                    // Get JSON from Razor model
+                    var data = @Html.Raw(Json.Serialize(Model.AccCreditNoteAgainstBillDetails));
+
+                    if (data && data.length > 0) {
+
+                        $.each(data, function (i, item) {
+                            // Clean up placeholder dates
+                            const formatDate = (d) => {
+                                if (!d || d === "01/01/1900 00:00:00") return "";
+                                return d.split(" ")[0]; // keep only date part
+                            };
+
+                                  html += '<tr id="CNPopUpDataRow-' + i + '" style="font-size: 12px;">' +
+            '<td>' + (i + 1) + '</td>' +
+            '<td id="partCode">' + (item.partCode || '') +
+                '<input type="hidden" id="popupItemCode-' + j + '" value="' + (item.itemCode || '') + '"/></td>' +
+            '<td id="popUpItemName">' + (item.itemName || '') + '</td>' +
+            '<td id="popUpsaleBillEntryId">' + (item.againstSaleBillEntryId || '') + '</td>' +
+            '<td id="popUpSaleBillYearCode">' + (item.againstSaleBillYearCode || '') + '</td>' +
+            '<td id="popUpSaleBillNo">' + (item.againstSaleBillBillNo || '') + '</td>' +
+            '<td id="popUpSaleBillDate">' + formatDate(item.againstSaleBillDate) + '</td>' +
+            '<td id="popUpPurchBillEntryId">' + (item.againstPurchaseBillEntryId || '') + '</td>' +
+            '<td id="popUpPurchBillYearCode">' + (item.againstPurchaseBillYearCode || '') + '</td>' +
+            '<td id="popUpInvoiceNo">' + (item.againstPurchaseBillBillNo || '') + '</td>' +
+            '<td id="popUpInvoiceDate">' + formatDate(item.againstPurchaseBillDate) + '</td>' +
+            '<td id="popUpINVNetAmt">' + (item.amount || 0) + '</td>' +
+            '<td id="popUpDueDate"></td>' +  // no matching field in model
+            '<td id="popUpPaidAmt"></td>' +  // no matching field in model
+            '<td id="popUpRemainingAmt"></td>' + // no matching field in model
+            '<td id="popUpBillQty">' + (item.billQty || 0) + '</td>' +
+            '<td id="popUpBillRate">' + (item.billRate || 0) + '</td>' +
+            '<td id="popUpItemAmount-' + i + '">' + (item.amount || 0) + '</td>' +
+            '<td id="popUpdisPer">' + (item.discountPer || 0) + '</td>' +
+            '<td id="popUpDisAmt">' + (item.discountAmt || 0) + '</td>' +
+            '<td id="popUpsono">' + (item.sono || '') + '</td>' +
+            '<td id="popUpcustOrderNo">' + (item.custOrderNo || '') + '</td>' +
+            '<td id="popUpsoDate">' + formatDate(item.soDate) + '</td>' +
+            '<td id="popUppono">' + (item.pono || '') + '</td>' +
+            '<td id="popUppoDate">' + formatDate(item.poDate) + '</td>' +
+            '<td id="popUppoEntryId">' + (item.poEntryId || '') + '</td>' +
+            '<td id="popUppoYearCode">' + (item.poYearCode || '') + '</td>' +
+            '<td id="popUpDocTypeAccountCode">' + (item.docAccountCode || '') + '</td>' +
+        '</tr>';
+
+
+                            // Accumulate totals
+                            billQty += parseFloat(item.billQty || 0);
+                            billRate += parseFloat(item.billRate || 0);
+                            j++;
+                        });
+
+                    } else {
+                        html = '<tr class="text-center"><td colspan="28" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
+                    }
+
+                    // Set totals in UI
+                    $('#BillQty').val(billQty.toFixed(2));
+                    $('#BillRate').val(billRate.toFixed(2));
+                    $('#RejectedQty').val($('#BillQty').val());
+                    $('#PRRate').val($('#BillRate').val());
+
+                    // Optional calculations if functions exist
+                    if (typeof CalculateItemAmount === "function") CalculateItemAmount();
+                    if (typeof BasicTotal === "function") BasicTotal();
+
+                    // Render the grid
+                       $('#divAddCreditNotePopupDataGrid').html(html);
+                }
+            }
+            function FillDetailFromPopupGrid(e) {
             let data = [];
             e.preventDefault();
             let rowCount = $('#divCreditNoteDataGrid tr').length;
@@ -1323,15 +1401,57 @@
 
             return true;
         }
+            $('.ItemBtn').click(function (e) {
+            e.preventDefault();
+                  AddToItemsGrid(e);
+                       const currentItemCode = ($("#ItemCode").val() || "").trim();
 
-        $('.ItemBtn').click(function (e) {
+            if (isAddItem) {
+                if (isAddToPopgrid) {
+                                         $('#divAddCreditNotePopupDataGrid tr:hidden').remove();
+
+                      let existingRows = $('#divAddCreditNotePopupDataGrid').html() || "";
+                 if (popuphtml.trim() !== "") {
+                     html = existingRows + popuphtml;
+                 } else {
+                     html = existingRows;
+                 }
+                          $('#divAddCreditNotePopupDataGrid').empty();
+                         $('#divAddCreditNotePopupDataGrid').append(html);
+                      }
+
+                else {
+
+                       $('#divAddCreditNotePopupDataGrid tr').each(function (index) {
+                        const i = index + 1;
+                        const $row = $(this);
+                        const popupItemCode = ($row.find('#popupItemCode-' + i).val() || '').trim();
+
+                        // hide rows for current itemCode; show all others
+                        if (popupItemCode === currentItemCode) {
+                            $row.hide();
+                        } else {
+                            $row.show();
+                        }
+                    });
+
+
+                }
+                isAddToPopgrid =false;
+                // Always refresh totals
+                BasicItemGridTotal();
+                BasicTotal();
+            }
+        });
+
+     /*    $('.ItemBtn').click(function (e) {
 
             AddToItemsGrid(e);
             if (isAddItem) {
                 $('#divAddCreditNotePopupDataGrid').empty();
                 $('#divAddCreditNotePopupDataGrid').append(html);
             }
-        });
+        }); */
 
         $('#AddPopDataInGrid').click(function (e) {
 
