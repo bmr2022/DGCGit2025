@@ -1291,6 +1291,22 @@ function submitForm(shouldPrint, printWindow) {
                 for (var i = 1; i <= rowCount; i++) {
                     GetAlternateItemCodes(i);
                 }
+
+                                 var totalrows = $('#divIssueWOBOMGrid tr').length;
+
+                                for (let i = 1; i <= totalrows; i++) {
+                                            var batchVal = $('#MainGridBatchNo-' + i).val();
+                                            var issueqty = $('#MainGridIssueQty-' + i).val();
+                                            var totalQty = $('#MainGridTotalStock-' + i).val();
+                                            var uniquebatch = $('#MainGridUniqueBatchNo-' + i).val();
+
+
+
+                                    if (batchVal === '' || batchVal === '0' || uniquebatch === '' || uniquebatch === '0' || uniquebatch===null || batchVal === null || issueqty <= 0 || totalQty <= 0) {
+                                        // Change background color of the whole row
+                                        $('#MainGridBatchNo-' + i).closest('tr').css('background-color', '#ee6b6e');
+                                    }
+                                }
                 GetIssueScanFeature();
                 $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy', minDate: 0 }).datepicker("setDate", 'now');
 
