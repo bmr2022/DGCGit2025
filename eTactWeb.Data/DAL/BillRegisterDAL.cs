@@ -217,7 +217,7 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@FromDate", fromDt);
                     oCmd.Parameters.AddWithValue("@ToDate", toDt);
                     oCmd.Parameters.AddWithValue("@VendorName",
-     (VendorName == "0" || string.IsNullOrWhiteSpace(VendorName)) ? "" : VendorName);
+                    (VendorName == "0" || string.IsNullOrWhiteSpace(VendorName)) ? "" : VendorName);
 
                     oCmd.Parameters.AddWithValue("@Docname",
                         (DocumentName == "0" || string.IsNullOrWhiteSpace(DocumentName)) ? "" : DocumentName);
@@ -255,14 +255,83 @@ namespace eTactWeb.Data.DAL
                     if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
                     {
                         model.BillRegisterList = (from DataRow dr in oDataSet.Tables[0].Rows
+                                                  select new BillRegisterModel
+                                                  {
+                                                      Description = Convert.ToString(dr["Description"].ToString()),
+                                                      ForTheDuration = Convert.ToString(dr["forTheDuration"].ToString()),
+                                                      ForFinYear = Convert.ToString(dr["ForFinYear"].ToString())
+                                                  }).ToList();
+                    }
+                }
+                else if (ReportType == "PurchaseBillDetail")
+                {
+                    if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                    {
+                        model.BillRegisterList = (from DataRow dr in oDataSet.Tables[0].Rows
                                                         select new BillRegisterModel
                                                         {
-                                                            Description = Convert.ToString(dr["Description"].ToString()),
-                                                            ForTheDuration = Convert.ToString(dr["forTheDuration"].ToString()),
-                                                            ForFinYear = Convert.ToString(dr["ForFinYear"].ToString())
+                                                            VendorName = dr["VendorName"] != DBNull.Value ? Convert.ToString(dr["VendorName"]) : string.Empty,
+                                                            GstNo = dr["GSTNO"] != DBNull.Value ? Convert.ToString(dr["GSTNO"]) : string.Empty,
+                                                            VendorAddress = dr["VendorAddress"] != DBNull.Value ? Convert.ToString(dr["VendorAddress"]) : string.Empty,
+                                                            State = dr["State"] != DBNull.Value ? Convert.ToString(dr["State"]) : string.Empty,
+                                                            StateCode = dr["State"] != DBNull.Value ? Convert.ToString(dr["State"]) : string.Empty,
+                                                            InvoiceNo = dr["InvoiceNo"] != DBNull.Value ? Convert.ToString(dr["InvoiceNo"]) : string.Empty,
+                                                            InvDate = dr["InvDate"] != DBNull.Value ? Convert.ToDateTime(dr["InvDate"]).ToString("dd/MM/yyyy") : string.Empty,
+                                                            VoucherNo = dr["VoucherNo"] != DBNull.Value ? Convert.ToString(dr["VoucherNo"]) : string.Empty,
+                                                            VoucherDate = dr["VoucherDate"] != DBNull.Value ? Convert.ToString(dr["VoucherDate"]) : string.Empty,
+                                                            MRNNo = dr["MRNNo"] != DBNull.Value ? Convert.ToString(dr["MRNNo"]) : string.Empty,
+                                                            MRNDate = dr["MRNDate"] != DBNull.Value ? Convert.ToDateTime(dr["MRNDate"]).ToString("dd/MM/yyyy") : string.Empty,
+                                                            GateNo = dr["GateNo"] != DBNull.Value ? Convert.ToString(dr["GateNo"]) : string.Empty,
+                                                            GateDate = dr["GateDate"] != DBNull.Value ? Convert.ToDateTime(dr["GateDate"]).ToString("dd/MM/yyyy") : string.Empty,
+                                                            PartCode = dr["PartCode"] != DBNull.Value ? Convert.ToString(dr["PartCode"]) : string.Empty,
+                                                            ItemName = dr["ItemName"] != DBNull.Value ? Convert.ToString(dr["ItemName"]) : string.Empty,
+                                                            HsnNo = dr["HSNNO"] != DBNull.Value ? Convert.ToString(dr["HSNNO"]) : string.Empty,
+                                                            BillQty = dr["BillQty"] != DBNull.Value ? Convert.ToDecimal(dr["BillQty"]) : 0,
+                                                            RecQty = dr["RecQty"] != DBNull.Value ? Convert.ToDecimal(dr["RecQty"]) : 0,
+                                                            RejectedQty = dr["RejectedQty"] != DBNull.Value ? Convert.ToDecimal(dr["RejectedQty"]) : 0,
+                                                            Unit = dr["Unit"] != DBNull.Value ? Convert.ToString(dr["Unit"]) : string.Empty,
+                                                            BillRate = dr["BillRate"] != DBNull.Value ? Convert.ToDecimal(dr["BillRate"]) : 0,
+                                                            PoRate = dr["PoRate"] != DBNull.Value ? Convert.ToDecimal(dr["PoRate"]) : 0,
+                                                            DiscountPer = dr["DiscountPer"] != DBNull.Value ? Convert.ToDecimal(dr["DiscountPer"]) : 0,
+                                                            DisAmt = dr["DisAmt"] != DBNull.Value ? Convert.ToDecimal(dr["DisAmt"]) : 0,
+                                                            ItemAmount = dr["ItemAmount"] != DBNull.Value ? Convert.ToDecimal(dr["ItemAmount"]) : 0,
+                                                            CGSTPer = dr["CGSTPer"] != DBNull.Value ? Convert.ToDecimal(dr["CGSTPer"]) : 0,
+                                                            CGSTAmt = dr["CGSTAmt"] != DBNull.Value ? Convert.ToDecimal(dr["CGSTAmt"]) : 0,
+                                                            SGSTPer = dr["SGSTPer"] != DBNull.Value ? Convert.ToDecimal(dr["SGSTPer"]) : 0,
+                                                            SGSTAmt = dr["SGSTAmt"] != DBNull.Value ? Convert.ToDecimal(dr["SGSTAmt"]) : 0,
+                                                            IGSTPer = dr["IGSTPer"] != DBNull.Value ? Convert.ToDecimal(dr["IGSTPer"]) : 0,
+                                                            IGSTAmt = dr["IGSTAmt"] != DBNull.Value ? Convert.ToDecimal(dr["IGSTAmt"]) : 0,
+                                                            ExpenseAmt = dr["ExpenseAmt"] != DBNull.Value ? Convert.ToDecimal(dr["ExpenseAmt"]) : 0,
+                                                            TotalBillAmt = dr["TotalBillAmt"] != DBNull.Value ? Convert.ToDecimal(dr["TotalBillAmt"]) : 0,
+                                                            TotaltaxableAmt = dr["TotaltaxableAmt"] != DBNull.Value ? Convert.ToDecimal(dr["TotaltaxableAmt"]) : 0,
+                                                            GSTAmount = dr["GSTAmount"] != DBNull.Value ? Convert.ToDecimal(dr["GSTAmount"]) : 0,
+                                                            Currency = dr["Currency"] != DBNull.Value ? Convert.ToString(dr["Currency"]) : string.Empty,
+                                                            InvAmt = dr["InvAmt"] != DBNull.Value ? Convert.ToDecimal(dr["InvAmt"]) : 0,
+                                                            MIRNO = dr["MIRNO"] != DBNull.Value ? Convert.ToString(dr["MIRNO"]) : string.Empty,
+                                                            MIRDate = dr["MIRDate"] != DBNull.Value ? Convert.ToDateTime(dr["MIRDate"]).ToString("dd/MM/yyyy") : string.Empty,
+                                                            ItemParentGroup = dr["ItemParentGroup"] != DBNull.Value ? Convert.ToString(dr["ItemParentGroup"]) : string.Empty,
+                                                            ItemCategory = dr["ItemCategory"] != DBNull.Value ? Convert.ToString(dr["ItemCategory"]) : string.Empty,
+                                                            TypeItemServAssets = dr["TypeItemServAssets"] != DBNull.Value ? Convert.ToString(dr["TypeItemServAssets"]) : string.Empty,
+                                                            DomesticImport = dr["DomesticImport"] != DBNull.Value ? Convert.ToString(dr["DomesticImport"]) : string.Empty,
+                                                            PurchaseBillDirectPB = dr["PurchaseBillDirectPB"] != DBNull.Value ? Convert.ToString(dr["PurchaseBillDirectPB"]) : string.Empty,
+                                                            PurchaseBillTypeMRNJWChallan = dr["PurchaseBillTypeMRNJWChallan"] != DBNull.Value ? Convert.ToString(dr["PurchaseBillTypeMRNJWChallan"]) : string.Empty,
+                                                            PaymentDays = dr["PaymentDays"] != DBNull.Value ? Convert.ToInt32(dr["PaymentDays"]) : 0,
+                                                            PaymentTerm = dr["PaymentTerm"] != DBNull.Value ? Convert.ToString(dr["PaymentTerm"]) : string.Empty,
+                                                            Approved = dr["Approved"] != DBNull.Value ? Convert.ToString(dr["Approved"]) : string.Empty,
+                                                            ApprovedDate = dr["ApprovedDate"] != DBNull.Value ? Convert.ToDateTime(dr["ApprovedDate"]).ToString("dd/MM/yyyy") : string.Empty,
+                                                            EntryByMachineName = dr["EntryByMachineName"] != DBNull.Value ? Convert.ToString(dr["EntryByMachineName"]) : string.Empty,
+                                                            PurchBillEntryId = dr["PurchBillEntryId"] != DBNull.Value ? Convert.ToInt32(dr["PurchBillEntryId"]) : 0,
+                                                            PurchBillYearCode = dr["PurchBillYearCode"] != DBNull.Value ? Convert.ToInt32(dr["PurchBillYearCode"]) : 0,
+                                                            EntryByEmployee = dr["EntryByEmployee"] != DBNull.Value ? Convert.ToString(dr["EntryByEmployee"]) : string.Empty,
+                                                            ActualEntryDate = dr["ActualEntryDate"] != DBNull.Value ? Convert.ToDateTime(dr["ActualEntryDate"]).ToString("dd/MM/yyyy") : string.Empty,
+                                                            LastUpdatedByEmp = dr["LastUpdatedByEmp"] != DBNull.Value ? Convert.ToString(dr["LastUpdatedByEmp"]) : string.Empty,
+                                                            LastUpdatedDate = dr["LastUpdatedDate"] != DBNull.Value ? Convert.ToDateTime(dr["LastUpdatedDate"]).ToString("dd/MM/yyyy") : string.Empty,
+
                                                         }).ToList();
                     }
                 }
+                
+
                 else if (ReportType== "GSTSUMMARY"||ReportType== "PURCHASESUMMARYREG")
                 {
                     if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
@@ -272,11 +341,13 @@ namespace eTactWeb.Data.DAL
                                                         {
                                                             VendorName = dr["VendorName"] == DBNull.Value ? "" : Convert.ToString(dr["VendorName"]),
                                                             InvoiceNo = dr["InvoiceNo"] == DBNull.Value ? "" : Convert.ToString(dr["InvoiceNo"]),
-                                                            InvoiceDate = dr["InvoiceDate"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(dr["InvoiceDate"]),
+                                                            InvoiceDate = dr["InvoiceDate"] == DBNull.Value ? "" : Convert.ToString(dr["InvoiceDate"]),
+                              
                                                             VoucherNo = dr["VoucherNo"] == DBNull.Value ? "" : Convert.ToString(dr["VoucherNo"]),
-                                                            VoucherDate = dr["VoucherDate"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(dr["VoucherDate"]),
+                                                            VoucherDate = dr["VoucherDate"] == DBNull.Value ? "" : Convert.ToString(dr["VoucherDate"]),
+                       
                                                             MRNNo = dr["MRNNo"] == DBNull.Value ? "" : Convert.ToString(dr["MRNNo"]),
-                                                            MRNDate = dr["MRNDate"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(dr["MRNDate"]),
+                                                            MRNDate = dr["MRNDate"] == DBNull.Value ? "" : Convert.ToString(dr["MRNDate"]),
                                                             BillAmt = dr["BillAmt"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["BillAmt"]),
                                                             TaxableAmt = dr["TaxableAmt"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["TaxableAmt"]),
                                                             GSTAmount = dr["GSTAmount"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["GSTAmount"]),
@@ -293,7 +364,7 @@ namespace eTactWeb.Data.DAL
                                                             ExpenseAmt = dr["ExpenseAmt"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["ExpenseAmt"]),
                                                             InvAmt = dr["InvAmt"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["InvAmt"]),
                                                             GSTType = dr["GSTType"] == DBNull.Value ? "" : Convert.ToString(dr["GSTType"]),
-                                                            GSTNO = dr["GSTNO"] == DBNull.Value ? "" : Convert.ToString(dr["GSTNO"]),
+                                                            GstNo = dr["GSTNO"] == DBNull.Value ? "" : Convert.ToString(dr["GSTNO"]),
                                                             VendorAddress = dr["VendorAddress"] == DBNull.Value ? "" : Convert.ToString(dr["VendorAddress"]),
                                                             State = dr["State"] == DBNull.Value ? "" : Convert.ToString(dr["State"]),
                                                             DirectPBOrAgainstMRN = dr["DirectPBOrAgainstMRN"] == DBNull.Value ? "" : Convert.ToString(dr["DirectPBOrAgainstMRN"]),
@@ -303,17 +374,154 @@ namespace eTactWeb.Data.DAL
                                                             PaymentDays = dr["PaymentDays"] == DBNull.Value ? 0 : Convert.ToInt32(dr["PaymentDays"]),
                                                             PurchBillEntryId = dr["PurchBillEntryId"] == DBNull.Value ? 0 : Convert.ToInt32(dr["PurchBillEntryId"]),
                                                             PurchBillYearCode = dr["PurchBillYearCode"] == DBNull.Value ? 0 : Convert.ToInt32(dr["PurchBillYearCode"]),
-                                                            ActualEntryByEmp = dr["ActualEntryByEmp"] == DBNull.Value ? "" : Convert.ToString(dr["ActualEntryByEmp"]),
-                                                            ActualEntryDate = dr["ActualEntryDate"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(dr["ActualEntryDate"]),
+                                                            ActualEntryByEmp = dr["ActualEntryByEmp"] == DBNull.Value ? "" : Convert.ToString(dr["ActualEntryDate"]),
+                                                            ActualEntryDate = dr["ActualEntryDate"] == DBNull.Value ? "" : Convert.ToString(dr["ActualEntryByEmp"]),
                                                             LastUpdatedByEmp = dr["LastUpdatedByEmp"] == DBNull.Value ? "" : Convert.ToString(dr["LastUpdatedByEmp"]),
-                                                            LastUpdatedDate = dr["LastUpdatedDate"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(dr["LastUpdatedDate"]),
+                                                            LastUpdatedDate = dr["LastUpdatedDate"] == DBNull.Value ? "" : Convert.ToString(dr["LastUpdatedDate"]),
                                                             Remark = dr["Remark"] == DBNull.Value ? "" : Convert.ToString(dr["Remark"]),
                                                             Country = dr["Country"] == DBNull.Value ? "" : Convert.ToString(dr["Country"])
 
                                                         }).ToList();
                     }
                 }
-               
+                else if (ReportType == "VendorItemWiseTrend")
+                {
+                    if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                    {
+                        model.BillRegisterList = (from DataRow dr in oDataSet.Tables[0].Rows
+                                                  select new BillRegisterModel
+                                                  {
+                                                      VendorName = dr["VendorName"] != DBNull.Value ? Convert.ToString(dr["VendorName"]) : string.Empty,
+                                                      PartCode = dr["PartCode"] != DBNull.Value ? Convert.ToString(dr["PartCode"]) : string.Empty,
+                                                      ItemName = dr["ItemName"] != DBNull.Value ? Convert.ToString(dr["ItemName"]) : string.Empty,
+                                                      HsnNo = dr["HSNNO"] != DBNull.Value ? Convert.ToString(dr["HSNNO"]) : string.Empty,
+                                                      TotalQty = dr["TotalQty"] != DBNull.Value ? Convert.ToDecimal(dr["TotalQty"]) : 0,
+                                                      Unit = dr["Unit"] != DBNull.Value ? Convert.ToString(dr["Unit"]) : string.Empty,
+                                                      TotalAmount = dr["TotalAmount"] != DBNull.Value ? Convert.ToDecimal(dr["TotalAmount"]) : 0,
+
+                                                  }).ToList();
+                    }
+                }
+                
+                else if (ReportType == "VendorWiseMonthlyTrend")
+                {
+                    if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                    {
+                        model.BillRegisterList = (from DataRow dr in oDataSet.Tables[0].Rows
+                                                  select new BillRegisterModel
+                                                  {
+                                                      VendorName = dr["VendorName"] != DBNull.Value ? Convert.ToString(dr["VendorName"]) : string.Empty,
+                                                      AprAmt = dr["AprAmt"] != DBNull.Value ? Convert.ToDouble(dr["AprAmt"]) : 0,
+                                                      MayAmt = dr["MayAmt"] != DBNull.Value ? Convert.ToDouble(dr["MayAmt"]) : 0,
+                                                      JunAmt = dr["JunAmt"] != DBNull.Value ? Convert.ToDouble(dr["JunAmt"]) : 0,
+                                                      JulAmt = dr["JulAmt"] != DBNull.Value ? Convert.ToDouble(dr["JulAmt"]) : 0,
+                                                      AugAmt = dr["AugAmt"] != DBNull.Value ? Convert.ToDouble(dr["AugAmt"]) : 0,
+                                                      SepAmt = dr["SepAmt"] != DBNull.Value ? Convert.ToDouble(dr["SepAmt"]) : 0,
+                                                      OctAmt = dr["OctAmt"] != DBNull.Value ? Convert.ToDouble(dr["OctAmt"]) : 0,
+                                                      NovAmt = dr["NovAmt"] != DBNull.Value ? Convert.ToDouble(dr["NovAmt"]) : 0,
+                                                      DecAmt = dr["DecAmt"] != DBNull.Value ? Convert.ToDouble(dr["DecAmt"]) : 0,
+                                                      JanAmt = dr["JanAmt"] != DBNull.Value ? Convert.ToDouble(dr["JanAmt"]) : 0,
+                                                      FebAmt = dr["FebAmt"] != DBNull.Value ? Convert.ToDouble(dr["FebAmt"]) : 0,
+                                                      MarAmt = dr["MarAmt"] != DBNull.Value ? Convert.ToDouble(dr["MarAmt"]) : 0,
+
+                                                      AprQty = dr["AprQty"] != DBNull.Value ? Convert.ToDouble(dr["AprQty"]) : 0,
+                                                      MayQty = dr["MayQty"] != DBNull.Value ? Convert.ToDouble(dr["MayQty"]) : 0,
+                                                      JunQty = dr["JunQty"] != DBNull.Value ? Convert.ToDouble(dr["JunQty"]) : 0,
+                                                      JulQty = dr["JulQty"] != DBNull.Value ? Convert.ToDouble(dr["JulQty"]) : 0,
+                                                      AugQty = dr["AugQty"] != DBNull.Value ? Convert.ToDouble(dr["AugQty"]) : 0,
+                                                      SepQty = dr["SepQty"] != DBNull.Value ? Convert.ToDouble(dr["SepQty"]) : 0,
+                                                      OctQty = dr["OctQty"] != DBNull.Value ? Convert.ToDouble(dr["OctQty"]) : 0,
+                                                      NovQty = dr["NovQty"] != DBNull.Value ? Convert.ToDouble(dr["NovQty"]) : 0,
+                                                      DecQty = dr["DecQty"] != DBNull.Value ? Convert.ToDouble(dr["DecQty"]) : 0,
+                                                      JanQty = dr["JanQty"] != DBNull.Value ? Convert.ToDouble(dr["JanQty"]) : 0,
+                                                      FebQty = dr["FebQty"] != DBNull.Value ? Convert.ToDouble(dr["FebQty"]) : 0,
+                                                      MarQty = dr["MarQty"] != DBNull.Value ? Convert.ToDouble(dr["MarQty"]) : 0
+
+                                                  }).ToList();
+                    }
+                }
+               else if (ReportType == "VendorItemWiseMonthlyData")
+                {
+                    if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                    {
+                        model.BillRegisterList = (from DataRow dr in oDataSet.Tables[0].Rows
+                                                  select new BillRegisterModel
+                                                  {
+                                                      VendorName = dr["VendorName"] != DBNull.Value ? Convert.ToString(dr["VendorName"]) : string.Empty,
+                                                      PartCode = dr["PartCode"] != DBNull.Value ? Convert.ToString(dr["PartCode"]) : string.Empty,
+                                                      ItemName = dr["ItemName"] != DBNull.Value ? Convert.ToString(dr["ItemName"]) : string.Empty,
+                                                      Unit = dr["Unit"] != DBNull.Value ? Convert.ToString(dr["Unit"]) : string.Empty,
+                                                      MonthName = dr["MonthName"] != DBNull.Value ? Convert.ToString(dr["MonthName"]) : string.Empty,
+                                                      TotalQty = dr["TotalQty"] != DBNull.Value ? Convert.ToDecimal(dr["TotalQty"]) : 0,
+                                                      TotalAmount = dr["TotalAmount"] != DBNull.Value ? Convert.ToDecimal(dr["TotalAmount"]) : 0
+
+                                                  }).ToList();
+                    }
+                }
+               else  if (ReportType == "ItemWiseMonthlyTrend")
+                {
+                    if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                    {
+                        model.BillRegisterList = (from DataRow dr in oDataSet.Tables[0].Rows
+                                                  select new BillRegisterModel
+                                                  {
+                                                      ItemName = dr["ItemName"] != DBNull.Value ? Convert.ToString(dr["ItemName"]) : string.Empty,
+                                                      PartCode = dr["PartCode"] != DBNull.Value ? Convert.ToString(dr["PartCode"]) : string.Empty,
+
+                                                      AprAmt = dr["AprAmt"] != DBNull.Value ? Convert.ToDouble(dr["AprAmt"]) : 0,
+                                                      MayAmt = dr["MayAmt"] != DBNull.Value ? Convert.ToDouble(dr["MayAmt"]) : 0,
+                                                      JunAmt = dr["JunAmt"] != DBNull.Value ? Convert.ToDouble(dr["JunAmt"]) : 0,
+                                                      JulAmt = dr["JulAmt"] != DBNull.Value ? Convert.ToDouble(dr["JulAmt"]) : 0,
+                                                      AugAmt = dr["AugAmt"] != DBNull.Value ? Convert.ToDouble(dr["AugAmt"]) : 0,
+                                                      SepAmt = dr["SepAmt"] != DBNull.Value ? Convert.ToDouble(dr["SepAmt"]) : 0,
+                                                      OctAmt = dr["OctAmt"] != DBNull.Value ? Convert.ToDouble(dr["OctAmt"]) : 0,
+                                                      NovAmt = dr["NovAmt"] != DBNull.Value ? Convert.ToDouble(dr["NovAmt"]) : 0,
+                                                      DecAmt = dr["DecAmt"] != DBNull.Value ? Convert.ToDouble(dr["DecAmt"]) : 0,
+                                                      JanAmt = dr["JanAmt"] != DBNull.Value ? Convert.ToDouble(dr["JanAmt"]) : 0,
+                                                      FebAmt = dr["FebAmt"] != DBNull.Value ? Convert.ToDouble(dr["FebAmt"]) : 0,
+                                                      MarAmt = dr["MarAmt"] != DBNull.Value ? Convert.ToDouble(dr["MarAmt"]) : 0,
+
+                                                      AprQty = dr["AprQty"] != DBNull.Value ? Convert.ToDouble(dr["AprQty"]) : 0,
+                                                      MayQty = dr["MayQty"] != DBNull.Value ? Convert.ToDouble(dr["MayQty"]) : 0,
+                                                      JunQty = dr["JunQty"] != DBNull.Value ? Convert.ToDouble(dr["JunQty"]) : 0,
+                                                      JulQty = dr["JulQty"] != DBNull.Value ? Convert.ToDouble(dr["JulQty"]) : 0,
+                                                      AugQty = dr["AugQty"] != DBNull.Value ? Convert.ToDouble(dr["AugQty"]) : 0,
+                                                      SepQty = dr["SepQty"] != DBNull.Value ? Convert.ToDouble(dr["SepQty"]) : 0,
+                                                      OctQty = dr["OctQty"] != DBNull.Value ? Convert.ToDouble(dr["OctQty"]) : 0,
+                                                      NovQty = dr["NovQty"] != DBNull.Value ? Convert.ToDouble(dr["NovQty"]) : 0,
+                                                      DecQty = dr["DecQty"] != DBNull.Value ? Convert.ToDouble(dr["DecQty"]) : 0,
+                                                      JanQty = dr["JanQty"] != DBNull.Value ? Convert.ToDouble(dr["JanQty"]) : 0,
+                                                      FebQty = dr["FebQty"] != DBNull.Value ? Convert.ToDouble(dr["FebQty"]) : 0,
+                                                      MarQty = dr["MarQty"] != DBNull.Value ? Convert.ToDouble(dr["MarQty"]) : 0
+
+                                                  }).ToList();
+                    }
+                }
+                else if (ReportType == "VendorWiseMonthlyValueTrend")
+                {
+                    if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                    {
+                        model.BillRegisterList = (from DataRow dr in oDataSet.Tables[0].Rows
+                                                  select new BillRegisterModel
+                                                  {
+                                                      VendorName = dr["VendorName"] != DBNull.Value ? Convert.ToString(dr["VendorName"]) : string.Empty,
+                                                      AprAmt = dr["AprAmt"] != DBNull.Value ? Convert.ToDouble(dr["AprAmt"]) : 0,
+                                                      MayAmt = dr["MayAmt"] != DBNull.Value ? Convert.ToDouble(dr["MayAmt"]) : 0,
+                                                      JunAmt = dr["JunAmt"] != DBNull.Value ? Convert.ToDouble(dr["JunAmt"]) : 0,
+                                                      JulAmt = dr["JulAmt"] != DBNull.Value ? Convert.ToDouble(dr["JulAmt"]) : 0,
+                                                      AugAmt = dr["AugAmt"] != DBNull.Value ? Convert.ToDouble(dr["AugAmt"]) : 0,
+                                                      SepAmt = dr["SepAmt"] != DBNull.Value ? Convert.ToDouble(dr["SepAmt"]) : 0,
+                                                      OctAmt = dr["OctAmt"] != DBNull.Value ? Convert.ToDouble(dr["OctAmt"]) : 0,
+                                                      NovAmt = dr["NovAmt"] != DBNull.Value ? Convert.ToDouble(dr["NovAmt"]) : 0,
+                                                      DecAmt = dr["DecAmt"] != DBNull.Value ? Convert.ToDouble(dr["DecAmt"]) : 0,
+                                                      JanAmt = dr["JanAmt"] != DBNull.Value ? Convert.ToDouble(dr["JanAmt"]) : 0,
+                                                      FebAmt = dr["FebAmt"] != DBNull.Value ? Convert.ToDouble(dr["FebAmt"]) : 0,
+                                                      MarAmt = dr["MarAmt"] != DBNull.Value ? Convert.ToDouble(dr["MarAmt"]) : 0,
+
+                                                  }).ToList();
+                    }
+                }
+
             }
             catch (Exception ex)
             {

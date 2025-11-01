@@ -352,9 +352,17 @@ namespace eTactWeb.Controllers
                                         return StatusCode(203, "Stock can't be zero");
                                     }
                                 }
-                                if (IssueWithoutBomDetailGrid.Where(x => x.ItemCode == item.ItemCode && x.BatchNo == item.BatchNo && x.uniqueBatchNo == item.uniqueBatchNo).Any())
+                                var duplicateItem = IssueWithoutBomDetailGrid
+                                .FirstOrDefault(x => x.ItemCode == item.ItemCode
+                                                  && x.BatchNo == item.BatchNo
+                                                  && x.uniqueBatchNo == item.uniqueBatchNo);
+
+                                if (duplicateItem!=null)
                                 {
-                                    return StatusCode(207, "Duplicate");
+                                    var message = $"Duplicate found: ItemName = {duplicateItem.ItemName}, " +
+                                     $"BatchNo = {duplicateItem.BatchNo}, " +
+                                     $"uniqueBatchNo = {duplicateItem.uniqueBatchNo}";
+                                    return StatusCode(207, message);
                                 }
                                 else
                                 {
@@ -412,27 +420,124 @@ namespace eTactWeb.Controllers
             }
             return PartialView("_IssueWithoutBomGrid", MainModel);
         }
+        //[HttpPost]
+        //public IActionResult DeleteFromZeroStockMemoryGrid(bool deleteZeroStockOnly, int? seqNo = null)
+        //{
+        //    var MainModel = new IssueWithoutBom();
+        //    string modelJson = HttpContext.Session.GetString("KeyIssWOBom");
+        //    List<IssueWithoutBomDetail> IssueWithoutBomGrid = new List<IssueWithoutBomDetail>();
+
+        //    if (!string.IsNullOrEmpty(modelJson))
+        //    {
+        //        IssueWithoutBomGrid = JsonConvert.DeserializeObject<List<IssueWithoutBomDetail>>(modelJson);
+        //    }
+
+        //    if (deleteZeroStockOnly)
+        //    {
+        //        var deletedPartCodes = new List<string>();
+        //        IssueWithoutBomGrid.RemoveAll(x =>
+        //        {
+        //            //bool toDelete = (x.BatchNo == "" || x.BatchNo == null);
+        //            bool toDelete = string.IsNullOrEmpty(x.BatchNo) ||   // BatchNo is empty or null
+        //                (x.LotStock < x.IssueQty) ||         // LotStock less than IssueQty
+        //                (x.TotalStock < x.IssueQty);
+        //            if (toDelete)
+        //                deletedPartCodes.Add(x.PartCode);
+        //            return toDelete;
+        //        });
+
+        //        ViewBag.DeletedPartCodes = string.Join(", ", deletedPartCodes);
+        //    }
+        //    else if (seqNo != null)
+        //    {
+        //        var itemToRemove = IssueWithoutBomGrid.FirstOrDefault(x => x.seqno == seqNo);
+        //        if (itemToRemove != null)
+        //        {
+        //            IssueWithoutBomGrid.Remove(itemToRemove);
+        //        }
+        //    }
+
+        //    int newSeq = 1;
+        //    foreach (var item in IssueWithoutBomGrid)
+        //    {
+        //        item.seqno = newSeq++;
+        //    }
+
+
+        //    MainModel.ItemDetailGrid = IssueWithoutBomGrid;
+
+
+        //    if (IssueWithoutBomGrid.Count == 0)
+        //    {
+        //        HttpContext.Session.Remove("KeyIssWOBom");
+        //    }
+        //    else
+        //    {
+        //        string updatedJson = JsonConvert.SerializeObject(IssueWithoutBomGrid);
+        //        HttpContext.Session.SetString("KeyIssWOBom", updatedJson);
+        //    }
+
+        //    return PartialView("_IssueWOMainBomGrid", MainModel);
+        //}
         [HttpPost]
-        public IActionResult DeleteFromZeroStockMemoryGrid(bool deleteZeroStockOnly, int? seqNo = null)
+        public async Task<IActionResult> DeleteFromZeroStockMemoryGrid(bool deleteZeroStockOnly, int? seqNo = null)
         {
             var MainModel = new IssueWithoutBom();
             string modelJson = HttpContext.Session.GetString("KeyIssWOBom");
             List<IssueWithoutBomDetail> IssueWithoutBomGrid = new List<IssueWithoutBomDetail>();
 
             if (!string.IsNullOrEmpty(modelJson))
-            {
                 IssueWithoutBomGrid = JsonConvert.DeserializeObject<List<IssueWithoutBomDetail>>(modelJson);
+
+            // 🧩 STEP 1: Fill LotStock & TotalStock for each row before checking
+            foreach (var item in IssueWithoutBomGrid)
+            {
+                var result = await _IIssueWOBOM.FillLotandTotalStock(
+                    item.ItemCode,
+                    item.StoreId,
+                    DateTime.Now.ToString("dd/MM/yyyy"),
+                    item.BatchNo,
+                    item.uniqueBatchNo
+                );
+
+                //if (result.Result.Result != null && result.Result.Result.Rows.Count > 0)
+                //{
+                //    item.LotStock = Convert.ToDecimal(result.Result[0].lotstock);
+                //    item.TotalStock = Convert.ToDecimal(result.Result[0].totalstock);
+                    
+                //}
+                var dt = result.Result as DataTable;
+                if (result != null   && result.StatusCode == HttpStatusCode.OK &&
+   dt != null &&
+    dt.Rows.Count > 0)
+                {
+                    var lotStock = Convert.ToDecimal(dt.Rows[0]["lotstock"]);
+                    var totalStock = Convert.ToDecimal(dt.Rows[0]["totalstock"]);
+
+                    item.LotStock = lotStock;
+                    item.TotalStock = totalStock;
+                }
+                else
+                {
+                    item.LotStock = 0;
+                    item.TotalStock = 0;
+                }
             }
 
+            // 🧩 STEP 2: Now apply delete logic
             if (deleteZeroStockOnly)
             {
                 var deletedPartCodes = new List<string>();
+
                 IssueWithoutBomGrid.RemoveAll(x =>
                 {
-                    bool toDelete = (x.BatchNo == "" || x.BatchNo == null);
+                    bool toDelete =
+                        string.IsNullOrEmpty(x.BatchNo) ||
+                        ((x.LotStock < x.IssueQty) || (x.TotalStock < x.IssueQty));
 
                     if (toDelete)
                         deletedPartCodes.Add(x.PartCode);
+
                     return toDelete;
                 });
 
@@ -442,30 +547,20 @@ namespace eTactWeb.Controllers
             {
                 var itemToRemove = IssueWithoutBomGrid.FirstOrDefault(x => x.seqno == seqNo);
                 if (itemToRemove != null)
-                {
                     IssueWithoutBomGrid.Remove(itemToRemove);
-                }
             }
 
+            // 🧩 STEP 3: Re-sequence and update session
             int newSeq = 1;
             foreach (var item in IssueWithoutBomGrid)
-            {
                 item.seqno = newSeq++;
-            }
-
 
             MainModel.ItemDetailGrid = IssueWithoutBomGrid;
 
-
             if (IssueWithoutBomGrid.Count == 0)
-            {
                 HttpContext.Session.Remove("KeyIssWOBom");
-            }
             else
-            {
-                string updatedJson = JsonConvert.SerializeObject(IssueWithoutBomGrid);
-                HttpContext.Session.SetString("KeyIssWOBom", updatedJson);
-            }
+                HttpContext.Session.SetString("KeyIssWOBom", JsonConvert.SerializeObject(IssueWithoutBomGrid));
 
             return PartialView("_IssueWOMainBomGrid", MainModel);
         }

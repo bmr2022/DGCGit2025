@@ -256,13 +256,13 @@ namespace eTactWeb.Controllers
         //    return Json(JsonString);
         //}
         [HttpPost]
-        public IActionResult UpdateRejectionItem(List<SaleRejectionDetail> model)
+        public async Task<IActionResult> UpdateRejectionItem(List<SaleRejectionDetail> model)
         {
             try
             {
                 // 🔹 Get the existing grid data from session
                 string modelJson = HttpContext.Session.GetString("KeySaleRejectionGrid");
-                IList<SaleRejectionDetail> SaleBillDetail = new List<SaleRejectionDetail>();
+                var SaleBillDetail = new List<SaleRejectionDetail>();
                 if (!string.IsNullOrEmpty(modelJson))
                 {
                     SaleBillDetail = JsonConvert.DeserializeObject<List<SaleRejectionDetail>>(modelJson);
@@ -270,17 +270,12 @@ namespace eTactWeb.Controllers
 
                 // 🔹 Get the main sale rejection model from session
                 string SaleBillModelJson = HttpContext.Session.GetString("SaleRejectionModel");
-                SaleRejectionModel saleBillModel = new SaleRejectionModel();
+                var saleBillModel = new SaleRejectionModel();
                 if (!string.IsNullOrEmpty(SaleBillModelJson))
                 {
                     saleBillModel = JsonConvert.DeserializeObject<SaleRejectionModel>(SaleBillModelJson);
                 }
 
-                var MainModel = new SaleRejectionModel();
-                var saleBillDetail = new List<SaleRejectionDetail>();
-                var rangeSaleBillGrid = new List<SaleRejectionDetail>();
-
-                // 🔹 Update only RejRate, Amount, and ItemNetAmount for matching items
                 if (model != null)
                 {
                     foreach (var item in model)
@@ -292,25 +287,23 @@ namespace eTactWeb.Controllers
 
                         if (existing != null)
                         {
+                            // ✅ Correctly update properties
                             existing.RejRate = item.RejRate;
                             existing.Amount = item.Amount;
                             existing.ItemNetAmount = item.Amount;
                         }
                     }
 
-                    // 🔹 (You already had this sorting and assignment logic)
-                    saleBillDetail = SaleBillDetail.OrderBy(x => x.SeqNo).ToList();
-                    //saleBillDetail = saleBillDetail.OrderBy(item => item.SeqNo).ToList();
-                    MainModel.SaleRejectionDetails = saleBillDetail;
-                    MainModel.ItemDetailGrid = saleBillDetail;
+                    // ✅ Sort & update the same model object
+                    SaleBillDetail = SaleBillDetail.OrderBy(x => x.SeqNo).ToList();
+                    saleBillModel.SaleRejectionDetails = SaleBillDetail;
+                    saleBillModel.ItemDetailGrid = SaleBillDetail;
 
-                    HttpContext.Session.SetString("KeySaleRejectionGrid", JsonConvert.SerializeObject(MainModel.SaleRejectionDetails));
+                    // ✅ Overwrite session ONCE cleanly
+                    HttpContext.Session.SetString("KeySaleRejectionGrid", JsonConvert.SerializeObject(SaleBillDetail));
+                    HttpContext.Session.SetString("SaleRejectionModel", JsonConvert.SerializeObject(saleBillModel));
 
-                    MainModel.SaleRejectionDetails = saleBillDetail;
-                    MainModel.ItemDetailGrid = saleBillDetail;
-
-                    HttpContext.Session.SetString("KeySaleRejectionGrid", JsonConvert.SerializeObject(MainModel.SaleRejectionDetails));
-                    HttpContext.Session.SetString("SaleRejectionModel", JsonConvert.SerializeObject(MainModel));
+                    await HttpContext.Session.CommitAsync();
                 }
                 else
                 {
@@ -321,7 +314,7 @@ namespace eTactWeb.Controllers
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw;
             }
         }
 

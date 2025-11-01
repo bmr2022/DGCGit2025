@@ -165,9 +165,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _SaleBillDAL.DisplaySODetail(accountName, itemName, partCode, sono, soYearCode, custOrderNo, schNo, schYearCode);
         }  
-        public async Task<ResponseResult> GetDashboardData(string summaryDetail, string partCode, string itemName, string saleBillno, string customerName, string sono, string custOrderNo, string schNo, string performaInvNo, string saleQuoteNo, string domensticExportNEPZ, string fromdate, string toDate,string SaleBillEntryFrom)
+        public async Task<ResponseResult> GetDashboardData(string summaryDetail, string partCode, string itemName, string saleBillno, string customerName, string sono, string custOrderNo, string schNo, string performaInvNo, string saleQuoteNo, string domensticExportNEPZ,string SubInvoicetype, string fromdate, string toDate,string SaleBillEntryFrom)
         {
-            return await _SaleBillDAL.GetDashboardData(summaryDetail, partCode, itemName, saleBillno,customerName,sono,custOrderNo,schNo,performaInvNo,saleQuoteNo,domensticExportNEPZ,fromdate,toDate, SaleBillEntryFrom);
+            return await _SaleBillDAL.GetDashboardData(summaryDetail, partCode, itemName, saleBillno,customerName,sono,custOrderNo,schNo,performaInvNo,saleQuoteNo,domensticExportNEPZ, SubInvoicetype,fromdate, toDate, SaleBillEntryFrom);
         }  
         public async Task<ResponseResult> FILLSOScheduleDate(string sono, int accountCode, int soYearCode, string schNo, int schYearCode)
         {
