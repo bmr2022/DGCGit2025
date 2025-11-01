@@ -53,7 +53,7 @@ else
                 <input value="@item.RejRate"
                        id="rejRate-@Cntr"
                        class="form-control text-center"
-                       onchange="CalculateRejAmount(); highlightRejRate(this, '@item.Rate');"
+                       onfocusout="CalculateRejAmount(); highlightRejRate(this, '@item.Rate');"
                        style="background-color:@bgColor; font-weight:600;" />
             </td>
             @* <td>@item.RejRate</td> *@
