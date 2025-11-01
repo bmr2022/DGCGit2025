@@ -60,23 +60,19 @@
 										{
 											case "BANK-RECEIPT":
 												ControllerName = "BankReceipt";
-												ActionName = "BankReceipt";
+												ActionName = "Index";
 												break;
 											case "BANK-PAYMENT":
 												ControllerName = "BankPayment";
-												ActionName = "BankPayment";
+												ActionName = "Index";
 												break;
 											case "CASH-RECEIPT":
 												ControllerName = "CashReceipt";
-												ActionName = "CashReceipt";
-												break;
-											case "Cash-Receipt":
-												ControllerName = "CashReceipt";
-												ActionName = "CashReceipt";
+												ActionName = "Index";
 												break;
 											case "CASH-PAYMENT":
 												ControllerName = "CashPayment";
-												ActionName = "CashPayment";
+												ActionName = "Index";
 												break;
 											case "SALE-BILL":
 												ControllerName = "SaleInvoice";
@@ -148,6 +144,7 @@
 									   data-docid="@item.DocEntryId"
 									   data-accountcode="@item.AccountCodeBack"
 									   data-yearcode="@item.AccEntryYearCode"
+									   data-voucherno = "@item.InvoiceVoucherNo"
 									   onclick="callDrillDown(this)">
 										@item.InvoiceVoucherNo
 									</a>

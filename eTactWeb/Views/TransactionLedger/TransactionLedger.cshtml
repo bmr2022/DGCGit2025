@@ -222,7 +222,6 @@
     <script>
 
         $(document).ready(function () {
-            debugger;
 
             // ✅ Identify current form
             var currentForm = $("#ReportType").val();
@@ -327,7 +326,7 @@
         });
 
         function GetValidateData() {
-             
+
             if ($('#ReportType').val() == "TransactionLedgerSummary" || $('#ReportType').val() == "TransactionLedgerDetail") {
                 if ($('#LedgerName').val() == 0 || $('#LedgerName').prop('selectedIndex') == 0) {
                     $.notify('Account Code is mandatory to display details data', "error");
@@ -335,7 +334,7 @@
                 }
                 else {
                     GetDetailsData();
-            }
+                }
             }
             else if ($('#ReportType').val() == "GROUPSUMMARY" || $('#ReportType').val() == "GROUPDETAIL") {
                 GetTransactionLedgerGroupSummaryDetailsData();
@@ -622,7 +621,7 @@
                     // add other filter fields as required
                 },
                 success: function (partialHtml) {
-                    debugger
+
                     // 1) Inject partial HTML
                     $('#divStockMainRegister').html(partialHtml);
                     $('#opnDRDiv').show();
@@ -687,6 +686,7 @@
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("GetTransactionLedgerGroupSummaryDetailsData", "TransactionLedger")',
+                async: false,
                 data: {
                     FromDate: FromDate,
                     ToDate: ToDate,
@@ -958,79 +958,102 @@
             window.location.href = '/TransactionLedger/GoBack';
         }
 
-        // ==============================================
-        // 🔹 Common Drilldown Function
-        // ==============================================
         function callDrillDown(elem) {
-            debugger;
 
-            const $link = $(elem);
-            const reportType = $("#ReportType").val();
-
-            // 🧩 Common click info
-            const drillData = {
-                DocId: $link.data("docid") || null,
-                AccountCode: $link.data("accountcode") || null,
-                YearCode: $link.data("yearcode") || null,
-                Mode: $link.data("mode") || null,
-                Month: $link.data("month") || null,
-                ReportType: reportType
-            };
-
-            // 💾 Collect all filters from current screen
-            const currentFilters = getCurrentFilters();
-            currentFilters.__drillData = drillData;
-
-            // 💾 Save filters for current form
-            DrilldownManager.saveFilters(reportType, currentFilters);
-
-            // 🧭 Determine Next ReportType (next step)
-            const nextForm = getNextFormByReportType(reportType);
-
-            // 💾 Save navigation info (for back navigation)
-            DrilldownManager.pushNavigation({
-                currentForm: reportType,
-                nextForm: nextForm,
-                controller: $link.data("controller"),
-                action: $link.data("action")
-            });
-
-            // 🚀 Go to next page — clean URL (no params)
-            const nextUrl = `/${$link.data("controller")}/${$link.data("action")}`;
-            window.location.href = nextUrl;
-        }
-
-        // ==============================================
-        // 🔹 Helper: Determine next report based on current one
-        // ==============================================
-        function getNextFormByReportType(currentType) {
-            switch (currentType) {
-                case "MonthlySummary": return "TransactionLedgerSummary";
-                case "TransactionLedgerSummary": return "TransactionLedgerDetail";
-                case "TransactionLedgerDetail": return "VoucherDetail";
-                case "GROUPSUMMARY": return "GROUPDETAIL";
-                case "GROUPDETAIL": return "GroupVoucherDetail";
-                case "BalanceConfirmation": return "BalanceDetail";
-                default: return currentType;
-            }
-        }
-
-        // ==============================================
-        // 🔹 Helper: Collect all filter values dynamically
-        // ==============================================
-        function getCurrentFilters() {
-            const filters = {};
-            $("input, select, textarea").each(function () {
-                const id = $(this).attr("id");
+            // ✅ Collect all filter input values (only inputs with id)
+            let filters = {};
+            $("[data-filter], input[id], select[id]").each(function () {
+                let id = $(this).attr("id");
                 if (!id) return;
 
                 if ($(this).attr("type") === "checkbox") {
-                    filters[id] = $(this).prop("checked");
+                    filters[id] = $(this).is(":checked");
                 } else {
                     filters[id] = $(this).val();
                 }
             });
-            return filters;
+
+            // ✅ Determine current form name and current ReportType BEFORE pushing
+            let formName = $("#FormName").val() || $("#ReportType").val() || "COMMON_FORM";
+            let ReportType = $('#ReportType').val();
+
+            // ✅ Save filters for current form
+            DrilldownManager.saveFilters(formName, filters);
+
+            // ✅ Push navigation entry (current -> next)
+            DrilldownManager.pushNavigation({
+                currentForm: formName,
+                nextForm: ReportType || null,
+                url: window.location.href
+            });
+
+            // --- existing drilldown logic (unchanged) ---
+            var controller = $(elem).data('controller');
+            var action = $(elem).data('action');
+            var mode = $(elem).data('mode');
+            var docid = $(elem).data('docid');
+            var accountcode = $(elem).data('accountcode');
+            var yearcode = $(elem).data('yearcode');
+            var voucherno = $(elem).data('voucherno');
+            var monthno = $(elem).data('month');
+            var clickname = $(elem).data('clickname');
+            var seqno = $(elem).data('seqno');
+
+            let url = '';
+
+            switch (ReportType) {
+
+                case 'TransactionLedgerSummary':
+                case 'TransactionLedgerDetail':
+                    url = `/${controller}/${action}?ID=${docid}&Mode=${mode}&YearCode=${yearcode}&AccountCode=${accountcode}&VoucherNo=${voucherno}`;
+                    window.open(url, "_blank");
+                    break;
+
+                case 'MonthlySummary':
+                    if (!yearcode) yearcode = new Date().getFullYear();
+
+                    let firstDay = new Date(yearcode, monthno - 1, 1);
+                    let lastDay = new Date(yearcode, monthno, 0);
+
+                    let fd = String(firstDay.getDate()).padStart(2, '0') + '/' +
+                        String(firstDay.getMonth() + 1).padStart(2, '0') + '/' +
+                        firstDay.getFullYear();
+
+                    let td = String(lastDay.getDate()).padStart(2, '0') + '/' +
+                        String(lastDay.getMonth() + 1).padStart(2, '0') + '/' +
+                        lastDay.getFullYear();
+
+                    $("#FromDate").val(fd);
+                    $("#ToDate").val(td);
+                    $('#ReportType').val('TransactionLedgerSummary').trigger('change');
+                    $('#BackButton').show();
+                    break;
+
+                case 'GROUPSUMMARY':
+                case 'GROUPDETAIL':
+                    switch (clickname) {
+                        case 'ParentLedgerClick':
+                            var parentCode = $('#ParentCode-' + seqno).val();
+                            $('#ParentLedgerName').val(parentCode).trigger('change');
+                            $('#ReportType').val("GROUPDETAIL").trigger("change");
+                            $('#BackButton').show();
+                            break;
+
+                        case 'LedgerClick':
+                            var parentCode = $('#ParentCode-' + seqno).val();
+                            $('#ParentLedgerName').val(parentCode).trigger('change');
+                            var accountCode = $('#AccountCode-' + seqno).val();
+                            $('#LedgerName').val(accountCode).trigger('change');
+                            $('#ReportType').val("TransactionLedgerDetail").trigger("change");
+                            $('#BackButton').show();
+                            break;
+                    }
+                    break;
+
+                default:
+                    alert('No drill-down configured for this ReportType: ' + ReportType);
+                    return;
+            }
         }
 
     </script>
