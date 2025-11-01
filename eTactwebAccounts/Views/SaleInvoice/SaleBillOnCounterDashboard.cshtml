@@ -150,6 +150,20 @@
         width: 10px;
         height: 10px;
     }
+
+    .fa-stack {
+        display: inline-block;
+        height: 1.5em;
+        line-height: 2em;
+        position: relative;
+        vertical-align: middle;
+        width: 1.1em;
+    }
+
+    #container > div {
+        flex: 1;
+        /* margin-right: 10px; */
+    }
 </style>
 
 @section Scripts
@@ -217,6 +231,7 @@
 
             GetSearchData();
             GetFeatureOption();
+            CalculateTotalAmt();
             sessionStorage.removeItem('FromDateBack');
             sessionStorage.removeItem('ToDateBack');
             sessionStorage.removeItem('PartCodeBack');
@@ -235,6 +250,22 @@
             $('#PartCode').rules('remove', 'required');
 
         });
+
+        function CalculateTotalAmt() {
+            var rowCount = $('#divSBDashboardGrid tr').length;
+            var totalAmt = 0;
+
+            for (var i = 1; i <= rowCount; i++) {
+                var amtText = $('#BillAmt-' + i).text().trim();
+                var amt = parseFloat(amtText);
+                if (!isNaN(amt)) {
+                    totalAmt += amt;
+                }
+            }
+
+            totalAmt = parseFloat(totalAmt); // ensure it's a number
+            $('#TotalAmt').text(totalAmt.toFixed(0));
+        }
         function openPopup(url) {
             window.open(
                 url,
@@ -695,6 +726,7 @@
                     $('#divDashboardGrid').empty().append(data);
                     GetFormRights();
                     GetFeatureOption();
+                    CalculateTotalAmt();
                     CheckInv();
                     YearEditDeleteRight();
                 },
