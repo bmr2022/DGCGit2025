@@ -54,13 +54,24 @@
                                 </div>
                                 <input type="hidden" asp-for="ForFinYear" />
                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="BillType" class="form-label">Bill Type</label>
+                                    <select asp-for="BillType" class="form-select">
+                                        <option disabled value="">-Select-</option>
+                                        <option selected value="PurchaseBill">Purchase Bill</option>
+                                        <option value="PurchaseRejection">Purchase Rejection  </option>
+                                        <option value="DebitNote">Debit Note</option>
+                                        <option value="CreditNote">Credit Note,  </option>
+                                        <option value="SaleRejection">Sale Rejection </option>
+                                    </select>
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                     <label asp-for="ReportType" class="form-label">Report Type</label>
                                     <select asp-for="ReportType" class="form-select">
                                         <option disabled value="">-Select-</option>
                                         <option selected value="PurchaseSummary">Purchase Summary</option>
                                         <option value="PurchaseBillDetail">PurchaseBill Detail </option>
-                                        <option  value="PURCHASESUMMARYREG">Purchase Summary Reg</option>
-                                        <option  value="GSTSUMMARY">GST Summary </option>
+                                        <option value="PURCHASESUMMARYREG">Purchase Summary Reg/GST SUMMARY</option>
+                                        
                                         <option  value="VendorItemWiseTrend">Vendor Item Wise Trend </option>
                                         <option  value="VendorWiseMonthlyTrend">Vendor Wise Monthly Trend </option>
                                         <option value="VendorItemWiseMonthlyData">Vendor Item Wise Monthly Data </option>
@@ -70,19 +81,7 @@
                                         
                                     </select>
                                 </div>
-                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
-                                    <label asp-for="BillType" class="form-label">Bill Type</label>
-                                    <select asp-for="BillType" class="form-select">
-                                        <option disabled value="">-Select-</option>
-                                        <option selected value="PurchaseBill">Purchase Bill</option>
-                                        <option value="PurchaseRejection">Purchase Rejection  </option>
-                                        <option value="DebitNote">Debit Note</option>
-                                        <option value="CreditNote">Credit Note,  </option>
-                                        <option value="SaleRejection">Sale Rejection </option>
-                                        
-                                        
-                                    </select>
-                                </div>
+                               
 
                                 <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
                                     <label asp-for="VendorName" class="form-label">Vendor Name</label>
@@ -141,55 +140,26 @@
                                         <option value="">-Select-</option>
                                     </select>
                                 </div>
-                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
-                                    <label asp-for="PurchaseBill" class="form-label">Purchase Bill </label>
-                                    <select asp-for="PurchaseBill" id="PurchaseBill" class="form-select">
-                                        <option value="">-Select-</option>
-                                    </select>
-                                </div>
-                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
-                                    <label asp-for="PurchaseRejection" class="form-label">Purchase Rejection  </label>
-                                    <select asp-for="PurchaseRejection" id="PurchaseRejection" class="form-select">
-                                        <option value="">-Select-</option>
-                                    </select>
-                                </div>
-                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
-                                    <label asp-for="DebitNote" class="form-label">Debit Note   </label>
-                                    <select asp-for="DebitNote" class="form-select">
-                                        <option value="">-Select-</option>
-                                    </select>
-                                </div>
-                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
-                                    <label asp-for="CreditNote" class="form-label">Credit Not</label>
-                                    <select asp-for="CreditNote" id="CreditNote" class="form-select">
-                                        <option value="">-Select-</option>
-                                    </select>
-                                </div>
-                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
-                                    <label asp-for="SaleRejection" class="form-label">Sale Rejection    </label>
-                                    <select asp-for="SaleRejection" class="form-select">
-                                        <option value="">-Select-</option>
-                                    </select>
-                                </div>
+                                
                                 
                                 <div class="col-sm-2 col-md-6 col-lg-4 col-xl-2">
                                     <label class="form-label">Global search</label>
                                     <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
                                 </div>
-                                <div class=" d-flex justify-content-center mt-3" width="inherit">
-                                    <button class="btn btn-sm btn-outline-info" type="button" style="padding:0px;height:30px;width:50px;" onclick="GetRegisterData();">
+                                
+                                    <button class="btn btn-sm btn-outline-info" type="button" style="padding:0px;height:30px;width:50px;margin-top:20px;" onclick="GetRegisterData();">
                                         <i class="fa-solid fa-magnifying-glass fa-fw fa-lg"></i>
                                     </button>
-                                    <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:50px;margin-left:20px;" type="button" id="sendToExcel">
+                                <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:50px;margin-left:20px;margin-top:20px;" type="button" id="sendToExcel">
                                         <i class="fa-solid fa-upload fa-fw fa-lg "></i>
                                     </button>
-                                    <button class="btn btn-sm btn-outline-danger" style="padding:3px; height:30px; width:50px; margin-left:20px;" type="button" id="sendToPDF">
+                                <button class="btn btn-sm btn-outline-danger" style="padding:3px; height:30px; width:50px; margin-left:20px;margin-top:20px;" type="button" id="sendToPDF">
                                         <i class="fa-solid fa-file-pdf fa-fw fa-lg"></i> 
                                     </button>
-                                    <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:50px;margin-left:20px;" asp-controller="BillRegister" asp-action="BillRegister">
+                                <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:50px;margin-left:20px;margin-top:20px;" asp-controller="BillRegister" asp-action="BillRegister">
                                         <i class="fa-solid fa-rotate fa-fw fa-lg"></i>
                                     </a>
-                                </div>
+                                
                             </div>
                             <div class="progress my-2 mb-3" style="height: 4px;">
                                 <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
@@ -274,11 +244,8 @@
             $('#ItemName').select2();
             $('#PartCode').select2();
             $('#VendorName').select2();
-            $('#PurchaseBill').select2();
-            $('#PurchaseRejection').select2();
-            $('#DebitNote').select2();
-            $('#CreditNote').select2();
-            $('#SaleRejection').select2();
+            $('#BillType').select2();
+           
            
             FillVendoreList();
             FillDocList();
@@ -314,9 +281,7 @@
                 success: function (result, status, error) {
                     console.log(result);
                     if (result != null) {
-                        // $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
-                        //$('#InvoiceDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
-
+                        
                         var firstDayOfMonth = getFirstDayOfMonth(result);
                         $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", firstDayOfMonth);
                         $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
@@ -324,15 +289,45 @@
                 }
             });
         }
-        
 
+        function selection(CurrentRow) {
+
+            $(CurrentRow).css({ 'background-color': '#00bcd4' });
+            $("#divStockRegisterBody tr").not(CurrentRow).css({ 'background-color': 'blanchedalmond' });
+        }
         $('#sendToExcel').click(function () {
-            let table = $("#ReportTable");
-            console.log(table);
-            TableToExcel.convert(table[0], {
-                name: `ReportTable.xlsx`,
-                sheet: {
-                    name: 'ReportTable'
+            var FromDate = $('#FromDate').val();
+            var ToDate = $('#ToDate').val();
+            var ReportType = $('#ReportType').val(); 
+
+            $.ajax({
+                url: '/BillRegister/ExportBillRegisterToExcel',
+                type: 'GET',
+                data: {
+                    FromDate: FromDate,
+                    ToDate: ToDate,
+                    ReportType: ReportType
+                },
+                xhrFields: {
+                    responseType: 'blob' 
+                },
+                success: function (data, status, xhr) {
+                   
+                    const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                    const link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+
+                    var filename = `BillRegister_${ReportType}.xlsx`;
+                    var disposition = xhr.getResponseHeader('Content-Disposition');
+                    if (disposition && disposition.indexOf('filename=') !== -1) {
+                        filename = disposition.split('filename=')[1].replace(/"/g, '');
+                    }
+
+                    link.download = filename;
+                    link.click();
+                },
+                error: function () {
+                    alert('Failed to download Bill Register Excel file.');
                 }
             });
         });
