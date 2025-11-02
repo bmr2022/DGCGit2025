@@ -164,7 +164,8 @@ namespace eTactWeb.Data.DAL
                                                                 Dr_CR = row["Dr/CR"] == DBNull.Value ? string.Empty : row["Dr/CR"].ToString(),
                                                                 YearCode = row["YearCode"] == DBNull.Value ? 0 : Convert.ToInt32(row["YearCode"]),
                                                                 SeqNo = row["SeqNo"] == DBNull.Value ? 0 : Convert.ToInt32(row["SeqNo"]),
-                                                                MonthNo = row["MonthNo"] == DBNull.Value ? 0 : Convert.ToInt32(row["MonthNo"])
+                                                                MonthNo = row["MonthNo"] == DBNull.Value ? 0 : Convert.ToInt32(row["MonthNo"]),
+                                                                AccountCodeBack = AccountCode
 
 															}).ToList();
                     }

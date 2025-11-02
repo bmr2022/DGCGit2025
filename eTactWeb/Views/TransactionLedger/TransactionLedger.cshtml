@@ -150,7 +150,7 @@
                                     <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="TransactionLedger" asp-action="TransactionLedger">
                                         <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
                                     </a>
-                                    <a href="#" class="btn btn-primary btn-sm ms-3" onclick="PressBack()" id="BackButton">
+                                    <a href="#" class="btn btn-primary btn-sm ms-3" onclick="goBack()" id="BackButton">
                                         <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
                                         BACK
                                     </a>
@@ -277,43 +277,54 @@
 
                 console.log("🔄 Restoring filters for:", formName, savedFilters);
 
+                // ✅ Wait for dropdowns to load before setting
+                function waitForSelect2(id, callback) {
+                    const interval = setInterval(() => {
+                        if ($(`#${id} option`).length > 0) {
+                            clearInterval(interval);
+                            callback();
+                        }
+                    }, 100);
+                }
+
                 for (const key in savedFilters) {
                     const $el = $(`#${key}`);
                     if (!$el.length) continue;
 
                     const type = $el.attr('type');
                     if (type === 'checkbox') {
-                        $el.prop('checked', !!savedFilters[key]);
-                        $el.trigger('change');
+                        $el.prop('checked', !!savedFilters[key]).trigger('change');
                         continue;
                     }
 
                     if (key === 'FromDate' || key === 'ToDate') {
                         $el.datepicker("setDate", savedFilters[key]);
-                    } else {
-                        $el.val(savedFilters[key]);
                     }
-
-                    if ($el.hasClass("select2") || $el.hasClass("custom-select2")) {
-                        $el.trigger("change.select2");
-                    } else {
-                        $el.trigger("change");
+                    else if ($el.hasClass("select2") || $el.hasClass("custom-select2")) {
+                        // ✅ Handle async-loaded select2 (LedgerName, etc.)
+                        if ($el.attr("id") === "LedgerName") {
+                            waitForSelect2("LedgerName", () => {
+                                $el.val(savedFilters[key]).trigger("change.select2");
+                            });
+                        } else {
+                            $el.val(savedFilters[key]).trigger("change.select2");
+                        }
+                    }
+                    else {
+                        $el.val(savedFilters[key]).trigger("change");
                     }
                 }
             }
 
             // ✅ Try restoring filters & state
             try {
-                // 1️⃣ Restore current form filters
                 restoreFormFilters(currentForm);
 
-                // 2️⃣ Also restore filters for the "next" form in stack (for dependent drilldown)
                 const nextForm = DrilldownManager.getLastNextForm();
                 if (nextForm && nextForm !== currentForm) {
                     restoreFormFilters(nextForm);
                 }
 
-                // 3️⃣ Restore scroll/tab state if saved by goBack()
                 DrilldownManager.restoreIfAvailable(currentForm);
             } catch (e) {
                 console.error("❌ Error restoring filters/state:", e);
@@ -323,6 +334,9 @@
             if (typeof GetValidateData === 'function') {
                 GetValidateData();
             }
+
+            // ✅ NEW — Show or hide Back Button based on stack depth
+            DrilldownManager.toggleBackButton();
         });
 
         function GetValidateData() {
@@ -959,7 +973,7 @@
         }
 
         function callDrillDown(elem) {
-
+            debugger
             // ✅ Collect all filter input values (only inputs with id)
             let filters = {};
             $("[data-filter], input[id], select[id]").each(function () {
@@ -978,7 +992,7 @@
             let ReportType = $('#ReportType').val();
 
             // ✅ Save filters for current form
-            DrilldownManager.saveFilters(formName, filters);
+            DrilldownManager.saveFormFilters(formName, filters);
 
             // ✅ Push navigation entry (current -> next)
             DrilldownManager.pushNavigation({
@@ -1003,13 +1017,50 @@
 
             switch (ReportType) {
 
+                // ============================================================
                 case 'TransactionLedgerSummary':
                 case 'TransactionLedgerDetail':
+                    // ============================================================
+                    DrilldownManager.saveFormFilters("TransactionLedger", {
+                        FromDate: $("#FromDate").val(),
+                        ToDate: $("#ToDate").val(),
+                        LedgerName: $("#LedgerName").val(),
+                        ReportType: $("#ReportType").val()
+                    });
+
+                    DrilldownManager.push({
+                        currentForm: "TransactionLedger",
+                        nextForm: "Voucher",
+                        url: window.location.href
+                    });
+
+                    // ✅ Show Back button
+                    $('#BackButton').show();
+
                     url = `/${controller}/${action}?ID=${docid}&Mode=${mode}&YearCode=${yearcode}&AccountCode=${accountcode}&VoucherNo=${voucherno}`;
                     window.open(url, "_blank");
                     break;
 
+                // ============================================================
                 case 'MonthlySummary':
+                    // ============================================================
+                    DrilldownManager.saveFormFilters("MonthlySummary", {
+                        FromDate: $("#FromDate").val(),
+                        ToDate: $("#ToDate").val(),
+                        ReportType: "MonthlySummary",
+                         LedgerName: $("#LedgerName").val(),
+                        ParentLedgerName: $("#ParentLedgerName").val(),
+                        VoucherType: $("#VoucherType").val(),
+                        Group_Ledger: $("#Group_Ledger").val(),
+                        AccountCode: accountcode
+                    });
+
+                    DrilldownManager.push({
+                        currentForm: "MonthlySummary",
+                        nextForm: "TransactionLedgerSummary",
+                        url: window.location.href
+                    });
+
                     if (!yearcode) yearcode = new Date().getFullYear();
 
                     let firstDay = new Date(yearcode, monthno - 1, 1);
@@ -1029,10 +1080,23 @@
                     $('#BackButton').show();
                     break;
 
+                // ============================================================
                 case 'GROUPSUMMARY':
                 case 'GROUPDETAIL':
+                    // ============================================================
                     switch (clickname) {
                         case 'ParentLedgerClick':
+
+                            DrilldownManager.saveFormFilters("GROUPSUMMARY", {
+                                ReportType: "GROUPDETAIL"
+                            });
+
+                            DrilldownManager.push({
+                                currentForm: "GROUPSUMMARY",
+                                nextForm: "GROUPDETAIL",
+                                url: window.location.href
+                            });
+
                             var parentCode = $('#ParentCode-' + seqno).val();
                             $('#ParentLedgerName').val(parentCode).trigger('change');
                             $('#ReportType').val("GROUPDETAIL").trigger("change");
@@ -1040,9 +1104,21 @@
                             break;
 
                         case 'LedgerClick':
+
+                            DrilldownManager.saveFormFilters("GROUPDETAIL", {
+                               ParentLedgerName: parentCode,
+                                ReportType: "TransactionLedgerDetail"
+                            });
+
+                            DrilldownManager.push({
+                                currentForm: "GROUPDETAIL",
+                                nextForm: "TransactionLedgerDetail",
+                                url: window.location.href
+                            });
+
                             var parentCode = $('#ParentCode-' + seqno).val();
-                            $('#ParentLedgerName').val(parentCode).trigger('change');
                             var accountCode = $('#AccountCode-' + seqno).val();
+                            $('#ParentLedgerName').val(parentCode).trigger('change');
                             $('#LedgerName').val(accountCode).trigger('change');
                             $('#ReportType').val("TransactionLedgerDetail").trigger("change");
                             $('#BackButton').show();
@@ -1050,7 +1126,9 @@
                     }
                     break;
 
+                // ============================================================
                 default:
+                    // ============================================================
                     alert('No drill-down configured for this ReportType: ' + ReportType);
                     return;
             }
