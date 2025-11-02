@@ -60,7 +60,7 @@
                     {
                         Cntr = Cntr + 1;
 
-                        <tr id="SAGridRow-@Cntr">
+                        <tr id="SAGridRow-@Cntr" onclick="selection(this)">
                             <td>
                                 <a class="table-link link-danger" onclick="DeleteRow(this.id)" id="@Cntr">
                                     <span class="fa-stack">
@@ -73,11 +73,11 @@
 
                             <td>@item.VendorName</td>
                             <td>@item.InvoiceNo</td>
-                            <td>@item.InvoiceDate</td>
+                            <td>@item.InvoiceDate.ToString().Split(' ')[0]</td>
                             <td>@item.VoucherNo</td>
-                            <td>@item.VoucherDate</td>
+                            <td>@item.VoucherDate.ToString().Split(' ')[0]</td>
                             <td>@item.MRNNo</td>
-                            <td>@item.MRNDate</td>
+                            <td>@item.MRNDate.ToString().Split(' ')[0]</td>
                             <td>@item.BillAmt</td>
                             <td>@item.TaxableAmt</td>
                             <td>@item.GSTAmount</td>
@@ -105,9 +105,9 @@
                             <td>@item.PurchBillEntryId</td>
                             <td>@item.PurchBillYearCode</td>
                             <td>@item.ActualEntryByEmp</td>
-                            <td>@item.ActualEntryDate</td>
+                            <td>@item.ActualEntryDate.ToString().Split(' ')[0]</td>
                             <td>@item.LastUpdatedByEmp</td>
-                            <td>@item.LastUpdatedDate</td>
+                            <td>@item.LastUpdatedDate.ToString().Split(' ')[0]</td>
                             <td>@item.Remark</td>
                             <td>@item.Country</td>
 
@@ -122,7 +122,9 @@
 </div>
 
 <style>
-
+    #divStockRegisterBody {
+        background-color: #ccffcc;
+    }
     .sort-icon {
         padding: 5px;
         margin: 5px;

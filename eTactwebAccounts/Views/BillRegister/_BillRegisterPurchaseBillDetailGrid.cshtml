@@ -76,7 +76,7 @@
                     {
                         Cntr = Cntr + 1;
 
-                        <tr id="SAGridRow-@Cntr">
+                        <tr id="SAGridRow-@Cntr" onclick="selection(this)">
                             <td>
                                 <a class="table-link link-danger" onclick="DeleteRow(this.id)" id="@Cntr">
                                     <span class="fa-stack">
@@ -92,13 +92,13 @@
                             <td>@item.VendorAddress</td>
                             <td>@item.State</td>
                             <td>@item.InvoiceNo</td>
-                            <td>@item.InvDate</td>
+                            <td>@item.InvDate.ToString().Split(' ')[0]</td>
                             <td>@item.VoucherNo</td>
-                            <td>@item.VoucherDate</td>
+                            <td>@item.VoucherDate.ToString().Split(' ')[0]</td>
                             <td>@item.MRNNo</td>
-                            <td>@item.MRNDate</td>
+                            <td>@item.MRNDate.ToString().Split(' ')[0]</td>
                             <td>@item.GateNo</td>
-                            <td>@item.GateDate</td>
+                            <td>@item.GateDate.ToString().Split(' ')[0]</td>
                             <td>@item.PartCode</td>
                             <td>@item.ItemName</td>
                             <td>@item.HsnNo</td>
@@ -124,7 +124,7 @@
                             <td>@item.Currency</td>
                             <td>@item.InvAmt</td>
                             <td>@item.MIRNO</td>
-                            <td>@item.MIRDate</td>
+                            <td>@item.MIRDate.ToString().Split(' ')[0]</td>
                             <td>@item.ItemParentGroup</td>
                             <td>@item.ItemCategory</td>
                             <td>@item.TypeItemServAssets</td>
@@ -139,9 +139,9 @@
                             <td>@item.PurchBillEntryId</td>
                             <td>@item.PurchBillYearCode</td>
                             <td>@item.EntryByEmployee</td>
-                            <td>@item.ActualEntryDate</td>
+                            <td>@item.ActualEntryDate.ToString().Split(' ')[0]</td>
                             <td>@item.LastUpdatedByEmp</td>
-                            <td>@item.LastUpdatedDate</td>
+                            <td>@item.LastUpdatedDate.ToString().Split(' ')[0]</td>
 
 
                         </tr>
@@ -154,7 +154,9 @@
 </div>
 
 <style>
-
+    #divStockRegisterBody {
+        background-color: #ffffb3;
+    }
     .sort-icon {
         padding: 5px;
         margin: 5px;

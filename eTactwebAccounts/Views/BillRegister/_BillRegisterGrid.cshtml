@@ -55,7 +55,7 @@ else
                         {
                             Cntr = Cntr + 1;
 
-                            <tr id="SAGridRow-@Cntr">
+                            <tr id="SAGridRow-@Cntr" onclick="selection(this)">
                                 <td>
                                     <a class="table-link link-danger" onclick="DeleteRow(this.id)" id="@Cntr">
                                         <span class="fa-stack">
@@ -83,7 +83,9 @@ else
 <center><strong>TOTAL ROWS : <span id="totalRows"></span></strong></center>
 
 <style>
-
+    #divStockRegisterBody{
+        background-color: #ffe6e6;
+    }
     .sort-icon {
         padding: 5px;
         margin: 5px;

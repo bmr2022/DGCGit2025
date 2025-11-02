@@ -100,7 +100,7 @@
                     {
                         Cntr = Cntr + 1;
 
-                        <tr id="SAGridRow-@Cntr">
+                        <tr id="SAGridRow-@Cntr" onclick="selection(this)">
                             <td>
                                 <a class="table-link link-danger" onclick="DeleteRow(this.id)" id="@Cntr">
                                     <span class="fa-stack">
@@ -112,18 +112,19 @@
                             <th>@Cntr</th>
                             <td>@item.ItemName</td>
                             <td>@item.PartCode</td>
-                            <td>@item.AprAmt</td>
-                            <td>@item.MayAmt</td>
-                            <td>@item.JunAmt</td>
-                            <td>@item.JulAmt</td>
-                            <td>@item.AugAmt</td>
-                            <td>@item.SepAmt</td>
-                            <td>@item.OctAmt</td>
-                            <td>@item.NovAmt</td>
-                            <td>@item.DecAmt</td>
-                            <td>@item.JanAmt</td>
-                            <td>@item.FebAmt</td>
-                            <td>@item.MarAmt</td>
+                            <td>@item.AprAmt.ToString("0.00")</td>
+                            <td>@item.MayAmt.ToString("0.00")</td>
+                            <td>@item.JunAmt.ToString("0.00")</td>
+                            <td>@item.JulAmt.ToString("0.00")</td>
+                            <td>@item.AugAmt.ToString("0.00")</td>
+                            <td>@item.SepAmt.ToString("0.00")</td>
+                            <td>@item.OctAmt.ToString("0.00")</td>
+                            <td>@item.NovAmt.ToString("0.00")</td>
+                            <td>@item.DecAmt.ToString("0.00")</td>
+                            <td>@item.JanAmt.ToString("0.00")</td>
+                            <td>@item.FebAmt.ToString("0.00")</td>
+                            <td>@item.MarAmt.ToString("0.00")</td>
+
 
                             <td>@item.AprQty</td>
                             <td>@item.MayQty</td>
