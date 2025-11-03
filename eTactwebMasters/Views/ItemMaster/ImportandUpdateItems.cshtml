@@ -405,12 +405,15 @@
                                           
                                             <tr><td>PartCode</td><td><select class="multicolumns"></select></td></tr>
                                             <tr><td>Item_Name</td><td><select class="multicolumns"></select></td></tr>
-                                            <tr><td>ParentCode</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>Unit</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>HsnNo</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>ItemGroup</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>ItemCategory</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>ItemServAssets</td><td><select class="multicolumns"></select></td></tr>
                                             <tr><td>EntryDate</td><td><select class="multicolumns"></select></td></tr>
                                             <tr><td>LastUpdatedDate</td><td><select class="multicolumns"></select></td></tr>
                                             <tr><td>LeadTime</td><td><select class="multicolumns"></select></td></tr>
                                             <tr><td>CC</td><td><select class="multicolumns"></select></td></tr>
-                                            <tr><td>Unit</td><td><select class="multicolumns"></select></td></tr>
                                             <tr><td>SalePrice</td><td><select class="multicolumns"></select></td></tr>
                                             <tr><td>PurchasePrice</td><td><select class="multicolumns"></select></td></tr>
                                             <tr><td>CostPrice</td><td><select class="multicolumns"></select></td></tr>
@@ -418,7 +421,6 @@
                                             <tr><td>WtSingleItem</td><td><select class="multicolumns"></select></td></tr>
                                             <tr><td>NoOfPcs</td><td><select class="multicolumns"></select></td></tr>
                                             <tr><td>QcReq</td><td><select class="multicolumns"></select></td></tr>
-                                            <tr><td>ItemType</td><td><select class="multicolumns"></select></td></tr>
                                             <tr><td>UploadItemImage</td><td><select class="multicolumns"></select></td></tr>
                                             <tr><td>UploadImage</td><td><select class="multicolumns"></select></td></tr>
                                             <tr><td>UID</td><td><select class="multicolumns"></select></td></tr>
@@ -453,13 +455,11 @@
                                             <tr><td>NeedSo</td><td><select class="multicolumns"></select></td></tr>
                                             <tr><td>BomRequired</td><td><select class="multicolumns"></select></td></tr>
                                             <tr><td>JobWorkItem</td><td><select class="multicolumns"></select></td></tr>
-                                            <tr><td>HsnNo</td><td><select class="multicolumns"></select></td></tr>
                                             <tr><td>CreatedBy</td><td><select class="multicolumns"></select></td></tr>
                                             <tr><td>CreatedOn</td><td><select class="multicolumns"></select></td></tr>
                                             <tr><td>UpdatedBy</td><td><select class="multicolumns"></select></td></tr>
                                             <tr><td>UpdatedOn</td><td><select class="multicolumns"></select></td></tr>
                                             <tr><td>Active</td><td><select class="multicolumns"></select></td></tr>
-                                            <tr><td>ItemServAssets</td><td><select class="multicolumns"></select></td></tr>
                                             <tr><td>VendorBatchcodeMand</td><td><select class="multicolumns"></select></td></tr>
                                             <tr><td>EntryByMachineName</td><td><select class="multicolumns"></select></td></tr>
                                             <tr><td>UniversalPartCode</td><td><select class="multicolumns"></select></td></tr>
@@ -605,9 +605,20 @@
                     mapping[dbColumn] = selectedExcelColumn;
                 }
             });
-                 if (!mapping["PartCode"] || mapping["PartCode"].trim() === "") {
-            $.notify(" PartCode mapping is mandatory!", "error");
-            return; // stop execution
+        //          if (!mapping["PartCode"] || mapping["PartCode"].trim() === "") {
+        //     $.notify(" PartCode mapping is mandatory!", "error");
+        //     return; // stop execution
+        // }
+            let mandatoryFields = ["PartCode", "Unit", "HsnNo", "ItemGroup", "ItemCategory", "ItemServAssets"];
+        let missingFields = [];
+        mandatoryFields.forEach(function (field) {
+            if (!mapping[field] || mapping[field].trim() === "") {
+                missingFields.push(field);
+            }
+        });
+        if (missingFields.length > 0) {
+            $.notify("Please map the following mandatory fields: " + missingFields.join(", "), "error");
+            return;
         }
             // 2. Extract Excel Table Headers
             let excelHeaders = [];
@@ -639,20 +650,31 @@
                 beforeSend: function () {
                     $('#ajaxLoader').show(); // ✅ Show loader
                 },
-                success: function (data, status, xhr) {
-                    $('#ajaxLoader').hide();
-                    $.notify("Data Update Successfully!!", "info");
-                    if (data && (data.statusCode === 200 || data.statusCode === 202)) {
-                        window.location.href = data.RedirectUrl;
-                    } else {
-                        //    console.log(data);
-                        //  alert(data.statusText);
-                        // Show notify message if error-like StatusText is returned
-                       // $.notify(data.statusText, "error");
-                       alert(data.statusText);
-                    }
-                    //    console.log("success");
-                },
+                  success: function (data, status, xhr) {
+            $('#ajaxLoader').hide();
+            $('#ColumnNameModel').modal('hide');
+
+            let code = data.StatusCode || data.statusCode;
+            let msg = data.StatusText || data.statusText;
+            if (code === 240 ){
+                $.notify(msg, "error");
+                return;
+            }
+
+            // ✅ If update succeeded
+            if (data && (data.statusCode === 200 || data.statusCode === 202)) {
+                   window.location.href = data.RedirectUrl;
+               }
+            // ✅ If partial success or custom warning
+            else if (code === 200 && msg && msg !== "Data imported successfully") {
+                $.notify(msg, "warn");
+            }
+            // ✅ Any other error
+            else {
+                $.notify(msg || "Unknown error", "error");
+            }
+        },
+
                 error: function (err) {
                     alert("Error updating data");
                 }
