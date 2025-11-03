@@ -14,9 +14,163 @@
     <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-gauge@3.0.0"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
+        /* Chatbot Styles */
+        .chatbot-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
 
+        .chatbot-button {
+            width: 60px;
+            height: 60px;
+            background-color: #4a6fa5;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+            .chatbot-button:hover {
+                background-color: #3a5980;
+                transform: scale(1.05);
+            }
+
+        .chatbot-window {
+            position: absolute;
+            bottom: 70px;
+            right: 0;
+            width: 350px;
+            height: 450px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+        }
+
+            .chatbot-window.active {
+                opacity: 1;
+                visibility: visible;
+                transform: translateY(0);
+            }
+
+        .chatbot-header {
+            background-color: #4a6fa5;
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+            .chatbot-header h3 {
+                margin: 0;
+                font-size: 16px;
+            }
+
+        .close-chatbot {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .chatbot-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 10px 15px;
+            border-radius: 18px;
+            margin-bottom: 10px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @@keyframes fadeIn {
+            from
+
+        {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+
+        .user-message {
+            align-self: flex-end;
+            background-color: #e0e7ff;
+            color: #333;
+        }
+
+        .bot-message {
+            align-self: flex-start;
+            background-color: #f1f5f9;
+            color: #333;
+        }
+
+        .chatbot-input {
+            display: flex;
+            padding: 15px;
+            border-top: 1px solid #eee;
+            background-color: #f9fafb;
+        }
+
+            .chatbot-input input {
+                flex: 1;
+                padding: 10px 15px;
+                border: 1px solid #ddd;
+                border-radius: 20px;
+                outline: none;
+            }
+
+                .chatbot-input input:focus {
+                    border-color: #4a6fa5;
+                }
+
+            .chatbot-input button {
+                margin-left: 10px;
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                background-color: #4a6fa5;
+                color: white;
+                border: none;
+                cursor: pointer;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+                .chatbot-input button:hover {
+                    background-color: #3a5980;
+                }
         :root {
             --primary-color: #4f46e5;
             --secondary-color: #10b981;
@@ -828,7 +982,7 @@
             display: flex;
             margin-bottom: 20px;
             border-bottom: 1px solid rgba(0,0,0,0.1);
-            cursor:pointer;
+            cursor: pointer;
         }
 
             .sales-card-header h2 {
@@ -1037,6 +1191,26 @@
     </style>
 </head>
 <body>
+    <div class="chatbot-container">
+        <div class="chatbot-button" id="chatbotButton">
+            <i class="fas fa-comments"></i>
+        </div>
+        <div class="chatbot-window" id="chatbotWindow">
+            <div class="chatbot-header">
+                <h3>XON ORBI-AI ASSISTANT</h3>
+                <button class="close-chatbot" id="closeChatbot">×</button>
+            </div>
+            <div class="chatbot-messages" id="chatbotMessages">
+                <div class="message bot-message">
+                    <p>Hello! How can I help you with your dashboard today?</p>
+                </div>
+            </div>
+            <div class="chatbot-input">
+                <input type="text" id="chatbotInput" placeholder="Type your question here...">
+                <button id="sendMessage"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
     <div class="tab-nav">
         <button class="tab-link active" data-target="#inventoryTab">
             <div class="tab-icon-container bg-icon" onclick="RefreshInventoryAllData()">
@@ -1858,7 +2032,7 @@
                 </div>
             </div>
 
-             <div class="sales-card">
+            <div class="sales-card">
                 <div class="sales-card-header" style="display: flex; align-items: center; gap: 10px;">
                     <i class="fa fa-chart-area" style="font-size: 20px; color: #0d6efd;"></i>
                     <h2>Monthly Rejection Trend</h2>
@@ -1868,7 +2042,7 @@
                     <!-- Chart canvas -->
                     <canvas id="MonthlyRejectionTrend" width="300" height="150"></canvas>
                 </div>
-            </div>  
+            </div>
 
             <div class="sales-card-SO-Dispatch">
                 <div class="sales-card-header" onclick="SaveSaleOrderVsDispatch()">
@@ -1907,11 +2081,95 @@
     <script>
 
         $(".table-link").on("click", function () {
-             
+
             var approvalType = $(this).data("approvaltype"); // get data-approvalType
             if (approvalType) {
                 $("#ApprovalTypeHidden").val(approvalType); // set value in hidden input
                 localStorage.setItem('ApprovalType', approvalType);
+            }
+        });
+                // Chatbot functionality
+        document.addEventListener("DOMContentLoaded", function() {
+            const chatbotButton = document.getElementById('chatbotButton');
+            const chatbotWindow = document.getElementById('chatbotWindow');
+            const closeChatbot = document.getElementById('closeChatbot');
+            const chatbotMessages = document.getElementById('chatbotMessages');
+            const chatbotInput = document.getElementById('chatbotInput');
+            const sendMessageButton = document.getElementById('sendMessage');
+
+            // Toggle chatbot window
+            chatbotButton.addEventListener('click', function() {
+                chatbotWindow.classList.toggle('active');
+            });
+
+            // Close chatbot window
+            closeChatbot.addEventListener('click', function() {
+                chatbotWindow.classList.remove('active');
+            });
+
+            // Send message function
+            function sendMessage() {
+                const message = chatbotInput.value.trim();
+                if (message === '') return;
+
+                // Add user message
+                addMessage(message, 'user');
+                chatbotInput.value = '';
+
+                // Simulate bot response (in a real app, you'd call your API)
+                setTimeout(() => {
+                    let response = generateResponse(message);
+                    addMessage(response, 'bot');
+                }, 1000);
+            }
+
+            // Send message on button click
+            sendMessageButton.addEventListener('click', sendMessage);
+
+            // Send message on Enter key
+            chatbotInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+
+            // Add message to chat
+            function addMessage(text, sender) {
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('message', `${sender}-message`);
+
+                const messageP = document.createElement('p');
+                messageP.textContent = text;
+
+                messageDiv.appendChild(messageP);
+                chatbotMessages.appendChild(messageDiv);
+
+                // Scroll to bottom
+                chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+            }
+
+            // Simple response generator (replace with your actual API call)
+            function generateResponse(message) {
+                const lowerMessage = message.toLowerCase();
+
+                if (lowerMessage.includes('inventory') || lowerMessage.includes('stock')) {
+                    return "I can help with inventory questions. The dashboard shows current stock values, dead stock items, and category breakdowns. What specific information do you need?";
+                }
+                else if (lowerMessage.includes('purchase') || lowerMessage.includes('po')) {
+                    return "The purchase dashboard shows order values, trends, and vendor information. You can view monthly/annual PO data and pending approvals.";
+                }
+                else if (lowerMessage.includes('sales') || lowerMessage.includes('order')) {
+                    return "The sales section displays order status, customer insights, and performance metrics. You can see top customers and sales trends.";
+                }
+                else if (lowerMessage.includes('help') || lowerMessage.includes('support')) {
+                    return "I'm here to help you navigate the dashboard. You can ask about inventory, purchases, sales, or any other dashboard features.";
+                }
+                else if (lowerMessage.includes('export') || lowerMessage.includes('pdf')) {
+                    return "You can export any dashboard tab as PDF using the 'Export to PDF' button in the tab navigation bar.";
+                }
+                else {
+                    return "I'm still learning about all the dashboard features. For now, I can help with questions about inventory, purchases, and sales data. Could you try asking about one of these areas?";
+                }
             }
         });
 
@@ -2366,7 +2624,7 @@
         }
 
         function FillNoOfItemInStock() {
-             
+
             $.ajax({
                 url: '@Url.Action("NoOfItemInStock", "XONDashboard")',
                 type: 'POST',
@@ -3997,7 +4255,7 @@
                 async: false,
                 data: {},
                 success: function (response, status, error) {
-                     
+
                     var obj = $.parseJSON(response);
                     if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
                         if ($('#RefreshSalesAllData').val() == "false") {

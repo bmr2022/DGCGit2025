@@ -10,6 +10,7 @@ namespace eTactWeb.DOM.Models
         //public bool AllowPartCode { get; set; }
         public bool AllowPartCode { get; set; } = true;
         public bool DuplicateItemName { get; set; }
+        public bool IsStoreMandatoryInItemMaster { get; set; }
      
     }
     public class ExcelUpdateRequest
@@ -19,6 +20,7 @@ namespace eTactWeb.DOM.Models
 
         // Excel rows data (Header -> Value)
         public List<Dictionary<string, string>> ExcelData { get; set; }
+        public string Flag { get; set; }
     }
 
     [Serializable()]
@@ -56,6 +58,7 @@ namespace eTactWeb.DOM.Models
         public int PageSize { get; set; }
         public string? EntryByMachineName { get;set; }
         public string? Act { get; set; }
+        public string? BatchWiseInventory { get; set; }
         public string? VoltageVlue { get; set; }
         public string? SerialNo { get; set; }
         public string? OldPartCode { get; set; }
@@ -366,6 +369,8 @@ namespace eTactWeb.DOM.Models
         public string? Store { get; set; }
         public string? WorkCenter { get; set; }
         public string? StoreName { get; set; }
+        public string? RackID { get; set; }
+        public string? Barcode { get; set; }
         public int? ProdInWorkcenter { get; set; }
         public int StdPkg { get; set; }
         public int SeqNo { get; set; }

@@ -24,9 +24,13 @@ namespace eTactWeb.Data.BLL
             _DataLogicDAL = iDataLogic;
             _OrderAmendHistoryDAL = new OrderAmendHistoryDAL(configuration, iDataLogic, _httpContextAccessor, connectionStringService);
         }
-        public async Task<ResponseResult> FillPONO(string FromDate, string ToDate)
+        public async Task<ResponseResult> FillPONO(string FromDate, string ToDate, int AccountCode,string HistoryReportMode)
         {
-            return await _OrderAmendHistoryDAL.FillPONO(FromDate, ToDate);
+            return await _OrderAmendHistoryDAL.FillPONO(FromDate, ToDate,AccountCode, HistoryReportMode);
+        }
+        public async Task<ResponseResult> FillPONOAmendNo(string FromDate, string ToDate, int AccountCode,string PONo, string HistoryReportMode)
+        {
+            return await _OrderAmendHistoryDAL.FillPONOAmendNo(FromDate, ToDate,AccountCode,PONo, HistoryReportMode);
         }
         public async Task<ResponseResult> FillVendorName(string FromDate, string ToDate)
         {
@@ -41,9 +45,9 @@ namespace eTactWeb.Data.BLL
             return await _OrderAmendHistoryDAL.FillPartCode(FromDate, ToDate);
         }
 
-        public async Task<OrderAmendHistoryModel> GetOrderAmendHistoryData(string FromDate, string ToDate, string ReportType, int AccountCode, string PartCode, string ItemName, string PONO, int ItemCode,string HistoryReportMode)
+        public async Task<OrderAmendHistoryModel> GetOrderAmendHistoryData(string FromDate, string ToDate, string ReportType, int AccountCode, string PartCode, string ItemName, string PONO, int ItemCode,string HistoryReportMode,string AmmNo)
         {
-            return await _OrderAmendHistoryDAL.GetOrderAmendHistoryData( FromDate,  ToDate,  ReportType,  AccountCode,  PartCode,  ItemName,  PONO,  ItemCode, HistoryReportMode);
+            return await _OrderAmendHistoryDAL.GetOrderAmendHistoryData( FromDate,  ToDate,  ReportType,  AccountCode,  PartCode,  ItemName,  PONO,  ItemCode, HistoryReportMode, AmmNo);
         }
     }
 }

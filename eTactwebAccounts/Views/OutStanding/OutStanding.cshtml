@@ -1,8 +1,13 @@
 ﻿@model eTactWeb.DOM.Models.OutStandingModel;
+@using Microsoft.AspNetCore.Http
+@using System.Reflection.PortableExecutable
+@inject IHttpContextAccessor HttpContextAccessor
 @{
     ViewData["Title"] = "OutStanding";
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
+    var yearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("YearCode"));
 }
+
 <style>
 
     .select2-container--default .select2-selection--single {
@@ -54,23 +59,6 @@
                     <div class="card-body">
                         <form id="SParam">
                             <div class="row">
-                                @* <input type="hidden" value="@Model.YearCode" asp-for="YearCode" />
-                                <input type="hidden" value="@Model.Storeid" asp-for="Storeid" /> *@
-
-                                @* <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12">
-                                <div class="row">
-                                <div class="col">
-                                <label class="form-label">From Date</label>
-                                <input asp-for="FromDate" class="form-control" />
-                                </div>
-                                <div class="col">
-                                <label class="form-label">To Date</label>
-                                <input asp-for="ToDate" class="form-control" />
-                                </div>
-                                </div>
-                                </div>
-                                *@
-
                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12">
                                     <label asp-for="ReportType" class="form-label">Party</label>
                                     <select class="form-control" asp-for="ReportType">
@@ -84,18 +72,11 @@
                                 </div>
                                 <div class="col-xl-2 col-xl-3 col-lg-3 col-md-3 col-sm-3 col-xs-6" style="width:150px">
                                     <label asp-for="TillDate" class="form-label">OutStanding Upto</label>
-
                                     <input asp-for="TillDate" class="form-control" />
-
-
                                 </div>
-
-
                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                     <label asp-for="GroupName" class="form-label">Group Name</label>
-
                                     <select asp-for="GroupName" class="form-control">
-                                        @* <option value="@Model.AccountCode">-Select-</option> *@
                                         <option value="@Model.GroupName">-Select-</option>
                                         @if (Model.Mode == "U" || Model.Mode == "V")
                                         {
@@ -114,6 +95,28 @@
                                     <select class="form-control" multiple="multiple" id="PartyNameMulti" asp-for="PartyName">
                                     </select>
                                     <select class="form-control" id="PartyNameSingle" asp-for="PartyName">
+                                    </select>
+                                </div>
+
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="VoucherType" class="form-label">Voucher Type</label>
+                                    <select asp-for="VoucherType" class="form-control">
+                                        <option value="@Model.VoucherType">-Select-</option>
+                                        @if (Model.Mode == "U" || Model.Mode == "V")
+                                        {
+                                            <option value="@Model.VoucherType" selected>@Model.VoucherType</option>
+                                        }
+                                    </select>
+                                </div>
+
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="VoucherNo" class="form-label">Voucher No</label>
+                                    <select asp-for="VoucherNo" class="form-control">
+                                        <option value="@Model.VoucherNo">-Select-</option>
+                                        @if (Model.Mode == "U" || Model.Mode == "V")
+                                        {
+                                            <option value="@Model.VoucherNo" selected>@Model.VoucherNo</option>
+                                        }
                                     </select>
                                 </div>
 
@@ -217,6 +220,22 @@
                                                     <input id="totPenAmt" class="form-control" readonly />
                                                 </div>
                                             </div>
+                                            <div class="modal fade" id="popupModal" tabindex="-1" aria-hidden="true">
+                                                <div class="modal-dialog modal-xl">
+                                                    <!-- xl for wide table -->
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title">Voucher Details</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <!-- Partial view content will load here -->
+                                                            <partial name="_OutStandingPopUpData" />
+                                                            <div id="divOutStandingPopUpDatas"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -234,40 +253,56 @@
     <script>
 
         $(document).ready(function () {
-            console.log("Ready");
+
+            // Initialize datepicker
             var currentDate = new Date();
-            var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-            $('#totalRows').text($('#divStockRegisterBody tr').length);
-            $('#TillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-            $('#GroupName').select2();
-            $('#PartyNameSingle').select2();
-            $('#ReportType').select2();
+            $('#TillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", currentDate);
+
+            // Initialize other dropdowns
+            $('#GroupName, #ReportType, #VoucherNo, #VoucherType').select2();
             $('#BackButton').hide();
 
-            var currentDate = new Date();
-            var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-            function formatDate(date) {
-                var day = ("0" + date.getDate()).slice(-2);
-                var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-                var month = monthNames[date.getMonth()];
-                var year = date.getFullYear();
-                return day + "/" + month + "/" + year;
-            }
+            // Fill dropdowns that are not dynamic
             FillGroupName();
-            FillPartyName();
-            GetDetailsData();
+            FillVoucherType();
+            FillVoucherNo();
+
+            // Restore values from session storage
+            var tillDateBack = sessionStorage.getItem('ToDateBack');
+            var reportTypeBack = sessionStorage.getItem('DashboardTypeBack');
+            var groupCodeBack = sessionStorage.getItem('GroupCodeBack');
+            var accountCodeBack = sessionStorage.getItem('AccountNameBack');
+            var voucherNoBack = sessionStorage.getItem('VoucherNoBack');
+            var voucherTypeBack = sessionStorage.getItem('VoucherTypeBack');
+
+            if (tillDateBack) {
+                $('#TillDate').val(tillDateBack);
+            }
+
+            // Initialize PartyName dropdown based on toggle
+            toggleMultiSelect(); // This will call FillPartyName internally
+
+            // Restore other dropdowns
+            if (groupCodeBack) $('#GroupName').val(groupCodeBack).trigger('change');
+            if (reportTypeBack) $('#ReportType').val(reportTypeBack).trigger('change');
+            if (voucherNoBack) $('#VoucherNo').val(voucherNoBack).trigger('change');
+            if (voucherTypeBack) $('#VoucherType').val(voucherTypeBack).trigger('change');
+
+            // Handle ReportType change
             $("#ReportType").change(function () {
                 handleReportTypeChange();
             });
 
             function handleReportTypeChange() {
-
                 var reportType = $("#ReportType").val().trim();
                 var reportTypesToCheck = ["Summary", "Detail", "IndentWithPODetail"];
                 if (reportTypesToCheck.includes(reportType)) {
                     $("#Group_Ledger").val("Ledger");
                 }
             }
+
+            // Fetch details
+            GetDetailsData();
         });
 
         var selectedPartyValues = [];
@@ -277,77 +312,90 @@
             var PartynameSingleDropdown = $('#PartyNameSingle');
             var PartynameMultiDropdown = $('#PartyNameMulti');
 
+            // Get appropriate back value
+            var accountCodeBack = isMulti
+                ? sessionStorage.getItem('AccountList') // multi-select
+                : sessionStorage.getItem('AccountNameBack'); // single-select
+
             if (isMulti) {
-                // Hide single-select and show multi-select
                 PartynameSingleDropdown.hide();
                 PartynameMultiDropdown.show();
 
-                // Destroy Select2 if initialized on single-select
                 if (PartynameSingleDropdown.hasClass("select2-hidden-accessible")) {
                     PartynameSingleDropdown.select2('destroy');
                 }
 
-                // Load party options
-                FillPartyName();
+                FillPartyName(function () {
+                    PartynameMultiDropdown.attr('multiple', 'multiple');
 
-                // Initialize multiselect plugin
-                PartynameMultiDropdown.attr('multiple', 'multiple');
-                PartynameMultiDropdown.multiselect({
-                    templates: {
-                        button: '<button type="button" class="multiselect btn btn-sm btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><span class="multiselect-selected-text"></span></button>',
-                    },
-                    onChange: function (option, checked) {
-                        var value = $(option).val();
-                        if (checked) {
-                            if (!selectedPartyValues.includes(value)) {
-                                selectedPartyValues.push(value);
+                    PartynameMultiDropdown.multiselect({
+                        templates: {
+                            button: '<button type="button" class="multiselect btn btn-sm btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><span class="multiselect-selected-text"></span></button>',
+                        },
+                        enableFiltering: true,
+                        enableCaseInsensitiveFiltering: true,
+                        includeSelectAllOption: false,
+                        buttonWidth: '100%',
+                        maxHeight: 300,
+                        nonSelectedText: 'Select Party',
+                        allSelectedText: 'All selected',
+                        numberDisplayed: 2,
+                        onChange: function (option, checked) {
+                            var value = $(option).val();
+                            if (checked) {
+                                if (!selectedPartyValues.includes(value)) {
+                                    selectedPartyValues.push(value);
+                                }
+                            } else {
+                                selectedPartyValues = selectedPartyValues.filter(v => v !== value);
                             }
-                        } else {
-                            selectedPartyValues = selectedPartyValues.filter(v => v !== value);
+                        },
+                        onSelectAll: function () {
+                            selectedPartyValues = $('#PartyNameMulti option:visible').map(function () {
+                                return $(this).val();
+                            }).get();
+                        },
+                        onDeselectAll: function () {
+                            selectedPartyValues = [];
                         }
-                    },
-                    onSelectAll: function () {
-                        selectedPartyValues = [];
-                        $('#PartyNameMulti option').each(function () {
-                            selectedPartyValues.push($(this).val());
-                        });
-                    },
-                    onDeselectAll: function () {
-                        selectedPartyValues = [];
-                    },
-                    enableFiltering: true,
-                    enableCaseInsensitiveFiltering: true,
-                    includeSelectAllOption: true,
-                    buttonWidth: '100%',
-                    maxHeight: 300,
-                    nonSelectedText: 'Select Party',
-                    allSelectedText: 'All selected',
-                    numberDisplayed: 2,
+                    });
+
+                    // Pre-select multi values
+                    if (accountCodeBack) {
+                        var selectedValues = accountCodeBack.split(',');
+                        PartynameMultiDropdown.val(selectedValues).multiselect('refresh');
+                        selectedPartyValues = selectedValues;
+                    }
                 });
 
             } else {
-                // Hide multi-select and show single-select
                 PartynameMultiDropdown.hide();
                 PartynameSingleDropdown.show();
 
-                // Destroy multiselect if initialized
                 if (PartynameMultiDropdown.data('multiselect')) {
                     PartynameMultiDropdown.multiselect('destroy');
                 }
 
                 selectedPartyValues = [];
 
-                // Load party options
-                FillPartyName();
+                FillPartyName(function () {
+                    PartynameSingleDropdown.select2({
+                        width: '100%',
+                        placeholder: 'Select Party',
+                        allowClear: true
+                    });
 
-                // Re-initialize Select2 for single-select
-                PartynameSingleDropdown.select2({
-                    width: '100%',
-                    placeholder: 'Select Party',
-                    allowClear: true
+                    // Pre-select single value
+                    if (accountCodeBack) {
+                        PartynameSingleDropdown.val(accountCodeBack).trigger('change');
+                    }
                 });
             }
         }
+
+        $('#GroupName').change(function () {
+            FillPartyName();
+        })
 
         function selection(CurrentRow) {
 
@@ -363,12 +411,24 @@
         });
 
         function GetDetailDataForPartyWise(td) {
-             ;
+            // 🔹 Save state before anything changes
+            const filters = {
+                TillDate: $('#TillDate').val(),
+                GroupName: $('#GroupName').val(),
+                PartyNameSingle: $('#PartyNameSingle').val(),
+                ReportType: $('#ReportType').val(),
+                VoucherNo: $('#VoucherNo').val(),
+                VoucherType: $('#VoucherType').val(),
+                multiPartySwitch: $('#multiPartySwitch').is(':checked')
+            };
+            sessionStorage.setItem('LastListFilters', JSON.stringify(filters));
+            sessionStorage.setItem('LastListUrl', window.location.href);
+
+            // 🔹 Your existing logic
             let accountCode = $(td).find(".hdnAccountCode").val();
             let ledgerDescription = $(td).data("id");
             $('#BackButton').show();
 
-            // ReportType mapping
             let reportType = $('#ReportType').val();
             if (reportType === "Receive Outstanding Ageing") {
                 $('#ReportType').val("Receive Outstanding").trigger("change");
@@ -377,56 +437,91 @@
                 $('#ReportType').val("Payable Outstanding").trigger("change");
             }
 
-            // Call FillPartyName with callback
-            FillPartyName(function () {
-                let isMulti = $('#multiPartySwitch').is(':checked');
-                if (!isMulti) {
-                    $('#PartyNameSingle').val(accountCode).trigger('change');
-                } else {
-                    $('#PartyNameMulti').val(accountCode).trigger('change');
-                    $('#PartyNameMulti').multiselect('refresh');
-                }
-
-                // only after dropdown ready & party set
-                GetDetailsData();
-            });
+            GetDetailsData();
         }
 
         function FillPartyName(callback) {
-            var OutStandingType = $('#ReportType').val();
-            var TillDate = $('#TillDate').val();
-            var isMulti = $('#multiPartySwitch').is(':checked');
-            var PartynameSingleDropdown = $('#PartyNameSingle');
-            var PartynameMultiDropdown = $('#PartyNameMulti');
-
             $.ajax({
-                url: '@Url.Action("GetPartyName", "OutStanding")',
-                data: {
-                    "OutStandingType": OutStandingType,
-                    "TillDate": TillDate
-                },
+                url: '@Url.Action("GetPartyName", "OutStanding")', // your API endpoint
                 type: 'GET',
+                dataType: 'json',
+                async: false,
                 success: function (response) {
                     var obj = $.parseJSON(response);
 
-                    if (!isMulti) {
-                        PartynameSingleDropdown.empty();
-                        PartynameSingleDropdown.append('<option value="">--Select--</option>');
+                    var PartynameSingleDropdown = $('#PartyNameSingle');
+                    var PartynameMultiDropdown = $('#PartyNameMulti');
 
-                        $.each(obj.Result, function (index, item) {
-                            PartynameSingleDropdown.append('<option value="' + item.Account_Code + '">' + item.PartyName + '</option>');
+                    // Check which dropdown should be active
+                    var isMulti = $('#multiPartySwitch').is(':checked');
+
+                    // Get back values from sessionStorage
+                    var accountCodeBackSingle = sessionStorage.getItem('AccountNameBack'); // single-select
+                    var accountCodeBackMulti = sessionStorage.getItem('AccountList');      // multi-select
+
+                    if (isMulti) {
+                        // Build multi-select options with selected
+                        var multiOptions = '<option value="">--Select--</option>';
+                        $.each(obj.Result, function (i, item) {
+                            var selectedMulti = (accountCodeBackMulti && accountCodeBackMulti.split(',').includes(item.Account_Code)) ? ' selected' : '';
+                            multiOptions += `<option value="${item.Account_Code}"${selectedMulti}>${item.PartyName}</option>`;
                         });
+
+                        // Fill multi-select dropdown
+                        PartynameMultiDropdown.html(multiOptions);
+                        PartynameSingleDropdown.hide();
+                        PartynameMultiDropdown.show();
+
+                        // Initialize multi-select
+                        PartynameMultiDropdown.attr('multiple', 'multiple');
+                        PartynameMultiDropdown.multiselect({
+                            templates: {
+                                button: '<button type="button" class="multiselect btn btn-sm btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><span class="multiselect-selected-text"></span></button>',
+                            },
+                            enableFiltering: true,
+                            enableCaseInsensitiveFiltering: true,
+                            includeSelectAllOption: false,
+                            buttonWidth: '100%',
+                            maxHeight: 300,
+                            nonSelectedText: 'Select Party',
+                            allSelectedText: 'All selected',
+                            numberDisplayed: 2
+                        });
+
+                        // Pre-select multi values
+                        if (accountCodeBackMulti) {
+                            var selectedValues = accountCodeBackMulti.split(',');
+                            PartynameMultiDropdown.val(selectedValues).multiselect('refresh');
+                            selectedPartyValues = selectedValues;
+                        }
+
                     } else {
-                        PartynameMultiDropdown.empty();
-
-                        $.each(obj.Result, function (index, item) {
-                            PartynameMultiDropdown.append('<option value="' + item.Account_Code + '">' + item.PartyName + '</option>');
+                        // Build single-select options with selected
+                        var singleOptions = '<option value="">--Select--</option>';
+                        $.each(obj.Result, function (i, item) {
+                            var selectedSingle = (item.Account_Code == accountCodeBackSingle) ? ' selected' : '';
+                            singleOptions += `<option value="${item.Account_Code}"${selectedSingle}>${item.PartyName}</option>`;
                         });
 
-                        PartynameMultiDropdown.multiselect('rebuild');
+                        // Fill single-select dropdown
+                        PartynameSingleDropdown.html(singleOptions);
+                        PartynameMultiDropdown.hide();
+                        PartynameSingleDropdown.show();
+
+                        // Initialize Select2
+                        PartynameSingleDropdown.select2({
+                            width: '100%',
+                            placeholder: 'Select Party',
+                            allowClear: true
+                        });
+
+                        // Pre-select single value
+                        if (accountCodeBackSingle) {
+                            PartynameSingleDropdown.val(accountCodeBackSingle).trigger('change');
+                        }
                     }
 
-                    // ✅ callback call after dropdown filled
+                    // Run callback if provided
                     if (typeof callback === "function") {
                         callback();
                     }
@@ -438,6 +533,97 @@
         }
 
         function FillGroupName() {
+            var OutStandingType = $('#ReportType').val();
+            var TillDate = $('#TillDate').val();
+
+            $.ajax({
+                url: '@Url.Action("GetGroupName", "OutStanding")',
+                data:
+                {
+                    "OutStandingType": OutStandingType,
+
+                    "TillDate": TillDate
+                },
+                type: 'GET',
+                async: false,
+                success: function (response, status, error) {
+
+                    var PartynameDropdown = $('#GroupName');
+                    var obj = $.parseJSON(response);
+                    PartynameDropdown.empty();
+                    PartynameDropdown.append('<option value="">--Select--</option>');
+                    var groupCodeBack = sessionStorage.getItem('GroupCodeBack');
+                    $.each(obj.Result, function (index, item) {
+                        var isSelected = (item.ParentCode == groupCodeBack) ? ' selected' : '';
+                        PartynameDropdown.append('<option value="' + item.ParentCode + '"' + isSelected + '>' + item.ParentGroupName + '</option>');
+                    });
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+
+        function FillVoucherType() {
+            var CurrentYear = @yearCode;
+
+            $.ajax({
+                url: '@Url.Action("GetVoucherType", "OutStanding")',
+                data:
+                {
+                    "CurrentYear": CurrentYear
+                },
+                type: 'GET',
+                async: false,
+                success: function (response, status, error) {
+
+                    var VoucherTypeDropdown = $('#VoucherType');
+                    var obj = $.parseJSON(response);
+                    VoucherTypeDropdown.empty();
+                    VoucherTypeDropdown.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, item) {
+                        VoucherTypeDropdown.append('<option value="' + item.VoucherType + '">' + item.VoucherType + '</option>');
+                    });
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+
+        function FillVoucherNo() {
+            var CurrentYear = @yearCode;
+
+            $.ajax({
+                url: '@Url.Action("GetVoucherNo", "OutStanding")',
+                data:
+                {
+                    "CurrentYear": CurrentYear
+                },
+                type: 'GET',
+                async: false,
+                success: function (response, status, error) {
+
+                    var VoucherNoDropdown = $('#VoucherNo');
+                    var obj = $.parseJSON(response);
+                    VoucherNoDropdown.empty();
+                    VoucherNoDropdown.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, item) {
+                        VoucherNoDropdown.append('<option value="' + item.VoucherNo + '">' + item.VoucherNo + '</option>');
+                    });
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+
+        function FillVoucherList() {
             var OutStandingType = $('#ReportType').val();
             var TillDate = $('#TillDate').val();
 
@@ -470,27 +656,37 @@
         }
 
         function GetDetailsData() {
-             
+            debugger
             var OutStandingType = $('#ReportType').val();
             var ShowZeroBal = $('#ShowZeroBal').is(':checked');
             var TillDate = $('#TillDate').val();
             var GroupName = $('#GroupName').val();
-            var AccountNameList = selectedPartyValues;
+            var isMulti = $('#multiPartySwitch').is(':checked'); // check toggle state
+            var AccountNameList = isMulti ? $('#PartyNameMulti').val() : null;
             var AccountCode = 0;
+            var accountCodeBack = sessionStorage.getItem('AccountNameBack');
 
-            if (AccountNameList && AccountNameList.length > 0) {
-                AccountCode = 0;
+            // ✅ if multi-select OFF, clear AccountNameList and selectedPartyValues
+            if (!isMulti) {
+                AccountNameList = null;
+                selectedPartyValues = []; // or = null if you prefer
             }
-            else {
-                AccountCode = $('#PartyNameSingle').val();
+
+            // ✅ logic for AccountCode
+            if (isMulti && AccountNameList && AccountNameList.length > 0) {
+                AccountCode = 0; // multi mode, send list
+            } else {
+                AccountCode = accountCodeBack ? accountCodeBack : ($('#PartyNameSingle').val() || 0);
             }
 
             var ShowOnlyApprovedBill = $("input[name='Status']:checked").val();
-
+            var VoucherNo = $('#VoucherNo').val();
+            var VoucherType = $('#VoucherType').val();
 
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("GetDetailsData", "OutStanding")',
+                async: false,
                 data: {
                     "OutStandingType": OutStandingType,
                     "TillDate": TillDate,
@@ -498,12 +694,13 @@
                     "AccountNameList": AccountNameList,
                     "AccountCode": AccountCode,
                     "ShowOnlyApprovedBill": ShowOnlyApprovedBill,
-                    "ShowZeroBal": ShowZeroBal
-
+                    "ShowZeroBal": ShowZeroBal,
+                    "VoucherNo": VoucherNo,
+                    "VoucherType": VoucherType
                 },
                 success: function (response) {
                     $('#divStockMainRegister').html(response);
-
+                    sessionStorage.removeItem('AccountNameBack');
                     var totalRows = $('#divStockMainRegister tr').length;
                     $('#totalRows').text(totalRows);
                     countAllTotal();
@@ -558,7 +755,7 @@
         }
 
         function PressBack() {
-             
+
             let ReportType = $('#ReportType').val();
             if (ReportType === "Receive Outstanding") {
                 $('#ReportType').val("Receive Outstanding Ageing").trigger("change");
@@ -661,6 +858,26 @@
 
             $.each(rows, function (index, row) {
                 table.children('#divStockRegisterBody').append(row);
+            });
+        }
+
+        function ViewData(AccountCode, VoucherNo, VoucherType, VoucherYearCode, CurrentYear) {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("GetVoucherList")",
+                data: {
+                    "AccountCode": AccountCode,
+                    "VoucherNo": VoucherNo,
+                    "VoucherType": VoucherType,
+                    "VoucherYearCode": VoucherYearCode,
+                    "CurrentYear": CurrentYear
+                },
+                success: function (result) {
+                    $("#popupModal").modal("show"); // open modal popup (if you’re using Bootstrap)
+                },
+                error: function (xhr) {
+                    alert("Error loading data: " + xhr.responseText);
+                }
             });
         }
 

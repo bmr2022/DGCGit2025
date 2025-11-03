@@ -1,0 +1,744 @@
+﻿@model eTactWeb.DOM.Models.Features_OptionsModel;
+@{
+	ViewData["Title"] = "Purchase Bill setting";
+	Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+<style>
+	.disabled-link {
+		pointer-events: none; /* Disables clicking */
+		color: gray; /* Makes it look disabled */
+		text-decoration: none; /* Removes underline */
+		cursor: not-allowed; /* Changes cursor */
+	}
+</style>
+
+<div class="card bg-gradient mb-3 border-light shadow-lg">
+	<form asp-action="FeaturesOptionsPurchaseBill" asp-controller="Features_Options" method="post" autocomplete="on" class="form-horizontal">
+		<div class="card-header card-headerBG text-light bg-gradient">
+			<div class="card-header card-headerBG text-light justify-content-center bg-gradient">
+				<h5>
+					<strong>Purchase Bill Setting </strong>
+					<span class="d-flex float-end" style="margin-top:-2px;">
+
+						<div class="row justify-content-between g-2">
+							<div class="col-auto">
+								<a href="#" class="btn btn-primary btn-sm" onclick="PressBack();">
+									<i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+									BACK
+								</a>
+							</div>
+							@if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+							{
+								<div class="col-auto">
+									<a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+										<i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+										REFRESH
+									</a>
+								</div>
+								@if (Model.Mode == "U")
+								{
+									Model.Mode = "U";
+									<div class="col-auto">
+										<button type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+											<i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+											UPDATE
+										</button>
+									</div>
+								}
+
+								else
+								{
+									<div class="col-auto">
+										<button type="submit" class="btn btn-primary btn-sm submitBTN">
+											<i class="fa-solid fa-chevron-circle-right"></i>
+											Save
+										</button>
+									</div>
+								}
+							}
+						</div>
+					</span>
+				</h5>
+			</div>
+			<div class="card-body bg-light">
+				<div class="accordion shadow-lg" id="accordionItemCategory">
+					<div class="accordion-item">
+						<h2 class="accordion-header" id="H_ItemCategoryDetail">
+							<button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_ItemCategoryDetail"
+									aria-expanded="true" aria-controls="B_ItemCategoryDetail">
+								<strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i> Purchase Bill Setting</strong>
+								<small class="p-3"></small>
+							</button>
+						</h2>
+						<div id="B_ItemCategoryDetail" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_ItemCategoryDetail">
+							<div class="accordion-body">
+								<div class="row">
+									<div class="col-md-6">
+										<input type="hidden" asp-for="Mode" />
+										
+										<div class="d-flex align-items-center mb-2" style="margin-left:0;">
+											<label title="PurchaseBillPrintReportName" asp-for="PurchaseBillPrintReportName" class="form-label me-2" style="width:230px;">
+												PurchaseBill PrintReport Name
+											</label>
+											<input readonly asp-for="PurchaseBillPrintReportName" class="form-control" style="max-width:400px;" />
+										</div>
+
+										<div class="d-flex align-items-center mb-2" style="margin-left:0;">
+											<label title="DirectPurchaseBillPrintReportName" asp-for="DirectPurchaseBillPrintReportName" class="form-label me-2" style="width:230px;">
+												Direct PurchaseBill PrintReport Name
+											</label>
+											<input readonly asp-for="DirectPurchaseBillPrintReportName" class="form-control" style="max-width:400px;" />
+										</div>
+
+										<div class="d-flex align-items-center mb-2" style="margin-left:0;">
+											<label title="PurchBillVoucherPrintReportName" asp-for="PurchBillVoucherPrintReportName" class="form-label me-2" style="width:230px;">
+												 Voucher PrintReport Name
+											</label>
+											<input readonly asp-for="PurchBillVoucherPrintReportName" class="form-control" style="max-width:400px;" />
+										</div>
+										<div class="d-flex align-items-center mb-2" style="margin-left:0;">
+											<label title="DirectPurchBillVoucherPrintReportName" asp-for="DirectPurchBillVoucherPrintReportName" class="form-label me-2" style="width:290px;">
+												Direct PurchaseBill Voucher PrintReport Name
+											</label>
+											<input readonly asp-for="DirectPurchBillVoucherPrintReportName" class="form-control" style="max-width:350px;" />
+										</div>
+										<div class="d-flex align-items-center mb-2" style="margin-left:0;">
+											<label title="AccPurchaseVoucherPrintoutFileName" asp-for="AccPurchaseVoucherPrintoutFileName" class="form-label me-2" style="width:230px;">
+												Voucher PrintOut FileName
+											</label>
+											<input readonly asp-for="AccPurchaseVoucherPrintoutFileName" class="form-control" style="max-width:400px;" />
+										</div>
+										<div class="d-flex align-items-center mb-2" style="margin-left:0;">
+											<label title="AccPurchaseBillInvoicePrintoutFileName" asp-for="AccPurchaseBillInvoicePrintoutFileName" class="form-label me-2" style="width:230px;">
+												Invoice PrintOut FileName
+											</label>
+											<input readonly asp-for="AccPurchaseBillInvoicePrintoutFileName" class="form-control" style="max-width:400px;" />
+										</div>
+										<div class="d-flex align-items-center mb-2" style="margin-left:0;">
+											<label title="AccPurchaseBillInvoicePrintoutfilename" asp-for="AccPurchaseBillInvoicePrintoutfilename" class="form-label me-2" style="width:230px;">
+												Purchase Bill Invoice Print filename
+											</label>
+											<input readonly asp-for="AccPurchaseBillInvoicePrintoutFileName" class="form-control" style="max-width:400px;" />
+										</div>
+
+										<div class="d-flex align-items-center mb-2">
+											<label title="ShowHideDirectPurchaseBillEntryDetail" asp-for="ShowHideDirectPurchaseBillEntryDetailBool" class="form-label me-2" style="width:340px;">
+												Click To Show Direct Purchase Bill Entry Detail
+											</label>
+											<input type="checkbox" class="form-check-input" asp-for="ShowHideDirectPurchaseBillEntryDetailBool" />
+											(Uncheck To Hide)
+										</div>
+
+										<div class="d-flex align-items-center mb-2">
+											<label title="ShowHideDirectPurchaseBillCustomerDetail" asp-for="ShowHideDirectPurchaseBillCustomerDetailBool" class="form-label me-2" style="width:340px;">
+												Click To Show Direct Purchase Bill Customer Detail
+											</label>
+											<input type="checkbox" class="form-check-input" asp-for="ShowHideDirectPurchaseBillCustomerDetailBool" />
+											(Uncheck To Hide)
+										</div>
+
+										<div class="d-flex align-items-center mb-2">
+											<label title="ShowHideDirectPurchaseBillOtherRequiredDetail" asp-for="ShowHideDirectPurchaseBillOtherRequiredDetailBool" class="form-label me-2" style="width:340px;">
+												Click To Show Direct Purchase Bill Other Required Detail
+											</label>
+											<input type="checkbox" class="form-check-input" asp-for="ShowHideDirectPurchaseBillOtherRequiredDetailBool" />
+											(Uncheck To Hide)
+										</div>
+
+										<div class="d-flex align-items-center mb-2">
+											<label title="ShowHideDirectPurchaseBillCurrency" asp-for="ShowHideDirectPurchaseBillCurrencyBool" class="form-label me-2" style="width:340px;">
+												Click To Show Direct Purchase Bill Currency
+											</label>
+											<input type="checkbox" class="form-check-input" asp-for="ShowHideDirectPurchaseBillCurrencyBool" />
+											(Uncheck To Hide)
+										</div>
+
+										<div class="d-flex align-items-center mb-2">
+											<label title="ShowHideDirectPurchaseBillConsignee" asp-for="ShowHideDirectPurchaseBillConsigneeBool" class="form-label me-2" style="width:340px;">
+												Click To Show Direct Purchase Bill Consignee
+											</label>
+											<input type="checkbox" class="form-check-input" asp-for="ShowHideDirectPurchaseBillConsigneeBool" />
+											(Uncheck To Hide)
+										</div>
+										<div class="d-flex align-items-center mb-2">
+											<label title="AccAllowtochangeDocumnetinPurchaseBill" asp-for="AccAllowtochangeDocumnetinPurchaseBillBool" class="form-label me-2" style="width:340px;">
+												Click To Allow to change Document
+											</label>
+											<input type="checkbox" class="form-check-input" asp-for="AccAllowtochangeDocumnetinPurchaseBillBool" />
+											(Uncheck To Not Allow)
+										</div>
+										<div class="d-flex align-items-center mb-2">
+											<label title="AccAllowTochangeVoucherDateInPurchBill" asp-for="AccAllowTochangeVoucherDateInPurchBillBool" class="form-label me-2" style="width:340px;">
+												Click To Allow To change VoucherDate
+											</label>
+											<input type="checkbox" class="form-check-input" asp-for="AccAllowTochangeVoucherDateInPurchBillBool" />
+											(Uncheck To Not Allow)
+										</div>
+									</div>
+									
+									<div class="col-md-6">
+										
+										<div class="d-flex align-items-center mb-2">
+											<label title="AccAllowtochangeInvoiceNoDateinPurchaseBill" asp-for="AccAllowtochangeInvoiceNoDateinPurchaseBillBool" class="form-label me-2" style="width:380px;">
+												Click To Allow to Change Invoice Date
+											</label>
+											<input type="checkbox" class="form-check-input" asp-for="AccAllowtochangeInvoiceNoDateinPurchaseBillBool" />
+											(Uncheck To Not Allow)
+										</div>
+										<div class="d-flex align-items-center mb-2">
+											<label title="ShowHideDirectPurchaseBillScheduleDetail" asp-for="ShowHideDirectPurchaseBillScheduleDetailBool" class="form-label me-2" style="width:380px;">
+												Click To Show Direct Purchase Bill Schedule Detail
+											</label>
+											<input type="checkbox" class="form-check-input" asp-for="ShowHideDirectPurchaseBillScheduleDetailBool" />
+											(Uncheck To Hide)
+										</div>
+
+										<div class="d-flex align-items-center mb-2">
+											<label title="HideOtherFieldOFDirectPurchaseBillDetailTable" asp-for="HideOtherFieldOFDirectPurchaseBillDetailTableBool" class="form-label me-2" style="width:380px;">
+												Click To Show Other Field Of Direct Purchase Bill Detail Table
+											</label>
+											<input type="checkbox" class="form-check-input" asp-for="HideOtherFieldOFDirectPurchaseBillDetailTableBool" />
+											(Uncheck To Hide)
+										</div>
+
+										<div class="d-flex align-items-center mb-2">
+											<label title="ShowHideDirectPurchaseBillOtherDetails" asp-for="ShowHideDirectPurchaseBillOtherDetailsBool" class="form-label me-2" style="width:380px;">
+												Click To Show Direct Purchase Bill Other Details
+											</label>
+											<input type="checkbox" class="form-check-input" asp-for="ShowHideDirectPurchaseBillOtherDetailsBool" />
+											(Uncheck To Hide)
+										</div>
+
+										<div class="d-flex align-items-center mb-2">
+											<label title="ShowHidePurchaseBillEntryDetail" asp-for="ShowHidePurchaseBillEntryDetailBool" class="form-label me-2" style="width:380px;">
+												Click To Show Purchase Bill Entry Detail
+											</label>
+											<input type="checkbox" class="form-check-input" asp-for="ShowHidePurchaseBillEntryDetailBool" />
+											(Uncheck To Hide)
+										</div>
+
+										<div class="d-flex align-items-center mb-2">
+											<label title="ShowHidePurchaseBillCustomerDetail" asp-for="ShowHidePurchaseBillCustomerDetailBool" class="form-label me-2" style="width:380px;">
+												Click To Show Purchase Bill Customer Detail
+											</label>
+											<input type="checkbox" class="form-check-input" asp-for="ShowHidePurchaseBillCustomerDetailBool" />
+											(Uncheck To Hide)
+										</div>
+
+										<div class="d-flex align-items-center mb-2">
+											<label title="ShowHidePurchaseBillOtherRequiredDetail" asp-for="ShowHidePurchaseBillOtherRequiredDetailBool" class="form-label me-2" style="width:380px;">
+												Click To Show Purchase Bill Other Required Detail
+											</label>
+											<input type="checkbox" class="form-check-input" asp-for="ShowHidePurchaseBillOtherRequiredDetailBool" />
+											(Uncheck To Hide)
+										</div>
+
+										<div class="d-flex align-items-center mb-2">
+											<label title="ShowHidePurchaseBillCurrency" asp-for="ShowHidePurchaseBillCurrencyBool" class="form-label me-2" style="width:380px;">
+												Click To Show Purchase Bill Currency
+											</label>
+											<input type="checkbox" class="form-check-input" asp-for="ShowHidePurchaseBillCurrencyBool" />
+											(Uncheck To Hide)
+										</div>
+
+										<div class="d-flex align-items-center mb-2">
+											<label title="ShowHidePurchaseBillConsignee" asp-for="ShowHidePurchaseBillConsigneeBool" class="form-label me-2" style="width:380px;">
+												Click To Show Purchase Bill Consignee
+											</label>
+											<input type="checkbox" class="form-check-input" asp-for="ShowHidePurchaseBillConsigneeBool" />
+											(Uncheck To Hide)
+										</div>
+
+										<div class="d-flex align-items-center mb-2">
+											<label title="ShowHidePurchaseBillScheduleDetail" asp-for="ShowHidePurchaseBillScheduleDetailBool" class="form-label me-2" style="width:380px;">
+												Click To Show Purchase Bill Schedule Detail
+											</label>
+											<input type="checkbox" class="form-check-input" asp-for="ShowHidePurchaseBillScheduleDetailBool" />
+											(Uncheck To Hide)
+										</div>
+
+										<div class="d-flex align-items-center mb-2">
+											<label title="HideOtherFieldOFPurchaseBillDetailTable" asp-for="HideOtherFieldOFPurchaseBillDetailTableBool" class="form-label me-2" style="width:380px;">
+												Click To Show Other Field Of Purchase Bill Detail Table
+											</label>
+											<input type="checkbox" class="form-check-input" asp-for="HideOtherFieldOFPurchaseBillDetailTableBool" />
+											(Uncheck To Hide)
+										</div>
+
+										<div class="d-flex align-items-center mb-2">
+											<label title="ShowHidePurchaseBillOtherDetails" asp-for="ShowHidePurchaseBillOtherDetailsBool" class="form-label me-2" style="width:380px;">
+												Click To Show Purchase Bill Other Details
+											</label>
+											<input type="checkbox" class="form-check-input" asp-for="ShowHidePurchaseBillOtherDetailsBool" />
+											(Uncheck To Hide)
+										</div>
+
+										<div class="d-flex align-items-center mb-2">
+											<label title="AddInventoryByDirectPurchaseBill" asp-for="AddInventoryByDirectPurchaseBillBool" class="form-label me-2" style="width:380px;">
+												Click To Add Inventory By Direct Purchase Bill
+											</label>
+											<input type="checkbox" class="form-check-input" asp-for="AddInventoryByDirectPurchaseBillBool" />
+											(Uncheck To Disable)
+										</div>
+
+									</div>
+
+								</div>
+							</div>
+						</div>
+
+
+						<div class="card-footer p-3">
+							<div class="row justify-content-between g-2">
+								<div class="card-header card-headerBG text-light bg-gradient">
+									<h5>
+										<strong> Purchase Bill Setting</strong>
+										<span class="d-flex float-end" style="margin-top:-2px;">
+
+
+											<div class="row justify-content-between g-2">
+												<div class="col-auto">
+
+													<a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
+														<i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+														BACK
+													</a>
+												</div>
+												@if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+												{
+													<div class="col-auto">
+														@*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+														<a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+															@* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+															<i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+															REFRESH
+														</a>
+													</div>
+													@if (Model.Mode == "U")
+													{
+														@*Model.Mode = "U";*@
+														<div class="col-auto">
+															@* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+															<button type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+																<i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+																UPDATE
+															</button>
+														</div>
+													}
+													else
+													{
+														<div class="col-auto">
+															<button type="submit" class="btn btn-primary btn-sm submitBTN">
+																<i class="fa-solid fa-chevron-circle-right"></i>
+																Save
+															</button>
+														</div>
+													}
+												}
+											</div>
+										</span>
+									</h5>
+								</div>
+							</div>
+						</div>
+					</div>
+	</form>
+</div>
+
+<style>
+	.form-label {
+		font-weight: 500;
+	}
+
+	.d-flex label {
+		white-space: nowrap;
+	}
+
+	.form-control {
+		max-width: 300px;
+	}
+
+</style>
+@section Scripts {
+	<script>
+		$(document).ready(function () {
+			//GetFormRights();
+			if ($('#Mode').val() != "U") {
+
+				FillEntryID();
+			}
+			$("#PurchaseBillPrintReportName").rules("remove", "required");
+			$("#DirectPurchaseBillPrintReportName").rules("remove", "required");
+			$("#PurchBillVoucherPrintReportName").rules("remove", "required");
+			$("#DirectPurchBillVoucherPrintReportName").rules("remove", "required");
+			$("#AccPurchaseVoucherPrintoutFileName").rules("remove", "required");
+			$("#AccPurchaseBillInvoicePrintoutFileName").rules("remove", "required");
+			$("#AccAllowtochangeDocumnetinPurchaseBillBool").rules("remove", "required");
+			$("#AccAllowTochangeVoucherDateInPurchBillBool").rules("remove", "required");
+			$("#AccAllowtochangeInvoiceNoDateinPurchaseBillBool").rules("remove", "required");
+		
+			GetCalibrationAgency();
+			$('#lblItemCount').text($('#divScheduleCalibrationGrid tr').length);
+			$(".DueCalibrationDate").datepicker({
+				dateFormat: "dd/M/yy",
+				minDate: 0
+			});
+			var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+			var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+				return new bootstrap.Tooltip(tooltipTriggerEl)
+			})
+			$(document).on("change", ".DueCalibrationDate", function () {
+				var row = $(this).closest("td");
+				calculateNextCalibrationDate(row);
+			});
+			$(".DueCalibrationDate").each(function () {
+				var row = $(this).closest("td");
+				calculateNextCalibrationDate(row);
+			});
+			//FillAltWorkCenterName();
+
+
+			setFormattedDate();
+			$('#GridButton').click(function (e) {
+				setFormattedDate();
+			});
+
+
+
+			$('.submitBTN').click(function (e) {
+
+				console.log("SubmitButton Click");
+				e.preventDefault();
+
+				$('form').submit();
+			});
+
+		});
+		// $('#CalibrationAgencyName').change(function () {
+		// 	$('#CalibrationAgencyId').val($('#CalibrationAgencyName').val());
+		// });
+
+		function calculateNextCalibrationDate(row) {
+			var dueDateStr = row.find(".DueCalibrationDate").val();
+			var freq = parseInt(row.closest("tr").find(".CalibrationFrequencyInMonth").text().trim());
+
+			if (dueDateStr && !isNaN(freq)) {
+				var parts = dueDateStr.split("/");
+				if (parts.length === 3) {
+					var day = parseInt(parts[0]);
+					var month = parts[1]; // Already "Jan, Feb, ..." because of dateFormat
+					var year = parseInt(parts[2]);
+
+					// Convert month abbreviation to index
+					var monthIndex = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"].indexOf(month);
+
+					var dueDate = new Date(year, monthIndex, day);
+
+					// Add months
+					dueDate.setMonth(dueDate.getMonth() + freq);
+
+					// Format as dd/MMM/yyyy
+					var formatted =
+						("0" + dueDate.getDate()).slice(-2) + "/" +
+						["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][dueDate.getMonth()] + "/" +
+						dueDate.getFullYear();
+
+					row.closest("tr").find(".NextCalibrationDate").text(formatted);
+				}
+			}
+		}
+
+
+		function setFormattedDate() {
+			var today = new Date();
+			var day = ('0' + today.getDate()).slice(-2);
+			var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+			var month = monthNames[today.getMonth()];
+			var year = today.getFullYear();
+
+			var formattedDate = day + '/' + month + '/' + year;
+
+			$('#ScheduleDate, #ActualScheduleDate, #CalibSchEntryDate,#LastUpdationDate')
+				.datepicker({ dateFormat: 'dd/M/yy', maxDate: 0 })
+				.val(formattedDate);
+
+			// $("#DueCalibrationDate").datepicker({
+			// 	dateFormat: "dd-M-yy",
+			// 	minDate: 0
+			// });
+
+		}
+
+
+		function GetFormRights() {
+			$.ajax({
+				url: "@Url.Action("GetFormRights")",
+				type: "POST",
+				success: function (data) {
+					if (data != null) {
+						var obj = $.parseJSON(data);
+						if (obj.Result.Table.length == 0) {
+							$(".submitBTN").prop("disabled", true);
+							$('.card-footer .submitBTN').prop("disabled", true);
+							$(".DashBoard")
+								.addClass("disabled-link")
+								.on("click", function (e) {
+									e.preventDefault(); // Prevents clicking the link
+								});
+						}
+						else {
+							// console.log(obj);
+							var optAll = obj.Result.Table[0].OptAll;
+							var optSave = obj.Result.Table[0].OptSave;
+							var optUpdate = obj.Result.Table[0].OptUpdate;
+							var optDelete = obj.Result.Table[0].OptDelete;
+							var optView = obj.Result.Table[0].OptView;
+							if (!optAll) {
+								if (!optSave) {
+									$("#submitBTN").prop("disabled", true);
+									$('.card-footer #submitBTN').prop("disabled", true);
+								}
+								if (!(optUpdate || optDelete || optView)) {
+									$(".DashBoard")
+										.addClass("disabled-link")
+										.on("click", function (e) {
+											e.preventDefault(); // Prevents clicking the link
+										});
+								}
+							}
+						}
+					}
+				},
+				error: function (errMsg) {
+					$.notify(errMsg, { position: "top center", className: "error" });
+				}
+			});
+		}
+
+
+		function FillEntryID() {
+
+			var YearCode = $('#OpeningYearCode').val();
+			$.ajax({
+				url: '@Url.Action("FillEntryID", "MaterialConversion")',
+				type: 'POST',
+				data: {
+					YearCode: YearCode
+				},
+				async: false,
+				success: function (data, status, xhr) {
+					var obj = $.parseJSON(data);
+					if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
+						$('#EntryId').val(obj.Result[0].EntryId || 0);
+						$('#SlipNo').val(obj.Result[0].EntryId || 0);
+					}
+				},
+				error: function (xhr, status, error) {
+					alert('Failed to load Entry Id.');
+				}
+			});
+		}
+
+		function GetCalibrationAgency() {
+			$.ajax({
+				url: '@Url.Action("GetCalibrationAgency", "ScheduleCalibration")',
+				type: 'POST',
+				async: false,
+				success: function (response) {
+					var obj = $.parseJSON(response);
+
+					$('.CalibrationAgencyName').each(function () {
+						var dropdown = $(this);
+						var hiddenId = dropdown.closest('td').find('.CalibrationAgencyId').val();
+
+						dropdown.empty();
+						dropdown.append('<option value="">--Select--</option>');
+
+						$.each(obj.Result, function (index, Val) {
+							dropdown.append('<option value="' + Val.CalAgencyEntryId + '">' + Val.CalAgencyName + '</option>');
+						});
+
+						if (hiddenId) {
+							dropdown.val(hiddenId); // preselect correct agency
+						}
+					});
+				},
+				error: function () {
+					alert('Failed to load Calibration Agency.');
+				}
+			});
+		}
+
+
+		$(document).on("change", ".CalibrationAgencyName", function () {
+			var selectedVal = $(this).val();
+			$(this).closest('td').find('.CalibrationAgencyId').val(selectedVal);
+		});
+
+		function AltFillStoreName() {
+			$.ajax({
+				url: '@Url.Action("FillStoreName", "MaterialConversion")',
+				type: 'POST',
+				async: false,
+				success: function (response, status, error) {
+					var AltStoreNameDropdown = $('#AltStoreName');
+					var obj = $.parseJSON(response);
+					AltStoreNameDropdown.empty();
+					AltStoreNameDropdown.append('<option value="">--Select--</option>');
+					$.each(obj.Result, function (index, Store) {
+						AltStoreNameDropdown.append('<option value="' + Store.EntryID + '">' + Store.store_name + '</option>');
+					});
+
+					if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+
+						var StoreName = ""
+						$('#AltStoreName').val(StoreName);
+					}
+				},
+				error: function (xhr, status, error) {
+					alert('Failed to load StoreName .');
+				}
+			});
+		}
+
+		function FillWorkCenterName() {
+			$.ajax({
+				url: '@Url.Action("FillWorkCenterName", "MaterialConversion")',
+				type: 'POST',
+				async: false,
+				success: function (response, status, error) {
+					var WorkCenterNameDropdown = $('#WorkCenterName');
+					var obj = $.parseJSON(response);
+					WorkCenterNameDropdown.empty();
+					WorkCenterNameDropdown.append('<option value="">--Select--</option>');
+					$.each(obj.Result, function (index, WorkCenter) {
+						WorkCenterNameDropdown.append('<option value="' + WorkCenter.EntryID + '">' + WorkCenter.WorkCenterDescription + '</option>');
+					});
+
+					if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+
+						var WorkCenterName = ""
+						$('#WorkCenterName').val(WorkCenterName);
+					}
+				},
+				error: function (xhr, status, error) {
+					alert('Failed to load WorkCenterName .');
+				}
+			});
+		}
+		function FillAltWorkCenterName() {
+			$.ajax({
+				url: '@Url.Action("FillWorkCenterName", "MaterialConversion")',
+				type: 'POST',
+				async: false,
+				success: function (response, status, error) {
+					var AltWorkCenterNameDropdown = $('#AltWorkCenterName');
+					var obj = $.parseJSON(response);
+					AltWorkCenterNameDropdown.empty();
+					AltWorkCenterNameDropdown.append('<option value="">--Select--</option>');
+					$.each(obj.Result, function (index, WorkCenter) {
+						AltWorkCenterNameDropdown.append('<option value="' + WorkCenter.EntryID + '">' + WorkCenter.WorkCenterDescription + '</option>');
+					});
+
+					if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+
+						var WorkCenterName = ""
+						$('#WorkCenterName').val(WorkCenterName);
+					}
+				},
+				error: function (xhr, status, error) {
+					alert('Failed to load WorkCenterName .');
+				}
+			});
+		}
+
+		function ClearItems() {
+
+			$('#Unit, #OriginalQty, #AltUnit, #AltOriginalQty, #OriginalStoreId,  #OrginalWCID,  #BatchNo, #UniqueBatchNo, #PlanNo, #PlanYearCode, #PlanDate, #ProdSchNo, #ProdSchYearCode, #ProdSchDatetime,#Remark,#OriginalPartCodeText,#OriginalItemNameText,,#AltPartCodeText,#AltItemNameText').val('');
+			$('#OriginalPartCode,#AltStoreName,#OriginalItemName,#OriginalItemCode,#StoreName,#WorkCenterName,#AltItemName, #AltPartCode, #AltItemCode').val("").trigger("change");
+
+			$('#BatchStock, #TotalStock, #AltStock, #OrigItemRate, #OriginalItemCode, #OriginalQty, #AltOriginalQty,#AltStoreName,#AltWorkCenterName').val(0);
+
+
+			// $('select').prop('selectedIndex', 0);
+		}
+
+
+
+
+		function TotalNoOfRows() {
+			var Row = $('#divScheduleCalibrationGrid tr').length;
+			var tdCount = $('#divScheduleCalibrationGrid tr td').length;
+			$('#lblItemCount').text(tdCount >= 1 ? Row : 0);
+		}
+
+		function CheckBeforeUpdate() {
+			$.ajax({
+				url: '@Url.Action("CheckBeforeUpdate")',
+				type: "POST",
+				data: { Type: $('#Entry_id').val() },
+				success: function (data) {
+					var obj = $.parseJSON(data);
+					if (obj.Result?.Table[0]?.Column1 > 0) {
+						$.notify("You cannot update this Category as Item with this category already exists", "error");
+					} else {
+						$('form').submit();
+					}
+				},
+				error: function (response) {
+					alert(response.responseText);
+				}
+			});
+		}
+
+
+		function DeleteItemRow(SrNO) {
+
+			$.ajax({
+				url: '@Url.Action("DeleteItemRow")',
+				type: "POST",
+				data: { SrNO: SrNO, Mode: "U" },
+				success: function (data, status, xhr) {
+					$('#divScheduleCalibrationGrid').html(data);
+					$.notify("Process deleted from Grid", "info");
+					EditEachItem = false;
+
+				},
+				error: function (response, status, xhr) {
+
+					$.notify("Cannot delete item that exists in Other Grid!!!", "error");
+				},
+				failure: function (response, status, xhr) {
+					alert(response.responseText);
+					$.notify(response.responseText, "error");
+				}
+			});
+		}
+
+
+		function PressBack() {
+			sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());
+			sessionStorage.setItem('ToDateBack', $('#ToDateBack').val());
+			sessionStorage.setItem('GroupNameBack', $('#GroupNameBack').val());
+			sessionStorage.setItem('LedgerNameBack', $('#LedgerNameBack').val());
+			sessionStorage.setItem('OpeningYearCodeBack', $('#OpeningYearCodeBack').val());
+			sessionStorage.setItem('PreviousAmountBack', $('#PreviousAmountBack').val());
+			sessionStorage.setItem('DrCrBack', $('#DrCrBack').val());
+			sessionStorage.setItem('GlobalSearchBack', $('#GlobalSearchBack').val());
+
+			window.history.back();
+		}
+	</script>
+}
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
+
+
+
+

@@ -71,6 +71,28 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
+
+        public async Task<ResponseResult> GetLeaveDetail(int empid, string LeaveAppEntryDate)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@flag", "GetBalanceLeave"));
+                SqlParams.Add(new SqlParameter("@Empid", empid));
+                SqlParams.Add(new SqlParameter("@LeaveAppEntryDate",CommonFunc.ParseFormattedDate(LeaveAppEntryDate)));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("HRSPLeaveApplicationMain", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
         public async Task<ResponseResult> GetLeaveName()
         {
             var _ResponseResult = new ResponseResult();
@@ -226,7 +248,7 @@ namespace eTactWeb.Data.DAL
             }
             return responseResult;
         }
-        public async Task<HRLeaveApplicationDashBoard> GetDashboardDetailData(string ReportType, string FromDate, string ToDate)
+        public async Task<HRLeaveApplicationDashBoard> GetDashboardDetailData(string ReportType, string FromDate, string ToDate,int Empid,int LeaveEntryId)
         {
             DataSet? oDataSet = new DataSet();
             var model = new HRLeaveApplicationDashBoard();
@@ -242,6 +264,8 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@Fromdate", Convert.ToDateTime(FromDate));
                     oCmd.Parameters.AddWithValue("@todate", Convert.ToDateTime(ToDate));
                     oCmd.Parameters.AddWithValue("@ReportType", ReportType);
+                    oCmd.Parameters.AddWithValue("@Empid", Empid);
+                    oCmd.Parameters.AddWithValue("@LeaveEntryId", LeaveEntryId);
 
 
 
@@ -282,8 +306,8 @@ namespace eTactWeb.Data.DAL
                                                                    MaxAllowedLeave = Convert.ToDecimal(dr["MaxAllowedLeave"]),
                                                                    TraineePermanent = dr["TraineePermanent"].ToString(),
                                                                    BalanceAdvanceAmt = Convert.ToDecimal(dr["BalanceAdvanceAmt"]),
-                                                                   DepartHeadApprovedBy = Convert.ToInt32(dr["DepartHeadApprovedBy"]),
-                                                                   HRApprovedBy = Convert.ToInt32(dr["HRApprovedBy"]),
+                                                                   DepartHeadApprovedBy = dr["DepartHeadApprovedBy"].ToString(),
+                                                                   HRApprovedBy = dr["HRApprovedBy"].ToString(),
                                                                    DepartAppdate = dr["DepartAppdate"] == DBNull.Value ? string.Empty : Convert.ToDateTime(dr["DepartAppdate"]).ToString("dd-MM-yyyy"),
                                                                    HRAppDate = dr["HRAppDate"] == DBNull.Value ? string.Empty : Convert.ToDateTime(dr["HRAppDate"]).ToString("dd-MM-yyyy"),
 
@@ -365,8 +389,8 @@ namespace eTactWeb.Data.DAL
             model.BalanceMonthlyLeave = Convert.ToDecimal(DS.Tables[0].Rows[0]["BalanceMonthlyLeave"].ToString());
             model.MaxAllowedLeave = Convert.ToDecimal(DS.Tables[0].Rows[0]["MaxAllowedLeave"].ToString());
             model.BalanceAdvanceAmt = Convert.ToDecimal(DS.Tables[0].Rows[0]["BalanceAdvanceAmt"].ToString());
-            model.DepartHeadApprovedBy = Convert.ToInt32(DS.Tables[0].Rows[0]["DepartHeadApprovedBy"].ToString());
-            model.HRApprovedBy = Convert.ToInt32(DS.Tables[0].Rows[0]["HRApprovedBy"].ToString());
+            model.DepartHeadApprovedBy = DS.Tables[0].Rows[0]["DepartHeadApprovedBy"].ToString();
+            model.HRApprovedBy =DS.Tables[0].Rows[0]["HRApprovedBy"].ToString();
             model.DepartAppdate = DS.Tables[0].Rows[0]["DepartAppdate"].ToString();
             model.HRAppDate = DS.Tables[0].Rows[0]["HRAppDate"].ToString();
             model.ActualEntryBy = Convert.ToInt32(DS.Tables[0].Rows[0]["ActualEntryBy"].ToString());

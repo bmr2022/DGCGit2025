@@ -1,0 +1,1026 @@
+﻿@model eTactWeb.DOM.Models.BillRegisterModel
+@{
+    ViewData["Title"] = "Bill Register";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+<style>
+
+    .select2-container--default .select2-selection--single {
+        background-color: #e0f2f1;
+        border: 1.5px solid #0a0a0a !important;
+        border-radius: 4px;
+    }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            border-bottom: none !important;
+        }
+
+    .select2-container--default .select2-results > .select2-results__options {
+        background-color: #e0f2f1;
+        color: #000;
+</style>
+
+<div class="card bg-gradient mb-3 border-light shadow-lg">
+
+    <div class="card-header card-headerBG text-light bg-gradient">
+        <h5>
+            <strong>Bill Register</strong>
+            <span class="d-flex float-end" style="margin-top:-2px;">
+                @*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">*@
+            </span>
+        </h5>
+    </div>
+    <div>
+    </div>
+    <div class="card-body bg-light pt-0">
+        <div class="accordion shadow-lg">
+            <div class="card-body">
+                <div class="card overflow-auto">
+                    <div class="card-body">
+                        <form id="SParam">
+                            <div class="row">
+
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                    <div class="row">
+                                        <div class="col">
+                                            <label class="form-label">From Date</label>
+                                            <input asp-for="FromDate" class="form-control" />
+                                        </div>
+                                        <div class="col">
+                                            <label class="form-label">To Date</label>
+                                            <input asp-for="ToDate" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <input type="hidden" asp-for="ForFinYear" />
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="BillType" class="form-label">Bill Type</label>
+                                    <select asp-for="BillType" class="form-select">
+                                        <option disabled value="">-Select-</option>
+                                        <option selected value="PurchaseBill">Purchase Bill</option>
+                                        <option value="PurchaseRejection">Purchase Rejection  </option>
+                                        <option value="DebitNote">Debit Note</option>
+                                        <option value="CreditNote">Credit Note,  </option>
+                                        <option value="SaleRejection">Sale Rejection </option>
+                                    </select>
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="ReportType" class="form-label">Report Type</label>
+                                    <select asp-for="ReportType" class="form-select">
+                                        <option disabled value="">-Select-</option>
+                                        <option selected value="PurchaseSummary">Purchase Summary</option>
+                                        <option value="PurchaseBillDetail">PurchaseBill Detail </option>
+                                        <option value="PURCHASESUMMARYREG">Purchase Summary Reg/GST SUMMARY</option>
+                                        
+                                        <option  value="VendorItemWiseTrend">Vendor Item Wise Trend </option>
+                                        <option  value="VendorWiseMonthlyTrend">Vendor Wise Monthly Trend </option>
+                                        <option value="VendorItemWiseMonthlyData">Vendor Item Wise Monthly Data </option>
+                                        <option value="ItemWiseMonthlyTrend">Item Wise Monthly Trend </option>
+                                        <option value="VendorWiseMonthlyValueTrend">Vendor Wise Monthly Value Trend </option>
+                                      
+                                        
+                                    </select>
+                                </div>
+                               
+
+                                <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="VendorName" class="form-label">Vendor Name</label>
+                                    <select asp-for="VendorName" class="form-control">
+                                        <option value="">-Select-</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="DocumentName" class="form-label">Document Name</label>
+                                    <select asp-for="DocumentName" class="form-control">
+                                        <option value="">-Select-</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="PONO" class="form-label"> PONO </label>
+                                    <select asp-for="PONO" class="form-control">
+                                        <option value="">-Select-</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="SchNo" class="form-label"> Sch No </label>
+                                    <select asp-for="SchNo" class="form-control">
+                                        <option value="">-Select-</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="HsnNo" class="form-label"> Hsn No </label>
+                                    <select asp-for="HsnNo" class="form-control">
+                                        <option value="">-Select-</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="GstNo" class="form-label"> Gst No </label>
+                                    <select asp-for="GstNo" class="form-control">
+                                        <option value="">-Select-</option>
+                                    </select>
+                                </div>
+                                 <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="InvoiceNo" class="form-label"> Invoice No </label>
+                                    <select asp-for="InvoiceNo" class="form-control">
+                                        <option value="">-Select-</option>
+                                    </select>
+                                </div>
+                                <input type="hidden" asp-for="ItemCode" />
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="PartCode" class="form-label">Part Code</label>
+                                    
+                                    <select asp-for="PartCode" class="form-select">
+                                        <option value="">-Select-</option>
+                                    </select>
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="ItemName" class="form-label">Item Name</label>
+                                    <select asp-for="ItemName" class="form-select">
+                                        <option value="">-Select-</option>
+                                    </select>
+                                </div>
+                                
+                                
+                                <div class="col-sm-2 col-md-6 col-lg-4 col-xl-2">
+                                    <label class="form-label">Global search</label>
+                                    <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
+                                </div>
+                                
+                                    <button class="btn btn-sm btn-outline-info" type="button" style="padding:0px;height:30px;width:50px;margin-top:20px;" onclick="GetRegisterData();">
+                                        <i class="fa-solid fa-magnifying-glass fa-fw fa-lg"></i>
+                                    </button>
+                                <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:50px;margin-left:20px;margin-top:20px;" type="button" id="sendToExcel">
+                                        <i class="fa-solid fa-upload fa-fw fa-lg "></i>
+                                    </button>
+                                <button class="btn btn-sm btn-outline-danger" style="padding:3px; height:30px; width:50px; margin-left:20px;margin-top:20px;" type="button" id="sendToPDF">
+                                        <i class="fa-solid fa-file-pdf fa-fw fa-lg"></i> 
+                                    </button>
+                                <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:50px;margin-left:20px;margin-top:20px;" asp-controller="BillRegister" asp-action="BillRegister">
+                                        <i class="fa-solid fa-rotate fa-fw fa-lg"></i>
+                                    </a>
+                                
+                            </div>
+                            <div class="progress my-2 mb-3" style="height: 4px;">
+                                <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="H_SAGrid">
+                                    <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+                                        <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Item Detail Grid</strong>
+                                    </button>
+                                </h2>
+
+                                <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradientn show" aria-labelledby="H_SAGrid">
+                                    <div class="accordion-body">
+                                        <div class="card-body" id="divPendingMRP">
+                                            <div class="row">
+                                                <div class="col-md-12 divStockRegister" id="divStockMainRegister">
+                                                    <partial name="_BillRegisterGrid" />
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <center>
+                                            <div class="row">
+                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="opnStkDiv">
+                                                    <label class="form-label">Total Qty</label>
+                                                    <input id="totOpenStock" class="form-control" readonly />
+                                                </div>
+
+                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="stockDiv">
+                                                    <label class="form-label">Total Amount</label>
+                                                    <input id="totAmount" class="form-control" readonly />
+                                                </div>
+                                            </div>
+                                        </center>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script>
+
+        $(function () {
+
+            
+            $('#B_SAGrid').addClass('show');
+            $('#totalRows').text($('#divStockRegisterBody tr').length);
+
+            var currentDate = new Date();
+
+            var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+            function formatDateWithMonthName(date) {
+                const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                let day = String(date.getDate()).padStart(2, '0');
+                let month = months[date.getMonth()];
+                let year = date.getFullYear();
+                return `${day}/${month}/${year}`;
+            }
+            $('#FromDate').datepicker({ dateFormat: 'dd/M/yy' })
+                .datepicker("setDate", formatDateWithMonthName(firstDayOfMonth));
+
+            $('#ToDate').datepicker({ dateFormat: 'dd/M/yy' })
+                .datepicker("setDate", formatDateWithMonthName(currentDate));
+
+            $('#ReportType').select2();
+            $('#ReportType').select2();
+            $('#DocumentName').select2();
+            $('#PONO').select2();
+            $('#PONO').select2();
+            $('#SchNo').select2();
+            $('#HsnNo').select2();
+            $('#GstNo').select2();
+            $('#InvoiceNo').select2();
+            $('#ItemName').select2();
+            $('#PartCode').select2();
+            $('#VendorName').select2();
+            $('#BillType').select2();
+           
+           
+            FillVendoreList();
+            FillDocList();
+            FillPONOList();
+            FillSchNOList();
+            FillHsnNOList();
+            FillGstNOList();
+            FillInvoiceNOList();
+            FillItemName();
+            FillPartCode();
+
+            GetRegisterData();
+
+        $('#FromDate, #ToDate').change(function () {
+            FillVendoreList();
+            FillDocList();
+            FillPONOList();
+            FillSchNOList();
+            FillHsnNOList();
+            FillGstNOList();
+            FillInvoiceNOList();
+            FillItemName();
+            FillPartCode();
+            GetRegisterData();
+        });
+
+        });
+        function GetServerDate() {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("GetServerDate")",
+                async: false,
+                success: function (result, status, error) {
+                    console.log(result);
+                    if (result != null) {
+                        
+                        var firstDayOfMonth = getFirstDayOfMonth(result);
+                        $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", firstDayOfMonth);
+                        $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                    }
+                }
+            });
+        }
+
+        function selection(CurrentRow) {
+
+            $(CurrentRow).css({ 'background-color': '#00bcd4' });
+            $("#divStockRegisterBody tr").not(CurrentRow).css({ 'background-color': 'blanchedalmond' });
+        }
+        $('#sendToExcel').click(function () {
+            var FromDate = $('#FromDate').val();
+            var ToDate = $('#ToDate').val();
+            var ReportType = $('#ReportType').val(); 
+
+            $.ajax({
+                url: '/BillRegister/ExportBillRegisterToExcel',
+                type: 'GET',
+                data: {
+                    FromDate: FromDate,
+                    ToDate: ToDate,
+                    ReportType: ReportType
+                },
+                xhrFields: {
+                    responseType: 'blob' 
+                },
+                success: function (data, status, xhr) {
+                   
+                    const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                    const link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+
+                    var filename = `BillRegister_${ReportType}.xlsx`;
+                    var disposition = xhr.getResponseHeader('Content-Disposition');
+                    if (disposition && disposition.indexOf('filename=') !== -1) {
+                        filename = disposition.split('filename=')[1].replace(/"/g, '');
+                    }
+
+                    link.download = filename;
+                    link.click();
+                },
+                error: function () {
+                    alert('Failed to download Bill Register Excel file.');
+                }
+            });
+        });
+
+        function GetRegisterData() {
+        
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetRegisterData")",
+                async: false,
+                data: {
+                    ReportType: $('#ReportType').val(),
+                    FromDate: $('#FromDate').val(),
+                    ToDate: $('#ToDate').val(),
+                    DocumentName: $('#DocumentName').val(),
+                    PONO: $('#PONO').val(),
+                    SchNo: $('#SchNo').val(),
+                    HsnNo: $('#HsnNo').val(),
+                    GstNo: $('#GstNo').val(),
+                    InvoiceNo: $('#InvoiceNo').val(),
+                    PurchaseBill: $('#PurchaseBill').val(),
+                    PurchaseRejection: $('#PurchaseRejection').val(),
+                    DebitNote: $('#DebitNote').val(),
+                    CreditNote: $('#CreditNote').val(),
+                    SaleRejection: $('#SaleRejection').val(),
+                    PartCode: $('#PartCode').val(),
+                    ItemName: $('#ItemName').val(),
+                    VendorName: $('#VendorName').val(),
+                    ForFinYear: $('#ForFinYear').val()
+                },
+                success: function (result, status, error) {
+
+                    $('#divStockMainRegister').empty();
+                    $('#divStockMainRegister').html(result);
+                    $('#totalRows').text($('#divStockMainRegister tr').length - 1);
+
+                    // countAllTotal();
+                }
+            });
+        }
+        $('#sendToPDF').click(async function () {
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
+
+            // Get dynamic values
+            var fromDate = $('#FromDate').val();
+            var toDate = $('#ToDate').val();
+
+            var reportTypeText = $('#ReportType option:selected').text();
+            var reportTypeValue = $('#ReportType').val();
+
+            var customerName = $('#CustomerName').val();
+            var saleBillNo = $('#SaleBillNo').val();
+            var partCode = $('#PartCode').val();
+            var itemName = $('#ItemName').val();
+            var soNo = $('#SONo').val();
+            var schNo = $('#Schno').val();
+            var hsnNo = $('#HSNNO').val();
+            var gstNo = $('#GSTNO').val();
+            var docName = $('#docname').val();
+
+
+            // Report Title
+            doc.setFontSize(16).text(reportTypeText, 40, 40);
+
+            // Date Range
+            doc.setFontSize(10).text(`For the duration From: ${fromDate}     To: ${toDate}`, 40, 58);
+
+            let currentY = 75;
+            const headerFields = [
+
+            ];
+
+            // Filter out any fields with empty values
+            const filled = headerFields.filter(field => field.value);
+
+            // If there is at least one non-empty value, print the header
+            if (filled.length > 0) {
+                filled.forEach(field => {
+                    doc.setFontSize(10)
+                        .text(`${field.label}: ${field.value}`, 40, currentY);
+                    currentY += 15;
+                });
+            }
+
+            // Fetch data
+            /* var resp = await fetch('/SaleBillRegister/GetSaleBillRegistergridData');
+            va r rows = await resp.json();*/
+
+            var resp = await fetch('/BillRegister/GetBillRegistergridPDFData');
+
+            if (!resp.ok) {
+                console.error("Fetch failed with status:", resp.status);
+                const errorText = await resp.text(); // Log full error
+                console.error("Error body:", errorText);
+                return; // Exit early
+            }
+
+            var rows = await resp.json();
+
+
+            // Declare headers and body
+            let headers = [];
+            let body = [];
+
+            // Handle report type logic
+            switch (reportTypeValue) {
+                case 'PurchaseSummary':
+                    headers = ["#Sr", "Description", "For The Duration", "For Financial Year"];
+
+                    console.log("Data:", rows);
+                    body = rows.map((r, i) => [
+                        i + 1, r.description, r.forTheDuration, r.forFinYear
+                    ]);
+                    break;
+                case 'PURCHASESUMMARYREG':
+                    headers = ["#Sr", "Sale Bill No", "Sale Bill Date", "Customer Name", "Voucher No", "Voucher Date", "MRN No", "MRN Date", "Bill Amount", "Taxable Amount", "GST Amount", "Currency", "Total Bill Qty", "Total Discount Amount", "Total Item Amount", "CGST %", "CGST Amount", "SGST %", "SGST Amount", "IGST %", "IGST Amount", "Expense Amount", "Invoice Amount", "GST Type", "GST No", "Vendor Address", 
+                    "State", "Direct PB or Against MRN", "Entry Machine Name", "Item/Service/Asset Type", "Domestic/Import", "Payment Days", "Purchase Bill Entry ID", "Purchase Bill Year Code", "Entered By", 
+                    "Entry Date", "Updated By", "Update Date", "Remark", "Country"
+                    ];
+                    console.log("Data:", rows);
+                    body = rows.map((r, i) => [
+                        i + 1, r.vendorName, r.invoiceNo, r.invoiceDate, r.voucherNo, r.voucherDate, r.mrnNo, r.mrnDate, r.billAmt, r.taxableAmt, r.gstAmount, r.currency, r.totalBillQty, r.totalDisAmt, r.totalItemAmt, r.cgstPer, r.cgstAmt, r.sgstPer, r.sgstAmt, r.igstPer, r.igstAmt, 
+                        r.expenseAmt, r.invAmt, r.gstType, r.gstNo, r.vendorAddress, r.state, r.directPBOrAgainstMRN, r.entryByMachineName, r.typeItemServAssets, r.domesticImport, r.paymentDays, r.purchBillEntryId, r.purchBillYearCode, r.actualEntryByEmp, r.actualEntryDate, 
+                        r.lastUpdatedByEmp, r.lastUpdatedDate, r.remark, r.country
+                    ]);
+
+                    break;
+                    case 'GSTSUMMARY':
+                    headers = ["#Sr", "SaleBillNo", "SaleBillDate", "CustomerName", "VoucherNo", "VoucherDate", "MRN No", "MRN Date", "Bill Amt", "Taxable Amt", "GST Amt", "Currency", "TotalBillQty", "Total Dis Amt", "Total Item Amt", "CGST %", "CGST Amt", "SGST %", "SGST Amt", "IGST %", "IGST Amount", "Expense Amt", "Invoice Amt", "GST Type", "GST No", "Vendor Address", 
+                    "State", "Against MRN", "Machine Name", "Asset Type", "Domestic/Import", "PaymentDays", "EntryID", "YearCode",
+                     "Remark", "Country"
+                    ];
+                    console.log("Data:", rows);
+                    body = rows.map((r, i) => [
+                        i + 1, r.vendorName, r.invoiceNo, r.invoiceDate, r.voucherNo, r.voucherDate, r.mrnNo, r.mrnDate, r.billAmt, r.taxableAmt, r.gstAmount, r.currency, r.totalBillQty, r.totalDisAmt, r.totalItemAmt, r.cgstPer, r.cgstAmt, r.sgstPer, r.sgstAmt, r.igstPer, r.igstAmt, 
+                        r.expenseAmt, r.invAmt, r.gstType, r.gstNo, r.vendorAddress, r.state, r.directPBOrAgainstMRN, r.entryByMachineName, r.typeItemServAssets, r.domesticImport, r.paymentDays, r.purchBillEntryId, r.purchBillYearCode,  
+                        r.remark, r.country
+                    ]);
+
+                    break;
+
+               
+
+                case 'VendorItemWiseTrend':
+                    headers = [
+                        "#Sr", "VendorName","PartCode", "ItemName", "HsnNo", "TotalQty", "Unit", "TotalAmount"
+                    ];
+
+                    console.log("Data:", rows);
+                    body = rows.map((r, i) => [
+                        i + 1, r.vendorName, r.partCode, r.itemName, r.hsnNo, r.totalQty, r.unit, r.totalAmount
+                    ]);
+
+                    break;
+
+                    case 'VendorWiseMonthlyTrend':
+                    headers = [
+                    "#Sr", "Vendor Name", "Apr Amt", "May Amt", "Jun Amt", "Jul Amt", "Aug Amt", "Sep Amt", "Oct Amt", "Nov Amt", "Dec Amt", 
+                    "Feb Amt", "Mar Amt", "Apr Qty", "May Qty", "Jun Qty", "Jul Qty", "Aug Qty", "Sep Qty", "Oct Qty", 
+                    "Nov Qty", "jan Qty", "Feb Qty", "Mar Qty"];
+
+
+                    console.log("Data:", rows);
+                    body = rows.map((r, i) => [
+                        i + 1, r.vendorName, r.aprAmt, r.mayAmt, r.junAmt, r.julAmt, r.augAmt, r.sepAmt, r.octAmt, r.novAmt, r.decAmt,
+                        r.janAmt, r.febAmt, r.marAmt, r.aprQty, r.mayQty, r.junQty, r.julQty, r.augQty, r.sepQty, r.octQty,
+                        r.novQty, r.decQty, r.janQty, r.febQty, r.marQty
+                    ]);
+
+                    break;
+                 case 'VendorItemWiseMonthlyData':
+                    headers = [
+                        "#Sr", "VendorName", "Part Code", "ItemName", "Unit", "MonthName", "TotalQty", "TotalAmount"
+                    ];
+
+
+
+                    console.log("Data:", rows);
+                    body = rows.map((r, i) => [
+                        i + 1,r.vendorName, r.partCode, r.itemName,r.unit,  r.monthName, r.totalQty,  r.totalAmount
+                    ]);
+
+                    break;
+
+                    case 'ItemWiseMonthlyTrend':
+                    headers = ["#Sr", "Item Name", "Part Code", "Apr Amt", "May Amt", "Jun Amt", "Jul Amt", "Aug Amt", "Sep Amt", "Oct Amt", "Nov Amt", "Dec Amt", "Jan Amt", "Feb Amt", "Mar Amt",
+                    "May Qty", "Jun Qty", "Jul Qty", "Aug Qty", "Sep Qty", "Oct Qty", "Nov Qty", "Dec Qty", "Jan Qty", "Feb Qty", "Mar Qty"
+                    ];
+
+                    console.log("Data:", rows);
+                    body = rows.map((r, i) => [
+                        i + 1,r.itemName, r.partCode, r.aprAmt, r.mayAmt, r.junAmt, r.julAmt, r.augAmt, r.sepAmt, r.octAmt, r.novAmt, r.decAmt,
+                        r.janAmt, r.febAmt, r.marAmt, r.aprQty, r.mayQty, r.junQty, r.julQty, r.augQty, r.sepQty,
+                        r.octQty, r.novQty, r.decQty, r.janQty, r.febQty, r.marQty
+                    ]);
+
+                    break;
+                    case 'ItemWiseMonthlyTrend':
+                    headers = ["#Sr","Vendor Name", "Apr Amt", "May Amt", "Jun Amt", "Jul Amt", "Aug Amt", "Sep Amt", "Oct Amt", "Nov Amt", "Dec Amt",
+                        "Jan Amt", "Feb Amt", "Mar Amt", "Apr Qty", "May Qty", "Jun Qty", "Jul Qty", "Aug Qty", "Sep Qty",
+                        "Oct Qty", "Nov Qty", "Dec Qty", "Jan Qty", "Feb Qty", "Mar Qty"
+                    ];
+
+                    console.log("Data:", rows);
+                    body = rows.map((r, i) => [
+                        i + 1,r.vendorName, r.aprAmt, r.mayAmt, r.junAmt, r.julAmt, r.augAmt, r.sepAmt, r.octAmt, r.novAmt, r.decAmt,
+                        r.janAmt, r.febAmt, r.marAmt, r.aprQty, r.mayQty, r.junQty, r.julQty, r.augQty, r.sepQty,
+                        r.octQty, r.novQty, r.decQty, r.janQty, r.febQty, r.marQty
+                    ]);
+
+                    break;
+                     case 'VendorWiseMonthlyValueTrend':
+                    headers = ["#Sr","Vendor Name", "Apr Amt", "May Amt", "Jun Amt", "Jul Amt", "Aug Amt", 
+                            "Sep Amt", "Oct Amt", "Nov Amt", "Dec Amt", "Jan Amt", "Feb Amt", "Mar Amt"
+
+                    ];
+
+                    console.log("Data:", rows);
+                    body = rows.map((r, i) => [
+                        i + 1,r.vendorName, r.aprAmt, r.mayAmt, r.junAmt, r.julAmt, 
+                        r.augAmt, r.sepAmt, r.octAmt, r.novAmt, r.decAmt, 
+                        r.janAmt, r.febAmt, r.marAmt
+
+                    ]);
+
+                    break;
+
+
+
+
+            default:
+            headers = ["#Sr", "Description", "For The Duration", "For Financial Year"];
+
+        console.log("Data:", rows);
+        body = rows.map((r, i) => [
+            i + 1, r.description, r.forTheDuration, r.forFinYear
+        ]); 
+
+                     break;
+             }
+
+            // Generate table with custom column width handling
+            doc.autoTable({
+                startY: currentY + 15, // Adjust the starting Y position
+                head: [headers],
+                body: body,
+                styles: { cellWidth: 'wrap' },
+                theme: 'grid',
+                margin: { left: 40, right: 40 },
+                styles: {
+                    fontSize: 7,
+                    cellPadding: 1,
+                    overflow: 'linebreak',
+                    halign: 'center',
+                    valign: 'middle'
+                },
+                headStyles: {
+                    fillColor: [41, 128, 185],
+                    textColor: 255,
+                    fontStyle: 'bold'
+                },
+                tableWidth: 'auto',
+                columnStyles: {
+                    0: { cellWidth: 30 },   // Column 1: Sr#
+                    1: { cellWidth: 50 },   // Column 2: VendorName
+                    2: { cellWidth: 50 },   // Column 3: MRNNo
+                    3: { cellWidth: 40 },   // Column 4: MRNDate
+                    4: { cellWidth: 60 },   // Column 5: GateNo
+                    5: { cellWidth: 50 },   // Column 6: GDate
+                    6: { cellWidth: 30 },   // Column 7: InvoiceNo
+                    7: { cellWidth: 30 },   // Column 8: InvoiceDate
+                    8: { cellWidth: 60 },   // Column 9: DocNo
+                    9: { cellWidth: 50 },   // Column 10: PartCode
+                    10: { cellWidth: 60 },  // Column 11: ItemName
+                    11: { cellWidth: 30 },  // Column 12: BillQty
+                    12: { cellWidth: 20 },  // Column 13: RecQty
+                    13: { cellWidth: 20 },  // Column 14: ShortExcessQty
+                    14: { cellWidth: 20 },  // Column 15: Unit
+                    15: { cellWidth: 20 },  // Column 16: Amount
+                    16: { cellWidth: 20 },  // Column 17: TotalAmt
+                    17: { cellWidth: 20 },  // Column 18: NetAmount
+                    18: { cellWidth: 20 },  // Column 19: Remark
+                    19: { cellWidth: 20 },  // Column 20: ActualEntryByEmp
+                    20: { cellWidth: 20 },  // Column 21: ActualEntryDate
+
+
+                },
+                showHead: 'everyPage'
+            });
+
+            // Save the PDF
+            doc.save(`SaleBill_${reportTypeValue.replace(/\s+/g, '_')}.pdf`);
+
+        });
+        function FillVendoreList() {
+            var FromDate = $('#FromDate').val();
+            var ToDate = $('#ToDate').val();
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillVendoreList")",
+                dataType: "JSON",
+                async: false,
+                data: { "FromDate": FromDate, "ToDate": ToDate },
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#VendorName').empty();
+                            $('#VendorName').append('<option value="0" selected>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                $('#VendorName').append('<option value="' + val.VendorName +
+                                    '">' + val.VendorName + '</option>');
+                            });
+                        }
+                    }
+                }
+            });
+        }
+        function FillDocList() {
+            var FromDate = $('#FromDate').val();
+            var ToDate = $('#ToDate').val();
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillDocList")",
+                dataType: "JSON",
+                async: false,
+                data: { "FromDate": FromDate, "ToDate": ToDate },
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#DocumentName').empty();
+                            $('#DocumentName').append('<option value="0" selected>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                $('#DocumentName').append('<option value="' + val.Document +
+                                    '">' + val.Document + '</option>');
+                            });
+                        }
+                    }
+                }
+            });
+        }
+        function FillPONOList() {
+            var FromDate = $('#FromDate').val();
+            var ToDate = $('#ToDate').val();
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillPONOList")",
+                dataType: "JSON",
+                async: false,
+                data: { "FromDate": FromDate, "ToDate": ToDate },
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#PONO').empty();
+                            $('#PONO').append('<option value="0" selected>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                $('#PONO').append('<option value="' + val.PONO +
+                                    '">' + val.PONO + '</option>');
+                            });
+                        }
+                    }
+                }
+            });
+        }
+        function FillSchNOList() {
+            var FromDate = $('#FromDate').val();
+            var ToDate = $('#ToDate').val();
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillSchNOList")",
+                dataType: "JSON",
+                async: false,
+                data: { "FromDate": FromDate, "ToDate": ToDate },
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#SchNo').empty();
+                            $('#SchNo').append('<option value="0" selected>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                $('#SchNo').append('<option value="' + val.SchNo +
+                                    '">' + val.SchNo + '</option>');
+                            });
+                        }
+                    }
+                }
+            });
+        }
+        function FillHsnNOList() {
+            var FromDate = $('#FromDate').val();
+            var ToDate = $('#ToDate').val();
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillHsnNOList")",
+                dataType: "JSON",
+                async: false,
+                data: { "FromDate": FromDate, "ToDate": ToDate },
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#HsnNo').empty();
+                            $('#HsnNo').append('<option value="0" selected>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                $('#HsnNo').append('<option value="' + val.HSNNO +
+                                    '">' + val.HSNNO + '</option>');
+                            });
+                        }
+                    }
+                }
+            });
+        }
+        function FillGstNOList() {
+            var FromDate = $('#FromDate').val();
+            var ToDate = $('#ToDate').val();
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillGstNOList")",
+                dataType: "JSON",
+                async: false,
+                data: { "FromDate": FromDate, "ToDate": ToDate },
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#GstNo').empty();
+                            $('#GstNo').append('<option value="0" selected>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                $('#GstNo').append('<option value="' + val.GST +
+                                    '">' + val.GST + '</option>');
+                            });
+                        }
+                    }
+                }
+            });
+        }
+        function FillInvoiceNOList() {
+            var FromDate = $('#FromDate').val();
+            var ToDate = $('#ToDate').val();
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillInvoiceNOList")",
+                dataType: "JSON",
+                async: false,
+                data: { "FromDate": FromDate, "ToDate": ToDate },
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#InvoiceNo').empty();
+                            $('#InvoiceNo').append('<option value="0" selected>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                $('#InvoiceNo').append('<option value="' + val.InvoiceNo +
+                                    '">' + val.InvoiceNo + '</option>');
+                            });
+                        }
+                    }
+                }
+            });
+        }
+        function FillItemName() {
+            var FromDate = $('#FromDate').val();
+            var ToDate = $('#ToDate').val();
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillItemName")",
+                dataType: "JSON",
+                async: false,
+                data: { "FromDate": FromDate, "ToDate": ToDate },
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#ItemName').empty();
+                            $('#ItemName').append('<option value="0" selected>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                $('#ItemName').append('<option value="' + val.ItemCode +
+                                    '">' + val.ItemName + '</option>');
+                            });
+                        }
+                    }
+                }
+            });
+        }
+        function FillPartCode() {
+            var FromDate = $('#FromDate').val();
+            var ToDate = $('#ToDate').val();
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillPartCode")",
+                dataType: "JSON",
+                async: false,
+                data: { "FromDate": FromDate, "ToDate": ToDate },
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#PartCode').empty();
+                            $('#PartCode').append('<option value="0" selected>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                $('#PartCode').append('<option value="' + val.ItemCode +
+                                    '">' + val.PartCode + '</option>');
+                            });
+                        }
+                    }
+                }
+            });
+        }
+
+
+        $(document).on('change', '#ItemName,#PartCode', function (e) {
+
+            var cntId = e.target.id;
+            if (cntId == 'ItemName') {
+                AltItemNameChange(cntId);
+            }
+            else {
+                AltPartCodeChange(cntId);
+            }
+        });
+
+        function AltItemNameChange(ID) {
+            SetAltPartCodeItemName(ID);
+        }
+
+        function AltPartCodeChange(ID) {
+            $.when(SetAltPartCodeItemName(ID)).done(function () {
+            });
+        }
+        function SetAltPartCodeItemName(ID) {
+            if (!ID) return;
+            var v = $('#' + ID).val();
+            if (ID == "PartCode") {
+                $("#ItemName").val(v).trigger("change.select2");
+            }
+            if (ID == "ItemName") {
+                $("#PartCode").val(v).trigger("change.select2");
+            }
+        }
+        function countAllTotal() {
+
+            var rowCount = $('#divStockRegisterBody tr').length;
+            var OpnStk = 0;
+            var TotStk = 0;
+            var IssQty = 0;
+            var RecQty = 0;
+            var rate = 0;
+            var totAmount = 0;
+            for (var i = 1; i <= rowCount; i++) {
+                OpnStk += $('#opnStk-' + i).text() == '' ? 0 : parseFloat($('#opnStk-' + i).text());
+                TotStk += $('#totStk-' + i).text() == '' ? 0 : parseFloat($('#totStk-' + i).text());
+                IssQty += $('#issQty-' + i).text() == '' ? 0 : parseFloat($('#issQty-' + i).text());
+                RecQty += $('#recQty-' + i).text() == '' ? 0 : parseFloat($('#recQty-' + i).text());
+                //rate += $('#rate-' + i).text() == '' ? 0 : parseFloat($('#rate-' + i).text());
+                totAmount += $('#amount-' + i).text() == '' ? 0 : parseFloat($('#amount-' + i).text());
+                //if(totAmount < 0){
+                //    $('#SAGridRow-' + i).css('background-color', 'red');
+                //}
+            }
+
+            $('#totOpenStock').val(isNaN(OpnStk) ? 0 : OpnStk.toFixed(2));
+            $('#totAmount').val(isNaN(totAmount) ? 0 : totAmount.toFixed(2));
+        }
+
+        $(document).on("click", ".sortCol", function () {
+            ;
+            var $column = $(this).parent().closest("th");
+            var colno = $(this).data('columnno');
+            var currentOrder = $(this).data('sortorder');
+
+            $('.sortCol').css('color', 'white');
+            if (currentOrder === 'asc') {
+                sortTable(colno, false);
+                $(this).data('sortorder', 'desc');
+                $(this).css('color', 'yellow'); // Visual indication of descending order
+                //$(this).css('font-size', 'larger'); // Visual indication of descending order
+                $(this).find('i:first').removeClass('fa-arrow-up');
+                $(this).find('i:first').addClass('fa-arrow-down');
+            } else {
+                sortTable(colno, true);
+                $(this).data('sortorder', 'asc');
+                $(this).css('color', 'yellow');
+                // $(this).css('font-size', 'larger'); // Visual indication of ascending order
+                $(this).find('i:first').removeClass('fa-arrow-down');
+                $(this).find('i:first').addClass('fa-arrow-up');
+            }
+        });
+
+        function sortTable(columnIndex, ascending) {
+
+            var table = $('#ReportTable');
+            var rows = table.find('#divStockRegisterBody > tr').toArray();
+
+            rows.sort(function (a, b) {
+                var aValue = $(a).find('td').eq(columnIndex).text();
+                var bValue = $(b).find('td').eq(columnIndex).text();
+
+                var aIntValue = 0;
+                var bIntValue = 0;
+                if (/^\d*\.?\d+$/.test(aValue) && /^\d*\.?\d+$/.test(bValue)) {
+                    aIntValue = parseInt(aValue, 10);
+                    bIntValue = parseInt(bValue, 10);
+                }
+
+                if (aIntValue > 0) {
+                    if (ascending) {
+                        return aValue - bValue;
+                    } else {
+                        return bValue - aValue;
+                    }
+                } else {
+                    if (ascending) {
+                        return aValue.localeCompare(bValue);
+                    } else {
+                        return bValue.localeCompare(aValue);
+                    }
+                }
+            });
+
+            $.each(rows, function (index, row) {
+                table.children('#divStockRegisterBody').append(row);
+            });
+        }
+
+        var currentSearchColumn = null;
+
+        $("#search-box").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#divStockRegisterBody tr").filter(function () {
+                if (currentSearchColumn !== null) {
+                    var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
+                    $(this).toggle(columnText.indexOf(value) > -1);
+                } else {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                }
+            });
+        });
+
+        $(document).on("click", "th[data-columnno]", function () {
+            currentSearchColumn = $(this).data('columnno');
+            $("#search-box").val('').trigger('keyup'); // Reset search box and trigger the search
+        });
+
+        function DeleteRow(i) {
+
+            var indexToRemove = i - 1;
+            $('#SAGridRow-' + i).remove();
+            $('#ReportTable tbody tr').each(function (index) {
+                $(this).attr('id', 'SAGridRow-' + (index + 1));
+
+
+                $(this).find('td:first-child a:first-child').each(function (tdIndex) {
+                    $(this).attr('id', (index + 1));
+                });
+
+                $(this).find('td[id^="amount-"]').each(function (tdIndex) {
+                    $(this).attr('id', 'amount-' + (index + 1));
+                });
+
+            });
+            //$('#ReportTable tr:eq(' + indexToRemove + ')').remove();
+            countAllTotal();
+            $('#totalRows').text($('#divStockMainRegister tr').length - 1);
+        }
+        
+
+    </script>
+    <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+
+}
+<style>
+
+    .sort-icon {
+        padding: 5px;
+        margin: 5px;
+        vertical-align: top;
+    }
+
+    .ascCol {
+        font-size: 15px;
+        vertical-align: bottom;
+    }
+
+    .descCol {
+        font-size: 15px;
+        vertical-align: super;
+    }
+
+</style>

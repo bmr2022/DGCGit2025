@@ -164,6 +164,47 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
+        public async Task<ResponseResult> UpdateMultipleItemDataFromExcel(DataTable ItemDetailGrid, string flag)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>
+        {
+            new SqlParameter("@Flag", flag),
+            new SqlParameter("@ExcelData", ItemDetailGrid)
+        };
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_ItemGroup", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> GetItemCatCode(string CName)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetCategoryCode"));
+                SqlParams.Add(new SqlParameter("@TypeName", CName));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_ItemMasterData", SqlParams);
+
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
         public async Task<ItemGroupModel> GetByID(int ID)
         {
             ItemGroupModel? _ItemGroupModel = new ItemGroupModel();
@@ -261,7 +302,7 @@ namespace eTactWeb.Data.DAL
                 //    Text = m.ParentAccountName,
                 //    Value = m.ParentAccountCode.ToString()
                 //});
-                if (model.Mode != "Search")
+                if (model.Mode != "Search" && model.ItemGroupList != null && model.ItemGroupList.Any())
                 {
                     List<TextValue>? _list = new List<TextValue>();
                     foreach (ItemGroupModel? item in model.ItemGroupList)

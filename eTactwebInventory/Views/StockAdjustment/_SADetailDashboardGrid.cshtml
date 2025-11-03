@@ -80,6 +80,14 @@
                                             <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
                                         </span>
                                     </a>
+                                    <div id="printData-@Cntr">
+                                        <a class="table-link link-dark" asp-action="PrintReport" target="_blank" asp-route-EntryId="@item.EntryId" asp-route-YearCode="@item.YearCode">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa-solid fa-print fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
                                     @if (item.YearCode == yearCode)
                                     {
                                         <a class="table-link link-primary" asp-action="StockAdjustment" asp-route-Mode="U" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode" onclick="back(event)">

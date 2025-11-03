@@ -38,7 +38,8 @@ public class PurchaseBillController : Controller
     private readonly IConfiguration iconfiguration;
     private readonly ICompositeViewEngine _viewEngine;
     private readonly IMemoryCache _MemoryCache;
-    public PurchaseBillController(IPurchaseBill iPurchaseBill, IDataLogic iDataLogic, ILogger<PurchaseBillModel> logger, EncryptDecrypt encryptDecrypt, IMemoryCacheService iMemoryCacheService, IWebHostEnvironment iWebHostEnvironment, IConfiguration configuration, ICompositeViewEngine viewEngine, IMemoryCache iMemoryCache)
+    private readonly ConnectionStringService _connectionStringService;
+    public PurchaseBillController(IPurchaseBill iPurchaseBill, IDataLogic iDataLogic, ILogger<PurchaseBillModel> logger, EncryptDecrypt encryptDecrypt, IMemoryCacheService iMemoryCacheService, IWebHostEnvironment iWebHostEnvironment, IConfiguration configuration, ICompositeViewEngine viewEngine, IMemoryCache iMemoryCache, ConnectionStringService connectionStringService)
     {
         IPurchaseBill = iPurchaseBill;
         IDataLogic = iDataLogic;
@@ -49,6 +50,7 @@ public class PurchaseBillController : Controller
         iconfiguration = configuration;
         _MemoryCache = iMemoryCache;
         _viewEngine = viewEngine;
+        _connectionStringService = connectionStringService;
     }
 
     public ILogger<PurchaseBillModel> _Logger { get; set; }
@@ -77,7 +79,8 @@ public class PurchaseBillController : Controller
 
         //}
         //webReport.Report.SetParameterValue("flagparam", "PURCHASEORDERPRINT");
-        my_connection_string = iconfiguration.GetConnectionString("eTactDB");
+        my_connection_string = _connectionStringService.GetConnectionString();
+        //my_connection_string = iconfiguration.GetConnectionString("eTactDB");
         webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
         webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
         webReport.Report.SetParameterValue("entryparam", EntryId);
@@ -1760,6 +1763,7 @@ public class PurchaseBillController : Controller
         Table.Columns.Add("POType", typeof(string));
         Table.Columns.Add("MIRNO", typeof(string));
         Table.Columns.Add("MIRYearCode", typeof(int));
+        Table.Columns.Add("MIREntryId", typeof(int));
         Table.Columns.Add("MIRDate", typeof(DateTime));
         Table.Columns.Add("AllowDebitNote", typeof(string));
         Table.Columns.Add("DebitNotePending", typeof(string));
@@ -1774,6 +1778,7 @@ public class PurchaseBillController : Controller
         Table.Columns.Add("AcceptedQty", typeof(float));
         Table.Columns.Add("ReworkQty", typeof(float));
         Table.Columns.Add("HoldQty", typeof(float));
+        Table.Columns.Add("ItemLocation", typeof(string));
         #endregion
 
         foreach (PBItemDetail Item in itemDetailList)
@@ -1831,6 +1836,7 @@ public class PurchaseBillController : Controller
                 string.Empty,
                 Item.MIRNO ?? string.Empty,
                 Item.MIRYEARCODE > 0 ? Convert.ToInt32(Item.MIRYEARCODE) : 0,
+                Item.MIREntryId> 0 ? Convert.ToInt32(Item.MIREntryId) : 0,
                 mirDate,
                 string.Empty,
                 string.Empty,
@@ -1844,7 +1850,9 @@ public class PurchaseBillController : Controller
                 Item.HSNNO.ToString(),
                 Item.AcceptedQty > 0 ? Math.Round(Convert.ToDecimal(Item.AcceptedQty ?? 0), 2) : 0,
                 Item.ReworkQty > 0 ? Math.Round(Convert.ToDecimal(Item.ReworkQty ?? 0), 2) : 0,
-                Item.HoldQty > 0 ? Math.Round(Convert.ToDecimal(Item.HoldQty ?? 0), 2) : 0
+                Item.HoldQty > 0 ? Math.Round(Convert.ToDecimal(Item.HoldQty ?? 0), 2) : 0,
+                  Item.ItemLocation ?? string.Empty,
+               
             });
         }
 

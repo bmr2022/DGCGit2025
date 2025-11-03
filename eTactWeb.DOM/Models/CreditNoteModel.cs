@@ -57,7 +57,15 @@ namespace eTactWeb.DOM.Models
         public int PageNumber {  get; set; }
         public int TotalRecords {  get; set; }
         public int PageSize { get; set; }
-
+        public string DashboardTypeBack {  get; set; }
+        public string FromDateBack {  get; set; }
+        public string ToDateBack { get; set; }
+        public int? AccountCodeBack {  get; set; }
+        public int? GroupCodeBack {  get; set; }
+        public int? AccountNameBack { get; set; }
+        public string? VoucherTypeBack { get; set; }
+        public string? VoucherNoBack {  get; set; }
+        public string[] AccountList { get; set; }
         private IList<SelectListItem> _YesNo = new List<SelectListItem>()
         {
             new() { Value = "Y", Text = "Yes" },
@@ -110,6 +118,7 @@ namespace eTactWeb.DOM.Models
     }
     public class AccCreditNoteAgainstBillDetail : TaxModel
     {
+        public int DocAccountCode { get; set; }
         public int CheckBoxNo { get; set; }
         public string CreditNoteInvoiceNo { get; set; } = string.Empty;
         public string CreditNoteVoucherNo { get; set; } = string.Empty;

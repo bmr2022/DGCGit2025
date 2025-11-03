@@ -23,11 +23,13 @@ namespace eTactWeb.Data.DAL
         private readonly IDataLogic _IDataLogic;
         private readonly string DBConnectionString = string.Empty;
         private IDataReader? Reader;
-
-        public IssueThrBOMDAL(IConfiguration configuration, IDataLogic iDataLogic)
+        private readonly ConnectionStringService _connectionStringService;
+        public IssueThrBOMDAL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
             _IDataLogic = iDataLogic;
-            DBConnectionString = configuration.GetConnectionString("eTactDB");
+            _connectionStringService = connectionStringService;
+            DBConnectionString = _connectionStringService.GetConnectionString();
+            //DBConnectionString = configuration.GetConnectionString("eTactDB");
         }
 
         public async Task<ResponseResult> GetFormRights(int userID)
@@ -314,6 +316,26 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
+        public async Task<ResponseResult> GetIssueScanFeature()
+        {
+            var _ResponseResult = new ResponseResult();
+
+            try
+            {
+                var SqlParams = new List<dynamic>();
+
+                SqlParams.Add(new SqlParameter("@Flag", "GetIssueScanFeature"));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_IssueWithoutBomM", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
         public async Task<ResponseResult> FillFGDataList(string Reqno, int ReqYC)
         {
             var _ResponseResult = new ResponseResult();
@@ -403,6 +425,30 @@ namespace eTactWeb.Data.DAL
                 Error.Source = ex.Source;
             }
             return _ResponseResult;
+        }   
+        public async Task<ResponseResult> GetStoreIdReqForScan(string ReqNo, int ReqYearCode, string ReqDate, int ItemCode)
+        {
+            var _ResponseResult = new ResponseResult();
+
+            try
+            {
+                var SqlParams = new List<dynamic>();
+
+                SqlParams.Add(new SqlParameter("@Flag", "GetStoreIdReqForScan"));
+                SqlParams.Add(new SqlParameter("@ReqNo", ReqNo));
+                SqlParams.Add(new SqlParameter("@ReqYearCode", ReqYearCode));
+                SqlParams.Add(new SqlParameter("@ReqDate", ReqDate));
+                SqlParams.Add(new SqlParameter("@ItemCode", ItemCode));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_IssueWithBOM", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
         }
         public static DateTime ParseDate(string dateString)
         {
@@ -422,6 +468,38 @@ namespace eTactWeb.Data.DAL
 
             //    throw new FormatException("Invalid date format. Expected format: dd/MM/yyyy");
 
+        }
+        public async Task<ResponseResult> ShowDetail(string FromDate, string ToDate, string ReqNo, int YearCode, int itemCode, string WoNo, int WorkCenter, int DeptName, int ReqYear, string IssueDate, string GlobalSearch, string FromStore, int StoreId)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var todt = CommonFunc.ParseFormattedDate(ToDate);
+                var fromdt = CommonFunc.ParseFormattedDate(FromDate);
+                var issDt = CommonFunc.ParseFormattedDate(IssueDate);
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "ShowDetail"));
+                SqlParams.Add(new SqlParameter("@fromDate", fromdt));
+                SqlParams.Add(new SqlParameter("@toDate", todt));
+                SqlParams.Add(new SqlParameter("@reqno", ReqNo == null ? "" : ReqNo));
+                SqlParams.Add(new SqlParameter("@yearCode", YearCode));
+                SqlParams.Add(new SqlParameter("@RmItemcode", itemCode));
+                SqlParams.Add(new SqlParameter("@WONO", WoNo == null ? "" : WoNo));
+                SqlParams.Add(new SqlParameter("@ToWC", WorkCenter));
+                SqlParams.Add(new SqlParameter("@ToDepartment", DeptName));
+                SqlParams.Add(new SqlParameter("@reqYearcode", ReqYear));
+                SqlParams.Add(new SqlParameter("@Issuedate", issDt));
+                SqlParams.Add(new SqlParameter("@storeid", StoreId));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("GetDataForRequitionThroughBOM", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
         }
         public async Task<ResponseResult> SaveIssueThrBom(IssueThrBom model, DataTable RMGrid, DataTable FGGrid)
         {

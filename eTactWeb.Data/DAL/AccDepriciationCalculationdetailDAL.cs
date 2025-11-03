@@ -39,7 +39,7 @@ namespace eTactWeb.Data.DAL
 					oCmd.Parameters.AddWithValue("@DepriciationYearCode", DepriciationYearCode);
 					oCmd.Parameters.AddWithValue("@AssetsName", AssetsName);
 					oCmd.Parameters.AddWithValue("@DepreciationMethod", DepreciationMethod);
-					//oCmd.Parameters.AddWithValue("@AssetsCategoryName", AssetsCategoryName);
+					oCmd.Parameters.AddWithValue("@AssetsCategoryName", AssetsCategoryName);
 
 
 					await myConnection.OpenAsync();
@@ -70,7 +70,7 @@ namespace eTactWeb.Data.DAL
 											  DepreciationRate = dr["DepreciationRate"] != DBNull.Value ? Convert.ToDecimal(dr["DepreciationRate"]) : 0,
 											  AfterDepriciationNetValue = dr["DepriciationAmt"] != DBNull.Value ? Convert.ToDecimal(dr["DepriciationAmt"]) : 0,
 											  AssetsCategoryName = dr["CategoryName"] != DBNull.Value ? Convert.ToString(dr["CategoryName"]) : "",
-
+                                              //vendorname using VendorName
                                               RemainingUseFullLifeInYear = dr["UseFullLifeInYear"] != DBNull.Value ? Convert.ToDecimal(dr["UseFullLifeInYear"]) : 0
 										  }).ToList();
 
@@ -110,6 +110,24 @@ namespace eTactWeb.Data.DAL
 
 			return _ResponseResult;
 		}
+        public async Task<ResponseResult> FillEssetsName()
+		{
+			var _ResponseResult = new ResponseResult();
+			try
+			{
+				var SqlParams = new List<dynamic>();
+				SqlParams.Add(new SqlParameter("@Flag", "FillAsssetsName"));
+				_ResponseResult = await _IDataLogic.ExecuteDataTable("AccSPDepriciationCalculationMainDetail", SqlParams);
+			}
+			catch (Exception ex)
+			{
+				dynamic Error = new ExpandoObject();
+				Error.Message = ex.Message;
+				Error.Source = ex.Source;
+			}
+
+			return _ResponseResult;
+		}
 		public async Task<ResponseResult> SaveDepriciationCalculationdetail(AccDepriciationCalculationdetailModel model, DataTable GIGrid)
 		{
 			var _ResponseResult = new ResponseResult();
@@ -117,22 +135,24 @@ namespace eTactWeb.Data.DAL
 			{
 
 				var SqlParams = new List<dynamic>();
+                var depriciationDate = CommonFunc.ParseFormattedDate(model.DepriciationDate);
+                var actualEntryDate = CommonFunc.ParseFormattedDate(model.ActualEntryDate);
+                var lastUpdatedDate = CommonFunc.ParseFormattedDate(model.LastUpdatedDate);
 
-				if (model.Mode == "U" || model.Mode == "V")
+                if (model.Mode == "U" || model.Mode == "V")
 				{
 
 					SqlParams.Add(new SqlParameter("@Flag", "UPDATE"));
+                    SqlParams.Add(new SqlParameter("@LastUpdatedBy", model.LastupdatedBy));
+                    SqlParams.Add(new SqlParameter("@LastUpdatedDate", lastUpdatedDate));
 
-				}
+                }
 				else
 				{
 					SqlParams.Add(new SqlParameter("@Flag", "INSERT"));
 
 				}
-				var depriciationDate = CommonFunc.ParseFormattedDate(model.DepriciationDate);
-				var actualEntryDate = CommonFunc.ParseFormattedDate(model.ActualEntryDate);
-				var lastUpdatedDate = CommonFunc.ParseFormattedDate(model.LastUpdatedDate);
-
+				
 				SqlParams.Add(new SqlParameter("@DepriciationEntryId", model.DepriciationEntryId));
 				SqlParams.Add(new SqlParameter("@DepriciationYearCode", model.DepriciationYearCode));
 				SqlParams.Add(new SqlParameter("@ForClosingOfFinancialYear", model.ForClosingOfFinancialYear));
@@ -141,8 +161,7 @@ namespace eTactWeb.Data.DAL
 				SqlParams.Add(new SqlParameter("@CC", model.CC));
 				SqlParams.Add(new SqlParameter("@ActualEntryBy", model.ActualEntryBy));
 				SqlParams.Add(new SqlParameter("@ActualEntryDate", actualEntryDate));
-				SqlParams.Add(new SqlParameter("@LastUpdatedBy", model.LastupdatedBy));
-				SqlParams.Add(new SqlParameter("@LastUpdatedDate", lastUpdatedDate));
+				
 				SqlParams.Add(new SqlParameter("@EntryByMachine", model.EntryByMachine));
 				SqlParams.Add(new SqlParameter("@UID", model.UID));
 				SqlParams.Add(new SqlParameter("@BalanceSheetClosed", model.BalanceSheetClosed));
@@ -181,7 +200,7 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
-        public async Task<AccDepriciationCalculationdetailModel> GetDashboardDetailData(string FromDate, string ToDate, string ReportType)
+        public async Task<AccDepriciationCalculationdetailModel> GetDashboardDetailData(string FromDate, string ToDate, string ReportType, string AssetsName)
         {
             DataSet? oDataSet = new DataSet();
             var model = new AccDepriciationCalculationdetailModel();
@@ -197,6 +216,7 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@reportType", ReportType);
                     oCmd.Parameters.AddWithValue("@fromdate", FromDate);
                     oCmd.Parameters.AddWithValue("@todate", ToDate);
+                    oCmd.Parameters.AddWithValue("@AssetsName", AssetsName);
 
                     await myConnection.OpenAsync();
                     using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
@@ -244,7 +264,7 @@ namespace eTactWeb.Data.DAL
                                                                 DepriciationSlipNo = dr["DepriciationSlipNo"] != DBNull.Value ? Convert.ToString(dr["DepriciationSlipNo"]) : string.Empty,
                                                                 DepriciationDate = dr["DepriciationDate"] != DBNull.Value ? Convert.ToString(dr["DepriciationDate"]) : string.Empty,
                                                                 AssetsName = dr["AssetsName"] != DBNull.Value ? Convert.ToString(dr["AssetsName"]) : string.Empty,
-                                                                AccountName = dr["Account_Name"] != DBNull.Value ? Convert.ToString(dr["Account_Name"]) : string.Empty,
+                                                                AccountName = dr["ParentGroupName"] != DBNull.Value ? Convert.ToString(dr["ParentGroupName"]) : string.Empty,
                                                                 ItemName = dr["itemName"] != DBNull.Value ? Convert.ToString(dr["itemName"]) : string.Empty,
 
                                                                 MainGroup = dr["MainGroup"] != DBNull.Value ? Convert.ToString(dr["MainGroup"]) : string.Empty,

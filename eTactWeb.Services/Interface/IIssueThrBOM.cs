@@ -19,10 +19,13 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FillProjectNo();
         Task<ResponseResult> GetIsStockable(int ItemCode);
         Task<ResponseResult> GetAllowBatch();
+        Task<ResponseResult> GetIssueScanFeature();
         Task<ResponseResult> FillFGDataList(string Reqno, int ReqYC);
         Task<DataSet> FillEmployee(string Flag);
         Task<ResponseResult> GetReqByName(string reqno,int yearcode);
         Task<ResponseResult> GetReqQtyForScan(string ReqNo, int ReqYearCode, string ReqDate, int ItemCode);
+        Task<ResponseResult> GetStoreIdReqForScan(string ReqNo, int ReqYearCode, string ReqDate, int ItemCode);
+        Task<ResponseResult> ShowDetail(string FromDate, string ToDate, string ReqNo, int YearCode, int ItemCode, string WoNo, int WorkCenter, int DeptName, int ReqYear, string IssueDate, string GlobalSearch, string FromStore, int StoreId);
         Task<ResponseResult> DisplayBomDetail(int ItemCode, float WOQty, int BomRevNo);
         Task<ResponseResult> GetItemDetailFromUniqBatch(string UniqBatchNo, int YearCode, string TransDate);
         Task<ResponseResult> FillBatchUnique(int ItemCode, int YearCode, string StoreName, string BatchNo, string IssuedDate, string FinStartDate);

@@ -34,13 +34,17 @@ namespace eTactWeb.Data.BLL
 		{
 			return await _AccDepriciationCalculationdetailDAL.FillEntryID(EntryDate,YearCode);
 		}
+		public async Task<ResponseResult> FillEssetsName()
+		{
+			return await _AccDepriciationCalculationdetailDAL.FillEssetsName();
+		}
         public async Task<ResponseResult> GetDashboardData(AccDepriciationCalculationdetailModel model)
         {
             return await _AccDepriciationCalculationdetailDAL.GetDashboardData(model);
         }
-        public async Task<AccDepriciationCalculationdetailModel> GetDashboardDetailData(string FromDate, string ToDate, string ReportType)
+        public async Task<AccDepriciationCalculationdetailModel> GetDashboardDetailData(string FromDate, string ToDate, string ReportType, string AssetsName)
         {
-            return await _AccDepriciationCalculationdetailDAL.GetDashboardDetailData(FromDate, ToDate, ReportType);
+            return await _AccDepriciationCalculationdetailDAL.GetDashboardDetailData(FromDate, ToDate, ReportType, AssetsName);
         }
         public async Task<ResponseResult> DeleteByID(int EntryId, int YearCode)
         {

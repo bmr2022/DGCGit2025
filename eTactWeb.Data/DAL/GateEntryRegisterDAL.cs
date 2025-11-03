@@ -19,13 +19,16 @@ namespace eTactWeb.Data.DAL
         private readonly string DBConnectionString = string.Empty;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private IDataReader? Reader;
-        public GateEntryRegisterDAL(IConfiguration configuration, IDataLogic iDataLogic, IHttpContextAccessor httpContextAccessor)
+        private readonly ConnectionStringService _connectionStringService;
+        public GateEntryRegisterDAL(IConfiguration configuration, IDataLogic iDataLogic, IHttpContextAccessor httpContextAccessor, ConnectionStringService connectionStringService)
         {
             _IDataLogic = iDataLogic;
-            DBConnectionString = configuration.GetConnectionString("eTactDB");
+            //DBConnectionString = configuration.GetConnectionString("eTactDB");
+            _connectionStringService = connectionStringService;
+            DBConnectionString = _connectionStringService.GetConnectionString();
             _httpContextAccessor = httpContextAccessor;
         }
-        public async Task<GateEntryRegisterModel> GetGateRegisterData(string ReportType, string FromDate, string ToDate, string gateno, string docname, string PONo, string Schno, string PartCode, string ItemName, string invoiceNo, string VendorName)
+        public async Task<GateEntryRegisterModel> GetGateRegisterData(string ReportType, string FromDate, string ToDate, string gateno, string docname, string PONo, string Schno, string PartCode, string ItemName, string invoiceNo, string VendorName, int RecUnit)
         {
             DataSet? oDataSet = new DataSet();
             var model = new GateEntryRegisterModel();
@@ -65,6 +68,7 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@Schno", Schno);
                     oCmd.Parameters.AddWithValue("@VendorName", VendorName);
                     oCmd.Parameters.AddWithValue("@invoiceNo", invoiceNo);
+                    oCmd.Parameters.AddWithValue("@RecUnit", RecUnit);
 
                     await myConnection.OpenAsync();
                     using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
@@ -382,7 +386,27 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-     public async Task<ResponseResult> FillSchNo(string FromDate, string ToDate)
+        public async Task<ResponseResult> GetFeatureOption()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+
+                SqlParams.Add(new SqlParameter("@Flag", "FeatureOption"));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_GateMainDetail", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> FillSchNo(string FromDate, string ToDate)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -391,6 +415,26 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@Flag", "FillSchNo"));
                 SqlParams.Add(new SqlParameter("@fromdate", FromDate));
                 SqlParams.Add(new SqlParameter("@todate", ToDate));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SpReportGate", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> PENDGATEDETAILFORMRN(string GateNo, int Yearcode)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "PENDGATEDETAILFORMRN"));
+                SqlParams.Add(new SqlParameter("@gateno", GateNo));
+                SqlParams.Add(new SqlParameter("@gateYearCOde", Yearcode));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SpReportGate", SqlParams);
             }
             catch (Exception ex)

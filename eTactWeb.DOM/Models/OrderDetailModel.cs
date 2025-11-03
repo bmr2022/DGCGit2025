@@ -44,6 +44,8 @@ namespace eTactWeb.DOM.Models
         public string? AmendmentDate { get; set; }
         public string? AmendmentNo { get; set; }
         public string? AmendmentReason { get; set; }
+        public string? SONo { get; set; }
+        public string? SODate { get; set; }
         public decimal Amount { get; set; }
         public string? Color { get; set; }
         public IList<DeliverySchedule>? DeliveryScheduleList { get; set; }
@@ -83,105 +85,134 @@ namespace eTactWeb.DOM.Models
         //public int AccountCode { get; set; }
         public string? AccountName { get; set; }
         public string? DiscCategoryName { get; set; }
+        public string? Location { get; set; }
     }
 
     [Serializable()]
     public class SaleOrderDashboard
     {
-        public string? AmmEffDate { get; set; }
-        public int AmmNo { get; set; }
-        public string AmendmentDate { get; set; }
-        public string AmendmentReason { get; set; }
+        // === Primary Order Information ===
+        public int SONo { get; set; }
+        public string SODate { get; set; }
+        public string? SOFor { get; set; }
+        public string? SOType { get; set; }
+        public string? OrderType { get; set; }
+        public string? OrderAmt { get; set; }
+        public string? OrderNetAmt { get; set; }
+        public string? SOConfirmDate { get; set; }
+        public string? SOCloseDate { get; set; }
+        public string? SOComplete { get; set; }
+
+        // === Customer Information ===
+        public string? CustomerName { get; set; }
+        public string? CustomerAddress { get; set; }
+        public string? Consignee { get; set; }
+        public string? ConsigneeAddress { get; set; }
+        public string? ConsigneeAccountName { get; set; }
+        public string CustContactPerson { get; set; }
+        public int AccountCode { get; set; }
+        public string? CustOrderNo { get; set; }
+        public string Address { get; set; }
+
+        // === Item & Quantity Details ===
+        public string? ItemName { get; set; }
+        public string? PartCode { get; set; }
+        public float Qty { get; set; }
+        public float AltQty { get; set; }
+        public string Unit { get; set; }
+        public string AltUnit { get; set; }
+        public decimal Rate { get; set; }
+        public decimal OtherRateCurr { get; set; }
+        public string UnitRate { get; set; }
+        public decimal DiscPer { get; set; }
+        public decimal Amount { get; set; }
+        public decimal TolLimit { get; set; }
+        public float pendingAmt { get; set; }
+        public float StockQty { get; set; }
+        public int HSNNO { get; set; }
         public string Color { get; set; }
         public decimal Rejper { get; set; }
         public decimal ProjQty1 { get; set; }
         public decimal ProjQty2 { get; set; }
         public int Excessper { get; set; }
-        public string? Approved { get; set; }
-        public string? AmmApproved { get; set; }
-        public string? ApprovedDate { get; set; }
-        public string? CC { get; set; }
-        public int HSNNO { get; set; }
-        public float Qty{ get; set; }
-        public string Unit { get; set; }
-        public float AltQty{ get; set; }
-        public string AltUnit{ get; set; }
-        public decimal Rate{ get; set; }
-        public decimal OtherRateCurr{ get; set; }
-        public string UnitRate { get; set; }
-        public decimal DiscPer { get; set; }
-        public decimal Amount { get; set; }
-        public decimal TolLimit { get; set; }
         public string Remark { get; set; }
         public string Description { get; set; }
         public string StoreName { get; set; }
-        public float StockQty{ get; set; }
-        public string? Consignee { get; set; }
-        public string? ConsigneeAddress { get; set; }
+
+        // === Amendment Details ===
+        public int AmmNo { get; set; }
+        public string AmendmentDate { get; set; }
+        public string AmendmentReason { get; set; }
+        public string? AmmEffDate { get; set; }
+        public string? AmmApproved { get; set; }
+
+        // === Approval Details ===
+        public string? Approved { get; set; }
+        public string? ApprovedDate { get; set; }
+
+        // === Entry & User Information ===
+        public int EntryID { get; set; }
+        public string EntryDate { get; set; }
+        public string EntryTime { get; set; }
         public string? CreatedOn { get; set; }
-        [Required]
-        public string? Currency { get; set; }
-        public string? CustomerAddress { get; set; }
-        public string? CustomerName { get; set; }
-        public string? CustOrderNo { get; set; }
+        public string? UpdatedOn { get; set; }
+        public string? CreatedByName { get; set; }
+        public int UpdatedBy { get; set; }
+        public string EntryByMachineName { get; set; }
+
+        // === Quotation Details ===
+        public int QuotNo { get; set; }
+        public string QDate { get; set; }
+        public int QuotYear { get; set; }
+
+        // === Delivery & Logistics ===
         [Required]
         public string? DeliveryAddress { get; set; }
+        public string DeliverySch { get; set; }
+        public string SODelivery { get; set; }
+        public string FreightPaidBy { get; set; }
+        public string InsuApplicable { get; set; }
+        public string ModeTransport { get; set; }
+        public string DeliveryTerms { get; set; }
+        public string PortToLoading { get; set; }
+        public string PortOfDischarge { get; set; }
+        public string DespatchAdviseComplete { get; set; }
+
+        // === Charges & Financials ===
+        public string PackingChgApplicable { get; set; }
+        public float TotalDiscount { get; set; }
+        public float TotalDisPercent { get; set; }
+        public float TotalDiscAmt { get; set; }
+        public string RoundOff { get; set; }
+        [Required]
+        public string? Currency { get; set; }
+
+        // === Miscellaneous Details ===
+        public string? CC { get; set; }
         public string? EID { get; set; }
-        public int EntryID { get; set; }
         public string? FromDate { get; set; }
-        public string? ItemName { get; set; }
-        public string? PartCode { get; set; }
-        public string? Mode { get; set; }
-        public string? OrderAmt { get; set; }
-        public string? OrderNetAmt { get; set; }
-        public string? OrderType { get; set; }
-        public string? SOCloseDate { get; set; }
-        public string? SOComplete { get; set; }
-        public string? SOConfirmDate { get; set; }
-        public IList<SaleOrderDashboard>? SODashboard { get; set; }
-        [Required]
-        public string? SOFor { get; set; }
-        public int SONo { get; set; }
-        public List<TextValue>? SONoList { get; set; }
-        public string? SOType { get; set; }
         public string? ToDate { get; set; }
-        public string? UpdatedOn { get; set; }
         public string? WEF { get; set; }
+        public string? Mode { get; set; }
+        public string? OtherDetail { get; set; }
+        public string? SummaryDetail { get; set; }
+        public string OrderDelayReason { get; set; }
+        public string? eMailFromCC1 { get; set; }
+        public string? eMailFromCC2 { get; set; }
+        public string? eMailFromCC3 { get; set; }
+        public string SalesPersonEmailId { get; set; }
+
+        // === Responsible Personnel ===
+        public int PreparedBy { get; set; }
+        public int ResposibleSalesPersonID { get; set; }
+
+        // === Status & Year ===
+        public int UID { get; set; }
         public int Year { get; set; }
-        public  string EntryDate { get; set; }
-        public  string EntryTime { get; set; }
-        public  string SODate { get; set; }
-        public  int QuotNo { get; set; }
-        public  string QDate { get; set; }
-        [Required]
-        public  int QuotYear { get; set; }
-        public  string Address { get; set; }
-        public  string ConsigneeAccountName { get; set; }
-        public  string FreightPaidBy { get; set; }
-        public  string InsuApplicable { get; set; }
-        public  string ModeTransport { get; set; }
-        public  string DeliverySch { get; set; }
-        public  string PackingChgApplicable { get; set; }
-        public  string DeliveryTerms { get; set; }
-        public  int PreparedBy { get; set; }
-        public  float TotalDiscount { get; set; }
-        public  string SODelivery { get; set; }
-        public  float TotalDisPercent { get; set; }
-        public  float TotalDiscAmt { get; set; }
-        public  string DespatchAdviseComplete { get; set; }
-        public  string PortToLoading { get; set; }
-        public  string PortOfDischarge { get; set; }
-        public  int ResposibleSalesPersonID { get; set; }
-        public  string CustContactPerson { get; set; }
-        public  int SaleDocType { get; set; }
-        public  string OtherDetail { get; set; }
-        public  string  OrderDelayReason{ get; set; }
-        public  int  UID{ get; set; }
-        public  string  RoundOff{ get; set; }
-        public  int  UpdatedBy{ get; set; }
-        public  string  EntryByMachineName{ get; set; }
-        public  string  SummaryDetail{ get; set; }
-      
+
+        // === Collections ===
+        public IList<SaleOrderDashboard>? SODashboard { get; set; }
+        public List<TextValue>? SONoList { get; set; }
         public IList<TextValue>? BranchList { get; set; }
     }
 
@@ -352,6 +383,8 @@ namespace eTactWeb.DOM.Models
 
         [Column(TypeName = "decimal(10, 2)")]
         public decimal TotalAmtAftrDiscount { get; set; }
+        public decimal PackingCharges { get; set; }
+        public decimal ForwardingCharges { get; set; }
 
         public decimal TotalDiscountPercentage { get; set; }
         public string? TotalRoundOff { get; set; }
@@ -371,6 +404,10 @@ namespace eTactWeb.DOM.Models
         public string SoTypeBack { get; set; }
         public string PartCodeBack { get; set; }
         public string ItemNameBack { get; set; }
+        public string? Email { get; set; }
+        public string? CC1 { get; set; }
+        public string? CC2 { get; set; }
+        public string? CC3 { get; set; }
 
         public IList<SelectListItem> TransportModeList
         {

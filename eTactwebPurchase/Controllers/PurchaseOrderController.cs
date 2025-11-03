@@ -37,8 +37,8 @@ public class PurchaseOrderController : Controller
     private readonly IWebHostEnvironment _IWebHostEnvironment;
     private readonly IConfiguration _iconfiguration;
     public WebReport webReport;
-
-    public PurchaseOrderController(IPurchaseOrder iPurchaseOrder, IDataLogic iDataLogic, IMemoryCache iMemoryCache, ILogger<PurchaseOrderModel> logger, EncryptDecrypt encryptDecrypt, IMemoryCacheService iMemoryCacheService, IWebHostEnvironment iWebHostEnvironment, IConfiguration configuration)
+    private readonly ConnectionStringService _connectionStringService;
+    public PurchaseOrderController(IPurchaseOrder iPurchaseOrder, IDataLogic iDataLogic, IMemoryCache iMemoryCache, ILogger<PurchaseOrderModel> logger, EncryptDecrypt encryptDecrypt, IMemoryCacheService iMemoryCacheService, IWebHostEnvironment iWebHostEnvironment, IConfiguration configuration, ConnectionStringService connectionStringService)
     {
         _iMemoryCacheService = iMemoryCacheService;
         IPurchaseOrder = iPurchaseOrder;
@@ -49,6 +49,7 @@ public class PurchaseOrderController : Controller
         CI = new CultureInfo("en-GB");
         _IWebHostEnvironment = iWebHostEnvironment;
         _iconfiguration = configuration;
+        _connectionStringService = connectionStringService;
     }
 
     public ILogger<PurchaseOrderModel> _Logger { get; set; }
@@ -80,7 +81,8 @@ public class PurchaseOrderController : Controller
             webReport.Report.Load(webRootPath + "\\PO.frx"); // default report
 
         }
-        my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+        my_connection_string = _connectionStringService.GetConnectionString();
+        //my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
         webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
         webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
         webReport.Report.SetParameterValue("entryparam", EntryId);
@@ -108,7 +110,7 @@ public class PurchaseOrderController : Controller
         
         webReport.Report.Load(webRootPath + "\\POAmendment.frx"); // default report
 
-        
+        my_connection_string = _connectionStringService.GetConnectionString();
         my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
         webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
         webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
@@ -152,7 +154,8 @@ public class PurchaseOrderController : Controller
             report.SetParameterValue("ponoparam", PONO);
 
             // Set connection string
-            string myConnectionString = _iconfiguration.GetConnectionString("eTactDB");
+            string myConnectionString = _connectionStringService.GetConnectionString();
+            //string myConnectionString = _iconfiguration.GetConnectionString("eTactDB");
             report.SetParameterValue("MyParameter", myConnectionString);
 
             // Prepare the report (generate data)
@@ -422,7 +425,7 @@ public class PurchaseOrderController : Controller
 
                     //monika
                     //IMemoryCache.Set("PurchaseOrder", MainModel, DateTimeOffset.Now.AddMinutes(60));
-                    HttpContext.Session.SetString("PurchaseOrder", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
+                    HttpContext.Session.SetString("PurchaseOrder", JsonConvert.SerializeObject(MainModel));
                 }
             }
         }
@@ -907,11 +910,14 @@ public class PurchaseOrderController : Controller
 
 
 
-        string modelJson1 = HttpContext.Session.GetString("PurchaseOrder");
-         MainModel = new PurchaseOrderModel();
-        if (!string.IsNullOrEmpty(modelJson1))
+        // 🔹 Get model JSON from session
+        string? modelJson = HttpContext.Session.GetString("PurchaseOrder");
+
+        // 🔹 Deserialize session model (if exists)
+        if (!string.IsNullOrEmpty(modelJson))
         {
-            MainModel = JsonConvert.DeserializeObject<PurchaseOrderModel>(modelJson1);
+            // Expecting full PurchaseOrderModel object in session
+            MainModel = JsonConvert.DeserializeObject<PurchaseOrderModel>(modelJson);
         }
 
         if (MainModel.ItemDetailGrid != null && MainModel.ItemDetailGrid.Count > 0)

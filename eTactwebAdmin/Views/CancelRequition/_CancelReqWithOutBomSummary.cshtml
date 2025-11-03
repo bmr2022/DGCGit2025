@@ -1,0 +1,153 @@
+﻿@model eTactWeb.DOM.Models.CancelRequitionModel
+@using Microsoft.AspNetCore.Http
+@using System.Reflection.PortableExecutable
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    var ActualEntryByEmpid = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("EmpID"));
+}
+
+<table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0" id="ISTDashboard">
+    <thead class="bg-gradient card-headerBG text-light">
+        <tr>
+            <th>Sr#</th>
+            <th>Action<input type="checkbox" id="selectAll" /></th>
+           
+            <th data-columnno="0" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> REQ No
+            </th>
+            <th data-columnno="1" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Req Date
+            </th>
+            <th data-columnno="2" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Workcenter
+            </th>
+            <th data-columnno="3" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Department
+            </th>
+            <th data-columnno="4" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Remark
+            </th>
+            <th data-columnno="5" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Req By Emp
+            </th>
+            <th data-columnno="6" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Entry By Emp
+            </th>
+            <th data-columnno="7" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Branch
+            </th>
+            <th data-columnno="8" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Completed
+            </th>
+            <th data-columnno="9" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Entry By Machine
+            </th>
+            <th data-columnno="10" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Cancel
+            </th>
+            <th data-columnno="11" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Cancel Reason
+            </th>
+            <th data-columnno="12" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Req Thr BOM Entry Id
+            </th>
+            <th data-columnno="13" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Req Thr BOM Year Code
+            </th>
+
+        </tr>
+    </thead>
+    <tbody id="DashboardGrid">
+        @{
+            var @Cntr = 0;
+            if (Model.CancelRequitionGrid == null || Model.CancelRequitionGrid.Count == 0)
+            {
+                <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+            }
+            else
+            {
+                foreach (var item in Model.CancelRequitionGrid)
+                {
+                    Cntr = Cntr + 1;
+                    <tr onclick="selection(this)">
+                        <th>@Cntr</th>
+                        <td class="action-col">
+                            <div class="action-buttons">
+                                <!-- View -->
+                                <a class="btn-icon bg-success"
+                                   asp-action="ControlPlan"
+                                   asp-route-Mode="V"
+                                   >
+                                    <i class="fa fa-search"></i>
+                                </a>
+
+                                <!-- Edit -->
+                                <a class="btn-icon bg-primary"
+                                   asp-action="ControlPlan"
+                                   onclick="confirmEdit(event)"
+                                   asp-route-Mode="U">
+                                    <i class="fa fa-pencil"></i>
+                                </a>
+                                <input type="checkbox" class="checkManual" data-entryid="@item.ReqEntryId" data-yearcode="@item.ReqYearCode"  data-reqno="@item.ReqNo" data-requitiontype="@item.RequitionType" />
+                            </div>
+                        
+                        </td>
+
+                        <td>@item.ReqNo</td>
+                        <td>@(item.ReqDate == null ? string.Empty : item.ReqDate.Split(" ")[0])</td>
+                        <td>@item.Workcenter</td>
+                        <td>@item.Department</td>
+                        <td>@item.Remarks</td>
+                        <td>@item.ReqByEmp</td>
+                        <td>@item.EntryByEmp</td>
+                        <td>@item.Branch</td>
+                        <td>@item.Completed</td>
+                        <td>@item.EntryByMachineName</td>
+                        <td>@item.Cancel</td>
+                        <td>@item.CancelReason</td>
+                        <td>@item.ReqEntryId</td>
+                        <td>@item.ReqYearCode</td>
+
+
+                    </tr>
+                }
+            }
+        }
+    </tbody>
+</table>
+<center><strong>TOTAL ROWS : <span id="totalRows"></span></strong></center>
+
+
+
+<style>
+
+    td.action-col, th.action-col {
+        width: 1%;
+        white-space: nowrap;
+        text-align: center;
+        padding: 0 2px;
+    }
+
+    .action-buttons {
+        display: inline-flex;
+        gap: 2px;
+    }
+
+    .btn-icon {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        width: 18px;
+        height: 18px;
+        border-radius: 3px;
+        color: #fff;
+        font-size: 12px;
+        line-height: 1;
+        text-decoration: none;
+    }
+
+
+    #DashboardGrid {
+        background-color: blanchedalmond;
+    }
+</style>

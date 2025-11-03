@@ -28,13 +28,15 @@ namespace eTactWeb.Controllers
         private readonly IDataLogic _IDataLogic;
         private readonly IJobWorkReceive _IJobWorkReceive;
         private readonly ILogger<JobWorkReceiveController> _logger;
-        public JobWorkReceiveController(ILogger<JobWorkReceiveController> logger, IDataLogic iDataLogic, IJobWorkReceive iJobWorkReceive, IWebHostEnvironment iWebHostEnvironment, IConfiguration configuration)
+        private readonly ConnectionStringService _connectionStringService;
+        public JobWorkReceiveController(ILogger<JobWorkReceiveController> logger, IDataLogic iDataLogic, IJobWorkReceive iJobWorkReceive, IWebHostEnvironment iWebHostEnvironment, IConfiguration configuration, ConnectionStringService connectionStringService)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IJobWorkReceive = iJobWorkReceive;
             _IWebHostEnvironment = iWebHostEnvironment;
             _iconfiguration = configuration;
+            _connectionStringService = connectionStringService;
         }
 
         [Route("{controller}/Index")]
@@ -266,7 +268,8 @@ namespace eTactWeb.Controllers
             webReport = new WebReport();
 
             webReport.Report.Load(webRootPath + "\\jobworkMRN.frx"); // default report
-            my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+            //my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+            my_connection_string = _connectionStringService.GetConnectionString();
             webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
             webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
             webReport.Report.SetParameterValue("mrnnoparam", MRNNo);
@@ -467,6 +470,7 @@ namespace eTactWeb.Controllers
         private static DataTable GetChallanTable(IList<JobWorkReceiveDetail> DetailList)
         {
             var ChallanGrid = new DataTable();
+            var todate = (DateTime.Today).ToString();
             //ChallanGrid.Columns.Add("SeqNo", typeof(int));
             ChallanGrid.Columns.Add("EntryDate", typeof(DateTime));
             ChallanGrid.Columns.Add("EntryIdIssJw", typeof(int));
@@ -512,27 +516,27 @@ namespace eTactWeb.Controllers
                 ChallanGrid.Rows.Add(
                     new object[]
                     {
-                    DateTime.Today,
+                  ParseFormattedDate (todate),
                     Item.EntryIdIssJw,
                     Item.YearCodeIssJw, //Item.IssYearCode,
                     Item.IssChallanNo ?? "",
-                    DateTime.Today,
+                    ParseFormattedDate (todate),
                     Item.ItemCode,
                     Item.EntryIdRecJw,
                     Item.YearCodeRecJw,
                     Item.PreRecChallanNo ?? "",
-                    DateTime.Today,
+                 ParseFormattedDate (todate),
                     Item.FinishItemCode,
                     Item.AccountCode,
                     Item.AdjQty,
                     Item.CC ?? "",
                     Item.AdjFormType ?? "",
-                    DateTime.Today,
+                   ParseFormattedDate (todate),
                     Item.TotalRecQty,
                     Item.PendQty,
                     Item.BOMQty,
                     Item.BOMrevno,
-                    DateTime.Today,
+                    ParseFormattedDate (todate),
                     Item.ProcessId,
                     Item.BOMInd ?? "",
                     Item.RecQty,
@@ -610,6 +614,64 @@ namespace eTactWeb.Controllers
             var JSON = await _IJobWorkReceive.GetGateNo("PENDINGGATEFORMRN", "SP_JobworkRec", FromDate, ToDate);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
+        }
+        public async Task<JsonResult> CheckQtyBeforeInsertOrUpdate(string TypesBOMIND)
+        {
+            var JWRGrid = new DataTable();
+            var ChallanGrid = new DataTable();
+            string serializedGrid = HttpContext.Session.GetString("KeyJobWorkRecieve");
+            List<JobWorkReceiveDetail> JobWorkReceiveDetail = new List<JobWorkReceiveDetail>();
+            if (!string.IsNullOrEmpty(serializedGrid))
+            {
+                JobWorkReceiveDetail = JsonConvert.DeserializeObject<List<JobWorkReceiveDetail>>(serializedGrid);
+            }
+            string modelReceiveGridJson = HttpContext.Session.GetString("KeyJobWorkRecieveGrid");
+            List<JobWorkReceiveItemDetail> JobWorkReceiveItemDetail = new List<JobWorkReceiveItemDetail>();
+            if (!string.IsNullOrEmpty(modelReceiveGridJson))
+            {
+                JobWorkReceiveItemDetail = JsonConvert.DeserializeObject<List<JobWorkReceiveItemDetail>>(modelReceiveGridJson);
+            }
+
+            JWRGrid = GetJWRTable(JobWorkReceiveItemDetail);
+            ChallanGrid = GetChallanTable(JobWorkReceiveDetail);
+            var ChechedData = await _IJobWorkReceive.CheckQtyBeforeInsertOrUpdate(TypesBOMIND,JWRGrid, ChallanGrid);
+            if (ChechedData.StatusCode == HttpStatusCode.OK && ChechedData.StatusText == "Success")
+            {
+                DataTable dt = ChechedData.Result;
+
+                List<string> errorMessages = new List<string>();
+                JsonConvert.SerializeObject(ChechedData);
+                foreach (DataRow row in dt.Rows)
+                {
+                    string itemName = row["Item_Name"].ToString();
+                    decimal availableQty = 0;
+
+                    try
+                    {
+                        if (row["AdjQty"] != DBNull.Value && !string.IsNullOrWhiteSpace(row["AdjQty"].ToString()))
+                            availableQty = Convert.ToDecimal(row["AdjQty"]);
+                    }
+                    catch
+                    {
+                        availableQty = 0; // if column doesn't exist or conversion fails
+                    }
+                 //   decimal availableQty = Convert.ToDecimal(row["AdjQty"]);
+
+                    string error = $"{itemName}  has only {availableQty} quantity available in stock.";
+                    errorMessages.Add(error);
+                }
+
+                return Json(new
+                {
+                    success = false,
+                    errors = errorMessages
+                });
+            }
+            return Json(new
+            {
+                success = true,
+                message = "No errors found."
+            });
         }
         public async Task<JsonResult> GetEmployeeList()
         {

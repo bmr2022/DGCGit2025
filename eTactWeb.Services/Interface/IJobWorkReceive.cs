@@ -27,6 +27,8 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetPopUpChallanData(int AccountCode, int YearCode, string FromDate, string ToDate, int RecItemCode, int BomRevNo, string BomRevDate, string BOMIND, string BillChallanDate, string JobType, string ProdUnProd);
         Task<ResponseResult> GetPopUpData(string Flag,int AccountCode, int IssYear, string FinYearFromDate, string billchallandate, string prodUnProd, string BOMINd, int RMItemCode, string RMPartcode, string RMItemNAme, string ACCOUNTNAME, int Processid);
         Task<ResponseResult> GetAdjustedChallan(int AccountCode, int YearCode, string FinYearFromDate, string billchallandate, string GateNo, int GateYearCode, DataTable DTTItemGrid);
+        Task<ResponseResult> CheckQtyBeforeInsertOrUpdate(string TypesBOMIND, DataTable JWRGrid, DataTable  ChallanGrid);
+
         Task<ResponseResult> GetBomValidated(int RecItemCode, int BomRevNo, string BomRevDate, int RecQty);
         Task<JWReceiveDashboard> GetDashboardData(string VendorName, string MRNNo, string GateNo, string PartCode, string ItemName,string BranchName, string InvNo, string Fromdate,string Todate);
         Task<JWReceiveDashboard> GetDetailDashboardData(string VendorName, string MRNNo, string GateNo, string PartCode, string ItemName,string BranchName, string InvNo, string Fromdate,string Todate);

@@ -33,13 +33,14 @@ namespace eTactWeb.Controllers
         private readonly IWebHostEnvironment _IWebHostEnvironment;
         private readonly IConfiguration iconfiguration;
         private readonly IMemoryCache _MemoryCache;
+        private readonly ConnectionStringService _connectionStringService;
         public ILogger<DirectPurchaseBillModel> _Logger { get; set; }
         public CultureInfo CI { get; private set; }
         public EncryptDecrypt EncryptDecrypt { get; private set; }
         public IDataLogic IDataLogic { get; private set; }
         public IDirectPurchaseBill IDirectPurchaseBill { get; set; }
 
-        public DirectPurchaseBillController(IDirectPurchaseBill iDirectPurchaseBill, IDataLogic iDataLogic, ILogger<DirectPurchaseBillModel> logger, EncryptDecrypt encryptDecrypt, IMemoryCacheService iMemoryCacheService, IWebHostEnvironment iWebHostEnvironment, IConfiguration configuration, IMemoryCache iMemoryCache)
+        public DirectPurchaseBillController(IDirectPurchaseBill iDirectPurchaseBill, IDataLogic iDataLogic, ILogger<DirectPurchaseBillModel> logger, EncryptDecrypt encryptDecrypt, IMemoryCacheService iMemoryCacheService, IWebHostEnvironment iWebHostEnvironment, IConfiguration configuration, IMemoryCache iMemoryCache, ConnectionStringService connectionStringService)
         {
             _iMemoryCacheService = iMemoryCacheService;
             IDirectPurchaseBill = iDirectPurchaseBill;
@@ -50,10 +51,11 @@ namespace eTactWeb.Controllers
             _IWebHostEnvironment = iWebHostEnvironment;
             iconfiguration = configuration;
             _MemoryCache = iMemoryCache;
+            _connectionStringService = connectionStringService;
         }
 
         [HttpGet]
-        public async Task<IActionResult> DirectPurchaseBill(int ID, int YearCode, string Mode, string? TypeITEMSERVASSETS, string FromDate = "", string ToDate = "", string DashboardType = "", string DocumentType = "", string VendorName = "", string PurchVouchNo = "", string InvoiceNo = "", string PartCode = "", string ItemName = "", string HSNNo = "", string Searchbox = "")
+        public async Task<IActionResult> DirectPurchaseBill( int ID,  int YearCode, string Mode, string? TypeITEMSERVASSETS, string FromDate = "", string ToDate = "",  string DashboardType = "", string DocumentType = "", string VendorName = "", string PurchVouchNo = "", string InvoiceNo = "", string PartCode = "", string ItemName = "", string HSNNo = "", string Searchbox = "")
         {
             HttpContext.Session.Remove("KeyTaxGrid");
             HttpContext.Session.Remove("KeyTDSGrid");
@@ -144,6 +146,12 @@ namespace eTactWeb.Controllers
             MainModel.adjustmentModel = (MainModel.adjustmentModel != null && MainModel.adjustmentModel.AdjAdjustmentDetailGrid != null) ? MainModel.adjustmentModel : new AdjustmentModel();
             return View(MainModel);
 
+        }
+        public async Task<JsonResult> GetFeatureOption()
+        {
+            var JSON = await IDirectPurchaseBill.GetFeatureOption();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
         }
 
         [HttpPost]
@@ -524,23 +532,15 @@ namespace eTactWeb.Controllers
             //string frx = Path.Combine(_env.ContentRootPath, "reports", value.file);
             var webReport = new WebReport();
 
-            var ReportName = IDirectPurchaseBill.GetReportName();
-            //if (ReportName.Result.Result.Rows[0].ItemArray[0] != System.DBNull.Value)
-            //{
-            //    webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0] + ".frx"); // from database
-            //}
-            //else
-            //{
-                webReport.Report.Load(webRootPath + "\\PO.frx"); // default report
+           
+           webReport.Report.Load(webRootPath + "\\DirectPurchaseBillReport.frx"); // default report
 
-           // }
-            //webReport.Report.SetParameterValue("flagparam", "PURCHASEORDERPRINT");
             webReport.Report.SetParameterValue("entryparam", EntryId);
             webReport.Report.SetParameterValue("yearparam", YearCode);
-            webReport.Report.SetParameterValue("ponoparam", PONO);
+            //webReport.Report.SetParameterValue("ponoparam", PONO);
 
-
-            my_connection_string = iconfiguration.GetConnectionString("eTactDB");
+            my_connection_string = _connectionStringService.GetConnectionString();
+            //my_connection_string = iconfiguration.GetConnectionString("eTactDB");
             webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
             webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
             webReport.Report.SetParameterValue("MyParameter", my_connection_string);
@@ -1259,6 +1259,7 @@ namespace eTactWeb.Controllers
             Table.Columns.Add("RejectedQty", typeof(float));
             Table.Columns.Add("AltQty", typeof(float));
             Table.Columns.Add("AltUnit", typeof(string));
+            
             Table.Columns.Add("Rate", typeof(float));
             Table.Columns.Add("MRP", typeof(float));
             Table.Columns.Add("RateUnit", typeof(string));
@@ -1301,9 +1302,11 @@ namespace eTactWeb.Controllers
             Table.Columns.Add("AgainstImportYearCode", typeof(int));
             Table.Columns.Add("AgainstImportInvDate", typeof(string));
             Table.Columns.Add("HSNNO", typeof(string));
+           
             Table.Columns.Add("AcceptedQty", typeof(float));
             Table.Columns.Add("ReworkQty", typeof(float));
             Table.Columns.Add("HoldQty", typeof(float));
+            Table.Columns.Add("ItemLocation", typeof(string));
 
             foreach (DPBItemDetail Item in itemDetailList)
             {
@@ -1343,6 +1346,7 @@ namespace eTactWeb.Controllers
                     0f, // Item.RejectedQty
                     Item.AltQty > 0 ? Math.Round(Item.AltQty, 2, MidpointRounding.AwayFromZero) : 0,
                     Item.AltUnit ?? string.Empty,
+                     
                     Item.Rate > 0 ? Math.Round(Item.Rate, 2, MidpointRounding.AwayFromZero) : 0,
                     0f, // Item.MRP
                     Item.UnitRate ?? string.Empty,
@@ -1385,9 +1389,11 @@ namespace eTactWeb.Controllers
                     0, // Item.AgainstImportYearCode
                     againstImportInvDt, // Item.AgainstImportInvDate
                     Item.HSNNo.ToString(),
+                   
                     Item.AcceptedQty,
                     Item.HoldQty,
-                Item.ReworkQty
+                Item.ReworkQty,
+                Item.ItemLocation ?? string.Empty
                     });
             }
 
@@ -1669,6 +1675,7 @@ namespace eTactWeb.Controllers
                     ScheduleNo = model.ScheduleNo,
                     ScheduleYear = model.ScheduleYear,
                     ScheduleDate = model.ScheduleDate,
+                    ItemLocation = model.ItemLocation,
 
                     Unit = model.Unit,
                 });

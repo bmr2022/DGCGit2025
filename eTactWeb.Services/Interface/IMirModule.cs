@@ -33,8 +33,9 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetSearchData(MIRQDashboard model);
         Task<MirModel> GetViewByID(int ID, int YearCode);
         Task<ResponseResult> GetFormRights(int uId);
-        Task<ResponseResult> GetOkRecStore(int ItemCode,string ShowAllStore);
+        Task<ResponseResult> GetOkRecStore(int ItemCode,string ShowAllStore,string GateNo);
         Task<ResponseResult> DeleteByID(int ID, int YC);
         Task<ResponseResult> GetReportName();
+        Task<ResponseResult> GenerateBarCodeTag(string MIRNo, int YearCode, string ItemCodes);
     }
 }

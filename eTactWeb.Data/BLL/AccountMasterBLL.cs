@@ -64,4 +64,25 @@ public class AccountMasterBLL : IAccountMaster
     {
         return await _AccountMasterDAL.SaveAccountMaster(model);
     }
+    public Task<ResponseResult> GetItemGroupCode(string GroupCode)
+    {
+        return _AccountMasterDAL.GetItemGroupCode(GroupCode);
+    }
+    public Task<ResponseResult> GetItemCatCode(string CatCode)
+    {
+        return _AccountMasterDAL.GetItemCatCode(CatCode);
+    }
+
+    public Task<ResponseResult> GetStateCode(string State)
+    {
+        return _AccountMasterDAL.GetStateCode(State);
+    } 
+    public Task<ResponseResult> GetAccountGroupDetail(string AccountName)
+    {
+        return _AccountMasterDAL.GetAccountGroupDetail(AccountName);
+    }
+    public async Task<ResponseResult> UpdateMultipleItemDataFromExcel(DataTable ItemDetailGrid, string flag)
+    {
+        return await _AccountMasterDAL.UpdateMultipleItemDataFromExcel(ItemDetailGrid, flag);
+    }
 }

@@ -71,7 +71,7 @@ namespace eTactWeb.Data.DAL
                         oDataAdapter.Fill(oDataSet);
                     }
 
-                    if (ReportType == "LISTOFPO") //list of po
+                    if (ReportType == "LIST OF PO") //list of po
                     {
                         if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
                         {
@@ -107,7 +107,7 @@ namespace eTactWeb.Data.DAL
                             model.PORegisterDetails = _PODetail;
                         }
                     } 
-                    if (ReportType == "DETAIL") //PURCHASE ORDER DETAIL
+                    if (ReportType == "List of PO With Item") //PURCHASE ORDER DETAIL
                     {
                         if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
                         {
@@ -119,7 +119,7 @@ namespace eTactWeb.Data.DAL
                             model.PORegisterDetails = _PODetail;
                         }
                     }
-                    if (ReportType == "SUMM") //PURCHASE ORDER SUMMARY
+                    if (ReportType == "PO vs Receiving Detail ( GateMRNQC)") //PURCHASE ORDER SUMMARY
                     {
                         if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
                         {
@@ -131,7 +131,7 @@ namespace eTactWeb.Data.DAL
                             model.PORegisterDetails = _PODetail;
                         }
                     }
-                    if (ReportType == "SUMMRATEING") //SUMMARY RATING
+                    if (ReportType == "PO+Sch Vs Receiving Summary") //SUMMARY RATING
                     {
                         if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
                         {
@@ -143,7 +143,7 @@ namespace eTactWeb.Data.DAL
                             model.PORegisterDetails = _PODetail;
                         }
                     }
-                    if (ReportType == "CONSOLIDATED") //Consolidated
+                    if (ReportType == "CONSOLIDATED ( Part+Item Wise)") //Consolidated
                     {
                         if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
                         {
@@ -155,6 +155,19 @@ namespace eTactWeb.Data.DAL
                             model.PORegisterDetails = _PODetail;
                         }
                     }
+                    if (ReportType == "SUMMRATEING") //Consolidated
+                    {
+                        if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                        {
+                            foreach (DataRow row in oDataSet.Tables[0].Rows)
+                            {
+                                var poDetail = CommonFunc.DataRowToClass<PORegisterDetail>(row);
+                                _PODetail.Add(poDetail);
+                            }
+                            model.PORegisterDetails = _PODetail;
+                        }
+                    }
+
                     if (ReportType == "PARTYWISECONSOLIDATED") //party WISE CONSOLIDATED
                     {
                         if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
@@ -179,7 +192,19 @@ namespace eTactWeb.Data.DAL
                             model.PORegisterDetails = _PODetail;
                         }
                     }
-                    if (ReportType == "PRICEHISTORY") //item wise consolidated
+                    if (ReportType == "PRICEHISTORY") 
+                    {
+                        if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                        {
+                            foreach (DataRow row in oDataSet.Tables[0].Rows)
+                            {
+                                var poDetail = CommonFunc.DataRowToClass<PORegisterDetail>(row);
+                                _PODetail.Add(poDetail);
+                            }
+                            model.PORegisterDetails = _PODetail;
+                        }
+                    }
+                    if (ReportType == "Order vs Dispatch") 
                     {
                         if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
                         {

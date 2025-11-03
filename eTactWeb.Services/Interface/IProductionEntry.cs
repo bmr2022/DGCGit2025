@@ -34,11 +34,11 @@ public interface IProductionEntry
     Task<ResponseResult> CheckForEditandDelete(string ProdSlipNo,int YearCode);
     Task<ResponseResult> FillIssStore();
     Task<ResponseResult> FillOperation(int ItemCode, int WcId);
-    Task<ResponseResult> FillMachineGroup();
+    Task<ResponseResult> FillMachineGroup(int groupId);
     Task<ProductionEntryModel> GetChildData(string Flag, string SPName, int WcId, int YearCode, float ProdQty, int ItemCode, string ProdDate, int BomNo);
-    Task<ResponseResult> GetItems(string ProdAgainst, int YearCode, string ItemName);
-    Task<ResponseResult> GetPartCode(string ProdAgainst, int YearCode, string PartCode);
-    Task<ResponseResult> FillMachineName();
+    Task<ResponseResult> GetItems(string ProdAgainst, int YearCode, string ItemName, int WCID);
+    Task<ResponseResult> GetPartCode(string ProdAgainst, int YearCode, string PartCode,int WCID);
+    Task<ResponseResult> FillMachineName(int groupId);
     Task<ProductionEntryModel> FillScrapData(int FGItemCode, decimal FgProdQty, string BomNo);
     Task<ProductionEntryModel> FillProductDetail(int FGItemCode, decimal FgProdQty, string BomNo);
     Task<ResponseResult> FillSuperwiser();
@@ -87,7 +87,7 @@ public interface IProductionEntry
     Task<ResponseResult> CheckDuplicateEntry(int YearCode, int AccountCode, string InvNo, int DocType);
     Task<ResponseResult> FillProductType();
     public Task<PendingProductionEntryModel> GetPendingProductionEntry(int Yearcode);
-    Task<ResponseResult> ChkWIPStockBeforeSaving(int WcId, string TransferMatEntryDate, int TransferMatYearCode, int TransferMatEntryId, DataTable TransferGrid);
+    Task<ResponseResult> ChkWIPStockBeforeSaving(int WcId, string TransferMatEntryDate, int TransferMatYearCode, int TransferMatEntryId, DataTable TransferGrid,string mode);
 
 
 }

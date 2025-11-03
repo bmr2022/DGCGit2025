@@ -17,11 +17,12 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FillEntryId(int YearCode);
 
         Task<ResponseResult> GetEmployeeDetail(int empid);
+        Task<ResponseResult> GetLeaveDetail(int empid,string LeaveAppEntryDate);
 
         Task<ResponseResult> SaveData(HRLeaveApplicationMasterModel model, DataTable DT);
 
         Task<ResponseResult> GetDashboardData();
-        Task<HRLeaveApplicationDashBoard> GetDashboardDetailData(string ReportType, string FromDate, string ToDate);
+        Task<HRLeaveApplicationDashBoard> GetDashboardDetailData(string ReportType, string FromDate, string ToDate,int Empid,int LeaveEntryId);
 
         Task<HRLeaveApplicationMasterModel> GetViewByID(int id, int year);
 

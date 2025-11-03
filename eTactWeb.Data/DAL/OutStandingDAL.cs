@@ -25,7 +25,7 @@ namespace eTactWeb.Data.DAL
             _IDataLogic = iDataLogic;
         }
 
-        public async Task<ResponseResult> GetPartyName(string outstandingType, string TillDate)
+        public async Task<ResponseResult> GetPartyName(string outstandingType, string TillDate, int? GroupCode)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -33,7 +33,8 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "FillAccountName"));
                 SqlParams.Add(new SqlParameter("@outstandingType", outstandingType));
-                //SqlParams.Add(new SqlParameter("Debtors", underGroup));
+                SqlParams.Add(new SqlParameter("@GroupCode", GroupCode.HasValue ? (object)GroupCode.Value : DBNull.Value));
+                SqlParams.Add(new SqlParameter("@ReportCallingFrom", "OutstandingForm"));
                 SqlParams.Add(new SqlParameter("@TillDate", ParseFormattedDate(TillDate)));
 
 
@@ -74,7 +75,7 @@ namespace eTactWeb.Data.DAL
 
         }
 
-        public async Task<OutStandingModel> GetDetailsData(string outstandingType, string TillDate, string GroupName, string[] AccountNameList, int AccountCode, string ShowOnlyApprovedBill, bool ShowZeroBal)
+        public async Task<OutStandingModel> GetDetailsData(string outstandingType, string TillDate, int? GroupName, string[] AccountNameList, int AccountCode, string ShowOnlyApprovedBill, bool ShowZeroBal, string VoucherNo, string VoucherType)
         {
             var resultList = new OutStandingModel();
             DataSet oDataSet = new DataSet();
@@ -117,7 +118,8 @@ namespace eTactWeb.Data.DAL
 														  select new OutStandingModel
 														  {
 															  LedgerDescription = row["LedgerDescription"] == DBNull.Value ? string.Empty : row["LedgerDescription"].ToString(),
-															  VoucherNo = row["VoucherNo"] == DBNull.Value ? string.Empty : row["VoucherNo"].ToString(),
+                                                              AccountCode = row["AccountCode"] == DBNull.Value ? 0 : Convert.ToInt32(row["AccountCode"]),
+                                                              VoucherNo = row["VoucherNo"] == DBNull.Value ? string.Empty : row["VoucherNo"].ToString(),
 															  VoucherDate = row["VoucherDate"] == DBNull.Value ? string.Empty : Convert.ToDateTime(row["VoucherDate"]).ToString("dd-MM-yyyy"),
 															  VoucherType = row["VoucherType"] == DBNull.Value ? string.Empty : row["VoucherType"].ToString(),
 															  DrAmt = row["DrAmt"] == DBNull.Value ? string.Empty : row["DrAmt"].ToString(),
@@ -131,6 +133,13 @@ namespace eTactWeb.Data.DAL
 															  AccYearCode = row["AccYearCode"] == DBNull.Value ? string.Empty : row["AccYearCode"].ToString(),
                                                               DocEntryId = row["DocEntryId"] == DBNull.Value ? 0 : Convert.ToInt32(row["DocEntryId"]),
                                                               SalesPersonName = row["SalesPersonName"] == DBNull.Value ? string.Empty : row["SalesPersonName"].ToString(),
+                                                              ReportType = outstandingType,
+                                                              GroupName = GroupName,
+                                                              TillDate = tillDt,
+                                                              AccountCodeBack = AccountCode,
+                                                              AccountNameList = AccountNameList,
+                                                              VoucherNoBack = VoucherNo,
+                                                              VoucherTypeBack = VoucherType,
 														  }).ToList();
 						}
 						else
@@ -185,6 +194,107 @@ namespace eTactWeb.Data.DAL
             }
 
             return resultList;
+        }
+
+        public async Task<ResponseResult> GetVoucherNo(int CurrentYear)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "FillVouchersList"));
+                SqlParams.Add(new SqlParameter("@currentYear", CurrentYear));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpGetListOfAgasintREfAdjustedVoucher", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+
+        }
+        public async Task<ResponseResult> GetVoucherType(int CurrentYear)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "FillVoucherTypeList"));
+                SqlParams.Add(new SqlParameter("@currentYear", CurrentYear));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpGetListOfAgasintREfAdjustedVoucher", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+
+        }
+        public async Task<OutStandingModel> GetVoucherList(int AccountCode, string VoucherNo, string VoucherType, int VoucherYearCode, int CurrentYear)
+        {
+            var result = new OutStandingModel();
+            DataSet oDataSet = new DataSet();
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(DBConnectionString))
+                {
+                    SqlCommand command = new SqlCommand("AccSpGetListOfAgasintREfAdjustedVoucher", connection)
+                    {
+                        CommandType = CommandType.StoredProcedure
+                    };
+
+                    command.Parameters.AddWithValue("@Flag", "GetListofAdjustedVouchers");
+                    command.Parameters.AddWithValue("@AccountCode", AccountCode);
+                    command.Parameters.AddWithValue("@VoucherNo", VoucherNo);
+                    command.Parameters.AddWithValue("@VoucherType", VoucherType);
+                    command.Parameters.AddWithValue("@VoucherYearCode", VoucherYearCode);
+                    command.Parameters.AddWithValue("@currentYear", CurrentYear);
+
+                    await connection.OpenAsync();
+
+                    using (SqlDataAdapter dataAdapter = new SqlDataAdapter(command))
+                    {
+                        dataAdapter.Fill(oDataSet);
+                    }
+                }
+
+                if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                {
+                    result.OutStandingPopUpDatas = (from DataRow row in oDataSet.Tables[0].Rows
+                                                    select new OutStandingPopUpData
+                                                    {
+                                                        VoucherNo = row["VoucherNo"] == DBNull.Value ? string.Empty : row["VoucherNo"].ToString(),
+                                                        VoucherDate = row["VoucherDate"] == DBNull.Value ? string.Empty : Convert.ToDateTime(row["VoucherDate"]).ToString("dd-MM-yyyy"),
+                                                        BillOrInvoiceNo = row.Table.Columns.Contains("BillOrInvoiceNo") && row["BillOrInvoiceNo"] != DBNull.Value ? row["BillOrInvoiceNo"].ToString() : string.Empty,
+                                                        DrAmt = row["DrAmt"] == DBNull.Value ? 0 : Convert.ToDecimal(row["DrAmt"]),
+                                                        CrAmt = row["CrAmt"] == DBNull.Value ? 0 : Convert.ToDecimal(row["CrAmt"]),
+                                                        VoucherType = row["VoucherType"] == DBNull.Value ? string.Empty : row["VoucherType"].ToString(),
+                                                        NewRefNo = row.Table.Columns.Contains("NewRefNo") && row["NewRefNo"] != DBNull.Value ? row["NewRefNo"].ToString() : string.Empty,
+                                                        DocEntryId = row["DocEntryId"] == DBNull.Value ? 0 : Convert.ToInt32(row["DocEntryId"]),
+                                                        AccEntryId = row["AccEntryId"] == DBNull.Value ? 0 : Convert.ToInt32(row["AccEntryId"]),
+                                                        AccYearCode = row["AccYearCode"] == DBNull.Value ? 0 : Convert.ToInt32(row["AccYearCode"]),
+                                                        AgainstAccEntryId = row.Table.Columns.Contains("AgainstAccEntryId") && row["AgainstAccEntryId"] != DBNull.Value ? Convert.ToInt32(row["AgainstAccEntryId"]) : 0,
+                                                        AgainstAccYearCode = row.Table.Columns.Contains("AgainstAccYearCode") && row["AgainstAccYearCode"] != DBNull.Value ? Convert.ToInt32(row["AgainstAccYearCode"]) : 0
+                                                    }).ToList();
+                }
+                else
+                {
+                    result.OutStandingPopUpDatas = new List<OutStandingPopUpData>();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error fetching voucher popup data.", ex);
+            }
+
+            return result;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
@@ -18,10 +19,10 @@ namespace eTactWeb.Data.BLL
         private readonly IDataLogic _DataLogicDAL;
         private readonly IssueThrBOMDAL _IssueThrBOMDAL;
        
-        public IssueThrBOMBLL(IConfiguration configuration, IDataLogic iDataLogic)
+        public IssueThrBOMBLL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
             _DataLogicDAL = iDataLogic;
-            _IssueThrBOMDAL = new IssueThrBOMDAL(configuration, iDataLogic);
+            _IssueThrBOMDAL = new IssueThrBOMDAL(configuration, iDataLogic, connectionStringService);
         }
 
         public async Task<ResponseResult> PassForCloseReq()
@@ -81,6 +82,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _IssueThrBOMDAL.GetAllowBatch();
         }
+        public async Task<ResponseResult> GetIssueScanFeature()
+        {
+            return await _IssueThrBOMDAL.GetIssueScanFeature();
+        }
         public async Task<ResponseResult> FillFGDataList(string Reqno, int ReqYC)
         {
             return await _IssueThrBOMDAL.FillFGDataList(Reqno,ReqYC);
@@ -92,6 +97,14 @@ namespace eTactWeb.Data.BLL
         public async Task<ResponseResult> GetReqQtyForScan(string ReqNo, int ReqYearCode, string ReqDate, int ItemCode)
         {
             return await _IssueThrBOMDAL.GetReqQtyForScan(ReqNo,ReqYearCode,ReqDate,ItemCode);
+        }
+        public async Task<ResponseResult> GetStoreIdReqForScan(string ReqNo, int ReqYearCode, string ReqDate, int ItemCode)
+        {
+            return await _IssueThrBOMDAL.GetStoreIdReqForScan(ReqNo,ReqYearCode,ReqDate,ItemCode);
+        }
+        public async Task<ResponseResult> ShowDetail(string FromDate, string ToDate, string ReqNo, int YearCode, int ItemCode, string WoNo, int WorkCenter, int DeptName, int ReqYear, string IssueDate, string GlobalSearch, string FromStore, int StoreId)
+        {
+            return await _IssueThrBOMDAL.ShowDetail(FromDate, ToDate, ReqNo, YearCode, ItemCode, WoNo, WorkCenter, DeptName, ReqYear, IssueDate, GlobalSearch, FromStore, StoreId);
         }
         public async Task<ResponseResult> SaveIssueThrBom(IssueThrBom model, DataTable RMGrid,DataTable FGGrid)
         {

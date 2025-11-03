@@ -28,7 +28,8 @@ namespace eTactWeb.Controllers
         private readonly IMemoryCache _memoryCache;
         private EncryptDecrypt EncryptDecrypt { get; }
         private readonly IConfiguration iconfiguration;
-        public InterStoreTransferController(IInterStoreTransfer iInterStore, IConfiguration configuration, IDataLogic iDataLogic, ILogger<InterStoreTransferController> logger, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IMemoryCache memoryCache)
+        private readonly ConnectionStringService _connectionStringService;
+        public InterStoreTransferController(IInterStoreTransfer iInterStore, IConfiguration configuration, IDataLogic iDataLogic, ILogger<InterStoreTransferController> logger, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IMemoryCache memoryCache, ConnectionStringService connectionStringService)
         {
             IInterStore = iInterStore;
             IDataLogic = iDataLogic;
@@ -37,6 +38,7 @@ namespace eTactWeb.Controllers
             IWebHostEnvironment = iWebHostEnvironment;
             iconfiguration = configuration;
             _memoryCache = memoryCache;
+            _connectionStringService = connectionStringService;
         }
 
         [HttpGet]
@@ -113,7 +115,8 @@ namespace eTactWeb.Controllers
             ViewBag.YearCode = YearCode;
             ViewBag.PONO = PONO;
             webReport.Report.Load(webRootPath + "\\InterStoreTRansfer.frx"); // default report
-            my_connection_string = iconfiguration.GetConnectionString("eTactDB");
+            my_connection_string = _connectionStringService.GetConnectionString();
+            //my_connection_string = iconfiguration.GetConnectionString("eTactDB");
             webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
             webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
             webReport.Report.SetParameterValue("entryparam", EntryId);

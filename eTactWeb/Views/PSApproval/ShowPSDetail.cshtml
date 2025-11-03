@@ -79,6 +79,12 @@
                         <th>SchNo</th>
                         <th>PONO</th>
                         <th>Vendor Name</th>
+                        <th>Part Code</th>
+                        <th>Item Name</th>
+                        <th>Quantity</th>
+                        <th>Rate</th>
+                        <th>Remarks</th>
+                        
                         <th>Delivery Address</th>
                         <th>PODate</th>
                         <th>Sch Date</th>
@@ -88,11 +94,10 @@
                         <th>Sch Eff Till</th>
                         
                         <th>Deilvery Date</th>
-                        <th>Quantity</th>
-                        <th>Rate</th>
-                        <th>Part Code</th>
-                        <th>Item Name</th>
+                        
+                        
                         <th>Created By</th>
+                       
                     </tr>
                 </thead>
                 <tbody id="gateDashboardtable">
@@ -113,6 +118,11 @@
                                     <td>@item.SchNo</td>
                                     <td>@item.PONO</td>
                                     <td>@item.VendorName</td>
+                                    <td>@item.PartCode</td>
+                                    <td>@item.ItemName</td>
+                                    <td>@item.SchQty</td>
+                                    <td>@item.Rate</td>
+                                    <td>@item.Remarks</td>
                                     <td>@item.DeliveryAddress</td>
                                     <td>@item.PODate</td>
                                     <td>@item.PODate</td>
@@ -121,12 +131,11 @@
                                     <td>@item.SchEffFromDate</td>
                                     <td>@item.SchEffTillDate</td>
                                     <td>@item.DeliveryDate</td>
-                                    <td>@item.SchQty</td>
-                                    <td>@item.Rate</td>
                                     
-                                    <td>@item.PartCode</td>
-                                    <td>@item.ItemName</td>
+                                    
+                                   
                                     <td>@item.UserName</td>
+                                    
                                 </tr>
                             }
                         }

@@ -1,0 +1,88 @@
+﻿@model eTactWeb.DOM.Models.Common.AdjustmentModel
+
+@if (Model.AdjAdjustmentDetailGrid == null)
+{
+    <tr class="text-center">
+        <td colspan="20" class="text-black-50"><strong>NO DATA ADDED</strong></td>
+    </tr>
+}
+else
+{
+    <input type="hidden" asp-for="AdjTotalAmt" class="form-control" />
+    <input type="hidden" asp-for="AdjAdjstedAmt" class="form-control" />
+    <input type="hidden" asp-for="AdjRemainingAmt" class="form-control" />
+
+    foreach (var item in Model.AdjAdjustmentDetailGrid)
+    {
+        <tr class="small @item.AdjSeqNo adjGridRow" style="white-space:nowrap">
+            <td style="white-space:nowrap;">
+                @if (Model.Mode == "V" && Model.ID > 0)
+                {
+                    <a class="table-link link-primary noCursor" disabled>
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                    <a class="table-link link-danger noCursor" disabled>
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                }
+                else
+                {
+                    <a class="table-link link-primary" onclick="EditAdjRow(@item.AdjSeqNo);">
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                    <a class="table-link link-danger" onclick="DeleteAdjRow(@item.AdjSeqNo);">
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                }
+            </td>
+            <td>@item.AdjSeqNo</td>
+            <td>@item.AdjModeOfAdjstment</td>
+            <td>@item.AdjDescription</td>
+            <td>
+                @{
+                    DateTime? adjDueDate = item.AdjDueDate;
+                    string formattedDate = adjDueDate.HasValue ? adjDueDate.Value.ToString("MM/dd/yyyy") : "";
+                    formattedDate = formattedDate.Replace("-", "/");
+                }
+                @formattedDate
+            </td>
+            <td>@item.AdjNewRefNo</td>
+            <td id="GridAdjPendAmount-@item.AdjSeqNo">@(item.AdjPendAmt?.ToString() ?? "0.00")</td>
+            <td class="GridAdjDrCr">
+                @if (item.AdjDrCr != null && item.AdjDrCr != "" && !item.AdjDrCr.Contains("Select"))
+                {
+                    @item.AdjDrCr
+                }
+                else { }
+            </td>
+            <td>@((item.AdjPurchOrderNo != null && item.AdjPurchOrderNo != "" && !item.AdjPurchOrderNo.Contains("Select")) ? item.AdjPurchOrderNo : string.Empty)</td>
+            <td>@(item.AdjPOYear ?? 0)</td>
+            <td>
+                @{
+                    DateTime? adjPODate = item.AdjPODate;
+                    string formattedPODate = adjPODate.HasValue ? adjPODate.Value.ToString("MM/dd/yyyy") : "";
+                    formattedDate = formattedDate.Replace("-", "/");
+                }
+                @formattedPODate
+            </td>
+            <td>@(item.AdjAgnstVouchNo ?? string.Empty)</td>
+            <td>@(item.AdjAgnstVouchType ?? string.Empty)</td>
+            <td>@(item.AdjOpenEntryID ?? 0)</td>
+            <td>@(item.AdjOpeningYearCode ?? 0)</td>
+            <td>@(item.AdjAgnstAccEntryID ?? 0)</td>
+            <td>@(item.AdjAgnstAccYearCode ?? 0)</td>
+        </tr>
+    }
+}

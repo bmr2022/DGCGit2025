@@ -55,6 +55,65 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
+        public async Task<ResponseResult> GetReportName()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetReportName"));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_PurchaseOrder", SqlParams);
+
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        } 
+        public async Task<ResponseResult> GetFeaturesOptions()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetFeaturesOptions"));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_ApproveUnapprovePurchaseOrder", SqlParams);
+
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> GetMobileNo(int ID, int YearCode, string PoNo)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetwhatsappMobileNo"));
+                SqlParams.Add(new SqlParameter("@PoNo", PoNo));
+                SqlParams.Add(new SqlParameter("@POEntryId", ID));
+                SqlParams.Add(new SqlParameter("@Poyearcode", YearCode));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_ApproveUnapprovePurchaseOrder", SqlParams);
+
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
         public async Task<ResponseResult> GetSearchData(string FromDate, string ToDate, string ApprovalType, string PONO, string VendorName,int Eid, string uid)
         {
             var _ResponseResult = new ResponseResult();

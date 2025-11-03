@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
@@ -15,9 +16,10 @@ namespace eTactWeb.Data.BLL
     {
         private readonly SaleRejectionDAL _SaleRejectionDAL;
         private readonly IDataLogic _DataLogicDAL;
-        public SaleRejectionBLL(IConfiguration configuration, IDataLogic iDataLogic)
+        private readonly ConnectionStringService _connectionStringService;
+        public SaleRejectionBLL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
-            _SaleRejectionDAL = new SaleRejectionDAL(configuration, iDataLogic);
+            _SaleRejectionDAL = new SaleRejectionDAL(configuration, iDataLogic,connectionStringService);
             _DataLogicDAL = iDataLogic;
         }
 
@@ -44,6 +46,14 @@ namespace eTactWeb.Data.BLL
         public async Task<ResponseResult> FillInvoiceNo(string fromDate, string toDate)
         {
             return await _SaleRejectionDAL.FillInvoiceNo(fromDate, toDate);
+        } 
+        public async Task<ResponseResult> FillMRNNo(string fromDate, string toDate)
+        {
+            return await _SaleRejectionDAL.FillMRNNo(fromDate, toDate);
+        }
+        public async Task<ResponseResult> FillGateNo(string fromDate, string toDate)
+        {
+            return await _SaleRejectionDAL.FillGateNo(fromDate, toDate);
         }
         public async Task<ResponseResult> FillVoucherNo(string fromDate, string toDate)
         {

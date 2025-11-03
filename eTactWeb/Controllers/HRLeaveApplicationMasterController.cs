@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using static eTactWeb.Data.Common.CommonFunc;
 using static eTactWeb.DOM.Models.Common;
 using eTactWeb.DOM.Models;
+using MessagePack;
 
 namespace eTactWeb.Controllers
 {
@@ -121,6 +122,14 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+
+        public async Task<JsonResult> GetLeaveDetail(int empid, string LeaveAppEntryDate)
+        {
+            var JSON = await _IHRLeaveApplicationMaster.GetLeaveDetail(empid, LeaveAppEntryDate);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
 
 
 
@@ -343,11 +352,13 @@ namespace eTactWeb.Controllers
                 GIGrid.Columns.Add("FromDate", typeof(DateTime));
                 GIGrid.Columns.Add("ToDate", typeof(DateTime));
                 GIGrid.Columns.Add("Duration", typeof(float));
+                GIGrid.Columns.Add("HalfDayFullDay", typeof(string));
                 GIGrid.Columns.Add("BalanceLeaveMonthly", typeof(float));
                 GIGrid.Columns.Add("BalanceLeaveYearly", typeof(float));
                 GIGrid.Columns.Add("MaxLeaveInMonth", typeof(float));
                 GIGrid.Columns.Add("Approved", typeof(string));
                 GIGrid.Columns.Add("Canceled", typeof(string));
+                
 
                 foreach (var Item in DetailList)
                 {
@@ -362,11 +373,13 @@ namespace eTactWeb.Controllers
                     Item.FromDate == null ? "" : DateTime.Parse(Item.FromDate),
                     Item.ToDate == null ? "" : DateTime.Parse(Item.ToDate),
                     Item.Duration == 0 ? 0:Item.Duration,
+                    Item.HalfDayFullDay == null ? "" : Item.HalfDayFullDay,
                     Item.BalanceLeaveMonthly == 0 ? 0 :Item.BalanceLeaveMonthly,
                     Item.BalanceLeaveYearly== 0 ? 0 : Item.BalanceLeaveYearly,
                     Item.MaxLeaveInMonth== 0 ? 0:Item.MaxLeaveInMonth,
                      Item.Approved == null ? "" : Item.Approved,
                       Item.Canceled == null ? "" : Item.Canceled,
+                      
                         });
                 }
                 GIGrid.Dispose();
@@ -488,11 +501,11 @@ namespace eTactWeb.Controllers
                 throw ex;
             }
         }
-        public async Task<IActionResult> GetDetailData(string ReportType, string FromDate, string ToDate)
+        public async Task<IActionResult> GetDetailData(string ReportType, string FromDate, string ToDate,int Empid,int LeaveEntryId)
         {
             //model.Mode = "Search";
             var model = new HRLeaveApplicationDashBoard();
-            model = await _IHRLeaveApplicationMaster.GetDashboardDetailData(ReportType, FromDate, ToDate);
+            model = await _IHRLeaveApplicationMaster.GetDashboardDetailData(ReportType, FromDate, ToDate, Empid, LeaveEntryId);
 
 
             if (ReportType == "SUMMARY")

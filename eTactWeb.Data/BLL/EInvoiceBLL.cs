@@ -21,6 +21,7 @@ namespace eTactWeb.Data.BLL
 {
     public class EInvoiceBLL : IEinvoiceService
     {
+
         private readonly IDataLogic _DataLogicDAL;
         private readonly EInvoiceDAL _EInvoiceDAL;
         private readonly IHttpClientFactory _httpClientFactory;
@@ -31,6 +32,12 @@ namespace eTactWeb.Data.BLL
             _EInvoiceDAL = new EInvoiceDAL(configuration, iDataLogic, _httpClientFactory, connectionStringService);
             _DataLogicDAL = iDataLogic;
         }
+
+        //public async Task<ResponseResult> GetEwayBillDataAsync(string invoiceNo, int yearCode, string flag)
+        //{
+        //    return 'ok';
+        //}
+
 
         public async Task<string> GetAccessTokenAsync()
         {
@@ -54,6 +61,10 @@ namespace eTactWeb.Data.BLL
         public async Task<ResponseResult> CheckDuplicateIRN(int entryId, string invoiceNo, int yearCode)
         {
             return await _EInvoiceDAL.CheckDuplicateIRN(entryId, invoiceNo, yearCode);
+        } 
+        public async Task<ResponseResult> GETGSTNO()
+        {
+            return await _EInvoiceDAL.GETGSTNO();
         }
         public async Task<ResponseResult> CancelEInvoice(   string token,int SaleBillYearCode, string SaleBillNo)
         {
@@ -188,6 +199,13 @@ namespace eTactWeb.Data.BLL
             };
         }
 
-      
+        public async Task<ResponseResult> GetEwayBillDataAsync()
+        {
+            return new ResponseResult
+            {
+                StatusCode = HttpStatusCode.OK,
+                StatusText = "E-way bill generated successfully"
+            };
+        }
     }
 }

@@ -108,12 +108,7 @@
                 </span> Remaining Useful Life (Years)
             </th>
 
-            <th data-columnno="16" data-sortorder="asc" class="sortCol">
-                <span style="padding:5px;margin:5px" class="sort-icon">
-                    <i class="fa" aria-hidden="true"></i>
-                </span> Carry Forwarded
-            </th>
-
+          
             <th data-columnno="17" data-sortorder="asc" class="sortCol">
                 <span style="padding:5px;margin:5px" class="sort-icon">
                     <i class="fa" aria-hidden="true"></i>
@@ -234,11 +229,37 @@
                                         </span>
                                     </a>
                                 </div>
-                                @if (item.BlockedEntry == "Y" || item.Carryforwarded == "Y" || item.BalanceSheetClosed == "Y")
-                                {
-                                    <div id="editCursorDiv-@Cntr">
 
-                                        <a class="table-link disabled link-primary" asp-action="AccDepriciationCalculationdetail" onclick="confirmEdit(event)" asp-route-Mode="U" asp-route-ID="@item.DepriciationEntryId" asp-route-YC="@YearCode"
+
+                                @if (item.BalanceSheetClosed == "Y" || item.CarryForwarded == "Y" || item.BlockedEntry == "Y")
+                                {
+                                    <div id="editCursorDiv-@Cntr" class="d-inline-block me-2">
+                                        <span class="table-link text-muted disabled-icon" title="Disabled">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </span>
+                                    </div>
+
+                                    <div id="deleteCursorDiv-@Cntr" class="d-inline-block">
+                                        <span class="table-link text-muted disabled-icon" title="Disabled">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </span>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div id="editCursorDiv-@Cntr" class="d-inline-block me-2">
+                                        <a class="table-link link-primary"
+                                           asp-action="AccDepriciationCalculationdetail"
+                                           onclick="confirmEdit(event)"
+                                           asp-route-Mode="U"
+                                           asp-route-ID="@item.DepriciationEntryId"
+                                           asp-route-YC="@YearCode"
                                            asp-route-DepriciationDate="@(item.DepriciationDate == null ? string.Empty : item.DepriciationDate.Split(" ")[0])"
                                            asp-route-DepriciationSlipNo="@item.DepriciationSlipNo"
                                            asp-route-CC="@item.CC"
@@ -260,42 +281,20 @@
                                             </span>
                                         </a>
                                     </div>
-                                }else{
-                                    <div id="editCursorDiv-@Cntr">
 
-                                        <a class="table-link link-primary" asp-action="AccDepriciationCalculationdetail" onclick="confirmEdit(event)" asp-route-Mode="U" asp-route-ID="@item.DepriciationEntryId" asp-route-YC="@YearCode"
-                                           asp-route-DepriciationDate="@(item.DepriciationDate == null ? string.Empty : item.DepriciationDate.Split(" ")[0])"
-                                           asp-route-DepriciationSlipNo="@item.DepriciationSlipNo"
-                                           asp-route-CC="@item.CC"
-                                           asp-route-ActualEntryByEmpName="@item.ActualEntryByEmpName"
-                                           asp-route-ActualEntryBy="@item.ActualEntryBy"
-                                           asp-route-ActualEntryDate="@(item.ActualEntryDate == null ? string.Empty : item.ActualEntryDate.Split(" ")[0])"
-                                           asp-route-LastUpdatedByEmpName="@item.LastUpdatedByEmpName"
-                                           asp-route-LastUpdatedDate="@(item.LastUpdatedDate == null ? string.Empty : item.LastUpdatedDate.Split(" ")[0])"
-                                           asp-route-EntryByMachine="@item.EntryByMachine"
-                                           asp-route-DepriciationYearCode="@item.DepriciationYearCode"
-                                           asp-route-ForClosingOfFinancialYear="@item.ForClosingOfFinancialYear"
-                                           asp-route-UID="@item.UID"
-                                           asp-route-BalanceSheetClosed="@item.BalanceSheetClosed"
-                                           asp-route-CarryForwarded="@item.CarryForwarded"
-                                           asp-route-BlockedEntry="@item.BlockedEntry">
+                                    <div id="deleteCursorDiv-@Cntr" class="d-inline-block">
+                                        <a class="table-link link-danger"
+                                           asp-action="DeleteByID"
+                                           asp-route-EntryId="@item.DepriciationEntryId"
+                                           asp-route-YearCode="@YearCode"
+                                           asp-route-EntryDate="@item.DepriciationDate">
                                             <span class="fa-stack">
                                                 <i class="fa fa-square fa-stack-2x"></i>
-                                                <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
                                             </span>
                                         </a>
                                     </div>
                                 }
-                                
-                                <div id="deleteCursorDiv-@Cntr">
-                                    <a class="table-link link-danger" asp-action="DeleteByID" asp-route-EntryId="@item.DepriciationEntryId" asp-route-YearCode="@YearCode" asp-route-EntryDate="@item.DepriciationDate">
-                                        <span class="fa-stack">
-                                            <i class="fa fa-square fa-stack-2x"></i>
-                                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
-                                        </span>
-                                    </a>
-                                </div>
-
 
                             </div>
                         </td>
@@ -317,7 +316,7 @@
                         <td>@item.DepreciationRate</td>
                         <td>@item.AfterDepriciationNetValue</td>
                         <td>@item.RemainingUseFullLifeInYear</td>
-                        <td>@item.CarryForwarded</td>
+                     
 
                         <td>@item.CC</td>
                         <td>@item.ActualEntryByEmpName</td>
@@ -333,7 +332,7 @@
                         <td>@item.ForClosingOfFinancialYear</td>
                         <td>@item.UID</td>
                         <td>@item.BalanceSheetClosed</td>
-                        <td>@item.Carryforwarded</td>
+                        <td>@item.CarryForwarded</td>
                         <td>@item.BlockedEntry</td>
 
 

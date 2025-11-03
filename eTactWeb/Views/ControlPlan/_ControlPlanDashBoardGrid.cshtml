@@ -16,15 +16,13 @@
                 <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Entry Date
             </th>
             
-            <th data-columnno="4" data-sortorder="asc" class="sortCol">
-                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Control Plan No
+            <th data-columnno="4" data-sortorder="asc" class="sortCol" style="width:50px; !important">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Plan No
             </th>
             <th data-columnno="5" data-sortorder="asc" class="sortCol">
-                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Revision No
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Rev No
             </th>
-            <th data-columnno="6" data-sortorder="asc" class="sortCol">
-                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> For/In/Out Process
-            </th>
+           
             <th data-columnno="7" data-sortorder="asc" class="sortCol">
                 <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Part Code
             </th>
@@ -77,38 +75,43 @@
                     Cntr = Cntr + 1;
                     <tr onclick="selection(this)">
                         <th>@Cntr</th>
-                        <td style="text-align:center;white-space: nowrap;">
-                            <div id="container">
+                        <td class="action-col">
+                            <div class="action-buttons">
+                                <!-- View -->
+                                <a class="btn-icon bg-success"
+                                   asp-action="ControlPlan"
+                                   asp-route-Mode="V"
+                                   asp-route-ID="@item.CntPlanEntryId"
+                                   asp-route-YC="@item.CntPlanYearCode"
+                                   onclick="BackButtonData(event,'@item.CntPlanEntryId','@item.CntPlanYearCode');">
+                                    <i class="fa fa-search"></i>
+                                </a>
 
-                                <div id="viewCursorDiv-@Cntr">
-                                    <a class="table-link link-success" asp-action="ControlPlan" asp-route-Mode="V" asp-route-ID="@item.CntPlanEntryId" asp-route-YC="@item.CntPlanYearCode" onclick="BackButtonData(event,'@item.CntPlanEntryId','@item.CntPlanYearCode');">
-                                        <span class="fa-stack">
-                                            <i class="fa fa-square fa-stack-2x"></i>
-                                            <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
-                                        </span>
-                                    </a>
-                                </div>
-                                <div id="editCursorDiv-@Cntr">
+                                <!-- Edit -->
+                                <a class="btn-icon bg-primary"
+                                   asp-action="ControlPlan"
+                                   onclick="confirmEdit(event)"
+                                   asp-route-Mode="U"
+                                   asp-route-ID="@item.CntPlanEntryId"
+                                   asp-route-YC="@item.CntPlanYearCode">
+                                    <i class="fa fa-pencil"></i>
+                                </a>
 
-                                    <a class="table-link link-primary" asp-action="ControlPlan" onclick="confirmEdit(event)" asp-route-Mode="U" asp-route-ID="@item.CntPlanEntryId" asp-route-YC="@item.CntPlanYearCode">
-                                        <span class="fa-stack">
-                                            <i class="fa fa-square fa-stack-2x"></i>
-                                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-                                        </span>
-                                    </a>
-                                </div>
-                                <div id="deleteCursorDiv-@Cntr">
-                                    <a class="table-link link-danger" asp-action="DeleteByID" asp-route-EntryId="@item.CntPlanEntryId"  asp-route-YearCode="@item.CntPlanYearCode" asp-route-EntryDate="@item.ActualEntryDate" asp-route-EntryByempId="@ActualEntryByEmpid" asp-route-ID="@item.CntPlanEntryId" asp-route-YC="@item.CntPlanYearCode">
-                                        <span class="fa-stack">
-                                            <i class="fa fa-square fa-stack-2x"></i>
-                                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
-                                        </span>
-                                    </a>
-                                </div>
-
-
+                                <!-- Delete -->
+                                <a class="btn-icon bg-danger"
+                                   onclick="confirmDelete(event)"
+                                   asp-action="DeleteByID"
+                                   asp-route-EntryId="@item.CntPlanEntryId"
+                                   asp-route-YearCode="@item.CntPlanYearCode"
+                                   asp-route-EntryDate="@item.ActualEntryDate"
+                                   asp-route-EntryByempId="@ActualEntryByEmpid"
+                                   asp-route-ID="@item.CntPlanEntryId"
+                                   asp-route-YC="@item.CntPlanYearCode">
+                                    <i class="fa fa-trash"></i>
+                                </a>
                             </div>
                         </td>
+
 
 
                         
@@ -116,7 +119,7 @@
                        
                         <td>@item.Control_PlanNo</td>
                         <td>@item.RevNo</td>
-                        <td>@item.ForInOutInprocess</td>
+                    
                         <td>@item.PartCode</td>
                         <td>@item.ItemName</td>
                        
@@ -144,14 +147,32 @@
 
 
 <style>
-    #container {
-        display: flex;
+    
+    td.action-col, th.action-col {
+        width: 1%;
+        white-space: nowrap;
+        text-align: center;
+        padding: 0 2px;
     }
 
-        #container > div {
-            flex: 1;
-            margin-right: 10px;
-        }
+    .action-buttons {
+        display: inline-flex;
+        gap: 2px;
+    }
+
+    .btn-icon {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        width:18px; 
+        height: 18px;
+        border-radius: 3px;
+        color: #fff;
+        font-size: 12px; 
+        line-height: 1;
+        text-decoration: none;
+    }
+
 
     #DashboardGrid {
         background-color: blanchedalmond;

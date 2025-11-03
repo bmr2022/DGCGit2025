@@ -33,7 +33,7 @@ namespace eTactWeb.Controllers
     string CheckPOPendFromPOonlyNotFromAmendment,string SOFileName,string AutoGenItemGroupCode,string AllowMultipleBuyerInSO,string SOPrintReportName
             ,string SaleAmendPrintReportName,string SaleSchedulePrintReportName,string SaleScheduleAmendPrintReportName,
     string BlockGateEntry4UnAppPOAmm,string AllowBackDateGateEntry, string ShowRateInGateMRN,string GateEntryPrintReportName,
-        string AllowGateRateEnabled, string AllowBackDateMRNEntry, string AllowToChangeStoreInMRN,string MRNPrintReportName,
+        string AllowGateRateEnabled, string AllowBackDateMRNEntry, string AllowToChangeStoreInMRN,string MRNPrintReportName, string TakeSuuplierBatchOrSystmGeneratedBatchForInv,
         string AllowBackDateMRIR, string CCMandatoryInQuery,string BatchWiseInventory,string AllowToChangeBranch,
         string AllowBAtchEditable, string AllowBAtchEditablePAssword, string FIFOBasedBatchInventory,
         string AllowBackdateReqWOBOM, long MaxDurationForReqToBePend, string IssueWithScanner,
@@ -71,7 +71,7 @@ string AccPurchaseBillInvoicePrintoutFilename,string FIFOBasedBatchInventoryInJo
             var MainModel = new Features_OptionsModel();
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && Mode == "U")
             {
-                 MainModel = await _IFeatures_Options.GetViewByID( Type).ConfigureAwait(false);
+                 MainModel = await _IFeatures_Options.GetViewByID(Type).ConfigureAwait(false);
 
                 MainModel.Mode = Mode;
                 MainModel.ID = ID;
@@ -98,7 +98,7 @@ string AccPurchaseBillInvoicePrintoutFilename,string FIFOBasedBatchInventoryInJo
                 MainModel.SaleAmendPrintReportName = SaleAmendPrintReportName;
                 MainModel.SaleSchedulePrintReportName = SaleSchedulePrintReportName;
                 MainModel.SaleScheduleAmendPrintReportName = SaleScheduleAmendPrintReportName;
-                MainModel.BlockGateEntry4UnAppPOAmm = BlockGateEntry4UnAppPOAmm;
+                MainModel.blockGateEntry4UnAppPOAmm = BlockGateEntry4UnAppPOAmm;
                 MainModel.AllowBackDateGAteEntry = AllowBackDateGateEntry;
                 MainModel.ShowRateINGAteMrn = ShowRateInGateMRN;
                 MainModel.GateEntryPrintReportName = GateEntryPrintReportName;
@@ -106,6 +106,7 @@ string AccPurchaseBillInvoicePrintoutFilename,string FIFOBasedBatchInventoryInJo
                 MainModel.AllowBackDateMRNEntry = AllowBackDateMRNEntry;
                 MainModel.AllowToChangeStoreInMRN = AllowToChangeStoreInMRN;
                 MainModel.MRNPrintReportName = MRNPrintReportName;
+                MainModel.TakeSuuplierBatchOrSystmGeneratedBatchForInv = TakeSuuplierBatchOrSystmGeneratedBatchForInv;
                 MainModel.AllowBackDateMRIR = AllowBackDateMRIR;
                 MainModel.CCMandatoryInQuery = CCMandatoryInQuery;
                 MainModel.BatchWiseInventory = BatchWiseInventory;
@@ -214,6 +215,7 @@ string AccPurchaseBillInvoicePrintoutFilename,string FIFOBasedBatchInventoryInJo
 
             return View(MainModel); 
         }
+
         [HttpPost]
         [Route("{controller}/Index")]
         public async Task<IActionResult> Features_Options(Features_OptionsModel model,string Type)
@@ -262,7 +264,407 @@ string AccPurchaseBillInvoicePrintoutFilename,string FIFOBasedBatchInventoryInJo
                 return View("Error", ResponseResult);
             }
         }
-        [HttpGet]
+		
+		public async Task<ActionResult> FeaturesOptionsSaleOrder(int ID, int YC,string Mode, string Type)
+		{
+			var MainModel = new Features_OptionsModel();
+			Type = "SaleOrderDetail";
+			MainModel = await _IFeatures_Options.GetViewByID(Type).ConfigureAwait(false);
+			MainModel.Mode = Mode; 
+			return View(MainModel);
+		}
+		[HttpPost]
+		public async Task<IActionResult> FeaturesOptionsSaleOrder(Features_OptionsModel model, string Type= "SaleOrderDetail")
+		{
+			try
+			{
+				model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+				 model.Type= "SaleOrderDetail";
+
+				var Result = await _IFeatures_Options.SaveFeatures_Options(model);
+				if (Result != null)
+				{
+					if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
+					{
+						ViewBag.isSuccess = true;
+						TempData["200"] = "200";
+						HttpContext.Session.Remove("CompanyGrid");
+					}
+					else if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
+					{
+						ViewBag.isSuccess = true;
+						TempData["202"] = "202";
+					}
+					else if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
+					{
+						ViewBag.isSuccess = false;
+						TempData["500"] = "500";
+						_logger.LogError($"\n \n ********** LogError ********** \n {JsonConvert.SerializeObject(Result)}\n \n");
+						return View("Error", Result);
+					}
+				}
+
+				return RedirectToAction(nameof(FeaturesOptionsSaleOrder));
+
+			}
+			catch (Exception ex)
+			{
+				
+				LogException<Features_OptionsController>.WriteException(_logger, ex);
+				var ResponseResult = new ResponseResult
+				{
+					StatusCode = HttpStatusCode.InternalServerError,
+					StatusText = "Error",
+					Result = ex
+				};
+				return View("Error", ResponseResult);
+			}
+		}
+        public async Task<ActionResult> FeaturesOptionsSaleInvoice(int ID, int YC,string Mode, string Type)
+		{
+			var MainModel = new Features_OptionsModel();
+			Type = "SaleBillDetail";
+			MainModel = await _IFeatures_Options.GetViewByID(Type).ConfigureAwait(false);
+				MainModel.Mode = Mode; // Set Mode to Update
+			
+
+			return View(MainModel);
+		}
+		[HttpPost]
+		public async Task<IActionResult> FeaturesOptionsSaleInvoice(Features_OptionsModel model, string Type= "SaleOrderDetail")
+		{
+			try
+			{
+				model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+				 model.Type= "SaleBillDetail";
+
+				var Result = await _IFeatures_Options.SaveFeatures_Options(model);
+				if (Result != null)
+				{
+					if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
+					{
+						ViewBag.isSuccess = true;
+						TempData["200"] = "200";
+						HttpContext.Session.Remove("CompanyGrid");
+					}
+					else if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
+					{
+						ViewBag.isSuccess = true;
+						TempData["202"] = "202";
+					}
+					else if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
+					{
+						ViewBag.isSuccess = false;
+						TempData["500"] = "500";
+						_logger.LogError($"\n \n ********** LogError ********** \n {JsonConvert.SerializeObject(Result)}\n \n");
+						return View("Error", Result);
+					}
+				}
+
+				return RedirectToAction(nameof(FeaturesOptionsSaleInvoice));
+
+			}
+			catch (Exception ex)
+			{
+				LogException<Features_OptionsController>.WriteException(_logger, ex);
+				var ResponseResult = new ResponseResult
+				{
+					StatusCode = HttpStatusCode.InternalServerError,
+					StatusText = "Error",
+					Result = ex
+				};
+				return View("Error", ResponseResult);
+			}
+		}
+        public async Task<ActionResult> FeaturesOptionsPurchaseBill(int ID, int YC,string Mode, string Type)
+		{
+			var MainModel = new Features_OptionsModel();
+			Type = "PurchaseBill";
+			MainModel = await _IFeatures_Options.GetViewByID(Type).ConfigureAwait(false);
+				MainModel.Mode = Mode; 
+			
+
+			return View(MainModel);
+		}
+		[HttpPost]
+		public async Task<IActionResult> FeaturesOptionsPurchaseBill(Features_OptionsModel model, string Type= "SaleOrderDetail")
+		{
+			try
+			{
+				model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+				 model.Type= "PurchaseBill";
+
+				var Result = await _IFeatures_Options.SaveFeatures_Options(model);
+				if (Result != null)
+				{
+					if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
+					{
+						ViewBag.isSuccess = true;
+						TempData["200"] = "200";
+						HttpContext.Session.Remove("CompanyGrid");
+					}
+					else if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
+					{
+						ViewBag.isSuccess = true;
+						TempData["202"] = "202";
+					}
+					else if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
+					{
+						ViewBag.isSuccess = false;
+						TempData["500"] = "500";
+						_logger.LogError($"\n \n ********** LogError ********** \n {JsonConvert.SerializeObject(Result)}\n \n");
+						return View("Error", Result);
+					}
+				}
+
+				return RedirectToAction(nameof(FeaturesOptionsPurchaseBill));
+
+			}
+			catch (Exception ex)
+			{
+				// Log and return the error
+				LogException<Features_OptionsController>.WriteException(_logger, ex);
+				var ResponseResult = new ResponseResult
+				{
+					StatusCode = HttpStatusCode.InternalServerError,
+					StatusText = "Error",
+					Result = ex
+				};
+				return View("Error", ResponseResult);
+			}
+		}
+
+        public async Task<ActionResult> FeaturesOptionsPurchaseOrder(int ID, int YC,string Mode, string Type)
+		{
+			var MainModel = new Features_OptionsModel();
+			Type = "PurchaseDetail";
+			MainModel = await _IFeatures_Options.GetViewByID(Type).ConfigureAwait(false);
+				MainModel.Mode = Mode; // Set Mode to Update
+			
+
+			return View(MainModel);
+		}
+		[HttpPost]
+		public async Task<IActionResult> FeaturesOptionsPurchaseOrder(Features_OptionsModel model, string Type= "SaleOrderDetail")
+		{
+			try
+			{
+				model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+				 model.Type= "PurchaseDetail";
+
+				var Result = await _IFeatures_Options.SaveFeatures_Options(model);
+				if (Result != null)
+				{
+					if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
+					{
+						ViewBag.isSuccess = true;
+						TempData["200"] = "200";
+						HttpContext.Session.Remove("CompanyGrid");
+					}
+					else if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
+					{
+						ViewBag.isSuccess = true;
+						TempData["202"] = "202";
+					}
+					else if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
+					{
+						ViewBag.isSuccess = false;
+						TempData["500"] = "500";
+						_logger.LogError($"\n \n ********** LogError ********** \n {JsonConvert.SerializeObject(Result)}\n \n");
+						return View("Error", Result);
+					}
+				}
+
+				return RedirectToAction(nameof(FeaturesOptionsPurchaseOrder));
+
+			}
+			catch (Exception ex)
+			{
+				// Log and return the error
+				LogException<Features_OptionsController>.WriteException(_logger, ex);
+				var ResponseResult = new ResponseResult
+				{
+					StatusCode = HttpStatusCode.InternalServerError,
+					StatusText = "Error",
+					Result = ex
+				};
+				return View("Error", ResponseResult);
+			}
+		}
+        public async Task<ActionResult> FeaturesOptionsMRN(int ID, int YC,string Mode, string Type)
+		{
+			var MainModel = new Features_OptionsModel();
+			Type = "MRNDetail";
+			MainModel = await _IFeatures_Options.GetViewByID(Type).ConfigureAwait(false);
+				MainModel.Mode = Mode; // Set Mode to Update
+			
+
+			return View(MainModel);
+		}
+		[HttpPost]
+		public async Task<IActionResult> FeaturesOptionsMRN(Features_OptionsModel model, string Type= "SaleOrderDetail")
+		{
+			try
+			{
+				model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+				 model.Type= "MRNDetail";
+
+				var Result = await _IFeatures_Options.SaveFeatures_Options(model);
+				if (Result != null)
+				{
+					if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
+					{
+						ViewBag.isSuccess = true;
+						TempData["200"] = "200";
+						HttpContext.Session.Remove("CompanyGrid");
+					}
+					else if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
+					{
+						ViewBag.isSuccess = true;
+						TempData["202"] = "202";
+					}
+					else if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
+					{
+						ViewBag.isSuccess = false;
+						TempData["500"] = "500";
+						_logger.LogError($"\n \n ********** LogError ********** \n {JsonConvert.SerializeObject(Result)}\n \n");
+						return View("Error", Result);
+					}
+				}
+
+				return RedirectToAction(nameof(FeaturesOptionsMRN));
+
+			}
+			catch (Exception ex)
+			{
+				// Log and return the error
+				LogException<Features_OptionsController>.WriteException(_logger, ex);
+				var ResponseResult = new ResponseResult
+				{
+					StatusCode = HttpStatusCode.InternalServerError,
+					StatusText = "Error",
+					Result = ex
+				};
+				return View("Error", ResponseResult);
+			}
+		}
+        public async Task<ActionResult> FeaturesOptionsItemMaster(int ID, int YC,string Mode, string Type)
+		{
+			var MainModel = new Features_OptionsModel();
+			Type = "ItemDetail";
+			MainModel = await _IFeatures_Options.GetViewByID(Type).ConfigureAwait(false);
+				MainModel.Mode = Mode; // Set Mode to Update
+			
+
+			return View(MainModel);
+		}
+		[HttpPost]
+		public async Task<IActionResult> FeaturesOptionsItemMaster(Features_OptionsModel model, string Type= "SaleOrderDetail")
+		{
+			try
+			{
+				model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+				 model.Type= "ItemDetail";
+
+				var Result = await _IFeatures_Options.SaveFeatures_Options(model);
+				if (Result != null)
+				{
+					if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
+					{
+						ViewBag.isSuccess = true;
+						TempData["200"] = "200";
+						HttpContext.Session.Remove("CompanyGrid");
+					}
+					else if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
+					{
+						ViewBag.isSuccess = true;
+						TempData["202"] = "202";
+					}
+					else if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
+					{
+						ViewBag.isSuccess = false;
+						TempData["500"] = "500";
+						_logger.LogError($"\n \n ********** LogError ********** \n {JsonConvert.SerializeObject(Result)}\n \n");
+						return View("Error", Result);
+					}
+				}
+
+				return RedirectToAction(nameof(FeaturesOptionsItemMaster));
+
+			}
+			catch (Exception ex)
+			{
+				// Log and return the error
+				LogException<Features_OptionsController>.WriteException(_logger, ex);
+				var ResponseResult = new ResponseResult
+				{
+					StatusCode = HttpStatusCode.InternalServerError,
+					StatusText = "Error",
+					Result = ex
+				};
+				return View("Error", ResponseResult);
+			}
+		} 
+		public async Task<ActionResult> FeaturesOptionsGateEntry(int ID, int YC,string Mode, string Type)
+		{
+			var MainModel = new Features_OptionsModel();
+			Type = "GateEntryDetail";
+			MainModel = await _IFeatures_Options.GetViewByID(Type).ConfigureAwait(false);
+				MainModel.Mode = Mode; // Set Mode to Update
+			
+
+			return View(MainModel);
+		}
+		[HttpPost]
+		public async Task<IActionResult> FeaturesOptionsGateEntry(Features_OptionsModel model, string Type= "SaleOrderDetail")
+		{
+			try
+			{
+				model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+				 model.Type= "GateEntryDetail";
+
+				var Result = await _IFeatures_Options.SaveFeatures_Options(model);
+				if (Result != null)
+				{
+					if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
+					{
+						ViewBag.isSuccess = true;
+						TempData["200"] = "200";
+						HttpContext.Session.Remove("CompanyGrid");
+					}
+					else if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
+					{
+						ViewBag.isSuccess = true;
+						TempData["202"] = "202";
+					}
+					else if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
+					{
+						ViewBag.isSuccess = false;
+						TempData["500"] = "500";
+						_logger.LogError($"\n \n ********** LogError ********** \n {JsonConvert.SerializeObject(Result)}\n \n");
+						return View("Error", Result);
+					}
+				}
+
+				return RedirectToAction(nameof(FeaturesOptionsGateEntry));
+
+			}
+			catch (Exception ex)
+			{
+				// Log and return the error
+				LogException<Features_OptionsController>.WriteException(_logger, ex);
+				var ResponseResult = new ResponseResult
+				{
+					StatusCode = HttpStatusCode.InternalServerError,
+					StatusText = "Error",
+					Result = ex
+				};
+				return View("Error", ResponseResult);
+			}
+		}
+
+
+		[HttpGet]
         public async Task<IActionResult> Features_OptionsDashBoard()
         {
             try

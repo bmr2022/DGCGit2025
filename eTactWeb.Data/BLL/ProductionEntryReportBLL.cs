@@ -23,6 +23,10 @@ namespace eTactWeb.Data.BLL
             _DataLogicDAL = iDataLogic;
             _ProductionEntryReportDAL = new ProductionEntryReportDAL(configuration, iDataLogic, _httpContextAccessor, connectionStringService);
         }
+        public async Task<ResponseResult> GetCompanyName()
+        {
+            return await _ProductionEntryReportDAL.GetCompanyName();
+        }
         public async Task<ResponseResult> FillFGPartCode(string FromDate,string ToDate)
         {
             return await _ProductionEntryReportDAL.FillFGPartCode(FromDate,ToDate);
@@ -84,9 +88,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _ProductionEntryReportDAL.FillProcess(FromDate, ToDate);
         }
-        public async Task<ProductionEntryReportModel> GetProductionEntryReport(string ReportType, string FromDate, string ToDate, string FGPartCode, string FGItemName, string RMPartCode, string RMItemName, string ProdSlipNo, string ProdPlanNo, string ProdSchNo, string ReqNo, string WorkCenter, string MachineName, string OperatorName, string Process,string ShiftName, int StoreID, int WCID)
+        public async Task<ProductionEntryReportModel> GetProductionEntryReport(string ReportType, string FromDate, string ToDate, string FGPartCode, string FGItemName, string RMPartCode, string RMItemName, string ProdSlipNo, string ProdPlanNo, string ProdSchNo, string ReqNo, string WorkCenter, string MachineName, string OperatorName, string Process,string ShiftName, int StoreID, int WCID, string FromSlipNo, string ToSlipNo, DateTime FromTime, DateTime ToTime)
         {
-            return await _ProductionEntryReportDAL.GetProductionEntryReport(ReportType , FromDate, ToDate, FGPartCode, FGItemName, RMPartCode, RMItemName, ProdSlipNo,ProdPlanNo , ProdSchNo, ReqNo,WorkCenter,MachineName,OperatorName,Process, ShiftName,  StoreID,  WCID);
+            return await _ProductionEntryReportDAL.GetProductionEntryReport(ReportType , FromDate, ToDate, FGPartCode, FGItemName, RMPartCode, RMItemName, ProdSlipNo,ProdPlanNo , ProdSchNo, ReqNo,WorkCenter,MachineName,OperatorName,Process, ShiftName,  StoreID,  WCID,  FromSlipNo,  ToSlipNo,  FromTime,  ToTime);
         }
     }
 }

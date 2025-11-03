@@ -297,6 +297,7 @@ public class DPBItemDetail : TaxModel, ITDSModel
     public decimal Amount { get; set; }
 
     public string? Color { get; set; }
+    public string? ItemLocation { get; set; }
     public int CostCenter { get; set; }
     public string? CostCenterName { get; set; }
     public IList<TextValue>? CostCenterList { get; set; }
@@ -401,6 +402,7 @@ public class DirectPurchaseBillModel : DPBItemDetail
 
     //just for display
     public string? UniversalPartCode { get; set; }
+    public string? AccountName { get; set; }
     public string? UniversalDescription { get; set; }
 
     public string ? TextBox1Value { get; set; }

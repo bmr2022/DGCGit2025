@@ -1,0 +1,29 @@
+﻿@model eTactWeb.DOM.Models.SaleBillModel
+
+@{
+    var @Cntr = 0;
+    if (Model.ItemDetailGrid == null)
+    {
+        <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+    }
+    else
+    {
+        foreach (var item in Model.ItemDetailGrid)
+        {
+            Cntr = Cntr + 1;
+            <tr>
+                <td>@item.BillNo</td>
+                <td>@item.BillDate</td>
+                <td>@item.CustomerName</td>
+                <td>@item.Qty</td>
+                <td>@item.Rate</td>
+                <td>@item.DiscountPer</td>
+                <td>@item.Amount</td>
+
+                
+               
+
+            </tr>
+        }
+    }
+}                                      

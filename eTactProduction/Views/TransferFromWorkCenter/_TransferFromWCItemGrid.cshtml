@@ -15,6 +15,8 @@ else
         <tr id="itemGrid-@Cntr" class="small" style="white-space:nowrap">
             <td style="display:none"><input type="hidden" id="WCID-@Cntr" value="@item.WCID" /></td>
             <td style="display:none"><input type="hidden" id="WorkCenterName-@Cntr" value="@item.WorkCenterName" /></td>
+            <td><input type="checkbox" class="MBCheckbox" id="MBCheckbox-@Cntr" onchange="CalculateAmountForMalti(@Cntr)" /></td>
+
             <td><input readonly id="ItemName-@Cntr" type="text" value="@item.ItemName" /></td>
             <td>
                 <input readonly id="PartCode-@Cntr" style="width:100px;" type="text" value="@item.PartCode" />

@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Http;
@@ -19,10 +20,10 @@ namespace eTactWeb.Data.BLL
         private readonly GateEntryRegisterDAL _GateEntryRegisterDAL;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public GateEntryRegisterBLL(IConfiguration configuration, IDataLogic iDataLogic)
+        public GateEntryRegisterBLL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
             _DataLogicDAL = iDataLogic;
-            _GateEntryRegisterDAL = new GateEntryRegisterDAL(configuration, iDataLogic, _httpContextAccessor);
+            _GateEntryRegisterDAL = new GateEntryRegisterDAL(configuration, iDataLogic, _httpContextAccessor, connectionStringService);
         }
         public async Task <ResponseResult> FillDocument(string FromDate, string ToDate)
         {
@@ -52,13 +53,22 @@ namespace eTactWeb.Data.BLL
         {
             return await _GateEntryRegisterDAL.FillSchNo(FromDate, ToDate);
         }
+          public async Task<ResponseResult> GetFeatureOption()
+        {
+            return await _GateEntryRegisterDAL.GetFeatureOption();
+        } 
+        
         public async Task<ResponseResult> FillVendor(string FromDate, string ToDate)
         {
             return await _GateEntryRegisterDAL.FillVendor(FromDate, ToDate);
         }
-        public async Task<GateEntryRegisterModel> GetGateRegisterData(string ReportType, string FromDate, string ToDate, string gateno, string docname, string PONo, string Schno, string PartCode, string ItemName, string invoiceNo, string VendorName)
+        public async Task<ResponseResult> PENDGATEDETAILFORMRN(string GateNo, int Yearcode)
+        {
+            return await _GateEntryRegisterDAL.PENDGATEDETAILFORMRN(GateNo, Yearcode);
+        }
+        public async Task<GateEntryRegisterModel> GetGateRegisterData(string ReportType, string FromDate, string ToDate, string gateno, string docname, string PONo, string Schno, string PartCode, string ItemName, string invoiceNo, string VendorName, int RecUnit)
          {
-            return await _GateEntryRegisterDAL.GetGateRegisterData(ReportType, FromDate, ToDate, gateno, docname, PONo, Schno, PartCode, ItemName, invoiceNo, VendorName);
+            return await _GateEntryRegisterDAL.GetGateRegisterData(ReportType, FromDate, ToDate, gateno, docname, PONo, Schno, PartCode, ItemName, invoiceNo, VendorName   ,RecUnit);
         }
         //public async Task<ResponseResult> GetAllItems()
         //{

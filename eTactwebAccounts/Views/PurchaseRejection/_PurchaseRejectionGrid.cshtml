@@ -13,7 +13,7 @@ else
     foreach (var item in Model.AccPurchaseRejectionDetails)
     {
         Cntr = Cntr + 1;
-        <tr class="small @Cntr" id="PurchaseRejectionRow-@Cntr" style="white-space:nowrap;font-size: 14px;">
+        <tr class="small @Cntr" id="PurchaseRejectionRow-@Cntr" style="white-space:nowrap;">
             <td style="width:4%">
                 @if (Model.Mode == "V" && Model.ID > 0)
                 {
@@ -42,7 +42,7 @@ else
             </td>
             <td>@item.PartCode
                 <input type="hidden" id="GridIC-@Cntr" value="@item.ItemCode" />
-                <input type="hidden" id="hdnuniquekey-@Cntr" value="@item.hdnuniquekey" />
+                <input type="hidden" id="hdnuniquekey-@Cntr"/>
             </td>
             <td>@item.ItemName</td>
             <td>@item.HSNNo</td>
@@ -70,7 +70,7 @@ else
             <td>@item.ItemDescription</td>
             <td>@item.Remark</td>
             <td>@item.MIRNo</td>
-            <td>@item.MIREntryID</td>
+            <td>@item.MIREntryId</td>
             <td>@item.MIRYearCode</td>
             <td>@item.MIRDate</td>
             <td>@item.InprocessNo</td>

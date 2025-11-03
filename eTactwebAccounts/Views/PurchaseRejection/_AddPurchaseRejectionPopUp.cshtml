@@ -1,40 +1,55 @@
 ﻿@model eTactWeb.DOM.Models.AccPurchaseRejectionModel
 
 <div class="modal fade" id="addPurchaseRejectionPopupModel" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-     aria-labelledby="staticBackdropLabel" aria-hidden="true">
+     aria-labelledby="staticBackdropLabel" aria-hidden="true" style="padding-right:100px;">
     <div class="modal-dialog modal-xl">
-        <div class="modal-content">
+        <div class="modal-content" style="width:1280px;">
             <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdropLabel"></h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="" aria-label="Close"></button>
+                
+              @*   <label class="form-check-label ms-2">Purchase Bill Details</label> *@
+               <div class="d-flex align-items-center gap-3">
+                    <div class="col-md-2">
+                        <h5 class="modal-title text-primary fw-bold mb-2">
+                            Purchase Bill Details
+                        </h5>
+                    </div>
+                    <div class="col-md-2">
+                    <input class="form-control" style="margin-top:17px;" id="popUpPartCodeTop" placeholder="Part Code" readonly />
+                    </div>
+                    <div class="col-md-2">
+                    <input class="form-control" style="margin-top:17px;" id="popUpItemNameTop" placeholder="Item Name" readonly />
+                    </div>
+                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="font-size:12px;">
+                        <label asp-for="fromBillDate" class="form-label me-2">From PBill Date</label>
+                        <input asp-for="fromBillDate" class="form-control"  />
+                    </div>
+                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="font-size:12px;">
+                        <label asp-for="toBillDate" class="form-label me-2">To PBill Date</label>
+                        <input asp-for="toBillDate" class="form-control"  />
+                    </div>
+                    <div class="col-md-2">
+                    <input type="text" class="form-control" id="popup-search-box" style="background-color:#FFFACD;margin-top:17px;" placeholder="Search...">
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            
             </div>
-            <div class="modal-body">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="row g-2 gx-3">
-                            <div class="card">
-                                <div class="card-body overflow-auto pb-0">
-                                    <div class="d-flex gap-2 justify-content-between mb-2">
-                                        <div class="d-flex me-2">
-                                            <div>
-                                                <input class="form-control" id="popUpPartCodeTop" placeholder="Part Code" readonly />
-                                            </div>
-                                            <div>
-                                                <input class="form-control" id="popUpItemNameTop" placeholder="Item Name" readonly />
-                                            </div>
-                                            <button class="btn btn-sm btn-outline-warning me-3 mb-2" type="button" id="CheckAll">
-                                                <i class="fa fa-check-square" aria-hidden="true"></i> Ch/UnCh All
-                                            </button>
-                                            <div class="form-check form-switch mx-3" style="color:#000;font-size:15px;">
-                                                <input asp-for="ShowAllBill" class="form-check-input" type="checkbox" role="switch" />
-                                                <label class="form-check-label ms-2">Show All</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-auto ms-3">
-                                            <input type="text" class="form-control" id="popup-search-box" style="background-color: #FFFACD;" placeholder="Search...">
-                                        </div>
-                                    </div>
-                                    <div class="table-responsive" style="max-height:250px;">
+
+        <div class="modal-body">
+            <div class="card">
+                <div class="card-body">
+                        <div class="d-flex align-items-center gap-3">
+                            <button class="btn btn-sm btn-outline-warning  mb-2" type="button" id="CheckAll" >
+                                <i class="fa fa-check-square" aria-hidden="true"></i> Ch/UnCh All
+                            </button>
+                            <div class="form-check form-switch mx-3" style="color:#000;font-size:12px;">
+                                <input asp-for="ShowAllBill" class="form-check-input" type="checkbox" role="switch" />
+                                <label class="form-check-label ms-2">Show All</label>
+                            </div>
+                        </div>
+                    <div class="row g-2 gx-3">
+                        <div class="card-body text-center overflow-auto pb-0">
+                            <div class="table-responsive" style="max-height:350px;">
                                         <table class="table table-hover table-bordered table-striped poPopUpData" id="poPopUpData">
                                             <thead class="bg-gradient card-headerBG text-light small"
                                                    style="white-space:nowrap; font-size: 12px; position: sticky; top: 0; z-index: 10;">
@@ -60,6 +75,13 @@
                                                     <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Amount</th>
                                                     <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Disc Per</th>
                                                     <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Dis Amt</th>
+                                                    <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MIR No</th>
+                                                    <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MIR EntryId</th>
+                                                    <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MIR YearCode</th>
+                                                    <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MIR Date</th>
+                                                    <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>InProgresss No</th>
+                                                    <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>InProgresss EntryId</th>
+                                                    <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>InProgresss YearCode</th>  <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>InProgresss Date</th>
                                                     @* <th data-columnno="17" data-sortorder="asc" class="sortCol hnSOfields" id="popupSONOHeader"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SONO</th>
                                                     <th data-columnno="18" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>CustOrderNo</th>
                                                     <th data-columnno="19" data-sortorder="asc" class="sortCol hnSOfields"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO Date</th>
@@ -76,7 +98,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                
                     <div class="progress my-2" style="height: 4px;">
                         <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
@@ -99,9 +121,8 @@
                 </div>
             </div>
         </div>
-    </div>
-</div>
-
+   </div>
+        </div>
 
 <style>
     #container {
@@ -112,4 +133,8 @@
             flex: 1;
             margin-right: 10px;
         }
+
+    #divPurchaseRejectionDataGrid tr td {
+        font-weight: 300;
+    }
 </style>

@@ -25,6 +25,43 @@ namespace eTactWeb.Data.DAL
             DBConnectionString = _connectionStringService.GetConnectionString();
         }
 
+        public async Task<ResponseResult> GetStateCode(string State)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetStateCode"));
+                SqlParams.Add(new SqlParameter("@State", State));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_AccountMaster", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        } 
+        public async Task<ResponseResult> GetAccountGroupDetail(string AccountName)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetAccountGroupDetail"));
+                SqlParams.Add(new SqlParameter("@Account_Name", AccountName));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_AccountMaster", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+
         public async Task<ResponseResult> DeleteByID(int ID)
         {
             dynamic _ResponseResult = null;
@@ -729,6 +766,65 @@ namespace eTactWeb.Data.DAL
                 _ResponseResult.StatusCode = (HttpStatusCode)ex.HResult;
                 _ResponseResult.StatusText = "Error";
                 _ResponseResult.Result = ex.StackTrace;
+            }
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> GetItemCatCode(string CName)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetCategoryCode"));
+                SqlParams.Add(new SqlParameter("@TypeName", CName));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_AccountMaster", SqlParams);
+
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> GetItemGroupCode(string GName)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetGroupCode"));
+                SqlParams.Add(new SqlParameter("@GroupCodeName", GName));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_AccountMaster", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> UpdateMultipleItemDataFromExcel(DataTable ItemDetailGrid, string flag)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>
+        {
+            new SqlParameter("@Flag", flag),
+            new SqlParameter("@ExcelData", ItemDetailGrid)
+        };
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_AccountMaster", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
             }
             return _ResponseResult;
         }

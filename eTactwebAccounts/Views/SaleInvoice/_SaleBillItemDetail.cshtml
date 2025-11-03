@@ -20,7 +20,7 @@
         </select>
         
     </div>
-    <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-6" id="SONODiv">
+    <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-6 SaleBillScheduleDetail" id="SONODiv">
         <label asp-for="SONO" onclick="redirectToSOEdit()" class="form-label" style="color: blue;">SONO</label>
         <input type="hidden" asp-for="SeqNo" />
         <select asp-for="SONO" class="form-control">
@@ -28,53 +28,53 @@
         </select>
     </div>
 
-    <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-6" id="SONODiv">
+    <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-6 SaleBillScheduleDetail" id="SONODiv">
         <label asp-for="SOType" class="form-label" style="color: blue;">SO Type</label>
         <input class="form-control" asp-for="SOType" disabled />
     </div>
 
-    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6" id="SOYearCodeDiv">
+    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6 SaleBillScheduleDetail" id="SOYearCodeDiv">
         <label asp-for="SOYearCode" class="form-label">SO Year</label>
         <select asp-for="SOYearCode" class="form-control">
             <option value="0">-select-</option>
         </select>
     </div>
 
-    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6" id="SODateDiv">
+    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6 SaleBillScheduleDetail" id="SODateDiv">
         <label asp-for="SODate" class="form-label">SO Date</label>
         <input asp-for="SODate" class="form-control" readonly disabled />
     </div>
-    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6" id="CustOrderNoDiv">
+    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6 SaleBillScheduleDetail" id="CustOrderNoDiv">
         <label asp-for="CustOrderNo" class="form-label" style="color: blue;">Order No</label>
         <select asp-for="CustOrderNo" class="form-control">
             <option value="0">-select-</option>
         </select>
     </div>
 
-    <div class="col-xl-1 col-lg-1 col-md-3 col-sm-6 col-xs-6 jobWorkChalln" id="SchdateDiv">
+    <div class="col-xl-1 col-lg-1 col-md-3 col-sm-6 col-xs-6 jobWorkChalln " id="SchdateDiv">
         <label asp-for="BomNo" class="form-label">Bom Rev No</label>
         <select asp-for="BomNo" class="form-control">
             <option value="0">-Select-</option>
         </select>
     </div>
 
-    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6" id="SchNoDiv">
+    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6 SaleBillScheduleDetail" id="SchNoDiv">
         <label asp-for="SchNo" class="form-label" style="color: blue;">Sch No</label>
         <select asp-for="SchNo" class="form-control">
             <option value="0">-select-</option>
         </select>
     </div>
-    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6" id="SaleSchYearCodeDiv">
+    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6 SaleBillScheduleDetail" id="SaleSchYearCodeDiv">
         <label asp-for="SaleSchYearCode" class="form-label">Sch YC</label>
         <select asp-for="SaleSchYearCode" class="form-control">
             <option value="0">-Select-</option>
         </select>
     </div>
-    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6" id="SchdateDiv">
+    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6 SaleBillScheduleDetail" id="SchdateDiv">
         <label asp-for="Schdate" class="form-label">Sch Date</label>
         <input asp-for="Schdate" class="form-control" readonly disabled />
     </div>
-    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" id="Group_CodeDiv">
+    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12 SaleBillOtherDetail" id="Group_CodeDiv">
         <label asp-for="Group_Code" class="form-label">Group Name</label>
         
         <select class="form-select" asp-for="Group_Code" style="width:170px">
@@ -83,85 +83,85 @@
     </div>
     <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-6">
         <label asp-for="PartCode" class="form-label" style="color: red;">Part Code*</label>
-        <select asp-for="PartCode" class="form-control" style="width:210px;">
+        @* <select asp-for="PartCode" class="form-control" style="width:210px;">
             <option value="0">-Select-</option>
-        </select>
+        </select> *@
+        <input type="text" id="PartCodeText" class="form-control" placeholder="Type Part Code..." />
+        <input type="hidden" asp-for="PartCode" id="PartCode" data-val="true" data-val-required="The PartCode field is required." name="PartCode" value="0" />
     </div>
     <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-6">
         <label asp-for="ItemCode" class="form-label" style="color: red;">Item Name*</label>
         <div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
-            <input asp-for="ItemSA" class="form-check-input" type="checkbox" role="switch" />Show All
+            <input asp-for="ItemSA" class="form-check-input" type="checkbox" role="switch" tabindex="-1" />Show All
         </div>
-        <select asp-for="ItemCode" class="form-control" style="width:200px;">
+        <input type="text" id="ItemNameText" class="form-control" placeholder="Type Item Name..." />
+        <input type="hidden" asp-for="ItemCode" id="ItemCode" />
+    @*     <select asp-for="ItemCode" class="form-control" style="width:200px;" tabindex="-1">
             <option value="0">-Select-</option>
-        </select>
+        </select> *@
     </div>
-
-    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6">
-        <label asp-for="HSNNo" class="form-label" style="color: red;">HSN NO*</label>
-        <input asp-for="HSNNo" class="form-control" />
-    </div>
-    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6">
+    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6 AllowToChangeStoreOrNot">
         <label asp-for="StoreId" class="form-label" style="color: red;">Store *</label>
         <select asp-for="StoreId" class="form-control">
             <option value="0">-Select-</option>
         </select>
     </div>
+    @if (Model.AllowToChangeSaleBillStoreName == "N")
+    {
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6 AllowToChangeStoreOrNot">
+            <label asp-for="Batchno" class="form-label" style="color: red;">Batch No*</label>
+            <select asp-for="Batchno" class="form-control">
+                <option value="1">1</option>
+            </select>
+        </div>
+        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-6 AllowToChangeStoreOrNot">
+            <label asp-for="Uniquebatchno" class="form-label" style="color: blue;">Unique BatchNo*</label>
+            <select asp-for="Uniquebatchno" class="form-control">
+                <option value="1">1</option>
+            </select>
+            </div>
+    }
+    else
+    {
 
-    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6">
-        <label asp-for="Unit" class="form-label" style="color: red;">Unit*</label>
-        <input asp-for="Unit" class="form-control" />
-    </div>
-
-    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6">
-        <label asp-for="AltUnit" class="form-label">Alt Unit*</label>
-        <input asp-for="AltUnit" class="form-control" />
-    </div>
-    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6">
-        <label asp-for="Batchno" class="form-label" style="color: red;">Batch No*</label>
-        <select asp-for="Batchno" class="form-control">
-            <option value="0">-Select-</option>
-        </select>
-    </div>
-    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-6">
-        <label asp-for="Uniquebatchno" class="form-label" style="color: blue;">Unique BatchNo*</label>
+       
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6 AllowToChangeStoreOrNot">
+            <label asp-for="Batchno" class="form-label" style="color: red;">Batch No*</label>
+            <select asp-for="Batchno" class="form-control">
+                <option value="0">-Select-</option>
+            </select>
+        </div>
+        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-6 AllowToChangeStoreOrNot">
+            <label asp-for="Uniquebatchno" class="form-label" style="color: blue;">Unique BatchNo*</label>
         <select asp-for="Uniquebatchno" class="form-control">
             <option value="0">-Select-</option>
         </select>
     </div>
-    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6">
+    }
+    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6 AllowToChangeStoreOrNot">
         <label asp-for="LotStock" class="form-label" style="color: blue;">Lot Stock*</label>
         <input asp-for="LotStock" class="form-control" readonly />
     </div>
-    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6">
+    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6 AllowToChangeStoreOrNot">
         <label asp-for="TotalStock" class="form-label" style="color: blue;">Total Stock*</label>
         <input asp-for="TotalStock" class="form-control" readonly />
     </div>
 
-    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6">
+    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6 ">
         <label asp-for="SOPendQty" class="form-label" style="color: blue;">Pend Qty</label>
-        <input asp-for="SOPendQty" class="form-control" readonly />
+        <input asp-for="SOPendQty" class="form-control" readonly tabindex="-1" />
     </div>
     <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6">
         <label asp-for="Qty" class="form-label" style="color: red;">Bill Qty*</label>
         <input asp-for="Qty" class="form-control" style="background-color:#F8FFB2" />
     </div>
-    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6">
+    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6 SaleBillOtherDetail">
         <label asp-for="AltQty" class="form-label">Alt Qty</label>
         <input asp-for="AltQty" class="form-control" />
     </div>
     <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6">
         <label asp-for="Rate" class="form-label" style="color: red;">Rate*</label>
         <input asp-for="Rate" class="form-control" style="background-color:#F8FFB2" />
-    </div>
-    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6">
-        <label asp-for="RateInOtherCurr" class="form-label">Rate Of Curr</label>
-        <input asp-for="RateInOtherCurr" class="form-control" readonly />
-    </div>
-
-    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6">
-        <label asp-for="NoofPcs" class="form-label">No of Pcs</label>
-        <input asp-for="NoofPcs" class="form-control" />
     </div>
     <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6">
         <label asp-for="DiscountPer" class="form-label">Dis Per</label>
@@ -171,20 +171,45 @@
         <label asp-for="DiscountAmt" class="form-label">Dis Amt</label>
         <input asp-for="DiscountAmt" class="form-control" />
     </div>
+    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6 SaleBillOtherDetail">
+        <label asp-for="RateInOtherCurr" class="form-label">Rate Of Curr</label>
+        <input asp-for="RateInOtherCurr" class="form-control" readonly />
+    </div>
+    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6">
+        <label asp-for="HSNNo" class="form-label" style="color: red;">HSN NO*</label>
+        <input asp-for="HSNNo" class="form-control" />
+    </div>
+
+
+    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6">
+        <label asp-for="Unit" class="form-label" style="color: red;">Unit*</label>
+        <input asp-for="Unit" class="form-control" />
+    </div>
+
+    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6 SaleBillOtherDetail">
+        <label asp-for="AltUnit" class="form-label">Alt Unit*</label>
+        <input asp-for="AltUnit" class="form-control" />
+    </div>
+
+    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6 SaleBillOtherDetail">
+        <label asp-for="NoofPcs" class="form-label">No of Pcs</label>
+        <input asp-for="NoofPcs" class="form-control" />
+    </div>
+   
 
     <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6">
         <label asp-for="Amount" class="form-label" style="color: red;">Amount*</label>
         <input asp-for="Amount" class="form-control" readonly style="background-color:#F8FFB2" />
     </div>
-    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6">
+    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6 SaleBillOtherDetail">
         <label asp-for="PacketsDetail" class="form-label">Packets</label>
         <input asp-for="PacketsDetail" class="form-control" />
     </div>
-    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6">
+    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6 SaleBillOtherDetail">
         <label asp-for="OtherDetail" class="form-label">Other Detail</label>
         <input asp-for="OtherDetail" class="form-control" />
     </div>
-    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-6">
+    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-6 SaleBillOtherDetail">
         <label asp-for="ItemRemark" class="form-label">Item Remark</label>
         <input asp-for="ItemRemark" class="form-control" />
     </div>
@@ -308,7 +333,7 @@
         <label asp-for="ProdSchDate" class="AF form-label">Prod SchDate</label>
         <input asp-for="ProdSchDate" class="AF form-control" />
     </div>
-    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-6">
+    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-6 SaleBillScheduleDetail">
         <label asp-for="SchdeliveryDate" class="AF form-label">Sch DeliveryDate</label>
         <input asp-for="SchdeliveryDate" class="AF form-control" />
     </div>

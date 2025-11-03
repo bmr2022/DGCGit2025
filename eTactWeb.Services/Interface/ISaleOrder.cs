@@ -5,18 +5,22 @@ namespace eTactWeb.Services.Interface
 {
     public interface ISaleOrder
     {
-        Task<ResponseResult> DeleteByID(int ID, int YearCode, string Flag);
+        Task<ResponseResult> DeleteByID(int ID, int YearCode, string Flag,string EntryByMachineName,int AccountCode);
 		
 
 		Task<ResponseResult> GetAddress(string Code);
+		Task<ResponseResult> AutoFillPARTYNAMELIST(string SearchAccount);
+
 
         Task<ResponseResult> CheckOrderNo(int year,int accountcode,int entryid, string custorderno);
         Task<ResponseResult> GetFillCurrency(string CTRL);
         Task<SaleOrderModel> ShowGroupWiseItems(int Group_Code,int AccountCode);
         Task<ResponseResult> getdiscCategoryName(int Group_Code, int AccountCode);
         Task<string> GetSOItem(int AccountCode, int SONO, int Year, int ItemCode);
+        Task<SaleOrderModel> GetlastSaleOrderDetail(string EntryDate, int currentYearcode, int AccountCode, int ItemCode);
 
-      
+
+
         Task<SaleOrderDashboard> GetAmmDashboardData();
         Task<ResponseResult> GetTotalStockList(int store, int Itemcode);
         Task<ResponseResult> GetAllowMultiBuyerProp();
@@ -35,6 +39,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetFormRightsAmm(int userID);
         Task<ResponseResult> NewEntryId(int YearCode);
         Task<ResponseResult> NewAmmEntryId(int YearCode);
+        Task<ResponseResult> GetFeatureOption();
 
         Task<ResponseResult> GetItemPartCode(string Code, string Flag);
         Task<ResponseResult> GetItemGroup();
@@ -44,6 +49,7 @@ namespace eTactWeb.Services.Interface
 
 		Task<ResponseResult> GetPartyList(string Check);
         Task<ResponseResult> GetItemCode(string PartCode);
+        Task<ResponseResult> GetReportName();
 
         Task<ResponseResult> GetQuotData(string Code, string Flag);
 
@@ -58,5 +64,6 @@ namespace eTactWeb.Services.Interface
         Task<SaleOrderModel> GetViewSOCcompletedByID(int iD, int yC, string v);
 
         Task<ResponseResult> SaveSaleOrder(DataTable DTItemGrid, DataTable DTSchedule, DataTable DTTaxGrid, DataTable MultiBuyersDT, SaleOrderModel model);
+       
     }
 }

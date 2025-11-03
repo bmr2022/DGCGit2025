@@ -21,13 +21,15 @@ namespace eTactWeb.Controllers
         private readonly ILogger<MaterialConversionController> _logger;
         private readonly IConfiguration iconfiguration;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
-        public MaterialConversionController(ILogger<MaterialConversionController> logger, IDataLogic iDataLogic, IMaterialConversion iMaterialConversion, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
+        private readonly ConnectionStringService _connectionStringService;
+        public MaterialConversionController(ILogger<MaterialConversionController> logger, IDataLogic iDataLogic, IMaterialConversion iMaterialConversion, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration, ConnectionStringService connectionStringService)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IMaterialConversion = iMaterialConversion;
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
+            _connectionStringService = connectionStringService;
         }
         public IActionResult PrintReport(int EntryId , int YC , string SlipNo )
         {
@@ -45,7 +47,7 @@ namespace eTactWeb.Controllers
             webReport.Report.SetParameterValue("EntryIdparam", EntryId);
             webReport.Report.SetParameterValue("YearCodeparam", YC);
             webReport.Report.SetParameterValue("SlipNoparam", SlipNo);
-            my_connection_string =  iconfiguration.GetConnectionString("eTactDB");
+            my_connection_string =  _connectionStringService.GetConnectionString();
             webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
             webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
             webReport.Report.SetParameterValue("MyParameter", my_connection_string);
@@ -394,7 +396,7 @@ namespace eTactWeb.Controllers
                     }
                     else
                     {
-                        if (MaterialConversionGrid.Any(x => (x.OriginalPartCode == model.OriginalPartCode)))
+                        if (MaterialConversionGrid.Any(x => (x.OriginalPartCode == model.OriginalPartCode && x.BatchNo == model.BatchNo && x.UniqueBatchNo==model.UniqueBatchNo)))
                         {
                             return StatusCode(207, "Duplicate");
                         }

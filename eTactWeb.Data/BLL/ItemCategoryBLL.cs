@@ -62,5 +62,10 @@ public class ItemCategoryBLL : IItemCategory
         //
         return await _ItemCategoryDAL.SaveItemCategory(model);
     }
+
+    public async Task<ResponseResult> UpdateMultipleItemDataFromExcel(DataTable ItemDetailGrid, string flag)
+    {
+        return await _ItemCategoryDAL.UpdateMultipleItemDataFromExcel(ItemDetailGrid, flag);
+    }
 }
 

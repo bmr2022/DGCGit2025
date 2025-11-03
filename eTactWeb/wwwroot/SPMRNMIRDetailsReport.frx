@@ -1,0 +1,169 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="11/29/2023 15:17:39" ReportInfo.Modified="09/24/2025 21:15:09" ReportInfo.CreatorVersion="2023.2.0.0" PrintSettings.Duplex="Simplex">
+  <Styles Name="Standard">
+    <Style Name="Title" Font="Arial, 12pt, style=Bold"/>
+    <Style Name="Header" Font="Arial, 10pt, style=Bold"/>
+    <Style Name="Group" Font="Arial, 10pt, style=Bold"/>
+    <Style Name="Data" Font="Arial, 10pt"/>
+    <Style Name="Footer" Font="Arial, 10pt"/>
+    <Style Name="EvenRows" Fill.Color="WhiteSmoke" Font="Arial, 10pt"/>
+  </Styles>
+  <Dictionary>
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqwYf2D6LPIs5GRi9VfJb9gu9ucqaRfzVvUaVne08cIFURWyyEsxwQsmngwHHahRU5IBf1gWxFxthjvCI+9BjhcR8BjTz2iHCnSBTgRKTkqutDkjIRRL0Lr+gAV5vh4t47BklN+Df+gZ1BDy0zz0wKb8ihM9loU9dXTaRaB3iM7MkRkKOWKZEyucGuTvDipndFzNvX32fe052MiZCpJjVnJw==">
+      <TableDataSource Name="Table1" Alias="SPMRNMIRDetailsReport" DataType="System.Int32" Enabled="true" SelectCommand="exec SPMRNMIRDetailsReport @MRN_No =@MrnNoparam,@Year_Code=@MrnYearcodeparam">
+        <Column Name="Rec_Qty" DataType="System.Decimal"/>
+        <Column Name="Accepted_Qty" DataType="System.Double"/>
+        <Column Name="Rejected_Qty" DataType="System.Double"/>
+        <Column Name="Entry_Date" DataType="System.DateTime"/>
+        <Column Name="itemname" DataType="System.String"/>
+        <Column Name="Account_Name" DataType="System.String"/>
+        <Column Name="Account_Code" DataType="System.Int64"/>
+        <Column Name="Item_Code" DataType="System.Int64"/>
+        <Column Name="MRN_No" DataType="System.String"/>
+        <Column Name="Item_Name" DataType="System.String"/>
+        <Column Name="DocName" DataType="System.String"/>
+        <Column Name="Bill_Qty" DataType="System.Decimal"/>
+        <Column Name="Rec_Qty1" DataType="System.Decimal"/>
+        <Column Name="Accepted_Qty1" DataType="System.Double"/>
+        <Column Name="Rejected_Qty1" DataType="System.Double"/>
+        <Column Name="Unit" DataType="System.String"/>
+        <Column Name="Short_Qty" DataType="System.Decimal"/>
+        <Column Name="PO_Date" DataType="System.DateTime"/>
+        <Column Name="Inv_Date" DataType="System.DateTime"/>
+        <Column Name="MIR_No" DataType="System.String"/>
+        <Column Name="MIR_Date" DataType="System.DateTime"/>
+        <Column Name="Qc_Type" DataType="System.String"/>
+        <Column Name="Inv_No" DataType="System.String"/>
+        <Column Name="Gate_No" DataType="System.String"/>
+        <Column Name="Year_Code" DataType="System.Int64"/>
+        <Column Name="MRN_Entry_Id" DataType="System.Int64"/>
+        <Column Name="PO_No" DataType="System.String"/>
+        <Column Name="PO_Year_Code" DataType="System.Int64"/>
+        <Column Name="Gate_Year_Code" DataType="System.Int64"/>
+        <Column Name="Sch_Year_Code" DataType="System.Int64"/>
+        <Column Name="Types" DataType="System.String"/>
+        <Column Name="Part_Code" DataType="System.String"/>
+        <Column Name="Sch_No" DataType="System.String"/>
+        <Column Name="CC" DataType="System.String"/>
+        <Column Name="rateinother" DataType="System.Decimal"/>
+        <Column Name="MainRemark" DataType="System.String"/>
+        <Column Name="Deviation_Qty" DataType="System.Double"/>
+        <Column Name="Hold_Qty" DataType="System.Double"/>
+        <Column Name="Rework_qty" DataType="System.Double"/>
+        <Column Name="Remarks" DataType="System.String"/>
+        <Column Name="Default_type" DataType="System.String"/>
+        <Column Name="Seq_No" DataType="System.Int64"/>
+        <Column Name="Store_Name" DataType="System.String"/>
+        <Column Name="rejstore" DataType="System.String"/>
+        <Column Name="Holdstore" DataType="System.String"/>
+        <Column Name="reworkstore" DataType="System.String"/>
+        <Column Name="rejstoretype" DataType="System.String"/>
+        <Column Name="holdstoretype" DataType="System.String"/>
+        <Column Name="reworkstoretype" DataType="System.String"/>
+        <Column Name="Rate" DataType="System.Decimal"/>
+        <Column Name="GateDate" DataType="System.DateTime"/>
+        <Column Name="QC_Completed" DataType="System.String"/>
+        <Column Name="Amount" DataType="System.Decimal"/>
+        <Column Name="ComAddress" DataType="System.String"/>
+        <Column Name="Country" DataType="System.String"/>
+        <Column Name="State" DataType="System.String"/>
+        <Column Name="City" DataType="System.String"/>
+        <Column Name="PinCode" DataType="System.String"/>
+        <Column Name="AmmEffDate" DataType="System.DateTime"/>
+        <Column Name="AmmNo" DataType="System.Int64"/>
+        <Column Name="BatchNo" DataType="System.String"/>
+        <Column Name="uniqueBatchno" DataType="System.String"/>
+        <Column Name="Remarks1" DataType="System.String"/>
+        <CommandParameter Name="MrnNoparam" DataType="22" Expression="MrnNoparam"/>
+        <CommandParameter Name="MrnYearcodeparam" Expression="MrnYearcodeparam"/>
+      </TableDataSource>
+    </MsSqlDataConnection>
+    <Relation Name="VMRNMainDetail_Company_Detail" ParentDataSource="null" ChildDataSource="null" ParentColumns="cc" ChildColumns="CC" Enabled="true"/>
+    <Parameter Name="MyParameter" DataType="System.String" AsString=""/>
+  </Dictionary>
+  <ReportPage Name="Page1" Landscape="true" PaperWidth="297" PaperHeight="210" RawPaperSize="9" Watermark.Font="Arial, 60pt">
+    <ReportTitleBand Name="ReportTitle1" Width="1047.06" Height="102.5">
+      <TextObject Name="Text25" Top="83.6" Width="1039.5" Height="18.9" Text="GOODS/MATERIAL  RECEIPT NOTE" HorzAlign="Center" Font="Arial, 12pt, style=Bold, Underline" TextFill.Color="MediumBlue"/>
+      <TextObject Name="Text241" Top="9.45" Width="1039.5" Height="37.8" Text="AUTO COMPONENT" HorzAlign="Center" Font="Arial, 18pt, style=Bold"/>
+      <TextObject Name="Text242" Top="47.25" Width="1039.5" Height="28.35" Text="Plot no 27 Sector 4,IIE  SIDCUL, Haridwar (Uttrakhand) - 249403" HorzAlign="Center" Font="Arial, 14pt, style=Bold"/>
+    </ReportTitleBand>
+    <GroupHeaderBand Name="GroupHeader2" Top="106.5" Width="1047.06" Height="68.25" Condition="[SPMRNMIRDetailsReport.MRN_No]">
+      <TextObject Name="Text3" Left="18.9" Top="28.35" Width="75.6" Height="18.9" Text="Gate No :" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text27" Left="255.15" Top="28.35" Width="75.6" Height="18.9" Text="Date :" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text29" Left="18.9" Top="49.35" Width="85.05" Height="18.9" Text="Invoice No:" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text30" Left="255.15" Top="49.35" Width="75.6" Height="18.9" Text="Date :" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text31" Left="472.5" Top="28.35" Width="94.5" Height="18.9" Text="Entry Date :" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text32" Left="472.5" Top="49.35" Width="94.5" Height="18.9" Text="Document :" Font="Arial, 10pt, style=Bold"/>
+      <LineObject Name="Line2" Top="8" Width="1048.95" Border.Style="Dash"/>
+      <TextObject Name="Text60" Left="18.9" Top="9.45" Width="75.6" Height="18.9" Text="MRN No :" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text61" Left="255.15" Top="9.45" Width="75.6" Height="18.9" Text="Date :" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text117" Left="746.55" Top="28.35" Width="47.25" Height="18.9" Text="FOC :" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text118" Left="746.55" Top="47.25" Width="94.5" Height="18.9" Text="Rec Store :" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text122" Left="103.95" Top="9.45" Width="151.2" Height="18.9" Text="[SPMRNMIRDetailsReport.MRN_No]" Font="Arial, 10pt"/>
+      <TextObject Name="Text123" Left="103.95" Top="28.35" Width="141.75" Height="18.9" Text="[SPMRNMIRDetailsReport.Gate_No]" Font="Arial, 10pt"/>
+      <TextObject Name="Text126" Left="330.75" Top="9.45" Width="94.5" Height="18.9" Text="[SPMRNMIRDetailsReport.Entry_Date]" Format="Date" Format.Format="d" Font="Arial, 10pt"/>
+      <TextObject Name="Text133" Left="330.75" Top="47.25" Width="94.5" Height="18.9" Text="[SPMRNMIRDetailsReport.Inv_Date]" Format="Date" Format.Format="d" Font="Arial, 10pt"/>
+      <TextObject Name="Text134" Left="103.95" Top="47.25" Width="141.75" Height="18.9" Text="[SPMRNMIRDetailsReport.Inv_No]" Font="Arial, 10pt"/>
+      <TextObject Name="Text145" Left="330.75" Top="28.35" Width="94.5" Height="18.9" Text="[SPMRNMIRDetailsReport.GateDate]" Format="Date" Format.Format="d" Font="Arial, 10pt"/>
+      <TextObject Name="Text240" Left="567" Top="28.35" Width="94.5" Height="18.9" Text="[SPMRNMIRDetailsReport.Entry_Date]" Format="Date" Format.Format="d" Font="Arial, 10pt"/>
+      <GroupHeaderBand Name="GroupHeader3" Top="178.75" Width="1047.06" Height="66.15" Condition="[SPMRNMIRDetailsReport.MRN_No]">
+        <TextObject Name="Text94" Left="18.9" Width="103.95" Height="28.35" Text="Vendor :" Font="Arial, 10pt, style=Bold"/>
+        <TextObject Name="Text95" Left="18.9" Top="28.35" Width="103.95" Height="28.35" Text="Address :" Font="Arial, 10pt, style=Bold"/>
+        <LineObject Name="Line3" Top="66.15" Width="1048.95" Border.Style="Dash"/>
+        <TextObject Name="Text128" Left="103.95" Width="567" Height="18.9" Text="[SPMRNMIRDetailsReport.Account_Name]" Font="Arial, 10pt"/>
+        <TextObject Name="Text146" Left="103.95" Top="28.35" Width="623.7" Height="18.9" Text="[SPMRNMIRDetailsReport.ComAddress]" Font="Arial, 10pt"/>
+        <GroupHeaderBand Name="GroupHeader4" Top="248.9" Width="1047.06" Height="47.25" Condition="[SPMRNMIRDetailsReport.MRN_No]">
+          <TextObject Name="Text34" Left="28.35" Width="94.5" Height="28.35" Text="Part Code" Font="Arial, 10pt, style=Bold"/>
+          <TextObject Name="Text35" Left="113.4" Width="85.05" Height="28.35" Text="Item Name" Font="Arial, 10pt, style=Bold"/>
+          <TextObject Name="Text37" Left="557.55" Width="37.8" Height="28.35" Text="Unit" Font="Arial, 10pt, style=Bold"/>
+          <TextObject Name="Text79" Width="28.35" Height="37.8" Text="S No" Font="Arial, 10pt, style=Bold"/>
+          <TextObject Name="Text85" Left="292.95" Width="37.8" Height="37.8" Text="Rec Qty" HorzAlign="Right" Font="Arial, 10pt, style=Bold"/>
+          <TextObject Name="Text86" Left="378.3" Width="47.25" Height="37.8" Text="OK Qty" HorzAlign="Center" Font="Arial, 10pt, style=Bold"/>
+          <TextObject Name="Text87" Left="429.65" Width="37.8" Height="37.8" Text="Rej Qty" HorzAlign="Right" Font="Arial, 10pt, style=Bold"/>
+          <TextObject Name="Text88" Left="463.05" Width="47.25" Height="37.8" Text="Hold Qty" HorzAlign="Center" Font="Arial, 10pt, style=Bold"/>
+          <TextObject Name="Text89" Left="510.3" Width="37.8" Height="37.8" Text="Rew Qty" HorzAlign="Center" Font="Arial, 10pt, style=Bold"/>
+          <TextObject Name="Text40" Left="918.65" Width="37.8" Height="37.8" Text="PO NO" Font="Arial, 10pt, style=Bold"/>
+          <TextObject Name="Text41" Left="998.1" Width="47.25" Height="37.8" Text="Sch No" Font="Arial, 10pt, style=Bold"/>
+          <TextObject Name="Text90" Left="340.2" Width="37.8" Height="47.25" Text="Shrt/Exc" HorzAlign="Right" Font="Arial, 10pt, style=Bold"/>
+          <TextObject Name="Text92" Left="595.35" Width="47.25" Height="28.35" Text="Rate" HorzAlign="Right" Font="Arial, 10pt, style=Bold"/>
+          <TextObject Name="Text104" Left="727.65" Width="47.25" Height="37.8" Text="BatchNo" Font="Arial, 10pt, style=Bold"/>
+          <TextObject Name="Text105" Left="784.35" Width="75.6" Height="47.25" Text="Unique Batch No" Font="Arial, 10pt, style=Bold"/>
+          <TextObject Name="Text106" Left="642.6" Width="47.25" Height="28.35" Text="Amt" HorzAlign="Center" Font="Arial, 10pt, style=Bold"/>
+          <TextObject Name="Text36" Left="235.05" Top="2" Width="37.8" Height="37.8" Text="Bill Qty" HorzAlign="Right" Font="Arial, 10pt, style=Bold"/>
+          <GroupHeaderBand Name="GroupHeader1" Top="300.15" Width="1047.06" Height="28.35" Condition="[SPMRNMIRDetailsReport.Part_Code]">
+            <TextObject Name="Text124" Left="368.55" Width="56.7" Height="18.9" Text="[SPMRNMIRDetailsReport.Accepted_Qty]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 10pt" Trimming="EllipsisCharacter"/>
+            <TextObject Name="Text125" Left="425.25" Width="47.25" Height="18.9" Text="[SPMRNMIRDetailsReport.Rejected_Qty]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 10pt" Trimming="EllipsisCharacter"/>
+            <TextObject Name="Text129" Left="113.4" Width="122.85" Height="18.9" Text="[SPMRNMIRDetailsReport.Item_Name]" Font="Arial, 10pt"/>
+            <TextObject Name="Text130" Left="236.25" Width="56.7" Height="18.9" Text="[SPMRNMIRDetailsReport.Bill_Qty]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Center" WordWrap="false" Font="Arial, 10pt" Trimming="EllipsisCharacter"/>
+            <TextObject Name="Text131" Left="292.95" Width="47.25" Height="18.9" Text="[SPMRNMIRDetailsReport.Rec_Qty1]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Center" WordWrap="false" Font="Arial, 10pt" Trimming="EllipsisCharacter"/>
+            <TextObject Name="Text132" Left="340.2" Width="47.25" Height="18.9" Text="[SPMRNMIRDetailsReport.Short_Qty]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Center" WordWrap="false" Font="Arial, 10pt" Trimming="EllipsisCharacter"/>
+            <TextObject Name="Text135" Left="888.3" Width="94.5" Height="18.9" Text="[SPMRNMIRDetailsReport.PO_No]" HorzAlign="Center" Font="Arial, 10pt"/>
+            <TextObject Name="Text136" Left="18.9" Width="85.05" Height="18.9" Text="[SPMRNMIRDetailsReport.Part_Code]" Font="Arial, 10pt"/>
+            <TextObject Name="Text137" Left="992.25" Width="56.7" Height="18.9" Text="[SPMRNMIRDetailsReport.Sch_No]" HorzAlign="Center" Font="Arial, 10pt"/>
+            <TextObject Name="Text139" Left="472.5" Width="37.8" Height="18.9" Text="[SPMRNMIRDetailsReport.Hold_Qty]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 10pt" Trimming="EllipsisCharacter"/>
+            <TextObject Name="Text140" Left="510.3" Width="37.8" Height="18.9" Text="[SPMRNMIRDetailsReport.Rework_qty]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 10pt" Trimming="EllipsisCharacter"/>
+            <TextObject Name="Text141" Left="604.8" Width="47.25" Height="18.9" Text="[SPMRNMIRDetailsReport.Rate]" HideZeros="true" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 10pt" Trimming="EllipsisCharacter"/>
+            <TextObject Name="Text142" Left="727.65" Width="66.15" Height="18.9" Text="[SPMRNMIRDetailsReport.BatchNo]" Font="Arial, 10pt"/>
+            <TextObject Name="Text143" Left="793.8" Width="94.5" Height="18.9" Text="[SPMRNMIRDetailsReport.uniqueBatchno]" Font="Arial, 10pt"/>
+            <TextObject Name="Text144" Left="652.05" Width="75.6" Height="18.9" Text="[SPMRNMIRDetailsReport.Amount]" Format="Currency" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 10pt" Trimming="EllipsisCharacter"/>
+            <TextObject Name="Text238" Width="18.9" Height="18.9" Text="[Row#]" HorzAlign="Center" Font="Arial, 8pt"/>
+            <TextObject Name="Text239" Left="557.55" Width="37.8" Height="18.9" Text="[SPMRNMIRDetailsReport.Unit]" HorzAlign="Center" Font="Arial, 10pt"/>
+            <LineObject Name="Line6" Width="1048.95" Border.Style="Dash"/>
+            <DataBand Name="Data1" Top="332.5" Width="1047.06" EvenStyle="EvenRows" DataSource="Table1"/>
+          </GroupHeaderBand>
+        </GroupHeaderBand>
+      </GroupHeaderBand>
+      <GroupFooterBand Name="GroupFooter2" Top="336.5" Width="1047.06" Height="66.15">
+        <TextObject Name="Text55" Left="66.15" Width="103.95" Height="18.9" Text="TOTAL  :" HorzAlign="Justify" VertAlign="Bottom" Font="Arial, 10pt, style=Bold"/>
+        <LineObject Name="Line4" Left="-9.45" Top="28.35" Width="1058.4" Border.Style="Dash"/>
+        <LineObject Name="Line5" Width="1048.95" Border.Style="Dash"/>
+        <TextObject Name="Text115" Left="9.45" Top="28.35" Width="85.05" Height="18.9" Text="Enterd By :" Font="Arial, 10pt, style=Bold"/>
+        <TextObject Name="Text116" Left="9.45" Top="47.25" Width="85.05" Height="18.9" Text="Date   :" Font="Arial, 10pt, style=Bold"/>
+        <TextObject Name="Text119" Left="330.75" Top="28.35" Width="94.5" Height="18.9" Text="Updated By :" Font="Arial, 10pt, style=Bold"/>
+        <TextObject Name="Text120" Left="330.75" Top="47.25" Width="94.5" Height="18.9" Text="Remark :" Font="Arial, 10pt, style=Bold"/>
+        <TextObject Name="Text121" Left="718.2" Top="28.35" Width="122.85" Height="18.9" Text="Store Incharge :" Font="Arial, 10pt, style=Bold"/>
+        <TextObject Name="Text138" Left="425.25" Top="47.25" Width="472.5" Height="18.9" Text="[SPMRNMIRDetailsReport.MainRemark]" Font="Arial, 10pt"/>
+      </GroupFooterBand>
+    </GroupHeaderBand>
+  </ReportPage>
+</Report>

@@ -18,10 +18,13 @@ namespace eTactWeb.Data.DAL
         private readonly IDataLogic _IDataLogic;
         private readonly string DBConnectionString = string.Empty;
         private IDataReader? Reader;
-        public MirDAL(IConfiguration configuration, IDataLogic iDataLogic)
+        private readonly ConnectionStringService _connectionStringService;
+        public MirDAL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
             _IDataLogic = iDataLogic;
-            DBConnectionString = configuration.GetConnectionString("eTactDB");
+            _connectionStringService = connectionStringService;
+            //DBConnectionString = configuration.GetConnectionString("eTactDB");
+            DBConnectionString = _connectionStringService.GetConnectionString();
         }
         public async Task<ResponseResult> GetReportName()
         {
@@ -64,7 +67,7 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
-        public async Task<ResponseResult> GetOkRecStore(int ItemCode,string ShowAllStore)
+        public async Task<ResponseResult> GetOkRecStore(int ItemCode,string ShowAllStore,string GateNo)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -72,6 +75,7 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "FillOkRecStore"));
                 SqlParams.Add(new SqlParameter("@itemcode", ItemCode));
+                SqlParams.Add(new SqlParameter("@GateNo", GateNo));
                 SqlParams.Add(new SqlParameter("@ShowAllStore", ShowAllStore));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("SPMIR", SqlParams);
@@ -955,6 +959,26 @@ namespace eTactWeb.Data.DAL
                 Error.Message = ex.Message;
                 Error.Source = ex.Source;
             }
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> GenerateBarCodeTag(string MIRNo, int YearCode, string ItemCodes)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@MIR_No", MIRNo));
+                SqlParams.Add(new SqlParameter("@Year_code", YearCode));
+                SqlParams.Add(new SqlParameter("@ItemCode", ItemCodes));
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("spGenerateIncomingBarcode", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
             return _ResponseResult;
         }
     }

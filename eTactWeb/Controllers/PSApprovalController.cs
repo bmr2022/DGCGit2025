@@ -50,7 +50,7 @@ namespace eTactWeb.Controllers
             var Result = await _IPSApproval.GetPSData(Flag, FromDate, ToDate, ApprovalType, PONO, SchNo, VendorName, EmpID, UID);
             
             var DT = Result.Result.DefaultView.ToTable(true, "EntryID", "PONO", "AccountCode", "VendorName", "DeliveryAddress",
-       "SchApproved", "PODate", "SchNo", "SchDate", "SchYear", "POYearCode", "SchEffFromDate", "SchEffTillDate", "CreatedBy", "CreatedOn", "ApprovedBy");
+       "SchApproved", "PODate", "SchNo", "SchDate", "SchYear", "POYearCode", "SchEffFromDate", "SchEffTillDate", "CreatedBy", "CreatedOn", "ApprovedBy","Remarks");
 
             model.PSAppDetailGrid = CommonFunc.DataTableToList<PSApprovalDetail>(DT, "PODASHBOARD");
 

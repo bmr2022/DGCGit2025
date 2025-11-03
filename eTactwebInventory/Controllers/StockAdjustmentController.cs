@@ -16,6 +16,9 @@ using DataTable = System.Data.DataTable;
 using eTactWeb.DOM.Models;
 using System.Net;
 using System.Data;
+using DocumentFormat.OpenXml.EMMA;
+using FastReport.Web;
+using Microsoft.AspNetCore.Hosting;
 
 namespace eTactWeb.Controllers
 {
@@ -25,14 +28,34 @@ namespace eTactWeb.Controllers
         public IStockAdjustment IStockAdjust { get; }
         public IWebHostEnvironment IWebHostEnvironment { get; }
         public ILogger<StockAdjustmentController> Logger { get; }
+        private readonly ConnectionStringService _connectionStringService;
         private EncryptDecrypt EncryptDecrypt { get; }
-        public StockAdjustmentController(IStockAdjustment iStockAdjust, IDataLogic iDataLogic, ILogger<StockAdjustmentController> logger, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment)
+        public StockAdjustmentController(IStockAdjustment iStockAdjust, IDataLogic iDataLogic, ILogger<StockAdjustmentController> logger, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, ConnectionStringService connectionStringService)
         {
             IStockAdjust = iStockAdjust;
             IDataLogic = iDataLogic;
             Logger = logger;
             EncryptDecrypt = encryptDecrypt;
             IWebHostEnvironment = iWebHostEnvironment;
+            _connectionStringService = connectionStringService;
+        }
+        public IActionResult PrintReport(int EntryId = 0, int YearCode = 0)
+        {
+            string my_connection_string;
+            string contentRootPath = IWebHostEnvironment.ContentRootPath;
+            string webRootPath = IWebHostEnvironment.WebRootPath;
+            var webReport = new WebReport();
+
+            webReport.Report.Load(webRootPath + "\\StockAdjustmentReport.frx"); 
+
+
+            webReport.Report.SetParameterValue("entryparam", EntryId);
+            webReport.Report.SetParameterValue("yearparam", YearCode);
+
+            my_connection_string = _connectionStringService.GetConnectionString();
+            webReport.Report.SetParameterValue("MyParameter", my_connection_string);
+
+            return View(webReport);
         }
         [HttpGet]
         [Route("{controller}/Index")]
@@ -45,10 +68,12 @@ namespace eTactWeb.Controllers
             HttpContext.Session.Remove("KeyStockMultiBatchAdjustGrid");
             var MainModel = new StockAdjustmentModel();
 
-            MainModel.FinFromDate = HttpContext.Session.GetString("FromDate");
-            MainModel.FinToDate = HttpContext.Session.GetString("ToDate");
+            //MainModel.FinFromDate = HttpContext.Session.GetString("FromDate");
+            //MainModel.FinToDate = HttpContext.Session.GetString("ToDate");
             MainModel.CC = HttpContext.Session.GetString("Branch");
             MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+            MainModel.FinFromDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString("FromDate"));
+            MainModel.FinToDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString("ToDate"));
 
             if (Mode != "U")
             {

@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -14,10 +15,10 @@ namespace eTactWeb.Data.BLL
     {
         private readonly IDataLogic _DataLogicDAL;
         private readonly PendingReqToIssueDAL _PendReqToissueDAL;
-        public PendingReqToIssueBLL(IConfiguration configuration, IDataLogic iDataLogic)
+        public PendingReqToIssueBLL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
             _DataLogicDAL = iDataLogic;
-            _PendReqToissueDAL = new PendingReqToIssueDAL(configuration, iDataLogic);
+            _PendReqToissueDAL = new PendingReqToIssueDAL(configuration, iDataLogic, connectionStringService);
         }
 
         public async Task<DataSet> BindAllDropDowns(string Flag,int YearCode)

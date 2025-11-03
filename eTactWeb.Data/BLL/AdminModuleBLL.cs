@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
@@ -11,9 +12,9 @@ public class AdminModuleBLL : IAdminModule
     private AdminModuleDAL _AdminModuleDAL;
     private readonly IDataLogic _IDataLogic;
 
-    public AdminModuleBLL(IConfiguration config, IDataLogic iDataLogic)
+    public AdminModuleBLL(IConfiguration config, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
     {
-        _AdminModuleDAL = new AdminModuleDAL(config,iDataLogic);
+        _AdminModuleDAL = new AdminModuleDAL(config,iDataLogic, connectionStringService);
         _IDataLogic = iDataLogic;
     }
 

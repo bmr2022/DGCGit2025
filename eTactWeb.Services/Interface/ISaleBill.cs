@@ -13,12 +13,15 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetItemGroup();
         Task<ResponseResult> GETGROUPWISEITEM(int Group_Code);
         Task<ResponseResult> GetReportName();
+        Task<ResponseResult> GetCompanyType();
         Task<SaleBillModel> ShowGroupWiseItems(int Group_Code, int AccountCode,int storeid,string GroupName,string ToDate,string FromDate,string PartCode);
+        Task<SaleBillModel> GetlastBillDetail(string invoicedate, int currentYearcode, int AccountCode, int ItemCode);
         Task<ResponseResult> getdiscCategoryName(int Group_Code, int AccountCode);
         Task<ResponseResult> AutoFillStore( string SearchStoreName);
         Task<ResponseResult> GetFormRights(int uId);
         Task<ResponseResult> GetMaxSaleInvoiceEntryDate(int YearCode);
-        Task<ResponseResult> NewEntryId(int YearCode);
+        Task<ResponseResult> NewEntryId(int YearCode,string SubInvoicetype);
+        Task<ResponseResult> EditableRateAndDiscountONSaleInvoice();
         Task<ResponseResult> GetBatchInventory();
         Task<ResponseResult> GetCustomerBasedDetails(int Code);
         Task<ResponseResult> FillCurrency(int accountCode);
@@ -31,7 +34,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FillConsigneeList(string showAllConsignee);
         Task<ResponseResult> FillSOYearCode(string sono,string accountCode);
         Task<ResponseResult> DisplaySODetail(string accountName, string itemName, string partCode, string sono, int soYearCode, string custOrderNo, string schNo, int schYearCode);
-        Task<ResponseResult> FillItems(string showAll, string TypeItemServAssets,string sbJobWork);
+        Task<ResponseResult> FillItems(string showAll, string TypeItemServAssets,string sbJobWork, string SearchItemCode, string SearchPartCode);
         Task<ResponseResult> FillSOWiseItems(string invoiceDate, string sono, int soYearCode, int accountCode, string schNo, int schYearCode, string sbJobWork);
         Task<ResponseResult> JWItemList(string typeItemServAssets, string showAll,string bomInd, string schNo, int schYearCode);
         Task<ResponseResult> FillStore();
@@ -44,7 +47,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FillSOItemRate(string sono, int soYearCode, int accountCode, string custOrderNo, int itemCode);
         Task<ResponseResult> FILLCustomerOrderAndSPDate(string billDate, int accountCode, string sono, int soYearCode);
         Task<ResponseResult> FillSOSchedule(string sono,string accountCode, int soYearCode, int ItemCode); 
-        Task<ResponseResult> GetDashboardData(string summaryDetail, string partCode, string itemName, string saleBillno, string customerName, string sono, string custOrderNo, string schNo, string performaInvNo, string saleQuoteNo, string domensticExportNEPZ, string fromdate, string toDate);
+        Task<ResponseResult> GetDashboardData(string summaryDetail, string partCode, string itemName, string saleBillno, string customerName, string sono, string custOrderNo, string schNo, string performaInvNo, string saleQuoteNo, string domensticExportNEPZ,string SubInvoicetype, string fromdate, string toDate,string SaleBillEntryFrom);
         Task<SaleBillModel> GetViewByID(int ID, string Mode, int YC);
         Task<ResponseResult> DeleteByID(int ID, int YC, string machineName);
 
@@ -53,9 +56,11 @@ namespace eTactWeb.Services.Interface
 
         Task<AdjChallanDetail> GetAdjustedChallanDetailsData(DataTable adjustedData, int YearCode, string EntryDate, string ChallanDate, int AccountCode);
         //Task<ResponseResult> GetReportName();
-        Task<ResponseResult> ShowPendingSaleorderforBill(string Flag, int CurrentYear, string FromDate, string Todate, string InvoiceDate, int BillFromStoreId,int accountCode, string SONo, string PartCode);
-        Task<ResponseResult> FILLPendingSONO(string Flag, int CurrentYear, string FromDate, string Todate, string InvoiceDate, int BillFromStoreId,int accountCode);
-        Task<ResponseResult> FillPendingPartCOde(string Flag, int CurrentYear, string FromDate, string Todate, string InvoiceDate, int BillFromStoreId,int accountCode);
+        Task<ResponseResult> ShowPendingSaleorderforBill(string Flag, int CurrentYear, string FromDate, string Todate, string InvoiceDate, int BillFromStoreId,int accountCode, string SONo, string PartCode,string CompanyType);
+        Task<ResponseResult> FILLPendingSONO();
+        Task<ResponseResult> FillPendingPartCOde();
         Task<ResponseResult> GetFeatureOption();
+        public Task<ResponseResult> AutoFillitem(string Flag, string SearchPartCode);
+
     }
 }

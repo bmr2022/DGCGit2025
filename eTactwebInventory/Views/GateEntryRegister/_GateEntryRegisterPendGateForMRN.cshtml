@@ -74,7 +74,7 @@
                                             </td>
 
                             <th>@srNo</th>
-                            <td style="background-color: #e09ef0;">@item.GateNo </td>
+                            <td style="background-color: #e09ef0;" onclick="GetGateDetail('@item.GateNo',@item.GateYearCode)">@item.GateNo </td>
                             <td>
                                 @(item.GDate == null ? string.Empty : @item.GDate.Split(" ")[0])
                             </td>

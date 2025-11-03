@@ -72,12 +72,20 @@ namespace eTactWeb.Data.BLL
             return await _GateInwardDAL.GetDashboardData(VendorName, Gateno, ItemName, PartCode, DocName, PONO, ScheduleNo, FromDate, ToDate,DashboardType);
         } 
         public async Task<PendingGateInwardDashboard> GetPendingGateEntryDashboardData(int AccountCode, string PoNo, int PoYearCode, int ItemCode,
-   string FromDate, string ToDate,string PartCode,string ItemName)
+   string FromDate, string ToDate,string PartCode,string ItemName,string GetDataFrom,string Invoiceno)
         {
-            return await _GateInwardDAL.GetPendingGateEntryDashboardData(AccountCode, PoNo, PoYearCode, ItemCode, FromDate, ToDate,PartCode,ItemName);
+            return await _GateInwardDAL.GetPendingGateEntryDashboardData(AccountCode, PoNo, PoYearCode, ItemCode, FromDate, ToDate,PartCode
+                ,ItemName, GetDataFrom, Invoiceno);
         }
-    
-        public async Task<GateInwardDashboard> GetDashboardDetailData(string VendorName, string Gateno, string ItemName, string PartCode,string DocName, string PONO, string ScheduleNo, string FromDate, string ToDate)
+
+
+		public async Task<PendingGateInwardDashboard> GetPendingGateEntryVPDetailData(int AccountCode, string InvoiceNo)
+		{
+			return await _GateInwardDAL.GetPendingGateEntryVPDetailData( AccountCode,  InvoiceNo);
+		}
+
+
+		public async Task<GateInwardDashboard> GetDashboardDetailData(string VendorName, string Gateno, string ItemName, string PartCode,string DocName, string PONO, string ScheduleNo, string FromDate, string ToDate)
         {
             return await _GateInwardDAL.GetDashboardDetailData(VendorName, Gateno, ItemName, PartCode, DocName, PONO, ScheduleNo, FromDate, ToDate);
         }
@@ -98,6 +106,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _GateInwardDAL.SaveGateInward(model, GIGrid);
         }
+        public async Task<GateInwardModel> GetEwayBillDataforPo(GateInwardModel model, DataTable GIGrid)
+        {
+            return await _GateInwardDAL.GetEwayBillDataforPo(model, GIGrid);
+        }
 
         public async Task<ResponseResult> DeleteByID(int ID, int YC,int ActualEnteredBy, string EntryByMachineName, string gateno)
         {
@@ -115,6 +127,10 @@ namespace eTactWeb.Data.BLL
         public async Task<ResponseResult> GetDashboardData()
         {
             return await _GateInwardDAL.GetDashboardData();
+        }  
+        public async Task<ResponseResult> GetFeatureOption()
+        {
+            return await _GateInwardDAL.GetFeatureOption();
         } 
        
 
@@ -126,6 +142,16 @@ namespace eTactWeb.Data.BLL
         public async Task<GateInwardModel> GetViewByID(int ID, int YearCode)
         {
             return await _GateInwardDAL.GetViewByID(ID, YearCode);
+
+        } 
+        public async Task<ResponseResult> GetAccountCode(string AccountName)
+        {
+            return await _GateInwardDAL.GetAccountCode(AccountName);
+
+        }
+        public async Task<ResponseResult> GetItemCode(string ItemName)
+        {
+            return await _GateInwardDAL.GetItemCode(ItemName);
 
         }
         public async Task<ResponseResult> FillSaleBillRate(int AccountCode, int ItemCode, string SaleBillNo, int SaleBillYearCode)

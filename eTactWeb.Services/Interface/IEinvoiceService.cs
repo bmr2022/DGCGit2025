@@ -12,6 +12,8 @@ namespace eTactWeb.Services.Interface
     public interface IEinvoiceService
     {
         Task<string> GetAccessTokenAsync();
+        Task<ResponseResult> GETGSTNO();
+        Task<ResponseResult> GetEwayBillDataAsync();
         Task<ResponseResult> GenerateInvoiceAsync(EInvoiceItemModel input);
         Task<ResponseResult> GenerateEwayBillAsync(string token, string irnNo, int invoiceNo, int yearCode);
         Task<ResponseResult> GenerateQRCodeAsync(string barcodeValue, int invoiceNo, int yearCode);

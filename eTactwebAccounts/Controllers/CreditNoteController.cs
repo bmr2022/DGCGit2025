@@ -28,11 +28,12 @@ namespace eTactWeb.Controllers
         }
         [HttpGet]
         [Route("{controller}/Index")]
-        public async Task<IActionResult> CreditNote(int ID, string Mode, int YearCode)
+        public async Task<IActionResult> CreditNote( int ID, string Mode, int YearCode, string FromDate = "", string ToDate = "", int? GroupName = null, int? AccountCode = null, string VoucherNo = "", string VoucherType = "", string DashboardType = "", int? AccountCodeBack=null, string VoucherTypeBack = "", string[] AccountList = null)
         {
             AccCreditNoteModel model = new AccCreditNoteModel();
             ViewData["Title"] = "Credit Note Details";
             TempData.Clear();
+
             HttpContext.Session.Remove("KeyCreditNoteGrid");
             HttpContext.Session.Remove("CreditNoteModel");
             HttpContext.Session.Remove("KeyAdjGrid");
@@ -74,6 +75,15 @@ namespace eTactWeb.Controllers
             HttpContext.Session.SetString("CreditNoteModel", JsonConvert.SerializeObject(model == null ? new AccCreditNoteModel() : model));
             HttpContext.Session.SetString("CreditNote", JsonConvert.SerializeObject(model));
 
+            model.FromDateBack = FromDate;
+            model.ToDateBack = ToDate;
+            model.DashboardTypeBack = DashboardType;
+            model.GroupCodeBack = GroupName;
+            model.AccountCodeBack = AccountCode;
+            model.AccountNameBack = AccountCodeBack;
+            model.VoucherTypeBack = VoucherTypeBack;
+            model.AccountList = AccountList;
+            model.VoucherNoBack = VoucherNo;
             //string serializedGrid = JsonConvert.SerializeObject(model.AccCreditNoteDetails);
             //HttpContext.Session.SetString("KeyCreditNoteGrid", serializedGrid);
             //var adjGrid = model.adjustmentModel == null ? new AdjustmentModel() : model.adjustmentModel;
@@ -720,6 +730,7 @@ namespace eTactWeb.Controllers
                 table.Columns.Add("SOEntryId", typeof(int));
                 table.Columns.Add("BatchNo", typeof(string));
                 table.Columns.Add("UniqueBatchNo", typeof(string));
+                table.Columns.Add("DocAccountCode", typeof(int));
 
                 foreach (AccCreditNoteAgainstBillDetail Item in List)
                 {
@@ -765,7 +776,8 @@ namespace eTactWeb.Controllers
                    Item.CustOrderNo ?? string.Empty,
                    Item.SOEntryId,
                    Item.BatchNo ?? string.Empty,
-                   Item.UniqueBatchNo ?? string.Empty
+                   Item.UniqueBatchNo ?? string.Empty,
+                   Item.DocAccountCode 
                         });
                 }
 

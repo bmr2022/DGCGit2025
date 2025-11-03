@@ -43,7 +43,14 @@ public class ItemGroupBLL : IItemGroup
     {
         return await _ItemGroupDAL.GetByID(ID);
     }
-
+    public Task<ResponseResult> GetItemCatCode(string CatCode)
+    {
+        return _ItemGroupDAL.GetItemCatCode(CatCode);
+    }
+    public async Task<ResponseResult> UpdateMultipleItemDataFromExcel(DataTable ItemDetailGrid, string flag)
+    {
+        return await _ItemGroupDAL.UpdateMultipleItemDataFromExcel(ItemDetailGrid, flag);
+    }
     public async Task<ItemGroupModel> GetDashboardData(ItemGroupModel model)
     {
         return await _ItemGroupDAL.GetDashboardData(model);

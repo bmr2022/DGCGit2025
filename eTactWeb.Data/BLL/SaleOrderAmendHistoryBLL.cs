@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Http;
@@ -22,10 +23,10 @@ namespace eTactWeb.Data.BLL
         private readonly IHttpContextAccessor _httpContextAccessor;
 
 
-        public SaleOrderAmendHistoryBLL(IConfiguration configuration, IDataLogic iDataLogic)
+        public SaleOrderAmendHistoryBLL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
             _DataLogicDAL = iDataLogic;
-            _SaleOrderAmendHistoryDAL = new SaleOrderAmendHistoryDAL(configuration, iDataLogic, _httpContextAccessor);
+            _SaleOrderAmendHistoryDAL = new SaleOrderAmendHistoryDAL(configuration, iDataLogic, _httpContextAccessor, connectionStringService);
         }
         public async Task<SaleOrderAmendHistoryModel> SaleOrderAmendHistory(
          string reportType,

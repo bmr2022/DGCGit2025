@@ -217,8 +217,8 @@ namespace eTactWeb.Data.DAL
                                                                    Item_Name = row["ItemName"] == DBNull.Value ? string.Empty : row["ItemName"].ToString(),
                                                                    Req_Qty = row["MRPReqQty"] == DBNull.Value ? 0: Convert.ToDecimal(row["MRPReqQty"]),
                                                                    Current_Stock = row["CurrentStock"] == DBNull.Value ? 0 : Convert.ToDecimal(row["CurrentStock"]),
-                                                                   WIPStock = row["MRPOrderQty"] == DBNull.Value ? 0 : Convert.ToDecimal(row["MRPOrderQty"]),
-                                                                   Order_Qty = row["WIPStock"] == DBNull.Value ? 0 : Convert.ToDecimal(row["WIPStock"]),
+                                                                   Order_Qty   = row["MRPOrderQty"] == DBNull.Value ? 0 : Convert.ToDecimal(row["MRPOrderQty"]),
+                                                                   WIPStock = row["WIPStock"] == DBNull.Value ? 0 : Convert.ToDecimal(row["WIPStock"]),
                                                                    SChOrderQty = row["SChOrderQty"] == DBNull.Value ? 0 : Convert.ToDecimal(row["SChOrderQty"]),
                                                                   
                                                                    MRP_No = row["MRPNO"] == DBNull.Value ? string.Empty : row["MRPNO"].ToString(),

@@ -18,18 +18,22 @@ namespace eTactWeb.Data.BLL
         private readonly IDataLogic _DataLogicDAL;
 
         private readonly SaleBillDAL _SaleBillDAL;
-        public async Task<ResponseResult> ShowPendingSaleorderforBill(string Flag, int CurrentYear, string FromDate, string Todate, string InvoiceDate, int BillFromStoreId, int accountCode, string SONo, string PartCode)
+        public async Task<ResponseResult> ShowPendingSaleorderforBill(string Flag, int CurrentYear, string FromDate, string Todate, string InvoiceDate, int BillFromStoreId, int accountCode, string SONo, string PartCode,string CompanyType)
         {
-            return await _SaleBillDAL.ShowPendingSaleorderforBill( Flag,  CurrentYear,  FromDate,  Todate,  InvoiceDate,  BillFromStoreId,  accountCode,  SONo,  PartCode);
+            return await _SaleBillDAL.ShowPendingSaleorderforBill( Flag,  CurrentYear,  FromDate,  Todate,  InvoiceDate,  BillFromStoreId,  accountCode,  SONo,  PartCode, CompanyType);
+        }
+        public async Task<ResponseResult> AutoFillitem(string Flag, string SearchPartCode)
+        {
+            return await _SaleBillDAL.AutoFillitem(Flag, SearchPartCode);
         }
 
-        public async Task<ResponseResult> FILLPendingSONO(string Flag, int CurrentYear, string FromDate, string Todate, string InvoiceDate, int BillFromStoreId, int accountCode)
+        public async Task<ResponseResult> FILLPendingSONO()
         {
-            return await _SaleBillDAL.FILLPendingSONO(Flag, CurrentYear, FromDate, Todate, InvoiceDate, BillFromStoreId, accountCode);
+            return await _SaleBillDAL.FILLPendingSONO();
         }
-        public async Task<ResponseResult> FillPendingPartCOde(string Flag, int CurrentYear, string FromDate, string Todate, string InvoiceDate, int BillFromStoreId, int accountCode)
+        public async Task<ResponseResult> FillPendingPartCOde()
         {
-            return await _SaleBillDAL.FillPendingPartCOde(Flag, CurrentYear, FromDate, Todate, InvoiceDate, BillFromStoreId, accountCode);
+            return await _SaleBillDAL.FillPendingPartCOde();
         }
 
         public async Task<ResponseResult> GetFormRights(int ID)
@@ -40,6 +44,11 @@ namespace eTactWeb.Data.BLL
         {
             return await _SaleBillDAL.ShowGroupWiseItems( Group_Code,  AccountCode,  storeid,  GroupName,  ToDate,  FromDate,  PartCode);
         }
+
+        public async Task<SaleBillModel> GetlastBillDetail(string invoicedate, int currentYearcode, int AccountCode, int ItemCode)
+        {
+            return await _SaleBillDAL.GetlastBillDetail( invoicedate,  currentYearcode,  AccountCode, ItemCode);
+        }
         public async Task<ResponseResult> GetReportName()
         {
             return await _SaleBillDAL.GetReportName();
@@ -49,9 +58,19 @@ namespace eTactWeb.Data.BLL
             _SaleBillDAL = new SaleBillDAL(configuration, iDataLogic,connectionStringService);
             _DataLogicDAL = iDataLogic;
         }
-        public async Task<ResponseResult> NewEntryId(int YearCode)
+        public async Task<ResponseResult> NewEntryId(int YearCode, string SubInvoicetype)
         {
-            return await _SaleBillDAL.NewEntryId(YearCode);
+            return await _SaleBillDAL.NewEntryId(YearCode, SubInvoicetype);
+        }
+
+        public async Task<ResponseResult> GetCompanyType()
+        {
+            return await _SaleBillDAL.GetCompanyType();
+        }
+
+        public async Task<ResponseResult> EditableRateAndDiscountONSaleInvoice()
+        {
+            return await _SaleBillDAL.EditableRateAndDiscountONSaleInvoice();
         }
         public async Task<ResponseResult> getdiscCategoryName(int Group_Code, int AccountCode)
         {
@@ -122,9 +141,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _SaleBillDAL.FillSOItemRate(sono,soYearCode,accountCode,custOrderNo,itemCode);
         }       
-        public async Task<ResponseResult> FillItems( string showAll, string typeItemServAssets,string sbJobWork)
+        public async Task<ResponseResult> FillItems(string showAll, string typeItemServAssets, string sbJobWork, string SearchItemCode, string SearchPartCode)
         {
-            return await _SaleBillDAL.FillItems(showAll,typeItemServAssets,sbJobWork);
+            return await _SaleBillDAL.FillItems(showAll,typeItemServAssets,sbJobWork,SearchItemCode,SearchPartCode);
         }       
         public async Task<ResponseResult> FillSOWiseItems(string invoiceDate, string sono, int soYearCode, int accountCode, string schNo, int schYearCode, string sbJobWork)
         {
@@ -146,9 +165,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _SaleBillDAL.DisplaySODetail(accountName, itemName, partCode, sono, soYearCode, custOrderNo, schNo, schYearCode);
         }  
-        public async Task<ResponseResult> GetDashboardData(string summaryDetail, string partCode, string itemName, string saleBillno, string customerName, string sono, string custOrderNo, string schNo, string performaInvNo, string saleQuoteNo, string domensticExportNEPZ, string fromdate, string toDate)
+        public async Task<ResponseResult> GetDashboardData(string summaryDetail, string partCode, string itemName, string saleBillno, string customerName, string sono, string custOrderNo, string schNo, string performaInvNo, string saleQuoteNo, string domensticExportNEPZ,string SubInvoicetype, string fromdate, string toDate,string SaleBillEntryFrom)
         {
-            return await _SaleBillDAL.GetDashboardData(summaryDetail, partCode, itemName, saleBillno,customerName,sono,custOrderNo,schNo,performaInvNo,saleQuoteNo,domensticExportNEPZ,fromdate,toDate);
+            return await _SaleBillDAL.GetDashboardData(summaryDetail, partCode, itemName, saleBillno,customerName,sono,custOrderNo,schNo,performaInvNo,saleQuoteNo,domensticExportNEPZ, SubInvoicetype,fromdate, toDate, SaleBillEntryFrom);
         }  
         public async Task<ResponseResult> FILLSOScheduleDate(string sono, int accountCode, int soYearCode, string schNo, int schYearCode)
         {

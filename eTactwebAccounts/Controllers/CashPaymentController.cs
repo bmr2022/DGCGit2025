@@ -11,6 +11,7 @@ using System.Net;
 using System.Runtime.Caching;
 using static eTactWeb.Data.Common.CommonFunc;
 using static eTactWeb.DOM.Models.Common;
+using System.Globalization;
 
 namespace eTactwebAccounts.Controllers
 {
@@ -21,13 +22,15 @@ namespace eTactwebAccounts.Controllers
         private readonly ILogger<CashPaymentController> _logger;
         private readonly IConfiguration iconfiguration;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
-        public CashPaymentController(ILogger<CashPaymentController> logger, IDataLogic iDataLogic, ICashPayment iCashPayment, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
+        private readonly ConnectionStringService _connectionStringService;
+        public CashPaymentController(ILogger<CashPaymentController> logger, IDataLogic iDataLogic, ICashPayment iCashPayment, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration, ConnectionStringService connectionStringService)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _ICashPayment = iCashPayment;
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
+            _connectionStringService = connectionStringService;
         }
         
         public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string VoucherName = "")
@@ -41,7 +44,8 @@ namespace eTactwebAccounts.Controllers
             webReport.Report = new Report();
 
             webReport.Report.Load(webRootPath + "\\VoucherReport.frx");
-            my_connection_string = iconfiguration.GetConnectionString("eTactDB");
+            my_connection_string = _connectionStringService.GetConnectionString();
+            //my_connection_string = iconfiguration.GetConnectionString("eTactDB");
             webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
             webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
             webReport.Report.SetParameterValue("vouchernameparam", VoucherName);
@@ -275,7 +279,7 @@ namespace eTactwebAccounts.Controllers
                 Item.VoucherDocNo ?? string.Empty,
                 Item.BillVouchNo ?? string.Empty,
                 Item.VoucherDocDate=DateTime.Now.ToString("dd/MMM/yyyy") ,
-                Item.BillInvoiceDate=DateTime.Now.ToString("dd/MMM/yyyy") ,
+                Item.BillInvoiceDate=DateTime.Now.ToString("dd/MMM/yyyy",CultureInfo.InvariantCulture) ,
                 Item.BillYearCode ,
                 Item.VoucherRefNo ?? string.Empty,
                 Item.SrNO ,

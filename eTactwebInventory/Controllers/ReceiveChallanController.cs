@@ -26,7 +26,8 @@ namespace eTactWeb.Controllers
         public ILogger<ReceiveChallanController> Logger { get; }
         private EncryptDecrypt EncryptDecrypt { get; }
         private readonly IConfiguration iconfiguration;
-        public ReceiveChallanController(IReceiveChallan iReceiveChallan, IConfiguration configuration, IDataLogic iDataLogic, ILogger<ReceiveChallanController> logger, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment)
+        private readonly ConnectionStringService _connectionStringService;
+        public ReceiveChallanController(IReceiveChallan iReceiveChallan, IConfiguration configuration, IDataLogic iDataLogic, ILogger<ReceiveChallanController> logger, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, ConnectionStringService connectionStringService)
         {
             IReceiveChallan = iReceiveChallan;
             IDataLogic = iDataLogic;
@@ -34,6 +35,7 @@ namespace eTactWeb.Controllers
             EncryptDecrypt = encryptDecrypt;
             IWebHostEnvironment = iWebHostEnvironment;
             iconfiguration = configuration;
+            _connectionStringService = connectionStringService;
         }
 
         [HttpGet]
@@ -302,7 +304,7 @@ namespace eTactWeb.Controllers
                         }
                         else
                         {
-                            if (RCDetail.Any(x => x.ItemCode == item.ItemCode && x.BatchNo == item.BatchNo && x.Storeid == item.Storeid && x.IssueChallanNo==item.IssueChallanNo))
+                            if (RCDetail.Any(x => x.ItemCode == item.ItemCode && x.BatchNo == item.BatchNo && x.Storeid == item.Storeid && x.IssueChallanNo==item.IssueChallanNo && x.UniqueBatchno == item.UniqueBatchno))
                             {
                                 
                                 var duplicateInfo = new
@@ -487,7 +489,10 @@ namespace eTactWeb.Controllers
 
             webReport.Report.SetParameterValue("entryparam", EntryId);
             webReport.Report.SetParameterValue("yearparam", YearCode);
-            my_connection_string = iconfiguration.GetConnectionString("eTactDB");
+            my_connection_string = _connectionStringService.GetConnectionString();
+            //my_connection_string = iconfiguration.GetConnectionString("eTactDB");
+            webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+            webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
             webReport.Report.SetParameterValue("MyParameter", my_connection_string);
             return View(webReport);
         }

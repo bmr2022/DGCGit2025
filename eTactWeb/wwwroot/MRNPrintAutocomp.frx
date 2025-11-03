@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="11/29/2023 15:17:39" ReportInfo.Modified="04/13/2025 11:01:30" ReportInfo.CreatorVersion="2023.2.0.0" PrintSettings.Duplex="Simplex">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="11/29/2023 15:17:39" ReportInfo.Modified="09/24/2025 20:59:29" ReportInfo.CreatorVersion="2023.2.0.0" PrintSettings.Duplex="Simplex">
   <Styles Name="Standard">
     <Style Name="Title" Font="Arial, 12pt, style=Bold"/>
     <Style Name="Header" Font="Arial, 10pt, style=Bold"/>
@@ -9,7 +9,7 @@
     <Style Name="EvenRows" Fill.Color="WhiteSmoke" Font="Arial, 10pt"/>
   </Styles>
   <Dictionary>
-    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqGVEBw+bD1302HhodPOki0mybnpuZKVLkWXI4YSXvoVCXDdUbv1TZOS4Qk6JbQnwOqsV1FfDeqhde6q/moiAFtY3Ug2AaGWs0+v2WzvD/9ONRKS+QUpguwBGYh70i9FMZhUEDcBuUa62uMyzpYRZWTduF5TuJ6/3Bnzt+/T6i2i3eOecLU09N5HLE+TzLJ1Cf9UyBga+YCEeA/76QzkBwVBRbWf760y+sdFcsYYbKKgU=">
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqwYf2D6LPIs5GRi9VfJb9gu9ucqaRfzVvUaVne08cIFURWyyEsxwQsmngwHHahRU5IBf1gWxFxthjvCI+9BjhcR8BjTz2iHCnSBTgRKTkqutDkjIRRL0Lr+gAV5vh4t47BklN+Df+gZ1BDy0zz0wKb8ihM9loU9dXTaRaB3iM7MkRkKOWKZEyucGuTvDipndFRozMzFCo3SEjQnyyAUUe4g==">
       <TableDataSource Name="Table1" Alias="GetMRNMIRDetails1" DataType="System.Int32" Enabled="true" SelectCommand="exec GetMRNMIRDetails @MRN_No =@MrnNoparam,@Year_Code=@MrnYearcodeparam">
         <Column Name="Rec_Qty" DataType="System.Decimal"/>
         <Column Name="Accepted_Qty" DataType="System.Double"/>
@@ -86,7 +86,7 @@
       <TextObject Name="Text241" Top="9.45" Width="1039.5" Height="37.8" Text="AUTO COMPONENT" HorzAlign="Center" Font="Arial, 18pt, style=Bold"/>
       <TextObject Name="Text242" Top="47.25" Width="1039.5" Height="28.35" Text="Plot no 27 Sector 4,IIE  SIDCUL, Haridwar (Uttrakhand) - 249403" HorzAlign="Center" Font="Arial, 14pt, style=Bold"/>
     </ReportTitleBand>
-    <GroupHeaderBand Name="GroupHeader2" Top="106.35" Width="1047.06" Height="68.25" Condition="[GetMRNMIRDetails1.MRN_No]">
+    <GroupHeaderBand Name="GroupHeader2" Top="106.5" Width="1047.06" Height="68.25" Condition="[GetMRNMIRDetails1.MRN_No]">
       <TextObject Name="Text3" Left="18.9" Top="28.35" Width="75.6" Height="18.9" Text="Gate No :" Font="Arial, 10pt, style=Bold"/>
       <TextObject Name="Text27" Left="255.15" Top="28.35" Width="75.6" Height="18.9" Text="Date :" Font="Arial, 10pt, style=Bold"/>
       <TextObject Name="Text29" Left="18.9" Top="49.35" Width="85.05" Height="18.9" Text="Invoice No:" Font="Arial, 10pt, style=Bold"/>
@@ -105,13 +105,13 @@
       <TextObject Name="Text134" Left="103.95" Top="47.25" Width="141.75" Height="18.9" Text="[GetMRNMIRDetails1.Inv_No]" Font="Arial, 10pt"/>
       <TextObject Name="Text145" Left="330.75" Top="28.35" Width="94.5" Height="18.9" Text="[GetMRNMIRDetails1.GateDate]" Format="Date" Format.Format="d" Font="Arial, 10pt"/>
       <TextObject Name="Text240" Left="567" Top="28.35" Width="94.5" Height="18.9" Text="[GetMRNMIRDetails1.Entry_Date]" Format="Date" Format.Format="d" Font="Arial, 10pt"/>
-      <GroupHeaderBand Name="GroupHeader3" Top="178.44" Width="1047.06" Height="66.15" Condition="[GetMRNMIRDetails1.MRN_No]">
+      <GroupHeaderBand Name="GroupHeader3" Top="178.75" Width="1047.06" Height="66.15" Condition="[GetMRNMIRDetails1.MRN_No]">
         <TextObject Name="Text94" Left="18.9" Width="103.95" Height="28.35" Text="Vendor :" Font="Arial, 10pt, style=Bold"/>
         <TextObject Name="Text95" Left="18.9" Top="28.35" Width="103.95" Height="28.35" Text="Address :" Font="Arial, 10pt, style=Bold"/>
         <LineObject Name="Line3" Top="66.15" Width="1048.95" Border.Style="Dash"/>
         <TextObject Name="Text128" Left="103.95" Width="567" Height="18.9" Text="[GetMRNMIRDetails1.Account_Name]" Font="Arial, 10pt"/>
         <TextObject Name="Text146" Left="103.95" Top="28.35" Width="623.7" Height="18.9" Text="[GetMRNMIRDetails1.ComAddress]" Font="Arial, 10pt"/>
-        <GroupHeaderBand Name="GroupHeader4" Top="248.44" Width="1047.06" Height="47.25" Condition="[GetMRNMIRDetails1.MRN_No]">
+        <GroupHeaderBand Name="GroupHeader4" Top="248.9" Width="1047.06" Height="47.25" Condition="[GetMRNMIRDetails1.MRN_No]">
           <TextObject Name="Text34" Left="28.35" Width="94.5" Height="28.35" Text="Part Code" Font="Arial, 10pt, style=Bold"/>
           <TextObject Name="Text35" Left="113.4" Width="85.05" Height="28.35" Text="Item Name" Font="Arial, 10pt, style=Bold"/>
           <TextObject Name="Text37" Left="557.55" Width="37.8" Height="28.35" Text="Unit" Font="Arial, 10pt, style=Bold"/>
@@ -129,7 +129,7 @@
           <TextObject Name="Text105" Left="784.35" Width="75.6" Height="47.25" Text="Unique Batch No" Font="Arial, 10pt, style=Bold"/>
           <TextObject Name="Text106" Left="642.6" Width="47.25" Height="28.35" Text="Amt" HorzAlign="Center" Font="Arial, 10pt, style=Bold"/>
           <TextObject Name="Text36" Left="235.05" Top="2" Width="37.8" Height="37.8" Text="Bill Qty" HorzAlign="Right" Font="Arial, 10pt, style=Bold"/>
-          <GroupHeaderBand Name="GroupHeader1" Top="299.53" Width="1047.06" Height="28.35" Condition="[GetMRNMIRDetails1.Part_Code]">
+          <GroupHeaderBand Name="GroupHeader1" Top="300.15" Width="1047.06" Height="28.35" Condition="[GetMRNMIRDetails1.Part_Code]">
             <TextObject Name="Text124" Left="368.55" Width="56.7" Height="18.9" Text="[GetMRNMIRDetails1.Accepted_Qty]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 10pt" Trimming="EllipsisCharacter"/>
             <TextObject Name="Text125" Left="425.25" Width="47.25" Height="18.9" Text="[GetMRNMIRDetails1.Rejected_Qty]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 10pt" Trimming="EllipsisCharacter"/>
             <TextObject Name="Text129" Left="113.4" Width="122.85" Height="18.9" Text="[GetMRNMIRDetails1.Item_Name]" Font="Arial, 10pt"/>
@@ -148,11 +148,11 @@
             <TextObject Name="Text238" Width="18.9" Height="18.9" Text="[Row#]" HorzAlign="Center" Font="Arial, 8pt"/>
             <TextObject Name="Text239" Left="557.55" Width="37.8" Height="18.9" Text="[GetMRNMIRDetails1.Unit]" HorzAlign="Center" Font="Arial, 10pt"/>
             <LineObject Name="Line6" Width="1048.95" Border.Style="Dash"/>
-            <DataBand Name="Data1" Top="331.73" Width="1047.06" EvenStyle="EvenRows" DataSource="Table1"/>
+            <DataBand Name="Data1" Top="332.5" Width="1047.06" EvenStyle="EvenRows" DataSource="Table1"/>
           </GroupHeaderBand>
         </GroupHeaderBand>
       </GroupHeaderBand>
-      <GroupFooterBand Name="GroupFooter2" Top="335.58" Width="1047.06" Height="66.15">
+      <GroupFooterBand Name="GroupFooter2" Top="336.5" Width="1047.06" Height="66.15">
         <TextObject Name="Text55" Left="66.15" Width="103.95" Height="18.9" Text="TOTAL  :" HorzAlign="Justify" VertAlign="Bottom" Font="Arial, 10pt, style=Bold"/>
         <LineObject Name="Line4" Left="-9.45" Top="28.35" Width="1058.4" Border.Style="Dash"/>
         <LineObject Name="Line5" Width="1048.95" Border.Style="Dash"/>

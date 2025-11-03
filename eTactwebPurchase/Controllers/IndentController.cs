@@ -32,7 +32,8 @@ namespace eTactWeb.Controllers
         public ILogger<IndentController> Logger { get; }
         private EncryptDecrypt EncryptDecrypt { get; }
         private readonly IConfiguration _iconfiguration;
-        public IndentController(IIndent _IIndent, IDataLogic iDataLogic, ILogger<IndentController> logger, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
+        private readonly ConnectionStringService _connectionStringService;
+        public IndentController(IIndent _IIndent, IDataLogic iDataLogic, ILogger<IndentController> logger, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration, ConnectionStringService connectionStringService)
         {
             _Indent = _IIndent;
             IDataLogic = iDataLogic;
@@ -40,6 +41,7 @@ namespace eTactWeb.Controllers
             EncryptDecrypt = encryptDecrypt;
             IWebHostEnvironment = iWebHostEnvironment;
             _iconfiguration = iconfiguration;
+            _connectionStringService = connectionStringService;
         }
 
         [HttpGet]
@@ -106,7 +108,10 @@ namespace eTactWeb.Controllers
             }
             webReport.Report.SetParameterValue("entryparam", EntryId);
             webReport.Report.SetParameterValue("yearparam", YearCode);
-            my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+            my_connection_string = _connectionStringService.GetConnectionString();
+            //my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+            webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+            webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
             webReport.Report.SetParameterValue("MyParameter", my_connection_string);
             webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
             webReport.Report.Prepare();

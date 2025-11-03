@@ -66,6 +66,9 @@ namespace eTactWeb.DOM.Models
         public int SeqNo { get; set; }
         public int Group_Code { get; set; }
         public string Group_name { get; set; }
+        public string? BillNo { get; set; }
+        public string? BillDate { get; set; }
+        public string? CustomerName { get; set; }
         public string BOMInd { get; set; }
         public string ProducedUnprod { get; set; }
         public string? SONO { get; set; }
@@ -73,6 +76,7 @@ namespace eTactWeb.DOM.Models
         public string? CustOrderNo { get; set; }
         public int SOYearCode { get; set; }
         public string? SODate { get; set; }
+        public string? RackID { get; set; }
         public string? SchNo { get; set; }
         public string? Schdate { get; set; }
         public int SaleSchYearCode { get; set; }
@@ -150,6 +154,9 @@ namespace eTactWeb.DOM.Models
         public int SaleBillEntryId { get; set; }
         public int SaleBillYearCode { get; set; }
         public string? SaleBillEntryDate { get; set; }
+        public string? AllowToAddNegativeStockInStore { get; set; }
+        public string? SaleBillEntryFrom { get; set; }
+        public string? SubInvoicetype { get; set; }
         public string? InvPrefix { get; set; }
         public string? SaleBillJobwork { get; set; }
         public string? AgainstVoucherNo { get; set; }
@@ -187,6 +194,9 @@ namespace eTactWeb.DOM.Models
         public string? TransporterdocNo { get; set; }
         public int TransporterId { get; set; }
         public string? TransportModeBYRoadAIR { get; set; }
+        public string? PrivateMark { get; set; }
+        public string? GRNo { get; set; }
+        public string? GRDate { get; set; }
         public int ConsigneeAccountcode { get; set; }
         public bool PNConsingee { get; set; }
         public string? ConsigneeAccountName { get; set; }
@@ -211,6 +221,11 @@ namespace eTactWeb.DOM.Models
         public string? PermitNo { get; set; }
         public decimal CashDisPer { get; set; }
         public decimal CashDisRs { get; set; }
+        public decimal AdditionalDiscount { get; set; }
+        public decimal PackingCharges { get; set; }
+        public decimal ForwardingCharges { get; set; }
+        public decimal CourieerCharges { get; set; }
+        public decimal GST { get; set; }
         public string? SoDelTime { get; set; }
         public string? TypeJob { get; set; }
         public string? Approved { get; set; }
@@ -293,11 +308,26 @@ namespace eTactWeb.DOM.Models
         public string? DomesticExportNEPZBack { get; set; }
         public string? SearchBoxBack { get; set; }
         public string? SummaryDetailBack { get; set; }
+        public int? GroupCodeBack { get; set; }
+        public int? AccountCodeBack { get; set; }
+        public int? AccountNameBack { get; set; }
+        public string? VoucherTypeBack {  get; set; }
+        public string[] AccountList {  get; set; }
         public List<SaleBillDetail>? saleBillDetails { get; set; }
         public IList<SaleBillDetail>? ItemDetailGrid { get; set; }
         public IList<DPBItemDetail>? DPBItemDetails { get; set; }
         public string? MaxSaleInvoiceEntryDate {  get; set; }
         public string? AllowBackDateSALEBILL {  get; set; }
+        public string? AllowToAdjZeroAmt {  get; set; }
+        //public string? ShowHideSaleBillEntryDetail { get; set; }
+        //public string? ShowHideSaleBillCustomerDetail { get; set; }
+        //public string? ShowHideSaleBillOtherRequiredDetail { get; set; }
+        //public string? ShowHideSaleBillCurrency { get; set; }
+        //public string? ShowHideSaleBillConsignee { get; set; }
+        //public string? ShowHideSaleBillScheduleDetail { get; set; }
+        public string? AllowToChangeSaleBillStoreName { get; set; }
+        //public string? HideOtherFieldOFSaleBillDetailTable { get; set; }
+        //public string? ApproveSOForGenerateSaleInvoiceOrNot { get; set; }
         private IList<SelectListItem> _YesNo = new List<SelectListItem>()
         {
             new() { Value = "Y", Text = "Yes" },

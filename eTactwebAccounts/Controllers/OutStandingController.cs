@@ -39,9 +39,9 @@ namespace eTactWeb.Controllers
             return View(MainModel); // Pass the model with old data to the view
         }
 
-        public async Task<JsonResult> GetPartyName(string outstandingType, string TillDate)
+        public async Task<JsonResult> GetPartyName(string outstandingType, string TillDate, int? GroupCode)
         {
-            var JSON = await _OutStanding.GetPartyName(outstandingType, TillDate);
+            var JSON = await _OutStanding.GetPartyName(outstandingType, TillDate, GroupCode);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
@@ -53,10 +53,31 @@ namespace eTactWeb.Controllers
             return Json(JsonString);
         }
 
-        public async Task<IActionResult> GetDetailsData(string outstandingType, string TillDate, string GroupName, string[] AccountNameList, int AccountCode, string ShowOnlyApprovedBill, bool ShowZeroBal)
+        public async Task<JsonResult> GetVoucherNo(int CurrentYear)
+        {
+            var JSON = await _OutStanding.GetVoucherNo(CurrentYear);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
+        public async Task<JsonResult> GetVoucherType(int CurrentYear)
+        {
+            var JSON = await _OutStanding.GetVoucherType(CurrentYear);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
+        public async Task<IActionResult> GetVoucherList(int AccountCode, string VoucherNo, string VoucherType, int VoucherYearCode, int CurrentYear)
         {
             var model = new OutStandingModel();
-            model = await _OutStanding.GetDetailsData(outstandingType, TillDate, GroupName, AccountNameList, AccountCode, ShowOnlyApprovedBill, ShowZeroBal);
+            model = await _OutStanding.GetVoucherList(AccountCode, VoucherNo, VoucherType, VoucherYearCode, CurrentYear);
+            return PartialView("_OutStandingPopUpData", model);
+        }
+
+        public async Task<IActionResult> GetDetailsData( string outstandingType, string TillDate, int? GroupName, string[] AccountNameList,  int AccountCode, string ShowOnlyApprovedBill, bool ShowZeroBal, string VoucherNo, string VoucherType)
+        {
+            var model = new OutStandingModel();
+            model = await _OutStanding.GetDetailsData(outstandingType, TillDate, GroupName, AccountNameList, AccountCode, ShowOnlyApprovedBill, ShowZeroBal, VoucherNo, VoucherType);
             if (outstandingType == "Receive Outstanding Ageing" || outstandingType == "Payable Outstanding Ageing")
             {
                 return PartialView("_OutStandingAgeingGrid", model);

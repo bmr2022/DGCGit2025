@@ -17,7 +17,7 @@
                         Add New
                     </a>
                 </span>
-            </h5>
+                </h5>
         </div>
         <div class="card-body">
             <div class="card overflow-auto">
@@ -139,7 +139,7 @@
             $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", date);
             $("#FromDate").on('keydown', function (e) { e.preventDefault(); return false; });
             //$("#ToDate").datepicker({ changeMonth: true, changeYear: true, dateFormat: 'dd/mm/yy' });
-            $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#ToDate').val()));
+            $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", ($('#ToDate').val()));
             $("#ToDate").on('keydown', function (e) { e.preventDefault(); return false; });
 
             AutoComplete('VIndentMainDetail', 'PartCode', 'PartCode', null);

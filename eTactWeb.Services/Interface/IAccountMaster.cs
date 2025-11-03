@@ -13,6 +13,9 @@ namespace eTactWeb.Services.Interface
         Task<AccountMasterModel> GetDetailDashboardData(AccountMasterModel model);
 
         Task<IList<TextValue>> GetDropDownList(string Flag);
+        Task<ResponseResult> GetStateCode(string State);
+        Task<ResponseResult> GetAccountGroupDetail(string AccountName);
+
 
         Task<ResponseResult> GetParentGroupDetail(string iD);
 
@@ -21,6 +24,9 @@ namespace eTactWeb.Services.Interface
 
         Task<ResponseResult> SaveAccountMaster(AccountMasterModel model);
         Task<ResponseResult> GetFormRights(int uId);
+        Task<ResponseResult> GetItemCatCode(string CatCode);
+        Task<ResponseResult> GetItemGroupCode(string GroupCode);
+        Task<ResponseResult> UpdateMultipleItemDataFromExcel(DataTable ItemDetailGrid, string flag);
 
     }
 }

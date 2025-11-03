@@ -52,6 +52,8 @@
                                         <option value="ProductionConsumptionReport(SUMMARY)" selected>Summary</option>
                                         <option value="ProductionConsumptionReport(DETAIL)">Detail</option>
                                         <option value="ProductionConsumptionReport(CONSOLIDATED)">Consolidated</option>
+                                        <option value="COMPACT">Compact Detail</option>
+                                        <option value="Prod Date Wise Consumption">Prod Date Wise Consumption</option>
                                     </select>
 
                                 </div>
@@ -85,7 +87,7 @@
                                         <option value="@Model.RMPartCode">-Select-</option>
                                     </select>
                                 </div>
-                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" >
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12"style="width:200px;" >
                                     <label asp-for="StoreName" class="form-label" >Store Name</label>
                                     <input type="hidden" asp-for="@Model.Storeid" />
                                     <select asp-for="StoreName" class="form-select" style="width:190px;" required>
@@ -95,29 +97,42 @@
                                     <span asp-validation-for="StoreName" class="text-danger"></span>
                                 </div>
 
-                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" >
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:200px;">
                                     <label asp-for="WorkCenterName" class="form-label">Work Center Name</label>
                                     <input type="hidden" asp-for="@Model.WorkCenterId" />
                                     <select asp-for="WorkCenterName" class="form-select" style="width:190px;">
                                         <option value="@Model.WorkCenterId">-Select-</option>
                                     </select>
                                 </div>
-                                <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                                 <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="ItemCateg" class="control-label">Category</label>
+                                        <br />
+                                        <select class="form-select" multiple="multiple" asp-for="ItemCateg" asp-items="@(new SelectList(Model.CategList, "Value", "Text"))"></select>
+                                    </div>
+
+                                    <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12"style="margin-left:10px;">
+                                        <label asp-for="GroupName" class="control-label">Group Name</label>
+                                        <br />
+
+                                        <select class="form-select" multiple="multiple" asp-for="GroupName" asp-items="@(new SelectList(Model.GroupNameList,"Value","Text"))"></select>
+                                    </div>
+                                <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2"style="margin-left:10px;">
                                     <label class="form-label">Global search</label>
                                     <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
                                 </div>
                                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                 <button class="btn btn-sm btn-outline-info" type="button" style="padding:0px;height:30px;width:50px;margin-top:18px;" onclick="GetConsumptionDetailsData(); ">
+                                        <i class="fa-solid fa-magnifying-glass fa-fw fa-lg"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:50px;margin-left:20px;margin-top:18px;" type="button" id="sendToExcel">
+                                        <i class="fa-solid fa-upload fa-fw fa-lg "></i>
+                                    </button>
+                                    <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:50px;margin-left:20px;margin-top:18px;" asp-controller="ConsumptionReport" asp-action="ConsumptionReport">
+                                        <i class="fa-solid fa-rotate fa-fw fa-lg"></i>
+                                    </a>
                                 <div class=" d-flex justify-content-center  mt-3 col-sm-5 col-md-8 col-lg-6 col-xl-4" width="inherit">
 
-                                    <button class="btn btn-sm btn-outline-info" type="button" style="padding:0px;height:30px;width:100px;" onclick="GetConsumptionDetailsData(); ">
-                                        <i class="fa-solid fa-magnifying-glass fa-fw fa-lg"></i>SEARCH
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
-                                        <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
-                                    </button>
-                                    <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="ConsumptionReport" asp-action="ConsumptionReport">
-                                        <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
-                                    </a>
+                                   
                                 </div>
                             </div>
                             <div class="progress my-2 mb-3" style="height: 4px;">
@@ -134,17 +149,20 @@
                                     <div class="accordion-body">
                                         <div class="card-body" id="divPendingMRP">
                                                 <div class="col-md-12 divStockRegister" id="divStockMainRegister">
-                                               @*  <partial name="_BOMReportGrid" /> *@
+                                                  @*  <partial name="_BOMReportGrid" /> *@
+                                               </div>
+                                        </div>
+                                            <div class="row" id="TOTALDetail">
+                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                                    <label class="form-label">Total Consumed Qty</label>
+                                                    <input id="TotalConsumedRMQty" class="form-control" readonly />
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="d-flex justify-content-end mt-2" id="reportFields">
-                                                    
-                                                   
-                                        </div>
+                                      </div>
                                        
-                                    </div>
+                                  </div>
 
-                                </div>
+                   
                             </div>
                         </form>
                     </div>
@@ -184,6 +202,27 @@
             FillRMItemName();
             FillWorkCenterName();
             FillStoreName();
+            countAllTotal();
+
+            $("#ItemCateg").multiselect({
+                templates: {
+                    button: '<button type="button" class="multiselect btn btn-sm btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><span class="multiselect-selected-text"></span></button>',
+                },
+                enableFiltering: true,
+                includeSelectAllOption: true,
+                buttonWidth: 250,
+                enableCaseInsensitiveFiltering: true
+            });
+             $("#GroupName").multiselect({
+                templates: {
+                    button: '<button type="button" class="multiselect btn btn-sm btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><span class="multiselect-selected-text"></span></button>',
+                },
+                enableFiltering: true,
+                includeSelectAllOption: true,
+                buttonWidth: 250,
+                enableCaseInsensitiveFiltering: true
+            });
+
             //GetConsumptionDetailsData();
             // handleReportType();
         });
@@ -202,7 +241,18 @@
             $(CurrentRow).css({ 'background-color': '#00bcd4' });
             $("#divStockRegisterBody tr").not(CurrentRow).css({ 'background-color': '' });
         }
+        function countAllTotal() {
+            var TotalConsumedRMQty = 0;
 
+            $('#divStockRegisterBody tr').each(function () {
+                var val = $(this).find('.GridConsumedRMQty').text().trim();
+                if (val !== '') {
+                    TotalConsumedRMQty += parseFloat(val) || 0;
+                }
+            });
+
+            $('#TotalConsumedRMQty').val(TotalConsumedRMQty.toFixed(2));
+        }
         function FillFGItemName() {
              
             $.ajax({
@@ -428,6 +478,9 @@
             var Yearcode = $('#YearCode').val();
             var Storeid = $('#StoreName').val();
             var WorkCenterid = $('#WorkCenterName').val();
+
+            var ItemCateg = $('#ItemCateg').val() ? $('#ItemCateg').val().join(',') : '';
+    var GroupName = $('#GroupName').val() ? $('#GroupName').val().join(',') : '';
             //var RMItemName = $('#RMItemName').val();
             if (Storeid === '') {
                 $.notify('Store Name is mandatory to display the report!', 'error');
@@ -444,7 +497,9 @@
                     //FGItemName: FGItemName,
                     RMItemCode: RMItemCode,
                     WorkCenterid: WorkCenterid,
-                    Storeid: Storeid
+                    Storeid: Storeid,
+                    ItemCateg: ItemCateg,
+            GroupName: GroupName
                     //RMItemName:RMItemName
                 },
                 success: function (response) {
@@ -460,7 +515,7 @@
                     }
                     var totalRows = $('#divStockMainRegister tr').length;
                     $('#totalRows').text(totalRows);
-                    //countAllTotal();
+                    countAllTotal();
                 },
                 error: function (xhr, status, error) {
                     console.error("Error fetching BOM tree data:", error);
@@ -619,31 +674,7 @@
                 table.children('#divStockRegisterBody').append(row);
             });
         }
-        function countAllTotal() {
-             
-            var rowCount = $('#divStockRegisterBody tr').length;
-           
-            var TotQty = 0;
-            var TotStoreStock = 0;
-            var TotWIPStock = 0;
-            var TotAmount = 0;
-            for (var i = 1; i <= rowCount; i++) {
-
-                TotQty += $('#totQtyG-' + i).text() == '' ? 0 : parseFloat($('#totQtyG-' + i).text());
-                TotStoreStock += $('#totStoreStockG-' + i).text() == '' ? 0 : parseFloat($('#totStoreStockG-' + i).text());
-                TotWIPStock += $('#totWIPStockG-' + i).text() == '' ? 0 : parseFloat($('#totWIPStockG-' + i).text());
-                TotAmount += $('#totAmountG-' + i).text() == '' ? 0 : parseFloat($('#totAmountG-' + i).text());
-                //if(totAmount < 0){
-                //    $('#SAGridRow-' + i).css('background-color', 'red');
-                //}
-            }
-
-
-            $('#totQty').val(isNaN(TotQty) ? 0 : TotQty.toFixed(2));
-            $('#totStoreStock').val(isNaN(TotStoreStock) ? 0 : TotStoreStock.toFixed(2));
-            $('#totWIPStock').val(isNaN(TotWIPStock) ? 0 : TotWIPStock.toFixed(2));
-            $('#totAmount').val(isNaN(TotAmount) ? 0 : TotAmount.toFixed(2));
-        }
+     
         var currentSearchColumn = null;
 
         $("#search-box").on("keyup", function () {

@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
@@ -16,10 +17,10 @@ namespace eTactWeb.Data.BLL
         private readonly IDataLogic _DataLogicDAL;
         private readonly InProcessQcDAL _InProcessQcDAL;
 
-        public InProcessQcBLL(IConfiguration configuration, IDataLogic iDataLogic)
+        public InProcessQcBLL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
             _DataLogicDAL = iDataLogic;
-            _InProcessQcDAL = new InProcessQcDAL(configuration, iDataLogic);
+            _InProcessQcDAL = new InProcessQcDAL(configuration, iDataLogic, connectionStringService);
         }
         public async Task<InProcessQc> GetViewByID(int ID, int YearCode)
         {
@@ -28,6 +29,22 @@ namespace eTactWeb.Data.BLL
         public async Task<ResponseResult> FillEntryId(string Flag, int YearCode, string SPName)
         {
             return await _InProcessQcDAL.FillEntryId(Flag, YearCode, SPName);
+        }
+        public async Task<ResponseResult> FillItems(string SearchItemCode, string SearchPartCode)
+        {
+            return await _InProcessQcDAL.FillItems(SearchItemCode, SearchPartCode);
+        }
+        public async Task<ResponseResult> FillInProcQCSlipNo()
+        {
+            return await _InProcessQcDAL.FillInProcQCSlipNo();
+        }
+        public async Task<ResponseResult> BindProdPlanNo()
+        {
+            return await _InProcessQcDAL.BindProdPlanNo();
+        } 
+        public async Task<ResponseResult> BindProdSlip()
+        {
+            return await _InProcessQcDAL.BindProdSlip();
         }
         public async Task<DataSet> BindEmpList(string Flag)
         {
@@ -45,9 +62,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _InProcessQcDAL.GetDashboardData(FromDate, ToDate, QcSlipNo, ItemName, PartCode, ProdPlanNo, ProdSchNo, ProdSlipNo, DashboardType);
         }
-        public async Task<InProcessDashboard> GetDashboardDetailData(string FromDate, string ToDate)
+        public async Task<InProcessDashboard> GetDashboardDetailData(string FromDate, string ToDate, string QcSlipNo, string ItemName, string PartCode, string ProdPlanNo, string ProdSchNo, string ProdSlipNo, string DashboardType)
         {
-            return await _InProcessQcDAL.GetDashboardDetailData(FromDate, ToDate);
+            return await _InProcessQcDAL.GetDashboardDetailData(FromDate, ToDate, QcSlipNo, ItemName, PartCode, ProdPlanNo, ProdSchNo, ProdSlipNo, DashboardType);
         }
         public async Task<ResponseResult> DeleteByID(int ID, int YC, string CC, string EntryByMachineName, string EntryDate)
         {

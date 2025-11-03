@@ -268,11 +268,11 @@
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-9" style=" width:100px" id="plannedtarget">
                                     <label asp-for="TargetQty" class="form-label" style="color: blue;">Target Qty</label>
-                                    <input asp-for="TargetQty" class="form-control" readonly />
+                                    <input asp-for="TargetQty" class="form-control" readonly onfocusout="ClearGridAjax()" />
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-9" style=" width:100px" id="unplannedtarget">
                                     <label asp-for="TargetQtyUnplanned" class="form-label">Target Qty</label>
-                                    <input asp-for="TargetQtyUnplanned" class="form-control" id="unTarget" min="0" type="number" step="any" />
+                                    <input asp-for="TargetQtyUnplanned" class="form-control" onfocusout="ClearGridAjax()" id="unTarget" min="0" type="number" step="any" />
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-9" style=" width:100px">
                                     <label asp-for="ProdQty" class="form-label" style="color: red;">Prod Qty*</label>
@@ -287,11 +287,11 @@
                                     <input asp-for="Stock" class="form-control" readonly />
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-9" style="width:150px">
-                                    <label asp-for="MachineGroup" class="form-label">Machine Group</label>
+                                    <label asp-for="MachineGroup" class="form-label" style="color:red;">Machine Group*</label>
                                     <select asp-for="MachineGroup" class="form-select"></select>
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-9" style="width:150px">
-                                    <label asp-for="MachineName" class="form-label">Machine Name</label>
+                                    <label asp-for="MachineName" class="form-label" style="color:red">Machine Name*</label>
                                     <input asp-for="MachineId" type="hidden" class="form-label" />
                                     <select asp-for="MachineName" class="form-select">
                                         <option value="">-Select-</option>
@@ -1175,7 +1175,12 @@
             if (!ValidateGI_Grid()) return;
             ChkWIPStockBeforeSaving(function (isValid) {
                 if (isValid) {
+                  
                     $('form').submit(); // proceed only if no stock errors
+                }
+                else
+                {
+                  
                 }
             });
         });
@@ -1275,6 +1280,22 @@
             }
             else {
                 RemoveErrorCls('SenToQc');
+            }
+                if ($('#MachineGroup').prop('selectedIndex') == 0) {
+                    AddErrorCls('MachineGroup');
+                    $.notify("MachineGroup Required", "error");
+                    Err = 1;
+                }
+                else {
+                    RemoveErrorCls('MachineGroup');
+                }
+                if ($('#MachineName').prop('selectedIndex') == 0) {
+                AddErrorCls('MachineName');
+                $.notify("MachineName Required", "error");
+                Err = 1;
+            }
+            else {
+                    RemoveErrorCls('MachineName');
             }
             if ($('#NextWorkCenter').prop('selectedIndex') <= 0) {
                 AddErrorCls('NextWorkCenter');
@@ -1420,7 +1441,7 @@
             FillWorkcenter();
             FillMachineGroup();
             FillMachineName();
-            FillItems();
+                        FillItems();
             /* GetItem();
             GetPartCode(); */
             FillOperator();
@@ -1816,7 +1837,19 @@
             }
 
         })
+             $('#WorkCenter').change(function () {
+                FillItems();
+            });
+             $("#MachineGroup").change(function () {
+            
+            FillMachineName();
+        });
 
+        
+        $("#MachineName").change(function () {
+            
+            FillMachineGroup();
+        });
         $('#childData').click(function () {
 
             FillScrapData();
@@ -2089,6 +2122,8 @@
         });
         $('#Store').change(function () {
             if ($('#Store').val() == "S") {
+                $('#NextStoreId').val($('#NextWorkCenter').val());
+                $('#NextWCID').val(0);
                 $('#NextWorkCenter').change(function () {
                     $('#NextStoreId').val($('#NextWorkCenter').val());
                     $('#NextWCID').val(0);
@@ -3381,12 +3416,12 @@
             });
         }
 
-        function FillMachineGroup() {
+            function FillMachineGroup() {
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("FillMachineGroup")",
                 dataType: "json",
-                data: {},
+                       data: { machineId: $("#MachineName").val() },
                 success: function (result, status, error) {
                     if (result != null) {
                         var obj = $.parseJSON(result);
@@ -3405,12 +3440,12 @@
             });
         }
 
-        function FillMachineName() {
+            function FillMachineName() {
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("FillMachineName")",
                 dataType: "json",
-                data: {},
+                         data: { groupId:  $("#MachineGroup").val() },
                 success: function (result, status, error) {
                     if (result != null) {
                         var obj = $.parseJSON(result);
@@ -3427,7 +3462,7 @@
             });
         }
 
-        function FillIssWorkcenter() {
+    /*     function FillIssWorkcenter() {
 
             $.ajax({
                 type: "POST",
@@ -3455,7 +3490,41 @@
                     }
                 }
             });
+        } */
+                function FillIssWorkcenter() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillIssWorkcenter")",
+                dataType: "json",
+                data: { "QcMandatory": $('#QcMandatory').val() },
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#NextWorkCenter').empty();
+                            $('#NextWorkCenter').append('<option disabled>-Select-</option>');
+
+                            $.each(obj.Result, function (index, val) {
+                                $('#NextWorkCenter').append(
+                                    '<option value="' + val.WCID + '">' + val.WorkCenterDescription + '</option>'
+                                );
+                            });
+
+                            // ✅ Move these AFTER filling all options
+                            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                                var nextwc = '@Model.NextWCID';
+                                $('#NextWorkCenter').val(nextwc).trigger("change");
+                            } else {
+                                // Default behavior
+                                $('#NextWCID').val($('#NextWorkCenter').val());
+                                $('#NextStoreId').val(0);
+                            }
+                        }
+                    }
+                }
+            });
         }
+
 
         function FillIssWorkcenterForQcMandatory() {
 
@@ -3505,6 +3574,10 @@
                                 $('#NextStoreId').val($('#NextWorkCenter').val());
                                 $('#NextWCID').val(0);
                             })
+                                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+            var nextStore = '@Model.NextStoreId';
+            $('#NextWorkCenter').val(nextStore).trigger("change");
+        }
                         }
                     }
                 }
@@ -3531,7 +3604,10 @@
                             });
                             $('#Operation option').filter(function () {
                                 return $(this).text() === "Assembly ";
+
+
                             }).first().prop('selected', true);
+                            $('#ProcessId').val($('#Operation').val());
                             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
 
                                 var operation = $('#ProcessId').val();
@@ -4508,7 +4584,8 @@
                     data: {
                         ProdAgainst: $('#ProdAgainstPlanManual').val(),
                         YearCode: $('#YearCode').val(),
-                        PartCode: request.term
+                        PartCode: request.term,
+                            WCID:$("#WorkCenter").val(),
                     },
                     success: function (result) {
                         let obj = typeof result === "string" ? JSON.parse(result) : result;
@@ -4537,7 +4614,8 @@
                     data: {
                         ProdAgainst: $('#ProdAgainstPlanManual').val(),
                         YearCode: $('#YearCode').val(),
-                        ItemName: request.term
+                        ItemName: request.term,      
+                        WCID:$("#WorkCenter").val(),
                     },
                     success: function (result) {
                         let obj = typeof result === "string" ? JSON.parse(result) : result;
@@ -4937,8 +5015,9 @@
                 data: {
                     "WcId": parseInt($('#WorkCenter').val()),
                     "TransferMatEntryDate": $('#EntryDate').val(),
+                    "TransferMatYearCode": parseInt($('#YearCode').val()),
                     "TransferMatEntryId": $('#EntryId').val(),
-                    "TransferMatYearCode": parseInt($('#YearCode').val())
+                    "Mode":$("#Mode").val()
                 },
                 success: function (response) {
                     if (response.success === false) {
@@ -4950,6 +5029,7 @@
                         });
                         callback(false); // indicate failure
                     } else {
+                    
                         callback(true); // indicate success
                     }
                 },

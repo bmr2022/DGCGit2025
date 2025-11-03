@@ -149,6 +149,35 @@ namespace eTactwebInventory.Controllers
                             TempData["2627"] = "2627";
                             return RedirectToAction(nameof(ReOfferItem));
                         }
+                        if (Result.StatusText == "ROWCOUNT" || Result.StatusCode == HttpStatusCode.InternalServerError)
+                        {
+                            ViewBag.isSuccess = false;
+                            var input = "";
+                            if (Result?.Result != null)
+                            {
+                                if (Result.Result is string str)
+                                {
+                                    input = str;
+                                }
+                                else
+                                {
+                                    input = JsonConvert.SerializeObject(Result.Result);
+                                }
+
+                                TempData["ErrorMessage"] = input;
+                            }
+                            else
+                            {
+                                TempData["500"] = "500";
+                            }
+
+                            return View("ReOfferItem", model);
+
+
+
+                            //model.IsError = "true";
+                            //return View("Error", Result);
+                        }
                     }
                     return RedirectToAction(nameof(ReOfferItem));
                 }

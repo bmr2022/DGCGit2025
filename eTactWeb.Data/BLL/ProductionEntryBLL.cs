@@ -23,9 +23,9 @@ namespace eTactWeb.Data.BLL
             _ProductionEntryDAL = new ProductionEntryDAL(configuration, iDataLogic, _httpContextAccessor, connectionStringService);
         }
 
-        public async Task<ResponseResult> ChkWIPStockBeforeSaving(int WcId, string TransferMatEntryDate, int TransferMatYearCode, int TransferMatEntryId, DataTable TransferGrid)
+        public async Task<ResponseResult> ChkWIPStockBeforeSaving(int WcId, string TransferMatEntryDate, int TransferMatYearCode, int TransferMatEntryId, DataTable TransferGrid,string mode)
         {
-            return await _ProductionEntryDAL.ChkWIPStockBeforeSaving(WcId, TransferMatEntryDate, TransferMatYearCode, TransferMatEntryId, TransferGrid);
+            return await _ProductionEntryDAL.ChkWIPStockBeforeSaving(WcId, TransferMatEntryDate, TransferMatYearCode, TransferMatEntryId, TransferGrid,mode);
         }
         public async Task<PendingProductionEntryModel> GetPendingProductionEntry(int Yearcode)
         {
@@ -175,13 +175,13 @@ namespace eTactWeb.Data.BLL
         {
             return await _ProductionEntryDAL.FillTool();
         }
-        public async Task<ResponseResult> FillMachineGroup()
+        public async Task<ResponseResult> FillMachineGroup(int machineId)
         {
-            return await _ProductionEntryDAL.FillMachineGroup();
+            return await _ProductionEntryDAL.FillMachineGroup(machineId);
         }
-        public async Task<ResponseResult> FillMachineName()
+        public async Task<ResponseResult> FillMachineName(int groupId)
         {
-            return await _ProductionEntryDAL.FillMachineName();
+            return await _ProductionEntryDAL.FillMachineName(groupId);
         }
         public async Task<ResponseResult> FillSuperwiser()
         {
@@ -267,13 +267,13 @@ namespace eTactWeb.Data.BLL
         {
             return await _ProductionEntryDAL.GetBatchNumber(SPName, ItemCode, YearCode, WcId, TransDate, BatchNo);
         }
-        public async Task<ResponseResult> GetItems(string ProdAgainst, int YearCode, string ItemName)
+        public async Task<ResponseResult> GetItems(string ProdAgainst, int YearCode, string ItemName, int WCID)
         {
-            return await _ProductionEntryDAL.GetItems(ProdAgainst, YearCode,ItemName);
+            return await _ProductionEntryDAL.GetItems(ProdAgainst, YearCode,ItemName,WCID);
         }
-        public async Task<ResponseResult> GetPartCode(string ProdAgainst, int YearCode, string PartCode)
+        public async Task<ResponseResult> GetPartCode(string ProdAgainst, int YearCode, string PartCode, int WCID)
         {
-            return await _ProductionEntryDAL.GetPartCode(ProdAgainst, YearCode, PartCode);
+            return await _ProductionEntryDAL.GetPartCode(ProdAgainst, YearCode, PartCode   ,WCID);
         }
         public async Task<ResponseResult> FillWorkcenter()
         {

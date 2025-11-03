@@ -6,20 +6,20 @@
     </button>
 </h2>
 <div id="BPanel6" class="accordion-body collapse pnl4 bg-gradient" aria-labelledby="HPanel6">
-    <div class="row g-2 gx-3">
-        <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-6" id="ModeOfAdjustmentDiv">
-            <label asp-for="AdjModeOfAdjstment" class="form-label" style="color: red;">Mode Of Adjustment*</label>
-            <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                <select asp-for="AdjModeOfAdjstment" asp-items="Model.AdjModeOfAdjustmentList" class="form-select" style="width:220px;">
-                    <option value="0">-Select-</option>
-                </select>
-            </div>
+    <div class="row g-2 gx-3 g-3 align-items-end">
+        <div class="col-md-2 col-lg-1" style="width:160px;">
+            <label asp-for="AdjModeOfAdjstment" class="form-label text-danger">Mode Of Adjustment*</label>
+            <select asp-for="AdjModeOfAdjstment" asp-items="Model.AdjModeOfAdjustmentList" class="form-select">
+                <option value="0">-Select-</option>
+            </select>
         </div>
-        <button type="button" class="btn btn-sm btn-outline-success Adjarbtn" onclick="Openagnstrefpopup()" style="margin-top: 10px;width: 110px; display: none">
-            <i class="fa-solid fa-angles-down fa-fw fa-lg"></i>
-            Add More <br /> Agnainst Ref
-        </button>
-        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <div class="col-md-auto">
+            <button type="button" class="btn btn-outline-success btn-sm mt-3 Adjarbtn" onclick="Openagnstrefpopup()" style="display:none">
+                <i class="fa-solid fa-angles-down me-1"></i>
+                Add More <br> Against Ref
+            </button>
+        </div>
+        <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:160px;">
             <label asp-for="AdjDescription" class="form-label">Description</label>
             <input asp-for="AdjDescription" class="form-control" disabled readonly />
         </div>
@@ -27,7 +27,7 @@
             <label class="form-label">Due Date</label>
             <input asp-for="AdjDueDate" class="form-control" type="text" readonly />
         </div>
-        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:160px;">
             <label asp-for="AdjNewRefNo" class="form-label" style="color: red;">New Ref No*</label>
             <input asp-for="AdjNewRefNo" class="form-control" type="text" />
         </div>
@@ -39,14 +39,6 @@
             <label asp-for="AdjDrCr" class="form-label" style="color: red;">Dr/Cr*</label>
             <select asp-for="AdjDrCr" asp-items="Model.AdjDrCrList" class="form-select" readonly disabled></select>
         </div>
-        @* <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 Adjar" style="display:none;">
-        <label asp-for="AdjOpenEntryID" class="form-label">Open Entry ID</label>
-        <input asp-for="AdjOpenEntryID" class="form-control" type="number" min="0" onkeypress="return (event.key == '.' || (event.charCode >= 48 && event.charCode <= 57))" />
-        </div>
-        <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12 Adjar" style="display:none;">
-        <label asp-for="AdjOpeningYearCode" class="form-label">Opening YearCode</label>
-        <input asp-for="AdjOpeningYearCode" class="form-control" type="number" min="0" onkeypress="return (event.key == '.' || (event.charCode >= 48 && event.charCode <= 57))" />
-        </div> *@
         <div class="col-xl-2 col-lg-4 col-md-4 col-sm-6 col-xs-12 Adjadv" style="display:none;">
             <label asp-for="AdjPurchOrderNo" class="form-label" style="color: red;">Purchase Order No</label>
             <select asp-for="AdjPurchOrderNo" asp-items="Model.AdjPurchOrderNoList" class="form-select" style="width:220px;">
@@ -61,16 +53,12 @@
             <label class="form-label">PO Date</label>
             <input asp-for="AdjPODate" class="form-control" disabled readonly type="text" />
         </div>
-        <div class="col-xl-1 col-lg-4 col-md-4 col-sm-6 col-xs-12">
-            <button type="button" class="btn btn-sm btn-outline-success btnAddAdjustment2Grid" onclick="AddAdjstmntDetail1()" style="margin-top:10px;margin-left:10px;">
-                <i class="fa-solid fa-angles-down fa-fw fa-lg"></i>
-                ADD TO GRID
+        <div class="col-auto">
+            <button type="button" class="btn btn-outline-success btn-sm mt-3" onclick="AddAdjstmntDetail1()">
+                <i class="fa-solid fa-angles-down me-1"></i> ADD TO GRID
             </button>
-        </div>
-        <div class="col-xl-1 col-lg-4 col-md-4 col-sm-6 col-xs-12">
-            <button type="button" class="btn btn-sm btn-outline-danger btnClearAdj" style="margin-top:10px;">
-                <i class="fa-solid fa-hand-sparkles fa-fw fa-lg"></i>
-                CLEAR Adjustment
+            <button type="button" class="btn btn-outline-danger btn-sm mt-3 btnClearAdj ms-2">
+                <i class="fa-solid fa-hand-sparkles me-1"></i> CLEAR Adjustment
             </button>
         </div>
         <div class="clearfix"></div>
@@ -130,3 +118,14 @@
     </div>
     <partial name="_AdjAgnstPopup" />
 </div>
+
+<style>
+
+    #AdjTable th {
+        background-color: #127387;
+        position: sticky;
+        top: -2px;
+        z-index: 1;
+    }
+
+</style>

@@ -35,100 +35,47 @@ namespace eTactWeb.Controllers
             return Json(JsonString);
         }
 
+        
         [Route("{controller}/Index")]
         [HttpGet]
-        public async Task<ActionResult> ControlPlan(int ID, string Mode, int YC,string FromDate,string ToDate, string EntryDate, string ItemName, string PartCode,
-            int SeqNo, string Characteristic, string EvalutionMeasurmentTechnique, string SpecificationFrom, string Operator,
-            string SpecificationTo, string FrequencyofTesting, string InspectionBy, string ControlMethod, string RejectionPlan,
-            string Remarks, string ItemimagePath, string DrawingNo, string DrawingNoImagePath,int ItemCode,string RevNo, bool isFromPartCode = false
-)
+        public async Task<ActionResult> ControlPlan(int ID, string Mode, int YC, string FromDate, string ToDate, string EntryDate, string ItemName, string PartCode, int SeqNo, string Characteristic, string EvalutionMeasurmentTechnique, string SpecificationFrom, string Operator, string SpecificationTo, string FrequencyofTesting, string InspectionBy, string ControlMethod, string RejectionPlan, string Remarks, string ItemimagePath, string DrawingNo, string DrawingNoImagePath, int ItemCode, string RevNo, bool isFromPartCode = false)
         {
-            _logger.LogInformation("\n \n ********** Page Gate Inward ********** \n \n " + _IWebHostEnvironment.EnvironmentName.ToString() + "\n \n");
-            bool IsFromItemCode = false;
-            // Clear TempData and set session variables
+            _logger.LogInformation("\n \n ********** ControlPlan Page ********** \n Environment: " + _IWebHostEnvironment.EnvironmentName + "\n \n");
+
             TempData.Clear();
-            var MainModel = new ControlPlanModel();
-            MainModel.FromDate = HttpContext.Session.GetString("FromDate");
-            MainModel.CntPlanEntryDate = DateTime.Today.ToString("dd/MM/yyyy").Replace("-", "/");
-            MainModel.CntPlanYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-            MainModel.Yearcode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-            MainModel.CC = HttpContext.Session.GetString("Branch");
-            MainModel.ActualEntryBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
-            MainModel.ActualEntryDate = DateTime.Today.ToString("dd/MM/yyyy").Replace("-", "/");
-            MainModel.Entry_Date = DateTime.Today.ToString("dd/MM/yyyy").Replace("-", "/");
-            MainModel.ActualEntryByName = HttpContext.Session.GetString("EmpName");
+
+            var MainModel = new ControlPlanModel
+            {
+                FromDate = HttpContext.Session.GetString("FromDate"),
+                CntPlanEntryDate = DateTime.Today.ToString("dd/MM/yyyy").Replace("-", "/"),
+                CntPlanYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode")),
+                Yearcode = Convert.ToInt32(HttpContext.Session.GetString("YearCode")),
+                CC = HttpContext.Session.GetString("Branch"),
+                ActualEntryBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID")),
+                ActualEntryDate = DateTime.Today.ToString("dd/MM/yyyy").Replace("-", "/"),
+                Entry_Date = DateTime.Today.ToString("dd/MM/yyyy").Replace("-", "/"),
+                ActualEntryByName = HttpContext.Session.GetString("EmpName"),
+                ItemCode = ItemCode,
+                PartCode = PartCode,
+                ItemName = ItemName
+            };
 
             HttpContext.Session.Remove("KeyControlPlanGrid");
 
-            if (isFromPartCode && ItemCode > 0)
+            if (ID > 0 && !string.IsNullOrEmpty(Mode) && (Mode == "U" || Mode == "V"))
             {
-                MainModel = await _IControlPlan.GetByItemOrPartCode(ItemCode);
-
-                if (MainModel != null && MainModel.CntPlanEntryId > 0)
-                {
-                    if (ID != MainModel.CntPlanEntryId || (Mode == "U" || Mode == "V"))
-                    {
-                        return RedirectToAction("ControlPlan", new
-                        {
-                            ID = MainModel.CntPlanEntryId,
-                            YC = MainModel.Yearcode,
-                            Mode = "U",
-                            EntryDate = MainModel.CntPlanEntryDate,
-                            ItemCode = ItemCode,
-                            ItemName = ItemName,
-                            PartCode = PartCode,
-                            RevNo = MainModel.RevNo,
-                            isFromPartCode = false
-                        });
-                    }
-                }
-                else
-                {
-                    MainModel.ItemCode = ItemCode;
-                    MainModel.PartCode = PartCode;
-                    MainModel.ItemName = ItemName;
-                    MainModel.Yearcode = YC;
-                    MainModel.FromDate = HttpContext.Session.GetString("FromDate");
-                    MainModel.CntPlanEntryDate = DateTime.Today.ToString("dd/MM/yyyy").Replace("-", "/");
-                    MainModel.CntPlanYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-                    //MainModel.Yearcode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-                    MainModel.CC = HttpContext.Session.GetString("Branch");
-                    MainModel.ActualEntryBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
-                    MainModel.ActualEntryDate = DateTime.Today.ToString("dd/MM/yyyy").Replace("-", "/");
-                    MainModel.Entry_Date = DateTime.Today.ToString("dd/MM/yyyy").Replace("-", "/");
-                    MainModel.ActualEntryByName = HttpContext.Session.GetString("EmpName");
-                   
-                }
-            }
-
-            //if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "U" || Mode == "V"))
-                if (!isFromPartCode && !string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "U" || Mode == "V"))
-
-                {
-
-
-                    MainModel.Mode = Mode;
+                MainModel.Mode = Mode;
                 MainModel = await _IControlPlan.GetViewByID(ID, YC, FromDate, ToDate).ConfigureAwait(false);
-                MainModel.Mode = Mode; // Set Mode to Update
+                MainModel.Mode = Mode;
                 MainModel.CntPlanEntryId = ID;
                 MainModel.CntPlanYearCode = YC;
                 MainModel.CntPlanEntryDate = EntryDate;
                 MainModel.PartCode = PartCode;
                 MainModel.ItemName = ItemName;
-                 RevNo=MainModel.RevNo;
-
-
-
-                //MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                //{
-                //    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                //    SlidingExpiration = TimeSpan.FromMinutes(55),
-                //    Size = 1024
-                //};
+                RevNo = MainModel.RevNo;
 
                 string serializedGrid = JsonConvert.SerializeObject(MainModel.DTSSGrid);
                 HttpContext.Session.SetString("KeyControlPlanGrid", serializedGrid);
-
 
                 if (Mode == "U")
                 {
@@ -137,9 +84,169 @@ namespace eTactWeb.Controllers
                     MainModel.LastUpdationDate = DateTime.Today.ToString("MM/dd/yyyy").Replace("-", "/");
                 }
             }
-            
-            return View(MainModel); 
+
+            return View(MainModel);
         }
+
+        //        public async Task<ActionResult> ControlPlan(int ID, string Mode, int YC,string FromDate,string ToDate, string EntryDate, string ItemName, string PartCode,
+        //            int SeqNo, string Characteristic, string EvalutionMeasurmentTechnique, string SpecificationFrom, string Operator,
+        //            string SpecificationTo, string FrequencyofTesting, string InspectionBy, string ControlMethod, string RejectionPlan,
+        //            string Remarks, string ItemimagePath, string DrawingNo, string DrawingNoImagePath,int ItemCode,string RevNo, bool isFromPartCode = false
+        //)
+        //        {
+        //            _logger.LogInformation("\n \n ********** Page Gate Inward ********** \n \n " + _IWebHostEnvironment.EnvironmentName.ToString() + "\n \n");
+        //            bool IsFromItemCode = false;
+        //            // Clear TempData and set session variables
+        //            TempData.Clear();
+        //            var MainModel = new ControlPlanModel();
+        //            MainModel.FromDate = HttpContext.Session.GetString("FromDate");
+        //            MainModel.CntPlanEntryDate = DateTime.Today.ToString("dd/MM/yyyy").Replace("-", "/");
+        //            MainModel.CntPlanYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+        //            MainModel.Yearcode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+        //            MainModel.CC = HttpContext.Session.GetString("Branch");
+        //            MainModel.ActualEntryBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+        //            MainModel.ActualEntryDate = DateTime.Today.ToString("dd/MM/yyyy").Replace("-", "/");
+        //            MainModel.Entry_Date = DateTime.Today.ToString("dd/MM/yyyy").Replace("-", "/");
+        //            MainModel.ActualEntryByName = HttpContext.Session.GetString("EmpName");
+
+        //            HttpContext.Session.Remove("KeyControlPlanGrid");
+
+        //            if (ItemCode > 0)
+        //            {
+        //                var existingModel = await _IControlPlan.GetByItemOrPartCode(ItemCode);
+
+        //                if (existingModel != null && existingModel.CntPlanEntryId > 0)
+        //                {
+        //                    // Step 2: Redirect once if coming first time from PartCode
+        //                    if (!isFromPartCode && ID != existingModel.CntPlanEntryId)
+        //                    {
+        //                        return RedirectToAction("ControlPlan", new
+        //                        {
+        //                            ID = existingModel.CntPlanEntryId,
+        //                            YC = existingModel.Yearcode,
+        //                            Mode = "U",
+        //                            EntryDate = existingModel.CntPlanEntryDate,
+        //                            ItemCode = ItemCode,
+        //                            ItemName = ItemName,
+        //                            PartCode = PartCode,
+        //                            RevNo = existingModel.RevNo,
+        //                            isFromPartCode = true  // prevent further redirects
+        //                        });
+        //                    }
+
+        //                    // Step 3: Load full data if redirected
+        //                    if (isFromPartCode && ID == existingModel.CntPlanEntryId)
+        //                    {
+        //                        MainModel = await _IControlPlan.GetViewByID(ID, YC, FromDate, ToDate);
+        //                        MainModel.Mode = "U";
+        //                        MainModel.PartCode = PartCode;
+        //                        MainModel.ItemName = ItemName;
+        //                        RevNo = MainModel.RevNo;
+
+        //                        string serializedGrid = JsonConvert.SerializeObject(MainModel.DTSSGrid);
+        //                        HttpContext.Session.SetString("KeyControlPlanGrid", serializedGrid);
+
+        //                        MainModel.LastUpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+        //                        MainModel.LastUpdatedByName = HttpContext.Session.GetString("EmpName");
+        //                        MainModel.LastUpdationDate = DateTime.Today.ToString("MM/dd/yyyy").Replace("-", "/");
+        //                    }
+        //                }
+        //                else
+        //                {
+        //                    // Step 4: New entry, set ItemCode/PartCode/ItemName
+        //                    MainModel.ItemCode = ItemCode;
+        //                    MainModel.PartCode = PartCode;
+        //                    MainModel.ItemName = ItemName;
+        //                    MainModel.Yearcode = YC;
+        //                }
+        //            }
+
+        //            //if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "U" || Mode == "V"))
+        //            if (!isFromPartCode && !string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "U" || Mode == "V"))
+
+        //                {
+
+
+        //                    MainModel.Mode = Mode;
+        //                MainModel = await _IControlPlan.GetViewByID(ID, YC, FromDate, ToDate).ConfigureAwait(false);
+        //                MainModel.Mode = Mode; // Set Mode to Update
+        //                MainModel.CntPlanEntryId = ID;
+        //                MainModel.CntPlanYearCode = YC;
+        //                MainModel.CntPlanEntryDate = EntryDate;
+        //                MainModel.PartCode = PartCode;
+        //                MainModel.ItemName = ItemName;
+        //                 RevNo=MainModel.RevNo;
+
+
+
+        //                //MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+        //                //{
+        //                //    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+        //                //    SlidingExpiration = TimeSpan.FromMinutes(55),
+        //                //    Size = 1024
+        //                //};
+
+        //                string serializedGrid = JsonConvert.SerializeObject(MainModel.DTSSGrid);
+        //                HttpContext.Session.SetString("KeyControlPlanGrid", serializedGrid);
+
+
+        //                if (Mode == "U")
+        //                {
+        //                    MainModel.LastUpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+        //                    MainModel.LastUpdatedByName = HttpContext.Session.GetString("EmpName");
+        //                    MainModel.LastUpdationDate = DateTime.Today.ToString("MM/dd/yyyy").Replace("-", "/");
+        //                }
+        //            }
+
+        //            return View(MainModel); 
+        //        }
+        //[HttpGet]
+        //public async Task<JsonResult> CheckItemOrPart(int itemCode, string partCode)
+        //{
+        //    var existing = await _IControlPlan.GetByItemOrPartCode(itemCode);
+        //    if (existing != null && existing.CntPlanEntryId > 0)
+        //    {
+        //        return Json(new
+        //        {
+        //            exists = true,
+        //            id = existing.CntPlanEntryId,
+        //            yc = existing.Yearcode,
+        //            revNo = existing.RevNo
+        //        });
+        //    }
+
+        //    return Json(new { exists = false });
+        //}
+        [HttpGet]
+        public async Task<JsonResult> CheckItemOrPart(int itemCode, string partCode)
+        {
+            var existing = await _IControlPlan.GetByItemOrPartCode(itemCode);
+
+            if (existing != null && existing.CntPlanEntryId > 0)
+            {
+                // Serialize grid into session (so Add/Edit/Delete still works)
+                HttpContext.Session.SetString("KeyControlPlanGrid", JsonConvert.SerializeObject(existing.DTSSGrid));
+
+                // Render partial grid HTML
+                var gridHtml = await this.RenderViewAsync("_ControlPlanMainGrid", existing, true);
+
+                return Json(new
+                {
+                    exists = true,
+                    id = existing.CntPlanEntryId,
+                    yc = existing.Yearcode,
+                    revNo = existing.RevNo,
+                    grid = gridHtml,
+                    model = existing,
+                    imageURL = existing.ImageURL,
+                    itemImageURL = existing.ItemImageURL,
+                    mode = "U"
+                });
+            }
+
+            return Json(new { exists = false });
+        }
+
         [Route("{controller}/Index")]
         [HttpPost]
 
@@ -207,6 +314,7 @@ namespace eTactWeb.Controllers
 
                 model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                 model.ActualEntryBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+                model.EntryByMachine = Environment.MachineName;
 
                 var Result = await _IControlPlan.SaveControlPlan(model, GIGrid);
 
@@ -232,7 +340,7 @@ namespace eTactWeb.Controllers
                     }
                 }
 
-                return RedirectToAction(nameof(ControlPlanDashBoard));
+                return RedirectToAction(nameof(ControlPlan));
             }
             catch (Exception ex)
             {
@@ -655,7 +763,7 @@ Item.Remarks ?? ""
                     if (isDuplicate)
                         return StatusCode(207, "Duplicate");
 
-                    if (model.Mode == "U")
+                    if (model.GridMode == "U")
                     {
                        
                         GridDetail.Add(model);

@@ -4,6 +4,7 @@ using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
+using static eTactWeb.DOM.Models.Common;
 
 namespace eTactWeb.Controllers
 {
@@ -29,7 +30,61 @@ namespace eTactWeb.Controllers
             var model = new ConsumptionReportModel();
             model.ConsumptionReportGrid = new List<ConsumptionReportModel>();
             //model.YearCode= Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+            model = await BindModel(model).ConfigureAwait(false);
+            model = await BindModel1(model).ConfigureAwait(false);
             return View(model);
+        }
+        private async Task<ConsumptionReportModel> BindModel(ConsumptionReportModel model)
+        {
+            var oDataSet = new DataSet();
+            var _List = new List<TextValue>();
+            oDataSet = await _IConsumptionReport.GetCategory().ConfigureAwait(true);
+
+            if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+            {
+
+
+                foreach (DataRow row in oDataSet.Tables[0].Rows)
+                {
+                    _List.Add(new TextValue
+                    {
+                        Value = row["Entry_Id"].ToString(),
+                        Text = row["ItemCategory"].ToString()
+                    });
+                }
+                model.CategList = _List;
+                _List = new List<TextValue>();
+
+            }
+
+
+            return model;
+        }
+        private async Task<ConsumptionReportModel> BindModel1(ConsumptionReportModel model)
+        {
+            var oDataSet = new DataSet();
+            var _List = new List<TextValue>();
+            oDataSet = await _IConsumptionReport.GetGroupName().ConfigureAwait(true);
+
+            if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+            {
+
+
+                foreach (DataRow row in oDataSet.Tables[0].Rows)
+                {
+                    _List.Add(new TextValue
+                    {
+                        Value = row["Group_Code"].ToString(),
+                        Text = row["ParentGroup"].ToString()
+                    });
+                }
+                model.GroupNameList = _List;
+                _List = new List<TextValue>();
+
+            }
+
+
+            return model;
         }
 
         public async Task<JsonResult> FillFGItemName()
@@ -69,11 +124,11 @@ namespace eTactWeb.Controllers
             return Json(JsonString);
         }
 
-        public async Task<IActionResult> GetConsumptionDetailsData(string fromDate, string toDate, int WorkCenterid, string ReportType, int FGItemCode, int RMItemCode, int Storeid)
+        public async Task<IActionResult> GetConsumptionDetailsData(string fromDate, string toDate, int WorkCenterid, string ReportType, int FGItemCode, int RMItemCode, int Storeid, string GroupName, string ItemCateg)
         {
             var model = new ConsumptionReportModel();
             model = await _IConsumptionReport
-                .GetConsumptionDetailsData(fromDate, toDate, WorkCenterid, ReportType, FGItemCode, RMItemCode, Storeid);
+                .GetConsumptionDetailsData(fromDate, toDate, WorkCenterid, ReportType, FGItemCode, RMItemCode, Storeid,  GroupName,  ItemCateg);
 
             if (ReportType == "ProductionConsumptionReport(SUMMARY)")
             {
@@ -87,6 +142,15 @@ namespace eTactWeb.Controllers
             {
                 return PartialView("_ConsumptionReportCONSOLIDATEDGrid", model);
             }
+            if (ReportType == "COMPACT")
+            {
+                return PartialView("_ConsumptionReportCompact", model);
+            }
+            if (ReportType == "Prod Date Wise Consumption")
+            {
+                return PartialView("_ConsumptionReportProdDateWiseConsumption", model);
+            }
+
             return null;
         }
     }

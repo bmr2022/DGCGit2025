@@ -30,6 +30,21 @@ namespace eTactWeb.Data.DAL
             DBConnectionString = _connectionStringService.GetConnectionString();
         }
 
+        public string GetBranchConnectionString(string branchDatabaseName)
+        {
+            // Base template (from appsettings)
+            string baseConnection = _connectionStringService.GetConnectionString(); // e.g., "Data Source=ServerName;Initial Catalog=CompanyInfoDetailWEB;User Id=sa;Password=786nazhuss;"
+
+            // Replace Initial Catalog with selected branch database
+            var builder = new SqlConnectionStringBuilder(baseConnection)
+            {
+                InitialCatalog = branchDatabaseName
+            };
+
+            return builder.ConnectionString;
+        }
+
+
         public async Task<ResponseResult> GetFormRights(int userId)
         {
             var _ResponseResult = new ResponseResult();
@@ -507,12 +522,18 @@ namespace eTactWeb.Data.DAL
 
             return ItemMasterList;
         }
-
-        public async Task<IList<ItemMasterModel>> GetDashBoardData(string ItemName, string PartCode, string ItemGroup, string ItemCategory, string HsnNo, string UniversalPartCode, string Flag)
+        public async Task<IList<ItemMasterModel>> GetDashBoardData(
+    string ItemName,
+    string PartCode,
+    string ItemGroup,
+    string ItemCategory,
+    string HsnNo,
+    string UniversalPartCode,
+    string Flag)
         {
             List<ItemMasterModel> ItemMasterList = new List<ItemMasterModel>();
-
             DataSet oDataSet = new DataSet();
+
             try
             {
                 using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
@@ -520,136 +541,120 @@ namespace eTactWeb.Data.DAL
                     SqlCommand oCmd = new SqlCommand("SP_FiletrItemMaster", myConnection)
                     {
                         CommandType = CommandType.StoredProcedure,
-                           CommandTimeout = 400
+                        CommandTimeout = 400
                     };
-                    oCmd.Parameters.AddWithValue("@ItemName", ItemName);
-                    oCmd.Parameters.AddWithValue("@PartCode", PartCode);
-                    oCmd.Parameters.AddWithValue("@ItemGroup", ItemGroup);
-                    oCmd.Parameters.AddWithValue("@ItemCategory", ItemCategory);
-                    oCmd.Parameters.AddWithValue("@HsnNo", HsnNo);
-                    oCmd.Parameters.AddWithValue("@UniversalPartCode", UniversalPartCode);
-                    oCmd.Parameters.AddWithValue("@Flag", Flag);
+
+                    oCmd.Parameters.AddWithValue("@ItemName", ItemName ?? (object)DBNull.Value);
+                    oCmd.Parameters.AddWithValue("@PartCode", PartCode ?? (object)DBNull.Value);
+                    oCmd.Parameters.AddWithValue("@ItemGroup", ItemGroup ?? (object)DBNull.Value);
+                    oCmd.Parameters.AddWithValue("@ItemCategory", ItemCategory ?? (object)DBNull.Value);
+                    oCmd.Parameters.AddWithValue("@HsnNo", HsnNo ?? (object)DBNull.Value);
+                    oCmd.Parameters.AddWithValue("@UniversalPartCode", UniversalPartCode ?? (object)DBNull.Value);
+                    oCmd.Parameters.AddWithValue("@Flag", Flag ?? (object)DBNull.Value);
+
                     await myConnection.OpenAsync();
+
                     using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
                     {
                         oDataAdapter.Fill(oDataSet);
                     }
                 }
 
-                for(int i = 0; i < oDataSet.Tables[0].Rows.Count;i++)
+                // If no data returned
+                if (oDataSet.Tables.Count == 0 || oDataSet.Tables[0].Rows.Count == 0)
+                    return ItemMasterList;
+
+                foreach (DataRow row in oDataSet.Tables[0].Rows)
                 {
                     ItemMasterList.Add(new ItemMasterModel
                     {
-                        Item_Code = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[0]),
-                        PartCode = oDataSet.Tables[0].Rows[i].ItemArray[1].ToString(),
-                        Item_Name = oDataSet.Tables[0].Rows[i].ItemArray[2].ToString(),
-                        ParentCode = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[3]),
-                        ItemGroup = oDataSet.Tables[0].Rows[i].ItemArray[4].ToString(),
-                        EntryDate = oDataSet.Tables[0].Rows[i].ItemArray[5].ToString(),
-                        LastUpdatedDate = oDataSet.Tables[0].Rows[i].ItemArray[6].ToString(),
-                        LeadTime = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[7]),
-                        CC = oDataSet.Tables[0].Rows[i].ItemArray[8].ToString(),
-                        Unit = oDataSet.Tables[0].Rows[i].ItemArray[9].ToString(),
-                        SalePrice = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[10]),
-                        PurchasePrice = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[11]),
-                        CostPrice = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[12]),
-                        WastagePercent = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[13]),
-                        WtSingleItem = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[14]),
-                        NoOfPcs = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[15]),
-                        QcReq = oDataSet.Tables[0].Rows[i].ItemArray[16].ToString(),
-                        ItemType = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[17]),
-                        TypeName = oDataSet.Tables[0].Rows[i].ItemArray[18].ToString(),
-                        ImageURL = oDataSet.Tables[0].Rows[i].ItemArray[19].ToString(),
-                        UID = oDataSet.Tables[0].Rows[i].ItemArray[20].ToString(),
-                        DrawingNo = oDataSet.Tables[0].Rows[i].ItemArray[21].ToString(),
-                        MinimumLevel = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[22]),
-                        MaximumLevel = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[23]),
-                        ReorderLevel = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[24]),
-                        YearCode = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[25]),
-                        AlternateUnit = oDataSet.Tables[0].Rows[i].ItemArray[26].ToString(),
-                        RackID = oDataSet.Tables[0].Rows[i].ItemArray[27].ToString(),
-                        BinNo = oDataSet.Tables[0].Rows[i].ItemArray[28].ToString(),
-                        ItemSize = oDataSet.Tables[0].Rows[i].ItemArray[29].ToString(),
-                        Colour = oDataSet.Tables[0].Rows[i].ItemArray[30].ToString(),
-                        NeedPO = oDataSet.Tables[0].Rows[i].ItemArray[31].ToString(),
-                        StdPacking = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[32]),
-                        PackingType = oDataSet.Tables[0].Rows[i].ItemArray[33].ToString(),
-                        ModelNo = oDataSet.Tables[0].Rows[i].ItemArray[34].ToString(),
-                        YearlyConsumedQty = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[35]),
-                        DispItemName = oDataSet.Tables[0].Rows[i].ItemArray[36].ToString(),
-                        PurchaseAccountcode = oDataSet.Tables[0].Rows[i].ItemArray[37].ToString(),
-                        SaleAccountcode = oDataSet.Tables[0].Rows[i].ItemArray[38].ToString(),
-
-                        MinLevelDays = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[39]),
-                        MaxLevelDays = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[40]),
-                        EmpName = oDataSet.Tables[0].Rows[i].ItemArray[41].ToString(),
-                        DailyRequirment = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[42]),
-                        Stockable = oDataSet.Tables[0].Rows[i].ItemArray[43].ToString(),
-                        WipStockable = oDataSet.Tables[0].Rows[i].ItemArray[44].ToString(),
-                        Store = oDataSet.Tables[0].Rows[i].ItemArray[45].ToString(),
-                        ProductLifeInus = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[46]),
-                        ItemDesc = oDataSet.Tables[0].Rows[i].ItemArray[47].ToString(),
-                        MaxWipStock = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[48]),
-                        NeedSo = oDataSet.Tables[0].Rows[i].ItemArray[49].ToString(),
-                        BomRequired = oDataSet.Tables[0].Rows[i].ItemArray[50].ToString(),
-                     
-                        HSNNO = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[52]),
-                        JobWorkItem = oDataSet.Tables[0].Rows[i].ItemArray[51].ToString(),
-                        CreatedByName = oDataSet.Tables[0].Rows[i].ItemArray[53].ToString(),
-                        CreatedOn = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[i].ItemArray[54].ToString()) ? new DateTime() : Convert.ToDateTime(oDataSet.Tables[0].Rows[i].ItemArray[54]),
-                        UpdatedOn = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[i].ItemArray[55].ToString()) ? new DateTime() : Convert.ToDateTime(oDataSet.Tables[0].Rows[i].ItemArray[55]),
-                        UpdatedByName = oDataSet.Tables[0].Rows[i].ItemArray[56].ToString(),
-                        Active = oDataSet.Tables[0].Rows[i].ItemArray[57].ToString(),
-                        UniversalPartCode = oDataSet.Tables[0].Rows[i].ItemArray[58].ToString(),
-                        UniversalDescription = oDataSet.Tables[0].Rows[i].ItemArray[59].ToString(),
-                        ProdWorkCenterDescription = oDataSet.Tables[0].Rows[i].ItemArray[60].ToString(),
-                        ProdInhouseJW = oDataSet.Tables[0].Rows[i].ItemArray[62].ToString(),
-                        BatchNO = oDataSet.Tables[0].Rows[i].ItemArray[63].ToString(),
-                        VoltageVlue = oDataSet.Tables[0].Rows[i].ItemArray[64].ToString(),
-                        OldPartCode = oDataSet.Tables[0].Rows[i].ItemArray[65].ToString(),
-                        SerialNo = oDataSet.Tables[0].Rows[i].ItemArray[66].ToString(),
-                        Package = oDataSet.Tables[0].Rows[i].ItemArray[67]?.ToString() ?? string.Empty,
-                        IsCustJWAdjMandatory = oDataSet.Tables[0].Rows[i].ItemArray[68].ToString(),
-                        ItemServAssets = oDataSet.Tables[0].Rows[i].ItemArray[69].ToString(),
-                        ProdInWorkcenter = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[61]),
-                        StoreName = oDataSet.Tables[0].Rows[i].ItemArray[70].ToString(),
-                        SaleAccountName = oDataSet.Tables[0].Rows[i].ItemArray[71].ToString(),
-                        PurchaseAccountName = oDataSet.Tables[0].Rows[i].ItemArray[72].ToString(),
-                        BranchName = oDataSet.Tables[0].Rows[i].ItemArray[73].ToString(),
-                        NoOfCavity = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[74].ToString()),
-                        ProdInMachineGroupName= oDataSet.Tables[0].Rows[i].ItemArray[75].ToString(),
-                        ProdInMachineName1 = oDataSet.Tables[0].Rows[i].ItemArray[76].ToString(),
-                        ProdInMachineName2 = oDataSet.Tables[0].Rows[i].ItemArray[77].ToString(),
-                        ProdInMachineName3 = oDataSet.Tables[0].Rows[i].ItemArray[78].ToString(),
-                        ProdInMachineName4 = oDataSet.Tables[0].Rows[i].ItemArray[79].ToString(),
-                        NoOfshotsHours = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[80].ToString()),
-                        ChildBom = (oDataSet.Tables[0].Rows[i].ItemArray[81].ToString()),
-                        ProdInMachineGroupId = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[82].ToString()),
-                        ProdInMachine1 = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[83].ToString()),
-                        ProdInMachine2 = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[84].ToString()),
-                        ProdInMachine3 = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[85].ToString()),
-                        ProdInMachine4= Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[86].ToString())
-                       
-                        
-                        
-
-                        //HSNNO = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[52]),
-                        //CreatedByName = oDataSet.Tables[0].Rows[i].ItemArray[53].ToString(),
-                        //CreatedOn = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[i].ItemArray[54].ToString()) ? new DateTime() : Convert.ToDateTime(oDataSet.Tables[0].Rows[i].ItemArray[54].ToString()),
-                        //UpdatedByName = oDataSet.Tables[0].Rows[i].ItemArray[56].ToString(),
-                        //UpdatedOn = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[i].ItemArray[55].ToString()) ? new DateTime() : Convert.ToDateTime(oDataSet.Tables[0].Rows[i].ItemArray[55].ToString()),
-                        //Active = oDataSet.Tables[0].Rows[i].ItemArray[57].ToString(),
-                        //UniversalPartCode = oDataSet.Tables[0].Rows[i].ItemArray[58].ToString(),
-                        //UniversalDescription = oDataSet.Tables[0].Rows[i].ItemArray[59].ToString(),
-                        //ProdWorkCenterDescription = oDataSet.Tables[0].Rows[i].ItemArray[60].ToString(),
-                        //ProdInhouseJW = oDataSet.Tables[0].Rows[i].ItemArray[61].ToString(),
-                        //BatchNO = oDataSet.Tables[0].Rows[i].ItemArray[62].ToString(),
-                        //VoltageVlue = oDataSet.Tables[0].Rows[i].ItemArray[63].ToString(),
-                        //OldPartCode = oDataSet.Tables[0].Rows[i].ItemArray[64].ToString(),
-                        //SerialNo = oDataSet.Tables[0].Rows[i].ItemArray[65].ToString(),
-                        //Package = oDataSet.Tables[0].Rows[i].ItemArray[66].ToString(),
-                        //IsCustJWAdjMandatory = oDataSet.Tables[0].Rows[i].ItemArray[67].ToString(),
-                        //JobWorkItem = oDataSet.Tables[0].Rows[i].ItemArray[68].ToString(),
+                        Item_Code = SafeToInt(row[0]),
+                        PartCode = SafeToString(row[1]),
+                        Item_Name = SafeToString(row[2]),
+                        ParentCode = SafeToInt(row[3]),
+                        ItemGroup = SafeToString(row[4]),
+                        EntryDate = SafeToString(row[5]),
+                        LastUpdatedDate = SafeToString(row[6]),
+                        LeadTime = SafeToInt(row[7]),
+                        CC = SafeToString(row[8]),
+                        Unit = SafeToString(row[9]),
+                        SalePrice = SafeToInt(row[10]),
+                        PurchasePrice = SafeToInt(row[11]),
+                        CostPrice = SafeToInt(row[12]),
+                        WastagePercent = SafeToInt(row[13]),
+                        WtSingleItem = SafeToInt(row[14]),
+                        NoOfPcs = SafeToInt(row[15]),
+                        QcReq = SafeToString(row[16]),
+                        ItemType = SafeToInt(row[17]),
+                        TypeName = SafeToString(row[18]),
+                        ImageURL = SafeToString(row[19]),
+                        UID = SafeToString(row[20]),
+                        DrawingNo = SafeToString(row[21]),
+                        MinimumLevel = SafeToInt(row[22]),
+                        MaximumLevel = SafeToInt(row[23]),
+                        ReorderLevel = SafeToInt(row[24]),
+                        YearCode = SafeToInt(row[25]),
+                        AlternateUnit = SafeToString(row[26]),
+                        RackID = SafeToString(row[27]),
+                        BinNo = SafeToString(row[28]),
+                        ItemSize = SafeToString(row[29]),
+                        Colour = SafeToString(row[30]),
+                        NeedPO = SafeToString(row[31]),
+                        StdPacking = SafeToInt(row[32]),
+                        PackingType = SafeToString(row[33]),
+                        ModelNo = SafeToString(row[34]),
+                        YearlyConsumedQty = SafeToInt(row[35]),
+                        DispItemName = SafeToString(row[36]),
+                        PurchaseAccountcode = SafeToString(row[37]),
+                        SaleAccountcode = SafeToString(row[38]),
+                        MinLevelDays = SafeToInt(row[39]),
+                        MaxLevelDays = SafeToInt(row[40]),
+                        EmpName = SafeToString(row[41]),
+                        DailyRequirment = SafeToInt(row[42]),
+                        Stockable = SafeToString(row[43]),
+                        WipStockable = SafeToString(row[44]),
+                        Store = SafeToString(row[45]),
+                        ProductLifeInus = SafeToInt(row[46]),
+                        ItemDesc = SafeToString(row[47]),
+                        MaxWipStock = SafeToInt(row[48]),
+                        NeedSo = SafeToString(row[49]),
+                        BomRequired = SafeToString(row[50]),
+                        JobWorkItem = SafeToString(row[51]),
+                        HSNNO = SafeToInt(row[52]),
+                        CreatedByName = SafeToString(row[53]),
+                        CreatedOn = SafeToDateTime(row[54]),
+                        UpdatedOn = SafeToDateTime(row[55]),
+                        UpdatedByName = SafeToString(row[56]),
+                        Active = SafeToString(row[57]),
+                        UniversalPartCode = SafeToString(row[58]),
+                        UniversalDescription = SafeToString(row[59]),
+                        ProdWorkCenterDescription = SafeToString(row[60]),
+                        ProdInWorkcenter = SafeToInt(row[61]),
+                        ProdInhouseJW = SafeToString(row[62]),
+                        BatchNO = SafeToString(row[63]),
+                        VoltageVlue = SafeToString(row[64]),
+                        OldPartCode = SafeToString(row[65]),
+                        SerialNo = SafeToString(row[66]),
+                        Package = SafeToString(row[67]),
+                        IsCustJWAdjMandatory = SafeToString(row[68]),
+                        ItemServAssets = SafeToString(row[69]),
+                        StoreName = SafeToString(row[70]),
+                        SaleAccountName = SafeToString(row[71]),
+                        PurchaseAccountName = SafeToString(row[72]),
+                        BranchName = SafeToString(row[73]),
+                        NoOfCavity = SafeToInt(row[74]),
+                        ProdInMachineGroupName = SafeToString(row[75]),
+                        ProdInMachineName1 = SafeToString(row[76]),
+                        ProdInMachineName2 = SafeToString(row[77]),
+                        ProdInMachineName3 = SafeToString(row[78]),
+                        ProdInMachineName4 = SafeToString(row[79]),
+                        NoOfshotsHours = SafeToInt(row[80]),
+                        ChildBom = SafeToString(row[81]),
+                        ProdInMachineGroupId = SafeToInt(row[82]),
+                        ProdInMachine1 = SafeToInt(row[83]),
+                        ProdInMachine2 = SafeToInt(row[84]),
+                        ProdInMachine3 = SafeToInt(row[85]),
+                        ProdInMachine4 = SafeToInt(row[86])
                     });
                 }
             }
@@ -658,18 +663,188 @@ namespace eTactWeb.Data.DAL
                 dynamic Error = new ExpandoObject();
                 Error.Message = ex.Message;
                 Error.Source = ex.Source;
-            }
-            finally
-            {
-                if (Reader != null)
-                {
-                    Reader.Close();
-                    Reader.Dispose();
-                }
+                // Optional: log this error somewhere
             }
 
             return ItemMasterList;
         }
+        private static int SafeToInt(object value)
+        {
+            return value == DBNull.Value || value == null || value.ToString() == "" ? 0 : Convert.ToInt32(value);
+        }
+
+        private static string SafeToString(object value)
+        {
+            return value == DBNull.Value || value == null ? string.Empty : value.ToString();
+        }
+
+        private static DateTime? SafeToDateTime(object value)
+        {
+            return value == DBNull.Value || value == null || value.ToString() == "" ? (DateTime?)null : Convert.ToDateTime(value);
+        }
+
+        //public async Task<IList<ItemMasterModel>> GetDashBoardData(string ItemName, string PartCode, string ItemGroup, string ItemCategory, string HsnNo, string UniversalPartCode, string Flag)
+        //{
+        //    List<ItemMasterModel> ItemMasterList = new List<ItemMasterModel>();
+
+        //    DataSet oDataSet = new DataSet();
+        //    try
+        //    {
+        //        using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
+        //        {
+        //            SqlCommand oCmd = new SqlCommand("SP_FiletrItemMaster", myConnection)
+        //            {
+        //                CommandType = CommandType.StoredProcedure,
+        //                   CommandTimeout = 400
+        //            };
+        //            oCmd.Parameters.AddWithValue("@ItemName", ItemName);
+        //            oCmd.Parameters.AddWithValue("@PartCode", PartCode);
+        //            oCmd.Parameters.AddWithValue("@ItemGroup", ItemGroup);
+        //            oCmd.Parameters.AddWithValue("@ItemCategory", ItemCategory);
+        //            oCmd.Parameters.AddWithValue("@HsnNo", HsnNo);
+        //            oCmd.Parameters.AddWithValue("@UniversalPartCode", UniversalPartCode);
+        //            oCmd.Parameters.AddWithValue("@Flag", Flag);
+        //            await myConnection.OpenAsync();
+        //            using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
+        //            {
+        //                oDataAdapter.Fill(oDataSet);
+        //            }
+        //        }
+
+        //        for(int i = 0; i < oDataSet.Tables[0].Rows.Count;i++)
+        //        {
+        //            ItemMasterList.Add(new ItemMasterModel
+        //            {
+        //                Item_Code = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[0]),
+        //                PartCode = oDataSet.Tables[0].Rows[i].ItemArray[1].ToString(),
+        //                Item_Name = oDataSet.Tables[0].Rows[i].ItemArray[2].ToString(),
+        //                ParentCode = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[3]),
+        //                ItemGroup = oDataSet.Tables[0].Rows[i].ItemArray[4].ToString(),
+        //                EntryDate = oDataSet.Tables[0].Rows[i].ItemArray[5].ToString(),
+        //                LastUpdatedDate = oDataSet.Tables[0].Rows[i].ItemArray[6].ToString(),
+        //                LeadTime = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[7]),
+        //                CC = oDataSet.Tables[0].Rows[i].ItemArray[8].ToString(),
+        //                Unit = oDataSet.Tables[0].Rows[i].ItemArray[9].ToString(),
+        //                SalePrice = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[10]),
+        //                PurchasePrice = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[11]),
+        //                CostPrice = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[12]),
+        //                WastagePercent = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[13]),
+        //                WtSingleItem = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[14]),
+        //                NoOfPcs = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[15]),
+        //                QcReq = oDataSet.Tables[0].Rows[i].ItemArray[16].ToString(),
+        //                ItemType = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[17]),
+        //                TypeName = oDataSet.Tables[0].Rows[i].ItemArray[18].ToString(),
+        //                ImageURL = oDataSet.Tables[0].Rows[i].ItemArray[19].ToString(),
+        //                UID = oDataSet.Tables[0].Rows[i].ItemArray[20].ToString(),
+        //                DrawingNo = oDataSet.Tables[0].Rows[i].ItemArray[21].ToString(),
+        //                MinimumLevel = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[22]),
+        //                MaximumLevel = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[23]),
+        //                ReorderLevel = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[24]),
+        //                YearCode = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[25]),
+        //                AlternateUnit = oDataSet.Tables[0].Rows[i].ItemArray[26].ToString(),
+        //                RackID = oDataSet.Tables[0].Rows[i].ItemArray[27].ToString(),
+        //                BinNo = oDataSet.Tables[0].Rows[i].ItemArray[28].ToString(),
+        //                ItemSize = oDataSet.Tables[0].Rows[i].ItemArray[29].ToString(),
+        //                Colour = oDataSet.Tables[0].Rows[i].ItemArray[30].ToString(),
+        //                NeedPO = oDataSet.Tables[0].Rows[i].ItemArray[31].ToString(),
+        //                StdPacking = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[32]),
+        //                PackingType = oDataSet.Tables[0].Rows[i].ItemArray[33].ToString(),
+        //                ModelNo = oDataSet.Tables[0].Rows[i].ItemArray[34].ToString(),
+        //                YearlyConsumedQty = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[35]),
+        //                DispItemName = oDataSet.Tables[0].Rows[i].ItemArray[36].ToString(),
+        //                PurchaseAccountcode = oDataSet.Tables[0].Rows[i].ItemArray[37].ToString(),
+        //                SaleAccountcode = oDataSet.Tables[0].Rows[i].ItemArray[38].ToString(),
+
+        //                MinLevelDays = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[39]),
+        //                MaxLevelDays = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[40]),
+        //                EmpName = oDataSet.Tables[0].Rows[i].ItemArray[41].ToString(),
+        //                DailyRequirment = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[42]),
+        //                Stockable = oDataSet.Tables[0].Rows[i].ItemArray[43].ToString(),
+        //                WipStockable = oDataSet.Tables[0].Rows[i].ItemArray[44].ToString(),
+        //                Store = oDataSet.Tables[0].Rows[i].ItemArray[45].ToString(),
+        //                ProductLifeInus = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[46]),
+        //                ItemDesc = oDataSet.Tables[0].Rows[i].ItemArray[47].ToString(),
+        //                MaxWipStock = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[48]),
+        //                NeedSo = oDataSet.Tables[0].Rows[i].ItemArray[49].ToString(),
+        //                BomRequired = oDataSet.Tables[0].Rows[i].ItemArray[50].ToString(),
+
+        //                HSNNO = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[52]),
+        //                JobWorkItem = oDataSet.Tables[0].Rows[i].ItemArray[51].ToString(),
+        //                CreatedByName = oDataSet.Tables[0].Rows[i].ItemArray[53].ToString(),
+        //                CreatedOn = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[i].ItemArray[54].ToString()) ? new DateTime() : Convert.ToDateTime(oDataSet.Tables[0].Rows[i].ItemArray[54]),
+        //                UpdatedOn = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[i].ItemArray[55].ToString()) ? new DateTime() : Convert.ToDateTime(oDataSet.Tables[0].Rows[i].ItemArray[55]),
+        //                UpdatedByName = oDataSet.Tables[0].Rows[i].ItemArray[56].ToString(),
+        //                Active = oDataSet.Tables[0].Rows[i].ItemArray[57].ToString(),
+        //                UniversalPartCode = oDataSet.Tables[0].Rows[i].ItemArray[58].ToString(),
+        //                UniversalDescription = oDataSet.Tables[0].Rows[i].ItemArray[59].ToString(),
+        //                ProdWorkCenterDescription = oDataSet.Tables[0].Rows[i].ItemArray[60].ToString(),
+        //                ProdInhouseJW = oDataSet.Tables[0].Rows[i].ItemArray[62].ToString(),
+        //                BatchNO = oDataSet.Tables[0].Rows[i].ItemArray[63].ToString(),
+        //                VoltageVlue = oDataSet.Tables[0].Rows[i].ItemArray[64].ToString(),
+        //                OldPartCode = oDataSet.Tables[0].Rows[i].ItemArray[65].ToString(),
+        //                SerialNo = oDataSet.Tables[0].Rows[i].ItemArray[66].ToString(),
+        //                Package = oDataSet.Tables[0].Rows[i].ItemArray[67]?.ToString() ?? string.Empty,
+        //                IsCustJWAdjMandatory = oDataSet.Tables[0].Rows[i].ItemArray[68].ToString(),
+        //                ItemServAssets = oDataSet.Tables[0].Rows[i].ItemArray[69].ToString(),
+        //                ProdInWorkcenter = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[61]),
+        //                StoreName = oDataSet.Tables[0].Rows[i].ItemArray[70].ToString(),
+        //                SaleAccountName = oDataSet.Tables[0].Rows[i].ItemArray[71].ToString(),
+        //                PurchaseAccountName = oDataSet.Tables[0].Rows[i].ItemArray[72].ToString(),
+        //                BranchName = oDataSet.Tables[0].Rows[i].ItemArray[73].ToString(),
+        //                NoOfCavity = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[74].ToString()),
+        //                ProdInMachineGroupName= oDataSet.Tables[0].Rows[i].ItemArray[75].ToString(),
+        //                ProdInMachineName1 = oDataSet.Tables[0].Rows[i].ItemArray[76].ToString(),
+        //                ProdInMachineName2 = oDataSet.Tables[0].Rows[i].ItemArray[77].ToString(),
+        //                ProdInMachineName3 = oDataSet.Tables[0].Rows[i].ItemArray[78].ToString(),
+        //                ProdInMachineName4 = oDataSet.Tables[0].Rows[i].ItemArray[79].ToString(),
+        //                NoOfshotsHours = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[80].ToString()),
+        //                ChildBom = (oDataSet.Tables[0].Rows[i].ItemArray[81].ToString()),
+        //                ProdInMachineGroupId = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[82].ToString()),
+        //                ProdInMachine1 = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[83].ToString()),
+        //                ProdInMachine2 = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[84].ToString()),
+        //                ProdInMachine3 = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[85].ToString()),
+        //                ProdInMachine4= Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[86].ToString())
+
+
+
+
+        //                //HSNNO = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[52]),
+        //                //CreatedByName = oDataSet.Tables[0].Rows[i].ItemArray[53].ToString(),
+        //                //CreatedOn = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[i].ItemArray[54].ToString()) ? new DateTime() : Convert.ToDateTime(oDataSet.Tables[0].Rows[i].ItemArray[54].ToString()),
+        //                //UpdatedByName = oDataSet.Tables[0].Rows[i].ItemArray[56].ToString(),
+        //                //UpdatedOn = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[i].ItemArray[55].ToString()) ? new DateTime() : Convert.ToDateTime(oDataSet.Tables[0].Rows[i].ItemArray[55].ToString()),
+        //                //Active = oDataSet.Tables[0].Rows[i].ItemArray[57].ToString(),
+        //                //UniversalPartCode = oDataSet.Tables[0].Rows[i].ItemArray[58].ToString(),
+        //                //UniversalDescription = oDataSet.Tables[0].Rows[i].ItemArray[59].ToString(),
+        //                //ProdWorkCenterDescription = oDataSet.Tables[0].Rows[i].ItemArray[60].ToString(),
+        //                //ProdInhouseJW = oDataSet.Tables[0].Rows[i].ItemArray[61].ToString(),
+        //                //BatchNO = oDataSet.Tables[0].Rows[i].ItemArray[62].ToString(),
+        //                //VoltageVlue = oDataSet.Tables[0].Rows[i].ItemArray[63].ToString(),
+        //                //OldPartCode = oDataSet.Tables[0].Rows[i].ItemArray[64].ToString(),
+        //                //SerialNo = oDataSet.Tables[0].Rows[i].ItemArray[65].ToString(),
+        //                //Package = oDataSet.Tables[0].Rows[i].ItemArray[66].ToString(),
+        //                //IsCustJWAdjMandatory = oDataSet.Tables[0].Rows[i].ItemArray[67].ToString(),
+        //                //JobWorkItem = oDataSet.Tables[0].Rows[i].ItemArray[68].ToString(),
+        //            });
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        dynamic Error = new ExpandoObject();
+        //        Error.Message = ex.Message;
+        //        Error.Source = ex.Source;
+        //    }
+        //    finally
+        //    {
+        //        if (Reader != null)
+        //        {
+        //            Reader.Close();
+        //            Reader.Dispose();
+        //        }
+        //    }
+
+        //    return ItemMasterList;
+        //}
 
         public FeatureOption GetFeatureOption()
         {
@@ -693,6 +868,7 @@ namespace eTactWeb.Data.DAL
                 {
                     FO.AllowPartCode = oDataTable.Rows[0]["AutoGen_PartCode"].ToString() == "Y" ? false : true;
                     FO.DuplicateItemName = oDataTable.Rows[0]["DuplicateItemName"].ToString() == "Y" ? true : false;
+                    FO.IsStoreMandatoryInItemMaster = oDataTable.Rows[0]["IsStoreMandatoryInItemMaster"].ToString() == "Y" ? true : false;
                 }
             }
             catch (Exception e)
@@ -731,7 +907,14 @@ namespace eTactWeb.Data.DAL
 
             return 0;
         }
-
+        private static decimal SafeDecimal(object value)
+        {
+            return value == DBNull.Value || value == null || string.IsNullOrEmpty(value.ToString()) ? 0 : Convert.ToDecimal(value);
+        }
+        private static double SafeDouble(object value)
+        {
+            return value == DBNull.Value || value == null || string.IsNullOrEmpty(value.ToString()) ? 0 : Convert.ToDouble(value);
+        }
         public async Task<ItemMasterModel> GetItemMasterByID(int ID)
         {
             DataTable? oDataTable = new DataTable();
@@ -756,114 +939,216 @@ namespace eTactWeb.Data.DAL
 
                 if (oDataTable.Rows.Count != 0)
                 {
+                    //foreach (DataRow dr in oDataTable.Rows)
+                    //{
+                    //    string branchCsv = dr["Branch"].ToString(); // "Surat,Ahmedabad"
+                    //    model.IsDelete = Convert.ToInt32(dr["IsDelete"]);
+                    //    model.Item_Code = Convert.ToInt32(dr["Item_Code"]);
+                    //    model.PartCode = dr["PartCode"].ToString();
+                    //    model.Item_Name = dr["Item_Name"].ToString();
+                    //    model.ParentCode = Convert.ToInt32(dr["ParentCode"]);
+                    //    model.EntryDate = dr["EntryDate"].ToString();
+                    //    model.LastUpdatedDate = dr["LastUpdatedDate"].ToString();
+                    //    model.LeadTime = Convert.ToInt32(dr["LeadTime"]);
+                    //    model.CC = dr["CC"].ToString();
+                    //    model.Unit = dr["Unit"].ToString();
+                    //    model.SalePrice = Convert.ToDecimal(dr["SalePrice"]);
+                    //    model.PurchasePrice = Convert.ToDecimal(dr["PurchasePrice"]);
+                    //    model.CostPrice = Convert.ToDecimal(dr["CostPrice"]);
+                    //    model.WastagePercent = Convert.ToDecimal(dr["WastagePercent"]);
+                    //    model.WtSingleItem = Convert.ToDouble(dr["WtSingleItem"]);
+                    //    model.NoOfPcs = Convert.ToDecimal(dr["NoOfPcs"]);
+                    //    model.QcReq = dr["QcReq"].ToString();
+                    //    model.ItemType = Convert.ToInt32(dr["ItemType"]);
+                    //    model.ImageURL = dr["UploadImage"].ToString();
+                    //    model.ItemImageURL = dr["UploadItemImage"].ToString();
+                    //    model.UID = dr["UID"].ToString();
+                    //    model.DrawingNo = dr["DrawingNo"].ToString();
+                    //    model.MinimumLevel = Convert.ToDecimal(dr["MinimumLevel"]);
+                    //    model.MaximumLevel = Convert.ToDecimal(dr["MaximumLevel"]);
+                    //    model.ReorderLevel = Convert.ToDecimal(dr["ReorderLevel"]);
+                    //    model.YearCode = Convert.ToInt32(dr["YearCode"]);
+                    //    model.AlternateUnit = dr["AlternateUnit"].ToString();
+                    //    model.RackID = dr["RackID"].ToString();
+                    //    model.BinNo = dr["BinNo"].ToString();
+                    //    model.ItemSize = dr["ItemSize"].ToString();
+                    //    model.Colour = dr["Colour"].ToString();
+                    //    model.NeedPO = dr["NeedPO"].ToString();
+                    //    model.StdPacking = Convert.ToDecimal(dr["StdPacking"]);
+                    //    model.PackingType = dr["PackingType"].ToString();
+                    //    model.ModelNo = dr["ModelNo"].ToString();
+                    //    model.YearlyConsumedQty = Convert.ToInt32(dr["YearlyConsumedQty"]);
+                    //    model.DispItemName = dr["DispItemName"].ToString();
+                    //    model.PurchaseAccountcode = dr["PurchaseAccountcode"].ToString();
+                    //    model.SaleAccountcode = dr["SaleAccountcode"].ToString();
+                    //    model.MinLevelDays = Convert.ToDecimal(dr["MinLevelDays"]);
+                    //    model.MaxLevelDays = Convert.ToDecimal(dr["MaxLevelDays"]);
+                    //    model.EmpName = dr["EmpName"].ToString();
+                    //    model.DailyRequirment = Convert.ToDecimal(dr["DailyRequirment"]);
+                    //    model.Stockable = dr["Stockable"].ToString();
+                    //    model.WipStockable = dr["WipStockable"].ToString();
+                    //    model.Store = dr["Store"].ToString();
+                    //    model.ProductLifeInus = Convert.ToDecimal(dr["ProductLifeInus"]);
+                    //    model.ItemDesc = dr["ItemDesc"].ToString();
+                    //    model.MaxWipStock = Convert.ToDecimal(dr["MaxWipStock"]);
+                    //    model.NeedSo = dr["NeedSo"].ToString();
+                    //    model.BomRequired = dr["BomRequired"].ToString();
+                    //    model.ChildBom = dr["ChildBom"].ToString();
+                    //    model.JobWorkItem = dr["JobWorkItem"].ToString();
+                    //    model.HSNNO = Convert.ToInt32(dr["HsnNo"]);
+                    //    model.ItemServAssets = dr["ItemServAssets"].ToString();
+                    //    model.CreatedBy = Convert.ToInt32(dr["CreatedBy"]);
+                    //    model.CreatedOn = string.IsNullOrEmpty(dr["CreatedOn"].ToString()) ? new DateTime() : Convert.ToDateTime(dr["CreatedOn"]);
+
+                    //    model.CreatedByName = dr["CreatedByName"].ToString();
+                    //    model.Active = dr["Active"].ToString();
+                    //    model.UniversalPartCode = dr["UniversalPartCode"].ToString();
+                    //    model.UniversalDescription = dr["UniversalDescription"].ToString();
+                    //    model.ProdInWorkcenter = dr["ProdInWorkcenter"].ToString() == "" ? 0 : Convert.ToInt32(dr["ProdInWorkcenter"].ToString());
+                    //    model.ProdInhouseJW = dr["ProdInhouseJW"].ToString();
+                    //    model.BatchNO = dr["BatchNO"].ToString();
+                    //    model.VoltageVlue = dr["VoltageValue"].ToString();
+                    //    model.OldPartCode = dr["OldPartCode"].ToString();
+                    //    model.SerialNo = dr["SerialNo"].ToString();
+                    //    model.usedinMachorVehicle = dr["usedinMachorVehicle"].ToString();
+                    //    model.Barcode = dr["Barcode"].ToString();
+                    //    model.BatchWiseInventory = dr["BatchWiseInventory"].ToString();
+
+                    //    model.Branch = branchCsv.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList();
+                    //    model.ProdInMachineGroup = dr["ProdInMachineGroup"].ToString() == "" ? 0 : Convert.ToInt32(dr["ProdInMachineGroup"].ToString());
+                    //    model.ProdInMachine1 = dr["ProdInMachine1"].ToString() == "" ? 0 : Convert.ToInt32(dr["ProdInMachine1"].ToString());
+                    //    model.ProdInMachine2 = dr["ProdInMachine2"].ToString() == "" ? 0 : Convert.ToInt32(dr["ProdInMachine2"].ToString());
+                    //    model.ProdInMachine3 = dr["ProdInMachine3"].ToString() == "" ? 0 : Convert.ToInt32(dr["ProdInMachine3"].ToString());
+                    //    model.ProdInMachine4 = dr["ProdInMachine4"].ToString() == "" ? 0 : Convert.ToInt32(dr["ProdInMachine4"].ToString());
+
+                    //    model.Package = dr["Package"].ToString();
+                    //    model.NoOfCavity = dr["NoOfCavity"].ToString() == "" ? 0 : Convert.ToInt32(dr["NoOfCavity"].ToString());
+                    //    model.NoOfshotsHours = dr["NoOfshotsHours"].ToString() == "" ? 0 : Convert.ToInt32(dr["NoOfshotsHours"].ToString());
+
+                    //    if (!string.IsNullOrEmpty(dr["UpdatedByName"].ToString()))
+                    //    {
+                    //        model.UpdatedByName =dr["UpdatedByName"].ToString();
+
+                    //        model.UpdatedBy = string.IsNullOrEmpty(dr["UpdatedBy"].ToString()) ? 0 : Convert.ToInt32(dr["UpdatedBy"]);
+                    //        model.UpdatedOn = string.IsNullOrEmpty(dr["UpdatedOn"].ToString()) ? new DateTime() : Convert.ToDateTime(dr["UpdatedOn"]);
+                    //    }
+                    //    if (!string.IsNullOrEmpty(dr["ItemServAssets"].ToString()))
+                    //    {
+                    //        if(dr["ItemServAssets"].ToString() == "Service")
+                    //        {
+                    //            model.ItemServAssets = "Service";
+                    //        }
+                    //        else if(dr["ItemServAssets"].ToString() == "Assets")
+                    //        {
+                    //            model.ItemServAssets = "Asset";
+                    //        }
+                    //        else
+                    //        {
+                    //            model.ItemServAssets = "Item";
+                    //        }
+                    //    }
+                    //}
                     foreach (DataRow dr in oDataTable.Rows)
                     {
-                        string branchCsv = dr["Branch"].ToString(); // "Surat,Ahmedabad"
-                        model.IsDelete = Convert.ToInt32(dr["IsDelete"]);
-                        model.Item_Code = Convert.ToInt32(dr["Item_Code"]);
-                        model.PartCode = dr["PartCode"].ToString();
-                        model.Item_Name = dr["Item_Name"].ToString();
-                        model.ParentCode = Convert.ToInt32(dr["ParentCode"]);
-                        model.EntryDate = dr["EntryDate"].ToString();
-                        model.LastUpdatedDate = dr["LastUpdatedDate"].ToString();
-                        model.LeadTime = Convert.ToInt32(dr["LeadTime"]);
-                        model.CC = dr["CC"].ToString();
-                        model.Unit = dr["Unit"].ToString();
-                        model.SalePrice = Convert.ToDecimal(dr["SalePrice"]);
-                        model.PurchasePrice = Convert.ToDecimal(dr["PurchasePrice"]);
-                        model.CostPrice = Convert.ToDecimal(dr["CostPrice"]);
-                        model.WastagePercent = Convert.ToDecimal(dr["WastagePercent"]);
-                        model.WtSingleItem = Convert.ToDouble(dr["WtSingleItem"]);
-                        model.NoOfPcs = Convert.ToDecimal(dr["NoOfPcs"]);
-                        model.QcReq = dr["QcReq"].ToString();
-                        model.ItemType = Convert.ToInt32(dr["ItemType"]);
-                        model.ImageURL = dr["UploadImage"].ToString();
-                        model.ItemImageURL = dr["UploadItemImage"].ToString();
-                        model.UID = dr["UID"].ToString();
-                        model.DrawingNo = dr["DrawingNo"].ToString();
-                        model.MinimumLevel = Convert.ToDecimal(dr["MinimumLevel"]);
-                        model.MaximumLevel = Convert.ToDecimal(dr["MaximumLevel"]);
-                        model.ReorderLevel = Convert.ToDecimal(dr["ReorderLevel"]);
-                        model.YearCode = Convert.ToInt32(dr["YearCode"]);
-                        model.AlternateUnit = dr["AlternateUnit"].ToString();
-                        model.RackID = dr["RackID"].ToString();
-                        model.BinNo = dr["BinNo"].ToString();
-                        model.ItemSize = dr["ItemSize"].ToString();
-                        model.Colour = dr["Colour"].ToString();
-                        model.NeedPO = dr["NeedPO"].ToString();
-                        model.StdPacking = Convert.ToDecimal(dr["StdPacking"]);
-                        model.PackingType = dr["PackingType"].ToString();
-                        model.ModelNo = dr["ModelNo"].ToString();
-                        model.YearlyConsumedQty = Convert.ToInt32(dr["YearlyConsumedQty"]);
-                        model.DispItemName = dr["DispItemName"].ToString();
-                        model.PurchaseAccountcode = dr["PurchaseAccountcode"].ToString();
-                        model.SaleAccountcode = dr["SaleAccountcode"].ToString();
-                        model.MinLevelDays = Convert.ToDecimal(dr["MinLevelDays"]);
-                        model.MaxLevelDays = Convert.ToDecimal(dr["MaxLevelDays"]);
-                        model.EmpName = dr["EmpName"].ToString();
-                        model.DailyRequirment = Convert.ToDecimal(dr["DailyRequirment"]);
-                        model.Stockable = dr["Stockable"].ToString();
-                        model.WipStockable = dr["WipStockable"].ToString();
-                        model.Store = dr["Store"].ToString();
-                        model.ProductLifeInus = Convert.ToDecimal(dr["ProductLifeInus"]);
-                        model.ItemDesc = dr["ItemDesc"].ToString();
-                        model.MaxWipStock = Convert.ToDecimal(dr["MaxWipStock"]);
-                        model.NeedSo = dr["NeedSo"].ToString();
-                        model.BomRequired = dr["BomRequired"].ToString();
-                        model.ChildBom = dr["ChildBom"].ToString();
-                        model.JobWorkItem = dr["JobWorkItem"].ToString();
-                        model.HSNNO = Convert.ToInt32(dr["HsnNo"]);
-                        model.ItemServAssets = dr["ItemServAssets"].ToString();
-                        model.CreatedBy = Convert.ToInt32(dr["CreatedBy"]);
-                        model.CreatedOn = string.IsNullOrEmpty(dr["CreatedOn"].ToString()) ? new DateTime() : Convert.ToDateTime(dr["CreatedOn"]);
+                        string branchCsv = SafeToString(dr["Branch"]);
 
-                        model.CreatedByName = dr["CreatedByName"].ToString();
-                        model.Active = dr["Active"].ToString();
-                        model.UniversalPartCode = dr["UniversalPartCode"].ToString();
-                        model.UniversalDescription = dr["UniversalDescription"].ToString();
-                        model.ProdInWorkcenter = dr["ProdInWorkcenter"].ToString() == "" ? 0 : Convert.ToInt32(dr["ProdInWorkcenter"].ToString());
-                        model.ProdInhouseJW = dr["ProdInhouseJW"].ToString();
-                        model.BatchNO = dr["BatchNO"].ToString();
-                        model.VoltageVlue = dr["VoltageValue"].ToString();
-                        model.OldPartCode = dr["OldPartCode"].ToString();
-                        model.SerialNo = dr["SerialNo"].ToString();
-                        model.usedinMachorVehicle = dr["usedinMachorVehicle"].ToString();
-                        model.Barcode = dr["Barcode"].ToString();
+                        model.IsDelete = SafeToInt(dr["IsDelete"]);
+                        model.Item_Code = SafeToInt(dr["Item_Code"]);
+                        model.PartCode = SafeToString(dr["PartCode"]);
+                        model.Item_Name = SafeToString(dr["Item_Name"]);
+                        model.ParentCode = SafeToInt(dr["ParentCode"]);
+                        model.EntryDate = SafeToString(dr["EntryDate"]);
+                        model.LastUpdatedDate = SafeToString(dr["LastUpdatedDate"]);
+                        model.LeadTime = SafeToInt(dr["LeadTime"]);
+                        model.CC = SafeToString(dr["CC"]);
+                        model.Unit = SafeToString(dr["Unit"]);
+                        model.SalePrice = SafeDecimal(dr["SalePrice"]);
+                        model.PurchasePrice = SafeDecimal(dr["PurchasePrice"]);
+                        model.CostPrice = SafeDecimal(dr["CostPrice"]);
+                        model.WastagePercent = SafeDecimal(dr["WastagePercent"]);
+                        model.WtSingleItem = SafeDouble(dr["WtSingleItem"]);
+                        model.NoOfPcs = SafeDecimal(dr["NoOfPcs"]);
+                        model.QcReq = SafeToString(dr["QcReq"]);
+                        model.ItemType = SafeToInt(dr["ItemType"]);
+                        model.ImageURL = SafeToString(dr["UploadImage"]);
+                        model.ItemImageURL = SafeToString(dr["UploadItemImage"]);
+                        model.UID = SafeToString(dr["UID"]);
+                        model.DrawingNo = SafeToString(dr["DrawingNo"]);
+                        model.MinimumLevel = SafeDecimal(dr["MinimumLevel"]);
+                        model.MaximumLevel = SafeDecimal(dr["MaximumLevel"]);
+                        model.ReorderLevel = SafeDecimal(dr["ReorderLevel"]);
+                        model.YearCode = SafeToInt(dr["YearCode"]);
+                        model.AlternateUnit = SafeToString(dr["AlternateUnit"]);
+                        model.RackID = SafeToString(dr["RackID"]);
+                        model.BinNo = SafeToString(dr["BinNo"]);
+                        model.ItemSize = SafeToString(dr["ItemSize"]);
+                        model.Colour = SafeToString(dr["Colour"]);
+                        model.NeedPO = SafeToString(dr["NeedPO"]);
+                        model.StdPacking = SafeDecimal(dr["StdPacking"]);
+                        model.PackingType = SafeToString(dr["PackingType"]);
+                        model.ModelNo = SafeToString(dr["ModelNo"]);
+                        model.YearlyConsumedQty = SafeToInt(dr["YearlyConsumedQty"]);
+                        model.DispItemName = SafeToString(dr["DispItemName"]);
+                        model.PurchaseAccountcode = SafeToString(dr["PurchaseAccountcode"]);
+                        model.SaleAccountcode = SafeToString(dr["SaleAccountcode"]);
+                        model.MinLevelDays = SafeDecimal(dr["MinLevelDays"]);
+                        model.MaxLevelDays = SafeDecimal(dr["MaxLevelDays"]);
+                        model.EmpName = SafeToString(dr["EmpName"]);
+                        model.DailyRequirment = SafeDecimal(dr["DailyRequirment"]);
+                        model.Stockable = SafeToString(dr["Stockable"]);
+                        model.WipStockable = SafeToString(dr["WipStockable"]);
+                        model.Store = SafeToString(dr["Store"]);
+                        model.ProductLifeInus = SafeDecimal(dr["ProductLifeInus"]);
+                        model.ItemDesc = SafeToString(dr["ItemDesc"]);
+                        model.MaxWipStock = SafeDecimal(dr["MaxWipStock"]);
+                        model.NeedSo = SafeToString(dr["NeedSo"]);
+                        model.BomRequired = SafeToString(dr["BomRequired"]);
+                        model.ChildBom = SafeToString(dr["ChildBom"]);
+                        model.JobWorkItem = SafeToString(dr["JobWorkItem"]);
+                        model.HSNNO = SafeToInt(dr["HsnNo"]);
+                        model.ItemServAssets = SafeToString(dr["ItemServAssets"]);
+                        model.CreatedBy = SafeToInt(dr["CreatedBy"]);
+                        model.CreatedOn = SafeToDateTime(dr["CreatedOn"]);
+                        model.CreatedByName = SafeToString(dr["CreatedByName"]);
+                        model.Active = SafeToString(dr["Active"]);
+                        model.UniversalPartCode = SafeToString(dr["UniversalPartCode"]);
+                        model.UniversalDescription = SafeToString(dr["UniversalDescription"]);
+                        model.ProdInWorkcenter = SafeToInt(dr["ProdInWorkcenter"]);
+                        model.ProdInhouseJW = SafeToString(dr["ProdInhouseJW"]);
+                        model.BatchNO = SafeToString(dr["BatchNO"]);
+                        model.VoltageVlue = SafeToString(dr["VoltageValue"]);
+                        model.OldPartCode = SafeToString(dr["OldPartCode"]);
+                        model.SerialNo = SafeToString(dr["SerialNo"]);
+                        model.usedinMachorVehicle = SafeToString(dr["usedinMachorVehicle"]);
+                        model.Barcode = SafeToString(dr["Barcode"]);
+                        model.BatchWiseInventory = SafeToString(dr["BatchWiseInventory"]);
 
                         model.Branch = branchCsv.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList();
-                        model.ProdInMachineGroup = dr["ProdInMachineGroup"].ToString() == "" ? 0 : Convert.ToInt32(dr["ProdInMachineGroup"].ToString());
-                        model.ProdInMachine1 = dr["ProdInMachine1"].ToString() == "" ? 0 : Convert.ToInt32(dr["ProdInMachine1"].ToString());
-                        model.ProdInMachine2 = dr["ProdInMachine2"].ToString() == "" ? 0 : Convert.ToInt32(dr["ProdInMachine2"].ToString());
-                        model.ProdInMachine3 = dr["ProdInMachine3"].ToString() == "" ? 0 : Convert.ToInt32(dr["ProdInMachine3"].ToString());
-                        model.ProdInMachine4 = dr["ProdInMachine4"].ToString() == "" ? 0 : Convert.ToInt32(dr["ProdInMachine4"].ToString());
-                       
-                        model.Package = dr["Package"].ToString();
-                        model.NoOfCavity = dr["NoOfCavity"].ToString() == "" ? 0 : Convert.ToInt32(dr["NoOfCavity"].ToString());
-                        model.NoOfshotsHours = dr["NoOfshotsHours"].ToString() == "" ? 0 : Convert.ToInt32(dr["NoOfshotsHours"].ToString());
 
-                        if (!string.IsNullOrEmpty(dr["UpdatedByName"].ToString()))
-                        {
-                            model.UpdatedByName =dr["UpdatedByName"].ToString();
+                        model.ProdInMachineGroup = SafeToInt(dr["ProdInMachineGroup"]);
+                        model.ProdInMachine1 = SafeToInt(dr["ProdInMachine1"]);
+                        model.ProdInMachine2 = SafeToInt(dr["ProdInMachine2"]);
+                        model.ProdInMachine3 = SafeToInt(dr["ProdInMachine3"]);
+                        model.ProdInMachine4 = SafeToInt(dr["ProdInMachine4"]);
 
-                            model.UpdatedBy = string.IsNullOrEmpty(dr["UpdatedBy"].ToString()) ? 0 : Convert.ToInt32(dr["UpdatedBy"]);
-                            model.UpdatedOn = string.IsNullOrEmpty(dr["UpdatedOn"].ToString()) ? new DateTime() : Convert.ToDateTime(dr["UpdatedOn"]);
-                        }
-                        if (!string.IsNullOrEmpty(dr["ItemServAssets"].ToString()))
+                        model.Package = SafeToString(dr["Package"]);
+                        model.NoOfCavity = SafeToInt(dr["NoOfCavity"]);
+                        model.NoOfshotsHours = SafeToInt(dr["NoOfshotsHours"]);
+
+                        model.UpdatedByName = SafeToString(dr["UpdatedByName"]);
+                        model.UpdatedBy = SafeToInt(dr["UpdatedBy"]);
+                        model.UpdatedOn = SafeToDateTime(dr["UpdatedOn"]);
+
+                        // Optional: Handle ItemServAssets specific mapping
+                        string itemServ = SafeToString(dr["ItemServAssets"]);
+                        model.ItemServAssets = itemServ switch
                         {
-                            if(dr["ItemServAssets"].ToString() == "Service")
-                            {
-                                model.ItemServAssets = "Service";
-                            }
-                            else if(dr["ItemServAssets"].ToString() == "Assets")
-                            {
-                                model.ItemServAssets = "Asset";
-                            }
-                            else
-                            {
-                                model.ItemServAssets = "Item";
-                            }
-                        }
+                            "Service" => "Service",
+                            "Assets" => "Asset",
+                            _ => "Item"
+                        };
                     }
+
                 }
             }
             catch (Exception ex)
@@ -886,113 +1171,241 @@ namespace eTactWeb.Data.DAL
         {
             try
             {
-                using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
+                string branchlist = string.Join(",", model.Branch ?? new List<string>());
+                if (!string.IsNullOrWhiteSpace(branchlist))
                 {
-                    SqlCommand oCmd = new SqlCommand("SP_ItemMasterData", myConnection)
+                    foreach (var branchDb in model.Branch ?? new List<string>())
                     {
-                        CommandType = CommandType.StoredProcedure
-                    };
-                    string branchlist = string.Join(",", model.Branch   ?? new List<string>());
+                        // Generate dynamic connection string for this branch
+                        string branchConnectionString = GetBranchConnectionString(branchDb);
 
-                    oCmd.Parameters.AddWithValue("@Flag", model.Mode);
-                    oCmd.Parameters.AddWithValue("@Item_Code", model.Item_Code);
-                    oCmd.Parameters.AddWithValue("@PartCode", model.PartCode);
-                    oCmd.Parameters.AddWithValue("@Item_Name", model.Item_Name);
-                    oCmd.Parameters.AddWithValue("@ParentCode", model.ParentCode);
-                    oCmd.Parameters.AddWithValue("@EntryDate", model.EntryDate);
-                    oCmd.Parameters.AddWithValue("@LastUpdatedDate", model.LastUpdatedDate);
-                    oCmd.Parameters.AddWithValue("@LeadTime", model.LeadTime);
-                    oCmd.Parameters.AddWithValue("@CC", model.CC);
-                    oCmd.Parameters.AddWithValue("@Unit", model.Unit);
-                    oCmd.Parameters.AddWithValue("@SalePrice", model.SalePrice);
-                    oCmd.Parameters.AddWithValue("@PurchasePrice", model.PurchasePrice);
-                    oCmd.Parameters.AddWithValue("@CostPrice", model.CostPrice);
-                    oCmd.Parameters.AddWithValue("@WastagePercent", model.WastagePercent);
-                    oCmd.Parameters.AddWithValue("@WtSingleItem", model.WtSingleItem);
-                    oCmd.Parameters.AddWithValue("@NoOfPcs", model.NoOfPcs);
-                    oCmd.Parameters.AddWithValue("@QcReq", model.QcReq);
-                    oCmd.Parameters.AddWithValue("@ItemType", model.ItemType);
-                    oCmd.Parameters.AddWithValue("@UploadImage", model.ImageURL);
-                    oCmd.Parameters.AddWithValue("@UploadItemImage", model.ItemImageURL);
-                    oCmd.Parameters.AddWithValue("@UID", model.UID);
-                    oCmd.Parameters.AddWithValue("@DrawingNo", model.DrawingNo);
-                    oCmd.Parameters.AddWithValue("@MinimumLevel", model.MinimumLevel);
-                    oCmd.Parameters.AddWithValue("@MaximumLevel", model.MaximumLevel);
-                    oCmd.Parameters.AddWithValue("@ReorderLevel", model.ReorderLevel);
-                    oCmd.Parameters.AddWithValue("@YearCode", model.YearCode);
-                    oCmd.Parameters.AddWithValue("@AlternateUnit", model.AlternateUnit);
-                    oCmd.Parameters.AddWithValue("@RackID", model.RackID);
-                    oCmd.Parameters.AddWithValue("@BinNo", model.BinNo);
-                    oCmd.Parameters.AddWithValue("@ItemSize", model.ItemSize);
-                    oCmd.Parameters.AddWithValue("@Colour", model.Colour);
-                    oCmd.Parameters.AddWithValue("@NeedPO", model.NeedPO);
-                    oCmd.Parameters.AddWithValue("@StdPacking", model.StdPacking);
-                    oCmd.Parameters.AddWithValue("@PackingType", model.PackingType);
-                    oCmd.Parameters.AddWithValue("@ModelNo", model.ModelNo);
-                    oCmd.Parameters.AddWithValue("@YearlyConsumedQty", model.YearlyConsumedQty);
-                    oCmd.Parameters.AddWithValue("@DispItemName", model.DispItemName);
-                    oCmd.Parameters.AddWithValue("@PurchaseAccountcode", model.PurchaseAccountcode);
-                    oCmd.Parameters.AddWithValue("@SaleAccountcode", model.SaleAccountcode);
-                    oCmd.Parameters.AddWithValue("@MinLevelDays", model.MinLevelDays);
-                    oCmd.Parameters.AddWithValue("@MaxLevelDays", model.MaxLevelDays);
-                    oCmd.Parameters.AddWithValue("@EmpName", model.EmpName);
-                    oCmd.Parameters.AddWithValue("@DailyRequirment", model.DailyRequirment);
-                    oCmd.Parameters.AddWithValue("@Stockable", model.Stockable);
-                    oCmd.Parameters.AddWithValue("@WipStockable", model.WipStockable);
-                    oCmd.Parameters.AddWithValue("@Store", model.Store);
-                    oCmd.Parameters.AddWithValue("@ProductLifeInus", model.ProductLifeInus);
-                    oCmd.Parameters.AddWithValue("@ItemDesc", model.ItemDesc);
-                    oCmd.Parameters.AddWithValue("@MaxWipStock", model.MaxWipStock);
-                    oCmd.Parameters.AddWithValue("@NeedSo", model.NeedSo);
-                    oCmd.Parameters.AddWithValue("@BomRequired", model.BomRequired);
-                    oCmd.Parameters.AddWithValue("@ChildBom", model.ChildBom);
-                    oCmd.Parameters.AddWithValue("@JobWorkItem", model.JobWorkItem);
-                    oCmd.Parameters.AddWithValue("@HsnNo", model.HSNNO);
-                    oCmd.Parameters.AddWithValue("@Active", model.Active);
-                    oCmd.Parameters.AddWithValue("@ItemServAssets", model.ItemServAssets);
-                    oCmd.Parameters.AddWithValue("@EntryByMachineName", model.EntryByMachineName);
-                    oCmd.Parameters.AddWithValue("@UniversalPartCode", model.UniversalPartCode);
-                    oCmd.Parameters.AddWithValue("@UniversalDescription", model.UniversalDescription);
-                    oCmd.Parameters.AddWithValue("@ProdInWorkcenter", model.ProdInWorkcenter);
-                    oCmd.Parameters.AddWithValue("@ProdInhouseJW", model.ProdInhouseJW);
-                    oCmd.Parameters.AddWithValue("@BatchNO", model.BatchNO);
-                    oCmd.Parameters.AddWithValue("@VoltageValue", model.VoltageVlue);
-                    oCmd.Parameters.AddWithValue("@SerialNo", model.SerialNo);
-                    oCmd.Parameters.AddWithValue("@OldPartCode", model.OldPartCode);
-                    oCmd.Parameters.AddWithValue("@package", model.Package);
-                    oCmd.Parameters.AddWithValue("@Branch", branchlist);
-                    oCmd.Parameters.AddWithValue("@NoOfCavity", model.NoOfCavity);
-                    oCmd.Parameters.AddWithValue("@ProdInMachineGroup", model.ProdInMachineGroup);
-                    oCmd.Parameters.AddWithValue("@ProdInMachine1", model.ProdInMachine1);
-                    oCmd.Parameters.AddWithValue("@ProdInMachine2", model.ProdInMachine2);
-                    oCmd.Parameters.AddWithValue("@ProdInMachine3", model.ProdInMachine3);
-                    oCmd.Parameters.AddWithValue("@ProdInMachine4", model.ProdInMachine4);
-                    oCmd.Parameters.AddWithValue("@NoOfshotsHours", model.NoOfshotsHours);
-                    oCmd.Parameters.AddWithValue("@usedinMachorVehicle", model.usedinMachorVehicle);
-                    oCmd.Parameters.AddWithValue("@Barcode", model.Barcode);
-                    oCmd.Parameters.AddWithValue("@CreatedBy", model.CreatedBy);
-                    if (model.Mode == "Update")
-                    {
-                        oCmd.Parameters.AddWithValue("@UpdatedBy", model.UpdatedBy);
+                        using (SqlConnection conn = new SqlConnection(branchConnectionString))
+                        {
+                            SqlCommand oCmd = new SqlCommand("SP_ItemMasterData", conn)
+                            {
+                                CommandType = CommandType.StoredProcedure
+                            };
 
+
+                            oCmd.Parameters.AddWithValue("@Flag", model.Mode);
+                            oCmd.Parameters.AddWithValue("@Item_Code", model.Item_Code);
+                            oCmd.Parameters.AddWithValue("@PartCode", model.PartCode);
+                            oCmd.Parameters.AddWithValue("@Item_Name", model.Item_Name);
+                            oCmd.Parameters.AddWithValue("@ParentCode", model.ParentCode);
+                            oCmd.Parameters.AddWithValue("@EntryDate", model.EntryDate);
+                            oCmd.Parameters.AddWithValue("@LastUpdatedDate", model.LastUpdatedDate);
+                            oCmd.Parameters.AddWithValue("@LeadTime", model.LeadTime);
+                            oCmd.Parameters.AddWithValue("@CC", model.CC);
+                            oCmd.Parameters.AddWithValue("@Unit", model.Unit);
+                            oCmd.Parameters.AddWithValue("@SalePrice", model.SalePrice);
+                            oCmd.Parameters.AddWithValue("@PurchasePrice", model.PurchasePrice);
+                            oCmd.Parameters.AddWithValue("@CostPrice", model.CostPrice);
+                            oCmd.Parameters.AddWithValue("@WastagePercent", model.WastagePercent);
+                            oCmd.Parameters.AddWithValue("@WtSingleItem", model.WtSingleItem);
+                            oCmd.Parameters.AddWithValue("@NoOfPcs", model.NoOfPcs);
+                            oCmd.Parameters.AddWithValue("@QcReq", model.QcReq);
+                            oCmd.Parameters.AddWithValue("@ItemType", model.ItemType);
+                            oCmd.Parameters.AddWithValue("@UploadImage", model.ImageURL);
+                            oCmd.Parameters.AddWithValue("@UploadItemImage", model.ItemImageURL);
+                            oCmd.Parameters.AddWithValue("@UID", model.UID);
+                            oCmd.Parameters.AddWithValue("@DrawingNo", model.DrawingNo);
+                            oCmd.Parameters.AddWithValue("@MinimumLevel", model.MinimumLevel);
+                            oCmd.Parameters.AddWithValue("@MaximumLevel", model.MaximumLevel);
+                            oCmd.Parameters.AddWithValue("@ReorderLevel", model.ReorderLevel);
+                            oCmd.Parameters.AddWithValue("@ParentName", model.ParentName);
+                            oCmd.Parameters.AddWithValue("@ItemTypeName", model.ItemTypeName);
+                            oCmd.Parameters.AddWithValue("@YearCode", model.YearCode);
+                            oCmd.Parameters.AddWithValue("@AlternateUnit", model.AlternateUnit);
+                            oCmd.Parameters.AddWithValue("@RackID", model.RackID);
+                            oCmd.Parameters.AddWithValue("@BinNo", model.BinNo);
+                            oCmd.Parameters.AddWithValue("@ItemSize", model.ItemSize);
+                            oCmd.Parameters.AddWithValue("@Colour", model.Colour);
+                            oCmd.Parameters.AddWithValue("@NeedPO", model.NeedPO);
+                            oCmd.Parameters.AddWithValue("@StdPacking", model.StdPacking);
+                            oCmd.Parameters.AddWithValue("@PackingType", model.PackingType);
+                            oCmd.Parameters.AddWithValue("@ModelNo", model.ModelNo);
+                            oCmd.Parameters.AddWithValue("@YearlyConsumedQty", model.YearlyConsumedQty);
+                            oCmd.Parameters.AddWithValue("@DispItemName", model.DispItemName);
+                            oCmd.Parameters.AddWithValue("@PurchaseAccountcode", model.PurchaseAccountcode);
+                            oCmd.Parameters.AddWithValue("@SaleAccountcode", model.SaleAccountcode);
+                            oCmd.Parameters.AddWithValue("@MinLevelDays", model.MinLevelDays);
+                            oCmd.Parameters.AddWithValue("@MaxLevelDays", model.MaxLevelDays);
+                            oCmd.Parameters.AddWithValue("@EmpName", model.EmpName);
+                            oCmd.Parameters.AddWithValue("@DailyRequirment", model.DailyRequirment);
+                            oCmd.Parameters.AddWithValue("@Stockable", model.Stockable);
+                            oCmd.Parameters.AddWithValue("@WipStockable", model.WipStockable);
+                            oCmd.Parameters.AddWithValue("@Store", model.Store);
+                            oCmd.Parameters.AddWithValue("@ProductLifeInus", model.ProductLifeInus);
+                            oCmd.Parameters.AddWithValue("@ItemDesc", model.ItemDesc);
+                            oCmd.Parameters.AddWithValue("@MaxWipStock", model.MaxWipStock);
+                            oCmd.Parameters.AddWithValue("@NeedSo", model.NeedSo);
+                            oCmd.Parameters.AddWithValue("@BomRequired", model.BomRequired);
+                            oCmd.Parameters.AddWithValue("@ChildBom", model.ChildBom);
+                            oCmd.Parameters.AddWithValue("@JobWorkItem", model.JobWorkItem);
+                            oCmd.Parameters.AddWithValue("@HsnNo", model.HSNNO);
+                            oCmd.Parameters.AddWithValue("@Active", model.Active);
+                            oCmd.Parameters.AddWithValue("@ItemServAssets", model.ItemServAssets);
+                            oCmd.Parameters.AddWithValue("@EntryByMachineName", model.EntryByMachineName);
+                            oCmd.Parameters.AddWithValue("@UniversalPartCode", model.UniversalPartCode);
+                            oCmd.Parameters.AddWithValue("@UniversalDescription", model.UniversalDescription);
+                            oCmd.Parameters.AddWithValue("@ProdInWorkcenter", model.ProdInWorkcenter);
+                            oCmd.Parameters.AddWithValue("@ProdInhouseJW", model.ProdInhouseJW);
+                            oCmd.Parameters.AddWithValue("@BatchNO", model.BatchNO);
+                            oCmd.Parameters.AddWithValue("@VoltageValue", model.VoltageVlue);
+                            oCmd.Parameters.AddWithValue("@SerialNo", model.SerialNo);
+                            oCmd.Parameters.AddWithValue("@OldPartCode", model.OldPartCode);
+                            oCmd.Parameters.AddWithValue("@package", model.Package);
+                            oCmd.Parameters.AddWithValue("@Branch", model.CC);
+                            oCmd.Parameters.AddWithValue("@BranchList", branchlist);
+                            oCmd.Parameters.AddWithValue("@NoOfCavity", model.NoOfCavity);
+                            oCmd.Parameters.AddWithValue("@ProdInMachineGroup", model.ProdInMachineGroup);
+                            oCmd.Parameters.AddWithValue("@ProdInMachine1", model.ProdInMachine1);
+                            oCmd.Parameters.AddWithValue("@ProdInMachine2", model.ProdInMachine2);
+                            oCmd.Parameters.AddWithValue("@ProdInMachine3", model.ProdInMachine3);
+                            oCmd.Parameters.AddWithValue("@ProdInMachine4", model.ProdInMachine4);
+                            oCmd.Parameters.AddWithValue("@NoOfshotsHours", model.NoOfshotsHours);
+                            oCmd.Parameters.AddWithValue("@usedinMachorVehicle", model.usedinMachorVehicle);
+                            oCmd.Parameters.AddWithValue("@Barcode", model.Barcode);
+                            oCmd.Parameters.AddWithValue("@CreatedBy", model.CreatedBy);
+                            oCmd.Parameters.AddWithValue("@BatchWiseInventory", model.BatchWiseInventory);
+                            if (model.Mode == "Update")
+                            {
+                                oCmd.Parameters.AddWithValue("@UpdatedBy", model.UpdatedBy);
+
+                            }
+
+                            await conn.OpenAsync();
+                            Reader = await oCmd.ExecuteReaderAsync();
+                            if (Reader != null)
+                            {
+                                while (Reader.Read())
+                                {
+                                    _ResponseResult = new ResponseResult()
+                                    {
+                                        StatusCode = (HttpStatusCode)Reader["StatusCode"],
+                                        StatusText = Reader["StatusText"].ToString(),
+                                        Result = Reader["Result"].ToString()
+                                    };
+                                }
+                            }
+                        }
                     }
 
-                    myConnection.Open();
-                    Reader = await oCmd.ExecuteReaderAsync();
-                    if (Reader != null)
+                }
+                else
+                {
+
+                    using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
                     {
-                        while (Reader.Read())
+                        SqlCommand oCmd = new SqlCommand("SP_ItemMasterData", myConnection)
                         {
-                            _ResponseResult = new ResponseResult()
+                            CommandType = CommandType.StoredProcedure
+                        };
+                        oCmd.Parameters.AddWithValue("@Flag", model.Mode);
+                        oCmd.Parameters.AddWithValue("@Item_Code", model.Item_Code);
+                        oCmd.Parameters.AddWithValue("@PartCode", model.PartCode);
+                        oCmd.Parameters.AddWithValue("@Item_Name", model.Item_Name);
+                        oCmd.Parameters.AddWithValue("@ParentCode", model.ParentCode);
+                        oCmd.Parameters.AddWithValue("@EntryDate", model.EntryDate);
+                        oCmd.Parameters.AddWithValue("@LastUpdatedDate", model.LastUpdatedDate);
+                        oCmd.Parameters.AddWithValue("@LeadTime", model.LeadTime);
+                        oCmd.Parameters.AddWithValue("@CC", model.CC);
+                        oCmd.Parameters.AddWithValue("@Unit", model.Unit);
+                        oCmd.Parameters.AddWithValue("@SalePrice", model.SalePrice);
+                        oCmd.Parameters.AddWithValue("@PurchasePrice", model.PurchasePrice);
+                        oCmd.Parameters.AddWithValue("@CostPrice", model.CostPrice);
+                        oCmd.Parameters.AddWithValue("@WastagePercent", model.WastagePercent);
+                        oCmd.Parameters.AddWithValue("@WtSingleItem", model.WtSingleItem);
+                        oCmd.Parameters.AddWithValue("@NoOfPcs", model.NoOfPcs);
+                        oCmd.Parameters.AddWithValue("@ParentName", model.ParentName);
+                        oCmd.Parameters.AddWithValue("@ItemTypeName", model.ItemTypeName);
+                        oCmd.Parameters.AddWithValue("@QcReq", model.QcReq);
+                        oCmd.Parameters.AddWithValue("@ItemType", model.ItemType);
+                        oCmd.Parameters.AddWithValue("@UploadImage", model.ImageURL);
+                        oCmd.Parameters.AddWithValue("@UploadItemImage", model.ItemImageURL);
+                        oCmd.Parameters.AddWithValue("@UID", model.UID);
+                        oCmd.Parameters.AddWithValue("@DrawingNo", model.DrawingNo);
+                        oCmd.Parameters.AddWithValue("@MinimumLevel", model.MinimumLevel);
+                        oCmd.Parameters.AddWithValue("@MaximumLevel", model.MaximumLevel);
+                        oCmd.Parameters.AddWithValue("@ReorderLevel", model.ReorderLevel);
+                        oCmd.Parameters.AddWithValue("@YearCode", model.YearCode);
+                        oCmd.Parameters.AddWithValue("@AlternateUnit", model.AlternateUnit);
+                        oCmd.Parameters.AddWithValue("@RackID", model.RackID);
+                        oCmd.Parameters.AddWithValue("@BinNo", model.BinNo);
+                        oCmd.Parameters.AddWithValue("@ItemSize", model.ItemSize);
+                        oCmd.Parameters.AddWithValue("@Colour", model.Colour);
+                        oCmd.Parameters.AddWithValue("@NeedPO", model.NeedPO);
+                        oCmd.Parameters.AddWithValue("@StdPacking", model.StdPacking);
+                        oCmd.Parameters.AddWithValue("@PackingType", model.PackingType);
+                        oCmd.Parameters.AddWithValue("@ModelNo", model.ModelNo);
+                        oCmd.Parameters.AddWithValue("@YearlyConsumedQty", model.YearlyConsumedQty);
+                        oCmd.Parameters.AddWithValue("@DispItemName", model.DispItemName);
+                        oCmd.Parameters.AddWithValue("@PurchaseAccountcode", model.PurchaseAccountcode);
+                        oCmd.Parameters.AddWithValue("@SaleAccountcode", model.SaleAccountcode);
+                        oCmd.Parameters.AddWithValue("@MinLevelDays", model.MinLevelDays);
+                        oCmd.Parameters.AddWithValue("@MaxLevelDays", model.MaxLevelDays);
+                        oCmd.Parameters.AddWithValue("@EmpName", model.EmpName);
+                        oCmd.Parameters.AddWithValue("@DailyRequirment", model.DailyRequirment);
+                        oCmd.Parameters.AddWithValue("@Stockable", model.Stockable);
+                        oCmd.Parameters.AddWithValue("@WipStockable", model.WipStockable);
+                        oCmd.Parameters.AddWithValue("@Store", model.Store);
+                        oCmd.Parameters.AddWithValue("@ProductLifeInus", model.ProductLifeInus);
+                        oCmd.Parameters.AddWithValue("@ItemDesc", model.ItemDesc);
+                        oCmd.Parameters.AddWithValue("@MaxWipStock", model.MaxWipStock);
+                        oCmd.Parameters.AddWithValue("@NeedSo", model.NeedSo);
+                        oCmd.Parameters.AddWithValue("@BomRequired", model.BomRequired);
+                        oCmd.Parameters.AddWithValue("@ChildBom", model.ChildBom);
+                        oCmd.Parameters.AddWithValue("@JobWorkItem", model.JobWorkItem);
+                        oCmd.Parameters.AddWithValue("@HsnNo", model.HSNNO);
+                        oCmd.Parameters.AddWithValue("@Active", model.Active);
+                        oCmd.Parameters.AddWithValue("@ItemServAssets", model.ItemServAssets);
+                        oCmd.Parameters.AddWithValue("@EntryByMachineName", model.EntryByMachineName);
+                        oCmd.Parameters.AddWithValue("@UniversalPartCode", model.UniversalPartCode);
+                        oCmd.Parameters.AddWithValue("@UniversalDescription", model.UniversalDescription);
+                        oCmd.Parameters.AddWithValue("@ProdInWorkcenter", model.ProdInWorkcenter);
+                        oCmd.Parameters.AddWithValue("@ProdInhouseJW", model.ProdInhouseJW);
+                        oCmd.Parameters.AddWithValue("@BatchNO", model.BatchNO);
+                        oCmd.Parameters.AddWithValue("@VoltageValue", model.VoltageVlue);
+                        oCmd.Parameters.AddWithValue("@SerialNo", model.SerialNo);
+                        oCmd.Parameters.AddWithValue("@OldPartCode", model.OldPartCode);
+                        oCmd.Parameters.AddWithValue("@package", model.Package);
+                        oCmd.Parameters.AddWithValue("@Branch", model.CC);
+                        oCmd.Parameters.AddWithValue("@BranchList", branchlist);
+                        oCmd.Parameters.AddWithValue("@NoOfCavity", model.NoOfCavity);
+                        oCmd.Parameters.AddWithValue("@ProdInMachineGroup", model.ProdInMachineGroup);
+                        oCmd.Parameters.AddWithValue("@ProdInMachine1", model.ProdInMachine1);
+                        oCmd.Parameters.AddWithValue("@ProdInMachine2", model.ProdInMachine2);
+                        oCmd.Parameters.AddWithValue("@ProdInMachine3", model.ProdInMachine3);
+                        oCmd.Parameters.AddWithValue("@ProdInMachine4", model.ProdInMachine4);
+                        oCmd.Parameters.AddWithValue("@NoOfshotsHours", model.NoOfshotsHours);
+                        oCmd.Parameters.AddWithValue("@usedinMachorVehicle", model.usedinMachorVehicle);
+                        oCmd.Parameters.AddWithValue("@Barcode", model.Barcode);
+                        oCmd.Parameters.AddWithValue("@CreatedBy", model.CreatedBy);
+                        oCmd.Parameters.AddWithValue("@BatchWiseInventory", model.BatchWiseInventory);
+                        if (model.Mode == "Update")
+                        {
+                            oCmd.Parameters.AddWithValue("@UpdatedBy", model.UpdatedBy);
+
+                        }
+                        myConnection.Open();
+                        Reader = await oCmd.ExecuteReaderAsync();
+                        if (Reader != null)
+                        {
+                            while (Reader.Read())
                             {
-                                StatusCode = (HttpStatusCode)Reader["StatusCode"],
-                                StatusText = "Success",
-                                Result = Reader["Result"].ToString()
-                            };
+                                _ResponseResult = new ResponseResult()
+                                {
+                                    StatusCode = (HttpStatusCode)Reader["StatusCode"],
+                                    StatusText = Reader["StatusText"].ToString(),
+                                    Result = Reader["Result"].ToString()
+                                };
+                            }
+
                         }
                     }
                 }
             }
+
             catch (Exception ex)
             {
                 dynamic Error = new ExpandoObject();

@@ -18,6 +18,10 @@ using DocumentFormat.OpenXml.Drawing.Diagrams;
 using DocumentFormat.OpenXml.Wordprocessing;
 using PdfSharp.Drawing.BarCodes;
 using PdfSharp.Pdf.Content.Objects;
+using System.Net.Http.Headers;
+using DocumentFormat.OpenXml.Office2010.Excel;
+using Newtonsoft.Json.Linq;
+using System.Threading.Tasks;
 
 namespace eTactWeb.Controllers
 {
@@ -26,17 +30,21 @@ namespace eTactWeb.Controllers
     public class GateInwardController : Controller
     {
         private readonly IDataLogic _IDataLogic;
+        public readonly IEinvoiceService _IEinvoiceService;
         public IGateInward _IGateInward { get; }
         private readonly ILogger<GateInwardController> _logger;
         private readonly IConfiguration iconfiguration;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
-        public GateInwardController(ILogger<GateInwardController> logger, IDataLogic iDataLogic, IGateInward iGateInward, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
+        private readonly ConnectionStringService _connectionStringService;
+        public GateInwardController(ILogger<GateInwardController> logger, IDataLogic iDataLogic, IGateInward iGateInward, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration, ConnectionStringService connectionStringService,IEinvoiceService IEinvoiceService )
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IGateInward = iGateInward;
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
+            _connectionStringService = connectionStringService;
+            _IEinvoiceService = IEinvoiceService;
         }
         public IActionResult PrintReport(int EntryId = 0, int YearCode = 0)
         {
@@ -53,8 +61,8 @@ namespace eTactWeb.Controllers
             webReport.Report.SetParameterValue("entryparam", EntryId);
             webReport.Report.SetParameterValue("yearparam", YearCode);
 
-
-            my_connection_string = iconfiguration.GetConnectionString("eTactDB");
+            my_connection_string = _connectionStringService.GetConnectionString();
+            //my_connection_string = iconfiguration.GetConnectionString("eTactDB");
             //my_connection_string = "Data Source=192.168.1.224\\sqlexpress;Initial  Catalog = etactweb; Integrated Security = False; Persist Security Info = False; User
             //         ID = web; Password = bmr2401";
             webReport.Report.SetParameterValue("MyParameter", my_connection_string);
@@ -67,6 +75,178 @@ namespace eTactWeb.Controllers
             //ViewBag.WebReport = webReport;
             return View(webReport);
         }
+        [HttpGet]
+        public async Task<IActionResult> GetEwayBillData(string ewayBillNo)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(ewayBillNo))
+                {
+                    return Json(new { success = false, error = "E-Way Bill number is required" });
+                }
+
+                string GSTNo = string.Empty;
+                var token = await _IEinvoiceService.GetAccessTokenAsync();
+                var gstResult = await _IEinvoiceService.GETGSTNO();
+
+                if (gstResult.Result != null && gstResult.Result.Rows.Count > 0)
+                {
+                    GSTNo = gstResult.Result.Rows[0]["GSTIN"].ToString();
+                }
+
+                string apiUrl = $"https://pro.mastersindia.co/getEwayBillData" +
+                                $"?access_token={token}" +
+                                $"&action=GetEwayBill" +
+                                $"&gstin={GSTNo}" +
+                                $"&eway_bill_number={ewayBillNo}";
+
+                using (HttpClient client = new HttpClient())
+                {
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(
+                        new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    HttpResponseMessage response = await client.GetAsync(apiUrl);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string jsonResponse = await response.Content.ReadAsStringAsync();
+
+                        // ✅ RETURN the result of EwayBillToGateInward
+                        return await EwayBillToGateInward(jsonResponse).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        return Json(new { success = false, message = "Failed to fetch E-Way Bill data from external API" });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, error = ex.Message });
+            }
+        }
+
+
+        public async Task<IActionResult> EwayBillToGateInward(string issueDataJson)
+        {
+            try
+            {
+                // Deserialize E-way Bill response
+                var ewayResponse = JsonConvert.DeserializeObject<EwayBillResponse>(issueDataJson);
+
+                var IssueGrid = new List<GateInwardModel>();
+                var docTypeId = 1;
+
+                if (ewayResponse?.results?.message != null)
+                {
+                    var message = ewayResponse.results.message;
+                    var AccountCodeId = _IGateInward.GetAccountCode(message.legal_name_of_consignee);
+                    int AccountCode = 0;
+
+                    if (AccountCodeId.Result.Result != null && AccountCodeId.Result.Result.Tables.Count > 0)
+                    {
+                        var table = AccountCodeId.Result.Result.Tables[0];
+                        if (table.Rows.Count > 0)
+                        {
+                            AccountCode = Convert.ToInt32(table.Rows[0].ItemArray[0]);
+                        }
+                    }
+                    if (AccountCode == 0 )
+                    {
+                        return Json(new
+                        {
+                            success = false,
+                            message = $"No valid Account Found : {message.legal_name_of_consignee}"
+                        });
+                    }
+                    int seqNo = 1; // Initialize sequence number
+
+                    foreach (var item in message.itemList)
+                    {
+                        var ItemCodeId = _IGateInward.GetItemCode(item.product_description);
+                        int itemcode = 0;
+                        string PartCode = string.Empty;
+                        string AltUnit = string.Empty;
+
+                        if (ItemCodeId.Result.Result != null && ItemCodeId.Result.Result.Tables.Count > 0)
+                        {
+                            var table = ItemCodeId.Result.Result.Tables[0];
+                            if (table.Rows.Count > 0)
+                            {
+                                itemcode = Convert.ToInt32(table.Rows[0].ItemArray[0]);   // Item_Code
+                                AltUnit = table.Rows[0].ItemArray[1].ToString();         // AlternateUnit
+                                PartCode = table.Rows[0].ItemArray[2].ToString();        // PartCode
+                            }
+                        }
+                        if (itemcode == 0 || string.IsNullOrWhiteSpace(PartCode))
+                        {
+                            return Json(new
+                            {
+                                success = false,
+                                message = $"No Item found in ItemMaster : {item.product_description}"
+                            });
+                        }
+                        var inward = new GateInwardModel
+                        {
+                            SeqNo = seqNo++, // Assign sequence number and increment
+                            Invoiceno = message.document_number,
+                            InvoiceDate = message.document_date,
+                            AccountCode = AccountCode,
+                            Address = message.address1_of_consignor,
+                            docTypeId = docTypeId,
+                            PartCode = PartCode,
+                            ItemCode = itemcode,
+                            ItemName = item.product_description,
+                            Unit = item.unit_of_product,
+                            Qty = item.quantity,
+                            Rate = item.taxable_amount / item.quantity, // Calculate rate
+                            Remarks = $"EwayBill No: {message.eway_bill_number}",
+                            AltUnit = AltUnit,
+                            AltQty = 0
+                        };
+
+                        IssueGrid.Add(inward);
+                    }
+                }
+
+                // Save list into Session
+                HttpContext.Session.SetString("KeyGateInwardGrid", JsonConvert.SerializeObject(IssueGrid));
+
+                var GIGrid = new DataTable();
+                
+                string modelJson = HttpContext.Session.GetString("KeyGateInwardGrid");
+                List<GateInwardModel> modelList = string.IsNullOrEmpty(modelJson)
+                     ? new List<GateInwardModel>()
+                     : JsonConvert.DeserializeObject<List<GateInwardModel>>(modelJson);
+
+                // Pick one model (e.g. first one) if GetEwayBillDataforPo needs a single model
+                GateInwardModel model = modelList.FirstOrDefault() ?? new GateInwardModel();
+
+                List<GateInwardItemDetail> GateInwardItemDetail = new List<GateInwardItemDetail>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    GateInwardItemDetail = JsonConvert.DeserializeObject<List<GateInwardItemDetail>>(modelJson);
+                }
+                
+                  GIGrid = GetDetailTable(GateInwardItemDetail);
+                  model= await _IGateInward.GetEwayBillDataforPo(model, GIGrid);
+
+
+                HttpContext.Session.Remove("KeyGateInwardItemDetail");
+                string serializedGrid = JsonConvert.SerializeObject(model);
+                HttpContext.Session.SetString("KeyGateInwardGrid", serializedGrid);
+
+              
+
+                return Json(new { success = true, message = "E-Way Bill saved to Gate Inward session successfully." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
         public ActionResult HtmlSave(int EntryId = 0, int YearCode = 0)
         {
             using (Report report = new Report())
@@ -151,7 +331,7 @@ namespace eTactWeb.Controllers
         }
         //[Route("GateInward/Index")]
         [HttpGet]
-        public async Task<ActionResult> GateInward(int ID, string Mode, int YC, string FromDate = "", string ToDate = "", string VendorName = "", string GateNo = "", string PartCode = "", string ItemName = "", string DocName = "", string PONO = "", string ScheduleNo = "", string Searchbox = "", string DashboardType = "",string AccountCode="",string docTypeId="")//, ILogger logger)
+        public async Task<ActionResult> GateInward(int ID, string Mode, int YC, string FromDate = "", string ToDate = "", string VendorName = "", string GateNo = "", string PartCode = "", string ItemName = "", string DocName = "", string PONO = "", string ScheduleNo = "", string Searchbox = "", string DashboardType = "",string AccountCode="",string docTypeId="", string Invoiceno="",int VPSaleBillEntryId=0)//, ILogger logger)
         {
             _logger.LogInformation("\n \n ********** Page Gate Inward ********** \n \n " + _IWebHostEnvironment.EnvironmentName.ToString() + "\n \n");
             TempData.Clear();
@@ -167,12 +347,37 @@ namespace eTactWeb.Controllers
             {
                 MainModel.AccountCode = Convert.ToInt32(AccountCode.ToString());
                 MainModel.docTypeId = Convert.ToInt32( docTypeId.ToString());
-                var selectedJson = HttpContext.Session.GetString("KeyGateInwardGrid");
+                MainModel.Invoiceno= Invoiceno.ToString();
+                MainModel.VPSaleBillEntryId = Convert.ToInt32(VPSaleBillEntryId.ToString());
+
+				var selectedJson = HttpContext.Session.GetString("KeyGateInwardGrid");
                 if (!string.IsNullOrEmpty(selectedJson))
                 {
                     var selectedItems = JsonConvert.DeserializeObject<List<GateInwardItemDetail>>(selectedJson);
                     MainModel.ItemDetailGrid = selectedItems;
                    
+                }
+            }
+            if (Mode == "Eway" && ID == 0)
+            {
+                
+                var selectedJson = HttpContext.Session.GetString("KeyGateInwardGrid");
+                if (!string.IsNullOrEmpty(selectedJson))
+                {
+                    var mainModel = JsonConvert.DeserializeObject<GateInwardModel>(selectedJson);
+
+                    if (mainModel != null)
+                    {
+                        // Map main properties
+                        MainModel.AccountCode = mainModel.AccountCode;
+                        MainModel.Invoiceno = mainModel.Invoiceno ?? string.Empty;
+                        MainModel.Address = mainModel.Address ?? string.Empty;
+                        MainModel.InvoiceDate = mainModel.InvoiceDate ?? string.Empty;
+
+                        // Get ItemDetailGrid
+                        MainModel.ItemDetailGrid = mainModel.ItemDetailGrid ?? new List<GateInwardItemDetail>();
+                    }
+
                 }
             }
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
@@ -367,7 +572,12 @@ namespace eTactWeb.Controllers
             var MainModel = new GateInwardModel();
             return PartialView("_GateInwardGrid", MainModel);
         }
-
+        public async Task<JsonResult> GetFeatureOption()
+        {
+            var JSON = await _IGateInward.GetFeatureOption();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
         public async Task<IActionResult> GetSearchData(string VendorName, string Gateno, string ItemName, string PartCode, string DocName, string PONO, string ScheduleNo, string FromDate, string ToDate, string DashboardType, int pageNumber = 1, int pageSize = 10, string SearchBox = "")
         {
             //model.Mode = "Search";
@@ -438,14 +648,17 @@ namespace eTactWeb.Controllers
     string DashboardType,
     string PartCode,
     string ItemName,
-    int pageNumber = 1,
+    string GetDataFrom,
+    string Invoiceno,
+
+	int pageNumber = 1,
     int pageSize = 10,
     string SearchBox = "")
 
         {
             //model.Mode = "Search";
             var model = new PendingGateInwardDashboard();
-            model = await _IGateInward.GetPendingGateEntryDashboardData(AccountCode , PoNo, PoYearCode, ItemCode, FromDate, ToDate, PartCode, ItemName);
+            model = await _IGateInward.GetPendingGateEntryDashboardData(AccountCode , PoNo, PoYearCode, ItemCode, FromDate, ToDate, PartCode, ItemName, GetDataFrom, Invoiceno);
            
             var modelList = model?.PendingGateEntryDashboard ?? new List<PendingGateInwardDashboard>();
 
@@ -497,7 +710,15 @@ namespace eTactWeb.Controllers
 
             string serializedGrid = JsonConvert.SerializeObject(modelList);
             HttpContext.Session.SetString("KeyPendingGateInwardList", serializedGrid);
-            return PartialView("_GateInwardDisplayDataDetail", model);
+            if (GetDataFrom == "PendingPO")
+            {
+				return PartialView("_GateInwardDisplayDataDetail", model);
+			}
+            else
+            {
+				return PartialView("_GateInwardDisplayVenderPortalDataSummery", model);
+			}
+            
             }
 
         [HttpGet]
@@ -686,6 +907,7 @@ namespace eTactWeb.Controllers
 
             model.AccountList = await _IDataLogic.GetDropDownList("CREDITORDEBTORLIST", "F", "SP_GetDropDownList");
             model.DocumentList = await _IDataLogic.GetDropDownList("DocumentList", "SP_GetDropDownList");
+            model.RecUnitList = await _IDataLogic.GetDropDownList("RecUnitList", "SP_GetDropDownList");
             model.ProcessList = await _IDataLogic.GetDropDownList("ProcessList", "SP_GetDropDownList");
             //model.PONO = await _IDataLogic.GetDropDownList("PENDINGPOLIST","I", "SP_GateMainDetail");
 
@@ -701,6 +923,7 @@ namespace eTactWeb.Controllers
 
             model.AccountList = await _IDataLogic.GetDropDownList("PendingPOAccountList", "SP_GateMainDetail");
             model.DocumentList = await _IDataLogic.GetDropDownList("DocumentList", "SP_GetDropDownList");
+            model.InvoiceList = await _IDataLogic.GetDropDownList("FillVPInvoiceNo", "SP_GateMainDetail");
             //model.PONO = await _IDataLogic.GetDropDownList("PENDINGPOLIST","I", "SP_GateMainDetail");
 
 
@@ -860,10 +1083,30 @@ namespace eTactWeb.Controllers
                         }
                         else
                         {
-                            if (model.docTypeId == 3 ? GateInwardItemDetail.Any(x => x.PartCode == model.PartCode && x.AgainstChallanNo == model.AgainstChallanNo && x.SaleBillNo == model.SaleBillNo && x.SaleBillYearCode == model.SaleBillYearCode) : GateInwardItemDetail.Any(x => x.PartCode == model.PartCode && x.AgainstChallanNo == model.AgainstChallanNo && x.PoNo == model.PoNo))
+                            if (model.docTypeId == 3? GateInwardItemDetail.Any(x =>
+                               string.Equals(x.PartCode?.Trim(), model.PartCode?.Trim(), StringComparison.OrdinalIgnoreCase) &&
+                               string.Equals(x.PoNo?.Trim(), model.PoNo?.Trim(), StringComparison.OrdinalIgnoreCase) &&
+                               x.PoYear == model.PoYear &&
+                               string.Equals(x.SchNo?.Trim(), model.SchNo?.Trim(), StringComparison.OrdinalIgnoreCase) &&
+                               x.SchYearCode == model.SchYearCode &&
+                               string.Equals(x.AgainstChallanNo ?? "", model.AgainstChallanNo ?? "", StringComparison.OrdinalIgnoreCase) &&
+                               string.Equals(x.SaleBillNo ?? "", model.SaleBillNo ?? "", StringComparison.OrdinalIgnoreCase) &&
+                               x.SaleBillYearCode == model.SaleBillYearCode)
+                         : GateInwardItemDetail.Any(x =>
+                               string.Equals(x.PartCode?.Trim(), model.PartCode?.Trim(), StringComparison.OrdinalIgnoreCase) &&
+                               string.Equals(x.PoNo?.Trim(), model.PoNo?.Trim(), StringComparison.OrdinalIgnoreCase) &&
+                               x.PoYear == model.PoYear &&
+                               string.Equals(x.SchNo?.Trim(), model.SchNo?.Trim(), StringComparison.OrdinalIgnoreCase) &&
+                               x.SchYearCode == model.SchYearCode &&
+                               string.Equals(x.AgainstChallanNo ?? "", model.AgainstChallanNo ?? "", StringComparison.OrdinalIgnoreCase)))
                             {
                                 return StatusCode(207, "Duplicate");
                             }
+
+                            //if (model.docTypeId == 3 ? GateInwardItemDetail.Any(x => x.PartCode == model.PartCode && x.AgainstChallanNo == model.AgainstChallanNo && x.SaleBillNo == model.SaleBillNo && x.SaleBillYearCode == model.SaleBillYearCode) : GateInwardItemDetail.Any(x => x.PartCode == model.PartCode && x.AgainstChallanNo == model.AgainstChallanNo && x.PoNo == model.PoNo))
+                            //{
+                            //    return StatusCode(207, "Duplicate");
+                            //}
                             else
                             {
                                 model.SeqNo = GateInwardItemDetail.Count + 1;
@@ -1118,7 +1361,50 @@ namespace eTactWeb.Controllers
                 throw ex;
             }
         }
-        [HttpPost]
+
+
+		[HttpPost]
+		public async Task<IActionResult> GetPendingGateEntryVPDetailData(int AccountCode, string InvoiceNo)
+		{
+			try
+			{
+				// 1️⃣ Get data from DB
+				var dataResult = await _IGateInward.GetPendingGateEntryVPDetailData(AccountCode, InvoiceNo);
+
+				// Assuming the service returns a model containing a list named PendingGateEntryDashboard
+				var pendingDetails = dataResult?.PendingGateEntryDashboard ?? new List<PendingGateInwardDashboard>();
+
+				// 2️⃣ Remove any old session data
+				HttpContext.Session.Remove("KeyGateInwardGrid");
+
+				// 3️⃣ Serialize and store new data
+				var serializedData = JsonConvert.SerializeObject(pendingDetails);
+				HttpContext.Session.SetString("KeyGateInwardGrid", serializedData);
+
+				// 4️⃣ Optionally return data for confirmation/debug
+				return Json(new
+				{
+					message = "done",
+					count = pendingDetails.Count
+				});
+			}
+			catch (Exception ex)
+			{
+				return Json(new
+				{
+					message = "error",
+					details = ex.Message
+				});
+			}
+		}
+
+
+
+
+
+
+
+		[HttpPost]
         public IActionResult StoreCheckedRowsToSession(List<PendingGateInwardDashboard> model)
         {
             try

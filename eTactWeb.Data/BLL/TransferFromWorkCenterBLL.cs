@@ -26,6 +26,11 @@ namespace eTactWeb.Data.BLL
         {
             return await _TranferFromWorkCenterDAL.GetFormRights(userID);
         }
+        public async Task<DataSet> BindAllDropDown()
+        {
+            return await _TranferFromWorkCenterDAL.BindAllDropDown();
+        }
+
         public async Task<ResponseResult> GetReportName()
         {
             return await _TranferFromWorkCenterDAL.GetReportName();
@@ -66,6 +71,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _TranferFromWorkCenterDAL.FillPartCode(TransferMatYearCode);
         }
+        public async Task<ResponseResult> FillItems(string Type, string ShowAllItem, string SearchItemCode, string SearchPartCode)
+        {
+            return await _TranferFromWorkCenterDAL.FillItems(Type, ShowAllItem, SearchItemCode, SearchPartCode);
+        }
         public async Task<ResponseResult> GetBatchNumber(string SPName, int ItemCode, int YearCode, float WcId, string TransDate, string BatchNo)
         {
             return await _TranferFromWorkCenterDAL.GetBatchNumber(SPName, ItemCode, YearCode, WcId, TransDate, BatchNo);
@@ -105,6 +114,11 @@ namespace eTactWeb.Data.BLL
         public async Task<ResponseResult> CheckEditOrDelete(int TransferEntryId, int TransferYearCode)
         {
             return await _TranferFromWorkCenterDAL.CheckEditOrDelete(TransferEntryId, TransferYearCode);
+        }
+
+        public async Task<TransferFromWorkCenterModel> selectMultipleItem(int WCID, string FromDate, string ToDate, string PartCode)
+        {
+            return await _TranferFromWorkCenterDAL.selectMultipleItem( WCID,  FromDate,  ToDate,  PartCode);
         }
     }
 }

@@ -33,8 +33,9 @@ namespace eTactWeb.Controllers
         private readonly ILogger<ProductionEntryController> _logger;
         private readonly IConfiguration iconfiguration;
         private readonly IMemoryCache _MemoryCache;
+        private readonly ConnectionStringService _connectionStringService;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
-        public ProductionEntryController(ILogger<ProductionEntryController> logger, IDataLogic iDataLogic, IProductionEntry iProductionEntry, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration, IMemoryCache iMemoryCache)
+        public ProductionEntryController(ILogger<ProductionEntryController> logger, IDataLogic iDataLogic, IProductionEntry iProductionEntry, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration, IMemoryCache iMemoryCache, ConnectionStringService connectionStringService)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
@@ -42,6 +43,7 @@ namespace eTactWeb.Controllers
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
             _MemoryCache = iMemoryCache;
+            _connectionStringService = connectionStringService;
         }
         public IActionResult PrintReport(int EntryId = 0, int YearCode = 0)
         {
@@ -60,7 +62,8 @@ namespace eTactWeb.Controllers
             webReport.Report.SetParameterValue("yearcodeparam", YearCode);
 
 
-            my_connection_string = iconfiguration.GetConnectionString("eTactDB");
+            //my_connection_string = iconfiguration.GetConnectionString("eTactDB");
+            my_connection_string = _connectionStringService.GetConnectionString();
             //my_connection_string = "Data Source=192.168.1.224\\sqlexpress;Initial  Catalog = etactweb; Integrated Security = False; Persist Security Info = False; User
             //         ID = web; Password = bmr2401";
             webReport.Report.SetParameterValue("MyParameter", my_connection_string);
@@ -197,6 +200,7 @@ namespace eTactWeb.Controllers
             HttpContext.Session.Remove("KeyProductionEntryBreakdowndetail");
             HttpContext.Session.Remove("KeyProductionEntryOperatordetail");
             HttpContext.Session.Remove("KeyProductionEntryScrapdetail");
+            HttpContext.Session.Remove("KeyProductionEntryProductdetail");
 
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
             {
@@ -209,12 +213,14 @@ namespace eTactWeb.Controllers
                 MainModel.FinToDate = HttpContext.Session.GetString("ToDate");
                 string serializedProductionGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
                 HttpContext.Session.SetString("KeyProductionEntryGrid", serializedProductionGrid);
-                string serializedBreakdownGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
+                string serializedBreakdownGrid = JsonConvert.SerializeObject(MainModel.BreakdownDetailGrid);
                 HttpContext.Session.SetString("KeyProductionEntryBreakdowndetail", serializedBreakdownGrid);
-                string serializedOperatorGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
+                string serializedOperatorGrid = JsonConvert.SerializeObject(MainModel.OperatorDetailGrid);
                 HttpContext.Session.SetString("KeyProductionEntryOperatordetail", serializedOperatorGrid);
-                string serializedScrapGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
-                HttpContext.Session.SetString("KeyProductionEntryScrapdetail", serializedScrapGrid);
+                string serializedScrapGrid = JsonConvert.SerializeObject(MainModel.ScrapDetailGrid);
+                HttpContext.Session.SetString("KeyProductionEntryScrapdetail", serializedScrapGrid); 
+                string serializedProductGrid = JsonConvert.SerializeObject(MainModel.ProductDetailGrid);
+                HttpContext.Session.SetString("KeyProductionEntryProductdetail", serializedProductGrid);
             }
             else
             {
@@ -387,7 +393,7 @@ namespace eTactWeb.Controllers
             }
         }
 
-        public async Task<JsonResult> ChkWIPStockBeforeSaving(int WcId, string TransferMatEntryDate, int TransferMatYearCode, int TransferMatEntryId)
+        public async Task<JsonResult> ChkWIPStockBeforeSaving(int WcId, string TransferMatEntryDate, int TransferMatYearCode, int TransferMatEntryId,string Mode)
         {
             var TransferGrid = new DataTable();
             string serializedGrid = HttpContext.Session.GetString("KeyProductionEntryGrid");
@@ -398,7 +404,7 @@ namespace eTactWeb.Controllers
             }
             //_MemoryCache.TryGetValue("KeyTransferFromWorkCenterGrid", out List<TransferFromWorkCenterDetail> TransferFromWorkCenterDetail);
             TransferGrid = GetDetailTable(ProductionEntryItemDetail);
-            var ChechedData = await _IProductionEntry.ChkWIPStockBeforeSaving(WcId, TransferMatEntryDate, TransferMatYearCode, TransferMatEntryId, TransferGrid);
+            var ChechedData = await _IProductionEntry.ChkWIPStockBeforeSaving(WcId, TransferMatEntryDate, TransferMatYearCode, TransferMatEntryId, TransferGrid,Mode);
             if (ChechedData.StatusCode == HttpStatusCode.OK && ChechedData.StatusText == "Success")
             {
                 DataTable dt = ChechedData.Result;
@@ -1501,7 +1507,7 @@ namespace eTactWeb.Controllers
                         }
                     }
                     MainModel.OperatorDetailGrid = ProductionEntryGrid;
-                    string serializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
+                    string serializedGrid = JsonConvert.SerializeObject(MainModel.OperatorDetailGrid);
                     HttpContext.Session.SetString("KeyProductionEntryOperatordetail", serializedGrid);
                 }
 
@@ -1801,15 +1807,15 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> FillMachineGroup()
+        public async Task<JsonResult> FillMachineGroup(int machineId)
         {
-            var JSON = await _IProductionEntry.FillMachineGroup();
+            var JSON = await _IProductionEntry.FillMachineGroup(machineId);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> FillMachineName()
+        public async Task<JsonResult> FillMachineName(int groupId)
         {
-            var JSON = await _IProductionEntry.FillMachineName();
+            var JSON = await _IProductionEntry.FillMachineName(groupId);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
@@ -1945,15 +1951,15 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> GetItems(string ProdAgainst, int YearCode, string ItemName)
+        public async Task<JsonResult> GetItems(string ProdAgainst, int YearCode, string ItemName,int WCID)
         {
-            var JSON = await _IProductionEntry.GetItems(ProdAgainst, YearCode,ItemName);
+            var JSON = await _IProductionEntry.GetItems(ProdAgainst, YearCode,ItemName,WCID);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> GetPartCode(string ProdAgainst, int YearCode, string PartCode)
+        public async Task<JsonResult> GetPartCode(string ProdAgainst, int YearCode, string PartCode,int WCID)
         {
-            var JSON = await _IProductionEntry.GetPartCode(ProdAgainst, YearCode   ,PartCode);
+            var JSON = await _IProductionEntry.GetPartCode(ProdAgainst, YearCode   ,PartCode, WCID);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
@@ -2278,19 +2284,26 @@ namespace eTactWeb.Controllers
                     Item.YearCode== 0 ? 0 : Item.YearCode,
                     Item.FGItemCode == 0 ? 0:Item.FGItemCode,
                     Item.ConsumedRMItemCode== 0 ? 0:Item.ConsumedRMItemCode,
-                    Item.IssueQty== 0 ? 0:Item.IssueQty,
+                    //Item.IssueQty== 0 ? 0:Item.IssueQty,
+                     Item.IssueQty == 0 ? 0 : (float)Math.Round((double)Item.IssueQty, 6),
                     Item.Unit==null?"":Item.Unit,
                     Item.ConsumedRMItemCode== 0 ? 0:Item.ConsumedRMItemCode,
-                    Item.IssueQty== 0 ? 0:Item.IssueQty,
+                    //Item.IssueQty== 0 ? 0:Item.IssueQty,
+                    Item.IssueQty == 0 ? 0 : (float)Math.Round((double)Item.IssueQty, 6),
                     Item.Unit==null?"":Item.Unit,
-                    Item.FGProdQty== 0 ? 0:Item.FGProdQty,
+                    Item.FGProdQty == 0 ? 0 : (float)Math.Round((double)Item.FGProdQty, 6),
+                    //Item.FGProdQty== 0 ? 0:Item.FGProdQty,
                     Item.Unit == null ? "" : Item.Unit,
-                    Item.ReqQty== 0 ? 0:Item.ReqQty,
-                    Item.TotalStock == 0 ? 0:Item.TotalStock,
-                    Item.BatchStock== 0 ? 0:Item.BatchStock,
+                    //Item.ReqQty== 0 ? 0:Item.ReqQty,
+                    //Item.TotalStock == 0 ? 0:Item.TotalStock,
+                    //Item.BatchStock== 0 ? 0:Item.BatchStock,
+                    Item.ReqQty == 0 ? 0 : (float)Math.Round((double)Item.ReqQty, 6),
+                    Item.TotalStock == 0 ? 0 : (float)Math.Round((double)Item.TotalStock, 6),
+                    Item.BatchStock == 0 ? 0 : (float)Math.Round((double)Item.BatchStock, 6),
                     Item.ProdInWCID== 0 ? 0:Item.ProdInWCID,
                     Item.AltRMItemCode== 0 ? 0:Item.AltRMItemCode,
-                    Item.AltRMQty==0?0.0:Item.AltRMQty,
+                    Item.AltRMQty == 0 ? 0 : (float)Math.Round((double)Item.AltRMQty, 6),
+                    //Item.AltRMQty==0?0.0:Item.AltRMQty,
                     Item.AltRMUnit==null?0:Item.AltRMUnit,
                     Item.RMNetWt== 0 ? 0:Item.RMNetWt,
                     Item.GrossWt== 0 ? 0:Item.GrossWt,
@@ -2311,7 +2324,7 @@ namespace eTactWeb.Controllers
                 throw;
             }
         }
-        private static DataTable GetOperatorDetailTable(IList<ProductionEntryItemDetail> OperatorDetailList)
+        private static DataTable GetOperatorDetailTable(IList<ProductionEntryItemDetail> OperatorDetailGrid)
         {
             var OperatorGrid = new DataTable();
 
@@ -2332,9 +2345,9 @@ namespace eTactWeb.Controllers
             OperatorGrid.Columns.Add("MachineCharges", typeof(float));
             OperatorGrid.Columns.Add("SeqNo", typeof(int));
 
-            if (OperatorDetailList != null)
+            if (OperatorDetailGrid != null)
             {
-                foreach (var Item in OperatorDetailList)
+                foreach (var Item in OperatorDetailGrid)
                 {
                     OperatorGrid.Rows.Add(
                         new object[]

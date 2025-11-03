@@ -176,6 +176,14 @@ namespace eTactWeb.DOM.Models
         public string? PODate { get; set; }
         public int? POEntryId { get; set; }
         public int? POYearCode { get; set; }
+        public string? MIRNo { get; set; }
+        public string? MIRDate { get; set; }
+        public int? MIREntryId { get; set; }
+        public int? MIRYearCode { get; set; }
+        public string? INProgressNo { get; set; }
+        public string? INProgressDate { get; set; }
+        public int? INProgressEntryId { get; set; }
+        public int? INProgressYearCode { get; set; }
         public float? PoRate { get; set; }
         public string? PoAmmNo { get; set; }
         public string? BatchNo { get; set; }

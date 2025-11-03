@@ -21,6 +21,8 @@ namespace eTactWeb.DOM.Models
         [Required]
         [StringLength(100)]
         public string LeaveName { get; set; } // Casual Leave, Sick Leave	
+        public int LeaveYearcode { get; set; } // Casual Leave, Sick Leave	
+        public string EntryByMachine { get; set; } // Casual Leave, Sick Leave	
 
         [Required]
         [StringLength(50)]
@@ -74,11 +76,12 @@ namespace eTactWeb.DOM.Models
         public IList<string>? RestrictedToDepartment { get; set; }
         public IList<string>? EmpCateg { get; set; }
         public IList<string>? DeptName { get; set; }
+        public IList<string>? LocationName { get; set; }
         public IList<LeaveDeptWiseCategDetail>? DeptWiseCategDetailList { get; set; }
         public IList<TextValue>? DeptWiseCategList { get; set; }
 
-        [StringLength(100)]
-        public string RestrictedToLocation { get; set; } // Example: India, GCC	
+      
+        public IList<string>? RestrictedToLocation { get; set; } // Example: India, GCC	
         public IList<LeaveLocationDetail>? LocationDetailList { get; set; }
         public IList<TextValue>? LocationList { get; set; }
 
@@ -111,6 +114,7 @@ namespace eTactWeb.DOM.Models
         public string? CreatedOn { get; set; }
         public string? UpdatedOn { get; set; }
         public string? CC { get; set; }
+        public string? MedicalCerificateReq { get; set; }
         public IList<HRLeaveMasterModel>? HRLeaveDashboard { get; set; }
         public string Searchbox { get; set; }
 
@@ -143,8 +147,9 @@ public class LeaveDeptWiseCategDetail
 public class LeaveLocationDetail
 {
     // public int DeptId { get; set; }
-    public long? LeaveId { get; set; }
+    public long? LeaveEntryId { get; set; }
     public string LocationId { get; set; }
+    public string Location { get; set; }
 
 }
 

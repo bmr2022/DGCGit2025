@@ -1,0 +1,62 @@
+﻿@model eTactWeb.DOM.Models.ScheduleCalibrationModel;
+@if (Model.CalibrationScheduleGrid == null)
+{
+    <tr class="text-center">
+        <td colspan="25" class="text-black-50"><strong>NO DATA ADDED</strong></td>
+    </tr>
+}
+else
+{
+    var @Cntr = 0;
+    foreach (var item in Model.CalibrationScheduleGrid)
+    {
+        Cntr = Cntr + 1;
+        <tr class="small " style="white-space:nowrap" id="divMtrGrid">
+            <td style="white-space:nowrap;">
+               
+                    <a class="table-link link-danger" onclick="DeleteItemRow(@Cntr);">
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                
+            </td>
+            <td>@Cntr</td>
+            <td>@item.ToolName</td>
+            <td>@item.ToolCode</td>
+            <td>@item.ItemName</td>
+            <td>@item.PartCode</td>
+            <td>@(item.LastCalibrationDate == null ? string.Empty : item.LastCalibrationDate.ToString().Split(" ")[0])</td>
+            <td>
+                <input type="text"
+                       value="@(item.DueCalibrationDate == null ? string.Empty : item.DueCalibrationDate.ToString().Split(" ")[0])"
+                       class="form-control DueCalibrationDate" readonly />
+            </td>
+
+            <td>
+                <input type="hidden" class="CalibrationAgencyId" value="@item.CalibrationAgencyId" />
+                <select class="form-select CalibrationAgencyName" style="width:200px;">
+                    <option value="">-Select-</option>
+                </select>
+            </td>
+
+            <td class="CalibrationFrequencyInMonth">@item.CalibrationFrequencyInMonth</td>
+            <td class="NextCalibrationDate">@(item.NextCalibrationDate == null ? string.Empty : item.NextCalibrationDate.ToString().Split(" ")[0])</td>
+
+            <td>@item.LastCalibrationCertificateNo</td>
+            <td>@item.CalibrationResultPassFail</td>
+            <td>@item.TolrenceRange</td>
+            <td>@item.CalibrationRemark</td>
+            <td>@item.TechEmployeeName</td>
+            <td>@item.Technician</td>
+            <td>@item.TechnicialcontactNo</td>
+            <td>@item.CustoidianEmpId</td>
+           
+
+            
+           
+        </tr>
+
+    }
+}

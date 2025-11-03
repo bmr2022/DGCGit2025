@@ -4,6 +4,8 @@
     ViewData["Title"] = "PO Approval";
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
+<input type="hidden" id="pdfurl" value="@ViewBag.pdfUrl" />
+<input type="hidden" id="responseContent" value="@ViewBag.responseContent" />
 <div class="shadow-lg">
     <div class="card rounded border-light bg-gradient">
         <div class="card-header card-headerBG text-light bg-gradient">

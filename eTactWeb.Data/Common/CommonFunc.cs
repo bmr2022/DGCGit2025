@@ -530,6 +530,16 @@ public static class CommonFunc
                                  && typeProperty.PropertyInfo.Name != "UpdatedOn" && typeProperty.PropertyInfo.Name != "DRCRGrid"
                                   && typeProperty.PropertyInfo.Name != "PageNumber" && typeProperty.PropertyInfo.Name != "TotalRecords"
                                    && typeProperty.PropertyInfo.Name != "PageSize"
+                                   && typeProperty.PropertyInfo.Name != "DashboardTypeBack"
+                                   && typeProperty.PropertyInfo.Name != "FromDateBack"
+                                   && typeProperty.PropertyInfo.Name != "ToDateBack"
+                                   && typeProperty.PropertyInfo.Name != "AccountCodeBack"
+                                   && typeProperty.PropertyInfo.Name != "GroupCodeBack"
+                                   && typeProperty.PropertyInfo.Name != "AccountNameBack"
+                                   && typeProperty.PropertyInfo.Name != "VoucherTypeBack"
+                                   && typeProperty.PropertyInfo.Name != "VoucherNoBack"
+                                   && typeProperty.PropertyInfo.Name != "AccountList"
+                                   && typeProperty.PropertyInfo.Name != "Message"
                                     )
                     {
                         object value = row[typeProperty.PropertyInfo.Name];
@@ -543,6 +553,11 @@ public static class CommonFunc
                     && typeProperty.PropertyInfo.Name != "FromDate" && typeProperty.PropertyInfo.Name != "ToDate" && typeProperty.PropertyInfo.Name != "Mode"
                      && typeProperty.PropertyInfo.Name != "SODashboard" && typeProperty.PropertyInfo.Name != "SONoList"
                     && typeProperty.PropertyInfo.Name != "BranchList" && typeProperty.PropertyInfo.Name != "SummaryDetail"
+                    && typeProperty.PropertyInfo.Name != "eMailFromCC1" && typeProperty.PropertyInfo.Name != "eMailFromCC2" 
+                    && typeProperty.PropertyInfo.Name != "eMailFromCC3"
+                    && typeProperty.PropertyInfo.Name != "pendingAmt"
+                    && typeProperty.PropertyInfo.Name != "CreatedByName"
+                    && typeProperty.PropertyInfo.Name != "SalesPersonEmailId"
                     && typeProperty.PropertyInfo.Name != "ConsigneeAccountName" && typeProperty.PropertyInfo.Name != "SODelivery" && typeProperty.PropertyInfo.Name != "ResposibleSalesPersonID")
                     {
                         object value = row[typeProperty.PropertyInfo.Name];
@@ -621,6 +636,25 @@ public static class CommonFunc
                         typeProperty.PropertyInfo.SetValue(obj, safeValue, null);
                     }
                 }
+                else if (table.TableName == "HRLeaveMasterLocation")
+                {
+                    if (typeProperty.PropertyInfo.Name != "Mode")
+                    {
+                        object value = row[typeProperty.PropertyInfo.Name];
+                        object? safeValue = value == null || DBNull.Value.Equals(value) ? null : Convert.ChangeType(value, typeProperty.Type);
+                        typeProperty.PropertyInfo.SetValue(obj, safeValue, null);
+                    }
+                }
+                else if (table.TableName == "HRWeekEmpCategDetail")
+                {
+                    if (typeProperty.PropertyInfo.Name != "Mode")
+                    {
+                        object value = row[typeProperty.PropertyInfo.Name];
+                        object? safeValue = value == null || DBNull.Value.Equals(value) ? null : Convert.ChangeType(value, typeProperty.Type);
+                        typeProperty.PropertyInfo.SetValue(obj, safeValue, null);
+                    }
+                }
+
                 else if (table.TableName == "LeaveDeptWiseCategDetail")
                 {
                     if (typeProperty.PropertyInfo.Name != "Mode")
@@ -711,6 +745,7 @@ public static class CommonFunc
                      // && typeProperty.PropertyInfo.Name != "UpdateddByEmp"
                      && typeProperty.PropertyInfo.Name != "UpdatedOn"
                      && typeProperty.PropertyInfo.Name != "PoallowtoprintWithoutApproval"
+                     && typeProperty.PropertyInfo.Name != "allowtostartdateindashboarddate"
                       && typeProperty.PropertyInfo.Name != "ShowOnlyAmendItem"
                       && typeProperty.PropertyInfo.Name != "EntryByMachineName"
                       && typeProperty.PropertyInfo.Name != "OrderNo"
@@ -738,7 +773,12 @@ public static class CommonFunc
                       && typeProperty.PropertyInfo.Name != "UpdatedByName" && typeProperty.PropertyInfo.Name != "SummaryDetail" && typeProperty.PropertyInfo.Name != "SeqNo" && typeProperty.PropertyInfo.Name != "ItemCode"
                       && typeProperty.PropertyInfo.Name != "TolLimitPercentage" && typeProperty.PropertyInfo.Name != "CretaedByName" && typeProperty.PropertyInfo.Name != "UpdatedByName"
                     && typeProperty.PropertyInfo.Name != "Remark" && typeProperty.PropertyInfo.Name != "PendQty" && typeProperty.PropertyInfo.Name != "CreatedOn" && typeProperty.PropertyInfo.Name != "PendQty"
-                      && typeProperty.PropertyInfo.Name != "Process" && typeProperty.PropertyInfo.Name != "PkgStd" && typeProperty.PropertyInfo.Name != "AmmendmentNo"
+                      && typeProperty.PropertyInfo.Name != "Process" 
+                      && typeProperty.PropertyInfo.Name != "EntryByMachineName"
+                      && typeProperty.PropertyInfo.Name != "ShowOnlyAmendItem"
+                      && typeProperty.PropertyInfo.Name != "PoallowtoprintWithoutApproval"
+                      && typeProperty.PropertyInfo.Name != "allowtostartdateindashboarddate"
+                      && typeProperty.PropertyInfo.Name != "PkgStd" && typeProperty.PropertyInfo.Name != "AmmendmentNo"
                       && typeProperty.PropertyInfo.Name != "AmmendmentNo" && typeProperty.PropertyInfo.Name != "AmmendmentDate"
                       && typeProperty.PropertyInfo.Name != "AmmendmentReason" && typeProperty.PropertyInfo.Name != "FirstMonthTentQty" && typeProperty.PropertyInfo.Name != "CreatedBy"
                       && typeProperty.PropertyInfo.Name != "SecMonthTentQty" && typeProperty.PropertyInfo.Name != "SizeDetail" && typeProperty.PropertyInfo.Name != "DeliveryTerm"
@@ -785,7 +825,8 @@ public static class CommonFunc
                       && typeProperty.PropertyInfo.Name != "Active" && typeProperty.PropertyInfo.Name != "RateApplicableOnUnit" && typeProperty.PropertyInfo.Name != "CC"
                       && typeProperty.PropertyInfo.Name != "ItemName" && typeProperty.PropertyInfo.Name != "rate" && typeProperty.PropertyInfo.Name != "OldRate" && typeProperty.PropertyInfo.Name != "POQty"
                       && typeProperty.PropertyInfo.Name != "PendQty" && typeProperty.PropertyInfo.Name != "Unit" && typeProperty.PropertyInfo.Name != "Description" && typeProperty.PropertyInfo.Name != "AltPOQty" && typeProperty.PropertyInfo.Name != "AltUnit" && typeProperty.PropertyInfo.Name != "PoallowtoprintWithoutApproval"
-                       && typeProperty.PropertyInfo.Name != "ShowOnlyAmendItem" &&
+                       && typeProperty.PropertyInfo.Name != "ShowOnlyAmendItem"
+                       && typeProperty.PropertyInfo.Name != "allowtostartdateindashboarddate" &&
                        typeProperty.PropertyInfo.Name != "DiscPer" && typeProperty.PropertyInfo.Name != "DiscRs"
                       && typeProperty.PropertyInfo.Name != "Amount" && typeProperty.PropertyInfo.Name != "AdditionalRate"
                       && typeProperty.PropertyInfo.Name != "OldRate" && typeProperty.PropertyInfo.Name != "Remark"
@@ -893,19 +934,27 @@ public static class CommonFunc
                 else if (Tbname == "POSCHEDULEDETAILDASHBOARD")
                 {
                     if (typeProperty.PropertyInfo.Name != "AmmEffDate" && typeProperty.PropertyInfo.Name != "EID" && typeProperty.PropertyInfo.Name != "ID"
-              && typeProperty.PropertyInfo.Name != "FromDate" && typeProperty.PropertyInfo.Name != "ToDate" && typeProperty.PropertyInfo.Name != "Mode" && typeProperty.PropertyInfo.Name != "ItemName" &&
-              typeProperty.PropertyInfo.Name != "PartCode" && typeProperty.PropertyInfo.Name != "TxPageName"
+              && typeProperty.PropertyInfo.Name != "FromDate" && typeProperty.PropertyInfo.Name != "ToDate" && typeProperty.PropertyInfo.Name != "Mode" 
+              //&& typeProperty.PropertyInfo.Name != "ItemName" &&
+              //typeProperty.PropertyInfo.Name != "PartCode"
+              && typeProperty.PropertyInfo.Name != "TxPageName"
               && typeProperty.PropertyInfo.Name != "DeliveryDate" && typeProperty.PropertyInfo.Name != "PODashboard" && typeProperty.PropertyInfo.Name != "PONoList"
               && typeProperty.PropertyInfo.Name != "PSDashboard" && typeProperty.PropertyInfo.Name != "POComplete"
-               && typeProperty.PropertyInfo.Name != "ApprovedDate" && typeProperty.PropertyInfo.Name != "Approved" && typeProperty.PropertyInfo.Name != "SchQty"
-                     && typeProperty.PropertyInfo.Name != "Rate" && typeProperty.PropertyInfo.Name != "UserName" && typeProperty.PropertyInfo.Name != "DashboardType"
+               && typeProperty.PropertyInfo.Name != "ApprovedDate" && typeProperty.PropertyInfo.Name != "Approved" 
+               //&& typeProperty.PropertyInfo.Name != "SchQty"
+                     //&& typeProperty.PropertyInfo.Name != "Rate" 
+                     && typeProperty.PropertyInfo.Name != "UserName" && typeProperty.PropertyInfo.Name != "DashboardType"
                      && typeProperty.PropertyInfo.Name != "QuotNo" && typeProperty.PropertyInfo.Name != "QuotYear" && typeProperty.PropertyInfo.Name != "BasicAmount"
-                     && typeProperty.PropertyInfo.Name != "NetAmount" && typeProperty.PropertyInfo.Name != "HsnNo" && typeProperty.PropertyInfo.Name != "POQty"
-                     && typeProperty.PropertyInfo.Name != "Unit" && typeProperty.PropertyInfo.Name != "AltPOQty" && typeProperty.PropertyInfo.Name != "AltUnit"
-                     && typeProperty.PropertyInfo.Name != "Rate" && typeProperty.PropertyInfo.Name != "RateInOtherCurr" && typeProperty.PropertyInfo.Name != "DiscPer" && typeProperty.PropertyInfo.Name != "DiscRs"
-                     && typeProperty.PropertyInfo.Name != "Amount" && typeProperty.PropertyInfo.Name != "PendQty" && typeProperty.PropertyInfo.Name != "PendAltQty"
-                     && typeProperty.PropertyInfo.Name != "UnitRate" && typeProperty.PropertyInfo.Name != "SchApproved" && typeProperty.PropertyInfo.Name != "SchAmendApprove"
-                      && typeProperty.PropertyInfo.Name != "SchCompleted" && typeProperty.PropertyInfo.Name != "DashboardType" && typeProperty.PropertyInfo.Name != "EnteredBy" && typeProperty.PropertyInfo.Name != "AmmType" && typeProperty.PropertyInfo.Name != "UpdatedByName" && typeProperty.PropertyInfo.Name != "ApprovedBy")
+                     && typeProperty.PropertyInfo.Name != "NetAmount" && typeProperty.PropertyInfo.Name != "HsnNo" 
+                     //&& typeProperty.PropertyInfo.Name != "POQty"
+                     //&& typeProperty.PropertyInfo.Name != "Unit" && typeProperty.PropertyInfo.Name != "AltPOQty" && typeProperty.PropertyInfo.Name != "AltUnit"
+                     //&& typeProperty.PropertyInfo.Name != "Rate" && typeProperty.PropertyInfo.Name != "RateInOtherCurr" && typeProperty.PropertyInfo.Name != "DiscPer" && typeProperty.PropertyInfo.Name != "DiscRs"
+                     && typeProperty.PropertyInfo.Name != "Amount" 
+                     //&& typeProperty.PropertyInfo.Name != "PendQty" && typeProperty.PropertyInfo.Name != "PendAltQty"
+                     //&& typeProperty.PropertyInfo.Name != "UnitRate" 
+                     //&& typeProperty.PropertyInfo.Name != "SchApproved" && typeProperty.PropertyInfo.Name != "SchAmendApprove"
+                     // && typeProperty.PropertyInfo.Name != "SchCompleted" && typeProperty.PropertyInfo.Name != "DashboardType"
+                      && typeProperty.PropertyInfo.Name != "EnteredBy" && typeProperty.PropertyInfo.Name != "AmmType" && typeProperty.PropertyInfo.Name != "UpdatedByName" && typeProperty.PropertyInfo.Name != "ApprovedBy")
                     {
                         object value = row[typeProperty.PropertyInfo.Name];
                         object? safeValue = value == null || DBNull.Value.Equals(value) ? null : Convert.ChangeType(value, typeProperty.Type);
@@ -1112,6 +1161,8 @@ public static class CommonFunc
                         && typeProperty.PropertyInfo.Name != "AgainstChallanYearCode" && typeProperty.PropertyInfo.Name != "AgainstChallanType" && typeProperty.PropertyInfo.Name != "closed"
                         && typeProperty.PropertyInfo.Name != "ItemColor" && typeProperty.PropertyInfo.Name != "ItemSize" && typeProperty.PropertyInfo.Name != "ItemModel"
                         && typeProperty.PropertyInfo.Name != "PendQty" && typeProperty.PropertyInfo.Name != "PendAltQty"
+                        && typeProperty.PropertyInfo.Name != "SalesPersonEmailId" && typeProperty.PropertyInfo.Name != "eMailFromCC1"
+                        && typeProperty.PropertyInfo.Name != "eMailFromCC2" && typeProperty.PropertyInfo.Name != "eMailFromCC3"
                         && typeProperty.PropertyInfo.Name != "ActualEnteredEMpBy")
 
                     {
@@ -1471,6 +1522,7 @@ public static class CommonFunc
                     && typeProperty.PropertyInfo.Name != "ShelfLife" && typeProperty.PropertyInfo.Name != "ItemSize"
                     && typeProperty.PropertyInfo.Name != "ItemColor" && typeProperty.PropertyInfo.Name != "TotalRecords"
                     && typeProperty.PropertyInfo.Name != "PageNumber" && typeProperty.PropertyInfo.Name != "PageSize"
+                    && typeProperty.PropertyInfo.Name != "FromMRNNo" && typeProperty.PropertyInfo.Name != "ToMRNNo"
                     )
 
                     {
@@ -1589,6 +1641,7 @@ public static class CommonFunc
                         && typeProperty.PropertyInfo.Name != "CashDisPer" && typeProperty.PropertyInfo.Name != "CashDisRs" && typeProperty.PropertyInfo.Name != "SoDelTime" && typeProperty.PropertyInfo.Name != "TypeJob"
                         && typeProperty.PropertyInfo.Name != "CurrencyId" && typeProperty.PropertyInfo.Name != "Shippingdate" && typeProperty.PropertyInfo.Name != "Cancelreason"
                         && typeProperty.PropertyInfo.Name != "BankName"
+                        && typeProperty.PropertyInfo.Name != "AllowToAddNegativeStockInStore"
                         && typeProperty.PropertyInfo.Name != "SOType" && typeProperty.PropertyInfo.Name != "EntryByempId" && typeProperty.PropertyInfo.Name != "ActualEnteredBy" && typeProperty.PropertyInfo.Name != "LastUpdatedByName"
                         && typeProperty.PropertyInfo.Name != "ChallanNo" && typeProperty.PropertyInfo.Name != "ChallanDate" && typeProperty.PropertyInfo.Name != "ChallanEntryid" && typeProperty.PropertyInfo.Name != "ChallanYearCode"
                         && typeProperty.PropertyInfo.Name != "SaleQuotEntryID" && typeProperty.PropertyInfo.Name != "TotalRoundOff" && typeProperty.PropertyInfo.Name != "TotalDiscountPercentage" && typeProperty.PropertyInfo.Name != "FinToDate"
@@ -1629,6 +1682,7 @@ public static class CommonFunc
                         && typeProperty.PropertyInfo.Name != "TxItemCode" && typeProperty.PropertyInfo.Name != "VendJwAdjustmentMandatory" && typeProperty.PropertyInfo.Name != "StockableNonStockable"
                         && typeProperty.PropertyInfo.Name != "TxItemName" && typeProperty.PropertyInfo.Name != "CustJwAdjustmentMandatory"
                         && typeProperty.PropertyInfo.Name != "TxOnExp"
+                        && typeProperty.PropertyInfo.Name != "AccountList"
                         && typeProperty.PropertyInfo.Name != "TxPartCode"
                         && typeProperty.PropertyInfo.Name != "TxPartName"
                         && typeProperty.PropertyInfo.Name != "TxPercentg"
@@ -1636,13 +1690,29 @@ public static class CommonFunc
                         && typeProperty.PropertyInfo.Name != "TxRemark"
                         && typeProperty.PropertyInfo.Name != "TxRoundOff"
                         && typeProperty.PropertyInfo.Name != "TxSeqNo"
+                        && typeProperty.PropertyInfo.Name != "RackID"
+                        && typeProperty.PropertyInfo.Name != "AdditionalDiscount"
+                        && typeProperty.PropertyInfo.Name != "AllowToChangeSaleBillStoreName"
+                        && typeProperty.PropertyInfo.Name != "PackingCharges"
+                        && typeProperty.PropertyInfo.Name != "ForwardingCharges"
+                        && typeProperty.PropertyInfo.Name != "CourieerCharges"
+                        && typeProperty.PropertyInfo.Name != "GST"
+                        && typeProperty.PropertyInfo.Name != "PrivateMark"
+                        && typeProperty.PropertyInfo.Name != "GRNo"
+                        && typeProperty.PropertyInfo.Name != "GRDate"
+                        && typeProperty.PropertyInfo.Name != "BillNo"
+                        && typeProperty.PropertyInfo.Name != "BillDate"
+                        && typeProperty.PropertyInfo.Name != "Message"
+                        && typeProperty.PropertyInfo.Name != "CustomerName"
+                        && typeProperty.PropertyInfo.Name != "AllowToAdjZeroAmt"
+                        && typeProperty.PropertyInfo.Name != "SubInvoicetype"
                         && typeProperty.PropertyInfo.Name != "TxTaxType" && typeProperty.PropertyInfo.Name != "TotalRecords"
                         && typeProperty.PropertyInfo.Name != "TxTaxTypeName" && typeProperty.PropertyInfo.Name != "BOMInd" && typeProperty.PropertyInfo.Name != "ProducedUnprod"
                         && typeProperty.PropertyInfo.Name != "TxType" && typeProperty.PropertyInfo.Name != "DashboardTypeBack"
                         && typeProperty.PropertyInfo.Name != "YesNo" && typeProperty.PropertyInfo.Name != "AttachmentFile1" && typeProperty.PropertyInfo.Name != "AttachmentFile2" && typeProperty.PropertyInfo.Name != "AttachmentFile3"
                         && typeProperty.PropertyInfo.Name != "CreatedBy" && typeProperty.PropertyInfo.Name != "CreatedOn" && typeProperty.PropertyInfo.Name != "EID" && typeProperty.PropertyInfo.Name != "ID" && typeProperty.PropertyInfo.Name != "Mode"
                         && typeProperty.PropertyInfo.Name != "TxPageName" && typeProperty.PropertyInfo.Name != "UpdatedBy" && typeProperty.PropertyInfo.Name != "UpdatedOn"
-                        && typeProperty.PropertyInfo.Name != "PageNumber" && typeProperty.PropertyInfo.Name != "SummaryDetailBack" && typeProperty.PropertyInfo.Name != "PageSize" && typeProperty.PropertyInfo.Name != "TotalRecords" && typeProperty.PropertyInfo.Name != "Group_name"
+                        && typeProperty.PropertyInfo.Name != "PageNumber" && typeProperty.PropertyInfo.Name != "SummaryDetailBack" && typeProperty.PropertyInfo.Name != "PageSize" && typeProperty.PropertyInfo.Name != "TotalRecords" && typeProperty.PropertyInfo.Name != "Group_name" && typeProperty.PropertyInfo.Name != "GroupCodeBack" && typeProperty.PropertyInfo.Name != "AccountCodeBack" && typeProperty.PropertyInfo.Name != "AccountNameBack" && typeProperty.PropertyInfo.Name != "VoucherTypeBack" && typeProperty.PropertyInfo.Name != "AccountList"
                         )
                     {
                         object value = row[typeProperty.PropertyInfo.Name];
@@ -1706,7 +1776,20 @@ public static class CommonFunc
                         && typeProperty.PropertyInfo.Name != "DomesticExportNEPZBack" && typeProperty.PropertyInfo.Name != "AttachmentFile1" && typeProperty.PropertyInfo.Name != "AttachmentFile2" && typeProperty.PropertyInfo.Name != "AttachmentFile3"
                         && typeProperty.PropertyInfo.Name != "SearchBoxBack" && typeProperty.PropertyInfo.Name != "SummaryDetailBack" && typeProperty.PropertyInfo.Name != "SaleBillDataDashboard"
                         && typeProperty.PropertyInfo.Name != "PageNumber" && typeProperty.PropertyInfo.Name != "SummaryDetailBack" && typeProperty.PropertyInfo.Name != "PageSize" && typeProperty.PropertyInfo.Name != "TotalRecords" && typeProperty.PropertyInfo.Name != "ProducedUnprod" && typeProperty.PropertyInfo.Name != "CustJwAdjustmentMandatory" && typeProperty.PropertyInfo.Name != "StockableNonStockable" && typeProperty.PropertyInfo.Name != "VendJwAdjustmentMandatory" && typeProperty.PropertyInfo.Name != "Group_Code" && typeProperty.PropertyInfo.Name != "Group_name"
-                        && typeProperty.PropertyInfo.Name != "ConsigneeAccountName" && typeProperty.PropertyInfo.Name != "ConsigneeAccountName"
+                        && typeProperty.PropertyInfo.Name != "ConsigneeAccountName"
+                        && typeProperty.PropertyInfo.Name != "RackID"
+                        && typeProperty.PropertyInfo.Name != "AdditionalDiscount"
+                        && typeProperty.PropertyInfo.Name != "AllowToChangeSaleBillStoreName"
+                        && typeProperty.PropertyInfo.Name != "PackingCharges"
+                        && typeProperty.PropertyInfo.Name != "ForwardingCharges"
+                        && typeProperty.PropertyInfo.Name != "CourieerCharges"
+                        && typeProperty.PropertyInfo.Name != "GST"
+                         && typeProperty.PropertyInfo.Name != "PrivateMark"
+                        && typeProperty.PropertyInfo.Name != "GRNo"
+                        && typeProperty.PropertyInfo.Name != "GRDate"
+                        && typeProperty.PropertyInfo.Name != "SubInvoicetype"
+                        && typeProperty.PropertyInfo.Name != "AllowToAddNegativeStockInStore"
+                        && typeProperty.PropertyInfo.Name != "AllowToAdjZeroAmt"
                         )
                     {
                         object value = row[typeProperty.PropertyInfo.Name];
@@ -1741,6 +1824,9 @@ public static class CommonFunc
                          && typeProperty.PropertyInfo.Name != "OtherDetail" && typeProperty.PropertyInfo.Name != "Amount" && typeProperty.PropertyInfo.Name != "RejectionReason"
                          && typeProperty.PropertyInfo.Name != "SaleorderRemark" && typeProperty.PropertyInfo.Name != "SaleBillremark"
                          && typeProperty.PropertyInfo.Name != "ItemNetAmount"
+                         && typeProperty.PropertyInfo.Name != "DbCrGrid"
+                         && typeProperty.PropertyInfo.Name != "SeqNo"
+                         && typeProperty.PropertyInfo.Name != "Message"
                         // && typeProperty.PropertyInfo.Name != "RoundOffAmt"
                         //&& typeProperty.PropertyInfo.Name != "Ewaybillno" && typeProperty.PropertyInfo.Name != "EInvNo" && typeProperty.PropertyInfo.Name != "Ewaybillno"
                         //&& typeProperty.PropertyInfo.Name != "EinvGenerated" && typeProperty.PropertyInfo.Name != "ActualEntryDate"
@@ -2210,6 +2296,32 @@ public static class CommonFunc
             return result < minSqlDate ? minSqlDate : result;
         }
         return minSqlDate;
+    }
+    public static TimeOnly? ParseSafeTime(string inputTime, bool? MinValueIfNull = false)
+    {
+        string[] formats = {
+        "HH:mm:ss",     // 23:59:59
+        "HH:mm",        // 23:59
+        "hh:mm tt",     // 11:59 PM
+        "hh:mm:ss tt"   // 11:59:59 PM
+    };
+        if (!string.IsNullOrWhiteSpace(inputTime))
+        {
+            foreach (var fmt in formats)
+            {
+                if (TimeOnly.TryParseExact(inputTime, fmt, CultureInfo.InvariantCulture, DateTimeStyles.None, out TimeOnly parsed))
+                    return parsed;
+            }
+
+            // fallback try general parse
+            if (TimeOnly.TryParse(inputTime, CultureInfo.InvariantCulture, out TimeOnly fallback))
+                return fallback;
+        }
+        if(MinValueIfNull != null && Convert.ToBoolean(MinValueIfNull))
+        {
+            return new TimeOnly(0, 0, 0);
+        }
+        return null;
     }
     public class LogException<T> where T : class
     {

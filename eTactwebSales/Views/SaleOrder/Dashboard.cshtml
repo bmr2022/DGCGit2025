@@ -91,6 +91,15 @@
                                 <label asp-for="ItemName" class="form-label">Item Name</label>
                                 <input asp-for="ItemName" class="form-control" />
                             </div>
+
+                            <div class="col-xxl-1 col-xl-1 col-lg-1 col-md-3 col-sm-6 col-xs-12">
+                                <label asp-for="SOComplete" class="form-label">SO Status</label>
+                                <select class="form-select" asp-for="SOComplete">
+                                    <option value="">-Select-</option>
+                                    <option value="Y">Complated</option>
+                                    <option value="N" selected>Pending</option>
+                                </select>
+                            </div>
                             
                             @*   <div class="col-lg-4 col-md-8 col-sm-6 col-xs-12 d-flex justify-content-evenly mt-3">
                             <button class="btn btn-sm btn-outline-info" type="button" onclick="GetSearchData();">
@@ -119,7 +128,7 @@
                                 </div>
 
                                 <div class="col-sm-3 col-md-6 col-lg-2 col-xl-4 justify-content-center mt-4" style="margin-left:50px;margin-top:10px;">
-                                    <label class="color-box" style="background-color: #FF0000;"></label><label style="margin-left:5px;margin-top:-5px;">UNAPPROVED</label>
+                                    <label class="color-box" style="background-color: black;"></label><label style="margin-left:5px;margin-top:-5px;">UNAPPROVED</label>
                                     <label class="color-box" style="background-color: green;margin-left:25px;"></label><label style="margin-left:5px;margin-top:-5px;">APPROVED</label>
                                     <label class="color-box" style="background-color: blue;margin-left:25px;"></label><label style="margin-left:5px;margin-top:-5px;">Amendment Approved</label>
                                 </div>
@@ -150,6 +159,9 @@
             </div>
             <div class="row g-2 gx-3 totalrows">
                 <div class="col-12 text-center">
+                    <strong class="me-3">Total Amount : <span id="OrderAmt"></span></strong>
+                    <strong class="me-3">Total NetAmount : <span id="OrderNetAmt"></span></strong>
+                    <strong class="me-3">Total PendAmount : <span id="pendingAmt"></span></strong>
                     <strong>Total No Of Rows : <span id="lblTotalNoOfItems"></span></strong>
                 </div>
             </div>
@@ -162,7 +174,23 @@
         width: 10px;
         height: 10px;
     }
+
+   
+    .fa-stack {
+        display: inline-block;
+        height: 1.5em;
+        line-height: 2em;
+        position: relative;
+        vertical-align: middle;
+        width: 1.9em;
+    }
+
+    #container > div {
+        flex: 1;
+        /* margin-right: 10px; */
+    }
 </style>
+
 
 @section Scripts
     {
@@ -275,6 +303,7 @@
                 }
             });
 
+            GetFeatureOption();
         });
 
         var currentSearchColumn = null;
@@ -361,7 +390,7 @@
                                                                                                              </span>
                                                                                                       </a>`);
                     } else {
-                        $('#SOGridrow-' + i).css("color", "#FF0000");
+                        $('#SOGridrow-' + i).css("color", "black");
                     }
                 }
             }
@@ -383,7 +412,66 @@
             } else {
                 $('#lblTotalNoOfItems').text(0);
             }
+
+            var totalOrderAmt = 0;
+            var totalOrderNetAmt = 0;
+            var totalPendingAmt = 0;
+            for (var i = 1; i <= soGridrow; i++) {
+                var orderAmt = parseFloat($('#hiddenOrderAmt-' + i).text().trim()) || 0;
+                var orderNetAmt = parseInt($('#hiddenOrderNetAmt-' + i).text().trim()) || 0;
+                var pendingAmt = parseFloat($('#hiddenPendingAmt-' + i).text().trim()) || 0;
+
+                totalOrderAmt += isNaN(orderAmt) ? 0 : orderAmt;
+                totalOrderNetAmt += isNaN(orderNetAmt) ? 0 : orderNetAmt;
+                totalPendingAmt += isNaN(pendingAmt) ? 0 : pendingAmt;
+            }
+            $('#OrderAmt').text(totalOrderAmt.toFixed(2));
+            $('#OrderNetAmt').text(totalOrderNetAmt);
+            $('#pendingAmt').text(totalPendingAmt.toFixed(2));
         }
+
+        function GetFeatureOption() {
+
+            $.ajax({
+                type: "POST",
+                data: {},
+                url: "@Url.Action("GetFeatureOption")",
+                dataType: "json",
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.Result != null) {
+                            if (obj.Result[0].ShowHideSaleOrderEntryDetail === "N") {
+                                $('.SaleOrderEntryDetail').hide();
+                            } else {
+                                $('.SaleOrderEntryDetail').show();
+                            }
+                            if (obj.Result[0].ShowHideSaleOrderOtherRequiredDetail === "N") {
+                                $('.SaleOrderOtherRequiredDetail').hide();
+                            } else {
+                                $('.SaleOrderOtherRequiredDetail').show();
+                            }
+                            if (obj.Result[0].ShowHideSaleOrderConsignee === "N") {
+                                $('.SaleOrderConsignee').hide();
+                            } else {
+                                $('.SaleOrderConsignee').show();
+                            }
+                            if (obj.Result[0].HideOtherFieldOFSaleOrderDetailTable === "N") {
+                                $('.SaleOrderOtherDetail').hide();
+                            } else {
+                                $('.SaleOrderOtherDetail').show();
+                            }
+
+
+
+                        }
+                    }
+                }
+            });
+        }
+
+
 
         function GetFormRights() {
             $.ajax({
@@ -495,6 +583,7 @@
 
                     TotalRows();
                     GetFormRights();
+                    GetFeatureOption();
                 },
                 error: function (response) {
                     alert(response.responseText);

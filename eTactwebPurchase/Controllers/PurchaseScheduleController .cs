@@ -29,9 +29,10 @@ public class PurchaseScheduleController : Controller
     public WebReport webReport;
     private readonly IConfiguration _iconfiguration;
     private readonly IWebHostEnvironment _IWebHostEnvironment;
+    private readonly ConnectionStringService _connectionStringService;
     //private readonly ILogger _logger;
     //  public PurchaseScheduleController(IPurchaseSchedule iPurchaseSchedule, IDataLogic iDataLogic, IMemoryCache iMemoryCache, ILogger<PurchaseOrderController> logger, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment)
-    public PurchaseScheduleController(IPurchaseSchedule iPurchaseSchedule, IConfiguration configuration, IDataLogic iDataLogic, IMemoryCache iMemoryCache, ILogger<PurchaseOrderController> logger, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment)
+    public PurchaseScheduleController(IPurchaseSchedule iPurchaseSchedule, IConfiguration configuration, IDataLogic iDataLogic, IMemoryCache iMemoryCache, ILogger<PurchaseOrderController> logger, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, ConnectionStringService connectionStringService)
     {
         IPurchaseSchedule = iPurchaseSchedule;
         IDataLogic = iDataLogic;
@@ -41,6 +42,7 @@ public class PurchaseScheduleController : Controller
         EncryptDecrypt = encryptDecrypt;
         _IWebHostEnvironment = iWebHostEnvironment;
         _iconfiguration = configuration;
+        _connectionStringService = connectionStringService;
     }
 
     public IDataLogic IDataLogic { get; }
@@ -169,6 +171,7 @@ public class PurchaseScheduleController : Controller
             webReport.Report.Load(webRootPath + "\\purchaseschedule.frx"); // default report
 
         }
+        my_connection_string = _connectionStringService.GetConnectionString();
         my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
         webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
         webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";

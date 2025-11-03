@@ -26,13 +26,14 @@ namespace eTactWeb.Data.DAL
             DBConnectionString = _connectionStringService.GetConnectionString();
             _IDataLogic = iDataLogic;
         }
-        public async Task<ResponseResult> GetLedgerName()
+        public async Task<ResponseResult> GetLedgerName(int? ParentAccountCode)
         {
             var _ResponseResult = new ResponseResult();
             try
             {
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "GetLedgerName"));
+                SqlParams.Add(new SqlParameter("@ParentAccountCode", ParentAccountCode));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpTRansactionLedgerAndGroupList", SqlParams);
             }
             catch (Exception ex)
@@ -45,7 +46,7 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
 
         }
-        public async Task<TransactionLedgerModel> GetDetailsData(string FromDate, string ToDate, int AccountCode, string ReportType,int Ledger,string VoucherType)
+        public async Task<TransactionLedgerModel> GetDetailsData(string FromDate, string ToDate, string ReportType, string GroupOrLedger, int? ParentAccountCode, int? AccountCode, string VoucherType, string VoucherNo, string InvoiceNo, string Narration, float? Amount, string? DR, string? CR, string Ledger)
         {
             var resultList = new TransactionLedgerModel();
             DataSet oDataSet = new DataSet();
@@ -65,7 +66,7 @@ namespace eTactWeb.Data.DAL
                     var toDt = CommonFunc.ParseFormattedDate(ToDate);
                     command.Parameters.Add(new SqlParameter("@fromDate", fromDt));
                     command.Parameters.Add(new SqlParameter("@ToDate", toDt));
-                    command.Parameters.AddWithValue("@ACCOUNTCODE", AccountCode);
+                    command.Parameters.Add("@ACCOUNTCODE", SqlDbType.Int).Value = (object?)AccountCode ?? DBNull.Value;
                     command.Parameters.AddWithValue("@ReportType", ReportType);
                     command.Parameters.AddWithValue("@LedgerHead", Ledger);
                     command.Parameters.AddWithValue("@VoucherType", VoucherType);
@@ -102,7 +103,20 @@ namespace eTactWeb.Data.DAL
                                                             AccountCode = row["ACCOUNTCODE"] == DBNull.Value ? 0 : Convert.ToInt32(row["ACCOUNTCODE"]),
                                                             ReportType = row["REPORTTYPE"] == DBNull.Value ? string.Empty : row["REPORTTYPE"].ToString(),
                                                             VchNo = row["VCH NO"] == DBNull.Value ? string.Empty : row["VCH NO"].ToString(),
-                                                            INVNo = row["InvoiceNo"] == DBNull.Value ? string.Empty : row["InvoiceNo"].ToString()
+                                                            INVNo = row["InvoiceNo"] == DBNull.Value ? string.Empty : row["InvoiceNo"].ToString(),
+                                                            FromDate = FromDate,
+                                                            ToDate = ToDate,
+                                                            ReportTypeBack = ReportType,
+                                                            GroupOrLedger = GroupOrLedger,
+                                                            ParentAccountCodeBack = ParentAccountCode,
+                                                            AccountCodeBack = AccountCode,
+                                                            VoucherTypeBack = VoucherType,
+                                                            VoucherNoBack = VoucherNo,
+                                                            InvoiceNoBack = InvoiceNo,
+                                                            NarrationBack = Narration,
+                                                            AmountBack = Amount,
+                                                            DRBack = DR,
+                                                            CRBack = CR,
                                                         }).ToList();
                 }
             }
@@ -143,14 +157,15 @@ namespace eTactWeb.Data.DAL
                         resultList.TransactionLedgerGrid = (from DataRow row in oDataSet.Tables[0].Rows
                                                             select new TransactionLedgerModel
                                                             {
-                                                                MOnthFullName = row["MOnthFullName"] == DBNull.Value ? string.Empty : row["MOnthFullName"].ToString(),
+                                                                MonthFullName = row["MOnthFullName"] == DBNull.Value ? string.Empty : row["MOnthFullName"].ToString(),
                                                                 TotalCr = row["TotalCr"] == DBNull.Value ? 0 : Convert.ToDecimal(row["TotalCr"]),
                                                                 TotalDr = row["TotalDr"] == DBNull.Value ? 0 : Convert.ToDecimal(row["TotalDr"]),
                                                                 ClosingAmt = row["ClosingAmt"] == DBNull.Value ? 0 : Convert.ToDecimal(row["ClosingAmt"]),
                                                                 Dr_CR = row["Dr/CR"] == DBNull.Value ? string.Empty : row["Dr/CR"].ToString(),
                                                                 YearCode = row["YearCode"] == DBNull.Value ? 0 : Convert.ToInt32(row["YearCode"]),
                                                                 SeqNo = row["SeqNo"] == DBNull.Value ? 0 : Convert.ToInt32(row["SeqNo"]),
-                                                                MonthNo = row["MonthNo"] == DBNull.Value ? 0 : Convert.ToInt32(row["MonthNo"])
+                                                                MonthNo = row["MonthNo"] == DBNull.Value ? 0 : Convert.ToInt32(row["MonthNo"]),
+                                                                AccountCodeBack = AccountCode
 
 															}).ToList();
                     }
@@ -165,7 +180,7 @@ namespace eTactWeb.Data.DAL
 
             return resultList;
         }
-		public async Task<TransactionLedgerModel> GetTransactionLedgerGroupSummaryDetailsData(string FromDate, string ToDate, string ReportType, int LedgerGroup,int AccountCode, string VoucherType)
+		public async Task<TransactionLedgerModel> GetTransactionLedgerGroupSummaryDetailsData(string FromDate, string ToDate, string ReportType, string GroupOrLedger, int? ParentAccountCode = null, int AccountCode = 0, string? VoucherType = null, string? VoucherNo = null, string? InvoiceNo = null, string? Narration = null, float? Amount = null, string? DR = null, string? CR = null, string? Ledger = null)
 		{
 			var resultList = new TransactionLedgerModel();
 			DataSet oDataSet = new DataSet();
@@ -181,9 +196,9 @@ namespace eTactWeb.Data.DAL
 					command.Parameters.AddWithValue("@FromDate", ParseFormattedDate(FromDate));
 					command.Parameters.AddWithValue("@ToDate", ParseFormattedDate(ToDate));
 					command.Parameters.AddWithValue("@ReportTypeSummDetail", ReportType);
-					if (LedgerGroup > 0)
+					if (ParentAccountCode > 0)
 					{
-						command.Parameters.AddWithValue("@GroupCode", LedgerGroup);
+						command.Parameters.AddWithValue("@GroupCode", ParentAccountCode);
 					}
 					command.Parameters.AddWithValue("@FromFormName", "GROUPSUMMARYFORM");
 
@@ -201,8 +216,10 @@ namespace eTactWeb.Data.DAL
 															select new TransactionLedgerModel
 															{
 																ParentLedgerName = row["ParentGroupName"] == DBNull.Value ? string.Empty : row["ParentGroupName"].ToString(),
-																AccountName = row["AccountName"] == DBNull.Value ? string.Empty : row["AccountName"].ToString(),
-																OpnDr = row["OpnDr"] == DBNull.Value ? 0 : Convert.ToDecimal(row["OpnDr"]),
+                                                                ParentAccountCode = row["ParentAccountCode"] == DBNull.Value ? 0 : Convert.ToInt32(row["ParentAccountCode"]),
+                                                                AccountName = row["AccountName"] == DBNull.Value ? string.Empty : row["AccountName"].ToString(),
+                                                                AccountCode = row["Accountcode"] == DBNull.Value ? 0 : Convert.ToInt32(row["Accountcode"]),
+                                                                OpnDr = row["OpnDr"] == DBNull.Value ? 0 : Convert.ToDecimal(row["OpnDr"]),
 																OpnCr = row["OpnCr"] == DBNull.Value ? 0 : Convert.ToDecimal(row["OpnCr"]),
 																TotalOpening = row["TotalOpening"] == DBNull.Value ? 0 : Convert.ToDecimal(row["TotalOpening"]),
 																CurrDrAmt = row["CurrDrAmt"] == DBNull.Value ? 0 : Convert.ToDecimal(row["CurrDrAmt"]),

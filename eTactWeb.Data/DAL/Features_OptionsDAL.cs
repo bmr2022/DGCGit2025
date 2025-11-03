@@ -180,8 +180,9 @@ namespace eTactWeb.Data.DAL
                                                                 PoallowtoprintWithoutApproval = dr["PoallowtoprintWithoutApproval"] != DBNull.Value ? dr["PoallowtoprintWithoutApproval"].ToString() : string.Empty,
                                                                 POClosePOAlwaysAgainstIndent = dr["POClosePOAlwaysAgainstIndent"] != DBNull.Value ? dr["POClosePOAlwaysAgainstIndent"].ToString() : string.Empty,
                                                                 IndentReportName = dr["IndentReportName"] != DBNull.Value ? dr["IndentReportName"].ToString() : string.Empty,
-                                                                PONotAllowedWithoutPartCodePartyWiseDefinition = dr["PONotAllowedWithoutPartCodePartyWiseDefinition"] != DBNull.Value ? dr["PONotAllowedWithoutPartCodePartyWiseDefinition"].ToString() : string.Empty
-                                                               
+                                                                PurchaseIncrementPercentageofRMInMRP = dr["PurchaseIncrementPercentageofRMInMRP"] != DBNull.Value? Convert.ToDecimal(dr["PurchaseIncrementPercentageofRMInMRP"]): 0
+
+
                                                             }).ToList();
                     } 
                     if (Type == "PurchaseBill")
@@ -220,7 +221,7 @@ namespace eTactWeb.Data.DAL
                         model.features_OptionsModelsGrid = (from DataRow dr in oDataSet.Tables[0].Rows
                                                             select new Features_OptionsModel
                                                             {
-                                                                BlockGateEntry4UnAppPOAmm = dr["BlockGateEntry4UnAppPOAmm"] != DBNull.Value ? dr["BlockGateEntry4UnAppPOAmm"].ToString() : string.Empty,
+                                                                //BlockGateEntry4UnAppPOAmm = dr["BlockGateEntry4UnAppPOAmm"] != DBNull.Value ? dr["BlockGateEntry4UnAppPOAmm"].ToString() : string.Empty,
                                                                 AllowBackDateGAteEntry = dr["AllowBackDateGAteEntry"] != DBNull.Value ? dr["AllowBackDateGAteEntry"].ToString() : string.Empty,
                                                                 ShowRateINGAteMrn = dr["ShowRateINGAteMrn"] != DBNull.Value ? dr["ShowRateINGAteMrn"].ToString() : string.Empty,
                                                                 GateEntryPrintReportName = dr["GateEntryPrintReportName"] != DBNull.Value ? dr["GateEntryPrintReportName"].ToString() : string.Empty,
@@ -237,6 +238,7 @@ namespace eTactWeb.Data.DAL
                                                                 AllowBackDateMRNEntry = dr["AllowBackDateMRNEntry"] != DBNull.Value ? dr["AllowBackDateMRNEntry"].ToString() : string.Empty,
                                                                 AllowToChangeStoreInMRN = dr["AllowToChangeStoreInMRN"] != DBNull.Value ? dr["AllowToChangeStoreInMRN"].ToString() : string.Empty,
                                                                 MRNPrintReportName = dr["MRNPrintReportName"] != DBNull.Value ? dr["MRNPrintReportName"].ToString() : string.Empty,
+                                                                TakeSuuplierBatchOrSystmGeneratedBatchForInv = dr["TakeSuuplierBatchOrSystmGeneratedBatchForInv"] != DBNull.Value ? dr["TakeSuuplierBatchOrSystmGeneratedBatchForInv"].ToString() : string.Empty,
                                                                 AllowBackDateMRIR = dr["AllowBackDateMRIR"] != DBNull.Value ? dr["AllowBackDateMRIR"].ToString() : string.Empty,
 
                                                             }).ToList();
@@ -400,13 +402,27 @@ namespace eTactWeb.Data.DAL
                          model.features_OptionsModelsGrid = (from DataRow dr in oDataSet.Tables[0].Rows
                                                             select new Features_OptionsModel
                                                             {
-                                                                AllowBackDateSALEBILL = dr["AllowBackDateSALEBILL"] != DBNull.Value ? dr["AllowBackDateSALEBILL"].ToString() : string.Empty,
-                                                                VoucherRotationDailyMonthYearly = dr["VoucherRotationDailyMonthYearly"] != DBNull.Value ? dr["VoucherRotationDailyMonthYearly"].ToString() : string.Empty,
-                                                                //AccSaleBillManualTaxAlloweed = dr["AccSaleBillManualTaxAlloweed"] != DBNull.Value ? dr["AccSaleBillManualTaxAlloweed"].ToString() : string.Empty,
-                                                                //AccPasswordToAllowManualTax = dr["AccPasswordToAllowManualTax"] != DBNull.Value ? dr["AccPasswordToAllowManualTax"].ToString() : string.Empty,
-                                                                salebillShowItemBatchFIFOBased = dr["salebillShowItemBatchFIFOBased"] != DBNull.Value ? dr["salebillShowItemBatchFIFOBased"].ToString() : string.Empty,
-                                                               
-                                                            }).ToList();
+																SaleInvoiceFileName = dr["SaleInvoiceFileName"] != DBNull.Value ? dr["SaleInvoiceFileName"].ToString() : string.Empty,
+																SaleBillPrintReportName = dr["SaleBillPrintReportName"] != DBNull.Value ? dr["SaleBillPrintReportName"].ToString() : string.Empty,
+																AllowMultipleBuyerInSaleOrder = dr["AllowMultipleBuyerInSaleOrder"] != DBNull.Value ? dr["AllowMultipleBuyerInSaleOrder"].ToString() : string.Empty,
+																JWSaleBillPrintReportName = dr["JWSaleBillPrintReportName"] != DBNull.Value ? dr["JWSaleBillPrintReportName"].ToString() : string.Empty,
+																AllowBackDateSALEBILL = dr["AllowBackDateSALEBILL"] != DBNull.Value ? dr["AllowBackDateSALEBILL"].ToString() : string.Empty,
+																salebillShowItemBatchFIFOBased = dr["salebillShowItemBatchFIFOBased"] != DBNull.Value ? dr["salebillShowItemBatchFIFOBased"].ToString() : string.Empty,
+																AccSaleBillManualTaxAlloweed = dr["AccSaleBillManualTaxAlloweed"] != DBNull.Value ? dr["AccSaleBillManualTaxAlloweed"].ToString() : string.Empty,
+																AccPasswordToAllowManualTax = dr["AccPasswordToAllowManualTax"] != DBNull.Value ? dr["AccPasswordToAllowManualTax"].ToString() : string.Empty,
+																EditableRateAndDiscountONSaleInvoice = dr["EditableRateAndDiscountONSaleInvoice"] != DBNull.Value ? dr["EditableRateAndDiscountONSaleInvoice"].ToString() : string.Empty,
+																ShowHideEntryDetail = dr["ShowHideSaleBillEntryDetail"] != DBNull.Value ? dr["ShowHideSaleBillEntryDetail"].ToString() : string.Empty,
+																ShowHideCustomerDetail = dr["ShowHideSaleBillCustomerDetail"] != DBNull.Value ? dr["ShowHideSaleBillCustomerDetail"].ToString() : string.Empty,
+																ShowHideOtherRequiredDetail = dr["ShowHideSaleBillOtherRequiredDetail"] != DBNull.Value ? dr["ShowHideSaleBillOtherRequiredDetail"].ToString() : string.Empty,
+																ShowHideCurrency = dr["ShowHideSaleBillCurrency"] != DBNull.Value ? dr["ShowHideSaleBillCurrency"].ToString() : string.Empty,
+																ShowHideConsignee = dr["ShowHideSaleBillConsignee"] != DBNull.Value ? dr["ShowHideSaleBillConsignee"].ToString() : string.Empty,
+																ShowHideScheduleDetail = dr["ShowHideSaleBillScheduleDetail"] != DBNull.Value ? dr["ShowHideSaleBillScheduleDetail"].ToString() : string.Empty,
+																AllowToChangeStoreName = dr["AllowToChangeSaleBillStoreName"] != DBNull.Value ? dr["AllowToChangeSaleBillStoreName"].ToString() : string.Empty,
+																HideOtherFieldOFDetailTable = dr["HideOtherFieldOfSaleBillDetailTable"] != DBNull.Value ? dr["HideOtherFieldOfSaleBillDetailTable"].ToString() : string.Empty,
+																ApproveSOForGenerateSaleInvoiceOrNot = dr["ApproveSOForGenerateSaleInvoiceOrNot"] != DBNull.Value ? dr["ApproveSOForGenerateSaleInvoiceOrNot"].ToString() : string.Empty,
+
+
+															}).ToList();
                         }
                          if (Type == "AccountDetail")
                         {
@@ -554,69 +570,95 @@ namespace eTactWeb.Data.DAL
                 int cnt = 0;
 
                 if (Type == "ItemDetail")
-                { 
-                    model.AutoGen_PartCode = DS.Tables[0].Rows[0]["AutoGen_PartCode"].ToString();
-                    model.DuplicateItemName = DS.Tables[0].Rows[0]["DuplicateItemName"].ToString();
-                    model.ItemPartcodeGenerationFormat = DS.Tables[0].Rows[0]["ItemPartcodeGenerationFormat"].ToString();
-                }
-                if (Type == "PurchaseDetail")
                 {
-                    model.Po_File_Name = DS.Tables[0].Rows[0]["Po_File_Name"].ToString();
-                    model.PONOEditable = DS.Tables[0].Rows[0]["PONOEditable"].ToString();
-                    model.PONOYearlyRenew = DS.Tables[0].Rows[0]["PONOYearlyRenew"].ToString();
-                    model.AutoGeneratedPUrchaseOrder = DS.Tables[0].Rows[0]["AutoGeneratedPUrchaseOrder"].ToString();
-                    model.PurchaseOrderReport = DS.Tables[0].Rows[0]["PurchaseOrderReport"].ToString();
-                    model.PurchaseorderPrintReportName = DS.Tables[0].Rows[0]["PurchaseorderPrintReportName"].ToString();
-                    model.PurchaseorderAmendPrintReportName = DS.Tables[0].Rows[0]["PurchaseorderAmendPrintReportName"].ToString();
-                    model.PurchasSchedulePrintReportName = DS.Tables[0].Rows[0]["PurchasSchedulePrintReportName"].ToString();
-                    model.PurchasScheduleAmendPrintReportName = DS.Tables[0].Rows[0]["PurchasScheduleAmendPrintReportName"].ToString();
-                    model.AllowBackDatePURCHASEORDER = DS.Tables[0].Rows[0]["AllowBackDatePURCHASEORDER"].ToString();
-                    model.AllowBackDateINDENT = DS.Tables[0].Rows[0]["AllowBackDateINDENT"].ToString();
-                    model.CheckPOPendFromPOonlyNotFromAmendment = DS.Tables[0].Rows[0]["CheckPOPendFromPOonlyNotFromAmendment"].ToString();
-                    model.PoallowtoprintWithoutApproval = DS.Tables[0].Rows[0]["PoallowtoprintWithoutApproval"].ToString();
-                    model.POClosePOAlwaysAgainstIndent = DS.Tables[0].Rows[0]["POClosePOAlwaysAgainstIndent"].ToString();
-                    model.IndentReportName = DS.Tables[0].Rows[0]["IndentReportName"].ToString();
-                    model.PONotAllowedWithoutPartCodePartyWiseDefinition = DS.Tables[0].Rows[0]["PONotAllowedWithoutPartCodePartyWiseDefinition"].ToString();
-                   
-                }
+					model.AutoGen_PartCode = DS.Tables[0].Rows[0]["AutoGen_PartCode"].ToString();
+					model.DuplicateItemName = DS.Tables[0].Rows[0]["DuplicateItemName"].ToString();
+					model.AutoGenItemGroupCode = DS.Tables[0].Rows[0]["AutoGenItemGroupCode"].ToString();
+					model.ItemPartcodeGenerationFormat = DS.Tables[0].Rows[0]["ItemPartcodeGenerationFormat"].ToString();
+					model.IsStoreMandatoryInItemMaster = DS.Tables[0].Rows[0]["IsStoreMandatoryInItemMaster"].ToString();
 
-                if (Type == "SaleOrderDetail")
+				}
+				if (Type == "PurchaseBill")
                 {
-                    model.SaleInvoiceFileName = DS.Tables[0].Rows[0]["SaleInvoiceFileName"].ToString();
-                    model.AutoGenItemGroupCode = DS.Tables[0].Rows[0]["AutoGenItemGroupCode"].ToString();
+					model.PurchaseBillPrintReportName = DS.Tables[0].Rows[0]["PurchaseBillPrintReportName"].ToString();
+					model.DirectPurchaseBillPrintReportName = DS.Tables[0].Rows[0]["DirectPurchaseBillPrintReportName"].ToString();
+					model.PurchBillVoucherPrintReportName = DS.Tables[0].Rows[0]["PurchBillVoucherPrintReportName"].ToString();
+					model.AccAllowtochangeDocumnetinPurchaseBill = DS.Tables[0].Rows[0]["AccAllowtochangeDocumnetinPurchaseBill"].ToString();
+					model.AccAllowTochangeVoucherDateInPurchBill = DS.Tables[0].Rows[0]["AccAllowTochangeVoucherDateInPurchBill"].ToString();
+					model.AccAllowtochangeInvoiceNoDateinPurchaseBill = DS.Tables[0].Rows[0]["AccAllowtochangeInvoiceNoDateinPurchaseBill"].ToString();
+					model.AccPurchaseVoucherPrintoutFileName = DS.Tables[0].Rows[0]["AccPurchaseVoucherPrintoutFileName"].ToString();
+					model.AccPurchaseBillInvoicePrintoutFileName = DS.Tables[0].Rows[0]["AccPurchaseBillInvoicePrintoutFileName"].ToString();
+					model.ShowHideDirectPurchaseBillEntryDetail = DS.Tables[0].Rows[0]["ShowHideDirectPurchaseBillEntryDetail"].ToString();
+					model.ShowHideDirectPurchaseBillCustomerDetail = DS.Tables[0].Rows[0]["ShowHideDirectPurchaseBillCustomerDetail"].ToString();
+					model.ShowHideDirectPurchaseBillOtherRequiredDetail = DS.Tables[0].Rows[0]["ShowHideDirectPurchaseBillOtherRequiredDetail"].ToString();
+					model.ShowHideDirectPurchaseBillCurrency = DS.Tables[0].Rows[0]["ShowHideDirectPurchaseBillCurrency"].ToString();
+					model.ShowHideDirectPurchaseBillConsignee = DS.Tables[0].Rows[0]["ShowHideDirectPurchaseBillConsignee"].ToString();
+					model.ShowHideDirectPurchaseBillScheduleDetail = DS.Tables[0].Rows[0]["ShowHideDirectPurchaseBillScheduleDetail"].ToString();
+					model.HideOtherFieldOFDirectPurchaseBillDetailTable = DS.Tables[0].Rows[0]["HideOtherFieldOFDirectPurchaseBillDetailTable"].ToString();
+					model.ShowHideDirectPurchaseBillOtherDetails = DS.Tables[0].Rows[0]["ShowHideDirectPurchaseBillOtherDetails"].ToString();
+					model.ShowHidePurchaseBillEntryDetail = DS.Tables[0].Rows[0]["ShowHidePurchaseBillEntryDetail"].ToString();
+					model.ShowHidePurchaseBillCustomerDetail = DS.Tables[0].Rows[0]["ShowHidePurchaseBillCustomerDetail"].ToString();
+					model.ShowHidePurchaseBillOtherRequiredDetail = DS.Tables[0].Rows[0]["ShowHidePurchaseBillOtherRequiredDetail"].ToString();
+					model.ShowHidePurchaseBillCurrency = DS.Tables[0].Rows[0]["ShowHidePurchaseBillCurrency"].ToString();
+					model.ShowHidePurchaseBillConsignee = DS.Tables[0].Rows[0]["ShowHidePurchaseBillConsignee"].ToString();
+					model.ShowHidePurchaseBillScheduleDetail = DS.Tables[0].Rows[0]["ShowHidePurchaseBillScheduleDetail"].ToString();
+					model.HideOtherFieldOFPurchaseBillDetailTable = DS.Tables[0].Rows[0]["HideOtherFieldOFPurchaseBillDetailTable"].ToString();
+					model.ShowHidePurchaseBillOtherDetails = DS.Tables[0].Rows[0]["ShowHidePurchaseBillOtherDetails"].ToString();
+					//model.DirectPurchBillVoucherPrintReportName = DS.Tables[0].Rows[0]["DirectPurchBillVoucherPrintReportName"].ToString();
+
+				}
+
+				if (Type == "SaleOrderDetail")
+                {
                     model.AllowMultipleBuyerInSaleOrder = DS.Tables[0].Rows[0]["AllowMultipleBuyerInSaleOrder"].ToString();
                     model.SaleorderPrintReportName = DS.Tables[0].Rows[0]["SaleorderPrintReportName"].ToString();
                     model.SaleAmendPrintReportName = DS.Tables[0].Rows[0]["SaleAmendPrintReportName"].ToString();
                     model.SaleSchedulePrintReportName = DS.Tables[0].Rows[0]["SaleSchedulePrintReportName"].ToString();
                     model.SaleScheduleAmendPrintReportName = DS.Tables[0].Rows[0]["SaleScheduleAmendPrintReportName"].ToString();
+                    model.ShowHideSaleOrderEntryDetail = DS.Tables[0].Rows[0]["ShowHideSaleOrderEntryDetail"].ToString();
+                    model.ShowHideSaleOrderOtherRequiredDetail = DS.Tables[0].Rows[0]["ShowHideSaleOrderOtherRequiredDetail"].ToString();
+                    model.ShowHideSaleOrderConsignee = DS.Tables[0].Rows[0]["ShowHideSaleOrderConsignee"].ToString();
+                    model.HideOtherFieldOFSaleOrderDetailTable = DS.Tables[0].Rows[0]["HideOtherFieldOFSaleOrderDetailTable"].ToString();
 
                 } 
-                if (Type == "PurchaseBill")
+                if (Type == "PurchaseDetail")
                 {
-                   // model.AccAllowtochangeDocumentinPurchaseBill = DS.Tables[0].Rows[0]["AccAllowtochangeDocumentinPurchaseBill"] != DBNull.Value ? DS.Tables[0].Rows[0]["AccAllowtochangeDocumentinPurchaseBill"].ToString() : string.Empty;
-                    model.AccPasswordToChangeDocumentinPurchaseBill = DS.Tables[0].Rows[0]["AccPasswordToChangeDocumentinPurchaseBill"] != DBNull.Value ? DS.Tables[0].Rows[0]["AccPasswordToChangeDocumentinPurchaseBill"].ToString() : string.Empty;
-                    model.AccAllowtochangeInvoiceNoDateinPurchaseBill = DS.Tables[0].Rows[0]["AccAllowtochangeInvoiceNoDateinPurchaseBill"] != DBNull.Value ? DS.Tables[0].Rows[0]["AccAllowtochangeInvoiceNoDateinPurchaseBill"].ToString() : string.Empty;
-                    model.AccAllowtochangeDocumnetinPurchaseBill = DS.Tables[0].Rows[0]["AccAllowtochangeDocumnetinPurchaseBill"].ToString();
-                    model.AccAllowToChangeVoucherDateInPurchBill = DS.Tables[0].Rows[0]["AccAllowTochangeVoucherDateInPurchBill"] != DBNull.Value ? DS.Tables[0].Rows[0]["AccAllowTochangeVoucherDateInPurchBill"].ToString() : string.Empty;
-                    model.AccPurchaseVoucherPrintoutFilename = DS.Tables[0].Rows[0]["AccPurchaseVoucherPrintoutfilename"] != DBNull.Value ? DS.Tables[0].Rows[0]["AccPurchaseVoucherPrintoutfilename"].ToString() : string.Empty;
-                    model.AccPurchaseBillInvoicePrintoutFilename = DS.Tables[0].Rows[0]["AccPurchaseBillInvoicePrintoutfilename"] != DBNull.Value ? DS.Tables[0].Rows[0]["AccPurchaseBillInvoicePrintoutfilename"].ToString() : string.Empty;
+					model.PurchaseorderPrintReportName = DS.Tables[0].Rows[0]["PurchaseorderPrintReportName"] != DBNull.Value ? DS.Tables[0].Rows[0]["PurchaseorderPrintReportName"].ToString() : string.Empty;
+					model.PurchaseorderAmendPrintReportName = DS.Tables[0].Rows[0]["PurchaseorderAmendPrintReportName"] != DBNull.Value ? DS.Tables[0].Rows[0]["PurchaseorderAmendPrintReportName"].ToString() : string.Empty;
+					model.PurchasSchedulePrintReportName = DS.Tables[0].Rows[0]["PurchasSchedulePrintReportName"] != DBNull.Value ? DS.Tables[0].Rows[0]["PurchasSchedulePrintReportName"].ToString() : string.Empty;
+					model.PurchasScheduleAmendPrintReportName = DS.Tables[0].Rows[0]["PurchasScheduleAmendPrintReportName"] != DBNull.Value ? DS.Tables[0].Rows[0]["PurchasScheduleAmendPrintReportName"].ToString() : string.Empty;
+					model.IndentReportName = DS.Tables[0].Rows[0]["IndentReportName"] != DBNull.Value ? DS.Tables[0].Rows[0]["IndentReportName"].ToString() : string.Empty;
+					model.PoallowtoprintWithoutApproval = DS.Tables[0].Rows[0]["PoallowtoprintWithoutApproval"] != DBNull.Value ? DS.Tables[0].Rows[0]["PoallowtoprintWithoutApproval"].ToString() : string.Empty;
+					model.PurchaseIncrementPercentageofRMInMRP =
+		DS.Tables[0].Rows[0]["PurchaseIncrementPercentageofRMInMRP"] != DBNull.Value
+		? Convert.ToDecimal(DS.Tables[0].Rows[0]["PurchaseIncrementPercentageofRMInMRP"])
+		: 0;
 
-                }
-                if (Type == "GateEntryDetail")
+					model.PONotAllowedWithoutPartCodePartyWiseDefinition = DS.Tables[0].Rows[0]["PONotAllowedWithoutPartCodePartyWiseDefinition"] != DBNull.Value ? DS.Tables[0].Rows[0]["PONotAllowedWithoutPartCodePartyWiseDefinition"].ToString() : string.Empty;
+					model.Allow_PO_Print = DS.Tables[0].Rows[0]["Allow_PO_Print"] != DBNull.Value ? DS.Tables[0].Rows[0]["Allow_PO_Print"].ToString() : string.Empty;
+					model.Po_File_Name = DS.Tables[0].Rows[0]["Po_File_Name"] != DBNull.Value ? DS.Tables[0].Rows[0]["Po_File_Name"].ToString() : string.Empty;
+					model.PONOEditable = DS.Tables[0].Rows[0]["PONOEditable"] != DBNull.Value ? DS.Tables[0].Rows[0]["PONOEditable"].ToString() : string.Empty;
+					model.PONOYearlyRenew = DS.Tables[0].Rows[0]["PONOYearlyRenew"] != DBNull.Value ? DS.Tables[0].Rows[0]["PONOYearlyRenew"].ToString() : string.Empty;
+					model.AutoGeneratedPUrchaseOrder = DS.Tables[0].Rows[0]["AutoGeneratedPUrchaseOrder"] != DBNull.Value ? DS.Tables[0].Rows[0]["AutoGeneratedPUrchaseOrder"].ToString() : string.Empty;
+					model.CheckPOPendFromPOonlyNotFromAmendment = DS.Tables[0].Rows[0]["CheckPOPendFromPOonlyNotFromAmendment"] != DBNull.Value ? DS.Tables[0].Rows[0]["CheckPOPendFromPOonlyNotFromAmendment"].ToString() : string.Empty;
+					model.POClosePOAlwaysAgainstIndent = DS.Tables[0].Rows[0]["POClosePOAlwaysAgainstIndent"] != DBNull.Value ? DS.Tables[0].Rows[0]["POClosePOAlwaysAgainstIndent"].ToString() : string.Empty;
+					model.allowtostartdateindashboarddate = DS.Tables[0].Rows[0]["allowtostartdateindashboarddate"] != DBNull.Value ? DS.Tables[0].Rows[0]["allowtostartdateindashboarddate"].ToString() : string.Empty;
+
+				}
+				if (Type == "GateEntryDetail")
                 {
-                    model.BlockGateEntry4UnAppPOAmm = DS.Tables[0].Rows[0]["BlockGateEntry4UnAppPOAmm"].ToString();
-                    model.AllowBackDateGAteEntry = DS.Tables[0].Rows[0]["AllowBackDateGAteEntry"].ToString();
-                    model.ShowRateINGAteMrn = DS.Tables[0].Rows[0]["ShowRateINGAteMrn"].ToString();
-                    model.GateEntryPrintReportName = DS.Tables[0].Rows[0]["GateEntryPrintReportName"].ToString();
-                    model.AllowGateRateEnabled = DS.Tables[0].Rows[0]["AllowGateRateEnabled"].ToString();
-
-                }
+					model.blockGateEntry4UnAppPOAmm = DS.Tables[0].Rows[0]["blockGateEntry4UnAppPOAmm"].ToString();
+					model.AllowBackDateGAteEntry = DS.Tables[0].Rows[0]["AllowBackDateGAteEntry"].ToString();
+					model.AllowGateRateEnabled = DS.Tables[0].Rows[0]["AllowGateRateEnabled"].ToString();
+					model.AllowToChangeBranch = DS.Tables[0].Rows[0]["AllowToChangeBranch"].ToString();
+					model.allowforRecUnitgateentry = DS.Tables[0].Rows[0]["allowforRecUnitgateentry"].ToString();
+				}
                 if (Type == "MRNDetail")
                 {
                     model.AllowBackDateMRNEntry = DS.Tables[0].Rows[0]["AllowBackDateMRNEntry"].ToString();
-                    model.AllowToChangeStoreInMRN = DS.Tables[0].Rows[0]["AllowToChangeStoreInMRN"].ToString();
+                    model.BatchWiseInventory = DS.Tables[0].Rows[0]["BatchWiseInventory"].ToString();
                     model.MRNPrintReportName = DS.Tables[0].Rows[0]["MRNPrintReportName"].ToString();
-                    model.AllowBackDateMRIR = DS.Tables[0].Rows[0]["AllowBackDateMRIR"].ToString();
+                    model.TakeSuuplierBatchOrSystmGeneratedBatchForInv = DS.Tables[0].Rows[0]["TakeSuuplierBatchOrSystmGeneratedBatchForInv"].ToString();
 
 
                 }
@@ -727,14 +769,29 @@ namespace eTactWeb.Data.DAL
                 }
                  if (Type == "SaleBillDetail")
                 {
-                    model.AllowBackDateSALEBILL = DS.Tables[0].Rows[0]["AllowBackDateSALEBILL"] != DBNull.Value ? DS.Tables[0].Rows[0]["AllowBackDateSALEBILL"].ToString() : string.Empty;
-                    model.VoucherRotationDailyMonthYearly = DS.Tables[0].Rows[0]["VoucherRotationDailyMonthYearly"] != DBNull.Value ? DS.Tables[0].Rows[0]["VoucherRotationDailyMonthYearly"].ToString() : string.Empty;
-                    model.AccSaleBillManualTaxAlloweed = DS.Tables[0].Rows[0]["AccSaleBillManualTaxAlloweed"] != DBNull.Value ? DS.Tables[0].Rows[0]["AccSaleBillManualTaxAlloweed"].ToString() : string.Empty;
-                    model.AccPasswordToAllowManualTax = DS.Tables[0].Rows[0]["AccPasswordToAllowManualTax"] != DBNull.Value ? DS.Tables[0].Rows[0]["AccPasswordToAllowManualTax"].ToString() : string.Empty;
-                    model.salebillShowItemBatchFIFOBased = DS.Tables[0].Rows[0]["salebillShowItemBatchFIFOBased"] != DBNull.Value ? DS.Tables[0].Rows[0]["salebillShowItemBatchFIFOBased"].ToString() : string.Empty;
-                    
-                }
-                  if (Type == "AccountDetail")
+					model.SaleInvoiceFileName = DS.Tables[0].Rows[0]["SaleInvoiceFileName"] != DBNull.Value ? DS.Tables[0].Rows[0]["SaleInvoiceFileName"].ToString() : string.Empty;
+					model.SaleBillPrintReportName = DS.Tables[0].Rows[0]["SaleBillPrintReportName"] != DBNull.Value ? DS.Tables[0].Rows[0]["SaleBillPrintReportName"].ToString() : string.Empty;
+					model.AllowMultipleBuyerInSaleOrder = DS.Tables[0].Rows[0]["AllowMultipleBuyerInSaleOrder"] != DBNull.Value ? DS.Tables[0].Rows[0]["AllowMultipleBuyerInSaleOrder"].ToString() : string.Empty;
+					model.JWSaleBillPrintReportName = DS.Tables[0].Rows[0]["JWSaleBillPrintReportName"] != DBNull.Value ? DS.Tables[0].Rows[0]["JWSaleBillPrintReportName"].ToString() : string.Empty;
+					model.AllowBackDateSALEBILL = DS.Tables[0].Rows[0]["AllowBackDateSALEBILL"] != DBNull.Value ? DS.Tables[0].Rows[0]["AllowBackDateSALEBILL"].ToString() : string.Empty;
+					model.salebillShowItemBatchFIFOBased = DS.Tables[0].Rows[0]["salebillShowItemBatchFIFOBased"] != DBNull.Value ? DS.Tables[0].Rows[0]["salebillShowItemBatchFIFOBased"].ToString() : string.Empty;
+					model.AccSaleBillManualTaxAlloweed = DS.Tables[0].Rows[0]["AccSaleBillManualTaxAlloweed"] != DBNull.Value ? DS.Tables[0].Rows[0]["AccSaleBillManualTaxAlloweed"].ToString() : string.Empty;
+					model.AccPasswordToAllowManualTax = DS.Tables[0].Rows[0]["AccPasswordToAllowManualTax"] != DBNull.Value ? DS.Tables[0].Rows[0]["AccPasswordToAllowManualTax"].ToString() : string.Empty;
+					model.EditableRateAndDiscountONSaleInvoice = DS.Tables[0].Rows[0]["EditableRateAndDiscountONSaleInvoice"] != DBNull.Value ? DS.Tables[0].Rows[0]["EditableRateAndDiscountONSaleInvoice"].ToString() : string.Empty;
+					model.ShowHideEntryDetail = DS.Tables[0].Rows[0]["ShowHideSaleBillEntryDetail"] != DBNull.Value ? DS.Tables[0].Rows[0]["ShowHideSaleBillEntryDetail"].ToString() : string.Empty;
+					model.ShowHideCustomerDetail = DS.Tables[0].Rows[0]["ShowHideSaleBillCustomerDetail"] != DBNull.Value ? DS.Tables[0].Rows[0]["ShowHideSaleBillCustomerDetail"].ToString() : string.Empty;
+					model.ShowHideOtherRequiredDetail = DS.Tables[0].Rows[0]["ShowHideSaleBillOtherRequiredDetail"] != DBNull.Value ? DS.Tables[0].Rows[0]["ShowHideSaleBillOtherRequiredDetail"].ToString() : string.Empty;
+					model.ShowHideCurrency = DS.Tables[0].Rows[0]["ShowHideSaleBillCurrency"] != DBNull.Value ? DS.Tables[0].Rows[0]["ShowHideSaleBillCurrency"].ToString() : string.Empty;
+					model.ShowHideConsignee = DS.Tables[0].Rows[0]["ShowHideSaleBillConsignee"] != DBNull.Value ? DS.Tables[0].Rows[0]["ShowHideSaleBillConsignee"].ToString() : string.Empty;
+					model.ShowHideScheduleDetail = DS.Tables[0].Rows[0]["ShowHideSaleBillScheduleDetail"] != DBNull.Value ? DS.Tables[0].Rows[0]["ShowHideSaleBillScheduleDetail"].ToString() : string.Empty;
+					model.AllowToChangeStoreName = DS.Tables[0].Rows[0]["AllowToChangeSaleBillStoreName"] != DBNull.Value ? DS.Tables[0].Rows[0]["AllowToChangeSaleBillStoreName"].ToString() : string.Empty;
+					model.HideOtherFieldOFDetailTable = DS.Tables[0].Rows[0]["HideOtherFieldOfSaleBillDetailTable"] != DBNull.Value ? DS.Tables[0].Rows[0]["HideOtherFieldOfSaleBillDetailTable"].ToString() : string.Empty;
+					model.ApproveSOForGenerateSaleInvoiceOrNot = DS.Tables[0].Rows[0]["ApproveSOForGenerateSaleInvoiceOrNot"] != DBNull.Value ? DS.Tables[0].Rows[0]["ApproveSOForGenerateSaleInvoiceOrNot"].ToString() : string.Empty;
+					model.ShowHideOtherDetails = DS.Tables[0].Rows[0]["ShowHideOtherDetails"] != DBNull.Value ? DS.Tables[0].Rows[0]["ShowHideOtherDetails"].ToString() : string.Empty;
+					model.HideShowOtherDiscount = DS.Tables[0].Rows[0]["HideShowOtherDiscount"] != DBNull.Value ? DS.Tables[0].Rows[0]["HideShowOtherDiscount"].ToString() : string.Empty;
+					
+				}
+				if (Type == "AccountDetail")
                 {
                    
                     model.AccPasswordToAllowManualTax = DS.Tables[0].Rows[0]["AccPasswordToAllowManualTax"] != DBNull.Value ? DS.Tables[0].Rows[0]["AccPasswordToAllowManualTax"].ToString() : string.Empty;
@@ -774,49 +831,70 @@ namespace eTactWeb.Data.DAL
                     if (model.Type == "ItemDetail")
                     {
 
-                        SqlParams.Add(new SqlParameter("@Flag", "UPDATEItemDashbaord"));
-                        SqlParams.Add(new SqlParameter("@AutoGen_PartCode", model.AutoGen_PartCode));
-                        SqlParams.Add(new SqlParameter("@DuplicateItemName", model.DuplicateItemName));
-                        SqlParams.Add(new SqlParameter("@ItemPartcodeGenerationFormat", model.ItemPartcodeGenerationFormat));
-                    }
-                     if (model.Type == "PurchaseBill")
+                         SqlParams.Add(new SqlParameter("@Flag", "UPDATEItemDashbaord"));
+					    SqlParams.Add(new SqlParameter("@AutoGen_PartCode", model.AutoGen_PartCode));
+					    SqlParams.Add(new SqlParameter("@DuplicateItemName", model.DuplicateItemName));
+					    SqlParams.Add(new SqlParameter("@AutoGenItemGroupCode", model.AutoGenItemGroupCode));
+					    SqlParams.Add(new SqlParameter("@ItemPartcodeGenerationFormat", model.ItemPartcodeGenerationFormat));
+					    SqlParams.Add(new SqlParameter("@IsStoreMandatoryInItemMaster", model.IsStoreMandatoryInItemMaster));
+
+				    }
+				if (model.Type == "PurchaseDetail")
                      {
 
-                        SqlParams.Add(new SqlParameter("@Flag", "UPDATEPurchaseBillDashbaord"));
-                        SqlParams.Add(new SqlParameter("@AccAllowtochangeDocumnetinPurchaseBill", model.AccAllowtochangeDocumnetinPurchaseBill));
-                       
-                        SqlParams.Add(new SqlParameter("@AccPasswordToChangeDocumentinPurchaseBill", model.AccPasswordToChangeDocumentinPurchaseBill));
-                        SqlParams.Add(new SqlParameter("@AccAllowtochangeInvoiceNoDateinPurchaseBill", model.AccAllowtochangeInvoiceNoDateinPurchaseBill));
-                        SqlParams.Add(new SqlParameter("@AccAllowTochangeVoucherDateInPurchBill", model.AccAllowToChangeVoucherDateInPurchBill));
-                        SqlParams.Add(new SqlParameter("@AccPurchaseVoucherPrintoutfilename", model.AccPurchaseVoucherPrintoutFilename));
-                        SqlParams.Add(new SqlParameter("@AccPurchaseBillInvoicePrintoutfilename", model.AccPurchaseBillInvoicePrintoutFilename));
+                        SqlParams.Add(new SqlParameter("@Flag", "UPDATEPurchaseDashbaord"));
+					SqlParams.Add(new SqlParameter("@PurchaseorderPrintReportName", model.PurchaseorderPrintReportName));
+					SqlParams.Add(new SqlParameter("@PurchaseorderAmendPrintReportName", model.PurchaseorderAmendPrintReportName));
+					SqlParams.Add(new SqlParameter("@PurchasSchedulePrintReportName", model.PurchasSchedulePrintReportName));
+					SqlParams.Add(new SqlParameter("@PurchasScheduleAmendPrintReportName", model.PurchasScheduleAmendPrintReportName));
+					SqlParams.Add(new SqlParameter("@IndentReportName", model.IndentReportName));
+					SqlParams.Add(new SqlParameter("@PoallowtoprintWithoutApproval", model.PoallowtoprintWithoutApproval));
+					SqlParams.Add(new SqlParameter("@PurchaseIncrementPercentageofRMInMRP", model.PurchaseIncrementPercentageofRMInMRP));
+					SqlParams.Add(new SqlParameter("@PONotAllowedWithoutPartCodePartyWiseDefinition", model.PONotAllowedWithoutPartCodePartyWiseDefinition));
+					SqlParams.Add(new SqlParameter("@Allow_PO_Print", model.Allow_PO_Print));
+					SqlParams.Add(new SqlParameter("@Po_File_Name", model.Po_File_Name));
+					SqlParams.Add(new SqlParameter("@PONOEditable", model.PONOEditable));
+					SqlParams.Add(new SqlParameter("@PONOYearlyRenew", model.PONOYearlyRenew));
+					SqlParams.Add(new SqlParameter("@AutoGeneratedPUrchaseOrder", model.AutoGeneratedPUrchaseOrder));
+					SqlParams.Add(new SqlParameter("@CheckPOPendFromPOonlyNotFromAmendment", model.CheckPOPendFromPOonlyNotFromAmendment));
+					SqlParams.Add(new SqlParameter("@POClosePOAlwaysAgainstIndent", model.POClosePOAlwaysAgainstIndent));
+					SqlParams.Add(new SqlParameter("@allowtostartdateindashboarddate", model.allowtostartdateindashboarddate));
 
-                }
+				}
 
 
-                if (model.Type == "PurchaseDetail")
+				if (model.Type == "PurchaseBill") 
                     {
                    
-                        SqlParams.Add(new SqlParameter("@Flag", "UPDATEPurchaseDashbaord"));
-                        SqlParams.Add(new SqlParameter("@Po_File_Name", model.Po_File_Name));
-                        SqlParams.Add(new SqlParameter("@PONOEditable", model.PONOEditable));
-                        SqlParams.Add(new SqlParameter("@PONOYearlyRenew", model.PONOYearlyRenew));
-                        SqlParams.Add(new SqlParameter("@AutoGeneratedPUrchaseOrder", model.AutoGeneratedPUrchaseOrder));
-                        SqlParams.Add(new SqlParameter("@PurchaseOrderReport", model.PurchaseOrderReport));
-                        SqlParams.Add(new SqlParameter("@PurchaseorderPrintReportName", model.PurchaseorderPrintReportName));
-                        SqlParams.Add(new SqlParameter("@PurchaseorderAmendPrintReportName", model.PurchaseorderAmendPrintReportName));
-                        SqlParams.Add(new SqlParameter("@PurchasSchedulePrintReportName", model.PurchasSchedulePrintReportName));
-                        SqlParams.Add(new SqlParameter("@PurchasScheduleAmendPrintReportName", model.PurchasScheduleAmendPrintReportName));
-                        SqlParams.Add(new SqlParameter("@AllowBackDatePURCHASEORDER", model.AllowBackDatePURCHASEORDER));
-                        SqlParams.Add(new SqlParameter("@AllowBackDateINDENT", model.AllowBackDateINDENT));
-                        SqlParams.Add(new SqlParameter("@CheckPOPendFromPOonlyNotFromAmendment", model.CheckPOPendFromPOonlyNotFromAmendment));
-                        SqlParams.Add(new SqlParameter("@PoallowtoprintWithoutApproval", model.PoallowtoprintWithoutApproval));
-                        SqlParams.Add(new SqlParameter("@POClosePOAlwaysAgainstIndent", model.POClosePOAlwaysAgainstIndent));
-                        SqlParams.Add(new SqlParameter("@IndentReportName", model.POClosePOAlwaysAgainstIndent));
-                        SqlParams.Add(new SqlParameter("@PONotAllowedWithoutPartCodePartyWiseDefinition", model.PONotAllowedWithoutPartCodePartyWiseDefinition));
-                       
-                    }
-                    if (model.Type == "SaleOrderDetail")
+                    SqlParams.Add(new SqlParameter("@Flag", "UPDATEPurchaseBillDashbaord"));
+					SqlParams.Add(new SqlParameter("@PurchaseBillPrintReportName", model.PurchaseBillPrintReportName));
+					SqlParams.Add(new SqlParameter("@DirectPurchaseBillPrintReportName", model.DirectPurchaseBillPrintReportName));
+					SqlParams.Add(new SqlParameter("@PurchBillVoucherPrintReportName", model.PurchBillVoucherPrintReportName));
+					SqlParams.Add(new SqlParameter("@DirectPurchBillVoucherPrintReportName", model.DirectPurchBillVoucherPrintReportName));
+					SqlParams.Add(new SqlParameter("@AccAllowtochangeDocumnetinPurchaseBill", model.AccAllowtochangeDocumnetinPurchaseBill));
+					SqlParams.Add(new SqlParameter("@AccAllowTochangeVoucherDateInPurchBill", model.AccAllowTochangeVoucherDateInPurchBill));
+					SqlParams.Add(new SqlParameter("@AccAllowtochangeInvoiceNoDateinPurchaseBill", model.AccAllowtochangeInvoiceNoDateinPurchaseBill));
+					SqlParams.Add(new SqlParameter("@AccPurchaseVoucherPrintoutFileName", model.AccPurchaseVoucherPrintoutFileName));
+					SqlParams.Add(new SqlParameter("@AccPurchaseBillInvoicePrintoutFileName", model.AccPurchaseBillInvoicePrintoutFileName));
+					SqlParams.Add(new SqlParameter("@ShowHideDirectPurchaseBillEntryDetail", model.ShowHideDirectPurchaseBillEntryDetail));
+					SqlParams.Add(new SqlParameter("@ShowHideDirectPurchaseBillCustomerDetail", model.ShowHideDirectPurchaseBillCustomerDetail));
+					SqlParams.Add(new SqlParameter("@ShowHideDirectPurchaseBillOtherRequiredDetail", model.ShowHideDirectPurchaseBillOtherRequiredDetail));
+					SqlParams.Add(new SqlParameter("@ShowHideDirectPurchaseBillCurrency", model.ShowHideDirectPurchaseBillCurrency));
+					SqlParams.Add(new SqlParameter("@ShowHideDirectPurchaseBillConsignee", model.ShowHideDirectPurchaseBillConsignee));
+					SqlParams.Add(new SqlParameter("@ShowHideDirectPurchaseBillScheduleDetail", model.ShowHideDirectPurchaseBillScheduleDetail));
+					SqlParams.Add(new SqlParameter("@HideOtherFieldOFDirectPurchaseBillDetailTable", model.HideOtherFieldOFDirectPurchaseBillDetailTable));
+					SqlParams.Add(new SqlParameter("@ShowHideDirectPurchaseBillOtherDetails", model.ShowHideDirectPurchaseBillOtherDetails));
+					SqlParams.Add(new SqlParameter("@ShowHidePurchaseBillEntryDetail", model.ShowHidePurchaseBillEntryDetail));
+					SqlParams.Add(new SqlParameter("@ShowHidePurchaseBillCustomerDetail", model.ShowHidePurchaseBillCustomerDetail));
+					SqlParams.Add(new SqlParameter("@ShowHidePurchaseBillOtherRequiredDetail", model.ShowHidePurchaseBillOtherRequiredDetail));
+					SqlParams.Add(new SqlParameter("@ShowHidePurchaseBillCurrency", model.ShowHidePurchaseBillCurrency));
+					SqlParams.Add(new SqlParameter("@ShowHidePurchaseBillConsignee", model.ShowHidePurchaseBillConsignee));
+					SqlParams.Add(new SqlParameter("@ShowHidePurchaseBillScheduleDetail", model.ShowHidePurchaseBillScheduleDetail));
+					SqlParams.Add(new SqlParameter("@HideOtherFieldOFPurchaseBillDetailTable", model.HideOtherFieldOFPurchaseBillDetailTable));
+					SqlParams.Add(new SqlParameter("@ShowHidePurchaseBillOtherDetails", model.ShowHidePurchaseBillOtherDetails));
+
+				}
+				if (model.Type == "SaleOrderDetail")
                     {
                         SqlParams.Add(new SqlParameter("@Flag", "UPDATESaleOrderDashbaord"));
                         SqlParams.Add(new SqlParameter("@SaleInvoiceFileName", model.SaleInvoiceFileName));
@@ -826,26 +904,30 @@ namespace eTactWeb.Data.DAL
                         SqlParams.Add(new SqlParameter("@SaleAmendPrintReportName", model.SaleAmendPrintReportName));
                         SqlParams.Add(new SqlParameter("@SaleSchedulePrintReportName", model.SaleSchedulePrintReportName));
                         SqlParams.Add(new SqlParameter("@SaleScheduleAmendPrintReportName", model.SaleScheduleAmendPrintReportName));
-
+                        SqlParams.Add(new SqlParameter("@ShowHideSaleOrderEntryDetail", model.ShowHideSaleOrderEntryDetail));
+                        SqlParams.Add(new SqlParameter("@ShowHideSaleOrderOtherRequiredDetail", model.ShowHideSaleOrderOtherRequiredDetail));
+                        SqlParams.Add(new SqlParameter("@ShowHideSaleOrderConsignee", model.ShowHideSaleOrderConsignee));
+                        SqlParams.Add(new SqlParameter("@HideOtherFieldOFSaleOrderDetailTable", model.HideOtherFieldOFSaleOrderDetailTable));
+                        
                     }
                     if (model.Type == "GateEntryDetail")
                     {
                         SqlParams.Add(new SqlParameter("@Flag", "UPDATEGateEntryDashbaord"));
-                        SqlParams.Add(new SqlParameter("@BlockGateEntry4UnAppPOAmm", model.BlockGateEntry4UnAppPOAmm));
-                        SqlParams.Add(new SqlParameter("@AllowBackDateGAteEntry", model.AllowBackDateGAteEntry));
-                        SqlParams.Add(new SqlParameter("@ShowRateINGAteMrn", model.ShowRateINGAteMrn));
-                        SqlParams.Add(new SqlParameter("@GateEntryPrintReportName", model.GateEntryPrintReportName));
-                        SqlParams.Add(new SqlParameter("@AllowGateRateEnabled", model.AllowGateRateEnabled));
+					SqlParams.Add(new SqlParameter("@blockGateEntry4UnAppPOAmm", model.blockGateEntry4UnAppPOAmm));
+					SqlParams.Add(new SqlParameter("@AllowBackDateGAteEntry", model.AllowBackDateGAteEntry));
+					SqlParams.Add(new SqlParameter("@AllowGateRateEnabled", model.AllowGateRateEnabled));
+					SqlParams.Add(new SqlParameter("@AllowToChangeBranch", model.AllowToChangeBranch));
+					SqlParams.Add(new SqlParameter("@AllowForRecUnitGateEntry", model.allowforRecUnitgateentry));
 
 
-                    }
-                     if (model.Type == "MRNDetail")
+				}
+				if (model.Type == "MRNDetail")
                      {
                         SqlParams.Add(new SqlParameter("@Flag", "UPDATEMRNDashbaord"));
                         SqlParams.Add(new SqlParameter("@AllowBackDateMRNEntry", model.AllowBackDateMRNEntry));
-                        SqlParams.Add(new SqlParameter("@AllowToChangeStoreInMRN", model.AllowToChangeStoreInMRN));
+                        SqlParams.Add(new SqlParameter("@BatchWiseInventory", model.BatchWiseInventory));
                         SqlParams.Add(new SqlParameter("@MRNPrintReportName", model.MRNPrintReportName));
-                        SqlParams.Add(new SqlParameter("@AllowBackDateMRIR", model.AllowBackDateMRIR));
+                        SqlParams.Add(new SqlParameter("@TakeSuuplierBatchOrSystmGeneratedBatchForInv", model.TakeSuuplierBatchOrSystmGeneratedBatchForInv));
 
                      }
                       if (model.Type == "CommonDetail")
@@ -970,14 +1052,29 @@ namespace eTactWeb.Data.DAL
                         if (model.Type == "SaleBillDetail")
                         {
                             SqlParams.Add(new SqlParameter("@Flag", "UPDATESaleBill"));
-                            SqlParams.Add(new SqlParameter("@AllowBackDateSALEBILL", model.AllowBackDateSALEBILL));
-                            SqlParams.Add(new SqlParameter("@VoucherRotationDailyMonthYearly", model.VoucherRotationDailyMonthYearly));
-                            SqlParams.Add(new SqlParameter("@AccSaleBillManualTaxAlloweed", model.AccSaleBillManualTaxAlloweed));
-                            SqlParams.Add(new SqlParameter("@AccPasswordToAllowManualTax", model.AccPasswordToAllowManualTax));
-                            SqlParams.Add(new SqlParameter("@salebillShowItemBatchFIFOBased", model.salebillShowItemBatchFIFOBased));
+					SqlParams.Add(new SqlParameter("@SaleInvoiceFileName", model.SaleInvoiceFileName));
+					SqlParams.Add(new SqlParameter("@SaleBillPrintReportName", model.SaleBillPrintReportName));
+					SqlParams.Add(new SqlParameter("@AllowMultipleBuyerInSaleOrder", model.AllowMultipleBuyerInSaleOrder));
+					SqlParams.Add(new SqlParameter("@JWSaleBillPrintReportName", model.JWSaleBillPrintReportName));
+					SqlParams.Add(new SqlParameter("@AllowBackDateSALEBILL", model.AllowBackDateSALEBILL));
+					SqlParams.Add(new SqlParameter("@salebillShowItemBatchFIFOBased", model.salebillShowItemBatchFIFOBased));
+					SqlParams.Add(new SqlParameter("@AccSaleBillManualTaxAlloweed", model.AccSaleBillManualTaxAlloweed));
+					SqlParams.Add(new SqlParameter("@AccPasswordToAllowManualTax", model.AccPasswordToAllowManualTax));
+					SqlParams.Add(new SqlParameter("@EditableRateAndDiscountONSaleInvoice", model.EditableRateAndDiscountONSaleInvoice));
+					SqlParams.Add(new SqlParameter("@ShowHideSaleBillEntryDetail", model.ShowHideEntryDetail));
+					SqlParams.Add(new SqlParameter("@ShowHideSaleBillCustomerDetail", model.ShowHideCustomerDetail));
+					SqlParams.Add(new SqlParameter("@ShowHideSaleBillOtherRequiredDetail", model.ShowHideOtherRequiredDetail));
+					SqlParams.Add(new SqlParameter("@ShowHideSaleBillCurrency", model.ShowHideCurrency));
+					SqlParams.Add(new SqlParameter("@ShowHideSaleBillConsignee", model.ShowHideConsignee));
+					SqlParams.Add(new SqlParameter("@ShowHideSaleBillScheduleDetail", model.ShowHideScheduleDetail));
+					SqlParams.Add(new SqlParameter("@AllowToChangeSaleBillStoreName", model.AllowToChangeStoreName));
+					SqlParams.Add(new SqlParameter("@HideOtherFieldOfSaleBillDetailTable", model.HideOtherFieldOFDetailTable));
+					SqlParams.Add(new SqlParameter("@ApproveSOForGenerateSaleInvoiceOrNot", model.ApproveSOForGenerateSaleInvoiceOrNot));
+					SqlParams.Add(new SqlParameter("@ShowHideOtherDetails", model.ShowHideOtherDetails));
+					SqlParams.Add(new SqlParameter("@HideShowOtherDiscount", model.HideShowOtherDiscount));
 
-                        }
-                         if (model.Type == "AccountDetail")
+				}
+				if (model.Type == "AccountDetail")
                          {
                             SqlParams.Add(new SqlParameter("@Flag", "UPDATEAccount"));
                            

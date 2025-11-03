@@ -31,7 +31,7 @@ namespace eTactWeb.Controllers
         public async Task<ActionResult> VendorUser(int ID, string Mode)
         {
             _logger.LogInformation("\n \n ********** Page Gate Inward ********** \n \n " + _IWebHostEnvironment.EnvironmentName.ToString() + "\n \n");
-            TempData.Clear();
+            //TempData.Clear();
             var MainModel = new VendorUserModel();
 
             MainModel.FinFromDate = HttpContext.Session.GetString("FromDate");
@@ -49,32 +49,6 @@ namespace eTactWeb.Controllers
                 MainModel.LastUpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
                 MainModel.UpdatedByName = HttpContext.Session.GetString("EmpName");
 
-                //MainModel.MachineId = MachineId;
-                //MainModel.MachGroupId = MachGroupId;
-                //MainModel.WorkCenterId = WorkCenterId;
-                //MainModel.MachineCode = MachineCode;
-                //MainModel.MachineName = MachineName;
-                //MainModel.LabourCost = LabourCost;
-                //MainModel.NeedHelper = NeedHelper;
-                //MainModel.TotalHelper = TotalHelper;
-                //MainModel.HelperCost = HelperCost;
-                //MainModel.ElectricityCost = ElectricityCost;
-                //MainModel.OtherCost = OtherCost;
-                //MainModel.TotalCost = TotalCost;
-                //MainModel.EntryDate = EntryDate;
-                //MainModel.Make = Make;
-                //MainModel.Location = Location;
-                //MainModel.TechSpecification = TechSpecification;
-                //MainModel.LastCalibraDate = LastCalibraDate;
-                //MainModel.CalibraDur = CalibraDur;
-                //MainModel.UId = UId;
-                //MainModel.CC = CC;
-                //MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                //{
-                //    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                //    SlidingExpiration = TimeSpan.FromMinutes(55),
-                //    Size = 1024
-                //};
             }
 
             return View(MainModel);
@@ -98,13 +72,28 @@ namespace eTactWeb.Controllers
 
                 if (Result != null)
                 {
-                    if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
+                    //if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
+                    //{
+                    //    ViewBag.isSuccess = true;
+                    //    TempData["200"] = "200";
+                    //    var modelSuccess = new VendorUserModel();
+                    //    return RedirectToAction("VendorUser", modelSuccess);
+                    //}
+
+                    if (Result.StatusCode == HttpStatusCode.OK)
                     {
-                        ViewBag.isSuccess = true;
-                        TempData["200"] = "200";
-                        var modelSuccess = new VendorUserModel();
-                        return RedirectToAction("VendorUser", modelSuccess);
+                        if (Result.StatusText == "Success")
+                        {
+                            TempData["Message"] = "Vendor created successfully!";
+                            return RedirectToAction("Index", "VendorUser");
+                        }
+                        else
+                        {
+                            TempData["422"] = Result.StatusText;
+                            return RedirectToAction("Index", "VendorUser");
+                        }
                     }
+
                     if (Result.StatusText == "Updated" && Result.StatusCode == HttpStatusCode.Accepted)
                     {
                         ViewBag.isSuccess = true;

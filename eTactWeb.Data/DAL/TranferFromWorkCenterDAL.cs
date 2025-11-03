@@ -47,6 +47,31 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
+        public async Task<DataSet> BindAllDropDown()
+        {
+            var oDataSet = new DataSet();
+
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "BINDPARTCODE"));
+                var _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_TransferMaterialFromWc", SqlParams);
+                if (_ResponseResult.Result != null && _ResponseResult.StatusCode == HttpStatusCode.OK && _ResponseResult.StatusText == "Success")
+                {
+                    _ResponseResult.Result.Tables[0].TableName = "PartCodeList";
+                   
+                    oDataSet = _ResponseResult.Result;
+                }
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return oDataSet;
+        }
         public async Task<ResponseResult> GetFormRights(int userID)
         {
             var _ResponseResult = new ResponseResult();
@@ -317,6 +342,27 @@ namespace eTactWeb.Data.DAL
                 Error.Source = ex.Source;
             }
 
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> FillItems(string Type, string ShowAllItem, string SearchItemCode, string SearchPartCode)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetItemsOnAssets"));
+                
+                SqlParams.Add(new SqlParameter("@showAllItem", ShowAllItem));
+                SqlParams.Add(new SqlParameter("@SearchItemCode", SearchItemCode ?? ""));
+                SqlParams.Add(new SqlParameter("@SearchPartCode", SearchPartCode ?? ""));
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_TransferMaterialFromWc", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
             return _ResponseResult;
         }
         public async Task<ResponseResult> FillPartCode(int TransferMatYearCode)
@@ -741,5 +787,72 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
+
+        public async Task<TransferFromWorkCenterModel> selectMultipleItem(int WCID, string FromDate, string ToDate, string PartCode)
+        {
+            var resultList = new TransferFromWorkCenterModel();
+            DataSet oDataSet = new DataSet();
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(DBConnectionString))
+                {
+                    SqlCommand command = new SqlCommand("SPReportWIPstockRegister", connection)
+                    {
+                        CommandType = CommandType.StoredProcedure
+                    };
+                    
+
+                    command.Parameters.AddWithValue("@Flag", "BATCHWISESTOCKSUMMARY");
+                    command.Parameters.AddWithValue("@FormName", "TransferFromWC");
+                  
+                    command.Parameters.AddWithValue("@WCID", WCID);
+                    command.Parameters.AddWithValue("@ToDate", ParseFormattedDate(ToDate));
+                    command.Parameters.AddWithValue("@FromDate", ParseFormattedDate(FromDate));
+                    command.Parameters.AddWithValue("@PartCode", PartCode);
+
+                    await connection.OpenAsync();
+
+                    using (SqlDataAdapter dataAdapter = new SqlDataAdapter(command))
+                    {
+                        dataAdapter.Fill(oDataSet);
+                    }
+                }
+
+                if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                {
+                    resultList.ItemDetailGrid = (from DataRow row in oDataSet.Tables[0].Rows
+                                                      select new TransferFromWorkCenterDetail
+                                                      {
+                                                          ItemCode = row["item_code"] == DBNull.Value ? 0 : Convert.ToInt32(row["item_code"]),
+
+                                                          PartCode = row["PartCode"] == DBNull.Value ? string.Empty : row["PartCode"].ToString(),
+                                                          ItemName = row["ItemName"] == DBNull.Value ? string.Empty : row["ItemName"].ToString(),
+
+                                                          BatchNo = row["batchno"] == DBNull.Value ? string.Empty : row["batchno"].ToString(),
+                                                          UniqueBatchNo = row["uniquebatchno"] == DBNull.Value ? string.Empty : row["uniquebatchno"].ToString(),
+
+
+                                                          Unit = row["unit"] == DBNull.Value ? string.Empty : row["unit"].ToString(),
+                                                          AltUnit = row["AltUnit"] == DBNull.Value ? string.Empty : row["AltUnit"].ToString(),
+                                                          
+                                                          
+                                                          BatchStock = row["BatchStock"] == DBNull.Value ? 0 : Convert.ToDecimal(row["BatchStock"]),
+                                                          TotalStock = row["TotalStock"] == DBNull.Value ? 0 : Convert.ToDecimal(row["TotalStock"]),
+                                                          TransferQty = row["BatchStock"] == DBNull.Value ? 0 : Convert.ToDecimal(row["BatchStock"]),
+
+
+                                                      }).ToList();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error fetching data.", ex);
+            }
+
+            return resultList;
+        }
+
     }
 }

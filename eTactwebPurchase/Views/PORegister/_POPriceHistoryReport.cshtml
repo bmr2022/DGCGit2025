@@ -21,7 +21,7 @@
                     <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PartCode
                 </th>
                 <th class="sortCol" data-sortorder="asc" data-columnno="6">
-                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PoRate
+                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PORate
                 </th>
                 <th class="sortCol" data-sortorder="asc" data-columnno="7">
                     <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Currency
@@ -83,7 +83,7 @@
                             <td>@(item.PODate == null ? string.Empty : item.PODate.Split(" ")[0])</td>
                             <td>@item.ItemName</td>
                             <td>@item.PartCode</td>
-                            <td>@item.PORate</td>
+                            <td style="background-color:#ebd9c6">@item.PORate</td>
                             <td>@item.Currency</td>
                             <td id="POQty-@Cntr">@item.POQty</td>
                             <td>@item.DisPer</td>
@@ -92,7 +92,7 @@
                             <td>@(item.POclosedate == null ? string.Empty : item.POclosedate.Split(" ")[0])</td>
                             <td>@(item.poAmmeffdate == null ? string.Empty : item.poAmmeffdate.Split(" ")[0])</td>
                             <td>@item.POEntryId</td>
-                            <td>@item.POYearCode</td>
+                            <td>@item.PoYear</td>
 
                         </tr>
                         srNo++;
@@ -111,3 +111,8 @@
     }
     <center><strong>TOTAL ROWS: <span>@displayedRows</span></strong></center>
 }
+<style>
+    #divStockRegisterBody {
+        background-color: #d9f2e6;
+    }
+</style>

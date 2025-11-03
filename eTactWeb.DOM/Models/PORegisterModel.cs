@@ -34,7 +34,7 @@ namespace eTactWeb.DOM.Models
         public string Account_name { get; set; }
         public string DOMESTICIMPORT { get; set; }
         public string PONO { get; set; }
-        public int POYearCode { get; set; }
+        public int PoYear { get; set; }
         public int HSNNO { get; set; }
         public string PODate { get; set; }
         public string POtype { get; set; }
@@ -48,7 +48,11 @@ namespace eTactWeb.DOM.Models
         public string PartCode { get; set; }
         public string ItemName { get; set; }
         public string Currency { get; set; }
+        public string Active { get; set; }
         public float PORate { get; set; }
+        public float POAmount { get; set; }
+        public float GSTAmt { get; set; }
+        public float GSTPer { get; set; }
         public string POQty { get; set; }
         public string MRNNo { get; set; }
         public string MRNDATE { get; set; }
@@ -72,16 +76,18 @@ namespace eTactWeb.DOM.Models
 
         //summary
         public string Vendor { get; set; }        
+        public string VendorName { get; set; }        
         public string ScheduleEffectiveFromDate { get; set; }        
         public string ScheduleEffectiveTillDate { get; set; }                   
         public string POEffDate { get; set; }
         public string POEndDate { get; set; }
         public string POValue { get; set; }
         public string QCOKQty { get; set; }
-        public string PendQty { get; set; }
+        public decimal PendQty { get; set; }
         public string MinLevel { get; set; }
         public string unit { get; set; }
         public string Rate { get; set; }
+        public string Oldrate { get; set; }
         public string SchQty { get; set; }
         public string DisPer { get; set; }
         public string DisAmt { get; set; }

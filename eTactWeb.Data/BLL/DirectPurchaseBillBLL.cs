@@ -108,7 +108,10 @@ namespace eTactWeb.Data.BLL
         {
             throw new NotImplementedException();
         }
-
+        public async Task<ResponseResult> GetFeatureOption()
+        {
+            return await _DirectPurchaseBillDAL.GetFeatureOption();
+        }
         Task<DirectPurchaseBillModel> IDirectPurchaseBill.GetViewPOCcompletedByID(int iD, int yC, string PONO, string v)
         {
             throw new NotImplementedException();

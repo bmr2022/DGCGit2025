@@ -11,6 +11,7 @@ using eTactWeb.DOM.Models;
 using eTactWeb.Services;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
+using etactwebBOT.Services;
 
 namespace eTactWeb
 {
@@ -71,7 +72,7 @@ namespace eTactWeb
             var cultureInfo = new CultureInfo("en-GB");
             CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
             CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
-
+            services.AddHttpClient<WrenAiService>();
             services.Configure<RequestLocalizationOptions>(options =>
             {
                 var supportedCultures = new[] { cultureInfo };
@@ -79,7 +80,8 @@ namespace eTactWeb
                 options.SupportedCultures = supportedCultures;
                 options.SupportedUICultures = supportedCultures;
             });
-            services.AddControllersWithViews();
+            services.AddControllersWithViews()
+         .AddSessionStateTempDataProvider();
             services.AddRazorPages().AddRazorRuntimeCompilation();
             services.AddLogging();
             services.AddAuthentication();
@@ -170,6 +172,7 @@ namespace eTactWeb
             services.TryAddScoped<ILedgerPartyWiseOpening, LedgerPartyWiseOpeningBLL>();
             services.TryAddScoped<IBankReceipt, BankReceiptBLL>();
             services.TryAddScoped<IContraVoucher, ContraVoucherBLL>();
+            services.TryAddScoped<IAgainstAdjustVoucher, AgainstAdjustVoucherBLL>();
             services.TryAddScoped<IBankPayment, BankPaymentBLL>();
             services.TryAddScoped<ICashPayment, CashPaymentBLL>();
             services.TryAddScoped<ICashReceipt, CashReceiptBLL>();
@@ -188,7 +191,9 @@ namespace eTactWeb
             services.TryAddScoped<IEmployeeMaster, EmployeeMasterBLL>();
             services.TryAddScoped<IRetFromDepartmentMain, RetFromDepartmentMainBLL>();
             services.TryAddScoped<ICustomerJobWorkIssue, CustomerJobWorkIssueBLL>();
+            services.TryAddScoped<IBalanceSheet, BalanceSheetBLL>();
             services.TryAddScoped<ICloseProductionPlan, CloseProductionPlanBLL>();
+            services.TryAddScoped<ICloseJobWorkChallan, CloseJobWorkChallanBLL>();
             services.TryAddScoped<ITransactionLedger, TransactionLedgerBLL>();
             services.TryAddScoped<IOutStanding, OutStandingBLL>();
             services.TryAddScoped<IIndentRegister, IndentRegisterBLL>();
@@ -211,7 +216,11 @@ namespace eTactWeb
             services.TryAddScoped<IToolMoldMaster,ToolMoldMasterBLL>();
             services.TryAddScoped<IGateAttendance, GateAttendanceBLL>();
             services.TryAddScoped<IAccDepriciationCalculationdetail, AccDepriciationCalculationdetailBLL>();
-
+            services.TryAddScoped<IScheduleCalibration, ScheduleCalibrationBLL>();
+            services.TryAddScoped<IProfitAndLoss, ProfitAndLossBLL>();
+            services.TryAddScoped<ICancelRequition, CancelRequitionBLL>();
+            services.TryAddScoped<IPOApprovalPolicy, POApprovalPolicyBLL>();
+            services.TryAddScoped<IBillRegister, BillRegisterBLL>();
 
             services.TryAddTransient<ISaleSchedule, SaleScheduleBLL>();
             services.TryAddTransient<ITaxMaster, TaxMasterBLL>();
@@ -294,5 +303,8 @@ namespace eTactWeb
             services.TryAddTransient<ICustSaleNewRate , CustSaleNewRateBLL>();
             services.TryAddTransient<IVendorMater , VendorUserBLL>();
         }
+
+
+
     }
 }

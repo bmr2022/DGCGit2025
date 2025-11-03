@@ -10,9 +10,13 @@ namespace eTactWeb.Data.DAL
 {
     public class SaleRejectionDAL
     {
-        public SaleRejectionDAL(IConfiguration configuration, IDataLogic iDataLogic)
+        private IDataReader? Reader;
+        private readonly ConnectionStringService _connectionStringService;
+        public SaleRejectionDAL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
-            DBConnectionString = configuration.GetConnectionString("eTactDB");
+            _connectionStringService = connectionStringService;
+            //DBConnectionString = configuration.GetConnectionString("eTactDB");
+            DBConnectionString = _connectionStringService.GetConnectionString();
             _IDataLogic = iDataLogic;
         }
 
@@ -220,6 +224,7 @@ namespace eTactWeb.Data.DAL
             model.ToatlDiscountPercent = Convert.ToInt32(DS.Tables[0].Rows[0]["ToatlDiscountPercent"]);
             model.TotalDiscountAmount = Convert.ToInt32(DS.Tables[0].Rows[0]["TotalDiscountAmount"]);
             model.InvNetAmt = Convert.ToInt32(DS.Tables[0].Rows[0]["InvNetAmt"]);
+            model.NetTotal = DS.Tables[0].Rows[0]["InvNetAmt"] != DBNull.Value ? Convert.ToDecimal(DS.Tables[0].Rows[0]["InvNetAmt"]) : 0;
             model.SalerejRemark = DS.Tables[0].Rows[0]["SalerejRemark"]?.ToString();
             model.CC = DS.Tables[0].Rows[0]["CC"]?.ToString();
             model.Uid = Convert.ToInt32(DS.Tables[0].Rows[0]["Uid"]);
@@ -229,7 +234,7 @@ namespace eTactWeb.Data.DAL
             model.ActualEnteredBy = Convert.ToInt32(DS.Tables[0].Rows[0]["ActualEnteredBy"]);
             model.ActualEnteredByName = DS.Tables[0].Rows[0]["ActualEntryByName"]?.ToString();
             model.BalanceSheetClosed = Convert.ToChar(DS.Tables[0].Rows[0]["BalanceSheetClosed"]);
-
+            model.DocTypeAccountCode = Convert.ToInt32(DS.Tables[0].Rows[0]["DocTypeAccountCode"]);
             if (Mode == "U" || Mode == "V")
             {
                 if (DS.Tables[0].Rows[0]["UpdatedByName"].ToString() != "")
@@ -251,19 +256,20 @@ namespace eTactWeb.Data.DAL
                         AgainstBillYearCode = row["AgainstBillYearCode"] != DBNull.Value ? Convert.ToInt32(row["AgainstBillYearCode"]) : 0,
                         AgainstBillEntryId = row["AgainstOpenBillEntryId"] != DBNull.Value ? Convert.ToInt32(row["AgainstOpenBillEntryId"]) : 0,
                         AgainstOpnOrBill = row["AgainstOpnOrBill"]?.ToString(),
-                        DocTypeAccountCode = row["DocTypeAccountCode"] != DBNull.Value ? Convert.ToInt32(row["DocTypeAccountCode"]) : 0,
                         ItemCode = row["ItemCode"] != DBNull.Value ? Convert.ToInt32(row["ItemCode"]) : 0,
                         ItemName = row["ItemName"]?.ToString(),
                         PartCode = row["PartCode"]?.ToString(),
                         Unit = row["Unit"]?.ToString(),
                         HSNNo = row["HSNNo"] != DBNull.Value ? Convert.ToInt32(row["HSNNo"]) : 0,
+                        SeqNo = row["SeqNo"] != DBNull.Value ? Convert.ToInt32(row["SeqNo"]) : 0,
                         NoOfCase = row["NoOfCase"] != DBNull.Value ? Convert.ToInt32(row["NoOfCase"]) : 0,
                         SaleBillQty = row["SaleBillQty"] != DBNull.Value ? Convert.ToInt32(row["SaleBillQty"]) : 0,
                         RejQty = row["RejQty"] != DBNull.Value ? Convert.ToInt32(row["RejQty"]) : 0,
                         RecQty = row["MRNRecQty"] != DBNull.Value ? Convert.ToInt32(row["MRNRecQty"]) : 0,
-                        Rate = row["RejRate"] != DBNull.Value ? Convert.ToInt32(row["RejRate"]) : 0,
-                        DiscountPer = row["DiscountPer"] != DBNull.Value ? Convert.ToInt32(row["DiscountPer"]) : 0,
-                        DiscountAmt = row["DiscountAmt"] != DBNull.Value ? Convert.ToInt32(row["DiscountAmt"]) : 0,
+                        RejRate = row["RejRate"] != DBNull.Value ? Convert.ToInt32(row["RejRate"]) : 0,
+                        Rate = row["SaleBillRate"] != DBNull.Value ? Convert.ToInt32(row["SaleBillRate"]) : 0,
+                        DiscountPer = row["DiscountPer"] != DBNull.Value ? Convert.ToDouble(row["DiscountPer"]) : 0,
+                        DiscountAmt = row["DiscountAmt"] != DBNull.Value ? Convert.ToDecimal(row["DiscountAmt"]) : 0,
                         SONO = row["SONO"]?.ToString(),
                         SOyearcode = row["SOyearcode"] != DBNull.Value ? Convert.ToInt32(row["SOyearcode"]) : 0,
                         SODate = row["SODate"]?.ToString(),
@@ -273,7 +279,7 @@ namespace eTactWeb.Data.DAL
                         RecStoreId = row["RecStoreId"] != DBNull.Value ? Convert.ToInt32(row["RecStoreId"]) : 0,
                         //RecStoreName = row["SONO"] != DBNull.Value ? Convert.ToInt32(row["SONO"]) : 0,
                         OtherDetail = row["OtherDetail"]?.ToString(),
-                        Amount = row["ItemAmount"] != DBNull.Value ? Convert.ToInt32(row["ItemAmount"]) : 0,
+                        Amount = row["ItemAmount"] != DBNull.Value ? Convert.ToDecimal(row["ItemAmount"]) : 0,
                         RejectionReason = row["RejectionReason"]?.ToString(),
                         SaleorderRemark = row["SaleorderRemark"]?.ToString(),
                         SaleBillremark = row["SaleBillremark"]?.ToString(),
@@ -290,10 +296,26 @@ namespace eTactWeb.Data.DAL
                 {
                     TaxGrid.Add(new TaxModel
                     {
+                        //TxType = row["Type"]?.ToString(),
+                        //TxItemCode = row["ItemCode"] != DBNull.Value ? Convert.ToInt32(row["ItemCode"]) : 0,
+                        //TxTaxTypeName = row["TaxTypeID"]?.ToString(),
+                        //TxAccountCode = row["TaxAccountCode"] != DBNull.Value ? Convert.ToInt32(row["TaxAccountCode"]) : 0,
+                        //TxPercentg = row["TaxPer"] != DBNull.Value ? Convert.ToDecimal(row["TaxPer"]) : 0,
+                        //TxRoundOff = row["RoundOff"]?.ToString(),
+                        //TxAmount = row["Amount"] != DBNull.Value ? Convert.ToDecimal(row["Amount"]) : 0,
+                        //TxOnExp = row["TaxonExp"] != DBNull.Value ? Convert.ToDecimal(row["TaxonExp"]) : 0,
+                        //TxRefundable = row["TaxRefundable"]?.ToString(),
+                        //TxAdInTxable = row["AddInTaxable"]?.ToString(),
+                        //TxRemark = row["Remarks"]?.ToString()
+                        TxSeqNo = row["SeqNo"] != DBNull.Value ? Convert.ToInt32(row["SeqNo"]) : 0,
                         TxType = row["Type"]?.ToString(),
+                        TxPartName = row["PartCode"]?.ToString(),
+                        TxItemName = row["itemNamePartCode"]?.ToString(),
                         TxItemCode = row["ItemCode"] != DBNull.Value ? Convert.ToInt32(row["ItemCode"]) : 0,
-                        TxTaxTypeName = row["TaxTypeID"]?.ToString(),
+                        TxTaxTypeName = row["TaxAccountName"]?.ToString(),
+                        TxTaxType = row["TaxTypeID"] != DBNull.Value ? Convert.ToInt32(row["TaxTypeID"]) : 0,
                         TxAccountCode = row["TaxAccountCode"] != DBNull.Value ? Convert.ToInt32(row["TaxAccountCode"]) : 0,
+                        TxAccountName = row["TaxAccountName"]?.ToString(),
                         TxPercentg = row["TaxPer"] != DBNull.Value ? Convert.ToDecimal(row["TaxPer"]) : 0,
                         TxRoundOff = row["RoundOff"]?.ToString(),
                         TxAmount = row["Amount"] != DBNull.Value ? Convert.ToDecimal(row["Amount"]) : 0,
@@ -335,46 +357,48 @@ namespace eTactWeb.Data.DAL
 
             if (DS.Tables.Count != 0 && DS.Tables[4].Rows.Count > 0)
             {
+                int cnt1 = 1;
                 foreach (DataRow row in DS.Tables[4].Rows)
                 {
                     adjustGrid.Add(new AdjustmentModel
                     {
-                        //AdjSeqNo = row["AccEntryId"] != DBNull.Value ? Convert.ToInt32(row["AccEntryId"]) : 0,
+                        AdjSeqNo = cnt1,
                         AdjModeOfAdjstment = row["ModOfAdjust"]?.ToString(),
                         //AdjModeOfAdjstmentName = row["AccEntryId"]?.ToString(),
-                        //AdjNewRefNo = row["AccEntryId"]?.ToString(),
-                        //AdjDescription = row["AccEntryId"]?.ToString(),
+                        AdjNewRefNo = row["NewrfNo"]?.ToString(),
+                        AdjDescription = row["Description"]?.ToString(),
                         //AdjDrCrName = row["AccEntryId"]?.ToString(),
                         AdjDrCr = row["DR/CR"]?.ToString(),
-                        //AdjPendAmt = row["AccEntryId"] != DBNull.Value ? Convert.ToInt32(row["AccEntryId"]) : 0,
-                        AdjAdjstedAmt = row["AdjustmentAmt"] != DBNull.Value ? Convert.ToInt32(row["AdjustmentAmt"]) : 0,
-                        AdjTotalAmt = row["BillAmt"] != DBNull.Value ? Convert.ToInt32(row["BillAmt"]) : 0, // BillAmt
-                        //AdjRemainingAmt = row["AccEntryId"] != DBNull.Value ? Convert.ToInt32(row["AccEntryId"]) : 0,
-                        //AdjOpenEntryID = row["AgainstAccEntryId"] != DBNull.Value ? Convert.ToInt32(row["AgainstAccEntryId"]) : 0,
-                        //AdjOpeningYearCode = row["AccEntryId"] != DBNull.Value ? Convert.ToInt32(row["AccEntryId"]) : 0,
-                        //AdjDueDate = row["AccEntryId"] != DBNull.Value ? Convert.ToDateTime(row["AccEntryId"]) : new DateTime(),
+                        AdjPendAmt = row["AdjustmentAmt"] != DBNull.Value ? Convert.ToDecimal(row["AdjustmentAmt"]) : 0,
+                        AdjAdjstedAmt = row["AdjustmentAmt"] != DBNull.Value ? Convert.ToSingle(row["AdjustmentAmt"]) : 0,
+                        AdjTotalAmt = row["BillAmt"] != DBNull.Value ? Convert.ToSingle(row["BillAmt"]) : 0, // BillAmt
+                        AdjRemainingAmt = row["RemaingAmt"] != DBNull.Value ? Convert.ToSingle(row["RemaingAmt"]) : 0,
+                        AdjOpenEntryID = row["AgainstAccOpeningEntryId"] != DBNull.Value ? Convert.ToInt32(row["AgainstAccOpeningEntryId"]) : 0,
+                        AdjOpeningYearCode = row["AgainstOpeningVoucheryearcode"] != DBNull.Value ? Convert.ToInt32(row["AgainstOpeningVoucheryearcode"]) : 0,
+                        AdjDueDate = string.IsNullOrEmpty(row["voucherDate"]?.ToString()) ? new DateTime() : CommonFunc.ParseDate(row["voucherDate"].ToString()),
                         //AdjPurchOrderNo = row["AccEntryId"]?.ToString(),
-                        //AdjPOYear = row["AccEntryId"] != DBNull.Value ? Convert.ToInt32(row["AccEntryId"]) : 0,
+                        AdjPOYear = row["yearcode"] != DBNull.Value ? Convert.ToInt32(row["yearcode"]) : 0,
                         //AdjPODate = row["AccEntryId"] != DBNull.Value ? Convert.ToDateTime(row["AccEntryId"]) : new DateTime(),
                         //AdjPageName = row["AccEntryId"]?.ToString(),
-                        //AdjAgnstAccEntryID = row["AccEntryId"] != DBNull.Value ? Convert.ToInt32(row["AccEntryId"]) : 0,
-                        AdjAgnstAccYearCode = row["yearcode"] != DBNull.Value ? Convert.ToInt32(row["yearcode"]) : 0,
-                        //AdjAgnstModeOfAdjstment = row["AccEntryId"]?.ToString(),
-                        //AdjAgnstModeOfAdjstmentName = row["AccEntryId"]?.ToString(),
-                        //AdjAgnstNewRefNo = row["AccEntryId"]?.ToString(),
-                        AdjAgnstVouchNo = row["AgainstVoucherNo"]?.ToString(),
+                        AdjAgnstAccEntryID = row["AgainstAccEntryId"] != DBNull.Value ? Convert.ToInt32(row["AgainstAccEntryId"]) : 0,
+                        AdjAgnstAccYearCode = row["AgainstVoucheryearcode"] != DBNull.Value ? Convert.ToInt32(row["AgainstVoucheryearcode"]) : 0,
+                        AdjAgnstModeOfAdjstment = row["ModOfAdjust"]?.ToString(),
+                        AdjAgnstModeOfAdjstmentName = row["ModOfAdjust"]?.ToString(),
+                        AdjAgnstNewRefNo = row["AgainstVoucherNo"]?.ToString(),
+                        AdjAgnstVouchNo = row["VoucherNo"]?.ToString(),
                         AdjAgnstVouchType = row["VoucherType"]?.ToString(),
-                        //AdjAgnstDrCrName = row["AccEntryId"]?.ToString(),
+                        AdjAgnstDrCrName = row["DR/CR"]?.ToString(),
                         AdjAgnstDrCr = row["DR/CR"]?.ToString(),
                         //AdjAgnstPendAmt = row["AccEntryId"] != DBNull.Value ? Convert.ToInt32(row["AccEntryId"]) : 0,
-                        AdjAgnstAdjstedAmt = row["AdjustmentAmt"] != DBNull.Value ? Convert.ToInt32(row["AdjustmentAmt"]) : 0,
-                        AdjAgnstTotalAmt = row["BillAmt"] != DBNull.Value ? Convert.ToInt32(row["BillAmt"]) : 0,
-                        AdjAgnstRemainingAmt = row["RemaingAmt"] != DBNull.Value ? Convert.ToInt32(row["RemaingAmt"]) : 0,
+                        AdjAgnstAdjstedAmt = row["AdjustmentAmt"] != DBNull.Value ? Convert.ToSingle(row["AdjustmentAmt"]) : 0,
+                        AdjAgnstTotalAmt = row["BillAmt"] != DBNull.Value ? Convert.ToSingle(row["BillAmt"]) : 0,
+                        AdjAgnstRemainingAmt = row["RemaingAmt"] != DBNull.Value ? Convert.ToSingle(row["RemaingAmt"]) : 0,
                         AdjAgnstOpenEntryID = row["AgainstAccOpeningEntryId"] != DBNull.Value ? Convert.ToInt32(row["AgainstAccOpeningEntryId"]) : 0,
                         AdjAgnstOpeningYearCode = row["AgainstOpeningVoucheryearcode"] != DBNull.Value ? Convert.ToInt32(row["AgainstOpeningVoucheryearcode"]) : 0,
-                        AdjAgnstVouchDate = row["voucherDate"] != DBNull.Value ? Convert.ToDateTime(row["voucherDate"]) : new DateTime(),
+                        AdjAgnstVouchDate = row["voucherDate"] != DBNull.Value ? CommonFunc.ParseDate(row["voucherDate"].ToString()) : new DateTime(),
                         //AdjAgnstTransType = row["AccEntryId"]?.ToString()
                     });
+                    cnt1++;
                 }
 
                 if (model.adjustmentModel == null)
@@ -384,7 +408,23 @@ namespace eTactWeb.Data.DAL
 
                 model.adjustmentModel.AdjAdjustmentDetailGrid = adjustGrid;
             }
-
+            if (DS.Tables.Count != 0 && DS.Tables[3].Rows.Count > 0)
+            {
+                foreach (DataRow row in DS.Tables[3].Rows)
+                {
+                    DRCRGrid.Add(new DbCrModel
+                    {
+                        AccEntryId = row["AccEntryId"] != DBNull.Value ? Convert.ToInt32(row["AccEntryId"]) : 0,
+                        AccYearCode = row["AccYearCode"] != DBNull.Value ? Convert.ToInt32(row["AccYearCode"]) : 0,
+                        VoucherNo = row["BillVouchNo"]?.ToString(),
+                        AccountCode = row["Accountcode"] != DBNull.Value ? Convert.ToInt32(row["Accountcode"]) : 0,
+                        AccountName = row["Account_Name"]?.ToString(),
+                        DrAmt = row["DrAmt"] != DBNull.Value ? Convert.ToSingle(row["DrAmt"]) : 0,
+                        CrAmt = row["CrAmt"] != DBNull.Value ? Convert.ToSingle(row["CrAmt"]) : 0
+                    });
+                }
+                model.DbCrGrid = DRCRGrid ?? new List<DbCrModel>();
+            }
             return model;
         }
         public static DateTime ParseDate(string dateString)
@@ -465,13 +505,14 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@DomesticExportNEPZ", model.DomesticExportNEPZ ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@Transporter", model.Transporter ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@Vehicleno", model.Vehicleno ?? string.Empty));
-                SqlParams.Add(new SqlParameter("@BillAmt", model.BillAmt));
+                SqlParams.Add(new SqlParameter("@BillAmt", model.ItemNetAmount));
+
                 SqlParams.Add(new SqlParameter("@RoundOffAmt", model.RoundOffAmt));
                 SqlParams.Add(new SqlParameter("@RoundoffType", model.RoundoffType ?? string.Empty));
-                SqlParams.Add(new SqlParameter("@Taxableamt", model.Taxableamt));
+                SqlParams.Add(new SqlParameter("@Taxableamt", model.NetTotal));
                 SqlParams.Add(new SqlParameter("@ToatlDiscountPercent", model.TotalDiscountPercentage));
                 SqlParams.Add(new SqlParameter("@TotalDiscountAmount", model.TotalDiscountAmount));
-                SqlParams.Add(new SqlParameter("@InvNetAmt", model.InvNetAmt));
+                SqlParams.Add(new SqlParameter("@InvNetAmt", model.NetTotal));
                 SqlParams.Add(new SqlParameter("@SalerejRemark", model.SalerejRemark ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@CC", model.CC ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@Uid", model.Uid));
@@ -479,13 +520,11 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@EntryByMachineName", model.MachineName));
                 SqlParams.Add(new SqlParameter("@ActualEntryDate", actualEntryDt == default ? string.Empty : actualEntryDt));
                 SqlParams.Add(new SqlParameter("@ActualEnteredBy", model.ActualEnteredBy));
-                SqlParams.Add(new SqlParameter("@LastUpdatedBy", model.LastUpdatedBy));
-                SqlParams.Add(new SqlParameter("@LastUpdationDate", lastUpdateDt == default ? string.Empty : lastUpdateDt));
                 SqlParams.Add(new SqlParameter("@BalanceSheetClosed", model.BalanceSheetClosed ?? 0));
                 SqlParams.Add(new SqlParameter("@SubVoucherName", model.VoucherNo ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@Currencyid", 0));
                 SqlParams.Add(new SqlParameter("@ExchangeRate", 0));
-
+                SqlParams.Add(new SqlParameter("@DocTypeAccountCode", model.DocTypeAccountCode));
                 SqlParams.Add(new SqlParameter("@DTGrid", SBGrid));
                 SqlParams.Add(new SqlParameter("@DTTaxGrid", TaxDetailDT));
 
@@ -525,7 +564,8 @@ namespace eTactWeb.Data.DAL
             //model.CustInvoiceTime = DS.Tables[0].Rows[0]["CustInvoiceTime"]?.ToString();
             model.AccountCode = Convert.ToInt32(DS.Tables[0].Rows[0]["Account_Code"]);
             model.Account_Name = DS.Tables[0].Rows[0]["Account_Name"]?.ToString();
-            model.PaymentTerm = Convert.ToInt32(DS.Tables[0].Rows[0]["PaymentTerms"]);
+            model.PaymentTerm = DS.Tables[0].Rows[0]["PaymentTerms"] != DBNull.Value && !string.IsNullOrEmpty(DS.Tables[0].Rows[0]["PaymentTerms"].ToString()) ? Convert.ToSingle(DS.Tables[0].Rows[0]["PaymentTerms"]) : 0f;
+            //model.PaymentTerm = Convert.ToInt32(DS.Tables[0].Rows[0]["PaymentTerms"]);
             model.GSTNO = DS.Tables[0].Rows[0]["GSTNO"]?.ToString();
             model.BillAmt = Convert.ToInt32(DS.Tables[0].Rows[0]["TotalAmt"]);
             model.InvNetAmt = Convert.ToInt32(DS.Tables[0].Rows[0]["NetAmt"]);
@@ -547,10 +587,12 @@ namespace eTactWeb.Data.DAL
                         ItemName = row["ItemName"]?.ToString(),
                         RecQty = row["RecQty"] != DBNull.Value ? Convert.ToInt32(row["RecQty"]) : 0,
                         Unit   = row["Unit"]?.ToString(),
+                        SeqNo = row["SeqNo"] != DBNull.Value ? Convert.ToInt32(row["SeqNo"]) : 0,
                         AltQty = row["altQty"] != DBNull.Value ? Convert.ToInt32(row["altQty"]) : 0,
                         SaleBillQty = row["SaleBillQty"] != DBNull.Value ? Convert.ToInt32(row["SaleBillQty"]) : 0,
                         RejQty = row["RejQty"] != DBNull.Value ? Convert.ToInt32(row["RejQty"]) : 0,
-                        Rate = row["Rate"] != DBNull.Value ? Convert.ToInt32(row["Rate"]) : 0,
+                        Rate = row["SaleRate"] != DBNull.Value ? Convert.ToInt32(row["SaleRate"]) : 0,
+                        RejRate = row["RejRate"] != DBNull.Value ? Convert.ToInt32(row["RejRate"]) : 0,
                         DiscountPer = row["DiscountPer"] != DBNull.Value ? Convert.ToInt32(row["DiscountPer"]) : 0,
                         DiscountAmt = row["DiscountAmt"] != DBNull.Value ? Convert.ToInt32(row["DiscountAmt"]) : 0,
                         SONO = row["SONO"]?.ToString(),
@@ -564,10 +606,10 @@ namespace eTactWeb.Data.DAL
                         Itemsize = row["ItemSize"]?.ToString(),
                         NoOfCase = row["NoOfCase"] != DBNull.Value ?  Convert.ToInt32( row["NoOfCase"]) : 0,
                         RecStoreName = row["ReceiveInStore"]?.ToString(),
-                        Amount = row["ItemAmount"] != DBNull.Value ? Convert.ToDecimal(row["ItemAmount"]) : 0
+                        Amount = row["rejAmount"] != DBNull.Value ? Convert.ToDecimal(row["rejAmount"]) : 0
                     });
                 }
-                //model.SaleRejectionDetails = SaleRejectionGrid;
+                model.SaleRejectionDetails = SaleRejectionGrid;
                 model.SaleRejectionInputGrid = SaleRejectionGrid;
                 model.ItemDetailGrid = SaleRejectionGrid;
             }
@@ -622,6 +664,47 @@ namespace eTactWeb.Data.DAL
             {
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "FILLPartCodeInDASHBOARD"));
+                SqlParams.Add(new SqlParameter("@fromDate", fromDate));
+                SqlParams.Add(new SqlParameter("@toDate", toDate));
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("AccSpSalerejection", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        } 
+
+        public async Task<ResponseResult> FillMRNNo(string fromDate, string toDate)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "FILLMrnNoINDASHBOARD"));
+                SqlParams.Add(new SqlParameter("@fromDate", fromDate));
+                SqlParams.Add(new SqlParameter("@toDate", toDate));
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("AccSpSalerejection", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        } 
+        public async Task<ResponseResult> FillGateNo(string fromDate, string toDate)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "FILLGateNoINDASHBOARD"));
                 SqlParams.Add(new SqlParameter("@fromDate", fromDate));
                 SqlParams.Add(new SqlParameter("@toDate", toDate));
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("AccSpSalerejection", SqlParams);

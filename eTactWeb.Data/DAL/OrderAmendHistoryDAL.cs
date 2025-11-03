@@ -28,19 +28,44 @@ namespace eTactWeb.Data.DAL
             DBConnectionString = _connectionStringService.GetConnectionString();
             //DBConnectionString = configuration.GetConnectionString("eTactDB");
         }
-        public async Task<ResponseResult> FillPONO(string FromDate, string ToDate)
+        public async Task<ResponseResult> FillPONOAmendNo(string FromDate, string ToDate, int AccountCode,string PoNo, string HistoryReportMode)
         {
             var _ResponseResult = new ResponseResult();
             try
             {
                 var SqlParams = new List<dynamic>();
-                SqlParams.Add(new SqlParameter("@flag", "POAmendmentHistoryReport"));
+                SqlParams.Add(new SqlParameter("@flag", HistoryReportMode));
+                SqlParams.Add(new SqlParameter("@Dashboardflag", "FillPONOAmendNo"));
+                SqlParams.Add(new SqlParameter("@reportType", ""));
+                SqlParams.Add(new SqlParameter("@FromDate", CommonFunc.ParseFormattedDate(FromDate)));
+                SqlParams.Add(new SqlParameter("@ToDate", CommonFunc.ParseFormattedDate(ToDate)));
+                //SqlParams.Add(new SqlParameter("@CurrentDate", CurrentDate));
+                SqlParams.Add(new SqlParameter("@AccountCode", AccountCode));
+                SqlParams.Add(new SqlParameter("@POno", PoNo));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SpReportOrderAmendHistoryOnGrid", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        } 
+        public async Task<ResponseResult> FillPONO(string FromDate, string ToDate, int AccountCode, string HistoryReportMode)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+               SqlParams.Add(new SqlParameter("@flag", HistoryReportMode));
                 SqlParams.Add(new SqlParameter("@reportType", ""));
                 SqlParams.Add(new SqlParameter("@Dashboardflag", "FillPONO"));
-                SqlParams.Add(new SqlParameter("@FromDate", FromDate));
-                SqlParams.Add(new SqlParameter("@ToDate", ToDate));
+                SqlParams.Add(new SqlParameter("@FromDate", CommonFunc.ParseFormattedDate(FromDate)));
+                SqlParams.Add(new SqlParameter("@ToDate", CommonFunc.ParseFormattedDate(ToDate)));
                 //SqlParams.Add(new SqlParameter("@CurrentDate", CurrentDate));
-                //SqlParams.Add(new SqlParameter("@StoreId", Storeid));
+                SqlParams.Add(new SqlParameter("@AccountCode", AccountCode));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SpReportOrderAmendHistoryOnGrid", SqlParams);
             }
             catch (Exception ex)
@@ -58,8 +83,8 @@ namespace eTactWeb.Data.DAL
             try
             {
                 var SqlParams = new List<dynamic>();
-                SqlParams.Add(new SqlParameter("@flag", "POAmendmentHistoryReport"));
-                SqlParams.Add(new SqlParameter("@reportType", ""));
+              //  SqlParams.Add(new SqlParameter("@flag", "POAmendmentHistoryReport"));
+            
                 SqlParams.Add(new SqlParameter("@Dashboardflag", "FillPOVendorName"));
                 SqlParams.Add(new SqlParameter("@FromDate",CommonFunc.ParseFormattedDate( FromDate)));
                 SqlParams.Add(new SqlParameter("@ToDate",CommonFunc.ParseFormattedDate( ToDate)));
@@ -82,11 +107,11 @@ namespace eTactWeb.Data.DAL
             try
             {
                 var SqlParams = new List<dynamic>();
-                SqlParams.Add(new SqlParameter("@flag", "POAmendmentHistoryReport"));
+               // SqlParams.Add(new SqlParameter("@flag", "POAmendmentHistoryReport"));
                 SqlParams.Add(new SqlParameter("@reportType", ""));
                 SqlParams.Add(new SqlParameter("@Dashboardflag", "FillPOPARTCODE"));
-                SqlParams.Add(new SqlParameter("@FromDate", FromDate));
-                SqlParams.Add(new SqlParameter("@ToDate", ToDate));
+                SqlParams.Add(new SqlParameter("@FromDate", CommonFunc.ParseFormattedDate(FromDate)));
+                SqlParams.Add(new SqlParameter("@ToDate", CommonFunc.ParseFormattedDate(ToDate)));
                 //SqlParams.Add(new SqlParameter("@CurrentDate", CurrentDate));
                 //SqlParams.Add(new SqlParameter("@StoreId", Storeid));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SpReportOrderAmendHistoryOnGrid", SqlParams);
@@ -106,11 +131,11 @@ namespace eTactWeb.Data.DAL
             try
             {
                 var SqlParams = new List<dynamic>();
-                SqlParams.Add(new SqlParameter("@flag", "POAmendmentHistoryReport"));
+            //    SqlParams.Add(new SqlParameter("@flag", "POAmendmentHistoryReport"));
                 SqlParams.Add(new SqlParameter("@reportType", ""));
                 SqlParams.Add(new SqlParameter("@Dashboardflag", "FillPOPARTCODE"));
-                SqlParams.Add(new SqlParameter("@FromDate", FromDate));
-                SqlParams.Add(new SqlParameter("@ToDate", ToDate));
+                SqlParams.Add(new SqlParameter("@FromDate", CommonFunc.ParseFormattedDate(FromDate)));
+                SqlParams.Add(new SqlParameter("@ToDate",CommonFunc.ParseFormattedDate(  ToDate)));
                 //SqlParams.Add(new SqlParameter("@CurrentDate", CurrentDate));
                 //SqlParams.Add(new SqlParameter("@StoreId", Storeid));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SpReportOrderAmendHistoryOnGrid", SqlParams);
@@ -125,7 +150,7 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
          }
 
-        public async Task<OrderAmendHistoryModel> GetOrderAmendHistoryData(string FromDate, string ToDate, string ReportType, int AccountCode, string PartCode, string ItemName, string PONO, int ItemCode,string HistoryReportMode)
+        public async Task<OrderAmendHistoryModel> GetOrderAmendHistoryData(string FromDate, string ToDate, string ReportType, int AccountCode, string PartCode, string ItemName, string PONO, int ItemCode,string HistoryReportMode,string AmmNo)
         {
             DataSet? oDataSet = new DataSet();
             var model = new OrderAmendHistoryModel();
@@ -148,6 +173,7 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@ToDate", toDt);
                     oCmd.Parameters.AddWithValue("@Accountcode", AccountCode);
                     oCmd.Parameters.AddWithValue("@POno", PONO );
+                    oCmd.Parameters.AddWithValue("@AmmNo", AmmNo);
                     //oCmd.Parameters.AddWithValue("@partCode", PartCode);
                     oCmd.Parameters.AddWithValue("@ItemCode", ItemCode );
                     await myConnection.OpenAsync();
@@ -173,6 +199,35 @@ namespace eTactWeb.Data.DAL
                         }
 
                         if (ReportType == "PODetail") 
+                        {
+                            if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                            {
+                                foreach (DataRow row in oDataSet.Tables[0].Rows)
+                                {
+                                    var poDetail = CommonFunc.DataRowToClass<OrderAmendHistoryModel>(row);
+                                    _PODetail.Add(poDetail);
+                                }
+                                model.OrderAmendHistoryGrid = _PODetail;
+                            }
+                        }
+                    }
+                    else if (HistoryReportMode == "POSCHAMENDMENTHISTORY")
+                    {
+
+                        if (ReportType == "POSummary")
+                        {
+                            if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                            {
+                                foreach (DataRow row in oDataSet.Tables[0].Rows)
+                                {
+                                    var poDetail = CommonFunc.DataRowToClass<OrderAmendHistoryModel>(row);
+                                    _PODetail.Add(poDetail);
+                                }
+                                model.OrderAmendHistoryGrid = _PODetail;
+                            }
+                        }
+
+                        if (ReportType == "PODetail")
                         {
                             if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
                             {

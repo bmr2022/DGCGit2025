@@ -5,6 +5,8 @@ using Newtonsoft.Json;
 using eTactWeb.DOM.Models;
 using System.Globalization;
 using ClosedXML.Excel;
+using FastReport.Web;
+using FastReport;
 
 namespace eTactWeb.Controllers
 {
@@ -15,14 +17,51 @@ namespace eTactWeb.Controllers
         private readonly ILogger<StockRegisterController> _logger;
         private readonly IConfiguration iconfiguration;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
-        public StockRegisterController(ILogger<StockRegisterController> logger, IDataLogic iDataLogic, IStockRegister iStockRegister, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
+        private readonly ConnectionStringService _connectionStringService;
+        public StockRegisterController(ILogger<StockRegisterController> logger, IDataLogic iDataLogic, IStockRegister iStockRegister, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration, ConnectionStringService connectionStringService)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IStockRegister = iStockRegister;
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
+            _connectionStringService = connectionStringService;
         }
+        [HttpGet]
+        public IActionResult PrintReport(string FromDate = "",string ToDate = "",int StoreId = 0,string PartCode = "",string ItemName = "",
+        string ItemGroupName = "",string ItemType = "",string ReportType = "",string BatchNo = "",string UniqueBatchNo ="")
+        {
+            string my_connection_string;
+            string contentRootPath = _IWebHostEnvironment.ContentRootPath;
+            string webRootPath = _IWebHostEnvironment.WebRootPath;
+
+            var webReport = new WebReport();
+            webReport.Report.Clear();
+            webReport.Report.Dispose();
+            webReport.Report = new Report();
+
+            webReport.Report.Load(webRootPath + "\\StockRegister.frx");
+
+            webReport.Report.SetParameterValue("FromDateparam", CommonFunc.ParseFormattedDate(FromDate));
+            webReport.Report.SetParameterValue("ToDateparam", CommonFunc.ParseFormattedDate(ToDate));
+            webReport.Report.SetParameterValue("StoreIdparam", StoreId);
+            webReport.Report.SetParameterValue("PartCodeparam", PartCode);
+            webReport.Report.SetParameterValue("ItemNameparam", ItemName);
+            webReport.Report.SetParameterValue("ItemGroupNameparam", ItemGroupName);
+            webReport.Report.SetParameterValue("ItemTypeparam", ItemType);
+            webReport.Report.SetParameterValue("BatchNoparam", BatchNo);
+            webReport.Report.SetParameterValue("UniqueBatchNoparam", UniqueBatchNo);
+
+            my_connection_string = _connectionStringService.GetConnectionString();
+            webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+            webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
+            webReport.Report.SetParameterValue("MyParameter", my_connection_string);
+
+            webReport.Report.Refresh();
+
+            return View(webReport);
+        }
+
         [Route("{controller}/Index")]
         public IActionResult StockRegister()
         {

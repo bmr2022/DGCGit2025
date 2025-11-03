@@ -1,0 +1,326 @@
+﻿@model List<CloseJobWorkChallanModel>
+@using Microsoft.AspNetCore.Http
+@using System.Reflection.PortableExecutable
+@{
+    ViewData["Title"] = "Close JobWork";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    // string VendJWIssEntryId = HttpContextAccessor.HttpContext.Session.GetString("Branch");
+    string empName = HttpContextAccessor.HttpContext.Session.GetString("EmpName");
+    string yearCode = HttpContextAccessor.HttpContext.Session.GetString("YearCode");
+    int EmpID = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("EmpID"));
+    string typeOfApproval = HttpContextAccessor.HttpContext.Request.Query["ShowClsoedPendingAll"];
+    string ChallanYear = HttpContextAccessor.HttpContext.Request.Query["ChallanYear"];
+    int EntryID = Convert.ToInt32(HttpContextAccessor.HttpContext.Request.Query["ID"]);
+    int VendJWIssYearCode = HttpContextAccessor.HttpContext.Request.Query["VendJWIssYearCode"] != "undefined" ? Convert.ToInt32(HttpContextAccessor.HttpContext.Request.Query["VendJWIssYearCode"]) : 0;
+    int VendJWIssEntryId = HttpContextAccessor.HttpContext.Request.Query["VendJWIssEntryId"] != "undefined" ? Convert.ToInt32(HttpContextAccessor.HttpContext.Request.Query["VendJWIssEntryId"]) : 0;
+    string SONO = HttpContextAccessor.HttpContext.Request.Query["SONo"];
+    string CustOrderNo = HttpContextAccessor.HttpContext.Request.Query["CustOrderNo"];
+    string VendorName = HttpContextAccessor.HttpContext.Request.Query["VendorName"];
+    string CustOrderNum = HttpContextAccessor.HttpContext.Request.Query["CustOrderNum"];
+    string SONum = HttpContextAccessor.HttpContext.Request.Query["SONum"];
+    string VendorNm = HttpContextAccessor.HttpContext.Request.Query["VendorNm"];
+
+}
+@{
+    ViewData["Title"] = "Close JobWorkChallan";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+<div class="card-body">
+    <div class="card overflow-auto">
+        <div class="card-body">
+            <form id="SParam">
+                <center><h4>Close JobWork</h4></center>
+                <div class="row">
+                    <div class="col-xl-3 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                        <input id="approvePO" type="checkbox" style="margin-left:30px;width:15px !important;height:15px !important;" />
+
+                        @if (@typeOfApproval == "Pending")
+                        {
+                            <label class="form-label" style="display: inline-block;"><strong>Click To Close Challan</strong></label>
+                        }
+                        @if (@typeOfApproval == "Closed")
+                        {
+                            <label class="form-label" style="display: inline-block;"><strong>Click To Open Challan</strong></label>
+                        }
+                      
+
+                    </div>
+                    <div class="col-xl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                        <label class="form-label">Reason </label>
+                        <input id="ClosingReason" style="display: inline-block;" class="form-control" />
+                    </div>
+                    <div class="col-xl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                        <label class="form-label">Closed Date</label>
+                        <input id="approveDate" style="display: inline-block;" class="form-control" readonly />
+                    </div>
+                    <div class="col-xl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                        <label class="form-label">Closed By</label>
+                        <input type="hidden" id="approvedById" value="@EmpID" />
+                        <input id="approvedBy" style="display: inline-block;" readonly value="@($"{empName} --> {EmpID}")" class="form-control" />
+                    </div>
+                    <div class="col-xl-1 col-xl-1 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                        <div class="d-flex justify-content-right">
+                            <a class="btn btn-sm btn-outline-info btnSave" style="height:30px;width:100px;margin-top:15px !important;">
+                                <i class="fa-solid fa-chevron-circle-right fa-fw fa-lg"></i>SAVE
+                            </a>
+                            @* <a class="btn btn-sm btn-outline-info" style="height:30px;width:100px;margin-top:15px !important;" asp-controller="SOApproval" asp-action="SaveApproval" asp-route-EntryId="@EntryID" asp-route-YC="@YC" asp-route-SONO="@SONO" asp-route-CustOrderNo="@CustOrderNo" asp-route-type="@typeOfApproval" asp-route-SONum="@SONum" asp-route-CustOrderNum="@CustOrderNum" asp-route-VendorNm="@VendorNm" asp-route-VendorName="@VendorNm">
+                            <i class="fa-solid fa-chevron-circle-right fa-fw fa-lg"></i>SAVE
+                            </a> *@
+                        </div>
+                    </div>
+                    <div class="col-xl-1 col-xl-1 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                        <div class="d-flex justify-content-right">
+                            <a href="#" class=" btn btn-primary btn-sm" onclick="back();" style="height:30px;width:100px;margin-top:15px !important;">
+                                <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                                BACK
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="card-body">
+    <div class="card overflow-auto">
+        <div class="card-body" id="divDashboardGrid">
+            <table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0">
+                <thead class="bg-gradient card-headerBG text-light">
+                    <tr>
+
+                        <th>Sr#</th>
+                        <th> Challan No</th>
+                        <th>Challan Date</th>
+                        <th>Total Approved Value</th>
+                        <th>Closed</th>
+                        <th>Total Amount</th>
+                        <th> PartCode</th>
+                        <th>Item Name</th>
+                        <th>Rate</th>
+                        <th>Amount</th>
+                        <th>Issued Qty</th>
+                     
+                        <th>Pending Qty</th>
+                        <th>Pending Alt Qty</th>
+                        <th>Entry Id</th>
+                        <th>Year Code</th>
+                    </tr>
+                </thead>
+                <tbody id="gateDashboardtable">
+                    @{
+                        var @Cntr = 0;
+                        if (Model == null || Model.Count == 0)
+                        {
+                                    <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                        }
+                        else
+                        {
+                            foreach (var item in Model)
+                            {
+
+                                Cntr = Cntr + 1;
+                                        <tr id="dashTableGridRow-@Cntr">
+                                        <td>
+                                            <input type="checkbox"
+                                                   class="row-checkbox"
+                                                   value="@item.VendJWIssEntryId"
+                                                   data-yearcode="@item.VendJWIssYearCode"
+                                                   data-itemcode="@item.ItemCode" />
+                                            <span class="ms-1">@Cntr</span>
+                                        </td>
+                                            <td>@item.VendJWIssChallanNo</td>
+                                            <td>@item.VendJWIssChallanDate]</td>
+                                            <td>@item.TolApprVal</td>
+                                            <td>@item.Closed</td>
+                                            <td>@item.TotalAmount</td>
+                                            <td>@item.PartCode  </td>
+                                            <td>@item.Item_Name</td>
+                                            <td>@item.Rate</td>
+                                            <td>@item.Amount</td>
+                                            <td>@item.IssQty</td>
+
+                                            <td>@item.PendQty</td>
+                                            <td>@item.PendAltQty</td>
+                                            <td>@item.VendJWIssEntryId</td>
+                                            <td>@item.VendJWIssYearCode</td>
+
+                                        </tr>
+                            }
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+@section Scripts
+{
+    <script>
+        $(document).ready(function () {
+            $('#approveDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+            $('#approveDate').datepicker("option", "minDate", 'now');
+            $('#approveDate').datepicker("option", "maxDate", 'now');
+
+            colorRates();
+            //GetSearchData();
+        });
+
+        $('.btnSave').click(function () {
+            var typeOfApproval = @Html.Raw(Json.Serialize(typeOfApproval));
+            var ChallanYear = @Html.Raw(Json.Serialize(ChallanYear));
+            var ClosingReason = $('#ClosingReason').val();
+
+            if (ClosingReason == '') {
+                $.notify("Please enter reason", "error");
+                return false;
+            }
+
+            // Collect all checked item codes
+            var checkedItems = [];
+            $('.row-checkbox:checked').each(function () {
+                checkedItems.push($(this).data('itemcode'));
+            });
+
+            var totalItems = $('.row-checkbox').length;
+
+            if ($('#approvePO').is(":checked") !== true) {
+                $.notify("Please check 'Approve PO'", "error");
+                return false;
+            }
+
+            // Prepare data object dynamically
+            var dataObj = {
+                VendJWIssEntryId: @VendJWIssEntryId,
+                VendJWIssYearCode: @VendJWIssYearCode,
+                ShowClsoedPendingAll: typeOfApproval,
+                ClosingReason: ClosingReason,
+                ChallanYear: ChallanYear,
+                ItemCodes: checkedItems.join(',')
+            };
+
+            // dataObj.CloseAllItem = checkedItems.length > 0 ? 'N' : undefined;
+            if (checkedItems.length === totalItems && totalItems > 0) {
+                dataObj.CloseAllItem = 'Y';
+            } else if (checkedItems.length > 0) {
+                dataObj.CloseAllItem = 'N';
+            }
+            // AJAX call
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("SaveActivation", "CloseJobWorkChallan")",
+                traditional: true, // ensures array is sent correctly
+                data: dataObj,
+                success: function (response, status, error) {
+                    if (response.redirectUrl) 
+                    { window.location.href = response.redirectUrl; }
+                    else 
+                    { $.notify("Items processed successfully.", "success"); }
+                    },
+
+                error: function (xhr, status, error) {
+                    $.notify("Error while closing items: " + error, "error");
+                }
+            });
+        });
+        function colorRates() {
+            var size = $('#gateDashboardtable tr').length;
+
+            for (var i = 1; i <= size; i++) {
+                var curRowTds = $('#dashTableGridRow-' + i).find('td');
+                if (parseInt($('#rateRow-' + i).text()) > parseInt($('#oldrateRow-' + i).text())) {
+                    curRowTds.css("color", "red");
+                    curRowTds.css("font-weight", "bolder");
+                    $('#rateRow-' + i).css("color", "blue");
+                    $('#oldrateRow-' + i).css("color", "blue");
+                } else if (parseInt($('#rateRow-' + i).text()) < parseInt($('#oldrateRow-' + i).text())) {
+                    curRowTds.css("color", "green");
+                    curRowTds.css("font-weight", "bolder");
+                    $('#rateRow-' + i).css("color", "purple");
+                    $('#oldrateRow-' + i).css("color", "purple");
+                } else {
+                    curRowTds.css("color", "black");
+                    $('#rateRow-' + i).css("color", "black");
+                    $('#oldrateRow-' + i).css("color", "black");
+                }
+            }
+
+        }
+
+        function checkCondition(event) {
+            if ($('#approvePO').is(":checked")) {
+                return true;
+            } else {
+                event.preventDefault();
+                $.notify("Please check for approval/unapproval", "error");
+                return false;
+            }
+        }
+
+
+        // $(document).off('change', '.row-checkbox').on('change', '.row-checkbox', function () {
+        //     const checkbox = $(this);
+
+        //     if (checkbox.is(':checked')) {
+        //         if (confirm("Are you sure you want to close this item?")) {
+
+        //             const entryId = checkbox.val();
+        //             const yearCode = checkbox.data('yearcode');
+        //             const itemCode = checkbox.data('itemcode');
+        //             const typeOfApproval = @Html.Raw(Json.Serialize(typeOfApproval));
+        //             const ChallanYear = @Html.Raw(Json.Serialize(ChallanYear));
+        //             const ClosingReason = "Closed by user";
+
+        //             $.ajax({
+        //                 type: "GET",
+        //                 url: "@Url.Action("SaveActivation", "CloseJobWorkChallan")",
+        //                 data: {
+        //                     JWCloseEntryId: 0,
+        //                     JWCloseEntryDate: new Date().toISOString().split('T')[0],
+        //                     VendJwCustomerJW: "",
+        //                     AccountCode: 0,
+        //                     VendJWIssEntryId: entryId,
+        //                     VendJWIssYearCode: yearCode,
+        //                     VendJWIssChallanNo: "",
+        //                     VendJWIssChallanDate: "",
+        //                     CustJwIssEntryid: 0,
+        //                     CustJwIssYearCode: 0,
+        //                     CustJwIssChallanNo: "",
+        //                     CustJwIssChallanDate: "",
+        //                     TotalChallanAmount: 0,
+        //                     NetAmount: 0,
+        //                     ClosingReason: ClosingReason,
+        //                     ActualEntryDate: new Date().toISOString().split('T')[0],
+        //                     ShowClsoedPendingAll: typeOfApproval,
+        //                     ChallanYear: ChallanYear,
+        //                     CloseAllItem: "N",
+        //                     itemcode: itemCode
+        //                 },
+        //                 success: function () {
+        //                     // ✅ Reload current page safely
+        //                     checkbox.prop('checked', false);
+        //                     window.location.href = window.location.href; // reload same page
+        //                 },
+        //                 error: function (xhr, status, error) {
+        //                     alert("Error while closing item: " + error);
+        //                     checkbox.prop('checked', false);
+        //                 }
+        //             });
+
+        //         } else {
+        //             // If cancelled, uncheck it
+        //             checkbox.prop('checked', false);
+        //         }
+        //     }
+        // });
+    </script>
+}
+
+<style>
+    .color-box {
+        width: 10px;
+        height: 10px;
+    }
+</style>

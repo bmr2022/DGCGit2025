@@ -375,6 +375,8 @@ public class PBItemDetail : TaxModel, ITDSModel
     public decimal? ReworkQty { get; set; }
     [Column(TypeName = "decimal(10, 4)")]
     public decimal? HoldQty { get; set; }
+    public string? ItemLocation { get; set; }
+
     public int? NoOfCase { get; set; }
     [Column(TypeName = "decimal(10, 4)")]
     public decimal? AltRecQty { get; set; }
@@ -415,6 +417,7 @@ public class PBItemDetail : TaxModel, ITDSModel
     public decimal? PORate { get; set; }
     public string? MIRNO { get; set; }
     public int? MIRYEARCODE { get; set; }
+    public int? MIREntryId { get; set; }
     public string? MIRDATE { get; set; }
     public string? ProjectNo { get; set; }
     public string? ProjectDate { get; set; }

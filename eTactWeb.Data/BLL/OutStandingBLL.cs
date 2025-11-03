@@ -23,18 +23,30 @@ namespace eTactWeb.Data.BLL
             _DataLogicDAL = dataLogicDAL;
         }
 
-        public async Task<ResponseResult> GetPartyName(string outstandingType, string TillDate)
+        public async Task<ResponseResult> GetPartyName(string outstandingType, string TillDate, int? GroupCode)
         {
-            return await _OutStandingDAL.GetPartyName( outstandingType,TillDate);
+            return await _OutStandingDAL.GetPartyName( outstandingType,TillDate, GroupCode);
         }
         public async Task<ResponseResult> GetGroupName(string outstandingType, string TillDate)
         {
             return await _OutStandingDAL.GetGroupName(outstandingType, TillDate);
         }
-
-        public async Task<OutStandingModel> GetDetailsData(string outstandingType, string TillDate,string GroupName,string[] AccountNameList,int AccountCode,string ShowOnlyApprovedBill,bool ShowZeroBal)
+        public async Task<ResponseResult> GetVoucherNo(int CurrentYear)
         {
-            return await _OutStandingDAL.GetDetailsData(outstandingType, TillDate, GroupName, AccountNameList,AccountCode, ShowOnlyApprovedBill, ShowZeroBal);
+            return await _OutStandingDAL.GetVoucherNo(CurrentYear);
+        }
+        public async Task<ResponseResult> GetVoucherType(int CurrentYear)
+        {
+            return await _OutStandingDAL.GetVoucherType(CurrentYear);
+        }
+        public async Task<OutStandingModel> GetVoucherList(int AccountCode, string VoucherNo, string VoucherType, int VoucherYearCode, int CurrentYear)
+        {
+            return await _OutStandingDAL.GetVoucherList(AccountCode,VoucherNo, VoucherType, VoucherYearCode, CurrentYear);
+        }
+
+        public async Task<OutStandingModel> GetDetailsData(string outstandingType, string TillDate,int? GroupName,string[] AccountNameList,int AccountCode,string ShowOnlyApprovedBill,bool ShowZeroBal, string VoucherNo, string VoucherType)
+        {
+            return await _OutStandingDAL.GetDetailsData(outstandingType, TillDate, GroupName, AccountNameList,AccountCode, ShowOnlyApprovedBill, ShowZeroBal, VoucherNo,VoucherType);
         }
     }
 }

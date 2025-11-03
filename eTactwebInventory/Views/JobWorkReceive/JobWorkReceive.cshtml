@@ -728,6 +728,34 @@
 
         var adjustChallan = 0;
         var alreadyAdjustedChallan = 0;
+        function CheckQtyBeforeInsertOrUpdate(callback) {
+                  $.ajax({
+                      type: "POST",
+                      url: "@Url.Action("CheckQtyBeforeInsertOrUpdate")",
+                      dataType: "json",
+                        data: { TypesBOMIND: $('#TypesBOMIND').val() },
+                      success: function (response) {
+                          if (response.success === false) {
+                              response.errors.forEach(function (err) {
+                                  $.notify(err, {
+                                      className: 'error',
+                                      globalPosition: 'top right'
+                                  });
+                              });
+                              callback(false); // indicate failure
+                          } else {
+                              callback(true); // indicate success
+                          }
+                      },
+                      error: function (xhr, status, error) {
+                          $.notify("Error checking stock: " + error, {
+                              className: 'error',
+                              globalPosition: 'top right'
+                          });
+                          callback(false); // prevent submission on error
+                      }
+                  });
+              }
 
         function FillNewEntry() {
 
@@ -960,8 +988,14 @@
                     console.log("Adjustchallan:", Adjustchallan);
                     console.log("ResultArray:", resultArray);
                     if (allElementsAdjusted) {
-                        $("form").submit();
-                    } else {
+
+                          CheckQtyBeforeInsertOrUpdate(function (isValid) {
+                if (isValid) {
+                    $("form").submit();
+                }
+            });
+                    } 
+                    else {
                         // $.notify('All Items Challan have not been adjusted yet.', "error");
                         $.notify('All Items Challan have not been adjusted yet. Missing: ' + unmatchedElements.join(', '), "error");
                     }

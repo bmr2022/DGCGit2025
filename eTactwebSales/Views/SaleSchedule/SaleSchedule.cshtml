@@ -1031,7 +1031,7 @@
             // $('#SchEffFromDate').datepicker("option", "minDate", $('#SODate').val());
             $("#SchEffFromDate,#SchEffTillDate,#SOCloseDate").datepicker({ dateFormat: 'dd/mm/yy' });
             if ($('#Mode').val() == 'U' || $('#Mode').val() == 'V' || $('#Mode').val() == 'SSA' || $('#Mode').val() == 'SSC') {
-
+                 
                 var hiddenSchDate = $('#hiddenSchDate').val();
                 var hiddenSchEffTillDate = $('#hiddenSchEffTillDate').val();
                 var ManualSplitMonthly = "@Model.ManualMonthSplit";
@@ -1071,7 +1071,11 @@
                /*  $('#DeliveryDate').datepicker("option", "minDate", parseDateToFormat($('#SchEffFromDate').val()));
                 $('#DeliveryDate').datepicker("option", "maxDate", parseDateToFormat($('#SchEffTillDate').val())); */
                 $("#SOCloseDate").datepicker("setDate", parseDateToFormat(SOCloseDate));
-                $("#SODate").datepicker("setDate", parseDateToFormat(SoDate));
+                var onlyDate = SoDate.split(" ")[0];
+                var dateObj = $.datepicker.parseDate("dd/mm/yy", onlyDate);
+               $("#SODate").datepicker({ dateFormat: "dd/mm/yy" })
+            .datepicker("setDate", $.datepicker.parseDate("dd/mm/yy", "@Model.SODate".split(" ")[0]));
+
                 /* //$('#SchEffTillDate').datepicker("option", "minDate", new Date(SoDate));
                 //$('#SchEffTillDate').datepicker("option", "maxDate", new Date(SoCloseDate)); */
                      $('input[type="radio"]').change();
@@ -2598,7 +2602,7 @@
                             $('#SOYearCode').append('<option>-Select-</option>');
                             // $('#SOYearCode').change();
 
-                            $('#CustomerOrderNo,#SODate,#DeliveryAddress').val('');
+                            $('#CustomerOrderNo,#DeliveryAddress').val('');
                             $('#SchEffFromDate,#SchEffTillDate').prop('disabled', false);
 
                             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {

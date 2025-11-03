@@ -46,5 +46,7 @@ namespace eTactWeb.Services.Interface
 
         Task<ResponseResult> GetItemGroup();
         Task<IssueNRGPModel> selectMultipleItem(string GroupName, int StoreID,string FromDate,string ToDate, string PartCode);
+        Task<ResponseResult> GetFeatureOption();
+
     }
 }

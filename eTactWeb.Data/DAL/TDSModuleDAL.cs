@@ -1,4 +1,5 @@
-﻿using eTactWeb.Services.Interface;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
 using static eTactWeb.DOM.Models.Common;
 
@@ -13,10 +14,12 @@ public class TDSModuleDAL
     private readonly DataTable oDataTable = new();
 
     private object Result = "";
-
-    public TDSModuleDAL(IConfiguration configuration, IDataLogic iDataLogic)
+    private readonly ConnectionStringService _connectionStringService;
+    public TDSModuleDAL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
     {
-        DBConnectionString = configuration.GetConnectionString("eTactDB");
+        _connectionStringService = connectionStringService;
+        DBConnectionString = _connectionStringService.GetConnectionString();
+        //DBConnectionString = configuration.GetConnectionString("eTactDB");
         _IDataLogic = iDataLogic;
     }
 

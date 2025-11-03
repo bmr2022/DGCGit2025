@@ -29,6 +29,26 @@ namespace eTactWeb.Data.DAL
             DBConnectionString = _connectionStringService.GetConnectionString();
             //DBConnectionString = configuration.GetConnectionString("eTactDB");
         }
+        public async Task<ResponseResult> GenerateMultiMRNPrint(string MRNNo, int YearCode)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@mrn_No", MRNNo));
+                SqlParams.Add(new SqlParameter("@Year_Code", YearCode));
+                
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SPMRNMIRDetailsReport", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
 
         public async Task<ResponseResult> GetReportName()
         {
@@ -274,6 +294,7 @@ namespace eTactWeb.Data.DAL
             
             model.YearCode = Convert.ToInt32(DS.Tables[0].Rows[0]["YearCode"].ToString());
             model.EntryDate = DS.Tables[0].Rows[0]["EntryDate"].ToString();
+            model.EntryTime = Convert.ToDateTime(DS.Tables[0].Rows[0]["EntryTime"]).ToString("HH:mm:ss")?.Trim();
             //            EntryId,YearCode,,gm.MRNNo ,EntryDate, 
             model.GateNo = DS.Tables[0].Rows[0]["GateNo"].ToString().Trim();
             model.GateEntryId = Convert.ToInt32(DS.Tables[0].Rows[0]["GateEntryId"].ToString());
@@ -370,6 +391,7 @@ namespace eTactWeb.Data.DAL
                         QCCompleted = row["QCCompleted"].ToString().Trim(),
                         RetChallanPendQty = string.IsNullOrEmpty(row["RetChallanPendQty"].ToString()) ? 0 : Convert.ToDecimal(row["RetChallanPendQty"].ToString()),
                         BatchWise = row["batchWise"].ToString().Trim(),
+                        SaleBillNo= row["Salebillno"].ToString().Trim(),
                         SaleBillYearCode = string.IsNullOrEmpty(row["salebillYearCode"].ToString()) ? 0 : Convert.ToInt32(row["salebillYearCode"].ToString()),
                         AgainstChallanNo = row["AgainstChallanNo"].ToString().Trim(),
                         BatchNo = row["Batchno"].ToString().Trim(),
@@ -429,6 +451,8 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@vendorName", model.VendorName));
                 SqlParams.Add(new SqlParameter("@PONo", model.MrnNo));
                 SqlParams.Add(new SqlParameter("@ItemName", model.ItemName));
+                SqlParams.Add(new SqlParameter("@FromMRNNo", model.FromMRNNo));
+                SqlParams.Add(new SqlParameter("@ToMRNNo", model.ToMRNNo));
                 SqlParams.Add(new SqlParameter("@StartDate", fromDt));
                 SqlParams.Add(new SqlParameter("@EndDate", toDt));
 
@@ -558,7 +582,7 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
-        public async Task<MRNQDashboard> GetDashboardData(string VendorName, string MRNNo, string GateNo, string PONo, string ItemName, string PartCode, string FromDate, string ToDate)
+        public async Task<MRNQDashboard> GetDashboardData(string VendorName, string MRNNo, string GateNo, string PONo, string ItemName, string PartCode, string FromDate, string ToDate,int FromMRNNo,int ToMRNNo)
         {
             DataSet? oDataSet = new DataSet();
             var model = new MRNQDashboard();
@@ -585,6 +609,8 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@PartCode", PartCode);
                     oCmd.Parameters.AddWithValue("@FromDate", fromDt);
                     oCmd.Parameters.AddWithValue("@ToDate", toDt);
+                    oCmd.Parameters.AddWithValue("@FromMRNNo", FromMRNNo);
+                    oCmd.Parameters.AddWithValue("@ToMRNNo", ToMRNNo);
 
 
                     await myConnection.OpenAsync();

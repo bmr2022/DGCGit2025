@@ -69,8 +69,8 @@ namespace eTactWeb.Controllers
         public readonly IEinvoiceService _IEinvoiceService;
         private readonly IEmailService _emailService;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
-
-        public JobWorkIssueController(ILogger<JobWorkIssueController> logger, IDataLogic iDataLogic, IJobWorkIssue iJobWorkIssue, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration, IIssueWithoutBom IIssueWOBOM,IEinvoiceService IEinvoiceService, IEmailService emailService)
+        private readonly ConnectionStringService _connectionStringService;
+        public JobWorkIssueController(ILogger<JobWorkIssueController> logger, IDataLogic iDataLogic, IJobWorkIssue iJobWorkIssue, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration, IIssueWithoutBom IIssueWOBOM,IEinvoiceService IEinvoiceService, IEmailService emailService, ConnectionStringService connectionStringService)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
@@ -80,6 +80,7 @@ namespace eTactWeb.Controllers
             _IIssueWOBOM = IIssueWOBOM;
             _IEinvoiceService = IEinvoiceService;
             _emailService = emailService;
+            _connectionStringService = connectionStringService;
         }
         private async Task<string> GenerateQRCodeImage(string qrText, string filePath)
         {
@@ -119,7 +120,16 @@ namespace eTactWeb.Controllers
                 return "Error";
             }
         }
+        public async Task<IActionResult> selectMultipleItem(string GroupName, int StoreID, string ToDate, string PartCode)
+        {
+            var model = new JobWorkIssueModel();
+            var FromDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString("FromDate"));
+            model = await _IJobWorkIssue.selectMultipleItem(GroupName, StoreID, FromDate, ToDate, PartCode);
 
+
+            return PartialView("_JobWorkIssueMultiItem", model);
+
+        }
         public async Task<IActionResult> GenerateEwayBill([FromBody] EInvoiceItemModel input)
         {
             try
@@ -216,8 +226,8 @@ namespace eTactWeb.Controllers
             {
                 webReport.Report.Load(webRootPath + "\\IssueVendJobworkChallan.frx"); // default report
             }
-           
-            my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+           my_connection_string = _connectionStringService.GetConnectionString();
+            //my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
             webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
             webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
             webReport.Report.SetParameterValue("entryparam", EntryId);
@@ -248,8 +258,8 @@ namespace eTactWeb.Controllers
             {
                 webReport.Report.Load(webRootPath + "\\IssueVendJobworkChallan.frx"); // default report
             }
-
-            my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+            my_connection_string = _connectionStringService.GetConnectionString();
+            //my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
             webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
             webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
             webReport.Report.SetParameterValue("entryparam", EntryId);
@@ -891,6 +901,72 @@ namespace eTactWeb.Controllers
             var username = HttpContext.Session.GetString("Branch");
             return Json(username);
         }
+        public IActionResult AddMultipleItemDetail(List<JobWorkGridDetail> model)
+        {
+            try
+            {
+                var MainModel = new JobWorkIssueModel();
+                var StockGrid = new List<JobWorkGridDetail>();
+                var StockAdjustGrid = new List<JobWorkGridDetail>();
+
+                var SeqNo = 1;
+                foreach (var item in model)
+                {
+                    string modelJson = HttpContext.Session.GetString("KeyJobWorkIssue");
+                    IList<JobWorkGridDetail> ItemDetail = new List<JobWorkGridDetail>();
+                    if (!string.IsNullOrEmpty(modelJson))
+                    {
+                        ItemDetail = JsonConvert.DeserializeObject<List<JobWorkGridDetail>>(modelJson);
+                    }
+
+                    //_MemoryCache.TryGetValue("ItemList", out List<SaleBillDetail> ItemDetail);
+
+
+                    if (model != null)
+                    {
+                        if (ItemDetail == null)
+                        {
+                            item.SeqForBatch = SeqNo++;
+                           
+                            StockGrid.Add(item);
+                        }
+                        else
+                        {
+
+
+                            if (ItemDetail.Where(x => x.ItemCode == item.ItemCode && x.BatchNo == item.BatchNo && x.UniqueBatchNo == item.UniqueBatchNo).Any())
+                            {
+                                return StatusCode(207, "Duplicate");
+                            }
+
+
+                            item.SeqForBatch = ItemDetail.Count + 1;
+                           
+                            StockGrid = ItemDetail.Where(x => x != null).ToList();
+                            StockAdjustGrid.AddRange(StockGrid);
+                            StockGrid.Add(item);
+                        }
+                        MainModel.JobDetailGrid = StockGrid;
+
+
+                        HttpContext.Session.SetString("KeyJobWorkIssue", JsonConvert.SerializeObject(MainModel.JobDetailGrid));
+                       
+                    }
+                    else
+                    {
+                        ModelState.TryAddModelError("Error", "Schedule List Cannot Be Empty...!");
+                    }
+                }
+
+
+                return PartialView("_JobWorkIssueGrid", MainModel);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
 
         public IActionResult AddJobWorkIssueDetail(JobWorkGridDetail model)
         {

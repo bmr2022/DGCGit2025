@@ -26,9 +26,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _HRWeekOffMasterDAL.FillEntryId();
         }
-        public async Task<ResponseResult> SaveData(HRWeekOffMasterModel model)
+        public async Task<ResponseResult> SaveData(HRWeekOffMasterModel model, List<string> HREmployeeDT)
         {
-            return await _HRWeekOffMasterDAL.SaveData(model);
+            return await _HRWeekOffMasterDAL.SaveData(model, HREmployeeDT);
         }
         public async Task<ResponseResult> GetDashboardData()
         {
@@ -46,7 +46,8 @@ namespace eTactWeb.Data.BLL
         {
             return await _HRWeekOffMasterDAL.DeleteByID(ID);
         }
-        public async Task<ResponseResult> GetEmpCat()
+       
+        public async Task<DataSet> GetEmpCat()
         {
             return await _HRWeekOffMasterDAL.GetEmpCat();
         }

@@ -35,5 +35,8 @@ namespace eTactWeb
 
             CreateHostBuilder(args).Build().Run();
         }
+
     }
+
+
 }

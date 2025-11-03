@@ -534,7 +534,7 @@
 	<script>
 		
 		$(document).ready(function () {
-			GetFormRights();
+			//GetFormRights();
 			if ($('#Mode').val() !== "U") {
 				setFormattedDate();
 				FillEntryID();
@@ -554,15 +554,7 @@
 
 			//$('#SlipDate').rules("remove", "required");
 
-			var InspectionType = $('#InspectionType').val();
-			if (!InspectionType || InspectionType === '' || InspectionType === null) {
-
-				$.notify('Inspection Type is mandatory to display the PartNo!', 'error');
-			}
-			var PartNo = $('#PartNo').val();
-			if (!PartNo || PartNo === '' || PartNo === null) {
-				$.notify('PartNo is mandatory to display the Color & Grid Data!', 'error');
-			}
+			
 			$('#InpectionJudgement').rules("remove", "required");
 			$('#InspectedOther1').rules("remove", "required");
 			$('#InspectedOther2').rules("remove", "required");
@@ -673,13 +665,22 @@
 
 				if (sampleSize > 25) {
 					$(this).val(25);
-					$.notify("⚠️ Sample Size cannot be more than 25", "error");
+					$.notify(" Sample Size cannot be more than 25", "error");
 				}
 			});
 			$('.submitBTN').click(function (e) {
 
 				console.log("SubmitButton Click");
 				e.preventDefault();
+				var InspectionType = $('#InspectionType').val();
+			if (!InspectionType || InspectionType === '' || InspectionType === null) {
+
+				$.notify('Inspection Type is mandatory to display the PartNo!', 'error');
+			}
+			var PartNo = $('#PartNo').val();
+			if (!PartNo || PartNo === '' || PartNo === null) {
+				$.notify('PartNo is mandatory to display the Color & Grid Data!', 'error');
+			}
 				//$(this).off('click');
 				$('form').submit();
 			});

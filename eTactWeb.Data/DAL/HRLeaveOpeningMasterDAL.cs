@@ -108,13 +108,14 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
-        public async Task<ResponseResult> GetShiftName()
+        public async Task<ResponseResult> GetShiftName(int EmpId)
         {
             var _ResponseResult = new ResponseResult();
             try
             {
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@flag", "FillShift"));
+                SqlParams.Add(new SqlParameter("@EmpId", EmpId));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("HRSPHRLeaveOpeningMainDetail", SqlParams);
             }

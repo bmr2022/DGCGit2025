@@ -229,7 +229,7 @@
                                                     <h6 class="mb-0 text-sm">Company Name</h6>
                                                 </label>
                                                 <div style="font-size:0.8em;">
-                                            <select asp-for="CompanyName" asp-items="@(new SelectList(Model.AccList, "CompanyName", "CompanyName"))" new { style="color:black;width: 250px;height:20px;  background: #e6eeff" }>
+                                            <select asp-for="CompanyName" asp-items="@(new SelectList(Model.AccList, "CompanyName", "CompanyName",Model.CompanyName))" new { style="color:black;width: 250px;height:20px;  background: #e6eeff" }>
                                                  @* <option selected disabled>-Select-</option>*@
                                             </select>            
                                             </div>
@@ -273,7 +273,7 @@
                                                 <label class="mb-1">
                                                     <h6 class="mb-0 text-sm">Password</h6>
                                                 </label>
-                                                <input type="password" asp-for="Password" placeholder="Enter password" style="height:20px;">
+                                                <input type="password" asp-for="Password" placeholder="Enter password" style="height:20px;" autofocus>
                                             </div>
                                             <div class="row px-3 mb-4">
                                                 <div class="custom-control custom-checkbox custom-control-inline"> <input id="chk1" type="checkbox" name="chk" class="custom-control-input"> <label for="chk1" class="custom-control-label text-sm">Remember me</label> </div> <a href="#" class="ml-auto mb-0 text-sm">Forgot Password?</a>
@@ -398,7 +398,7 @@
                     return true;
                 }
                 $(document).ready(function () {
-                     
+                    
                    var unit;
                    var yearCode;
                    if($('#Mode').val()=="Y"){
@@ -517,68 +517,66 @@
                     });
             }
 
-               function GetBranchname(comName){
-                    
-                   $.ajax({
-                        type: "POST",
-                        url: "@Url.Action("GetBranchName","Home")",
-                        data: {companyName: comName},
-                        dataType: "json",
-                        success: function (result, status, error) 
-                        {
-                             
-                            $('#Unit').empty();
-                            $('#Unit').append('<option selected disabled>-Select-</option>');
-                            console.log(result);
-                            for(var i=0;i<result.length;i++){
-                                if ($('#hiddenUnit').val() == result[i]) 
-                                {
-                                    $('#Unit').append('<option value="'+result[i]+'" selected>'+result[i]+'</option>');
-                                }
-                                else
-                                {
-                                    $('#Unit').append('<option value="'+result[i]+'">'+result[i]+'</option>');
-                                }
-                                
-                            }
-                            var unit = $('#Unit').find(':selected').val();
-                            
-                             GetYearCode(unit,comName);
-                             fillUnitandYC(serverName,companyName);
-                        },
-                        error: function(xhr, status, error) {
-                            console.log("Error: " + error);
-                        }
-                    });
-               }
+               function GetBranchname(comName) {
+    $.ajax({
+        type: "POST",
+        url: "@Url.Action("GetBranchName", "Home")",  
+        data: { companyName: comName },
+        dataType: "json",
+        success: function (result) {
+            var $unit = $('#Unit');
+            var hiddenUnit = $('#hiddenUnit').val(); // last selected/last login branch
 
-               function GetYearCode(unit,comname){
-                    
-                   $.ajax({
-                        type: "POST",
-                        url: "@Url.Action("GetYearCode","Home")",
-                        data: {branchName: unit,companyName:comname},
-                        dataType: "json",
-                        success: function (result, status, error) {
-                             
-                            console.log(result);
-                            $('#YearCode').empty();
-                            $('#YearCode').append('<option selected disabled>-Select-</option>');
-                           for(var i=0;i<result.length;i++){
-                               if ($('#hiddenYC').val() == result[i]) {
-                                    $('#YearCode').append('<option value="'+result[i]+'" selected>'+result[i]+'</option>');
-                                }
-                                else {
-                                    $('#YearCode').append('<option value="'+result[i]+'">'+result[i]+'</option>');
-                                }
-                                //$('#YearCode').append('<option value="'+result[i]+'">'+result[i]+'</option>');
-                            }
-                        },
-                        error: function(xhr, status, error) {
-                            console.log("Error: " + error);
-                        }
-                    });
-               }
+            $unit.empty();
+            $unit.append('<option disabled>-Select-</option>');
+
+            // Loop through branches and bind options
+            result.forEach(function(branch) {
+                if (branch === hiddenUnit) {
+                    $unit.append('<option value="' + branch + '" selected>' + branch + '</option>');
+                } else {
+                    $unit.append('<option value="' + branch + '">' + branch + '</option>');
+                }
+            });
+
+            // Optional: call other functions after binding
+            var selectedUnit = $unit.find(':selected').val();
+            GetYearCode(selectedUnit, comName);
+            fillUnitandYC(serverName, comName);
+        },
+        error: function (xhr, status, error) {
+            console.log("Error fetching branches: " + error);
+        }
+    });
+}
+
+              function GetYearCode(unit, comName) {
+    $.ajax({
+        type: "POST",
+        url: "@Url.Action("GetYearCode", "Home")",
+        data: { branchName: unit, companyName: comName },
+        dataType: "json",
+        success: function (result) {
+            var $yearCode = $('#YearCode');
+            var hiddenYC = $('#hiddenYC').val(); // Last logged-in YearCode
+
+            $yearCode.empty();
+            $yearCode.append('<option disabled>-Select-</option>');
+
+            result.forEach(function (yc) {
+                if (yc === hiddenYC) {
+                    $yearCode.append('<option value="' + yc + '" selected>' + yc + '</option>');
+                } else {
+                    $yearCode.append('<option value="' + yc + '">' + yc + '</option>');
+                }
+            });
+        },
+        error: function (xhr, status, error) {
+            console.log("Error fetching YearCode: " + error);
+        }
+    });
+}
+
                $('#Unit').change(function(){
                    var unit = $('#Unit').val();
                    var comName = $('#CompanyName').val();

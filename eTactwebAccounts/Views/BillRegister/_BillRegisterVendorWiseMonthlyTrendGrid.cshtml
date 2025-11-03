@@ -1,0 +1,221 @@
+﻿@model eTactWeb.DOM.Models.BillRegisterModel
+<div class="table-responsive" style="max-height:300px;overflow-y:auto;">
+    <table class="table table-responsive table-hover table-bordered PMRPGrid TbCss text-nowrap mb-0" id="ReportTable">
+        <thead class="bg-gradient card-headerBG text-light PMRPThead" style="position:static;" id="dashRThead">
+            <tr>
+                <th>Action</th>
+                <th>Sr#</th>
+                <th data-columnno="1" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>VendorName
+                </th>
+                <th data-columnno="2" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>AprAmt
+                </th>
+                <th data-columnno="3" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>MayAmt
+                </th>
+                <th data-columnno="4" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>JunAmt
+                </th>
+                <th data-columnno="5" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>JulAmt
+                </th>
+                <th data-columnno="6" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>AugAmt
+                </th>
+                <th data-columnno="7" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>SepAmt
+                </th>
+                <th data-columnno="8" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>OctAmt
+                </th>
+                <th data-columnno="9" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>NovAmt
+                </th>
+                <th data-columnno="10" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>DecAmt
+                </th>
+                <th data-columnno="11" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>JanAmt
+                </th>
+                <th data-columnno="12" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>FebAmt
+                </th>
+                <th data-columnno="13" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>MarAmt
+                </th>
+                <th data-columnno="14" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>AprQty
+                </th>
+                <th data-columnno="15" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>MayQty
+                </th>
+                <th data-columnno="16" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>JunQty
+                </th>
+                <th data-columnno="17" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>JulQty
+                </th>
+                <th data-columnno="18" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>AugQty
+                </th>
+                <th data-columnno="19" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>SepQty
+                </th>
+                <th data-columnno="20" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>OctQty
+                </th>
+                <th data-columnno="21" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>NovQty
+                </th>
+                <th data-columnno="22" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>DecQty
+                </th>
+                <th data-columnno="23" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>JanQty
+                </th>
+                <th data-columnno="24" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>FebQty
+                </th>
+                <th data-columnno="25" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>MarQty
+                </th>
+
+            </tr>
+        </thead>
+        <tbody id="divStockRegisterBody">
+            @{
+                var @Cntr = 0;
+                if (Model.BillRegisterList == null)
+                {
+                    <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                }
+                else
+                {
+                    foreach (var item in Model.BillRegisterList)
+                    {
+                        Cntr = Cntr + 1;
+
+                        <tr id="SAGridRow-@Cntr" onclick="selection(this)">
+                            <td>
+                                <a class="table-link link-danger" onclick="DeleteRow(this.id)" id="@Cntr">
+                                    <span class="fa-stack">
+                                        <i class="fa fa-square fa-stack-2x"></i>
+                                        <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </td>
+                            <th>@Cntr</th>
+                            <td>@item.VendorName</td>
+                            <td>@item.AprAmt.ToString("0.00")</td>
+                            <td>@item.MayAmt.ToString("0.00")</td>
+                            <td>@item.JunAmt.ToString("0.00")</td>
+                            <td>@item.JulAmt.ToString("0.00")</td>
+                            <td>@item.AugAmt.ToString("0.00")</td>
+                            <td>@item.SepAmt.ToString("0.00")</td>
+                            <td>@item.OctAmt.ToString("0.00")</td>
+                            <td>@item.NovAmt.ToString("0.00")</td>
+                            <td>@item.DecAmt.ToString("0.00")</td>
+                            <td>@item.JanAmt.ToString("0.00")</td>
+                            <td>@item.FebAmt.ToString("0.00")</td>
+                            <td>@item.MarAmt.ToString("0.00")</td>
+
+                            <td>@item.AprQty</td>
+                            <td>@item.MayQty</td>
+                            <td>@item.JunQty</td>
+                            <td>@item.JulQty</td>
+                            <td>@item.AugQty</td>
+                            <td>@item.SepQty</td>
+                            <td>@item.OctQty</td>
+                            <td>@item.NovQty</td>
+                            <td>@item.DecQty</td>
+                            <td>@item.JanQty</td>
+                            <td>@item.FebQty</td>
+                            <td>@item.MarQty</td>
+
+                        </tr>
+                    }
+                }
+            }
+
+        </tbody>
+    </table>
+</div>
+
+<style>
+    #divStockRegisterBody {
+        background-color: #e0ebeb;
+    }
+    .sort-icon {
+        padding: 5px;
+        margin: 5px;
+        vertical-align: top;
+    }
+
+    .ascCol {
+        font-size: 15px;
+        vertical-align: bottom;
+    }
+
+    .descCol {
+        font-size: 15px;
+        vertical-align: super;
+    }
+
+    #dashRThead th {
+        background-color: #127387;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+</style>

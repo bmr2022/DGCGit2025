@@ -1,0 +1,167 @@
+﻿@model eTactWeb.DOM.Models.AgainstAdjustVoucherModel
+@{
+    var rowIndex = 0;
+}
+
+@if (Model.AgainstAdjustVoucherList == null)
+{
+    <tr class="text-center">
+        <td colspan="20" class="text-black-50"><strong>NO DATA ADDED</strong></td>
+    </tr>
+}
+else
+{
+    foreach (var item in Model.AgainstAdjustVoucherList)
+    {
+        rowIndex++;
+        <tr class="small @rowIndex adjGridRow" style="white-space:nowrap">
+            <td style="white-space:nowrap;">
+                @if (Model.Mode == "V" && Model.ID > 0)
+                {
+                    <a class="table-link link-primary noCursor" disabled>
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                    <a class="table-link link-danger noCursor" disabled>
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                }
+                else
+                {
+                    <a class="table-link link-primary" onclick="EditAdjRow(@rowIndex);">
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                    <a class="table-link link-danger" onclick="DeleteAdjRow(@rowIndex);">
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                }
+            </td>
+
+            <td>@rowIndex</td>
+            <td>@item.ModeOfAdjustment</td>
+            <td>@item.Description</td>
+
+            <!-- Format VoucherDocDate (string) -->
+            <td>
+                @{
+                    string formattedDate = "";
+                    if (!string.IsNullOrEmpty(item.VoucherDocDate)
+                    && DateTime.TryParse(item.VoucherDocDate, out var adjDueDate))
+                    {
+                        formattedDate = adjDueDate.ToString("MM/dd/yyyy");
+                    }
+                }
+                @formattedDate
+            </td>
+
+            <td>@item.VoucherNo</td>
+
+            <!-- Fix AdjustAmount (decimal not nullable) -->
+            <td id="GridAdjPendAmount-@rowIndex">
+                @(item.AdjustmentAmt)
+            </td>
+
+            <td class="GridAdjDrCr">
+                @if (!string.IsNullOrEmpty(item.ActualDrCr) && !item.ActualDrCr.Contains("Select"))
+                {
+                    @item.ActualDrCr
+                }
+            </td>
+
+            <td>@item.PONo</td>
+            <td>@item.POYear</td>
+
+            <!-- Format PoDate (string) -->
+            <td>
+                @{
+                    string formattedPODate = "";
+                    if (!string.IsNullOrEmpty(item.PoDate)
+                    && DateTime.TryParse(item.PoDate, out var adjPODate))
+                    {
+                        formattedPODate = adjPODate.ToString("MM/dd/yyyy");
+                    }
+                }
+                @formattedPODate
+            </td>
+
+            <td>@(item.AgainstVoucherNo ?? string.Empty)</td>
+            <td>@item.AgainstVoucherType</td>
+
+            <!-- int values (no ?? needed since they are not nullable) -->
+            <td>@item.AgainstVoucherEntryId</td>
+            <td>@item.AgainstVoucheryearCode</td>
+            <td>@item.AgainstVoucherEntryId</td>
+            <td>@item.ProjectYearcode</td>
+        </tr>
+    }
+ }
+@* else
+{
+    <tr class="small" style="white-space:nowrap">
+        <td>
+            <select class="form-control" asp-for="Type" style="width:50px;">
+                <option value="DR">DR</option>
+                <option value="CR">CR</option>
+            </select>
+        </td>
+        <td>
+            <input asp-for="AccountCode" class="form-control" type="hidden" />
+            <input type="hidden" asp-for="BankType" />
+            <select class="form-control" asp-for="LedgerName" style="width:250px;">
+                <option value="@Model.LedgerName">-Select-</option>
+                @if (Model.Mode == "U" || Model.Mode == "V")
+                {
+                    <option value="@Model.LedgerName" selected>@Model.LedgerName</option>
+                }
+            </select>
+        </td>
+        <td>
+            <div class="d-flex align-items-center">
+                <input asp-for="Balance" class="form-control me-2" style="width: 70px;" readonly />
+                <input asp-for="DRCR" class="form-control" style="width: 50px;" readonly />
+            </div>
+        </td>
+        <td>
+            <select class="form-control" asp-for="ModeOfAdjustment" style="width:100px;">
+                @if (Model.Mode == "U" || Model.Mode == "V")
+                {
+                    <option value="@Model.ModeOfAdjustment" selected>@Model.ModeOfAdjustment</option>
+                }
+            </select>
+        </td>
+        <td><input asp-for="AdjustmentAmt" class="form-control" type="number" min="0" style="width:70px;" /></td>
+        <td>
+            <input asp-for="AdjustmentAmtOthCur" class="form-control" readonly />
+        </td>
+        <td>
+            <input type="hidden" asp-for="CostCenterId" value="@Model.CostCenterId" />
+            <select class="form-control" asp-for="CostCenterName" style="width:140px;">
+
+
+                @if (Model.Mode == "U" || Model.Mode == "V")
+                {
+                    <option value="@Model.CostCenterId">@Model.CostCenterName</option>
+                }
+            </select>
+        </td>
+        <td><input asp-for="PartyWiseNaration" class="form-control" /></td>
+        <td><input asp-for="AgainstVoucherNo" class="form-control" readonly /></td>
+        <td><input asp-for="AgainstVoucheryearCode" class="form-control" readonly /></td>
+        <td><input asp-for="AgainstVoucherDate" class="form-control" readonly /></td>
+        <td><input asp-for="AgainstVoucherType" class="form-control" readonly /></td>
+        <td><input asp-for="AgainstVoucherEntryId" class="form-control" readonly /></td>
+        <td><input asp-for="VoucherBillAmt" class="form-control" readonly /></td>
+        <td><input asp-for="PendBillAmt" class="form-control" readonly /></td>
+    </tr>
+}  *@

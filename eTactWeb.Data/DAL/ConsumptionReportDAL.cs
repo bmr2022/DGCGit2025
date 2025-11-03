@@ -133,8 +133,60 @@ namespace eTactWeb.Data.DAL
             }
 
             return _ResponseResult;
+         }
+        public async Task<DataSet> GetCategory()
+        {
+            var oDataSet = new DataSet();
+
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@flag", "FillItemCategory"));
+                var _ResponseResult = await _IDataLogic.ExecuteDataSet("SPRMConsumptionReport", SqlParams);
+                if (_ResponseResult.Result != null && _ResponseResult.StatusCode == HttpStatusCode.OK && _ResponseResult.StatusText == "Success")
+                {
+                    _ResponseResult.Result.Tables[0].TableName = "CategoryList";
+
+                    oDataSet = _ResponseResult.Result;
+                }
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return oDataSet;
         }
-        public async Task<ConsumptionReportModel> GetConsumptionDetailsData(string fromDate, string toDate, int WorkCenterid, string ReportType, int FGItemCode, int RMItemCode, int Storeid)
+         public async Task<DataSet> GetGroupName()
+        {
+            var oDataSet = new DataSet();
+
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@flag", "FillParentGroup"));
+                var _ResponseResult = await _IDataLogic.ExecuteDataSet("SPRMConsumptionReport", SqlParams);
+                if (_ResponseResult.Result != null && _ResponseResult.StatusCode == HttpStatusCode.OK && _ResponseResult.StatusText == "Success")
+                {
+                    _ResponseResult.Result.Tables[0].TableName = "GroupNameList";
+
+                    oDataSet = _ResponseResult.Result;
+                }
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return oDataSet;
+        }
+
+
+        public async Task<ConsumptionReportModel> GetConsumptionDetailsData(string fromDate, string toDate, int WorkCenterid, string ReportType, int FGItemCode, int RMItemCode, int Storeid,string GroupName, string ItemCateg)
         {
             var resultList = new ConsumptionReportModel();
             DataSet oDataSet = new DataSet();
@@ -158,6 +210,8 @@ namespace eTactWeb.Data.DAL
                         command.Parameters.AddWithValue("@WCID", WorkCenterid);
                         command.Parameters.AddWithValue("@FGItemcode", FGItemCode );
                         command.Parameters.AddWithValue("@RMItemcode", RMItemCode );
+                        command.Parameters.AddWithValue("@ItemCatEntryIdList", ItemCateg);
+                        command.Parameters.AddWithValue("@ParentGroupIdList", GroupName);
                     
 
                     // Open connection
@@ -294,6 +348,49 @@ namespace eTactWeb.Data.DAL
                                                         ClosingStock = row["ClosingStock"] != DBNull.Value ? Convert.ToDecimal(row["ClosingStock"]) : 0,
                                                         WIPClosingStock = row["WIPClosingStock"] != DBNull.Value ? Convert.ToDecimal(row["WIPClosingStock"]) : 0,
                                                         RMItemCode = row["RMItemCode"] != DBNull.Value ? Convert.ToInt32(row["RMItemCode"]) : 0
+
+                                                    }).ToList();
+                    }
+                }
+              else if (ReportType.ToString() == "COMPACT")
+                {
+                    if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                    {
+
+
+                        resultList.ConsumptionReportGrid = (from DataRow row in oDataSet.Tables[0].Rows
+                                                    select new ConsumptionReportModel
+                                                    {
+                                                        RMPartCode = row["RMPartCode"] != DBNull.Value ? row["RMPartCode"].ToString() : string.Empty,
+                                                        RMItemName = row["RMItemName"] != DBNull.Value ? row["RMItemName"].ToString() : string.Empty,
+                                                        ConsumedRMQty = row["ConsumedRMQty"] != DBNull.Value ? Convert.ToDecimal(row["ConsumedRMQty"]) : 0,
+                                                        ConsumedRMUnit = row["RmUnit"] != DBNull.Value ? row["RmUnit"].ToString() : string.Empty,
+                                                        FGPartCode = row["FGPartCode"] != DBNull.Value ? row["FGPartCode"].ToString() : string.Empty,
+                                                        FGItemName = row["FGItemName"] != DBNull.Value ? row["FGItemName"].ToString() : string.Empty,
+                                                        FGProdQty = row["FGProdQty"] != DBNull.Value ? Convert.ToDecimal(row["FGProdQty"]) : 0,
+                                                        Unit = row["Unit"] != DBNull.Value ? row["Unit"].ToString() : string.Empty
+
+                                                    }).ToList();
+                    }
+                }
+              else if (ReportType.ToString() == "Prod Date Wise Consumption")
+                {
+                    if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                    {
+
+
+                        resultList.ConsumptionReportGrid = (from DataRow row in oDataSet.Tables[0].Rows
+                                                    select new ConsumptionReportModel
+                                                    {
+                                                        ProdDate = row["ProdDate"] != DBNull.Value ? row["ProdDate"].ToString() : string.Empty,
+                                                        FGPartCode = row["FGPartCode"] != DBNull.Value ? row["FGPartCode"].ToString() : string.Empty,
+                                                        FGItemName = row["FGItemName"] != DBNull.Value ? row["FGItemName"].ToString() : string.Empty,
+                                                        FGProdQty = row["FGProdQty"] != DBNull.Value ? Convert.ToDecimal(row["FGProdQty"]) : 0,
+                                                        FGunit = row["FGunit"] != DBNull.Value ? row["FGunit"].ToString() : string.Empty,
+                                                        RMPartCode = row["RMPartCode"] != DBNull.Value ? row["RMPartCode"].ToString() : string.Empty,
+                                                        RMItemName = row["RMItemName"] != DBNull.Value ? row["RMItemName"].ToString() : string.Empty,
+                                                        ConsumedRMQty = row["ConsumedRMQty"] != DBNull.Value ? Convert.ToDecimal(row["ConsumedRMQty"]) : 0,
+                                                        ConsumedRMUnit = row["ConsumedRMUnit"] != DBNull.Value ? row["ConsumedRMUnit"].ToString() : string.Empty
 
                                                     }).ToList();
                     }

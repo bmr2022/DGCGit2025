@@ -19,6 +19,7 @@ public interface IGateInward
     Task<ResponseResult> FillItems(string Flag, string accountCode, string Year, string poNo, string Type, string GateNo = "", string GateYear = "", string Check = "");
 
     Task<ResponseResult> SaveGateInward(GateInwardModel model, DataTable GIGrid);
+    Task<GateInwardModel> GetEwayBillDataforPo(GateInwardModel model, DataTable GIGrid);
 
     Task<ResponseResult> DeleteByID(int ID, int YC,int ActualEnteredBy,string EntryByMachineName,string gateno);
     Task<ResponseResult> FillEntryandGate(string Flag, int YearCode, string SPName);
@@ -26,13 +27,22 @@ public interface IGateInward
     Task<ResponseResult> FillPendQty(int ItemCode, int PartyCode, string PONO, int POYear, int Year, string SchNo, int SchYearCode, int ProcessId, int EntryId, int YearCode);
 
     Task<ResponseResult> GetDashboardData();
+      Task<ResponseResult> GetFeatureOption();
 
     Task<GateInwardDashboard> GetDashboardData(string VendorName, string Gateno, string ItemName, string PartCode,string DocName, string PONO, string ScheduleNo, string FromDate, string ToDate,string DashboardType);
     Task<PendingGateInwardDashboard> GetPendingGateEntryDashboardData(int AccountCode, string PoNo, int PoYearCode, int ItemCode,
-    string FromDate, string ToDatePartCode,string PartCode, string ItemName);
-    Task<GateInwardDashboard> GetDashboardDetailData(string VendorName, string Gateno, string ItemName, string PartCode,string DocName, string PONO, string ScheduleNo, string FromDate, string ToDate);
+    string FromDate, string ToDatePartCode,string PartCode, string ItemName,string GetDataFrom,string Invoiceno);
+
+
+	Task<PendingGateInwardDashboard> GetPendingGateEntryVPDetailData(int AccountCod,string InvoiceNo);
+
+
+
+	Task<GateInwardDashboard> GetDashboardDetailData(string VendorName, string Gateno, string ItemName, string PartCode,string DocName, string PONO, string ScheduleNo, string FromDate, string ToDate);
 
     Task<ResponseResult> GetSearchData(GateDashboard model);
+    Task<ResponseResult> GetAccountCode(string AccountName );
+    Task<ResponseResult> GetItemCode(string ItemName );
 
     Task<GateInwardModel> GetViewByID(int ID, int YearCode);
 

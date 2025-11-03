@@ -6,6 +6,7 @@ using eTactWeb.DOM.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using System.Data;
 
 namespace eTactWeb.Controllers
 {
@@ -76,7 +77,11 @@ namespace eTactWeb.Controllers
 
             model = await _IItemGroup.GetDashboardData(model).ConfigureAwait(false);
             //model.ItemCatList = model.ItemCatList.DistinctBy(x => x.Entry_id).ToList();
-            model.ItemGroupList = model.ItemGroupList.DistinctBy(x => x.Group_Code).ToList();
+            if (model.ItemGroupList != null)
+            {
+                model.ItemGroupList = model.ItemGroupList.DistinctBy(x => x.Group_Code).ToList();
+            }
+            //model.ItemGroupList = model.ItemGroupList.DistinctBy(x => x.Group_Code).ToList();
             return View(model);
         }
 
@@ -211,5 +216,154 @@ namespace eTactWeb.Controllers
             var Result = _IDataLogic.isDuplicate(ColVal, ColName, "Itemgroup_master");
             return Result;
         }
+        public async Task<IActionResult> ImportandUpdateItemGroup()
+        {
+            var model = new ItemGroupModel();
+            return View(model);
+        }
+        public async Task<IActionResult> UpdateFromExcel([FromBody] ExcelUpdateRequest request)
+        {
+            var response = new ResponseResult();
+            var flag = request.Flag;
+
+            try
+            {
+                DataTable dt = new DataTable();
+
+                // Define columns based on SQL table
+                dt.Columns.Add("Group_Code", typeof(long));
+                dt.Columns.Add("Group_name", typeof(string));
+                dt.Columns.Add("Under_GroupCode", typeof(long));
+                dt.Columns.Add("Entry_date", typeof(DateTime));
+                dt.Columns.Add("GroupPrefix", typeof(string));
+                dt.Columns.Add("UnderCategoryId", typeof(int));
+                dt.Columns.Add("seqNo", typeof(long));
+                dt.Columns.Add("ItemAssetsService", typeof(string));
+                dt.Columns.Add("CategoryPrefix", typeof(string));
+                dt.Columns.Add("ItemPrefix", typeof(string));
+
+                int rowIndex = 1;
+
+                foreach (var excelRow in request.ExcelData)
+                {
+                    DataRow row = dt.NewRow();
+
+                    foreach (var map in request.Mapping)
+                    {
+                        string dbCol = map.Key;      // DB column name
+                        string excelCol = map.Value; // Excel column name
+
+                        object value = DBNull.Value;
+
+                        if (excelRow.ContainsKey(excelCol) && !string.IsNullOrEmpty(excelRow[excelCol]))
+                        {
+                            value = excelRow[excelCol];
+                            Type columnType = dt.Columns[dbCol].DataType;
+
+                            try
+                            {
+                                if (dbCol == "UnderCategoryId")
+                                {
+                                    string ItemCat = value.ToString().Trim();
+                                    int ItemType = 0;
+                                    var CatCode = _IItemGroup.GetItemCatCode(ItemCat);
+
+                                    if (CatCode.Result.Result != null && CatCode.Result.Result.Rows.Count > 0)
+                                    {
+                                        ItemType = (int)CatCode.Result.Result.Rows[0].ItemArray[0];
+                                    }
+
+                                    if (ItemType != 0)
+                                        value = ItemType;
+                                    else
+                                        return Json(new
+                                        {
+                                            StatusCode = 201,
+                                            StatusText = $"Please Enter valid UnderCategoryId at Row {rowIndex}"
+                                        });
+                                }
+                                if (dbCol == "ItemAssetsService")
+                                {
+                                    string itemType = value?.ToString().Trim() ?? string.Empty;
+                                    if (string.IsNullOrEmpty(itemType) ||
+                                        !(itemType.Equals("Item", StringComparison.OrdinalIgnoreCase) ||
+                                          itemType.Equals("Service", StringComparison.OrdinalIgnoreCase) ||
+                                          itemType.Equals("Asset", StringComparison.OrdinalIgnoreCase)))
+                                    {
+                                        return Json(new
+                                        {
+                                            StatusCode = 201,
+                                            StatusText = $"Invalid Item/Service/Asset type at Row {rowIndex}"
+                                        });
+                                    }
+                                }
+
+
+
+                                if (columnType == typeof(int))
+                                    value = int.Parse(value.ToString());
+                                else if (columnType == typeof(decimal))
+                                    value = decimal.Parse(value.ToString());
+                                else if (columnType == typeof(bool))
+                                {
+                                    string s = value.ToString().Trim().ToLower();
+                                    value = (s == "1" || s == "true" || s == "y");
+                                }
+                                else if (columnType == typeof(DateTime))
+                                    value = DateTime.Parse(value.ToString());
+                                else
+                                    value = value.ToString();
+                            }
+                            catch
+                            {
+                                value = DBNull.Value; // Conversion failed
+                            }
+                        }
+
+                        row[dbCol] = value;
+                    }
+
+                    dt.Rows.Add(row);
+                    rowIndex++;
+                }
+
+                // Pass to repository/service layer
+                response = await _IItemGroup.UpdateMultipleItemDataFromExcel(dt, flag);
+
+                if (response != null)
+                {
+                    if ((response.StatusText == "Success" || response.StatusText == "Updated") &&
+                        (response.StatusCode == HttpStatusCode.OK || response.StatusCode == HttpStatusCode.Accepted))
+                    {
+                        return Json(new
+                        {
+                            StatusCode = 200,
+                            StatusText = "Data imported successfully",
+                            RedirectUrl = Url.Action("ImportandUpdateAccount", "AccountMaster", new { Flag = "" })
+                        });
+                    }
+                    else
+                    {
+                        return Json(new
+                        {
+                            StatusText = response.StatusText,
+                            StatusCode = 201,
+                            RedirectUrl = ""
+                        });
+                    }
+                }
+
+                return Json(new
+                {
+                    StatusCode = 500,
+                    StatusText = "Unknown error occurred"
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
     }
 }

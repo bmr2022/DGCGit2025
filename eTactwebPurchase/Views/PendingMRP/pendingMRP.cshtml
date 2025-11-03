@@ -173,6 +173,13 @@
 
 
 </div>
+<div id="ajaxLoader" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(255,255,255,0.7); z-index:9999; text-align:center;">
+	<div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%);">
+		<span class="spinner-border text-primary" role="status"></span>
+		<br />
+		<span>Processing...</span>
+	</div>
+</div>
 @section Scripts {
 	<Script>
 		$(document).ready(function () {
@@ -204,7 +211,11 @@
 			$.ajax({
 				type: "POST",
 				url: "@Url.Action("GetBomMultiLevelGrid")",
+				   beforeSend: function () {
+							$('#ajaxLoader').show(); // ✅ Show loader
+						},
 				success: function (response) {
+					$('#ajaxLoader').hide();
 					if ($.parseJSON(response).Result.length > 0) {
 						$.notify('Bom refresh successfully.', 'success');
 					} else {
@@ -451,6 +462,7 @@
 				});
 			}
 			console.log(data);
+			FillMRPSOList();
 
 
 			$.ajax({
@@ -467,7 +479,9 @@
 							//if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
 							//}
 							var url = '@Url.Action("MRP", "MRP")';
-							window.location.href = url;
+							setTimeout(function () {
+								window.location.href = '@Url.Action("MRP", "MRP")';
+							}, 300);  // wait 300ms for session write to complete
 						} else {
 							$.notify("Something went Worng....!", "error");
 						}
@@ -475,7 +489,7 @@
 				}
 			});
 
-			FillMRPSOList();
+			
 		});
 
 		function FillMRPSOList() {

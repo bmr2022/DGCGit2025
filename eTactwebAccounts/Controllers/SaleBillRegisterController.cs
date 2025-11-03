@@ -18,7 +18,6 @@ namespace eTactWeb.Controllers
         private readonly ILogger<SaleBillRegisterController> _logger;
         private readonly IConfiguration iconfiguration;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
-
         public SaleBillRegisterController(ILogger<SaleBillRegisterController> logger, IDataLogic iDataLogic, ISaleBillRegister iSaleBillRegister, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
         {
             _logger = logger;
@@ -79,7 +78,6 @@ namespace eTactWeb.Controllers
             {
                 stockRegisterList = JsonConvert.DeserializeObject<List<SaleBillRegisterDetail>>(modelJson);
             }
-
             return Json(stockRegisterList);
         }
         public async Task<JsonResult> FillCustomerList(string FromDate, string ToDate)
@@ -101,7 +99,6 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-  
         public async Task<JsonResult> FillItemNamePartcodeList(string FromDate, string ToDate)
         {
             var JSON = await _ISaleBillRegister.FillItemNamePartcodeList(FromDate, ToDate);
@@ -143,8 +140,6 @@ namespace eTactWeb.Controllers
                 var dt = time.ToString(format);
                 return Json(formattedDate);
                 //string apiUrl = "https://worldtimeapi.org/api/ip";
-
-               
             }
             catch (HttpRequestException ex)
             {

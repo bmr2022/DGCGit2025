@@ -134,6 +134,26 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
+        public async Task<ResponseResult> GetFeatureOption()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+
+                SqlParams.Add(new SqlParameter("@Flag", "FeatureOption"));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_IssueNRGP", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
         public IssueNrgpDAL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
             _IDataLogic = iDataLogic;
@@ -591,6 +611,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@RGPNRGP", model.RGPNRGP));
                 SqlParams.Add(new SqlParameter("@ItemName", model.ItemName));
                 SqlParams.Add(new SqlParameter("@PartCode", model.PartCode));
+                SqlParams.Add(new SqlParameter("@ChallanEntryFrom", model.ChallanEntryFrom));
                 SqlParams.Add(new SqlParameter("@FromDate", ParseFormattedDate((model.FromDate).Split(" ")[0])));
                 SqlParams.Add(new SqlParameter("@ToDate", ParseFormattedDate((model.ToDate).Split(" ")[0])));
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_IssueNRGP", SqlParams);
@@ -874,10 +895,20 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@Transporter", model.Transporter));
                 SqlParams.Add(new SqlParameter("@Distance", model.Distance));
                 SqlParams.Add(new SqlParameter("@IssByEmpId", model.IssByEmpCode));
+                SqlParams.Add(new SqlParameter("@AllowToAddNegativeStockInStore", model.AllowToAddNegativeStockInStore));
 
                 if (model.Mode == "U")
                 {
                     SqlParams.Add(new SqlParameter("@UpdatedByEmpId", model.UpdatedByEmpId));
+                }
+                if (model.AllowToAddNegativeStockInStore == "Y")
+                {
+                    SqlParams.Add(new SqlParameter("@ChallanEntryFrom", "EntryFromCounter"));
+                }
+                else
+                {
+
+                   
                 }
 
                 SqlParams.Add(new SqlParameter("@DTItemGrid", INGrid));

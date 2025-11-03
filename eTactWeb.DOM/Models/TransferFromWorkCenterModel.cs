@@ -97,6 +97,7 @@ namespace eTactWeb.DOM.Models
         public string? ReceivebyEmpName {  get; set; }
         public IList<TransferFromWorkCenterDetail>? ItemDetailGrid { get; set; }
         public List<string> WIPErrorList { get; set; } = new List<string>();
+        //public IList<TextValue>? PartcodeList { get; set; }
     }
 	public class CheckedItemRequest
 	{
@@ -109,6 +110,7 @@ namespace eTactWeb.DOM.Models
         public string? WorkCenterName {  get; set; }
         public string? PartCode {  get; set; }
         public string? ItemName {  get; set; }
+      
         public int ItemCode {  get; set; }
         public int TransferMatEntryId { get; set; }
         public int TransferMatYearCode { get; set; }
@@ -149,6 +151,7 @@ namespace eTactWeb.DOM.Models
         public decimal Rate { get; set; }
         public decimal ItemWeight { get; set; }
         public string? ReceivebyEmpName { get; set; }
+        
     }
     [Serializable]
     public class TransferFromDashboard

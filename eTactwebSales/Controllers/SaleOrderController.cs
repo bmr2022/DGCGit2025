@@ -19,6 +19,23 @@ using System.Data;
 using System.Globalization;
 using System.Reflection;
 using FastReport.Web;
+using FastReport.Export.Image;
+using MimeKit;
+using System.Drawing;
+using System.Drawing.Imaging;
+using PdfSharp.Pdf;
+using PdfSharp.Drawing;
+using PdfSharp.Drawing.BarCodes;
+using MimeKit;
+using MailKit.Net.Smtp;
+using System.Drawing;
+using System.Security.Cryptography;
+using Newtonsoft.Json.Linq;
+using eTactWeb.Services;
+using DocumentFormat.OpenXml.EMMA;
+using OfficeOpenXml.Style;
+
+
 
 namespace eTactWeb.Controllers;
 
@@ -32,9 +49,9 @@ public class SaleOrderController : Controller
 	private readonly IMemoryCache _MemoryCache;
 	private readonly IItemMaster itemMaster;
     public WebReport webReport;
-
-
-    public SaleOrderController(ILogger<SaleOrderController> logger, IDataLogic iDataLogic, ISaleOrder iSaleOrder, ITaxModule iTaxModule, IMemoryCache iMemoryCache, IWebHostEnvironment iWebHostEnvironment, IItemMaster itemMaster, EncryptDecrypt encryptDecrypt, LoggerInfo loggerInfo, IConfiguration configuration)
+    private readonly IEmailService _emailService;
+    private readonly ConnectionStringService _connectionStringService;
+    public SaleOrderController(ILogger<SaleOrderController> logger, IDataLogic iDataLogic, ISaleOrder iSaleOrder, ITaxModule iTaxModule, IMemoryCache iMemoryCache, IWebHostEnvironment iWebHostEnvironment, IItemMaster itemMaster, EncryptDecrypt encryptDecrypt, LoggerInfo loggerInfo, IConfiguration configuration, IEmailService emailService, ConnectionStringService connectionStringService)
 	{
 		_logger = logger;
 		_IDataLogic = iDataLogic;
@@ -46,6 +63,8 @@ public class SaleOrderController : Controller
 		_EncryptDecrypt = encryptDecrypt;
 		LoggerInfo = loggerInfo;
         _iconfiguration = configuration;
+        _emailService = emailService;
+		_connectionStringService = connectionStringService;
     }
 
 	private EncryptDecrypt _EncryptDecrypt { get; }
@@ -55,22 +74,31 @@ public class SaleOrderController : Controller
     private LoggerInfo LoggerInfo { get; }
 
 
-    public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string SONO = "", string ShowOnlyAmendItem = "", int AmmNo = 0)
-    {
+	public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string SONO = "", string ShowOnlyAmendItem = "", int AmmNo = 0)
+	{
 
-        string my_connection_string;
-        string contentRootPath = _IWebHostEnvironment.ContentRootPath;
-        string webRootPath = _IWebHostEnvironment.WebRootPath;
-        webReport = new WebReport();
-        
-        ViewBag.EntryId = EntryId;
-        ViewBag.YearCode = YearCode;
-        ViewBag.SONO = SONO;
-        ViewBag.ShowOnlyAmendItem = ShowOnlyAmendItem;
-        ViewBag.AmmNo = AmmNo;
-        
-        
-            webReport.Report.Load(webRootPath + "\\SOReport.frx"); // default report
+		string my_connection_string;
+		string contentRootPath = _IWebHostEnvironment.ContentRootPath;
+		string webRootPath = _IWebHostEnvironment.WebRootPath;
+		webReport = new WebReport();
+		var ReportName = _ISaleOrder.GetReportName();
+		ViewBag.EntryId = EntryId;
+		ViewBag.YearCode = YearCode;
+		ViewBag.SONO = SONO;
+		ViewBag.ShowOnlyAmendItem = ShowOnlyAmendItem;
+		ViewBag.AmmNo = AmmNo;
+        var val = ReportName.Result.Result.Rows[0].ItemArray[0];
+
+        if (!Convert.IsDBNull(val) && !string.IsNullOrEmpty(val?.ToString()))
+
+        {
+			webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0] + ".frx"); // from database
+		}
+		else
+		{ 
+
+			webReport.Report.Load(webRootPath + "\\SOReportNew.frx"); // default report
+	}
 
         
         
@@ -78,13 +106,254 @@ public class SaleOrderController : Controller
         webReport.Report.SetParameterValue("yearparam", YearCode);
         webReport.Report.SetParameterValue("ShowOnlyAmendItemparam", ShowOnlyAmendItem);
         webReport.Report.SetParameterValue("AmmNo", AmmNo);
-        my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+		my_connection_string = _connectionStringService.GetConnectionString();
+       //my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
         webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
         webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
         webReport.Report.SetParameterValue("MyParameter", my_connection_string);
         webReport.Report.Refresh();
         return View(webReport);
     }
+
+
+
+
+
+    public IActionResult SendReport(string emailTo = "", int EntryId = 0, int YearCode = 0, string Type = "", string CC1 = "", string CC2 = "", string CC3 = "", string Sono = "")
+    {
+        string my_connection_string;
+        string contentRootPath = _IWebHostEnvironment.ContentRootPath;
+        string webRootPath = _IWebHostEnvironment.WebRootPath;
+        webReport = new WebReport();
+
+        ViewBag.EntryId = EntryId;
+        ViewBag.YearCode = YearCode;
+        ViewBag.SONO = Sono;
+        var ReportName = _ISaleOrder.GetReportName();
+
+        if (!string.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
+        {
+            webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0] + ".frx"); // from database
+        }
+        else
+        {
+
+            webReport.Report.Load(webRootPath + "\\SOReportNew.frx"); // default report
+        }
+        
+
+
+
+        webReport.Report.SetParameterValue("entryparam", EntryId);
+        webReport.Report.SetParameterValue("yearparam", YearCode);
+        webReport.Report.SetParameterValue("ShowOnlyAmendItemparam", "");
+        webReport.Report.SetParameterValue("AmmNo", 0);
+		my_connection_string = _connectionStringService.GetConnectionString();
+        //my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+        webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+        webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
+        webReport.Report.SetParameterValue("MyParameter", my_connection_string);
+        webReport.Report.Refresh();
+        // Now call EmailReport
+        return EmailReport(webReport, emailTo, Sono, CC1, CC2, CC3);
+    }
+
+    public IActionResult EmailReport(WebReport webReport, string emailTo, string Challanno, string CC1, string CC2, string CC3)
+    {
+        try
+        {
+            webReport.Report.Prepare(); // Prepare the report before exporting
+                                        // First export the report to an image
+            using (MemoryStream imageStream = new MemoryStream())
+            {
+                // Configure image export
+                var imageExport = new ImageExport()
+                {
+                    ImageFormat = ImageExportFormat.Png, // Force PNG format
+                    Resolution = 300, // Higher quality
+                                      //ExportQuality = 100 // Maximum quality
+                };
+
+                // Export the report
+                webReport.Report.Export(imageExport, imageStream);
+                imageStream.Position = 0;
+
+                // Verify the image data
+                if (imageStream.Length == 0)
+                    throw new Exception("Report export failed - empty image stream");
+
+                // Convert to PDF with additional validation
+                byte[] pdfBytes;
+                try
+                {
+                    pdfBytes = ConvertImageToPdf(imageStream.ToArray());
+                }
+                catch (Exception ex)
+                {
+                    // Try alternative conversion if first attempt fails
+                    pdfBytes = ConvertImageToPdf(imageStream.ToArray());
+                }
+                //emailTo = "infotech.bmr@gmail.com,bmr.client2021@gmail.com";
+                emailTo = string.Join(",", new[] { emailTo, CC1, CC2, CC3 }
+                     .Where(x => !string.IsNullOrWhiteSpace(x))
+                     .Select(x => x.Trim()));
+                string body = $@"
+                        Dear Sir,<br/>
+                        Please find the attachment for the Sale Order No: <strong>{Challanno}</strong> from DGC.<br/><br/>
+                        Regards,<br/>
+                        DGC Team
+                        ";
+                var emailToList = emailTo.Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries)
+                               .Select(e => e.Trim())
+                               .ToList();
+                // Send email
+                //_emailService.SendEmailAsync(
+                //    emailTo,
+                //    "Soft Copy Of Challan No: " +Challanno + " From AutoComponent",
+                //    CC1,
+                //    CC2,
+                //    CC3,
+                //    body,
+                //    pdfBytes,
+                //    "Report.pdf").Wait();
+                foreach (var recipient in emailToList)
+                {
+                    _emailService.SendEmailAsync(
+                        recipient,
+                        "Soft Copy Of Sale Order No: " + Challanno + " From DGC",
+                        CC1,
+                        CC2,
+                        CC3,
+                        body,
+                        pdfBytes,
+                        "Report.pdf").Wait();
+                }
+
+                return Content("Report sent successfully");
+            }
+        }
+        catch (Exception ex)
+        {
+            return Content($"Error: {ex.Message}\n\nStack Trace: {ex.StackTrace}");
+        }
+    }
+
+
+    private byte[] ConvertImageToPdf(byte[] imageBytes)
+    {
+        // First ensure the image is in a supported format
+        using (var ms = new MemoryStream(imageBytes))
+        using (var image = Image.FromStream(ms))
+        using (var pdfStream = new MemoryStream())
+        {
+            // Convert to PNG if needed (PdfSharp works best with PNG)
+            if (image.RawFormat.Equals(ImageFormat.Png))
+            {
+                using (var pngMs = new MemoryStream())
+                {
+                    image.Save(pngMs, System.Drawing.Imaging.ImageFormat.Png);
+                    imageBytes = pngMs.ToArray();
+                }
+            }
+
+            // Now create PDF
+            var document = new PdfDocument();
+            var page = document.AddPage();
+            page.Width = XUnit.FromMillimeter(image.Width / image.HorizontalResolution * 25.4);
+            page.Height = XUnit.FromMillimeter(image.Height / image.VerticalResolution * 25.4);
+
+            using (var xImage = XImage.FromStream(new MemoryStream(imageBytes)))
+            {
+                XGraphics gfx = XGraphics.FromPdfPage(page);
+                gfx.DrawImage(xImage, 0, 0, page.Width, page.Height);
+            }
+
+            document.Save(pdfStream, false);
+            return pdfStream.ToArray();
+        }
+    }
+    bool IsValidEmail(string email)
+    {
+        try
+        {
+            var addr = new System.Net.Mail.MailAddress(email);
+            return addr.Address == email;
+        }
+        catch { return false; }
+    }
+    public async Task SendEmailAsync(string emailTo, string subject, string message, byte[] attachment = null, string attachmentName = null, string CC1 = "", string CC2 = "", string CC3 = "", string Challanno = "")
+    {
+        var emailSettings = _iconfiguration.GetSection("EmailSettings");
+        emailTo = string.Join(",", new[] { emailTo, CC1, CC2, CC3 }
+                      .Where(x => !string.IsNullOrWhiteSpace(x))
+                      .Select(x => x.Trim()));
+        var mimeMessage = new MimeMessage();
+        mimeMessage.From.Add(new MailboxAddress(emailSettings["FromName"], emailSettings["FromEmail"]));
+        //mimeMessage.To.Add(MailboxAddress.Parse("infotech.bmr@gmail.com"));
+        //mimeMessage.To.Add(MailboxAddress.Parse(CC1));
+        //mimeMessage.To.Add(MailboxAddress.Parse(CC2));
+        var toEmails = emailTo.Split(',')
+                          .Where(x => !string.IsNullOrWhiteSpace(x))
+                          .Select(x => x.Trim());
+
+        foreach (var email in toEmails)
+        {
+            if (IsValidEmail(email))
+                mimeMessage.To.Add(MailboxAddress.Parse(email));
+        }
+        mimeMessage.Subject = subject;
+        //if (!string.IsNullOrWhiteSpace(CC1))
+        //    mimeMessage.Cc.Add(new MailboxAddress("CC",CC1));
+        //if (!string.IsNullOrWhiteSpace(CC2))
+        //    mimeMessage.Cc.Add(MailboxAddress.Parse(CC2));
+        //if (!string.IsNullOrWhiteSpace(CC3))
+        //    mimeMessage.Cc.Add(MailboxAddress.Parse(CC3));
+
+        // if (!string.IsNullOrWhiteSpace(CC1))
+        //  mimeMessage.Cc.Add(MailboxAddress.Parse("bmr.client2021@gmail.com"));
+        //if (!string.IsNullOrWhiteSpace(CC2))
+        //   mimeMessage.Cc.Add(MailboxAddress.Parse("bmr.client2021@gmail.com"));
+        //  if (!string.IsNullOrWhiteSpace(CC3))
+        //   mimeMessage.Cc.Add(MailboxAddress.Parse("bmr.client2021@gmail.com"));
+
+        var builder = new BodyBuilder();
+        builder.HtmlBody = message;
+
+        if (attachment != null && !string.IsNullOrEmpty(attachmentName))
+        {
+            builder.Attachments.Add(attachmentName, attachment);
+        }
+
+        mimeMessage.Body = builder.ToMessageBody();
+
+        using (var client = new SmtpClient())
+        {
+            try
+            {
+                await client.ConnectAsync(emailSettings["SmtpServer"],
+                    int.Parse(emailSettings["SmtpPort"]),
+                    MailKit.Security.SecureSocketOptions.StartTls);
+
+                await client.AuthenticateAsync(emailSettings["SmtpUsername"],
+                    emailSettings["SmtpPassword"]);
+
+                await client.SendAsync(mimeMessage);
+            }
+            catch (Exception ex)
+            {
+                // Handle exception
+                throw;
+            }
+            finally
+            {
+                await client.DisconnectAsync(true);
+            }
+        }
+    }
+
+
+
+
 
     public PartialViewResult AddSchedule(DeliverySchedule model)
 	{
@@ -303,14 +572,30 @@ public class SaleOrderController : Controller
 		string JsonString = JsonConvert.SerializeObject(JSON);
 		return Json(JsonString);
 	}
-	public async Task<JsonResult> NewAmmEntryId(int YearCode)
+    public async Task<IActionResult> GetlastSaleOrderDetail(string EntryDate, int currentYearcode, int AccountCode, int ItemCode)
+    {
+
+        var model = new SaleOrderModel();
+        model = await _ISaleOrder.GetlastSaleOrderDetail(EntryDate, currentYearcode, AccountCode, ItemCode);
+
+
+        return PartialView("_SaleOrderHistoryGrid", model);
+
+    }
+    public async Task<JsonResult> NewAmmEntryId(int YearCode)
 	{
 		var JSON = await _ISaleOrder.NewAmmEntryId(YearCode);
 		string JsonString = JsonConvert.SerializeObject(JSON);
 		return Json(JsonString);
 	}
+    public async Task<JsonResult> GetFeatureOption()
+    {
+        var JSON = await _ISaleOrder.GetFeatureOption();
+        string JsonString = JsonConvert.SerializeObject(JSON);
+        return Json(JsonString);
+    }
 
-	public async Task<SaleOrderModel> BindModels(SaleOrderModel model)
+    public async Task<SaleOrderModel> BindModels(SaleOrderModel model)
 	{
         var ammEffDate = model?.AmmEffDate;
         if (model == null)
@@ -368,8 +653,14 @@ public class SaleOrderController : Controller
 
 		return model;
 	}
+    public async Task<JsonResult> AutoFillPARTYNAMELIST(string SearchAccount)
+    {
+        var JSON = await _ISaleOrder.AutoFillPARTYNAMELIST(SearchAccount);
+        string JsonString = JsonConvert.SerializeObject(JSON);
+        return Json(JsonString);
+    }
 
-	public async Task<IActionResult> Dashboard()
+    public async Task<IActionResult> Dashboard()
 	{
 		HttpContext.Session.Remove("ItemList");
 		HttpContext.Session.Remove("TaxGrid");
@@ -408,9 +699,10 @@ public class SaleOrderController : Controller
             return PartialView("_SaleOrderGroupWiseItems", model);
         
     }
-    public async Task<IActionResult> DeleteByID(int ID, int YC)
+    public async Task<IActionResult> DeleteByID(int ID, int YC, string EntryByMachineName, int AccountCode)
 	{
-		var Result = await _ISaleOrder.DeleteByID(ID, YC, "DELETEBYID");
+        EntryByMachineName=Environment.MachineName;
+        var Result = await _ISaleOrder.DeleteByID(ID, YC, "DELETEBYID",  EntryByMachineName,  AccountCode);
 
 		if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
 		{
@@ -517,11 +809,22 @@ public class SaleOrderController : Controller
 	{
 		bool exists = false;
 		var model = new SaleOrderModel();
-		_MemoryCache.TryGetValue("KeyTaxGrid", out List<TaxModel> TaxGrid);
+		string modelJson = HttpContext.Session.GetString("ItemList");
+		List<ItemDetail> ItemDetailGrid = new List<ItemDetail>();
+		if (!string.IsNullOrEmpty(modelJson))
+		{
+			ItemDetailGrid = JsonConvert.DeserializeObject<List<ItemDetail>>(modelJson);
+		}
+		string modelJson1 = HttpContext.Session.GetString("KeyTaxGrid");
+		List<TaxModel> TaxGrid = new List<TaxModel>();
+		if (!string.IsNullOrEmpty(modelJson1))
+        {
+            TaxGrid = JsonConvert.DeserializeObject<List<TaxModel>>(modelJson1);
+        }
+		
 		int Indx = Convert.ToInt32(SeqNo) - 1;
 
-		if (_MemoryCache.TryGetValue("ItemList", out List<ItemDetail> ItemDetailGrid) != null)
-		{
+		
 			model.ItemDetailGrid = ItemDetailGrid;
 
 			var itemfound = model.ItemDetailGrid.FirstOrDefault(item => item.SeqNo == Convert.ToInt32(SeqNo)).PartCode;
@@ -551,16 +854,16 @@ public class SaleOrderController : Controller
 				item.SeqNo = Indx;
 			}
 			model.ItemNetAmount = model.ItemDetailGrid.Sum(x => x.Amount);
-			//if (model.ItemDetailGrid.Count <= 0)
-			//{
-			//	HttpContext.Session.Remove("ItemList");
-			//	_MemoryCache.Remove("ItemList");
-			//}
-			//else
-			//{
-			//	HttpContext.Session.SetString("ItemList", JsonConvert.SerializeObject(model.ItemDetailGrid));
-			//}
-		}
+			if (model.ItemDetailGrid.Count <= 0)
+			{
+				HttpContext.Session.Remove("ItemList");
+				_MemoryCache.Remove("ItemList");
+			}
+			else
+			{
+            HttpContext.Session.SetString("ItemList", JsonConvert.SerializeObject(model.ItemDetailGrid));
+        }
+		
 		return PartialView("_SaleItemGrid", model);
 	}
 
@@ -571,9 +874,21 @@ public class SaleOrderController : Controller
 
 		int Indx = Convert.ToInt32(model.SeqNo) - 1;
 
-		if (_MemoryCache.TryGetValue("ItemList" , out List<ItemDetail> ItemDetailGrid) != null)
-		{
-			_MemoryCache.TryGetValue("KeyTaxGrid", out List<TaxModel> TaxGrid);
+       
+        string modelJson = HttpContext.Session.GetString("ItemList");
+        List<ItemDetail> ItemDetailGrid = new List<ItemDetail>();
+        if (!string.IsNullOrEmpty(modelJson))
+        {
+            ItemDetailGrid = JsonConvert.DeserializeObject<List<ItemDetail>>(modelJson);
+        }
+        string modelJson1 = HttpContext.Session.GetString("KeyTaxGrid");
+        List<TaxModel> TaxGrid = new List<TaxModel>();
+        if (!string.IsNullOrEmpty(modelJson1))
+        {
+            TaxGrid = JsonConvert.DeserializeObject<List<TaxModel>>(modelJson1);
+        }
+
+        //_MemoryCache.TryGetValue("KeyTaxGrid", out List<TaxModel> TaxGrid);
 			model.ItemDetailGrid = ItemDetailGrid;
 
 			var ItmPartCode = model.ItemDetailGrid.FirstOrDefault(item => item.SeqNo == Convert.ToInt32(model.SeqNo)).PartCode;
@@ -590,28 +905,29 @@ public class SaleOrderController : Controller
 			Result = model.ItemDetailGrid.Where(m => m.SeqNo == model.SeqNo).ToList();
 			model.ItemDetailGrid.RemoveAt(Convert.ToInt32(Indx));
 
-			Indx = 0;
-			foreach (ItemDetail item in model.ItemDetailGrid)
-			{
-				Indx++;
-				item.SeqNo = Indx;
-			}
-
-			//if (model.ItemDetailGrid.Count > 0)
+			//Indx = 0;
+			//foreach (ItemDetail item in model.ItemDetailGrid)
 			//{
-			//	HttpContext.Session.SetString
-			//	(
-			//		"ItemList",
-			//		JsonConvert.SerializeObject(model.ItemDetailGrid)
-			//	);
+			//	Indx++;
+			//	item.SeqNo = Indx;
 			//}
-			//else
-			//{
-			//	HttpContext.Session.Remove("ItemList");
-			//}
-		}
 
-		return Json(JsonConvert.SerializeObject(Result));
+        //if (model.ItemDetailGrid.Count > 0)
+        //{
+        //	HttpContext.Session.SetString
+        //	(
+        //		"ItemList",
+        //		JsonConvert.SerializeObject(model.ItemDetailGrid)
+        //	);
+        //}
+        //else
+        //{
+        //	HttpContext.Session.Remove("ItemList");
+        //}
+        HttpContext.Session.SetString("ItemList", JsonConvert.SerializeObject(model.ItemDetailGrid));
+
+
+        return Json(JsonConvert.SerializeObject(Result));
 	}
 	public JsonResult ResetGridItems()
 	{
@@ -631,7 +947,7 @@ public class SaleOrderController : Controller
 		_MemoryCache.Set("ItemList", MainModel, DateTimeOffset.Now.AddMinutes(60));
 		HttpContext.Session.SetString("ItemList", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
 		_MemoryCache.Set("KeyTaxGrid", taxList, DateTimeOffset.Now.AddMinutes(60));
-		HttpContext.Session.SetString("ItemList", JsonConvert.SerializeObject(MainModel));
+		//HttpContext.Session.SetString("ItemList", JsonConvert.SerializeObject(MainModel));
 		_MemoryCache.TryGetValue("ItemList", out MainModel);
 		_MemoryCache.TryGetValue("KeyTaxGrid", out List<TaxModel> TaxGrid);
 
@@ -662,8 +978,12 @@ public class SaleOrderController : Controller
 	public async Task<JsonResult> GetClearItemGrid(string Code)
 	{
 		_MemoryCache.Remove("ItemList");
-		_MemoryCache.Remove("KeyTaxGrid");
-		ResponseResult JsonString = await _ISaleOrder.GetAddress(Code);
+        HttpContext.Session.Remove("ItemList");
+        _MemoryCache.Remove("KeyTaxGrid");
+        HttpContext.Session.Remove("KeyTaxGrid");
+
+
+        ResponseResult JsonString = await _ISaleOrder.GetAddress(Code);
 		_logger.LogError(JsonConvert.SerializeObject(JsonString));
 		return Json(JsonString);
 	}
@@ -866,8 +1186,24 @@ public class SaleOrderController : Controller
 			var MainModel = new SaleOrderModel();
 			var _List = new List<ItemDetail>();
 			var SSGrid = new List<ItemDetail>();
-			_MemoryCache.TryGetValue("ItemList", out List<ItemDetail> ItemDetailGrid);
-			_MemoryCache.TryGetValue("KeyTaxGrid", out List<TaxModel> TaxGrid);
+            string modelJson = HttpContext.Session.GetString("ItemList");
+            List<ItemDetail> ItemDetailGrid = new List<ItemDetail>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                ItemDetailGrid = JsonConvert.DeserializeObject<List<ItemDetail>>(modelJson);
+            }
+
+            string modelJson1 = HttpContext.Session.GetString("KeyTaxGrid");
+            List<TaxModel> POTaxGrid = new List<TaxModel>();
+            if (!string.IsNullOrEmpty(modelJson1))
+            {
+                POTaxGrid = JsonConvert.DeserializeObject<List<TaxModel>>(modelJson1);
+            }
+
+
+
+            //_MemoryCache.TryGetValue("ItemList", out List<ItemDetail> ItemDetailGrid);
+            //_MemoryCache.TryGetValue("KeyTaxGrid", out List<TaxModel> TaxGrid);
 			if (model != null)
 			{
 				if (ItemDetailGrid == null)
@@ -883,22 +1219,26 @@ public class SaleOrderController : Controller
 					}
 					else
 					{
-						model.SeqNo = ItemDetailGrid.Count + 1;	
-						_List = ItemDetailGrid.Where(x=>x!=null).ToList();
+                        if (model.SeqNo==0)
+                        {
+                            model.SeqNo = ItemDetailGrid.Count + 1;	
+                        }
+
+                        _List = ItemDetailGrid.Where(x=>x!=null).ToList();
 						SSGrid.AddRange(_List);
 						_List.Add(model);	
 					}
 				}
-				MainModel.ItemDetailGrid = _List;
+                MainModel.ItemDetailGrid = _List.OrderBy(x => x.SeqNo).ToList();
 
-				MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
 				{
 					AbsoluteExpiration = DateTime.Now.AddMinutes(60),
 					SlidingExpiration = TimeSpan.FromMinutes(55),
 					Size = 1024,
 				};
 
-				_MemoryCache.Set("ItemList", MainModel.ItemDetailGrid, cacheEntryOptions);
+				//_MemoryCache.Set("ItemList", MainModel.ItemDetailGrid, cacheEntryOptions);
 				HttpContext.Session.SetString("ItemList", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
 			}
 			else
@@ -959,29 +1299,7 @@ public class SaleOrderController : Controller
 		// string ipaddress = IPAddress.IPv6Loopback.ToString();
 		var model = new SaleOrderModel();
 
-		//var webReport = new WebReport();
-		//var mssqlDataConnection = new MsSqlDataConnection();
-		//mssqlDataConnection.ConnectionString = _IDataLogic.GetDBConnection();
-		//webReport.Report.Dictionary.Connections.Add(mssqlDataConnection);
-
-		////webReport.EnableMargins = true;
-		////webReport.ShowExports = true;
-
-		//webReport.Report.Load(Path.Combine(_IWebHostEnvironment.ContentRootPath, "REPORT", "ItemMasterReport.frx"));
-
-		//webReport.Report.Load(Path.Combine(_IWebHostEnvironment.WebRootPath, "Reports", "ItemMasterReport2.frx"));
-
-		//var categories = GetTable<Category>(_northwindContext.Categories, "Categories");
-		//webReport.Report.RegisterData(categories, "Categories");
-
-		////var DTReport = itemMaster.GetDashBoardData("", "", "", "", "", "").Result.ToArray();
-		////webReport.Report.RegisterData(DTReport, "Categories");
-
-		////webReport.Report.Prepare();
-		////FastReport.Export.Html.HTMLExport export = new FastReport.Export.Html.HTMLExport();
-		////webReport.Report.Export(export, "result.pdf");
-
-		//return PartialView("_ViewReport", webReport);
+		
 		model.PreparedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
 		model.PreparedByName = HttpContext.Session.GetString("EmpName");
 		
@@ -1028,6 +1346,7 @@ public class SaleOrderController : Controller
 				};
 
 				_MemoryCache.Set("KeyTaxGrid", model.TaxDetailGridd, cacheEntryOptions);
+				HttpContext.Session.SetString("KeyTaxGrid", JsonConvert.SerializeObject(model.TaxDetailGridd));
 			}
 			if (model.SaleOrderBillToShipTo != null)
 			{
@@ -1039,12 +1358,14 @@ public class SaleOrderController : Controller
 				};
 
 				_MemoryCache.Set("KeySaleBillToShipTo", model.SaleOrderBillToShipTo, cacheEntryOptions);
+
 			}
+
 		}
 		else
 		{
 			model = await BindModels(null);
-			//HttpContext.Session.Remove("ItemList");
+			HttpContext.Session.Remove("ItemList");
 			_MemoryCache.Remove("ItemList");
 			HttpContext.Session.Remove("TaxGrid");
 			_MemoryCache.Remove("KeyTaxGrid");
@@ -1093,12 +1414,53 @@ public class SaleOrderController : Controller
 			_MemoryCache.TryGetValue("KeySaleBillToShipTo", out List<SaleOrderBillToShipTo> SaleOrderBillToShipToGrid);
 
 
-			var ItemDetailList = JsonConvert.DeserializeObject<List<ItemDetail>>(HttpContext.Session.GetString("ItemList") ?? string.Empty);
+			//var ItemDetailList = JsonConvert.DeserializeObject<List<ItemDetail>>(HttpContext.Session.GetString("ItemList") ?? string.Empty);
 
-			_logger.LogInformation("ItemDetailList session Data done", DateTime.UtcNow);
 
-			_MemoryCache.TryGetValue("KeyTaxGrid", out List<TaxModel> TaxGrid);
-			var MainModel = new SaleOrderModel();
+            //string modelJson = HttpContext.Session.GetString("ItemList");
+            //List<PurchaseOrderModel> PSDetail = new List<PurchaseOrderModel>();
+           var MainModel = new SaleOrderModel();
+       //     if (!string.IsNullOrEmpty(modelJson))
+       //     {
+       //         //PSDetail = JsonConvert.DeserializeObject<List<PurchaseOrderModel>>(modelJson);
+
+       //         MainModel = string.IsNullOrEmpty(modelJson)
+       //? new SaleOrderModel()
+       //: JsonConvert.DeserializeObject<SaleOrderModel>(modelJson);
+
+
+            string modelJson = HttpContext.Session.GetString("ItemList");
+            //List<TaxModel> TaxDetail = new List<TaxModel>();
+            List<ItemDetail> ItemDetailList = new List<ItemDetail>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                //TaxDetail = JsonConvert.DeserializeObject<List<TaxModel>>(modelTaxJson);
+                ItemDetailList = string.IsNullOrEmpty(modelJson)
+      ? new List<ItemDetail>()
+      : JsonConvert.DeserializeObject<List<ItemDetail>>(modelJson);
+
+            }
+
+
+
+            _logger.LogInformation("ItemDetailList session Data done", DateTime.UtcNow);
+
+
+
+            string modelTaxJson = HttpContext.Session.GetString("KeyTaxGrid");
+            //List<TaxModel> TaxDetail = new List<TaxModel>();
+            List<TaxModel> TaxGrid = new List<TaxModel>();
+            if (!string.IsNullOrEmpty(modelTaxJson))
+            {
+                //TaxDetail = JsonConvert.DeserializeObject<List<TaxModel>>(modelTaxJson);
+                TaxGrid = string.IsNullOrEmpty(modelTaxJson)
+      ? new List<TaxModel>()
+      : JsonConvert.DeserializeObject<List<TaxModel>>(modelTaxJson);
+
+            }
+
+            //_MemoryCache.TryGetValue("KeyTaxGrid", out List<TaxModel> TaxGrid);
+		
 			//_MemoryCache.TryGetValue("ItemList", out List<ItemDetail> ItemDetailList);
 
 			ModelState.Clear();
@@ -1159,9 +1521,11 @@ public class SaleOrderController : Controller
 					else
 					{
 						model.Mode = model.Mode;
-					}
+                        model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+                        model.CreatedByName = HttpContext.Session.GetString("EmpName");
+                    }
 					//model.Mode = model.Mode == "U" ? "Update" : "Insert";
-					model.CreatedBy = Constants.UserID;
+					//model.CreatedBy = Constants.UserID;
 					Result = await _ISaleOrder.SaveSaleOrder(ItemDetailDT, DelieveryScheduleDT, TaxDetailDT, MultiBuyersDT, model);
 				}
 				_logger.LogInformation("Save SaleOrder Data done", DateTime.UtcNow);
@@ -1230,7 +1594,8 @@ public class SaleOrderController : Controller
                                     {
                                         status = "Success",
                                         entryId = model.EntryID,
-                                        yearCode = model.YearCode
+                                        yearCode = model.YearCode,
+										Sono = model.CustOrderNo
                                     });
                                 }
                                 return Json(new { status = "Success" });
@@ -1240,17 +1605,12 @@ public class SaleOrderController : Controller
                         }
 						else
 						{
-							dynamic jsonObj = JsonConvert.DeserializeObject(stringResponse);
-							if (jsonObj.Result != null && jsonObj.Result.Count > 0)
-							{
-								int resultValue = jsonObj.Result[0].Result;
-								int YearCodeVal = jsonObj.Result[0].YearCode;
+							
+								int resultValue = model.EntryID;
+								int YearCodeVal =model.YearCode;
 								return RedirectToAction("OrderDetail", new { ID = resultValue, YC = YearCodeVal, Mode = "U" });
-							}
-							else
-							{
-								ErrList.Add("ItemDetailGrid", "Something went Wrong");
-							}
+							
+							
 						}
 					}
 				}
@@ -1620,7 +1980,7 @@ public class SaleOrderController : Controller
 		Table.Columns.Add("Description", typeof(string));
 		Table.Columns.Add("Remark", typeof(string));
 		Table.Columns.Add("StoreName", typeof(string));
-		Table.Columns.Add("StockQty", typeof(int));
+		Table.Columns.Add("StockQty", typeof(decimal));
 		Table.Columns.Add("AmendmentNo", typeof(string));
 		Table.Columns.Add("AmendmentDate", typeof(string)); // datetime
 		Table.Columns.Add("AmendmentReason", typeof(string));
@@ -1832,7 +2192,12 @@ public class SaleOrderController : Controller
 					string unit = itemData.Rows[0]["Unit"].ToString();
 					string altUnit = itemData.Rows[0]["AltUnit"].ToString();
 					string itemName = itemData.Rows[0]["Item_Name"].ToString();
+					string Location = itemData.Rows[0]["Location"].ToString();
+					string Group_name = itemData.Rows[0]["Group_name"].ToString();
+					
 					int itemCode = Convert.ToInt32(itemData.Rows[0]["Item_Code"]);
+					int Group_Code = Convert.ToInt32(itemData.Rows[0]["Group_Code"]);
+					decimal SalePrice = Convert.ToDecimal(itemData.Rows[0]["SalePrice"]);
 
 
                     string soType = Request.Form["SOType"];
@@ -1860,6 +2225,11 @@ public class SaleOrderController : Controller
 					decimal rate = decimal.TryParse(worksheet.Cells[row, 3].Value?.ToString(), out decimal tempRate) ? tempRate : 0;
 					if(rate == 0)
 					{
+						rate = SalePrice;
+                        
+                    }
+					 if (rate == 0)
+					{
                         errors.Add($"Enter rate more then 0 at row {row}: {partCode}");
                     }
 
@@ -1868,43 +2238,47 @@ public class SaleOrderController : Controller
 						errors.Add($"Qty should be greater than 0 at row {row} ");
 						continue; // Skip processing this row
 					}
+                    // **Delivery Date Validation**
+                    string deliveryDateStr = worksheet.Cells[row, 5].Value?.ToString();
+					var deliveryDate = (DateTime?)null;
 
-					// **Delivery Date Validation**
-					string deliveryDateStr = worksheet.Cells[row, 5].Value?.ToString();
-
-                    if (isSOTypeClose && deliveryDateStr == "")
-					{
-                        errors.Add($"DeliveryDate is manadatory {row} ");
-                        continue;
-                    }
-
-                        deliveryDateStr = ParseFormattedDate(deliveryDateStr);
-					DateTime? deliveryDate = null;
-
-                    deliveryDate = DateTime.Parse(deliveryDateStr);
-                    DateTime wefDate = DateTime.Parse(wef);
-                    DateTime soClose = DateTime.Parse(soCloseDate);
-
-                    if (deliveryDate < wefDate || deliveryDate > soClose)
+                    // Only validate if a value is provided
+                    if (!string.IsNullOrWhiteSpace(deliveryDateStr))
                     {
-                        errors.Add($"DeliveryDate must between of wefDate and socloseDate at Row - {row} ");
-                        continue;
+                        // Parse the date (use helper if needed)
+                        deliveryDateStr = ParseFormattedDate(deliveryDateStr);
+
+                        if (!DateTime.TryParse(deliveryDateStr, out DateTime tempDeliveryDate))
+                        {
+                            errors.Add($"DeliveryDate format is invalid at row {row}");
+                            continue;
+                        }
+
+                        // Range validation
+                        DateTime wefDateTime = DateTime.Parse(wef);
+                        DateTime soCloseDateTime = DateTime.Parse(soCloseDate);
+
+                        if (tempDeliveryDate < wefDateTime || tempDeliveryDate > soCloseDateTime)
+                        {
+                            errors.Add($"DeliveryDate must be between {wefDateTime:dd/MMM/yyyy} and {soCloseDateTime:dd/MMM/yyyy} at row {row}");
+                            continue;
+                        }
+
+                        // Today validation
+                        if (tempDeliveryDate < DateTime.Today)
+                        {
+                            errors.Add($"Delivery Date at row {row} must be greater than today ({DateTime.Today:dd/MMM/yyyy})");
+                            continue;
+                        }
+						deliveryDate = tempDeliveryDate;
+
+                        // Assign the valid date
+                       
                     }
 
-                    if (DateTime.TryParse(deliveryDateStr, out DateTime tempDeliveryDate))
-					{
-						if (tempDeliveryDate < DateTime.Today)
-						{
-							errors.Add($"Delivery Date at row {row} must be greater than today ({DateTime.Today:dd/MMM/yyyy}).");
-						}
-						else
-						{
-							deliveryDate = tempDeliveryDate;
-						}
-					}
 
-					// **Calculate Amount (Qty * Rate)**
-					decimal amount = qty * rate;
+                    // **Calculate Amount (Qty * Rate)**
+                    decimal amount = qty * rate;
 
 					// **Add to SaleGridList**
 					SaleGridList.Add(new ItemDetail
@@ -1917,6 +2291,9 @@ public class SaleOrderController : Controller
 						HSNNo = int.TryParse(hsnNo, out int tempHSN) ? tempHSN : 0, // Fetched from DB
 						Qty = qty,
 						Unit = unit, // Fetched from DB
+						Location = Location, // Fetched from DB
+						Group_Code = Group_Code, // Fetched from DB
+						Group_name = Group_name, // Fetched from DB
 						DeliveryDate = deliveryDate?.ToString("dd/MMM/yyyy") ?? "", // Store in required format
 						AltQty = decimal.TryParse(worksheet.Cells[row, 8].Value?.ToString(), out decimal tempAltQty) ? tempAltQty : 0,
 						AltUnit = altUnit, // Fetched from DB
@@ -1977,5 +2354,69 @@ public class SaleOrderController : Controller
 			return StatusCode(500, "An internal server error occurred. Please check the file format.");
 		}
 	}
+    [HttpGet]
+    public async Task<IActionResult> ExportToExcel(int SONo, string YearCode)
+    {
+        try
+        {
+            // Prepare model for DAL
+            var model = new SaleOrderDashboard
+            {
+                SummaryDetail = "Detail",
+                SONo = SONo,
+                FromDate = "",
+                ToDate = ""
+            };
+
+            // Call DAL
+            var result = await _ISaleOrder.GetSearchData(model);
+
+            // Filter by SONo
+            var data = result.SODashboard
+                             .Where(x => x.SONo == SONo)
+                             .ToList();
+
+            if (!data.Any())
+                return Content($"No data found for Sale Order No: {SONo}");
+
+            // Prepare Excel
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            using (var package = new ExcelPackage())
+            {
+                var ws = package.Workbook.Worksheets.Add("SaleOrder");
+
+                // Header
+                var props = typeof(SaleOrderDashboard).GetProperties();
+                for (int i = 0; i < props.Length; i++)
+                {
+                    ws.Cells[1, i + 1].Value = props[i].Name;
+                    ws.Cells[1, i + 1].Style.Font.Bold = true;
+                    ws.Cells[1, i + 1].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                    ws.Cells[1, i + 1].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightGray);
+                }
+
+                // Data
+                for (int row = 0; row < data.Count; row++)
+                {
+                    for (int col = 0; col < props.Length; col++)
+                    {
+                        ws.Cells[row + 2, col + 1].Value = props[col].GetValue(data[row]);
+                    }
+                }
+
+                ws.Cells.AutoFitColumns();
+
+                var excelBytes = package.GetAsByteArray();
+                return File(excelBytes,
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    $"SaleOrder_{SONo}.xlsx");
+            }
+        }
+        catch (Exception ex)
+        {
+            return Content($"Error generating Excel: {ex.Message}");
+        }
+    }
+
 
 }

@@ -17,7 +17,8 @@
                 </tr>
             </thead>
             <tbody id="divDashboardGrid" class="content">
-                @if (Model.ItemGroupList.Count == 0)
+                @* @if (Model.ItemGroupList.Count == 0) *@
+                @if (Model.ItemGroupList == null || Model.ItemGroupList.Count == 0)
                 {
                     <tr class="text-center">
                         <td colspan="14" class="text-black-50"><strong>NO DATA FOUND</strong></td>

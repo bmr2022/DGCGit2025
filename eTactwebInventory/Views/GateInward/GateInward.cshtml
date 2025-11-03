@@ -6,27 +6,27 @@
 }
 <style>
     .disabled-link {
-        pointer-events: none; /* Prevents clicking */
-        color: gray; /* Optional: Make it look disabled */
-        text-decoration: none; /* Optional: Remove underline */
-        cursor: default; /* Optional: Show normal cursor */
-        opacity: 0.6; /* Optional: Make it look faded */
+    pointer-events: none; /* Prevents clicking */
+    color: gray; /* Optional: Make it look disabled */
+    text-decoration: none; /* Optional: Remove underline */
+    cursor: default; /* Optional: Show normal cursor */
+    opacity: 0.6; /* Optional: Make it look faded */
     }
 
     .select2-container--default .select2-selection--single {
-        background-color: #e0f2f1;
-        border: 1.5px solid #0a0a0a !important;
-        border-radius: 4px;
+    background-color: #e0f2f1;
+    border: 1.5px solid #0a0a0a !important;
+    border-radius: 4px;
     }
 
-        .select2-container--default .select2-selection--single .select2-selection__rendered {
-            /* border-bottom: 1.5px solid #000 !important; */
-            border-bottom: none !important;
-        }
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+    /* border-bottom: 1.5px solid #000 !important; */
+    border-bottom: none !important;
+    }
 
     .select2-container--default .select2-results > .select2-results__options {
-        background-color: #e0f2f1; /* Dropdown background color */
-        color: #000;
+    background-color: #e0f2f1; /* Dropdown background color */
+    color: #000;
 </style>
 @if (TempData["422"] != null)
 {
@@ -67,6 +67,7 @@
                             <input asp-for="SchNoBack" type="hidden" value="@Model.SchNoBack" />
                             <input asp-for="DashboardTypeBack" type="hidden" value="@Model.DashboardTypeBack" />
                             <input asp-for="VendorNameBack" type="hidden" value="@Model.VendorNameBack" />
+                            <input asp-for="VPSaleBillEntryId" type="hidden" value="@Model.VPSaleBillEntryId" />
                             <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
                                 <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
                                 BACK
@@ -163,9 +164,16 @@
                                         <option value="" disabled selected>-Select-</option>
                                     </select>
                                 </div>
-                                <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                     <label asp-for="Types" class="form-label" style="color: red;">Type</label>
                                     <select class="form-select" asp-for="Types" data-abcd="2" asp-items="@(new SelectList(Model.TypeList,"Value","Text"))"></select>
+                                </div>
+                                   <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 RecUnitgateentry">
+                                    <label asp-for="RecUnit" class="form-label">Rec Unit</label>
+                                    <select class="form-select" asp-for="RecUnit" data-abcd="4" asp-items="@(new SelectList(Model.RecUnitList,"Value","Text"))">
+                                        <option value="" disabled selected>-Select-</option>
+                                    </select>
+                                   
                                 </div>
                                 <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                     <label asp-for="Invoiceno" class="form-label" style="color: red;"> Invoice No*</label>
@@ -179,11 +187,12 @@
                                         <option value="" disabled selected>-Select-</option>
                                     </select>
                                 </div>
+                             
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-3 col-xs-12">
                                     <label asp-for="InvoiceDate" class="form-label" style="color: red;">Invoice date*</label>
                                     <input type="text" class="form-control" data-abcd="5" asp-for="InvoiceDate" readonly />
                                 </div>
-                                <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                     @if (Model.Mode == "U" || Model.Mode == "V")
                                     {
                                         <input type="hidden" id="hiddenAddress" value="@Model.Address" />
@@ -206,11 +215,27 @@
                                     <label asp-for="POType" class="form-label">PO Type</label>
                                     <input type="text" class="form-control" asp-for="POType" readonly />
                                 </div>
+                                @if (Model.Mode != "U" && Model.Mode != "V")
+                                {
+                                    
+                                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                                        <label for="ewayBillNo" class="form-label">E-Way Bill No</label>
+                                        <div class="input-group">
+                                                    <input type="text" class="form-control" id="ewayBillNo" placeholder="Enter E-Way Bill Number">
+                                                    <button class="btn btn-primary" type="button" id="fetchEwayBill">
+                                                        <i class="fa fa-search"></i> 
+                                                    </button>
+                                                    </div>
+                                                       <div id="ewayBillStatus" class="form-text"></div>
+                                                </div>
+                                             
+                                }
                             </div>
                         </div>
                     </div>
                 </div>
-
+                     
+            
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="H_SAGrid">
                         <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
@@ -325,18 +350,20 @@
                                     <label asp-for="OtherDetail" class="form-label">Other Detail</label>
                                     <input asp-for="OtherDetail" data-abcd="22" class="form-control" />
                                 </div>
-                                <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                     <label asp-for="Remarks" class="form-label">Remarks</label>
                                     <input asp-for="Remarks" data-abcd="23" class="form-control" />
                                 </div>
-                                <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                     <label asp-for="SupplierBatchNo" class="form-label">Supply batch no</label>
                                     <input asp-for="SupplierBatchNo" data-abcd="32" class="form-control" />
                                 </div>
-                                <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                     <label asp-for="ShelfLife" class="form-label">Shelf Life(Months)</label>
                                     <input asp-for="ShelfLife" data-abcd="33" type="number" class="form-control" />
                                 </div>
+                             
+
                                 <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12" id="SaleBillNumber">
                                     @if (Model.Mode == "U" || Model.Mode == "V")
                                     {
@@ -755,8 +782,34 @@
                                                           alert("Please select a valid PO No and ensure PO Year is filled in.");
                                             }
                     }
+                      function GetFeatureOption() {
 
-                                                    function redirectToPOEdit(yearCode, entryId) {
+             $.ajax({
+                 type: "POST",
+                 data: {},
+                 url: "@Url.Action("GetFeatureOption")",
+                 dataType: "json",
+                 success: function (result, status, error) {
+
+                     if (result != null) {
+                         var obj = $.parseJSON(result);
+                         if (obj.Result != null) {
+
+                               if (obj.Result[0].allowforRecUnitgateentry === "Y") {
+                                 $('.RecUnitgateentry').show();
+                             } else {
+                                         $('.RecUnitgateentry').hide();
+                             }
+
+      
+
+                         }
+                     }
+                 }
+             });
+         }
+
+          function redirectToPOEdit(yearCode, entryId) {
 
                                  
                                                               if (!formRights.pooptView) {
@@ -776,7 +829,23 @@
 
                         }
         $(document).ready(function () {
+
+                    if ('@Model.Mode' != '' && parseInt('@Model.ID') != 0) {
+                       
+                    }
+                    else {
+                        window.setInterval(function () {
+                            var Dat = new Date();
+                            let am_pm = (Dat.getHours() >= 12) ? "PM" : "AM";
+                            var time = Dat.getHours() + ":" + Dat.getMinutes() + ":" + Dat.getSeconds() + " - " + am_pm;
+                            //console.log(time);
+                            $('#EntryTime').val(time);
+                        }, 1000);
+                    }
+
+                
             PoNoFormRights();
+                    GetFeatureOption();
             $('#UpdateButton').click(function (e) {
                 e.preventDefault();
                 var Entrydate = $('#EntryDate').val();
@@ -804,7 +873,56 @@
                 }
             });
             fillPendQty();
+                    $('#fetchEwayBill').click(function() {
+                const ewayBillNo = $('#ewayBillNo').val().trim();
+
+                if (!ewayBillNo) {
+                    $('#ewayBillStatus').html('<span class="text-danger">Please enter an E-Way Bill number</span>');
+                    return;
+                }
+
+                $('#ewayBillStatus').html('<span class="text-info">Fetching E-Way Bill details...</span>');
+
+                // Call your API to fetch E-Way Bill data
+                fetchEwayBillData(ewayBillNo);
+            });
+                  
+          
         });
+                  function fetchEwayBillData(ewayBillNo) {
+                        $.ajax({
+                          url: "@Url.Action("GetEwayBillData")",
+                            type: 'GET',
+                            data: { ewayBillNo: ewayBillNo },
+                            dataType: 'json',
+                            success: function(response) {
+                               /*  if (response.results && response.results.status === "Success") {
+                                    const ewayData = response.results.message;
+                                    populateFormWithEwayData(ewayData);
+                                    $('#ewayBillStatus').html('<span class="text-success">E-Way Bill data loaded successfully</span>');
+                                } else {
+                                    $('#ewayBillStatus').html('<span class="text-danger">Failed to fetch E-Way Bill data</span>');
+                                } */
+                                                if (response.success) {
+                                $('#ewayBillStatus').html(
+                                    '<span class="text-success">' + (response.message || "E-Way Bill processed successfully") + '</span>'
+                                );
+
+                                setTimeout(function () {
+                                    window.location.href = "@Url.Action("GateInward", "GateInward")"
+                                        + "?ID=0&Mode=Eway&YC=" + response.yearCode;
+                                }, 2000);
+                            } else {
+                                $('#ewayBillStatus').html(
+                                    '<span class="text-danger">' + (response.message || "Failed to fetch E-Way Bill data") + '</span>'
+                                );
+                            }
+                        },
+                        error: function () {
+                            $('#ewayBillStatus').html('<span class="text-danger">Error fetching E-Way Bill data</span>');
+                        }
+                    });
+                }
 
         function SetFields() {
 
@@ -969,7 +1087,7 @@
                 } else {
                     $(".ChallanElements").css("display", "none");
                 }
-
+                        $('#EntryDate').datepicker("option", "maxDate", new Date());
             }
             else 
             {
@@ -1017,6 +1135,7 @@
                               var EntryDate = parseDateToFormat($('#EntryDate').val());
 
                         $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
+                                $('#EntryDate').datepicker("option", "maxDate", new Date());
                       /*   alert("final"); */
             }
             $('#AccountCode').select2();
@@ -1489,7 +1608,7 @@
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         $('#PONO').empty();
-                        $('#PONO').append('<option disabled selected> -Select - </option>');
+                        $('#PONO').append('<option  value="" selected> -Select - </option>');
                         var i = 0;
                      /*    $.each(obj.Result.Table, function (index, val) {
                                                     $('#PONO').append('<option value = "' + obj.Result.Table[i].PONO +  '" data-EntryId="' + val.EntryId+'"> ' + obj.Result.Table[i].PONO + ' </option>');
@@ -1612,7 +1731,7 @@
                             $('#PoYear').empty();
                             $('#PoYear').append('<option disabled selected>-Select-</option>');
                             $.each(obj.Result, function (key, val) {
-                                $('#PoYear').append('<option value="' + val.YearCode + '" data-po-date="' + formatJSONDate(val.PODate) + '" data-po-type="' + val.POType + '" data-po-entryid="' + val.Entryid + '">' + val.YearCode + '</option>');
+                                $('#PoYear').append('<option value="' + val.YearCode + '" data-po-date="' + (val.PODate) + '" data-po-type="' + val.POType + '" data-po-entryid="' + val.Entryid + '">' + val.YearCode + '</option>');
                             });
                         }
                     }
@@ -1723,7 +1842,7 @@
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                             $.each(obj.Result, function (index, val) {
                                 var html = '';
-                                html += '<tr><td id="ModalItemName">' + val.ItemName + '</td><td id="ModalPartCode">' + val.PartCode + '</td><td id="ModalPOQty">' + val.POQty + '</td><td id="ModalPendQtyQty">' + val.PendQty + '</td><td id="ModalPONO">' + val.PONo + '</td><td id="ModalGateQty">' + val.GateQty + '</td><td id="ModalGateAlQty">' + val.GateAlQty + '</td><td id="ModalPendAfterGate">' + val.PendAfterGate + '</td><td id="ModalMRNAlQty">' + val.MRNAltQty + '</td><td id="ModalMIRAlQty">' + val.MIRAltQty + '</td><td id="ModalItemServType">' + val.POTypeServItem + '</td><td id="ModalApproved">' + val.popproved + '</td><td id="ModalWef">' + val.wef + '</td><td id="ModalSchNo">' + val.ScheduleNo + '</td><td id="ModalPOType">' + val.POType + '</td></tr>';
+                                html += '<tr><td id="ModalItemName">' + val.ItemName + '</td><td id="ModalPartCode">' + val.PartCode + '</td><td id="ModalPOQty">' + val.POQty + '</td><td id="ModalPORate">' + val.Rate + '</td><td id="ModalPendQtyQty">' + val.PendQty + '</td><td id="ModalPONO">' + val.PONo + '</td><td id="ModalGateQty">' + val.GateQty + '</td><td id="ModalGateAlQty">' + val.GateAlQty + '</td><td id="ModalPendAfterGate">' + val.PendAfterGate + '</td><td id="ModalMRNAlQty">' + val.MRNAltQty + '</td><td id="ModalMIRAlQty">' + val.MIRAltQty + '</td><td id="ModalItemServType">' + val.POTypeServItem + '</td><td id="ModalApproved">' + val.popproved + '</td><td id="ModalWef">' + val.wef + '</td><td id="ModalSchNo">' + val.ScheduleNo + '</td><td id="ModalPOType">' + val.POType + '</td></tr>';
                                 $('#divDisplayGrid').append(html);
                             });
                         }
@@ -1818,13 +1937,13 @@
                             $('#SchYearCode').empty();
                             $('#SchYearCode').append('<option disabled selected>-Select-</option>');
                             $.each(obj.Result, function (index, val) {
-                                $('#SchNo').append('<option value="' + val.ScheduleNo + '" data-sch-date="' + formatJSONDate(val.ScheduleDate) + '" data-sch-entryid="' + val.SchEntryID + '">' + val.ScheduleNo + '</option>');
+                                $('#SchNo').append('<option value="' + val.ScheduleNo + '" data-sch-date="' + (val.ScheduleDate) + '" data-sch-entryid="' + val.SchEntryID + '">' + val.ScheduleNo + '</option>');
                                 if ($("#SchYearCode option[value='" + val.YearCode + "']").length == 0) {
                                     $('#SchYearCode').append('<option value="' + val.YearCode + '" >' + val.YearCode + '</option>');
 
                                 }
                             });
-                            //$('#ScheduleDate').val(formatJSONDate(obj.Result[0].ScheduleDate));
+                            //$('#ScheduleDate').val((obj.Result[0].ScheduleDate));
                             $("#SchNo").bind("change", function () { CheckAndFillItem() });
                             $("#SchYearCode").bind("change", function () { CheckAndFillItem() });
                         }
@@ -2831,7 +2950,8 @@
 
             if (obj != null && obj.length == 1) {
                 if ($('#docTypeId').val() != 3) {
-                    if (obj[0].PoNo != '') {
+                            if (obj[0].PoNo) {
+                         /*   // if (obj[0].PoNo != '') { */
                         $('#PONO').val(obj[0].PoNo).trigger('change');
                         $('#PoYear').val(obj[0].PoYear).trigger('change');
                         $('#SchNo').val(obj[0].SchNo);
@@ -2844,7 +2964,7 @@
                 }
                 else {
                     $('#ItemCheck').prop("checked", true);
-                    GetallItems();
+                            GetallItems();
                 }
                 $('#PartCode').val(obj[0].ItemCode).trigger('change');
                 $('#ItemName').val(obj[0].ItemCode).trigger('change');
@@ -2862,11 +2982,15 @@
                 //$('#OtherDetail').val(obj[0].ItemNetAmount);
                 $('#Remarks').val(obj[0].Remarks);
                 $('#ProcessId').val(obj[0].ProcessId);
+                         if ($('#docTypeId').val() == 3) {
                 $('#SaleBillNo').val(obj[0].SaleBillNo).trigger('change');
                 $('#SaleBillYearCode').val(obj[0].SaleBillYearCode).trigger('change');
+                         }
                 $('#SaleBillQty').val(obj[0].SaleBillQty);
+                 if (       $('#docTypeId').val() == 4 ||$('#docTypeId').val() == 5 || $('#docTypeId').val() == 11 ) {
                 $('#AgainstChallanNo').val(obj[0].AgainstChallanNo).trigger('change');
                 $('#AgainstChallanYearcode').val(obj[0].AgainstChallanYearcode).trigger('change');
+                }
                 $('#ChallanQty').val(obj[0].ChallanQty);
                 $('#SupplierBatchNo').val(obj[0].SupplierBatchNo);
                 $('#ShelfLife').val(obj[0].ShelfLife);

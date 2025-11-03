@@ -29,8 +29,95 @@ namespace eTactWeb.Data.DAL
             DBConnectionString = _connectionStringService.GetConnectionString();
             _IDataLogic = iDataLogic;
         }
+        public async Task<ResponseResult> AutoFillPARTYNAMELIST(string SearchAccount)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "AutoFillPARTYNAMELIST"));
+               
+                SqlParams.Add(new SqlParameter("@SearchAccount", SearchAccount ?? ""));
+              
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_GetDropDownList", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
 
-		internal async Task<string> GetSOItem(object AccountCode, object SONO, object Year, int ItemCode)
+        public async Task<SaleOrderModel> GetlastSaleOrderDetail(string EntryDate, int currentYearcode, int AccountCode, int ItemCode)
+        {
+            var resultList = new SaleOrderModel();
+            DataSet oDataSet = new DataSet();
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(DBConnectionString))
+                {
+                    SqlCommand command = new SqlCommand("SPGetLAstSaleOrderAndCustomerOutstanding", connection)
+                    {
+                        CommandType = CommandType.StoredProcedure
+                    };
+                    ;
+
+                    command.Parameters.AddWithValue("@Flag", "GetlastSaleOrderDetail");
+
+                    command.Parameters.AddWithValue("@AccountCode", AccountCode);
+                    command.Parameters.AddWithValue("@EntryDate", CommonFunc.ParseFormattedDate(EntryDate));
+                    command.Parameters.AddWithValue("@currentYearcode", currentYearcode);
+                    command.Parameters.AddWithValue("@ItemCode", ItemCode);
+
+
+
+                    await connection.OpenAsync();
+
+                    using (SqlDataAdapter dataAdapter = new SqlDataAdapter(command))
+                    {
+                        dataAdapter.Fill(oDataSet);
+                    }
+                }
+
+                if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                {
+                    resultList.ItemDetailGrid = (from DataRow row in oDataSet.Tables[0].Rows
+                                                 select new ItemDetail
+                                                 {
+                                                    
+
+
+                                                     SONo = row["InvNo"] == DBNull.Value ? string.Empty : row["InvNo"].ToString(),
+                                                     SODate = row["InvDate"] == DBNull.Value ? string.Empty : row["InvDate"].ToString(),
+                                                     AccountName = row["Account_Name"] == DBNull.Value ? string.Empty : row["Account_Name"].ToString(),
+
+
+
+
+                                                     Qty = row["Qty"] == DBNull.Value ? 0 : Convert.ToDecimal(row["Qty"]),
+                                                     Rate = row["Rate"] == DBNull.Value ? 0 : Convert.ToDecimal(row["Rate"]),
+                                                     DiscPer = row["DiscPer"] == DBNull.Value ? 0 : Convert.ToDecimal(row["DiscPer"]),
+                                                     Amount = row["Amount"] == DBNull.Value ? 0 : Convert.ToDecimal(row["Amount"])
+
+
+
+                                                 }).ToList();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error fetching data.", ex);
+            }
+
+            return resultList;
+        }
+
+
+        internal async Task<string> GetSOItem(object AccountCode, object SONO, object Year, int ItemCode)
 		{
 			var JsonString = string.Empty;
 			try
@@ -87,6 +174,25 @@ namespace eTactWeb.Data.DAL
                 //SqlParams.Add(new SqlParameter("@SubMenu", "Sale Order"));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_ItemGroup", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> GetReportName()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetReportName"));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_SaleOrder", SqlParams);
+
             }
             catch (Exception ex)
             {
@@ -180,6 +286,26 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "GetNewAmmEntry"));
                 SqlParams.Add(new SqlParameter("@YearCode", YearCode));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_SaleOrder", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> GetFeatureOption()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+
+                SqlParams.Add(new SqlParameter("@Flag", "FeatureOption"));
+
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_SaleOrder", SqlParams);
             }
             catch (Exception ex)
@@ -903,6 +1029,8 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@DeliveryAddress", model.DeliveryAddress));
                 SqlParams.Add(new SqlParameter("@OrderType", model.OrderType));
                 SqlParams.Add(new SqlParameter("@CustOrderNo", model.CustOrderNo));
+                SqlParams.Add(new SqlParameter("@ForwardingCharges", model.ForwardingCharges));
+                SqlParams.Add(new SqlParameter("@PackingCharges", model.PackingCharges));
                 SqlParams.Add(new SqlParameter("@SONo", model.SONo));
                 SqlParams.Add(new SqlParameter("@ENTRYDATE", entDt));
                 //SqlParams.Add(new SqlParameter("@EntryDate", DateTime.ParseExact(model.EntryDate.ToString(), "dd-mm-yyyy", CultureInfo.InvariantCulture)));
@@ -984,7 +1112,7 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
-        internal async Task<ResponseResult> DeleteByID(int ID, int YearCode, string Flag)
+        internal async Task<ResponseResult> DeleteByID(int ID, int YearCode, string Flag, string EntryByMachineName, int AccountCode)
         {
             var oDataTable = new DataTable();
 
@@ -998,6 +1126,8 @@ namespace eTactWeb.Data.DAL
                         oCmd.Parameters.AddWithValue("@Flag", Flag);
                         oCmd.Parameters.AddWithValue("@ID", ID);
                         oCmd.Parameters.AddWithValue("@YearCode", YearCode);
+                        oCmd.Parameters.AddWithValue("@EntryByMachineName", EntryByMachineName);
+                        oCmd.Parameters.AddWithValue("@AccountCode", AccountCode);
                         await myConnection.OpenAsync();
 
                         using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
@@ -1298,7 +1428,7 @@ namespace eTactWeb.Data.DAL
                                 "AmmNo","AmmEffDate","Address","DeliveryAddress","ConsigneeAccountCode","OrderAmt","OrderNetAmt", "FreightPaidBy", "InsuApplicable", "ModeTransport","DeliverySch",
                                 "PackingChgApplicable", "DeliveryTerms", "SOComplete", "PreparedBy", "TotalDiscount", "SODeliveryDate", "TotalDisPercent", "TotalDiscAmt", "DespatchAdviseComplete", "PortToLoading", "PortOfDischarge",
                                 "ResponsibleSalesPersonID","CustContactPerson","SaleDocType","OtherDetail","SOConfirmDate","OrderDelayReason","Approved","ApprovedDate","ApprovedBy", "UID","UpdatedOn","UpdatedBy", "CreatedOn","RoundOff",
-                                "EntryByMachineName");
+                                "EntryByMachineName", "SalesPersonEmailId", "eMailFromCC1", "eMailFromCC2", "eMailFromCC3", "pendingAmt", "CreatedByName");
                         oDT.TableName = "SODASHBOARD";
 
                         Result.SODashboard = CommonFunc.DataTableToList<SaleOrderDashboard>(oDT);
@@ -1386,7 +1516,11 @@ namespace eTactWeb.Data.DAL
                     using (SqlCommand oCmd = new SqlCommand("SP_SaleOrder", myConnection))
                     {
                         oCmd.CommandType = CommandType.StoredProcedure;
-                        oCmd.Parameters.AddWithValue("@Flag", "SEARCH");
+                        if (model.SummaryDetail == "Summary")
+
+                            oCmd.Parameters.AddWithValue("@Flag", "dashboard");
+                        else
+                            oCmd.Parameters.AddWithValue("@Flag", "SEARCH");
                         oCmd.Parameters.AddWithValue("@CustomerName", model.CustomerName);
                         oCmd.Parameters.AddWithValue("@CustOrderNo", model.CustOrderNo);
                         oCmd.Parameters.AddWithValue("@Branch", model.CC);
@@ -1395,6 +1529,7 @@ namespace eTactWeb.Data.DAL
                         oCmd.Parameters.AddWithValue("@SOType", model.SOType);
                         oCmd.Parameters.AddWithValue("@ItemName", model.ItemName);
                         oCmd.Parameters.AddWithValue("@PartCode", model.PartCode);
+                        oCmd.Parameters.AddWithValue("@SOComplete", model.SOComplete);
                         //SqlParams.Add(new SqlParameter("@EntryDate", DateTime.ParseExact(model.EntryDate.ToString(), "dd-mm-yyyy", CultureInfo.InvariantCulture)));
 
                         oCmd.Parameters.AddWithValue("@StartDate", StartDate);
@@ -1411,7 +1546,7 @@ namespace eTactWeb.Data.DAL
                               "AmmNo", "AmmEffDate", "Address", "DeliveryAddress", "ConsigneeAccountCode", "OrderAmt", "OrderNetAmt", "FreightPaidBy", "InsuApplicable", "ModeTransport", "DeliverySch",
                               "PackingChgApplicable", "DeliveryTerms", "SOComplete", "PreparedBy", "TotalDiscount", "SODeliveryDate", "TotalDisPercent", "TotalDiscAmt", "DespatchAdviseComplete", "PortToLoading", "PortOfDischarge",
                               "ResponsibleSalesPersonID", "CustContactPerson", "SaleDocType", "OtherDetail", "SOConfirmDate", "OrderDelayReason", "Approved", "ApprovedDate", "ApprovedBy", "UID", "UpdatedOn", "UpdatedBy", "CreatedOn", "RoundOff",
-                              "EntryByMachineName");
+                              "EntryByMachineName","SalesPersonEmailId", "eMailFromCC1", "eMailFromCC2", "eMailFromCC3", "pendingAmt", "CreatedByName");
 
                             oDT.TableName = "SODASHBOARD";
 
@@ -1633,16 +1768,23 @@ namespace eTactWeb.Data.DAL
                             model.CurrencyID = Convert.ToInt32(oDataSet.Tables[0].Rows[0]["CurrencyID"]);
                             model.AccountCode = Convert.ToInt32(oDataSet.Tables[0].Rows[0]["AccountCode"]);
                             model.Address = oDataSet.Tables[0].Rows[0]["Address"].ToString();
+                            model.AccountName = oDataSet.Tables[0].Rows[0]["Account_Name"].ToString();
                             model.DeliveryAddress = oDataSet.Tables[0].Rows[0]["DeliveryAddress"].ToString();
                             model.OrderType = oDataSet.Tables[0].Rows[0]["OrderType"].ToString();
                             model.CustOrderNo = oDataSet.Tables[0].Rows[0]["CustOrderNo"].ToString();
                             model.SONo = Convert.ToInt32(oDataSet.Tables[0].Rows[0]["SONo"]);
+                            model.PackingCharges = Convert.ToDecimal(oDataSet.Tables[0].Rows[0]["PackingCharges"]);
+                            model.ForwardingCharges = Convert.ToDecimal(oDataSet.Tables[0].Rows[0]["ForwardingCharges"]);
                             model.SODate = oDataSet.Tables[0].Rows[0]["SODate"].ToString();
                             model.WEF = oDataSet.Tables[0].Rows[0]["WEF"].ToString();
                             model.SOCloseDate = oDataSet.Tables[0].Rows[0]["SOCloseDate"].ToString();
                             model.QuotNo = oDataSet.Tables[0].Rows[0]["QuotNo"].ToString();
                             model.QuotYear = Convert.ToInt32(oDataSet.Tables[0].Rows[0]["QuotYear"]);
                             model.QDate = oDataSet.Tables[0].Rows[0]["QDate"].ToString();
+                            model.Email = oDataSet.Tables[0].Rows[0]["SalesPersonEmailId"].ToString();
+                            model.CC1 = oDataSet.Tables[0].Rows[0]["eMailFromCC1"].ToString();
+                            model.CC2 = oDataSet.Tables[0].Rows[0]["eMailFromCC2"].ToString();
+                            model.CC3 = oDataSet.Tables[0].Rows[0]["eMailFromCC3"].ToString();
 
                             if (Flag == "SOA")
                             {
@@ -1724,6 +1866,8 @@ namespace eTactWeb.Data.DAL
                                     CustomerLocation = row["CustomerLocation"].ToString(),
                                     ItemModel = row["ItemModel"].ToString(),
                                     CustItemCategory = row["CustItemCategory"].ToString(),
+                                    Location = row["Location"].ToString(),
+                                    Vehicle = row["VehicalNo"].ToString(),
                                     Group_Code = row["ItemGroupCode"] != DBNull.Value ? Convert.ToInt32(row["ItemGroupCode"]) : 0,
                                     Group_name = row["Group_name"].ToString()??"",
                                     DeliveryScheduleList = listObject.Where(x => x.DPartCode == Convert.ToInt32(row["ItemCode"])).ToList(),
@@ -1912,7 +2056,7 @@ namespace eTactWeb.Data.DAL
                                     Rate = Convert.ToInt32(row["Rate"]),
                                     Rejper = Convert.ToInt32(row["Rejper"]),
                                     Remark = row["Remark"].ToString(),
-                                    StockQty = Convert.ToInt32(row["StockQty"]),
+                                    StockQty = Convert.ToDecimal(row["StockQty"]),
                                     StoreName = row["StoreName"].ToString(),
                                     TolLimit = Convert.ToInt32(row["TolLimit"]),
                                     Unit = row["Unit"].ToString(),

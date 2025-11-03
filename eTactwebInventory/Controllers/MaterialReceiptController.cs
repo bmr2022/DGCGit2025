@@ -46,7 +46,8 @@ namespace eTactWeb.Controllers
         private readonly IMemoryCache _MemoryCache;
         private readonly IEmailService _emailService;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
-        public MaterialReceiptController(ILogger<MaterialReceiptController> logger, IDataLogic iDataLogic, IMaterialReceipt iMaterialReceipt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration, IMemoryCache iMemoryCache, IEmailService emailService)
+        private readonly ConnectionStringService _connectionStringService;
+        public MaterialReceiptController(ILogger<MaterialReceiptController> logger, IDataLogic iDataLogic, IMaterialReceipt iMaterialReceipt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration, IMemoryCache iMemoryCache, IEmailService emailService, ConnectionStringService connectionStringService)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
@@ -55,9 +56,70 @@ namespace eTactWeb.Controllers
             this._iconfiguration = iconfiguration;
             _MemoryCache = iMemoryCache;
             _emailService = emailService;
+            _connectionStringService = connectionStringService;
         }
 
-        public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string MrnNo = "")
+        [HttpPost]
+
+        public async Task<JsonResult> GenerateMultiMRNPrint(string MRNNo, int YearCode)
+        {
+            YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+            var JSON = await _IMaterialReceipt.GenerateMultiMRNPrint(MRNNo, YearCode);
+
+            // if SP saved successfully, build PrintReport URL
+            if (JSON != null && JSON.Result != null && JSON.Result.Tables.Count > 0 && JSON.Result.Tables[0].Rows.Count > 0)
+            {
+                // Example: take EntryId from your SP result (adjust column name accordingly)
+                //int entryId = Convert.ToInt32(JSON.Result.Tables[0].Rows[0]["EntryId"]);
+
+                // Build PrintReport URL
+                string reportUrl = Url.Action("PrintMultiMRN", "MaterialReceipt", new
+                {
+                    MRNNo = MRNNo,
+                    YearCode = YearCode
+
+                }, protocol: Request.Scheme);
+
+                return Json(new { url = reportUrl });// return URL to AJAX
+            }
+
+            return Json(null);
+        }
+        public IActionResult PrintMultiMRN(string MRNNo, int YearCode)
+        {
+            string my_connection_string;
+            string contentRootPath = _IWebHostEnvironment.ContentRootPath;
+            string webRootPath = _IWebHostEnvironment.WebRootPath;
+            var webReport = new WebReport();
+            webReport.Report.Clear();
+            var ReportName = _IMaterialReceipt.GetReportName();
+            webReport.Report.Dispose();
+            webReport.Report = new Report();
+
+            //webReport.Report.Load(webRootPath + "\\MRNMultiReportYauto.frx");
+            if (!String.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
+            {
+                webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0].ToString() + ".frx");
+            }
+            else
+            {
+                webReport.Report.Load(webRootPath + "\\MRNMultiReportYauto.frx"); 
+            }
+            my_connection_string = _connectionStringService.GetConnectionString();
+            //my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+            webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+            webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
+            webReport.Report.SetParameterValue("MrnNoparam", MRNNo);
+            webReport.Report.SetParameterValue("MrnYearcodeparam", YearCode);
+
+            webReport.Report.SetParameterValue("MyParameter", my_connection_string);
+            webReport.Report.Refresh();
+            return View(webReport);
+        }
+       
+ 
+
+public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string MrnNo = "")
         {
             string my_connection_string;
             string contentRootPath = _IWebHostEnvironment.ContentRootPath;
@@ -75,8 +137,8 @@ namespace eTactWeb.Controllers
             {
                 webReport.Report.Load(webRootPath + "\\MRN.frx"); // default report
             }
-
-            my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+            my_connection_string = _connectionStringService.GetConnectionString();
+            //my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
             webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
             webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
             webReport.Report.SetParameterValue("MrnNoparam", MrnNo);
@@ -98,7 +160,7 @@ namespace eTactWeb.Controllers
             webReport.Report = new Report();
 
             webReport.Report.Load(webRootPath + "\\MRNShortExcess.frx"); // default repor 
-            my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+            my_connection_string = _connectionStringService.GetConnectionString();
             webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
             webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
             //webReport.Report.SetParameterValue("MrnNoparam", MrnNo);
@@ -325,7 +387,7 @@ namespace eTactWeb.Controllers
             webReport.Report = new Report();
 
             webReport.Report.Load(webRootPath + "\\MRNShortExcess.frx"); // default repor 
-            my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+            my_connection_string = _connectionStringService.GetConnectionString();
             webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
             webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
             //webReport.Report.SetParameterValue("MrnNoparam", MrnNo);
@@ -348,7 +410,7 @@ namespace eTactWeb.Controllers
             webReport.Report = new Report();
 
             webReport.Report.Load(webRootPath + "\\MRNTAGFinal.frx"); 
-            my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+            my_connection_string = _connectionStringService.GetConnectionString();
             webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
             webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
            // webReport.Report.SetParameterValue("MrnNoparam", MrnNo);
@@ -674,7 +736,7 @@ namespace eTactWeb.Controllers
                         }
                         else
                         {
-                            if (MaterialReceiptDetail.Where(x => x.ItemNumber == item.ItemNumber
+                            if (MaterialReceiptDetail.Where(x => x.ItemNumber == item.ItemNumber &&  x.SaleBillNo == item.SaleBillNo
                             && x.PONO == item.PONO
                  && x.SchNo == item.SchNo).Any())
                             {
@@ -1149,11 +1211,11 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<IActionResult> GetSearchData(string VendorName, string MrnNo, string GateNo, string PONo, string ItemName, string PartCode, string FromDate, string ToDate, int pageNumber = 1, int pageSize = 50, string SearchBox = "")
+        public async Task<IActionResult> GetSearchData(string VendorName, string MrnNo, string GateNo, string PONo, string ItemName, string PartCode, string FromDate, string ToDate, int FromMRNNo, int ToMRNNo, int pageNumber = 1, int pageSize = 50, string SearchBox = "")
         {
             //model.Mode = "Search";
             var model = new MRNQDashboard();
-            model = await _IMaterialReceipt.GetDashboardData(VendorName, MrnNo, GateNo, PONo, ItemName, PartCode, FromDate, ToDate);
+            model = await _IMaterialReceipt.GetDashboardData(VendorName, MrnNo, GateNo, PONo, ItemName, PartCode, FromDate, ToDate, FromMRNNo, ToMRNNo);
             model.DashboardType = "Summary";
             var modelList = model?.MRNQDashboard ?? new List<MRNDashboard>();
             List<MRNDashboard> filteredResults;

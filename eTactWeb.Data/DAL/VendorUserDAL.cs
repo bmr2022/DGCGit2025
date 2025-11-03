@@ -24,8 +24,8 @@ namespace eTactWeb.Data.DAL
         {
             _IDataLogic = iDataLogic;
             _connectionStringService = connectionStringService;
-            //DBConnectionString = _connectionStringService.GetConnectionString();
-            DBConnectionString = configuration.GetConnectionString("eTactDB");
+            DBConnectionString = _connectionStringService.GetConnectionString();
+            //DBConnectionString = configuration.GetConnectionString("eTactDB");
         }
 
         public async Task<ResponseResult> FillEntryId()
@@ -114,8 +114,8 @@ namespace eTactWeb.Data.DAL
                 if (model.Mode == "V" || model.Mode == "U")
                 {
                     SqlParams.Add(new SqlParameter("@Flag", "Update"));
-                    SqlParams.Add(new SqlParameter("@UpdatedBy", model.LastUpdatedBy));
-                    SqlParams.Add(new SqlParameter("@LastUpdationdate", upDt));
+                    //SqlParams.Add(new SqlParameter("@UpdatedBy", model.LastUpdatedBy));
+                    //SqlParams.Add(new SqlParameter("@LastUpdationdate", upDt));
                 }
                 else
                 {
@@ -123,15 +123,7 @@ namespace eTactWeb.Data.DAL
                 }
 
                 var currentDate = CommonFunc.ParseFormattedDate(DateTime.Today.ToString());
-                //var ProdSchDate = CommonFunc.ParseFormattedDate(model.ProdSchDate);
-                //var FromSchDt = CommonFunc.ParseFormattedDate(model.FinFromDate);
-                //var ToSchDt = CommonFunc.ParseFormattedDate(model.FinToDate);
-                //var EffFromDt = CommonFunc.ParseFormattedDate(model.EffectiveFrom);
-                //var EffTillDt = CommonFunc.ParseFormattedDate(model.EffectiveTill);
-                //var Revdt = CommonFunc.ParseFormattedDate(model.RevDate);
-                //var Actudt = CommonFunc.ParseFormattedDate(model.ActualEntryDate);
-
-
+                
                 SqlParams.Add(new SqlParameter("@UpdatedBy", model.LastUpdatedBy));
                 SqlParams.Add(new SqlParameter("@LastUpdationdate", currentDate == default ? string.Empty : currentDate));
                 

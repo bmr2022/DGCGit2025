@@ -5,10 +5,10 @@
     string branchName = HttpContextAccessor.HttpContext.Session.GetString("Branch");
     string CompanyName = HttpContextAccessor.HttpContext.Session.GetString("CompanyName");
     string empName = HttpContextAccessor.HttpContext.Session.GetString("EmpName");
-    string yearCode = HttpContextAccessor.HttpContext.Session.GetString("YearCode");
-    string FinFromDate = HttpContextAccessor.HttpContext.Session.GetString("FromDate");
+    string yearCode =  HttpContextAccessor.HttpContext.Session.GetString("YearCode");
+    string FinFromDate =CommonFunc.ParseFormattedDate( HttpContextAccessor.HttpContext.Session.GetString("FromDate"));
     // .Split(" ")[0];
-    string FinToDate = HttpContextAccessor.HttpContext.Session.GetString("ToDate");
+    string FinToDate =CommonFunc.ParseFormattedDate( HttpContextAccessor.HttpContext.Session.GetString("ToDate"));
     //.Split(" ")[0];
 }
 <footer class="footer mt-auto py-3 text-light" style="background: radial-gradient(#168096, #04414a);">

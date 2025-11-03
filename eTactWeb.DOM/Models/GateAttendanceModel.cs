@@ -61,6 +61,7 @@ public class GateAttendanceModel : TimeStamp
     public int? HRApprovalEmpId { get; set; }
     public string CC { get; set; }
     public string CategoryCode { get; set; }
+    public int? CategoryId { get; set; }
     public DateTime? EmpAttDate { get; set; }
     public int? EmpAttYear { get; set; }
     public DateTime? EmpAttTime { get; set; }
@@ -75,6 +76,7 @@ public class GateAttendanceModel : TimeStamp
     public int? DesignationEntryId { get; set; }
     public string DesignationName { get; set; }
     public string strEmpAttDate { get; set; }
+    public string EmpCategoryId { get; set; }
     public string EmpCategory { get; set; }
     public string? AttendanceEntryMethodType { get; set; }
     public IList<SelectListItem> AttendanceEntryMethodTypeList
@@ -89,6 +91,7 @@ public class GateAttendanceModel : TimeStamp
         set => _DayOrMonthTypeList = value;
     }
     public string strEmpAttMonth { get; set; }
+    public int? intEmpAttMonth { get; set; }
     public IList<SelectListItem> strEmpAttMonthList
     {
         get => _strEmpAttMonthList;
@@ -104,9 +107,10 @@ public class GateAttendanceModel : TimeStamp
     public string EmployeeCode { get; set; }
     public string EmployeeName { get; set; }
     public IList<TextValue>? EmployeeList { get; set; }
-    public IList<TextValue>? DeptList { get; set; } // for future filter
-    public IList<TextValue>? ShiftList { get; set; } // for future filter
-    public IList<TextValue>? DesignationList { get; set; } // for future filter
+    public IList<TextValue>? DeptList { get; set; }
+    public IList<TextValue>? ShiftList { get; set; }
+    public IList<TextValue>? DesignationList { get; set; }
+    public IList<TextValue>? CategoryList { get; set; }
     public string TotalEmployees { get; set; }
     public string TotalEmployeesOnLeave { get; set; }
     public string TotalEmployeesAttDone { get; set; }
@@ -121,8 +125,60 @@ public class GateAttendanceModel : TimeStamp
     public string UpdatedByName { get; set; }
     public string Branch { get; set; }
     // Dynamic support
+    public bool? IsSelectedEmployee { get; set; }
     public List<string> DayHeaders { get; set; } = new(); // dynamic column headers
     public Dictionary<string, string> Attendance { get; set; } = new(); // dynamic day-wise In/Out
     public List<GateAttendanceModel> GateAttDetailsList { get; set; }
+    public List<GateAttendanceHolidayModel> HolidayList { get; set; }
+    //for dashboard back
+    public string FromDateBack { get; set; }
+    public string ToDateBack { get; set; }
+    public string AttendanceEntryMethodTypeBack { get; set; }
+    public string DashboardTypeBack { get; set; }
+    public string GlobalSearchBack { get; set; }
 }
 
+[Serializable]
+public class GateAttDashBoard : TimeStamp
+{
+    public IList<GateAttDashBoard> GateAttDashboard { get; set; }
+    public string? ApprovedDate { get; set; }
+    public string? Approved { get; set; }
+
+    public DateTime? AttendanceEntryDate { get; set; }
+    public string? DailyMonthlyAttendance { get; set; }
+    public string? AttendanceEntryMethod { get; set; }
+    public string? AttMonthName { get; set; }
+    public DateTime? ActualEntryDate { get; set; }
+    public string? EntryByMachineName { get; set; }
+    public string? CC { get; set; }
+    public string? EntryByEmp { get; set; }
+    public string? UpdatedByEmp { get; set; }
+    public int? GateAttEntryId { get; set; }
+    public int? GateAttYearCode { get; set; }
+    public string? FromDate { get; set; }
+    public string? ToDate { get; set; }
+    public string? FromDate1 { get; set; }
+    public string? ToDate1 { get; set; }
+    //public IList<TextValue>? PONoList { get; set; }
+    //pagintion
+    public int PageNumber { get; set; }
+    public int PageSize { get; set; }
+    public int TotalRecords { get; set; }
+
+}
+
+public class GateAttendanceHolidayModel
+{
+    public int HolidayEntryId { get; set; }
+    public int HolidayYear { get; set; }
+    public string HolidayName { get; set; }
+    public string HalfDayFullDay { get; set; }
+    public DateTime? HolidayEffFrom { get; set; }
+    public DateTime? HolidayEffTill { get; set; }
+    public string DayName { get; set; }
+    public int CategoryId { get; set; }
+    public string DayType { get; set; }  // e.g. WEEKOFF, HOLIDAY
+    public string AllowedCompOff { get; set; } // "YES" / "NO"
+    public string OverrideWeekoff { get; set; } // "YES" / "NO"
+}

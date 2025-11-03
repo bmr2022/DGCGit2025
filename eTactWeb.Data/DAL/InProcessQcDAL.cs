@@ -2,6 +2,7 @@
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
+using PdfSharp.Drawing.BarCodes;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -17,11 +18,13 @@ namespace eTactWeb.Data.DAL
         private readonly IDataLogic _IDataLogic;
         private readonly string DBConnectionString = string.Empty;
         private IDataReader? Reader;
-
-        public InProcessQcDAL(IConfiguration configuration, IDataLogic iDataLogic)
+        private readonly ConnectionStringService _connectionStringService;
+        public InProcessQcDAL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
             _IDataLogic = iDataLogic;
-            DBConnectionString = configuration.GetConnectionString("eTactDB");
+            _connectionStringService = connectionStringService;
+            DBConnectionString = _connectionStringService.GetConnectionString();
+            //DBConnectionString = configuration.GetConnectionString("eTactDB");
         }
         internal async Task<InProcessQc> GetViewByID(int ID, int YearCode)
         {
@@ -49,6 +52,76 @@ namespace eTactWeb.Data.DAL
             }
 
             return model;
+        }
+        public async Task<ResponseResult> FillItems(string SearchItemCode, string SearchPartCode)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "FillItemName"));
+                SqlParams.Add(new SqlParameter("@ItemName", SearchItemCode ?? ""));
+                SqlParams.Add(new SqlParameter("@partcode", SearchPartCode ?? ""));
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_InProcessQC", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> FillInProcQCSlipNo()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "FillInProcQCSlipNo"));
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_InProcessQC", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> BindProdSlip()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "BindProdSlip"));
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_InProcessQC", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> BindProdPlanNo()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "BindProdPlanNo"));
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_InProcessQC", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
         }
         private static InProcessQc PrepareView(DataSet DS, ref InProcessQc? model)
         {
@@ -374,6 +447,12 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@Flag", "DASHBOARD");
                     oCmd.Parameters.AddWithValue("@FromDate", fromDt);
                     oCmd.Parameters.AddWithValue("@ToDate", toDt);
+                    oCmd.Parameters.AddWithValue("@InProcQCSlipNo",  QcSlipNo);
+                    oCmd.Parameters.AddWithValue("@ProdSlipNo", ProdSlipNo);
+                    oCmd.Parameters.AddWithValue("@ItemName",ItemName);
+                    oCmd.Parameters.AddWithValue("@PartCode",  PartCode);
+                    oCmd.Parameters.AddWithValue("@ProdSchNo",  ProdSchNo);
+                    oCmd.Parameters.AddWithValue("@ProdPlanNo", ProdPlanNo);
 
                     await myConnection.OpenAsync();
                     using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
@@ -416,7 +495,7 @@ namespace eTactWeb.Data.DAL
             }
             return model;
         }
-        public async Task<InProcessDashboard> GetDashboardDetailData(string FromDate, string ToDate)
+        public async Task<InProcessDashboard> GetDashboardDetailData(string FromDate, string ToDate, string QcSlipNo, string ItemName, string PartCode, string ProdPlanNo, string ProdSchNo, string ProdSlipNo, string DashboardType)
         {
             DataSet? oDataSet = new DataSet();
             var model = new InProcessDashboard();
@@ -436,7 +515,12 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@Flag", "DETAILDASHBOARD");
                     oCmd.Parameters.AddWithValue("@FromDate", fromDt);
                     oCmd.Parameters.AddWithValue("@ToDate", toDt);
-
+                    oCmd.Parameters.AddWithValue("@InProcQCSlipNo", QcSlipNo);
+                    oCmd.Parameters.AddWithValue("@ProdSlipNo", ProdSlipNo);
+                    oCmd.Parameters.AddWithValue("@ItemName", ItemName);
+                    oCmd.Parameters.AddWithValue("@PartCode", PartCode);
+                    oCmd.Parameters.AddWithValue("@ProdSchNo", ProdSchNo);
+                    oCmd.Parameters.AddWithValue("@ProdPlanNo", ProdPlanNo);
                     await myConnection.OpenAsync();
                     using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
                     {

@@ -440,6 +440,26 @@ public class DirectPurchaseBillDAL
 
         return _ResponseResult;
     }
+    public async Task<ResponseResult> GetFeatureOption()
+    {
+        var _ResponseResult = new ResponseResult();
+        try
+        {
+            var SqlParams = new List<dynamic>();
+
+            SqlParams.Add(new SqlParameter("@Flag", "FeatureOptions"));
+
+            _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_DirectPurchaseBillMainDetail", SqlParams);
+        }
+        catch (Exception ex)
+        {
+            dynamic Error = new ExpandoObject();
+            Error.Message = ex.Message;
+            Error.Source = ex.Source;
+        }
+
+        return _ResponseResult;
+    }
     public async Task<ResponseResult> NewAmmEntryId()
     {
         var _ResponseResult = new ResponseResult();
@@ -855,6 +875,7 @@ public class DirectPurchaseBillDAL
                     MainModel.Currency = Convert.ToInt32(oDataSet.Tables[0].Rows[0]["CurrencyId"]);
                     MainModel.AccountCode = Convert.ToInt32(oDataSet.Tables[0].Rows[0]["AccountCode"]);
                     MainModel.InvoiceNo = oDataSet.Tables[0].Rows[0]["InvoiceNo"].ToString();
+                    MainModel.AccountName = oDataSet.Tables[0].Rows[0]["VendorName"].ToString();
                     MainModel.InvDate = oDataSet.Tables[0].Rows[0]["InvoiceDate"].ToString();
                     MainModel.PurchVouchNo = oDataSet.Tables[0].Rows[0]["purvoucherno"].ToString();
                     MainModel.VouchDate = oDataSet.Tables[0].Rows[0]["VoucherDate"].ToString();
@@ -925,6 +946,7 @@ public class DirectPurchaseBillDAL
                             ProcessName = row["ProcessName"].ToString(),
                             CostCenter = (!string.IsNullOrEmpty(row["CostCenterId"].ToString())) ? Convert.ToInt32(row["CostCenterId"]) : 0,
                             CostCenterName = row["CostCenterName"].ToString(),
+                            ItemLocation = row["ItemLocation"].ToString(),
                         });
                     }
 
@@ -993,7 +1015,7 @@ public class DirectPurchaseBillDAL
                             AdjDescription = row["Description"].ToString(),
                             AdjDueDate = string.IsNullOrEmpty(row["DueDate"].ToString()) ? new DateTime() : Convert.ToDateTime(row["DueDate"]),
                             AdjNewRefNo = row["NewRefNo"].ToString(),
-                            AdjPendAmt = Convert.ToSingle(row["PendAmt"]),
+                            AdjPendAmt = Convert.ToDecimal(row["PendAmt"]),
                             AdjDrCr = row["DR/CR"].ToString(),
                             AdjPurchOrderNo = string.Empty, //row["RoundOff"].ToString(),
                             AdjPOYear = 0, //Convert.ToInt32(row["RoundOffAmt"]),

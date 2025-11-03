@@ -42,7 +42,7 @@ namespace eTactwebAccounts.Controllers
 			MainModel.ActualEntryByEmpName = HttpContext.Session.GetString("EmpName");
 			MainModel.CC = HttpContext.Session.GetString("Branch");
 			HttpContext.Session.Remove("KeyAccDepriciationCalculationdetailGrid");
-			if (!string.IsNullOrEmpty(Mode) && ID > 0 && Mode == "U")
+			if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "U" || Mode == "V"))
 			{
 				MainModel = await _IAccDepriciationCalculationdetail.GetViewByID(ID, YC).ConfigureAwait(false);
 				MainModel.Mode = Mode;
@@ -55,7 +55,7 @@ namespace eTactwebAccounts.Controllers
                 MainModel.ActualEntryBy = ActualEntryBy;
                 MainModel.ActualEntryDate = ActualEntryDate;
                 MainModel.LastUpdatedByEmpName = LastUpdatedByEmpName;
-                MainModel.LastUpdatedDate = LastUpdatedDate;
+                //MainModel.LastUpdatedDate = LastUpdatedDate;
                 MainModel.EntryByMachine = EntryByMachine;
                 MainModel.ForClosingOfFinancialYear = ForClosingOfFinancialYear;
                 MainModel.UID = UID;
@@ -88,6 +88,7 @@ namespace eTactwebAccounts.Controllers
 		{
 			try
 			{
+
 				string modelJson = HttpContext.Session.GetString("KeyAccDepriciationCalculationdetailGrid");
 				List<AccDepriciationCalculationdetailModel> DepriciationCalculationdetail = new List<AccDepriciationCalculationdetailModel>();
 
@@ -99,7 +100,8 @@ namespace eTactwebAccounts.Controllers
 				// Now use this list to build DataTable
 				model.ActualEntryBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
 				model.ForClosingOfFinancialYear = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-				var GIGrid = GetDetailTable(DepriciationCalculationdetail,  model.DepriciationEntryId,model.DepriciationYearCode,model.ForClosingOfFinancialYear);
+                model.LastUpdatedDate = DateTime.Today.ToString("MM/dd/yyyy").Replace("-", "/");
+                var GIGrid = GetDetailTable(DepriciationCalculationdetail,  model.DepriciationEntryId,model.DepriciationYearCode,model.ForClosingOfFinancialYear);
 				var Result = await _IAccDepriciationCalculationdetail.SaveDepriciationCalculationdetail(model, GIGrid);
 
 				if (Result != null)
@@ -238,6 +240,12 @@ namespace eTactwebAccounts.Controllers
 			string JsonString = JsonConvert.SerializeObject(JSON);
 			return Json(JsonString);
 		}
+		public async Task<JsonResult> FillEssetsName()
+		{
+			var JSON = await _IAccDepriciationCalculationdetail.FillEssetsName();
+			string JsonString = JsonConvert.SerializeObject(JSON);
+			return Json(JsonString);
+		}
         public async Task<IActionResult> AccDepriciationCalculationdetailDashBoard(string ReportType, string FromDate, string ToDate)
         {
             var model = new AccDepriciationCalculationdetailModel();
@@ -274,11 +282,11 @@ namespace eTactwebAccounts.Controllers
 
             return View(model);
         }
-        public async Task<IActionResult> GetDetailData(string FromDate, string ToDate, string ReportType)
+        public async Task<IActionResult> GetDetailData(string FromDate, string ToDate, string ReportType,string AssetsName)
         {
             //model.Mode = "Search";
             var model = new AccDepriciationCalculationdetailModel();
-            model = await _IAccDepriciationCalculationdetail.GetDashboardDetailData(FromDate, ToDate, ReportType);
+            model = await _IAccDepriciationCalculationdetail.GetDashboardDetailData(FromDate, ToDate, ReportType, AssetsName);
             if (ReportType == "SUMMARY")
             {
                 return PartialView("_AccDepriciationCalculationdetailDashBoardSummaryGrid", model);

@@ -39,11 +39,22 @@
                         {
                             <label class="form-label" style="display: inline-block;"><strong>Click for DeActive SO</strong></label>
                         }
-                        else
+                        @if (@typeOfApproval == "LISTOFDeActiveSO")
                         {
                             <label class="form-label" style="display: inline-block;"><strong>Click for Active SO</strong></label>
 
                         }
+                        @if (@typeOfApproval == "ListOFComplatedSO")
+                        {
+                            <label class="form-label" style="display: inline-block;"><strong>Click for Incomplete SO</strong></label>
+
+                        }
+                        @if (@typeOfApproval == "LISTOFIncomplatedSO")
+                        {
+                            <label class="form-label" style="display: inline-block;"><strong>Click for Complete SO</strong></label>
+
+                        }
+
                     </div>
                     <div class="col-xl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                         <label class="form-label">Approve Date</label>

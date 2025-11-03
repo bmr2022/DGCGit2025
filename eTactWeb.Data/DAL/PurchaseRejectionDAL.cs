@@ -180,6 +180,7 @@ namespace eTactWeb.Data.DAL
                         DocAccountCode = row["DocAccountCode"] != DBNull.Value ? Convert.ToInt32(row["DocAccountCode"]) : 0,
                         DocAccountName = row["DocumentName"]?.ToString(),
                         ItemAmount = row["ItemAmount"] != DBNull.Value ? Convert.ToDecimal(row["ItemAmount"]) : 0,
+                        Amount = row["ItemAmount"] != DBNull.Value ? Convert.ToDecimal(row["ItemAmount"]) : 0,
                         DiscountPer = row["DiscountPer"] != DBNull.Value ? Convert.ToSingle(row["DiscountPer"]) : 0,
                         DiscountAmt = row["DiscountAmt"] != DBNull.Value ? Convert.ToSingle(row["DiscountAmt"]) : 0,
                         StoreId = row["StoreId"] != DBNull.Value ? Convert.ToInt32(row["StoreId"]) : 0,
@@ -195,6 +196,10 @@ namespace eTactWeb.Data.DAL
                         ItemSize = row["itemSize"]?.ToString(),
                         ItemDescription = row["ItemDescription"]?.ToString(),
                         Remark = row["Remark"]?.ToString(),
+                        MIREntryId = row["MIREntryId"] != DBNull.Value ? Convert.ToInt32(row["MIREntryId"]) : 0,
+                        MIRNo = row["MIRNo"]?.ToString(),
+                        MIRYearCode = row["MIRYearCode"] != DBNull.Value ? Convert.ToInt32(row["MIRYearCode"]) : 0,
+                        MIRDate = row["MIRDate"]?.ToString(),
                     });
                     cnt++;
                 }
@@ -244,7 +249,7 @@ namespace eTactWeb.Data.DAL
                         AdjDescription = row["Description"]?.ToString(),
                         //AdjDrCrName = row["AccEntryId"]?.ToString(),
                         AdjDrCr = row["DR/CR"]?.ToString(),
-                        AdjPendAmt = row["AdjustmentAmt"] != DBNull.Value ? Convert.ToSingle(row["AdjustmentAmt"]) : 0,
+                        AdjPendAmt = row["AdjustmentAmt"] != DBNull.Value ? Convert.ToDecimal(row["AdjustmentAmt"]) : 0,
                         AdjAdjstedAmt = row["AdjustmentAmt"] != DBNull.Value ? Convert.ToSingle(row["AdjustmentAmt"]) : 0,
                         AdjTotalAmt = row["BillAmt"] != DBNull.Value ? Convert.ToSingle(row["BillAmt"]) : 0, // BillAmt
                         AdjRemainingAmt = row["RemaingAmt"] != DBNull.Value ? Convert.ToSingle(row["RemaingAmt"]) : 0,
@@ -325,6 +330,10 @@ namespace eTactWeb.Data.DAL
                         UniqueBatchNo = row["UniqueBatchNo"]?.ToString(),
                         AltQty = row["AltQty"] != DBNull.Value ? Convert.ToSingle(row["AltQty"]) : 0,
                         AltUnit = row["AltUnit"]?.ToString(),
+                        MIREntryId = row["MIREntryId"] != DBNull.Value ? Convert.ToInt32(row["MIREntryId"]) : 0,
+                        MIRNo = row["MIRNo"]?.ToString(),
+                        MIRYearCode = row["MIRYearCode"] != DBNull.Value ? Convert.ToInt32(row["MIRYearCode"]) : 0,
+                        MIRDate = row["MIRDate"]?.ToString(),
                     });
                 }
                 model.AccPurchaseRejectionAgainstBillDetails = purchaseRejectionAgainstBillGrid ?? new List<AccPurchaseRejectionAgainstBillDetail>();

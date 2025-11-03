@@ -65,20 +65,25 @@
                     </a>
                     </div> *@
                     }
-                    <a asp-action="PendingSaleRejection" asp-controller="PendingSaleRejection" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
-                        <i class="fa fa-plus-circle fafw fa-lg" aria-hidden="true"></i>
-                        Add New
-                    </a>
+                 
                     <a asp-action="CNDashboard" class="btn btn-sm btn-outline-light bg-gradient" style="margin-right:5px;">
                         <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                         Dashboard
                     </a>
-
+                    <input asp-for="DashboardTypeBack" type="hidden" value="@Model.DashboardTypeBack" />
+                    <input asp-for="FromDateBack" type="hidden" value="@Model.FromDateBack" />
+                    <input asp-for="ToDateBack" type="hidden" value="@Model.ToDateBack" />
+                    <input asp-for="AccountCodeBack" type="hidden" value="@Model.AccountCodeBack" />
+                    <input asp-for="GroupCodeBack" type="hidden" value="@Model.GroupCodeBack" />
+                    <input asp-for="AccountNameBack" type="hidden" value="@Model.AccountNameBack" />
+                    <input asp-for="VoucherNoBack" type="hidden" value="@Model.VoucherNoBack" />
+                    <input asp-for="AccountList" type="hidden"
+                           value="@string.Join(",", Model.AccountList ?? new string[0])" />
                     <partial name="_AddCreditNotePopUp" />
                     @* <partial name="_FormsButton" /> *@
                     <div class="row justify-content-between g-2">
                         <div class="col-auto">
-                            <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
+                            <a href="#" class=" btn btn-primary btn-sm" onclick="goBack();">
                                 <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
                                 BACK
                             </a>
@@ -330,7 +335,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
             <div class="accordion-item">
                 <h2 class="accordion-header" id="H_TaxDetail">
                     <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_TaxDetail" aria-expanded="true" aria-controls="B_TaxDetail">
@@ -341,7 +345,7 @@
                     <div class="accordion-body">
                         <partial name="_TaxDetail" />
                         <div class="row g-2 gx-3 justify-content-around">
-                            <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                         @*    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                 <label asp-for="TotalRoundOff" class="form-label">RoundOff</label>
                                 <select class="form-select" asp-for="TotalRoundOff" asp-items="Model.YesNoList">
                                     <option value="">-Select-</option>
@@ -354,7 +358,7 @@
                             <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                 <label asp-for="TotalAmtAftrDiscount" class="form-label">Amt Aftr Discount</label>
                                 <input asp-for="TotalAmtAftrDiscount" class="form-control" readonly />
-                            </div>
+                            </div> *@
                             <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                 <label asp-for="NetTotal" class="form-label">Net Total</label>
                                 <input asp-for="NetTotal" class="form-control" readonly />
@@ -405,6 +409,7 @@
                     <partial name="_CreditNoteOtherDetail" />
                 </div>
 
+            </div>
             </div>
 
         </div>
@@ -496,9 +501,9 @@
 
 
             $('#SubVoucherName').change(function () {
-                 if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
+                if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
                     NewEntryId();
-                 }
+                }
             })
 
             $('#PartCode').select2();
@@ -514,7 +519,7 @@
             GetCostCenter();
             DueDateCalculation();
             FillSubVoucher();
-
+                 FillPopUpGridDetails($('#Mode').val());
             $('#GstRegUnreg').rules("remove", "required");
             $('#Transporter').rules("remove", "required");
             $('#HSNNo').rules("remove", "required");
@@ -668,7 +673,7 @@
 
                     if (result != null) {
                         var obj = $.parseJSON(result);
-                         
+
                         if (obj.Result != null) {
                             $('#SubVoucherName').empty();
                             $('#SubVoucherName').append('<option value="0">-Select-</option>');
@@ -1023,6 +1028,7 @@
                                     '<td id="poDate-' + i + '" class="hnPOfields">' + poDate + '</td>' +
                                     '<td id="poEntryId-' + i + '" class="hnPOfields">' + val.POEntryId + '</td>' +
                                     '<td id="poYearCode-' + i + '" class="hnPOfields">' + val.POYearcode + '</td>' +
+                                    '<td id="DocTypeAccountCode-' + i + '">' + val.DocTypeAccountCode + '</td>' +
                                     '</tr>';
                                 i++;
                             });
@@ -1091,11 +1097,90 @@
                 }
             });
         }
+        
         var billQty = 0;
         var billRate = 0;
+        var DocTypeAccountCode=0;
         var html = '';
         var popUpItems = [];
-        function FillDetailFromPopupGrid(e) {
+            function FillPopUpGridDetails(modeId) {
+                let html = '';
+                let billQty = 0;
+                let billRate = 0;
+                let j = 1;
+
+                if (modeId === 'U' || modeId === 'V') {
+
+                    // Get JSON from Razor model
+                    var data = @Html.Raw(Json.Serialize(Model.AccCreditNoteAgainstBillDetails));
+
+                    if (data && data.length > 0) {
+
+                        $.each(data, function (i, item) {
+                            // Clean up placeholder dates
+                            const formatDate = (d) => {
+                                if (!d || d === "01/01/1900 00:00:00") return "";
+                                return d.split(" ")[0]; // keep only date part
+                            };
+
+                                  html += '<tr id="CNPopUpDataRow-' + i + '" style="font-size: 12px;">' +
+            '<td>' + (i + 1) + '</td>' +
+            '<td id="partCode">' + (item.partCode || '') +
+                '<input type="hidden" id="popupItemCode-' + j + '" value="' + (item.itemCode || '') + '"/></td>' +
+            '<td id="popUpItemName">' + (item.itemName || '') + '</td>' +
+            '<td id="popUpsaleBillEntryId">' + (item.againstSaleBillEntryId || '') + '</td>' +
+            '<td id="popUpSaleBillYearCode">' + (item.againstSaleBillYearCode || '') + '</td>' +
+            '<td id="popUpSaleBillNo">' + (item.againstSaleBillBillNo || '') + '</td>' +
+            '<td id="popUpSaleBillDate">' + formatDate(item.againstSaleBillDate) + '</td>' +
+            '<td id="popUpPurchBillEntryId">' + (item.againstPurchaseBillEntryId || '') + '</td>' +
+            '<td id="popUpPurchBillYearCode">' + (item.againstPurchaseBillYearCode || '') + '</td>' +
+            '<td id="popUpInvoiceNo">' + (item.againstPurchaseBillBillNo || '') + '</td>' +
+            '<td id="popUpInvoiceDate">' + formatDate(item.againstPurchaseBillDate) + '</td>' +
+            '<td id="popUpINVNetAmt">' + (item.amount || 0) + '</td>' +
+            '<td id="popUpDueDate"></td>' +  // no matching field in model
+            '<td id="popUpPaidAmt"></td>' +  // no matching field in model
+            '<td id="popUpRemainingAmt"></td>' + // no matching field in model
+            '<td id="popUpBillQty">' + (item.billQty || 0) + '</td>' +
+            '<td id="popUpBillRate">' + (item.billRate || 0) + '</td>' +
+            '<td id="popUpItemAmount-' + i + '">' + (item.amount || 0) + '</td>' +
+            '<td id="popUpdisPer">' + (item.discountPer || 0) + '</td>' +
+            '<td id="popUpDisAmt">' + (item.discountAmt || 0) + '</td>' +
+            '<td id="popUpsono">' + (item.sono || '') + '</td>' +
+            '<td id="popUpcustOrderNo">' + (item.custOrderNo || '') + '</td>' +
+            '<td id="popUpsoDate">' + formatDate(item.soDate) + '</td>' +
+            '<td id="popUppono">' + (item.pono || '') + '</td>' +
+            '<td id="popUppoDate">' + formatDate(item.poDate) + '</td>' +
+            '<td id="popUppoEntryId">' + (item.poEntryId || '') + '</td>' +
+            '<td id="popUppoYearCode">' + (item.poYearCode || '') + '</td>' +
+            '<td id="popUpDocTypeAccountCode">' + (item.docAccountCode || '') + '</td>' +
+        '</tr>';
+
+
+                            // Accumulate totals
+                            billQty += parseFloat(item.billQty || 0);
+                            billRate += parseFloat(item.billRate || 0);
+                            j++;
+                        });
+
+                    } else {
+                        html = '<tr class="text-center"><td colspan="28" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
+                    }
+
+                    // Set totals in UI
+                    $('#BillQty').val(billQty.toFixed(2));
+                    $('#BillRate').val(billRate.toFixed(2));
+                    $('#RejectedQty').val($('#BillQty').val());
+                    $('#PRRate').val($('#BillRate').val());
+
+                    // Optional calculations if functions exist
+                    if (typeof CalculateItemAmount === "function") CalculateItemAmount();
+                    if (typeof BasicTotal === "function") BasicTotal();
+
+                    // Render the grid
+                       $('#divAddCreditNotePopupDataGrid').html(html);
+                }
+            }
+            function FillDetailFromPopupGrid(e) {
             let data = [];
             e.preventDefault();
             let rowCount = $('#divCreditNoteDataGrid tr').length;
@@ -1103,15 +1188,15 @@
                 let row = $('#CNPopUpRow-' + i);
                 if (row.length === 0) continue;
                 if ($('#chkCreditNote-' + i).is(':checked')) {
-                    
+
                     let dataObj = {
                         "CheckBoxNo": $('#chkCreditNote-' + i).val(),
                         "CreditNoteInvoiceNo": $('#CreditNoteEntryId').val() || "",
                         "CreditNoteVoucherNo": $('#CreditNoteVoucherNo').val() || "",
-                        "AgainstSaleBillBillNo": row.find('#SaleBillNo-'+i).text() || "",
-                        "AgainstSaleBillYearCode": row.find('#SaleBillYearCode-'+i).text() || "",
-                        "AgainstSaleBillDate": row.find('#SaleBillDate-'+i).text() || "",
-                        "AgainstSaleBillEntryId": row.find('#saleBillEntryId-'+i).text() || "",
+                        "AgainstSaleBillBillNo": row.find('#SaleBillNo-' + i).text() || "",
+                        "AgainstSaleBillYearCode": row.find('#SaleBillYearCode-' + i).text() || "",
+                        "AgainstSaleBillDate": row.find('#SaleBillDate-' + i).text() || "",
+                        "AgainstSaleBillEntryId": row.find('#saleBillEntryId-' + i).text() || "",
                         "AgainstSaleBillVoucherNo": row.find('#InvoiceNo-' + i).text() || "",
                         "SaleBillType": "",
                         "AgainstPurchaseBillBillNo": "",
@@ -1123,17 +1208,18 @@
                         "ItemCode": $('#ItemCode').val() || "",
                         "PartCode": $('#PartCode').find(':selected').text() !== '-Select-' ? $('#PartCode').find(':selected').text() : "",
                         "ItemName": $('#ItemName').find(':selected').text() !== '-Select-' ? $('#ItemName').find(':selected').text() : "",
-                        "BillQty": row.find('#BillQty-'+i).text() || "",
+                        "BillQty": row.find('#BillQty-' + i).text() || "",
                         "Unit": $('#Unit').val() || "",
-                        "BillRate": row.find('#BillRate-'+i).text() || "",
-                        "DiscountPer": row.find('#disPer-'+i).text() || "",
-                        "DiscountAmt": row.find('#DisAmt-'+i).text() || "",
+                        "BillRate": row.find('#BillRate-' + i).text() || "",
+                        "DiscountPer": row.find('#disPer-' + i).text() || "",
+                        "DiscountAmt": row.find('#DisAmt-' + i).text() || "",
                         "ItemSize": $('#ItemSize').val() || "",
-                        "Amount": $('#ItemAmount-'+i).val() || "",
-                        "PONO": row.find('#pono-'+i).text() || "",
-                        "PODate": row.find('#poDate-'+i).text() || "",
-                        "POEntryId": row.find('#poEntryId-'+i).text() || "",
-                        "POYearCode": row.find('#poYearCode-'+i).text() || "",
+                        "Amount": $('#ItemAmount-' + i).val() || "",
+                        "PONO": row.find('#pono-' + i).text() || "",
+                        "PODate": row.find('#poDate-' + i).text() || "",
+                        "POEntryId": row.find('#poEntryId-' + i).text() || "",
+                        "POYearCode": row.find('#poYearCode-' + i).text() || "",
+                        "DocAccountCode": row.find('#DocAccountCode-' + i).text() || "",
                         "PoRate": 0,
                         "PoAmmNo": "",
                         "SONO": "",
@@ -1167,6 +1253,7 @@
                             $('#billQty-' + i).text((obj.Result[i - 1].BillQty) == null ? 0 : (obj.Result[i - 1].BillQty).toFixed(2));
                             $('#discPer-' + i).text((obj.Result[i - 1].DiscountPer) == null ? 0 : (obj.Result[i - 1].DiscountPer).toFixed(2));
                             $('#billRate-' + i).text((obj.Result[i - 1].BillRate) == null ? 0 : (obj.Result[i - 1].BillRate).toFixed(2));
+                              $('#DocTypeAccountCode').text(obj.Result[i - 1]?.DocTypeAccountCode ?? 0);
                         }
 
                         if (obj.Result != null) {
@@ -1204,10 +1291,13 @@
                                         '<td id="popUppoDate">' + $('#poDate-' + i).text() + '</td>' +
                                         '<td id="popUppoEntryId">' + $('#poEntryId-' + i).text() + '</td>' +
                                         '<td id="popUppoYearCode">' + $('#poYearCode-' + i).text() + '</td>' +
+                                        '<td id="popUpDocTypeAccountCode">' + $('#DocTypeAccountCode-' + i).text() + '</td>' +
+
                                         '</tr>';
                                     j++;
                                     billQty += ($('#BillQty-' + i).text() == '' ? 0 : parseFloat($('#BillQty-' + i).text()));
                                     billRate += ($('#BillRate-' + i).text() == '' ? 0 : parseFloat($('#BillRate-' + i).text()));
+                                      DocTypeAccountCode =($('#DocTypeAccountCode-' + i).text());
                                 }
                             }
                             $('#addCreditNotePopupModel').modal("hide");
@@ -1220,7 +1310,7 @@
 
                         $('#BillQty').val(billQty.toFixed(2));
                         $('#BillRate').val(billRate.toFixed(2));
-
+                           $('#DocAccountCode').val(DocTypeAccountCode);
                         $('#RejectedQty').val($('#BillQty').val());
                         $('#CRNRate').val($('#BillRate').val());
                         CalculateItemAmount();
@@ -1241,7 +1331,7 @@
         });
 
         function ValidateGrid() {
-             
+
             var Err = 0;
 
             if ($('#PartCode').prop('selectedIndex') == 0) {
@@ -1311,15 +1401,57 @@
 
             return true;
         }
+            $('.ItemBtn').click(function (e) {
+            e.preventDefault();
+                  AddToItemsGrid(e);
+                       const currentItemCode = ($("#ItemCode").val() || "").trim();
 
-        $('.ItemBtn').click(function (e) {
+            if (isAddItem) {
+                if (isAddToPopgrid) {
+                                         $('#divAddCreditNotePopupDataGrid tr:hidden').remove();
+
+                      let existingRows = $('#divAddCreditNotePopupDataGrid').html() || "";
+                 if (popuphtml.trim() !== "") {
+                     html = existingRows + popuphtml;
+                 } else {
+                     html = existingRows;
+                 }
+                          $('#divAddCreditNotePopupDataGrid').empty();
+                         $('#divAddCreditNotePopupDataGrid').append(html);
+                      }
+
+                else {
+
+                       $('#divAddCreditNotePopupDataGrid tr').each(function (index) {
+                        const i = index + 1;
+                        const $row = $(this);
+                        const popupItemCode = ($row.find('#popupItemCode-' + i).val() || '').trim();
+
+                        // hide rows for current itemCode; show all others
+                        if (popupItemCode === currentItemCode) {
+                            $row.hide();
+                        } else {
+                            $row.show();
+                        }
+                    });
+
+
+                }
+                isAddToPopgrid =false;
+                // Always refresh totals
+                BasicItemGridTotal();
+                BasicTotal();
+            }
+        });
+
+     /*    $('.ItemBtn').click(function (e) {
 
             AddToItemsGrid(e);
             if (isAddItem) {
                 $('#divAddCreditNotePopupDataGrid').empty();
                 $('#divAddCreditNotePopupDataGrid').append(html);
             }
-        });
+        }); */
 
         $('#AddPopDataInGrid').click(function (e) {
 
@@ -1598,7 +1730,7 @@
                                 });
                                 if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
 
-                                    var AccountCode ="@Model.AccountCode";
+                                    var AccountCode = "@Model.AccountCode";
                                     $('#AccountCode').val(AccountCode).trigger("change");
                                 }
                             }
@@ -1698,6 +1830,20 @@
 
             $('#toBillDate').datepicker("option", "minDate", $('#fromBillDate').val());
         });
+
+        function PressBack() {
+            sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());
+            sessionStorage.setItem('ToDateBack', $('#ToDateBack').val());
+            sessionStorage.setItem('DashboardTypeBack', $('#DashboardTypeBack').val());
+            sessionStorage.setItem('GroupCodeBack', $('#GroupCodeBack').val());
+            sessionStorage.setItem('AccountCodeBack', $('#AccountCodeBack').val());
+            sessionStorage.setItem('AccountNameBack', $('#AccountNameBack').val());
+            sessionStorage.setItem('VoucherTypeBack', $('#VoucherTypeBack').val());
+            sessionStorage.setItem('AccountList', $('#AccountList').val());
+            sessionStorage.setItem('VoucherNoBack', $('#VoucherNoBack').val());
+
+            window.history.back();
+        }
 
         function GetServerDate() {
             $.ajax({

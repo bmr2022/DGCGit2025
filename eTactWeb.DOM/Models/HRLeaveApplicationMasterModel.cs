@@ -31,14 +31,16 @@ namespace eTactWeb.DOM.Models
         public string? Shift { get; set; }
         public decimal? TotalYearlyLeave { get; set; }
         public decimal? TotalMonthlyLeave { get; set; }
+        public decimal? totalpresentDaysTillYet { get; set; }
+        public decimal? totalpresentDaysinCurrentMonth { get; set; }
 
         public decimal? GrossSalary { get; set; }
         public decimal? BalanceMonthlyLeave { get; set; }
         public decimal? MaxAllowedLeave { get; set; }
         public string? TraineePermanent { get; set; }
         public decimal? BalanceAdvanceAmt { get; set; }
-        public int? DepartHeadApprovedBy { get; set; }
-        public int? HRApprovedBy { get; set; }
+        public string? DepartHeadApprovedBy { get; set; }
+        public string? HRApprovedBy { get; set; }
         public string? DepartAppdate { get; set; }
         public string? HRAppDate { get; set; }
         public int? ActualEntryBy { get; set; }
@@ -59,6 +61,7 @@ namespace eTactWeb.DOM.Models
         public string? LeaveName { get; set; }
         public string? FromDate { get; set; }
         public string? ToDate { get; set; }
+        public string? HalfDayFullDay { get; set; }
         public decimal? Duration { get; set; }
         public decimal? BalanceLeaveMonthly { get; set; }
         public decimal? BalanceLeaveYearly { get; set; }
@@ -96,8 +99,8 @@ namespace eTactWeb.DOM.Models
         public decimal? MaxAllowedLeave { get; set; }
         public string? TraineePermanent { get; set; }
         public decimal? BalanceAdvanceAmt { get; set; }
-        public int? DepartHeadApprovedBy { get; set; }
-        public int? HRApprovedBy { get; set; }
+        public string? DepartHeadApprovedBy { get; set; }
+        public string? HRApprovedBy { get; set; }
         public string? DepartAppdate { get; set; }
         public string? HRAppDate { get; set; }
         public int? ActualEntryBy { get; set; }

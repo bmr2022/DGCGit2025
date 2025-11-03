@@ -731,7 +731,7 @@
 
                     }).datepicker('show');
                 });
-                alert("entrydate1" + $('#EntryDate').val());
+               
                 var EntryDate = parseDateToFormat1($('#EntryDate').val());
                 var PODate = parseDateToFormat1($('#PODate').val());
                 var ScheduleDate = parseDateToFormat1($('#ScheduleDate').val());
@@ -745,7 +745,7 @@
                 $('#SchEffFromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", SchEffFromDate);
                 $('#SchEffTillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", SchEffTillDate);
                 $('#SchAmendmentDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", SchAmendmentDate);
-                alert("entrydate2" + $('#EntryDate').val());
+                
             }
             else {
 
@@ -1502,6 +1502,7 @@
 
         function ValidateSSGrid() {
             var Err = 0;
+            var mode = $('#Mode').val();
             if ($('#PartCode').prop('selectedIndex') == 0 || $('#ItemCode').prop('selectedIndex') == 0) {
                 AddErrorCls('PartCode'), AddErrorCls('ItemCode');
                 Err = 1;
@@ -1524,6 +1525,14 @@
             }
             else {
                 RemoveErrorCls('DeliveryDate');
+            }
+            if (mode === 'PSA') {
+                if ($('#Remarks').val().trim() === "") {
+                    AddErrorCls('Remarks');
+                    Err = 1;
+                } else {
+                    RemoveErrorCls('Remarks');
+                }
             }
             Err == 1 ? ShowErrorFld('H_Panel2') : HideErrorFld('H_Panel2');
             if (Err == 1) return false;

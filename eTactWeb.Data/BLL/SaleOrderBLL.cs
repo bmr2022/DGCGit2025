@@ -21,15 +21,22 @@ public class SaleOrderBLL : ISaleOrder
 	{
 		return await _SaleOrderDAL.GetSOItem(AccountCode, SONO, Year, ItemCode);
 	}
-
+    public async Task<ResponseResult> GetReportName()
+    {
+        return await _SaleOrderDAL.GetReportName();
+    }
+    public async Task<ResponseResult> AutoFillPARTYNAMELIST( string SearchAccount)
+    {
+        return await _SaleOrderDAL.AutoFillPARTYNAMELIST(SearchAccount);
+    }
     public async Task<ResponseResult> CheckOrderNo(int year, int accountcode, int entryid, string custorderno)
     {
         return await _SaleOrderDAL.CheckOrderNo( year,  accountcode,  entryid,  custorderno);
     }
 
-    public async Task<ResponseResult> DeleteByID(int ID, int YearCode, string Flag)
+    public async Task<ResponseResult> DeleteByID(int ID, int YearCode, string Flag, string EntryByMachineName, int AccountCode)
     {
-        return await _SaleOrderDAL.DeleteByID(ID, YearCode, Flag);
+        return await _SaleOrderDAL.DeleteByID(ID, YearCode, Flag, EntryByMachineName,  AccountCode);
     }
 
     public async Task<ResponseResult> GetAddress(string Code)
@@ -65,6 +72,10 @@ public class SaleOrderBLL : ISaleOrder
     {
         return await _SaleOrderDAL.NewAmmEntryId(YearCode);
     }
+    public async Task<ResponseResult> GetFeatureOption()
+    {
+        return await _SaleOrderDAL.GetFeatureOption();
+    }
     public async Task<SaleOrderDashboard> GetAmmDashboardData()
     {
         return await _SaleOrderDAL.GetAmmDashboardData();
@@ -97,6 +108,10 @@ public class SaleOrderBLL : ISaleOrder
     public async Task<ResponseResult> GetLockedYear(int YearCode)
     {
         return await _SaleOrderDAL.GetLockedYear(YearCode);
+    }
+    public async Task<SaleOrderModel> GetlastSaleOrderDetail(string EntryDate, int currentYearcode, int AccountCode, int ItemCode)
+    {
+        return await _SaleOrderDAL.GetlastSaleOrderDetail(EntryDate, currentYearcode, AccountCode, ItemCode);
     }
 
     public async Task<object> GetAmmStatus(int EntryID, int YearCode)

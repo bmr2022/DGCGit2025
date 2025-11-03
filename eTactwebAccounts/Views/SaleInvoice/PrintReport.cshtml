@@ -11,3 +11,50 @@
     </div>
 }
 
+
+
+<!-- Print Styles -->
+<style>
+    @@media print {
+        body * {
+            visibility: hidden;
+        }
+
+        .fr-container, .fr-container * {
+            visibility: visible;
+        }
+
+        .fr-container {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+        }
+    }
+</style>
+
+@section Scripts {
+    <script>
+        document.addEventListener("keydown", function (e) {
+            if (e.ctrlKey && e.key === "p") {
+                e.preventDefault();
+
+                // Find the "Print from browser" link inside FastReport toolbar
+                let link = document.querySelector(".fr-toolbar-item a[href*='preview.printReport']");
+                if (link) {
+                    // Open it in popup
+                    let printWindow = window.open(link.href, "_blank", "width=900,height=700");
+                    printWindow.focus();
+                    printWindow.onload = function () {
+                        printWindow.document.title = "Sale Bill Report";
+                        printWindow.print();
+                    };
+                } else {
+                    alert("FastReport print link not found.");
+                }
+            }
+        });
+    </script>
+}
+
+

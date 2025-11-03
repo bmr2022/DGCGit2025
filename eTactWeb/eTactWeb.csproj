@@ -63,7 +63,7 @@
 		<None Include="Views\Shared\_TaxNRGPGrid.cshtml">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
-		<None Include="Views\Home\Dashboard.cshtml">
+		<None Include="Views\Home\Dashboard1.cshtml">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
 		
@@ -89,7 +89,6 @@
 		<PackageReference Include="FastReport.OpenSource.Data.MsSql" Version="2021.4.0">
 		  <TreatAsUsed>true</TreatAsUsed>
 		</PackageReference>
-		<PackageReference Include="FastReport.OpenSource.Export.PdfSimple" Version="2023.2.25" />
 		<PackageReference Include="FastReport.OpenSource.Web" Version="2023.2.25" />
 		<PackageReference Include="Grpc.Core" Version="2.46.6" />
 		<PackageReference Include="MailKit" Version="4.12.1" />
@@ -105,10 +104,12 @@
 		<PackageReference Include="MimeKit" Version="4.12.0" />
 		<PackageReference Include="Moment.js" Version="2.29.4" />
 		<PackageReference Include="NtpClient" Version="1.0.14" />
+		<PackageReference Include="PDFsharp" Version="6.2.1" />
 		<PackageReference Include="Serilog.AspNetCore" Version="8.0.3" />
 		<PackageReference Include="Serilog.Extensions.Logging.File" Version="3.0.0" />
 		<PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
 		<PackageReference Include="System.Runtime.Caching" Version="7.0.0" />
+		<PackageReference Include="Westwind.AspNetCore.LiveReload" Version="0.5.2" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -129,6 +130,8 @@
 	  <ProjectReference Include="..\eTactWeb.DOM\eTactWeb.DOM.csproj" />
 	  <ProjectReference Include="..\eTactWeb.Services\eTactWeb.Services.csproj" />
 	  <ProjectReference Include="..\eTactwebAccounts\eTactwebAccounts.csproj" />
+	  <ProjectReference Include="..\eTactwebAdmin\eTactwebAdmin.csproj" />
+	  <ProjectReference Include="..\eTactwebBOT\eTactwebBOT.csproj" />
 	  <ProjectReference Include="..\eTactwebHR\eTactwebHR.csproj" />
 	  <ProjectReference Include="..\eTactwebInventory\eTactwebInventory.csproj" />
 	  <ProjectReference Include="..\eTactwebMasters\eTactwebMasters.csproj" />

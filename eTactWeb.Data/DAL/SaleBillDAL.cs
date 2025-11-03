@@ -75,6 +75,99 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
+        public async Task<ResponseResult> AutoFillitem(string Flag, string SearchPartCode)
+        {
+            var Result = new ResponseResult();
+
+            try
+            {
+                var SqlParams = new List<dynamic>();
+
+                SqlParams.Add(new SqlParameter("@Flag", Flag));
+              
+              
+                SqlParams.Add(new SqlParameter("@SearchPartCode", SearchPartCode ?? ""));
+
+
+                Result = await _IDataLogic.ExecuteDataTable("SP_SaleBillMainDetail", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return Result;
+        }
+        public async Task<SaleBillModel> GetlastBillDetail(string invoicedate, int currentYearcode, int AccountCode,int ItemCode)
+        {
+            var resultList = new SaleBillModel();
+            DataSet oDataSet = new DataSet();
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(DBConnectionString))
+                {
+                    SqlCommand command = new SqlCommand("AccGetLAstSaleBillAndCustomerOutstanding1", connection)
+                    {
+                        CommandType = CommandType.StoredProcedure
+                    };
+                    ;
+
+                    command.Parameters.AddWithValue("@Flag", "GetlastBillDetail");
+                   
+                    command.Parameters.AddWithValue("@AccountCode", AccountCode);
+                    command.Parameters.AddWithValue("@invoicedate", CommonFunc.ParseFormattedDate(invoicedate));
+                    command.Parameters.AddWithValue("@currentYearcode", currentYearcode);
+                    command.Parameters.AddWithValue("@ItemCode", ItemCode);
+                   
+
+
+                    await connection.OpenAsync();
+
+                    using (SqlDataAdapter dataAdapter = new SqlDataAdapter(command))
+                    {
+                        dataAdapter.Fill(oDataSet);
+                    }
+                }
+
+                if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                {
+                    resultList.ItemDetailGrid = (from DataRow row in oDataSet.Tables[0].Rows
+                                                 select new SaleBillDetail
+                                                 {
+                                                    
+
+                                                     BillNo = row["InvNo"] == DBNull.Value ? string.Empty : row["InvNo"].ToString(),
+
+
+                                                     BillDate = row["InvDate"] == DBNull.Value ? string.Empty : row["InvDate"].ToString(),
+                                                     CustomerName = row["Account_Name"] == DBNull.Value ? string.Empty : row["Account_Name"].ToString(),
+
+
+
+                                                    
+                                                     Qty = row["BillQty"] == DBNull.Value ? 0 : Convert.ToSingle(row["BillQty"]),
+                                                     Rate = row["BillRate"] == DBNull.Value ? 0 : Convert.ToSingle(row["BillRate"]),
+                                                     DiscountPer = row["DiscountPer"] == DBNull.Value ? 0 : Convert.ToSingle(row["DiscountPer"]),
+                                                     Amount = row["ItemAmount"] == DBNull.Value ? 0 : Convert.ToDecimal(row["ItemAmount"])
+                                                    
+
+
+                                                 }).ToList();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error fetching data.", ex);
+            }
+
+            return resultList;
+        }
+
+
         public async Task<SaleBillModel> ShowGroupWiseItems(int Group_Code, int AccountCode, int storeid, string GroupName, string ToDate, string FromDate, string PartCode)
         {
             var resultList = new SaleBillModel();
@@ -269,7 +362,7 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        public async Task<ResponseResult> ShowPendingSaleorderforBill(string Flag, int CurrentYear, string FromDate, string Todate, string InvoiceDate, int BillFromStoreId, int accountCode, string SONo, string PartCode)
+        public async Task<ResponseResult> ShowPendingSaleorderforBill(string Flag, int CurrentYear, string FromDate, string Todate, string InvoiceDate, int BillFromStoreId, int accountCode, string SONo, string PartCode, string CompanyType)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -295,8 +388,14 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@SONo", SONo));
                 SqlParams.Add(new SqlParameter("@partcode", PartCode));
                 
+                if(CompanyType=="Retailer")
 
-                _ResponseResult = await _IDataLogic.ExecuteDataSet("AccPendingSaleOrderForSalebill", SqlParams);
+                { _ResponseResult = await _IDataLogic.ExecuteDataSet("AccPendingSaleOrderForSalebillForRetailer", SqlParams); }
+                else
+                {
+                    _ResponseResult = await _IDataLogic.ExecuteDataSet("AccPendingSaleOrderForSalebill", SqlParams);
+                }
+               
             }
             catch (Exception ex)
             {
@@ -308,28 +407,18 @@ namespace eTactWeb.Data.DAL
         }
 
 
-        public async Task<ResponseResult> FILLPendingSONO(string Flag, int CurrentYear, string FromDate, string Todate, string InvoiceDate, int BillFromStoreId, int accountCode)
+        public async Task<ResponseResult> FILLPendingSONO()
         {
             var _ResponseResult = new ResponseResult();
             try
             {
                
-                var fromDt = CommonFunc.ParseFormattedDate(FromDate);
-                var toDt = CommonFunc.ParseFormattedDate(Todate);
-                var InvDate = CommonFunc.ParseFormattedDate(InvoiceDate);
-
+               
                 var SqlParams = new List<dynamic>();
-                SqlParams.Add(new SqlParameter("@Flag", Flag));
+               
                 SqlParams.Add(new SqlParameter("@DropDownFlag", "FILLSONO"));
                
-                SqlParams.Add(new SqlParameter("@FromDate", fromDt));
-                SqlParams.Add(new SqlParameter("@ToDate", toDt));
-                SqlParams.Add(new SqlParameter("@CurrentYear", CurrentYear));
-                SqlParams.Add(new SqlParameter("@InvoiceDate", InvDate));
-                SqlParams.Add(new SqlParameter("@BillFromStoreId", BillFromStoreId));
-                SqlParams.Add(new SqlParameter("@accountCode", accountCode));
-
-
+              
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("AccPendingSaleOrderForSalebill", SqlParams);
             }
             catch (Exception ex)
@@ -342,28 +431,18 @@ namespace eTactWeb.Data.DAL
         }
 
 
-        public async Task<ResponseResult> FillPendingPartCOde(string Flag, int CurrentYear, string FromDate, string Todate, string InvoiceDate, int BillFromStoreId, int accountCode)
+        public async Task<ResponseResult> FillPendingPartCOde()
         {
             var _ResponseResult = new ResponseResult();
             try
             {
 
-                var fromDt = CommonFunc.ParseFormattedDate(FromDate);
-                var toDt = CommonFunc.ParseFormattedDate(Todate);
-                var InvDate = CommonFunc.ParseFormattedDate(InvoiceDate);
-
+               
                 var SqlParams = new List<dynamic>();
-                SqlParams.Add(new SqlParameter("@Flag", Flag));
+               
                 SqlParams.Add(new SqlParameter("@DropDownFlag", "FILLPartCode"));
 
-                SqlParams.Add(new SqlParameter("@FromDate", fromDt));
-                SqlParams.Add(new SqlParameter("@ToDate", toDt));
-                SqlParams.Add(new SqlParameter("@CurrentYear", CurrentYear));
-                SqlParams.Add(new SqlParameter("@InvoiceDate", InvDate));
-                SqlParams.Add(new SqlParameter("@BillFromStoreId", BillFromStoreId));
-                SqlParams.Add(new SqlParameter("@accountCode", accountCode));
-
-
+                
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("AccPendingSaleOrderForSalebill", SqlParams);
             }
             catch (Exception ex)
@@ -417,7 +496,7 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
-        public async Task<ResponseResult> NewEntryId(int YearCode)
+        public async Task<ResponseResult> NewEntryId(int YearCode,string SubInvoicetype)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -426,7 +505,49 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "NewEntryId"));
                 SqlParams.Add(new SqlParameter("@YearCode", YearCode));
+                SqlParams.Add(new SqlParameter("@SubInvoicetype", SubInvoicetype));
                 SqlParams.Add(new SqlParameter("@SaleBillEntryDate", billDate));
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_SaleBillMainDetail", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+
+        public async Task<ResponseResult> GetCompanyType()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            { var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetCompanyType"));
+               
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("AccPendingSaleOrderForSalebillForRetailer", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+
+
+        public async Task<ResponseResult> EditableRateAndDiscountONSaleInvoice()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+               
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "EditableRateAndDiscountONSaleInvoice"));
+           
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_SaleBillMainDetail", SqlParams);
             }
             catch (Exception ex)
@@ -604,6 +725,11 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@ApprovedBy", model.ApprovedBy));
                 SqlParams.Add(new SqlParameter("@currencyId", model.currencyId));
                 SqlParams.Add(new SqlParameter("@ExchangeRate", model.ExchangeRate));
+                SqlParams.Add(new SqlParameter("@AdditionalDiscount", model.AdditionalDiscount));
+                SqlParams.Add(new SqlParameter("@PackingCharges", model.PackingCharges));
+                SqlParams.Add(new SqlParameter("@ForwardingCharges", model.ForwardingCharges));
+                SqlParams.Add(new SqlParameter("@CourieerCharges", model.CourieerCharges));
+                SqlParams.Add(new SqlParameter("@GST", model.GST));
                 SqlParams.Add(new SqlParameter("@TypeItemServAssets", model.TypeItemServAssets ?? string.Empty));
                 //SqlParams.Add(new SqlParameter("@CostCenterId", model.CostCenter));
                 SqlParams.Add(new SqlParameter("@Shippingdate", Shippingdate == default ? string.Empty : Shippingdate));
@@ -635,6 +761,15 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@SaleQuotNo", model.SaleQuotNo ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@SaleQuotEntryID", model.SaleQuotEntryID));
                 SqlParams.Add(new SqlParameter("@SaleQuotyearCode", model.SaleQuotyearCode));
+                SqlParams.Add(new SqlParameter("@PrivateMark", model.PrivateMark));
+                SqlParams.Add(new SqlParameter("@GRNo", model.GRNo));
+                SqlParams.Add(new SqlParameter("@AllowToAddNegativeStockInStore", model.AllowToAddNegativeStockInStore));
+                SqlParams.Add(new SqlParameter("@SubInvoicetype", model.SubInvoicetype));
+                if (model.AllowToAddNegativeStockInStore == "Y")
+                {
+                    SqlParams.Add(new SqlParameter("@SaleBillEntryFrom", "EntryFromCounter"));
+                }
+                SqlParams.Add(new SqlParameter("@GRDate",CommonFunc.ParseFormattedDate( model.GRDate)));
                 SqlParams.Add(new SqlParameter("@SaleQuotDate", SaleQuotDate == default ? string.Empty : SaleQuotDate));
                 //SqlParams.Add(new SqlParameter("@BooktrnsEntryId", model.SaleBillEntryId));
 
@@ -928,7 +1063,7 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        public async Task<ResponseResult> GetDashboardData(string summaryDetail, string partCode, string itemName, string saleBillno, string customerName, string sono, string custOrderNo, string schNo, string performaInvNo, string saleQuoteNo, string domensticExportNEPZ, string fromdate, string toDate)
+        public async Task<ResponseResult> GetDashboardData(string summaryDetail, string partCode, string itemName, string saleBillno, string customerName, string sono, string custOrderNo, string schNo, string performaInvNo, string saleQuoteNo, string domensticExportNEPZ,string SubInvoicetype, string fromdate, string toDate,string SaleBillEntryFrom)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -943,6 +1078,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@salebillno", saleBillno ?? ""));
                 SqlParams.Add(new SqlParameter("@customerName", customerName ?? ""));
                 SqlParams.Add(new SqlParameter("@SOno", sono));
+                SqlParams.Add(new SqlParameter("@SaleBillEntryFrom", SaleBillEntryFrom));
                 SqlParams.Add(new SqlParameter("@custOrderNo", custOrderNo ?? ""));
                 SqlParams.Add(new SqlParameter("@ScheduleNo", schNo ?? ""));
                 SqlParams.Add(new SqlParameter("@PerformaInvNo", performaInvNo ?? ""));
@@ -950,6 +1086,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@DomesticExportNEPZ", domensticExportNEPZ ?? ""));
                 SqlParams.Add(new SqlParameter("@FromDate", fromdate));
                 SqlParams.Add(new SqlParameter("@ToDate", toDate));
+                SqlParams.Add(new SqlParameter("@SubInvoicetype", SubInvoicetype));
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_SaleBillMainDetail", SqlParams);
             }
             catch (Exception ex)
@@ -1107,7 +1244,7 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        public async Task<ResponseResult> FillItems(string showAll, string TypeItemServAssets, string sbJobwok)
+        public async Task<ResponseResult> FillItems(string showAll, string TypeItemServAssets, string sbJobwok, string SearchItemCode, string SearchPartCode)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -1118,8 +1255,10 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@ShowAll", showAll));
                 SqlParams.Add(new SqlParameter("@TypeItemServAssets", TypeItemServAssets));
                 SqlParams.Add(new SqlParameter("@SaleBillJobwork", sbJobwok));
+                SqlParams.Add(new SqlParameter("@SearchItemCode", SearchItemCode));
+                SqlParams.Add(new SqlParameter("@SearchPartCode", SearchPartCode));
 
-                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_SaleBillMainDetail", SqlParams);
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_SaleBillMainDetail", SqlParams);
             }
             catch (Exception ex)
             {
@@ -1334,8 +1473,18 @@ namespace eTactWeb.Data.DAL
                 model.ChallanEntryid = Convert.ToInt32(DS.Tables[0].Rows[0]["ChallanEntryid"]);
                 model.BalanceSheetClosed = DS.Tables[0].Rows[0]["BalanceSheetClosed"]?.ToString();
                 model.SaleQuotNo = DS.Tables[0].Rows[0]["SaleQuotNo"]?.ToString();
+                model.PrivateMark = DS.Tables[0].Rows[0]["PrivateMark"]?.ToString();
+                model.GRNo = DS.Tables[0].Rows[0]["GRNo"]?.ToString();
+                model.SubInvoicetype = DS.Tables[0].Rows[0]["SubInvoicetype"]?.ToString();
+                model.GRDate = DS.Tables[0].Rows[0]["GRDate"]?.ToString();
                 model.SaleQuotEntryID = Convert.ToInt32(DS.Tables[0].Rows[0]["SaleQuotEntryID"]);
                 model.SaleQuotyearCode = Convert.ToInt32(DS.Tables[0].Rows[0]["SaleQuotyearCode"]);
+                model.AdditionalDiscount = DS.Tables[0].Rows[0]["additiondiscount"] == DBNull.Value ? 0 : Convert.ToDecimal(DS.Tables[0].Rows[0]["additiondiscount"]);
+                model.PackingCharges = DS.Tables[0].Rows[0]["PackingCharges"] == DBNull.Value ? 0 : Convert.ToDecimal(DS.Tables[0].Rows[0]["PackingCharges"]);
+                model.ForwardingCharges = DS.Tables[0].Rows[0]["ForwardingCharges"] == DBNull.Value ? 0 : Convert.ToDecimal(DS.Tables[0].Rows[0]["ForwardingCharges"]);
+                model.CourieerCharges = DS.Tables[0].Rows[0]["CourieerCharges"] == DBNull.Value ? 0 : Convert.ToDecimal(DS.Tables[0].Rows[0]["CourieerCharges"]);
+                model.GST = DS.Tables[0].Rows[0]["GST"] == DBNull.Value ? 0 : Convert.ToDecimal(DS.Tables[0].Rows[0]["GST"]);
+
                 model.SaleQuotDate = DS.Tables[0].Rows[0]["SaleQuotDate"]?.ToString();
 
                 //if (model.AttachmentFilePath1 != null)
@@ -1542,7 +1691,7 @@ namespace eTactWeb.Data.DAL
                             //AdjAgnstModeOfAdjstment = row["AccEntryId"]?.ToString(),
                             //AdjAgnstModeOfAdjstmentName = row["AccEntryId"]?.ToString(),
                             //AdjAgnstNewRefNo = row["AccEntryId"]?.ToString(),
-                            AdjAgnstVouchNo = row["VoucherNo"]?.ToString(),
+                            AdjAgnstVouchNo = row["AgainstVoucherNo"]?.ToString(),
                             AdjAgnstVouchType = row["VoucherType"]?.ToString(),
                             //AdjAgnstDrCrName = row["AccEntryId"]?.ToString(),
                             AdjAgnstDrCr = row["DR/CR"]?.ToString(),
@@ -1553,8 +1702,8 @@ namespace eTactWeb.Data.DAL
                             AdjAgnstOpenEntryID = row["AgainstAccOpeningEntryId"] != DBNull.Value ? Convert.ToInt32(row["AgainstAccOpeningEntryId"]) : 0,
                             AdjAgnstOpeningYearCode = row["AgainstOpeningVoucheryearcode"] != DBNull.Value ? Convert.ToInt32(row["AgainstOpeningVoucheryearcode"]) : 0,
                             AdjAgnstVouchDate = row["voucherDate"] != DBNull.Value ? Convert.ToDateTime(row["voucherDate"]) : new DateTime(),
-                            AdjAgnstAccEntryID = row["AccEntryId"] != DBNull.Value ? Convert.ToInt32(row["AccEntryId"]) : 0,
-                            AdjAgnstAccYearCode = row["AccYearCode"] != DBNull.Value ? Convert.ToInt32(row["AccYearCode"]) : 0
+                            AdjAgnstAccEntryID = row["AgainstAccEntryId"] != DBNull.Value ? Convert.ToInt32(row["AgainstAccEntryId"]) : 0,
+                            AdjAgnstAccYearCode = row["AgainstVoucheryearcode"] != DBNull.Value ? Convert.ToInt32(row["AgainstVoucheryearcode"]) : 0
                             //AdjAgnstTransType = row["AccEntryId"]?.ToString()
                         });
                         cnt1++;

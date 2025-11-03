@@ -360,10 +360,16 @@ namespace eTactWeb.Data.DAL
                 model.CntPlanEntryId = Convert.ToInt32(DS.Tables[0].Rows[0]["CntPlanEntryId"].ToString());
                 model.Yearcode = Convert.ToInt32(DS.Tables[0].Rows[0]["CntPlanYearCode"].ToString());
                 model.Control_PlanNo = DS.Tables[0].Rows[0]["ControlPlanNo"].ToString();
-                model.Entry_Date = DS.Tables[0].Rows[0]["CntPlanEntryDate"].ToString();
+                //model.Entry_Date = DS.Tables[0].Rows[0]["CntPlanEntryDate"].ToString();
+                model.Entry_Date = Convert.ToDateTime(DS.Tables[0].Rows[0]["CntPlanEntryDate"])
+                          .ToString("dd/MM/yyyy");
+
+                model.EffectiveDate = Convert.ToDateTime(DS.Tables[0].Rows[0]["CntPlanEntryDate"])
+                                        .ToString("dd/MM/yyyy");
+
 
                 model.RevNo = DS.Tables[0].Rows[0]["RevNo"].ToString();
-                model.EffectiveDate = DS.Tables[0].Rows[0]["CntPlanEntryDate"].ToString();
+               // model.EffectiveDate = DS.Tables[0].Rows[0]["CntPlanEntryDate"].ToString();
                 //model.PartCode = DS.Tables[0].Rows[0]["Item_Name"].ToString();
                 //model.ItemName = DS.Tables[0].Rows[0]["Item_Name"].ToString();
 
@@ -421,6 +427,85 @@ namespace eTactWeb.Data.DAL
                 throw;
             }
         }
+        private static ControlPlanModel PrepareViewDashBoard(DataSet DS, ref ControlPlanModel? model)
+        {
+            try
+            {
+                var ItemList = new List<ControlPlanDetailModel>();
+                var DetailList = new List<ControlPlanModel>();
+                DS.Tables[0].TableName = "ControlPlan";
+                DS.Tables[1].TableName = "ControlPlanDetail";
+                int cnt = 0;
+
+                model.CntPlanEntryId = Convert.ToInt32(DS.Tables[0].Rows[0]["CntPlanEntryId"].ToString());
+                model.Yearcode = Convert.ToInt32(DS.Tables[0].Rows[0]["CntPlanYearCode"].ToString());
+                model.Control_PlanNo = DS.Tables[0].Rows[0]["ControlPlanNo"].ToString();
+                //model.Entry_Date = DS.Tables[0].Rows[0]["CntPlanEntryDate"].ToString();
+                model.Entry_Date = Convert.ToDateTime(DS.Tables[0].Rows[0]["CntPlanEntryDate"])
+                          .ToString("dd/MM/yyyy");
+
+                model.EffectiveDate = Convert.ToDateTime(DS.Tables[0].Rows[0]["CntPlanEntryDate"])
+                                        .ToString("dd/MM/yyyy");
+
+
+                model.RevNo = DS.Tables[0].Rows[0]["RevNo"].ToString();
+               // model.EffectiveDate = DS.Tables[0].Rows[0]["CntPlanEntryDate"].ToString();
+                //model.PartCode = DS.Tables[0].Rows[0]["Item_Name"].ToString();
+                //model.ItemName = DS.Tables[0].Rows[0]["Item_Name"].ToString();
+
+              
+                model.ImageURL = DS.Tables[0].Rows[0]["DrawingNoImagePath"].ToString();
+                model.ItemImageURL = DS.Tables[0].Rows[0]["ItemimagePath"].ToString();
+                model.DrawingNo = DS.Tables[0].Rows[0]["DrawingNo"].ToString();
+
+                model.ActualEntryByName = DS.Tables[0].Rows[0]["ActualEmployee"].ToString();
+                model.ActualEntryDate = DS.Tables[0].Rows[0]["ActualEntryDate"] != DBNull.Value ? Convert.ToDateTime(DS.Tables[0].Rows[0]["ActualEntryDate"]).ToString("dd/MM/yyyy") : string.Empty;
+                model.CC = DS.Tables[0].Rows[0]["CC"].ToString();
+                model.EntryByMachine = DS.Tables[0].Rows[0]["EntryByMachine"].ToString();
+
+                model.LastUpdatedByName = DS.Tables[0].Rows[0]["UpdatedByEmployee"].ToString();
+                model.LastUpdationDate = DS.Tables[0].Rows[0]["LastUpdationDate"] != DBNull.Value ? Convert.ToDateTime(DS.Tables[0].Rows[0]["LastUpdationDate"]).ToString("dd/MM/yyyy") : string.Empty;
+                //model.UpdationDate = DS.Tables[0].Rows[0]["UpdationDate"] != DBNull.Value? Convert.ToDateTime(DS.Tables[0].Rows[0]["UpdationDate"]).ToString("dd/MM/yyyy"): string.Empty;
+
+                if (DS.Tables.Count != 0 && DS.Tables[1].Rows.Count > 0)
+                {
+                    foreach (DataRow row in DS.Tables[1].Rows)
+                    {
+                        ItemList.Add(new ControlPlanDetailModel
+                        {
+                            CntPlanEntryId = Convert.ToInt32(row["CntPlanEntryId"].ToString()),
+                            CntPlanYearCode = Convert.ToInt32(row["CntPlanYearCode"].ToString()),
+                            SeqNo = Convert.ToInt32(row["SeqNo"].ToString()),
+                            Characteristic = row["Characteristic"].ToString(),
+                            EvalutionMeasurmentTechnique = row["EvalutionMeasurmentTechnique"].ToString(),
+                            SpecificationFrom = row["SpecificationFrom"].ToString(),
+                            Operator = row["Operator"].ToString(),
+                            SpecificationTo = row["SpecificationTo"].ToString(),
+                            FrequencyofTesting = row["FrequencyofTesting"].ToString(),
+                            InspectionBy = row["InspectionBy"].ToString(),
+                            ControlMethod = row["ControlMethod"].ToString(),
+                            RejectionPlan = row["RejectionPlan"].ToString(),
+                            Remarks = row["Remarks"].ToString(),
+                            //ItemImageURL = row["ItemimagePath"].ToString(),
+                            //DrawingNo = row["DrawingNo"].ToString(),
+                            //ImageURL = row["DrawingNoImagePath"].ToString(),
+                         
+
+
+                        });
+                    }
+                    model.DTSSGrid = ItemList;
+                    model.ImageURL = DS.Tables[0].Rows[0]["DrawingNoImagePath"].ToString();
+                    model.ItemImageURL = DS.Tables[0].Rows[0]["ItemimagePath"].ToString();
+                }
+                return model;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
         public async Task<ControlPlanModel> GetByItemOrPartCode(int ItemCode)
         {
             var model = new ControlPlanModel();
@@ -440,7 +525,7 @@ namespace eTactWeb.Data.DAL
 
                 if (_ResponseResult.Result != null && _ResponseResult.StatusCode == HttpStatusCode.OK && _ResponseResult.StatusText == "Success")
                 {
-                    PrepareView(_ResponseResult.Result, ref model);
+                    PrepareViewDashBoard(_ResponseResult.Result, ref model);
                 }
             }
             catch (Exception ex)

@@ -48,35 +48,11 @@
                                 <input asp-for="Account_Name" class="form-control" value="@Model.Account_Name" />
                             </div>
                             <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                <label asp-for="Parent_Account_Code" class="form-label">Parent Group</label>
-                                <select asp-for="Account_Code" id="Account_Code" class="form-control">
-                                    <option value="@Model.Account_Code">-Select-</option>
-                                    @if (Model.Mode == "U" || Model.Mode == "V")
-                                    {
-                                        <option value="@Model.Account_Code" selected>@Model.Parent_Account_Code</option>
-                                    }
-                                </select>
+                                <label asp-for="ParentAccountName" class="form-label">Parent Group</label>
+                                <input asp-for="ParentAccountName" class="form-control" value="@Model.ParentAccountName" />
                             </div>
-                            <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                <label asp-for="Main_Group" class="form-label">Main Group </label>
-                                <input id="Main_Group" type="text" asp-for="Main_Group" class="form-control" readonly />
-                                <span asp-validation-for="Main_Group" class="text-danger"></span>
-                            </div>
-                            <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                <label asp-for="SubGroup" class="form-label">Sub Group </label>
-                                <input id="SubGroup" type="text" asp-for="SubGroup" class="form-control" readonly />
-                                <span asp-validation-for="SubGroup" class="text-danger"></span>
-                            </div>
-                            <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                <label asp-for="SubSubGroup" class="form-label">Sub Sub Group </label>
-                                <input id="SubSubGroup" type="text" asp-for="SubSubGroup" class="form-control" readonly />
-                                <span asp-validation-for="SubSubGroup" class="text-danger"></span>
-                            </div>
-                            <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                <label asp-for="UnderGroup" class="form-label">Under Group  </label>
-                                <input id="UnderGroup" type="text" asp-for="UnderGroup" class="form-control" readonly />
-                                <span asp-validation-for="UnderGroup" class="text-danger"></span>
-                            </div>
+
+                           
 
                            
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -85,7 +61,7 @@
                                 <input type="text" class="form-control" asp-for="Searchbox" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
                             </div>
                             <div class=" d-flex justify-content-center mt-3 col-sm-5 col-md-8 col-lg-6 col-xl-4" width="inherit">
-                                <button class="btn btn-sm btn-outline-info" type="button" style="padding:0px;height:30px;width:100px;" onclick="GetSearchData();">
+                                <button class="btn btn-sm btn-outline-info" type="button" style="padding:0px;height:30px;width:100px;" onclick="GetDetailData();">
                                     <i class="fa-solid fa-magnifying-glass fa-fw fa-lg"></i>SEARCH
                                 </button>
                                 <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
@@ -237,19 +213,15 @@
                 $('#totalRows').text(dashGrid);
             }
 
+            var CurrentDate = new Date();
+
             var currentDate = new Date();
-
             var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-            // function formatDate(date) {
-            //     var day = ("0" + date.getDate()).slice(-2);
-            //     var month = ("0" + (date.getMonth() + 1)).slice(-2);
-            //     var year = date.getFullYear();
-            //     var dateString = day + "/" + month + "/" + year;
-            //     return dateString;
+            $('#FromDate').datepicker({ dateFormat: 'dd/M/yy' }).datepicker("setDate", formatDate1(firstDayOfMonth));
+            $('#ToDate').datepicker({
+                dateFormat: 'dd/M/yy'
+            }).datepicker("setDate", new Date());
 
-            // }
-            $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatDate(firstDayOfMonth));
-            $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
 
             // AutoComplete('gateDashboardtable', 'SrNO', 'SrNO', null);
             // AutoComplete('VAccLedgerOpening', 'LedgerName', 'LedgerName', null);
@@ -285,8 +257,8 @@
                 var convertedToDateText = day.toString().padStart(2, '0') + '/' + month.toString().padStart(2, '0') + '/' + year;
 
 
-                $('#FromDate').val(convertedFromDateText);
-                $('#ToDate').val(convertedToDateText);
+                //$('#FromDate').val(convertedFromDateText);
+                //$('#ToDate').val(convertedToDateText);
 
             }
         });

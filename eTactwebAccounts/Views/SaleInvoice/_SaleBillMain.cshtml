@@ -18,18 +18,18 @@
 </style>
 <div class="accordion-body">
     <div class="row g-2 gx-3">
-        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12  SaleBillEntryDetail">
             <input type="hidden" asp-for="FinFromDate" />
             <input type="hidden" asp-for="FinToDate" />
             <input type="hidden" id="GSTRegistered" value="" />
             <label asp-for="SaleBillEntryId" class="form-label">Entry ID</label>
             <input asp-for="SaleBillEntryId" class="form-control" readonly />
         </div>
-        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 SaleBillEntryDetail">
             <label asp-for="SaleBillYearCode" class="form-label">YearCode</label>
             <input asp-for="SaleBillYearCode" class="form-control" value="@Model.SaleBillYearCode" readonly />
         </div>
-        <div class="col-xxl-1 col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <div class="col-xxl-1 col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12 SaleBillEntryDetail">
             <label asp-for="SaleBillEntryDate" class="form-label">EntryDate</label>
             <input asp-for="SaleBillEntryDate" class="form-control" readonly />
         </div>
@@ -50,15 +50,15 @@
             <input asp-for="InvoiceTime" type="time" tabindex="7" class="form-control" />
         </div>
 
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 SaleBillEntryDetail">
             <label asp-for="RemovalDate" class="form-label">Removal Dt.</label>
             <input asp-for="RemovalDate" class="form-control" readonly />
         </div>
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 SaleBillEntryDetail">
             <label asp-for="RemovalTime" class="form-label">Time</label>
             <input asp-for="RemovalTime" type="time" class="form-control" />
         </div>
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 SaleBillEntryDetail">
             <label asp-for="SaleBillJobwork" class="form-label">Bill Type</label>
             <select asp-for="SaleBillJobwork" class="form-control">
                 <option value="">-select-</option>
@@ -66,7 +66,18 @@
                 <option value="J">SaleBill JobWork</option>
             </select>
         </div>
-        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+            <label asp-for="SubInvoicetype" class="form-label">Invoice Type</label>
+            <select asp-for="SubInvoicetype" class="form-control" onchange="NewEntryId()">
+                <option value="">-select-</option>
+                <option value="SALE BILL" selected>SALE BILL</option>
+                <option value="ACCURATE SALE">ACCURATE SALE</option>
+                <option value="OUTSTATION SALE">OUTSTATION SALE</option>
+            </select>
+        </div>
+
+      @*   <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
             <label asp-for="AccountCode" class="form-label" style="color: red;">Customer Name*</label>
             <div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
                 <input asp-for="PN1" class="form-check-input" type="checkbox" role="switch" />Show All
@@ -78,28 +89,41 @@
             {
                 <input type="hidden" asp-for="AccountCode" id="hiddenAccountCode" />
             }
+        </div> *@
+        <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+            <label asp-for="AccountCode" class="form-label" style="color:  red;">Customer Name</label>
+            <div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
+                <input asp-for="PN1" class="form-check-input" type="checkbox" role="switch" />Show All
+            </div>
+            @*   <select class="form-select" asp-for="AccountCode" asp-items="@(new SelectList(Model.AccountList,"Value","Text"))">
+                                            <option value="">-Select-</option>
+                                        </select> *@
+            <input type="text" asp-for="AccountName" id="AccountCodeText" class="form-control" value="@Model.AccountName" placeholder="Type Item Name..." />
+            <input type="hidden" asp-for="AccountCode" id="AccountCode" />
+            <input type="hidden" value="@Model.AccountCode" id="hiddenAccountCode" />
         </div>
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 SaleBillCustomerDetail">
             <label asp-for="GSTNO" class="form-label" style="color: blue;">GST No</label>
             <input asp-for="GSTNO" class="form-control" />
         </div>
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 SaleBillCustomerDetail">
             <label asp-for="StateNameofSupply" class="form-label">State </label>
             <input asp-for="StateNameofSupply" class="form-control" readonly />
         </div>
-        <div class="col-xl-3 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-3 col-lg-2 col-md-6 col-sm-6 col-xs-12 SaleBillCustomerDetail">
             <label asp-for="CustAddress" class="form-label" style="color: red;">Cust Address*</label>
             <input asp-for="CustAddress" class="form-control" />
         </div>
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 SaleBillCustomerDetail">
             <label asp-for="StateCode" class="form-label" style="color: red;">State Code*</label>
             <input asp-for="StateCode" class="form-control" readonly />
         </div>
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 SaleBillCustomerDetail">
             <label asp-for="CityofSupply" class="form-label">City </label>
             <input asp-for="CityofSupply" class="form-control" readonly />
         </div>
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 SaleBillCustomerDetail">
             <label asp-for="CountryOfSupply" class="form-label">Country </label>
             <input asp-for="CountryOfSupply" class="form-control" readonly />
         </div>
@@ -128,22 +152,36 @@
         </div>
         <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
             <label asp-for="TransportModeBYRoadAIR" class="form-label"> Mode</label>
-            <select asp-for="TransportModeBYRoadAIR" class="form-control">
+            <input asp-for="TransportModeBYRoadAIR" class="form-control" />
+          @*   <select asp-for="TransportModeBYRoadAIR" class="form-control">
                 <option value="0">-Select-</option>
                 <option value="Road">Road</option>
                 <option value="Air">Air</option>
-            </select>
+            </select> *@
         </div>
 
+         <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+            <label asp-for="PrivateMark" class="form-label">PrivateMark</label>
+            <input asp-for="PrivateMark" class="form-control" />
+        </div>
+         <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+            <label asp-for="GRNo" class="form-label">GRNo</label>
+            <input asp-for="GRNo" class="form-control" />
+        </div>
         <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+            <label asp-for="GRDate" class="form-label">GRDate</label>
+            <input asp-for="GRDate" class="form-control" />
+        </div>
+
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 SaleBillOtherRequiredDetail">
             <label asp-for="DispatchTo" class="form-label">Dispatch To</label>
             <input asp-for="DispatchTo" class="form-control" />
         </div>
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 SaleBillOtherRequiredDetail">
             <label asp-for="DispatchThrough" class="form-label">Dispatch Thr</label>
             <input asp-for="DispatchThrough" class="form-control" />
         </div>
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 SaleBillCurrency">
             <label asp-for="DomesticExportNEPZ" class="form-label" style="color: red;">Dom/Exp*</label>
             <select asp-for="DomesticExportNEPZ" class="form-control">
                 <option value="DOMESTIC">Domestic</option>
@@ -151,7 +189,7 @@
             </select>
         </div>
 
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 SaleBillCurrency">
             <label asp-for="SupplyType" class="form-label">Supply Type</label>
           @*  <input asp-for="SupplyType" class="form-control" />*@
             <select asp-for="SupplyType" class="form-control" id="SupplyType">
@@ -182,18 +220,18 @@
         <input asp-for="PaymentTerm" class="form-control" />
         </div> *@
 
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 SaleBillOtherRequiredDetail">
             <label asp-for="TypeJob" class="form-label">Type of Job</label>
             <input asp-for="TypeJob" class="form-control" />
         </div>
 
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 SaleBillCurrency">
             <label asp-for="currencyId" class="form-label" style="color: red;">Currency*</label>
             <select asp-for="currencyId" class="form-control">
                 <option value="0">-Select-</option>
             </select>
         </div>
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 SaleBillCurrency">
             <label asp-for="ExchangeRate" class="form-label">FX Rate</label>
             <input asp-for="ExchangeRate" class="form-control" />
         </div>
@@ -206,21 +244,21 @@
                 <option value="A">Assets</option>
             </select>
         </div>
-        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12 SaleBillOtherRequiredDetail">
             <label asp-for="dispatchLocation" class="form-label">Dispatch Location</label>
             <input asp-for="dispatchLocation" class="form-control" />
         </div>
-        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12 SaleBillConsignee">
             <label asp-for="ConsigneeAccountcode" class="form-label">Consignee Name</label>
             <div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
                 <input asp-for="PNConsingee" class="form-check-input" type="checkbox" role="switch" />Show All
             </div>
-            <select asp-for="ConsigneeAccountcode" class="form-control">
+            <select asp-for="ConsigneeAccountcode" class="form-control ">
                 <option value="0">-Select-</option>
             </select>
             <input type="hidden" value="@Model.ConsigneeAccountcode" id="hiddenConsigneeAC" />
         </div>
-        <div class="col-xl-3 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-3 col-lg-2 col-md-6 col-sm-6 col-xs-12 SaleBillConsignee">
             <label asp-for="ConsigneeAddress" class="form-label">Consignee Address</label>
             <input asp-for="ConsigneeAddress" class="form-control" />
         </div>

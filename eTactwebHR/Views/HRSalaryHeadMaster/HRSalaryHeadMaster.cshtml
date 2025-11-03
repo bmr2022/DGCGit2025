@@ -1,0 +1,1410 @@
+﻿@model eTactWeb.DOM.Models.HRSalaryHeadMasterModel
+
+@{
+    ViewData["Title"] = "HRSalaryHeadMaster";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+
+<div class="rounded shadow-lg">
+    @* <partial name="_ItemDetailConfirmation" /> *@
+
+    <form asp-action="HRSalaryHeadMaster" enctype="multipart/form-data" autocomplete="off" class="form-horizontal" method="post">
+        @Html.AntiForgeryToken()
+        @* <input type="hidden" asp-for="Act">
+        <input type="hidden" asp-for="ImageURL"> *@
+        <input type="hidden" asp-for="Mode">
+        <div class="card border-light bg-gradient rounded shadow-lg">
+            <div class="card-header card-headerBG text-light justify-content-center bg-gradient">
+                <h4>
+                    @*@ViewData["Title"] - @Model.YearCode *@
+                    Salary Head Master
+                    <span class="d-flex float-end" style="margin-top:-2px;">
+                        <a asp-action="DashBoard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                            <i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
+                            Dashboard
+                        </a>
+                        <div class="row justify-content-between g-2">
+                            <div class="col-auto">
+                                @*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
+                                <a href="#" class=" btn btn-primary btn-sm" onclick="back();">
+                                    <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+
+                                    BACK
+                                </a>
+                            </div>
+                            @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+                            {
+                                <div class="col-auto">
+                                    @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                                    <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                        @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                        <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                        REFRESH
+                                    </a>
+                                </div>
+                                @if (Model.Mode == "U")
+                                {
+                                    @*Model.Mode = "U";*@
+                                    <div class="col-auto">
+                                        @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+                                        <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton" onclick="validateAmounts()">
+                                            <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                            UPDATE
+                                        </button>
+                                    </div>
+                                }
+
+                                else
+                                {
+                                    <div class="col-auto">
+                                        @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
+                                        <button type="submit" class="btn btn-primary btn-sm submitBTN" id="submitBTN" onclick="validateAmounts()">
+                                            <i class="fa-solid fa-chevron-circle-right fa-fw fa-lg"></i>
+                                            SUBMIT
+                                        </button>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </span>
+                </h4>
+            </div>
+        </div>
+        @*<div asp-validation-summary="All" class="text-danger"></div>*@
+        <span id="TempError" style="display:none;">@ViewBag.Error</span>
+        <div id="ErrorDiv" class="text-danger"></div>
+
+        <div class="card rounded shadow-lg">
+            <div class="card-body bg-light">
+                <div class="accordion shadow-lg" id="accordionAccountMaster">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="H_BasicInformation">
+                        <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_BasicInformation" aria-expanded="true" aria-controls="B_BasicInformation">
+                            <strong style="text-transform:uppercase"><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Basic Information </strong>
+                        </button>
+                    </h2>
+                    <div id="B_BasicInformation" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_BasicInformation">
+                        <div class="accordion-body">
+                            <div class="row g-3">
+                                <div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    @* <input type="hidden" asp-for="FinFromDate" value="@Model.FinFromDate" />
+                                    <input type="hidden" asp-for="FinToDate" value="@Model.FinToDate" /> *@
+                                    <label asp-for="SalHeadEntryId" class="form-label">Entry Id</label> 
+                                    <input asp-for="SalHeadEntryId" class="form-control" value="@Model.SalHeadEntryId" readonly />
+                
+                                </div>
+                                <div class="col-xl-1 col-sm-2 col-md-2 col-xs-16">
+                                    <label asp-for="SalHeadEntryDate" class="form-label">Entry Date</label>
+                                        <input asp-for="SalHeadEntryDate" class="form-control"  readonly />
+                                </div>
+
+
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="SalaryHead" class="form-label" style="color:red;">Head Name<span><label class="mandatoryField">*</label></span></label>
+                                    <input asp-for="SalaryHead" class="form-control" value="@Model.SalaryHead"  />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="SalaryCode" class="form-label">Code</label>
+                                    <input asp-for="SalaryCode" class="form-control" value="@Model.SalaryCode" />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="SalHeadEffectiveDate" class="form-label">Eff Date</label>
+                                    <input asp-for="SalHeadEffectiveDate" class="form-control"  />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label id="Types" class="form-label" style="color:red;">Type Of Salary Head<span><label class="mandatoryField">*</label></span></label>
+                                    <select asp-for="TypeOfSalary" class="form-control">
+                                        @* <option value="@Model.AccountCode">-Select-</option> *@
+                                       @*  <option value="@Model.TypeOfSalary">-Select-</option> *@
+                                        @if (Model.Mode == "U" || Model.Mode == "V")
+                                        {
+                                            <option value="@Model.TypeOfSalary" selected>@Model.TypeOfSalary</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="ShortForm" class="form-label">Short Name</label>
+                                    <input asp-for="ShortForm" class="form-control" value="@Model.ShortForm" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label id="Types" class="form-label" style="color:red;">Calculation Type</label>
+                                    <select asp-for="CalculationType" class="form-control">
+                                        @* <option value="@Model.AccountCode">-Select-</option> *@
+                                      @*   <option value="@Model.CalculationType">-Select-</option> *@
+                                        @if (Model.Mode == "U" || Model.Mode == "V")
+                                        {
+                                            <option value="@Model.CalculationType" selected>@Model.CalculationType</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label id="Types" class="form-label" style="color:red;">Part Of GrossBasic<span><label class="mandatoryField">*</label></span></label>
+                                    <select asp-for="PartOfGrossBasic" class="form-control">
+                                        @* <option value="@Model.AccountCode">-Select-</option> *@
+                                        <option value="@Model.PartOfGrossBasic">-Select-</option>
+                                        @if (Model.Mode == "U" || Model.Mode == "V")
+                                        {
+                                            <option value="@Model.PartOfGrossBasic" selected>@Model.PartOfGrossBasic</option>
+                                        }
+                                    </select>
+                                </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="PartOfPayslip" class="form-label">PartOfPayslip</label>
+                                        <select asp-for="PartOfPayslip" class="form-select" >
+                                            <option value="" disabled>-Select-</option>
+                                            <option value="YES" selected>YES</option>
+                                            <option value="NO">NO</option>
+
+                                        </select>
+                                    </div>
+
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="Currency" class="form-label">Currency </label>
+                                    <input asp-for="CurrencyId" class="form-control" type="hidden" value="@Model.CurrencyId" />
+                                    <select asp-for="Currency" class="form-control">
+                                        @* <option value="@Model.AccountCode">-Select-</option> *@
+                                        <option value="@Model.CurrencyId">-Select-</option>
+                                        @if (Model.Mode == "U" || Model.Mode == "V")
+                                        {
+                                            <option value="@Model.CurrencyId" selected>@Model.Currency</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="SalaryPaymentMode" class="form-label">Type Of Salary Mode </label>
+                
+                                    <select asp-for="SalaryPaymentMode" class="form-control">
+                                        @* <option value="@Model.AccountCode">-Select-</option> *@
+                                        <option value="@Model.SalaryPaymentMode">-Select-</option>
+                                        @if (Model.Mode == "U" || Model.Mode == "V")
+                                        {
+                                            <option value="@Model.SalaryPaymentMode" selected>@Model.SalaryPaymentMode</option>
+                                        }
+                                    </select>
+                                </div>
+
+                
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="H_CalculationDetail">
+                        <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_CalculationDetail" aria-expanded="true" aria-controls="B_BasicInformation">
+                            <strong style="text-transform:uppercase"><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Calculation Detail </strong>
+                        </button>
+                    </h2>
+                    <div id="B_CalculationDetail" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_CalculationDetail">
+                        <div class="accordion-body">
+                            <div class="row g-3">
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="AmountOrPercentage" class="form-label">Amount/Pecentage </label>
+
+                                        <select asp-for="AmountOrPercentage" class="form-control" onchange="toggleTextbox()">
+                                        @* <option value="@Model.AccountCode">-Select-</option> *@
+                                        <option value="@Model.AmountOrPercentage">-Select-</option>
+                                        @if (Model.Mode == "U" || Model.Mode == "V")
+                                        {
+                                            <option value="@Model.AmountOrPercentage" selected>@Model.AmountOrPercentage</option>
+                                        }
+                                    </select>
+                                </div>
+
+
+
+                                <div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                   
+                                    <label asp-for="CalculationPercentage" class="form-label">Percentage</label>
+                                        <input asp-for="CalculationPercentage" class="form-control numbers" value="@Model.CalculationPercentage" />
+
+                                </div>
+                                <div class="col-xl-1 col-sm-2 col-md-2 col-xs-16">
+                                    <label asp-for="CalculationFormula" class="form-label">Formula</label>
+                                    <input asp-for="CalculationFormula" class="form-control" />
+                                </div>
+
+
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" >
+                                    <label asp-for="RoundOffMethod" class="form-label">Round Of Method</label>
+                                    <select asp-for="RoundOffMethod" class="form-control" style="100px">
+                                        @* <option value="@Model.AccountCode">-Select-</option> *@
+                                        <option value="@Model.RoundOffMethod">-Select-</option>
+                                        @if (Model.Mode == "U" || Model.Mode == "V")
+                                        {
+                                            <option value="@Model.RoundOffMethod" selected>@Model.RoundOffMethod</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="FrequencyOfPayment" class="form-label" style="color:red;">Frequency<span><label class="mandatoryField">*</label></span></label>
+                                    <select asp-for="FrequencyOfPayment" class="form-control">
+                                        @* <option value="@Model.AccountCode">-Select-</option> *@
+                                        <option value="@Model.FrequencyOfPayment">-Select-</option>
+                                        @if (Model.Mode == "U" || Model.Mode == "V")
+                                        {
+                                            <option value="@Model.FrequencyOfPayment" selected>@Model.FrequencyOfPayment</option>
+                                        }
+                                    </select>
+                                </div>
+
+                                <div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="CarryForward" class="form-label">Carry Forward</label>
+                                        <select asp-for="CarryForward" class="form-select" onchange="CarryForwerdAmt()">
+                                        @* <option value="" disabled>-Select-</option> *@
+                                           @if (Model.Mode == "U" || Model.Mode == "V")
+                                            {
+                                                <option value="@Model.CarryForward" selected>@Model.CarryForward</option>
+                                            }
+
+                                    </select>
+                                </div>
+
+                               
+
+                                <div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="MaxAmountofCarryForward" class="form-label">CarryfrdMaxAmt</label>
+                                        <input asp-for="MaxAmountofCarryForward" class="form-control numbers" value="@Model.MaxAmountofCarryForward" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="EmployerContribution" class="form-label">Employer Contribution</label>
+                                        <select asp-for="EmployerContribution" class="form-select" onchange="EmpContribution()">
+                                        <option value="" disabled>-Select-</option>
+                                        <option value="YES" selected>YES</option>
+                                        <option value="NO">NO</option>
+                                        
+                                    </select>
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="ContributionPercentage" class="form-label">Percentage</label>
+                                        <input asp-for="ContributionPercentage" class="form-control numbers" value="@Model.ContributionPercentage" />
+                                </div>
+
+                                <div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="ContributionAmount" class="form-label">Amount</label>
+                                        <input asp-for="ContributionAmount" class="form-control numbers" value="@Model.ContributionAmount" />
+                                </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="MinAmount" class="form-label">MinAmount</label>
+                                        <input asp-for="MinAmount" class="form-control numbers" value="@Model.MinAmount" />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="MaxAmount" class="form-label">MaxAmount</label>
+                                        <input asp-for="MaxAmount" class="form-control numbers" value="@Model.MaxAmount" />
+                                    </div>
+
+
+                                
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="H_LinkingMapping">
+                        <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_LinkingMapping" aria-expanded="true" aria-controls="B_LinkingMapping">
+                            <strong style="text-transform:uppercase"><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Linking & Mapping </strong>
+                        </button>
+                    </h2>
+                    <div id="B_LinkingMapping" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_LinkingMapping">
+                        <div class="accordion-body">
+                            <div class="row g-3">
+
+            
+                                    <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="EmpCateg" class="control-label">Applicable Employee Category</label>
+                                        <br />
+                                     
+                                            <select class="form-select" multiple="multiple" asp-for="EmpCateg" asp-items="@(new SelectList(Model.EmpCategList, "Value", "Text"))"></select>
+                                     
+
+                                        @* <select class="form-select" multiple="multiple" asp-for="EmpCateg" asp-items="@(new SelectList(Model.EmpCategList,"Value","Text"))"></select> *@
+                                    </div>
+
+                                    <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="DeptName" class="control-label">Department Wise Applicable </label>
+                                        <br />
+
+                                        <select class="form-select" multiple="multiple" asp-for="DeptName" asp-items="@(new SelectList(Model.DeptWiseCategList,"Value","Text"))"></select>
+                                    </div>
+
+                                
+
+
+
+                                
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="PFApplicable" class="form-label" style="color:red;">Provident Fund Applicable<span><label class="mandatoryField">*</label></span></label>
+                                    <select asp-for="PFApplicable" class="form-select">
+                                        <option value="" disabled>-Select-</option>
+                                        <option value="YES" selected>YES</option>
+                                        <option value="NO">NO</option>
+
+                                    </select>
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="ESIApplicable" class="form-label" style="color:red;">ESI Applicable</label>
+                                    <select asp-for="ESIApplicable" class="form-select">
+                                        <option value="" disabled>-Select-</option>
+                                        <option value="YES" selected>YES</option>
+                                        <option value="NO">NO</option>
+
+                                    </select>
+                                </div>
+
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="IncomeTaxApplicable" class="form-label">Income Tax Applicable</label>
+                                        <select asp-for="IncomeTaxApplicable" class="form-select" onchange="TaxApplicable()">
+                                        <option value="" disabled>-Select-</option>
+                                            <option value="NO" selected>NO</option>
+                                            <option value="YES" >YES</option>
+                                        
+
+                                    </select>
+                                </div>
+                                  
+                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="Taxpercentage" class="form-label">Tax Percentage</label>
+                                        <input asp-for="Taxpercentage" class="form-control numbers" value="@Model.Taxpercentage" disabled max="50"/>
+                                </div>
+
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="TaxAmount" class="form-label">Tax Amount</label>
+                                        <input asp-for="TaxAmount" class="form-control numbers" value="@Model.TaxAmount" disabled />
+                                </div>
+
+                                <div class="col-xl-2  col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="DeductionMorY" class="form-label">Deduction M/Y </label>
+
+                                    <select asp-for="DeductionMorY" class="form-control" disabled>
+                                        @* <option value="@Model.AccountCode">-Select-</option> *@
+                                        <option value="@Model.DeductionMorY">-Select-</option>
+                                        @if (Model.Mode == "U" || Model.Mode == "V")
+                                        {
+                                            <option value="@Model.DeductionMorY" selected>@Model.DeductionMorY</option>
+                                        }
+                                    </select>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="H_AdditionalSetting">
+                        <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_AdditionalSetting" aria-expanded="true" aria-controls="B_AdditionalSetting">
+                            <strong style="text-transform:uppercase"><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Additional Setting </strong>
+                        </button>
+                    </h2>
+                    <div id="B_AdditionalSetting" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_AdditionalSetting">
+                        <div class="accordion-body">
+                            <div class="row g-3">
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px">
+                                        <label asp-for="EntryByMachine" class="form-label">Entered by Machine Name</label>
+                                        <input asp-for="EntryByMachine" class="form-control" readonly value="@Environment.MachineName" />
+                                    </div>
+                                
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="ActiveStatus" class="form-label">Active Status</label>
+                                    <select asp-for="ActiveStatus" class="form-select">
+                                        <option value="" disabled>-Select-</option>
+                                            @if (Model.Mode == "U" || Model.Mode == "V")
+                                            {
+                                        <option value="YES" selected>YES</option>
+                                        <option value="NO">NO</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="YES" selected>YES</option>
+                                                <option value="NO" disabled>NO</option>
+                                            }
+
+
+                                    </select>
+                                </div>
+                                
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="DisplayOrder" class="form-label">DisplayOrder</label>
+                                    <input asp-for="DisplayOrder" class="form-control" value="@Model.DisplayOrder" />
+                                </div>
+
+                                <div class="col-xl-5 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="Remarks" class="form-label">Remarks/Notes</label>
+                                    <input asp-for="Remarks" class="form-control" value="@Model.Remarks" />
+                                </div>
+
+                                    <div class="col-xl-5 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="display:none">
+                                        <label asp-for="LastUpdatedOn" class="form-label">Update Date</label>
+                                        <input asp-for="LastUpdatedOn" class="form-control" value="@Model.LastUpdatedOn" />
+                                    </div>
+
+                               
+
+
+
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                </div>
+
+               
+            </div>
+            <div class="card-footer p-3">
+                <div class="row justify-content-between g-2">
+                    @*<div class="col-auto">
+                    <a class="btn btn-sm btn-secondary" href="#" onclick="back();">
+                    <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                    BACK
+                    </a>
+                    </div>*@
+                    <div class="card border-light bg-gradient rounded shadow-lg">
+                        <div class="card-header card-headerBG text-light justify-content-center bg-gradient">
+                            <h4>
+                                @* @ViewData["Title"] - @Model.YearCode *@
+                                <span class="d-flex float-end" style="margin-top:-2px;">
+                                    <a asp-action="DashBoard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                                        <i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
+                                        Dashboard
+                                    </a>
+                                    <div class="row justify-content-between g-2">
+                                        <div class="col-auto">
+                                            @*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
+                                            <a href="#" class=" btn btn-primary btn-sm" onclick="back();">
+                                                <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+
+                                                BACK
+                                            </a>
+                                        </div>
+                                        @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+                                        {
+                                            <div class="col-auto">
+                                                @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                                                <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                                    @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                                    <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                                    REFRESH
+                                                </a>
+                                            </div>
+                                            @if (Model.Mode == "U")
+                                            {
+                                                @*Model.Mode = "U";*@
+                                                <div class="col-auto">
+                                                    @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+                                                    <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton" onclick="validateAmounts()">
+                                                        <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                                        UPDATE
+                                                    </button>
+                                                </div>
+                                            }
+
+                                            else
+                                            {
+                                                <div class="col-auto">
+                                                    @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
+                                                    <button type="submit" class="btn btn-primary btn-sm submitBTN" id="submitBTN" onclick="validateAmounts()">
+                                                        <i class="fa-solid fa-chevron-circle-right fa-fw fa-lg"></i>
+                                                        SUBMIT
+                                                    </button>
+                                                </div>
+                                            }
+                                        }
+                                    </div>
+                                </span>
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts
+{
+
+    <script type="text/javascript">
+        $('.submitBTN').click(function (e) {
+             
+            e.preventDefault();
+            let typeOfSalary = $('#TypeOfSalary').val()?.trim();
+            let calculationType = $('#CalculationType').val()?.trim();
+            let partOfGrossBasic = $('#PartOfGrossBasic').val()?.trim();
+            let frequencyOfPayment = $('#FrequencyOfPayment').val()?.trim();
+            let pfApplicable = $('#PFApplicable').val()?.trim();
+            let esiApplicable = $('#ESIApplicable').val()?.trim();
+            let salaryHead = $('#SalaryHead').val()?.trim();
+
+            if (!typeOfSalary) {
+                $.notify("Please select Type Of Salary Head", "error");
+                $('#TypeOfSalary').focus();
+                return false;
+            }
+            if (!calculationType) {
+                $.notify("Please select Calculation Type", "error");
+                $('#CalculationType').focus();
+                return false;
+            }
+            if (!partOfGrossBasic) {
+                $.notify("Please select Part Of Gross Basic", "error");
+                $('#PartOfGrossBasic').focus();
+                return false;
+            }
+            if (!frequencyOfPayment) {
+                $.notify("Please select Frequency Of Payment", "error");
+                $('#FrequencyOfPayment').focus();
+                return false;
+            }
+            if (!pfApplicable) {
+                $.notify("Please select PF Applicable option", "error");
+                $('#PFApplicable').focus();
+                return false;
+            }
+            if (!esiApplicable) {
+                $.notify("Please select ESI Applicable option", "error");
+                $('#ESIApplicable').focus();
+                return false;
+            }
+            if (!salaryHead) {
+                $.notify("Please Write SalaryHead ", "error");
+                $('#SalaryHead').focus();
+                return false;
+            }
+            if (!validateAmounts()) {
+                return false; 
+            }
+            maxTaxPercentage();
+
+            $('form').submit();
+        });
+
+       
+        // $('.numbers').on('input', function () {
+        //     // Remove non-numeric characters except for decimal point
+        //     $(this).val($(this).val().replace(/[^0-9.]/g, ''));
+
+        //     // Prevent negative values
+        //     if ($(this).val() < 0) {
+        //         $(this).val('');
+        //     }
+        // });
+
+        
+        $(function () {
+           
+            $('#TypeOfSalary').select2();
+            $('#CalculationType').select2();
+            $('#PartOfGrossBasic').select2();
+            $('#Currency').select2();
+            $('#SalaryPaymentMode').select2();
+            $('#AmountOrPercentage').select2();
+            $('#RoundOffMethod').select2();
+
+            $('#FrequencyOfPayment').select2();
+            $('#CarryForward').select2(); 
+            $('#EmployerContribution').select2();
+            $('#PFApplicable').select2();
+            $('#ESIApplicable').select2();
+            $('#IncomeTaxApplicable').select2();
+            $('#DeductionMorY').select2();
+            $('#ActiveStatus').select2();
+               
+
+            
+        });
+          
+            // $('#CalculationPercentage, #MaxAmountofCarryForward, #ContributionAmount, #MinAmount, #MaxAmount, #TaxAmount').on('input', function () {
+            //     var val = $(this).val();
+            //     if (val < 0) {
+            //         $(this).val(''); 
+            //         $.notify("Amount cannot be negative", "error");
+            //     }
+            // });
+
+            // $('#CalculationPercentage, #ContributionPercentage, #Taxpercentage').on('input', function () {
+            //     var val = $(this).val();
+            //     if (val > 100) {
+            //         $(this).val(''); 
+            //         $.notify("Percentage cannot exceed 100", "error");
+            //     }
+            // });
+        $('#CalculationPercentage, #MaxAmountofCarryForward, #ContributionAmount, #MinAmount, #MaxAmount, #TaxAmount, #ContributionPercentage, #Taxpercentage')
+            .on('input', function () {
+                var val = $(this).val();
+
+               
+                if (!/^\d*\.?\d*$/.test(val)) {
+                    $(this).val(val.replace(/[^0-9.]/g, '')); // Remove non-numeric chars
+                    $.notify("Only numeric values allowed", "error");
+                    return;
+                }
+
+               
+                var num = parseFloat(val);
+
+                
+                if (num <= 0) {
+                    $(this).val('');
+                    $.notify("Value cannot be zero or negative", "error");
+                    return;
+                }
+
+               
+                if ($(this).is('#CalculationPercentage, #ContributionPercentage, #Taxpercentage') && num > 100) {
+                    $(this).val('');
+                    $.notify("Percentage cannot exceed 100", "error");
+                    return;
+                }
+            });
+
+        $('#DisplayOrder').on('input', function () {
+            var val = $(this).val();
+            if (val < 0) {
+                $(this).val(''); // remove invalid value
+                $.notify("DisplayOrder cannot be negative", "error");
+            } else if (val > 30) {
+                $(this).val(''); // remove invalid value
+                $.notify("DisplayOrder cannot exceed 30", "error");
+            }
+        });
+            
+   
+        if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
+            FillEntryID();
+        }
+
+        function simulateBackspace(element) {
+            var event = new KeyboardEvent("keydown", {
+                key: "Backspace",
+                keyCode: 8,
+                code: "Backspace",
+                which: 8,
+                bubbles: true,
+                cancelable: true,
+            });
+
+            element.dispatchEvent(event);
+        }
+
+        function GetFormRights() {
+            $.ajax({
+                url: "@Url.Action("GetFormRights")",
+                type: "POST",
+                success: function (data) {
+                    if (data != null) {
+                        var obj = $.parseJSON(data);
+                        if (obj.Result.Table.length == 0) {
+                            $("button[type='submit']").prop("disabled", true);
+                        } else {
+                            console.log(obj);
+                            var optAll = obj.Result.Table[0].OptAll;
+                            var optSave = obj.Result.Table[0].OptSave;
+                            var optUpdate = obj.Result.Table[0].OptUpdate;
+                            var optDelete = obj.Result.Table[0].OptDelete;
+                            var optView = obj.Result.Table[0].OptView;
+                            if (!optAll) {
+                                if (!optSave) {
+                                    $("button[type='submit']").prop("disabled", true);
+                                }
+                            }
+                        }
+                    }
+                },
+                error: function (errMsg) {
+                    $.notify(errMsg, { position: "top center", className: "error" });
+                }
+            });
+        }
+
+        function toggleTextbox() {
+            var dropdown = document.getElementById("AmountOrPercentage");
+            var textbox1 = document.getElementById("CalculationPercentage");
+            var textbox2 = document.getElementById("CalculationFormula");
+
+            // Check the selected value in the dropdown
+            if (dropdown.value == "Percentage") {
+                textbox1.disabled = false; // Disable the first textbox
+                textbox2.disabled = true; // Enable the second textbox
+                textbox2.value = '0';
+
+            } else if (dropdown.value == "Formula") {
+                textbox1.disabled = true; // Enable the first textbox
+                textbox2.disabled = false;
+                textbox1.value = '0';// Disable the second textbox
+            }
+            else if (dropdown.value == "Basic Salary") {
+                textbox1.disabled = true; // Enable the first textbox
+                textbox2.disabled = true;
+                textbox1.value = '0';
+                textbox2.value = '0';// Disable the second textbox
+            } else {
+                textbox1.disabled = true; // Enable both textboxes
+                textbox2.disabled = true;
+                textbox1.value = '0';
+                textbox2.value = '0';
+            }
+        }
+
+
+
+        function CarryForwerdAmt() {
+            var dropdown = document.getElementById("CarryForward");
+            var textbox1 = document.getElementById("MaxAmountofCarryForward");
+           
+            if (dropdown.value == "YES") {
+                textbox1.disabled = false; 
+            }
+
+            else if (dropdown.value == "NO") {
+                textbox1.disabled = true;
+                textbox1.value = "0";
+            }
+             else {
+                textbox1.disabled = true;
+                textbox1.value = "0";
+               
+            }
+        }
+
+        function EmpContribution() {
+            var dropdown = document.getElementById("EmployerContribution");
+            var textbox1 = document.getElementById("ContributionPercentage");
+            var textbox2 = document.getElementById("ContributionAmount");
+            var textbox3 = document.getElementById("MinAmount");
+            var textbox4 = document.getElementById("MaxAmount");
+
+            if (dropdown.value == "YES") {
+                textbox1.disabled = false;
+                textbox2.disabled = false;
+                textbox3.disabled = false;
+                textbox4.disabled = false;
+
+            }
+
+            else if (dropdown.value == "NO") {
+                textbox1.disabled = true;
+                textbox2.disabled = true;
+                textbox3.disabled = true;
+                textbox4.disabled = true;
+                textbox1.value = "0";
+                textbox2.value = "0";
+                textbox3.value = "0";
+                textbox4.value = "0";
+            }
+            else {
+                textbox1.disabled = true;
+                textbox2.disabled = true;
+                textbox3.disabled = true;
+                textbox4.disabled = true;
+                textbox1.value = "0";
+                textbox2.value = "0";
+                textbox3.value = "0";
+                textbox4.value = "0";
+
+            }
+        }
+
+        function TaxApplicable() {
+            var dropdown = document.getElementById("IncomeTaxApplicable");
+            var textbox1 = document.getElementById("Taxpercentage");
+            var textbox2 = document.getElementById("TaxAmount");
+            var textbox3 = document.getElementById("DeductionMorY");
+            
+
+            if (dropdown.value == "YES") {
+                textbox1.disabled = false;
+                textbox2.disabled = false;
+                textbox3.disabled = false;
+              
+
+            }
+
+            else if (dropdown.value == "NO") {
+                textbox1.disabled = true;
+                textbox2.disabled = true;
+                textbox3.disabled = true;
+                
+                textbox1.value = "0";
+                textbox2.value = "0";
+                textbox3.value = "";
+               
+            }
+            else {
+                textbox1.disabled = true;
+                textbox2.disabled = true;
+                textbox3.disabled = true;
+               
+                textbox1.value = "0";
+                textbox2.value = "0";
+                textbox3.value = "";
+               
+
+            }
+        }
+
+        function maxTaxPercentage() {
+            var percentage = document.getElementById("Taxpercentage");
+            if (percentage.value > 50) {
+                
+                alert("Tex Should be Less Then 50%");
+                event.preventDefault();
+            }
+        }
+
+
+
+
+        $(document).ready(function () {
+            $("#EmpCateg").multiselect({
+                // Bootstrap 5 compatibility
+                templates: {
+                    button: '<button type="button" class="multiselect btn btn-sm btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><span class="multiselect-selected-text"></span></button>',
+                },
+                enableFiltering: true,
+                includeSelectAllOption: true,
+                buttonWidth: 250,
+                enableCaseInsensitiveFiltering: true
+
+               
+            });
+            var error = $("#TempError").text().trim();
+            if (error) {
+                $.notify(error, "error");
+            }
+            $("#DeptName").multiselect({
+                // Bootstrap 5 compatibility
+                templates: {
+                    button: '<button type="button" class="multiselect btn btn-sm btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><span class="multiselect-selected-text"></span></button>',
+                },
+                enableFiltering: true,
+                includeSelectAllOption: true,
+                buttonWidth: 250,
+                enableCaseInsensitiveFiltering: true
+            });
+
+          
+            if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
+
+                $('#SalHeadEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                $('#SalHeadEffectiveDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+            }
+            else {
+                $('#SalHeadEntryDate').datepicker({ dateFormat: 'dd/mm/yy' });
+                $('#SalHeadEffectiveDate').datepicker({ dateFormat: 'dd/mm/yy' });
+            }
+            
+           
+           
+            var LastUpdatedOn = parseDateToFormat($('#LastUpdatedOn').val().split(" ")[0]);
+            $('#LastUpdatedOn').datepicker({ dateFormat: 'dd/MM/yy' }).datepicker("setDate", LastUpdatedOn);
+
+
+            
+
+            
+
+            let SalaryHead = $('#SalaryHead').val();
+            $('#SalaryHead').change(function () 
+            {
+                if ($('#Mode').val() === 'U') 
+                {
+                    if ($(this).val() !== SalaryHead) 
+                    {
+                        ChkForDuplicate();
+                    }
+                } else if ($('#Mode').val() === 'V')
+                {
+                    ChkForDuplicate();
+                }
+            });
+
+            $('#Item_Name').css('background-color', 'rgb(248 255 178)');
+
+            
+
+            $('#Currency').change(function () {
+                $('#CurrencyId').val($('#Currency').val());
+            });
+
+          
+            GetFormRights();
+
+            $("#SalaryHead").on("input", function () {
+                // Set the value of the second textbox to be the same as the first
+                $("#ShortForm").val($(this).val());
+            });
+           
+
+            $('.datefield').keyup(function (e) {
+                e.preventDefault();
+                if (e.keyCode == 8) {
+                    return false;
+                }
+            });
+
+           
+            FILLTypeofSalaryHead();
+            FILLSalaryCalculationType();
+            FILLPartOf();
+            FILLSalaryPaymentMode();
+            FillCurrency();
+            FillAmountPercentageOfCalculation();
+            FillRoundOff();
+            FillCarryForward();
+            FillEmployerContribution();
+            FillIncomeTaxApplicable();
+           
+            FillPaymentFrequency();
+            FillDeductionOfTax();
+           
+
+
+        });
+
+        // function validateAmounts() {
+        //     // Get the values from the input fields
+        //     const minAmount = document.getElementById('MinAmount').value;
+        //     const maxAmount = document.getElementById('MaxAmount').value;
+
+        //     // Check if max amount is less than min amount
+        //     if (parseFloat(maxAmount) < parseFloat(minAmount)) {
+        //         // Show alert if condition is met
+        //         $.notify("Max amount cannot be less than Min amount!", "error");
+        //         event.preventDefault();
+        //     } 
+        // }
+        function validateAmounts() {
+            const minAmount = parseFloat($('#MinAmount').val());
+            const maxAmount = parseFloat($('#MaxAmount').val());
+
+            // If both values exist
+            if (!isNaN(minAmount) && !isNaN(maxAmount)) {
+                if (maxAmount < minAmount) {
+                    $.notify("Max amount cannot be less than Min amount!", "error");
+                    $('#MaxAmount').focus();
+                    return false; 
+                }
+            }
+            return true; 
+        }
+        function FillEntryID() {
+            $.ajax({
+                url: '@Url.Action("FillEntryId", "HRSalaryHeadMaster")',
+                type: 'POST',
+                async: false,
+                success: function (data, status, xhr) {
+                    console.log(data);
+                    var obj = $.parseJSON(data);
+                    if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                        $('#SalHeadEntryId').val(0);
+                        $('#SalHeadEntryId').val(obj.Result[0].EntryId);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+
+       
+
+
+        function FILLTypeofSalaryHead() {
+           
+
+            $.ajax({
+                url: '@Url.Action("GetTypeofSalaryHead", "HRSalaryHeadMaster")',
+               
+                type: 'GET',
+                async: false,
+                success: function (response, status, error) {
+
+                    var TypeOfSalaryDropdown = $('#TypeOfSalary');
+                    var obj = $.parseJSON(response);
+                    TypeOfSalaryDropdown.empty();
+                    // TypeOfSalaryDropdown.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, item) {
+                        TypeOfSalaryDropdown.append('<option value="' + item.TypeOfSalaryHead + '">' + item.TypeOfSalaryHead + '</option>');
+                    });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                        var TypeOfSalaryHead = '@Model.TypeOfSalary';
+                        $('#TypeOfSalary').val(TypeOfSalaryHead).trigger("change");
+                        $('#TypeOfSalary').val(TypeOfSalaryHead);
+                    }
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+
+        function FILLSalaryCalculationType() {
+            $.ajax({
+                url: '@Url.Action("GetSalaryCalculationType", "HRSalaryHeadMaster")',
+
+                type: 'GET',
+                async: false,
+                success: function (response, status, error) {
+
+                    var CalculationTypeDropdown = $('#CalculationType');
+                    var obj = $.parseJSON(response);
+                    CalculationTypeDropdown.empty();
+                    // CalculationTypeDropdown.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, item) {
+                        CalculationTypeDropdown.append('<option value="' + item.SalaryCalculationType + '">' + item.SalaryCalculationType + '</option>');
+                    });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                        var CalculationType = '@Model.CalculationType';
+                        $('#CalculationType').val(CalculationType).trigger("change");
+                        $('#CalculationType').val(CalculationType);
+                    }
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+
+        function FILLPartOf() {
+            $.ajax({
+                url: '@Url.Action("GetPartOf", "HRSalaryHeadMaster")',
+
+                type: 'GET',
+                async: false,
+                success: function (response, status, error) {
+
+                    var PartOfDropdown = $('#PartOfGrossBasic');
+                    var obj = $.parseJSON(response);
+                    PartOfDropdown.empty();
+                    // PartOfDropdown.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, item) {
+                        PartOfDropdown.append('<option value="' + item.Partof + '">' + item.Partof + '</option>');
+                    });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                        var PartOfGrossBasic = '@Model.PartOfGrossBasic';
+                        $('#PartOfGrossBasic').val(PartOfGrossBasic).trigger("change");
+                        $('#PartOfGrossBasic').val(PartOfGrossBasic);
+                    }
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+
+        function FILLSalaryPaymentMode() {
+            $.ajax({
+                url: '@Url.Action("GetSalaryPaymentMode", "HRSalaryHeadMaster")',
+
+                type: 'GET',
+                async: false,
+                success: function (response, status, error) {
+
+                    var PaymentModeDropdown = $('#SalaryPaymentMode');
+                    var obj = $.parseJSON(response);
+                    PaymentModeDropdown.empty();
+                    // PaymentModeDropdown.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, item) {
+                        PaymentModeDropdown.append('<option value="' + item.SalaryPaymentMode + '">' + item.SalaryPaymentMode + '</option>');
+                    });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                        var SalaryPaymentMode = '@Model.SalaryPaymentMode';
+                        $('#SalaryPaymentMode').val(SalaryPaymentMode).trigger("change");
+                        $('#SalaryPaymentMode').val(SalaryPaymentMode);
+                    }
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+
+        function FillCurrency() {
+            $.ajax({
+                url: '@Url.Action("GetCurrency", "HRSalaryHeadMaster")',
+                
+                type: 'GET',
+                async: false,
+                success: function (response, status, error) {
+
+                    var CurrencyDropdown = $('#Currency');
+                    var obj = $.parseJSON(response);
+                    CurrencyDropdown.empty();
+                    CurrencyDropdown.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, item) {
+                        CurrencyDropdown.append('<option value="' + item.CurrencyId + '">' + item.Currency + '</option>');
+                    });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                        var Currency = '@Model.CurrencyId';
+                        $('#Currency').val(Currency).trigger("change");
+                        $('#Currency').val(Currency);
+                    }
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+
+        function FillAmountPercentageOfCalculation() {
+            $.ajax({
+                url: '@Url.Action("GetAmountPercentageOfCalculation", "HRSalaryHeadMaster")',
+
+                type: 'GET',
+                async: false,
+                success: function (response, status, error) {
+
+                    var AmountPercentageOfCalculationDropdown = $('#AmountOrPercentage');
+                    var obj = $.parseJSON(response);
+                    AmountPercentageOfCalculationDropdown.empty();
+                    AmountPercentageOfCalculationDropdown.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, item) {
+                        AmountPercentageOfCalculationDropdown.append('<option value="' + item.AmountOrPercentage + '">' + item.AmountOrPercentage + '</option>');
+                    });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                        var AmountOrPercentage = '@Model.AmountOrPercentage';
+                        $('#AmountOrPercentage').val(AmountOrPercentage).trigger("change");
+                        $('#AmountOrPercentage').val(AmountOrPercentage);
+                    }
+
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+
+        function FillCarryForward() {
+            $.ajax({
+                url: '@Url.Action("GetYesOrNo", "HRSalaryHeadMaster")',
+
+                type: 'GET',
+                async: false,
+                success: function (response, status, error) {
+
+                    var AmountPercentageOfCalculationDropdown = $('#CarryForward');
+                    var obj = $.parseJSON(response);
+                    AmountPercentageOfCalculationDropdown.empty();
+                    AmountPercentageOfCalculationDropdown.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, item) {
+                        AmountPercentageOfCalculationDropdown.append('<option value="' + item.YESNO + '">' + item.YESNO + '</option>');
+                    });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                        var CarryForward = '@Model.CarryForward';
+                        $('#CarryForward').val(CarryForward).trigger("change");
+                        $('#CarryForward').val(CarryForward);
+                    }
+
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+
+        function FillEmployerContribution() {
+            $.ajax({
+                url: '@Url.Action("GetYesOrNo", "HRSalaryHeadMaster")',
+
+                type: 'GET',
+                async: false,
+                success: function (response, status, error) {
+
+                    var AmountPercentageOfCalculationDropdown = $('#EmployerContribution');
+                    var obj = $.parseJSON(response);
+                    AmountPercentageOfCalculationDropdown.empty();
+                    AmountPercentageOfCalculationDropdown.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, item) {
+                        AmountPercentageOfCalculationDropdown.append('<option value="' + item.YESNO + '">' + item.YESNO + '</option>');
+                    });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                        var EmployerContribution = '@Model.EmployerContribution';
+                        $('#EmployerContribution').val(EmployerContribution).trigger("change");
+                        $('#EmployerContribution').val(EmployerContributionsss);
+                    }
+
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+
+        function FillIncomeTaxApplicable() {
+            $.ajax({
+                url: '@Url.Action("GetYesOrNo", "HRSalaryHeadMaster")',
+
+                type: 'GET',
+                async: false,
+                success: function (response, status, error) {
+
+                    var AmountPercentageOfCalculationDropdown = $('#IncomeTaxApplicable');
+                    var obj = $.parseJSON(response);
+                    AmountPercentageOfCalculationDropdown.empty();
+                    AmountPercentageOfCalculationDropdown.append('<option value="YES">YES</option>');
+                    AmountPercentageOfCalculationDropdown.append('<option value="NO" selected>NO</option>');
+
+                    // $.each(obj.Result, function (index, item) {
+                    //     AmountPercentageOfCalculationDropdown.append('<option value="' + item.YESNO + '">' + item.YESNO + '</option>');
+                    // });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                        var IncomeTaxApplicable = '@Model.IncomeTaxApplicable';
+                        $('#IncomeTaxApplicable').val(IncomeTaxApplicable).trigger("change");
+                        $('#IncomeTaxApplicable').val(IncomeTaxApplicable);
+                    }
+
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+
+        function FillRoundOff() {
+            $.ajax({
+                url: '@Url.Action("GetRoundOff", "HRSalaryHeadMaster")',
+
+                type: 'GET',
+                async: false,
+                success: function (response, status, error) {
+
+                    var RoundOffDropdown = $('#RoundOffMethod');
+                    var obj = $.parseJSON(response);
+                    RoundOffDropdown.empty();
+                    //RoundOffDropdown.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, item) {
+                        RoundOffDropdown.append('<option value="' + item.RoundType + '">' + item.RoundType + '</option>');
+                    });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                        var RoundOffMethod = '@Model.RoundOffMethod';
+                        $('#RoundOffMethod').val(RoundOffMethod).trigger("change");
+                        $('#RoundOffMethod').val(RoundOffMethod);
+                    }
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+        function FillPaymentFrequency() {
+            $.ajax({
+                url: '@Url.Action("GetPaymentFrequency", "HRSalaryHeadMaster")',
+
+                type: 'GET',
+                async: false,
+                success: function (response, status, error) {
+
+                    var PaymentFrequencyDropdown = $('#FrequencyOfPayment');
+                    var obj = $.parseJSON(response);
+                    PaymentFrequencyDropdown.empty();
+                    PaymentFrequencyDropdown.append('<option value="Monthly" selected>Monthly</option>');
+
+                    $.each(obj.Result, function (index, item) {
+                        PaymentFrequencyDropdown.append('<option value="' + item.PaymentFrequency + '">' + item.PaymentFrequency + '</option>');
+                    });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                        var FrequencyOfPayment = '@Model.FrequencyOfPayment';
+                        $('#FrequencyOfPayment').val(FrequencyOfPayment).trigger("change");
+                        $('#FrequencyOfPayment').val(FrequencyOfPayment);
+                    }
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+        function FillDeductionOfTax() {
+            $.ajax({
+                url: '@Url.Action("GetDeductionOfTax", "HRSalaryHeadMaster")',
+
+                type: 'GET',
+                async: false,
+                success: function (response, status, error) {
+
+                    var DeductionOfTaxDropdown = $('#DeductionMorY');
+                    var obj = $.parseJSON(response);
+                    DeductionOfTaxDropdown.empty();
+                    DeductionOfTaxDropdown.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, item) {
+                        DeductionOfTaxDropdown.append('<option value="' + item.DeductionOfTax + '">' + item.DeductionOfTax + '</option>');
+                    });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                        var DeductionMorY = '@Model.DeductionMorY';
+                        $('#DeductionMorY').val(DeductionMorY).trigger("change");
+                        $('#DeductionMorY').val(DeductionMorY);
+                    }
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+
+
+        function ChkForDuplicate() {
+
+            var SalaryHead = $('#SalaryHead').val();
+            var SalHeadEntryId = $('#SalHeadEntryId').val();
+
+            $.ajax({
+                url: '@Url.Action("ChkForDuplicateHeadName", "HRSalaryHeadMaster")',
+                type: 'POST',
+                data: { SalaryHead: SalaryHead,
+                    SalHeadEntryId: SalHeadEntryId
+                },
+                success: function (data, status, xhr) {
+                    var obj = $.parseJSON(data);
+                    if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                        $.notify('The Head name already exists. Please choose another name.', 'error');
+                    }
+                    else {
+                        $.notify('The Head name is available.', 'success');
+
+                    }
+                },
+                error: function (xhr, status, error) {
+                    notify('Error occurred while checking for duplicate Head names.', 'error');
+                }
+            });
+        }
+
+        
+    </script>
+}
+
+<style>
+    .mandatoryField {
+        color: red !important;
+        font-size: small;
+    }
+</style>

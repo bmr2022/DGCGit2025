@@ -48,6 +48,11 @@ namespace eTactWeb.Data.BLL
             return await _HRLeaveApplicationMasterDAL.GetEmployeeDetail(empid);
         }
 
+        public async Task<ResponseResult> GetLeaveDetail(int empid, string LeaveAppEntryDate)
+        {
+            return await _HRLeaveApplicationMasterDAL.GetLeaveDetail(empid, LeaveAppEntryDate);
+        }
+
         public async Task<ResponseResult> SaveData(HRLeaveApplicationMasterModel model, DataTable DT)
         {
             //throw new NotImplementedException();
@@ -58,9 +63,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _HRLeaveApplicationMasterDAL.GetDashboardData();
         }
-        public async Task<HRLeaveApplicationDashBoard> GetDashboardDetailData(string ReportType, string FromDate, string ToDate)
+        public async Task<HRLeaveApplicationDashBoard> GetDashboardDetailData(string ReportType, string FromDate, string ToDate,int Empid,int LeaveEntryId)
         {
-            return await _HRLeaveApplicationMasterDAL.GetDashboardDetailData(ReportType, FromDate, ToDate);
+            return await _HRLeaveApplicationMasterDAL.GetDashboardDetailData(ReportType, FromDate, ToDate, Empid, LeaveEntryId);
         }
         public async Task<HRLeaveApplicationMasterModel> GetViewByID(int id, int year)
         {

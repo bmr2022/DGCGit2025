@@ -55,7 +55,10 @@ public class Common
         public dynamic? Result { get; set; }
         public HttpStatusCode StatusCode { get; set; }
         public string? StatusText { get; set; }
-		public object Rows { get; set; }
+        public string? Message { get; set; }
+        public bool IsSuccess { get; set; }
+        public string ErrorMessage { get; set; }
+        public object Rows { get; set; }
 	}
 
     public class TaxModel : TimeStamp
@@ -68,14 +71,14 @@ public class Common
             new() { Value = "EXPENSES", Text = "EXPENSES" },
         };
 
-        [Column(TypeName = "decimal(10, 2)")]
+        [Column(TypeName = "decimal(18, 6)")]
         public decimal TotalTaxAmt { get; set; }
 
         public int TxAccountCode { get; set; }
         public string? TxAccountName { get; set; }
         public string? TxAdInTxable { get; set; }
 
-        [Column(TypeName = "decimal(10, 2)")]
+        [Column(TypeName = "decimal(18, 6)")]
         public decimal TxAmount { get; set; }
 
         public int TxItemCode { get; set; }
@@ -91,7 +94,7 @@ public class Common
         public int TxTaxType { get; set; }
         public string? TxTaxTypeName { get; set; }
         public string? TxType { get; set; }
-
+        public string ? Message { get; set; }
         public IList<SelectListItem> YesNo { get; set; } = new List<SelectListItem>()
         {
             new() { Value = "Y", Text = "Yes" },
@@ -101,7 +104,7 @@ public class Common
     public class TDSModel : TimeStamp
     {
         public IList<TDSModel>? TDSDetailGridd { get; set; }
-        [Column(TypeName = "decimal(10, 2)")]
+        [Column(TypeName = "decimal(18, 6)")]
         public decimal TotalTDSAmt { get; set; }
         public int TDSAccountCode { get; set; }
         public string? TDSAccountName { get; set; }
@@ -247,11 +250,11 @@ public class Common
         public int? AginstVoucherYearcode { get; set; }
         public int? AccountCode { get; set; }
         public int? DocTypeID { get; set; }
-        [Column(TypeName = "decimal(10, 2)")]
+        [Column(TypeName = "decimal(18, 6)")]
         public int? BillQty { get; set; }
-        [Column(TypeName = "decimal(10, 2)")]
+        [Column(TypeName = "decimal(18, 6)")]
         public int? Rate { get; set; }
-        [Column(TypeName = "decimal(10, 2)")]
+        [Column(TypeName = "decimal(18, 6)")]
         public int? AccountAmount { get; set; }
         public string? DRCR { get; set; }
         public string? AccountName { get; set; }
@@ -284,8 +287,8 @@ public class Common
         public string? AdjDescription { get; set; }
         public string? AdjDrCrName { get; set; }
         public string? AdjDrCr { get; set; }
-        [Column(TypeName = "decimal(10, 2)")]
-        public float? AdjPendAmt { get; set; }
+        //[Column(TypeName = "decimal(18, 6)")]
+        public decimal? AdjPendAmt { get; set; }
         public float? AdjAdjstedAmt { get; set; }
         public float? AdjTotalAmt { get; set; }
         public float? AdjRemainingAmt { get; set; }
@@ -306,7 +309,7 @@ public class Common
         public string? AdjAgnstVouchType { get; set; }
         public string? AdjAgnstDrCrName { get; set; }
         public string? AdjAgnstDrCr { get; set; }
-        [Column(TypeName = "decimal(10, 2)")]
+        [Column(TypeName = "decimal(18, 6)")]
         public float? AdjAgnstPendAmt { get; set; }
         public float? AdjAgnstAdjstedAmt { get; set; }
         public float? AdjAgnstTotalAmt { get; set; }
@@ -315,5 +318,9 @@ public class Common
         public int? AdjAgnstOpeningYearCode { get; set; }
         public DateTime? AdjAgnstVouchDate { get; set; }
         public string? AdjAgnstTransType { get; set; }
+        public float TotalBillAmount {  get; set; }
+        public float TotalRemainingAmount {  get; set; }
+        public float TotalAdjustAmount { get; set; }
+        public float? PendingToAdjustAmount { get; set; }
     }
 }

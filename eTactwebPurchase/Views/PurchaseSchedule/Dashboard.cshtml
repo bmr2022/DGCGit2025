@@ -80,6 +80,10 @@
                                 <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
                                     <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
                                 </button>
+                                <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToPDF">
+                                    <i class="fa-solid fa-file-pdf fa-fw fa-lg"></i> PDF
+                                </button>
+                             
                                 <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="PurchaseSchedule" asp-action="Dashboard">
                                     <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
                                 </a>
@@ -436,6 +440,62 @@
 
             XLSX.writeFile(wb, "PendProductionSchGrid.xlsx");
         });
+              $("#sendToPDF").click(function () {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF("l", "pt", "a3"); // Landscape, A3 for wide tables
+
+        const table = document.querySelector("#PSDashboard");
+        const rows = table.querySelectorAll("tr");
+        if (rows.length === 0) return;
+
+        const headers = [];
+        const body = [];
+
+        // Define columns to remove
+                            const removeColumns = ["Action", "PO Entry Id",  "Created On","Delivery Date","Item Amend No","Branch","Alt Pend Qty	","Entry From Machine","Entry ID"];
+
+        // Process headers
+        const ths = rows[0].querySelectorAll("th");
+        ths.forEach((th, index) => {
+            const text = th.textContent.trim();
+            if (!removeColumns.includes(text)) {
+                headers.push({ text: text, idx: index }); // store both text and original index
+            }
+        });
+
+        // Process body rows
+        for (let i = 1; i < rows.length; i++) {
+            const tr = rows[i];
+            const tds = tr.querySelectorAll("td, th");
+            const rowData = [];
+
+            headers.forEach(h => {
+                rowData.push(tds[h.idx] ? tds[h.idx].textContent.trim() : "");
+            });
+
+            body.push(rowData);
+        }
+
+        // Generate PDF
+        doc.autoTable({
+            head: [headers.map(h => h.text)],
+            body: body,
+            startY: 20,
+            tableWidth: "auto",
+            styles: { fontSize: 8, cellPadding: 3 },
+            headStyles: { fillColor: [41, 128, 185], textColor: 255 },
+            didParseCell: function (data) {
+                if (data.cell.width < 30) data.cell.width = 30;
+                if (data.cell.width > 80) data.cell.width = 80;
+            },
+            margin: { top: 20, left: 10, right: 10 }
+        });
+
+        doc.save("PSDashboard.pdf");
+    });
+
+           
+
 
         function GetDetailData() {
             var data = $('#SParam').serialize();
@@ -638,5 +698,6 @@
 
     </script>
     <script src="~/Scripts/table2excel.js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
 }

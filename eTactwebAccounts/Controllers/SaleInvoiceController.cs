@@ -27,6 +27,7 @@ using Microsoft.AspNetCore.Http;
 using System.Drawing.Printing;
 using Org.BouncyCastle.Asn1.Ocsp;
 using Newtonsoft.Json.Linq;
+using DocumentFormat.OpenXml.Vml.Office;
 
 
 namespace eTactWeb.Controllers
@@ -44,7 +45,8 @@ namespace eTactWeb.Controllers
         private readonly ICommon _ICommon;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
         private readonly IMemoryCache _MemoryCache;
-        public SaleInvoiceController(ILogger<SaleBillController> logger, IDataLogic iDataLogic, ISaleBill iSaleBill, IEinvoiceService IEinvoiceService, IConfiguration configuration, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, ICustomerJobWorkIssue CustomerJobWorkIssue, IMemoryCache iMemoryCache, ICommon ICommon)
+        private readonly ConnectionStringService _connectionStringService;
+        public SaleInvoiceController(ILogger<SaleBillController> logger, IDataLogic iDataLogic, ISaleBill iSaleBill, IEinvoiceService IEinvoiceService, IConfiguration configuration, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, ICustomerJobWorkIssue CustomerJobWorkIssue, IMemoryCache iMemoryCache, ICommon ICommon, ConnectionStringService connectionStringService)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
@@ -55,6 +57,13 @@ namespace eTactWeb.Controllers
             _ICustomerJobWorkIssue = CustomerJobWorkIssue;
             _MemoryCache = iMemoryCache;
             _ICommon = ICommon;
+            _connectionStringService = connectionStringService;
+        }
+        public async Task<JsonResult> AutoFillPartCode ( string SearchPartCode)
+        {
+            var JSON = await _SaleBill.AutoFillitem("AutoFillPartCode", SearchPartCode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
         }
         public async Task<JsonResult> GetItemGroup()
         {
@@ -71,6 +80,17 @@ namespace eTactWeb.Controllers
 
 
             return PartialView("_SaleBillGroupWiseItems", model);
+
+        }
+
+        public async Task<IActionResult> GetlastBillDetail(string invoicedate, int currentYearcode, int AccountCode,int ItemCode)
+        {
+           
+            var model = new SaleBillModel();
+            model = await _SaleBill.GetlastBillDetail( invoicedate,  currentYearcode,  AccountCode, ItemCode);
+
+
+            return PartialView("_SaleBillHistoryGrid", model);
 
         }
         public async Task<JsonResult> GetFormRights()
@@ -107,6 +127,91 @@ namespace eTactWeb.Controllers
             HttpContext.Session.SetString("KeyPendingSaleBill", JsonConvert.SerializeObject(model));
             return View(MainModel);
         }
+        [HttpPost]
+        public IActionResult RemovePackingChargesTax(string taxName)
+        {
+            var modelTxGridJson = HttpContext.Session.GetString("KeyTaxGrid");
+            if (!string.IsNullOrEmpty(modelTxGridJson))
+            {
+                var taxGrid = JsonConvert.DeserializeObject<List<TaxModel>>(modelTxGridJson);
+
+                if (taxGrid != null)
+                {
+                    // ✅ Remove items directly from list
+                    taxGrid.RemoveAll(x => x.TxAccountName == taxName);
+
+                    // ✅ Save updated list back to session
+                    HttpContext.Session.SetString("KeyTaxGrid", JsonConvert.SerializeObject(taxGrid));
+                }
+            }
+
+            return Json(new { success = true });
+        }
+
+        [HttpPost]
+        public IActionResult RemovePForwardingChargesTax(string taxName)
+        {
+            var modelTxGridJson = HttpContext.Session.GetString("KeyTaxGrid");
+            if (!string.IsNullOrEmpty(modelTxGridJson))
+            {
+                var taxGrid = JsonConvert.DeserializeObject<List<TaxModel>>(modelTxGridJson);
+
+                if (taxGrid != null)
+                {
+                    // ✅ Remove items directly from list
+                    taxGrid.RemoveAll(x => x.TxAccountName == taxName);
+
+                    // ✅ Save updated list back to session
+                    HttpContext.Session.SetString("KeyTaxGrid", JsonConvert.SerializeObject(taxGrid));
+                }
+            }
+
+            return Json(new { success = true });
+        }
+
+        [HttpPost]
+        public IActionResult RemoveCourieerChargesTax(string taxName)
+        {
+            var modelTxGridJson = HttpContext.Session.GetString("KeyTaxGrid");
+            if (!string.IsNullOrEmpty(modelTxGridJson))
+            {
+                var taxGrid = JsonConvert.DeserializeObject<List<TaxModel>>(modelTxGridJson);
+
+                if (taxGrid != null)
+                {
+                    // ✅ Remove items directly from list
+                    taxGrid.RemoveAll(x => x.TxAccountName == taxName);
+
+                    // ✅ Save updated list back to session
+                    HttpContext.Session.SetString("KeyTaxGrid", JsonConvert.SerializeObject(taxGrid));
+                }
+            }
+
+            return Json(new { success = true });
+        }
+
+
+        [HttpPost]
+        public IActionResult RemoveGSTTax(string taxName)
+        {
+            var modelTxGridJson = HttpContext.Session.GetString("KeyTaxGrid");
+            if (!string.IsNullOrEmpty(modelTxGridJson))
+            {
+                var taxGrid = JsonConvert.DeserializeObject<List<TaxModel>>(modelTxGridJson);
+
+                if (taxGrid != null)
+                {
+                    // ✅ Remove items directly from list
+                    taxGrid.RemoveAll(x => x.TxAccountName == taxName);
+
+                    // ✅ Save updated list back to session
+                    HttpContext.Session.SetString("KeyTaxGrid", JsonConvert.SerializeObject(taxGrid));
+                }
+            }
+
+            return Json(new { success = true });
+        }
+
 
         public async Task<JsonResult> FillStoreList()
         {
@@ -120,22 +225,22 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> ShowPendingSaleorderforBill(string Flag, int CurrentYear, string FromDate, string Todate, string InvoiceDate, int BillFromStoreId, int accountCode,string SONo,string PartCode)
+        public async Task<JsonResult> ShowPendingSaleorderforBill(string Flag, int CurrentYear, string FromDate, string Todate, string InvoiceDate, int BillFromStoreId, int accountCode,string SONo,string PartCode,string CompanyType)
         {
-            var JSON = await _SaleBill.ShowPendingSaleorderforBill(Flag, CurrentYear, FromDate, Todate, InvoiceDate, BillFromStoreId, accountCode,  SONo,  PartCode);
+            var JSON = await _SaleBill.ShowPendingSaleorderforBill(Flag, CurrentYear, FromDate, Todate, InvoiceDate, BillFromStoreId, accountCode,  SONo,  PartCode, CompanyType);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
 
-        public async Task<JsonResult> FILLPendingSONO(string Flag, int CurrentYear, string FromDate, string Todate, string InvoiceDate, int BillFromStoreId, int accountCode)
+        public async Task<JsonResult> FILLPendingSONO()
         {
-            var JSON = await _SaleBill.FILLPendingSONO(Flag, CurrentYear, FromDate, Todate, InvoiceDate, BillFromStoreId, accountCode);
+            var JSON = await _SaleBill.FILLPendingSONO();
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> FillPendingPartCOde(string Flag, int CurrentYear, string FromDate, string Todate, string InvoiceDate, int BillFromStoreId, int accountCode)
+        public async Task<JsonResult> FillPendingPartCOde()
         {
-            var JSON = await _SaleBill.FillPendingPartCOde(Flag, CurrentYear, FromDate, Todate, InvoiceDate, BillFromStoreId, accountCode);
+            var JSON = await _SaleBill.FillPendingPartCOde();
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
@@ -272,6 +377,7 @@ namespace eTactWeb.Controllers
             DataTable AdjChallanDetailDT = null;
             string SaleBillModel = HttpContext.Session.GetString("SaleBillModel");
             SaleBillModel MainModel = new SaleBillModel();
+          
             if (!string.IsNullOrEmpty(SaleBillModel))
             {
                 MainModel = JsonConvert.DeserializeObject<SaleBillModel>(SaleBillModel);
@@ -470,10 +576,12 @@ namespace eTactWeb.Controllers
                                 vehicleNo = model.vehicleNo,
                                 distanceKM = model.DistanceKM,
                                 EntrybyId = model.EntryByempId,
-                                MachineName = model.MachineName
+                                MachineName = model.MachineName,
+                                AccountCode = model.AccountCode
 
                             });
                         }
+                        
                         HttpContext.Session.Remove("KeySaleBillGrid");
                         HttpContext.Session.Remove("SaleBillModel");
                         //return RedirectToAction(nameof(SaleInvoice), new { Id = 0, Mode = "", YC = 0 });
@@ -524,12 +632,14 @@ namespace eTactWeb.Controllers
                                 vehicleNo = model.vehicleNo,
                                 distanceKM = model.DistanceKM,
                                 EntrybyId = model.EntryByempId,
-                                MachineName = model.MachineName
+                                MachineName = model.MachineName,
+                                AccountCode = model.AccountCode
 
                             });
 
                         }
-                        HttpContext.Session.Remove("KeySaleBillGrid");
+                       
+                            HttpContext.Session.Remove("KeySaleBillGrid");
                         HttpContext.Session.Remove("SaleBillModel");
                     }
                     if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
@@ -583,7 +693,18 @@ namespace eTactWeb.Controllers
                     HttpContext.Session.SetString("SaleInvoice", JsonConvert.SerializeObject(model));
                 }
                 HttpContext.Session.Remove("SaleBillListItem");
-                return Json(new { status = "Success" });
+               // return Json(new { status = "Success" });
+                return Json(new
+                {
+                    status = "Success",
+                    EntryId = model.SaleBillEntryId,
+                    InvoiceNo = model.SaleBillNo,
+                    YearCode = model.SaleBillYearCode,
+                    saleBillType = model.SupplyType,
+                    AccountCode = model.AccountCode
+
+                });
+
                 // return View();
             }
         }
@@ -685,7 +806,7 @@ namespace eTactWeb.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> SaleInvoice(int ID, string Mode, int YearCode, string dashboardType = "", string fromDate = "", string toDate = "", string partCode = "", string itemName = "", string saleBillNo = "", string custName = "", string sono = "", string custOrderNo = "", string schNo = "", string performaInvNo = "", string saleQuoteNo = "", string domExportNEPZ = "", string Searchbox = "", string summaryDetail = "")
+        public async Task<IActionResult> SaleInvoice(int ID, string Mode, int YearCode, string DashboardType = "", string FromDate = "", string ToDate = "", string partCode = "", string itemName = "", string VoucherNo = "", string custName = "", string sono = "", string custOrderNo = "", string schNo = "", string PerformaInvNo = "", string saleQuoteNo = "", string domExportNEPZ = "", string Searchbox = "", string summaryDetail = "", int? GroupName = null, int? AccountCode = null, int? AccountCodeBack = null, string VoucherTypeBack = "", string[] AccountList = null,string? Narration = "", float? Amount = null, string? DR="", string? CR="")
         {
             var model = new SaleBillModel(); // Create a new model instance for the view
 
@@ -695,6 +816,110 @@ namespace eTactWeb.Controllers
             HttpContext.Session.Remove("SaleBillModel");
             HttpContext.Session.Remove("KeyAdjGrid");
             HttpContext.Session.Remove("KeyAdjChallanGrid");
+            var featuresoptions = _SaleBill.GetFeatureOption();
+
+            if (featuresoptions?.Result?.Result != null &&
+                featuresoptions.Result.Result.Rows.Count > 0)
+            {
+                model.AllowToChangeSaleBillStoreName =
+                    featuresoptions.Result.Result.Rows[0]["AllowToChangeSaleBillStoreName"]?.ToString() ?? "";
+            }
+            else
+            {
+                model.AllowToChangeSaleBillStoreName = "";
+            }
+
+            if (model.Mode != "U" && model.Mode != "V")
+            {
+                model.Uid = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                model.ActualEnteredBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                model.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
+            }
+            model.adjustmentModel = new AdjustmentModel();
+
+            if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
+            {
+                model = await _SaleBill.GetViewByID(ID, Mode, YearCode);
+                model.Mode = Mode;
+                model.ID = ID;
+            }
+            else
+            {
+                model.FinFromDate = HttpContext.Session.GetString("FromDate");
+                model.FinToDate = HttpContext.Session.GetString("ToDate");
+                model.SaleBillYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+                model.CC = HttpContext.Session.GetString("Branch");
+            }
+
+            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                SlidingExpiration = TimeSpan.FromMinutes(55),
+                Size = 1024,
+            };
+
+            model.CustomerJobWorkChallanAdj = model.CustomerJobWorkChallanAdj == null ? new List<CustomerJobWorkChallanAdj>() : model.CustomerJobWorkChallanAdj;
+            HttpContext.Session.SetString("KeySaleBillGrid", JsonConvert.SerializeObject(model.saleBillDetails));
+            HttpContext.Session.SetString("KeyAdjChallanGrid", JsonConvert.SerializeObject(model.CustomerJobWorkChallanAdj));
+            HttpContext.Session.SetString("KeyAdjGrid", JsonConvert.SerializeObject(model.adjustmentModel == null ? new AdjustmentModel() : model.adjustmentModel));
+            HttpContext.Session.SetString("KeyTaxGrid", JsonConvert.SerializeObject(model.TaxDetailGridd == null ? new List<TaxModel>() : model.TaxDetailGridd));
+            HttpContext.Session.SetString("SaleBillModel", JsonConvert.SerializeObject(model == null ? new SaleBillModel() : model));
+            HttpContext.Session.SetString("SaleInvoice", JsonConvert.SerializeObject(model));
+
+            model.FromDateBack = FromDate;
+            model.ToDateBack = ToDate;
+            model.PartCodeBack = partCode;
+            model.ItemNameBack = itemName;
+            model.SaleBillNoBack = VoucherNo;
+            model.CustNameBack = custName;
+            model.SonoBack = sono;
+            model.CustOrderNoBack = custOrderNo;
+            model.SchNoBack = schNo;
+            model.PerformaInvNoBack = PerformaInvNo;
+            model.SaleQuoteNoBack = saleQuoteNo;
+            model.DomesticExportNEPZBack = domExportNEPZ;
+            model.SearchBoxBack = Searchbox;
+            model.SummaryDetailBack = summaryDetail;
+            model.DashboardTypeBack = DashboardType;
+            model.GroupCodeBack = GroupName;
+            model.AccountCodeBack = AccountCode;
+            model.AccountNameBack = AccountCodeBack;
+            model.VoucherTypeBack = VoucherTypeBack;
+            model.AccountList = AccountList;
+            return View(model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> SaleBillOnCounter(int ID, string Mode, int YearCode, string dashboardType = "", string fromDate = "", string toDate = "", string partCode = "", string itemName = "", string VoucherNo = "", string custName = "", string sono = "", string custOrderNo = "", string schNo = "", string performaInvNo = "", string saleQuoteNo = "", string domExportNEPZ = "", string Searchbox = "", string summaryDetail = "")
+        {
+            var model = new SaleBillModel(); // Create a new model instance for the view
+
+            ViewData["Title"] = "Sale Bill Details";
+            TempData.Clear();
+            HttpContext.Session.Remove("KeySaleBillGrid");
+            HttpContext.Session.Remove("SaleBillModel");
+            HttpContext.Session.Remove("KeyAdjGrid");
+            HttpContext.Session.Remove("KeyAdjChallanGrid");
+
+            string referer = Request.Headers["Referer"].ToString();
+
+            // Remove session only if NOT coming from SaleBillList
+            if (string.IsNullOrEmpty(referer) || !referer.Contains("SaleBillList", StringComparison.OrdinalIgnoreCase))
+            {
+                HttpContext.Session.Remove("SaleBillListItem");
+            }
+            var featuresoptions = _SaleBill.GetFeatureOption();
+
+            if (featuresoptions?.Result?.Result != null &&
+                featuresoptions.Result.Result.Rows.Count > 0)
+            {
+                model.AllowToChangeSaleBillStoreName =
+                    featuresoptions.Result.Result.Rows[0]["AllowToChangeSaleBillStoreName"]?.ToString() ?? "";
+            }
+            else
+            {
+                model.AllowToChangeSaleBillStoreName = "";
+            }
 
             if (model.Mode != "U" && model.Mode != "V")
             {
@@ -737,7 +962,7 @@ namespace eTactWeb.Controllers
             model.ToDateBack = toDate;
             model.PartCodeBack = partCode;
             model.ItemNameBack = itemName;
-            model.SaleBillNoBack = saleBillNo;
+            model.SaleBillNoBack = VoucherNo;
             model.CustNameBack = custName;
             model.SonoBack = sono;
             model.CustOrderNoBack = custOrderNo;
@@ -749,11 +974,9 @@ namespace eTactWeb.Controllers
             model.SummaryDetailBack = summaryDetail;
 
             return View(model);
+
         }
-
-
-
-        public async Task<IActionResult> SaleInvoiceMemoryGrid()
+            public async Task<IActionResult> SaleInvoiceMemoryGrid()
         {
             
             HttpContext.Session.Remove("SaleBillListItem");
@@ -767,7 +990,7 @@ namespace eTactWeb.Controllers
 
         [HttpGet]
         [Route("{controller}/Dashboard")]
-        public async Task<IActionResult> SBDashboard(string summaryDetail = "", string Flag = "True", string partCode = "", string itemName = "", string saleBillno = "", string customerName = "", string sono = "", string custOrderNo = "", string schNo = "", string performaInvNo = "", string saleQuoteNo = "", string domensticExportNEPZ = "", string fromdate = "", string toDate = "", string searchBox = "")
+        public async Task<IActionResult> SBDashboard(string summaryDetail = "", string Flag = "True", string partCode = "", string itemName = "", string saleBillno = "", string customerName = "", string sono = "", string custOrderNo = "", string schNo = "", string performaInvNo = "", string saleQuoteNo = "", string domensticExportNEPZ = "",string SubInvoicetype="", string fromdate = "", string toDate = "", string searchBox = "",string SaleBillEntryFrom="")
         {
             try
             {
@@ -784,7 +1007,7 @@ namespace eTactWeb.Controllers
                 model.SaleBillYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
                 model.SummaryDetail = "Summary";
                 model.SONO = "";
-                var Result = await _SaleBill.GetDashboardData(model.SummaryDetail, partCode, itemName, saleBillno, customerName, sono, custOrderNo, schNo, performaInvNo, saleQuoteNo, domensticExportNEPZ, ParseFormattedDate(model.FinFromDate.Split(" ")[0]), common.CommonFunc.ParseFormattedDate(model.FinToDate.Split(" ")[0])).ConfigureAwait(true);
+                var Result = await _SaleBill.GetDashboardData(model.SummaryDetail, partCode, itemName, saleBillno, customerName, sono, custOrderNo, schNo, performaInvNo, saleQuoteNo, domensticExportNEPZ, SubInvoicetype, ParseFormattedDate(model.FinFromDate.Split(" ")[0]), common.CommonFunc.ParseFormattedDate(model.FinToDate.Split(" ")[0]), SaleBillEntryFrom).ConfigureAwait(true);
                 if (Result != null)
                 {
                     var _List = new List<TextValue>();
@@ -798,7 +1021,7 @@ namespace eTactWeb.Controllers
                             , "CancelBill", "Canceldate", "CancelBy", "Cancelreason", "BankName", "FreightPaid", "DispatchDelayReason", "AttachmentFilePath1", "AttachmentFilePath2", "AttachmentFilePath3", "DocketNo", "DispatchDelayreson", "Commodity", "CC"
                             , "Uid", "MachineName", "ActualEnteredByName", "ActualEntryDate", "LastUpdatedByName"
                             , "LastUpdationDate", "TypeItemServAssets", "SaleBillJobwork", "PerformaInvNo", "PerformaInvDate", "PerformaInvYearCode"
-                            , "BILLAgainstWarrenty", "ExportInvoiceNo", "InvoiceTime", "RemovalDate", "RemovalTime", "EntryFreezToAccounts", "BalanceSheetClosed", "SaleQuotNo", "SaleQuotDate", "salesperson_name", "SalesPersonMobile"
+                            , "BILLAgainstWarrenty", "ExportInvoiceNo", "InvoiceTime", "RemovalDate", "RemovalTime", "EntryFreezToAccounts", "BalanceSheetClosed", "SaleQuotNo", "SaleQuotDate", "salesperson_name", "SalesPersonMobile", "SaleBillEntryFrom"
                             );
                         model.SaleBillDataDashboard = CommonFunc.DataTableToList<SaleBillDashboard>(DT, "SaleBillSummTable");
                     }
@@ -831,13 +1054,80 @@ namespace eTactWeb.Controllers
                 throw ex;
             }
         }
-        public async Task<IActionResult> GetSearchData(string summaryDetail, string partCode, string itemName, string saleBillno, string customerName, string sono, string custOrderNo, string schNo, string performaInvNo, string saleQuoteNo, string domensticExportNEPZ, string fromdate, string toDate, int pageNumber = 1, int pageSize = 50, string SearchBox = "")
+
+        [HttpGet]
+        [Route("{controller}/SaleBillOnCounterDashboard")]
+        public async Task<IActionResult> SaleBillOnCounterDashboard(string summaryDetail = "", string Flag = "True", string partCode = "", string itemName = "", string saleBillno = "", string customerName = "", string sono = "", string custOrderNo = "", string schNo = "", string performaInvNo = "", string saleQuoteNo = "", string domensticExportNEPZ = "",string SubInvoicetype="", string fromdate = "", string toDate = "", string searchBox = "",string SaleBillEntryFrom="")
+        {
+            try
+            {
+                HttpContext.Session.Remove("KeySaleBillGrid");
+                HttpContext.Session.Remove("KeyTaxGrid");
+                var model = new SaleBillDashboard();
+
+                var FromDt = HttpContext.Session.GetString("FromDate");
+                model.FinFromDate = Convert.ToDateTime(FromDt).ToString("dd/MM/yyyy");
+                //DateTime ToDate = DateTime.Today;
+                var ToDt = HttpContext.Session.GetString("ToDate");
+                model.FinToDate = Convert.ToDateTime(ToDt).ToString("dd/MM/yyyy");
+
+                model.SaleBillYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+                model.SummaryDetail = "Summary";
+                model.SONO = "";
+                var Result = await _SaleBill.GetDashboardData(model.SummaryDetail, partCode, itemName, saleBillno, customerName, sono, custOrderNo, schNo, performaInvNo, saleQuoteNo, domensticExportNEPZ, SubInvoicetype, ParseFormattedDate(model.FinFromDate.Split(" ")[0]), common.CommonFunc.ParseFormattedDate(model.FinToDate.Split(" ")[0]), SaleBillEntryFrom).ConfigureAwait(true);
+                if (Result != null)
+                {
+                    var _List = new List<TextValue>();
+                    DataSet DS = Result.Result;
+                    if (DS != null)
+                    {
+                        var DT = DS.Tables[0].DefaultView.ToTable(true, "SaleBillNo", "SaleBillDate", "GSTNO", "AccountCode", "AccountName", "SupplyType", "CustAddress", "StateNameofSupply", "AgainstVoucherNo"
+                            , "CityofSupply", "DocumentHead", "ConsigneeAccountName", "ConsigneeAddress", "PaymentTerm", "Currency", "BillAmt", "TaxableAmt", "GSTAmount", "RoundType", "RoundOffAmt", "INVNetAmt"
+                            , "Ewaybillno", "EInvNo", "EinvGenerated", "CountryOfSupply", "TransporterdocNo", "TransportModeBYRoadAIR", "DispatchTo", "DispatchThrough", "Remark", "Approved", "ApprovDate", "ApprovedBy", "ExchangeRate"
+                            , "SaleBillEntryId", "SaleBillYearCode", "SaleBillEntryDate", "Shippingdate", "DistanceKM", "vehicleNo", "TransporterName", "DomesticExportNEPZ", "PaymentCreditDay", "ReceivedAmt", "pendAmount"
+                            , "CancelBill", "Canceldate", "CancelBy", "Cancelreason", "BankName", "FreightPaid", "DispatchDelayReason", "AttachmentFilePath1", "AttachmentFilePath2", "AttachmentFilePath3", "DocketNo", "DispatchDelayreson", "Commodity", "CC"
+                            , "Uid", "MachineName", "ActualEnteredByName", "ActualEntryDate", "LastUpdatedByName"
+                            , "LastUpdationDate", "TypeItemServAssets", "SaleBillJobwork", "PerformaInvNo", "PerformaInvDate", "PerformaInvYearCode"
+                            , "BILLAgainstWarrenty", "ExportInvoiceNo", "InvoiceTime", "RemovalDate", "RemovalTime", "EntryFreezToAccounts", "BalanceSheetClosed", "SaleQuotNo", "SaleQuotDate", "salesperson_name", "SalesPersonMobile", "SaleBillEntryFrom"
+                            );
+                        model.SaleBillDataDashboard = CommonFunc.DataTableToList<SaleBillDashboard>(DT, "SaleBillSummTable");
+                    }
+
+                    if (Flag != "True")
+                    {
+                        model.FromDate1 = fromdate;
+                        model.ToDate1 = toDate;
+                        model.FinFromDate = fromdate;
+                        model.FinToDate = toDate;
+                        model.SaleBillNo = saleBillno;
+                        model.PartCode = partCode;
+                        model.ItemName = itemName;
+                        model.AccountName = customerName;
+                        model.SONO = sono;
+                        model.CustOrderNo = custOrderNo;
+                        model.SchNo = schNo;
+                        model.PerformaInvNo = performaInvNo;
+                        model.SaleQuotNo = saleQuoteNo;
+                        model.DomesticExportNEPZ = domensticExportNEPZ;
+                        model.SummaryDetail = summaryDetail;
+                        model.Searchbox = searchBox;
+                        return View(model);
+                    }
+                }
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public async Task<IActionResult> GetSearchData(string summaryDetail, string partCode, string itemName, string saleBillno, string customerName, string sono, string custOrderNo, string schNo, string performaInvNo, string saleQuoteNo, string domensticExportNEPZ, string fromdate, string toDate,string SaleBillEntryFrom, string SubInvoicetype, int pageNumber = 1, int pageSize = 50, string SearchBox = "")
         {
             try
             {
                 var model = new SaleBillDashboard();
                 model.SaleBillYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-                var Result = await _SaleBill.GetDashboardData(summaryDetail, partCode, itemName, saleBillno, customerName, sono, custOrderNo, schNo, performaInvNo, saleQuoteNo, domensticExportNEPZ, ParseFormattedDate((fromdate).Split(" ")[0]), ParseFormattedDate(toDate.Split(" ")[0])).ConfigureAwait(true);
+                var Result = await _SaleBill.GetDashboardData(summaryDetail, partCode, itemName, saleBillno, customerName, sono, custOrderNo, schNo, performaInvNo, saleQuoteNo, domensticExportNEPZ, SubInvoicetype, ParseFormattedDate((fromdate).Split(" ")[0]), ParseFormattedDate(toDate.Split(" ")[0]), SaleBillEntryFrom).ConfigureAwait(true);
                 if (Result != null)
                 {
                     var _List = new List<TextValue>();
@@ -853,7 +1143,7 @@ namespace eTactWeb.Controllers
                                     , "CancelBill", "Canceldate", "CancelBy", "Cancelreason", "BankName", "FreightPaid", "DispatchDelayReason", "AttachmentFilePath1", "AttachmentFilePath2", "AttachmentFilePath3", "DocketNo", "DispatchDelayreson", "Commodity", "CC"
                                     , "Uid", "MachineName", "ActualEnteredByName", "ActualEntryDate", "LastUpdatedByName"
                                     , "LastUpdationDate", "TypeItemServAssets", "SaleBillJobwork", "PerformaInvNo", "PerformaInvDate", "PerformaInvYearCode"
-                                    , "BILLAgainstWarrenty", "ExportInvoiceNo", "InvoiceTime", "RemovalDate", "RemovalTime", "EntryFreezToAccounts", "BalanceSheetClosed", "SaleQuotNo", "SaleQuotDate", "salesperson_name", "SalesPersonMobile"
+                                    , "BILLAgainstWarrenty", "ExportInvoiceNo", "InvoiceTime", "RemovalDate", "RemovalTime", "EntryFreezToAccounts", "BalanceSheetClosed", "SaleQuotNo", "SaleQuotDate", "salesperson_name", "SalesPersonMobile", "SaleBillEntryFrom"
                                     );
                             model.SaleBillDataDashboard = CommonFunc.DataTableToList<SaleBillDashboard>(DT, "SaleBillSummTable");
 
@@ -880,7 +1170,7 @@ namespace eTactWeb.Controllers
                                     , "ActualEntryDate", "LastUpdatedByName", "LastUpdationDate", "TypeItemServAssets", "SaleBillJobwork", "PerformaInvNo",
                                     "AgainstProdPlanNo", "AgainstProdPlanYearCode", "AgaisntProdPlanDate", "GSTPer", "GSTType", "ProdSchno", "CostCenterId", "ProdSchYearcode"
                                     , "PerformaInvDate", "PerformaInvYearCode", "BILLAgainstWarrenty", "ExportInvoiceNo", "InvoiceTime", "RemovalDate", "ProcessId"
-                                    , "RemovalTime", "EntryFreezToAccounts", "BalanceSheetClosed", "SaleQuotNo", "SaleQuotDate", "AdviceNo", "AdviceYearCode", "AdviseDate", "AdviseEntryId"
+                                    , "RemovalTime", "EntryFreezToAccounts", "BalanceSheetClosed", "SaleQuotNo", "SaleQuotDate", "AdviceNo", "AdviceYearCode", "AdviseDate", "AdviseEntryId", "SaleBillEntryFrom"
                                 );
                             model.SaleBillDataDashboard = CommonFunc.DataTableToList<SaleBillDashboard>(DT, "SaleBillDetailTable");
                         }
@@ -996,12 +1286,27 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> NewEntryId(int YearCode)
+        public async Task<JsonResult> NewEntryId(int YearCode,string SubInvoicetype)
         {
-            var JSON = await _SaleBill.NewEntryId(YearCode);
+            var JSON = await _SaleBill.NewEntryId(YearCode, SubInvoicetype);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+
+        public async Task<JsonResult> GetCompanyType()
+        {
+            var JSON = await _SaleBill.GetCompanyType();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
+
+        public async Task<JsonResult> EditableRateAndDiscountONSaleInvoice()
+        {
+            var JSON = await _SaleBill.EditableRateAndDiscountONSaleInvoice();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }   
         public async Task<JsonResult> GetCustomerBasedDetails(int Code)
         {
             var JSON = await _SaleBill.GetCustomerBasedDetails(Code);
@@ -1043,7 +1348,7 @@ namespace eTactWeb.Controllers
                     foreach (var item in saleBillDetail)
                     {
                         Indx++;
-                        //item.SeqNo = Indx;
+                        item.SeqNo = Indx;
                     }
                     MainModel.saleBillDetails = saleBillDetail;
 
@@ -1069,7 +1374,7 @@ namespace eTactWeb.Controllers
                     foreach (var item in saleBillGrid)
                     {
                         Indx++;
-                        //item.SeqNo = Indx;
+                        item.SeqNo = Indx;
                     }
                     MainModel.saleBillDetails = saleBillGrid;
 
@@ -1124,7 +1429,7 @@ namespace eTactWeb.Controllers
                         {
 
 
-                            if (ItemDetail.Any(x => x.ItemCode == item.ItemCode))
+                            if (ItemDetail.Where(x => x.ItemCode == item.ItemCode && x.Batchno == item.Batchno && x.Uniquebatchno == item.Uniquebatchno).Any())
                             {
                                 return StatusCode(207, "Duplicate");
                             }
@@ -1190,7 +1495,7 @@ namespace eTactWeb.Controllers
                 {
                     if (SaleBillDetail == null)
                     {
-                        //model.SeqNo = 1;
+                        model.SeqNo = 1;
                         saleBillDetail.Add(model);
                     }
                     else
@@ -1200,7 +1505,7 @@ namespace eTactWeb.Controllers
                             return StatusCode(207, "Duplicate");
                         }
 
-                        //model.SeqNo = SaleBillDetail.Count + 1;
+                        model.SeqNo = SaleBillDetail.Count + 1;
                         saleBillDetail = SaleBillDetail.Where(x => x != null).ToList();
                         rangeSaleBillGrid.AddRange(saleBillDetail);
                         saleBillDetail.Add(model);
@@ -1616,9 +1921,9 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> FillItems(string showAll, string TypeItemServAssets, string sbJobWork)
+        public async Task<JsonResult> FillItems(string showAll, string TypeItemServAssets, string sbJobWork,string SearchItemCode, string SearchPartCode)
         {
-            var JSON = await _SaleBill.FillItems(showAll, TypeItemServAssets, sbJobWork);
+            var JSON = await _SaleBill.FillItems(showAll, TypeItemServAssets, sbJobWork ,SearchItemCode, SearchPartCode);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
@@ -1687,23 +1992,25 @@ namespace eTactWeb.Controllers
                 var ReportName = _SaleBill.GetReportName();
                 webReport.Report.Dispose();
                 webReport.Report = new Report();
-                if (!String.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
-                {
-                    webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0]); // from database
-                }
-                else
-                {
-                    webReport.Report.Load(webRootPath + "\\SaleBill.frx"); // default report
-                }
+                //if (!String.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
+                //{
+                //    webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0]); // from database
+                //}
+                //else
+                //{
+                  
+                //}
+                webReport.Report.Load(webRootPath + "\\SaleEstimate.frx"); // default report
                 webReport.Report.SetParameterValue("entryparam", EntryId);
                 webReport.Report.SetParameterValue("yearparam", YearCode);
-                my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+                my_connection_string = _connectionStringService.GetConnectionString();
+                //my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
                 webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
                 webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
                 webReport.Report.SetParameterValue("MyParameter", my_connection_string);
-                webReport.Report.SetParameterValue("copyType", copyType);
+                //webReport.Report.SetParameterValue("copyType", copyType);
                 webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
-                webReport.Report.SetParameterValue("copyType", copyType);
+                //webReport.Report.SetParameterValue("copyType", copyType);
                 webReport.Report.Prepare();
                 foreach (var dataSource in webReport.Report.Dictionary.DataSources)
                 {
@@ -1783,7 +2090,7 @@ namespace eTactWeb.Controllers
             return Table;
         }
 
-        public async Task<IActionResult> DeleteByID(int ID, int YC, string entryByMachineName, string partCode = "", string itemName = "", string saleBillno = "", string customerName = "", int sono = 0, string custOrderNo = "", string schNo = "", string performaInvNo = "", string saleQuoteNo = "", string domensticExportNEPZ = "", string fromdate = "", string toDate = "", string Searchbox = "")
+        public async Task<IActionResult> DeleteByID(int ID, int YC, string entryByMachineName, string partCode = "", string itemName = "", string saleBillno = "", string customerName = "", int sono = 0, string custOrderNo = "", string schNo = "", string performaInvNo = "", string saleQuoteNo = "", string domensticExportNEPZ = "", string fromdate = "", string toDate = "", string Searchbox = "",string Page="")
         {
             var Result = await _SaleBill.DeleteByID(ID, YC, entryByMachineName).ConfigureAwait(false);
 
@@ -1817,6 +2124,10 @@ namespace eTactWeb.Controllers
                 ViewBag.isSuccess = false;
                 TempData["500"] = "500";
 
+            }
+            if (Page == "SaleBillOnCounterDashboard")
+            {
+                return RedirectToAction("SaleBillOnCounterDashboard", new { Flag = "False", ItemName = itemName, PartCode = partCode, saleBillno = saleBillno, customerName = customerName, sono = sono, custOrderNo = custOrderNo, schNo = schNo, performaInvNo = performaInvNo, saleQuoteNo = saleQuoteNo, domensticExportNEPZ = domensticExportNEPZ, fromdate = fromdate, todate = toDate, searchBox = Searchbox });
             }
             return RedirectToAction("SBDashboard", new { Flag = "False", ItemName = itemName, PartCode = partCode, saleBillno = saleBillno, customerName = customerName, sono = sono, custOrderNo = custOrderNo, schNo = schNo, performaInvNo = performaInvNo, saleQuoteNo = saleQuoteNo, domensticExportNEPZ = domensticExportNEPZ, fromdate = fromdate, todate = toDate, searchBox = Searchbox });
         }

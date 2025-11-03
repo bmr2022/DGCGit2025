@@ -1,4 +1,5 @@
-﻿using eTactWeb.DOM.Models;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
 using System.Globalization;
@@ -15,12 +16,15 @@ namespace eTactWeb.Data.DAL
         //private readonly DataSet? oDataSet = new();
         //private readonly DataTable oDataTable = new();
         private IDataReader? Reader;
+        private readonly ConnectionStringService _connectionStringService;
         private readonly IConnectionStringHelper _connectionStringHelper;
-        public DataLogicDAL(IConfiguration configuration, IConnectionStringHelper connectionStringHelper)
+        public DataLogicDAL(IConfiguration configuration, IConnectionStringHelper connectionStringHelper, ConnectionStringService connectionStringService)
         {
             _connectionStringHelper = connectionStringHelper;
             //configuration = config;
-            DBConnectionString = configuration.GetConnectionString("eTactDB");
+            //DBConnectionString = configuration.GetConnectionString("eTactDB");
+            _connectionStringService = connectionStringService;
+            DBConnectionString = _connectionStringService.GetConnectionString();
 
             //DBConnectionString = _connectionStringHelper.GetConnectionStringForCompany();
         }
@@ -298,7 +302,16 @@ namespace eTactWeb.Data.DAL
                                     Value = Reader["DiscCategoryEntryId"].ToString()
                                 };
                             }
-                            else if (Flag == "GetRegion")
+
+							else if (Flag == "FillVPInvoiceNo")
+							{
+								Listval = new TextValue()
+								{
+									Text = Reader["VPSaleBillNo"].ToString(),
+									Value = Reader["VPSaleBillEntryId"].ToString()
+								};
+							}
+							else if (Flag == "GetRegion")
                             {
                                 Listval = new TextValue()
                                 {
@@ -445,6 +458,14 @@ namespace eTactWeb.Data.DAL
                                     Text = Reader[Constants.DocName].ToString(),
                                     Value = Reader[Constants.EntryID].ToString()
                                 };
+                            } 
+                            else if (Flag == "RecUnitList")
+                            {
+                                Listval = new TextValue()
+                                {
+                                    Text = Reader[Constants.RecStoreName].ToString(),
+                                    Value = Reader[Constants.RecStoreId].ToString()
+                                };
                             }
                             else if (Flag == "COSTCENTER")
                             {
@@ -511,6 +532,14 @@ namespace eTactWeb.Data.DAL
                                 };
                             }
                             else if (Flag == "FillEmployeeName")
+                            {
+                                Listval = new TextValue()
+                                {
+                                    Text = Reader[Constants.EmpName].ToString(),
+                                    Value = Reader[Constants.EmpyID].ToString()
+                                };
+                            }
+                            else if (Flag == "FillEmployee")
                             {
                                 Listval = new TextValue()
                                 {
