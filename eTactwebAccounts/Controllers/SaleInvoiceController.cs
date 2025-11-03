@@ -311,54 +311,65 @@ namespace eTactWeb.Controllers
         {
             try
             {
-                var MainModel = new SaleBillModel();
-                var RCGrid = new List<SaleBillDetail>();
-                var ReceiveChallanGrid = new List<SaleBillDetail>();
-
-                var SeqNo = 1;
-                foreach (var item in model)
+                // 🔹 Step 1: Validate input
+                if (model == null || !model.Any())
                 {
-                    //string modelJson = HttpContext.Session.GetString("ReceiveItems");
-                    //IList<TransferFromWorkCenterDetail> RCDetail = new List<TransferFromWorkCenterDetail>();
-                    //if (modelJson != null)
-                    //{
-                    //    RCDetail = JsonConvert.DeserializeObject<List<TransferFromWorkCenterDetail>>(modelJson);
-                    //}
-
-                    if (model != null)
-                    {
-
-                        {
-                            item.SeqNo = SeqNo;
-                            //RCGrid = RCDetail.Where(x => x != null).ToList();
-                            ReceiveChallanGrid.AddRange(RCGrid);
-                            RCGrid.Add(item);
-                            SeqNo++;
-
-
-                        }
-                        RCGrid = RCGrid.OrderBy(item => item.SeqNo).ToList();
-                        MainModel.saleBillDetails = RCGrid;
-                        MainModel.ItemDetailGrid = RCGrid;
-
-
-                        HttpContext.Session.SetString("KeySaleBillGrid", JsonConvert.SerializeObject(MainModel.saleBillDetails));
-                        HttpContext.Session.SetString("SaleBillModel", JsonConvert.SerializeObject(MainModel));
-
-                        //HttpContext.Session.SetString("KeyTransferFromWorkCenterGrid", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
-                    }
-                    else
-                    {
-                        ModelState.TryAddModelError("Error", "Receive Challan List Cannot Be Empty...!");
-                    }
+                    ModelState.AddModelError("Error", "Sale Bill Detail list cannot be empty.");
+                    return BadRequest(ModelState);
                 }
 
+                var mainModel = new SaleBillModel();
+                var rcGrid = new List<SaleBillDetail>();
 
-                return PartialView("_SaleBillGrid", MainModel);
+                // 🔹 Step 2: Try to get existing session data
+                string existingSession = HttpContext.Session.GetString("KeySaleBillGrid");
+
+                if (!string.IsNullOrEmpty(existingSession))
+                {
+                    var existingList = JsonConvert.DeserializeObject<List<SaleBillDetail>>(existingSession);
+                    if (existingList != null)
+                        rcGrid = existingList;
+                }
+
+                // 🔹 Step 3: Determine next sequence number
+                int seqNoStart = (rcGrid != null && rcGrid.Any()) ? rcGrid.Max(x => x.SeqNo) + 1 : 1;
+
+                // 🔹 Step 4: Loop through new items and check for duplicates
+                foreach (var item in model)
+                {
+                    bool isDuplicate = rcGrid.Any(x =>
+                        x.SONO == item.SONO &&
+                        x.ItemCode == item.ItemCode &&
+                        x.Batchno == item.Batchno &&
+                        x.Uniquebatchno == item.Uniquebatchno
+                    );
+
+                    if (isDuplicate)
+                    {
+                        // Return "Duplicate" with 207 code (like your JS expects)
+                        return StatusCode(207, "Duplicate");
+                    }
+
+                    // Otherwise add new entry
+                    item.SeqNo = seqNoStart++;
+                    rcGrid.Add(item);
+                }
+
+                // 🔹 Step 5: Sort and assign back to model
+                rcGrid = rcGrid.OrderBy(x => x.SeqNo).ToList();
+                mainModel.saleBillDetails = rcGrid;
+                mainModel.ItemDetailGrid = rcGrid;
+
+                // 🔹 Step 6: Save back to session
+                HttpContext.Session.SetString("KeySaleBillGrid", JsonConvert.SerializeObject(rcGrid));
+                HttpContext.Session.SetString("SaleBillModel", JsonConvert.SerializeObject(mainModel));
+
+                // 🔹 Step 7: Return updated partial
+                return PartialView("_SaleBillGrid", mainModel);
             }
             catch (Exception ex)
             {
-                throw ex;
+                return StatusCode(500, "Error while adding sale bill details: " + ex.Message);
             }
         }
         public async Task<JsonResult> AutoFillStore(string SearchStoreName)
