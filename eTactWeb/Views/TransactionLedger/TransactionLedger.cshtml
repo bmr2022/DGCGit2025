@@ -1034,11 +1034,7 @@
                         url: window.location.href
                     });
 
-                    // ✅ Show Back button
-                    $('#BackButton').show();
-
-                    url = `/${controller}/${action}?ID=${docid}&Mode=${mode}&YearCode=${yearcode}&AccountCode=${accountcode}&VoucherNo=${voucherno}`;
-                    window.open(url, "_blank");
+                    window.location.href = `/${controller}/${action}?ID=${docid}&Mode=${mode}&YearCode=${yearcode}&AccountCode=${accountcode}&VoucherNo=${voucherno}`;
                     break;
 
                 // ============================================================
