@@ -1211,6 +1211,9 @@
                         "BillQty": row.find('#BillQty-' + i).text() || "",
                         "Unit": $('#Unit').val() || "",
                         "BillRate": row.find('#BillRate-' + i).text() || "",
+                           "BillAmount": row.find('#INVNetAmt-' + i).text() || "",
+                           "PaidAmt": row.find('#PaidAmt-' + i).text() || "",
+                           "RemainingAmt": row.find('#RemainingAmt-' + i).text() || "",
                         "DiscountPer": row.find('#disPer-' + i).text() || "",
                         "DiscountAmt": row.find('#DisAmt-' + i).text() || "",
                         "ItemSize": $('#ItemSize').val() || "",
@@ -1258,6 +1261,14 @@
 
                         if (obj.Result != null) {
                             var j = 1;
+                                   if (html != null) {
+               let existingRows = [];
+                  $('#divAddCreditNotePopupDataGrid tr').each(function () {
+                   let existingItemCode = $(this).find('input[id^="popupItemCode-"]').val();
+                   if (existingItemCode && existingItemCode != $('#ItemCode').val()) {
+                       existingRows.push($(this).prop('outerHTML'));
+                   }
+               });
                             var checkedRowsCount = $('#divCreditNoteDataGrid tr').length;
                             popUpItems = [];
                             for (var i = 1; i <= checkedRowsCount; i++) {

@@ -2096,14 +2096,17 @@
                         var firstAccountCode = $('#AccountCode-1').val();
                         var AccountName = $('#AccountName-1').val();
 
-                        if (firstAccountCode) {
+                          if (firstAccountCode) {
                             // ✅ Fill your #WCID dropdown with only that one value
-                            $('#AccountCode').empty().append(
-                                $('<option>', {
-                                    value: firstAccountCode,
-                                    text: AccountName
-                                })
-                            );
+                            // $('#AccountCode').empty().append(
+                            //     $('<option>', {
+                            //         value: firstAccountCode,
+                            //         text: AccountName
+                            //     })
+                            // );
+                            $('#AccountCode').val(firstAccountCode);
+                            $('#AccountCodeText').val(AccountName);
+
                             // $('#AccountCode').prop('disabled', true);
                             $.getJSON({
                                 url: '@Url.Action("GetGstRegister", "PurchaseOrder")',

@@ -153,12 +153,19 @@ namespace eTactWeb.DOM.Models
         public string? SONO { get; set; }
         public int SOYearCode { get; set; }
         public string? SODate { get; set; }
+
         public string? CustOrderNo { get; set; }
         public int SOEntryId { get; set; }
         public string? BatchNo { get; set; }
         public string? UniqueBatchNo { get; set; }
         public float AltQty { get; set; }
         public string? AltUnit { get; set; }
+        [Column(TypeName = "decimal(10, 4)")]
+        public decimal BillAmount { get; set; }
+        [Column(TypeName = "decimal(10, 4)")]
+        public decimal PaidAmt { get; set; }
+        [Column(TypeName = "decimal(10, 4)")]
+        public decimal RemainingAmt { get; set; }
 
         [Column(TypeName = "decimal(10, 4)")]
         public decimal ItemNetAmount { get; set; }

@@ -566,6 +566,9 @@ namespace eTactWeb.Controllers
             DTSSGrid.Columns.Add("SOEntryId", typeof(int));
             DTSSGrid.Columns.Add("BatchNo", typeof(string));
             DTSSGrid.Columns.Add("UniqueBatchNo", typeof(string));
+            DTSSGrid.Columns.Add("BillAmount", typeof(float));
+            DTSSGrid.Columns.Add("PaidAmt", typeof(float));
+            DTSSGrid.Columns.Add("RemainingAmt", typeof(float));
 
             foreach (var Item in DetailList)
             {
@@ -612,7 +615,10 @@ namespace eTactWeb.Controllers
                     Item.CustOrderNo == null ? string.Empty : Item.CustOrderNo,
                     Item.SOEntryId,
                     Item.BatchNo == null ? string.Empty : Item.BatchNo,
-                    Item.UniqueBatchNo == null ? string.Empty : Item.UniqueBatchNo
+                    Item.UniqueBatchNo == null ? string.Empty : Item.UniqueBatchNo,
+                     Item.BillAmount,
+                    Item.PaidAmt,
+                    Item.RemainingAmt
                     });
             }
             DTSSGrid.Dispose();
