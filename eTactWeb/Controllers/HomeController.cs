@@ -731,7 +731,7 @@ public class HomeController : Controller
                 conn.Open();
                 
 
-                sql = "SELECT RetailerOrManufacturar FROM Company_Detail";
+                sql = "SELECT isnull(RetailerOrManufacturar,'')  RetailerOrManufacturar  FROM Company_Detail";
 
                 cmdAccountCode = new SqlCommand(sql, conn);
                 rdrAccount = cmdAccountCode.ExecuteReader();
