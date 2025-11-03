@@ -1,0 +1,528 @@
+﻿@model eTactWeb.DOM.Models.PPCToolIssueMainModel
+
+
+@{
+    ViewData["Title"] = "PPCToolIssue";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+<style>
+    #ReqWithoutBom th {
+        background-color: #127387;
+        position: sticky;
+        top: -15px;
+        z-index: 1;
+    }
+</style>
+
+<div class="card bg-gradient mb-3 border-light shadow-lg">
+    <form asp-action="PPCToolIssue" autocomplete="off" class="form-horizontal">
+        <div class="card-header card-headerBG text-light bg-gradient">
+            <h5>
+                <strong>PPC Tool Issue</strong>
+                <span class="d-flex float-end" style="margin-top:-2px;">
+                    <div class="col-auto">
+                       
+                        <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="PrintReport"
+                           asp-controller="PPCToolIssue" asp-route-EntryId="" asp-route-YearCode="" target="_blank">
+                            <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                            PRINT
+                        </a>
+                    </div>
+                    <a asp-action="Dashboard" asp-route-FromDate="@DateTime.Now.AddDays(1 - DateTime.Now.Day);" asp-route-Todate="@DateTime.Today" asp-route-Flag="True" class="btn btn-sm btn-outline-light bg-gradient">
+                        <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+                        Dashboard
+                    </a>
+                    @*<partial name="_FormsButton" />*@
+                    <div class="row justify-content-between g-2">
+                        <div class="col-auto">
+                           
+                            <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
+                                <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                                BACK
+                            </a>
+                        </div>
+                        @if (Model.Mode != "V")
+                        {
+                            <div class="col-auto">
+                                @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                                <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                    @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                    <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                    REFRESH
+                                </a>
+                            </div>
+                            @if (Model.Mode == "U")
+                            {
+                                @*Model.Mode = "U";*@
+                                <div class="col-auto">
+                                    @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+                                    <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton">
+                                        <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                        UPDATE
+                                    </button>
+                                </div>
+                            }
+
+                            else
+                            {
+                                <div class="col-auto">
+                                    @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
+                                    <button type="submit" class="btn btn-primary btn-sm" id="submitBTN">
+                                        <i class="fa-solid fa-chevron-circle-right"></i>
+                                        SUBMIT
+                                    </button>
+                                </div>
+                            }
+                        }
+                    </div>
+                </span>
+            </h5>
+        </div>
+        <div class="card-body bg-light pt-0">
+            <div class="accordion shadow-lg">
+                <div class="accordion-item" id="GI_Grid">
+                    <h2 class="accordion-header" id="H_RParameter">
+                        <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_RParameter" aria-expanded="true" aria-controls="B_RParameter">
+                            <i class="fa-brands fa-wpforms fa-lg fa-fw pr35"></i>
+                            Required Parameter
+                        </button>
+                    </h2>
+                    <div id="B_RParameter" class="accordion-collapse collapse show pnl1 bg-gradient" aria-labelledby="H_RParameter">
+                        <div class="accordion-body">
+                            <div class="row g-2 gx-3">
+                                
+                                <div class="col-lg-2">
+                                    <label asp-for="ToolIssueEntryId" class="form-label">Entry Id</label>
+                                    <input asp-for="ToolIssueEntryId" id="ToolIssueEntryId" class="form-control" readonly />
+                                </div>
+                                <div class="col-lg-2">
+                                    <label asp-for="ToolIssueYearCode" class="form-label">Year Code</label>
+                                    <input asp-for="ToolIssueYearCode" class="form-control" readonly />
+                                </div>
+                                <div class="col-lg-2">
+                                    <label asp-for="ToolIssueDate" class="form-label">Issue Date</label>
+                                    <input asp-for="ToolIssueDate" type="date" class="form-control" />
+                                </div>
+                                <div class="col-lg-2">
+                                    <label asp-for="ToolIssueEntryDate" class="form-label">Entry Date</label>
+                                    <input asp-for="ToolIssueEntryDate" type="date" class="form-control" readonly />
+                                </div>
+                                <div class="col-lg-2">
+                                    <label asp-for="ToolIssueSlipNo" class="form-label">Slip No</label>
+                                    <input asp-for="ToolIssueSlipNo" id="ToolIssueSlipNo" class="form-control" readonly />
+                                </div>
+                                <div class="col-lg-2">
+                                    <label asp-for="IssueToDepartmentId" class="form-label">Issue To Dept</label>
+                                    <select asp-for="IssueToDepartmentId" class="form-select"
+                                            asp-items="ViewBag.Departments"></select>
+                                </div>
+                                <div class="col-lg-2">
+                                    <label asp-for="IssuedByEmpId" class="form-label">Issued By</label>
+                                    <select asp-for="IssuedByEmpId" class="form-select"
+                                            asp-items="ViewBag.Employees"></select>
+                                </div>
+                                <div class="col-lg-2">
+                                    <label asp-for="ApprovedByEmpId" class="form-label">Approved By</label>
+                                    <select asp-for="ApprovedByEmpId" class="form-select"
+                                            asp-items="ViewBag.Employees"></select>
+                                </div>
+                                <div class="col-lg-2">
+                                    <label asp-for="ReceivedByEmpId" class="form-label">Received By</label>
+                                    <select asp-for="ReceivedByEmpId" class="form-select"
+                                            asp-items="ViewBag.Employees"></select>
+                                </div>
+                                <div class="col-lg-2">
+                                    <label asp-for="CC" class="form-label">Branch</label>
+                                    <input asp-for="CC" class="form-control" readonly />
+                                </div>
+                                <div class="col-lg-2">
+                                    <label asp-for="PendingStatus" class="form-label">Pending Status</label>
+                                    <select asp-for="PendingStatus" class="form-select">
+                                        <option value="Pending">Pending</option>
+                                        <option value="Approved">Approved</option>
+                                        <option value="Rejected">Rejected</option>
+                                    </select>
+                                </div>
+                                <div class="col-lg-2">
+                                    <label asp-for="LastUpdatedDate" class="form-label">Last Updated</label>
+                                    <input asp-for="LastUpdatedDate" type="date" class="form-control" readonly />
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="H_SAGrid">
+                            <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_ToolGrid" aria-expanded="true" aria-controls="B_ToolGrid">
+                                <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Req Item Grid</strong>
+                            </button>
+                        </h2>
+
+                        <div id="B_ToolGrid" class="accordion-collapse collapse pnl4 bg-gradient " aria-labelledby="H_ToolGrid">
+                            <div class="accordion-body ">
+
+                                <!-- 🔹 Input Form Row -->
+                                <div class="card  mb-3">
+                                    <div class="card-body overflow-auto">
+                                        <table class="table table-hover table-bordered">
+                                            <thead class="bg-gradient card-headerBG text-light small">
+                                                <tr>
+                                                    <th style="min-width: 150px;">Barcode</th>
+                                                    <th style="min-width: 150px;">Serial No</th>
+                                                    <th style="min-width: 150px;">Tool Type</th>
+                                                    <th style="min-width: 150px;">Issue Qty</th>
+                                                    <th style="min-width: 150px;">Unit</th>
+                                                    <th style="min-width: 150px;">Current Location</th>
+                                                    <th style="min-width: 150px;">Issue To Location</th>
+                                                    <th style="min-width: 150px;">Tool Condition</th>
+                                                    <th style="min-width: 150px;">Last Calibration</th>
+                                                    <th style="min-width: 150px;">Next Calibration Due</th>
+                                                    <th style="min-width: 150px;">Remaining Life (Months)</th>
+                                                    <th style="min-width: 150px;">Prod Plan No</th>
+                                                    <th style="min-width: 150px;">Prod Plan Date</th>
+                                                    <th style="min-width: 150px;">Prod Sch No</th>
+                                                    <th style="min-width: 150px;">Prod Sch Date</th>
+                                                    <th style="min-width: 150px;">For Machine</th>
+                                                    <th style="min-width: 150px;">Special Instruction</th>
+                                                    <th style="min-width: 150px;">Consumed/Returned</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="inputRow">
+                                                <tr>
+                                                    <td><input name="ToolIssueDetails[0].BarCode" id="BarCode" class="form-control" placeholder="Enter Barcode" /></td>
+                                                    <td><input name="ToolIssueDetails[0].SerialNo" id="SerialNo" class="form-control" placeholder="Enter Serial No" /></td>
+                                                    <td><input name="ToolIssueDetails[0].ToolType" id="ToolType" class="form-control" placeholder="Enter Tool Type" /></td>
+                                                    <td><input name="ToolIssueDetails[0].IssueQty" id="IssueQty" class="form-control" placeholder="Enter Issue Quantity" /></td>
+                                                    <td><input name="ToolIssueDetails[0].Unit" id="Unit" class="form-control" placeholder="Enter Unit" /></td>
+                                                    <td><input name="ToolIssueDetails[0].CurrentLocation" id="CurrentLocation" class="form-control" placeholder="Enter Current Location" /></td>
+                                                    <td><input name="ToolIssueDetails[0].IssueToLocation" id="IssueToLocation" class="form-control" placeholder="Enter Issue To Location" /></td>
+                                                    <td><input name="ToolIssueDetails[0].ToolCondition" id="ToolCondition" class="form-control" placeholder="Enter Tool Condition" /></td>
+                                                    <td><input name="ToolIssueDetails[0].LastCalibrationDate" id="LastCalibrationDate" type="date" class="form-control" placeholder="Select Last Calibration Date" /></td>
+                                                    <td><input name="ToolIssueDetails[0].NextCalibrationDueDate" id="NextCalibrationDueDate" type="date" class="form-control" placeholder="Select Next Calibration Date" /></td>
+                                                    <td><input name="ToolIssueDetails[0].RemainingToolLifeInMonths" id="RemainingToolLifeInMonths" class="form-control" placeholder="Enter Remaining Life (Months)" /></td>
+                                                    <td><input name="ToolIssueDetails[0].ProdPlanNo" id="ProdPlanNo" class="form-control" placeholder="Enter Production Plan No" /></td>
+                                                    <td><input name="ToolIssueDetails[0].ProdPlanDate" id="ProdPlanDate" type="date" class="form-control" placeholder="Select Production Plan Date" /></td>
+                                                    <td><input name="ToolIssueDetails[0].ProdSchNo" id="ProdSchNo" class="form-control" placeholder="Enter Production Schedule No" /></td>
+                                                    <td><input name="ToolIssueDetails[0].ProdSchDate" id="ProdSchDate" type="date" class="form-control" placeholder="Select Production Schedule Date" /></td>
+                                                    <td><input name="ToolIssueDetails[0].ForMachineId" id="ForMachineId" class="form-control" placeholder="Enter Machine ID" /></td>
+                                                    <td><input name="ToolIssueDetails[0].SpecialInstruction" id="SpecialInstruction" class="form-control" placeholder="Enter Special Instruction" /></td>
+                                                    <td>
+                                                        <select name="ToolIssueDetails[0].WillBeConsumedOrReturned" id="WillBeConsumedOrReturned" class="form-select">
+                                                            <option value="">-- Select Option --</option>
+                                                            <option value="Returned">Returned</option>
+                                                            <option value="Consumed">Consumed</option>
+                                                        </select>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+
+
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <!-- 🔹 Add to Grid Button -->
+                                <div class="col-4 col-auto">
+                                    <div class="row justify-content-around">
+                                        <div class="col-auto">
+                                            <button type="button" class="GridButton btn btn-sm btn-outline-danger mt-3">
+                                                <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="progress my-2 mb-3" style="height: 4px;">
+                                    <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated"
+                                         role="progressbar" style="width: 100%" aria-valuenow="100"
+                                         aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+
+                                <!-- 🔹 Added Items Grid -->
+                                <div class="card">
+                                    <div class="card-body overflow-auto pb-0">
+                                        <table class="table table-hover table-bordered table-striped" id="table">
+                                            <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+                                                <tr>
+                                                    <th>Action</th>
+                                                    <th>Barcode</th>
+                                                    <th>Serial No</th>
+                                                    <th>Tool Type</th>
+                                                    <th>Issue Qty</th>
+                                                    <th>Unit</th>
+                                                    <th>Current Location</th>
+                                                    <th>Issue To Location</th>
+                                                    <th>Tool Condition</th>
+                                                    <th>Last Calibration</th>
+                                                    <th>Next Calibration Due</th>
+                                                    <th>Remaining Life</th>
+                                                    <th>Prod Plan No</th>
+                                                    <th>Prod Plan Date</th>
+                                                    <th>Prod Sch No</th>
+                                                    <th>Prod Sch Date</th>
+                                                    <th>For Machine</th>
+                                                    <th>Special Instruction</th>
+                                                    <th>Consumed/Returned</th>
+                                                    <th>Pending Status</th>
+                                                    <th>Pending Qty</th>
+                                                </tr>
+                                            </thead>
+                                           <tbody id="divToolIssueAdded">
+                                                @await Html.PartialAsync("_PPCToolIssueGrid", Model.ToolIssueDetails)
+                                           </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+            <div class="card-header card-headerBG text-light bg-gradient">
+                <h5>
+                    <strong>PPC Tool Issue</strong>
+                    <span class="d-flex float-end" style="margin-top:-2px;">
+                        <div class="col-auto">
+                            @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+                            <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="PrintButton">
+                                <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                PRINT
+                            </button>
+                        </div>
+                        <a asp-action="Dashboard" asp-route-FromDate="@DateTime.Now.AddDays(1 - DateTime.Now.Day);" asp-route-Todate="@DateTime.Today" asp-route-Flag="True" class="btn btn-sm btn-outline-light bg-gradient">
+                            <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+                            Dashboard
+                        </a>
+                        <partial name="_FormsButton" />
+                    </span>
+                </h5>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+<div class="modal fade" id="PasswordAllowPopup" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+     aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="staticBackdropLabel">Confirmation</h3>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row g-2 gx-3">
+                            <div class="card">
+                                <div class="card-body overflow-auto pb-0">
+                                    <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-xs-12">
+                                        <div class="d-flex align-items-center">
+                                            <h6 class="mb-0 me-2">Do You Want to Save & Print?</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="progress my-2" style="height: 4px;">
+                        <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-primary" id="btnPrint">
+                        <i class="fa fa-print"></i> Save & Print
+                    </a>
+                    <button type="button" class="btn btn-danger" id="btnClose">Save Only</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Fetch new entry
+    async function GetNewEntry() {
+        try {
+            const result = await $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetNewEntry", "PPCToolIssue")',
+                dataType: "json"
+            });
+
+            console.log("Raw result:", result);
+
+            // Parse if needed
+            const obj = typeof result === "string" ? JSON.parse(result) : result;
+            console.log("Parsed object:", obj);
+
+            if (obj.Result && obj.Result.length > 0) {
+                $('#ToolIssueEntryId').val(obj.Result[0].EntryID);
+                $('#ToolIssueSlipNo').val(obj.Result[0].ToolIssueSlipNo);
+                return obj.Result[0].EntryID; // return entryId
+            } else if (obj.Error) {
+                alert(obj.Error);
+                return null;
+            }
+        } catch (err) {
+            console.error("Error fetching new entry:", err);
+            alert("Failed to fetch new entry.");
+            return null;
+        }
+    }
+
+    function FillToolBarCode(toolIssueEntryId) {
+       
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("FillToolBarCode", "PPCToolIssue")',
+            data: { ToolIssueEntryId: toolIssueEntryId },
+            dataType: "json",
+            success: function (result) {
+                console.log("Tools fetched:", result);
+                var ddl = $('#BarCode');
+                ddl.empty();
+                ddl.append('<option value="">-- Select Barcode --</option>');
+
+                window.ToolList = result;
+
+                $.each(result, function (i, item) {
+                    ddl.append('<option value="' + item.BarCode + '">' + item.BarCode + '</option>');
+                });
+
+                if (result.length > 0) {
+                    ddl.val(result[0].BarCode).trigger('change');
+                }
+            },
+            error: function (err) {
+                console.error("Error fetching tools:", err);
+            }
+        });
+
+        $('#BarCodeDropdown').change(function () {
+            var selectedBarcode = $(this).val();
+            if (!selectedBarcode) return;
+
+            var tool = window.ToolList.find(x => x.BarCode === selectedBarcode);
+            if (!tool) return;
+
+            $('#SerialNo').val(tool.SerialNo);
+            $('#ToolType').val(tool.Tooltype);
+            $('#CurrentLocation').val(tool.LocationOfInsallation);
+            $('#ExpectedLife').val(tool.ExpectedLife);
+            $('#NextCalibrationDate').val(tool.NextCalibrationDate ? tool.NextCalibrationDate.split('T')[0] : '');
+            $('#ForDepartmentId').val(tool.ForDepartmentId);
+        });
+    } // <<< Add this closing brace
+
+
+    $(document).ready(async function () {
+        const entryId = await GetNewEntry();
+        console.log("Entry ID after fetch:", entryId);
+
+        if (entryId) {
+            FillToolBarCode(entryId);
+        }
+        console.log("Entry ID on load:", entryId);
+        if (entryId) {
+            FillToolBarCode(entryId);
+        }
+        let rowIndex = $("#divToolIssueAdded tr").length; // start index based on existing rows
+
+        // Add to Grid
+        $(".GridButton").click(function () {
+            const inputs = $("#inputRow input, #inputRow select");
+            let emptyCheck = false;
+
+            // Optional: validate required fields
+            inputs.each(function () {
+                if ($(this).val() === "") {
+                    emptyCheck = true;
+                    $(this).addClass("is-invalid");
+                } else {
+                    $(this).removeClass("is-invalid");
+                }
+            });
+
+            if (emptyCheck) {
+                alert("Please fill all fields before adding.");
+                return;
+            }
+
+            // Build row with correct model binding
+            let row = `<tr>
+                <td>
+                    <button type="button" class="btn btn-sm btn-danger removeRow">X</button>
+                    <button type="button" class="btn btn-sm btn-primary editRow">Edit</button>
+                </td>
+                <td><input type="hidden" name="ToolIssueDetails[${rowIndex}].BarCode" value="${$("#BarCode").val()}"/>${$("#BarCode").val()}</td>
+                <td><input type="hidden" name="ToolIssueDetails[${rowIndex}].SerialNo" value="${$("#SerialNo").val()}"/>${$("#SerialNo").val()}</td>
+                <td><input type="hidden" name="ToolIssueDetails[${rowIndex}].ToolType" value="${$("#ToolType").val()}"/>${$("#ToolType").val()}</td>
+                <td><input type="hidden" name="ToolIssueDetails[${rowIndex}].IssueQty" value="${$("#IssueQty").val()}"/>${$("#IssueQty").val()}</td>
+                <td><input type="hidden" name="ToolIssueDetails[${rowIndex}].Unit" value="${$("#Unit").val()}"/>${$("#Unit").val()}</td>
+                <td><input type="hidden" name="ToolIssueDetails[${rowIndex}].CurrentLocation" value="${$("#CurrentLocation").val()}"/>${$("#CurrentLocation").val()}</td>
+                <td><input type="hidden" name="ToolIssueDetails[${rowIndex}].IssueToLocation" value="${$("#IssueToLocation").val()}"/>${$("#IssueToLocation").val()}</td>
+                <td><input type="hidden" name="ToolIssueDetails[${rowIndex}].ToolCondition" value="${$("#ToolCondition").val()}"/>${$("#ToolCondition").val()}</td>
+                <td><input type="hidden" name="ToolIssueDetails[${rowIndex}].LastCalibrationDate" value="${$("#LastCalibrationDate").val()}"/>${$("#LastCalibrationDate").val()}</td>
+                <td><input type="hidden" name="ToolIssueDetails[${rowIndex}].NextCalibrationDueDate" value="${$("#NextCalibrationDueDate").val()}"/>${$("#NextCalibrationDueDate").val()}</td>
+                <td><input type="hidden" name="ToolIssueDetails[${rowIndex}].RemainingToolLifeInMonths" value="${$("#RemainingToolLifeInMonths").val()}"/>${$("#RemainingToolLifeInMonths").val()}</td>
+                <td><input type="hidden" name="ToolIssueDetails[${rowIndex}].ProdPlanNo" value="${$("#ProdPlanNo").val()}"/>${$("#ProdPlanNo").val()}</td>
+                <td><input type="hidden" name="ToolIssueDetails[${rowIndex}].ProdPlanDate" value="${$("#ProdPlanDate").val()}"/>${$("#ProdPlanDate").val()}</td>
+                <td><input type="hidden" name="ToolIssueDetails[${rowIndex}].ProdSchNo" value="${$("#ProdSchNo").val()}"/>${$("#ProdSchNo").val()}</td>
+                <td><input type="hidden" name="ToolIssueDetails[${rowIndex}].ProdSchDate" value="${$("#ProdSchDate").val()}"/>${$("#ProdSchDate").val()}</td>
+                <td><input type="hidden" name="ToolIssueDetails[${rowIndex}].ForMachineId" value="${$("#ForMachineId").val()}"/>${$("#ForMachineId").val()}</td>
+                <td><input type="hidden" name="ToolIssueDetails[${rowIndex}].SpecialInstruction" value="${$("#SpecialInstruction").val()}"/>${$("#SpecialInstruction").val()}</td>
+                <td><input type="hidden" name="ToolIssueDetails[${rowIndex}].WillBeConsumedOrReturned" value="${$("#WillBeConsumedOrReturned").val()}"/>${$("#WillBeConsumedOrReturned").val()}</td>
+            </tr>`;
+
+            $("#divToolIssueAdded").append(row);
+
+            // Clear inputs
+            inputs.val("").prop('selectedIndex', 0);
+
+            rowIndex++; // increment for next row
+        });
+
+        // Remove row
+        $(document).on("click", ".removeRow", function () {
+            $(this).closest("tr").remove();
+            // Optional: reindex remaining rows for model binding if needed
+        });
+
+        // Edit row
+        $(document).on("click", ".editRow", function () {
+            const tr = $(this).closest("tr");
+            $("#BarCode").val(tr.find("td:eq(1)").text());
+            $("#SerialNo").val(tr.find("td:eq(2)").text());
+            $("#ToolType").val(tr.find("td:eq(3)").text());
+            $("#IssueQty").val(tr.find("td:eq(4)").text());
+            $("#Unit").val(tr.find("td:eq(5)").text());
+            $("#CurrentLocation").val(tr.find("td:eq(6)").text());
+            $("#IssueToLocation").val(tr.find("td:eq(7)").text());
+            $("#ToolCondition").val(tr.find("td:eq(8)").text());
+            $("#LastCalibrationDate").val(tr.find("td:eq(9)").text());
+            $("#NextCalibrationDueDate").val(tr.find("td:eq(10)").text());
+            $("#RemainingToolLifeInMonths").val(tr.find("td:eq(11)").text());
+            $("#ProdPlanNo").val(tr.find("td:eq(12)").text());
+            $("#ProdPlanDate").val(tr.find("td:eq(13)").text());
+            $("#ProdSchNo").val(tr.find("td:eq(14)").text());
+            $("#ProdSchDate").val(tr.find("td:eq(15)").text());
+            $("#ForMachineId").val(tr.find("td:eq(16)").text());
+            $("#SpecialInstruction").val(tr.find("td:eq(17)").text());
+            $("#WillBeConsumedOrReturned").val(tr.find("td:eq(18)").text());
+
+            // Remove the row after bringing values to input
+            tr.remove();
+        });
+
+      
+    });
+
+</script>
+
+
+
