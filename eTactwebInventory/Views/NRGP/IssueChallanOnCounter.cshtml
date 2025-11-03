@@ -319,6 +319,7 @@
                                                     <th class="ShowHideOtherDetailTableData">Process</th>
                                                     <th>HSN No</th>
                                                     <th>Unit</th>
+                                                    <th>Location</th>
 
                                                     <th>Amount</th>
                                                     <th>Remark</th>
@@ -372,6 +373,7 @@
                                                     </td>
                                                     <td><input asp-for="HSNNo" style="width:70px !important" readonly /></td>
                                                     <td><input asp-for="unit" style="width:70px !important" readonly /></td>
+                                                    <td><input asp-for="ItemLocation" style="width:70px !important" readonly /></td>
 
                                                     <td><input asp-for="Amount" style="width:70px !important" readonly /></td>
                                                     <td><input asp-for="RemarkDetail" /></td>
@@ -501,6 +503,7 @@
                                                     <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unit</th>
                                                     <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rate</th>
                                                     <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Amount</th>
+                                                    <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Location</th>
                                                     <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PurchasePrice</th>
                                                     <th data-columnno="15" data-sortorder="asc" class="sortCol ShowHideOtherDetailTableData"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Qty</th>
                                                     <th data-columnno="16" data-sortorder="asc" class="sortCol ShowHideOtherDetailTableData"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Unit</th>
@@ -3587,6 +3590,7 @@
                 "Amount": $('#Amount').val(),
                 "PurchasePrice": $('#PurchasePrice').val(),
                 "ProcessId": $('#ProcessId').val(),
+                "ItemLocation": $('#ItemLocation').val(),
                 "ProcessName": ProcessName,
                 "Storeid": $('#Storeid').val(),
                 "StoreName": StoreName,
@@ -4184,6 +4188,7 @@
                         else if (obj.StatusCode == 200 && obj.StatusText == "Success") {
                             $('#unit').val(obj.Result[0].Unit);
                             $('#HSNNo').val(obj.Result[0].HSNNo);
+                            $('#ItemLocation').val(obj.Result[0].Location);
                             $('#AltUnit').val(obj.Result[0].AltUnit == null ? 'NA' : obj.Result[0].AltUnit);
                             !$('#AltUnit').val() ? $('#UnitRate').prop('disabled', true) : $('#UnitRate').prop('disabled', false);
                         }
@@ -4327,6 +4332,7 @@
                                 $('#PurchasePrice').val(obj[0].PurchasePrice);
                                 $('#AltQty').val(obj[0].AltQty);
                                 $('#AltUnit').val(obj[0].AltUnit);
+                                $('#ItemLocation').val(obj[0].ItemLocation);
                                 $('#RemarkDetail').val(obj[0].RemarkDetail);
                                 $('#Purpose').val(obj[0].Purpose);
                                 $('#PONO').val(obj[0].PONO);
