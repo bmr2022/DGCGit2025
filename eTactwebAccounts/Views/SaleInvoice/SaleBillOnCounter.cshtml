@@ -22,6 +22,7 @@
         <input type="hidden" asp-for="MaxSaleInvoiceEntryDate" />
         <input type="hidden" asp-for="AllowBackDateSALEBILL" />
         <input type="hidden" asp-for="AllowToAdjZeroAmt" />
+        <input type="hidden" id="Companytype" />
         @*   <input type="hidden" asp-for="ShowHideSaleBillEntryDetail" />
         <input type="hidden" asp-for="ShowHideSaleBillCustomerDetail" />
         <input type="hidden" asp-for="ShowHideSaleBillOtherRequiredDetail" />
@@ -767,6 +768,119 @@
     </div>
 </div>
 
+
+
+@* ---------------------*@
+
+@* Pend SO For Sale Bill*@
+
+
+<div class="modal fade" style="display:none" id="PendSOForSaleBill" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document" ">
+        <div class="modal-content">
+            <div class="modal-header">
+             
+
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row g-2 gx-3">
+
+                            <div class="card-body text-center overflow-auto pb-0   ">
+                                <div class="d-flex align-items-center mb-2">
+                                    <button class="btn btn-sm btn-outline-warning mb-2" type="button" id="CheckAll" style="display: flex; align-items: center;">
+                                        <i class="fa fa-check-square" aria-hidden="true"></i>
+                                        <span style="margin-left: 5px;">Ch/UnCh All</span>
+                                    </button>
+                                    <div class="col-md-2 me-3" style="margin-left:50px">
+                                        <input type="text" class="form-control" id="search-box1" placeholder="Search..." style="background-color:#FFFACD;">
+                                    </div>
+                                   
+                                </div>
+                                <div class="table-responsive" style="max-height:350px;">
+                                    <table class="table table-hover table-bordered table-striped" id="GateDataTable" style="table-layout: fixed;">
+                                        <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+                                            <tr>
+                                                <th style="width:70px;">Action <input id="checkuncheck" class="form-check-input me-1 mt-2" type="checkbox" role="switch" /></th>
+
+                                                <th style="width:70px;">SO No</th>
+
+
+                                                <th style="width:150px;">Part Code</th>
+                                                <th style="width:250px;">Item Name</th>
+                                                <th style="width:100px;">Bill Qty</th>
+                                                <th style="width:100px;">Rate</th>
+                                                
+                                                <th style="width:70px;">Disc %</th>
+                                               
+                                                <th style="width:100px;">Disc Amount</th>
+                                                <th style="width:120px;">Item Amount</th>
+                                                <th style="width:70px;">Order Qty</th>
+                                                <th style="width:70px;">Pending Qty</th>
+                                               
+                                               
+                                                <th style="width:70px;">Unit</th>
+                                                <th style="width:70px;">Location</th>
+                                                <th style="width:70px;">SOYear </th>
+                                                <th style="width:90px;">Order No</th>
+                                                <th style="width:70px;">Sch No</th>
+                                                <th style="width:70px;">Sch Year </th>
+                                                <th style="width:70px;">SO Type</th>
+                                                <th style="width:70px;">SO For</th>
+
+                                                <th style="width:70px;">HSN No</th>
+                                                <th style="width:80px;">TotalStock</th>
+                                                <th style="width:150px;">Batch No</th>
+                                                <th style="width:150px;">Unique Batch No</th>
+                                                <th style="width:70px;">Batch Stock</th>
+                                               
+                                                
+                                                <th style="width:100px;">AltQty</th>
+                                                <th style="width:100px;">StoreId</th>
+                                                <th style="width:150px;">StoreName</th>
+                                                <th style="width:200px;">Customer Name</th>
+                                                <th style="width:120px;">Account Code</th>
+                                                <th style="width:120px;">Item Code</th>
+
+
+                                            </tr>
+                                        </thead>
+                                        <tbody id="divPendMRNGrid">
+                                            <tr class="text-center">
+                                                <td colspan="25" class="text-black-50"><strong>NO DATA YET</strong></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="progress my-2" style="height: 4px;">
+                        <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <div class="row g-2 gx-3">
+                        <div class="col-12 text-center">
+                            <strong>Total No Of Items : <span id="lblTotalNoOfItems1"></span></strong>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class=" btn btn-sm btn-outline-success me-2" onclick="AddPendSOToGrid(event)">
+                        <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
+                    </button>
+
+                    <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@* ----------------------------
+ *@
 <div class="modal fade" id="EinvoicePopup" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
      aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
@@ -1032,6 +1146,10 @@
             FillCurrency();
             FillCustomerAddress();
 
+                    $('#PendSOForSaleBill').modal('show');
+                    showDetail();
+                   
+
             if ($('#divTaxGrid tr td').length > 1) {
                 btnClearTax();
             }
@@ -1133,6 +1251,7 @@
             // $('#Group_Code1').select2();
             GetItemGroup();
             AutoFillItems();
+            GetCompanyType();
                AutoFillPARTYNAMELIST();
             EditableRateAndDiscountONSaleInvoice();
 
@@ -1533,6 +1652,165 @@
             }
         });
 
+        function GetCompanyType() {
+
+
+            $.ajax({
+                type: "POST",
+
+                url: "@Url.Action("GetCompanyType")",
+                dataType: "json",
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.Result != null) {
+                            $('#Companytype').val('');
+                            $('#Companytype').val(obj.Result.Table[0].RetailerOrManufacturar);
+
+
+                        }
+                    }
+                }
+            });
+        }
+
+        function CheckacceptedQtySHA(i) {
+
+            var checkedtruevalues = [];
+            var rowCount = $('#divPendMRNGrid tr').length;
+            for (let i = 1; i <= rowCount; i++) {
+                checkedtruevalues.push({
+                    "checked": $('#AcceptedQtySHA' + i).is(':checked')
+                })
+            }
+
+            var checkedonlytrue = checkedtruevalues.filter(function (item) {
+                return item.checked;
+            }).length;
+            if (rowCount == checkedonlytrue) {
+                $('#checkuncheck').prop('checked', true)
+            } else {
+                $('#checkuncheck').prop('checked', false)
+            }
+        }
+
+        $('#checkuncheck').change(function () {
+
+            var rowCount = $('#divPendMRNGrid tr').length;
+            if ($('#checkuncheck').is(':checked') == true) {
+                for (let i = 1; i <= rowCount; i++) {
+                    $('#AcceptedQtySHA' + i).prop('checked', true)
+                }
+            }
+            else {
+                for (let i = 1; i <= rowCount; i++) {
+                    $('#AcceptedQtySHA' + i).prop('checked', false)
+                }
+            }
+        })
+
+        function showDetail() {
+
+            var data = {
+                "Flag": "ShowPendingSaleorderforBill",
+                "FromDate": $('#FinFromDate').val(),
+                "Todate": $('#FinToDate').val(),
+                "InvoiceDate": $('#SaleBillDate').val(),
+                "CurrentYear": $('#SaleBillYearCode').val(),
+                "BillFromStoreId": $('#BillFromStoreId').val(),
+                "accountCode": $('#AccountCode').val(),
+                "SONo": $('#SONo').val(),
+                "PartCode": $('#PartCode').val(),
+                "CompanyType": $('#Companytype').val()
+
+            }
+
+            $.ajax({
+                url: '@Url.Action("ShowPendingSaleorderforBill")',
+                type: "POST",
+                data: data,
+                success: function (data) {
+                    if (data != null) {
+
+                        var obj = $.parseJSON(data);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#divPendMRNGrid').empty();
+                            var i = 1;
+                            $.each(obj.Result.Table, function (index, val) {
+
+                                var html = '';
+                                html += '<tr>' +
+                                    '<td style="text-align:center;">' +
+                                    '<input style="background-color: #b2b3f0;" id="AcceptedQtySHA' + i + '" ' +
+                                    'class="form-check-input me-1 mt-2" type="checkbox" role="switch" ' +
+                                    'onchange="CheckacceptedQtySHA(' + i + ');" />' +
+                                    '</td>' +
+
+                                    '<td><input id="SONo' + i + '" class="form-control no-cursor" value="' + val.SONo + '"/></td>' +
+
+                                    '<td><input id="PartCode' + i + '" class="form-control no-cursor" value="' + val.PartCode + '"/></td>' +
+                                    '<td><input id="ItemName' + i + '" class="form-control no-cursor" value="' + val.ItemName + '"/></td>' +
+                                    '<td><input type="number" style="background-color :#FFFACD" onfocusout="CalculateAmountForPendSOGrid(' + i + ')" id="SaleBillQty' + i + '" class="form-control " value="' + val.SaleBillQty + '"/></td>' +
+                                    '<td><input id="SOItemRate' + i + '" style="background-color:#FFFACD" onfocusout="CalculateAmountForPendSOGrid(' + i + ')" class="form-control" value="' + val.SOItemRate + '"/></td>' +
+                                    '<td><input type="number" style="background-color:#FFFACD" onfocusout="CalculateAmountForPendSOGrid(' + i + ')" id="DisPer' + i + '" class="form-control " value="' + val.DisPer + '"/></td>' +
+                                    '<td><input type="number" id="DisAmt' + i + '" class="form-control" value="' + val.DisAmt + '"/></td>' +
+                                    '<td><input type="number" id="ItemAmount' + i + '" class="form-control no-cursor" value="' + val.ItemAmount + '"/></td>' +
+                                    '<td><input id="OrderQty' + i + '" class="form-control no-cursor" value="' + val.OrderQty + '"/></td>' +
+                                    '<td><input id="OrderPendQty' + i + '" class="form-control no-cursor" value="' + val.OrderPendQty + '"/></td>' +
+                                    
+                                   
+                                    '<td><input id="Unit' + i + '" class="form-control no-cursor" value="' + val.Unit + '"/></td>' +
+                                    '<td><input id="RackID' + i + '" class="form-control no-cursor" value="' + val.RackID + '"/></td>' +
+                                    '<td><input id="SOYearCode' + i + '" class="form-control no-cursor" value="' + val.SOYearCode + '"/></td>' +
+                                    '<td><input id="CustorderNo' + i + '" class="form-control no-cursor" value="' + val.CustorderNo + '"/></td>' +
+                                    '<td><input id="SchNo' + i + '" class="form-control no-cursor" value="' + val.SchNo + '"/></td>' +
+                                    '<td><input id="SchYearCode' + i + '" class="form-control no-cursor" value="' + val.SchYearCode + '"/></td>' +
+                                    '<td><input id="SOType' + i + '" class="form-control no-cursor" value="' + val.SOType + '"/></td>' +
+                                    '<td><input id="SOFor' + i + '" class="form-control no-cursor" value="' + val.SOFor + '"/></td>' +
+
+                                    '<td><input id="HSNNO' + i + '" class="form-control no-cursor" value="' + val.HSNNO + '"/></td>' +
+                                    '<td><input id="TotalStock' + i + '" class="form-control no-cursor" value="' + val.TotalStock + '"/></td>' +
+                                    '<td><input id="BatchNo' + i + '" class="form-control no-cursor" value="' + val.BatchNo + '"/></td>' +
+                                    '<td><input id="UniqueBatchNo' + i + '" class="form-control no-cursor" value="' + val.UniqueBatchNo + '"/></td>' +
+                                    '<td><input id="BatchStock' + i + '" class="form-control no-cursor" value="' + val.BatchStock + '"/></td>' +
+                                    
+                                    '<td><input id="AltQty' + i + '" class="form-control no-cursor" value="' + val.AltQty + '"/></td>' +
+                                    '<td><input id="Storeid' + i + '" class="form-control no-cursor" value="' + val.Storeid + '"/></td>' +
+                                    '<td><input id="Store_Name' + i + '" class="form-control no-cursor" value="' + val.Store_Name + '"/></td>' +
+                                    '<td><input id="CustomerName' + i + '" class="form-control no-cursor" value="' + val.CustomerName + '"/></td>' +
+                                    '<td><input id="Accountcode' + i + '" class="form-control no-cursor" value="' + val.Accountcode + '"/></td>' +
+                                    '<td><input id="ItemCode' + i + '" type="hidden" value="' + val.ItemCode + '"/>' +
+                                    '<input class="form-control no-cursor" value="' + val.ItemCode + '"/></td>' +
+                                    '</tr>';
+
+                                $('#divPendMRNGrid').append(html);
+                                $('#TransertoMIRBtn').prop("disabled", false);
+
+                                var count = $('#divPendMRNGrid tr').length;
+                                $('#totalRows').text(count);
+                                i++;
+                            });
+
+                        }
+                        else {
+                            $('#divPendMRNGrid').empty();
+                            var count = $('#divPendMRNGrid tr').length;
+                            $('#totalRows').text(count);
+                            $('#divPendMRNGrid').append('<tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>')
+
+                        }
+                    }
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
 
         function AutoFillItems() {
 
@@ -1867,127 +2145,127 @@
         }
 
 
-        function showDetail() {
+        // function showDetail() {
 
-            var data = {
-                "Flag": "ShowPendingSaleorderforBill",
-                "FromDate": $('#FromDate').val(),
-                "Todate": $('#SaleBillDate').val(),
-                "InvoiceDate": $('#SaleBillDate').val(),
-                "CurrentYear": $('#SaleBillYearCode').val(),
-                "BillFromStoreId": $('#BillFromStoreId').val(),
-                "accountCode": $('#AccountCode').val(),
-                "SONo": $('#SONo').val(),
-                // "PartCode": $('#PartCode').val()
+        //     var data = {
+        //         "Flag": "ShowPendingSaleorderforBill",
+        //         "FromDate": $('#FromDate').val(),
+        //         "Todate": $('#SaleBillDate').val(),
+        //         "InvoiceDate": $('#SaleBillDate').val(),
+        //         "CurrentYear": $('#SaleBillYearCode').val(),
+        //         "BillFromStoreId": $('#BillFromStoreId').val(),
+        //         "accountCode": $('#AccountCode').val(),
+        //         "SONo": $('#SONo').val(),
+        //         // "PartCode": $('#PartCode').val()
 
-            }
+        //     }
 
-            $.ajax({
-                url: '@Url.Action("ShowPendingSaleorderforBill")',
-                type: "POST",
-                data: data,
-                success: function (data) {
-                    if (data != null) {
+        //     $.ajax({
+        //         url: '@Url.Action("ShowPendingSaleorderforBill")',
+        //         type: "POST",
+        //         data: data,
+        //         success: function (data) {
+        //             if (data != null) {
 
-                        var obj = $.parseJSON(data);
-                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                            $('#PendSaleOrderModel').modal('show');
-                            $('#divPendSOGrid').empty();
-                            var i = 1;
-                            $.each(obj.Result.Table, function (index, val) {
+        //                 var obj = $.parseJSON(data);
+        //                 if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+        //                     $('#PendSaleOrderModel').modal('show');
+        //                     $('#divPendSOGrid').empty();
+        //                     var i = 1;
+        //                     $.each(obj.Result.Table, function (index, val) {
 
-                                var html = '';
-                                html += '<tr>' +
-                                    '<td style="text-align:center;">' +
-                                    '<input style="background-color: #b2b3f0;" id="AcceptedQtySHA-' + i + '" ' +
-                                    'class="form-check-input me-1 mt-2" type="checkbox" role="switch" ' +
-                                    'onchange="CheckacceptedQtySHA(' + i + ');" />' +
-                                    '</td>' +
+        //                         var html = '';
+        //                         html += '<tr>' +
+        //                             '<td style="text-align:center;">' +
+        //                             '<input style="background-color: #b2b3f0;" id="AcceptedQtySHA-' + i + '" ' +
+        //                             'class="form-check-input me-1 mt-2" type="checkbox" role="switch" ' +
+        //                             'onchange="CheckacceptedQtySHA(' + i + ');" />' +
+        //                             '</td>' +
 
-                                    '<td><input id="SONO-' + i + '" class=" no-cursor" style="width:50px !important;" value="' + val.SONo + '"/></td>' +
-                                    '<td><input id="SOYearCode-' + i + '" class=" no-cursor hiddenColumn" value="' + val.SOYearCode + '"/></td>' +
-                                    '<td><input id="CustOrderNo-' + i + '" class=" no-cursor hiddenColumn" value="' + val.CustorderNo + '"/></td>' +
-                                    '<td><input id="SchNo-' + i + '" class=" no-cursor hiddenColumn" value="' + val.SchNo + '"/></td>' +
-                                    '<td><input id="SaleSchYearCode-' + i + '" class=" no-cursor hiddenColumn" value="' + val.SchYearCode + '"/></td>' +
+        //                             '<td><input id="SONO-' + i + '" class=" no-cursor" style="width:50px !important;" value="' + val.SONo + '"/></td>' +
+        //                             '<td><input id="SOYearCode-' + i + '" class=" no-cursor hiddenColumn" value="' + val.SOYearCode + '"/></td>' +
+        //                             '<td><input id="CustOrderNo-' + i + '" class=" no-cursor hiddenColumn" value="' + val.CustorderNo + '"/></td>' +
+        //                             '<td><input id="SchNo-' + i + '" class=" no-cursor hiddenColumn" value="' + val.SchNo + '"/></td>' +
+        //                             '<td><input id="SaleSchYearCode-' + i + '" class=" no-cursor hiddenColumn" value="' + val.SchYearCode + '"/></td>' +
 
-                                    '<td><input id="PartCode-' + i + '" class=" no-cursor" style="width:200px !important;" value="' + val.PartCode + '"/></td>' +
-                                    '<td><input id="ItemName-' + i + '" class=" no-cursor" style="width:200px !important;" value="' + val.ItemName + '"/></td>' +
-                                    '<td><input id="Rate-' + i + '" class="" style="width:60px !important;"   onkeyup="CalculateAmountForMemoryGrid(' + i + ')"  value="' + val.SOItemRate + '"/></td>' +
-                                    // '<td><input id="OrderQty' + i + '" class="form-control no-cursor" value="' + val.OrderQty + '"/></td>' +
-                                    '<td><input id="Qty-' + i + '" class="" style="width:60px !important;"  onkeyup="CalculateAmountForMemoryGrid(' + i + ')"  value="' + val.SaleBillQty + '"/></td>' +
-                                    '<td><input id="Amount-' + i + '" class=" no-cursor" style="width:60px !important;" value="' + val.ItemAmount + '"/></td>' +
-                                    '<td><input id="DiscountPer-' + i + '" class="" style="width:40px !important;"  onkeyup="CalculateAmountForMemoryGrid(' + i + ')"  value="' + val.DisPer + '"/></td>' +
-                                    '<td><input id="DiscountAmt-' + i + '" class=" no-cursor" style="width:40px !important;" value="' + val.DisAmt + '"/></td>' +
+        //                             '<td><input id="PartCode-' + i + '" class=" no-cursor" style="width:200px !important;" value="' + val.PartCode + '"/></td>' +
+        //                             '<td><input id="ItemName-' + i + '" class=" no-cursor" style="width:200px !important;" value="' + val.ItemName + '"/></td>' +
+        //                             '<td><input id="Rate-' + i + '" class="" style="width:60px !important;"   onkeyup="CalculateAmountForMemoryGrid(' + i + ')"  value="' + val.SOItemRate + '"/></td>' +
+        //                             // '<td><input id="OrderQty' + i + '" class="form-control no-cursor" value="' + val.OrderQty + '"/></td>' +
+        //                             '<td><input id="Qty-' + i + '" class="" style="width:60px !important;"  onkeyup="CalculateAmountForMemoryGrid(' + i + ')"  value="' + val.SaleBillQty + '"/></td>' +
+        //                             '<td><input id="Amount-' + i + '" class=" no-cursor" style="width:60px !important;" value="' + val.ItemAmount + '"/></td>' +
+        //                             '<td><input id="DiscountPer-' + i + '" class="" style="width:40px !important;"  onkeyup="CalculateAmountForMemoryGrid(' + i + ')"  value="' + val.DisPer + '"/></td>' +
+        //                             '<td><input id="DiscountAmt-' + i + '" class=" no-cursor" style="width:40px !important;" value="' + val.DisAmt + '"/></td>' +
 
-                                    '<td><input id="Unit-' + i + '" class=" no-cursor " style="width:30px !important;" value="' + val.Unit + '"/></td>' +
-                                    '<td><input id="RackID-' + i + '" class=" no-cursor" style="width:80px !important;" value="' + val.RackID + '"/></td>' +
-                                    '<td><input id="HSNNo-' + i + '" class=" no-cursor" style="width:70px !important;" value="' + val.HSNNO + '"/></td>' +
-
-
-                                    '<td><input id="SOPendQty-' + i + '" class=" no-cursor" style="width:70px !important;" value="' + val.OrderPendQty + '"/></td>' +
-                                    '<td><input id="StoreName-' + i + '" class=" no-cursor hiddenColumn" value="' + val.Store_Name + '"/></td>' +
-                                    '<td><input id="StoreId-' + i + '" class=" no-cursor hiddenColumn" value="' + val.Storeid + '"/></td>' +
-                                    '<td><input id="Batchno-' + i + '" class=" no-cursor " value="' + val.BatchNo + '"/></td>' +
-                                    '<td><input id="Uniquebatchno-' + i + '" class=" no-cursor hiddenColumn" value="' + val.UniqueBatchNo + '"/></td>' +
-                                    '<td><input id="TotalStock-' + i + '" class=" no-cursor hiddenColumn" value="' + val.TotalStock + '"/></td>' +
-
-                                    '<td><input id="LotStock-' + i + '" class=" no-cursor " value="' + val.BatchStock + '"/></td>' +
+        //                             '<td><input id="Unit-' + i + '" class=" no-cursor " style="width:30px !important;" value="' + val.Unit + '"/></td>' +
+        //                             '<td><input id="RackID-' + i + '" class=" no-cursor" style="width:80px !important;" value="' + val.RackID + '"/></td>' +
+        //                             '<td><input id="HSNNo-' + i + '" class=" no-cursor" style="width:70px !important;" value="' + val.HSNNO + '"/></td>' +
 
 
+        //                             '<td><input id="SOPendQty-' + i + '" class=" no-cursor" style="width:70px !important;" value="' + val.OrderPendQty + '"/></td>' +
+        //                             '<td><input id="StoreName-' + i + '" class=" no-cursor hiddenColumn" value="' + val.Store_Name + '"/></td>' +
+        //                             '<td><input id="StoreId-' + i + '" class=" no-cursor hiddenColumn" value="' + val.Storeid + '"/></td>' +
+        //                             '<td><input id="Batchno-' + i + '" class=" no-cursor " value="' + val.BatchNo + '"/></td>' +
+        //                             '<td><input id="Uniquebatchno-' + i + '" class=" no-cursor hiddenColumn" value="' + val.UniqueBatchNo + '"/></td>' +
+        //                             '<td><input id="TotalStock-' + i + '" class=" no-cursor hiddenColumn" value="' + val.TotalStock + '"/></td>' +
 
-                                    '<td><input id="SOType-' + i + '" class=" no-cursor hiddenColumn" value="' + val.SOType + '"/></td>' +
-
-
-                                    '<td><input id="AltQty-' + i + '" class=" no-cursor hiddenColumn" value="' + val.AltQty + '"/></td>' +
-                                    '<td><input id="ItemCode-' + i + '" class=" no-cursor hiddenColumn" value="' + val.ItemCode + '"/></td>' +
-
-
-                                    // '<td><input id="CustomerName' + i + '" class="form-control no-cursor" value="' + val.CustomerName + '"/></td>' +
-                                    // '<td><input id="Accountcode' + i + '" class="form-control no-cursor" value="' + val.Accountcode + '"/></td>' +
-                                    // '<td><input id="ItemCode' + i + '" type="hidden" value="' + val.ItemCode + '"/>' +
-                                    // '<input class="form-control no-cursor" value="' + val.ItemCode + '"/></td>' +
-                                    '</tr>';
-
-                                $('#divPendSOGrid').append(html);
-                                $('#TransertoMIRBtn').prop("disabled", false);
-
-                                var count = $('#divPendSOGrid tr').length;
-                                $('#totalRows').text(count);
-                                i++;
-                            });
-                            $('th.hiddenColumn').hide();
-                            $('.hiddenColumn').closest('td').hide();
-
-                            if ($('#EditableRateAndDiscountONSaleInvoice').val() == 'N') {
-                                $('input[id^="Rate-"]').prop('readonly', true);
-                                $('input[id^="DiscountPer-"]').prop('readonly', true);
-                                $('input[id^="DiscountAmt-"]').prop('readonly', true);
-                            }
-                            else {
-                                $('input[id^="Rate-"]').prop('readonly', false);
-                                $('input[id^="DiscountPer-"]').prop('readonly', false);
-                                $('input[id^="DiscountAmt-"]').prop('readonly', false);
-                            }
+        //                             '<td><input id="LotStock-' + i + '" class=" no-cursor " value="' + val.BatchStock + '"/></td>' +
 
 
-                        }
-                        else {
-                            $('#divPendSOGrid').empty();
-                            var count = $('#divPendSOGrid tr').length;
-                            $('#totalRows').text(count);
-                            $('#divPendSOGrid').append('<tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>')
 
-                        }
-                    }
-                },
-                error: function (response) {
-                    alert(response.responseText);
-                },
-                failure: function (response) {
-                    alert(response.responseText);
-                }
-            });
-        }
+        //                             '<td><input id="SOType-' + i + '" class=" no-cursor hiddenColumn" value="' + val.SOType + '"/></td>' +
+
+
+        //                             '<td><input id="AltQty-' + i + '" class=" no-cursor hiddenColumn" value="' + val.AltQty + '"/></td>' +
+        //                             '<td><input id="ItemCode-' + i + '" class=" no-cursor hiddenColumn" value="' + val.ItemCode + '"/></td>' +
+
+
+        //                             // '<td><input id="CustomerName' + i + '" class="form-control no-cursor" value="' + val.CustomerName + '"/></td>' +
+        //                             // '<td><input id="Accountcode' + i + '" class="form-control no-cursor" value="' + val.Accountcode + '"/></td>' +
+        //                             // '<td><input id="ItemCode' + i + '" type="hidden" value="' + val.ItemCode + '"/>' +
+        //                             // '<input class="form-control no-cursor" value="' + val.ItemCode + '"/></td>' +
+        //                             '</tr>';
+
+        //                         $('#divPendSOGrid').append(html);
+        //                         $('#TransertoMIRBtn').prop("disabled", false);
+
+        //                         var count = $('#divPendSOGrid tr').length;
+        //                         $('#totalRows').text(count);
+        //                         i++;
+        //                     });
+        //                     $('th.hiddenColumn').hide();
+        //                     $('.hiddenColumn').closest('td').hide();
+
+        //                     if ($('#EditableRateAndDiscountONSaleInvoice').val() == 'N') {
+        //                         $('input[id^="Rate-"]').prop('readonly', true);
+        //                         $('input[id^="DiscountPer-"]').prop('readonly', true);
+        //                         $('input[id^="DiscountAmt-"]').prop('readonly', true);
+        //                     }
+        //                     else {
+        //                         $('input[id^="Rate-"]').prop('readonly', false);
+        //                         $('input[id^="DiscountPer-"]').prop('readonly', false);
+        //                         $('input[id^="DiscountAmt-"]').prop('readonly', false);
+        //                     }
+
+
+        //                 }
+        //                 else {
+        //                     $('#divPendSOGrid').empty();
+        //                     var count = $('#divPendSOGrid tr').length;
+        //                     $('#totalRows').text(count);
+        //                     $('#divPendSOGrid').append('<tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>')
+
+        //                 }
+        //             }
+        //         },
+        //         error: function (response) {
+        //             alert(response.responseText);
+        //         },
+        //         failure: function (response) {
+        //             alert(response.responseText);
+        //         }
+        //     });
+        // }
 
 
 
@@ -2176,6 +2454,199 @@
                 $(this).find("td:first").text(index + 1);
             });
         }
+
+
+       function AddPendSOToGrid (e) {
+            e.preventDefault();
+            /* if (!Validate_TransferGrid()) return; */
+            // var ItemData = [];
+            // var RowCount = $('#divMultiItemGrid tr').length;
+
+
+
+
+            // var CheckboxArr = [];
+            // // var RowCount = $('#MultiItemBody tr').length;
+
+
+
+
+            // // var RowCount = $('#MultiItemBody tr').length;
+            // for (var i = 1; i <= RowCount; i++) {
+
+            //     if ($('#Qty-' + i).val() == 0) {
+            //         $.notify('Please enter quantity for ' + $('#PartCode-' + i).val(), 'error');
+            //         return;
+            //     }
+
+            //     if (AllowedToDispatchQtyMoreThenCloseSOPendQty != 'Y') {
+            //         if (parseFloat($('#Qty-' + i).val()) > parseFloat($('#SOPendQty-' + i).val())) {
+            //             $.notify('Please enter Valid quantity for ' + $('#PartCode-' + i).val(), 'error');
+            //             return;
+            //         }
+            //     }
+
+            //     if ($('#Rate-' + i).val() == 0) {
+            //         $.notify('Please enter rate for ' + $('#PartCode-' + i).val(), 'error');
+            //         return;
+            //     }
+            //     if ($('#Unit-' + i).val() == '') {
+            //         $.notify('Please select unit for ' + $('#PartCode-' + i).val(), 'error');
+            //         return;
+            //     }
+
+            //     if ($('#Amount-' + i).val() == '') {
+            //         $.notify('amount can not be 0 ' + $('#PartCode-' + i).val(), 'error');
+            //         return;
+            //     }
+
+
+
+
+
+            // }
+
+
+
+
+
+            var selectedData = [];
+
+            $('#GateDataTable tbody tr').each(function (rowIndex) {
+                var $row = $(this);
+                var checkbox = $row.find('input[type="checkbox"]');
+
+                if (checkbox.is(':checked')) {
+                    var i = rowIndex + 1;
+                    var rowData = {
+
+                        AccountName: $("#CustomerName" + i).val(),   // we created CustomerNameX
+                        AccountCode: $("#Accountcode" + i).val(),
+                        SONO: $("#SONo" + i).val(),
+                        SOYearCode: $("#SOYearCode" + i).val(),
+                        CustOrderNo: $("#CustorderNo" + i).val(),
+                        SchNo: $("#SchNo" + i).val(),
+                        SaleSchYearCode: $("#SchYearCode" + i).val(),
+                        ItemCode: $("#ItemCode" + i).val(),
+                        PartCode: $("#PartCode" + i).val(),
+                        ItemName: $("#ItemName" + i).val(),
+                        Unit: $("#Unit" + i).val(),
+                        HSNNo: $("#HSNNO" + i).val(),
+                        Qty: $("#SaleBillQty" + i).val(),
+                        SOPendQty: $("#OrderPendQty" + i).val(),
+                        Rate: $("#SOItemRate" + i).val(),
+                        SOType: $("#SOType" + i).val(),
+                        Batchno: $("#BatchNo" + i).val(),
+                        Uniquebatchno: $("#UniqueBatchNo" + i).val(),
+                        DiscountPer: $("#DisPer" + i).val(),
+                        DiscountAmt: $("#DisAmt" + i).val(),
+                        Amount: $("#ItemAmount" + i).val(),
+                        AltQty: $("#AltQty" + i).val(),
+                        StoreId: $("#Storeid" + i).val(),
+                        StoreName: $("#Store_Name" + i).val(),
+                        RackID: $("#RackID" + i).val()
+
+
+                    };
+                    selectedData.push(rowData);
+                }
+            });
+            if (selectedData.length === 0) {
+                notify("Please check at least one checkbox before proceeding.", "error");
+                return;
+            }
+
+            $.ajax({
+                url: '@Url.Action("AddMultiSaleBillDetail")',
+                type: "POST",
+                data: JSON.stringify(selectedData),
+                contentType: 'application/json',
+                beforeSend: function () {
+                    console.log('Sending item...');
+                    console.log('ItemData', selectedData);
+                },
+                success: function (data, status, xhr) {
+
+                    
+
+                    if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
+                        $.notify('Duplicate Item Not Allowed.', "info");
+                        $('.ItemBtn').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
+                    } else if (xhr.status == 205 && (xhr.responseText.indexOf('Reset') || xhr.statusText.indexOf('Reset'))) {
+                        $.notify('Adding Item Not Allowed, Please Clear Gate Detail...!!!', "info");
+                    } else {
+                        // $('.gridHiddenField').show();
+
+                        $('#divSaleBillList').html(data);
+                        $('#PendSOForSaleBill').modal('hide');
+                        if ($('#SaleBillJobwork').val() == 'J') {
+                            $('.jobWorkChalln').show();
+                            $('.gridHiddenField').show();
+                        } else {
+                            $('.jobWorkChalln').hide();
+                            $('.gridHiddenField').hide();
+                        }
+                        GetFeatureOption();
+                        $.notify('Item Added To Grid.', "success");
+                    }
+
+                    editingNow = false;
+                    BasicTotal();
+                    ClearAdjustmentGrid();
+                    calculatetotalqty();
+                    // ResetPendQty();
+
+                    // var rowCount = $('#divSaleBillList tr').length;
+
+                    // for (var i = 1; i <= rowCount; i++) {
+
+                    //     sum += parseFloat($('#GridAmount-' + i).text() == '.00' ? 0 : $('#GridAmount-' + i).text());
+                    // }
+                    $('#ItemNetAmount').val(sum);
+
+                    // $('#lblItemNetAmount').text(sum.toFixed(2));
+
+                    var txSum = 0;
+                    if ($('#divTaxGrid tr td').length > 1) {
+                        for (var i = 1; i <= taxRowCount; i++) {
+                            txSum += parseFloat($('#txGridAmount-' + i).text() == '.00' ? 0 : $('#txGridAmount-' + i).text());
+                        }
+                    }
+
+                    var txTotal = sum + txSum;
+                    $('#NetTotal').val(txTotal.toFixed(2));
+                    $('#BaseNetTotal').val(txTotal.toFixed(2));
+                    $('#AdjPendAmt').val($('#NetTotal').val());
+                    $('#TotalDiscountPercentage').val(0);
+                    $('#TotalAmtAftrDiscount').val(0);
+
+                    // ClearGrid();
+                    $('.PendingItem').hide();
+                    $('.newitems').show();
+                    // $('#BatchNo').val('0');
+                    // $('#UniqueBatchNo').val('0');
+
+                },
+                error: function (result) {
+                    $.notify(result.responseText, "error");
+                },
+                failure: function (result) {
+                    alert(result.responseText);
+                },
+                complete: function () {
+                    console.log('Done');
+                    $('.Schedule').fadeIn();
+                }
+            }).done(function () {
+                GetItemGroup();
+                GetTaxPartItem();
+                GetDbCrDetail();
+                AddAdjstmntDetail1();
+            })
+        };
+
+
+
 
         $('.PendGridButton').click(function (e) {
             e.preventDefault();
@@ -3840,6 +4311,31 @@
 
         }
 
+        function CalculateAmountForPendSOGrid(i) {
+
+            var Amount = 0;
+
+            const UnitRate = $('#UnitRate').val();
+            const Rate = $('#SOItemRate' + i).val() === "0" || $('#SOItemRate' + i).val() === "" ? 0 : parseFloat($('#SOItemRate' + i).val());
+            const DP = $('#DisPer' + i) === "0" || $('#DisPer' + i).val() === "" ? 0 : parseFloat($('#DisPer' + i).val());
+
+
+            const Qty = $('#SaleBillQty' + i).val() == "0" || $('#SaleBillQty' + i).val() == "" ? 0 : parseFloat($('#SaleBillQty' + i).val());
+            Amount = Qty * Rate;
+
+
+            if (DP !== 0) {
+                const DA = ((Amount * DP) / 100);
+                $('#DisAmt' + i).val(DA);
+                Amount = Amount - DA;
+            }
+
+            $('#ItemAmount' + i).val(Amount.toFixed(2));
+
+
+
+        }
+
         function CalculateRateForMalti(i) {
 
             var Amount = 0;
@@ -4381,20 +4877,20 @@
             let itemNameVal = "";
 
             if ($("#PartCode").is("select")) {
-                    let selectedPartText = $('#PartCode').find(':selected').text();
-                    partCodeVal = (selectedPartText === "-Select-") ? "" : selectedPartText;
-                } else {
-                    partCodeVal = $("#PartCodeText").val() || "";
-                }
+                let selectedPartText = $('#PartCode').find(':selected').text();
+                partCodeVal = (selectedPartText === "-Select-") ? "" : selectedPartText;
+            } else {
+                partCodeVal = $("#PartCodeText").val() || "";
+            }
 
-                if ($("#ItemCode").is("select")) {
-                    itemCodeVal = $('#ItemCode').val() || "";
-                    let selectedItemText = $('#ItemCode').find(':selected').text();
-                    itemNameVal = (selectedItemText === "-Select-") ? "" : selectedItemText;
-                } else {
-                    itemCodeVal = $("#ItemCode").val() || "";
-                    itemNameVal = $("#ItemNameText").val() || "";
-                }
+            if ($("#ItemCode").is("select")) {
+                itemCodeVal = $('#ItemCode').val() || "";
+                let selectedItemText = $('#ItemCode').find(':selected').text();
+                itemNameVal = (selectedItemText === "-Select-") ? "" : selectedItemText;
+            } else {
+                itemCodeVal = $("#ItemCode").val() || "";
+                itemNameVal = $("#ItemNameText").val() || "";
+            }
 
             var SchData = {
                 "SONO": parseInt($('#SONO').val()),
@@ -4406,9 +4902,9 @@
                 // "PartCode": $('#PartCode').find(':selected').text() == "-Select-" ? "" : $('#PartCode').find(':selected').text(),
                 // "ItemCode": $('#ItemCode').val(),
                 // "ItemName": $('#ItemCode').find(':selected').text() == '-Select-' ? "" : $('#ItemCode').find(':selected').text(),
-                     "PartCode": partCodeVal,
-                    "ItemCode": itemCodeVal,
-                    "ItemName": itemNameVal,
+                "PartCode": partCodeVal,
+                "ItemCode": itemCodeVal,
+                "ItemName": itemNameVal,
                 "SchNo": $('#SchNo').val(),
                 "SaleSchYearCode": $('#SaleSchYearCode').val(),
                 "Schdate": $('#Schdate').val(),
