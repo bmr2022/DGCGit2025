@@ -774,5 +774,43 @@ namespace eTactwebHR.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+        public async Task<JsonResult> DeleteByID(int ID, int YC, string PurchVoucherNo, string InvNo = "", bool? IsDetail = false)
+        {
+            int EntryBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            string EntryByMachineName = HttpContext.Session.GetString("EmpName");
+            string cc = HttpContext.Session.GetString("Branch");
+            DateTime EntryDate = DateTime.Today;
+            var Result = await IGateAttendance.DeleteByID(ID, YC, "DELETEBYID", EntryBy, EntryByMachineName, cc, EntryDate);
+
+            var rslt = string.Empty;
+            if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
+            {
+                ViewBag.isSuccess = true;
+                TempData["410"] = "410";
+                rslt = "true";
+            }
+            else if (Result.StatusText == "Error" || Result.StatusCode == HttpStatusCode.Locked)
+            {
+                ViewBag.isSuccess = true;
+                TempData["423"] = "423";
+                rslt = "true";
+            }
+            else if ((Result.StatusText == "Deleted Successfully" || Result.StatusText == "deleted Successfully") && (Result.StatusCode == HttpStatusCode.Accepted || Result.StatusCode == HttpStatusCode.OK))
+            {
+                ViewBag.isSuccess = true;
+                TempData["410"] = "410";
+                rslt = "true";
+            }
+            else
+            {
+                ViewBag.isSuccess = false;
+                TempData["500"] = "500";
+                rslt = "false";
+            }
+            return Json(new { success = rslt, message = Result.StatusText });
+
+            //return Json(rslt);
+            //return RedirectToAction(nameof(DashBoard));
+        }
     }
 }

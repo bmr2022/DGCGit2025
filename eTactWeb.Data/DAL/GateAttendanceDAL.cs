@@ -509,4 +509,31 @@ public class GateAttendanceDAL
         }
         return MainModel;
     }
+    internal async Task<ResponseResult> DeleteByID(int ID, int YearCode, string Flag, int EntryBy, string EntryByMachineName, string cc, DateTime EntryDate)
+    {
+        var _ResponseResult = new ResponseResult();
+
+        try
+        {
+            var SqlParams = new List<dynamic>();
+
+            SqlParams.Add(new SqlParameter("@Flag", Flag));//DELETEBYID
+            SqlParams.Add(new SqlParameter("@GateAttEntryId", ID));
+            SqlParams.Add(new SqlParameter("@GateAttYearCode", YearCode));
+            SqlParams.Add(new SqlParameter("@ActualEnteredBy", EntryBy));
+            SqlParams.Add(new SqlParameter("@EntryByMachineName", EntryByMachineName));
+            SqlParams.Add(new SqlParameter("@cc", cc));
+            //SqlParams.Add(new SqlParameter("@EntryDate", EntryDate));
+
+            _ResponseResult = await _IDataLogic.ExecuteDataTable("HRSPGateAttendanceMainDetail", SqlParams);
+        }
+        catch (Exception ex)
+        {
+            dynamic Error = new ExpandoObject();
+            Error.Message = ex.Message;
+            Error.Source = ex.Source;
+        }
+
+        return _ResponseResult;
+    }
 }

@@ -50,5 +50,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _GateAttendanceDAL.GetViewByID(ID, YearCode);
         }
+        public async Task<ResponseResult> DeleteByID(int ID, int YearCode, string Flag, int EntryBy, string EntryByMachineName, string cc, DateTime EntryDate)
+        {
+            return await _GateAttendanceDAL.DeleteByID(ID, YearCode, Flag, EntryBy, EntryByMachineName, cc, EntryDate);
+        }
     }
 }
