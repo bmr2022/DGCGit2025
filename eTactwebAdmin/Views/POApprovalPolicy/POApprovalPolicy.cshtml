@@ -147,6 +147,16 @@
 										<label asp-for="ToAmt" class="form-label">To Amt</label>
 										<input asp-for="ToAmt" class="form-control"  />
 									</div>
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:240px;">
+										<label asp-for="All3ApprovalRequired" class="form-label">All 3 Approval Required</label>
+										<select class="form-select" asp-for="All3ApprovalRequired" style="width:220px;">
+											<option value="Y">Yes</option>
+											<option value="N">No</option>
+										</select>
+									</div>
+									<div class="row">
+
+
 									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:160px;">
 										<label asp-for="FirstApprovalRequired" class="form-label" style="color:red">First Approval Required*</label>
 										<select class="form-select" asp-for="FirstApprovalRequired" style="width:150px;">
@@ -154,7 +164,36 @@
 											<option value="N">No</option>
 										</select>
 									</div>
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:160px;">
+										<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:350px;">
+											<label asp-for="EmpNameForFirstApproval" class="form-label">Employee Name For First Approval </label>
+											<input type="hidden" asp-for="EmpidForFirstApproval" />
+											<select class="form-select" asp-for="EmpNameForFirstApproval" style="width:340px;">
+												<option value="">-Select-</option>
+											</select>
+										</div>
+										<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:350px;">
+											<label asp-for="EmpNameForFirstApproval1" class="form-label" style="color:red">Employee Name For First Approval 1*</label>
+											<input type="hidden" asp-for="EmpidForFirstApproval1" />
+											<select class="form-select" asp-for="EmpNameForFirstApproval1" style="width:340px;">
+												<option value="">-Select-</option>
+											</select>
+										</div>
+										<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:350px;">
+											<label asp-for="EmpNameForFirstApproval2" class="form-label">Employee Name For First Approval 2*</label>
+											<input type="hidden" asp-for="EmpidForFirstApproval2" />
+											<select class="form-select" asp-for="EmpNameForFirstApproval2" style="width:340px;">
+												<option value="">-Select-</option>
+											</select>
+										</div>
+										<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:350px;">
+											<label asp-for="EmpNameForFirstApproval3" class="form-label">Employee Name For First Approval 3*</label>
+											<input type="hidden" asp-for="EmpidForFirstApproval3" />
+											<select class="form-select" asp-for="EmpNameForFirstApproval3" style="width:350px;">
+												<option value="">-Select-</option>
+											</select>
+										</div>
+
+										<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:160px;">
 										<label asp-for="FinalApprovalRequired1" class="form-label" style="color:red">Final Approval Required*</label>
 										<select class="form-select" asp-for="FinalApprovalRequired1" style="width:150px;">
 											<option value="Y">Yes</option>
@@ -175,6 +214,8 @@
 											<option value="N">No</option>
 										</select>
 									</div>
+									</div>
+										  
 									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
 										<label asp-for="OnlyFinalApprovalRequired" class="form-label">Only Final Approval Required</label>
 										<select class="form-select" asp-for="OnlyFinalApprovalRequired" style="width:190px;">
@@ -182,42 +223,10 @@
 											<option value="N">No</option>
 										</select>
 									</div>
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:240px;">
-										<label asp-for="All3ApprovalRequired" class="form-label">All 3 Approval Required</label>
-										<select class="form-select" asp-for="All3ApprovalRequired" style="width:220px;">
-											<option value="Y">Yes</option>
-											<option value="N">No</option>
-										</select>
-									</div>
 									
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:350px;">
-										<label asp-for="EmpNameForFirstApproval" class="form-label" >Employee Name For First Approval </label>
-										<input type="hidden" asp-for="EmpidForFirstApproval" />
-										<select class="form-select" asp-for="EmpNameForFirstApproval" style="width:340px;">
-											<option value="">-Select-</option>
-										</select>
-									</div>
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:350px;">
-										<label asp-for="EmpNameForFirstApproval1" class="form-label" style="color:red">Employee Name For First Approval 1*</label>
-										<input type="hidden" asp-for="EmpidForFirstApproval1" />
-										<select class="form-select" asp-for="EmpNameForFirstApproval1" style="width:340px;">
-											<option value="">-Select-</option>
-										</select>
-									</div>
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:350px;">
-										<label asp-for="EmpNameForFirstApproval2" class="form-label" >Employee Name For First Approval 2*</label>
-										<input type="hidden" asp-for="EmpidForFirstApproval2" />
-										<select class="form-select" asp-for="EmpNameForFirstApproval2" style="width:340px;">
-											<option value="">-Select-</option>
-										</select>
-									</div>
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:350px;">
-										<label asp-for="EmpNameForFirstApproval3" class="form-label">Employee Name For First Approval 3*</label>
-										<input type="hidden" asp-for="EmpidForFirstApproval3" />
-										<select class="form-select" asp-for="EmpNameForFirstApproval3" style="width:350px;">
-											<option value="">-Select-</option>
-										</select>
-									</div>
+									
+									
+									
 									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:350px;">
 										<label asp-for="EmpNameForFinalApproval" class="form-label">Employee Name For Final Approval </label>
 										<input type="hidden" asp-for="EmpidForFinalApproval" />
@@ -280,6 +289,12 @@
 
 								</div>
 							</div>
+							
+							
+							
+							
+							
+							
 							<div class="accordion-item">
 								
 
