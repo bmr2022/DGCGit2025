@@ -3558,7 +3558,7 @@
             }
 
             fillBomRevNo();
-            FillCurrentBatchINStore();
+            // FillCurrentBatchINStore();
             FillSOPendQty();
             FillTotalStock();
             FillSOItemRate();
@@ -5252,7 +5252,7 @@
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         $('#StoreId').empty();
-                        $('#StoreId').append('<option value="0">-Select-</option>');
+                        // $('#StoreId').append('<option value="0">-Select-</option>');
                         if (obj.StatusCode != 500) {
                             $.each(obj.Result, function (index, val) {
                                 $('#StoreId').append("<option value=" + val.StoreId + ">" + val.Store_Name + "</option>");
