@@ -1180,6 +1180,8 @@
                        $('#divAddCreditNotePopupDataGrid').html(html);
                 }
             }
+                var isAddItem = false;
+           var isAddToPopgrid = false;
             function FillDetailFromPopupGrid(e) {
             let data = [];
             e.preventDefault();
@@ -1269,6 +1271,46 @@
                        existingRows.push($(this).prop('outerHTML'));
                    }
                });
+                                      popuphtml = existingRows.join('');
+               let j = existingRows.length + 1;
+                  let checkedRowsCount = $('#divCreditNoteDataGrid tr').length;
+
+               // 3️⃣ Add newly checked rows for current ItemCode
+               for (let i = 1; i <= checkedRowsCount; i++) {
+                      if ($('#chkCreditNote-' + i).is(':checked')) {
+                             let entryId = ($('#saleBillEntryId-' + i).text() || '').trim();
+                          let yearCode = ($('#SaleBillYearCode-' + i).text() || '').trim();
+                       let invoiceNo = ($('#InvoiceNo-' + i).text() || '').trim();
+                       let pbitemCode = $('#itemCode-' + i).val();
+                       let itemCode = $('#ItemCode').val();
+                     
+                       let uniqueKey = entryId + '_' + yearCode + '_' + invoiceNo + '_' + pbitemCode + '_' + itemCode;
+
+                       // ✅ Prevent duplicate insertion
+                       if (!popuphtml.includes(uniqueKey)) {
+                           popuphtml += `
+                                  <tr id="CNPopUpDataRow-${j}" style="font-size: 12px;">
+                                   <td>${j}</td>
+                                   <td id="partCode-${j}">
+                                       ${$('#PartCode').find(':selected').text()}
+                                          <input type="hidden" id="popupItemCode-${j}" value="${itemCode}" />
+                                       <input type="hidden" id="popUpUniqueKey-${j}" value="${uniqueKey}" />
+                                   </td>
+                                      <td id="popUpItemName-${j}">${$('#ItemName').find(':selected').text()}</td>
+                                      <td id="popUpsaleBillEntryId-${j}">${entryId}</td>
+                                      <td id="popUpSaleBillYearCode-${j}">${yearCode}</td>
+                                      <td id="popUpSaleBillNo-${j}">${invoiceNo}</td>
+                                      <td id="popUpSaleBillDate-${j}">${$('#InvoiceDate-' + i).text()}</td>
+                                   <td id="popUpBillQty-${j}">${$('#BillQty-' + i).text()}</td>
+                                   <td id="popUpBillRate-${j}">${$('#BillRate-' + i).text()}</td>
+                                         <td id="popUpDocTypeAccountCode-${j}">${$('#DocTypeAccountCode-' + i).text()}</td>
+                               </tr>`;
+                           j++;
+                                popUpItems.push({ key: $('#ItemCode').val(), value: uniqueKey });
+                       }
+                   }
+               }
+           }
                             var checkedRowsCount = $('#divCreditNoteDataGrid tr').length;
                             popUpItems = [];
                             for (var i = 1; i <= checkedRowsCount; i++) {
