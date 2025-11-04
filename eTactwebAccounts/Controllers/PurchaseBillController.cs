@@ -163,6 +163,7 @@ public class PurchaseBillController : Controller
             }
         }
     }
+
     public IActionResult AddItem2Grid(PurchaseBillModel model)
     {
         bool TF = false;

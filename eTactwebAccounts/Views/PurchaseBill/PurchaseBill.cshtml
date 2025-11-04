@@ -1252,8 +1252,15 @@
                         }
                         else {
                             $('#PBItemTable').html(data);
+                             ClearDRCRGrid();
+                            ClearAdjustmentGrid();
+                                if($('#divTaxGrid tr td').length>1){
+                                   btnClearTax();
+                                }
+                                       AddAdjstmntDetail1();
                             $('#divPBItemListToAddInGrid').empty();
                             $.notify("Item Added to Grid", "success");
+
                         }
                         $('#TotalRoundOff').prop('selectedIndex', 0);
 
@@ -1286,7 +1293,23 @@
                 });
             }
         });
+            function ClearDRCRGrid() {
+               $.ajax({
+                   type: "POST",
+                   url: "@Url.Action("ClearDRCRGrid")",
+                   dataType: "json",
+                   success: function (result, status, error) {
 
+                       $('#divdbCrItemList').empty();
+                       var NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
+                       $('#divdbCrItemList').html(NoData);
+
+                   },
+                   error: function (req, status, error) {
+                       alert(error);
+                   }
+               });
+           }
         function CalculateAmount() {
             var rowCount = $('#divPBItemList tr').length;
             if (rowCount > 1) {
@@ -2215,7 +2238,7 @@
             //if ($('#AccountCode').find(':selected').data('gstregister') == 'Y') {
             var AdjPendAmt = $('#AdjPendAmt').val();
             AdjPendAmt = (AdjPendAmt != null && AdjPendAmt != '' && AdjPendAmt != undefined) ? parseFloat(AdjPendAmt) : 0;
-            const mrnDate = parseDateToFormat($("#StrMRNEntryDate").val());
+            const mrnDate = ($("#StrMRNEntryDate").val());
             const maxMIRDate = getMaxMIRDate();
             const dateOnly = new (Date);
 

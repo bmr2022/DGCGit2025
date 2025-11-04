@@ -45,8 +45,7 @@
                             GENARATE EINVOICE
                         </a>
                     }
-                    <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="SaleBillList"
-                       asp-controller="SaleInvoice">
+                    <a type="button" class="pendingso  btn btn-sm btn-outline-light bg-gradient" >
                         <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                         Pending SO
                     </a>
@@ -1319,6 +1318,10 @@
             }
             calculatetotalqty();
 
+                $('.pendingso').click(function () {
+                    $('#PendSOForSaleBill').modal('show');
+ showDetail();
+                });
 
 
             // Initialize validator only once
@@ -4244,12 +4247,15 @@
             }
 
             if ($('#SONO').val() != '' && $('#CustOrderNo').val() != '0') {
+                if (AllowedToDispatchQtyMoreThenCloseSOPendQty != 'Y') {
                 if (parseFloat($('#Qty').val()) > parseFloat($('#SOPendQty').val())) {
                     $.notify('Bill Qty should not more then Pend Qty...!', "error");
                     AddErrorCls('Qty');
                     Err = 1;
                 } else {
                     RemoveErrorCls('Qty');
+                }
+
                 }
             }
 
@@ -5500,6 +5506,14 @@
                                 onItemSelected("ItemCode");
 
                             }
+                            else{
+                                                   AddMultipleItems();
+          ShowGroupWiseItems();
+                            }
+                        }
+                        else{
+                                      AddMultipleItems();
+                 ShowGroupWiseItems();
                         }
 
                     },
@@ -5557,10 +5571,17 @@
                                 } else {
                                     alert("Invalid Item Name entered!");
                                     $("#ItemNameText").val("").focus();
+                                           AddMultipleItems();
+                                            ShowGroupWiseItems();
                                 }
                             } else {
                                 alert("Invalid Item Name entered!");
                                 $("#ItemNameText").val("").focus();
+                                   
+                               AddMultipleItems();
+          ShowGroupWiseItems();
+                        
+
                             }
                         }
                     });
@@ -6502,14 +6523,34 @@
                             // if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
                             // FillSONO();
                             $('#SONO').val(obj[0].SONO);
-                            // FillSOYearCode();
-                            $('#SOYearCode').val(obj[0].SOYearCode);
+                           
+        if ($('#SONO option[value="' + obj[0].SONO + '"]').length === 0 && obj[0].SONO && obj[0].SONO !== '0') {
+            $('#SONO').append('<option value="' + obj[0].SONO + '">' + obj[0].SONO + '</option>');
+        }
+        $('#SONO').val(obj[0].SONO).trigger('change');
+                // FillSOYearCode();
+                                   FillSOYearCode();
+                                   $('#SOYearCode').val(obj[0].SOYearCode);
                             // FILLCustomerOrderAndSPDate();
                             // FillSOSchedule();
                             // FillSchYearCode();
                             // $('#SaleSchYearCode').trigger("change");
                             $('#SchNo').val(obj[0].SchNo);
+                           
+                                if ($('#SchNo option[value="' + obj[0].ScheduleNo + '"]').length === 0 && obj[0].ScheduleNo && obj[0].ScheduleNo !== '0') {
+                   $('#SchNo').append('<option value="' + obj[0].ScheduleNo + '">' + obj[0].ScheduleNo + '</option>');
+        }
+               $('#SchNo').val(obj[0].ScheduleNo).trigger('change');
+                      FillSchYearCode();
                             $('#SaleSchYearCode').val(obj[0].SaleSchYearCode);
+
+                            $('#CustOrderNo').val(obj[0].CustOrderNo);
+      
+                                if ($('#CustOrderNo option[value="' + obj[0].CustOrderNo + '"]').length === 0 && obj[0].CustOrderNo && obj[0].CustOrderNo !== '0') {
+                   $('#CustOrderNo').append('<option value="' + obj[0].CustOrderNo + '">' + obj[0].CustOrderNo + '</option>');
+        }
+               $('#CustOrderNo').val(obj[0].CustOrderNo).trigger('change');
+                                   //  $('#CustOrderNo').append("<option value=" + val.CustOrderNo + " selected>" + val.CustOrderNo + "</option>");
                             // FillItems($('#TypeItemServAssets').val());
                             if ($('#SaleBillJobwork').val() == 'J') {
                                 JWItemList($('#TypeItemServAssets').val());
@@ -6575,7 +6616,7 @@
                             $('#ProducedUnprod').val(obj[0].ProducedUnprod);
                             $('#Group_Code').val(obj[0].Group_Code).trigger('select2:select');
                             $('#BOMInd').val(obj[0].BOMInd);
-                            $('#CustOrderNo').val(obj[0].CustOrderNo);
+                            
                             $('#SODate').val(obj[0].SODate);
                             $('#SchNo').val(obj[0].SchNo);
                             $('#Schdate').val(obj[0].Schdate);
@@ -7295,6 +7336,7 @@
            
 
              if ($('#SONO').val() != '' && $('#CustOrderNo').val() != '0') {
+                 if (AllowedToDispatchQtyMoreThenCloseSOPendQty != 'Y') {
                 if (parseFloat($('#Qty').val()) > LowestStock) {
                 AddErrorCls('Qty');
                 Err = 1;
@@ -7304,6 +7346,7 @@
             else {
                 RemoveErrorCls('Qty');
             }
+                 }
              }
             return true;
         }
