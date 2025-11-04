@@ -81,6 +81,15 @@ namespace eTactWeb.DOM.Models
 
 		public string Allow_PO_Print { get; set; }
 		[NotMapped] 
+		public bool AllowedToDispatchQtyMoreThenCloseSOPendQtyBool
+        {
+			get => AllowedToDispatchQtyMoreThenCloseSOPendQty == "Y";
+			set => AllowedToDispatchQtyMoreThenCloseSOPendQty = value ? "Y" : "N";
+		}
+
+		public string AllowedToDispatchQtyMoreThenCloseSOPendQty { get; set; }
+
+		[NotMapped] 
 		public bool blockGateEntry4UnAppPOAmmBool
 		{
 			get => blockGateEntry4UnAppPOAmm == "Y";
@@ -314,7 +323,7 @@ namespace eTactWeb.DOM.Models
         public string AllowBackDatePURCHASEORDER { get; set; }
         public string AllowBackDateINDENT { get; set; }
         public string AllowBackDateMRIR { get; set; }
-        public string AllowBackDateIssueChallan { get; set; }
+        
         public string ALLOWBACKDATRECCHALLAN { get; set; }
         public string AllowBackDateJOBWorkIssue { get; set; }
         public string ALLOWBACKDATEJobworkRec { get; set; }
@@ -428,7 +437,7 @@ namespace eTactWeb.DOM.Models
 		public string AllowBackDateTRANSFERMATERIAL { get; set; }
         
         public string AllowBackDateReceiveChallanEntry { get; set; }
-        public string FIFOBasedBatchInventory { get; set; }
+       
         public string FIFOBasedBatchInventoryInJobWorkIss { get; set; }
         public string AllowBackDateCustomerJWIssue { get; set; }
         public string IssueViaScanningBarcode { get; set; }
@@ -514,7 +523,7 @@ namespace eTactWeb.DOM.Models
         public string AccPurchaseVoucherPrintoutFilename { get; set; }
         public string AccPurchaseBillInvoicePrintoutFilename { get; set; }
         
-        public string IssueChaallanTaxIsMandatory { get; set; }
+     
         public decimal PurchaseIncrementPercentageofRMInMRP { get; set; }
         public string FromDate { get; set; }
         public string ToDate { get; set; }
@@ -658,6 +667,39 @@ namespace eTactWeb.DOM.Models
 			get => AddInventoryByDirectPurchaseBill?.Trim() == "Y";
 			set => AddInventoryByDirectPurchaseBill = value ? "Y" : "N";
 		}
+		
+		[NotMapped]
+		public bool FIFOBasedBatchInventoryBool
+		{
+			get => FIFOBasedBatchInventory?.Trim() == "Y";
+			set => FIFOBasedBatchInventory = value ? "Y" : "N";
+		}
+		public string FIFOBasedBatchInventory { get; set; }
+
+		[NotMapped]
+		public bool AllowBackDateIssueChallanBool
+		{
+			get => AllowBackDateIssueChallan?.Trim() == "Y";
+			set => AllowBackDateIssueChallan = value ? "Y" : "N";
+		}
+		public string AllowBackDateIssueChallan { get; set; }
+
+		[NotMapped]
+		public bool IssueChaallanTaxIsMandatoryBool
+		{
+			get => IssueChaallanTaxIsMandatory?.Trim() == "Y";
+			set => IssueChaallanTaxIsMandatory = value ? "Y" : "N";
+		}
+		public string IssueChaallanTaxIsMandatory { get; set; }
+		[NotMapped]
+		public bool ShowHideOtherDetailTableDataBool
+		{
+			get => ShowHideOtherDetailTableData?.Trim() == "Y";
+			set => ShowHideOtherDetailTableData = value ? "Y" : "N";
+		}
+		public string ShowHideOtherDetailTableData { get; set; }
+
+
 		public IList<Features_OptionsModel> features_OptionsModelsGrid { get; set; }
     }
 }
