@@ -504,6 +504,7 @@
 					   let vendorName = $('#VendorName').val();
 					   let docType = $('#docTypeId').val();
 					   let searchBox = $('#search-box').val();
+				   let Invoiceno = $('#Invoiceno').val();
 						if (!vendorName) {
 			alert("Please select Vendor Name.");
 			$('#VendorName').focus();
@@ -514,6 +515,13 @@
 			$('#docTypeId').focus();
 			return;
 		}
+
+			if (!Invoiceno)
+			{
+				alert("Please select Invoice No.");
+				$('#Invoiceno').focus();
+				return;
+			}
 		let data = {
 
 					AccountCode: $('#VendorName').val(),
