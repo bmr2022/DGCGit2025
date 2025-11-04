@@ -1174,6 +1174,36 @@
             else {
                 RemoveErrorCls('ExcelFile');
             }
+                   if ($('#YearCode').val().trim() === "" || $('#YearCode').val() == "0") {
+              AddErrorCls('YearCode');
+              $.notify("Please select a valid Year Code.", "error");
+              Err = 1;
+          } else {
+              RemoveErrorCls('YearCode');
+          }
+
+          // 🔹 Validate Account Code
+          if ($('#AccountCode').val().trim() === "" || $('#AccountCode').val() == "0") {
+              AddErrorCls('AccountCode');
+              $.notify("Please select a valid Account.", "error");
+              Err = 1;
+          } else {
+              RemoveErrorCls('AccountCode');
+          }
+
+          // 🔹 Validate Currency
+          if ($('#Currency').find(":selected").text().trim() === "" || $('#Currency').find(":selected").text() === "Select") {
+              AddErrorCls('Currency');
+              $.notify("Please select a currency.", "error");
+              Err = 1;
+          } else {
+              RemoveErrorCls('Currency');
+          }
+
+          // 🚫 Stop execution if any validation failed
+          if (Err === 1) {
+              return;
+          }
 
             $.ajax({
                 url: "@Url.Action("UploadExcel")",
@@ -1236,7 +1266,16 @@
                        //   ClearAdjustmentGrid();
                          AddAdjstmntDetail1();
                     }
-                }
+                },
+                     error: function (xhr) {
+              // ✅ This will catch your C# BadRequest messages
+              if (xhr.status === 400) {
+                  // The message from BadRequest() in controller
+                  $.notify(xhr.responseText, "error");
+              } else {
+                  $.notify("Unexpected error occurred while uploading Excel.", "error");
+              }
+          }
             });
         }
 
@@ -3037,14 +3076,14 @@
                 RemoveErrorCls('BillQty');
             }
 
-            if ($('#Description').val() == null || $('#Description').val() == undefined || $('#Description').val() == '') {
-                $.notify("Description is required", "error");
-                AddErrorCls('Description');
-                IsError = 1;
-            }
-            else {
-                RemoveErrorCls('Description');
-            }
+            // if ($('#Description').val() == null || $('#Description').val() == undefined || $('#Description').val() == '') {
+            //     $.notify("Description is required", "error");
+            //     AddErrorCls('Description');
+            //     IsError = 1;
+            // }
+            // else {
+            //     RemoveErrorCls('Description');
+            // }
 
             if (IsError == 1) {
                 $('.ItemBtn').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
