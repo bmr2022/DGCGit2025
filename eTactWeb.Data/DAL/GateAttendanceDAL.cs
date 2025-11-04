@@ -39,8 +39,8 @@ public class GateAttendanceDAL
         var model1 = new GateAttendanceModel();
         try
         {
-            //var AttndanceDt = CommonFunc.ParseFormattedDate(Attdate.ToString("dd/MMM/yyyy"));
-            var AttndanceDt = CommonFunc.ParseFormattedDate(Attdate.ToString("yyyy-MM-dd"));
+            var AttndanceDt = CommonFunc.ParseFormattedDate(Attdate.ToString("dd/MMM/yyyy"));
+            //var AttndanceDt = CommonFunc.ParseFormattedDate(Attdate.ToString("yyyy-MM-dd"));
             using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
             {
                 DateTime now = DateTime.Now;
@@ -51,7 +51,15 @@ public class GateAttendanceDAL
                 };
                 oCmd.Parameters.AddWithValue("@flag", "FillEmployeesListForManualAttand");
                 oCmd.Parameters.AddWithValue("@DailyMonthlyAttendance", DayOrMonthType);
-                //oCmd.Parameters.AddWithValue("@AttndanceDt", AttndanceDt);
+                if(string.Equals(DayOrMonthType, "daily", StringComparison.OrdinalIgnoreCase))
+                {
+                     oCmd.Parameters.AddWithValue("@AttendanceDate", AttndanceDt);
+                }
+                else
+                {
+                    oCmd.Parameters.AddWithValue("@AttendanceForMonth", AttMonth);
+                    oCmd.Parameters.AddWithValue("@GateAttYearCode", YearCode);
+                }
                 await myConnection.OpenAsync();
                 using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
                 {
@@ -252,7 +260,7 @@ public class GateAttendanceDAL
                 SqlParams.Add(new SqlParameter("@GateAttEntryId", model.GateAttEntryId));
 
             SqlParams.Add(new SqlParameter("@GateAttYearCode", model.GateAttYearCode));
-            SqlParams.Add(new SqlParameter("@AttendanceDate", EntryDt == default ? null : EntryDt));
+            SqlParams.Add(new SqlParameter("@AttendanceDate", AttDate == default ? (EntryDt == default ? null : EntryDt) : AttDate));
             SqlParams.Add(new SqlParameter("@AttendanceEntryMethod", model.AttendanceEntryMethodType ?? string.Empty));
             SqlParams.Add(new SqlParameter("@fromdate", fromdate == default ? string.Empty : fromdate));
             SqlParams.Add(new SqlParameter("@todate", todate == default ? string.Empty : todate));

@@ -79,6 +79,7 @@ namespace eTactwebHR.Controllers
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
             {
                 MainModel = await IGateAttendance.GetViewByID(ID, YearCode).ConfigureAwait(false);
+                MainModel.strEmpAttDate = (MainModel.EmpAttDate != null) ? CommonFunc.ParseFormattedDate(MainModel.EmpAttDate?.Date.ToString("dd/MM/yyyy")) : CommonFunc.ParseFormattedDate(DateTime.Now.ToString("dd/MM/yyyy"));
                 MainModel.Mode = Mode;
                 MainModel.ID = ID;
                 MainModel.GateAttYearCode = YearCode;

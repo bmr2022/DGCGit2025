@@ -238,9 +238,10 @@
             var defaultDate = (today < minDate) ? minDate : (today > maxDate ? maxDate : today);
             fillEntryId();
             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-                var strEmpAttDate = $('#strEmpAttDate').val().split("-").join("/");
-                strEmpAttDate = parseDateToFormat(strEmpAttDate.split(" ")[0]);
-                $('#strEmpAttDate').val('').datepicker("destroy").datepicker({ dateFormat: 'dd/M/yy' }).datepicker("setDate", strEmpAttDate);
+                //var strEmpAttDate = $('#strEmpAttDate').val().split("-").join("/");
+                //strEmpAttDate = parseDateToFormat(strEmpAttDate.split(" ")[0]);
+                var strEmpAttDate = $('#strEmpAttDate').val();
+                $('#strEmpAttDate').datepicker("destroy").datepicker({ dateFormat: 'dd/M/yy' }).datepicker("setDate", strEmpAttDate);
             }
             else {
                 $('#strEmpAttDate').val('').datepicker("destroy").datepicker({dateFormat: 'dd/M/yy', minDate: minDate, maxDate: maxDate}).datepicker("setDate", defaultDate);
@@ -568,6 +569,7 @@
                     }
                     $('.dvEmpAttMonth').hide();
                     $('#strEmpAttMonth').prop("selectedIndex", 0);
+                    $('#CategoryCode').val($('#EmpCategoryId').val());
                 }
                 else if (obj && obj.toLowerCase() === "monthly") {
                     $('.dvEmpAttMonth').show();
