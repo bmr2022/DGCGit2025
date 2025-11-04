@@ -1751,7 +1751,7 @@
 
                                     '<td><input id="PartCode' + i + '" class="form-control no-cursor" value="' + val.PartCode + '"/></td>' +
                                     '<td><input id="ItemName' + i + '" class="form-control no-cursor" value="' + val.ItemName + '"/></td>' +
-                                    '<td><input type="number" style="background-color :#FFFACD" onfocusout="CalculateAmountForPendSOGrid(' + i + ')" id="SaleBillQty' + i + '" class="form-control " value="' + val.SaleBillQty + '"/></td>' +
+                                      '<td><input type="number" style="background-color :#FFFACD" onfocusout="CalculateAmountForPendSOGrid(' + i + ')" id="SaleBillQty' + i + '" class="form-control " value="' + val.SaleBillQty + '"/></td>' +
                                     '<td><input id="SOItemRate' + i + '" style="background-color:#FFFACD" onfocusout="CalculateAmountForPendSOGrid(' + i + ')" class="form-control" value="' + val.SOItemRate + '"/></td>' +
                                     '<td><input type="number" style="background-color:#FFFACD" onfocusout="CalculateAmountForPendSOGrid(' + i + ')" id="DisPer' + i + '" class="form-control " value="' + val.DisPer + '"/></td>' +
                                     '<td><input type="number" id="DisAmt' + i + '" class="form-control" value="' + val.DisAmt + '"/></td>' +
@@ -4880,9 +4880,20 @@
 
             if ($("#PartCode").is("select")) {
                 let selectedPartText = $('#PartCode').find(':selected').text();
-                partCodeVal = (selectedPartText === "-Select-") ? "" : selectedPartText;
+              var   partCodeValue = (selectedPartText === "-Select-") ? "" : selectedPartText;
+                  let parts = partCodeValue.split('-->');
+                  partCodeVal = parts[0].trim();
             } else {
-                partCodeVal = $("#PartCodeText").val() || "";
+
+                let partCodeTextVal = $("#PartCodeText").val()?.trim() || "";
+                        let partDescVal = "";
+                        if (partCodeTextVal.includes("-->")) {
+                            const parts = partCodeTextVal.split("-->");
+                              partCodeVal = parts[0].trim();
+                            partDescVal = parts[1]?.trim() || "";
+                        } else {
+                            partCodeVal = partCodeTextVal; // fallback if no separator
+                        }
             }
 
             if ($("#ItemCode").is("select")) {
@@ -4904,7 +4915,7 @@
                 // "PartCode": $('#PartCode').find(':selected').text() == "-Select-" ? "" : $('#PartCode').find(':selected').text(),
                 // "ItemCode": $('#ItemCode').val(),
                 // "ItemName": $('#ItemCode').find(':selected').text() == '-Select-' ? "" : $('#ItemCode').find(':selected').text(),
-                "PartCode": partCodeVal,
+                    "PartCode": partCodeVal,
                 "ItemCode": itemCodeVal,
                 "ItemName": itemNameVal,
                 "SchNo": $('#SchNo').val(),
@@ -6509,7 +6520,7 @@
                             // } else {
                             //     FillSOWiseItems();
                             // }
-                             if ($('#SONO').val() == '' || $('#SONO').val() == '0') {
+                             if ($('#SONO').val() == ''||$('#SONO').val() == null || $('#SONO').val() == '0') {
                 // Autocomplete mode
                 enableAutocompleteMode();
                 // FillItems($('#TypeItemServAssets').val());
