@@ -11,6 +11,8 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> CheckLockYear(int YearCode);
         Task<ResponseResult> CheckEditOrDelete(int ID,int YearCode);
         Task<ResponseResult> GetExchangeRate(string Currency);
+        Task<ResponseResult> GetDocTypeId(string Dooctype);
+        Task<ResponseResult> GetItemDetail(string PartCode);
         Task<ResponseResult> FillCurrency(string Ctrl);
         Task<ResponseResult> NewAmmEntryId();
         Task<ResponseResult> GetFeatureOption();

@@ -685,6 +685,17 @@ namespace eTactWeb.Controllers
             var JSON = await IDirectPurchaseBill.GetExchangeRate(Currency);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
+        }    public async Task<JsonResult> GetDocTypeId(string Dooctype)
+        {
+            var JSON = await IDirectPurchaseBill.GetDocTypeId(Dooctype);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        } 
+        public async Task<JsonResult> GetItemDetail(string PartCode)
+        {
+            var JSON = await IDirectPurchaseBill.GetItemDetail(PartCode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
         }
 
         public async Task<IActionResult> GetItemServiceFORPO(string ItemService)
@@ -1291,6 +1302,7 @@ namespace eTactWeb.Controllers
             Table.Columns.Add("POType", typeof(string));
             Table.Columns.Add("MIRNO", typeof(string));
             Table.Columns.Add("MIRYearCode", typeof(int));
+            Table.Columns.Add("MIREntryId", typeof(int));
             Table.Columns.Add("MIRDate", typeof(string));
             Table.Columns.Add("AllowDebitNote", typeof(string));
             Table.Columns.Add("DebitNotePending", typeof(string));
@@ -1378,6 +1390,7 @@ namespace eTactWeb.Controllers
                     string.Empty, // Item.POType
                     string.Empty, // Item.MIRNO
                     0, // Item.MIRYearCode
+                    0,
                     mirDt, // Item.MIRDate
                     string.Empty, // Item.AllowDebitNote
                     string.Empty, // Item.DebitNotePending
@@ -1767,7 +1780,7 @@ namespace eTactWeb.Controllers
         [HttpPost]
         public IActionResult UploadExcel()
         {
-            var excelFile = Request.Form.Files[0];
+                var excelFile = Request.Form.Files[0];
             string pono = Request.Form.Where(x => x.Key == "PoNo").FirstOrDefault().Value;
             int poYearcode = Convert.ToInt32(Request.Form.Where(x => x.Key == "POYearcode").FirstOrDefault().Value);
             int AccountCode = Convert.ToInt32(Request.Form.Where(x => x.Key == "AccountCode").FirstOrDefault().Value);
@@ -1788,7 +1801,7 @@ namespace eTactWeb.Controllers
                 for (int row = 2; row <= worksheet.Dimension.Rows; row++)
                 {
                     //var itemCatCode = IStockAdjust.GetItemCatCode(worksheet.Cells[row, 6].Value.ToString());
-                    var itemCode = IDirectPurchaseBill.GetItemCode(worksheet.Cells[row, 3].Value.ToString());
+                    var itemCode = IDirectPurchaseBill.GetItemCode(worksheet.Cells[row, 1].Value.ToString());
                     var partcode = 0;
                     var itemCodeValue = 0;
                     if (itemCode.Result.Result != null)
@@ -1802,54 +1815,66 @@ namespace eTactWeb.Controllers
                         return Json("Partcode not available");
                     }
                     // for pending qty validation -- still need to change
-                    var DPBQty = Convert.ToDecimal(worksheet.Cells[row, 6].Value.ToString());
+                    var DPBQty = Convert.ToDecimal(worksheet.Cells[row, 4].Value.ToString());
 
 
                     //for altunit conversion
-                    var altUnitConversion = AltUnitConversion(partcode, 0, Convert.ToDecimal(worksheet.Cells[row, 6].Value.ToString()));
-                    JObject AltUnitCon = JObject.Parse(altUnitConversion.Result.Value.ToString());
-                    decimal altUnitValue = (decimal)AltUnitCon["Result"][0]["AltUnitValue"];
+                    //var altUnitConversion = AltUnitConversion(partcode, 0, Convert.ToDecimal(worksheet.Cells[row, 6].Value.ToString()));
+                    //JObject AltUnitCon = JObject.Parse(altUnitConversion.Result.Value.ToString());
+                    //decimal altUnitValue = (decimal)AltUnitCon["Result"][0]["AltUnitValue"];
 
 
                     var GetExhange = GetExchangeRate(Currency);
+                    var GetDocTypeId1 = GetDocTypeId(worksheet.Cells[row, 7].Value.ToString());
+                     var GetItem =GetItemDetail(worksheet.Cells[row, 1].Value.ToString());
+                    JObject Jsonstring = JObject.Parse(GetItem.Result.Value.ToString());
+                    var Unit =Jsonstring["Result"][0]["Unit"];
+                    var HsnNo = Jsonstring["Result"][0]["HsnNo"];
+                    var AlternateUnit = Jsonstring["Result"][0]["AlternateUnit"];
+                    var Rackid = Jsonstring["Result"][0]["Rackid"];
 
                     JObject AltRate = JObject.Parse(GetExhange.Result.Value.ToString());
-                    decimal AltRateToken = (decimal)AltRate["Result"][0]["Rate"];
-                    var RateInOther = Convert.ToDecimal(worksheet.Cells[row, 14].Value) * AltRateToken;
+                    decimal AltRateToken = (decimal)AltRate["Result"][0]["IndianValue"];
+                    var RateInOther = Convert.ToDecimal(worksheet.Cells[row, 3].Value) * AltRateToken;
+
+                    JObject DocTypeIdjson = JObject.Parse(GetDocTypeId1.Result.Value.ToString());
+                    decimal DocTypeId = (int)DocTypeIdjson["Result"][0]["DocTypeId"];
 
 
-                    var DisRs = DPBQty * Convert.ToDecimal(worksheet.Cells[row, 14].Value) * (Convert.ToDecimal(worksheet.Cells[row, 18].Value.ToString()) / 100);
-                    var Amount = (DPBQty * Convert.ToDecimal(worksheet.Cells[row, 14].Value)) - DisRs;
+                    var DisRs = DPBQty * Convert.ToDecimal(worksheet.Cells[row, 3].Value) * (Convert.ToDecimal(worksheet.Cells[row, 5].Value.ToString()) / 100);
+                    var Amount = (DPBQty * Convert.ToDecimal(worksheet.Cells[row, 3].Value)) - DisRs;
 
 
 
                     data.Add(new DPBItemDetail()
                     {
                         SeqNo = cnt++,
-                        PartText = worksheet.Cells[row, 3].Value.ToString(),
-                        ItemText = worksheet.Cells[row, 4].Value.ToString(),
+                        PartText = worksheet.Cells[row, 1].Value.ToString(),
+                        ItemText = worksheet.Cells[row, 2].Value.ToString(),
                         ItemCode = itemCodeValue,
                         PartCode = partcode,
-                        HSNNo = Convert.ToInt32(worksheet.Cells[row, 5].Value.ToString()),
-                        DPBQty = Convert.ToDecimal(worksheet.Cells[row, 6].Value.ToString()),
-                        Unit = worksheet.Cells[row, 7].Value.ToString(),
-                        AltQty = altUnitValue,
-                        AltUnit = worksheet.Cells[row, 9].Value.ToString(),
-
-                        AltPendQty = Convert.ToDecimal(worksheet.Cells[row, 11].Value.ToString()),
-                        Process = Convert.ToInt32(worksheet.Cells[row, 13].Value.ToString()),
-                        Rate = Convert.ToDecimal(worksheet.Cells[row, 14].Value.ToString()),
+                        HSNNo = Convert.ToInt32(HsnNo.ToString()),
+                        DPBQty = Convert.ToDecimal(worksheet.Cells[row, 4].Value.ToString()),
+                        BillQty = Convert.ToDecimal(worksheet.Cells[row, 4].Value.ToString()),
+                        Unit = (Unit.ToString()),
+                        AltQty = 0,
+                        AltUnit = (AlternateUnit.ToString()),
+                        AltPendQty =0,
+                        Process =0,
+                        Rate = Convert.ToDecimal(worksheet.Cells[row, 3].Value.ToString()),
                         OtherRateCurr = RateInOther,
-                        UnitRate = worksheet.Cells[row, 17].Value.ToString(),
-                        DiscPer = Convert.ToDecimal(worksheet.Cells[row, 18].Value.ToString()),
+                        UnitRate ="",
+                        DiscPer = Convert.ToDecimal(worksheet.Cells[row, 5].Value.ToString()),
                         DiscRs = Convert.ToDecimal(DisRs.ToString("F2")),
                         Amount = Convert.ToDecimal(Amount.ToString("F2")),
-                        TxRemark = worksheet.Cells[row, 24].Value == null ? "" : worksheet.Cells[row, 24].Value.ToString(),
-                        Description = worksheet.Cells[row, 25].Value == null ? "" : worksheet.Cells[row, 25].Value.ToString(),
-                        AdditionalRate = Convert.ToDecimal(worksheet.Cells[row, 26].Value.ToString()),
-                        Color = worksheet.Cells[row, 27].Value == null ? "" : worksheet.Cells[row, 27].Value.ToString(),
-                        CostCenter = Convert.ToInt32(worksheet.Cells[row, 28].Value.ToString()),
-
+                        TxRemark = "",
+                        Description ="",
+                        AdditionalRate = 0,
+                        Color = "",
+                        CostCenter = 0,
+                        ItemLocation = string.IsNullOrEmpty(worksheet.Cells[row, 6].Value.ToString())  ? Rackid.ToString() : worksheet.Cells[row, 6].Value.ToString(),
+                        DocTypeText= (worksheet.Cells[row, 7].Value.ToString()),
+                        docTypeId= Convert.ToInt32(DocTypeId),
                     });
                 }
             }
@@ -1880,7 +1905,7 @@ namespace eTactWeb.Controllers
                     DirectPurchaseBillModel Model = string.IsNullOrEmpty(serializedModel)
                         ? new DirectPurchaseBillModel()  // Default if not found
                         : JsonConvert.DeserializeObject<DirectPurchaseBillModel>(serializedModel);
-
+                    Model.ItemDetailGrid ??= new List<DPBItemDetail>();
                     if (Model == null)
                     {
                         item.SeqNo += seqNo + 1;
@@ -1920,7 +1945,7 @@ namespace eTactWeb.Controllers
                 ? new DirectPurchaseBillModel()  // Default if not found
                 : JsonConvert.DeserializeObject<DirectPurchaseBillModel>(serializedMainModelFromSession);
 
-            return PartialView("_POItemGrid", MainModel);
+            return PartialView("_DPBItemGrid", MainModel);
         }
     }
 }
