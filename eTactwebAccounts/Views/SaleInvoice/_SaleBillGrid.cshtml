@@ -46,12 +46,12 @@ else
             <td>@item.ItemName</td>
             <td id="gridBomInd-@Cntr" class="gridHiddenField">@item.BOMInd</td>  @*gridHiddenField*@
             <td class="gridHiddenField">@item.ProducedUnprod</td>  @*gridHiddenField*@
-           
-            <td class="billQty" style="background-color:yellow">@item.Qty</td>
-            <td class="rate" style="background-color:yellow">@item.Rate</td>
+
+            <td class="billQty" style="background-color:#FFFACD">@item.Qty</td>
+            <td class="rate" style="background-color:#FFFACD">@item.Rate</td>
             <td class="DiscPer">@item.DiscountPer</td>
             <td class="DiscAmt">@item.DiscountAmt</td>
-            <td id="GridAmount-@Cntr" style="background-color:yellow">@item.Amount.ToString("F2")</td>
+            <td id="GridAmount-@Cntr" style="background-color:#FFFACD">@item.Amount.ToString("F2")</td>
             <td id="GridSONO-@Cntr">@item.SONO</td>
             <td>@(item.SODate != null ? (item.SODate).Split(" ")[0] : item.SODate)</td>
             <td>@item.CustOrderNo</td>
