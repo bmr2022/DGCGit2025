@@ -420,6 +420,7 @@ namespace eTactWeb.Data.DAL
 																AllowToChangeStoreName = dr["AllowToChangeSaleBillStoreName"] != DBNull.Value ? dr["AllowToChangeSaleBillStoreName"].ToString() : string.Empty,
 																HideOtherFieldOFDetailTable = dr["HideOtherFieldOfSaleBillDetailTable"] != DBNull.Value ? dr["HideOtherFieldOfSaleBillDetailTable"].ToString() : string.Empty,
 																ApproveSOForGenerateSaleInvoiceOrNot = dr["ApproveSOForGenerateSaleInvoiceOrNot"] != DBNull.Value ? dr["ApproveSOForGenerateSaleInvoiceOrNot"].ToString() : string.Empty,
+																AllowedToDispatchQtyMoreThenCloseSOPendQty = dr["AllowedToDispatchQtyMoreThenCloseSOPendQty"] != DBNull.Value ? dr["AllowedToDispatchQtyMoreThenCloseSOPendQty"].ToString() : string.Empty,
 
 
 															}).ToList();
@@ -540,9 +541,13 @@ namespace eTactWeb.Data.DAL
                   {
                     SqlParams.Add(new SqlParameter("@flag", "VIEWBYIDProdPlanSch"));
                   }
-                   if (Type == "AccountDetail")
+                  if (Type == "AccountDetail")
                   {
                     SqlParams.Add(new SqlParameter("@flag", "VIEWBYIDAccount"));
+                  }
+                  if (Type == "IssueChallanDetail")
+                  {
+                    SqlParams.Add(new SqlParameter("@flag", "VIEWBYIDIssueChallan"));
                   }
 
                 var _ResponseResult = await _IDataLogic.ExecuteDataSet("Sp_FeaturesOptions", SqlParams);
@@ -789,6 +794,7 @@ namespace eTactWeb.Data.DAL
 					model.ApproveSOForGenerateSaleInvoiceOrNot = DS.Tables[0].Rows[0]["ApproveSOForGenerateSaleInvoiceOrNot"] != DBNull.Value ? DS.Tables[0].Rows[0]["ApproveSOForGenerateSaleInvoiceOrNot"].ToString() : string.Empty;
 					model.ShowHideOtherDetails = DS.Tables[0].Rows[0]["ShowHideOtherDetails"] != DBNull.Value ? DS.Tables[0].Rows[0]["ShowHideOtherDetails"].ToString() : string.Empty;
 					model.HideShowOtherDiscount = DS.Tables[0].Rows[0]["HideShowOtherDiscount"] != DBNull.Value ? DS.Tables[0].Rows[0]["HideShowOtherDiscount"].ToString() : string.Empty;
+					model.AllowedToDispatchQtyMoreThenCloseSOPendQty = DS.Tables[0].Rows[0]["AllowedToDispatchQtyMoreThenCloseSOPendQty"] != DBNull.Value ? DS.Tables[0].Rows[0]["AllowedToDispatchQtyMoreThenCloseSOPendQty"].ToString() : string.Empty;
 					
 				}
 				if (Type == "AccountDetail")
@@ -800,8 +806,22 @@ namespace eTactWeb.Data.DAL
                     model.AccBackdateVoucherEntryPassword = DS.Tables[0].Rows[0]["AccBackdateVoucherEntryPassword"] != DBNull.Value ? DS.Tables[0].Rows[0]["AccBackdateVoucherEntryPassword"].ToString() : string.Empty;
                     
                 }
+                if (Type == "IssueChallanDetail")
+                {
 
-                if (DS.Tables.Count != 0 && DS.Tables[0].Rows.Count > 0)
+					model.FIFOBasedBatchInventory = DS.Tables[0].Rows[0]["FIFOBasedBatchInventory"] != DBNull.Value ? DS.Tables[0].Rows[0]["FIFOBasedBatchInventory"].ToString() : string.Empty;
+					model.AllowBackDateIssueChallan = DS.Tables[0].Rows[0]["AllowBackDateIssueChallan"] != DBNull.Value ? DS.Tables[0].Rows[0]["AllowBackDateIssueChallan"].ToString() : string.Empty;
+					model.IssueChaallanTaxIsMandatory = DS.Tables[0].Rows[0]["IssueChaallanTaxIsMandatory"] != DBNull.Value ? DS.Tables[0].Rows[0]["IssueChaallanTaxIsMandatory"].ToString() : string.Empty;
+					model.NRGPChallanPrintReportName = DS.Tables[0].Rows[0]["NRGPChallanPrintReportNAme"] != DBNull.Value ? DS.Tables[0].Rows[0]["NRGPChallanPrintReportNAme"].ToString() : string.Empty;
+					model.ShowHideEntryDetail = DS.Tables[0].Rows[0]["ShowHideEntryDetail"] != DBNull.Value ? DS.Tables[0].Rows[0]["ShowHideEntryDetail"].ToString() : string.Empty;
+					model.ShowHideOtherRequiredDetail = DS.Tables[0].Rows[0]["ShowHideOtherRequiredDetail"] != DBNull.Value ? DS.Tables[0].Rows[0]["ShowHideOtherRequiredDetail"].ToString() : string.Empty;
+					model.AllowToChangeStoreName = DS.Tables[0].Rows[0]["AllowToChangeStore"] != DBNull.Value ? DS.Tables[0].Rows[0]["AllowToChangeStore"].ToString() : string.Empty;
+					model.ShowHideOtherDetailTableData = DS.Tables[0].Rows[0]["ShowHideOtherDetailTableData"] != DBNull.Value ? DS.Tables[0].Rows[0]["ShowHideOtherDetailTableData"].ToString() : string.Empty;
+					model.ShowHideOtherDetails = DS.Tables[0].Rows[0]["ShowHideOtherDetail"] != DBNull.Value ? DS.Tables[0].Rows[0]["ShowHideOtherDetail"].ToString() : string.Empty;
+
+				}
+
+				if (DS.Tables.Count != 0 && DS.Tables[0].Rows.Count > 0)
                 {
                     foreach (DataRow row in DS.Tables[0].Rows)
                     {
@@ -813,6 +833,7 @@ namespace eTactWeb.Data.DAL
                     }
                     model.features_OptionsModelsGrid = ItemList;
                 }
+
                 return model;
             }
             catch (Exception ex)
@@ -1072,6 +1093,7 @@ namespace eTactWeb.Data.DAL
 					SqlParams.Add(new SqlParameter("@ApproveSOForGenerateSaleInvoiceOrNot", model.ApproveSOForGenerateSaleInvoiceOrNot));
 					SqlParams.Add(new SqlParameter("@ShowHideOtherDetails", model.ShowHideOtherDetails));
 					SqlParams.Add(new SqlParameter("@HideShowOtherDiscount", model.HideShowOtherDiscount));
+					SqlParams.Add(new SqlParameter("@AllowedToDispatchQtyMoreThenCloseSOPendQty", model.AllowedToDispatchQtyMoreThenCloseSOPendQty));
 
 				}
 				if (model.Type == "AccountDetail")
@@ -1083,12 +1105,27 @@ namespace eTactWeb.Data.DAL
                             SqlParams.Add(new SqlParameter("@AccAllowBackdateVoucherEntry", model.AccAllowBackdateVoucherEntry));
                             SqlParams.Add(new SqlParameter("@AccBackdateVoucherEntryPassword", model.AccBackdateVoucherEntryPassword));
                             
-                         }
+                }
+                if (model.Type == "IssueChallanDetail")
+				{
+
+                            SqlParams.Add(new SqlParameter("@Flag", "UPDATEIssueChallan"));
+					SqlParams.Add(new SqlParameter("@FIFOBasedBatchInventory", model.FIFOBasedBatchInventory));
+					SqlParams.Add(new SqlParameter("@AllowBackDateIssueChallan", model.AllowBackDateIssueChallan));
+					SqlParams.Add(new SqlParameter("@IssueChaallanTaxIsMandatory", model.IssueChaallanTaxIsMandatory));
+					SqlParams.Add(new SqlParameter("@NRGPChallanPrintReportNAme", model.NRGPChallanPrintReportName));
+					SqlParams.Add(new SqlParameter("@ShowHideEntryDetail", model.ShowHideEntryDetail));
+					SqlParams.Add(new SqlParameter("@ShowHideOtherRequiredDetail", model.ShowHideOtherRequiredDetail));
+					SqlParams.Add(new SqlParameter("@AllowToChangeStore", model.AllowToChangeStoreName));
+					SqlParams.Add(new SqlParameter("@ShowHideOtherDetailTableData", model.ShowHideOtherDetailTableData));
+					SqlParams.Add(new SqlParameter("@ShowHideOtherDetail", model.ShowHideOtherDetails));
+
+				}
 
 
 
-               // _ResponseResult = await _IDataLogic.ExecuteDataTable("Sp_FeaturesOptions", SqlParams);
-                _ResponseResult = await _IDataLogic.ExecuteDataSet("Sp_FeaturesOptions", SqlParams).ConfigureAwait(false);
+				// _ResponseResult = await _IDataLogic.ExecuteDataTable("Sp_FeaturesOptions", SqlParams);
+				_ResponseResult = await _IDataLogic.ExecuteDataSet("Sp_FeaturesOptions", SqlParams).ConfigureAwait(false);
              
 
             }
