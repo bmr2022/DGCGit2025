@@ -2519,11 +2519,8 @@
 
                         // 🔹 Auto-select 1st batch if store change not allowed
                         if ($('#AllowToChangeStore').val() == "N") {
-                            var firstBatch = $('#BatchNo option:eq(1)').val(); // first real batch (skip -Select-)
-                            if (firstBatch) {
-                                $('#BatchNo').val('1');
-                                $('#BatchNo').prop("disabled", true);
-                            }
+                            $('#BatchNo').empty();
+                            $('#BatchNo').append('<option value="1" selected>1</option>');
                             $('#uniquebatchno').empty();
                             $('#uniquebatchno').append('<option value="1" selected>1</option>');
                             GetBatchStock();
@@ -3875,13 +3872,13 @@
                     RemoveErrorCls('uniquebatchno');
                 }
 
-                //if (parseInt($('#Qty').val()) == 0 || $('#Qty').val() == '' || parseFloat($('#Qty').val()) > parseFloat($('#BatchStock').val())) {
+              /*   //if (parseInt($('#Qty').val()) == 0 || $('#Qty').val() == '' || parseFloat($('#Qty').val()) > parseFloat($('#BatchStock').val())) {
                 //    AddErrorCls('Qty');
                 //    Err = 1;
                 //}
                 //else {
                 //    RemoveErrorCls('Qty');
-                //}
+                //} */
 
                 if (parseFloat($('#Qty').val()) == 0 || $('#Qty').val() == '' ) {
                     AddErrorCls('Qty');
