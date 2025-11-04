@@ -685,6 +685,17 @@ namespace eTactWeb.Controllers
             var JSON = await IDirectPurchaseBill.GetExchangeRate(Currency);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
+        }    public async Task<JsonResult> GetDocTypeId(string Dooctype)
+        {
+            var JSON = await IDirectPurchaseBill.GetDocTypeId(Dooctype);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        } 
+        public async Task<JsonResult> GetItemDetail(string PartCode)
+        {
+            var JSON = await IDirectPurchaseBill.GetItemDetail(PartCode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
         }
 
         public async Task<IActionResult> GetItemServiceFORPO(string ItemService)
@@ -1291,6 +1302,7 @@ namespace eTactWeb.Controllers
             Table.Columns.Add("POType", typeof(string));
             Table.Columns.Add("MIRNO", typeof(string));
             Table.Columns.Add("MIRYearCode", typeof(int));
+            Table.Columns.Add("MIREntryId", typeof(int));
             Table.Columns.Add("MIRDate", typeof(string));
             Table.Columns.Add("AllowDebitNote", typeof(string));
             Table.Columns.Add("DebitNotePending", typeof(string));
@@ -1363,7 +1375,7 @@ namespace eTactWeb.Controllers
                     Item.Color ?? string.Empty,
                     string.Empty, // Item.ItemModel
                     0, // Item.Deaprtmentid
-                    Item.Description,
+                    Item.Description?? string.Empty,
                     string.Empty, // Item.DebitNoteType
                     Item.Process > 0 ? Item.Process : 0,
                     0f, // Item.NewPoRate
@@ -1378,6 +1390,7 @@ namespace eTactWeb.Controllers
                     string.Empty, // Item.POType
                     string.Empty, // Item.MIRNO
                     0, // Item.MIRYearCode
+                    0,
                     mirDt, // Item.MIRDate
                     string.Empty, // Item.AllowDebitNote
                     string.Empty, // Item.DebitNotePending
@@ -1763,19 +1776,17 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-
         [HttpPost]
         public IActionResult UploadExcel()
         {
             var excelFile = Request.Form.Files[0];
-            string pono = Request.Form.Where(x => x.Key == "PoNo").FirstOrDefault().Value;
-            int poYearcode = Convert.ToInt32(Request.Form.Where(x => x.Key == "POYearcode").FirstOrDefault().Value);
-            int AccountCode = Convert.ToInt32(Request.Form.Where(x => x.Key == "AccountCode").FirstOrDefault().Value);
-            string SchNo = Request.Form.Where(x => x.Key == "SchNo").FirstOrDefault().Value;
-            var SchYearCode = Convert.ToInt32(Request.Form.Where(x => x.Key == "SchYearCode").FirstOrDefault().Value);
-            string Currency = Request.Form.Where(x => x.Key == "Currency").FirstOrDefault().Value;
-            string Flag = Request.Form.Where(x => x.Key == "Flag").FirstOrDefault().Value;
-
+            string pono = Request.Form["PoNo"];
+            int poYearcode = Convert.ToInt32(Request.Form["POYearcode"]);
+            int AccountCode = Convert.ToInt32(Request.Form["AccountCode"]);
+            string SchNo = Request.Form["SchNo"];
+            int SchYearCode = Convert.ToInt32(Request.Form["SchYearCode"]);
+            string Currency = Request.Form["Currency"];
+            string Flag = Request.Form["Flag"];
 
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             List<DPBItemDetail> data = new List<DPBItemDetail>();
@@ -1785,143 +1796,278 @@ namespace eTactWeb.Controllers
             {
                 var worksheet = package.Workbook.Worksheets[0];
                 int cnt = 1;
+
                 for (int row = 2; row <= worksheet.Dimension.Rows; row++)
                 {
-                    //var itemCatCode = IStockAdjust.GetItemCatCode(worksheet.Cells[row, 6].Value.ToString());
-                    var itemCode = IDirectPurchaseBill.GetItemCode(worksheet.Cells[row, 3].Value.ToString());
-                    var partcode = 0;
-                    var itemCodeValue = 0;
-                    if (itemCode.Result.Result != null)
+                    // Read cell values safely
+                    var itemName = worksheet.Cells[row, 2].Value?.ToString()?.Trim();
+                    var rateValue = worksheet.Cells[row, 3].Value?.ToString();
+                    var qtyValue = worksheet.Cells[row, 4].Value?.ToString();
+                    var docTypeText = worksheet.Cells[row, 7].Value?.ToString();
+
+                    // 🔹 Basic Required Field Validation
+                    if (string.IsNullOrEmpty(itemName))
+                        return BadRequest($"Row {row}: Item Name is required.");
+
+                    if (string.IsNullOrEmpty(rateValue) || !decimal.TryParse(rateValue, out decimal rate) || rate <= 0)
+                        return BadRequest($"Row {row}: Valid Rate is required.");
+
+                    if (string.IsNullOrEmpty(qtyValue) || !decimal.TryParse(qtyValue, out decimal qty) || qty <= 0)
+                        return BadRequest($"Row {row}: Valid Quantity is required.");
+
+                    if (string.IsNullOrEmpty(docTypeText))
+                        return BadRequest($"Row {row}: Document Type is required.");
+
+                    // 🔹 Fetch Item Code from DB
+                    var itemCodeResult = IDirectPurchaseBill.GetItemCode(worksheet.Cells[row, 1].Value.ToString());
+                    int partcode = 0;
+                    int itemCodeValue = 0;
+
+                    if (itemCodeResult.Result.Result != null)
                     {
-                        partcode = itemCode.Result.Result.Rows.Count <= 0 ? 0 : (int)itemCode.Result.Result.Rows[0].ItemArray[0];
-                        itemCodeValue = itemCode.Result.Result.Rows.Count <= 0 ? 0 : (int)itemCode.Result.Result.Rows[0].ItemArray[0];
+                        partcode = itemCodeResult.Result.Result.Rows.Count <= 0 ? 0 : (int)itemCodeResult.Result.Result.Rows[0].ItemArray[0];
+                        itemCodeValue = partcode;
                     }
 
+                    // 🔹 Validate PartCode
                     if (partcode == 0)
-                    {
-                        return Json("Partcode not available");
-                    }
-                    // for pending qty validation -- still need to change
-                    var DPBQty = Convert.ToDecimal(worksheet.Cells[row, 6].Value.ToString());
+                        return BadRequest($"Row {row}: Invalid Part Code or Item not found.");
 
+                    // Continue your original logic...
+                    var GetExchange = GetExchangeRate(Currency);
+                    var GetDocTypeId1 = GetDocTypeId(docTypeText);
+                    var GetItem = GetItemDetail(worksheet.Cells[row, 1].Value.ToString());
 
-                    //for altunit conversion
-                    var altUnitConversion = AltUnitConversion(partcode, 0, Convert.ToDecimal(worksheet.Cells[row, 6].Value.ToString()));
-                    JObject AltUnitCon = JObject.Parse(altUnitConversion.Result.Value.ToString());
-                    decimal altUnitValue = (decimal)AltUnitCon["Result"][0]["AltUnitValue"];
+                    JObject Jsonstring = JObject.Parse(GetItem.Result.Value.ToString());
+                    var Unit = Jsonstring["Result"][0]["Unit"];
+                    var HsnNo = Jsonstring["Result"][0]["HsnNo"];
+                    var AlternateUnit = Jsonstring["Result"][0]["AlternateUnit"];
+                    var Rackid = Jsonstring["Result"][0]["Rackid"];
 
+                    JObject AltRate = JObject.Parse(GetExchange.Result.Value.ToString());
+                    decimal AltRateToken = (decimal)AltRate["Result"][0]["IndianValue"];
+                    var RateInOther = rate * AltRateToken;
 
-                    var GetExhange = GetExchangeRate(Currency);
+                    JObject DocTypeIdjson = JObject.Parse(GetDocTypeId1.Result.Value.ToString());
+                    int DocTypeId = (int)DocTypeIdjson["Result"][0]["DocTypeId"];
 
-                    JObject AltRate = JObject.Parse(GetExhange.Result.Value.ToString());
-                    decimal AltRateToken = (decimal)AltRate["Result"][0]["Rate"];
-                    var RateInOther = Convert.ToDecimal(worksheet.Cells[row, 14].Value) * AltRateToken;
-
-
-                    var DisRs = DPBQty * Convert.ToDecimal(worksheet.Cells[row, 14].Value) * (Convert.ToDecimal(worksheet.Cells[row, 18].Value.ToString()) / 100);
-                    var Amount = (DPBQty * Convert.ToDecimal(worksheet.Cells[row, 14].Value)) - DisRs;
-
-
+                    var DisRs = qty * rate * (Convert.ToDecimal(worksheet.Cells[row, 5].Value?.ToString() ?? "0") / 100);
+                    var Amount = (qty * rate) - DisRs;
 
                     data.Add(new DPBItemDetail()
                     {
                         SeqNo = cnt++,
-                        PartText = worksheet.Cells[row, 3].Value.ToString(),
-                        ItemText = worksheet.Cells[row, 4].Value.ToString(),
+                        PartText = worksheet.Cells[row, 1].Value?.ToString(),
+                        ItemText = itemName,
                         ItemCode = itemCodeValue,
                         PartCode = partcode,
-                        HSNNo = Convert.ToInt32(worksheet.Cells[row, 5].Value.ToString()),
-                        DPBQty = Convert.ToDecimal(worksheet.Cells[row, 6].Value.ToString()),
-                        Unit = worksheet.Cells[row, 7].Value.ToString(),
-                        AltQty = altUnitValue,
-                        AltUnit = worksheet.Cells[row, 9].Value.ToString(),
-
-                        AltPendQty = Convert.ToDecimal(worksheet.Cells[row, 11].Value.ToString()),
-                        Process = Convert.ToInt32(worksheet.Cells[row, 13].Value.ToString()),
-                        Rate = Convert.ToDecimal(worksheet.Cells[row, 14].Value.ToString()),
+                        HSNNo = Convert.ToInt32(HsnNo.ToString()),
+                        DPBQty = qty,
+                        BillQty = qty,
+                        Unit = Unit.ToString(),
+                        AltQty = 0,
+                        AltUnit = AlternateUnit.ToString(),
+                        AltPendQty = 0,
+                        Process = 0,
+                        Rate = rate,
                         OtherRateCurr = RateInOther,
-                        UnitRate = worksheet.Cells[row, 17].Value.ToString(),
-                        DiscPer = Convert.ToDecimal(worksheet.Cells[row, 18].Value.ToString()),
-                        DiscRs = Convert.ToDecimal(DisRs.ToString("F2")),
-                        Amount = Convert.ToDecimal(Amount.ToString("F2")),
-                        TxRemark = worksheet.Cells[row, 24].Value == null ? "" : worksheet.Cells[row, 24].Value.ToString(),
-                        Description = worksheet.Cells[row, 25].Value == null ? "" : worksheet.Cells[row, 25].Value.ToString(),
-                        AdditionalRate = Convert.ToDecimal(worksheet.Cells[row, 26].Value.ToString()),
-                        Color = worksheet.Cells[row, 27].Value == null ? "" : worksheet.Cells[row, 27].Value.ToString(),
-                        CostCenter = Convert.ToInt32(worksheet.Cells[row, 28].Value.ToString()),
-
+                        UnitRate = "",
+                        DiscPer = Convert.ToDecimal(worksheet.Cells[row, 5].Value?.ToString() ?? "0"),
+                        DiscRs = Math.Round(DisRs, 2),
+                        Amount = Math.Round(Amount, 2),
+                        TxRemark = "",
+                        Description = "",
+                        AdditionalRate = 0,
+                        Color = "",
+                        CostCenter = 0,
+                        ItemLocation = string.IsNullOrEmpty(worksheet.Cells[row, 6].Value?.ToString())
+                            ? Rackid.ToString()
+                            : worksheet.Cells[row, 6].Value.ToString(),
+                        DocTypeText = docTypeText,
+                        docTypeId = DocTypeId,
                     });
                 }
             }
 
+            // ✅ Continue with session logic...
+            var MainModel = new DirectPurchaseBillModel { ItemDetailGrid = data };
+            string serializedMainModel = JsonConvert.SerializeObject(MainModel);
+            HttpContext.Session.SetString("DirectPurchaseBill", serializedMainModel);
 
-            var MainModel = new DirectPurchaseBillModel();
-            var POItemGrid = new List<DPBItemDetail>();
-            var POGrid = new List<DPBItemDetail>();
-            var SSGrid = new List<DPBItemDetail>();
-
-            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-            {
-                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                SlidingExpiration = TimeSpan.FromMinutes(55),
-                Size = 1024,
-            };
-            var seqNo = 0;
-            HttpContext.Session.Remove("DirectPurchaseBill");
-
-            foreach (var item in data)
-            {
-                if (item != null)
-                {
-                    // 1. Get the serialized string from session
-                    string serializedModel = HttpContext.Session.GetString("DirectPurchaseBill");
-
-                    // 2. Deserialize the string back into the original object (DirectPurchaseBillModel)
-                    DirectPurchaseBillModel Model = string.IsNullOrEmpty(serializedModel)
-                        ? new DirectPurchaseBillModel()  // Default if not found
-                        : JsonConvert.DeserializeObject<DirectPurchaseBillModel>(serializedModel);
-
-                    if (Model == null)
-                    {
-                        item.SeqNo += seqNo + 1;
-                        POItemGrid.Add(item);
-                        seqNo++;
-                    }
-                    else
-                    {
-                        if (Model.ItemDetailGrid.Where(x => x.ItemCode == item.ItemCode).Any())
-                        {
-                            return StatusCode(207, "Duplicate");
-                        }
-                        else
-                        {
-                            item.SeqNo = Model.ItemDetailGrid.Count + 1;
-                            POItemGrid = Model.ItemDetailGrid.Where(x => x != null).ToList();
-                            SSGrid.AddRange(POItemGrid);
-                            POItemGrid.Add(item);
-                        }
-                    }
-                    MainModel.ItemDetailGrid = POItemGrid;
-
-                    // 1. Serialize MainModel to a JSON string
-                    string serializedMainModel = JsonConvert.SerializeObject(MainModel);
-
-                    // 2. Store the serialized string in Session
-                    HttpContext.Session.SetString("DirectPurchaseBill", serializedMainModel);
-
-
-                }
-            }
-            // 1. Get the serialized string from Session
-            string serializedMainModelFromSession = HttpContext.Session.GetString("DirectPurchaseBill");
-
-            // 2. Deserialize the string back to DirectPurchaseBillModel
-            DirectPurchaseBillModel MainModel1 = string.IsNullOrEmpty(serializedMainModelFromSession)
-                ? new DirectPurchaseBillModel()  // Default if not found
-                : JsonConvert.DeserializeObject<DirectPurchaseBillModel>(serializedMainModelFromSession);
-
-            return PartialView("_POItemGrid", MainModel);
+            return PartialView("_DPBItemGrid", MainModel);
         }
+
+        //[HttpPost]
+        //public IActionResult UploadExcel()
+        //{
+        //        var excelFile = Request.Form.Files[0];
+        //    string pono = Request.Form.Where(x => x.Key == "PoNo").FirstOrDefault().Value;
+        //    int poYearcode = Convert.ToInt32(Request.Form.Where(x => x.Key == "POYearcode").FirstOrDefault().Value);
+        //    int AccountCode = Convert.ToInt32(Request.Form.Where(x => x.Key == "AccountCode").FirstOrDefault().Value);
+        //    string SchNo = Request.Form.Where(x => x.Key == "SchNo").FirstOrDefault().Value;
+        //    var SchYearCode = Convert.ToInt32(Request.Form.Where(x => x.Key == "SchYearCode").FirstOrDefault().Value);
+        //    string Currency = Request.Form.Where(x => x.Key == "Currency").FirstOrDefault().Value;
+        //    string Flag = Request.Form.Where(x => x.Key == "Flag").FirstOrDefault().Value;
+
+
+        //    ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+        //    List<DPBItemDetail> data = new List<DPBItemDetail>();
+
+        //    using (var stream = excelFile.OpenReadStream())
+        //    using (var package = new ExcelPackage(stream))
+        //    {
+        //        var worksheet = package.Workbook.Worksheets[0];
+        //        int cnt = 1;
+        //        for (int row = 2; row <= worksheet.Dimension.Rows; row++)
+        //        {
+        //            //var itemCatCode = IStockAdjust.GetItemCatCode(worksheet.Cells[row, 6].Value.ToString());
+        //            var itemCode = IDirectPurchaseBill.GetItemCode(worksheet.Cells[row, 1].Value.ToString());
+        //            var partcode = 0;
+        //            var itemCodeValue = 0;
+        //            if (itemCode.Result.Result != null)
+        //            {
+        //                partcode = itemCode.Result.Result.Rows.Count <= 0 ? 0 : (int)itemCode.Result.Result.Rows[0].ItemArray[0];
+        //                itemCodeValue = itemCode.Result.Result.Rows.Count <= 0 ? 0 : (int)itemCode.Result.Result.Rows[0].ItemArray[0];
+        //            }
+
+        //            if (partcode == 0)
+        //            {
+        //                return Json("Partcode not available");
+        //            }
+        //            // for pending qty validation -- still need to change
+        //            var DPBQty = Convert.ToDecimal(worksheet.Cells[row, 4].Value.ToString());
+
+
+        //            //for altunit conversion
+        //            //var altUnitConversion = AltUnitConversion(partcode, 0, Convert.ToDecimal(worksheet.Cells[row, 6].Value.ToString()));
+        //            //JObject AltUnitCon = JObject.Parse(altUnitConversion.Result.Value.ToString());
+        //            //decimal altUnitValue = (decimal)AltUnitCon["Result"][0]["AltUnitValue"];
+
+
+        //            var GetExhange = GetExchangeRate(Currency);
+        //            var GetDocTypeId1 = GetDocTypeId(worksheet.Cells[row, 7].Value.ToString());
+        //             var GetItem =GetItemDetail(worksheet.Cells[row, 1].Value.ToString());
+        //            JObject Jsonstring = JObject.Parse(GetItem.Result.Value.ToString());
+        //            var Unit =Jsonstring["Result"][0]["Unit"];
+        //            var HsnNo = Jsonstring["Result"][0]["HsnNo"];
+        //            var AlternateUnit = Jsonstring["Result"][0]["AlternateUnit"];
+        //            var Rackid = Jsonstring["Result"][0]["Rackid"];
+
+        //            JObject AltRate = JObject.Parse(GetExhange.Result.Value.ToString());
+        //            decimal AltRateToken = (decimal)AltRate["Result"][0]["IndianValue"];
+        //            var RateInOther = Convert.ToDecimal(worksheet.Cells[row, 3].Value) * AltRateToken;
+
+        //            JObject DocTypeIdjson = JObject.Parse(GetDocTypeId1.Result.Value.ToString());
+        //            decimal DocTypeId = (int)DocTypeIdjson["Result"][0]["DocTypeId"];
+
+
+        //            var DisRs = DPBQty * Convert.ToDecimal(worksheet.Cells[row, 3].Value) * (Convert.ToDecimal(worksheet.Cells[row, 5].Value.ToString()) / 100);
+        //            var Amount = (DPBQty * Convert.ToDecimal(worksheet.Cells[row, 3].Value)) - DisRs;
+
+
+
+        //            data.Add(new DPBItemDetail()
+        //            {
+        //                SeqNo = cnt++,
+        //                PartText = worksheet.Cells[row, 1].Value.ToString(),
+        //                ItemText = worksheet.Cells[row, 2].Value.ToString(),
+        //                ItemCode = itemCodeValue,
+        //                PartCode = partcode,
+        //                HSNNo = Convert.ToInt32(HsnNo.ToString()),
+        //                DPBQty = Convert.ToDecimal(worksheet.Cells[row, 4].Value.ToString()),
+        //                BillQty = Convert.ToDecimal(worksheet.Cells[row, 4].Value.ToString()),
+        //                Unit = (Unit.ToString()),
+        //                AltQty = 0,
+        //                AltUnit = (AlternateUnit.ToString()),
+        //                AltPendQty =0,
+        //                Process =0,
+        //                Rate = Convert.ToDecimal(worksheet.Cells[row, 3].Value.ToString()),
+        //                OtherRateCurr = RateInOther,
+        //                UnitRate ="",
+        //                DiscPer = Convert.ToDecimal(worksheet.Cells[row, 5].Value.ToString()),
+        //                DiscRs = Convert.ToDecimal(DisRs.ToString("F2")),
+        //                Amount = Convert.ToDecimal(Amount.ToString("F2")),
+        //                TxRemark = "",
+        //                Description ="",
+        //                AdditionalRate = 0,
+        //                Color = "",
+        //                CostCenter = 0,
+        //                ItemLocation = string.IsNullOrEmpty(worksheet.Cells[row, 6].Value.ToString())  ? Rackid.ToString() : worksheet.Cells[row, 6].Value.ToString(),
+        //                DocTypeText= (worksheet.Cells[row, 7].Value.ToString()),
+        //                docTypeId= Convert.ToInt32(DocTypeId),
+        //            });
+        //        }
+        //    }
+
+
+        //    var MainModel = new DirectPurchaseBillModel();
+        //    var POItemGrid = new List<DPBItemDetail>();
+        //    var POGrid = new List<DPBItemDetail>();
+        //    var SSGrid = new List<DPBItemDetail>();
+
+        //    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+        //    {
+        //        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+        //        SlidingExpiration = TimeSpan.FromMinutes(55),
+        //        Size = 1024,
+        //    };
+        //    var seqNo = 0;
+        //    HttpContext.Session.Remove("DirectPurchaseBill");
+
+        //    foreach (var item in data)
+        //    {
+        //        if (item != null)
+        //        {
+        //            // 1. Get the serialized string from session
+        //            string serializedModel = HttpContext.Session.GetString("DirectPurchaseBill");
+
+        //            // 2. Deserialize the string back into the original object (DirectPurchaseBillModel)
+        //            DirectPurchaseBillModel Model = string.IsNullOrEmpty(serializedModel)
+        //                ? new DirectPurchaseBillModel()  // Default if not found
+        //                : JsonConvert.DeserializeObject<DirectPurchaseBillModel>(serializedModel);
+        //            Model.ItemDetailGrid ??= new List<DPBItemDetail>();
+        //            if (Model == null)
+        //            {
+        //                item.SeqNo += seqNo + 1;
+        //                POItemGrid.Add(item);
+        //                seqNo++;
+        //            }
+        //            else
+        //            {
+        //                if (Model.ItemDetailGrid.Where(x => x.ItemCode == item.ItemCode).Any())
+        //                {
+        //                    return StatusCode(207, "Duplicate");
+        //                }
+        //                else
+        //                {
+        //                    item.SeqNo = Model.ItemDetailGrid.Count + 1;
+        //                    POItemGrid = Model.ItemDetailGrid.Where(x => x != null).ToList();
+        //                    SSGrid.AddRange(POItemGrid);
+        //                    POItemGrid.Add(item);
+        //                }
+        //            }
+        //            MainModel.ItemDetailGrid = POItemGrid;
+
+        //            // 1. Serialize MainModel to a JSON string
+        //            string serializedMainModel = JsonConvert.SerializeObject(MainModel);
+
+        //            // 2. Store the serialized string in Session
+        //            HttpContext.Session.SetString("DirectPurchaseBill", serializedMainModel);
+
+
+        //        }
+        //    }
+        //    // 1. Get the serialized string from Session
+        //    string serializedMainModelFromSession = HttpContext.Session.GetString("DirectPurchaseBill");
+
+        //    // 2. Deserialize the string back to DirectPurchaseBillModel
+        //    DirectPurchaseBillModel MainModel1 = string.IsNullOrEmpty(serializedMainModelFromSession)
+        //        ? new DirectPurchaseBillModel()  // Default if not found
+        //        : JsonConvert.DeserializeObject<DirectPurchaseBillModel>(serializedMainModelFromSession);
+
+        //    return PartialView("_DPBItemGrid", MainModel);
+        //}
     }
+
 }
 
