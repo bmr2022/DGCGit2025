@@ -92,7 +92,7 @@
                                     </select>
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                    <label asp-for="LedgerName" class="form-label" id="LedgerNameMain">Ledger List*</label>
+                                    <label asp-for="LedgerName" class="form-label" id="LedgerNameMain" style="color:red">Ledger List*</label>
                                     <input asp-for="AccountCode" class="form-control" type="hidden" value="@Model.AccountCode" />
                                     <select asp-for="LedgerName" class="form-control">
                                         <option value="@Model.AccountCode">-Select-</option>
@@ -269,7 +269,7 @@
             if (typeof FillVoucherName === 'function') FillVoucherName();
             if (typeof FillLedgerName === 'function') FillLedgerName();
 
-            // ✅ Helper: Restore saved filters for a given form
+            // ✅ Restore saved filters
             function restoreFormFilters(formName) {
                 if (!formName) return;
                 const savedFilters = DrilldownManager.restoreFilters(formName);
@@ -277,7 +277,7 @@
 
                 console.log("🔄 Restoring filters for:", formName, savedFilters);
 
-                // ✅ Wait for dropdowns to load before setting
+                // Helper to wait until a dropdown has options
                 function waitForSelect2(id, callback) {
                     const interval = setInterval(() => {
                         if ($(`#${id} option`).length > 0) {
@@ -292,6 +292,7 @@
                     if (!$el.length) continue;
 
                     const type = $el.attr('type');
+
                     if (type === 'checkbox') {
                         $el.prop('checked', !!savedFilters[key]).trigger('change');
                         continue;
@@ -301,13 +302,13 @@
                         $el.datepicker("setDate", savedFilters[key]);
                     }
                     else if ($el.hasClass("select2") || $el.hasClass("custom-select2")) {
-                        // ✅ Handle async-loaded select2 (LedgerName, etc.)
                         if ($el.attr("id") === "LedgerName") {
                             waitForSelect2("LedgerName", () => {
-                                $el.val(savedFilters[key]).trigger("change.select2");
+                                // ✅ Use normal change, not change.select2
+                                $el.val(savedFilters[key]).trigger("change");
                             });
                         } else {
-                            $el.val(savedFilters[key]).trigger("change.select2");
+                            $el.val(savedFilters[key]).trigger("change");
                         }
                     }
                     else {
@@ -316,7 +317,7 @@
                 }
             }
 
-            // ✅ Try restoring filters & state
+            // ✅ Try restoring filters and state
             try {
                 restoreFormFilters(currentForm);
 
@@ -330,14 +331,18 @@
                 console.error("❌ Error restoring filters/state:", e);
             }
 
-            // ✅ Finally: Load initial data if function exists
-            if (typeof GetValidateData === 'function') {
-                GetValidateData();
-            }
+            // ✅ NEW — Ensure data loads after filters are restored
+            setTimeout(() => {
+                console.log("🔁 Triggering GetValidateData after restore...");
+                if (typeof GetValidateData === 'function') {
+                    GetValidateData();
+                }
+            }, 600); // wait slightly to ensure dropdowns ready
 
-            // ✅ NEW — Show or hide Back Button based on stack depth
+            // ✅ Show or hide Back Button based on stack depth
             DrilldownManager.toggleBackButton();
         });
+
 
         function GetValidateData() {
 
@@ -432,85 +437,8 @@
             return dateString;
         }
 
-        function PressBack() {
-
-            let history = JSON.parse(sessionStorage.getItem('HistoryStack')) || [];
-
-            if (history.length === 0) {
-                // Back to TrailBalance main page
-                window.location.href = '/TrailBalance/Index';
-                return;
-            }
-
-            let lastStep = history[history.length - 1]; // peek, don’t pop yet
-
-            switch (lastStep.action) {
-                case 'TrailAccount':
-                    // Don’t pop, just redirect
-                    window.location.href = '/TrailBalance/Index';
-                    return;
-
-                case 'MonthlySummary':
-                    history.pop();
-                    sessionStorage.setItem('HistoryStack', JSON.stringify(history));
-                    $('#ParentLedgerName').val(lastStep.params.parentCode);
-                    $('#LedgerName').val(lastStep.params.accountCode);
-                    $('#FromDate').datepicker("setDate", lastStep.params.fromDate);
-                    $('#ToDate').datepicker("setDate", lastStep.params.toDate);
-                    $('#ReportType').val('MonthlySummary').trigger('change');
-                    GetTransactionLedgerMonthlySummaryDetailsData();
-                    break;
-
-                case 'TransactionLedgerSummary':
-                    history.pop();
-                    sessionStorage.setItem('HistoryStack', JSON.stringify(history));
-                    $('#ParentLedgerName').val(lastStep.params.parentCode);
-                    $('#LedgerName').val(lastStep.params.accountCode);
-                    $('#FromDate').datepicker("setDate", lastStep.params.fromDate);
-                    $('#ToDate').datepicker("setDate", lastStep.params.toDate);
-                    $('#ReportType').val('TransactionLedgerSummary').trigger('change');
-                    GetDetailsData(lastStep.params.someFilter);
-                    break;
-
-                case 'GroupSummary':
-                    history.pop();
-                    sessionStorage.setItem('HistoryStack', JSON.stringify(history));
-                    $('#ParentLedgerName').val(lastStep.params.ParentCode).trigger('change');
-                    $('#FromDate').datepicker("setDate", lastStep.params.FromDate);
-                    $('#ToDate').datepicker("setDate", lastStep.params.ToDate);
-                    $('#ReportType').val('GROUPSUMMARY').trigger('change');
-                    break;
-
-                case 'GroupDetail':
-                    history.pop();
-                    sessionStorage.setItem('HistoryStack', JSON.stringify(history));
-                    $('#ParentLedgerName').val(lastStep.params.ParentCode).trigger('change');
-                    $('#FromDate').datepicker("setDate", lastStep.params.FromDate);
-                    $('#ToDate').datepicker("setDate", lastStep.params.ToDate);
-                    $('#ReportType').val('GROUPDETAIL').trigger('change');
-                    $('#LedgerName').val(lastStep.params.AccountCode).trigger('change');
-                    break;
-
-                case 'ProfitAndLossGroup':
-                    sessionStorage.setItem('HistoryStack', JSON.stringify(history));
-                    window.location.href = '/ProfitAndLoss/Index';
-                    break;
-
-                case 'ProfitAndLossGroupLedgerDetail':
-                    sessionStorage.setItem('HistoryStack', JSON.stringify(history));
-                    window.location.href = '/ProfitAndLoss/Index';
-                    break;
-
-                case 'BalanceSheetSummary':
-                    sessionStorage.setItem('HistoryStack', JSON.stringify(history));
-                    window.location.href = '/BalanceSheet/Index';
-                    break;
-            }
-
-            if (history.length === 0) $('#BackButton').hide();
-        }
-
         $('#ParentLedgerName').change(function () {
+            $('#ParentAccountCode').val($('#ParentLedgerName').val());
             FillLedgerName();
         })
 
@@ -546,14 +474,6 @@
 
         $('#LedgerName').change(function () {
             $('#AccountCode').val($('#LedgerName').val());
-        });
-
-        $('#ParentLedgerName').change(function () {
-            $('#ParentAccountCode').val($('#ParentLedgerName').val());
-            FillLedgerName();
-        });
-
-        $('#LedgerName').change(function () {
             GetValidateData();
         });
 
@@ -667,6 +587,7 @@
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("GetTransactionLedgerMonthlySummaryDetailsData", "TransactionLedger")',
+                async: false,
                 data: {
                     FromentryDate: FromentryDate,
                     ToEntryDate: ToEntryDate,
@@ -829,7 +750,7 @@
         }
 
         $(document).on("click", ".sortCol", function () {
-            ;
+
             var $column = $(this).parent().closest("th");
             var colno = $(this).data('columnno');
             var currentOrder = $(this).data('sortorder');
@@ -966,10 +887,6 @@
             //$('#ReportTable tr:eq(' + indexToRemove + ')').remove();
             countAllTotal();
             $('#totalRows').text($('#divStockMainRegister tr').length - 1);
-        }
-
-        function PressBack() {
-            window.location.href = '/TransactionLedger/GoBack';
         }
 
         function callDrillDown(elem) {
