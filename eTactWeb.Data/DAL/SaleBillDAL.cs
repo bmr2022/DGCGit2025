@@ -1675,8 +1675,8 @@ namespace eTactWeb.Data.DAL
                             AdjDescription = row["Description"]?.ToString(),
                             //AdjDrCrName = row["AccEntryId"]?.ToString(),
                             AdjDrCr = row["DR/CR"]?.ToString(),
-                            AdjPendAmt = row["AdjustmentAmt"] != DBNull.Value ? Convert.ToInt32(row["AdjustmentAmt"]) : 0,
-                            AdjAdjstedAmt = row["AdjustmentAmt"] != DBNull.Value ? Convert.ToInt32(row["AdjustmentAmt"]) : 0,
+                            AdjPendAmt = row["AdjustmentAmt"] != DBNull.Value ? Convert.ToDecimal(row["AdjustmentAmt"]) : 0,
+                            AdjAdjstedAmt = !string.IsNullOrEmpty(row["AdjustmentAmt"].ToString()) ? Convert.ToInt32(row["AdjustmentAmt"]) : 0,
                             AdjTotalAmt = row["BillAmt"] != DBNull.Value ? Convert.ToInt32(row["BillAmt"]) : 0, // BillAmt
                                                                                                                 //AdjRemainingAmt = row["AccEntryId"] != DBNull.Value ? Convert.ToInt32(row["AccEntryId"]) : 0,
                             AdjOpenEntryID = row["AgainstAccOpeningEntryId"] != DBNull.Value ? Convert.ToInt32(row["AgainstAccOpeningEntryId"]) : 0,

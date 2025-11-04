@@ -967,6 +967,13 @@
                 AddErrorCls('UnderGroup');
                 IsErr = 1;
             }
+                    if (($('#SubGroup').val() === "Sundry Debtors" || $('#SubGroup').val() === "Sundry Creditors") &&
+            ($('#CreditDays').val() === "" || $('#CreditDays').val() == null)) {
+
+            $.notify("Credit Days is required for Sundry Debtors or Sundry Creditors!", "error");
+            AddErrorCls('CreditDays'); // optional: highlight the field
+          IsErr = 1;
+            }
 
             //if(!$('#DebCredCode').val())
             //{
