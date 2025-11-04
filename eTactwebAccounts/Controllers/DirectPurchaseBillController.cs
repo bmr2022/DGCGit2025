@@ -1375,7 +1375,7 @@ namespace eTactWeb.Controllers
                     Item.Color ?? string.Empty,
                     string.Empty, // Item.ItemModel
                     0, // Item.Deaprtmentid
-                    Item.Description,
+                    Item.Description?? string.Empty,
                     string.Empty, // Item.DebitNoteType
                     Item.Process > 0 ? Item.Process : 0,
                     0f, // Item.NewPoRate
