@@ -1496,6 +1496,11 @@
                                 $('#docTypeId').append("<option value=" + val.Account_code + ">" + val.DocumentName + "</option>");
                                 //+ " data-unipartcode = " + val.UniversalPartCode + " data-unidesc = " + val.UniversalDescription
                             });
+                                    if (obj.Result.Table.length > 0) {
+                                     $('#docTypeId').val(obj.Result.Table[0].Account_code).trigger('change');
+                          }
+                                       $('#docTypeId').select2();
+
                         }
                     }
                 }
