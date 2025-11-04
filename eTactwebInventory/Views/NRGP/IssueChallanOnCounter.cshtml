@@ -347,7 +347,7 @@
                                                         @* <select class="form-select" asp-for="ItemCode" style="width:250px;">
                                                         <option value="0">-Select-</option>
                                                         </select>*@
-                                                        <input type="text" id="ItemNameText" class="form-control" placeholder="Type Item Name..." />
+                                                        <input type="text" id="ItemNameText" class="form-control" tabindex="-1" placeholder="Type Item Name..." />
                                                         <input type="hidden" asp-for="ItemCode" id="ItemCode" />
                                                     </td>
 
@@ -2029,38 +2029,38 @@
                 }
             });
         }
+        var isItemSelected = false;
         function AutoFillItems() {
-
-
             // Source for PartCodeText
             const partCodeSource = function (request, response) {
                 $.ajax({
-                    url: '@Url.Action("AutoFillPartCode")',
+                    url: '@Url.Action("FillItems", "PurchaseOrder")',
                     type: 'POST',
                     data: {
-
-                        "showallitem": $('#IC1').is(':checked') ? 'Y' : 'N',
+                        Type: $('#POTypeServItem').val(),
+                        ShowAllItem: 'N',
                         SearchItemCode: '',
                         SearchPartCode: request.term
                     },
                     success: function (result) {
                         let obj = typeof result === "string" ? JSON.parse(result) : result;
-                        console.log("obj" + obj);
-                        console.log("result" + typeof result === "string" ? JSON.parse(result) : result);
-                        if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result)) {
 
-                            let filtered = obj.Result.filter(function (item) {
+                        if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
+                            let filtered = obj.Result.Table.filter(function (item) {
                                 let term = request.term.toLowerCase();
-                                return item.PartCode.toLowerCase().includes(term);
+                                return (
+                                    (item.PartCode && item.PartCode.toLowerCase().includes(term)) ||
+                                    (item.Barcode && item.Barcode.toLowerCase().includes(term)) ||
+                                    (item.ItemName && item.ItemName.toLowerCase().includes(term))
+                                );
                             });
-                            console.log(filtered);
 
                             response($.map(filtered, function (item) {
                                 return {
                                     label: item.PartCode,
                                     value: item.PartCode,
                                     itemName: item.ItemName,
-                                    itemCode: item.Item_Code,
+                                    itemCode: item.Item_Code
                                 };
                             }));
                         } else {
@@ -2073,18 +2073,19 @@
             // Source for ItemNameText
             const itemNameSource = function (request, response) {
                 $.ajax({
-                    url: '@Url.Action("AutoFillItemName")',
+                    url: '@Url.Action("FillItems", "PurchaseOrder")',
                     type: 'POST',
                     data: {
-                        "showallitem": $('#IC1').is(':checked') ? 'Y' : 'N',
+                        Type: $('#POTypeServItem').val(),
+                        ShowAllItem: 'N',
                         SearchItemCode: request.term,
                         SearchPartCode: ''
                     },
                     success: function (result) {
                         let obj = typeof result === "string" ? JSON.parse(result) : result;
 
-                        if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result)) {
-                            let filtered = obj.Result.filter(function (item) {
+                        if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
+                            let filtered = obj.Result.Table.filter(function (item) {
                                 let term = request.term.toLowerCase();
                                 return item.ItemName.toLowerCase().includes(term);
                             });
@@ -2103,23 +2104,7 @@
                         }
                     }
                 });
-
             };
-
-            $("#SearchPartCode").autocomplete({
-                source: partCodeSource,
-                appendTo: "#AddMultiplrItemModel",
-                select: function (event, ui) {
-                    $("#SearchPartCode").val(ui.item.value).data("itemcode", ui.item.itemCode);
-
-                    return false;
-                },
-                focus: function (event, ui) {
-                    $("#SearchPartCode").val(ui.item.value);
-                    return false;
-                },
-                minLength: 2
-            });
 
             // Autocomplete for PartCodeText
             $("#PartCodeText").autocomplete({
@@ -2136,7 +2121,6 @@
 
                     GetTotalStockQty();
                     StockableItems(parseInt($('#ItemCode').val()));
-                    /* GetBatchStock(); */
                     return false;
                 },
                 focus: function (event, ui) {
@@ -2146,7 +2130,55 @@
                 minLength: 2
             });
 
+            // 🔹 Focusout event for PartCodeText (manual entry validation)
+            $("#PartCodeText").on("focusout", function () {
+                let entered = $(this).val().trim().toLowerCase();
+                if (entered === "") return;
 
+                $.ajax({
+                    url: '@Url.Action("FillItems", "PurchaseOrder")',
+                    type: 'POST',
+                    data: {
+                        Type: $('#POTypeServItem').val(),
+                        ShowAllItem: 'N',
+                        SearchItemCode: '',
+                        SearchPartCode: entered
+                    },
+                    success: function (result) {
+                        let obj = typeof result === "string" ? JSON.parse(result) : result;
+
+                        if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
+                            // 🔹 Partial match: includes()
+                            let match = obj.Result.Table.find(item => {
+                                let real = (item.RealPartCode || "").toLowerCase();
+                                let name = (item.Item_Name || "").toLowerCase();
+                                let barcode = (item.Barcode || "").toLowerCase();
+
+                                return real.includes(entered) || name.includes(entered) || barcode.includes(entered);
+                            });
+
+                            if (match) {
+                                $("#PartCodeText").val(match.PartCode).data("itemcode", match.Item_Code);
+                                $("#ItemNameText").val(match.Item_Name);
+                                $("#ItemCode").val(match.Item_Code);
+                                $("#PartCode").val(match.Item_Code);
+                                GetItemPartCode("PartCode");
+
+                                FillCurrentBatchINStore();
+                                GetItemRate();
+
+                                GetTotalStockQty();
+                                StockableItems(parseInt($('#ItemCode').val()));
+
+                            }
+                        }
+
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("AJAX Error:", error);
+                    }
+                });
+            });
 
             // Autocomplete for ItemNameText
             $("#ItemNameText").autocomplete({
@@ -2156,14 +2188,15 @@
                     $("#PartCodeText").val(ui.item.partCode);
                     $('#ItemCode').val(ui.item.itemCode);
                     $('#PartCode').val(ui.item.itemCode);
-                    GetItemPartCode("ItemCode");
+                    GetItemPartCode("PartCode");
+
                     FillCurrentBatchINStore();
                     GetItemRate();
 
                     GetTotalStockQty();
                     StockableItems(parseInt($('#ItemCode').val()));
-                    /* GetBatchStock(); */
                     return false;
+
                 },
                 focus: function (event, ui) {
                     $("#ItemNameText").val(ui.item.itemName);
@@ -2172,8 +2205,51 @@
                 minLength: 2
             });
 
-        }
+            // 🔹 Focusout event for ItemNameText (manual entry validation)
+            $("#ItemNameText").on("focusout", function () {
+                let itemName = $(this).val().trim();
+                if (itemName !== "") {
+                    $.ajax({
+                        url: '@Url.Action("FillItems", "PurchaseOrder")',
+                        type: 'POST',
+                        data: {
+                            Type: $('#POTypeServItem').val(),
+                            ShowAllItem: 'N',
+                            SearchItemCode: itemName,
+                            SearchPartCode: ''
+                        },
+                        success: function (result) {
+                            let obj = typeof result === "string" ? JSON.parse(result) : result;
+                            alert(JSON.stringify(obj.Result));
+                            if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
 
+                                let match = obj.Result.Table.find(item => item.ItemName.toLowerCase() === itemName.toLowerCase());
+
+                                if (match) {
+                                    $("#ItemNameText").val(match.ItemName).data("itemcode", match.Item_Code);
+                                    $("#PartCodeText").val(match.PartCode);
+                                    $('#ItemCode').val(match.Item_Code);
+                                    $('#PartCode').val(match.Item_Code);
+                                    GetItemPartCode("PartCode");
+
+                                    FillCurrentBatchINStore();
+                                    GetItemRate();
+
+                                    GetTotalStockQty();
+                                    StockableItems(parseInt($('#ItemCode').val()));
+                                } else {
+                                    alert("Invalid Item Name entered!");
+                                    $("#ItemNameText").val("").focus();
+                                }
+                            } else {
+                                alert("Invalid Item Name entered!");
+                                $("#ItemNameText").val("").focus();
+                            }
+                        }
+                    });
+                }
+            });
+        }
 
         function FillVendorList() {
             $.ajax({
@@ -3578,7 +3654,7 @@
 
             var ItemData = {
                 "ItemCode": parseInt($('#ItemCode').val()),
-                "PartCode": $('#PartCodeText').val(),
+                "PartCode": ($('#PartCodeText').val() || '').split('-->')[0].trim(),
                 "ItemName": $('#ItemNameText').val(),
                 "HSNNo": $('#HSNNo').val(),
                 "Qty": $('#Qty').val(),
