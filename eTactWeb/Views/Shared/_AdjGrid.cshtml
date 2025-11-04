@@ -61,7 +61,7 @@ else
             <td>@item.AdjNewRefNo</td>
            @*  <td id="GridAdjPendAmount-@item.AdjSeqNo">@(item.AdjPendAmt?.ToString() ?? "0.00")</td> *@
             <td id="GridAdjPendAmount-@item.AdjSeqNo">
-                @(item.AdjPendAmt.HasValue ? item.AdjPendAmt.Value.ToString("F6") : "0.000000")
+                @(item.AdjPendAmt.HasValue ? item.AdjPendAmt.Value.ToString("F2") : "0.000000")
             </td>
             <td class="GridAdjDrCr">
                 @if (item.AdjDrCr != null && item.AdjDrCr != "" && !item.AdjDrCr.Contains("Select"))
