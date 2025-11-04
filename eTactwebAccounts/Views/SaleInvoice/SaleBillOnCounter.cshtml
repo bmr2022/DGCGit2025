@@ -3779,7 +3779,9 @@
             $('#divAdjItemList').html(NoData);
             CalculateAdjAmt('NetTotal');
             DueDateCalculation();
-            AddAdjstmntDetail1();
+              ClearAdjustmentGrid();
+                    AddAdjstmntDetail1();
+         
         });
 
         function PasswordCheck() {
@@ -6614,7 +6616,10 @@
                             $('#ProdSchDate').val(obj[0].ProdSchDate);
                             $('#SchdeliveryDate').val(obj[0].SchdeliveryDate);
                             // FillUniqueBatchNo();
-                            $('#Uniquebatchno').val(obj[0].Uniquebatchno);
+                               if (obj[0].Uniquebatchno != '0' && obj[0].Uniquebatchno != null && obj[0].Uniquebatchno != 0) {
+                                    $('#Uniquebatchno').append('<option value="' + obj[0].Uniquebatchno + '" selected>' + obj[0].Uniquebatchno + '</option>');
+                              }
+                          //  $('#Uniquebatchno').val(obj[0].Uniquebatchno);
 
                             var rowCount = $('#divStockGrid tr').length;
                             for (var i = 1; i <= rowCount + 1; i++) {
