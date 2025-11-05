@@ -6698,7 +6698,7 @@
                             // } else {
                             //     FillSOWiseItems();
                             // }
-                             if ($('#SONO').val() == ''||   $('#SONO').val() == 'NaN' ||$('#SONO').val() == null || $('#SONO').val() == '0') {
+                             // if ($('#SONO').val() == ''||   $('#SONO').val() == 'NaN' ||$('#SONO').val() == null || $('#SONO').val() == '0') {
                 // Autocomplete mode
                 enableAutocompleteMode();
                 // FillItems($('#TypeItemServAssets').val());
@@ -6711,13 +6711,13 @@
                 $("#PartCodeText").val(obj[0].PartCode);
 
                // GetItemPartCode("ItemCode");
-            } else {
-                // Select2 mode
-                enableSelect2Mode();
-                FillSOWiseItems();
-                $('#ItemCode').append('<option value="' + obj[0].ItemCode + '"  selected> '+obj[0].ItemName+'</option>').val(obj[0].ItemCode).trigger("change");
-                $('#PartCode').append('<option value="' + obj[0].ItemCode + '"  selected> '+obj[0].PartCode+'</option>') .val(obj[0].ItemCode) .trigger("change");
-            }
+            // } else {
+            //     // Select2 mode
+            //     enableSelect2Mode();
+            //     FillSOWiseItems();
+            //     $('#ItemCode').append('<option value="' + obj[0].ItemCode + '"  selected> '+obj[0].ItemName+'</option>').val(obj[0].ItemCode).trigger("change");
+            //     $('#PartCode').append('<option value="' + obj[0].ItemCode + '"  selected> '+obj[0].PartCode+'</option>') .val(obj[0].ItemCode) .trigger("change");
+            // }
 
                             // $('#ItemCode').val(obj[0].ItemCode).trigger("change");
                             // $('#PartCode').val(obj[0].ItemCode).trigger("change");
