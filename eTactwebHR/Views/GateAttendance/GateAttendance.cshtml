@@ -249,6 +249,7 @@
             DayorMonthChange();
             EmpAttDateOnChange();
             $('#EmployeeCode').select2();
+            updateItemCount();
             //$('form').on('submit', handleAttendanceSubmit);
         });
 
@@ -389,6 +390,7 @@
             model.EmpCategoryId = ($('#EmpCategoryId').val() != "0" && $('#EmpCategoryId').val() != null) ? $('#EmpCategoryId').val() : "0";
             // collect selected employees
             model.GateAttDetailsList = [];
+            let missingEmpList = [];
             document.querySelectorAll("input[name='selectedEmpIds']:checked").forEach(function (cb) {
                 var empId = cb.value;
                 var row = cb.closest("tr");
@@ -407,14 +409,6 @@
                     CategoryId: CategoryId ? parseInt(CategoryId.value, 10) || 0 : 0,
                     Attendance: {}
                 };
-
-                // // collect attendance fields
-                // row.querySelectorAll("input[name^='Attendance[" + empId + "]']").forEach(function (inp) {
-                //     var name = inp.getAttribute("name");
-                //     var keyMatch = name.match(/\[(.*?)\]$/);
-                //     var key = keyMatch ? keyMatch[1] : name;
-                //     empObj.Attendance[key.toLowerCase()] = inp.value || "";
-                // });
                  row.querySelectorAll("input[name^='Attendance[" + empId + "]']").forEach(function (inp) {
                     var name = inp.getAttribute("name");
                     var keyMatch = name.match(/\]\[(\d+)\((.*?)\)\]/) || name.match(/\[(\d+)\]\[([A-Za-z]+)\)?]/);
@@ -430,11 +424,47 @@
                             var type = keyMatch[2]; 
                         }
                         var dictKey = (type.toLowerCase() === "intime" ? "AttInTime" : "AttOutTime") + day;
+                        if($('#DayOrMonthType').val().toLowerCase() == 'daily') {
+                            if (!inp.value || inp.value.trim() === "") {
+                                if (!missingEmpList.some(x => x.id === empId)) {
+                                    let srNo = $("#SrNo_" + empId).text().trim();
+                                    let nameText = $("#EmpName_" + empId).text().trim();
+                                    let code = $("#EmpCode_" + empId).text().trim();
+                                    let empRow = $("#selectedEmp_" + empId).closest("tr");
+                                    missingEmpList.push({ id: empId, srNo, name: nameText, code, row: empRow });
+                                }
+                            }
+                        }
                         empObj.Attendance[dictKey] = inp.value || "";
                     }
                 });
                 model.GateAttDetailsList.push(empObj);
             });
+             if ($('#DayOrMonthType').val().toLowerCase() === 'daily' && missingEmpList.length > 0) {
+                $("input[name='selectedEmpIds']:checked").each(function () {
+                    $(this).closest("tr").css("background-color", "");
+                });
+                missingEmpList.forEach(emp => { emp.row.css("background-color", "#ffe6e6");  });
+                let msgList = missingEmpList.map(emp => `${emp.srNo}. ${emp.name} (${emp.code})`).join("\n");
+                let msg = `The following employees have missing time entries. Please enter the required time for them, or Do you want to unselect them?: \n\n${msgList}\n\n`;
+                let confirmUnselect = confirm(msg);
+
+                if (confirmUnselect) {
+                    missingEmpList.forEach(emp => {
+                        // uncheck checkbox
+                        let checkbox = document.getElementById("selectedEmp_" + emp.id);
+                        if (checkbox) checkbox.checked = false;
+
+                        // remove from GateAttDetailsList
+                        model.GateAttDetailsList = model.GateAttDetailsList.filter(e => e.EmpId != emp.id);
+
+                        // clear highlight
+                        emp.row.css("background-color", "");
+                    });
+                } else {
+                    return false; // stop save
+                }
+            }
             return model;
         }
         $("#submitBTN, #UpdateButton").on("click", function(e) 
@@ -451,7 +481,10 @@
             }
             else {
                 var model = collectGateAttendanceModel();
-
+                if (model == null || model == false) {
+                    $.notify("Please fill the missing attendance entries or unselect them before saving.", "error");
+                    IsErr = 1;
+                }
                 if (!model.GateAttDetailsList || model.GateAttDetailsList.length === 0) {
                     $.notify("Please select at least one employee before submitting.", "error");
                     IsErr = 1;
@@ -646,7 +679,7 @@
                         success: function (result) {
                                 $("#attendanceItemGrid").html(result);
                                 updateItemCount();
-                                $("#lblItemCount").text($("#rowitemcount").val());
+                                //$("#lblItemCount").text($("#rowitemcount").val());
                         },
                         error: function () {
                             console.log("Error loading attendance grid.");
@@ -655,8 +688,8 @@
                 }
             }
          function updateItemCount() {
-            var count = $("#employeeTable tbody tr").length;
-            $("#lblItemCount").text("Total Rows: " + count);
+            var count = $("#attendanceItemGrid tbody tr").length;
+            $("#lblItemCount").text(count);
         }
             function fillEntryId() {
                 //ENTRYID
