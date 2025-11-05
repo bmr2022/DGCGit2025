@@ -47,6 +47,18 @@ namespace eTactWeb.Controllers
             TempData.Clear();
             HttpContext.Session.Remove("KeyReceiveChallan");
             var MainModel = new ReceiveChallanModel();
+            var featuresoptions = IReceiveChallan.GetFeatureOption();
+
+            if (featuresoptions?.Result?.Result != null &&
+               featuresoptions.Result.Result.Rows.Count > 0)
+            {
+                MainModel.ShowOtherReqFields =
+                    featuresoptions.Result.Result.Rows[0]["ShowOtherReqFields"]?.ToString() ?? "";
+            }
+            else
+            {
+                MainModel.ShowOtherReqFields = "";
+            }
 
             MainModel.CC = HttpContext.Session.GetString("Branch");
             MainModel.Yearcode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
