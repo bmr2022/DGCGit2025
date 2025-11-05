@@ -5506,14 +5506,18 @@
                                 onItemSelected("ItemCode");
 
                             }
-                            else{
-                                                   AddMultipleItems();
-          ShowGroupWiseItems();
+                            else
+                            {
+                               
+                                $("#PartCodeText").val("").focus();
+                                         AddMultipleItems();
+                                          ShowGroupWiseItems();
                             }
+                           
                         }
                         else{
-                                      AddMultipleItems();
-                 ShowGroupWiseItems();
+                 //                      AddMultipleItems();
+                 // ShowGroupWiseItems();
                         }
 
                     },
