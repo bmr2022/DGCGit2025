@@ -51,12 +51,7 @@ else
             <td>@item.AdjModeOfAdjstment</td>
             <td>@item.AdjDescription</td>
             <td>
-                @{
-                    DateTime? adjDueDate = item.AdjDueDate;
-                    string formattedDate = adjDueDate.HasValue ? adjDueDate.Value.ToString("MM/dd/yyyy") : "";
-                    formattedDate = formattedDate.Replace("-", "/");
-                }
-                @formattedDate
+                @(item.AdjDueDate != null ? item.AdjDueDate.Value.ToString("dd/MM/yyyy") : "")
             </td>
             <td>@item.AdjNewRefNo</td>
            @*  <td id="GridAdjPendAmount-@item.AdjSeqNo">@(item.AdjPendAmt?.ToString() ?? "0.00")</td> *@
@@ -73,12 +68,7 @@ else
             <td>@((item.AdjPurchOrderNo != null && item.AdjPurchOrderNo != "" && !item.AdjPurchOrderNo.Contains("Select")) ? item.AdjPurchOrderNo : string.Empty)</td>
             <td>@(item.AdjPOYear ?? 0)</td>
             <td>
-                @{
-                    DateTime? adjPODate = item.AdjPODate;
-                    string formattedPODate = adjPODate.HasValue ? adjPODate.Value.ToString("MM/dd/yyyy") : "";
-                    formattedDate = formattedDate.Replace("-", "/");
-                }
-                @formattedPODate
+                @(item.AdjPODate != null ? item.AdjPODate.Value.ToString("dd/MM/yyyy") : "")
             </td>
             <td>@(item.AdjAgnstVouchNo ?? string.Empty)</td>
             <td>@(item.AdjAgnstVouchType ?? string.Empty)</td>
