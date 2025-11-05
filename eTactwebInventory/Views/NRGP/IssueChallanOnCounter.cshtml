@@ -888,7 +888,9 @@
                     $.notify('Please Fill Tax Fields Property!', "error");
                 }
                 else {
-                         $("form").submit();
+                          setTimeout(() => {
+                    submitForm(false, false, false, null, null,false,true); // no print
+            }, 300);
                     }
                    
             });
@@ -946,12 +948,12 @@
             $('#PasswordAllowPopup').modal("hide");
 
             setTimeout(() => {
-                submitForm(true, false, false, printWindow, null,false); // Send true and window object
+                    submitForm(true, false, false, printWindow, null,false,false); // Send true and window object
             }, 300);
         });
                  $('#btnSaveAndDashBoard').click(function () {
-                                submitForm(true, false, false, printWindow, null,true); 
-                               $('#PasswordAllowPopup').modal("hide");
+                                    submitForm(true, false, false, printWindow, null,true,false);
+                                   $('#PasswordAllowPopup').modal("hide");
                    });
         $('#btnPrintEmail').click(function () {
             const printWindow = window.open('', '_blank'); // Open blank tab first (browser-safe)
@@ -961,7 +963,7 @@
             $('#PasswordAllowPopup').modal("hide");
 
             setTimeout(() => {
-                    submitForm(true, true, false, printWindow, sendWindow,false); // Send true and window object
+                    submitForm(true, true, false, printWindow, sendWindow,false,false); // Send true and window object
             }, 300);
         });
         $('#btncancelEwayOnly').on('click', function () {
@@ -987,7 +989,7 @@
             $('#PasswordAllowPopup').modal("hide");
 
             setTimeout(() => {
-                    submitForm(false, false, true, null, null,false);// Send true and window object
+                        submitForm(false, false, true, null, null,false,false);// Send true and window object
             }, 300);
         });
         $(document).on('click', '#btnEwayOnly, #btnEwayOnlyD', function () {
@@ -1046,11 +1048,11 @@
             $('#PasswordAllowPopup').modal("hide");
 
             setTimeout(() => {
-                    submitForm(false, false, false, null, null,false); // no print
+                        submitForm(false, false, false, null, null,false,false); // no print
             }, 300);
         });
 
-            function submitForm(shouldPrint, shouldSend, ShouldEway, printWindow, sendWindow,GoToDashBoard) {
+                function submitForm(shouldPrint, shouldSend, ShouldEway, printWindow, sendWindow,GoToDashBoard,Partialview) {
             $('#ShouldPrint').val(shouldPrint); // Set hidden input
             $('#ShouldEway').val(ShouldEway); // Set hidden input
             const formData = $('form').serialize(); // Properly serialize full form
@@ -1076,10 +1078,10 @@
                             const printUrl = '/NRGP/PrintReport?EntryId=' + res.entryId + '&YearCode=' + res.yearCode;
                             printWindow.location.href = printUrl;
                         }
-                         /*    else if ($('#TypeOfSave').val() === "PS") {
+                                else if (Partialview) {
                                                                    window.location.href = '/NRGP/IssueChallanOnCounter?ID='+res.entryId+'&Mode=U&YC='+res.yearCode;
 
-                                                        } */
+                                                        }
                         else if (shouldPrint && shouldSend) {
                             const printUrl = '/NRGP/PrintReport?EntryId=' + res.entryId + '&YearCode=' + res.yearCode;
                             const sendUrl = '/NRGP/SendReport?EntryId=' + res.entryId + '&YearCode=' + res.yearCode + '&EmailTo=' + Email + '&CC1=' + CC1 + '&CC2=' + CC2 + '&CC3=' + CC3 + '&Challanno=' + ChallanNo;
