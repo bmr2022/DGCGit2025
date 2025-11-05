@@ -1076,10 +1076,10 @@
                             const printUrl = '/NRGP/PrintReport?EntryId=' + res.entryId + '&YearCode=' + res.yearCode;
                             printWindow.location.href = printUrl;
                         }
-                            else if ($('#TypeOfSave').val() === "PS") {
+                         /*    else if ($('#TypeOfSave').val() === "PS") {
                                                                    window.location.href = '/NRGP/IssueChallanOnCounter?ID='+res.entryId+'&Mode=U&YC='+res.yearCode;
 
-                                                        }
+                                                        } */
                         else if (shouldPrint && shouldSend) {
                             const printUrl = '/NRGP/PrintReport?EntryId=' + res.entryId + '&YearCode=' + res.yearCode;
                             const sendUrl = '/NRGP/SendReport?EntryId=' + res.entryId + '&YearCode=' + res.yearCode + '&EmailTo=' + Email + '&CC1=' + CC1 + '&CC2=' + CC2 + '&CC3=' + CC3 + '&Challanno=' + ChallanNo;

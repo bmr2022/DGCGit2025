@@ -1551,11 +1551,12 @@
                                     printWindow.document.title = "Sale Invoice Report";
 
                                 };
-                                        else if ($('#TypeOfSave').val() === "PS") {
-                                                               window.location.href = `/SaleInvoice/SaleBillOnCounter/${res.entryId}?Mode=U&YearCode=${res.yearCode}`;
-                                                           }
+                                       
                                 window.location.href = '/SaleInvoice/SaleBillOnCounter/0';
                             }
+                                    else if ($('#TypeOfSave').val() === "PS") {
+                                                                      window.location.href = `/SaleInvoice/SaleBillOnCounter/${res.entryId}?Mode=U&YearCode=${res.yearCode}`;
+                                                                  }
                             else {
                                 window.location.href = '/SaleInvoice/SaleBillOnCounter/0';
                             }
