@@ -1356,16 +1356,16 @@
                 $('#EinvoicePopup').modal("hide");
 
                 // setTimeout(() => {
-                       submitForm(false, printWindow,false); // Send true and window object
+                       submitForm(false, printWindow,false,false); // Send true and window object
                 // }, 300);
             });
                       $('#btnSaveAndDashBoard').click(function () {
-                             submitForm(false, null,true);
+                                    submitForm(false, null,true,false);
                        $('#EinvoicePopup').modal("hide");
                });
 
             $('#btnClose').click(function () {
-                submitForm(false, null,false);
+                submitForm(false, null,false,false);
                 $('#EinvoicePopup').modal("hide");
                 //   $('#btnCloseSpinner').removeClass('d-none');
                 //   $('#btnClose').prop('disabled', true);
@@ -1412,7 +1412,7 @@
                 }
                 else {
                     //   setTimeout(() => {
-                    submitForm(true, null,false); // no print
+                    submitForm(true, null,false,false); // no print
                     // }, 300);
                 }
             });
@@ -1425,7 +1425,7 @@
                 }
                 else {
                     // setTimeout(() => {
-                           submitForm(true, null,false); // no print
+                                  submitForm(true, null,false,false); // no print
                     // }, 300);
                 }
             });
@@ -1435,7 +1435,94 @@
                        $('.PartialSave').trigger("click");
                    }
                });
-                   function submitForm(ShouldEinvoice, printWindow,GoToDashBoard) {
+                          $(document).on('click', '.PartialSave', function (e) {
+
+                              $('#TypeOfSave').val("PS");
+                              e.preventDefault();
+                                         ValidateSubmitWrapper(function (isValid) {
+                              if (!isValid) return;
+
+                              if ($('#divSaleBillList tr td').length <= 1) {
+                                  $.notify('Sale Bill Grid Should Have Atleast 1 Item...!', "error");
+                              } else if ($('#GSTRegistered').val() == 'Y') {
+                                  if ($('#divTaxGrid tr td').length <= 1 && $('#DomesticExportNEPZ').val() == "DOMESTIC") {
+                                      $.notify('Tax Grid Should Have Atleast 1 Item...!', "error");
+                                  } else {
+                                      if ($('#divAdjItemList tr td').length <= 1) {
+                                          $.notify('Adjust Grid Should Have Atleast 1 Item...!', "error");
+                                      } else if ($('#divdbCrItemList tr td').length <= 1) {
+                                          $.notify('DRCR Grid Should Have Atleast 1 Item...!', "error");
+                                      } else if ($('#StateCode').val() == 0) {
+                                          $.notify('StateCode is mandatory...!', "error");
+                                      } else if ($('#divAdjItemList tr td').length > 1) {
+                                          var hasCR = false;
+                                          $('tr.adjGridRow').each(function () {
+                                              $(this).find('.GridAdjDrCr').each(function () {
+                                                  if ($(this).text().trim().toUpperCase() === 'CR') {
+                                                      hasCR = true;
+                                                      return false;
+                                                  }
+                                              });
+                                              if (hasCR) return false;
+                                          });
+
+                                          if (hasCR) {
+                                              $.notify('AdjGrid should not have CR value...!', "error");
+                                          } else {
+                                              if ($('#SaleBillJobwork').val() == 'J') {
+                                                  var rowCount = $('#divSaleBillList tr').length;
+                                                  var itemsStockableAndCustJw = [];
+
+                                                  for (var i = 1; i <= rowCount; i++) {
+                                                      var stockable = $('#stockableItems-' + i).text() === 'Y';
+                                                      var custJWAdj = $('#custJWAdjMandatory-' + i).text() === 'Y';
+                                                      if (stockable || custJWAdj) {
+                                                          itemsStockableAndCustJw.push($('#GridIC-' + i).val());
+                                                      }
+                                                  }
+
+                                                  var isCustJWValid = ValidateAdjChallanGrid('#divCustJobWorkISsueSummary', '#fgItemCodeGrid-');
+                                                  var isBomCustJWValid = ValidateAdjChallanGrid('#divBomCustJobWorkISsueSummary', '#fgBomItemCodeGrid-');
+                                                  var isBomItemsValidInCust = ValidateBomItemsInCustGrid();
+
+                                                  var isPentoAdj = true;
+                                                  $('.bomCustRowJW').find('#pendToAdj').each(function () {
+                                                      if (parseFloat($(this).text()) > 0) {
+                                                          isPentoAdj = false;
+                                                          $.notify('PendToAdj qty must be adjusted.', "error");
+                                                          return false;
+                                                      }
+                                                  });
+
+                                                  if (isCustJWValid && isBomCustJWValid && isBomItemsValidInCust && isPentoAdj) {
+                                                      if (confirm("Are you sure you want to save this entry?")) {
+                                                         submitForm(false, null,false,true);
+                                                      }
+                                                  }
+                                              } else {
+                                                  if (confirm("Are you sure you want to save this entry?")) {
+                                                            submitForm(false, null,false,true);
+                                                  }
+                                              }
+                                          }
+                                      } else if ($('#GSTRegistered').val() == 'Y') {
+                                          if ($('#divTaxGrid tr td').length <= 1) {
+                                              $.notify('Tax Grid Should Have Atleast 1 Item...!', "error");
+                                          }
+                                      } else {
+                                          if (confirm("Are you sure you want to save this entry?")) {
+                                             submitForm(false, null,false,true);
+                                          }
+                                      }
+                                  }
+                              } else {
+                                  if (confirm("Are you sure you want to save this entry?")) {
+                                          submitForm(false, null,false,true);
+                                  }
+                              }
+                          });
+                          });
+                   function submitForm(ShouldEinvoice, printWindow,GoToDashBoard,Partialview) {
                 $('#ShouldEinvoice').val(ShouldEinvoice);
 
                 var formData = new FormData(document.getElementById('saleInvoiceForm'));
@@ -1455,8 +1542,10 @@
                                      if (GoToDashBoard) {
                                                  window.location.href = '/SaleInvoice/SaleBillOnCounterDashboard';
                                }
-                                     
-                               else{
+                                              else if (Partialview) {
+                                                                             window.location.href = `/SaleInvoice/SaleBillOnCounter/${res.entryId}?Mode=U&YearCode=${res.yearCode}`;
+                                                                         }
+                                      else{
                             if (ShouldEinvoice && res.entryId && res.yearCode) {
                                 const payload = {
                                     EntryId: res.entryId,
@@ -1554,9 +1643,7 @@
                                        
                                 window.location.href = '/SaleInvoice/SaleBillOnCounter/0';
                             }
-                                    else if ($('#TypeOfSave').val() === "PS") {
-                                                                      window.location.href = `/SaleInvoice/SaleBillOnCounter/${res.entryId}?Mode=U&YearCode=${res.yearCode}`;
-                                                                  }
+                                    
                             else {
                                 window.location.href = '/SaleInvoice/SaleBillOnCounter/0';
                             }
@@ -6457,93 +6544,7 @@
                 }
             });
         }
-                 $(document).on('click', '.PartialSave', function (e) {
-
-                       $('#TypeOfSave').val("PS");
-                       e.preventDefault();
-                                  ValidateSubmitWrapper(function (isValid) {
-                       if (!isValid) return;
-
-                       if ($('#divSaleBillList tr td').length <= 1) {
-                           $.notify('Sale Bill Grid Should Have Atleast 1 Item...!', "error");
-                       } else if ($('#GSTRegistered').val() == 'Y') {
-                           if ($('#divTaxGrid tr td').length <= 1 && $('#DomesticExportNEPZ').val() == "DOMESTIC") {
-                               $.notify('Tax Grid Should Have Atleast 1 Item...!', "error");
-                           } else {
-                               if ($('#divAdjItemList tr td').length <= 1) {
-                                   $.notify('Adjust Grid Should Have Atleast 1 Item...!', "error");
-                               } else if ($('#divdbCrItemList tr td').length <= 1) {
-                                   $.notify('DRCR Grid Should Have Atleast 1 Item...!', "error");
-                               } else if ($('#StateCode').val() == 0) {
-                                   $.notify('StateCode is mandatory...!', "error");
-                               } else if ($('#divAdjItemList tr td').length > 1) {
-                                   var hasCR = false;
-                                   $('tr.adjGridRow').each(function () {
-                                       $(this).find('.GridAdjDrCr').each(function () {
-                                           if ($(this).text().trim().toUpperCase() === 'CR') {
-                                               hasCR = true;
-                                               return false;
-                                           }
-                                       });
-                                       if (hasCR) return false;
-                                   });
-
-                                   if (hasCR) {
-                                       $.notify('AdjGrid should not have CR value...!', "error");
-                                   } else {
-                                       if ($('#SaleBillJobwork').val() == 'J') {
-                                           var rowCount = $('#divSaleBillList tr').length;
-                                           var itemsStockableAndCustJw = [];
-
-                                           for (var i = 1; i <= rowCount; i++) {
-                                               var stockable = $('#stockableItems-' + i).text() === 'Y';
-                                               var custJWAdj = $('#custJWAdjMandatory-' + i).text() === 'Y';
-                                               if (stockable || custJWAdj) {
-                                                   itemsStockableAndCustJw.push($('#GridIC-' + i).val());
-                                               }
-                                           }
-
-                                           var isCustJWValid = ValidateAdjChallanGrid('#divCustJobWorkISsueSummary', '#fgItemCodeGrid-');
-                                           var isBomCustJWValid = ValidateAdjChallanGrid('#divBomCustJobWorkISsueSummary', '#fgBomItemCodeGrid-');
-                                           var isBomItemsValidInCust = ValidateBomItemsInCustGrid();
-
-                                           var isPentoAdj = true;
-                                           $('.bomCustRowJW').find('#pendToAdj').each(function () {
-                                               if (parseFloat($(this).text()) > 0) {
-                                                   isPentoAdj = false;
-                                                   $.notify('PendToAdj qty must be adjusted.', "error");
-                                                   return false;
-                                               }
-                                           });
-
-                                           if (isCustJWValid && isBomCustJWValid && isBomItemsValidInCust && isPentoAdj) {
-                                               if (confirm("Are you sure you want to save this entry?")) {
-                                                 $("form").submit();
-                                               }
-                                           }
-                                       } else {
-                                           if (confirm("Are you sure you want to save this entry?")) {
-                                              $("form").submit();
-                                           }
-                                       }
-                                   }
-                               } else if ($('#GSTRegistered').val() == 'Y') {
-                                   if ($('#divTaxGrid tr td').length <= 1) {
-                                       $.notify('Tax Grid Should Have Atleast 1 Item...!', "error");
-                                   }
-                               } else {
-                                   if (confirm("Are you sure you want to save this entry?")) {
-                                    $("form").submit();
-                                   }
-                               }
-                           }
-                       } else {
-                           if (confirm("Are you sure you want to save this entry?")) {
-                                      $("form").submit();
-                           }
-                       }
-                   });
-                   });
+             
         $('#submitBTN,#submitBTNfooter,#UpdateButton').click(function (e) {
             e.preventDefault();
                    $('#TypeOfSave').val("NPS");
