@@ -17,6 +17,7 @@ namespace eTactWeb.DOM.Models
         public int POYearCode { get; set; }
         public string PODate { get; set; }
         public string ItemLocation { get; set; }
+        public string Accout_Name { get; set; }
         public int POAmendementNo { get; set; }
         public int SEQNo { get; set; }
         public int ItemCode { get; set; }
