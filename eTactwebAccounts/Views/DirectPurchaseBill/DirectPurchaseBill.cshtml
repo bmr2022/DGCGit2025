@@ -57,6 +57,16 @@
                                 BACK
                             </a>
                         </div>
+                        <div class="col-auto me-2">
+                            @if (Model.Mode != "V")
+                            {
+                                <button type="button" class="PartialSave btn btn-secondary btn-sm mr-2" style="color:white!important">
+                                    <i class="fa-solid fa-floppy-disk-pen fa-fw fa-lg" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
+                                    PARTIAL SAVE
+                                </button>
+                            }
+
+                        </div>
                         @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
                         {
                             <div class="col-auto">

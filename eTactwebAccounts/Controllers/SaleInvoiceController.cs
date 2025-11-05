@@ -1399,6 +1399,67 @@ namespace eTactWeb.Controllers
 
             return PartialView("_SaleBillGrid", MainModel);
         }
+        public IActionResult EditItemRow(SaleBillModel model)
+        {
+            bool exists = false;
+            object Result = string.Empty;
+
+            int Indx = Convert.ToInt32(model.SeqNo) - 1;
+
+            string modelJson = HttpContext.Session.GetString("KeySaleBillGrid");
+            List<SaleBillDetail> ItemDetailGrid = new List<SaleBillDetail>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                ItemDetailGrid = JsonConvert.DeserializeObject<List<SaleBillDetail>>(modelJson);
+            }
+            string modelJson1 = HttpContext.Session.GetString("KeyTaxGrid");
+            List<TaxModel> TaxGrid = new List<TaxModel>();
+            if (!string.IsNullOrEmpty(modelJson1))
+            {
+                TaxGrid = JsonConvert.DeserializeObject<List<TaxModel>>(modelJson1);
+            }
+
+            //_MemoryCache.TryGetValue("KeyTaxGrid", out List<TaxModel> TaxGrid);
+            model.ItemDetailGrid = ItemDetailGrid;
+
+            var ItmPartCode = model.ItemDetailGrid.FirstOrDefault(item => item.SeqNo == Convert.ToInt32(model.SeqNo)).ItemCode;
+
+            if (TaxGrid != null)
+            {
+                exists = TaxGrid.Any(x => x.TxPartCode == ItmPartCode);
+            }
+
+            if (exists)
+            {
+                return StatusCode(207, "Duplicate");
+            }
+            Result = model.ItemDetailGrid.Where(m => m.SeqNo == model.SeqNo).ToList();
+            model.ItemDetailGrid.RemoveAt(Convert.ToInt32(Indx));
+
+            //Indx = 0;
+            //foreach (ItemDetail item in model.ItemDetailGrid)
+            //{
+            //	Indx++;
+            //	item.SeqNo = Indx;
+            //}
+
+            //if (model.ItemDetailGrid.Count > 0)
+            //{
+            //	HttpContext.Session.SetString
+            //	(
+            //		"ItemList",
+            //		JsonConvert.SerializeObject(model.ItemDetailGrid)
+            //	);
+            //}
+            //else
+            //{
+            //	HttpContext.Session.Remove("ItemList");
+            //}
+            HttpContext.Session.SetString("KeySaleBillGrid", JsonConvert.SerializeObject(model.ItemDetailGrid));
+
+
+            return Json(JsonConvert.SerializeObject(Result));
+        }
         public async Task<JsonResult> EditItemRows(int SeqNo)
         {
             var MainModel = new SaleBillModel();
@@ -1520,7 +1581,13 @@ namespace eTactWeb.Controllers
                             return StatusCode(207, "Duplicate");
                         }
 
-                        model.SeqNo = SaleBillDetail.Count + 1;
+                        if (model.SeqNo == 0)
+                        {
+                            model.SeqNo = SaleBillDetail.Count + 1;
+                        }
+                       
+
+                        //model.SeqNo = SaleBillDetail.Count + 1;
                         saleBillDetail = SaleBillDetail.Where(x => x != null).ToList();
                         rangeSaleBillGrid.AddRange(saleBillDetail);
                         saleBillDetail.Add(model);
