@@ -22,6 +22,7 @@
         <input type="hidden" asp-for="MaxSaleInvoiceEntryDate" />
         <input type="hidden" asp-for="AllowBackDateSALEBILL" />
         <input type="hidden" asp-for="AllowToAdjZeroAmt" />
+        <input type="hidden" id="TypeOfSave"/>
         <input type="hidden" id="Companytype" />
         @*   <input type="hidden" asp-for="ShowHideSaleBillEntryDetail" />
         <input type="hidden" asp-for="ShowHideSaleBillCustomerDetail" />
@@ -89,10 +90,21 @@
                             {
                                 <input type="hidden" value="@Model.SaleBillNo" id="hiddenSaleBillNo" />
                             }
+
                             <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
                                 <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
                                 BACK
                             </a>
+                        </div>
+                        <div class="col-auto me-2">
+                            @if (Model.Mode != "V")
+                            {
+                                <button type="button" class="PartialSave btn btn-secondary btn-sm mr-2" style="color:white!important">
+                                    <i class="fa-solid fa-floppy-disk-pen fa-fw fa-lg" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
+                                    PARTIAL SAVE
+                                </button>
+                            }
+
                         </div>
                         @if (Model.Mode != "V")
                         {
@@ -492,6 +504,16 @@
                                     <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
                                     BACK
                                 </a>
+                            </div>
+                            <div class="col-auto me-2">
+                                @if (Model.Mode != "V")
+                                {
+                                    <button type="button" class="PartialSave btn btn-secondary btn-sm mr-2" style="color:white!important">
+                                        <i class="fa-solid fa-floppy-disk-pen fa-fw fa-lg" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
+                                        PARTIAL SAVE
+                                    </button>
+                                }
+
                             </div>
                             @if (Model.Mode != "V")
                             {
@@ -911,6 +933,7 @@
                     <a href="#" class="btn btn-primary" id="btngenrateEinvoice">
                         save & Generate Einvoice
                     </a>
+                    <button type="button" class="btn btn-danger" id="btnSaveAndDashBoard">Save & DashBoard</button>
                     <button type="button" class="btn btn-danger" id="btnClose">
                         @* <span class="spinner-border spinner-border-sm me-2 d-none" role="status" id="btnCloseSpinner" aria-hidden="true"></span> *@
                         Save
@@ -1333,11 +1356,16 @@
                 $('#EinvoicePopup').modal("hide");
 
                 // setTimeout(() => {
-                submitForm(false, printWindow); // Send true and window object
+                       submitForm(false, printWindow,false,false); // Send true and window object
                 // }, 300);
             });
+                      $('#btnSaveAndDashBoard').click(function () {
+                                    submitForm(false, null,true,false);
+                       $('#EinvoicePopup').modal("hide");
+               });
+
             $('#btnClose').click(function () {
-                submitForm(false, null);
+                submitForm(false, null,false,false);
                 $('#EinvoicePopup').modal("hide");
                 //   $('#btnCloseSpinner').removeClass('d-none');
                 //   $('#btnClose').prop('disabled', true);
@@ -1384,7 +1412,7 @@
                 }
                 else {
                     //   setTimeout(() => {
-                    submitForm(true, null); // no print
+                    submitForm(true, null,false,false); // no print
                     // }, 300);
                 }
             });
@@ -1397,11 +1425,104 @@
                 }
                 else {
                     // setTimeout(() => {
-                    submitForm(true, null); // no print
+                                  submitForm(true, null,false,false); // no print
                     // }, 300);
                 }
             });
-            function submitForm(ShouldEinvoice, printWindow) {
+                    $(document).keyup(function (e) {
+                   if (e.altKey && e.keyCode === 83) {
+                       e.preventDefault();
+                       $('.PartialSave').trigger("click");
+                   }
+               });
+                          $(document).on('click', '.PartialSave', function (e) {
+
+                              $('#TypeOfSave').val("PS");
+                              e.preventDefault();
+                                         ValidateSubmitWrapper(function (isValid) {
+                              if (!isValid) return;
+
+                              if ($('#divSaleBillList tr td').length <= 1) {
+                                  $.notify('Sale Bill Grid Should Have Atleast 1 Item...!', "error");
+                              } else if ($('#GSTRegistered').val() == 'Y') {
+                                  if ($('#divTaxGrid tr td').length <= 1 && $('#DomesticExportNEPZ').val() == "DOMESTIC") {
+                                      $.notify('Tax Grid Should Have Atleast 1 Item...!', "error");
+                                  } else {
+                                      if ($('#divAdjItemList tr td').length <= 1) {
+                                          $.notify('Adjust Grid Should Have Atleast 1 Item...!', "error");
+                                      } else if ($('#divdbCrItemList tr td').length <= 1) {
+                                          $.notify('DRCR Grid Should Have Atleast 1 Item...!', "error");
+                                      } else if ($('#StateCode').val() == 0) {
+                                          $.notify('StateCode is mandatory...!', "error");
+                                      } else if ($('#divAdjItemList tr td').length > 1) {
+                                          var hasCR = false;
+                                          $('tr.adjGridRow').each(function () {
+                                              $(this).find('.GridAdjDrCr').each(function () {
+                                                  if ($(this).text().trim().toUpperCase() === 'CR') {
+                                                      hasCR = true;
+                                                      return false;
+                                                  }
+                                              });
+                                              if (hasCR) return false;
+                                          });
+
+                                          if (hasCR) {
+                                              $.notify('AdjGrid should not have CR value...!', "error");
+                                          } else {
+                                              if ($('#SaleBillJobwork').val() == 'J') {
+                                                  var rowCount = $('#divSaleBillList tr').length;
+                                                  var itemsStockableAndCustJw = [];
+
+                                                  for (var i = 1; i <= rowCount; i++) {
+                                                      var stockable = $('#stockableItems-' + i).text() === 'Y';
+                                                      var custJWAdj = $('#custJWAdjMandatory-' + i).text() === 'Y';
+                                                      if (stockable || custJWAdj) {
+                                                          itemsStockableAndCustJw.push($('#GridIC-' + i).val());
+                                                      }
+                                                  }
+
+                                                  var isCustJWValid = ValidateAdjChallanGrid('#divCustJobWorkISsueSummary', '#fgItemCodeGrid-');
+                                                  var isBomCustJWValid = ValidateAdjChallanGrid('#divBomCustJobWorkISsueSummary', '#fgBomItemCodeGrid-');
+                                                  var isBomItemsValidInCust = ValidateBomItemsInCustGrid();
+
+                                                  var isPentoAdj = true;
+                                                  $('.bomCustRowJW').find('#pendToAdj').each(function () {
+                                                      if (parseFloat($(this).text()) > 0) {
+                                                          isPentoAdj = false;
+                                                          $.notify('PendToAdj qty must be adjusted.', "error");
+                                                          return false;
+                                                      }
+                                                  });
+
+                                                  if (isCustJWValid && isBomCustJWValid && isBomItemsValidInCust && isPentoAdj) {
+                                                      if (confirm("Are you sure you want to save this entry?")) {
+                                                         submitForm(false, null,false,true);
+                                                      }
+                                                  }
+                                              } else {
+                                                  if (confirm("Are you sure you want to save this entry?")) {
+                                                            submitForm(false, null,false,true);
+                                                  }
+                                              }
+                                          }
+                                      } else if ($('#GSTRegistered').val() == 'Y') {
+                                          if ($('#divTaxGrid tr td').length <= 1) {
+                                              $.notify('Tax Grid Should Have Atleast 1 Item...!', "error");
+                                          }
+                                      } else {
+                                          if (confirm("Are you sure you want to save this entry?")) {
+                                             submitForm(false, null,false,true);
+                                          }
+                                      }
+                                  }
+                              } else {
+                                  if (confirm("Are you sure you want to save this entry?")) {
+                                          submitForm(false, null,false,true);
+                                  }
+                              }
+                          });
+                          });
+                   function submitForm(ShouldEinvoice, printWindow,GoToDashBoard,Partialview) {
                 $('#ShouldEinvoice').val(ShouldEinvoice);
 
                 var formData = new FormData(document.getElementById('saleInvoiceForm'));
@@ -1418,6 +1539,13 @@
                     success: function (res) {
                           $('#ajaxLoader').hide();
                         if (res && res.status === "Success") {
+                                     if (GoToDashBoard) {
+                                                 window.location.href = '/SaleInvoice/SaleBillOnCounterDashboard';
+                               }
+                                              else if (Partialview) {
+                                                                             window.location.href = `/SaleInvoice/SaleBillOnCounter/${res.entryId}?Mode=U&YearCode=${res.yearCode}`;
+                                                                         }
+                                      else{
                             if (ShouldEinvoice && res.entryId && res.yearCode) {
                                 const payload = {
                                     EntryId: res.entryId,
@@ -1512,12 +1640,16 @@
                                     printWindow.document.title = "Sale Invoice Report";
 
                                 };
+                                       
                                 window.location.href = '/SaleInvoice/SaleBillOnCounter/0';
                             }
+                                    
                             else {
                                 window.location.href = '/SaleInvoice/SaleBillOnCounter/0';
                             }
-                        } else {
+                        } 
+                        }
+                        else {
                             alert(res.message || "Something went wrong.");
                         }
                     },
@@ -5411,6 +5543,8 @@
                                 };
                             }));
                         } else {
+                            AddMultipleItems();
+                ShowGroupWiseItems();
                             response([]);
                         }
                     }
@@ -5447,6 +5581,8 @@
                                 };
                             }));
                         } else {
+                                   AddMultipleItems();
+                       ShowGroupWiseItems();
                             response([]);
                         }
                     }
@@ -5515,10 +5651,7 @@
                             }
                            
                         }
-                        else{
-                 //                      AddMultipleItems();
-                 // ShowGroupWiseItems();
-                        }
+                      
 
                     },
                     error: function (xhr, status, error) {
@@ -5573,17 +5706,17 @@
                                     $('#PartCode').val(match.Item_Code);
                                     onItemSelected("ItemCode");
                                 } else {
-                                    alert("Invalid Item Name entered!");
+                                   // alert("Invalid Item Name entered!");
                                     $("#ItemNameText").val("").focus();
                                            AddMultipleItems();
                                             ShowGroupWiseItems();
                                 }
                             } else {
-                                alert("Invalid Item Name entered!");
+                              //  alert("Invalid Item Name entered!");
                                 $("#ItemNameText").val("").focus();
                                    
-                               AddMultipleItems();
-          ShowGroupWiseItems();
+          //                      AddMultipleItems();
+          // ShowGroupWiseItems();
                         
 
                             }
@@ -6411,10 +6544,10 @@
                 }
             });
         }
-
+             
         $('#submitBTN,#submitBTNfooter,#UpdateButton').click(function (e) {
             e.preventDefault();
-
+                   $('#TypeOfSave').val("NPS");
             ValidateSubmitWrapper(function (isValid) {
                 if (!isValid) return;
 
@@ -6511,7 +6644,7 @@
             }
             else {
                 $.ajax({
-                    url: '/SaleInvoice/EditItemRows',
+                           url: '/SaleInvoice/EditItemRow',
                     type: "POST",
                     data: { SeqNo: SeqNo },
                     success: function (data) {
@@ -6565,7 +6698,7 @@
                             // } else {
                             //     FillSOWiseItems();
                             // }
-                             if ($('#SONO').val() == ''||$('#SONO').val() == null || $('#SONO').val() == '0') {
+                             if ($('#SONO').val() == ''||   $('#SONO').val() == 'NaN' ||$('#SONO').val() == null || $('#SONO').val() == '0') {
                 // Autocomplete mode
                 enableAutocompleteMode();
                 // FillItems($('#TypeItemServAssets').val());
@@ -6690,7 +6823,13 @@
                                 $('.jobWorkChalln').hide();
                                 $('.gridHiddenField').hide();
                             }
-                            DeleteItemRow(SeqNo);
+                                          $('#saleBillRow-' + SeqNo).remove();
+                            // DeleteItemRow(SeqNo);
+
+                             if ($('#divSaleBillList').children().length == 0) {
+                                var NoData = '<tr class="text-center"><td colspan="28" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
+                                       $('#divSaleBillList').html(NoData);
+                            }
                         }
                     },
                     error: function (response) {
@@ -7184,7 +7323,7 @@
                 $('#SaleSchYearCode').prop("disabled", false);
             }
             // $('#SOType').val($('#SONO').find(':selected').data('sotype'));
-            if ($('#SONO').val() == '0' || $('#SONO').val() == '') {
+            if ($('#SONO').val() == '0' || $('#SONO').val() == ''||  $('#SONO').val()=="NaN") {
                 $('#Rate').prop("readonly", false);
                 $('#RateInOtherCurr').prop("readonly", false);
             } else {

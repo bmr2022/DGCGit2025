@@ -78,6 +78,7 @@
                             <input asp-for="DashboardTypeBack" type="hidden" value="@Model.DashboardTypeBack" />
                             <input asp-for="AllowToChangeStore" type="hidden" value="@Model.AllowToChangeStore" />
                             <input asp-for="AllowToAddNegativeStockInStore" type="hidden" value="Y" />
+                            <input type="hidden" id="TypeOfSave" />
                             <input type="hidden" id="Email" />
                             <input type="hidden" id="CC1" />
                             <input type="hidden" id="CC2" />
@@ -88,6 +89,16 @@
                                 <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
                                 BACK
                             </a>
+                        </div>
+                        <div class="col-auto me-2">
+                            @if (Model.Mode != "V")
+                            {
+                            <button type="button" class="PartialSave btn btn-secondary btn-sm mr-2" style="color:white!important">
+                                <i class="fa-solid fa-floppy-disk-pen fa-fw fa-lg" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
+                                PARTIAL SAVE
+                            </button>
+                            }
+
                         </div>
                         @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
                         {
@@ -716,6 +727,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" id="btnClose">Save</button>
+                    <button type="button" class="btn btn-danger" id="btnSaveAndDashBoard">Save & DashBoard</button>
                     <a href="#" class="btn btn-primary" id="btnPrint">
                         <i class="fa fa-print"></i> Save & Print
                     </a>
@@ -828,20 +840,60 @@
     </div>
 </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
     @section Scripts {
     <script>
+         $(document).keyup(function (e) {
+                if (e.altKey && e.keyCode === 83) {
+                    e.preventDefault();
+                    $('.PartialSave').trigger("click");
+                }
+            });
+          $(document).on('click', '.PartialSave', function (e) {
+
+                $('#TypeOfSave').val("PS");
+                e.preventDefault();
+                          var finfromdate = parseDateToFormat($("#FinFromDate").val());
+                var fintodate = parseDateToFormat($("#FinToDate").val());
+                var entrydate = parseDateToFormat($("#EntryDate").val());
+                var challanDate = parseDateToFormat($("#ChallanDate").val());
+
+                if (!ValidateSubmit()) return;
+                var CheckTaxFileds = false;
+                var TaxRow = $('#divTaxGrid tr').length;
+                if ($('#divTaxGrid tr td').length > 1) {
+                    for (var i = 1; i <= TaxRow; i++) {
+                        if ($('#txGridType-' + i).text() == '' || $('#txGridName-' + i).text() == '') {
+                            CheckTaxFileds = true;
+                            break;
+                        }
+                    }
+                }
+                //ValidateSubmit();
+                var IssueChaallanTaxIsMandatory = $('#IssueChaallanTaxIsMandatory').val();
+                if (IssueChaallanTaxIsMandatory == 'Y') {
+                    if ($('#divTaxGrid tr td').length <= 1) {
+                        $.notify('tax Grid Should Have Atleast 1 Item...!', "error");
+                        return false;
+                    }
+                }
+
+
+
+                if ($('#divIssueNRGPGrid tr td').length <= 1) {
+                    $.notify('IssueNRGP Grid Should Have Atleast 1 Item...!', "error");
+                }
+
+
+                else if (CheckTaxFileds) {
+                    $.notify('Please Fill Tax Fields Property!', "error");
+                }
+                else {
+                          setTimeout(() => {
+                    submitForm(false, false, false, null, null,false,true); // no print
+            }, 300);
+                    }
+                   
+            });
         $('#submitBTN').click(function (e) {
             e.preventDefault();
 
@@ -896,10 +948,13 @@
             $('#PasswordAllowPopup').modal("hide");
 
             setTimeout(() => {
-                submitForm(true, false, false, printWindow, null); // Send true and window object
+                    submitForm(true, false, false, printWindow, null,false,false); // Send true and window object
             }, 300);
         });
-
+                 $('#btnSaveAndDashBoard').click(function () {
+                                    submitForm(true, false, false, printWindow, null,true,false);
+                                   $('#PasswordAllowPopup').modal("hide");
+                   });
         $('#btnPrintEmail').click(function () {
             const printWindow = window.open('', '_blank'); // Open blank tab first (browser-safe)
             const sendWindow = window.open('', '_blank'); // Open blank tab first (browser-safe)
@@ -908,7 +963,7 @@
             $('#PasswordAllowPopup').modal("hide");
 
             setTimeout(() => {
-                submitForm(true, true, false, printWindow, sendWindow); // Send true and window object
+                    submitForm(true, true, false, printWindow, sendWindow,false,false); // Send true and window object
             }, 300);
         });
         $('#btncancelEwayOnly').on('click', function () {
@@ -934,7 +989,7 @@
             $('#PasswordAllowPopup').modal("hide");
 
             setTimeout(() => {
-                submitForm(false, false, true, null, null);// Send true and window object
+                        submitForm(false, false, true, null, null,false,false);// Send true and window object
             }, 300);
         });
         $(document).on('click', '#btnEwayOnly, #btnEwayOnlyD', function () {
@@ -993,11 +1048,11 @@
             $('#PasswordAllowPopup').modal("hide");
 
             setTimeout(() => {
-                submitForm(false, false, false, null, null); // no print
+                        submitForm(false, false, false, null, null,false,false); // no print
             }, 300);
         });
 
-        function submitForm(shouldPrint, shouldSend, ShouldEway, printWindow, sendWindow) {
+                function submitForm(shouldPrint, shouldSend, ShouldEway, printWindow, sendWindow,GoToDashBoard,Partialview) {
             $('#ShouldPrint').val(shouldPrint); // Set hidden input
             $('#ShouldEway').val(ShouldEway); // Set hidden input
             const formData = $('form').serialize(); // Properly serialize full form
@@ -1016,10 +1071,17 @@
                     console.log("Server response:", res);
 
                     if (res && res.status === "Success") {
+                                 if (GoToDashBoard) {
+                                                         window.location.href = '/NRGP/IssueChallanOnCounterDashboard?Flag=True';
+                                   }else{
                         if (shouldPrint && res.entryId && res.yearCode && printWindow && !shouldSend) {
                             const printUrl = '/NRGP/PrintReport?EntryId=' + res.entryId + '&YearCode=' + res.yearCode;
                             printWindow.location.href = printUrl;
                         }
+                                else if (Partialview) {
+                                                                   window.location.href = '/NRGP/IssueChallanOnCounter?ID='+res.entryId+'&Mode=U&YC='+res.yearCode;
+
+                                                        }
                         else if (shouldPrint && shouldSend) {
                             const printUrl = '/NRGP/PrintReport?EntryId=' + res.entryId + '&YearCode=' + res.yearCode;
                             const sendUrl = '/NRGP/SendReport?EntryId=' + res.entryId + '&YearCode=' + res.yearCode + '&EmailTo=' + Email + '&CC1=' + CC1 + '&CC2=' + CC2 + '&CC3=' + CC3 + '&Challanno=' + ChallanNo;
@@ -1072,10 +1134,9 @@
                                 }
                             });
                         }
-
-
                         window.location.href = '/NRGP/IssueChallanOnCounter';
-                    } else {
+                    } 
+                    }else {
                         alert(res.message || "Something went wrong.");
                     }
                 },
