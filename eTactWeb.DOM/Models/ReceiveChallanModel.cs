@@ -14,6 +14,7 @@ namespace eTactWeb.DOM.Models
         public int Yearcode { get; set; }
         public string Entrydate { get; set; }
         public string RetNotRetChallan { get; set; }
+        public string ShowOtherReqFields { get; set; }
         public string AgainstMRNNOrGate { get; set; }
         public string MRNNo { get; set; }
         public int AgainstMRNYearCode { get; set; }
