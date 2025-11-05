@@ -13,7 +13,7 @@ else
     foreach (var item in Model.SaleRejectionDetails)
     {
         Cntr = Cntr + 1;
-        var bgColor = item.RejRate != item.Rate ? "red" : "#85f2ec"; // red if different, blue if same
+        var bgColor = item.RejRate > item.Rate ? "red" : "#85f2ec"; // red if different, blue if same
         <tr class="small" id="saleBillRow" style="white-space:nowrap">
             
            @*  <td style="width:4%">
