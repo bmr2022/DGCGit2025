@@ -1296,8 +1296,15 @@ public class SaleOrderController : Controller
 	[Route("{controller}/Index")]
 	public async Task<ActionResult> OrderDetail(string Mode, int ID, int YC,string fromDateBack = "", string summaryDetail = "", string toDateBack = "",string customerNameBack = "",string customerOrderNoBack="",string branchBack = "",string sonoBack = "",string orderTypeBack = "",string soTypeBack = "",string partCodeBack = "",string itemNameBack = "")
 	{
-		// string ipaddress = IPAddress.IPv6Loopback.ToString();
-		var model = new SaleOrderModel();
+        // string ipaddress = IPAddress.IPv6Loopback.ToString();
+
+        HttpContext.Session.Remove("ItemList");
+        _MemoryCache.Remove("ItemList");
+        HttpContext.Session.Remove("TaxGrid");
+        HttpContext.Session.Remove("KeyTaxGrid");
+        _MemoryCache.Remove("KeyTaxGrid");
+        _MemoryCache.Remove("KeySaleBillToShipTo");
+        var model = new SaleOrderModel();
 
 		
 		model.PreparedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
