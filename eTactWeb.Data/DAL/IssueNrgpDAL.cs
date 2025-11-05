@@ -715,6 +715,7 @@ namespace eTactWeb.Data.DAL
             model.ChallanDate = DS.Tables[0].Rows[0]["ChallanDate"].ToString();
             model.AccountCode = Convert.ToInt32(DS.Tables[0].Rows[0]["AccountCode"].ToString());
             model.DeliveryAddress = DS.Tables[0].Rows[0]["DeliveryAddress"].ToString();
+            model.Accout_Name = DS.Tables[0].Rows[0]["Account_Name"].ToString();
             model.VendorStateCode = DS.Tables[0].Rows[0]["VendorStateCode"].ToString();
             model.Remark = DS.Tables[0].Rows[0]["Remark"].ToString();
             model.Closed = DS.Tables[0].Rows[0]["Closed"].ToString();
