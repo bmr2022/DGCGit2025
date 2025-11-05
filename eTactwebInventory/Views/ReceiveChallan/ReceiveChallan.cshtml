@@ -617,6 +617,42 @@
             $('#InvoiceNo').rules("remove", "required");
         });
 
+        function GetFeatureOption() {
+
+            $.ajax({
+                type: "POST",
+                data: {},
+                url: "@Url.Action("GetFeatureOption")",
+                dataType: "json",
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.Result != null) {
+                            if (obj.Result[0].ShowOtherReqFields === "N") {
+                                $('.ShowOtherReqFields').hide();
+                            } else {
+                                $('.ShowOtherReqFields').show();
+                            }
+                            if (obj.Result[0].ShowDetailtableFields === "N") {
+                                $('.ShowDetailtableFields').hide();
+                            } else {
+                                $('.ShowDetailtableFields').show();
+                            }
+                            if (obj.Result[0].ShowOtherFields === "N") {
+                                $('.ShowOtherFields').hide();
+                            } else {
+                                $('.ShowOtherFields').show();
+                            }
+                         
+
+
+
+                        }
+                    }
+                }
+            });
+        }
 
         //$('.textbox').keydown(function (e) {
         //     

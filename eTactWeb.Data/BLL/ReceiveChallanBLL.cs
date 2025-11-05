@@ -85,5 +85,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _ReceiveChallanDAL.GetViewByID(ID,YC,Mode);
         }
+        public async Task<ResponseResult> GetFeatureOption()
+        {
+            return await _ReceiveChallanDAL.GetFeatureOption();
+        }
     }
 }

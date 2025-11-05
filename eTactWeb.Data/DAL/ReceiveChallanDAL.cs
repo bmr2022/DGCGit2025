@@ -623,5 +623,26 @@ namespace eTactWeb.Data.DAL
 
             return model;
         }
+
+        public async Task<ResponseResult> GetFeatureOption()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+
+                SqlParams.Add(new SqlParameter("@Flag", "FeatureOption"));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_ReceiveChallan", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
     }
 }
