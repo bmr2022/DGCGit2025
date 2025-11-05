@@ -26,5 +26,6 @@ namespace eTactWeb.Services.Interface
         Task<ReceiveChallanModel> GetViewByID(int ID, int YearCode, string Mode);
         Task<ResponseResult> GetDashboardData(RCDashboard model);
         Task<ResponseResult> DeleteByID(int ID, int YC);
+        Task<ResponseResult> GetFeatureOption();
     }
 }

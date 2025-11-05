@@ -630,5 +630,12 @@ namespace eTactWeb.Controllers
             return DTSSGrid;
         }
 
+        public async Task<JsonResult> GetFeatureOption()
+        {
+            var JSON = await IReceiveChallan.GetFeatureOption();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
     }
 }
