@@ -95,6 +95,7 @@ namespace eTactWeb.DOM.Models
         public string AgainstVoucherRefNo { get; set; }
         public decimal VoucherBillAmt { get; set; }
         public decimal PendBillAmt { get; set; }
+        public decimal NetAmount { get; set; }
         public string? NewrefNo { get; set; }
         public string AgainstBillno { get; set; }
         public string PONo { get; set; }

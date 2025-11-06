@@ -40,6 +40,7 @@ namespace eTactWeb.DOM.Models
         public string InsDate { get; set; }
         public string DRCR { get; set; }
         public decimal Balance { get; set; }
+        public decimal NetAmount { get; set; }
         public string? InVoiceNo { get; set; }
         public string AccountName { get; set; }
         public int AccountCode { get; set; }
