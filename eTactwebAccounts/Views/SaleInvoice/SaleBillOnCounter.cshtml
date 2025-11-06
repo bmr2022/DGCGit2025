@@ -204,9 +204,17 @@
                     <h2 class="accordion-header" id="HPanel2">
                         <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#BPanel2" aria-expanded="true" aria-controls="BPanel2">
                             <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Item Detail Grid</strong>
+                            <div class="d-flex justify-content-center align-items-center flex-grow-1">
+                                <strong>BASIC TOTAL : <i class="fa-solid fa-indian-rupee-sign fa-fw fa-1x"></i><span id="lblItemNetAmount"></span></strong>
+                                <strong>Total Qty : <span id="TotalQty"></span></strong>
+                                <input type="hidden" asp-for="BillAmt" />
+                                <strong>, TOTAL NO OF ITEMS : <span id="lblItemCount"></span></strong>
+                            </div>
                         </button>
                         <button type="button" style="display:none" class="PendGridButton btn btn-sm btn-outline-danger mt-1 mb-1 PendingItem">
                             <i class="fa-duotone fa-angle-double-down fa-fw fa-lg"></i> ADD TO GRID
+
+                            
                         </button>
                     </h2>
                     <div id="BPanel2" class="accordion-collapse collapse pnl1 bg-gradient" aria-labelledby="HPanel2">
@@ -412,14 +420,14 @@
                             <div class="progress my-3 mb-3" style="height: 4px;">
                                 <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
-                            <div class="row g-2 gx-3">
+                          @*   <div class="row g-2 gx-3">
                                 <div class="col-12 text-center">
                                     <strong>BASIC TOTAL : <i class="fa-solid fa-indian-rupee-sign fa-fw fa-1x"></i><span id="lblItemNetAmount"></span></strong>
                                     <strong>Total Qty : <span id="TotalQty"></span></strong>
                                     <input type="hidden" asp-for="BillAmt" />
                                     <strong>, TOTAL NO OF ITEMS : <span id="lblItemCount"></span></strong>
                                 </div>
-                            </div>
+                            </div> *@
                         </div>
                     </div>
                 </div>
@@ -702,7 +710,7 @@
                 </select>
                 <label style="margin-left:3px;margin-right:3px" for="StoreName">Store Name</label>
                 <select class="form-select" asp-for="StoreId" id="MultiStoreName" style="width:170px">
-                    <option value="0">-Select-</option>
+                   
                 </select>
                 <input type="text" id="SearchPartCode" style="width:170px" placeholder="partcode">
 
@@ -773,7 +781,7 @@
                     </div>
                     <div class="row g-2 gx-3">
                         <div class="col-12 text-center">
-                            <strong>Total No Of Items : <span id="lblTotalNoOfItems1"></span></strong>
+                            <strong>Total No Of Items : <span id="lblTotalNoOfItemsGroupWise"></span></strong>
                         </div>
                     </div>
                 </div>
@@ -885,7 +893,7 @@
                     </div>
                     <div class="row g-2 gx-3">
                         <div class="col-12 text-center">
-                            <strong>Total No Of Items : <span id="lblTotalNoOfItems1"></span></strong>
+                            <strong>Total No Of Items : <span id="lblTotalNoOfItemsPendSO"></span></strong>
                         </div>
                     </div>
                 </div>
@@ -1335,6 +1343,8 @@
                 // Set selected SupplyType from Razor model
                 const supplyTypeFromModel = "@Model.SupplyType";
                 $supplyType.val(supplyTypeFromModel);
+                var salebilldatee= $('#SaleBillDate').val();
+                        $('#SaleBillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", salebilldatee);
             }
             else {
                 GetServerDate();
@@ -1924,6 +1934,7 @@
 
                                 var count = $('#divPendMRNGrid tr').length;
                                 $('#totalRows').text(count);
+                                  $("#lblTotalNoOfItemsPendSO").html(count);
                                 i++;
                             });
 
@@ -1931,6 +1942,7 @@
                         else {
                             $('#divPendMRNGrid').empty();
                             var count = $('#divPendMRNGrid tr').length;
+                                   $("#lblTotalNoOfItemsPendSO").html(count);
                             $('#totalRows').text(count);
                             $('#divPendMRNGrid').append('<tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>')
 
@@ -2213,7 +2225,7 @@
                     $('#MultiItemBody').html(response);
 
                     var totalRows = $('#MultiItemBody tr').length;
-                    $('#lblTotalNoOfItems1').text(totalRows);
+                           $('#lblTotalNoOfItemsGroupWise').text(totalRows);
 
                     for (let i = 1; i <= totalRows; i++) {
                         CalculateRateForMalti(i);
@@ -2289,7 +2301,7 @@
         //         "InvoiceDate": $('#SaleBillDate').val(),
         //         "CurrentYear": $('#SaleBillYearCode').val(),
         //         "BillFromStoreId": $('#BillFromStoreId').val(),
-        //         "accountCode": $('#AccountCode').val(),
+               //         "PaymentDays": $('#AccountCode').val(),
         //         "SONo": $('#SONo').val(),
         //         // "PartCode": $('#PartCode').val()
 
@@ -2552,16 +2564,16 @@
 
                         }
 
-                        if ($('#EditableRateAndDiscountONSaleInvoice').val() == 'N') {
-                            $('input[id^="Rate-"]').prop('readonly', true);
-                            $('input[id^="DiscountPer-"]').prop('readonly', true);
-                            $('input[id^="DiscountAmt-"]').prop('readonly', true);
-                        }
-                        else {
-                            $('input[id^="Rate-"]').prop('readonly', false);
-                            $('input[id^="DiscountPer-"]').prop('readonly', false);
-                            $('input[id^="DiscountAmt-"]').prop('readonly', false);
-                        }
+                        // if ($('#EditableRateAndDiscountONSaleInvoice').val() == 'N') {
+                        //     $('input[id^="Rate-"]').prop('readonly', true);
+                        //     $('input[id^="DiscountPer-"]').prop('readonly', true);
+                        //     $('input[id^="DiscountAmt-"]').prop('readonly', true);
+                        // }
+                        // else {
+                        //     $('input[id^="Rate-"]').prop('readonly', false);
+                        //     $('input[id^="DiscountPer-"]').prop('readonly', false);
+                        //     $('input[id^="DiscountAmt-"]').prop('readonly', false);
+                        // }
 
                         var rowCounter = $('#divMultiItemGrid tr').length;
                         for (let i = 1; i <= rowCounter; i++) {
@@ -3514,7 +3526,7 @@
             $('#AdjPendAmt').val($('#NetTotal').val());
         });
 
-        $("#HSNNo,#Qty,#DiscountAmt,#DiscountPer").on("input", function (e) {
+        $("#HSNNo,#Qty").on("input", function (e) {
             var inputValue = $(this).val();
 
             inputValue = inputValue.replace(/[^0-9.]/g, '');
@@ -4024,12 +4036,12 @@
             }
         }
 
-        $('#DiscountPer').on('input', function () {
-            var discPer = $(this).val();
-            if (discPer < 0 || discPer > 100 || isNaN(discPer)) {
-                $(this).val('');
-            }
-        });
+        // $('#DiscountPer').on('input', function () {
+        //     var discPer = $(this).val();
+        //     if (discPer < 0 || discPer > 100 || isNaN(discPer)) {
+        //         $(this).val('');
+        //     }
+        // });
 
         $('#NoofPcs').on('input', function () {
             var value = $(this).val();
@@ -4521,7 +4533,7 @@
                             $('#SOPendQty').prop("readonly", true);
                             $('#Rate').val("");
                             $('#Rate').val(obj.Result[0].Rate);
-                            $('#Rate').prop("readonly", true);
+                            // $('#Rate').prop("readonly", true);
                             $('#Unit,#AltUnit').val("");
                             $('#Unit').val(obj.Result[0].Unit);
                             $('#Unit').prop("readonly", true);
@@ -4821,10 +4833,10 @@
                             $.notify('Please enter quantity for ' + $('#PartCode-' + i).val(), 'error');
                             return;
                         }
-                        if (parseFloat($('#Qty-' + i).val()) > parseFloat($('#LotStock-' + i).val())) {
-                            $.notify('Please enter Valid quantity for ' + $('#PartCode-' + i).val(), 'error');
-                            return;
-                        }
+                        // if (parseFloat($('#Qty-' + i).val()) > parseFloat($('#LotStock-' + i).val())) {
+                        //     $.notify('Please enter Valid quantity for ' + $('#PartCode-' + i).val(), 'error');
+                        //     return;
+                        // }
                         if ($('#Rate-' + i).val() == 0) {
                             $.notify('Please enter rate for ' + $('#PartCode-' + i).val(), 'error');
                             return;
@@ -4930,6 +4942,9 @@
                     },
                     success: function (result, status, xhr) {
                         if (xhr.status == 200 && xhr.responseText == result) {
+                           
+                            $('#divSaleBillList').html(result);
+
                             if ($('#SaleBillJobwork').val() == 'J') {
                                 $('.jobWorkChalln').show();
                                 $('.gridHiddenField').show();
@@ -4937,13 +4952,12 @@
                                 $('.jobWorkChalln').hide();
                                 $('.gridHiddenField').hide();
                             }
-                            $('#divSaleBillList').html(result);
-
                             $('#SaleOrderGroupWiseItem').modal('hide');
                             BasicTotal();
                             ClearAdjustmentGrid();
+                           
                             // ResetPendQty();
-                            FillSOPendQty();
+                            // FillSOPendQty();
 
                             $('#ItemNetAmount').val(sum);
 
@@ -4971,7 +4985,7 @@
                         $.notify('Something Went Wrong, Please Try Again.', "error");
                     }
                 }).done(function () {
-
+                    GetFeatureOption();
                     GetTaxPartItem();
                     GetDbCrDetail();
                     AddAdjstmntDetail1();
@@ -5150,9 +5164,9 @@
 
                         //$('#Storeid,#Wcid').prop("disabled", false);
 
-                        if ($('#DiscountPer').val() != 0 && $('#DiscountPer').val() != '0' && $('#DiscountPer').val() != '') {
-                            $('#DiscountPer').prop("readonly", "true");
-                        }
+                        // if ($('#DiscountPer').val() != 0 && $('#DiscountPer').val() != '0' && $('#DiscountPer').val() != '') {
+                        //     $('#DiscountPer').prop("readonly", "true");
+                        // }
 
                         if ($('#DiscountAmt').val() != 0 && $('#DiscountAmt').val() != '0' && $('#DiscountAmt').val() != '') {
                             $('#DiscountAmt').prop("readonly", "true");
@@ -6899,6 +6913,8 @@
                             $('#DiscountAmt').val(0);
                             $('#DiscountAmt').prop("readonly", false);
                         }
+
+                        calculatetotalqty();
                     },
                     error: function (response, status, xhr) {
                         alert(response.responseText);
@@ -6911,6 +6927,9 @@
                 }).done(function () {
                     GetTaxPartItem();
                     GetDbCrDetail();
+                           ClearAdjustmentGrid();
+                    AddAdjstmntDetail1();
+
                 });
             }
             EditDeleteBatchValidation = false;
@@ -7260,7 +7279,7 @@
                             $('#HSNNo').val(obj.Result[0].HsnNo);
 
                             if ($('#DiscountPer').val() != 0 || $('#DiscountAmt').val() != 0) {
-                                $('#DiscountPer').prop("readonly", true);
+                                // $('#DiscountPer').prop("readonly", true);
                                 $('#DiscountAmt').prop("readonly", true);
                             }
                         }
@@ -7328,7 +7347,7 @@
                 $('#Rate').prop("readonly", false);
                 $('#RateInOtherCurr').prop("readonly", false);
             } else {
-                $('#Rate').prop("readonly", true)
+                // $('#Rate').prop("readonly", true)
                 $('#RateInOtherCurr').prop("readonly", true);
                 $('#ItemSA').prop("disabled", true);
             }
@@ -7362,7 +7381,7 @@
                 $('#Rate').prop("readonly", false);
                 $('#RateInOtherCurr').prop("readonly", false);
             } else {
-                $('#Rate').prop("readonly", true);
+                // $('#Rate').prop("readonly", true);
                 $('#RateInOtherCurr').prop("readonly", true);
             }
         });
@@ -7592,15 +7611,15 @@
             }
         }
 
-        $('#DiscountPer,#DiscountAmt').on('input', function () {
-            let value = $(this).val();
-            if (/^\d+(\.\d{0,2})?$/.test(value)) {
+        // $('#DiscountPer,#DiscountAmt').on('input', function () {
+        //     let value = $(this).val();
+        //     if (/^\d+(\.\d{0,2})?$/.test(value)) {
 
-            } else {
+        //     } else {
 
-                $(this).val(value.slice(0, value.indexOf('.') + 3));
-            }
-        });
+        //         $(this).val(value.slice(0, value.indexOf('.') + 3));
+        //     }
+        // });
 
         $('#DiscountAmt').change(function () {
             DiscountAmtCalculation();

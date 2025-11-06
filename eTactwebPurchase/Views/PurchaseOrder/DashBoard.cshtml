@@ -68,7 +68,10 @@
             if( $('#allowtostartdateindashboarddate').val()=="N"){
                     $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatDate(firstDayOfMonth));
             }
-        
+            else{
+                   $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatDate(firstDayOfMonth));
+            }
+     
             $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
 
             AutoComplete('VPURCHASEORDER', 'VendorName', 'VendorName', null);

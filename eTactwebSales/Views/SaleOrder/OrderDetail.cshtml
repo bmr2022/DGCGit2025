@@ -531,9 +531,37 @@
 
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="H_SAGrid">
-                        <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid" tabindex="-1">
-                            <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Item Detail Grid</strong>
+                        <button class="accordion-button collapsed text-light pnl4BG bg-gradient d-flex align-items-center justify-content-between"
+                                type="button"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#B_SAGrid"
+                                aria-expanded="true"
+                                aria-controls="B_SAGrid"
+                                tabindex="-1"
+                                style="padding: 0.6rem 1rem;">
+
+                            <!-- Left side: Title -->
+                            <div class="d-flex align-items-center">
+                                <i class="fa-solid fa-table-list fa-lg fa-fw fa-fade me-2"
+                                   style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>
+                                <strong class="text-uppercase">Item Detail Grid</strong>
+                            </div>
+
+                            <!-- Center: Totals -->
+                            @if (Model.Mode != "SOA" && Model.Mode != "SAU")
+                            {
+                                <div class="d-flex justify-content-center align-items-center flex-grow-1">
+                                    <strong class="me-2">BASIC TOTAL:</strong>
+                                    <span id="lblItemNetAmount" class="me-4 text-warning">0.00</span>
+
+                                    <strong class="me-2">TOTAL NO OF ITEMS:</strong>
+                                    <span id="lblTotalNoOfItems" class="text-warning">0</span>
+                                </div>
+                            }
                         </button>
+
+
+
                     </h2>
                     @if (Model.Mode == "SOA" || Model.Mode == "SAU")
                     {
@@ -1035,10 +1063,7 @@
                                     <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
                                 </div>
                                 <div class="row g-2 gx-3">
-                                    <div class="col-12 text-center">
-                                        <strong>BASIC TOTAL : <i></i><span id="lblItemNetAmount"></span></strong>,
-                                        <strong>Total No Of Items : <span id="lblTotalNoOfItems"></span></strong>
-                                    </div>
+                                    
                                 </div>
                             </div>
                         </div>
@@ -2016,6 +2041,8 @@
 
             // Update total amount label
             $('#lblItemNetAmount').text(totalAmount.toFixed(2));
+            $('#ItemNetAmount').val(totalAmount.toFixed(2));
+            $('#NetTotal').val(totalAmount.toFixed(2));
         }
 
 

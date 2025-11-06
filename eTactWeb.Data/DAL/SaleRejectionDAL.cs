@@ -564,13 +564,32 @@ namespace eTactWeb.Data.DAL
             //model.CustInvoiceTime = DS.Tables[0].Rows[0]["CustInvoiceTime"]?.ToString();
             model.AccountCode = Convert.ToInt32(DS.Tables[0].Rows[0]["Account_Code"]);
             model.Account_Name = DS.Tables[0].Rows[0]["Account_Name"]?.ToString();
-            model.PaymentTerm = DS.Tables[0].Rows[0]["PaymentTerms"] != DBNull.Value && !string.IsNullOrEmpty(DS.Tables[0].Rows[0]["PaymentTerms"].ToString()) ? Convert.ToSingle(DS.Tables[0].Rows[0]["PaymentTerms"]) : 0f;
+            //model.PaymentTerm = DS.Tables[0].Rows[0]["PaymentTerms"] != DBNull.Value && !string.IsNullOrEmpty(DS.Tables[0].Rows[0]["PaymentTerms"].ToString()) ? Convert.ToSingle(DS.Tables[0].Rows[0]["PaymentTerms"]) : 0f;
             //model.PaymentTerm = Convert.ToInt32(DS.Tables[0].Rows[0]["PaymentTerms"]);
             model.GSTNO = DS.Tables[0].Rows[0]["GSTNO"]?.ToString();
             model.BillAmt = Convert.ToInt32(DS.Tables[0].Rows[0]["TotalAmt"]);
             model.InvNetAmt = Convert.ToInt32(DS.Tables[0].Rows[0]["NetAmt"]);
             model.ActualEntryDate = DS.Tables[0].Rows[0]["ActualEntryDate"]?.ToString();
             //model.BalanceSheetClosed = DS.Tables[0].Rows[0]["SaleBillEntryDate"]?.ToString();
+            float accountPaymentTerm = 0f;
+            if (DS.Tables[0].Rows[0]["PaymentTerms"] != DBNull.Value && !string.IsNullOrEmpty(DS.Tables[0].Rows[0]["PaymentTerms"].ToString()))
+            {
+                accountPaymentTerm = Convert.ToSingle(DS.Tables[0].Rows[0]["PaymentTerms"]);
+            }
+
+            // If account payment term = 0, try to get from detail
+            float finalPaymentTerm = accountPaymentTerm;
+
+            if (accountPaymentTerm == 0 && DS.Tables.Count > 1 && DS.Tables[1].Rows.Count > 0)
+            {
+                var firstDetailRow = DS.Tables[1].Rows[0];
+                if (firstDetailRow["PaymentTerms"] != DBNull.Value)
+                {
+                    finalPaymentTerm = Convert.ToSingle(firstDetailRow["PaymentTerms"]);
+                }
+            }
+
+            model.PaymentTerm = finalPaymentTerm;
 
             if (DS.Tables.Count != 0 && DS.Tables[1].Rows.Count > 0)
             {

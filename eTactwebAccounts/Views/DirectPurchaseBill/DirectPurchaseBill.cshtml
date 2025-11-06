@@ -119,7 +119,22 @@
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="HPanel2">
                         <button class="accordion-button collapsed text-light pnl1BG bg-gradient" tabindex="-1" type="button" data-bs-toggle="collapse" data-bs-target="#BPanel2" aria-expanded="true" aria-controls="BPanel2">
-                            <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Item Detail Grid</strong>
+                            <div class="d-flex align-items-center">
+                                <i class="fa-solid fa-table-list fa-lg fa-fw fa-fade me-2"
+                                   style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>
+                                <strong class="text-uppercase">Item Detail Grid</strong>
+                            </div>
+
+                            <!-- Center: Totals -->
+                            
+                                <div class="d-flex justify-content-center align-items-center flex-grow-1">
+                                    <strong class="me-2">BASIC TOTAL:</strong>
+                                <span id="lblItemNetAmount" class="me-4 text-warning">0.00</span>
+
+                                    <strong class="me-2">TOTAL NO OF ITEMS:</strong>
+                                <span id="lblItemCount" class="text-warning">0</span>
+                                </div>
+                            
                         </button>
                     </h2>
                     <div id="BPanel2" class="accordion-collapse collapse pnl1 bg-gradient" aria-labelledby="HPanel2">
@@ -2167,12 +2182,14 @@
                                 else {
                                     $('#VendorAddress').val('');
                                 }
-                                if (obj.Result[0].PaymentDays != null && obj.Result[0].PaymentDays != undefined && obj.Result[0].PaymentDays != '') {
+                                      if (obj.Result[0].PaymentDays != null && obj.Result[0].PaymentDays != undefined && obj.Result[0].PaymentDays != ''&& obj.Result[0].PaymentDays != '0') {
                                     $('#PaymentDays').val(obj.Result[0].PaymentDays);
                                 }
                                 else {
-                                    $('#PaymentDays').val('1');
+                                    $('#PaymentDays').val(1);
                                 }
+                                     
+
                             }
                             else {
                                 $('#GstType').val('');
@@ -2918,7 +2935,7 @@
             var [day, month, year] = VouchDateVal.split('/').map(Number);
             var VouchDate = new Date(year, month - 1, day);
 
-            var creditDays = $('#PaymentDays').val() == "" ? 0 : parseInt($('#PaymentDays').val(), 10);
+            var creditDays = $('#PaymentDays').val() == "" ? 1 : parseInt($('#PaymentDays').val(), 10);
 
             // Add credit days
             VouchDate.setDate(VouchDate.getDate() + creditDays);
@@ -3110,7 +3127,7 @@
                     'docTypeId': $('#docTypeId').val(),
                     'DocTypeText': $('#docTypeId option:selected').text(),
                     "PartCode": $('#PartCode').val(),
-                    "PartText": $('#PartCodeText').val(),
+                    "PartText": $('#PartCodeText').val().split('-->')[0]?.trim() || '',
                     "ItemCode": $('#ItemCode').val(),
                     "ItemText": $('#ItemNameText').val(),
                     'PONo': $('#PONo').val(),
