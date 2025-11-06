@@ -79,7 +79,11 @@
                             } else {
                                 $("[id^='deleteCursorDiv-']").show();
                             }
-
+                            if (feature.ShowHideDirectPurchaseBillEntryDetail === "N") {
+                                $('.DirectPurchaseBillEntryDetail').hide();
+                            } else {
+                                $('.DirectPurchaseBillEntryDetail').show();
+                            }
                           
 
 
@@ -87,6 +91,21 @@
                     }
                 }
             });
+        }
+        function CalculateTotalAmt() {
+            var rowCount = $('#DPBDashboardGrid tr').length;
+            var totalAmt = 0;
+
+            for (var i = 1; i <= rowCount; i++) {
+                var amtText = $('#BillAmt-' + i).text().trim();
+                var amt = parseFloat(amtText);
+                if (!isNaN(amt)) {
+                    totalAmt += amt;
+                }
+            }
+
+            totalAmt = parseFloat(totalAmt); // ensure it's a number
+            $('#TotalAmt').text(totalAmt.toFixed(0));
         }
 
         $(function () {
@@ -161,9 +180,10 @@
                 $('#HSNNo').val(HSNNoBack);
                 $('#search-box').val(GlobalSearchBack);
             }
-            GetFeatureOption();
+          
             GetSearchData();
               GetFeatureOption();
+            CalculateTotalAmt();
                GetFormRights();
             $("#search-box").val($('#search-box').val()).trigger('keyup');
 
@@ -382,9 +402,14 @@
             if ($('#DashboardType').val() == "Summary") {
                 GetSummaryData();
                    GetFormRights();
+                   GetFeatureOption();
+                CalculateTotalAmt();
+               
             } else {
                 GetDetailData();
                    GetFormRights();
+                GetFeatureOption();
+                CalculateTotalAmt();
             }
         }
 
@@ -422,6 +447,8 @@
                     var dashGrid = $('#DPBDashboardGrid tr').length - 1;
                     $('#totalRows').text(dashGrid);
                       GetFormRights();
+                    GetFeatureOption();
+                    CalculateTotalAmt();
 
                 },
                 error: function (response) {
