@@ -34,7 +34,7 @@ public class PODashBoard : TimeStamp
     public string? OrderType { get; set; }
     public string? PartCode { get; set; }
     public string? PaymentTerms { get; set; }
-    public IList<PODashBoard> PODashboard { get; set; }
+    public IList<PODashBoard> ?PODashboard { get; set; }
     public string? PODate { get; set; }
     public string? POFor { get; set; }
     public string? PONo { get; set; }
@@ -214,10 +214,10 @@ public class POItemDetail : TaxModel
 }
 public class FormDataModel
 {
-    public string PoNo { get; set; }
+    public string? PoNo { get; set; }
     public int POYearCode { get; set; }
     public int AccountCode { get; set; }
-    public string SchNo { get; set; }
+    public string? SchNo { get; set; }
     public int SchYearCode { get; set; }
     public IFormFile excelFile { get; set; }
 }

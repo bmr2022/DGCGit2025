@@ -1335,6 +1335,8 @@
                 // Set selected SupplyType from Razor model
                 const supplyTypeFromModel = "@Model.SupplyType";
                 $supplyType.val(supplyTypeFromModel);
+                var salebilldatee= $('#SaleBillDate').val();
+                        $('#SaleBillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", salebilldatee);
             }
             else {
                 GetServerDate();
@@ -2289,7 +2291,7 @@
         //         "InvoiceDate": $('#SaleBillDate').val(),
         //         "CurrentYear": $('#SaleBillYearCode').val(),
         //         "BillFromStoreId": $('#BillFromStoreId').val(),
-        //         "accountCode": $('#AccountCode').val(),
+               //         "PaymentDays": $('#AccountCode').val(),
         //         "SONo": $('#SONo').val(),
         //         // "PartCode": $('#PartCode').val()
 
@@ -6901,6 +6903,8 @@
                             $('#DiscountAmt').val(0);
                             $('#DiscountAmt').prop("readonly", false);
                         }
+
+                        calculatetotalqty();
                     },
                     error: function (response, status, xhr) {
                         alert(response.responseText);
@@ -6913,6 +6917,9 @@
                 }).done(function () {
                     GetTaxPartItem();
                     GetDbCrDetail();
+                           ClearAdjustmentGrid();
+                    AddAdjstmntDetail1();
+
                 });
             }
             EditDeleteBatchValidation = false;

@@ -474,13 +474,10 @@
                 $('#ItemSA').prop("disabled", false);
             }
              var dtValue = $('#DT').prop("checked") == true ? "T" : "F";
-
-             $('#DT').change(function () {
-             FillDocument(dtValue);
-
-         });
+              FillDocument(dtValue);
+            
                
-          FillDocument(dtValue);
+          
             // FillStore();
 
             $('#PartCode').select2();
@@ -759,16 +756,16 @@
             $('#AdjDueDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDueDate);
             $('#AdjDueDate').datepicker("option", "minDate", ($('#CustInvoiceDate').val()).split(" ")[0]);
         }
-
+           
 
         $('#PaymentTerm').change(function () {
             $('#divAdjItemList').empty();
             var NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
             $('#divAdjItemList').html(NoData);
-            CalculateAdjAmt('NetTotal');
+                 CalculateAdjAmt('NetTotal');
             DueDateCalculation();
-            AddAdjstmntDetail1();
-            ClearAdjustmentGrid();
+              ClearAdjustmentGrid();
+                    AddAdjstmntDetail1();
         });
 
 

@@ -1244,6 +1244,10 @@ namespace eTactWeb.Controllers
             {
                 MainModel = new SaleBillModel();
             }
+            else if (SN == "SaleRejection")
+            {
+                MainModel = new SaleRejectionModel();
+            }
             //MainModel = SN == "ItemList" ? new SaleOrderModel() : new PurchaseOrderModel();
             string modelJson = HttpContext.Session.GetString("KeyAdjGrid");
             AdjustmentModel AdjGrid = new AdjustmentModel();

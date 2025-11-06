@@ -179,7 +179,8 @@ namespace eTactWeb.Data.DAL
                 {
                     SqlCommand command = new SqlCommand("SPReportSTockRegister", connection)
                     {
-                        CommandType = CommandType.StoredProcedure
+                        CommandType = CommandType.StoredProcedure,
+                         CommandTimeout = 300 // 5 minutes
                     };
                     ;
 

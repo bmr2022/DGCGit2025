@@ -179,6 +179,31 @@
 @section Scripts
 {
     <script>
+        function GetFeatureOptions() {
+
+            $.ajax({
+                type: "POST",
+                data: {},
+                url: "@Url.Action("GetFeatureOption")",
+                dataType: "json",
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.Result != null) {
+
+                            if (obj.Result[0].allowtoremovedeletedashboard === "N") {
+                                $("[id^='deleteCursorDiv-']").hide();
+                            } else {
+                                $("[id^='deleteCursorDiv-']").show();
+                            }
+                           
+                        }
+                    }
+                }
+            });
+        }
+
         $(document).ready(function () {
             var deleteMessage = '@TempData["DeleteMessage"]';
 
@@ -238,8 +263,9 @@
                 $('#search-box').val(searchBoxBack);
                 $('#SummaryDetail').val(summaryDetailBack);
             }
-
+            GetFeatureOptions();
             GetSearchData();
+              GetFeatureOptions();
             GetFeatureOption();
             CalculateTotalAmt();
             sessionStorage.removeItem('FromDateBack');
