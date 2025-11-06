@@ -46,7 +46,25 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
-        // 2️⃣ FILL TOOL LIST
+
+        public async Task<ResponseResult> FillDepartmentList(string Flag)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", Flag));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable(SP_NAME, SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+
         public async Task<ResponseResult> FillToolList(string Flag)
         {
             var _ResponseResult = new ResponseResult();
@@ -66,14 +84,14 @@ namespace eTactWeb.Data.DAL
         }
 
         // 3️⃣ FILL TOOL BARCODE
-        public async Task<ResponseResult> FillToolBarCode(string Flag, long ToolIssueEntryId)
+        public async Task<ResponseResult> FillToolBarCode(string Flag, long ToolEntryId)
         {
             var _ResponseResult = new ResponseResult();
             try
             {
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", Flag));
-                SqlParams.Add(new SqlParameter("@ToolIssueEntryId", ToolIssueEntryId));
+                SqlParams.Add(new SqlParameter("@ToolEntryId", ToolEntryId));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable(SP_NAME, SqlParams);
             }
             catch (Exception ex)
@@ -85,15 +103,58 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
-        // 4️⃣ FILL PROD PLAN
-        public async Task<ResponseResult> FillProdPlan(string Flag, long ToolIssueEntryId)
+        public async Task<ResponseResult> FillToolSerialNo(string Flag, long ToolEntryId, string Barcode)
         {
             var _ResponseResult = new ResponseResult();
             try
             {
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", Flag));
-                SqlParams.Add(new SqlParameter("@ToolIssueEntryId", ToolIssueEntryId));
+                SqlParams.Add(new SqlParameter("@ToolEntryId", ToolEntryId));
+                SqlParams.Add(new SqlParameter("@barcode", Barcode));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable(SP_NAME, SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+
+        public async Task<ResponseResult> FillToolBarCodeDetail(string Flag, long ToolEntryId, string Barcode, string SerialNo)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", Flag));
+                SqlParams.Add(new SqlParameter("@ToolEntryId", ToolEntryId));
+                SqlParams.Add(new SqlParameter("@barcode", Barcode));
+                SqlParams.Add(new SqlParameter("@SerialNo", SerialNo));
+
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable(SP_NAME, SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+        // 4️⃣ FILL PROD PLAN
+        public async Task<ResponseResult> FillProdPlan(string Flag, long ToolEntryId)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", Flag));
+                SqlParams.Add(new SqlParameter("@ToolEntryId", ToolEntryId));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable(SP_NAME, SqlParams);
             }
             catch (Exception ex)
@@ -106,14 +167,14 @@ namespace eTactWeb.Data.DAL
         }
 
         // 5️⃣ FILL PROD PLAN YEAR CODE
-        public async Task<ResponseResult> FillProdPlanYearCode(string Flag, long ToolIssueEntryId, string ProdPlanNo)
+        public async Task<ResponseResult> FillProdPlanYearCode(string Flag, long ToolEntryId, string ProdPlanNo)
         {
             var _ResponseResult = new ResponseResult();
             try
             {
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", Flag));
-                SqlParams.Add(new SqlParameter("@ToolIssueEntryId", ToolIssueEntryId));
+                SqlParams.Add(new SqlParameter("@ToolEntryId", ToolEntryId));
                 SqlParams.Add(new SqlParameter("@ProdPlanNo", ProdPlanNo));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable(SP_NAME, SqlParams);
             }
@@ -126,6 +187,26 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
+        public async Task<ResponseResult> FillProdPlanDate(string Flag, long ToolEntryId, string ProdPlanNo, long ProdPlanYearCode)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", Flag));
+                SqlParams.Add(new SqlParameter("@ToolEntryId", ToolEntryId));
+                SqlParams.Add(new SqlParameter("@ProdPlanNo", ProdPlanNo));
+                SqlParams.Add(new SqlParameter("@ProdPlanYearCode", ProdPlanYearCode));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable(SP_NAME, SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
         // 6️⃣ FILL PROD PLAN SCHEDULE
         public async Task<ResponseResult> FillProdPlanSchedule(string Flag, long ToolIssueEntryId, string ProdPlanNo, long ProdPlanYearCode, long PlanNoEntryId)
         {
