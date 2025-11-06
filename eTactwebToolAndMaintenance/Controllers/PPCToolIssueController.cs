@@ -11,6 +11,7 @@ using System.Net;
 using System.Globalization;
 using System.Data;
 using System.Configuration;
+using static eTactWeb.Data.Common.CommonFunc;
 
 namespace eTactweb.Controllers
 {
@@ -34,17 +35,34 @@ namespace eTactweb.Controllers
         [HttpGet]
         public IActionResult PPCToolIssue()
         {
+            HttpContext.Session.Remove("KeyToolIssueGrid");
+
             var model = new PPCToolIssueMainModel
             {
                 ToolIssueDetails = new List<PPCToolIssueDetailModel>()
             };
 
+            
             model.ToolIssueYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
             model.CC = HttpContext.Session.GetString("Branch");
             model.UID = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-           
+
+            // ✅ Same style default values (matching your format)
+            model.ToolIssueDate = DateTime.Now;
+            model.ToolIssueEntryDate = DateTime.Now;
+            model.ActualEntryDate = DateTime.Now;
+            model.LastUpdatedDate = DateTime.Now;
+
+            model.EntryByMachine = Environment.MachineName;
+            model.ActualEntryBy = HttpContext.Session.GetString("EmpName");
+            model.LastUpdatedBy = HttpContext.Session.GetString("EmpName");
+
+            string serializedGrid = JsonConvert.SerializeObject(model.ToolIssueDetails);
+            HttpContext.Session.SetString("KeyToolIssueGrid", serializedGrid);
+
             return View(model);
         }
+
 
 
 
@@ -129,7 +147,7 @@ namespace eTactweb.Controllers
         }
 
         [HttpGet]
-        public async Task<JsonResult> FillToolBarCodeDetail(long ToolEntryId,string Barcode,string SerialNo)
+        public async Task<JsonResult> FillToolBarCodeDetail(long ToolEntryId, string Barcode, string SerialNo)
         {
             try
             {
@@ -182,7 +200,7 @@ namespace eTactweb.Controllers
         }
 
         [HttpGet]
-        public async Task<JsonResult> FillProdPlanDate(long ToolEntryId, string ProdPlanNo,long ProdPlanYearCode)
+        public async Task<JsonResult> FillProdPlanDate(long ToolEntryId, string ProdPlanNo, long ProdPlanYearCode)
         {
             try
             {
@@ -230,6 +248,276 @@ namespace eTactweb.Controllers
                 _logger.LogError(ex, "Error while filling machine list.");
                 return Json(new { success = false, message = ex.Message });
             }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> InsertToolIssue(PPCToolIssueMainModel model)
+        {
+            try
+            {
+                string gridJson = HttpContext.Session.GetString("KeyToolIssueGrid");
+                List<PPCToolIssueDetailModel> toolDetails = new();
+
+                if (!string.IsNullOrEmpty(gridJson))
+                    toolDetails = JsonConvert.DeserializeObject<List<PPCToolIssueDetailModel>>(gridJson);
+
+                if (toolDetails == null || toolDetails.Count == 0)
+                {
+                    ModelState.AddModelError("ToolIssueDetails", "Tool Issue Grid should have at least one record!");
+                    return View("PPCToolIssue", model);
+                }
+
+                // Prepare metadata
+                model.CC = HttpContext.Session.GetString("Branch");
+                model.UID = Convert.ToInt64(HttpContext.Session.GetString("UID"));
+                model.EntryByMachine = Environment.MachineName;
+                model.ActualEntryBy = HttpContext.Session.GetString("EmpName");
+                model.LastUpdatedBy = HttpContext.Session.GetString("EmpName");
+                model.ToolIssueYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+
+
+                // Convert list to DataTable
+                DataTable dtTool = new DataTable();
+              
+
+                var result = await _IPPCToolIssue.InsertToolIssue(model, dtTool);
+
+                if (result != null && result.StatusText == "Success" && result.StatusCode == HttpStatusCode.OK)
+                {
+                    TempData["200"] = "Data Saved Successfully!";
+                    HttpContext.Session.Remove("KeyToolIssueGrid");
+                }
+                else
+                {
+                    TempData["500"] = "Error while saving data!";
+                }
+
+                return RedirectToAction("PPCToolIssue"); // or back to form view
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in SaveToolIssue");
+                TempData["500"] = "Unexpected Error!";
+                return View("Error");
+            }
+        }
+
+        private static DataTable GetToolIssueDetailTable(IList<PPCToolIssueDetailModel> detailList)
+        {
+            try
+            {
+                var dt = new DataTable();
+
+                dt.Columns.Add("SeqNo", typeof(long));
+                dt.Columns.Add("ToolIssueEntryId", typeof(long));
+                dt.Columns.Add("ToolIssueYearCode", typeof(long));
+                dt.Columns.Add("ToolEntryId", typeof(long));
+                dt.Columns.Add("ToolYearCode", typeof(long));
+                dt.Columns.Add("BarCode", typeof(string));
+                dt.Columns.Add("SerialNo", typeof(string));
+                dt.Columns.Add("ToolType", typeof(string));
+                dt.Columns.Add("IssueQty", typeof(long));
+                dt.Columns.Add("Unit", typeof(string));
+                dt.Columns.Add("CurrentLocation", typeof(string));
+                dt.Columns.Add("IssueToLocation", typeof(string));
+                dt.Columns.Add("ToolCondition", typeof(string));
+                dt.Columns.Add("LastCalibrationDate", typeof(DateTime));
+                dt.Columns.Add("NextCalibrationDueDate", typeof(DateTime));
+                dt.Columns.Add("RemainingToolLifeInMonths", typeof(long));
+                dt.Columns.Add("ProdPlanEntryId", typeof(long));
+                dt.Columns.Add("ProdPlanNo", typeof(string));
+                dt.Columns.Add("ProdPlandate", typeof(DateTime));
+                dt.Columns.Add("ProdPlanYearCode", typeof(long));
+                dt.Columns.Add("ProdSchEntryId", typeof(long));
+                dt.Columns.Add("ProdSchno", typeof(string));
+                dt.Columns.Add("ProdSchDate", typeof(DateTime));
+                dt.Columns.Add("ProdSchYearcode", typeof(long));
+                dt.Columns.Add("ForMachineId", typeof(long));
+                dt.Columns.Add("Specialinstruction", typeof(string));
+                dt.Columns.Add("WillBeConsumedOrReturned", typeof(string));
+                dt.Columns.Add("PendingStatus", typeof(string));
+                dt.Columns.Add("PendingQty", typeof(long));
+
+                foreach (var item in detailList)
+                {
+                    dt.Rows.Add(
+                        item.SeqNo,
+                        item.ToolIssueEntryId,
+                        item.ToolIssueYearCode,
+                        item.ToolEntryId,
+                        item.ToolYearCode,
+                        item.BarCode ?? "",
+                        item.SerialNo ?? "",
+                        item.ToolType ?? "",
+                        item.IssueQty == null ? 0 : item.IssueQty,
+                        item.Unit ?? "",
+                        item.CurrentLocation ?? "",
+                        item.IssueToLocation ?? "",
+                        item.ToolCondition ?? "",
+                        item.LastCalibrationDate ?? (object)DBNull.Value,
+                        item.NextCalibrationDueDate ?? (object)DBNull.Value,
+                        item.RemainingToolLifeInMonths == null ? 0 : item.RemainingToolLifeInMonths,
+                        item.ProdPlanEntryId == null ? 0 : item.ProdPlanEntryId,
+                        item.ProdPlanNo ?? "",
+                        item.ProdPlanDate ?? (object)DBNull.Value,
+                        item.ProdPlanYearCode == null ? 0 : item.ProdPlanYearCode,
+                        item.ProdSchEntryId == null ? 0 : item.ProdSchEntryId,
+                        item.ProdSchNo ?? "",
+                        item.ProdSchDate ?? (object)DBNull.Value,
+                        item.ProdSchYearCode == null ? 0 : item.ProdSchYearCode,
+                        item.ForMachineId == null ? 0 : item.ForMachineId,
+                        item.SpecialInstruction ?? "",
+                        item.WillBeConsumedOrReturned ?? "",
+                        item.PendingStatus ?? "",
+                        item.PendingQty == null ? 0 : item.PendingQty
+                    );
+                }
+
+                return dt;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        [HttpPost]
+        public IActionResult AddToolIssueDetail(PPCToolIssueDetailModel model)
+        {
+            try
+            {
+                // Load existing grid from session
+                string modelJson = HttpContext.Session.GetString("KeyToolIssueGrid");
+                List<PPCToolIssueDetailModel> ToolGrid = new List<PPCToolIssueDetailModel>();
+
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    ToolGrid = JsonConvert.DeserializeObject<List<PPCToolIssueDetailModel>>(modelJson);
+                }
+
+                var MainModel = new PPCToolIssueMainModel
+                {
+                    ToolIssueDetails = new List<PPCToolIssueDetailModel>()
+                };
+
+                if (model != null)
+                {
+                    if (model.SeqNo > 0) // ✅ Update existing row
+                    {
+                        var row = ToolGrid.FirstOrDefault(x => x.SeqNo == model.SeqNo);
+                        if (row != null)
+                        {
+                            // Update all fields
+                            row.ToolEntryId = model.ToolEntryId;
+                            row.ToolName = model.ToolName;
+                            row.ToolYearCode = model.ToolYearCode;
+                            row.BarCode = model.BarCode;
+                            row.SerialNo = model.SerialNo;
+                            row.ToolType = model.ToolType;
+                            row.IssueQty = model.IssueQty;
+                            row.Unit = model.Unit;
+                            row.CurrentLocation = model.CurrentLocation;
+                            row.IssueToLocation = model.IssueToLocation;
+                            row.ToolCondition = model.ToolCondition;
+                            row.LastCalibrationDate = model.LastCalibrationDate;
+                            row.NextCalibrationDueDate = model.NextCalibrationDueDate;
+                            row.RemainingToolLifeInMonths = model.RemainingToolLifeInMonths;
+                            row.ProdPlanEntryId = model.ProdPlanEntryId;
+                            row.ProdPlanNo = model.ProdPlanNo;
+                            row.ProdPlanDate = model.ProdPlanDate;
+                            row.ProdPlanYearCode = model.ProdPlanYearCode;
+                            row.ProdSchEntryId = model.ProdSchEntryId;
+                            row.ProdSchNo = model.ProdSchNo;
+                            row.ProdSchDate = model.ProdSchDate;
+                            row.ProdSchYearCode = model.ProdSchYearCode;
+                            row.ForMachineId = model.ForMachineId;
+                            row.SpecialInstruction = model.SpecialInstruction;
+                            row.WillBeConsumedOrReturned = model.WillBeConsumedOrReturned;
+                            row.PendingQty = model.PendingQty;
+                            row.PendingStatus = model.PendingStatus;
+                        }
+                    }
+                    else // ✅ Add new row
+                    {
+                        model.SeqNo = ToolGrid.Count + 1;
+                        ToolGrid.Add(model);
+                    }
+
+                    // Save back to session
+                    MainModel.ToolIssueDetails = ToolGrid;
+                    HttpContext.Session.SetString("KeyToolIssueGrid", JsonConvert.SerializeObject(MainModel.ToolIssueDetails));
+                }
+
+                // Return updated grid partial
+                return PartialView("_PPCToolIssueGrid", ToolGrid);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
+
+        public IActionResult DeleteToolIssueRow(int SeqNo)
+        {
+            var MainModel = new PPCToolIssueMainModel();
+
+            // ✅ Load existing session grid
+            string modelJson = HttpContext.Session.GetString("KeyToolIssueGrid");
+            List<PPCToolIssueDetailModel> Grid = new List<PPCToolIssueDetailModel>();
+
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                Grid = JsonConvert.DeserializeObject<List<PPCToolIssueDetailModel>>(modelJson);
+            }
+
+            if (Grid != null && Grid.Count > 0)
+            {
+                int index = SeqNo - 1;
+
+                // ✅ Remove row
+                if (index >= 0 && index < Grid.Count)
+                {
+                    Grid.RemoveAt(index);
+                }
+
+                // ✅ Re-assign SeqNo again
+                int newSeq = 1;
+                foreach (var item in Grid)
+                {
+                    item.SeqNo = newSeq++;
+                }
+
+                // ✅ Assign to main model
+                MainModel.ToolIssueDetails = Grid;
+
+                // ✅ Save back to session
+                string serializedGrid = JsonConvert.SerializeObject(Grid);
+                HttpContext.Session.SetString("KeyToolIssueGrid", serializedGrid);
+            }
+
+            // ✅ Return updated grid
+            return PartialView("_PPCToolIssueGrid", Grid);
+        }
+
+        public IActionResult EditToolIssueRow(int SeqNo)
+        {
+            // ✅ Load session grid
+            string modelJson = HttpContext.Session.GetString("KeyToolIssueGrid");
+            List<PPCToolIssueDetailModel> Grid = new List<PPCToolIssueDetailModel>();
+
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                Grid = JsonConvert.DeserializeObject<List<PPCToolIssueDetailModel>>(modelJson);
+            }
+
+            // ✅ Find row using SeqNo
+            var row = Grid.FirstOrDefault(x => x.SeqNo == SeqNo);
+
+            // ✅ Return JSON so frontend can fill controls
+            string json = JsonConvert.SerializeObject(row);
+            return Json(json);
         }
 
     }

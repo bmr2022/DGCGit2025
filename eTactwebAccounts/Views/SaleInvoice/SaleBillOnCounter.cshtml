@@ -2564,16 +2564,16 @@
 
                         }
 
-                        if ($('#EditableRateAndDiscountONSaleInvoice').val() == 'N') {
-                            $('input[id^="Rate-"]').prop('readonly', true);
-                            $('input[id^="DiscountPer-"]').prop('readonly', true);
-                            $('input[id^="DiscountAmt-"]').prop('readonly', true);
-                        }
-                        else {
-                            $('input[id^="Rate-"]').prop('readonly', false);
-                            $('input[id^="DiscountPer-"]').prop('readonly', false);
-                            $('input[id^="DiscountAmt-"]').prop('readonly', false);
-                        }
+                        // if ($('#EditableRateAndDiscountONSaleInvoice').val() == 'N') {
+                        //     $('input[id^="Rate-"]').prop('readonly', true);
+                        //     $('input[id^="DiscountPer-"]').prop('readonly', true);
+                        //     $('input[id^="DiscountAmt-"]').prop('readonly', true);
+                        // }
+                        // else {
+                        //     $('input[id^="Rate-"]').prop('readonly', false);
+                        //     $('input[id^="DiscountPer-"]').prop('readonly', false);
+                        //     $('input[id^="DiscountAmt-"]').prop('readonly', false);
+                        // }
 
                         var rowCounter = $('#divMultiItemGrid tr').length;
                         for (let i = 1; i <= rowCounter; i++) {
@@ -3526,7 +3526,7 @@
             $('#AdjPendAmt').val($('#NetTotal').val());
         });
 
-        $("#HSNNo,#Qty,#DiscountAmt,#DiscountPer").on("input", function (e) {
+        $("#HSNNo,#Qty").on("input", function (e) {
             var inputValue = $(this).val();
 
             inputValue = inputValue.replace(/[^0-9.]/g, '');
@@ -4036,12 +4036,12 @@
             }
         }
 
-        $('#DiscountPer').on('input', function () {
-            var discPer = $(this).val();
-            if (discPer < 0 || discPer > 100 || isNaN(discPer)) {
-                $(this).val('');
-            }
-        });
+        // $('#DiscountPer').on('input', function () {
+        //     var discPer = $(this).val();
+        //     if (discPer < 0 || discPer > 100 || isNaN(discPer)) {
+        //         $(this).val('');
+        //     }
+        // });
 
         $('#NoofPcs').on('input', function () {
             var value = $(this).val();
@@ -4533,7 +4533,7 @@
                             $('#SOPendQty').prop("readonly", true);
                             $('#Rate').val("");
                             $('#Rate').val(obj.Result[0].Rate);
-                            $('#Rate').prop("readonly", true);
+                            // $('#Rate').prop("readonly", true);
                             $('#Unit,#AltUnit').val("");
                             $('#Unit').val(obj.Result[0].Unit);
                             $('#Unit').prop("readonly", true);
@@ -5164,9 +5164,9 @@
 
                         //$('#Storeid,#Wcid').prop("disabled", false);
 
-                        if ($('#DiscountPer').val() != 0 && $('#DiscountPer').val() != '0' && $('#DiscountPer').val() != '') {
-                            $('#DiscountPer').prop("readonly", "true");
-                        }
+                        // if ($('#DiscountPer').val() != 0 && $('#DiscountPer').val() != '0' && $('#DiscountPer').val() != '') {
+                        //     $('#DiscountPer').prop("readonly", "true");
+                        // }
 
                         if ($('#DiscountAmt').val() != 0 && $('#DiscountAmt').val() != '0' && $('#DiscountAmt').val() != '') {
                             $('#DiscountAmt').prop("readonly", "true");
@@ -7279,7 +7279,7 @@
                             $('#HSNNo').val(obj.Result[0].HsnNo);
 
                             if ($('#DiscountPer').val() != 0 || $('#DiscountAmt').val() != 0) {
-                                $('#DiscountPer').prop("readonly", true);
+                                // $('#DiscountPer').prop("readonly", true);
                                 $('#DiscountAmt').prop("readonly", true);
                             }
                         }
@@ -7347,7 +7347,7 @@
                 $('#Rate').prop("readonly", false);
                 $('#RateInOtherCurr').prop("readonly", false);
             } else {
-                $('#Rate').prop("readonly", true)
+                // $('#Rate').prop("readonly", true)
                 $('#RateInOtherCurr').prop("readonly", true);
                 $('#ItemSA').prop("disabled", true);
             }
@@ -7381,7 +7381,7 @@
                 $('#Rate').prop("readonly", false);
                 $('#RateInOtherCurr').prop("readonly", false);
             } else {
-                $('#Rate').prop("readonly", true);
+                // $('#Rate').prop("readonly", true);
                 $('#RateInOtherCurr').prop("readonly", true);
             }
         });
@@ -7611,15 +7611,15 @@
             }
         }
 
-        $('#DiscountPer,#DiscountAmt').on('input', function () {
-            let value = $(this).val();
-            if (/^\d+(\.\d{0,2})?$/.test(value)) {
+        // $('#DiscountPer,#DiscountAmt').on('input', function () {
+        //     let value = $(this).val();
+        //     if (/^\d+(\.\d{0,2})?$/.test(value)) {
 
-            } else {
+        //     } else {
 
-                $(this).val(value.slice(0, value.indexOf('.') + 3));
-            }
-        });
+        //         $(this).val(value.slice(0, value.indexOf('.') + 3));
+        //     }
+        // });
 
         $('#DiscountAmt').change(function () {
             DiscountAmtCalculation();

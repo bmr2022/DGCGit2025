@@ -23,8 +23,8 @@ namespace eTactWeb.DOM.Models
 		public long UID { get; set; }
 		public string EntryByMachine { get; set; }
 		public DateTime? ActualEntryDate { get; set; }
-		public long ActualEntryBy { get; set; }
-		public long LastUpdatedBy { get; set; }
+		public string ActualEntryBy { get; set; }
+		public string LastUpdatedBy { get; set; }
 		public DateTime? LastUpdatedDate { get; set; }
 		public string PendingStatus { get; set; }
 
@@ -45,7 +45,8 @@ namespace eTactWeb.DOM.Models
 		public long ToolIssueEntryId { get; set; }
 		public long ToolIssueYearCode { get; set; }
 		public long ToolEntryId { get; set; }
-		public long ToolYearCode { get; set; }
+        public string ToolName { get; set; }
+        public long ToolYearCode { get; set; }
 		public string BarCode { get; set; }
 		public string SerialNo { get; set; }
 		public string ToolType { get; set; }
@@ -70,6 +71,8 @@ namespace eTactWeb.DOM.Models
 		public string WillBeConsumedOrReturned { get; set; }
 		public string PendingStatus { get; set; }
 		public decimal? PendingQty { get; set; }
-	}
+		public long? SeqNo { get; set; }
+
+    }
 
 }

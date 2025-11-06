@@ -80,9 +80,10 @@ namespace eTactWeb.Data.BLL
         }
 
         // 8️⃣ INSERT TOOL ISSUE
-        public async Task<ResponseResult> InsertToolIssue(PPCToolIssueMainModel model, string Flag)
+        public async Task<ResponseResult> InsertToolIssue(PPCToolIssueMainModel model, DataTable ToolGrid)
         {
-            return await _PPCToolIssueDAL.InsertToolIssue(model, Flag);
+            return await _PPCToolIssueDAL.InsertToolIssue(model, ToolGrid);
         }
     }
 }
+        

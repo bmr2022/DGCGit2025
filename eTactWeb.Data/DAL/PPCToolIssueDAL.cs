@@ -250,17 +250,21 @@ namespace eTactWeb.Data.DAL
         }
 
         // 8️⃣ INSERT TOOL ISSUE
-        public async Task<ResponseResult> InsertToolIssue(PPCToolIssueMainModel model, string Flag)
-        {
+           public async Task<ResponseResult> InsertToolIssue(PPCToolIssueMainModel model, DataTable ToolGrid)
+           {
             var _ResponseResult = new ResponseResult();
             try
             {
                 var SqlParams = new List<dynamic>();
-                SqlParams.Add(new SqlParameter("@Flag", Flag));
+
+                // INSERT / UPDATE
+                SqlParams.Add(new SqlParameter("@flag",
+                    model.Mode == "UPDATE" ? "UPDATE" : "INSERT"));
+
                 SqlParams.Add(new SqlParameter("@ToolIssueEntryId", model.ToolIssueEntryId));
                 SqlParams.Add(new SqlParameter("@ToolIssueYearCode", model.ToolIssueYearCode));
-                SqlParams.Add(new SqlParameter("@ToolIssueDate", model.ToolIssueDate));
-                SqlParams.Add(new SqlParameter("@ToolIssueEntryDate", model.ToolIssueEntryDate ?? DateTime.Today));
+                SqlParams.Add(new SqlParameter("@ToolIssueDate", model.ToolIssueDate ?? DateTime.Now));
+                SqlParams.Add(new SqlParameter("@ToolIssueEntryDate", model.ToolIssueEntryDate ?? DateTime.Now));
                 SqlParams.Add(new SqlParameter("@ToolIssueSlipNo", model.ToolIssueSlipNo ?? ""));
                 SqlParams.Add(new SqlParameter("@IssueToDepartmentId", model.IssueToDepartmentId));
                 SqlParams.Add(new SqlParameter("@IssuedByEmpId", model.IssuedByEmpId));
@@ -268,12 +272,13 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@ReceivedByEmpId", model.ReceivedByEmpId));
                 SqlParams.Add(new SqlParameter("@CC", model.CC ?? ""));
                 SqlParams.Add(new SqlParameter("@UID", model.UID));
-                SqlParams.Add(new SqlParameter("@EntryByMachine", model.EntryByMachine ?? Environment.MachineName));
-                SqlParams.Add(new SqlParameter("@ActualEntryDate", model.ActualEntryDate ?? DateTime.Today));
+                SqlParams.Add(new SqlParameter("@EntryByMachine", model.EntryByMachine ?? ""));
+                SqlParams.Add(new SqlParameter("@ActualEntryDate", model.ActualEntryDate ?? DateTime.Now));
                 SqlParams.Add(new SqlParameter("@ActualEntryBy", model.ActualEntryBy));
                 SqlParams.Add(new SqlParameter("@LastUpdatedBy", model.LastUpdatedBy));
-                SqlParams.Add(new SqlParameter("@LastUpdatedDate", model.LastUpdatedDate ?? DateTime.Today));
-                SqlParams.Add(new SqlParameter("@pendingStatus", model.PendingStatus ?? ""));
+                SqlParams.Add(new SqlParameter("@LastUpdatedDate", model.LastUpdatedDate ?? DateTime.Now));
+                SqlParams.Add(new SqlParameter("@pendingStatus", model.PendingStatus));
+                SqlParams.Add(new SqlParameter("@dt", ToolGrid));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataTable(SP_NAME, SqlParams);
             }
