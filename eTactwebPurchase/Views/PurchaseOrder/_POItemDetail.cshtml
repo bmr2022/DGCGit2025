@@ -47,7 +47,7 @@
         </div>
         <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
             <label asp-for="POQty" class="form-label" style="color: red;">PO Qty</label>
-            <input asp-for="POQty"  style="background-color:#FFFACD" class="form-control" min=0 onkeyup="CalculateRate();" data-val="false" />
+            <input asp-for="POQty" class="form-control" min=0 onkeyup="CalculateRate();" data-val="false" style="background-color:#FFFACD" />
         </div>
         <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
             <label asp-for="Unit" class="form-label" style="color: red;">Unit</label>
@@ -84,7 +84,7 @@
         <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
             <label asp-for="Rate" class="form-label" style="color: red;" `>Rate</label>
             @* <input asp-for="Rate" step="any" type="number" min="0" pattern="^\d+(\.\d+)?$" class="form-control" onkeyup="CalculateRate();" /> *@
-            <input asp-for="Rate" style="background-color:#FFFACD"  min="0" class="form-control" onkeyup="CalculateRate();" />
+            <input asp-for="Rate" min="0" class="form-control" onkeyup="CalculateRate();" style="background-color:#FFFACD" />
         </div>
 
         <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
@@ -97,7 +97,7 @@
         </div>
         <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
             <label asp-for="UnitRate" class="form-label">Rate/Unit</label>
-            <select class="form-select"  style="background-color:#FFFACD" asp-for="UnitRate" asp-items="Model.UnitRateList" onchange="CalculateRate();"></select>
+            <select class="form-select" asp-for="UnitRate" asp-items="Model.UnitRateList" onchange="CalculateRate();" style="background-color:#FFFACD"></select>
         </div>
         <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
             <label asp-for="DiscPer" class="form-label">Disc %</label>
@@ -287,7 +287,7 @@ else
         </div>
         <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
             <label asp-for="POQty" class="form-label" style="color: red;">PO Qty</label>
-            <input asp-for="POQty" class="form-control" min=0 onkeyup="CalculateRate();" data-val="false" />
+            <input asp-for="POQty" class="form-control" min=0 onkeyup="CalculateRate();" style="background-color: #FFFACD !important;" data-val="false" />
         </div>
         <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
             <label asp-for="Unit" class="form-label" style="color: red;">Unit</label>
@@ -322,7 +322,8 @@ else
         <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
             <label asp-for="Rate" class="form-label" style="color: red;">Rate</label>
             @* <input asp-for="Rate" step="any" type="number" min="0" pattern="^\d+(\.\d+)?$" class="form-control" onkeyup="CalculateRate();" /> *@
-            <input asp-for="Rate" min="0" class="form-control" onkeyup="CalculateRate();" />
+            <input asp-for="Rate" min="0" class="form-control" style="background-color: #FFFACD !important;"
+            onkeyup="CalculateRate();" />
         </div>
         <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
             <label asp-for="DeliveryDate" class="form-label">deliverydate</label>
@@ -334,7 +335,7 @@ else
         </div>
         <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
             <label asp-for="UnitRate" class="form-label">Rate/Unit</label>
-            <select class="form-select" asp-for="UnitRate" asp-items="Model.UnitRateList" onchange="CalculateRate();"></select>
+            <select class="form-select" asp-for="UnitRate" asp-items="Model.UnitRateList" onchange="CalculateRate();" style="background-color: #FFFACD !important;"></select>
         </div>
         <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
             <label asp-for="DiscPer" class="form-label">Disc %</label>
@@ -346,7 +347,7 @@ else
         </div>
         <div class="col-xl-1 col-lg-1 col-md-3 col-sm-6 col-xs-12">
             <label asp-for="Amount" class="form-label" style="color: red;">Amount</label>
-            <input asp-for="Amount" class="form-control" value="0.00" readonly disabled />
+            <input asp-for="Amount" class="form-control" value="0.00" style="background-color: #FFFACD !important;"  readonly disabled />
         </div>
         <div class="col-xl-12 col-md-12 mt-4 col-auto">
             <div class="d-flex flex-wrap align-items-center gap-3">
