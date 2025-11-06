@@ -2249,12 +2249,15 @@ public class ItemMasterController : Controller
 
             dt.Columns.Add("PartCode", typeof(string));
             dt.Columns.Add("Item_Name", typeof(string));
-            dt.Columns.Add("ParentCode", typeof(string));
+            dt.Columns.Add("Unit", typeof(string));
+            dt.Columns.Add("HsnNo", typeof(string));
+            dt.Columns.Add("ItemGroup", typeof(string));
+            dt.Columns.Add("ItemCategory", typeof(string));
+            dt.Columns.Add("ItemServAssets", typeof(string));
             dt.Columns.Add("EntryDate", typeof(DateTime));
             dt.Columns.Add("LastUpdatedDate", typeof(DateTime));
             dt.Columns.Add("LeadTime", typeof(int));
             dt.Columns.Add("CC", typeof(string));
-            dt.Columns.Add("Unit", typeof(string));
             dt.Columns.Add("SalePrice", typeof(decimal));
             dt.Columns.Add("PurchasePrice", typeof(decimal));
             dt.Columns.Add("CostPrice", typeof(decimal));
@@ -2262,7 +2265,6 @@ public class ItemMasterController : Controller
             dt.Columns.Add("WtSingleItem", typeof(decimal));
             dt.Columns.Add("NoOfPcs", typeof(int));
             dt.Columns.Add("QcReq", typeof(string));
-            dt.Columns.Add("ItemType", typeof(string));
             dt.Columns.Add("UploadItemImage", typeof(string));
             dt.Columns.Add("UploadImage", typeof(string));
             dt.Columns.Add("UID", typeof(string));
@@ -2297,13 +2299,11 @@ public class ItemMasterController : Controller
             dt.Columns.Add("NeedSo", typeof(string));
             dt.Columns.Add("BomRequired", typeof(string));
             dt.Columns.Add("JobWorkItem", typeof(string));
-            dt.Columns.Add("HsnNo", typeof(string));
             dt.Columns.Add("CreatedBy", typeof(string));
             dt.Columns.Add("CreatedOn", typeof(DateTime));
             dt.Columns.Add("UpdatedBy", typeof(string));
             dt.Columns.Add("UpdatedOn", typeof(DateTime));
             dt.Columns.Add("Active", typeof(string));
-            dt.Columns.Add("ItemServAssets", typeof(string));
             dt.Columns.Add("VendorBatchcodeMand", typeof(string));
             dt.Columns.Add("EntryByMachineName", typeof(string));
             dt.Columns.Add("UniversalPartCode", typeof(string));
@@ -2330,6 +2330,9 @@ public class ItemMasterController : Controller
 
             foreach (var excelRow in request.ExcelData)
             {
+                List<string> errors = new List<string>(); // 🟢 Added for collecting validation errors
+                var validItemServAssetsOptions = new List<string> { "Item", "Service", "Asset" };
+
                 DataRow row = dt.NewRow();
 
                 foreach (var map in request.Mapping)
@@ -2348,7 +2351,22 @@ public class ItemMasterController : Controller
 
                         try
                         {
-                            if (dbCol == "ParentCode")  // <-- Special handling for ParentCode
+                            if (dbCol == "ItemServAssets")
+                            {
+                                string itemServAssetsValue = value.ToString().Trim();
+
+                                if (!validItemServAssetsOptions.Contains(itemServAssetsValue, StringComparer.OrdinalIgnoreCase))
+                                {
+                                    return Json(new
+                                    {
+                                        StatusCode = 240,
+                                        StatusText = "Please Enter valid ItemServAssets"
+
+                                    });
+                                }
+                            }
+
+                            if (dbCol == "ItemGroup")  // <-- Special handling for ParentCode
                             {
                                 string groupName = value.ToString().Trim();
 
@@ -2371,7 +2389,7 @@ public class ItemMasterController : Controller
                                 {
                                     return Json(new
                                     {
-                                        StatusCode = 200,
+                                        StatusCode = 240,
                                         StatusText = "Please Enter valid group"
                                        
                                     });
@@ -2379,7 +2397,7 @@ public class ItemMasterController : Controller
                                    
                             }
 
-                            if (dbCol == "ItemType")  // <-- Special handling for ParentCode
+                            if (dbCol == "ItemCategory")  // <-- Special handling for ParentCode
                             {
                                 string ItemCat = value.ToString().Trim();
 
@@ -2402,7 +2420,7 @@ public class ItemMasterController : Controller
                                 {
                                     return Json(new
                                     {
-                                        StatusCode = 200,
+                                        StatusCode = 240,
                                         StatusText = "Please Enter valid category"
 
                                     });
@@ -2434,7 +2452,7 @@ public class ItemMasterController : Controller
                                 {
                                     return Json(new
                                     {
-                                        StatusCode = 200,
+                                        StatusCode = 240,
                                         StatusText = "Please Enter valid Store"
 
                                     });

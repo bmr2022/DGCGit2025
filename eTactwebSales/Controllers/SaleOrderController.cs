@@ -1296,8 +1296,15 @@ public class SaleOrderController : Controller
 	[Route("{controller}/Index")]
 	public async Task<ActionResult> OrderDetail(string Mode, int ID, int YC,string fromDateBack = "", string summaryDetail = "", string toDateBack = "",string customerNameBack = "",string customerOrderNoBack="",string branchBack = "",string sonoBack = "",string orderTypeBack = "",string soTypeBack = "",string partCodeBack = "",string itemNameBack = "")
 	{
-		// string ipaddress = IPAddress.IPv6Loopback.ToString();
-		var model = new SaleOrderModel();
+        // string ipaddress = IPAddress.IPv6Loopback.ToString();
+
+        HttpContext.Session.Remove("ItemList");
+        _MemoryCache.Remove("ItemList");
+        HttpContext.Session.Remove("TaxGrid");
+        HttpContext.Session.Remove("KeyTaxGrid");
+        _MemoryCache.Remove("KeyTaxGrid");
+        _MemoryCache.Remove("KeySaleBillToShipTo");
+        var model = new SaleOrderModel();
 
 		
 		model.PreparedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
@@ -2280,8 +2287,27 @@ public class SaleOrderController : Controller
                     // **Calculate Amount (Qty * Rate)**
                     decimal amount = qty * rate;
 
-					// **Add to SaleGridList**
-					SaleGridList.Add(new ItemDetail
+                    // **Handle Discount Rs and Discount %**
+                    decimal discRs = decimal.TryParse(worksheet.Cells[row, 9].Value?.ToString(), out decimal tempDiscRs) ? tempDiscRs : 0;
+                    decimal discPer = decimal.TryParse(worksheet.Cells[row, 8].Value?.ToString(), out decimal tempDiscPer) ? tempDiscPer : 0;
+
+                    // If % not entered but Rs is available, calculate %
+                    if (discPer == 0 && discRs > 0 && rate > 0 && qty > 0)
+                    {
+                        discPer = Math.Round((discRs / (rate * qty)) * 100, 2);
+                    }
+
+                    // If % is entered but Rs is not, calculate Rs
+                    if (discRs == 0 && discPer > 0 && rate > 0 && qty > 0)
+                    {
+                        discRs = Math.Round(((rate * qty) * discPer) / 100, 2);
+                    }
+
+                    // Final amount after discount
+                    amount = Math.Round((rate * qty) - discRs, 2);
+
+                    // **Add to SaleGridList**
+                    SaleGridList.Add(new ItemDetail
 					{
 						SeqNo = SaleGridList.Count + 1,
 						PartCode = itemCode,
@@ -2302,9 +2328,10 @@ public class SaleOrderController : Controller
 						StoreName = worksheet.Cells[row, 17].Value?.ToString() ?? "",
 						StockQty = decimal.TryParse(worksheet.Cells[row, 5].Value?.ToString(), out decimal tempStockqty) ? tempStockqty : 0,
 						UnitRate = worksheet.Cells[row, 3].Value?.ToString() ?? "",
-						DiscPer = decimal.TryParse(worksheet.Cells[row, 8].Value?.ToString(), out decimal tempDiscPer) ? tempDiscPer : 0,
-						DiscRs = decimal.TryParse(worksheet.Cells[row, 9].Value?.ToString(), out decimal tempDiscRs) ? tempDiscRs : 0,
-						Amount = amount, // Auto-calculated value
+						DiscPer = discPer,
+						DiscRs = discRs,
+
+                        Amount = amount, // Auto-calculated value
 						TolLimit = decimal.TryParse(worksheet.Cells[row, 14].Value?.ToString(), out decimal tempTolLimit) ? tempTolLimit : 0,
 						Description = worksheet.Cells[row, 15].Value?.ToString() ?? "",
 						Remark = worksheet.Cells[row, 16].Value?.ToString() ?? "",

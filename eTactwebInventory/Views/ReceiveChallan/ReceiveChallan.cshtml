@@ -109,23 +109,23 @@
                                     <label asp-for="Entrydate" class="form-label">Entry Date</label>
                                     <input asp-for="Entrydate" class="form-control" readonly />
                                 </div>
-                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-3 col-xs-12 ShowOtherReqFields">
                                     <label asp-for="Yearcode" class="form-label">Year Code</label>
                                     <input asp-for="Yearcode" class="form-control" readonly />
                                 </div>
-                                <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12 ShowOtherReqFields">
                                     <label asp-for="CC" class="form-label">Branch</label>
                                     <input asp-for="CC" value="@Model.CC" class="form-control" readonly />
                                 </div>
-                                <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12 ShowOtherReqFields">
                                     <label asp-for="FinFromDate" class="form-label">From Date</label>
                                     <input asp-for="FinFromDate" value="@Model.FinFromDate" class="form-control" />
                                 </div>
-                                <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12 ShowOtherReqFields">
                                     <label asp-for="FinToDate" class="form-label">To Date</label>
                                     <input asp-for="FinToDate" value="@Model.FinToDate" class="form-control" />
                                 </div>
-                                <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                                <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6 col-xs-12 ShowOtherReqFields">
                                     <label asp-for="RetNotRetChallan" class="form-label" style="color: red;">Ret/NotRet Challan*</label>
                                     @if (Model.Mode == "U" || @Model.Mode == "V")
                                     {
@@ -144,7 +144,7 @@
                                         </select>
                                     }
                                 </div>
-                                <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                                <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6 col-xs-12 ShowOtherReqFields">
                                     <label asp-for="AgainstMRNNOrGate" class="form-label" style="color: red;">MRN Or Gate*</label>
                                     <select class="form-select" asp-for="AgainstMRNNOrGate">
                                         <option value="">-Select-</option>
@@ -152,7 +152,7 @@
                                         <option value="Gate" selected>Gate</option>
                                     </select>
                                 </div>
-                                <div class="col-xl-1 col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                                <div class="col-xl-1 col-lg-2 col-md-4 col-sm-6 col-xs-12 ShowOtherReqFields">
                                     <label asp-for="MRNNo" class="form-label">MRN No</label>
                                     @if (Model.Mode == "U" || Model.Mode == "V")
                                     {
@@ -162,7 +162,7 @@
                                         <option value="">-Select-</option>
                                     </select>
                                 </div>
-                                <div class="col-xl-1 col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                                <div class="col-xl-1 col-lg-2 col-md-4 col-sm-6 col-xs-12 ShowOtherReqFields">
                                     <label asp-for="AgainstMRNYearCode" class="form-label">MRN YC</label>
                                     @if (Model.Mode == "U" || Model.Mode == "V")
                                     {
@@ -172,11 +172,11 @@
                                         <option value="">-Select-</option>
                                     </select>
                                 </div>
-                                <div class="col-xl-1 col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                                <div class="col-xl-1 col-lg-2 col-md-4 col-sm-6 col-xs-12 ShowOtherReqFields">
                                     <label asp-for="MRNDate" class="form-label">MRN Date</label>
                                     <input asp-for="MRNDate" class="form-control" readonly />
                                 </div>
-                                <div class="col-xl-1 col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                                <div class="col-xl-1 col-lg-2 col-md-4 col-sm-6 col-xs-12 ShowOtherReqFields">
                                     <label asp-for="BillOrChallan" class="form-label" style="color: red;">BillOrChallan*</label>
                                     <select class="form-select" asp-for="BillOrChallan">
                                         <option value="">-Select-</option>
@@ -184,7 +184,7 @@
                                         <option value="Challan">Challan</option>
                                     </select>
                                 </div>
-                                <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                                <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6 col-xs-12 ShowOtherReqFields">
                                     <label asp-for="gateno" class="form-label" style="color: red;">Gate No*</label>
                                     @if (Model.Mode == "U" || Model.Mode == "V")
                                     {
@@ -194,7 +194,7 @@
                                         <option value="">-Select-</option>
                                     </select>
                                 </div>
-                                <div class="col-xl-1 col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                                <div class="col-xl-1 col-lg-2 col-md-4 col-sm-6 col-xs-12ShowOtherReqFields">
                                     <label asp-for="GateYearCode" class="form-label" style="color: red;">Gate YC*</label>
                                     @if (Model.Mode == "U" || Model.Mode == "V")
                                     {
@@ -204,7 +204,7 @@
                                         <option value="">-Select-</option>
                                     </select>
                                 </div>
-                                <div class="col-xl-1 col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                                <div class="col-xl-1 col-lg-2 col-md-4 col-sm-6 col-xs-12 ShowOtherReqFields">
                                     <label asp-for="GateDate" class="form-label" style="color: red;">Gate Date*</label>
                                     <input asp-for="GateDate" class="form-control" readonly />
                                 </div>
@@ -213,7 +213,7 @@
                                     <label asp-for="ChallanNo" class="form-label" style="color: red;">Challan No*</label>
                                     <input asp-for="ChallanNo" class="form-control" readonly />
                                 </div>
-                                <div class="col-xl-1 col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                                <div class="col-xl-1 col-lg-2 col-md-4 col-sm-6 col-xs-12 ShowOtherReqFields">
                                     <label asp-for="ChallanDate" class="form-label" style="color: red;">Date*</label>
                                     <input asp-for="ChallanDate" class="form-control" readonly />
                                 </div>
@@ -224,11 +224,22 @@
                                     {
                                         <input type="hidden" value="@Model.AccountCode-@Model.AccountName" id="hiddenAccountCode" />
                                     }
-                                    <select class="form-select" asp-for="AccountCode" readonly>
-                                        <option value="">-Select-</option>
-                                    </select>
+                                    @if (Model.ShowOtherReqFields == "N")
+                                    {
+                                        <input type="text" id="AccountCodeText" class="form-control" placeholder="Type Party Name..." />
+                                        <input type="hidden" asp-for="AccountCode" id="AccountCode" />
+                                    }
+                                    else
+                                    {
+                                        <select class="form-select" asp-for="AccountCode" readonly>
+                                            <option value="">-Select-</option>
+                                        </select>
+                                    }
+                                    
+
+                                    
                                 </div>
-                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 ShowOtherReqFields">
                                     <label asp-for="RGPNRGP" class="form-label" style="color: red;">RGP/NRGP*</label>
                                     <select class="form-select" asp-for="RGPNRGP" onchange="FillChallanType();">
                                         <option value="">-Select-</option>
@@ -236,7 +247,7 @@
                                         <option value="NRGP" selected>NRGP</option>
                                     </select>
                                 </div>
-                                <div class="col-xl-1 col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                                <div class="col-xl-1 col-lg-2 col-md-4 col-sm-6 col-xs-12 ShowOtherReqFields">
                                     <label asp-for="ChallanType" class="form-label" style="color: red;">Challan Type*</label>
                                     @if (Model.Mode == "U" || Model.Mode == "V")
                                     {
@@ -246,7 +257,7 @@
                                         <option value="">-Select-</option>
                                     </select>
                                 </div>
-                                <div class="col-xl-1 col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                                <div class="col-xl-1 col-lg-2 col-md-4 col-sm-6 col-xs-12 ShowOtherReqFields">
                                     <label asp-for="DocTypeCode" class="form-label" style="color: red;">Doc Name</label>
                                     @if (Model.Mode == "U" || Model.Mode == "V")
                                     {
@@ -552,13 +563,15 @@
     {
     <script>
         $(document).ready(function () {
+           
             $('#AccountCode').select2();
             $('#DocTypeCode').select2();
             $('#ChallanType').select2();
             $('#gateno').select2();
+            AutoFillPARTYNAMELIST();
 
             GetFormRights();
-
+            GetFeatureOption();
             $('#PartCode').select2();
             $('#ItemCode').select2();
             GetGateNo();
@@ -617,6 +630,104 @@
             $('#InvoiceNo').rules("remove", "required");
         });
 
+
+        function AutoFillPARTYNAMELIST() {
+            // Source for PartCodeText
+            const AccountCodeSourse = function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("AutoFillPARTYNAMELIST", "SaleOrder")',
+                    type: 'POST',
+                    data: {
+
+                        SearchAccount: request.term
+                    },
+                    success: function (result) {
+                        let obj = typeof result === "string" ? JSON.parse(result) : result;
+
+                        if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
+                            let filtered = obj.Result.Table.filter(function (item) {
+                                let term = request.term.toLowerCase();
+                                return item.Account_Name.toLowerCase().includes(term);
+                            });
+
+                            response($.map(filtered, function (item) {
+                                return {
+                                    label: item.Account_Name,
+                                    value: item.Account_Name,
+                                    accountCode: item.Account_Code,
+
+                                };
+                            }));
+                        } else {
+                            response([]);
+                        }
+                    }
+                });
+            };
+
+
+
+            // Autocomplete for PartCodeText
+            $("#AccountCodeText").autocomplete({
+                source: AccountCodeSourse,
+                select: function (event, ui) {
+                    $("#AccountCodeText").val(ui.item.value).data("Account_Code", ui.item.accountCode);
+
+                    $('#AccountCode').val(ui.item.accountCode);
+                    /*    CheckOrderNo();*/
+                    onchangeaccountcode();
+
+
+                    return false;
+                },
+                focus: function (event, ui) {
+                    $("#AccountCodeText").val(ui.item.value);
+
+                    return false;
+                },
+                minLength: 2
+            });
+
+
+        }
+
+
+        function GetFeatureOption() {
+
+            $.ajax({
+                type: "POST",
+                data: {},
+                url: "@Url.Action("GetFeatureOption")",
+                dataType: "json",
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.Result != null) {
+                            if (obj.Result[0].ShowOtherReqFields === "N") {
+                                $('.ShowOtherReqFields').hide();
+                            } else {
+                                $('.ShowOtherReqFields').show();
+                            }
+                            if (obj.Result[0].ShowDetailtableFields === "N") {
+                                $('.ShowDetailtableFields').hide();
+                            } else {
+                                $('.ShowDetailtableFields').show();
+                            }
+                            if (obj.Result[0].ShowOtherFields === "N") {
+                                $('.ShowOtherFields').hide();
+                            } else {
+                                $('.ShowOtherFields').show();
+                            }
+                         
+
+
+
+                        }
+                    }
+                }
+            });
+        }
 
         //$('.textbox').keydown(function (e) {
         //     

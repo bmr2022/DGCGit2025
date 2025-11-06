@@ -55,6 +55,14 @@ namespace eTactWeb.Data.BLL
         {
             return await _DirectPurchaseBillDAL.GetExchangeRate(Currency);
         }
+        public async Task<ResponseResult> GetDocTypeId(string Dooctype)
+        {
+            return await _DirectPurchaseBillDAL.GetDocTypeId(Dooctype);
+        }
+        public async Task<ResponseResult> GetItemDetail(string PartCode)
+        {
+            return await _DirectPurchaseBillDAL.GetItemDetail(PartCode);
+        }
 
         public async Task<ResponseResult> FillItems(string Type, string ShowAllItem)
         {

@@ -1593,44 +1593,41 @@
 					});
 				}
 
-				function AdjustAmount() {
+		function AdjustAmount() {
+			var rowCount = $('#divDisplayPopupForPendingVouchersDetail tr').length;
+			var DRAmt = 0, CRAmt = 0;
+			var TotalDRAmt = 0, TotalCrAmt = 0;
 
-					var rowCount = $('#divDisplayPopupForPendingVouchersDetail tr').length;
-					var DRAmt = 0;
-					var CRAmt = 0;
-					var TotalDRAmt = 0;
-					var TotalCrAmt = 0;
-					for (var i = 1; i <= rowCount; i++) {
+			for (var i = 1; i <= rowCount; i++) {
+				if ($('#CheckUnCheck-' + i).is(':checked')) {
+					var drcr = $(`#PopUpType-${i}`).text().trim().toLowerCase();
+					var adjVal = parseFloat($(`#AdjustAmt-${i}`).val()) || 0;
 
-						if ($('#CheckUnCheck-' + i).is(':checked') == true) {
-							var drcr = $(`#PopUpType-${i}`).text().trim();
-
-							if (drcr.toLowerCase() === "dr") {
-								var DRAmtrow = parseFloat($(`#AdjustAmt-${i}`).val());
-								DRAmt += DRAmtrow;
-							} else if (drcr.toLowerCase() === "cr") {
-								var CRAmtrow = parseFloat($(`#AdjustAmt-${i}`).val());
-								CRAmt += CRAmtrow;
-							}
-						}
-						var drcr = $(`#PopUpType-${i}`).text().trim();
-						var DRAmtrow = parseFloat($(`#PopUpDrAmt-${i}`).text().trim());
-						var CRAmtrow = parseFloat($(`#PopUpCrAmt-${i}`).text().trim());
-
-						if (drcr.toLowerCase() === "dr") {
-							TotalDRAmt += DRAmtrow;
-						} else if (drcr.toLowerCase() === "cr") {
-							TotalCrAmt += CRAmtrow;
-						}
-					}
-					$('#PopDrAmt').val(CRAmt.toFixed(2));
-					$('#PopCrAmt').val(DRAmt.toFixed(2));
-					$('#TotalPopDrAmt').val(TotalDRAmt.toFixed(2));
-					$('#TotalPopCrAmt').val(TotalCrAmt.toFixed(2));
-					$('#PopUpBalance').val((TotalDRAmt - TotalCrAmt).toFixed(2));
-					$('#PopAdjustmentAmt').val((DRAmt - CRAmt).toFixed(2));
-
+					if (drcr === "dr") DRAmt += adjVal;
+					else if (drcr === "cr") CRAmt += adjVal;
 				}
+
+				var drcrFull = $(`#PopUpType-${i}`).text().trim().toLowerCase();
+				var drVal = parseFloat($(`#PopUpDrAmt-${i}`).text().trim()) || 0;
+				var crVal = parseFloat($(`#PopUpCrAmt-${i}`).text().trim()) || 0;
+
+				if (drcrFull === "dr") TotalDRAmt += drVal;
+				else if (drcrFull === "cr") TotalCrAmt += crVal;
+			}
+
+			// ✅ Totals
+			$('#PopDrAmt').val(DRAmt.toFixed(2));
+			$('#PopCrAmt').val(CRAmt.toFixed(2));
+			$('#TotalPopDrAmt').val(TotalDRAmt.toFixed(2));
+			$('#TotalPopCrAmt').val(TotalCrAmt.toFixed(2));
+			$('#PopUpBalance').val(Math.abs(TotalDRAmt - TotalCrAmt).toFixed(2));
+
+			// 🧮 Simple total of all adjusted amounts (no DR/CR logic)
+			var totalAdjustment = DRAmt + CRAmt;
+			$('#PopAdjustmentAmt').val(totalAdjustment.toFixed(2));
+			$('#AdjustAmountss').val(totalAdjustment.toFixed(2));
+
+		}
 
 				var isEditAllowed = "false";
 
@@ -1666,37 +1663,46 @@
 					});
 				}
 
-						function ChangeAdjustAmt(i) {
-			 ;
-
+		function ChangeAdjustAmt(i) {
 			let adjustAmtInput = $('#AdjustAmt-' + i);
-			let balanceAmtLabel = $('#BalanceAmt-' + i);
-			let adjustAmt = parseFloat(adjustAmtInput.val()) || 0;
-			let balanceAmt = parseFloat(balanceAmtLabel.text()) || 0;
+			let balanceText = $('#BalanceText-' + i);
+			let netBalanceHidden = $('#NetBalance-' + i);
+			let originalBalanceHidden = $('#OriginalBalance-' + i);
 			let errorSpan = $('#AdjustAmtError-' + i);
 
-			if (adjustAmt > balanceAmt) {
-				balanceAmtLabel.text(balanceAmt.toFixed(2));
+			let netAmount = parseFloat(netBalanceHidden.val()) || 0;
+			let originalBalance = parseFloat(originalBalanceHidden.val()) || 0;
+			let adjustAmt = parseFloat(adjustAmtInput.val()) || 0;
+
+			// ❌ Validation
+			if (adjustAmt > originalBalance) {
 				adjustAmtInput.val(0);
-				errorSpan.text('Adjustment amount cannot be greater than Actual Balance.').show();
-				return; // Stop further processing
+				balanceText.text(originalBalance.toFixed(2));
+				errorSpan.text('Adjustment amount cannot be greater than Balance Amount.').show();
+				$('#CheckUnCheck-' + i).prop('checked', false);
+				$('#AdjustData-' + i).css("background-color", "");
+				AdjustAmount();
+				return;
 			} else {
-				errorSpan.hide(); // Clear any previous error
+				errorSpan.hide();
 			}
 
+			// 🧮 New balance from original balance
+			let newBalance = originalBalance - adjustAmt;
+			if (newBalance < 0) newBalance = 0;
+			balanceText.text(newBalance.toFixed(2));
+
+			// 🟩 Checkbox & color logic
 			if (adjustAmt > 0) {
-				let newBalance = balanceAmt - adjustAmt;
-				balanceAmtLabel.text((Math.round(newBalance * 100) / 100).toFixed(2));
 				$('#CheckUnCheck-' + i).prop('checked', true);
 				$('#AdjustData-' + i).css("background-color", "rgb(161 184 161)");
 			} else {
-				balanceAmtLabel.text(balanceAmt.toFixed(2));
 				$('#CheckUnCheck-' + i).prop('checked', false);
 				$('#AdjustData-' + i).css("background-color", "");
+				balanceText.text(originalBalance.toFixed(2)); // Reset when 0 entered
 			}
 
 			AdjustAmount();
-			CheckUnCheckCheck(i);
 		}
 
 				function Validate_AdjustButton() {
@@ -2099,31 +2105,42 @@
 			});
 		});
 
-				function CheckUnCheckCheck(i) {
-			var RowCount = $('#divDisplayPopupForPendingVouchersDetail tr').length;
+		function CheckUnCheckCheck(i) {
 			var isChecked = $('#CheckUnCheck-' + i).is(':checked');
+			var balanceText = $('#BalanceText-' + i);
+			var adjustInput = $('#AdjustAmt-' + i);
+			var netBalance = parseFloat($('#NetBalance-' + i).val()) || 0;
+			var originalBalance = parseFloat($('#OriginalBalance-' + i).val()) || 0;
 
 			if (isChecked) {
-				if (parseFloat($('#AdjustAmt-' + i).val()) == 0) {
-					$('#AdjustAmt-' + i).val($('#BalanceAmt-' + i).text());
-					$('#BalanceAmt-' + i).text(0);
+				let currentAdjust = parseFloat(adjustInput.val()) || 0;
+
+				if (currentAdjust === 0) {
+					// 🟩 Full adjustment
+					adjustInput.val(originalBalance.toFixed(2));
+					balanceText.text("0.00");
+				} else {
+					// 🧮 Partial adjustment
+					let newBalance = originalBalance - currentAdjust;
+					if (newBalance < 0) newBalance = 0;
+					balanceText.text(newBalance.toFixed(2));
 				}
+
 				$('#AdjustData-' + i).css("background-color", "rgb(161 184 161)");
 			} else {
-				var adjustedValue = $('#AdjustAmt-' + i).val();
-				if (adjustedValue && adjustedValue !== "0") {
-					$('#BalanceAmt-' + i).text(adjustedValue);
-					$('#AdjustAmt-' + i).val(0);
-				}
+				// 🟫 Unchecked — reset
+				adjustInput.val(0);
+				balanceText.text(originalBalance.toFixed(2));
 				$('#AdjustData-' + i).css("background-color", "");
 			}
 
-			var selectedRows = $('#divDisplayPopupForPendingVouchersDetail tr').has('input[type="checkbox"]:checked').length;
+			// Update “Select All” checkbox and count
+			var selectedRows = $('#divDisplayPopupForPendingVouchersDetail tr')
+				.has('input[type="checkbox"]:checked').length;
+			var totalRows = $('#divDisplayPopupForPendingVouchersDetail tr').length;
 
-			$('#CheckUnCheckAll').prop('checked', selectedRows === RowCount);
-
+			$('#CheckUnCheckAll').prop('checked', selectedRows === totalRows);
 			$('#lblcheckitem').text(selectedRows);
-
 			AdjustAmount();
 		}
 

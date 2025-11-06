@@ -62,7 +62,17 @@
 													</div>
 												</div>
 											</div>
-											
+											<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+												<label class="form-label" style="color: red;">
+													GetDataFrom*
+												</label>
+
+												<select class="form-select" data-abcd="4" id="GetDataFrom">
+													<option value="" disabled selected>-select-</option>
+													<option value="PendingPO">Pending PO List</option>
+													<option value="VendorPortal">VendorPortal</option>
+												</select>
+											</div>
 												<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
 													<input type="hidden" asp-for="SessionYearCode" value="@Model.SessionYearCode" />
 												<label asp-for="VendorName" class="form-label" style="color: red;">Vendor Name*</label>
@@ -81,17 +91,7 @@
 												</select>
 											</div>
 
-											<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
-												<label class="form-label" style="color: red;">
-													GetDataFrom*
-												</label>
-
-												<select class="form-select" data-abcd="4" id="GetDataFrom">
-													<option value="" disabled selected>-select-</option>
-													<option value="PendingPO">Pending PO List</option>
-													<option value="VendorPortal">VendorPortal</option>
-												</select>
-											</div>
+											
 											<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
 												<label asp-for="Invoiceno" class="form-label">Invoiceno</label>
 												<select class="form-select" asp-for="Invoiceno" data-abcd="1" asp-items="@(new SelectList(Model.InvoiceList,"Value","Text"))">
@@ -133,7 +133,8 @@
 													<i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
 												</a>
 												<div class="col-sm-2 col-md-6 col-lg-4 col-xl-2">
-													<button class="btn btn-sm btn-outline-primary GotoMainPage" style="margin-top:15px;height:30px;width:150px;margin-left:20px;" type="button" >
+													<button class="btn btn-sm btn-outline-primary GotoMainPage
+													" style="margin-top:15px;height:30px;width:150px;margin-left:20px;" type="button" >
 														<i class="fa fa-check-circle" aria-hidden="true"></i> Gate Entry
 													</button>
 												</div>
@@ -260,7 +261,10 @@
 			var AccountCode = document.getElementById("VendorName").value;
             var docTypeId = document.getElementById("docTypeId").value;
 			var VPSaleBillEntryId = document.getElementById("Invoiceno").value;
-			var InvoiceNo = $("#Invoiceno option:selected").text().trim();
+			var InvoiceNo = ($("#Invoiceno")[0].selectedIndex === 0)
+				? ""
+				: $("#Invoiceno option:selected").text().trim();
+			var VPSaleBillEntryId = $("#Invoiceno").val();
 			if (!AccountCode) {
 				alert("Please select Vendor Name.");
 				document.getElementById("VendorName").focus();
@@ -271,11 +275,13 @@
 					document.getElementById("docTypeId").focus();
 					return;
 					}
-					if (!InvoiceNo) {
+			 if ($('#GetDataFrom').val() == 'VendorPortal') {
+			if (!VPSaleBillEntryId) {
 						alert("Please enter Invoice No.");
                         document.getElementById("Invoiceno").focus();
                         return;
                         }
+			 }
 
 
 
@@ -504,6 +510,7 @@
 					   let vendorName = $('#VendorName').val();
 					   let docType = $('#docTypeId').val();
 					   let searchBox = $('#search-box').val();
+				   let Invoiceno = $('#Invoiceno').val();
 						if (!vendorName) {
 			alert("Please select Vendor Name.");
 			$('#VendorName').focus();
@@ -514,6 +521,13 @@
 			$('#docTypeId').focus();
 			return;
 		}
+
+			/* if (!Invoiceno)
+			{
+				alert("Please select Invoice No.");
+				$('#Invoiceno').focus();
+				return;
+			} */
 		let data = {
 
 					AccountCode: $('#VendorName').val(),
@@ -526,7 +540,9 @@
 					ToDate: $('#ToDate').val(),
 					ScheduleNo: $('#ScheduleNo').val(),
 				GetDataFrom: $('#GetDataFrom').val(),
-				 Invoiceno : $("#Invoiceno option:selected").text().trim(),
+				 Invoiceno : ($("#Invoiceno")[0].selectedIndex === 0)
+					? ""
+					: $("#Invoiceno option:selected").text().trim(),
 					DashboardType: "", // Add if needed
 					
 					SearchBox: searchBox

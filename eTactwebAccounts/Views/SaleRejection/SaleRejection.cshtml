@@ -2095,7 +2095,7 @@
             const rejRate = parseFloat(input.value) || 0;
             const saleBillRate = parseFloat(saleRate) || 0;
 
-            if (rejRate !== saleBillRate) {
+            if (rejRate > saleBillRate) {
                 input.style.backgroundColor = "Red"; // 🔴 red
             } else {
                 input.style.backgroundColor = "#85f2ec"; // 🟦 blue

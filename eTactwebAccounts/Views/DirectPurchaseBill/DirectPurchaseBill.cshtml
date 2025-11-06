@@ -57,6 +57,16 @@
                                 BACK
                             </a>
                         </div>
+                        <div class="col-auto me-2">
+                            @if (Model.Mode != "V")
+                            {
+                                <button type="button" class="PartialSave btn btn-secondary btn-sm mr-2" style="color:white!important">
+                                    <i class="fa-solid fa-floppy-disk-pen fa-fw fa-lg" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
+                                    PARTIAL SAVE
+                                </button>
+                            }
+
+                        </div>
                         @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
                         {
                             <div class="col-auto">
@@ -119,10 +129,33 @@
                                 <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
                             <div class="card">
-                                <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12" style="margin-top:10px;margin-left:1100px">
-                                    <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
-                                </div>
+                                <div class="d-flex justify-content-end mb-2">
 
+
+                                    <div class="col-auto" style="display:none">
+                                        <button type="button" class="EXPORT btn btn-sm btn-outline-success" id="sendToExcel">
+                                            <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> EXPORT
+                                        </button>
+                                    </div>
+                                    <div class="col-auto  me-3">
+                                        <input class="form-control" type="file" id="ExcelFile" />
+                                    </div>
+                                    <div class="col-auto  me-3">
+                                        <button type="button" class="Importbtn btn btn-sm btn-outline-success" onclick="UploadExcel()">
+                                            <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> Import From Excel
+                                        </button>
+                                    </div>
+
+
+
+                                    <div class="col-md-2 me-3">
+                                        <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
+                                    </div>
+                                    <a class="btn btn-secondary btn-sm ImportExcel" onclick="ExportPOFormate();">
+                                        <i class="fa-solid fa-floppy-disk-pen fa-fw fa-lg" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
+                                        IMPORT FORMAT
+                                    </a>
+                                </div>
                                 <div class="card-body overflow-auto pb-0">
                                     <div class="table-responsive" style="max-height:150px;">
                                         <table class="table table-hover table-bordered table-striped" id="poTable">
@@ -328,6 +361,143 @@
 @section Scripts
 {
     <script>
+                  $('#sendToExcel').click(function () {
+                  let table = $("#poTable");
+                  console.log(table);
+
+                  TableToExcel.convert(table[0], {
+                      name: `PurchaseOrderTableAmm.xlsx`,
+                      sheet: {
+                          name: 'PurchaseOrderTableAmm'
+                      }
+                  });
+              });
+
+              function ExportPOFormate() {
+
+                  $('#divPOItemList').empty();
+                  var wb = XLSX.utils.book_new();
+
+
+                        var ws = XLSX.utils.json_to_sheet([], { header: ["Part Code","Item Name", "Rate", "Qty", "Dis%",  "Location ","DocumentType"] });
+                  
+                  //ws['!ref'] = 'A1:I1';
+
+                  XLSX.utils.book_append_sheet(wb, ws, "Sheet 1");
+
+                  XLSX.writeFile(wb, "ImportDirectPurchaseBillFormat.xlsx");
+              }
+        //               function UploadExcel() {
+        //     var fileInput = $('#ExcelFile');
+        //     var file = fileInput.prop("files")[0];
+
+        //     var formData = new FormData();
+        //     var Err = 0;
+
+        //     // ✅ Validate file
+        //     if (!file) {
+        //         AddErrorCls('ExcelFile');
+        //         $.notify("Please select an Excel file.", "error");
+        //         Err = 1;
+        //         return;
+        //     } else {
+        //         RemoveErrorCls('ExcelFile');
+        //         formData.append("excelFile", file); // ✅ attach the file
+        //     }
+
+        //     // ✅ Append additional fields to formData
+        //     formData.append("PoNo", $('#PoNo').val() || '');
+        //     formData.append("POYearcode", $('#POYearcode').val() || 0);
+        //     formData.append("AccountCode", $('#AccountCode').val() || 0);
+        //     formData.append("SchNo", $('#SchNo').val() || '');
+        //     formData.append("SchYearCode", $('#SchYearCode').val() || 0);
+        //     formData.append("Currency", $('#Currency').val() || '');
+        //     formData.append("Flag", $('#Flag').val() || '');
+
+        //     // ✅ Now send the AJAX request
+        //     $.ajax({
+        //         url: "@Url.Action("UploadExcel")",
+        //         type: "POST",
+        //         data: formData,
+        //         processData: false,
+        //         contentType: false,
+        //         beforeSend: function () {
+        //             $('#ajaxLoader').show();
+        //         },
+        //         success: function (result) {
+        //             $('#ajaxLoader').hide();
+
+        //             if (result === "Not Done") {
+        //                 $.notify("Pend Qty cannot be less than 0! Please Try again!", "error");
+        //             } else if (result === "Duplicate") {
+        //                 $.notify("Duplicate Item Not allowed", "error");
+        //             } else if (result === "Partcode not available") {
+        //                 $.notify("Imported Partcode is not available, Please check!!!", "error");
+        //             } else if (result === "Qty is less Then 0") {
+        //                 $.notify("Qty Should be Greater Then 0, Please check!!!", "error");
+        //             } else {
+        //                 // ✅ Replace the div with the updated grid partial view
+        //                 $('#divPOItemList').html(result);
+        //                        var INA = parseFloat($('#ItemNetAmount').val());
+        //                      var rowCount = $('#divPOItemList tr').length;
+        //                      var columnCount = $('#divPOItemList tr td').length;
+        //                      var taxRowCount = $('#divTaxGrid tr').length;
+        //                      var sum = 0;
+
+        //                      //noofitems
+        //                      if (columnCount > 1)
+        //                          $('#lblItemCount').text(rowCount);
+        //                      else
+        //                          $('#lblItemCount').text(0);
+
+        //                      for (var i = 1; i <= rowCount; i++) {
+
+        //                          sum += parseFloat($('#GridAmount-' + i).text() == '.00' ? 0 : $('#GridAmount-' + i).text());
+        //                      }
+        //                      $('#ItemNetAmount').val(sum);
+        //                      var txSum = 0;
+        //                      if ($('#divTaxGrid tr td').length > 1) {
+        //                          for (var i = 1; i <= taxRowCount; i++) {
+        //                              txSum += parseFloat($('#txGridAmount-' + i).text() == '.00' ? 0 : $('#txGridAmount-' + i).text());
+        //                          }
+        //                      }
+        //                      $('#lblItemNetAmount').text(sum.toFixed(2));
+
+
+        //                      var txTotal = sum + txSum;
+        //                      $('#NetTotal').val(txTotal.toFixed(2));
+        //                      $('#TotalDiscountPercentage').val(0);
+        //                      $('#TotalAmtAftrDiscount').val(0);
+        //                      $('#TotalRoundOffAmt').val(0.00);
+        //                    GetTaxPartItem();
+        //               GetDbCrDetail();
+        //               GetFeatureOption();
+        //               AddAdjstmntDetail1();
+        //               CalculateRate();
+
+        //               // If adjustment grid exists, clear it
+        //               var AdjGrid = $('#divAdjItemList tr td').length;
+        //               if (AdjGrid >= 1) {
+        //                   ClearAdjustmentGrid();
+        //               }
+        //               AddAdjstmntDetail1();
+        //                 $.notify("Excel imported successfully!", "success");
+        //             }
+        //         },
+        //         error: function (xhr) {
+        //             $('#ajaxLoader').hide();
+        //             if (xhr.status === 400) {
+        //                 $.notify(xhr.responseText, "error");
+        //             } else {
+        //                 $.notify("An unexpected error occurred. Please try again.", "error");
+        //             }
+        //         }
+        //     });
+
+        //     // ✅ Utility: Calculate total item amount
+        
+        // }
+
         function PressBack() {
 
             sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());
@@ -490,6 +660,7 @@
             LockedFinancialYear();
             FillItems();
             FillCurrency();
+            FillDocumentType();
             $('#DPBTypeServItem').val('I');
             FillTDSTaxType();
             
@@ -1014,6 +1185,36 @@
             else {
                 RemoveErrorCls('ExcelFile');
             }
+                   if ($('#YearCode').val().trim() === "" || $('#YearCode').val() == "0") {
+              AddErrorCls('YearCode');
+              $.notify("Please select a valid Year Code.", "error");
+              Err = 1;
+          } else {
+              RemoveErrorCls('YearCode');
+          }
+
+          // 🔹 Validate Account Code
+          if ($('#AccountCode').val().trim() === "" || $('#AccountCode').val() == "0") {
+              AddErrorCls('AccountCode');
+              $.notify("Please select a valid Account.", "error");
+              Err = 1;
+          } else {
+              RemoveErrorCls('AccountCode');
+          }
+
+          // 🔹 Validate Currency
+          if ($('#Currency').find(":selected").text().trim() === "" || $('#Currency').find(":selected").text() === "Select") {
+              AddErrorCls('Currency');
+              $.notify("Please select a currency.", "error");
+              Err = 1;
+          } else {
+              RemoveErrorCls('Currency');
+          }
+
+          // 🚫 Stop execution if any validation failed
+          if (Err === 1) {
+              return;
+          }
 
             $.ajax({
                 url: "@Url.Action("UploadExcel")",
@@ -1034,8 +1235,58 @@
                     else {
                         $('#divPOItemList').empty();
                         $('#divPOItemList').html(result);
+                               var rowCount = $('#divPOItemList tr').length;
+                             var columnCount = $('#divPOItemList tr td').length;
+                             var taxRowCount = $('#divTaxGrid tr').length;
+                             var sum = 0;
+
+                             //noofitems
+                             if (columnCount > 1)
+                                 $('#lblItemCount').text(rowCount);
+                             else
+                                 $('#lblItemCount').text(0);
+
+                             for (var i = 1; i <= rowCount; i++) {
+
+                                 sum += parseFloat($('#GridAmount-' + i).text() == '.00' ? 0 : $('#GridAmount-' + i).text());
+                             }
+                             $('#ItemNetAmount').val(sum);
+                             var txSum = 0;
+                             if ($('#divTaxGrid tr td').length > 1) {
+                                 for (var i = 1; i <= taxRowCount; i++) {
+                                     txSum += parseFloat($('#txGridAmount-' + i).text() == '.00' ? 0 : $('#txGridAmount-' + i).text());
+                                 }
+                             }
+                             $('#lblItemNetAmount').text(sum.toFixed(2));
+
+
+                             var txTotal = sum + txSum;
+                             $('#NetTotal').val(txTotal.toFixed(2));
+                             $('#TotalDiscountPercentage').val(0);
+                             $('#TotalAmtAftrDiscount').val(0);
+                             $('#TotalRoundOffAmt').val(0.00);
+                             // $('#PartCode').select2('open').select2('focus');
+                             CalculateRate();
+                                    GetTaxPartItem();
+                         GetDbCrDetail();
+                         GetFeatureOption();
+                          var AdjGrid = $('#divAdjItemList tr td').length;
+                   if (AdjGrid >= 1 ) {
+                ClearAdjustmentGrid();
+                   }
+                       //   ClearAdjustmentGrid();
+                         AddAdjstmntDetail1();
                     }
-                }
+                },
+                     error: function (xhr) {
+              // ✅ This will catch your C# BadRequest messages
+              if (xhr.status === 400) {
+                  // The message from BadRequest() in controller
+                  $.notify(xhr.responseText, "error");
+              } else {
+                  $.notify("Unexpected error occurred while uploading Excel.", "error");
+              }
+          }
             });
         }
 
@@ -1256,6 +1507,11 @@
                                 $('#docTypeId').append("<option value=" + val.Account_code + ">" + val.DocumentName + "</option>");
                                 //+ " data-unipartcode = " + val.UniversalPartCode + " data-unidesc = " + val.UniversalDescription
                             });
+                                    if (obj.Result.Table.length > 0) {
+                                     $('#docTypeId').val(obj.Result.Table[0].Account_code).trigger('change');
+                          }
+                                       $('#docTypeId').select2();
+
                         }
                     }
                 }
@@ -2836,14 +3092,14 @@
                 RemoveErrorCls('BillQty');
             }
 
-            if ($('#Description').val() == null || $('#Description').val() == undefined || $('#Description').val() == '') {
-                $.notify("Description is required", "error");
-                AddErrorCls('Description');
-                IsError = 1;
-            }
-            else {
-                RemoveErrorCls('Description');
-            }
+            // if ($('#Description').val() == null || $('#Description').val() == undefined || $('#Description').val() == '') {
+            //     $.notify("Description is required", "error");
+            //     AddErrorCls('Description');
+            //     IsError = 1;
+            // }
+            // else {
+            //     RemoveErrorCls('Description');
+            // }
 
             if (IsError == 1) {
                 $('.ItemBtn').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
@@ -3492,7 +3748,9 @@
 
     <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
 
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.2/xlsx.full.min.js"></script>
+    @*<script src="~/Scripts/table2excel.js"></script>*@
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
 }
 
 <style>
@@ -3516,5 +3774,4 @@
         z-index: 10000 !important; /* Adjust the value as needed */
     }
 </style>
-
 

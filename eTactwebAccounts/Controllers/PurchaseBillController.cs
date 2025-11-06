@@ -58,7 +58,11 @@ public class PurchaseBillController : Controller
     public EncryptDecrypt EncryptDecrypt { get; private set; }
     public IDataLogic IDataLogic { get; private set; }
     public IPurchaseBill IPurchaseBill { get; set; }
-
+    public IActionResult ClearDRCRGrid()
+    {
+        HttpContext.Session.Remove("KeyDrCrGrid");
+        return Json("Ok");
+    }
     public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string PONO = "")
     {
         string my_connection_string;
@@ -163,6 +167,7 @@ public class PurchaseBillController : Controller
             }
         }
     }
+
     public IActionResult AddItem2Grid(PurchaseBillModel model)
     {
         bool TF = false;

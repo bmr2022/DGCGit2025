@@ -47,6 +47,7 @@ namespace eTactWeb.DOM.Models
         public string Intrument { get; set; }
         public string ModeOfAdjustment { get; set; }
         public decimal AdjustmentAmt { get; set; }
+        public decimal NetAmount { get; set; }
         public string? Adjusted { get; set; }
         //other currency
         public double AdjustmentAmtOthCur { get; set; }

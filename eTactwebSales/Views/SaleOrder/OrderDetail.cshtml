@@ -4718,12 +4718,14 @@
             const Rate = $('#Rate').val() === "0" || $('#Rate').val() === "" ? 0 : parseFloat($('#Rate').val());
             const DP = $('#DiscPer') === "0" || $('#DiscPer').val() === "" ? 0 : parseFloat($('#DiscPer').val());
 
-            if (UnitRate == "Unit") {
-                const Qty = $('#Qty').val() == "0" || $('#Qty').val() == "" ? 0 : parseFloat($('#Qty').val());
-                Amount = OC == 'CLOSE' ? Qty * Rate : Amount;
-            }
+            
             if (UnitRate == "AltUnit") {
                 const Qty = $('#AltQty').val() == "0" || $('#AltQty').val() == "" ? 0 : parseInt($('#AltQty').val());
+                Amount = OC == 'CLOSE' ? Qty * Rate : Amount;
+            }
+            else
+            {
+                const Qty = $('#Qty').val() == "0" || $('#Qty').val() == "" ? 0 : parseFloat($('#Qty').val());
                 Amount = OC == 'CLOSE' ? Qty * Rate : Amount;
             }
 
@@ -4732,12 +4734,12 @@
                 $('#DiscRs').val(DA);
                 Amount = Amount - DA;
             }
-            if ($('#OtherRateCurr').val() == ".") {
-                $('#Amount').val("0.00");
-            } else {
-                $('#Amount').val(Amount.toFixed(2));
-            }
-            // $('#Amount').val(Amount.toFixed(2));
+            // if ($('#OtherRateCurr').val() == ".") {
+            //     $('#Amount').val("0.00");
+            // } else {
+            //     $('#Amount').val(Amount.toFixed(2));
+            // }
+             $('#Amount').val(Amount.toFixed(2));
 
         }
 

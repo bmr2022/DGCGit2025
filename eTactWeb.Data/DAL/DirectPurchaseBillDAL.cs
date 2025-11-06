@@ -395,6 +395,48 @@ public class DirectPurchaseBillDAL
         }
 
         return _ResponseResult;
+    } public async Task<ResponseResult> GetDocTypeId(string Doctype)
+    {
+        var _ResponseResult = new ResponseResult();
+
+        try
+        {
+            var SqlParams = new List<dynamic>();
+
+            SqlParams.Add(new SqlParameter("@flag", "GetDocTypeId"));
+            SqlParams.Add(new SqlParameter("@DocumentType", Doctype));
+
+            _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_DirectPurchaseBillMainDetail", SqlParams);
+        }
+        catch (Exception ex)
+        {
+            dynamic Error = new ExpandoObject();
+            Error.Message = ex.Message;
+            Error.Source = ex.Source;
+        }
+
+        return _ResponseResult;
+    }
+    public async Task<ResponseResult> GetItemDetail(string Partcode)
+    {
+        var _ResponseResult = new ResponseResult();
+
+        try
+        {
+            var SqlParams = new List<dynamic>();
+
+            SqlParams.Add(new SqlParameter("@flag", "GetItemDetail"));
+            SqlParams.Add(new SqlParameter("@partcode", Partcode));
+            _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_DirectPurchaseBillMainDetail", SqlParams);
+        }
+        catch (Exception ex)
+        {
+            dynamic Error = new ExpandoObject();
+            Error.Message = ex.Message;
+            Error.Source = ex.Source;
+        }
+
+        return _ResponseResult;
     }
     public async Task<ResponseResult> GetGstRegister(string Flag, int Code)
     {

@@ -83,10 +83,10 @@
                     {
                         <tr>
                             <td>
-                                @(i + 1) <input type="checkbox" name="selectedEmpIds" value="@Model.GateAttDetailsList[i].EmpId" id="selectedEmp_@Model.GateAttDetailsList[i].EmpId" onclick="checkUncheckEmp(@Model.GateAttDetailsList[i].EmpId)" />
+                                <span id="SrNo_@Model.GateAttDetailsList[i].EmpId">@(i + 1)</span> <input type="checkbox" name="selectedEmpIds" value="@Model.GateAttDetailsList[i].EmpId" id="selectedEmp_@Model.GateAttDetailsList[i].EmpId" onclick="checkUncheckEmp(@Model.GateAttDetailsList[i].EmpId)" />
                             </td>
-                            <td>@Model.GateAttDetailsList[i].EmployeeName</td>
-                            <td>@Model.GateAttDetailsList[i].EmployeeCode</td>
+                            <td id="EmpName_@Model.GateAttDetailsList[i].EmpId">@Model.GateAttDetailsList[i].EmployeeName</td>
+                            <td id="EmpCode_@Model.GateAttDetailsList[i].EmpId">@Model.GateAttDetailsList[i].EmployeeCode</td>
                             <td>@Model.GateAttDetailsList[i].ActualEmpShiftName</td>
                             <td>@Model.GateAttDetailsList[i].EmpCategory</td>
                             @if (Model != null && Model.DayHeaders != null)

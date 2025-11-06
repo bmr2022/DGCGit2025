@@ -22,6 +22,8 @@
         <input type="hidden" asp-for="MaxSaleInvoiceEntryDate" />
         <input type="hidden" asp-for="AllowBackDateSALEBILL" />
         <input type="hidden" asp-for="AllowToAdjZeroAmt" />
+        <input type="hidden" id="TypeOfSave"/>
+        <input type="hidden" id="Companytype" />
         @*   <input type="hidden" asp-for="ShowHideSaleBillEntryDetail" />
         <input type="hidden" asp-for="ShowHideSaleBillCustomerDetail" />
         <input type="hidden" asp-for="ShowHideSaleBillOtherRequiredDetail" />
@@ -44,8 +46,7 @@
                             GENARATE EINVOICE
                         </a>
                     }
-                    <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="SaleBillList"
-                       asp-controller="SaleInvoice">
+                    <a type="button" class="pendingso  btn btn-sm btn-outline-light bg-gradient" >
                         <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                         Pending SO
                     </a>
@@ -89,10 +90,21 @@
                             {
                                 <input type="hidden" value="@Model.SaleBillNo" id="hiddenSaleBillNo" />
                             }
+
                             <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
                                 <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
                                 BACK
                             </a>
+                        </div>
+                        <div class="col-auto me-2">
+                            @if (Model.Mode != "V")
+                            {
+                                <button type="button" class="PartialSave btn btn-secondary btn-sm mr-2" style="color:white!important">
+                                    <i class="fa-solid fa-floppy-disk-pen fa-fw fa-lg" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
+                                    PARTIAL SAVE
+                                </button>
+                            }
+
                         </div>
                         @if (Model.Mode != "V")
                         {
@@ -493,6 +505,16 @@
                                     BACK
                                 </a>
                             </div>
+                            <div class="col-auto me-2">
+                                @if (Model.Mode != "V")
+                                {
+                                    <button type="button" class="PartialSave btn btn-secondary btn-sm mr-2" style="color:white!important">
+                                        <i class="fa-solid fa-floppy-disk-pen fa-fw fa-lg" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
+                                        PARTIAL SAVE
+                                    </button>
+                                }
+
+                            </div>
                             @if (Model.Mode != "V")
                             {
                                 <div class="col-auto">
@@ -767,6 +789,119 @@
     </div>
 </div>
 
+
+
+@* ---------------------*@
+
+@* Pend SO For Sale Bill*@
+
+
+<div class="modal fade" style="display:none" id="PendSOForSaleBill" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document" ">
+        <div class="modal-content">
+            <div class="modal-header">
+             
+
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row g-2 gx-3">
+
+                            <div class="card-body text-center overflow-auto pb-0   ">
+                                <div class="d-flex align-items-center mb-2">
+                                    <button class="btn btn-sm btn-outline-warning mb-2" type="button" id="CheckAll" style="display: flex; align-items: center;">
+                                        <i class="fa fa-check-square" aria-hidden="true"></i>
+                                        <span style="margin-left: 5px;">Ch/UnCh All</span>
+                                    </button>
+                                    <div class="col-md-2 me-3" style="margin-left:50px">
+                                        <input type="text" class="form-control" id="search-box1" placeholder="Search..." style="background-color:#FFFACD;">
+                                    </div>
+                                   
+                                </div>
+                                <div class="table-responsive" style="max-height:350px;">
+                                    <table class="table table-hover table-bordered table-striped" id="GateDataTable" style="table-layout: fixed;">
+                                        <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+                                            <tr>
+                                                <th style="width:70px;">Action <input id="checkuncheck" class="form-check-input me-1 mt-2" type="checkbox" role="switch" /></th>
+
+                                                <th style="width:70px;">SO No</th>
+
+
+                                                <th style="width:150px;">Part Code</th>
+                                                <th style="width:250px;">Item Name</th>
+                                                <th style="width:100px;">Bill Qty</th>
+                                                <th style="width:100px;">Rate</th>
+                                                
+                                                <th style="width:70px;">Disc %</th>
+                                               
+                                                <th style="width:100px;">Disc Amount</th>
+                                                <th style="width:120px;">Item Amount</th>
+                                                <th style="width:70px;">Order Qty</th>
+                                                <th style="width:70px;">Pending Qty</th>
+                                               
+                                               
+                                                <th style="width:70px;">Unit</th>
+                                                <th style="width:70px;">Location</th>
+                                                <th style="width:70px;">SOYear </th>
+                                                <th style="width:90px;">Order No</th>
+                                                <th style="width:70px;">Sch No</th>
+                                                <th style="width:70px;">Sch Year </th>
+                                                <th style="width:70px;">SO Type</th>
+                                                <th style="width:70px;">SO For</th>
+
+                                                <th style="width:70px;">HSN No</th>
+                                                <th style="width:80px;">TotalStock</th>
+                                                <th style="width:150px;">Batch No</th>
+                                                <th style="width:150px;">Unique Batch No</th>
+                                                <th style="width:70px;">Batch Stock</th>
+                                               
+                                                
+                                                <th style="width:100px;">AltQty</th>
+                                                <th style="width:100px;">StoreId</th>
+                                                <th style="width:150px;">StoreName</th>
+                                                <th style="width:200px;">Customer Name</th>
+                                                <th style="width:120px;">Account Code</th>
+                                                <th style="width:120px;">Item Code</th>
+
+
+                                            </tr>
+                                        </thead>
+                                        <tbody id="divPendMRNGrid">
+                                            <tr class="text-center">
+                                                <td colspan="25" class="text-black-50"><strong>NO DATA YET</strong></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="progress my-2" style="height: 4px;">
+                        <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <div class="row g-2 gx-3">
+                        <div class="col-12 text-center">
+                            <strong>Total No Of Items : <span id="lblTotalNoOfItems1"></span></strong>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class=" btn btn-sm btn-outline-success me-2" onclick="AddPendSOToGrid(event)">
+                        <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
+                    </button>
+
+                    <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@* ----------------------------
+ *@
 <div class="modal fade" id="EinvoicePopup" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
      aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
@@ -798,6 +933,7 @@
                     <a href="#" class="btn btn-primary" id="btngenrateEinvoice">
                         save & Generate Einvoice
                     </a>
+                    <button type="button" class="btn btn-danger" id="btnSaveAndDashBoard">Save & DashBoard</button>
                     <button type="button" class="btn btn-danger" id="btnClose">
                         @* <span class="spinner-border spinner-border-sm me-2 d-none" role="status" id="btnCloseSpinner" aria-hidden="true"></span> *@
                         Save
@@ -1032,6 +1168,10 @@
             FillCurrency();
             FillCustomerAddress();
 
+                    $('#PendSOForSaleBill').modal('show');
+                    showDetail();
+                   
+
             if ($('#divTaxGrid tr td').length > 1) {
                 btnClearTax();
             }
@@ -1133,13 +1273,14 @@
             // $('#Group_Code1').select2();
             GetItemGroup();
             AutoFillItems();
+            GetCompanyType();
                AutoFillPARTYNAMELIST();
             EditableRateAndDiscountONSaleInvoice();
 
             const domesticExport = $('#DomesticExportNEPZ').val();
             const $supplyType = $('#SupplyType');
             GetSONoFormRights();
-                FillItems($('#TypeItemServAssets').val());
+                // FillItems($('#TypeItemServAssets').val());
 
         // When SO changes
               $("#SONO").change(function () {
@@ -1200,6 +1341,10 @@
             }
             calculatetotalqty();
 
+                $('.pendingso').click(function () {
+                    $('#PendSOForSaleBill').modal('show');
+ showDetail();
+                });
 
 
             // Initialize validator only once
@@ -1211,11 +1356,16 @@
                 $('#EinvoicePopup').modal("hide");
 
                 // setTimeout(() => {
-                submitForm(false, printWindow); // Send true and window object
+                       submitForm(false, printWindow,false,false); // Send true and window object
                 // }, 300);
             });
+                      $('#btnSaveAndDashBoard').click(function () {
+                                    submitForm(false, null,true,false);
+                       $('#EinvoicePopup').modal("hide");
+               });
+
             $('#btnClose').click(function () {
-                submitForm(false, null);
+                submitForm(false, null,false,false);
                 $('#EinvoicePopup').modal("hide");
                 //   $('#btnCloseSpinner').removeClass('d-none');
                 //   $('#btnClose').prop('disabled', true);
@@ -1262,7 +1412,7 @@
                 }
                 else {
                     //   setTimeout(() => {
-                    submitForm(true, null); // no print
+                    submitForm(true, null,false,false); // no print
                     // }, 300);
                 }
             });
@@ -1275,11 +1425,104 @@
                 }
                 else {
                     // setTimeout(() => {
-                    submitForm(true, null); // no print
+                                  submitForm(true, null,false,false); // no print
                     // }, 300);
                 }
             });
-            function submitForm(ShouldEinvoice, printWindow) {
+                    $(document).keyup(function (e) {
+                   if (e.altKey && e.keyCode === 83) {
+                       e.preventDefault();
+                       $('.PartialSave').trigger("click");
+                   }
+               });
+                          $(document).on('click', '.PartialSave', function (e) {
+
+                              $('#TypeOfSave').val("PS");
+                              e.preventDefault();
+                                         ValidateSubmitWrapper(function (isValid) {
+                              if (!isValid) return;
+
+                              if ($('#divSaleBillList tr td').length <= 1) {
+                                  $.notify('Sale Bill Grid Should Have Atleast 1 Item...!', "error");
+                              } else if ($('#GSTRegistered').val() == 'Y') {
+                                  if ($('#divTaxGrid tr td').length <= 1 && $('#DomesticExportNEPZ').val() == "DOMESTIC") {
+                                      $.notify('Tax Grid Should Have Atleast 1 Item...!', "error");
+                                  } else {
+                                      if ($('#divAdjItemList tr td').length <= 1) {
+                                          $.notify('Adjust Grid Should Have Atleast 1 Item...!', "error");
+                                      } else if ($('#divdbCrItemList tr td').length <= 1) {
+                                          $.notify('DRCR Grid Should Have Atleast 1 Item...!', "error");
+                                      } else if ($('#StateCode').val() == 0) {
+                                          $.notify('StateCode is mandatory...!', "error");
+                                      } else if ($('#divAdjItemList tr td').length > 1) {
+                                          var hasCR = false;
+                                          $('tr.adjGridRow').each(function () {
+                                              $(this).find('.GridAdjDrCr').each(function () {
+                                                  if ($(this).text().trim().toUpperCase() === 'CR') {
+                                                      hasCR = true;
+                                                      return false;
+                                                  }
+                                              });
+                                              if (hasCR) return false;
+                                          });
+
+                                          if (hasCR) {
+                                              $.notify('AdjGrid should not have CR value...!', "error");
+                                          } else {
+                                              if ($('#SaleBillJobwork').val() == 'J') {
+                                                  var rowCount = $('#divSaleBillList tr').length;
+                                                  var itemsStockableAndCustJw = [];
+
+                                                  for (var i = 1; i <= rowCount; i++) {
+                                                      var stockable = $('#stockableItems-' + i).text() === 'Y';
+                                                      var custJWAdj = $('#custJWAdjMandatory-' + i).text() === 'Y';
+                                                      if (stockable || custJWAdj) {
+                                                          itemsStockableAndCustJw.push($('#GridIC-' + i).val());
+                                                      }
+                                                  }
+
+                                                  var isCustJWValid = ValidateAdjChallanGrid('#divCustJobWorkISsueSummary', '#fgItemCodeGrid-');
+                                                  var isBomCustJWValid = ValidateAdjChallanGrid('#divBomCustJobWorkISsueSummary', '#fgBomItemCodeGrid-');
+                                                  var isBomItemsValidInCust = ValidateBomItemsInCustGrid();
+
+                                                  var isPentoAdj = true;
+                                                  $('.bomCustRowJW').find('#pendToAdj').each(function () {
+                                                      if (parseFloat($(this).text()) > 0) {
+                                                          isPentoAdj = false;
+                                                          $.notify('PendToAdj qty must be adjusted.', "error");
+                                                          return false;
+                                                      }
+                                                  });
+
+                                                  if (isCustJWValid && isBomCustJWValid && isBomItemsValidInCust && isPentoAdj) {
+                                                      if (confirm("Are you sure you want to save this entry?")) {
+                                                         submitForm(false, null,false,true);
+                                                      }
+                                                  }
+                                              } else {
+                                                  if (confirm("Are you sure you want to save this entry?")) {
+                                                            submitForm(false, null,false,true);
+                                                  }
+                                              }
+                                          }
+                                      } else if ($('#GSTRegistered').val() == 'Y') {
+                                          if ($('#divTaxGrid tr td').length <= 1) {
+                                              $.notify('Tax Grid Should Have Atleast 1 Item...!', "error");
+                                          }
+                                      } else {
+                                          if (confirm("Are you sure you want to save this entry?")) {
+                                             submitForm(false, null,false,true);
+                                          }
+                                      }
+                                  }
+                              } else {
+                                  if (confirm("Are you sure you want to save this entry?")) {
+                                          submitForm(false, null,false,true);
+                                  }
+                              }
+                          });
+                          });
+                   function submitForm(ShouldEinvoice, printWindow,GoToDashBoard,Partialview) {
                 $('#ShouldEinvoice').val(ShouldEinvoice);
 
                 var formData = new FormData(document.getElementById('saleInvoiceForm'));
@@ -1296,6 +1539,13 @@
                     success: function (res) {
                           $('#ajaxLoader').hide();
                         if (res && res.status === "Success") {
+                                     if (GoToDashBoard) {
+                                                 window.location.href = '/SaleInvoice/SaleBillOnCounterDashboard';
+                               }
+                                              else if (Partialview) {
+                                                                             window.location.href = `/SaleInvoice/SaleBillOnCounter/${res.entryId}?Mode=U&YearCode=${res.yearCode}`;
+                                                                         }
+                                      else{
                             if (ShouldEinvoice && res.entryId && res.yearCode) {
                                 const payload = {
                                     EntryId: res.entryId,
@@ -1390,12 +1640,16 @@
                                     printWindow.document.title = "Sale Invoice Report";
 
                                 };
+                                       
                                 window.location.href = '/SaleInvoice/SaleBillOnCounter/0';
                             }
+                                    
                             else {
                                 window.location.href = '/SaleInvoice/SaleBillOnCounter/0';
                             }
-                        } else {
+                        } 
+                        }
+                        else {
                             alert(res.message || "Something went wrong.");
                         }
                     },
@@ -1533,72 +1787,231 @@
             }
         });
 
-
-        function AutoFillItems() {
-
-
-            // Source for PartCodeText
-            const partCodeSource = function (request, response) {
-                $.ajax({
-                    url: '@Url.Action("AutoFillPartCode")',
-                    type: 'POST',
-                    data: {
+        function GetCompanyType() {
 
 
+            $.ajax({
+                type: "POST",
 
-                        SearchPartCode: request.term
-                    },
-                    success: function (result) {
-                        let obj = typeof result === "string" ? JSON.parse(result) : result;
-                        console.log("obj" + obj);
-                        console.log("result" + typeof result === "string" ? JSON.parse(result) : result);
-                        if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result)) {
+                url: "@Url.Action("GetCompanyType")",
+                dataType: "json",
+                success: function (result, status, error) {
 
-                            let filtered = obj.Result.filter(function (item) {
-                                let term = request.term.toLowerCase();
-                                return item.PartCode.toLowerCase().includes(term);
-                            });
-                            console.log(filtered);
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.Result != null) {
+                            $('#Companytype').val('');
+                            $('#Companytype').val(obj.Result.Table[0].RetailerOrManufacturar);
 
-                            response($.map(filtered, function (item) {
-                                return {
-                                    label: item.PartCode,
-                                    value: item.PartCode,
-                                    itemName: item.ItemName,
-                                    itemCode: item.Item_Code,
-                                };
-                            }));
-                        } else {
-                            response([]);
+
                         }
                     }
-                });
-            };
-
-
-
-            $("#SearchPartCode").autocomplete({
-                source: partCodeSource,
-                appendTo: "#SaleOrderGroupWiseItem",
-                select: function (event, ui) {
-                    $("#SearchPartCode").val(ui.item.value).data("itemcode", ui.item.itemCode);
-
-                    return false;
-                },
-                focus: function (event, ui) {
-                    $("#SearchPartCode").val(ui.item.value);
-                    return false;
-                },
-                minLength: 2
+                }
             });
-
-
-
-
-
-
-
         }
+
+        function CheckacceptedQtySHA(i) {
+
+            var checkedtruevalues = [];
+            var rowCount = $('#divPendMRNGrid tr').length;
+            for (let i = 1; i <= rowCount; i++) {
+                checkedtruevalues.push({
+                    "checked": $('#AcceptedQtySHA' + i).is(':checked')
+                })
+            }
+
+            var checkedonlytrue = checkedtruevalues.filter(function (item) {
+                return item.checked;
+            }).length;
+            if (rowCount == checkedonlytrue) {
+                $('#checkuncheck').prop('checked', true)
+            } else {
+                $('#checkuncheck').prop('checked', false)
+            }
+        }
+
+        $('#checkuncheck').change(function () {
+
+            var rowCount = $('#divPendMRNGrid tr').length;
+            if ($('#checkuncheck').is(':checked') == true) {
+                for (let i = 1; i <= rowCount; i++) {
+                    $('#AcceptedQtySHA' + i).prop('checked', true)
+                }
+            }
+            else {
+                for (let i = 1; i <= rowCount; i++) {
+                    $('#AcceptedQtySHA' + i).prop('checked', false)
+                }
+            }
+        })
+
+        function showDetail() {
+
+            var data = {
+                "Flag": "ShowPendingSaleorderforBill",
+                "FromDate": $('#FinFromDate').val(),
+                "Todate": $('#FinToDate').val(),
+                "InvoiceDate": $('#SaleBillDate').val(),
+                "CurrentYear": $('#SaleBillYearCode').val(),
+                "BillFromStoreId": $('#BillFromStoreId').val(),
+                "accountCode": $('#AccountCode').val(),
+                "SONo": $('#SONo').val(),
+                "PartCode": $('#PartCode').val(),
+                "CompanyType": $('#Companytype').val()
+
+            }
+
+            $.ajax({
+                url: '@Url.Action("ShowPendingSaleorderforBill")',
+                type: "POST",
+                data: data,
+                success: function (data) {
+                    if (data != null) {
+
+                        var obj = $.parseJSON(data);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#divPendMRNGrid').empty();
+                            var i = 1;
+                            $.each(obj.Result.Table, function (index, val) {
+
+                                var html = '';
+                                html += '<tr>' +
+                                    '<td style="text-align:center;">' +
+                                    '<input style="background-color: #b2b3f0;" id="AcceptedQtySHA' + i + '" ' +
+                                    'class="form-check-input me-1 mt-2" type="checkbox" role="switch" ' +
+                                    'onchange="CheckacceptedQtySHA(' + i + ');" />' +
+                                    '</td>' +
+
+                                    '<td><input id="SONo' + i + '" class="form-control no-cursor" value="' + val.SONo + '"/></td>' +
+
+                                    '<td><input id="PartCode' + i + '" class="form-control no-cursor" value="' + val.PartCode + '"/></td>' +
+                                    '<td><input id="ItemName' + i + '" class="form-control no-cursor" value="' + val.ItemName + '"/></td>' +
+                                      '<td><input type="number" style="background-color :#FFFACD" onfocusout="CalculateAmountForPendSOGrid(' + i + ')" id="SaleBillQty' + i + '" class="form-control " value="' + val.SaleBillQty + '"/></td>' +
+                                    '<td><input id="SOItemRate' + i + '" style="background-color:#FFFACD" onfocusout="CalculateAmountForPendSOGrid(' + i + ')" class="form-control" value="' + val.SOItemRate + '"/></td>' +
+                                    '<td><input type="number" style="background-color:#FFFACD" onfocusout="CalculateAmountForPendSOGrid(' + i + ')" id="DisPer' + i + '" class="form-control " value="' + val.DisPer + '"/></td>' +
+                                    '<td><input type="number" id="DisAmt' + i + '" class="form-control" value="' + val.DisAmt + '"/></td>' +
+                                    '<td><input type="number" id="ItemAmount' + i + '" class="form-control no-cursor" value="' + val.ItemAmount + '"/></td>' +
+                                    '<td><input id="OrderQty' + i + '" class="form-control no-cursor" value="' + val.OrderQty + '"/></td>' +
+                                    '<td><input id="OrderPendQty' + i + '" class="form-control no-cursor" value="' + val.OrderPendQty + '"/></td>' +
+                                    
+                                   
+                                    '<td><input id="Unit' + i + '" class="form-control no-cursor" value="' + val.Unit + '"/></td>' +
+                                    '<td><input id="RackID' + i + '" class="form-control no-cursor" value="' + val.RackID + '"/></td>' +
+                                    '<td><input id="SOYearCode' + i + '" class="form-control no-cursor" value="' + val.SOYearCode + '"/></td>' +
+                                    '<td><input id="CustorderNo' + i + '" class="form-control no-cursor" value="' + val.CustorderNo + '"/></td>' +
+                                    '<td><input id="SchNo' + i + '" class="form-control no-cursor" value="' + val.SchNo + '"/></td>' +
+                                    '<td><input id="SchYearCode' + i + '" class="form-control no-cursor" value="' + val.SchYearCode + '"/></td>' +
+                                    '<td><input id="SOType' + i + '" class="form-control no-cursor" value="' + val.SOType + '"/></td>' +
+                                    '<td><input id="SOFor' + i + '" class="form-control no-cursor" value="' + val.SOFor + '"/></td>' +
+
+                                    '<td><input id="HSNNO' + i + '" class="form-control no-cursor" value="' + val.HSNNO + '"/></td>' +
+                                    '<td><input id="TotalStock' + i + '" class="form-control no-cursor" value="' + val.TotalStock + '"/></td>' +
+                                    '<td><input id="BatchNo' + i + '" class="form-control no-cursor" value="' + val.BatchNo + '"/></td>' +
+                                    '<td><input id="UniqueBatchNo' + i + '" class="form-control no-cursor" value="' + val.UniqueBatchNo + '"/></td>' +
+                                    '<td><input id="BatchStock' + i + '" class="form-control no-cursor" value="' + val.BatchStock + '"/></td>' +
+                                    
+                                    '<td><input id="AltQty' + i + '" class="form-control no-cursor" value="' + val.AltQty + '"/></td>' +
+                                    '<td><input id="Storeid' + i + '" class="form-control no-cursor" value="' + val.Storeid + '"/></td>' +
+                                    '<td><input id="Store_Name' + i + '" class="form-control no-cursor" value="' + val.Store_Name + '"/></td>' +
+                                    '<td><input id="CustomerName' + i + '" class="form-control no-cursor" value="' + val.CustomerName + '"/></td>' +
+                                    '<td><input id="Accountcode' + i + '" class="form-control no-cursor" value="' + val.Accountcode + '"/></td>' +
+                                    '<td><input id="ItemCode' + i + '" type="hidden" value="' + val.ItemCode + '"/>' +
+                                    '<input class="form-control no-cursor" value="' + val.ItemCode + '"/></td>' +
+                                    '</tr>';
+
+                                $('#divPendMRNGrid').append(html);
+                                $('#TransertoMIRBtn').prop("disabled", false);
+
+                                var count = $('#divPendMRNGrid tr').length;
+                                $('#totalRows').text(count);
+                                i++;
+                            });
+
+                        }
+                        else {
+                            $('#divPendMRNGrid').empty();
+                            var count = $('#divPendMRNGrid tr').length;
+                            $('#totalRows').text(count);
+                            $('#divPendMRNGrid').append('<tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>')
+
+                        }
+                    }
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+
+        // function AutoFillItems() {
+
+
+        //     // Source for PartCodeText
+        //     const partCodeSource = function (request, response) {
+        //         $.ajax({
+        //             url: '@Url.Action("AutoFillPartCode")',
+        //             type: 'POST',
+        //             data: {
+
+
+
+        //                 SearchPartCode: request.term
+        //             },
+        //             success: function (result) {
+        //                 let obj = typeof result === "string" ? JSON.parse(result) : result;
+        //                 console.log("obj" + obj);
+        //                 console.log("result" + typeof result === "string" ? JSON.parse(result) : result);
+        //                 if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result)) {
+
+        //                     let filtered = obj.Result.filter(function (item) {
+        //                         let term = request.term.toLowerCase();
+        //                         return item.PartCode.toLowerCase().includes(term);
+        //                     });
+        //                     console.log(filtered);
+
+        //                     response($.map(filtered, function (item) {
+        //                         return {
+        //                             label: item.PartCode,
+        //                             value: item.PartCode,
+        //                             itemName: item.ItemName,
+        //                             itemCode: item.Item_Code,
+        //                         };
+        //                     }));
+        //                 } else {
+        //                     response([]);
+        //                 }
+        //             }
+        //         });
+        //     };
+
+
+
+        //     $("#SearchPartCode").autocomplete({
+        //         source: partCodeSource,
+        //         appendTo: "#SaleOrderGroupWiseItem",
+        //         select: function (event, ui) {
+        //             $("#SearchPartCode").val(ui.item.value).data("itemcode", ui.item.itemCode);
+
+        //             return false;
+        //         },
+        //         focus: function (event, ui) {
+        //             $("#SearchPartCode").val(ui.item.value);
+        //             return false;
+        //         },
+        //         minLength: 2
+        //     });
+
+
+
+
+
+
+
+        // }
 
 
         $(document).on('mouseover', 'input[type="text"]', function () {
@@ -1867,127 +2280,127 @@
         }
 
 
-        function showDetail() {
+        // function showDetail() {
 
-            var data = {
-                "Flag": "ShowPendingSaleorderforBill",
-                "FromDate": $('#FromDate').val(),
-                "Todate": $('#SaleBillDate').val(),
-                "InvoiceDate": $('#SaleBillDate').val(),
-                "CurrentYear": $('#SaleBillYearCode').val(),
-                "BillFromStoreId": $('#BillFromStoreId').val(),
-                "accountCode": $('#AccountCode').val(),
-                "SONo": $('#SONo').val(),
-                // "PartCode": $('#PartCode').val()
+        //     var data = {
+        //         "Flag": "ShowPendingSaleorderforBill",
+        //         "FromDate": $('#FromDate').val(),
+        //         "Todate": $('#SaleBillDate').val(),
+        //         "InvoiceDate": $('#SaleBillDate').val(),
+        //         "CurrentYear": $('#SaleBillYearCode').val(),
+        //         "BillFromStoreId": $('#BillFromStoreId').val(),
+        //         "accountCode": $('#AccountCode').val(),
+        //         "SONo": $('#SONo').val(),
+        //         // "PartCode": $('#PartCode').val()
 
-            }
+        //     }
 
-            $.ajax({
-                url: '@Url.Action("ShowPendingSaleorderforBill")',
-                type: "POST",
-                data: data,
-                success: function (data) {
-                    if (data != null) {
+        //     $.ajax({
+        //         url: '@Url.Action("ShowPendingSaleorderforBill")',
+        //         type: "POST",
+        //         data: data,
+        //         success: function (data) {
+        //             if (data != null) {
 
-                        var obj = $.parseJSON(data);
-                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                            $('#PendSaleOrderModel').modal('show');
-                            $('#divPendSOGrid').empty();
-                            var i = 1;
-                            $.each(obj.Result.Table, function (index, val) {
+        //                 var obj = $.parseJSON(data);
+        //                 if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+        //                     $('#PendSaleOrderModel').modal('show');
+        //                     $('#divPendSOGrid').empty();
+        //                     var i = 1;
+        //                     $.each(obj.Result.Table, function (index, val) {
 
-                                var html = '';
-                                html += '<tr>' +
-                                    '<td style="text-align:center;">' +
-                                    '<input style="background-color: #b2b3f0;" id="AcceptedQtySHA-' + i + '" ' +
-                                    'class="form-check-input me-1 mt-2" type="checkbox" role="switch" ' +
-                                    'onchange="CheckacceptedQtySHA(' + i + ');" />' +
-                                    '</td>' +
+        //                         var html = '';
+        //                         html += '<tr>' +
+        //                             '<td style="text-align:center;">' +
+        //                             '<input style="background-color: #b2b3f0;" id="AcceptedQtySHA-' + i + '" ' +
+        //                             'class="form-check-input me-1 mt-2" type="checkbox" role="switch" ' +
+        //                             'onchange="CheckacceptedQtySHA(' + i + ');" />' +
+        //                             '</td>' +
 
-                                    '<td><input id="SONO-' + i + '" class=" no-cursor" style="width:50px !important;" value="' + val.SONo + '"/></td>' +
-                                    '<td><input id="SOYearCode-' + i + '" class=" no-cursor hiddenColumn" value="' + val.SOYearCode + '"/></td>' +
-                                    '<td><input id="CustOrderNo-' + i + '" class=" no-cursor hiddenColumn" value="' + val.CustorderNo + '"/></td>' +
-                                    '<td><input id="SchNo-' + i + '" class=" no-cursor hiddenColumn" value="' + val.SchNo + '"/></td>' +
-                                    '<td><input id="SaleSchYearCode-' + i + '" class=" no-cursor hiddenColumn" value="' + val.SchYearCode + '"/></td>' +
+        //                             '<td><input id="SONO-' + i + '" class=" no-cursor" style="width:50px !important;" value="' + val.SONo + '"/></td>' +
+        //                             '<td><input id="SOYearCode-' + i + '" class=" no-cursor hiddenColumn" value="' + val.SOYearCode + '"/></td>' +
+        //                             '<td><input id="CustOrderNo-' + i + '" class=" no-cursor hiddenColumn" value="' + val.CustorderNo + '"/></td>' +
+        //                             '<td><input id="SchNo-' + i + '" class=" no-cursor hiddenColumn" value="' + val.SchNo + '"/></td>' +
+        //                             '<td><input id="SaleSchYearCode-' + i + '" class=" no-cursor hiddenColumn" value="' + val.SchYearCode + '"/></td>' +
 
-                                    '<td><input id="PartCode-' + i + '" class=" no-cursor" style="width:200px !important;" value="' + val.PartCode + '"/></td>' +
-                                    '<td><input id="ItemName-' + i + '" class=" no-cursor" style="width:200px !important;" value="' + val.ItemName + '"/></td>' +
-                                    '<td><input id="Rate-' + i + '" class="" style="width:60px !important;"   onkeyup="CalculateAmountForMemoryGrid(' + i + ')"  value="' + val.SOItemRate + '"/></td>' +
-                                    // '<td><input id="OrderQty' + i + '" class="form-control no-cursor" value="' + val.OrderQty + '"/></td>' +
-                                    '<td><input id="Qty-' + i + '" class="" style="width:60px !important;"  onkeyup="CalculateAmountForMemoryGrid(' + i + ')"  value="' + val.SaleBillQty + '"/></td>' +
-                                    '<td><input id="Amount-' + i + '" class=" no-cursor" style="width:60px !important;" value="' + val.ItemAmount + '"/></td>' +
-                                    '<td><input id="DiscountPer-' + i + '" class="" style="width:40px !important;"  onkeyup="CalculateAmountForMemoryGrid(' + i + ')"  value="' + val.DisPer + '"/></td>' +
-                                    '<td><input id="DiscountAmt-' + i + '" class=" no-cursor" style="width:40px !important;" value="' + val.DisAmt + '"/></td>' +
+        //                             '<td><input id="PartCode-' + i + '" class=" no-cursor" style="width:200px !important;" value="' + val.PartCode + '"/></td>' +
+        //                             '<td><input id="ItemName-' + i + '" class=" no-cursor" style="width:200px !important;" value="' + val.ItemName + '"/></td>' +
+        //                             '<td><input id="Rate-' + i + '" class="" style="width:60px !important;"   onkeyup="CalculateAmountForMemoryGrid(' + i + ')"  value="' + val.SOItemRate + '"/></td>' +
+        //                             // '<td><input id="OrderQty' + i + '" class="form-control no-cursor" value="' + val.OrderQty + '"/></td>' +
+        //                             '<td><input id="Qty-' + i + '" class="" style="width:60px !important;"  onkeyup="CalculateAmountForMemoryGrid(' + i + ')"  value="' + val.SaleBillQty + '"/></td>' +
+        //                             '<td><input id="Amount-' + i + '" class=" no-cursor" style="width:60px !important;" value="' + val.ItemAmount + '"/></td>' +
+        //                             '<td><input id="DiscountPer-' + i + '" class="" style="width:40px !important;"  onkeyup="CalculateAmountForMemoryGrid(' + i + ')"  value="' + val.DisPer + '"/></td>' +
+        //                             '<td><input id="DiscountAmt-' + i + '" class=" no-cursor" style="width:40px !important;" value="' + val.DisAmt + '"/></td>' +
 
-                                    '<td><input id="Unit-' + i + '" class=" no-cursor " style="width:30px !important;" value="' + val.Unit + '"/></td>' +
-                                    '<td><input id="RackID-' + i + '" class=" no-cursor" style="width:80px !important;" value="' + val.RackID + '"/></td>' +
-                                    '<td><input id="HSNNo-' + i + '" class=" no-cursor" style="width:70px !important;" value="' + val.HSNNO + '"/></td>' +
-
-
-                                    '<td><input id="SOPendQty-' + i + '" class=" no-cursor" style="width:70px !important;" value="' + val.OrderPendQty + '"/></td>' +
-                                    '<td><input id="StoreName-' + i + '" class=" no-cursor hiddenColumn" value="' + val.Store_Name + '"/></td>' +
-                                    '<td><input id="StoreId-' + i + '" class=" no-cursor hiddenColumn" value="' + val.Storeid + '"/></td>' +
-                                    '<td><input id="Batchno-' + i + '" class=" no-cursor " value="' + val.BatchNo + '"/></td>' +
-                                    '<td><input id="Uniquebatchno-' + i + '" class=" no-cursor hiddenColumn" value="' + val.UniqueBatchNo + '"/></td>' +
-                                    '<td><input id="TotalStock-' + i + '" class=" no-cursor hiddenColumn" value="' + val.TotalStock + '"/></td>' +
-
-                                    '<td><input id="LotStock-' + i + '" class=" no-cursor " value="' + val.BatchStock + '"/></td>' +
+        //                             '<td><input id="Unit-' + i + '" class=" no-cursor " style="width:30px !important;" value="' + val.Unit + '"/></td>' +
+        //                             '<td><input id="RackID-' + i + '" class=" no-cursor" style="width:80px !important;" value="' + val.RackID + '"/></td>' +
+        //                             '<td><input id="HSNNo-' + i + '" class=" no-cursor" style="width:70px !important;" value="' + val.HSNNO + '"/></td>' +
 
 
+        //                             '<td><input id="SOPendQty-' + i + '" class=" no-cursor" style="width:70px !important;" value="' + val.OrderPendQty + '"/></td>' +
+        //                             '<td><input id="StoreName-' + i + '" class=" no-cursor hiddenColumn" value="' + val.Store_Name + '"/></td>' +
+        //                             '<td><input id="StoreId-' + i + '" class=" no-cursor hiddenColumn" value="' + val.Storeid + '"/></td>' +
+        //                             '<td><input id="Batchno-' + i + '" class=" no-cursor " value="' + val.BatchNo + '"/></td>' +
+        //                             '<td><input id="Uniquebatchno-' + i + '" class=" no-cursor hiddenColumn" value="' + val.UniqueBatchNo + '"/></td>' +
+        //                             '<td><input id="TotalStock-' + i + '" class=" no-cursor hiddenColumn" value="' + val.TotalStock + '"/></td>' +
 
-                                    '<td><input id="SOType-' + i + '" class=" no-cursor hiddenColumn" value="' + val.SOType + '"/></td>' +
-
-
-                                    '<td><input id="AltQty-' + i + '" class=" no-cursor hiddenColumn" value="' + val.AltQty + '"/></td>' +
-                                    '<td><input id="ItemCode-' + i + '" class=" no-cursor hiddenColumn" value="' + val.ItemCode + '"/></td>' +
-
-
-                                    // '<td><input id="CustomerName' + i + '" class="form-control no-cursor" value="' + val.CustomerName + '"/></td>' +
-                                    // '<td><input id="Accountcode' + i + '" class="form-control no-cursor" value="' + val.Accountcode + '"/></td>' +
-                                    // '<td><input id="ItemCode' + i + '" type="hidden" value="' + val.ItemCode + '"/>' +
-                                    // '<input class="form-control no-cursor" value="' + val.ItemCode + '"/></td>' +
-                                    '</tr>';
-
-                                $('#divPendSOGrid').append(html);
-                                $('#TransertoMIRBtn').prop("disabled", false);
-
-                                var count = $('#divPendSOGrid tr').length;
-                                $('#totalRows').text(count);
-                                i++;
-                            });
-                            $('th.hiddenColumn').hide();
-                            $('.hiddenColumn').closest('td').hide();
-
-                            if ($('#EditableRateAndDiscountONSaleInvoice').val() == 'N') {
-                                $('input[id^="Rate-"]').prop('readonly', true);
-                                $('input[id^="DiscountPer-"]').prop('readonly', true);
-                                $('input[id^="DiscountAmt-"]').prop('readonly', true);
-                            }
-                            else {
-                                $('input[id^="Rate-"]').prop('readonly', false);
-                                $('input[id^="DiscountPer-"]').prop('readonly', false);
-                                $('input[id^="DiscountAmt-"]').prop('readonly', false);
-                            }
+        //                             '<td><input id="LotStock-' + i + '" class=" no-cursor " value="' + val.BatchStock + '"/></td>' +
 
 
-                        }
-                        else {
-                            $('#divPendSOGrid').empty();
-                            var count = $('#divPendSOGrid tr').length;
-                            $('#totalRows').text(count);
-                            $('#divPendSOGrid').append('<tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>')
 
-                        }
-                    }
-                },
-                error: function (response) {
-                    alert(response.responseText);
-                },
-                failure: function (response) {
-                    alert(response.responseText);
-                }
-            });
-        }
+        //                             '<td><input id="SOType-' + i + '" class=" no-cursor hiddenColumn" value="' + val.SOType + '"/></td>' +
+
+
+        //                             '<td><input id="AltQty-' + i + '" class=" no-cursor hiddenColumn" value="' + val.AltQty + '"/></td>' +
+        //                             '<td><input id="ItemCode-' + i + '" class=" no-cursor hiddenColumn" value="' + val.ItemCode + '"/></td>' +
+
+
+        //                             // '<td><input id="CustomerName' + i + '" class="form-control no-cursor" value="' + val.CustomerName + '"/></td>' +
+        //                             // '<td><input id="Accountcode' + i + '" class="form-control no-cursor" value="' + val.Accountcode + '"/></td>' +
+        //                             // '<td><input id="ItemCode' + i + '" type="hidden" value="' + val.ItemCode + '"/>' +
+        //                             // '<input class="form-control no-cursor" value="' + val.ItemCode + '"/></td>' +
+        //                             '</tr>';
+
+        //                         $('#divPendSOGrid').append(html);
+        //                         $('#TransertoMIRBtn').prop("disabled", false);
+
+        //                         var count = $('#divPendSOGrid tr').length;
+        //                         $('#totalRows').text(count);
+        //                         i++;
+        //                     });
+        //                     $('th.hiddenColumn').hide();
+        //                     $('.hiddenColumn').closest('td').hide();
+
+        //                     if ($('#EditableRateAndDiscountONSaleInvoice').val() == 'N') {
+        //                         $('input[id^="Rate-"]').prop('readonly', true);
+        //                         $('input[id^="DiscountPer-"]').prop('readonly', true);
+        //                         $('input[id^="DiscountAmt-"]').prop('readonly', true);
+        //                     }
+        //                     else {
+        //                         $('input[id^="Rate-"]').prop('readonly', false);
+        //                         $('input[id^="DiscountPer-"]').prop('readonly', false);
+        //                         $('input[id^="DiscountAmt-"]').prop('readonly', false);
+        //                     }
+
+
+        //                 }
+        //                 else {
+        //                     $('#divPendSOGrid').empty();
+        //                     var count = $('#divPendSOGrid tr').length;
+        //                     $('#totalRows').text(count);
+        //                     $('#divPendSOGrid').append('<tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>')
+
+        //                 }
+        //             }
+        //         },
+        //         error: function (response) {
+        //             alert(response.responseText);
+        //         },
+        //         failure: function (response) {
+        //             alert(response.responseText);
+        //         }
+        //     });
+        // }
 
 
 
@@ -2176,6 +2589,199 @@
                 $(this).find("td:first").text(index + 1);
             });
         }
+
+
+       function AddPendSOToGrid (e) {
+            e.preventDefault();
+            /* if (!Validate_TransferGrid()) return; */
+            // var ItemData = [];
+            // var RowCount = $('#divMultiItemGrid tr').length;
+
+
+
+
+            // var CheckboxArr = [];
+            // // var RowCount = $('#MultiItemBody tr').length;
+
+
+
+
+            // // var RowCount = $('#MultiItemBody tr').length;
+            // for (var i = 1; i <= RowCount; i++) {
+
+            //     if ($('#Qty-' + i).val() == 0) {
+            //         $.notify('Please enter quantity for ' + $('#PartCode-' + i).val(), 'error');
+            //         return;
+            //     }
+
+            //     if (AllowedToDispatchQtyMoreThenCloseSOPendQty != 'Y') {
+            //         if (parseFloat($('#Qty-' + i).val()) > parseFloat($('#SOPendQty-' + i).val())) {
+            //             $.notify('Please enter Valid quantity for ' + $('#PartCode-' + i).val(), 'error');
+            //             return;
+            //         }
+            //     }
+
+            //     if ($('#Rate-' + i).val() == 0) {
+            //         $.notify('Please enter rate for ' + $('#PartCode-' + i).val(), 'error');
+            //         return;
+            //     }
+            //     if ($('#Unit-' + i).val() == '') {
+            //         $.notify('Please select unit for ' + $('#PartCode-' + i).val(), 'error');
+            //         return;
+            //     }
+
+            //     if ($('#Amount-' + i).val() == '') {
+            //         $.notify('amount can not be 0 ' + $('#PartCode-' + i).val(), 'error');
+            //         return;
+            //     }
+
+
+
+
+
+            // }
+
+
+
+
+
+            var selectedData = [];
+
+            $('#GateDataTable tbody tr').each(function (rowIndex) {
+                var $row = $(this);
+                var checkbox = $row.find('input[type="checkbox"]');
+
+                if (checkbox.is(':checked')) {
+                    var i = rowIndex + 1;
+                    var rowData = {
+
+                        AccountName: $("#CustomerName" + i).val(),   // we created CustomerNameX
+                        AccountCode: $("#Accountcode" + i).val(),
+                        SONO: $("#SONo" + i).val(),
+                        SOYearCode: $("#SOYearCode" + i).val(),
+                        CustOrderNo: $("#CustorderNo" + i).val(),
+                        SchNo: $("#SchNo" + i).val(),
+                        SaleSchYearCode: $("#SchYearCode" + i).val(),
+                        ItemCode: $("#ItemCode" + i).val(),
+                        PartCode: $("#PartCode" + i).val(),
+                        ItemName: $("#ItemName" + i).val(),
+                        Unit: $("#Unit" + i).val(),
+                        HSNNo: $("#HSNNO" + i).val(),
+                        Qty: $("#SaleBillQty" + i).val(),
+                        SOPendQty: $("#OrderPendQty" + i).val(),
+                        Rate: $("#SOItemRate" + i).val(),
+                        SOType: $("#SOType" + i).val(),
+                        Batchno: $("#BatchNo" + i).val(),
+                        Uniquebatchno: $("#UniqueBatchNo" + i).val(),
+                        DiscountPer: $("#DisPer" + i).val(),
+                        DiscountAmt: $("#DisAmt" + i).val(),
+                        Amount: $("#ItemAmount" + i).val(),
+                        AltQty: $("#AltQty" + i).val(),
+                        StoreId: $("#Storeid" + i).val(),
+                        StoreName: $("#Store_Name" + i).val(),
+                        RackID: $("#RackID" + i).val()
+
+
+                    };
+                    selectedData.push(rowData);
+                }
+            });
+            if (selectedData.length === 0) {
+                notify("Please check at least one checkbox before proceeding.", "error");
+                return;
+            }
+
+            $.ajax({
+                url: '@Url.Action("AddMultiSaleBillDetail")',
+                type: "POST",
+                data: JSON.stringify(selectedData),
+                contentType: 'application/json',
+                beforeSend: function () {
+                    console.log('Sending item...');
+                    console.log('ItemData', selectedData);
+                },
+                success: function (data, status, xhr) {
+
+                    
+
+                    if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
+                        $.notify('Duplicate Item Not Allowed.', "info");
+                        $('.ItemBtn').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
+                    } else if (xhr.status == 205 && (xhr.responseText.indexOf('Reset') || xhr.statusText.indexOf('Reset'))) {
+                        $.notify('Adding Item Not Allowed, Please Clear Gate Detail...!!!', "info");
+                    } else {
+                        // $('.gridHiddenField').show();
+
+                        $('#divSaleBillList').html(data);
+                        $('#PendSOForSaleBill').modal('hide');
+                        if ($('#SaleBillJobwork').val() == 'J') {
+                            $('.jobWorkChalln').show();
+                            $('.gridHiddenField').show();
+                        } else {
+                            $('.jobWorkChalln').hide();
+                            $('.gridHiddenField').hide();
+                        }
+                        GetFeatureOption();
+                        $.notify('Item Added To Grid.', "success");
+                    }
+
+                    editingNow = false;
+                    BasicTotal();
+                    ClearAdjustmentGrid();
+                    calculatetotalqty();
+                    // ResetPendQty();
+
+                    // var rowCount = $('#divSaleBillList tr').length;
+
+                    // for (var i = 1; i <= rowCount; i++) {
+
+                    //     sum += parseFloat($('#GridAmount-' + i).text() == '.00' ? 0 : $('#GridAmount-' + i).text());
+                    // }
+                    $('#ItemNetAmount').val(sum);
+
+                    // $('#lblItemNetAmount').text(sum.toFixed(2));
+
+                    var txSum = 0;
+                    if ($('#divTaxGrid tr td').length > 1) {
+                        for (var i = 1; i <= taxRowCount; i++) {
+                            txSum += parseFloat($('#txGridAmount-' + i).text() == '.00' ? 0 : $('#txGridAmount-' + i).text());
+                        }
+                    }
+
+                    var txTotal = sum + txSum;
+                    $('#NetTotal').val(txTotal.toFixed(2));
+                    $('#BaseNetTotal').val(txTotal.toFixed(2));
+                    $('#AdjPendAmt').val($('#NetTotal').val());
+                    $('#TotalDiscountPercentage').val(0);
+                    $('#TotalAmtAftrDiscount').val(0);
+
+                    // ClearGrid();
+                    $('.PendingItem').hide();
+                    $('.newitems').show();
+                    // $('#BatchNo').val('0');
+                    // $('#UniqueBatchNo').val('0');
+
+                },
+                error: function (result) {
+                    $.notify(result.responseText, "error");
+                },
+                failure: function (result) {
+                    alert(result.responseText);
+                },
+                complete: function () {
+                    console.log('Done');
+                    $('.Schedule').fadeIn();
+                }
+            }).done(function () {
+                GetItemGroup();
+                GetTaxPartItem();
+                GetDbCrDetail();
+                AddAdjstmntDetail1();
+            })
+        };
+
+
+
 
         $('.PendGridButton').click(function (e) {
             e.preventDefault();
@@ -2681,7 +3287,7 @@
         if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
             NewEntryId();
             btnClearTax();
-            FillItems($('#TypeItemServAssets').val());
+            // FillItems($('#TypeItemServAssets').val());
         } else {
             SetminQty();
             BasicTotal();
@@ -3308,7 +3914,9 @@
             $('#divAdjItemList').html(NoData);
             CalculateAdjAmt('NetTotal');
             DueDateCalculation();
-            AddAdjstmntDetail1();
+              ClearAdjustmentGrid();
+                    AddAdjstmntDetail1();
+         
         });
 
         function PasswordCheck() {
@@ -3771,12 +4379,15 @@
             }
 
             if ($('#SONO').val() != '' && $('#CustOrderNo').val() != '0') {
+                if (AllowedToDispatchQtyMoreThenCloseSOPendQty != 'Y') {
                 if (parseFloat($('#Qty').val()) > parseFloat($('#SOPendQty').val())) {
                     $.notify('Bill Qty should not more then Pend Qty...!', "error");
                     AddErrorCls('Qty');
                     Err = 1;
                 } else {
                     RemoveErrorCls('Qty');
+                }
+
                 }
             }
 
@@ -3835,6 +4446,31 @@
             }
 
             $('#Amount-' + i).val(Amount.toFixed(2));
+
+
+
+        }
+
+        function CalculateAmountForPendSOGrid(i) {
+
+            var Amount = 0;
+
+            const UnitRate = $('#UnitRate').val();
+            const Rate = $('#SOItemRate' + i).val() === "0" || $('#SOItemRate' + i).val() === "" ? 0 : parseFloat($('#SOItemRate' + i).val());
+            const DP = $('#DisPer' + i) === "0" || $('#DisPer' + i).val() === "" ? 0 : parseFloat($('#DisPer' + i).val());
+
+
+            const Qty = $('#SaleBillQty' + i).val() == "0" || $('#SaleBillQty' + i).val() == "" ? 0 : parseFloat($('#SaleBillQty' + i).val());
+            Amount = Qty * Rate;
+
+
+            if (DP !== 0) {
+                const DA = ((Amount * DP) / 100);
+                $('#DisAmt' + i).val(DA);
+                Amount = Amount - DA;
+            }
+
+            $('#ItemAmount' + i).val(Amount.toFixed(2));
 
 
 
@@ -4381,20 +5017,31 @@
             let itemNameVal = "";
 
             if ($("#PartCode").is("select")) {
-                    let selectedPartText = $('#PartCode').find(':selected').text();
-                    partCodeVal = (selectedPartText === "-Select-") ? "" : selectedPartText;
-                } else {
-                    partCodeVal = $("#PartCodeText").val() || "";
-                }
+                let selectedPartText = $('#PartCode').find(':selected').text();
+              var   partCodeValue = (selectedPartText === "-Select-") ? "" : selectedPartText;
+                  let parts = partCodeValue.split('-->');
+                  partCodeVal = parts[0].trim();
+            } else {
 
-                if ($("#ItemCode").is("select")) {
-                    itemCodeVal = $('#ItemCode').val() || "";
-                    let selectedItemText = $('#ItemCode').find(':selected').text();
-                    itemNameVal = (selectedItemText === "-Select-") ? "" : selectedItemText;
-                } else {
-                    itemCodeVal = $("#ItemCode").val() || "";
-                    itemNameVal = $("#ItemNameText").val() || "";
-                }
+                let partCodeTextVal = $("#PartCodeText").val()?.trim() || "";
+                        let partDescVal = "";
+                        if (partCodeTextVal.includes("-->")) {
+                            const parts = partCodeTextVal.split("-->");
+                              partCodeVal = parts[0].trim();
+                            partDescVal = parts[1]?.trim() || "";
+                        } else {
+                            partCodeVal = partCodeTextVal; // fallback if no separator
+                        }
+            }
+
+            if ($("#ItemCode").is("select")) {
+                itemCodeVal = $('#ItemCode').val() || "";
+                let selectedItemText = $('#ItemCode').find(':selected').text();
+                itemNameVal = (selectedItemText === "-Select-") ? "" : selectedItemText;
+            } else {
+                itemCodeVal = $("#ItemCode").val() || "";
+                itemNameVal = $("#ItemNameText").val() || "";
+            }
 
             var SchData = {
                 "SONO": parseInt($('#SONO').val()),
@@ -4406,9 +5053,9 @@
                 // "PartCode": $('#PartCode').find(':selected').text() == "-Select-" ? "" : $('#PartCode').find(':selected').text(),
                 // "ItemCode": $('#ItemCode').val(),
                 // "ItemName": $('#ItemCode').find(':selected').text() == '-Select-' ? "" : $('#ItemCode').find(':selected').text(),
-                     "PartCode": partCodeVal,
-                    "ItemCode": itemCodeVal,
-                    "ItemName": itemNameVal,
+                    "PartCode": partCodeVal,
+                "ItemCode": itemCodeVal,
+                "ItemName": itemNameVal,
                 "SchNo": $('#SchNo').val(),
                 "SaleSchYearCode": $('#SaleSchYearCode').val(),
                 "Schdate": $('#Schdate').val(),
@@ -4846,7 +5493,8 @@
 
             $("#PartCodeText, #ItemNameText").show();
 
-             FillItems($('#TypeItemServAssets').val());
+             // FillItems($('#TypeItemServAssets').val());
+            AutoFillItems();
         }
 
         // function enableAutocompleteMode() {
@@ -4860,6 +5508,227 @@
         //     FillItems("Item");
         // }
         // var sonoItems = [];
+
+        function AutoFillItems() {
+            // Source for PartCodeText
+            const partCodeSource = function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("FillItems", "PurchaseOrder")',
+                    type: 'POST',
+                    data: {
+                        Type: $('#POTypeServItem').val(),
+                        ShowAllItem: 'N',
+                        SearchItemCode: '',
+                        SearchPartCode: request.term
+                    },
+                    success: function (result) {
+                        let obj = typeof result === "string" ? JSON.parse(result) : result;
+
+                        if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
+                            let filtered = obj.Result.Table.filter(function (item) {
+                                let term = request.term.toLowerCase();
+                                return (
+                                    (item.PartCode && item.PartCode.toLowerCase().includes(term)) ||
+                                    (item.Barcode && item.Barcode.toLowerCase().includes(term)) ||
+                                    (item.ItemName && item.ItemName.toLowerCase().includes(term))
+                                );
+                            });
+
+                            response($.map(filtered, function (item) {
+                                return {
+                                    label: item.PartCode,
+                                    value: item.PartCode,
+                                    itemName: item.ItemName,
+                                    itemCode: item.Item_Code
+                                };
+                            }));
+                        } else {
+                            AddMultipleItems();
+                ShowGroupWiseItems();
+                            response([]);
+                        }
+                    }
+                });
+            };
+
+            // Source for ItemNameText
+            const itemNameSource = function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("FillItems", "PurchaseOrder")',
+                    type: 'POST',
+                    data: {
+                        Type: $('#POTypeServItem').val(),
+                        ShowAllItem: 'N',
+                        SearchItemCode: request.term,
+                        SearchPartCode: ''
+                    },
+                    success: function (result) {
+                        let obj = typeof result === "string" ? JSON.parse(result) : result;
+
+                        if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
+                            let filtered = obj.Result.Table.filter(function (item) {
+                                let term = request.term.toLowerCase();
+                                return item.ItemName.toLowerCase().includes(term);
+                            });
+
+                            response($.map(filtered, function (item) {
+                                return {
+                                    label: item.ItemName,
+                                    value: item.Item_Code,
+                                    itemName: item.ItemName,
+                                    itemCode: item.Item_Code,
+                                    partCode: item.PartCode
+                                };
+                            }));
+                        } else {
+                                   AddMultipleItems();
+                       ShowGroupWiseItems();
+                            response([]);
+                        }
+                    }
+                });
+            };
+
+            // Autocomplete for PartCodeText
+            $("#PartCodeText").autocomplete({
+                source: partCodeSource,
+                select: function (event, ui) {
+                    $("#PartCodeText").val(ui.item.value).data("itemcode", ui.item.itemCode);
+                    $("#ItemNameText").val(ui.item.itemName);
+                    $('#ItemCode').val(ui.item.itemCode);
+                    $('#PartCode').val(ui.item.itemCode);
+                    onItemSelected("ItemCode");
+                    return false;
+                },
+                focus: function (event, ui) {
+                    $("#PartCodeText").val(ui.item.value);
+                    return false;
+                },
+                minLength: 2
+            });
+
+            // 🔹 Focusout event for PartCodeText (manual entry validation)
+            $("#PartCodeText").on("focusout", function () {
+                let entered = $(this).val().trim().toLowerCase();
+                if (entered === "") return;
+
+                $.ajax({
+                    url: '@Url.Action("FillItems", "PurchaseOrder")',
+                    type: 'POST',
+                    data: {
+                        Type: $('#POTypeServItem').val(),
+                        ShowAllItem: 'N',
+                        SearchItemCode: '',
+                        SearchPartCode: entered
+                    },
+                    success: function (result) {
+                        let obj = typeof result === "string" ? JSON.parse(result) : result;
+
+                        if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
+                            // 🔹 Partial match: includes()
+                            let match = obj.Result.Table.find(item => {
+                                let real = (item.RealPartCode || "").toLowerCase();
+                                let name = (item.Item_Name || "").toLowerCase();
+                                let barcode = (item.Barcode || "").toLowerCase();
+
+                                return real.includes(entered) || name.includes(entered) || barcode.includes(entered);
+                            });
+
+                            if (match) {
+                                $("#PartCodeText").val(match.PartCode).data("itemcode", match.Item_Code);
+                                $("#ItemNameText").val(match.Item_Name);
+                                $("#ItemCode").val(match.Item_Code);
+                                $("#PartCode").val(match.Item_Code);
+                                onItemSelected("ItemCode");
+
+                            }
+                            else
+                            {
+                               
+                                $("#PartCodeText").val("").focus();
+                                         AddMultipleItems();
+                                          ShowGroupWiseItems();
+                            }
+                           
+                        }
+                      
+
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("AJAX Error:", error);
+                    }
+                });
+            });
+
+            // Autocomplete for ItemNameText
+            $("#ItemNameText").autocomplete({
+                source: itemNameSource,
+                select: function (event, ui) {
+                    $("#ItemNameText").val(ui.item.itemName).data("itemcode", ui.item.itemCode);
+                    $("#PartCodeText").val(ui.item.partCode);
+                    $('#ItemCode').val(ui.item.itemCode);
+                    $('#PartCode').val(ui.item.itemCode);
+                    onItemSelected("ItemCode");
+                    return false;
+
+                },
+                focus: function (event, ui) {
+                    $("#ItemNameText").val(ui.item.itemName);
+                    return false;
+                },
+                minLength: 2
+            });
+
+            // 🔹 Focusout event for ItemNameText (manual entry validation)
+            $("#ItemNameText").on("focusout", function () {
+                let itemName = $(this).val().trim();
+                if (itemName !== "") {
+                    $.ajax({
+                        url: '@Url.Action("FillItems", "PurchaseOrder")',
+                        type: 'POST',
+                        data: {
+                            Type: $('#POTypeServItem').val(),
+                            ShowAllItem: 'N',
+                            SearchItemCode: itemName,
+                            SearchPartCode: ''
+                        },
+                        success: function (result) {
+                            let obj = typeof result === "string" ? JSON.parse(result) : result;
+                            alert(JSON.stringify(obj.Result));
+                            if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
+
+                                let match = obj.Result.Table.find(item => item.ItemName.toLowerCase() === itemName.toLowerCase());
+
+                                if (match) {
+                                    $("#ItemNameText").val(match.ItemName).data("itemcode", match.Item_Code);
+                                    $("#PartCodeText").val(match.PartCode);
+                                    $('#ItemCode').val(match.Item_Code);
+                                    $('#PartCode').val(match.Item_Code);
+                                    onItemSelected("ItemCode");
+                                } else {
+                                   // alert("Invalid Item Name entered!");
+                                    $("#ItemNameText").val("").focus();
+                                           AddMultipleItems();
+                                            ShowGroupWiseItems();
+                                }
+                            } else {
+                              //  alert("Invalid Item Name entered!");
+                                $("#ItemNameText").val("").focus();
+                                   
+          //                      AddMultipleItems();
+          // ShowGroupWiseItems();
+                        
+
+                            }
+                        }
+                    });
+                }
+            });
+        }
+
+
+
+
         function FillItems(itemType) {
             var showAll = $('#ItemSA').prop('checked') ? 'T' : 'F';
                 const partCodeSource = function (request, response) {
@@ -5675,10 +6544,10 @@
                 }
             });
         }
-
+             
         $('#submitBTN,#submitBTNfooter,#UpdateButton').click(function (e) {
             e.preventDefault();
-
+                   $('#TypeOfSave').val("NPS");
             ValidateSubmitWrapper(function (isValid) {
                 if (!isValid) return;
 
@@ -5775,7 +6644,7 @@
             }
             else {
                 $.ajax({
-                    url: '/SaleInvoice/EditItemRows',
+                           url: '/SaleInvoice/EditItemRow',
                     type: "POST",
                     data: { SeqNo: SeqNo },
                     success: function (data) {
@@ -5789,16 +6658,36 @@
                             EditDeleteBatchValidation = true;
 
                             // if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-                            FillSONO();
+                            // FillSONO();
                             $('#SONO').val(obj[0].SONO);
-                            FillSOYearCode();
-                            $('#SOYearCode').val(obj[0].SOYearCode);
-                            FILLCustomerOrderAndSPDate();
-                            FillSOSchedule();
-                            FillSchYearCode();
+                           
+        if ($('#SONO option[value="' + obj[0].SONO + '"]').length === 0 && obj[0].SONO && obj[0].SONO !== '0') {
+            $('#SONO').append('<option value="' + obj[0].SONO + '">' + obj[0].SONO + '</option>');
+        }
+        $('#SONO').val(obj[0].SONO).trigger('change');
+                // FillSOYearCode();
+                                   FillSOYearCode();
+                                   $('#SOYearCode').val(obj[0].SOYearCode);
+                            // FILLCustomerOrderAndSPDate();
+                            // FillSOSchedule();
+                            // FillSchYearCode();
                             // $('#SaleSchYearCode').trigger("change");
                             $('#SchNo').val(obj[0].SchNo);
+                           
+                                if ($('#SchNo option[value="' + obj[0].ScheduleNo + '"]').length === 0 && obj[0].ScheduleNo && obj[0].ScheduleNo !== '0') {
+                   $('#SchNo').append('<option value="' + obj[0].ScheduleNo + '">' + obj[0].ScheduleNo + '</option>');
+        }
+               $('#SchNo').val(obj[0].ScheduleNo).trigger('change');
+                      FillSchYearCode();
                             $('#SaleSchYearCode').val(obj[0].SaleSchYearCode);
+
+                            $('#CustOrderNo').val(obj[0].CustOrderNo);
+      
+                                if ($('#CustOrderNo option[value="' + obj[0].CustOrderNo + '"]').length === 0 && obj[0].CustOrderNo && obj[0].CustOrderNo !== '0') {
+                   $('#CustOrderNo').append('<option value="' + obj[0].CustOrderNo + '">' + obj[0].CustOrderNo + '</option>');
+        }
+               $('#CustOrderNo').val(obj[0].CustOrderNo).trigger('change');
+                                   //  $('#CustOrderNo').append("<option value=" + val.CustOrderNo + " selected>" + val.CustOrderNo + "</option>");
                             // FillItems($('#TypeItemServAssets').val());
                             if ($('#SaleBillJobwork').val() == 'J') {
                                 JWItemList($('#TypeItemServAssets').val());
@@ -5809,10 +6698,11 @@
                             // } else {
                             //     FillSOWiseItems();
                             // }
-                             if ($('#SONO').val() == '' || $('#SONO').val() == '0') {
+                             // if ($('#SONO').val() == ''||   $('#SONO').val() == 'NaN' ||$('#SONO').val() == null || $('#SONO').val() == '0') {
                 // Autocomplete mode
                 enableAutocompleteMode();
-                FillItems($('#TypeItemServAssets').val());
+                // FillItems($('#TypeItemServAssets').val());
+                                 AutoFillItems();
 
                 $("#ItemCode").val(obj[0].ItemCode);
                 $("#PartCode").val(obj[0].ItemCode);
@@ -5821,17 +6711,17 @@
                 $("#PartCodeText").val(obj[0].PartCode);
 
                // GetItemPartCode("ItemCode");
-            } else {
-                // Select2 mode
-                enableSelect2Mode();
-                FillSOWiseItems();
-                $('#ItemCode').append('<option value="' + obj[0].ItemCode + '"  selected> '+obj[0].ItemName+'</option>').val(obj[0].ItemCode).trigger("change");
-                $('#PartCode').append('<option value="' + obj[0].ItemCode + '"  selected> '+obj[0].PartCode+'</option>') .val(obj[0].ItemCode) .trigger("change");
-            }
+            // } else {
+            //     // Select2 mode
+            //     enableSelect2Mode();
+            //     FillSOWiseItems();
+            //     $('#ItemCode').append('<option value="' + obj[0].ItemCode + '"  selected> '+obj[0].ItemName+'</option>').val(obj[0].ItemCode).trigger("change");
+            //     $('#PartCode').append('<option value="' + obj[0].ItemCode + '"  selected> '+obj[0].PartCode+'</option>') .val(obj[0].ItemCode) .trigger("change");
+            // }
 
                             // $('#ItemCode').val(obj[0].ItemCode).trigger("change");
                             // $('#PartCode').val(obj[0].ItemCode).trigger("change");
-                            FillCurrentBatchINStore();
+                            // FillCurrentBatchINStore();
                             if (obj[0].Batchno != '0' && obj[0].Batchno != null && obj[0].Batchno != 0) {
                                 $('#Batchno').append('<option value="' + obj[0].Batchno + '" selected>' + obj[0].Batchno + '</option>');
                             }
@@ -5862,8 +6752,9 @@
                             $('#SeqNo').val(obj[0].SeqNo);
                             $('#ProducedUnprod').val(obj[0].ProducedUnprod);
                             $('#Group_Code').val(obj[0].Group_Code).trigger('select2:select');
+                            $("#Group_CodeDiv").hide();
                             $('#BOMInd').val(obj[0].BOMInd);
-                            $('#CustOrderNo').val(obj[0].CustOrderNo);
+                            
                             $('#SODate').val(obj[0].SODate);
                             $('#SchNo').val(obj[0].SchNo);
                             $('#Schdate').val(obj[0].Schdate);
@@ -5914,8 +6805,11 @@
                             $('#ProdSchEntryId').val(obj[0].prodSchEntryId);
                             $('#ProdSchDate').val(obj[0].ProdSchDate);
                             $('#SchdeliveryDate').val(obj[0].SchdeliveryDate);
-                            FillUniqueBatchNo();
-                            $('#Uniquebatchno').val(obj[0].Uniquebatchno);
+                            // FillUniqueBatchNo();
+                               if (obj[0].Uniquebatchno != '0' && obj[0].Uniquebatchno != null && obj[0].Uniquebatchno != 0) {
+                                    $('#Uniquebatchno').append('<option value="' + obj[0].Uniquebatchno + '" selected>' + obj[0].Uniquebatchno + '</option>');
+                              }
+                          //  $('#Uniquebatchno').val(obj[0].Uniquebatchno);
 
                             var rowCount = $('#divStockGrid tr').length;
                             for (var i = 1; i <= rowCount + 1; i++) {
@@ -5930,7 +6824,13 @@
                                 $('.jobWorkChalln').hide();
                                 $('.gridHiddenField').hide();
                             }
-                            DeleteItemRow(SeqNo);
+                                          $('#saleBillRow-' + SeqNo).remove();
+                            // DeleteItemRow(SeqNo);
+
+                             if ($('#divSaleBillList').children().length == 0) {
+                                var NoData = '<tr class="text-center"><td colspan="28" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
+                                       $('#divSaleBillList').html(NoData);
+                            }
                         }
                     },
                     error: function (response) {
@@ -6424,7 +7324,7 @@
                 $('#SaleSchYearCode').prop("disabled", false);
             }
             // $('#SOType').val($('#SONO').find(':selected').data('sotype'));
-            if ($('#SONO').val() == '0' || $('#SONO').val() == '') {
+            if ($('#SONO').val() == '0' || $('#SONO').val() == ''||  $('#SONO').val()=="NaN") {
                 $('#Rate').prop("readonly", false);
                 $('#RateInOtherCurr').prop("readonly", false);
             } else {
@@ -6468,7 +7368,7 @@
         });
 
         $('#TypeItemServAssets').change(function () {
-            FillItems($(this).val());
+            // FillItems($(this).val());
             JWItemList($(this).val());
         });
 
@@ -6580,6 +7480,7 @@
            
 
              if ($('#SONO').val() != '' && $('#CustOrderNo').val() != '0') {
+                 if (AllowedToDispatchQtyMoreThenCloseSOPendQty != 'Y') {
                 if (parseFloat($('#Qty').val()) > LowestStock) {
                 AddErrorCls('Qty');
                 Err = 1;
@@ -6589,6 +7490,7 @@
             else {
                 RemoveErrorCls('Qty');
             }
+                 }
              }
             return true;
         }

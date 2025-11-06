@@ -17,5 +17,6 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> SaveGateAtt(GateAttendanceModel model, DataTable itemgrid);
         Task<GateAttDashBoard> GetDashBoardData(GateAttDashBoard model);
         Task<GateAttendanceModel> GetViewByID(int ID, int YearCode);
+        Task<ResponseResult> DeleteByID(int ID, int YearCode, string Flag, int EntryBy, string EntryByMachineName, string cc, DateTime EntryDate);
     }
 }
