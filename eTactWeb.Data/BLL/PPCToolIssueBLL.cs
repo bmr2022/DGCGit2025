@@ -26,6 +26,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _PPCToolIssueDAL.GetNewEntry(Flag, YearCode);
         }
+        public async Task<ResponseResult> FillDepartmentList(string Flag)
+        {
+            return await _PPCToolIssueDAL.FillDepartmentList(Flag);
+        }
 
         // 2️⃣ FILL TOOL LIST
         public async Task<ResponseResult> FillToolList(string Flag)
@@ -34,21 +38,33 @@ namespace eTactWeb.Data.BLL
         }
 
         // 3️⃣ FILL TOOL BARCODE
-        public async Task<ResponseResult> FillToolBarCode(string Flag, long ToolIssueEntryId)
+        public async Task<ResponseResult> FillToolBarCode(string Flag, long ToolEntryId)
         {
-            return await _PPCToolIssueDAL.FillToolBarCode(Flag, ToolIssueEntryId);
+            return await _PPCToolIssueDAL.FillToolBarCode(Flag, ToolEntryId);
         }
 
-        // 4️⃣ FILL PROD PLAN
-        public async Task<ResponseResult> FillProdPlan(string Flag, long ToolIssueEntryId)
+        public async Task<ResponseResult> FillToolSerialNo(string Flag, long ToolEntryId, string Barcode)
         {
-            return await _PPCToolIssueDAL.FillProdPlan(Flag, ToolIssueEntryId);
+            return await _PPCToolIssueDAL.FillToolSerialNo(Flag, ToolEntryId,Barcode);
+        }
+        public async Task<ResponseResult> FillToolBarCodeDetail(string Flag, long ToolEntryId, string Barcode, string SerialNo)
+        {
+            return await _PPCToolIssueDAL.FillToolBarCodeDetail(Flag, ToolEntryId, Barcode,SerialNo);
+        }
+        // 4️⃣ FILL PROD PLAN
+        public async Task<ResponseResult> FillProdPlan(string Flag, long ToolEntryId)
+        {
+            return await _PPCToolIssueDAL.FillProdPlan(Flag, ToolEntryId);
         }
 
         // 5️⃣ FILL PROD PLAN YEAR CODE
-        public async Task<ResponseResult> FillProdPlanYearCode(string Flag, long ToolIssueEntryId, string ProdPlanNo)
+        public async Task<ResponseResult> FillProdPlanYearCode(string Flag, long ToolEntryId, string ProdPlanNo)
         {
-            return await _PPCToolIssueDAL.FillProdPlanYearCode(Flag, ToolIssueEntryId, ProdPlanNo);
+            return await _PPCToolIssueDAL.FillProdPlanYearCode(Flag, ToolEntryId, ProdPlanNo);
+        }
+        public async Task<ResponseResult> FillProdPlanDate(string Flag, long ToolEntryId, string ProdPlanNo, long ProdPlanYearCode)
+        {
+            return await _PPCToolIssueDAL.FillProdPlanDate(Flag, ToolEntryId, ProdPlanNo,ProdPlanYearCode);
         }
 
         // 6️⃣ FILL PROD PLAN SCHEDULE

@@ -12,7 +12,24 @@
         top: -15px;
         z-index: 1;
     }
+
+    .select2-container--default .select2-selection--single {
+        background-color: #e0f2f1;
+        border: 1.5px solid #0a0a0a !important;
+        border-radius: 4px;
+    }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            /* border-bottom: 1.5px solid #000 !important; */
+            border-bottom: none !important;
+        }
+
+    .select2-container--default .select2-results > .select2-results__options {
+        background-color: #e0f2f1; /* Dropdown background color */
+        color: #000;
+    }
 </style>
+
 
 <div class="card bg-gradient mb-3 border-light shadow-lg">
     <form asp-action="PPCToolIssue" autocomplete="off" class="form-horizontal">
@@ -100,54 +117,25 @@
                                     <input asp-for="ToolIssueYearCode" class="form-control" readonly />
                                 </div>
                                 <div class="col-lg-2">
-                                    <label asp-for="ToolIssueDate" class="form-label">Issue Date</label>
-                                    <input asp-for="ToolIssueDate" type="date" class="form-control" />
-                                </div>
-                                <div class="col-lg-2">
                                     <label asp-for="ToolIssueEntryDate" class="form-label">Entry Date</label>
-                                    <input asp-for="ToolIssueEntryDate" type="date" class="form-control" readonly />
+                                    <input asp-for="ToolIssueEntryDate" id="EntryDate" class="form-control datepicker" type="text" readonly />
                                 </div>
+
+                                <div class="col-lg-2">
+                                    <label asp-for="ToolIssueDate" class="form-label">Issue Date</label>
+                                    <input asp-for="ToolIssueDate" id="IssueDate" class="form-control datepicker" type="text" readonly />
+                                </div>
+
                                 <div class="col-lg-2">
                                     <label asp-for="ToolIssueSlipNo" class="form-label">Slip No</label>
                                     <input asp-for="ToolIssueSlipNo" id="ToolIssueSlipNo" class="form-control" readonly />
                                 </div>
                                 <div class="col-lg-2">
                                     <label asp-for="IssueToDepartmentId" class="form-label">Issue To Dept</label>
-                                    <select asp-for="IssueToDepartmentId" class="form-select"
-                                            asp-items="ViewBag.Departments"></select>
-                                </div>
-                                <div class="col-lg-2">
-                                    <label asp-for="IssuedByEmpId" class="form-label">Issued By</label>
-                                    <select asp-for="IssuedByEmpId" class="form-select"
-                                            asp-items="ViewBag.Employees"></select>
-                                </div>
-                                <div class="col-lg-2">
-                                    <label asp-for="ApprovedByEmpId" class="form-label">Approved By</label>
-                                    <select asp-for="ApprovedByEmpId" class="form-select"
-                                            asp-items="ViewBag.Employees"></select>
-                                </div>
-                                <div class="col-lg-2">
-                                    <label asp-for="ReceivedByEmpId" class="form-label">Received By</label>
-                                    <select asp-for="ReceivedByEmpId" class="form-select"
-                                            asp-items="ViewBag.Employees"></select>
-                                </div>
-                                <div class="col-lg-2">
-                                    <label asp-for="CC" class="form-label">Branch</label>
-                                    <input asp-for="CC" class="form-control" readonly />
-                                </div>
-                                <div class="col-lg-2">
-                                    <label asp-for="PendingStatus" class="form-label">Pending Status</label>
-                                    <select asp-for="PendingStatus" class="form-select">
-                                        <option value="Pending">Pending</option>
-                                        <option value="Approved">Approved</option>
-                                        <option value="Rejected">Rejected</option>
+                                    <select name="IssueToDepartmentId" asp-for="IssueToDepartmentId" id="IssueToDepartmentId" class="form-select">
+                                        <option value="">-- Select Department --</option>
                                     </select>
                                 </div>
-                                <div class="col-lg-2">
-                                    <label asp-for="LastUpdatedDate" class="form-label">Last Updated</label>
-                                    <input asp-for="LastUpdatedDate" type="date" class="form-control" readonly />
-                                </div>
-
                             </div>
                         </div>
                     </div>
@@ -168,19 +156,22 @@
                                         <table class="table table-hover table-bordered">
                                             <thead class="bg-gradient card-headerBG text-light small">
                                                 <tr>
+                                                    <th style="min-width: 150px;color:red">Tool Name *</th>
                                                     <th style="min-width: 150px;">Barcode</th>
                                                     <th style="min-width: 150px;">Serial No</th>
                                                     <th style="min-width: 150px;">Tool Type</th>
-                                                    <th style="min-width: 150px;">Issue Qty</th>
-                                                    <th style="min-width: 150px;">Unit</th>
+                                                    <th style="min-width: 60px;color:red">Issue Qty *</th>
+                                                    <th style="min-width: 60px;">Unit</th>
                                                     <th style="min-width: 150px;">Current Location</th>
-                                                    <th style="min-width: 150px;">Issue To Location</th>
+                                                    <th style="min-width: 150px;color:red">Issue To Location *</th>
                                                     <th style="min-width: 150px;">Tool Condition</th>
                                                     <th style="min-width: 150px;">Last Calibration</th>
                                                     <th style="min-width: 150px;">Next Calibration Due</th>
                                                     <th style="min-width: 150px;">Remaining Life (Months)</th>
                                                     <th style="min-width: 150px;">Prod Plan No</th>
+                                                    <th style="min-width: 100px;">Prod Plan YearCode</th>
                                                     <th style="min-width: 150px;">Prod Plan Date</th>
+                                                    <th style="min-width: 70px;">Prod Plan ID</th>
                                                     <th style="min-width: 150px;">Prod Sch No</th>
                                                     <th style="min-width: 150px;">Prod Sch Date</th>
                                                     <th style="min-width: 150px;">For Machine</th>
@@ -190,22 +181,47 @@
                                             </thead>
                                             <tbody id="inputRow">
                                                 <tr>
-                                                    <td><input name="ToolIssueDetails[0].BarCode" id="BarCode" class="form-control" placeholder="Enter Barcode" /></td>
-                                                    <td><input name="ToolIssueDetails[0].SerialNo" id="SerialNo" class="form-control" placeholder="Enter Serial No" /></td>
-                                                    <td><input name="ToolIssueDetails[0].ToolType" id="ToolType" class="form-control" placeholder="Enter Tool Type" /></td>
-                                                    <td><input name="ToolIssueDetails[0].IssueQty" id="IssueQty" class="form-control" placeholder="Enter Issue Quantity" /></td>
-                                                    <td><input name="ToolIssueDetails[0].Unit" id="Unit" class="form-control" placeholder="Enter Unit" /></td>
+                                                    <td>
+
+                                                        <select name="ToolIssueDetails[0].ToolEntryId" id="ToolEntryId" class="form-select">
+                                                            <option value="">-- Select Option --</option>
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select name="ToolIssueDetails[0].BarCode" id="BarCode" class="form-select">
+                                                            <option value="">-- Select Barcode --</option>
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select name="ToolIssueDetails[0].SerialNo" id="SerialNo" class="form-select">
+                                                            <option value="">-- Select SerialNo --</option>
+                                                        </select>
+                                                    </td>
+                                                    <td><input name="ToolIssueDetails[0].ToolType" id="ToolType" class="form-control" disabled placeholder="Enter Tool Type" /></td>
+                                                    <td><input name="ToolIssueDetails[0].IssueQty" type="text" id="IssueQty" inputmode="numeric" class="form-control" pattern="[0-9]*" placeholder="0" oninput="this.value = this.value.replace(/[^0-9]/g, '')" /></td>
+                                                    <td><input name="ToolIssueDetails[0].Unit" id="Unit" class="form-control" disabled /></td>
                                                     <td><input name="ToolIssueDetails[0].CurrentLocation" id="CurrentLocation" class="form-control" placeholder="Enter Current Location" /></td>
                                                     <td><input name="ToolIssueDetails[0].IssueToLocation" id="IssueToLocation" class="form-control" placeholder="Enter Issue To Location" /></td>
                                                     <td><input name="ToolIssueDetails[0].ToolCondition" id="ToolCondition" class="form-control" placeholder="Enter Tool Condition" /></td>
-                                                    <td><input name="ToolIssueDetails[0].LastCalibrationDate" id="LastCalibrationDate" type="date" class="form-control" placeholder="Select Last Calibration Date" /></td>
-                                                    <td><input name="ToolIssueDetails[0].NextCalibrationDueDate" id="NextCalibrationDueDate" type="date" class="form-control" placeholder="Select Next Calibration Date" /></td>
-                                                    <td><input name="ToolIssueDetails[0].RemainingToolLifeInMonths" id="RemainingToolLifeInMonths" class="form-control" placeholder="Enter Remaining Life (Months)" /></td>
-                                                    <td><input name="ToolIssueDetails[0].ProdPlanNo" id="ProdPlanNo" class="form-control" placeholder="Enter Production Plan No" /></td>
-                                                    <td><input name="ToolIssueDetails[0].ProdPlanDate" id="ProdPlanDate" type="date" class="form-control" placeholder="Select Production Plan Date" /></td>
+                                                    <td><input name="ToolIssueDetails[0].LastCalibrationDate" id="LastCalibrationDate" disabled class="form-control datepicker" placeholder="Select Last Calibration Date" /></td>
+                                                    <td><input name="ToolIssueDetails[0].NextCalibrationDueDate" id="NextCalibrationDueDate" disabled class="form-control datepicker" placeholder="Select Next Calibration Date" /></td>
+                                                    <td><input name="ToolIssueDetails[0].RemainingToolLifeInMonths" id="RemainingToolLifeInMonths" disabled class="form-control" placeholder="Enter Remaining Life (Months)" /></td>
+                                                    <td>
+                                                        <select name="ToolIssueDetails[0].ProdPlanNo" id="ProdPlanNo" class="form-select">
+                                                            <option value="">-- Select Prod Plan --</option>
+                                                        </select>
+                                                    </td>
+                                                    <td><input name="ToolIssueDetails[0].ProdPlanYearCode" id="ProdPlanYearCode" class="form-control" placeholder="Enter ProdPlan YearCode" /></td>
+                                                    <td><input name="ToolIssueDetails[0].ProdPlanDate" id="ProdPlanDate"  class="form-control datepicker" placeholder="Select Production Plan Date" /></td>
+                                                    <td><input name="ToolIssueDetails[0].ProdPlanEntryId" id="ProdPlanEntryId" class="form-control" placeholder="Plan ID" /></td>
+
                                                     <td><input name="ToolIssueDetails[0].ProdSchNo" id="ProdSchNo" class="form-control" placeholder="Enter Production Schedule No" /></td>
-                                                    <td><input name="ToolIssueDetails[0].ProdSchDate" id="ProdSchDate" type="date" class="form-control" placeholder="Select Production Schedule Date" /></td>
-                                                    <td><input name="ToolIssueDetails[0].ForMachineId" id="ForMachineId" class="form-control" placeholder="Enter Machine ID" /></td>
+                                                    <td><input name="ToolIssueDetails[0].ProdSchDate" id="ProdSchDate"  class="form-control" placeholder="Select Production Schedule Date" /></td>
+                                                    <td>
+                                                        <select name="ToolIssueDetails[0].ForMachineId" id="ForMachineId" class="form-select">
+                                                            <option value="">-- Select Machine --</option>
+                                                        </select>
+                                                    </td>
                                                     <td><input name="ToolIssueDetails[0].SpecialInstruction" id="SpecialInstruction" class="form-control" placeholder="Enter Special Instruction" /></td>
                                                     <td>
                                                         <select name="ToolIssueDetails[0].WillBeConsumedOrReturned" id="WillBeConsumedOrReturned" class="form-select">
@@ -246,6 +262,7 @@
                                             <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
                                                 <tr>
                                                     <th>Action</th>
+                                                    <th>Tool Name</th>
                                                     <th>Barcode</th>
                                                     <th>Serial No</th>
                                                     <th>Tool Type</th>
@@ -258,7 +275,9 @@
                                                     <th>Next Calibration Due</th>
                                                     <th>Remaining Life</th>
                                                     <th>Prod Plan No</th>
+                                                    <th>Prod Plan YearCode</th>
                                                     <th>Prod Plan Date</th>
+                                                    <th>Prod Plan ID</th>
                                                     <th>Prod Sch No</th>
                                                     <th>Prod Sch Date</th>
                                                     <th>For Machine</th>
@@ -279,6 +298,51 @@
                         </div>
                     </div>
 
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="OtherGrid">
+                            <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#OtherGridDetail" aria-expanded="true" aria-controls="OtherGridDetail">
+                                <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Other Detail</strong>
+                            </button>
+                        </h2>
+                        <div id="OtherGridDetail" class="accordion-collapse collapse pnl1 bg-gradient" aria-labelledby="OtherGrid">
+                            <div class="accordion-body">
+                                <div class="row g-2 gx-3">
+                                    <div class="col-lg-2">
+                                        <label asp-for="IssuedByEmpId" class="form-label">Issued By</label>
+                                        <select asp-for="IssuedByEmpId" class="form-select"
+                                                asp-items="ViewBag.Employees"></select>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <label asp-for="ApprovedByEmpId" class="form-label">Approved By</label>
+                                        <select asp-for="ApprovedByEmpId" class="form-select"
+                                                asp-items="ViewBag.Employees"></select>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <label asp-for="ReceivedByEmpId" class="form-label">Received By</label>
+                                        <select asp-for="ReceivedByEmpId" class="form-select"
+                                                asp-items="ViewBag.Employees"></select>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <label asp-for="CC" class="form-label">Branch</label>
+                                        <input asp-for="CC" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <label asp-for="PendingStatus" class="form-label">Pending Status</label>
+                                        <select asp-for="PendingStatus" class="form-select">
+                                            <option value="Pending">Pending</option>
+                                            <option value="Approved">Approved</option>
+                                            <option value="Rejected">Rejected</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <label asp-for="LastUpdatedDate" class="form-label">Last Updated</label>
+                                        <input asp-for="LastUpdatedDate"  class="form-control" readonly />
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
 
                 </div>
             </div>
@@ -358,7 +422,7 @@
 
             // Parse if needed
             const obj = typeof result === "string" ? JSON.parse(result) : result;
-            console.log("Parsed object:", obj);
+            // console.log("Parsed object:", obj);
 
             if (obj.Result && obj.Result.length > 0) {
                 $('#ToolIssueEntryId').val(obj.Result[0].EntryID);
@@ -375,90 +439,510 @@
         }
     }
 
-    function FillToolBarCode(toolIssueEntryId) {
-       
+     function FillDepartmentList() {
         $.ajax({
-            type: "GET",
-            url: '@Url.Action("FillToolBarCode", "PPCToolIssue")',
-            data: { ToolIssueEntryId: toolIssueEntryId },
-            dataType: "json",
-            success: function (result) {
-                console.log("Tools fetched:", result);
-                var ddl = $('#BarCode');
-                ddl.empty();
-                ddl.append('<option value="">-- Select Barcode --</option>');
+            url: '/PPCToolIssue/FillDepartmentList',
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                // console.log("ToolList raw data:", data);
 
-                window.ToolList = result;
+                // ✅ Parse only if it's actually a string
+                const obj = typeof data === "string" ? JSON.parse(data) : data;
+                // console.log("Parsed object:", obj);
 
-                $.each(result, function (i, item) {
-                    ddl.append('<option value="' + item.BarCode + '">' + item.BarCode + '</option>');
-                });
+                var select = $('#IssueToDepartmentId');
+                select.empty();
+                select.append('<option value="">-- Select Department --</option>');
 
-                if (result.length > 0) {
-                    ddl.val(result[0].BarCode).trigger('change');
+                // ✅ Use obj instead of data
+                if (obj.Result && obj.Result.length > 0) {
+                    $.each(obj.Result, function (i, item) {
+                        select.append($('<option>', {
+                            value: item.DeptId,
+                            text: item.DeptName
+                        }));
+                    });
                 }
             },
             error: function (err) {
-                console.error("Error fetching tools:", err);
+                console.error("❌ Error fetching tool list:", err);
             }
         });
+    }
 
-        $('#BarCodeDropdown').change(function () {
-            var selectedBarcode = $(this).val();
-            if (!selectedBarcode) return;
+     function FillToolList() {
+        $.ajax({
+            url: '/PPCToolIssue/FillToolList',
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                // console.log("ToolList raw data:", data);
 
-            var tool = window.ToolList.find(x => x.BarCode === selectedBarcode);
-            if (!tool) return;
+                
+                const obj = typeof data === "string" ? JSON.parse(data) : data;
+                // console.log("Parsed object:", obj);
 
-            $('#SerialNo').val(tool.SerialNo);
-            $('#ToolType').val(tool.Tooltype);
-            $('#CurrentLocation').val(tool.LocationOfInsallation);
-            $('#ExpectedLife').val(tool.ExpectedLife);
-            $('#NextCalibrationDate').val(tool.NextCalibrationDate ? tool.NextCalibrationDate.split('T')[0] : '');
-            $('#ForDepartmentId').val(tool.ForDepartmentId);
+                var select = $('#ToolEntryId');
+                select.empty();
+                select.append('<option value="">-- Select Tool --</option>');
+
+                 if (obj.Result && obj.Result.length > 0) {
+                $.each(obj.Result, function (i, item) {
+                    select.append($('<option>', {
+                        value: item.ToolEntryId,
+                        text: item.ToolName
+                    }));
+                }); 
+            }
+            select.trigger('change.select2');
+            },
+            error: function (err) {
+                console.error("❌ Error fetching tool list:", err);
+            }
         });
-    } // <<< Add this closing brace
+    }
+
+
+    function FillToolBarCode() {
+        const toolId = $('#ToolEntryId').val();
+
+        if (!toolId) {
+            $('#BarCode').empty().append('<option value="">-- Select Barcode --</option>');
+            $('#ToolType').val(''); // clear tool type too
+            return;
+        }
+
+        $.ajax({
+            url: '/PPCToolIssue/FillToolBarCode',
+            type: 'GET',
+            data: { ToolEntryId: toolId },
+            dataType: 'json',
+            success: function (data) {
+                // console.log("Barcode List:", data);
+
+                const obj = typeof data === "string" ? JSON.parse(data) : data;
+                const result = obj.Result || [];
+
+                const select = $('#BarCode');
+                select.empty();
+                select.append('<option value="">-- Select Barcode --</option>');
+
+                if (result.length > 0) {
+                    $.each(result, function (i, item) {
+                        select.append($('<option>', {
+                            value: item.BarCode,
+                            text: item.BarCode
+                        }));
+
+                        // If ToolType is returned, set it in the field
+                        if (item.Tooltype && item.Tooltype.trim() !== "") {
+                            $('#ToolType').val(item.Tooltype);
+                        }
+                    });
+                  
+
+                } else {
+                    select.append('<option value="">No barcode found</option>');
+                    $('#ToolType').val('');
+                }
+                 select.trigger('change.select2');
+            },
+            error: function (err) {
+                console.error("❌ Error fetching barcode list:", err);
+            }
+        });
+    }
+
+    function FillToolSerialNo() {
+        const toolId = $('#ToolEntryId').val();
+        const barcode = $('#BarCode').val();
+        console.log("Serial NotoolId:", toolId);
+        console.log("Serial barcode:", barcode);
+
+        if (!toolId || !barcode) {
+            $('#SerialNo').empty().append('<option value="">-- Select Serial No --</option>');
+            return;
+        }
+
+        $.ajax({
+            url: '/PPCToolIssue/FillToolSerialNo',
+            type: 'GET',
+            data: { ToolEntryId: toolId, barcode: barcode },
+            dataType: 'json',
+            success: function (data) {
+                // console.log("Serial No List:", data);
+
+                const obj = typeof data === "string" ? JSON.parse(data) : data;
+                const result = obj.Result || [];
+
+                const select = $('#SerialNo');
+                select.empty();
+                select.append('<option value="">-- Select Serial No --</option>');
+
+                if (result.length > 0) {
+                    $.each(result, function (i, item) {
+                        select.append($('<option>', {
+                            value: item.SerialNo,
+                            text: item.SerialNo
+                        }));
+                    });
+                } else {
+                    select.append('<option value="">No serial number found</option>');
+                }
+               select.trigger('change.select2');
+
+            },
+            error: function (err) {
+                console.error("❌ Error fetching serial no list:", err);
+            }
+        });
+    }
+
+    function FillToolBarCodeDetail() {
+        const ToolEntryId = $('#ToolEntryId').val();
+        const barcode = $('#BarCode').val();
+        const SerialNo = $('#SerialNo').val();
+
+        // 🧩 Stop if any dropdown is empty
+        if (!ToolEntryId || !barcode || !SerialNo) return;
+
+        $.ajax({
+            url: '/PPCToolIssue/FillToolBarCodeDetail',
+            type: 'GET',
+            data: { ToolEntryId, barcode, SerialNo },
+            dataType: 'json',
+            success: function (data) {
+                // console.log("✅ BarcodeDetails List:", data);
+
+                const obj = typeof data === "string" ? JSON.parse(data) : data;
+                const result = obj.Result?.[0] || obj[0];
+
+                if (!result) {
+                    console.warn("⚠ No detail found for selected serial");
+                    return;
+                }
+
+                const backendDate = new Date(result.NextCalibrationDate);
+                const backendDate1 = new Date(result.LastCalibrationDate);
+
+                 const formatted = ('0' + backendDate.getDate()).slice(-2) + '/' +
+                      ('0' + (backendDate.getMonth() + 1)).slice(-2) + '/' +
+                      backendDate.getFullYear();
+                const formatted1 = ('0' + backendDate1.getDate()).slice(-2) + '/' +
+                      ('0' + (backendDate1.getMonth() + 1)).slice(-2) + '/' +
+                      backendDate1.getFullYear();
+                // 🟢 Fill all fields from SP result
+                $('#RemainingToolLifeInMonths').val(result.ExpectedLife || '');
+                $('#NextCalibrationDueDate').val(formatted);
+                $('#ForDepartmentId').val(result.ForDepartmentId || '');
+                $('#CurrentLocation').val(result.LocationOfInsallation || '');
+                $('#Unit').val(result.Unit || '');
+                $('#LastCalibrationDate').val(formatted1);
+            },
+            error: function (err) {
+                console.error("❌ Error fetching detail:", err);
+            }
+        });
+    }
+
+     function FillMachineList() {
+        $.ajax({
+            url: '/PPCToolIssue/FillMachineList',
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                // ✅ Parse only if it's actually a string
+                const obj = typeof data === "string" ? JSON.parse(data) : data;
+                var select = $('#ForMachineId');
+                select.empty();
+                select.append('<option value="">-- Select Machine --</option>');
+
+                // ✅ Use obj instead of data
+                if (obj.Result && obj.Result.length > 0) {
+                    $.each(obj.Result, function (i, item) {
+                        select.append($('<option>', {
+                            value: item.MachineId,
+                            text: item.MachineName
+                        }));
+                    });
+                }
+            },
+            error: function (err) {
+                console.error("❌ Error fetching tool list:", err);
+            }
+        });
+    }
+
+    function FillProdPlan() {
+            // console.log("🔹 FillProdPlan called");
+        const toolId = $('#ToolEntryId').val();
+        // console.log("....id",toolId);
+        if (!toolId) {
+            $('#ProdPlanNo').empty().append('<option value="">-- Select Prod Plan --</option>');
+            return;
+        }
+
+        $.ajax({
+            url: '/PPCToolIssue/FillProdPlan',
+            type: 'GET',
+            data: { ToolEntryId: toolId },
+            dataType: 'json',
+            success: function (data) {
+                console.log("✅ FillProdPlan Data:", data);
+                const obj = typeof data === "string" ? JSON.parse(data) : data;
+                const result = obj.Result || obj || [];
+
+                let select = $('#ProdPlanNo');
+                select.empty();
+                select.append('<option value="">-- Select Prod Plan --</option>');
+
+                if (result.length > 0) {
+                    $.each(result, function (i, item) {
+                        if (item.ProDPlanNo) {
+                            select.append(`<option value="${item.ProDPlanNo}">${item.ProDPlanNo}</option>`);
+                        }
+                    });
+                } else {
+                    select.append('<option value="">No Production Plan Found</option>');
+                }
+            },
+            error: function (err) {
+                console.error("❌ Error fetching FillProdPlan:", err);
+            }
+        });
+    }
+
+
+    function FillProdPlanYearCode() {
+        const toolId = $('#ToolEntryId').val();
+        const ProdPlanNo = $('#ProdPlanNo').val();
+
+        if (!toolId || !ProdPlanNo) return;
+
+        $.ajax({
+            url: '/PPCToolIssue/FillProdPlanYearCode',
+            type: 'GET',
+            data: { ToolEntryId: toolId,ProdPlanNo },
+            dataType: 'json',
+            success: function (data) {
+                console.log("FillProdPlanYearCode No List:", data);
+
+                const obj = typeof data === "string" ? JSON.parse(data) : data;
+                const result = obj.Result && obj.Result.length > 0 ? obj.Result[0] : null;
+
+                if (!result) {
+                    console.warn("⚠ No detail found for FillProdPlanYearCode");
+                    return;
+                }
+
+                $('#ProdPlanYearCode').val(result.PlanNoYearCode || '');
+                FillProdPlanDate();
+            },
+            error: function (err) {
+                console.error("❌ Error fetching FillProdPlanYearCode:", err);
+            }
+        });
+    }
+
+     function FillProdPlanDate() {
+        const ToolEntryId = $('#ToolEntryId').val();
+        const ProdPlanNo = $('#ProdPlanNo').val();
+        const ProdPlanYearCode = $('#ProdPlanYearCode').val();
+
+        // 🧩 Stop if any dropdown is empty
+        if (!ToolEntryId || !ProdPlanNo || !ProdPlanYearCode) return;
+
+        $.ajax({
+            url: '/PPCToolIssue/FillProdPlanDate',
+            type: 'GET',
+            data: { ToolEntryId, ProdPlanNo, ProdPlanYearCode },
+            dataType: 'json',
+            success: function (data) {
+                console.log("✅ FillProdPlanDate List:", data);
+
+                const obj = typeof data === "string" ? JSON.parse(data) : data;
+                const result = obj.Result?.[0] || obj[0];
+
+                if (!result) {
+                    console.warn("⚠ No detail found for selected serial");
+                    return;
+                }
+
+                const backendDate = new Date(result.WODAte);
+                 const formatted = ('0' + backendDate.getDate()).slice(-2) + '/' +
+                      ('0' + (backendDate.getMonth() + 1)).slice(-2) + '/' +
+                      backendDate.getFullYear();
+                // 🟢 Fill all fields from SP result
+                $('#ProdPlanEntryId').val(result.PlanNoEntryId || '');
+                $('#ProdPlanDate').val(formatted);
+              
+            },
+            error: function (err) {
+                console.error("❌ Error fetching FillProdPlanDate detail:", err);
+            }
+        });
+    }
+
+    $(function () {
+        $(".datepicker").datepicker({
+            dateFormat: "dd/mm/yy",
+            changeMonth: true,
+            changeYear: true
+        });
+
+        // Set today's date on page load
+        let today = new Date();
+        $(".datepicker").datepicker("setDate", today);
+
+        // Prevent typing manually
+        $(".datepicker").on("keydown", function (e) {
+            e.preventDefault();
+        });
+    });
 
 
     $(document).ready(async function () {
-        const entryId = await GetNewEntry();
-        console.log("Entry ID after fetch:", entryId);
+        GetNewEntry();
+        FillDepartmentList();
+        FillToolList();
+        FillMachineList();
 
-        if (entryId) {
-            FillToolBarCode(entryId);
-        }
-        console.log("Entry ID on load:", entryId);
-        if (entryId) {
-            FillToolBarCode(entryId);
-        }
+    function clearDependentFieldsForBarcode() {
+        $('#SerialNo').empty().append('<option value="">-- Select Serial No --</option>');
+        $('#ProdPlanNo').empty().append('<option value="">-- Select Prod Plan --</option>');
+
+        $('#ProdPlanYearCode').val('');
+        $('#ProdPlanDate').val('');
+        $('#ProdPlanEntryId').val('');
+        $('#RemainingToolLifeInMonths').val('');
+        $('#NextCalibrationDueDate').val('');
+        $('#LastCalibrationDate').val('');
+        $('#ForDepartmentId').val('');
+        $('#CurrentLocation').val('');
+        $('#Unit').val('');
+    }
+        function clearDependentFields() {
+        $('#BarCode').empty().append('<option value="">-- Select Barcode --</option>');
+        clearDependentFieldsForBarcode();
+    }
+
+        // ✅ Delegated event bindings
+        $(document).on('change', '#ToolEntryId', function () {
+            clearDependentFields();
+            FillToolBarCode();
+            FillProdPlan();
+        });
+
+    $(document).on('change', '#BarCode', function () {
+        // Only clear dependent fields that rely on SerialNo
+        $('#RemainingToolLifeInMonths').val('');
+        $('#NextCalibrationDueDate').val('');
+        $('#LastCalibrationDate').val('');
+        $('#CurrentLocation').val('');
+        $('#Unit').val('');
+
+        // Now populate SerialNo for this barcode
+        FillToolSerialNo();
+    });
+
+
+        $(document).on('change', '#SerialNo', function () {
+            FillToolBarCodeDetail();
+        });
+
+        $(document).on('change', '#ProdPlanNo', function () {
+            FillProdPlanYearCode();
+        });
+
+        $(document).on('change', '#ProdPlanYearCode', function () {
+            FillProdPlanDate();
+        });
+
+        $('#ToolEntryId, #BarCode, #SerialNo').select2({
+            placeholder: "-- Select --",
+            allowClear: false,
+            width: '100%'
+        });
+
+
+    $(document).on('select2:select', '#ToolEntryId', function (e) {
+        var selectedValue = e.params.data.id;
+        console.log('Tool selected:', selectedValue);
+
+        // Trigger the same logic as normal dropdown change
+        clearDependentFields();
+        FillToolBarCode();
+        FillProdPlan();
+    });
+
+    $(document).on('select2:select', '#BarCode', function (e) {
+        // Only clear SerialNo dependent fields
+        $('#SerialNo').empty().append('<option value="">-- Select Serial No --</option>');
+        $('#RemainingToolLifeInMonths').val('');
+        $('#NextCalibrationDueDate').val('');
+        $('#LastCalibrationDate').val('');
+        $('#CurrentLocation').val('');
+        $('#Unit').val('');
+        // Do NOT clear ToolType or ProdPlanNo
+        FillToolSerialNo();
+    });
+
+
+    $(document).on('select2:select', '#SerialNo', function (e) {
+        var selectedValue = e.params.data.id;
+        FillToolBarCodeDetail();
+    });
+
         let rowIndex = $("#divToolIssueAdded tr").length; // start index based on existing rows
-
+        let editIndex = -1;
         // Add to Grid
         $(".GridButton").click(function () {
-            const inputs = $("#inputRow input, #inputRow select");
-            let emptyCheck = false;
+         const requiredFields = [
+        { id: '#ToolEntryId', name: 'Tool Name' },
+        { id: '#IssueToLocation', name: 'Issue To Location' },
+        { id: '#IssueQty', name: 'Issue Quantity' }
+    ];
 
-            // Optional: validate required fields
-            inputs.each(function () {
-                if ($(this).val() === "") {
-                    emptyCheck = true;
-                    $(this).addClass("is-invalid");
-                } else {
-                    $(this).removeClass("is-invalid");
-                }
-            });
+    let emptyCheck = false;
+    let missingFields = [];
 
-            if (emptyCheck) {
-                alert("Please fill all fields before adding.");
-                return;
-            }
+    requiredFields.forEach(function (field) {
+        const input = $(field.id);
+        const value = input.val() && input.val().trim() !== "" ? input.val() : "";
 
+        if (value === "") {
+            emptyCheck = true;
+            missingFields.push(field.name); 
+            input.addClass("is-invalid");
+        } else {
+            input.removeClass("is-invalid");
+        }
+    });
+
+    if (emptyCheck) {
+        alert("Please fill the following required fields:\n\n- " + missingFields.join("\n- "));
+        return;
+    }
             // Build row with correct model binding
-            let row = `<tr>
-                <td>
-                    <button type="button" class="btn btn-sm btn-danger removeRow">X</button>
-                    <button type="button" class="btn btn-sm btn-primary editRow">Edit</button>
-                </td>
+               let row = `
+            <tr>
+                
+                 <td style="white-space:nowrap;">
+                <a class="table-link link-primary editRow">
+                    <span class="fa-stack">
+                        <i class="fa fa-square fa-stack-2x"></i>
+                        <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                    </span>
+                </a>
+                <a class="table-link link-danger removeRow">
+                    <span class="fa-stack">
+                        <i class="fa fa-square fa-stack-2x"></i>
+                        <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                    </span>
+                </a>
+            </td>
+                <td><input type="hidden" name="ToolIssueDetails[${rowIndex}].ToolEntryId" value="${$("#ToolEntryId").val()}"/>${$("#ToolEntryId option:selected").text()}</td>
                 <td><input type="hidden" name="ToolIssueDetails[${rowIndex}].BarCode" value="${$("#BarCode").val()}"/>${$("#BarCode").val()}</td>
                 <td><input type="hidden" name="ToolIssueDetails[${rowIndex}].SerialNo" value="${$("#SerialNo").val()}"/>${$("#SerialNo").val()}</td>
                 <td><input type="hidden" name="ToolIssueDetails[${rowIndex}].ToolType" value="${$("#ToolType").val()}"/>${$("#ToolType").val()}</td>
@@ -471,54 +955,98 @@
                 <td><input type="hidden" name="ToolIssueDetails[${rowIndex}].NextCalibrationDueDate" value="${$("#NextCalibrationDueDate").val()}"/>${$("#NextCalibrationDueDate").val()}</td>
                 <td><input type="hidden" name="ToolIssueDetails[${rowIndex}].RemainingToolLifeInMonths" value="${$("#RemainingToolLifeInMonths").val()}"/>${$("#RemainingToolLifeInMonths").val()}</td>
                 <td><input type="hidden" name="ToolIssueDetails[${rowIndex}].ProdPlanNo" value="${$("#ProdPlanNo").val()}"/>${$("#ProdPlanNo").val()}</td>
+                <td><input type="hidden" name="ToolIssueDetails[${rowIndex}].ProdPlanYearCode" value="${$("#ProdPlanYearCode").val()}"/>${$("#ProdPlanYearCode").val()}</td>
                 <td><input type="hidden" name="ToolIssueDetails[${rowIndex}].ProdPlanDate" value="${$("#ProdPlanDate").val()}"/>${$("#ProdPlanDate").val()}</td>
+                <td><input type="hidden" name="ToolIssueDetails[${rowIndex}].ProdPlanEntryId" value="${$("#ProdPlanEntryId").val()}"/>${$("#ProdPlanEntryId").val()}</td>
                 <td><input type="hidden" name="ToolIssueDetails[${rowIndex}].ProdSchNo" value="${$("#ProdSchNo").val()}"/>${$("#ProdSchNo").val()}</td>
                 <td><input type="hidden" name="ToolIssueDetails[${rowIndex}].ProdSchDate" value="${$("#ProdSchDate").val()}"/>${$("#ProdSchDate").val()}</td>
-                <td><input type="hidden" name="ToolIssueDetails[${rowIndex}].ForMachineId" value="${$("#ForMachineId").val()}"/>${$("#ForMachineId").val()}</td>
+                <td><input type="hidden" name="ToolIssueDetails[${rowIndex}].ForMachineId" value="${$("#ForMachineId").val()}"/>${$("#ForMachineId").val() ? $("#ForMachineId option:selected").text() : ""}</td>
                 <td><input type="hidden" name="ToolIssueDetails[${rowIndex}].SpecialInstruction" value="${$("#SpecialInstruction").val()}"/>${$("#SpecialInstruction").val()}</td>
                 <td><input type="hidden" name="ToolIssueDetails[${rowIndex}].WillBeConsumedOrReturned" value="${$("#WillBeConsumedOrReturned").val()}"/>${$("#WillBeConsumedOrReturned").val()}</td>
-            </tr>`;
+                <td><input type="hidden" name="ToolIssueDetails[${rowIndex}].PendingStatus" value="Pending"/>Pending</td>
+                <td><input type="hidden" name="ToolIssueDetails[${rowIndex}].PendingQty" value="${$("#PendingQty").val()}"/>${$("#PendingQty").val()}</td>
+            </tr>
+        `;
+       
+     if (editIndex >= 0) {
+        $("#divToolIssueAdded tr").eq(editIndex).replaceWith(row);
+        editIndex = -1; // reset
+             $(".GridButton")
+            .removeClass("btn-warning")
+            .addClass("btn-outline-danger")
+            .html('<i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID');
+    } else {
+        $("#divToolIssueAdded tr:contains('NO DATA ADDED')").remove();
+        $("#divToolIssueAdded").append(row);
+        rowIndex++;
+    }
 
-            $("#divToolIssueAdded").append(row);
+            // Clear only fields except ToolEntryId
+    $("#inputRow input, #inputRow select").each(function() {
+        const id = $(this).attr("id");
+        if (id !== "ToolEntryId" && id !== "ToolType") {
+            if ($(this).is("select")) {
+                $(this).prop('selectedIndex', 0);
+            } else {
+                $(this).val("");
+            }
+            $(this).removeClass("is-invalid");
+        }
+    })
 
-            // Clear inputs
-            inputs.val("").prop('selectedIndex', 0);
+    });
 
-            rowIndex++; // increment for next row
+    // ✅ Remove Row
+    $(document).on("click", ".removeRow", function () {
+        console.log("remove click");
+        $(this).closest("tr").remove();
+        reindexRows();
+    });
+
+    // ✅ Edit Row (optional fine-tuned version)
+    $(document).on("click", ".editRow", function () {
+        console.log("edit click");
+
+        const tr = $(this).closest("tr");
+         editIndex = tr.index();
+           $("#ToolEntryId").val(tr.find("input[name*='.ToolEntryId']").val()).trigger('change');
+    $("#BarCode").val(tr.find("input[name*='.BarCode']").val()).trigger('change');
+    $("#SerialNo").val(tr.find("input[name*='.SerialNo']").val()).trigger('change');
+    $("#ToolType").val(tr.find("input[name*='.ToolType']").val());
+    $("#IssueQty").val(tr.find("input[name*='.IssueQty']").val());
+    $("#Unit").val(tr.find("input[name*='.Unit']").val());
+    $("#CurrentLocation").val(tr.find("input[name*='.CurrentLocation']").val());
+    $("#IssueToLocation").val(tr.find("input[name*='.IssueToLocation']").val()).trigger('change');
+    $("#ToolCondition").val(tr.find("input[name*='.ToolCondition']").val());
+    $("#LastCalibrationDate").val(tr.find("input[name*='.LastCalibrationDate']").val());
+    $("#NextCalibrationDueDate").val(tr.find("input[name*='.NextCalibrationDueDate']").val());
+    $("#RemainingToolLifeInMonths").val(tr.find("input[name*='.RemainingToolLifeInMonths']").val());
+    $("#ProdPlanNo").val(tr.find("input[name*='.ProdPlanNo']").val()).trigger('change');
+    $("#ProdPlanYearCode").val(tr.find("input[name*='.ProdPlanYearCode']").val());
+    $("#ProdPlanDate").val(tr.find("input[name*='.ProdPlanDate']").val());
+    $("#ProdPlanEntryId").val(tr.find("input[name*='.ProdPlanEntryId']").val());
+    $("#ProdSchNo").val(tr.find("input[name*='.ProdSchNo']").val());
+    $("#ProdSchDate").val(tr.find("input[name*='.ProdSchDate']").val());
+    $("#ForMachineId").val(tr.find("input[name*='.ForMachineId']").val()).trigger('change');
+    $("#SpecialInstruction").val(tr.find("input[name*='.SpecialInstruction']").val());
+    $("#WillBeConsumedOrReturned").val(tr.find("input[name*='.WillBeConsumedOrReturned']").val()).trigger('change');
+
+        $(".GridButton")
+            .removeClass("btn-outline-danger")
+            .addClass("btn-warning")
+            .html('<i class="fa-solid fa-pen-to-square fa-fw fa-lg"></i> UPDATE GRID');
+        
+        reindexRows();
+    });
+        function reindexRows() {
+        $("#divToolIssueAdded tr").each(function (i) {
+            $(this).find("input[name]").each(function () {
+                const name = $(this).attr("name");
+                const newName = name.replace(/\[\d+\]/, `[${i}]`);
+                $(this).attr("name", newName);
+            });
         });
-
-        // Remove row
-        $(document).on("click", ".removeRow", function () {
-            $(this).closest("tr").remove();
-            // Optional: reindex remaining rows for model binding if needed
-        });
-
-        // Edit row
-        $(document).on("click", ".editRow", function () {
-            const tr = $(this).closest("tr");
-            $("#BarCode").val(tr.find("td:eq(1)").text());
-            $("#SerialNo").val(tr.find("td:eq(2)").text());
-            $("#ToolType").val(tr.find("td:eq(3)").text());
-            $("#IssueQty").val(tr.find("td:eq(4)").text());
-            $("#Unit").val(tr.find("td:eq(5)").text());
-            $("#CurrentLocation").val(tr.find("td:eq(6)").text());
-            $("#IssueToLocation").val(tr.find("td:eq(7)").text());
-            $("#ToolCondition").val(tr.find("td:eq(8)").text());
-            $("#LastCalibrationDate").val(tr.find("td:eq(9)").text());
-            $("#NextCalibrationDueDate").val(tr.find("td:eq(10)").text());
-            $("#RemainingToolLifeInMonths").val(tr.find("td:eq(11)").text());
-            $("#ProdPlanNo").val(tr.find("td:eq(12)").text());
-            $("#ProdPlanDate").val(tr.find("td:eq(13)").text());
-            $("#ProdSchNo").val(tr.find("td:eq(14)").text());
-            $("#ProdSchDate").val(tr.find("td:eq(15)").text());
-            $("#ForMachineId").val(tr.find("td:eq(16)").text());
-            $("#SpecialInstruction").val(tr.find("td:eq(17)").text());
-            $("#WillBeConsumedOrReturned").val(tr.find("td:eq(18)").text());
-
-            // Remove the row after bringing values to input
-            tr.remove();
-        });
-
+    }
       
     });
 

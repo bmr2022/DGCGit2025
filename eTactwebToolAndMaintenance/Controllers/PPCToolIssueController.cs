@@ -42,8 +42,7 @@ namespace eTactweb.Controllers
             model.ToolIssueYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
             model.CC = HttpContext.Session.GetString("Branch");
             model.UID = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-            model.ToolIssueDate = DateTime.Now;
-
+           
             return View(model);
         }
 
@@ -60,12 +59,28 @@ namespace eTactweb.Controllers
         }
 
         [HttpGet]
+        public async Task<JsonResult> FillDepartmentList()
+        {
+            try
+            {
+                var result = await _IPPCToolIssue.FillDepartmentList("FillDepartmentList");
+                string jsonString = JsonConvert.SerializeObject(result);
+                return Json(jsonString);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while filling tool list.");
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+        [HttpGet]
         public async Task<JsonResult> FillToolList()
         {
             try
             {
                 var result = await _IPPCToolIssue.FillToolList("FillToolList");
-                return Json(result);
+                string jsonString = JsonConvert.SerializeObject(result);
+                return Json(jsonString);
             }
             catch (Exception ex)
             {
@@ -75,15 +90,16 @@ namespace eTactweb.Controllers
         }
 
         [HttpGet]
-        public async Task<JsonResult> FillToolBarCode(long ToolIssueEntryId)
+        public async Task<JsonResult> FillToolBarCode(long ToolEntryId)
         {
             try
             {
-                var result = await _IPPCToolIssue.FillToolBarCode("FillToolBarCode", ToolIssueEntryId);
+                var result = await _IPPCToolIssue.FillToolBarCode("FillToolBarCode", ToolEntryId);
                 // Manually serialize the result
                 string jsonString = JsonConvert.SerializeObject(result);
 
                 return Json(jsonString); // return as string
+
             }
             catch (Exception ex)
             {
@@ -92,13 +108,54 @@ namespace eTactweb.Controllers
             }
         }
 
+
         [HttpGet]
-        public async Task<JsonResult> FillProdPlan(long ToolIssueEntryId)
+        public async Task<JsonResult> FillToolSerialNo(long ToolEntryId, string Barcode)
         {
             try
             {
-                var result = await _IPPCToolIssue.FillProdPlan("FillProdPlan", ToolIssueEntryId);
-                return Json(result);
+                var result = await _IPPCToolIssue.FillToolSerialNo("FillToolSerialNo", ToolEntryId, Barcode);
+                // Manually serialize the result
+                string jsonString = JsonConvert.SerializeObject(result);
+
+                return Json(jsonString); // return as string
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while filling tool serial no.");
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> FillToolBarCodeDetail(long ToolEntryId,string Barcode,string SerialNo)
+        {
+            try
+            {
+                var result = await _IPPCToolIssue.FillToolBarCodeDetail("FillToolBarCodeDetail", ToolEntryId, Barcode, SerialNo);
+                // Manually serialize the result
+                string jsonString = JsonConvert.SerializeObject(result);
+
+                return Json(jsonString); // return as string
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while filling tool barcode details.");
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> FillProdPlan(long ToolEntryId)
+        {
+            try
+            {
+                var result = await _IPPCToolIssue.FillProdPlan("FillProdPlan", ToolEntryId);
+                string jsonString = JsonConvert.SerializeObject(result);
+
+                return Json(jsonString); // return as string
             }
             catch (Exception ex)
             {
@@ -108,12 +165,31 @@ namespace eTactweb.Controllers
         }
 
         [HttpGet]
-        public async Task<JsonResult> FillProdPlanYearCode(long ToolIssueEntryId, string ProdPlanNo)
+        public async Task<JsonResult> FillProdPlanYearCode(long ToolEntryId, string ProdPlanNo)
         {
             try
             {
-                var result = await _IPPCToolIssue.FillProdPlanYearCode("FillProdPlanYearCode", ToolIssueEntryId, ProdPlanNo);
-                return Json(result);
+                var result = await _IPPCToolIssue.FillProdPlanYearCode("FillProdPlanYearCode", ToolEntryId, ProdPlanNo);
+                string jsonString = JsonConvert.SerializeObject(result);
+
+                return Json(jsonString); // return as string
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while filling production plan year code.");
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> FillProdPlanDate(long ToolEntryId, string ProdPlanNo,long ProdPlanYearCode)
+        {
+            try
+            {
+                var result = await _IPPCToolIssue.FillProdPlanDate("FillProdPlanDate", ToolEntryId, ProdPlanNo, ProdPlanYearCode);
+                string jsonString = JsonConvert.SerializeObject(result);
+
+                return Json(jsonString); // return as string
             }
             catch (Exception ex)
             {
@@ -128,7 +204,9 @@ namespace eTactweb.Controllers
             try
             {
                 var result = await _IPPCToolIssue.FillProdPlanSchedule("FillProdPlanSchedule", ToolIssueEntryId, ProdPlanNo, ProdPlanYearCode, PlanNoEntryId);
-                return Json(result);
+                string jsonString = JsonConvert.SerializeObject(result);
+
+                return Json(jsonString); // return as string
             }
             catch (Exception ex)
             {
@@ -143,7 +221,9 @@ namespace eTactweb.Controllers
             try
             {
                 var result = await _IPPCToolIssue.FillMachineList("FillMachineList");
-                return Json(result);
+                string jsonString = JsonConvert.SerializeObject(result);
+
+                return Json(jsonString); // return as string
             }
             catch (Exception ex)
             {
