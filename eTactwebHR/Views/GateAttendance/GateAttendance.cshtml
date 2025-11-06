@@ -53,13 +53,19 @@
                                         <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                                         UPDATE
                                     </button>
+                                    <span class="d-flex float-end" style="margin-top:-2px;">
+                                        <a asp-action="GateAttendance" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient" id="savebtn">
+                                            <i class="fa fa-plus-circle fafw fa-lg" aria-hidden="true"></i>
+                                            Add New
+                                        </a>
+                                    </span>
                                 </div>
                             }
 
                             else
                             {
                                 <div class="col-auto">
-                                    <button type="button" class="btn btn-outline-primary btn-sm" id="submitBTN">
+                                    <button type="button" class="btn btn-primary btn-sm" id="submitBTN">
                                         <i class="fa-solid fa-chevron-circle-right"></i>
                                         SUBMIT
                                     </button>
@@ -84,6 +90,7 @@
                         <partial name="_GateAttMain" />
                         <input type="hidden" asp-for="TypeOfSave" value="" />
                         <input type="hidden" asp-for="EntryByMachineName" value="" />
+                        <input type="hidden" asp-for="IsIncreamented" value="@Model.IsIncreamented" />
                     </div>
                 </div>
                 <div class="accordion-item">
@@ -164,6 +171,12 @@
                                         UPDATE
                                     </button>
                                 </div>
+                                <span class="d-flex float-end" style="margin-top:-2px;">
+                                    <a asp-action="GateAttendance" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient" id="savebtn">
+                                        <i class="fa fa-plus-circle fafw fa-lg" aria-hidden="true"></i>
+                                        Add New
+                                    </a>
+                                </span>
                             }
                             else
                             {
@@ -237,7 +250,7 @@
             var today = new Date(); today.setHours(0,0,0,0);
             var defaultDate = (today < minDate) ? minDate : (today > maxDate ? maxDate : today);
             fillEntryId();
-            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+            if ($('#Mode').val() == "U" || $('#Mode').val() == "V" || $('#IsIncreamented').val() == "true") {
                 //var strEmpAttDate = $('#strEmpAttDate').val().split("-").join("/");
                 //strEmpAttDate = parseDateToFormat(strEmpAttDate.split(" ")[0]);
                 var strEmpAttDate = $('#strEmpAttDate').val();
@@ -250,7 +263,9 @@
             EmpAttDateOnChange();
             $('#EmployeeCode').select2();
             updateItemCount();
-            //$('form').on('submit', handleAttendanceSubmit);
+            if($('#IsIncreamented').val() == 'true') {
+                ShowManualAttandance();
+            }
         });
 
           function parseCustomDate(str) {
@@ -424,42 +439,48 @@
                             var type = keyMatch[2]; 
                         }
                         var dictKey = (type.toLowerCase() === "intime" ? "AttInTime" : "AttOutTime") + day;
-                        if($('#DayOrMonthType').val().toLowerCase() == 'daily') {
-                            if (!inp.value || inp.value.trim() === "") {
-                                if (!missingEmpList.some(x => x.id === empId)) {
-                                    let srNo = $("#SrNo_" + empId).text().trim();
-                                    let nameText = $("#EmpName_" + empId).text().trim();
-                                    let code = $("#EmpCode_" + empId).text().trim();
-                                    let empRow = $("#selectedEmp_" + empId).closest("tr");
-                                    missingEmpList.push({ id: empId, srNo, name: nameText, code, row: empRow });
-                                }
-                            }
-                        }
                         empObj.Attendance[dictKey] = inp.value || "";
                     }
                 });
+                if ($('#DayOrMonthType').val().toLowerCase() == 'daily') {
+                    let anyMissing = Object.values(empObj.Attendance).some(v => !v || v.trim() === "");
+                    if (anyMissing) {
+                        let srNo = $("#SrNo_" + empId).text().trim();
+                        let nameText = $("#EmpName_" + empId).text().trim();
+                        let code = $("#EmpCode_" + empId).text().trim();
+                        let empRow = $("#selectedEmp_" + empId).closest("tr");
+                        missingEmpList.push({ id: empId, srNo, name: nameText, code, row: empRow });
+                    }
+                } else if ($('#DayOrMonthType').val().toLowerCase() == 'monthly') {
+                    let allEmpty = Object.values(empObj.Attendance).every(v => !v || v.trim() === "");
+                    if (allEmpty) {
+                        let srNo = $("#SrNo_" + empId).text().trim();
+                        let nameText = $("#EmpName_" + empId).text().trim();
+                        let code = $("#EmpCode_" + empId).text().trim();
+                        let empRow = $("#selectedEmp_" + empId).closest("tr");
+                        missingEmpList.push({ id: empId, srNo, name: nameText, code, row: empRow });
+                    }
+                }
                 model.GateAttDetailsList.push(empObj);
             });
-             if ($('#DayOrMonthType').val().toLowerCase() === 'daily' && missingEmpList.length > 0) {
+             if (missingEmpList.length > 0) {
+                // reset background for all selected rows
                 $("input[name='selectedEmpIds']:checked").each(function () {
                     $(this).closest("tr").css("background-color", "");
                 });
-                missingEmpList.forEach(emp => { emp.row.css("background-color", "#ffe6e6");  });
+
+                // highlight missing rows
+                missingEmpList.forEach(emp => emp.row.css("background-color", "#ffe6e6"));
+
                 let msgList = missingEmpList.map(emp => `${emp.srNo}. ${emp.name} (${emp.code})`).join("\n");
                 let msg = `The following employees have missing time entries. Please enter the required time for them, or Do you want to unselect them?: \n\n${msgList}\n\n`;
-                let confirmUnselect = confirm(msg);
 
-                if (confirmUnselect) {
+                if (confirm(msg)) {
                     missingEmpList.forEach(emp => {
-                        // uncheck checkbox
                         let checkbox = document.getElementById("selectedEmp_" + emp.id);
                         if (checkbox) checkbox.checked = false;
-
-                        // remove from GateAttDetailsList
-                        model.GateAttDetailsList = model.GateAttDetailsList.filter(e => e.EmpId != emp.id);
-
-                        // clear highlight
                         emp.row.css("background-color", "");
+                        model.GateAttDetailsList = model.GateAttDetailsList.filter(e => e.EmpId != emp.id);
                     });
                 } else {
                     return false; // stop save
@@ -473,11 +494,11 @@
             submitAttendanceAjax();
         });
         function submitAttendanceAjax() {
-            $('.btn-outline-primary').prop('disabled', true).html('Validating Form... <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
+            $('#submitBTN, #UpdateButton').prop('disabled', true).html('Validating Form... <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
             var IsErr = 0;
             if (!ValidateForm()) {
                 event.preventDefault();
-                resetButtonText('.btn-outline-primary');
+                resetButtonText('#submitBTN, #UpdateButton');
             }
             else {
                 var model = collectGateAttendanceModel();
@@ -491,7 +512,7 @@
                 }
                 if(IsErr==1){
                     event.preventDefault();
-                    resetButtonText('.btn-outline-primary');
+                    resetButtonText('#submitBTN, #UpdateButton');
                 }
                 else{
                     console.log("Payload:", model);
@@ -505,7 +526,7 @@
                             if (res != null && res.isSuccess == true) {
                                 $.notify(res?.message || "Attendance saved successfully!", "success");
                                 setTimeout(function () {
-                                    window.location.href = '@Url.Action("GateAttendance", "GateAttendance")' + '?ID=' + res.ID + '&Mode=' + $('#Mode').val() + '&YearCode=' + $('#GateAttYearCode').val();
+                                    window.location.href = '@Url.Action("GateAttendance", "GateAttendance")' + '?ID=' + res.ID + '&Mode=' + $('#Mode').val() + '&YearCode=' + $('#GateAttYearCode').val() + '&IsIncreament=' + true;
                                 }, 1500);       
                             }
                             else if (res != null && res.isSuccess == false) {
@@ -597,7 +618,7 @@
                 if (obj && obj.toLowerCase() === "daily") {
                     $('.dvEmpAttDate').show();
                     $('.dvGateAttEntryDay').show();
-                    if($('#Mode').val() != 'V' && $('#Mode').val() != 'U') {
+                    if($('#Mode').val() != 'V' && $('#Mode').val() != 'U' && $('#IsIncreamented').val() == 'false') {
                         $('#strEmpAttDate').select(0);
                     }
                     $('.dvEmpAttMonth').hide();
@@ -607,7 +628,7 @@
                 else if (obj && obj.toLowerCase() === "monthly") {
                     $('.dvEmpAttMonth').show();
                     $('.dvEmpAttDate').hide();
-                    if($('#Mode').val() != 'V' && $('#Mode').val() != 'U') {
+                    if($('#Mode').val() != 'V' && $('#Mode').val() != 'U' && $('#IsIncreamented').val() == 'false') {
                         $('#strEmpAttMonth').val('');
                     }
                     else {
@@ -625,7 +646,7 @@
                 else {
                     $('.dvEmpAttDate').show();
                     $('.dvGateAttEntryDay').show();
-                    if($('#Mode').val() != 'V' && $('#Mode').val() != 'U') {
+                    if($('#Mode').val() != 'V' && $('#Mode').val() != 'U' && $('#IsIncreamented').val() == 'false') {
                         $('#strEmpAttDate').select(0);
                     }
                     $('.dvEmpAttMonth').hide();
@@ -646,7 +667,6 @@
             }
 
             function ShowManualAttandance() {
-                var date = $("#strEmpAttDate").val();
                 var date = $("#strEmpAttDate").val();
                 var attmonth = $("#strEmpAttMonth").val();
                 var yearcode = $("#GateAttYearCode").val();

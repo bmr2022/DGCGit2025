@@ -57,8 +57,68 @@ namespace eTactwebHR.Controllers
             return View();
         }
         [HttpGet]
-        public async Task<IActionResult> GateAttendance(int ID, int YearCode, string Mode, string? AttendanceEntryMethodType, string FromDate = "", string ToDate = "", string DashboardType = "", string Searchbox = "")
+        public async Task<IActionResult> GateAttendance(int ID, int YearCode, string Mode, string? AttendanceEntryMethodType, string FromDate = "", string ToDate = "", string DashboardType = "", string Searchbox = "", bool IsIncreament = false)
         {
+            GateAttendanceModel tMainModel = new();
+            if (IsIncreament)
+            {
+                string GateAttendanceJson = HttpContext.Session.GetString("tempGateAttendance");
+                if (!string.IsNullOrEmpty(GateAttendanceJson))
+                {
+                    tMainModel = JsonConvert.DeserializeObject<GateAttendanceModel>(GateAttendanceJson);
+                    if (tMainModel != null)
+                    {
+                        if (string.Equals(tMainModel.DayOrMonthType, "daily", StringComparison.OrdinalIgnoreCase))
+                        {
+                            tMainModel.EmpAttDate = (tMainModel.EmpAttDate ?? DateTime.Now).AddDays(1);
+                        }
+                        else if (string.Equals(tMainModel.DayOrMonthType, "monthly", StringComparison.OrdinalIgnoreCase))
+                        {
+                            tMainModel.EmpAttDate = (tMainModel.EmpAttDate ?? DateTime.Now).AddMonths(1);
+                        }
+                        tMainModel.strEmpAttDate = CommonFunc.ParseFormattedDate(tMainModel.EmpAttDate.Value.ToString("dd/MM/yyyy"));
+
+                        if (tMainModel.Mode == "U" || tMainModel.Mode == "V")
+                        {
+                            int nextId = tMainModel.ID + 1;
+                            var nextModel = await IGateAttendance.GetViewByID(nextId, YearCode).ConfigureAwait(false);
+
+                            if (nextModel != null && nextModel.ID > 0)
+                            {
+                                tMainModel = nextModel;
+                                tMainModel.Mode = tMainModel.Mode; 
+                                tMainModel.strEmpAttDate = CommonFunc.ParseFormattedDate(tMainModel.EmpAttDate?.ToString("dd/MM/yyyy"));
+                            }
+                            else
+                            {
+                                tMainModel.ID = 0;
+                                tMainModel.Mode = "I";
+                            }
+                        }
+                        else if (tMainModel.Mode == "I")
+                        {
+                            tMainModel.ID = 0;
+                            tMainModel.Mode = "I";
+                        }
+
+                        tMainModel.GateAttYearCode = YearCode;
+                        tMainModel = await BindModels(tMainModel).ConfigureAwait(false);
+                        tMainModel.HolidayList = (!string.IsNullOrEmpty(tMainModel.EmpCategoryId) && tMainModel.EmpAttDate != null)
+                            ? GetHolidayList(Convert.ToInt32(tMainModel.EmpCategoryId), tMainModel.EmpAttDate ?? new DateTime(tMainModel.GateAttYearCode, 1, 1), YearCode)?.HolidayList ?? new List<GateAttendanceHolidayModel>()
+                            : null;
+
+                        ViewBag.DeptList = await IDataLogic.GetDropDownList("FillDepartment", "HRSPGateAttendanceMainDetail");
+                        ViewBag.DesigList = await IDataLogic.GetDropDownList("FillDesignation", "HRSPGateAttendanceMainDetail");
+                        ViewBag.EmployeeList = await IDataLogic.GetDropDownList("FillEmployee", "HRSPGateAttendanceMainDetail");
+
+                        string serializedGrid = JsonConvert.SerializeObject(tMainModel);
+                        HttpContext.Session.SetString("GateAttendance", serializedGrid);
+                        HttpContext.Session.Remove("tempGateAttendance");
+
+                        return View(tMainModel);
+                    }
+                }
+            }
             HttpContext.Session.Remove("GateAttendance");
             var MainModel = new GateAttendanceModel();
             MainModel.GateAttYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
@@ -237,10 +297,13 @@ namespace eTactwebHR.Controllers
                     string message = string.Empty;
                     if (Result != null)
                     {
+                        string serializedtempGateAttendance = JsonConvert.SerializeObject(model);
+                        HttpContext.Session.SetString("tempGateAttendance", serializedtempGateAttendance);
                         if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
                         {
                             ViewBag.isSuccess = true;
                             TempData["200"] = "200";
+
                             HttpContext.Session.Remove("GateAttendance");
                             message = "Success!";
                         }
