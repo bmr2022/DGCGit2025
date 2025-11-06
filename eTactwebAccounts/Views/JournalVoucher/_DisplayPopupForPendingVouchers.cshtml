@@ -108,7 +108,11 @@
 				{
 					<td>@item.DueDate</td>
 				}
-				<td id="BalanceAmt-@Cntr">@item.Balance</td>
+				<td id="BalanceAmt-@Cntr">
+					<input type="hidden" id="NetBalance-@Cntr" value="@item.NetAmount" />
+					<input type="hidden" id="OriginalBalance-@Cntr" value="@item.Balance" />
+					<span id="BalanceText-@Cntr">@item.Balance</span>
+				</td>
 				<td id="PopUpType-@Cntr">@item.DRCR</td>
 				<td><input id="AdjustAmt-@Cntr" style="width:50px" value="@item.AdjustmentAmt" onchange="ChangeAdjustAmt(@Cntr)"></td>
 				<td>@item.Adjusted</td>
