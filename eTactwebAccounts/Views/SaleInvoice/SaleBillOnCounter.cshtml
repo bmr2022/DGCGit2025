@@ -702,7 +702,7 @@
                 </select>
                 <label style="margin-left:3px;margin-right:3px" for="StoreName">Store Name</label>
                 <select class="form-select" asp-for="StoreId" id="MultiStoreName" style="width:170px">
-                    <option value="0">-Select-</option>
+                   
                 </select>
                 <input type="text" id="SearchPartCode" style="width:170px" placeholder="partcode">
 
@@ -4930,6 +4930,9 @@
                     },
                     success: function (result, status, xhr) {
                         if (xhr.status == 200 && xhr.responseText == result) {
+                           
+                            $('#divSaleBillList').html(result);
+
                             if ($('#SaleBillJobwork').val() == 'J') {
                                 $('.jobWorkChalln').show();
                                 $('.gridHiddenField').show();
@@ -4937,13 +4940,12 @@
                                 $('.jobWorkChalln').hide();
                                 $('.gridHiddenField').hide();
                             }
-                            $('#divSaleBillList').html(result);
-
                             $('#SaleOrderGroupWiseItem').modal('hide');
                             BasicTotal();
                             ClearAdjustmentGrid();
+                           
                             // ResetPendQty();
-                            FillSOPendQty();
+                            // FillSOPendQty();
 
                             $('#ItemNetAmount').val(sum);
 
@@ -4971,7 +4973,7 @@
                         $.notify('Something Went Wrong, Please Try Again.', "error");
                     }
                 }).done(function () {
-
+                    GetFeatureOption();
                     GetTaxPartItem();
                     GetDbCrDetail();
                     AddAdjstmntDetail1();
