@@ -4533,7 +4533,7 @@
                             $('#SOPendQty').prop("readonly", true);
                             $('#Rate').val("");
                             $('#Rate').val(obj.Result[0].Rate);
-                            $('#Rate').prop("readonly", true);
+                            // $('#Rate').prop("readonly", true);
                             $('#Unit,#AltUnit').val("");
                             $('#Unit').val(obj.Result[0].Unit);
                             $('#Unit').prop("readonly", true);
@@ -7347,7 +7347,7 @@
                 $('#Rate').prop("readonly", false);
                 $('#RateInOtherCurr').prop("readonly", false);
             } else {
-                $('#Rate').prop("readonly", true)
+                // $('#Rate').prop("readonly", true)
                 $('#RateInOtherCurr').prop("readonly", true);
                 $('#ItemSA').prop("disabled", true);
             }
@@ -7381,7 +7381,7 @@
                 $('#Rate').prop("readonly", false);
                 $('#RateInOtherCurr').prop("readonly", false);
             } else {
-                $('#Rate').prop("readonly", true);
+                // $('#Rate').prop("readonly", true);
                 $('#RateInOtherCurr').prop("readonly", true);
             }
         });
