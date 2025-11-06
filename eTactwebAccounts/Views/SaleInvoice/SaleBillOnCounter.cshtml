@@ -4821,10 +4821,10 @@
                             $.notify('Please enter quantity for ' + $('#PartCode-' + i).val(), 'error');
                             return;
                         }
-                        if (parseFloat($('#Qty-' + i).val()) > parseFloat($('#LotStock-' + i).val())) {
-                            $.notify('Please enter Valid quantity for ' + $('#PartCode-' + i).val(), 'error');
-                            return;
-                        }
+                        // if (parseFloat($('#Qty-' + i).val()) > parseFloat($('#LotStock-' + i).val())) {
+                        //     $.notify('Please enter Valid quantity for ' + $('#PartCode-' + i).val(), 'error');
+                        //     return;
+                        // }
                         if ($('#Rate-' + i).val() == 0) {
                             $.notify('Please enter rate for ' + $('#PartCode-' + i).val(), 'error');
                             return;
