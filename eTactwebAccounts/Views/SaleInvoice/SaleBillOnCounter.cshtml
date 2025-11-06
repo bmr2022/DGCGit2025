@@ -5164,9 +5164,9 @@
 
                         //$('#Storeid,#Wcid').prop("disabled", false);
 
-                        if ($('#DiscountPer').val() != 0 && $('#DiscountPer').val() != '0' && $('#DiscountPer').val() != '') {
-                            $('#DiscountPer').prop("readonly", "true");
-                        }
+                        // if ($('#DiscountPer').val() != 0 && $('#DiscountPer').val() != '0' && $('#DiscountPer').val() != '') {
+                        //     $('#DiscountPer').prop("readonly", "true");
+                        // }
 
                         if ($('#DiscountAmt').val() != 0 && $('#DiscountAmt').val() != '0' && $('#DiscountAmt').val() != '') {
                             $('#DiscountAmt').prop("readonly", "true");
@@ -7279,7 +7279,7 @@
                             $('#HSNNo').val(obj.Result[0].HsnNo);
 
                             if ($('#DiscountPer').val() != 0 || $('#DiscountAmt').val() != 0) {
-                                $('#DiscountPer').prop("readonly", true);
+                                // $('#DiscountPer').prop("readonly", true);
                                 $('#DiscountAmt').prop("readonly", true);
                             }
                         }
