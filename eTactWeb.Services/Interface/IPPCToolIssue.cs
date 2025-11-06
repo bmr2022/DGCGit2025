@@ -17,6 +17,6 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FillProdPlanDate(string Flag, long ToolEntryId, string ProdPlanNo, long ProdPlanYearCode);
         Task<ResponseResult> FillProdPlanSchedule(string Flag, long ToolIssueEntryId, string ProdPlanNo, long ProdPlanYearCode, long PlanNoEntryId);
         Task<ResponseResult> FillMachineList(string Flag);
-        Task<ResponseResult> InsertToolIssue(PPCToolIssueMainModel model, string Flag);
+        Task<ResponseResult> InsertToolIssue(PPCToolIssueMainModel model, DataTable ToolGrid);
     }
 }

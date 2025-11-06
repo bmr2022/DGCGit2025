@@ -181,6 +181,7 @@
                                             </thead>
                                             <tbody id="inputRow">
                                                 <tr>
+                                                    <input type="hidden" id="SeqNo" value="" />
                                                     <td>
 
                                                         <select name="ToolIssueDetails[0].ToolEntryId" id="ToolEntryId" class="form-select">
@@ -801,7 +802,7 @@
         });
     });
 
-
+    let isEditing = false;
     $(document).ready(async function () {
         GetNewEntry();
         FillDepartmentList();
@@ -829,12 +830,14 @@
 
         // ✅ Delegated event bindings
         $(document).on('change', '#ToolEntryId', function () {
+             if (isEditing) return;
             clearDependentFields();
             FillToolBarCode();
             FillProdPlan();
         });
 
     $(document).on('change', '#BarCode', function () {
+         if (isEditing) return;
         // Only clear dependent fields that rely on SerialNo
         $('#RemainingToolLifeInMonths').val('');
         $('#NextCalibrationDueDate').val('');
@@ -848,14 +851,17 @@
 
 
         $(document).on('change', '#SerialNo', function () {
+             if (isEditing) return;
             FillToolBarCodeDetail();
         });
 
         $(document).on('change', '#ProdPlanNo', function () {
+             if (isEditing) return;
             FillProdPlanYearCode();
         });
 
         $(document).on('change', '#ProdPlanYearCode', function () {
+             if (isEditing) return;
             FillProdPlanDate();
         });
 
@@ -894,11 +900,10 @@
         FillToolBarCodeDetail();
     });
 
-        let rowIndex = $("#divToolIssueAdded tr").length; // start index based on existing rows
-        let editIndex = -1;
+
         // Add to Grid
         $(".GridButton").click(function () {
-         const requiredFields = [
+    const requiredFields = [
         { id: '#ToolEntryId', name: 'Tool Name' },
         { id: '#IssueToLocation', name: 'Issue To Location' },
         { id: '#IssueQty', name: 'Issue Quantity' }
@@ -913,7 +918,7 @@
 
         if (value === "") {
             emptyCheck = true;
-            missingFields.push(field.name); 
+            missingFields.push(field.name);
             input.addClass("is-invalid");
         } else {
             input.removeClass("is-invalid");
@@ -924,129 +929,70 @@
         alert("Please fill the following required fields:\n\n- " + missingFields.join("\n- "));
         return;
     }
-            // Build row with correct model binding
-               let row = `
-            <tr>
-                
-                 <td style="white-space:nowrap;">
-                <a class="table-link link-primary editRow">
-                    <span class="fa-stack">
-                        <i class="fa fa-square fa-stack-2x"></i>
-                        <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-                    </span>
-                </a>
-                <a class="table-link link-danger removeRow">
-                    <span class="fa-stack">
-                        <i class="fa fa-square fa-stack-2x"></i>
-                        <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
-                    </span>
-                </a>
-            </td>
-                <td><input type="hidden" name="ToolIssueDetails[${rowIndex}].ToolEntryId" value="${$("#ToolEntryId").val()}"/>${$("#ToolEntryId option:selected").text()}</td>
-                <td><input type="hidden" name="ToolIssueDetails[${rowIndex}].BarCode" value="${$("#BarCode").val()}"/>${$("#BarCode").val()}</td>
-                <td><input type="hidden" name="ToolIssueDetails[${rowIndex}].SerialNo" value="${$("#SerialNo").val()}"/>${$("#SerialNo").val()}</td>
-                <td><input type="hidden" name="ToolIssueDetails[${rowIndex}].ToolType" value="${$("#ToolType").val()}"/>${$("#ToolType").val()}</td>
-                <td><input type="hidden" name="ToolIssueDetails[${rowIndex}].IssueQty" value="${$("#IssueQty").val()}"/>${$("#IssueQty").val()}</td>
-                <td><input type="hidden" name="ToolIssueDetails[${rowIndex}].Unit" value="${$("#Unit").val()}"/>${$("#Unit").val()}</td>
-                <td><input type="hidden" name="ToolIssueDetails[${rowIndex}].CurrentLocation" value="${$("#CurrentLocation").val()}"/>${$("#CurrentLocation").val()}</td>
-                <td><input type="hidden" name="ToolIssueDetails[${rowIndex}].IssueToLocation" value="${$("#IssueToLocation").val()}"/>${$("#IssueToLocation").val()}</td>
-                <td><input type="hidden" name="ToolIssueDetails[${rowIndex}].ToolCondition" value="${$("#ToolCondition").val()}"/>${$("#ToolCondition").val()}</td>
-                <td><input type="hidden" name="ToolIssueDetails[${rowIndex}].LastCalibrationDate" value="${$("#LastCalibrationDate").val()}"/>${$("#LastCalibrationDate").val()}</td>
-                <td><input type="hidden" name="ToolIssueDetails[${rowIndex}].NextCalibrationDueDate" value="${$("#NextCalibrationDueDate").val()}"/>${$("#NextCalibrationDueDate").val()}</td>
-                <td><input type="hidden" name="ToolIssueDetails[${rowIndex}].RemainingToolLifeInMonths" value="${$("#RemainingToolLifeInMonths").val()}"/>${$("#RemainingToolLifeInMonths").val()}</td>
-                <td><input type="hidden" name="ToolIssueDetails[${rowIndex}].ProdPlanNo" value="${$("#ProdPlanNo").val()}"/>${$("#ProdPlanNo").val()}</td>
-                <td><input type="hidden" name="ToolIssueDetails[${rowIndex}].ProdPlanYearCode" value="${$("#ProdPlanYearCode").val()}"/>${$("#ProdPlanYearCode").val()}</td>
-                <td><input type="hidden" name="ToolIssueDetails[${rowIndex}].ProdPlanDate" value="${$("#ProdPlanDate").val()}"/>${$("#ProdPlanDate").val()}</td>
-                <td><input type="hidden" name="ToolIssueDetails[${rowIndex}].ProdPlanEntryId" value="${$("#ProdPlanEntryId").val()}"/>${$("#ProdPlanEntryId").val()}</td>
-                <td><input type="hidden" name="ToolIssueDetails[${rowIndex}].ProdSchNo" value="${$("#ProdSchNo").val()}"/>${$("#ProdSchNo").val()}</td>
-                <td><input type="hidden" name="ToolIssueDetails[${rowIndex}].ProdSchDate" value="${$("#ProdSchDate").val()}"/>${$("#ProdSchDate").val()}</td>
-                <td><input type="hidden" name="ToolIssueDetails[${rowIndex}].ForMachineId" value="${$("#ForMachineId").val()}"/>${$("#ForMachineId").val() ? $("#ForMachineId option:selected").text() : ""}</td>
-                <td><input type="hidden" name="ToolIssueDetails[${rowIndex}].SpecialInstruction" value="${$("#SpecialInstruction").val()}"/>${$("#SpecialInstruction").val()}</td>
-                <td><input type="hidden" name="ToolIssueDetails[${rowIndex}].WillBeConsumedOrReturned" value="${$("#WillBeConsumedOrReturned").val()}"/>${$("#WillBeConsumedOrReturned").val()}</td>
-                <td><input type="hidden" name="ToolIssueDetails[${rowIndex}].PendingStatus" value="Pending"/>Pending</td>
-                <td><input type="hidden" name="ToolIssueDetails[${rowIndex}].PendingQty" value="${$("#PendingQty").val()}"/>${$("#PendingQty").val()}</td>
-            </tr>
-        `;
-       
-     if (editIndex >= 0) {
-        $("#divToolIssueAdded tr").eq(editIndex).replaceWith(row);
-        editIndex = -1; // reset
-             $(".GridButton")
-            .removeClass("btn-warning")
-            .addClass("btn-outline-danger")
-            .html('<i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID');
-    } else {
-        $("#divToolIssueAdded tr:contains('NO DATA ADDED')").remove();
-        $("#divToolIssueAdded").append(row);
-        rowIndex++;
-    }
 
-            // Clear only fields except ToolEntryId
-    $("#inputRow input, #inputRow select").each(function() {
-        const id = $(this).attr("id");
-        if (id !== "ToolEntryId" && id !== "ToolType") {
-            if ($(this).is("select")) {
-                $(this).prop('selectedIndex', 0);
-            } else {
-                $(this).val("");
-            }
-            $(this).removeClass("is-invalid");
+    let model = {
+        ToolIssueEntryId: $("#ToolIssueEntryId").val(),
+        ToolIssueYearCode: $("#ToolYearCode").val(),  // ✅ parent
+
+        ToolEntryId: $("#ToolEntryId").val(),
+        ToolName: $("#ToolEntryId option:selected").text(),
+        ToolYearCode: $("#ToolYearCode").val(),       // ✅ child
+
+        BarCode: $("#BarCode").val(),
+        SerialNo: $("#SerialNo").val(),
+        ToolType: $("#ToolType").val(),
+        IssueQty: $("#IssueQty").val(),
+        Unit: $("#Unit").val(),
+        CurrentLocation: $("#CurrentLocation").val(),
+        IssueToLocation: $("#IssueToLocation").val(),
+        ToolCondition: $("#ToolCondition").val(),
+
+        LastCalibrationDate: $("#LastCalibrationDate").val(),
+        NextCalibrationDueDate: $("#NextCalibrationDueDate").val(),
+        RemainingToolLifeInMonths: $("#RemainingToolLifeInMonths").val(),
+
+        ProdPlanEntryId: $("#ProdPlanEntryId").val(),
+        ProdPlanNo: $("#ProdPlanNo").val(),
+        ProdPlanDate: $("#ProdPlanDate").val(),
+        ProdPlanYearCode: $("#ProdPlanYearCode").val(),
+
+        ProdSchEntryId: $("#ProdSchEntryId").val(),
+        ProdSchNo: $("#ProdSchNo").val(),
+        ProdSchDate: $("#ProdSchDate").val(),
+        ProdSchYearCode: $("#ProdSchYearCode").val(),
+
+        ForMachineId: $("#ForMachineId").val(),
+        SpecialInstruction: $("#SpecialInstruction").val(),
+        WillBeConsumedOrReturned: $("#WillBeConsumedOrReturned").val(),
+        PendingQty: $("#PendingQty").val(),
+        PendingStatus: $("#PendingStatus").val(),
+        SeqNo: $("#SeqNo").val() || 0
+    };
+
+
+    $.ajax({
+        url: "/PPCToolIssue/AddToolIssueDetail",   
+        type: "POST",
+        data: model,
+        success: function (response) {
+            // console.log("post add grid res",response);
+            $("#divToolIssueAdded").html(response);  
+            if (!model.SeqNo || model.SeqNo == 0) {
+        // Clear SeqNo for next new row
+        $("#SeqNo").val("");
+
+      
+    }
+        },
+        error: function () {
+            alert("Error adding detail");
         }
-    })
+    });
+
 
     });
 
-    // ✅ Remove Row
-    $(document).on("click", ".removeRow", function () {
-        console.log("remove click");
-        $(this).closest("tr").remove();
-        reindexRows();
-    });
-
-    // ✅ Edit Row (optional fine-tuned version)
-    $(document).on("click", ".editRow", function () {
-        console.log("edit click");
-
-        const tr = $(this).closest("tr");
-         editIndex = tr.index();
-           $("#ToolEntryId").val(tr.find("input[name*='.ToolEntryId']").val()).trigger('change');
-    $("#BarCode").val(tr.find("input[name*='.BarCode']").val()).trigger('change');
-    $("#SerialNo").val(tr.find("input[name*='.SerialNo']").val()).trigger('change');
-    $("#ToolType").val(tr.find("input[name*='.ToolType']").val());
-    $("#IssueQty").val(tr.find("input[name*='.IssueQty']").val());
-    $("#Unit").val(tr.find("input[name*='.Unit']").val());
-    $("#CurrentLocation").val(tr.find("input[name*='.CurrentLocation']").val());
-    $("#IssueToLocation").val(tr.find("input[name*='.IssueToLocation']").val()).trigger('change');
-    $("#ToolCondition").val(tr.find("input[name*='.ToolCondition']").val());
-    $("#LastCalibrationDate").val(tr.find("input[name*='.LastCalibrationDate']").val());
-    $("#NextCalibrationDueDate").val(tr.find("input[name*='.NextCalibrationDueDate']").val());
-    $("#RemainingToolLifeInMonths").val(tr.find("input[name*='.RemainingToolLifeInMonths']").val());
-    $("#ProdPlanNo").val(tr.find("input[name*='.ProdPlanNo']").val()).trigger('change');
-    $("#ProdPlanYearCode").val(tr.find("input[name*='.ProdPlanYearCode']").val());
-    $("#ProdPlanDate").val(tr.find("input[name*='.ProdPlanDate']").val());
-    $("#ProdPlanEntryId").val(tr.find("input[name*='.ProdPlanEntryId']").val());
-    $("#ProdSchNo").val(tr.find("input[name*='.ProdSchNo']").val());
-    $("#ProdSchDate").val(tr.find("input[name*='.ProdSchDate']").val());
-    $("#ForMachineId").val(tr.find("input[name*='.ForMachineId']").val()).trigger('change');
-    $("#SpecialInstruction").val(tr.find("input[name*='.SpecialInstruction']").val());
-    $("#WillBeConsumedOrReturned").val(tr.find("input[name*='.WillBeConsumedOrReturned']").val()).trigger('change');
-
-        $(".GridButton")
-            .removeClass("btn-outline-danger")
-            .addClass("btn-warning")
-            .html('<i class="fa-solid fa-pen-to-square fa-fw fa-lg"></i> UPDATE GRID');
-        
-        reindexRows();
-    });
-        function reindexRows() {
-        $("#divToolIssueAdded tr").each(function (i) {
-            $(this).find("input[name]").each(function () {
-                const name = $(this).attr("name");
-                const newName = name.replace(/\[\d+\]/, `[${i}]`);
-                $(this).attr("name", newName);
-            });
-        });
-    }
+      
       
     });
 
