@@ -61,6 +61,34 @@
 @section Scripts
 {
     <script>
+                      function GetFeatureOption() {
+            $.ajax({
+                type: "POST",
+                data: {},
+                url: "@Url.Action("GetFeatureOption")",
+                dataType: "json",
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.Result != null && obj.Result.length > 0) {
+                            var feature = obj.Result[0];
+
+                            // New DirectPurchaseBill flags
+                            if (feature.allowtoremovedeletedashboard === "N") {
+                               $("[id^='deleteCursorDiv-']").hide();
+                            } else {
+                                $("[id^='deleteCursorDiv-']").show();
+                            }
+
+                          
+
+
+                        }
+                    }
+                }
+            });
+        }
+
         $(function () {
             GetFormRights();
             LockedFinancialYear();
@@ -133,7 +161,9 @@
                 $('#HSNNo').val(HSNNoBack);
                 $('#search-box').val(GlobalSearchBack);
             }
+            GetFeatureOption();
             GetSearchData();
+              GetFeatureOption();
                GetFormRights();
             $("#search-box").val($('#search-box').val()).trigger('keyup');
 

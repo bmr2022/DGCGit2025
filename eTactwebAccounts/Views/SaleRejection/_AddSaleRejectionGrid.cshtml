@@ -45,9 +45,9 @@ else
             <td >@item.SeqNo</td>
             <td><input type="hidden" value="@item.ItemCode" id="itemCode-@Cntr" />@item.PartCode</td>
             <td>@item.ItemName</td>
-            <td>@item.RecQty</td>
-            <td>@item.SaleBillQty</td>
-            <td id="rate-@Cntr" style="background-color:#FFF3CD; font-weight:600;">@item.Rate</td>
+            <td style="background-color:#eebd23; font-weight:600;">@item.RecQty</td>
+            <td style="background-color:#eebd23; font-weight:600;">@item.SaleBillQty</td>
+            <td id="rate-@Cntr" style="background-color:#eebd23; font-weight:600;">@item.Rate</td>
             <td id="rejQty-@Cntr">@item.RejQty</td>
             <td>
                 <input value="@item.RejRate"
@@ -59,7 +59,7 @@ else
             @* <td>@item.RejRate</td> *@
             <td id="discountPer-@Cntr">@item.DiscountPer</td>
             <td id="DiscountAmt-@Cntr">@item.DiscountAmt</td>
-            <td id="Amount-@Cntr">@item.Amount</td>
+            <td id="Amount-@Cntr" style="background-color:#eebd23; font-weight:600;">@item.Amount</td>
             <td>@item.SONO</td>
 
             <td id="GridUniqueBatchNo-@Cntr">@item.SODate</td>

@@ -2167,12 +2167,14 @@
                                 else {
                                     $('#VendorAddress').val('');
                                 }
-                                if (obj.Result[0].PaymentDays != null && obj.Result[0].PaymentDays != undefined && obj.Result[0].PaymentDays != '') {
+                                      if (obj.Result[0].PaymentDays != null && obj.Result[0].PaymentDays != undefined && obj.Result[0].PaymentDays != ''&& obj.Result[0].PaymentDays != '0') {
                                     $('#PaymentDays').val(obj.Result[0].PaymentDays);
                                 }
                                 else {
-                                    $('#PaymentDays').val('1');
+                                    $('#PaymentDays').val(1);
                                 }
+                                     
+
                             }
                             else {
                                 $('#GstType').val('');
@@ -2918,7 +2920,7 @@
             var [day, month, year] = VouchDateVal.split('/').map(Number);
             var VouchDate = new Date(year, month - 1, day);
 
-            var creditDays = $('#PaymentDays').val() == "" ? 0 : parseInt($('#PaymentDays').val(), 10);
+            var creditDays = $('#PaymentDays').val() == "" ? 1 : parseInt($('#PaymentDays').val(), 10);
 
             // Add credit days
             VouchDate.setDate(VouchDate.getDate() + creditDays);
