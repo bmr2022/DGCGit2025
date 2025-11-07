@@ -96,15 +96,17 @@ else
                 }
                 @formattedDate1
             </td>
-            <td>@item.HSNNo</td>
+           
             <td class="DirectPurchaseBillScheduleDetail">@item.DPBQty</td>
-            <td>@item.Unit</td>
+            
             <td>@item.BillQty</td>
             <td>@item.Rate.ToString("#.##")</td>
             <td class="OtherFieldOFDirectPurchaseBillDetailTable">@item.OtherRateCurr.ToString("#.##")</td>
             <td>@item.DiscPer</td>
             <td>@item.DiscRs</td>
             <td id="GridAmount-@item.SeqNo">@item.Amount.ToString("#.##")</td>
+            <td>@item.HSNNo</td>
+            <td>@item.Unit</td>
             <td class="OtherFieldOFDirectPurchaseBillDetailTable">@item.ProcessName</td>
             <td class="OtherFieldOFDirectPurchaseBillDetailTable">@item.Description</td>
             <td>@item.ItemLocation</td>
