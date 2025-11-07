@@ -344,24 +344,48 @@
 				.val(formattedDate);
 		}
 
+		// $('#MachineGroup').change(function () {
+		// 	var machGroup = $(this).val();
+		// 	if (machGroup) {
+		// 		$.get('/MachineGroupMaster/CheckMachineGroup', { MachGroup: machGroup }, function (res) {
+		// 			if (res.exists) {
+						
+		// 				$.notify("Machine Group already exists, switching to update mode.", "info");
+
+		// 				$('#EntryId').val(res.entryId);
+		// 				$('#UId').val(res.uId);
+		// 				$('#CC').val(res.cc);
+		// 				$('#Mode').val('U'); 
+		// 			} else {
+		// 				$('#Mode').val('');
+		// 			}
+		// 		});
+		// 	}
+		// });
 		$('#MachineGroup').change(function () {
 			var machGroup = $(this).val();
-			if (machGroup) {
-				$.get('/MachineGroupMaster/CheckMachineGroup', { MachGroup: machGroup }, function (res) {
-					if (res.exists) {
-						
-						$.notify("Machine Group already exists, switching to update mode.", "info");
+			var mode = $('#Mode').val();
+			if (!mode || mode === '') {
+				if (machGroup) {
+					$.get('/MachineGroupMaster/CheckMachineGroup', { MachGroup: machGroup }, function (res) {
+						if (res.exists) {
+							$.notify("Machine Group already exists, switching to update mode.", "info");
 
-						$('#EntryId').val(res.entryId);
-						$('#UId').val(res.uId);
-						$('#CC').val(res.cc);
-						$('#Mode').val('U'); 
-					} else {
-						$('#Mode').val('');
-					}
-				});
+							$('#EntryId').val(res.entryId);
+							$('#UId').val(res.uId);
+							$('#CC').val(res.cc);
+							$('#Mode').val('U'); 
+						} else {
+							$('#Mode').val(''); 
+						}
+					});
+				}
+			} else {
+				
+				console.log("Already in update mode, skipping duplicate check.");
 			}
 		});
+
 
 
 

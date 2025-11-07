@@ -114,7 +114,59 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        public async Task<InventoryAgingReportModel> GetInventoryAgingReportDetailsData(string fromDate, string toDate,string CurrentDate, int WorkCenterid, string ReportType, int RMItemCode, int Storeid,int Foduration)
+
+        public async Task<DataSet> GetCategory()
+        {
+            var oDataSet = new DataSet();
+
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@flag", "FillItemCategory"));
+                var _ResponseResult = await _IDataLogic.ExecuteDataSet("SPReportInventoryAgeing", SqlParams);
+                if (_ResponseResult.Result != null && _ResponseResult.StatusCode == HttpStatusCode.OK && _ResponseResult.StatusText == "Success")
+                {
+                    _ResponseResult.Result.Tables[0].TableName = "CategoryList";
+
+                    oDataSet = _ResponseResult.Result;
+                }
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return oDataSet;
+        }
+        public async Task<DataSet> GetGroupName()
+        {
+            var oDataSet = new DataSet();
+
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@flag", "FillParentGroup"));
+                var _ResponseResult = await _IDataLogic.ExecuteDataSet("SPReportInventoryAgeing", SqlParams);
+                if (_ResponseResult.Result != null && _ResponseResult.StatusCode == HttpStatusCode.OK && _ResponseResult.StatusText == "Success")
+                {
+                    _ResponseResult.Result.Tables[0].TableName = "GroupNameList";
+
+                    oDataSet = _ResponseResult.Result;
+                }
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return oDataSet;
+        }
+
+        public async Task<InventoryAgingReportModel> GetInventoryAgingReportDetailsData(string fromDate, string toDate,string CurrentDate, int WorkCenterid, string ReportType, int RMItemCode, int Storeid,int Foduration, string GroupName, string ItemCateg)
         {
             var resultList = new InventoryAgingReportModel();
             DataSet oDataSet = new DataSet();
@@ -134,8 +186,10 @@ namespace eTactWeb.Data.DAL
                     command.Parameters.AddWithValue("@Itemcode", RMItemCode);
                     command.Parameters.AddWithValue("@Foduration", Foduration);
                     command.Parameters.AddWithValue("@StoreId", Storeid);
+                    command.Parameters.AddWithValue("@ItemCatEntryIdList", ItemCateg);
+                    command.Parameters.AddWithValue("@ParentGroupIdList", GroupName);
                     //command.Parameters.AddWithValue("@WCID", WorkCenterid);
-                   // command.Parameters.AddWithValue("@RMItemcode", RMItemCode);
+                    // command.Parameters.AddWithValue("@RMItemcode", RMItemCode);
 
 
                     // Open connection
@@ -220,6 +274,56 @@ namespace eTactWeb.Data.DAL
                                                                 //AccountCode = row["AccountCode"] != DBNull.Value ? Convert.ToInt32(row["AccountCode"]) : 0,
                                                                 //ItemCode = row["ItemCode"] != DBNull.Value ? Convert.ToInt32(row["ItemCode"]) : 0
 
+
+                                                            }).ToList();
+                    }
+                }
+                else if (ReportType.ToString() == "Day Wise Aging")
+                {
+                    if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                    {
+
+
+                        resultList.InventoryAgingReportGrid = (from DataRow row in oDataSet.Tables[0].Rows
+                                                            select new InventoryAgingReportModel
+                                                            {
+                                                                StoreName = row["storeName"] != DBNull.Value ? row["storeName"].ToString() : string.Empty,
+                                                                PartCode = row["Part_Code"] != DBNull.Value ? row["Part_Code"].ToString() : string.Empty,
+                                                                ItemName = row["item_name"] != DBNull.Value ? row["item_name"].ToString() : string.Empty,
+                                                                TotalStock = row["TotalStock"] != DBNull.Value ? Convert.ToDecimal(row["TotalStock"]) : 0,
+                                                                Unit = row["unit"] != DBNull.Value ? row["unit"].ToString() : string.Empty,
+                                                                Rate = row["Rate"] != DBNull.Value ? Convert.ToDecimal(row["Rate"]) : 0,
+                                                                TotalAmt = row["TotalAmt"] != DBNull.Value ? Convert.ToDecimal(row["TotalAmt"]) : 0,
+                                                                ItemAge = row["ItemAge"] != DBNull.Value ? Convert.ToInt32(row["ItemAge"]) : 0,
+                                                                BatchNo = row["batchno"] != DBNull.Value ? row["batchno"].ToString() : string.Empty,
+                                                                UniqueBatchNo = row["Uniquebatchno"] != DBNull.Value ? row["Uniquebatchno"].ToString() : string.Empty,
+                                                                Type_Item = row["Type_Item"] != DBNull.Value ? row["Type_Item"].ToString() : string.Empty,
+                                                                Group_Name = row["Group_name"] != DBNull.Value ? row["Group_name"].ToString() : string.Empty
+
+
+                                                            }).ToList();
+                    }
+                }
+                else if (ReportType.ToString() == "Agining Data Summary (As Per Actual NoOf Days)")
+                {
+                    if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                    {
+
+
+                        resultList.InventoryAgingReportGrid = (from DataRow row in oDataSet.Tables[0].Rows
+                                                            select new InventoryAgingReportModel
+                                                            {
+                                                                StoreName = row["storeName"] != DBNull.Value ? row["storeName"].ToString() : string.Empty,
+                                                                PartCode = row["Part_Code"] != DBNull.Value ? row["Part_Code"].ToString() : string.Empty,
+                                                                ItemName = row["item_name"] != DBNull.Value ? row["item_name"].ToString() : string.Empty,
+                                                                Unit = row["unit"] != DBNull.Value ? row["unit"].ToString() : string.Empty,
+                                                                TotalStock = row["TotalStock"] != DBNull.Value ? Convert.ToDecimal(row["TotalStock"]) : 0,
+ 
+                                                                ItemAge = row["itemage"] != DBNull.Value ? Convert.ToInt32(row["itemage"]) : 0,
+                                                                Rate = row["Rate"] != DBNull.Value ? Convert.ToDecimal(row["Rate"]) : 0,
+                                                                TotalAmt = row["TotalAmt"] != DBNull.Value ? Convert.ToDecimal(row["TotalAmt"]) : 0,
+                                                                Type_Item = row["Type_Item"] != DBNull.Value ? row["Type_Item"].ToString() : string.Empty,
+                                                                Group_Name = row["Group_name"] != DBNull.Value ? row["Group_name"].ToString() : string.Empty,
 
                                                             }).ToList();
                     }

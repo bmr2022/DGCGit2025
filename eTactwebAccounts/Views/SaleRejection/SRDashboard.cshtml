@@ -165,8 +165,14 @@
             FillGateNo();
             FillMRNNo();
             GetSearchData();
-           
-
+            $('#CustInvoiceNo').select2();
+            $('#Account_Name').select2();
+            $('#MrnNo').select2();
+            $('#GateNo').select2();
+            $('#PartCode').select2();
+            $('#ItemName').select2();
+            $('#AgainstBillNo').select2();
+            $('#VoucherNo').select2();
             $('#CustInvoiceNo').val($('#hiddenCustInvoiceNo').val());
             $('#MrnNo').val($('#hiddenMrnNo').val());
             $('#GateNo').val($('#hiddenGateNo').val());

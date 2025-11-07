@@ -136,6 +136,7 @@ public class GateAttendanceModel : TimeStamp
     public string AttendanceEntryMethodTypeBack { get; set; }
     public string DashboardTypeBack { get; set; }
     public string GlobalSearchBack { get; set; }
+    public bool? IsIncreamented { get; set; } = false;
 }
 
 [Serializable]

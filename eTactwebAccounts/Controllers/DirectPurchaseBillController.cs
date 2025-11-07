@@ -1804,14 +1804,10 @@ namespace eTactWeb.Controllers
                     var rateValue = worksheet.Cells[row, 3].Value?.ToString();
                     var qtyValue = worksheet.Cells[row, 4].Value?.ToString();
                     var docTypeText = worksheet.Cells[row, 7].Value?.ToString();
+                    var locationValue = worksheet.Cells[row, 6].Value?.ToString();
 
                     // 🔹 Basic Required Field Validation
-                    if (string.IsNullOrEmpty(itemName))
-                        return BadRequest($"Row {row}: Item Name is required.");
-
-                    if (string.IsNullOrEmpty(rateValue) || !decimal.TryParse(rateValue, out decimal rate) || rate <= 0)
-                        return BadRequest($"Row {row}: Valid Rate is required.");
-
+                 
                     if (string.IsNullOrEmpty(qtyValue) || !decimal.TryParse(qtyValue, out decimal qty) || qty <= 0)
                         return BadRequest($"Row {row}: Valid Quantity is required.");
 
@@ -1842,7 +1838,38 @@ namespace eTactWeb.Controllers
                     var Unit = Jsonstring["Result"][0]["Unit"];
                     var HsnNo = Jsonstring["Result"][0]["HsnNo"];
                     var AlternateUnit = Jsonstring["Result"][0]["AlternateUnit"];
-                    var Rackid = Jsonstring["Result"][0]["Rackid"];
+                    var Rackid = Jsonstring["Result"][0]["Rackid"]?.ToString();
+                    var purchaseprice = Jsonstring["Result"][0]["purchaseprice"].ToString();
+                    var item_name = Jsonstring["Result"][0]["item_name"].ToString();
+
+
+                    string location = !string.IsNullOrWhiteSpace(locationValue) ? locationValue: (!string.IsNullOrWhiteSpace(Rackid) ? Rackid : null);
+
+                    if (string.IsNullOrWhiteSpace(location))
+                        return BadRequest($"Row {row}: Location is required.");
+
+                    if (string.IsNullOrWhiteSpace(itemName))  itemName = item_name;
+                    if (string.IsNullOrWhiteSpace(itemName))
+                        return BadRequest($"Row {row}: Item Name is required.");
+
+                    decimal rate = 0;
+
+                    if (!string.IsNullOrWhiteSpace(rateValue) && decimal.TryParse(rateValue, out decimal excelRate))
+                    {
+                        rate = excelRate;
+                    }
+                    else if (!string.IsNullOrWhiteSpace(purchaseprice) && decimal.TryParse(purchaseprice, out decimal dbRate))
+                    {
+                        rate = dbRate;
+                    }
+                    else
+                    {
+                        return BadRequest($"Row {row}: Valid Rate is required.");
+                    }
+                    if (rate <= 0)
+                    {
+                        return BadRequest($"Row {row}: Rate must be greater than 0.");
+                    }
 
                     JObject AltRate = JObject.Parse(GetExchange.Result.Value.ToString());
                     decimal AltRateToken = (decimal)AltRate["Result"][0]["IndianValue"];
@@ -1880,9 +1907,7 @@ namespace eTactWeb.Controllers
                         AdditionalRate = 0,
                         Color = "",
                         CostCenter = 0,
-                        ItemLocation = string.IsNullOrEmpty(worksheet.Cells[row, 6].Value?.ToString())
-                            ? Rackid.ToString()
-                            : worksheet.Cells[row, 6].Value.ToString(),
+                        ItemLocation = location,
                         DocTypeText = docTypeText,
                         docTypeId = DocTypeId,
                     });

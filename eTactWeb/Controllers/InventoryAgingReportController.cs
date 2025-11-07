@@ -5,6 +5,7 @@ using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
+using static eTactWeb.DOM.Models.Common;
 
 namespace eTactWeb.Controllers
 {
@@ -30,8 +31,62 @@ namespace eTactWeb.Controllers
         {
             var model = new InventoryAgingReportModel();
             model.InventoryAgingReportGrid = new List<InventoryAgingReportModel>();
-
+            model = await BindModel(model).ConfigureAwait(false);
+            model = await BindModel1(model).ConfigureAwait(false);
             return View(model);
+        }
+
+        private async Task<InventoryAgingReportModel> BindModel(InventoryAgingReportModel model)
+        {
+            var oDataSet = new DataSet();
+            var _List = new List<TextValue>();
+            oDataSet = await _IInventoryAgingReport.GetCategory().ConfigureAwait(true);
+
+            if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+            {
+
+
+                foreach (DataRow row in oDataSet.Tables[0].Rows)
+                {
+                    _List.Add(new TextValue
+                    {
+                        Value = row["Entry_Id"].ToString(),
+                        Text = row["ItemCategory"].ToString()
+                    });
+                }
+                model.CategList = _List;
+                _List = new List<TextValue>();
+
+            }
+
+
+            return model;
+        }
+        private async Task<InventoryAgingReportModel> BindModel1(InventoryAgingReportModel model)
+        {
+            var oDataSet = new DataSet();
+            var _List = new List<TextValue>();
+            oDataSet = await _IInventoryAgingReport.GetGroupName().ConfigureAwait(true);
+
+            if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+            {
+
+
+                foreach (DataRow row in oDataSet.Tables[0].Rows)
+                {
+                    _List.Add(new TextValue
+                    {
+                        Value = row["Group_Code"].ToString(),
+                        Text = row["ParentGroup"].ToString()
+                    });
+                }
+                model.GroupNameList = _List;
+                _List = new List<TextValue>();
+
+            }
+
+
+            return model;
         }
         public async Task<JsonResult> FillRMItemName(string FromDate, string ToDate, string CurrentDate, int Storeid)
         {
@@ -57,10 +112,10 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<IActionResult> GetInventoryAgingReportDetailsData(string fromDate, string toDate,string CurrentDate, int WorkCenterid, string ReportType, int RMItemCode, int Storeid, int Foduration, int pageNumber = 1, int pageSize = 50, string SearchBox = "")
+        public async Task<IActionResult> GetInventoryAgingReportDetailsData(string fromDate, string toDate,string CurrentDate, int WorkCenterid, string ReportType, int RMItemCode, int Storeid, int Foduration, string GroupName, string ItemCateg, int pageNumber = 1, int pageSize = 50, string SearchBox = "")
         {
             var model = new InventoryAgingReportModel();
-            model = await _IInventoryAgingReport.GetInventoryAgingReportDetailsData(fromDate, toDate, CurrentDate, WorkCenterid, ReportType, RMItemCode, Storeid, Foduration);
+            model = await _IInventoryAgingReport.GetInventoryAgingReportDetailsData(fromDate, toDate, CurrentDate, WorkCenterid, ReportType, RMItemCode, Storeid, Foduration,  GroupName,  ItemCateg);
 
             var modelList = model?.InventoryAgingReportGrid ?? new List<InventoryAgingReportModel>();
 
@@ -122,6 +177,15 @@ namespace eTactWeb.Controllers
             {
                 return PartialView("_InventoryAgingReportDetailGrid", model);
             }
+            if (ReportType == "Day Wise Aging")
+            {
+                return PartialView("_InventoryAgingReportDayWiseGrid", model);
+            }
+            if (ReportType == "Agining Data Summary (As Per Actual NoOf Days)")
+            {
+                return PartialView("_InventoryAgingReportSummaryAsPerActualNoOfDays", model);
+            }
+
             return null;
         }
         [HttpGet]
@@ -170,6 +234,15 @@ namespace eTactWeb.Controllers
             {
                 return PartialView("_InventoryAgingReportSlabWiseGrid", model);
             }
+            else if(model.ReportType == "Day Wise Aging")
+            {
+                return PartialView("_InventoryAgingReportDayWiseGrid", model);
+            }
+            else if(model.ReportType == "Agining Data Summary (As Per Actual NoOf Days)")
+            {
+                return PartialView("_InventoryAgingReportSummaryAsPerActualNoOfDays", model);
+            }
+
             else 
             {
                 return PartialView("_InventoryAgingReportDetailGrid", model);
@@ -191,7 +264,9 @@ namespace eTactWeb.Controllers
             var reportGenerators = new Dictionary<string, Action<IXLWorksheet, IList<InventoryAgingReportModel>>>
             {
                 { "AginingDataSummary", EXPORT_InventoryAgingReportSummaryGrid },
-                { "AginingDataBatchWise", EXPORT_InventoryAgingReportBatchWiseGrid }
+                { "AginingDataBatchWise", EXPORT_InventoryAgingReportBatchWiseGrid },
+                { "Day Wise Aging", EXPORT_InventoryAgingReportDayWiseGrid },
+                { "Agining Data Summary (As Per Actual NoOf Days", EXPORT_InventoryAgingReportAsPerActualNoOfDaysGrid }
 
             };
 
@@ -288,6 +363,75 @@ namespace eTactWeb.Controllers
                 row++;
             }
         }
+        private void EXPORT_InventoryAgingReportDayWiseGrid(IXLWorksheet sheet, IList<InventoryAgingReportModel> list)
+        {
+            string[] headers = {
+                "#Sr", "Store Name", "Part Code", "Item Name", "Total Stock", "Unit", "Rate",
+                "Total Amount", "Item Age", "Batch No", "Unique Batch No", "Type Item", "Group Name"
+
+            };
+
+
+
+            for (int i = 0; i < headers.Length; i++)
+                sheet.Cell(1, i + 1).Value = headers[i];
+
+            int row = 2, srNo = 1;
+            foreach (var item in list)
+            {
+                sheet.Cell(row, 1).Value = srNo++;
+                sheet.Cell(row, 2).Value = item.StoreName;
+                sheet.Cell(row, 3).Value = item.PartCode;
+                sheet.Cell(row, 4).Value = item.ItemName;
+                sheet.Cell(row, 5).Value = item.TotalStock;
+                sheet.Cell(row, 6).Value = item.Unit;
+                sheet.Cell(row, 7).Value = item.Rate;
+                sheet.Cell(row, 8).Value = item.TotalAmt;
+                sheet.Cell(row, 9).Value = item.ItemAge;
+                sheet.Cell(row, 10).Value = item.BatchNo;
+                sheet.Cell(row, 11).Value = item.UniqueBatchNo;
+                sheet.Cell(row, 12).Value = item.Type_Item;
+                sheet.Cell(row, 13).Value = item.Group_Name;
+
+
+
+                row++;
+            }
+        }
+         private void EXPORT_InventoryAgingReportAsPerActualNoOfDaysGrid(IXLWorksheet sheet, IList<InventoryAgingReportModel> list)
+        {
+            string[] headers = {
+                "#Sr","Store Name", "Part Code", "Item Name", "Unit", "Total Stock",
+"Item Age", "Rate", "Total Amount", "Type Item", "Group Name"
+
+            };
+
+
+
+            for (int i = 0; i < headers.Length; i++)
+                sheet.Cell(1, i + 1).Value = headers[i];
+
+            int row = 2, srNo = 1;
+            foreach (var item in list)
+            {
+                sheet.Cell(row, 1).Value = srNo++;
+                sheet.Cell(row, 2).Value = item.StoreName;
+                sheet.Cell(row, 3).Value = item.PartCode;
+                sheet.Cell(row, 4).Value = item.ItemName;
+                sheet.Cell(row, 5).Value = item.Unit;
+                sheet.Cell(row, 6).Value = item.TotalStock;
+                sheet.Cell(row, 7).Value = item.ItemAge;
+                sheet.Cell(row, 8).Value = item.Rate;
+                sheet.Cell(row, 9).Value = item.TotalAmt;
+                sheet.Cell(row, 10).Value = item.Type_Item;
+                sheet.Cell(row, 11).Value = item.Group_Name;
+
+
+
+                row++;
+            }
+        }
+
         [HttpGet]
         public IActionResult GetInventoryAgingReportForPDF()
         {
