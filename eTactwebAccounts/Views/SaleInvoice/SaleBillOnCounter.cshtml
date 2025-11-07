@@ -1306,6 +1306,13 @@
         // Initialize autocomplete mode by default
         enableAutocompleteMode();
             // Only for Update/View mode
+             if (mode === "U" || mode === "V") {
+                 $("#SaleBillNoContainer").show();
+             }
+             else{
+                $("#SaleBillNoContainer").hide();
+             }
+            
             if (mode === "U" || mode === "V") {
                 // let d = $('#SaleBillEntryDate').val().split(" ")[0].split("-");
                 // $('#SaleBillEntryDate').datepicker({ dateFormat: 'dd/mm/yy' })

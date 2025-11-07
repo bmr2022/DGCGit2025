@@ -852,6 +852,28 @@ namespace eTactWeb.Controllers
             MainModel.PartCodeList = await _IDataLogic.GetDropDownListWithCustomeVar("AccSPPurchaseRejectionMainDetail", partcodeparams, false, true);
             return MainModel;
         }
+        [HttpPost]
+        public async Task<JsonResult> GetDashboardDropdowns(DateTime fromDate, DateTime toDate)
+        {
+            var commonParams = new Dictionary<string, object>
+    {
+        {"@fromBilldate", fromDate},
+        {"@ToBilldate", toDate}
+    };
+
+            var mainModel = new AccPurchaseRejectionDashboard();
+
+            mainModel = await BindDashboardList(mainModel, commonParams);
+
+            return Json(new
+            {
+                vendorList = mainModel.VendorNameList,
+                voucherList = mainModel.VoucherNoList,
+                invoiceList = mainModel.InvoiceNoList,
+                partCodeList = mainModel.PartCodeList
+            });
+        }
+
         public async Task<JsonResult> NewEntryId(int YearCode,string SubVoucherName)
         {
             var JSON = await _purchRej.NewEntryId(YearCode, SubVoucherName);
