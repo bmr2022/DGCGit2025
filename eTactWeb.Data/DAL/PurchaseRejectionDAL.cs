@@ -876,9 +876,10 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@Flag", "DASHBOARD");
                     oCmd.Parameters.AddWithValue("@fromBilldate", fromDate);
                     oCmd.Parameters.AddWithValue("@ToBilldate", toDate);
-                    oCmd.Parameters.AddWithValue("@PurchaserejVoucherNo", !string.IsNullOrEmpty(model.PurchaseRejectionVoucherNo) ? (model.PurchaseRejectionVoucherNo != "0" ? model.PurchaseRejectionVoucherNo : string.Empty) : string.Empty);
+                    oCmd.Parameters.AddWithValue("@PurchaserejVoucherNo", !string.IsNullOrEmpty(model.VoucherNo) ? (model.PurchaseRejectionVoucherNo != "0" ? model.VoucherNo : string.Empty) : string.Empty);
+                    oCmd.Parameters.AddWithValue("@accountcode", !string.IsNullOrEmpty(model.VendorName) ? (model.VendorName != "0" ? model.VendorName : string.Empty) : string.Empty);
                     oCmd.Parameters.AddWithValue("@InvoiceNo", !string.IsNullOrEmpty(model.InvoiceNo) ? (model.InvoiceNo != "0" ? model.InvoiceNo : string.Empty) : string.Empty);
-                    oCmd.Parameters.AddWithValue("@Itemcode", !string.IsNullOrEmpty(model.ItemCode.ToString()) ? (model.ItemCode.ToString() != "0" ? Convert.ToInt32(model.ItemCode) : string.Empty) : string.Empty);
+                    oCmd.Parameters.AddWithValue("@Itemcode", !string.IsNullOrEmpty(model.ItemCode.ToString()) ? (model.ItemCode.ToString() != "" ? Convert.ToInt32(model.ItemCode) : string.Empty) : string.Empty);
                     //oCmd.Parameters.AddWithValue("@accountcode", !string.IsNullOrEmpty(model.AccountCode.ToString()) ? (model.AccountCode.ToString() != "0" ? Convert.ToInt32(model.AccountCode) : string.Empty) : string.Empty);
                     await myConnection.OpenAsync();
                     using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
