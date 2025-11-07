@@ -202,6 +202,13 @@ namespace eTactWeb.DOM.Models
         public string? ConsigneeAccountName { get; set; }
         public string? ConsigneeAddress { get; set; }
         public string? DispatchTo { get; set; }
+        public string? MobileNo { get; set; }
+        public string? DriverContactNo { get; set; }
+        public string? DriverName { get; set; }
+        public string? DocThrough { get; set; }
+        public string? CourierDate { get; set; }
+        public string? CourierNo { get; set; }
+        public string? TransportGSTIN { get; set; }
         public string? DispatchThrough { get; set; }
         public int DocTypeAccountCode { get; set; }
         public int DocTypeAccountName { get; set; }
@@ -218,6 +225,7 @@ namespace eTactWeb.DOM.Models
         public decimal INVNetAmt { get; set; }
         public string? NetAmtInWords { get; set; }
         public string? Remark { get; set; }
+        public string? Termsandcondition { get; set; }
         public string? PermitNo { get; set; }
         public decimal CashDisPer { get; set; }
         public decimal CashDisRs { get; set; }
@@ -274,6 +282,7 @@ namespace eTactWeb.DOM.Models
         public int ChallanEntryid { get; set; }
         public string? BalanceSheetClosed { get; set; }
         public string? SaleQuotNo { get; set; }
+        public string? DeliveryAddress { get; set; }
         public int? SaleQuotEntryID { get; set; } // Nullable
         public int? SaleQuotyearCode { get; set; } // Nullable
         public string? SaleQuotDate { get; set; }
