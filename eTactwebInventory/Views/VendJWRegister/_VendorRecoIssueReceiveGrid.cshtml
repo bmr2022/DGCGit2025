@@ -13,6 +13,11 @@ else if (Model.ReportMode == "RECO SUMMARY")
     <partial name="_VendorRecoSummary" />
 }
 
+else if (Model.ReportMode == "JOBWORK Reco Summary (Item+Vendor)")
+{
+    <partial name="_VendorRecoSummary(Item+Vendor)Grid" />
+}
+
 else
 {
     <div class="table-responsive" style="max-height:300px;overflow-y:auto;">
