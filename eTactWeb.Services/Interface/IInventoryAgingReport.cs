@@ -16,7 +16,8 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FillStoreName(string FromDate, string ToDate, string CurrentDate, int Storeid);
         Task<ResponseResult> FillWorkCenterName(string FromDate, string ToDate, string CurrentDate, int Storeid);
 
-        Task<InventoryAgingReportModel> GetInventoryAgingReportDetailsData(string fromDate, string toDate,string CurrentDate, int WorkCenterid, string ReportType, int RMItemCode, int Storeid,int Foduration);
-
+        Task<InventoryAgingReportModel> GetInventoryAgingReportDetailsData(string fromDate, string toDate,string CurrentDate, int WorkCenterid, string ReportType, int RMItemCode, int Storeid,int Foduration, string GroupName, string ItemCateg);
+        Task<DataSet> GetCategory();
+        Task<DataSet> GetGroupName();
     }
 }

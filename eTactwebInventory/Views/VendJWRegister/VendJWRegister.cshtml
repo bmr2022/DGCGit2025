@@ -877,6 +877,34 @@
                         9: { cellWidth: 50 }   // Actual Pending Qty
                     };
                 break;
+                case 'JOBWORK Reco Summary (Item+Vendor)':
+                    headers = [
+                        "#Sr", "Vendor Name",
+                        "Issue Part Code",
+                        "Issue Item Name",
+                        "Issue Qty",
+                        "Received Qty",
+                        "Pending Qty"
+
+                    ];
+
+                    console.log("Data:", rows);
+                    body = rows.map((item, i) => [
+                        i + 1, item.vendorName, item.issuePartCode, item.issueItemName,
+                        item.issQty, item.recQty, item.pendqty
+
+                    ]);
+
+                    columnStyles = {
+                        0: { cellWidth: 20 },  // #
+                        1: { cellWidth: 80 },  // Vendor Name
+                        2: { cellWidth: 50 },  // Issue Part Code
+                        3: { cellWidth: 70 },  // Issue Item Name
+                        4: { cellWidth: 40 },  // Issue Qty
+                        5: { cellWidth: 40 },  // Received Qty
+                        6: { cellWidth: 40 },  // Pending Qty
+                    };
+                break;
                 case 'JOBWORKISSUEITEMDETAIL':
                     headers = [
                         "#Sr", "ItemName", "PartCode", "IssQty", "Unit", "Amount",
@@ -1235,6 +1263,7 @@
                                                  <option data-info="JWRecoIssue" value="JOBWORKRecoSummary">JobWork Reco Issue</option>\
                                                  <option data-info="ONLY PENDING CHALLAN" value="ONLY PENDING CHALLAN">Only Pendig Challan</option>\
                                                  <option data-info="RECO SUMMARY" value="RECO SUMMARY">RECO SUMMARY</option>\
+                                                                                 <option data-info="JOBWORK Reco Summary (Item+Vendor)" value="JOBWORK Reco Summary (Item+Vendor)">JOBWORK Reco Summary (Item+Vendor)</option>\
                 ');
                 $('#TOTALRecDetail').hide();
                 $('#TOTALRecSummary').hide();

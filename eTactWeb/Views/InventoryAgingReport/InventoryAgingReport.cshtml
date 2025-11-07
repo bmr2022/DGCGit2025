@@ -48,6 +48,8 @@
                                         <option disabled value="">-Select-</option>
                                         <option value="AginingDataSummary" selected>Summary</option>
                                         <option value="AginingDataBatchWise">BatchWise</option>
+                                        <option value="Day Wise Aging">Day Wise Aging</option>
+                                        <option value="Agining Data Summary (As Per Actual NoOf Days)">Agining Data Summary (As Per Actual NoOf Days)</option>
                                        
                                     </select>
 
@@ -111,7 +113,20 @@
                                     </select>
                                     <span asp-validation-for="StoreName" class="text-danger"></span>
                                 </div>
-@* 
+
+                                <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="ItemCateg" class="control-label">Category</label>
+                                    <br />
+                                    <select class="form-select" multiple="multiple" asp-for="ItemCateg" asp-items="@(new SelectList(Model.CategList, "Value", "Text"))"></select>
+                                </div>
+
+                                <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="margin-left:10px;">
+                                    <label asp-for="GroupName" class="control-label">Group Name</label>
+                                    <br />
+
+                                    <select class="form-select" multiple="multiple" asp-for="GroupName" asp-items="@(new SelectList(Model.GroupNameList,"Value","Text"))"></select>
+                                </div>
+                                @* 
                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                     <label asp-for="WorkCenterName" class="form-label">Work Center Name</label>
                                     <input type="hidden" asp-for="@Model.WorkCenterId" />
@@ -119,7 +134,7 @@
                                         <option value="@Model.WorkCenterId">-Select-</option>
                                     </select>
                                 </div> *@
-                                <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                                <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2"style="margin-left:10px;">
                                     <label class="form-label">Global search</label>
                                     <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
                                 </div>
@@ -241,6 +256,25 @@
                 $(this).css({ 'background-color': '#00bcd4' });
             });
             applyBackgroundColor();
+
+            $("#ItemCateg").multiselect({
+                templates: {
+                    button: '<button type="button" class="multiselect btn btn-sm btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><span class="multiselect-selected-text"></span></button>',
+                },
+                enableFiltering: true,
+                includeSelectAllOption: true,
+                buttonWidth: 250,
+                enableCaseInsensitiveFiltering: true
+            });
+            $("#GroupName").multiselect({
+                templates: {
+                    button: '<button type="button" class="multiselect btn btn-sm btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><span class="multiselect-selected-text"></span></button>',
+                },
+                enableFiltering: true,
+                includeSelectAllOption: true,
+                buttonWidth: 250,
+                enableCaseInsensitiveFiltering: true
+            });
         });
 
         $('#ReportType').change(function () {
@@ -428,6 +462,9 @@
             var CurrentDate = $('#CurrentDate').val();
             var Foduration = $('#Foduration').val();
             //var RMItemName = $('#RMItemName').val();
+
+            var ItemCateg = $('#ItemCateg').val() ? $('#ItemCateg').val().join(',') : '';
+            var GroupName = $('#GroupName').val() ? $('#GroupName').val().join(',') : '';
             if (Storeid === '') {
                 $.notify('Store Name is mandatory to display the report!', 'error');
                 return false; // Stop the function if StoreName is empty
@@ -447,7 +484,9 @@
                     RMItemCode: RMPartCode,
                     WorkCenterid: WorkCenterid,
                     Storeid: Storeid,
-                    CurrentDate: CurrentDate
+                    CurrentDate: CurrentDate,
+                    ItemCateg: ItemCateg,
+                    GroupName: GroupName
                     //RMItemName:RMItemName
                 },
                 success: function (response) {
@@ -687,6 +726,65 @@
                         13: { cellWidth: 90 },
                         14: { cellWidth: 50 },
                         15: { cellWidth: 30 },
+                    };
+                    break;
+                case 'Day Wise Aging':
+                    headers = [
+                        "#Sr", "Store Name", "Part Code", "Item Name", "Total Stock", "Unit", "Rate",
+                        "Total Amount", "Item Age", "Batch No", "Unique Batch No", "Type Item", "Group Name"
+
+                    ];
+
+                    console.log("Data:", rows);
+                    body = rows.map((item, i) => [
+                        i + 1, item.storeName, item.partCode, item.itemName, item.totalStock, item.unit, item.rate,
+                        item.totalAmt, item.itemAge, item.batchNo, item.uniqueBatchNo, item.typeItem, item.groupName
+
+
+                    ]);
+
+                    columnStyles = {
+                        0: { cellWidth: 20 },  // i + 1 (Sr. No)
+                        1: { cellWidth: 50 },  // storeName
+                        2: { cellWidth: 50 },  // partCode
+                        3: { cellWidth: 90 },  // itemName
+                        4: { cellWidth: 40 },  // totalStock
+                        5: { cellWidth: 30 },  // unit
+                        6: { cellWidth: 40 },  // rate
+                        7: { cellWidth: 50 },  // totalAmt
+                        8: { cellWidth: 40 },  // itemAge
+                        9: { cellWidth: 50 },  // batchNo
+                        10: { cellWidth: 50 },  // uniqueBatchNo
+                        11: { cellWidth: 50 },  // typeItem
+                        12: { cellWidth: 90 }   // groupName
+                    };
+                    break;
+                case 'Agining Data Summary (As Per Actual NoOf Days)':
+                    headers = [
+                        "#Sr", "Store Name", "Part Code", "Item Name", "Unit", "Total Stock",
+                        "Item Age", "Rate", "Total Amount", "Type Item", "Group Name"
+
+                    ];
+
+                    console.log("Data:", rows);
+                    body = rows.map((item, i) => [
+                        i + 1, item.storeName, item.partCode, item.itemName, item.unit, item.totalStock,
+                        item.itemAge, item.rate, item.totalAmt, item.typeItem, item.groupName
+
+                    ]);
+
+                    columnStyles = {
+                        0: { cellWidth: 20 },  // i + 1 (Sr. No)
+                        1: { cellWidth: 50 },  // storeName
+                        2: { cellWidth: 50 },  // partCode
+                        3: { cellWidth: 90 },  // itemName
+                        4: { cellWidth: 30 },  // unit
+                        5: { cellWidth: 40 },  // totalStock
+                        6: { cellWidth: 40 },  // itemAge
+                        7: { cellWidth: 50 },  // rate
+                        8: { cellWidth: 50 },  // totalAmt
+                        9: { cellWidth: 40 },  // typeItem
+                        10: { cellWidth: 60 }   // groupName
                     };
                     break;
                 
