@@ -50,17 +50,17 @@ namespace eTactWeb.DOM.Models
 		public string BarCode { get; set; }
 		public string SerialNo { get; set; }
 		public string ToolType { get; set; }
-		public decimal IssueQty { get; set; }
+		public long? IssueQty { get; set; }
 		public string Unit { get; set; }
 		public string CurrentLocation { get; set; }
 		public string IssueToLocation { get; set; }
 		public string ToolCondition { get; set; }
 		public DateTime? LastCalibrationDate { get; set; }
 		public DateTime? NextCalibrationDueDate { get; set; }
-		public int? RemainingToolLifeInMonths { get; set; }
+		public long? RemainingToolLifeInMonths { get; set; }
 		public long? ProdPlanEntryId { get; set; }
 		public string ProdPlanNo { get; set; }
-		public DateTime? ProdPlanDate { get; set; }
+		public DateTime? ProdPlandate { get; set; }
 		public long? ProdPlanYearCode { get; set; }
 		public long? ProdSchEntryId { get; set; }
 		public string ProdSchNo { get; set; }
@@ -70,7 +70,7 @@ namespace eTactWeb.DOM.Models
 		public string SpecialInstruction { get; set; }
 		public string WillBeConsumedOrReturned { get; set; }
 		public string PendingStatus { get; set; }
-		public decimal? PendingQty { get; set; }
+		public long? PendingQty { get; set; }
 		public long? SeqNo { get; set; }
 
     }
