@@ -13,7 +13,8 @@ namespace eTactWeb.DOM.Models
         public int AdvanceYearCode { get; set; }
         public string AdvanceSlipNo { get; set; }
         public int EmpId { get; set; }
-        public int EmpName { get; set; }
+        public string EmpName { get; set; }
+        public string EmpCode { get; set; }
         public int DesigId { get; set; }
         public int DepId { get; set; }
         public string DOJ { get; set; }
@@ -31,11 +32,19 @@ namespace eTactWeb.DOM.Models
         public decimal PreviousPendLoanAmt { get; set; }
         public string? MgrApprovaldate { get; set; }
         public int? MgrApprovedbyEmpid { get; set; }
+        public string? MgrApprovedbyEmpName { get; set; }
+        public string? MgrApprovedbyEmpCode { get; set; }
         public int? HRApprovedbyEmpid { get; set; }
+        public string? HRApprovedbyEmpName { get; set; }
+        public string? HRApprovedbyEmpCode { get; set; }
         public string? HRApprovalDate { get; set; }
         public int? FinanceApprovalEmpid { get; set; }
+        public string? FinanceApprovalEmpName { get; set; }
+        public string? FinanceApprovalEmpCode { get; set; }
         public string? FinanceApprovalDate { get; set; }
         public int? CanceledByEmpId { get; set; }
+        public string? CanceledByEmpName { get; set; }
+        public string? CanceledByEmpCode { get; set; }
         public string? Canceled { get; set; }
         public string? CancelOrApprovalremarks { get; set; }
         public string? ModeOfPayment { get; set; }
