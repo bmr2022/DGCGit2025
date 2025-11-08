@@ -17,6 +17,7 @@ namespace eTactWeb.DOM.Models
         public string? PODate { get; set; }
         public decimal RecQty { get; set; }
         public string BatchNo { get; set; }
+        public int ItemAge { get; set; }
         public string UniqueBatchNo { get; set; }
         public decimal Rate { get; set; }
         public decimal TotalAmt { get; set; }
@@ -61,6 +62,17 @@ namespace eTactWeb.DOM.Models
         public int TotalRecords { get; set; }
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
+        public IList<string>? ItemCateg { get; set; }
+        public IList<CategDetail>? CategDetailList { get; set; }
+        public IList<CategDetail>? CategDetailList1 { get; set; }
+        public IList<TextValue>? CategList { get; set; }
+
+        public IList<string>? GroupName { get; set; }
+        public IList<GroupNameDetail>? GroupNameDetailList { get; set; }
+        public IList<GroupNameDetail>? GroupNameDetailList1 { get; set; }
+        public IList<TextValue>? GroupNameList { get; set; }
         public IList<InventoryAgingReportModel> InventoryAgingReportGrid { get; set; }
     }
+
+   
 }

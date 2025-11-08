@@ -247,6 +247,10 @@ public class GateAttendanceDAL
             //DateTime CurrentDate = new DateTime();
 
             var EntryDt = CommonFunc.ParseSafeDate(model.GateAttEntryDate);
+            if(string.Equals(model.DayOrMonthType, "monthly", StringComparison.OrdinalIgnoreCase))
+            {
+                model.strEmpAttDate = new DateTime(model.GateAttYearCode, (model.intEmpAttMonth ?? 1), 1).ToString("dd/MM/yyyy");
+            }
             var AttDate = CommonFunc.ParseSafeDate(model.strEmpAttDate);
             var fromdate = CommonFunc.ParseSafeDate(CommonFunc.ParseDate(model.NFromDate).ToString("dd/MM/yyyy"));
             var todate = CommonFunc.ParseSafeDate(CommonFunc.ParseDate(model.NToDate).ToString("dd/MM/yyyy"));

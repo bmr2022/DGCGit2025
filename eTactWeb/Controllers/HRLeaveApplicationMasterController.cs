@@ -130,6 +130,13 @@ namespace eTactWeb.Controllers
             return Json(JsonString);
         }
 
+        public async Task<JsonResult> GetBalanceandMaxLeaveTypeWise(int empid, string LeaveAppEntryDate,int LeaveEntryId)
+        {
+            var JSON = await _IHRLeaveApplicationMaster.GetBalanceandMaxLeaveTypeWise(empid, LeaveAppEntryDate, LeaveEntryId);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
 
 
 

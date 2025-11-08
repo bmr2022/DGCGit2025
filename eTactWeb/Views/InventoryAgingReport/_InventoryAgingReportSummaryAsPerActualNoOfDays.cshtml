@@ -22,37 +22,21 @@
                     <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Total Stock
                 </th>
                 <th data-columnno="6" data-sortorder="asc" class="sortCol">
-                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rate
+                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Age
                 </th>
                 <th data-columnno="7" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rate
+                </th>
+                <th data-columnno="8" data-sortorder="asc" class="sortCol">
                     <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Total Amount
                 </th>
-                
-           
-                <th data-columnno="8" data-sortorder="asc" class="sortCol">
-                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> 0-30
-                </th>
                 <th data-columnno="9" data-sortorder="asc" class="sortCol">
-                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> 31-60
-                </th>
-                <th data-columnno="10" data-sortorder="asc" class="sortCol">
-                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> 61-90
-                </th>
-                <th data-columnno="11" data-sortorder="asc" class="sortCol">
-                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> ≥91
-                </th>
-                <th data-columnno="12" data-sortorder="asc" class="sortCol">
-                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Batch No
-                </th>
-                <th data-columnno="13" data-sortorder="asc" class="sortCol">
-                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unique Batch No
-                </th>
-                <th data-columnno="14" data-sortorder="asc" class="sortCol">
                     <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Type Item
                 </th>
-                <th data-columnno="15" data-sortorder="asc" class="sortCol">
+                <th data-columnno="10" data-sortorder="asc" class="sortCol">
                     <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Group Name
                 </th>
+
             </tr>
         </thead>
         <tbody id="divStockRegisterBody" style="background-color:#e5ccff !important">
@@ -84,21 +68,12 @@
                             <td>@item.PartCode</td>
                             <td>@item.ItemName</td>
                             <td>@item.Unit</td>
-                            <td style="background-color:#ccccff;">@item.TotalStock</td>
+                            <td>@item.TotalStock</td>
+                            <td>@item.ItemAge</td>
                             <td>@item.Rate</td>
-                            <td style="background-color:#e6ffff;">@item.TotalAmt</td>
-
-
-
-                            <td style="background-color:#ffb3cc;">@item.Aging_0_30</td>
-                            <td style="background-color:#ccffcc;">@item.Aging_31_60</td>
-                            <td style="background-color:#b3b3ff;">@item.Aging_61_90</td>
-                            <td style="background-color:#ecc6ec;">@item.Aging_91</td>
-                            <td>@item.BatchNo</td>
-                            <td>@item.UniqueBatchNo</td>
+                            <td>@item.TotalAmt</td>
                             <td>@item.Type_Item</td>
                             <td>@item.Group_Name</td>
-
 
 
                         </tr>
@@ -169,6 +144,7 @@
     #divStockRegisterBody {
         background-color: #e6eeff;
     }
+
     .sort-icon {
         padding: 5px;
         margin: 5px;
