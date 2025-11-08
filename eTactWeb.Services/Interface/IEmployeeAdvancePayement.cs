@@ -10,5 +10,6 @@ namespace eTactWeb.Services.Interface
     public interface IEmployeeAdvancePayement
     {
         Task<ResponseResult> FillEntryId(int yearCode);
+        Task<ResponseResult> FillEmpName();
     }
 }
