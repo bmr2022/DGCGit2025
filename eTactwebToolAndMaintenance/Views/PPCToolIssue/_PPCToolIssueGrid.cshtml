@@ -10,7 +10,8 @@ else
 {
     foreach (var item in Model)
     {
-        <tr>
+        <tr data-seq="@item.SeqNo">
+            <td>@item.SeqNo</td>
             <td style="white-space:nowrap;">
                 <a class="table-link link-primary" onclick="EditDetail(@item.SeqNo)">
                     <span class="fa-stack">
@@ -25,7 +26,6 @@ else
                     </span>
                 </a>
             </td>
-
             <td>@item.ToolName</td>
             <td>@item.BarCode</td>
             <td>@item.SerialNo</td>
@@ -39,11 +39,11 @@ else
             <td>@(item.NextCalibrationDueDate?.ToString("dd-MM-yyyy"))</td>
             <td>@item.RemainingToolLifeInMonths</td>
             <td>@item.ProdPlanNo</td>
-            <td>@(item.ProdPlanDate?.ToString("dd-MM-yyyy"))</td>
             <td>@item.ProdPlanYearCode</td>
+            <td>@(item.ProdPlandate?.ToString("dd-MM-yyyy"))</td>
+            <td>@item.ProdPlanEntryId</td>
             <td>@item.ProdSchNo</td>
             <td>@(item.ProdSchDate?.ToString("dd-MM-yyyy"))</td>
-            <td>@item.ProdSchYearCode</td>
             <td>@item.ForMachineId</td>
             <td>@item.SpecialInstruction</td>
             <td>@item.WillBeConsumedOrReturned</td>
@@ -52,72 +52,3 @@ else
         </tr>
     }
 }
-<script>
-      function DeleteDetail(seq) {
-        $.ajax({
-            url: "/PPCToolIssue/DeleteToolIssueRow",
-            type: "GET",
-            data: { SeqNo: seq },
-            success: function (res) {
-                $("#divToolIssueAdded").html(res);
-            }
-        });
-    }
-
-    function setSelect2Value(selector, value, text) {
-        // If option does not exist, add it
-        if ($(selector + " option[value='" + value + "']").length === 0) {
-            $(selector).append(new Option(text || value, value, true, true));
-        }
-        // Set value
-        $(selector).val(value).trigger("change.select2");
-    }
-
-    function EditDetail(seq) {
-        $.ajax({
-            url: "/PPCToolIssue/EditToolIssueRow",
-            type: "GET",
-            data: { SeqNo: seq },
-            success: function(data) {
-                let row = JSON.parse(data);
-                isEditing = true;
-
-                // ToolEntryId
-                setSelect2Value("#ToolEntryId", row.ToolEntryId, row.ToolName);
-
-                // BarCode
-                setSelect2Value("#BarCode", row.BarCode);
-
-                // SerialNo depends on Barcode, so fill first
-                FillToolSerialNo(row.BarCode, function() {
-                    setSelect2Value("#SerialNo", row.SerialNo);
-                });
-
-                // ProdPlanNo depends on some logic, fill first
-                FillProdPlan(row.ProdPlanNo, function() {
-                    setSelect2Value("#ProdPlanNo", row.ProdPlanNo);
-                });
-
-                // Other simple inputs
-                $("#ToolType").val(row.ToolType);
-                $("#IssueQty").val(row.IssueQty);
-                $("#Unit").val(row.Unit);
-                $("#CurrentLocation").val(row.CurrentLocation);
-                $("#IssueToLocation").val(row.IssueToLocation);
-                $("#ToolCondition").val(row.ToolCondition);
-                $("#LastCalibrationDate").val(row.LastCalibrationDate);
-                $("#NextCalibrationDueDate").val(row.NextCalibrationDueDate);
-                $("#RemainingToolLifeInMonths").val(row.RemainingToolLifeInMonths);
-                $("#ProdPlanEntryId").val(row.ProdPlanEntryId);
-                $("#ProdPlanYearCode").val(row.ProdPlanYearCode);
-                $("#ProdPlanDate").val(row.ProdPlanDate);
-                $("#SeqNo").val(row.SeqNo);
-
-                setTimeout(() => { isEditing = false; }, 200);
-            }
-        });
-    }
-
-
-
-</script>

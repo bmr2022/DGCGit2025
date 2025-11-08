@@ -32,7 +32,7 @@
 
 
 <div class="card bg-gradient mb-3 border-light shadow-lg">
-    <form asp-action="PPCToolIssue" autocomplete="off" class="form-horizontal">
+    <form asp-action="InsertToolIssue" method="post" id="toolIssueForm" autocomplete="off" class="form-horizontal">
         <div class="card-header card-headerBG text-light bg-gradient">
             <h5>
                 <strong>PPC Tool Issue</strong>
@@ -107,14 +107,14 @@
                     <div id="B_RParameter" class="accordion-collapse collapse show pnl1 bg-gradient" aria-labelledby="H_RParameter">
                         <div class="accordion-body">
                             <div class="row g-2 gx-3">
-                                
+                                <input type="hidden" name="Mode" value="@Model.Mode" />
                                 <div class="col-lg-2">
                                     <label asp-for="ToolIssueEntryId" class="form-label">Entry Id</label>
                                     <input asp-for="ToolIssueEntryId" id="ToolIssueEntryId" class="form-control" readonly />
                                 </div>
                                 <div class="col-lg-2">
                                     <label asp-for="ToolIssueYearCode" class="form-label">Year Code</label>
-                                    <input asp-for="ToolIssueYearCode" class="form-control" readonly />
+                                    <input asp-for="ToolIssueYearCode" id="ToolIssueYearCode" class="form-control" readonly />
                                 </div>
                                 <div class="col-lg-2">
                                     <label asp-for="ToolIssueEntryDate" class="form-label">Entry Date</label>
@@ -213,7 +213,7 @@
                                                         </select>
                                                     </td>
                                                     <td><input name="ToolIssueDetails[0].ProdPlanYearCode" id="ProdPlanYearCode" class="form-control" placeholder="Enter ProdPlan YearCode" /></td>
-                                                    <td><input name="ToolIssueDetails[0].ProdPlanDate" id="ProdPlanDate"  class="form-control datepicker" placeholder="Select Production Plan Date" /></td>
+                                                    <td><input name="ToolIssueDetails[0].ProdPlandate" id="ProdPlanDate" class="form-control datepicker" placeholder="Select Production Plan Date" /></td>
                                                     <td><input name="ToolIssueDetails[0].ProdPlanEntryId" id="ProdPlanEntryId" class="form-control" placeholder="Plan ID" /></td>
 
                                                     <td><input name="ToolIssueDetails[0].ProdSchNo" id="ProdSchNo" class="form-control" placeholder="Enter Production Schedule No" /></td>
@@ -262,6 +262,7 @@
                                         <table class="table table-hover table-bordered table-striped" id="table">
                                             <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
                                                 <tr>
+                                                    <th>Sq No</th>
                                                     <th>Action</th>
                                                     <th>Tool Name</th>
                                                     <th>Barcode</th>
@@ -505,101 +506,83 @@
     }
 
 
-    function FillToolBarCode() {
-        const toolId = $('#ToolEntryId').val();
+    function FillToolBarCode(callback) {
+            const toolId = $('#ToolEntryId').val();
+            const editingValue = $('#BarCode').data('editing-value');
 
-        if (!toolId) {
-            $('#BarCode').empty().append('<option value="">-- Select Barcode --</option>');
-            $('#ToolType').val(''); // clear tool type too
-            return;
+            if (!toolId) {
+                $('#BarCode').empty().append('<option value="">-- Select Barcode --</option>').trigger("change.select2");
+                $('#ToolType').val('');
+                if (callback) callback();
+                return;
+            }
+
+            $.ajax({
+                url: '/PPCToolIssue/FillToolBarCode',
+                type: 'GET',
+                data: { ToolEntryId: toolId },
+                dataType: 'json',
+                success: function (data) {
+                    const obj = typeof data === "string" ? JSON.parse(data) : data;
+                    const result = obj.Result || [];
+                    const select = $('#BarCode');
+                    select.empty().append('<option value="">-- Select Barcode --</option>');
+
+                    if (result.length > 0) {
+                        $.each(result, function (i, item) {
+                            select.append($('<option>', { value: item.BarCode, text: item.BarCode }));
+                            if (item.Tooltype) $('#ToolType').val(item.Tooltype);
+                        });
+                    }
+                    // Add editing value if missing
+                    if (editingValue && select.find(`option[value="${editingValue}"]`).length === 0) {
+                        select.append($('<option>', { value: editingValue, text: editingValue }));
+                    }
+
+                    select.val(editingValue || "").trigger('change.select2');
+                    if (callback) callback();
+                }
+            });
         }
 
-        $.ajax({
-            url: '/PPCToolIssue/FillToolBarCode',
-            type: 'GET',
-            data: { ToolEntryId: toolId },
-            dataType: 'json',
-            success: function (data) {
-                // console.log("Barcode List:", data);
+        function FillToolSerialNo(callback) {
+            const toolId = $('#ToolEntryId').val();
+            const barcode = $('#BarCode').val();
+            const editingValue = $('#SerialNo').data('editing-value');
 
-                const obj = typeof data === "string" ? JSON.parse(data) : data;
-                const result = obj.Result || [];
-
-                const select = $('#BarCode');
-                select.empty();
-                select.append('<option value="">-- Select Barcode --</option>');
-
-                if (result.length > 0) {
-                    $.each(result, function (i, item) {
-                        select.append($('<option>', {
-                            value: item.BarCode,
-                            text: item.BarCode
-                        }));
-
-                        // If ToolType is returned, set it in the field
-                        if (item.Tooltype && item.Tooltype.trim() !== "") {
-                            $('#ToolType').val(item.Tooltype);
-                        }
-                    });
-                  
-
-                } else {
-                    select.append('<option value="">No barcode found</option>');
-                    $('#ToolType').val('');
-                }
-                 select.trigger('change.select2');
-            },
-            error: function (err) {
-                console.error("❌ Error fetching barcode list:", err);
+            if (!toolId || !barcode) {
+                $('#SerialNo').empty().append('<option value="">-- Select Serial No --</option>').trigger("change.select2");
+                if (callback) callback();
+                return;
             }
-        });
-    }
 
-    function FillToolSerialNo() {
-        const toolId = $('#ToolEntryId').val();
-        const barcode = $('#BarCode').val();
-        console.log("Serial NotoolId:", toolId);
-        console.log("Serial barcode:", barcode);
+            $.ajax({
+                url: '/PPCToolIssue/FillToolSerialNo',
+                type: 'GET',
+                data: { ToolEntryId: toolId, barcode: barcode },
+                dataType: 'json',
+                success: function (data) {
+                    const obj = typeof data === "string" ? JSON.parse(data) : data;
+                    const result = obj.Result || [];
+                    const select = $('#SerialNo');
+                    select.empty().append('<option value="">-- Select Serial No --</option>');
 
-        if (!toolId || !barcode) {
-            $('#SerialNo').empty().append('<option value="">-- Select Serial No --</option>');
-            return;
+                    if (result.length > 0) {
+                        $.each(result, function (i, item) {
+                            select.append($('<option>', { value: item.SerialNo, text: item.SerialNo }));
+                        });
+                    }
+
+                    // Add editing value if missing
+                    if (editingValue && select.find(`option[value="${editingValue}"]`).length === 0) {
+                        select.append($('<option>', { value: editingValue, text: editingValue }));
+                    }
+
+                    select.val(editingValue || "").trigger('change.select2');
+                    if (callback) callback();
+                }
+            });
         }
-
-        $.ajax({
-            url: '/PPCToolIssue/FillToolSerialNo',
-            type: 'GET',
-            data: { ToolEntryId: toolId, barcode: barcode },
-            dataType: 'json',
-            success: function (data) {
-                // console.log("Serial No List:", data);
-
-                const obj = typeof data === "string" ? JSON.parse(data) : data;
-                const result = obj.Result || [];
-
-                const select = $('#SerialNo');
-                select.empty();
-                select.append('<option value="">-- Select Serial No --</option>');
-
-                if (result.length > 0) {
-                    $.each(result, function (i, item) {
-                        select.append($('<option>', {
-                            value: item.SerialNo,
-                            text: item.SerialNo
-                        }));
-                    });
-                } else {
-                    select.append('<option value="">No serial number found</option>');
-                }
-               select.trigger('change.select2');
-
-            },
-            error: function (err) {
-                console.error("❌ Error fetching serial no list:", err);
-            }
-        });
-    }
-
     function FillToolBarCodeDetail() {
         const ToolEntryId = $('#ToolEntryId').val();
         const barcode = $('#BarCode').val();
@@ -801,8 +784,75 @@
             e.preventDefault();
         });
     });
+  
+    function toDDMMYYYY(dateString) {
+    if (!dateString) return "";
 
-    let isEditing = false;
+    const d = new Date(dateString);
+    if (isNaN(d)) return "";
+
+        let day = ("0" + d.getDate()).slice(-2);
+    let month = ("0" + (d.getMonth() + 1)).slice(-2);
+    let year = d.getFullYear();
+
+    return `${day}/${month}/${year}`;
+}
+
+        let isEditing = false;
+         // Edit a row from the second table
+    function EditDetail(seq) {
+        isEditing = true;
+        $.ajax({
+            url: "/PPCToolIssue/EditToolIssueRow",
+            type: "GET",
+            data: { SeqNo: seq },
+            success: function(data) {
+                const row = JSON.parse(data);
+
+                // Save editing values
+                $('#BarCode').data('editing-value', row.BarCode);
+                $('#SerialNo').data('editing-value', row.SerialNo);
+
+                // Fill dropdowns with callbacks
+                $("#ToolEntryId").val(row.ToolEntryId).trigger("change.select2");
+
+                FillToolBarCode(function() {
+                    FillToolSerialNo(function() {
+                        // Fill remaining fields
+                        $("#ToolType").val(row.ToolType);
+                        $("#IssueQty").val(row.IssueQty);
+                        $("#Unit").val(row.Unit);
+                        $("#CurrentLocation").val(row.CurrentLocation);
+                        $("#IssueToLocation").val(row.IssueToLocation);
+                        $("#ToolCondition").val(row.ToolCondition);
+                        $("#LastCalibrationDate").val(toDDMMYYYY(row.LastCalibrationDate)).datepicker("setDate", toDDMMYYYY(row.LastCalibrationDate));
+                        $("#NextCalibrationDueDate").val(toDDMMYYYY(row.NextCalibrationDueDate)).datepicker("setDate", toDDMMYYYY(row.NextCalibrationDueDate));
+                        $("#RemainingToolLifeInMonths").val(row.RemainingToolLifeInMonths);
+                        $("#ProdPlanEntryId").val(row.ProdPlanEntryId);
+                        $("#ProdPlanYearCode").val(row.ProdPlanYearCode);
+                                $("#ProdPlanDate").val(toDDMMYYYY(row.ProdPlandate)).datepicker("setDate", toDDMMYYYY(row.ProdPlandate));
+                        $("#ProdSchDate").val(toDDMMYYYY(row.ProdSchDate)).datepicker("setDate", toDDMMYYYY(row.ProdSchDate));
+
+                        $("#SeqNo").val(row.SeqNo);
+                        isEditing = false; // finished editing
+                    });
+                });
+            }
+        });
+    }
+
+    function DeleteDetail(seq) {
+        $.ajax({
+            url: "/PPCToolIssue/DeleteToolIssueRow",
+            type: "GET",
+            data: { SeqNo: seq },
+            success: function(res) {
+                $("#divToolIssueAdded").html(res);
+            }
+        });
+    }
+  
+    
     $(document).ready(async function () {
         GetNewEntry();
         FillDepartmentList();
@@ -830,6 +880,9 @@
 
         // ✅ Delegated event bindings
         $(document).on('change', '#ToolEntryId', function () {
+             $('#BarCode').removeData('editing-value');
+            $('#SerialNo').removeData('editing-value');
+                $('#ToolType').val('');
              if (isEditing) return;
             clearDependentFields();
             FillToolBarCode();
@@ -932,11 +985,11 @@
 
     let model = {
         ToolIssueEntryId: $("#ToolIssueEntryId").val(),
-        ToolIssueYearCode: $("#ToolYearCode").val(),  // ✅ parent
+        ToolIssueYearCode: $("#ToolIssueYearCode").val(),  // ✅ parent
 
         ToolEntryId: $("#ToolEntryId").val(),
         ToolName: $("#ToolEntryId option:selected").text(),
-        ToolYearCode: $("#ToolYearCode").val(),       // ✅ child
+        ToolYearCode: $("#ToolIssueYearCode").val(),       // ✅ child
 
         BarCode: $("#BarCode").val(),
         SerialNo: $("#SerialNo").val(),
@@ -953,7 +1006,7 @@
 
         ProdPlanEntryId: $("#ProdPlanEntryId").val(),
         ProdPlanNo: $("#ProdPlanNo").val(),
-        ProdPlanDate: $("#ProdPlanDate").val(),
+        ProdPlandate: $("#ProdPlanDate").val(),
         ProdPlanYearCode: $("#ProdPlanYearCode").val(),
 
         ProdSchEntryId: $("#ProdSchEntryId").val(),
@@ -974,28 +1027,49 @@
         url: "/PPCToolIssue/AddToolIssueDetail",   
         type: "POST",
         data: model,
-        success: function (response) {
-            // console.log("post add grid res",response);
-            $("#divToolIssueAdded").html(response);  
-            if (!model.SeqNo || model.SeqNo == 0) {
-        // Clear SeqNo for next new row
-        $("#SeqNo").val("");
+            success: function (response) {
+        // Update grid HTML
+        //VERY IMPORTANT: remove editing values after save
+        $("#divToolIssueAdded").html(response);
+         $('#BarCode').removeData('editing-value');
+    $('#SerialNo').removeData('editing-value');
+    // Clear all except Tool Name
+    $("#BarCode").empty().append('<option value="">-- Select --</option>').val('').trigger('change.select2');
+    $("#SerialNo").empty().append('<option value="">-- Select --</option>').val('').trigger('change.select2');
 
-      
-    }
-        },
+    $("#ToolType,#IssueQty,#Unit,#CurrentLocation,#IssueToLocation,#ToolCondition,#LastCalibrationDate,#NextCalibrationDueDate,#RemainingToolLifeInMonths,#ProdPlanEntryId,#ProdPlanNo,#ProdPlanDate,#ProdPlanYearCode,#ProdSchEntryId,#ProdSchNo,#ProdSchDate,#ProdSchYearCode,#ForMachineId,#SpecialInstruction,#WillBeConsumedOrReturned,#PendingQty,#PendingStatus,#SeqNo").val('');
+    FillToolBarCode(function () {
+        FillToolSerialNo(function () {
+            console.log("Done loading both");
+        });
+    });
+
+    },
         error: function () {
             alert("Error adding detail");
         }
     });
 
+  
 
     });
 
-      
+       
       
     });
 
+
+        $("#toolIssueForm").on("submit", function (e) {
+            e.preventDefault();
+
+            $.post("/PPCToolIssue/InsertToolIssue", $(this).serialize())
+                .done(function () {
+                    window.location.reload();
+                })
+                .fail(function () {
+                    alert("Error submitting form");
+                });
+        });
 </script>
 
 
