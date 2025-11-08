@@ -96,10 +96,6 @@
                         @if (Model.Mode != "V")
                         {
                             <div class="col-auto">
-                                @* <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
-                            <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
-                            REFRESH
-                            </a> *@
                                 <a type="button" class="btn btn-secondary btn-sm" asp-action="SaleInvoiceMemoryGrid"
                                    asp-controller="SaleInvoice">
                                     <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
@@ -487,7 +483,7 @@
                                     Dashboard
                                 </a>
                                 <a href="#" class=" btn btn-primary btn-sm">
-                                    <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                                    <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true" onclick="goBack()"></i>
                                     BACK
                                 </a>
                             </div>
@@ -7172,11 +7168,6 @@
                     alert(error);
                 }
             });
-        }
-
-        function PressBack() {
-
-            window.location.href = '/BaseNavigation/GoBack';
         }
 
     </script>
