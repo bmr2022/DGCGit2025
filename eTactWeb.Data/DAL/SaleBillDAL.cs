@@ -669,7 +669,7 @@ namespace eTactWeb.Data.DAL
                 var ChallanDate = Common.CommonFunc.ParseFormattedDate(model.ChallanDate);
                 var SaleQuotDate = Common.CommonFunc.ParseFormattedDate(model.SaleQuotDate);
                 var RemovalTime = Common.CommonFunc.ParseFormattedDate(model.RemovalTime);
-
+                var CourierDate = Common.CommonFunc.ParseFormattedDate(model.CourierDate);
                 SqlParams.Add(new SqlParameter("@EntryId", model.SaleBillEntryId));
                 SqlParams.Add(new SqlParameter("@Yearcode", model.SaleBillYearCode));
                 SqlParams.Add(new SqlParameter("@SaleBillEntryDate", entDt == default ? string.Empty : entDt));
@@ -718,6 +718,15 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@NetAmtInWords", model.NetAmtInWords ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@INVNetAmt", model.NetTotal));
                 SqlParams.Add(new SqlParameter("@Remark", model.Remark ?? string.Empty));
+                SqlParams.Add(new SqlParameter("@MobileNo", model.MobileNo ?? string.Empty));
+                SqlParams.Add(new SqlParameter("@DriverContactNo", model.DriverContactNo ?? string.Empty));
+                SqlParams.Add(new SqlParameter("@DriverName", model.DriverName ?? string.Empty));
+                SqlParams.Add(new SqlParameter("@DocThrough", model.DocThrough ?? string.Empty));
+                SqlParams.Add(new SqlParameter("@CourierDate", CourierDate));
+                SqlParams.Add(new SqlParameter("@CourierNo", model.CourierNo ?? string.Empty));
+                SqlParams.Add(new SqlParameter("@TransportGSTIN", model.TransportGSTIN ?? string.Empty));
+                SqlParams.Add(new SqlParameter("@Termsandcondition", model.Termsandcondition ?? string.Empty));
+                SqlParams.Add(new SqlParameter("@DeliveryAddress", model.DeliveryAddress ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@PermitNo", model.PermitNo ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@CashDisPer", model.CashDisPer));
                 SqlParams.Add(new SqlParameter("@CashDisRs", model.CashDisRs));
@@ -1395,6 +1404,15 @@ namespace eTactWeb.Data.DAL
                 model.RemovalTime = DS.Tables[0].Rows[0]["RemovalTime"]?.ToString();
                 model.AccountCode = Convert.ToInt32(DS.Tables[0].Rows[0]["AccountCode"]);
                 model.AccountName = DS.Tables[0].Rows[0]["Account_Name"]?.ToString();
+                model.DriverContactNo = DS.Tables[0].Rows[0]["DriverContactNo"]?.ToString();
+                model.MobileNo = DS.Tables[0].Rows[0]["MobileNo"]?.ToString();
+                model.DriverName = DS.Tables[0].Rows[0]["DriverName"]?.ToString();
+                model.DocThrough = DS.Tables[0].Rows[0]["DocThrough"]?.ToString();
+                model.CourierDate = DS.Tables[0].Rows[0]["CourierDate"]?.ToString();
+                model.CourierNo = DS.Tables[0].Rows[0]["CourierNo"]?.ToString();
+                model.TransportGSTIN = DS.Tables[0].Rows[0]["TransportGSTIN"]?.ToString();
+                model.Termsandcondition = DS.Tables[0].Rows[0]["Termsandcondition"]?.ToString();
+                model.DeliveryAddress = DS.Tables[0].Rows[0]["DeliveryAddress"]?.ToString();
                 model.GSTNO = DS.Tables[0].Rows[0]["GSTNO"]?.ToString();
                 model.DomesticExportNEPZ = DS.Tables[0].Rows[0]["DomesticExportNEPZ"]?.ToString();
                 model.SupplyType = DS.Tables[0].Rows[0]["SupplyType"]?.ToString();

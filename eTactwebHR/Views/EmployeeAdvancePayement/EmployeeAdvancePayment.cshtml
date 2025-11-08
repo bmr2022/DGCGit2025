@@ -88,119 +88,129 @@
 							<input asp-for="Mode" type="hidden" class="form-control" value="@Model.Mode" />
 							<div class="row">
 
-								<div class="col-md-1">
-									<label asp-for="AdvanceEntryId" class="form-label"></label>
+								<div class="col-md-2">
+									<label asp-for="AdvanceEntryId" class="form-label">Advance EntryId</label>
 									<input asp-for="AdvanceEntryId" class="form-control" readonly />
 								</div>
 
 								<div class="col-md-2">
-									<label asp-for="AdvanceYearCode" class="form-label"></label>
+									<label asp-for="AdvanceYearCode" class="form-label">Advance YearCode</label>
 									<input asp-for="AdvanceYearCode" class="form-control" />
 								</div>
 
 								<div class="col-md-2">
-									<label asp-for="AdvanceSlipNo" class="form-label"></label>
+									<label asp-for="AdvanceSlipNo" class="form-label">Advance SlipNo</label>
 									<input asp-for="AdvanceSlipNo" class="form-control" />
 								</div>
 
-								<div class="col-md-1">
-									<label asp-for="EmpId" class="form-label"></label>
-									<input asp-for="EmpId" class="form-control" />
+								<div class="col-md-1">fi
+									<label asp-for="EmpId" class="form-label">Emp Name</label>
+									<select asp-for="EmpId" class="form-select">
+										<option value="">-Select-</option>
+									</select>
 								</div>
 
 								<div class="col-md-1">
-									<label asp-for="DesigId" class="form-label"></label>
-									<input asp-for="DesigId" class="form-control" />
+									<label asp-for="DesigId" class="form-label">Designation</label>
+									<select asp-for="DesigId" class="form-select">
+										<option value="">-Select-</option>
+									</select>
 								</div>
 
 								<div class="col-md-1">
-									<label asp-for="DepId" class="form-label"></label>
-									<input asp-for="DepId" class="form-control" />
+									<label asp-for="DepId" class="form-label">Department</label>
+									<select asp-for="DepId" class="form-select">
+										<option value="">-Select-</option>
+									</select>
 								</div>
 
 								<div class="col-md-1">
-									<label asp-for="DOJ" class="form-label"></label>
+									<label asp-for="DOJ" class="form-label">DOJ</label>
 									<input asp-for="DOJ"  class="form-control" />
 								</div>
 
 								<div class="col-md-1">
-									<label asp-for="BasicSalary" class="form-label"></label>
+									<label asp-for="BasicSalary" class="form-label">Basic Salary</label>
 									<input asp-for="BasicSalary" class="form-control" />
 								</div>
 
 								<div class="col-md-1">
-									<label asp-for="NetSalary" class="form-label"></label>
+									<label asp-for="NetSalary" class="form-label">Net Salary</label>
 									<input asp-for="NetSalary" class="form-control" />
 								</div>
 
 								<div class="col-md-2">
-									<label asp-for="PresentDaysinCurrMonth" class="form-label"></label>
+									<label asp-for="PresentDaysinCurrMonth" class="form-label">PresentDaysinCurrMonth</label>
 									<input asp-for="PresentDaysinCurrMonth" class="form-control" />
 								</div>
 
 								<div class="col-md-2">
-									<label asp-for="PresentDaysInCurrYear" class="form-label"></label>
+									<label asp-for="PresentDaysInCurrYear" class="form-label">PresentDays InCurrYear</label>
 									<input asp-for="PresentDaysInCurrYear" class="form-control" />
 								</div>
 
 								<div class="col-md-1">
-									<label asp-for="CategoryId" class="form-label"></label>
+									<label asp-for="CategoryId" class="form-label">Category</label>
 									<input asp-for="CategoryId" class="form-control" />
 								</div>
 
 								<div class="col-md-1">
-									<label asp-for="RequestDate" class="form-label"></label>
+									<label asp-for="RequestDate" class="form-label">Request Date</label>
 									<input asp-for="RequestDate" class="form-control" />
 								</div>
 
 								<div class="col-md-1">
-									<label asp-for="EntryDate" class="form-label"></label>
+									<label asp-for="EntryDate" class="form-label">Entry Date</label>
 									<input asp-for="EntryDate" class="form-control" />
 								</div>
 
 								<div class="col-md-3">
 									<label asp-for="Purpose" class="form-label"></label>
-									<textarea asp-for="Purpose" class="form-control"></textarea>
+									<textarea asp-for="Purpose" type="textarea" class="form-control">Purpose</textarea>
 								</div>
 
 
 								<div class="col-md-2">
-									<label asp-for="PreviousPendAdvanceAmt" class="form-label"></label>
+									<label asp-for="PreviousPendAdvanceAmt" class="form-label">Previous PendAdvanceAmt</label>
 									<input asp-for="PreviousPendAdvanceAmt" class="form-control" />
 								</div>
 
 								<div class="col-md-2">
-									<label asp-for="PreviousPendLoanAmt" class="form-label"></label>
+									<label asp-for="PreviousPendLoanAmt" class="form-label">Previous PendLoanAmt</label>
 									<input asp-for="PreviousPendLoanAmt" class="form-control" />
 								</div>
 
 								<div class="col-md-2">
-									<label asp-for="MgrApprovaldate" class="form-label"></label>
+									<label asp-for="MgrApprovaldate" class="form-label">Mgr Approvaldate</label>
 									<input asp-for="MgrApprovaldate" class="form-control" />
 								</div>
 
 								<div class="col-md-2">
-									<label asp-for="MgrApprovedbyEmpid" class="form-label"></label>
-									<input asp-for="MgrApprovedbyEmpid" class="form-control" />
+									<label asp-for="MgrApprovedbyEmpid" class="form-label">Mgr ApprovedbyEmp</label>
+									<select asp-for="MgrApprovedbyEmpid" class="form-select">
+										<option value="">-Select-</option>
+									</select>
 								</div>
 
 								<div class="col-md-2">
-									<label asp-for="HRApprovedbyEmpid" class="form-label"></label>
-									<input asp-for="HRApprovedbyEmpid" class="form-control" />
+									<label asp-for="HRApprovedbyEmpid" class="form-label">HR ApprovedbyEmp</label>
+									<select asp-for="HRApprovedbyEmpid" class="form-select">
+										<option value="">-Select-</option>
+									</select>
 								</div>
 
 								<div class="col-md-2">
-									<label asp-for="HRApprovalDate" class="form-label"></label>
+									<label asp-for="HRApprovalDate" class="form-label">HR ApprovalDate</label>
 									<input asp-for="HRApprovalDate"  class="form-control" />
 								</div>
 
 								<div class="col-md-2">
-									<label asp-for="PaymentVoucherNo" class="form-label"></label>
+									<label asp-for="PaymentVoucherNo" class="form-label">Payment VoucherNo</label>
 									<input asp-for="PaymentVoucherNo" class="form-control" />
 								</div>
 
 								<div class="col-md-2">
-									<label asp-for="PaymentVoucherType" class="form-label"></label>
+									<label asp-for="PaymentVoucherType" class="form-label">Payment VoucherType</label>
 									<input asp-for="PaymentVoucherType" class="form-control" />
 								</div>
 
@@ -221,27 +231,27 @@
 							<input asp-for="Mode" type="hidden" class="form-control" value="@Model.Mode" />
 							<div class="row">
 								<div class="col-md-2">
-									<label asp-for="RequestedAmount" class="form-label"></label>
+									<label asp-for="RequestedAmount" class="form-label">Requested Amount</label>
 									<input asp-for="RequestedAmount" class="form-control" />
 								</div>
 
 								<div class="col-md-2">
-									<label asp-for="ApprovedAmount" class="form-label"></label>
+									<label asp-for="ApprovedAmount" class="form-label">Approved Amount</label>
 									<input asp-for="ApprovedAmount" class="form-control" />
 								</div>
 
 								<div class="col-md-2">
-									<label asp-for="FinanceApprovalEmpid" class="form-label"></label>
+									<label asp-for="FinanceApprovalEmpid" class="form-label">FinanceApproval Empid</label>
 									<input asp-for="FinanceApprovalEmpid" class="form-control" />
 								</div>
 
 								<div class="col-md-2">
-									<label asp-for="FinanceApprovalDate" class="form-label"></label>
+									<label asp-for="FinanceApprovalDate" class="form-label">Finance ApprovalDate</label>
 									<input asp-for="FinanceApprovalDate" class="form-control" />
 								</div>
 
 								<div class="col-md-2">
-									<label asp-for="ModeOfPayment" class="form-label"></label>
+									<label asp-for="ModeOfPayment" class="form-label">Mode Of Payment</label>
 									<select asp-for="ModeOfPayment" class="form-select">
 										<option value="">-- Select Payment Mode --</option>
 										<option value="Cash">Cash</option>
@@ -251,12 +261,12 @@
 								</div>
 
 								<div class="col-md-2">
-									<label asp-for="PaymentReferenceNo" class="form-label"></label>
+									<label asp-for="PaymentReferenceNo" class="form-label">Payment ReferenceNo</label>
 									<input asp-for="PaymentReferenceNo" class="form-control" />
 								</div>
 
 								<div class="col-md-4">
-									<label asp-for="PaymentRemark" class="form-label"></label>
+									<label asp-for="PaymentRemark" class="form-label">Payment Remark</label>
 									<textarea asp-for="PaymentRemark" class="form-control"></textarea>
 								</div>
 							</div>
@@ -277,32 +287,32 @@
 							<div class="row">
 								
 								<div class="col-md-2">
-									<label asp-for="RecoveryMethod" class="form-label"></label>
+									<label asp-for="RecoveryMethod" class="form-label">Recovery Method</label>
 									<input asp-for="RecoveryMethod" class="form-control" />
 								</div>
 
 								<div class="col-md-2">
-									<label asp-for="NoofInstallment" class="form-label"></label>
+									<label asp-for="NoofInstallment" class="form-label">No of Installment</label>
 									<input asp-for="NoofInstallment" class="form-control" />
 								</div>
 
 								<div class="col-md-2">
-									<label asp-for="StartRecoveryFromMonth" class="form-label"></label>
-									<input asp-for="StartRecoveryFromMonth" class="form-control" />
+									<label asp-for="StartRecoveryFromMonth" class="form-label">StartRecovery FromMonth</label>
+									<input asp-for="StartRecoveryFromMonth" class="form-control" />  @* Month picker *@
 								</div>
 								<div class="col-md-2">
-									<label asp-for="FinalRevoveryDate" class="form-label"></label>
+									<label asp-for="FinalRevoveryDate" class="form-label">Final RevoveryDate</label>
 									<input asp-for="FinalRevoveryDate" class="form-control" />
 								</div>
 								<div class="col-md-2">
-									<label asp-for="AutoDeductionFromSalaryYN" class="form-label"></label>
+									<label asp-for="AutoDeductionFromSalaryYN" class="form-label">AutoDeduction FromSalary</label>
 									<select asp-for="AutoDeductionFromSalaryYN" class="form-select">
 										<option value="Y">Yes</option>
 										<option value="N">No</option>
 									</select>
 								</div>
 								<div class="col-md-2">
-									<label asp-for="ActualFinalRecoveryDate" class="form-label"></label>
+									<label asp-for="ActualFinalRecoveryDate" class="form-label">ActualFinal RecoveryDate</label>
 									<input asp-for="ActualFinalRecoveryDate" class="form-control" />
 								</div>
 
@@ -322,24 +332,24 @@
 							<input asp-for="Mode" type="hidden" class="form-control" value="@Model.Mode" />
 							<div class="row">
 								<div class="col-md-2">
-									<label asp-for="StatusHoldCancelApproved" class="form-label"></label>
+									<label asp-for="StatusHoldCancelApproved" class="form-label">StatusHold CancelApproved</label>
 									<input asp-for="StatusHoldCancelApproved" class="form-control" />
 								</div>
 
 								<div class="col-md-2">
-									<label asp-for="ActualEntryBy" class="form-label"></label>
+									<label asp-for="ActualEntryBy" class="form-label">ActualEntry By</label>
 									<input asp-for="ActualEntryBy" type="hidden" class="form-control" />
 									<input asp-for="ActualEntryByName" class="form-control" />
 								</div>
 
 								<div class="col-md-1">
-									<label asp-for="LastUpdatedBy" class="form-label"></label>
+									<label asp-for="LastUpdatedBy" class="form-label">LastUpdated By</label>
 									<input type="hidden" asp-for="LastUpdatedBy" class="form-control" />
 									<input asp-for="LastUpdatedByEmpName" class="form-control" />
 								</div>
 
 								<div class="col-md-2">
-									<label asp-for="LastUpdationDate" class="form-label"></label>
+									<label asp-for="LastUpdationDate" class="form-label">LastUpdation Date</label>
 									<input asp-for="LastUpdationDate" class="form-control" />
 								</div>
 							</div>
@@ -368,27 +378,27 @@
 							<div class="row g-2 gx-3" id="_ItemGrid">
 
 								<div class="col-md-2">
-									<label asp-for="RequestEntryByMachine" class="form-label"></label>
+									<label asp-for="RequestEntryByMachine" class="form-label">Request EntryByMachine</label>
 									<input asp-for="RequestEntryByMachine" class="form-control" />
 								</div>
 
 								<div class="col-md-2">
-									<label asp-for="ApprovedBYMachine" class="form-label"></label>
+									<label asp-for="ApprovedBYMachine" class="form-label">ApprovedBY Machine</label>
 									<input asp-for="ApprovedBYMachine" class="form-control" />
 								</div>
 
 								<div class="col-md-2">
-									<label asp-for="CancelByMachine" class="form-label"></label>
+									<label asp-for="CancelByMachine" class="form-label">CancelBy Machine</label>
 									<input asp-for="CancelByMachine" class="form-control" />
 								</div>
 
 								<div class="col-md-1">
-									<label asp-for="CC" class="form-label"></label>
+									<label asp-for="CC" class="form-label">Branch</label>
 									<input asp-for="CC" class="form-control" />
 								</div>
 
 								<div class="col-md-1">
-									<label asp-for="UID" class="form-label"></label>
+									<label asp-for="UID" class="form-label">UID</label>
 									<input asp-for="UID" class="form-control" />
 								</div>
 							</div>
@@ -485,6 +495,23 @@
 
 			// $('#LastUpdatedBy').rules("remove", "required");
 		});
+
+		function FillEntryID() {
+			$.ajax({
+				url: '@Url.Action("FillEntryId")',
+				type: 'POST',
+				success: function (data, status, xhr) {
+					var obj = $.parseJSON(data);
+					if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
+						$('#AdvanceEntryId').val(obj.Result[0].EntryId);
+						$('#AdvanceSlipNo').val(obj.Result[0].AdvanceSlipNo);
+					}
+				},
+				error: function (xhr, status, error) {
+					console.log('Failed to load Entry Id.');
+				}
+			});
+		}
 
 	</script>
 	@* 	<script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>

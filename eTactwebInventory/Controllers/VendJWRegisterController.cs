@@ -206,6 +206,10 @@ namespace eTactWeb.Controllers
             {
                 return PartialView("_ONLYPENDINGCHALLAN", model);
             }
+             else if (model.ReportMode == "JOBWORK Reco Summary (Item+Vendor)")
+            {
+                return PartialView("_VendorRecoSummary(Item+Vendor)Grid", model);
+            }
 
             //issue
             else if (model.ReportMode == "JOBWORKISSUECHALLANITEMDETAIL")
@@ -276,6 +280,7 @@ namespace eTactWeb.Controllers
                 { "JOBWORKISSUEPatyITEMDETAIL", EXPORT_JOBWORKISSUEPatyITEMDETAILGrid },
                 { "JOBWORKISSUECHALLANSUMMARY", EXPORT_JOBWORKISSUECHALLANSUMMARYGrid },
                 { "JOBWORK ISSUECHALLAN CONSOLIDATED", EXPORT_JOBWORKISSUECHALLANCONSOLIDATEDGrid },
+                { "JOBWORK Reco Summary (Item+Vendor)", EXPORT_JOBWORKRECOSUMMARYITEMVENDOREGrid },
                 
 
 
@@ -546,6 +551,34 @@ namespace eTactWeb.Controllers
                 sheet.Cell(row, 7).Value = item.IssQty;                             // Issued Qty
                 sheet.Cell(row, 8).Value = item.AdjqTY;                             // Adjusted Qty
                 sheet.Cell(row, 9).Value = item.pendqty;
+                row++;
+            }
+        } 
+        private void EXPORT_JOBWORKRECOSUMMARYITEMVENDOREGrid(IXLWorksheet sheet, IList<VendJWRegisterDetail> list)
+        {
+            string[] headers = {
+                "#Sr","Vendor Name",
+                        "Issue Part Code",
+                        "Issue Item Name",
+                        "Issue Qty",
+                        "Received Qty",
+                        "Pending Qty"
+            };
+
+            for (int i = 0; i < headers.Length; i++)
+                sheet.Cell(1, i + 1).Value = headers[i];
+
+            int row = 2, srNo = 1;
+            foreach (var item in list)
+            {
+                sheet.Cell(row, 1).Value = srNo++;                          // Sr No
+                sheet.Cell(row, 2).Value = item.VendorName;
+                sheet.Cell(row, 3).Value = item.IssuePartCode;
+                sheet.Cell(row, 4).Value = item.IssueItemName;
+                sheet.Cell(row, 5).Value = item.IssQty;
+                sheet.Cell(row, 6).Value = item.RecQty;
+                sheet.Cell(row, 7).Value = item.pendqty;
+
                 row++;
             }
         }

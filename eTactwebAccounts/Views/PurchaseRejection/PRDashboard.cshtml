@@ -47,6 +47,37 @@
 @section Scripts
 {
     <script>
+              function updateDropdowns() {
+            var fromDate = $('#FromDate').val();
+            var toDate = $('#ToDate').val();
+
+            if (!fromDate || !toDate) return;
+
+            $.ajax({
+                url: '@Url.Action("GetDashboardDropdowns")',
+                type: 'POST',
+                data: { fromDate: fromDate, toDate: toDate },
+                success: function (response) {
+                    // ✅ Populate dropdowns
+                    fillDropdown('#VendorName', response.vendorList);
+                    fillDropdown('#VoucherNo', response.voucherList);
+                    fillDropdown('#InvoiceNo', response.invoiceList);
+                    fillDropdown('#PartCode', response.partCodeList);
+                },
+                error: function (xhr) {
+                    console.error("Dropdown update failed:", xhr.responseText);
+                }
+            });
+        }
+
+        function fillDropdown(selector, list) {
+            var dropdown = $(selector);
+            dropdown.empty();
+            dropdown.append('<option value="0">-Select-</option>');
+            $.each(list, function (i, item) {
+                dropdown.append('<option value="' + item.value + '">' + item.text + '</option>');
+            });
+        }
         $(function () {
             GetFormRights();
             LockedFinancialYear();
@@ -95,6 +126,9 @@
 
             }
             //$('#DashboardType').select2();
+            $('#FromDate, #ToDate').on('change', function () {
+            updateDropdowns();
+        });
             $('#VendorName').select2();
             $('#VoucherNo').select2();
             $('#InvoiceNo').select2();

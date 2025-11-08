@@ -1,0 +1,138 @@
+﻿@model eTactWeb.DOM.Models.VendJWRegisterModel
+
+<div class="table-responsive" style="max-height:300px;overflow-y:auto;">
+    <table class="table table-responsive table-hover table-bordered PMRPGrid TbCss text-nowrap mb-0" id="ReportTable">
+        <thead class="bg-gradient card-headerBG text-light PMRPThead" style="position:static;" id="dashRThead">
+            <tr>
+                <th>Action</th>
+                <th>Sr#</th>
+               <th class="sortCol" data-sortorder="asc" data-columnno="1">
+    <span style="padding:5px;margin:5px" class="sort-icon">
+        <i class="fa" aria-hidden="true"></i>
+    </span>VendorName
+</th>
+<th class="sortCol" data-sortorder="asc" data-columnno="2">
+    <span style="padding:5px;margin:5px" class="sort-icon">
+        <i class="fa" aria-hidden="true"></i>
+    </span>IssuePartCode
+</th>
+<th class="sortCol" data-sortorder="asc" data-columnno="3">
+    <span style="padding:5px;margin:5px" class="sort-icon">
+        <i class="fa" aria-hidden="true"></i>
+    </span>IssueItemName
+</th>
+<th class="sortCol" data-sortorder="asc" data-columnno="4">
+    <span style="padding:5px;margin:5px" class="sort-icon">
+        <i class="fa" aria-hidden="true"></i>
+    </span>IssQty
+</th>
+<th class="sortCol" data-sortorder="asc" data-columnno="5">
+    <span style="padding:5px;margin:5px" class="sort-icon">
+        <i class="fa" aria-hidden="true"></i>
+    </span>RecQty
+</th>
+<th class="sortCol" data-sortorder="asc" data-columnno="6">
+    <span style="padding:5px;margin:5px" class="sort-icon">
+        <i class="fa" aria-hidden="true"></i>
+    </span>PendingQty
+</th>
+
+
+            </tr>
+        </thead>
+        <tbody id="divStockRegisterBody">
+            @{
+                var @Cntr = 0;
+                int srNoStart = (Model.PageNumber - 1) * Model.PageSize;
+                int srNo = srNoStart + 1;
+                if (Model.VendJWRegisterDetails == null)
+                {
+                            <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                }
+                else
+                {
+                    foreach (var item in Model.VendJWRegisterDetails)
+                    {
+                        Cntr = Cntr + 1;
+
+                                    <tr id="SAGridRow-@Cntr" onclick="FreezeSelection(this)">
+                                        <td>
+                                            <a class="table-link link-danger" onclick="DeleteRow(this.id)" id="@Cntr">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                        </td>
+                                        <th id="StickyHearder-@Cntr">@srNo</th>
+
+                                        <td>@item.VendorName</td>
+<td>@item.IssuePartCode</td>
+<td>@item.IssueItemName</td>
+<td id="TotalIssQtyReco">@item.IssQty</td>
+            <td id="TotalRecQtyReco">@item.RecQty</td>
+<td id="TotalPendingQtySumm">@item.pendqty</td>
+
+
+                                    </tr>
+                        srNo++;
+                    }
+                }
+            }
+
+        </tbody>
+    </table>
+</div>
+
+@{
+    int displayedRows = Model.PageNumber * Model.PageSize;
+    if (displayedRows > Model.TotalRecords)
+    {
+        displayedRows = Model.TotalRecords;
+    }
+        <center><strong>TOTAL ROWS  : <span>@displayedRows</span></strong></center>
+}
+@{
+    int totalPages = (int)Math.Ceiling((double)Model.TotalRecords / Model.PageSize);
+}
+@if (Model.TotalRecords > 0)
+{
+        <ul class="pagination d-flex align-items-center">
+        @if (Model.PageNumber > 1)
+        {
+                    <li class="page-item">
+                        <a class="page-link" href="#" onclick="loadPage(@(Model.PageNumber - 1)); return false;">Previous</a>
+                    </li>
+        }
+
+        @if (Model.PageNumber > 3)
+        {
+                    <li class="page-item">
+                        <a class="page-link" href="#" onclick="loadPage(1); return false;">1</a>
+                    </li>
+                    <li class="page-item disabled"><a class="page-link">...</a></li>
+        }
+
+        @for (int i = Math.Max(1, Model.PageNumber - 2); i <= Math.Min(Model.PageNumber + 2, totalPages); i++)
+        {
+                    <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                        <a class="page-link" href="#" onclick="loadPage(@i); return false;">@i</a>
+                    </li>
+        }
+
+        @if (Model.PageNumber < totalPages - 2)
+        {
+                    <li class="page-item disabled"><a class="page-link">...</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#" onclick="loadPage(@totalPages); return false;">@totalPages</a>
+                    </li>
+        }
+
+        @if (Model.PageNumber < totalPages)
+        {
+                    <li class="page-item">
+                        <a class="page-link" href="#" onclick="loadPage(@(Model.PageNumber + 1)); return false;">Next</a>
+                    </li>
+        }
+        </ul>
+}

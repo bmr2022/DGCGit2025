@@ -435,7 +435,12 @@
                     <h2 class="accordion-header" id="H_TaxDetail">
                         <button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_TaxDetail" aria-expanded="true" aria-controls="B_TaxDetail">
                             <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Tax Detail</strong>
+                            <div class="d-flex justify-content-center align-items-center flex-grow-1">
+                                <strong> NetTotal : <i class="fa-solid fa-indian-rupee-sign fa-fw fa-1x"></i><span id="NetTotal1"></span></strong>
+                            </div>
                         </button>
+                          
+                            
                     </h2>
                     <div id="B_TaxDetail" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_TaxDetail">
                         <div class="accordion-body">
@@ -1278,7 +1283,9 @@
         $(document).ready(function () {
             const mode = $('#Mode').val(); // Get current mode: U = Update, V = View
             // $('#Group_Code').select2();
-            // $('#Group_Code1').select2();
+            // $('#Group_Code1').select2
+            $("#NetTotal1").html($("#NetTotal").val())
+                             $('.salebilloncounter').show();
             GetItemGroup();
             AutoFillItems();
             GetCompanyType();
@@ -1306,6 +1313,13 @@
         // Initialize autocomplete mode by default
         enableAutocompleteMode();
             // Only for Update/View mode
+             if (mode === "U" || mode === "V") {
+                 $("#SaleBillNoContainer").show();
+             }
+             else{
+                $("#SaleBillNoContainer").hide();
+             }
+            
             if (mode === "U" || mode === "V") {
                 // let d = $('#SaleBillEntryDate').val().split(" ")[0].split("-");
                 // $('#SaleBillEntryDate').datepicker({ dateFormat: 'dd/mm/yy' })
@@ -2764,6 +2778,7 @@
                     $('#NetTotal').val(txTotal.toFixed(2));
                     $('#BaseNetTotal').val(txTotal.toFixed(2));
                     $('#AdjPendAmt').val($('#NetTotal').val());
+                    $('#NetTotal1').html($('#NetTotal').val());
                     $('#TotalDiscountPercentage').val(0);
                     $('#TotalAmtAftrDiscount').val(0);
 
@@ -2967,6 +2982,7 @@
                     $('#NetTotal').val(txTotal.toFixed(2));
                     $('#BaseNetTotal').val(txTotal.toFixed(2));
                     $('#AdjPendAmt').val($('#NetTotal').val());
+                           $('#NetTotal1').html($('#NetTotal').val());
                     $('#TotalDiscountPercentage').val(0);
                     $('#TotalAmtAftrDiscount').val(0);
 
@@ -3198,6 +3214,7 @@
                     $('#NetTotal').val(txTotal.toFixed(2));
                     $('#BaseNetTotal').val(txTotal.toFixed(2));
                     $('#AdjPendAmt').val($('#NetTotal').val());
+                    $('#NetTotal1').html($('#NetTotal').val());
                     $('#TotalDiscountPercentage').val(0);
                     $('#TotalAmtAftrDiscount').val(0);
 
@@ -3319,6 +3336,7 @@
             $('#NetTotal').val(txTotal.toFixed(2));
             $('#BaseNetTotal').val(txTotal.toFixed(2));
             $('#AdjPendAmt').val($('#NetTotal').val());
+                   $('#NetTotal1').html($('#NetTotal').val());
         }
 
         if ($('#SaleBillJobwork').val() == 'S') {
@@ -4776,6 +4794,7 @@
             let net = baseTotal + packing + forwarding + courier + gst - CashDisRs - AdditionalDiscount;
 
             $('#NetTotal').val(net.toFixed(2));
+            $('#NetTotal1').html(net.toFixed(2));
         }
 
         function NetAmountAfterDiscount() {
@@ -4800,6 +4819,7 @@
                 + PackingCharges + ForwardingCharges + CourieerCharges + GST;
 
             $('#NetTotal').val(netAmt.toFixed(2));
+            $('#NetTotal1').html(netAmt.toFixed(2));
             $('#AdjPendAmt').val(netAmt.toFixed(2));
 
             // GetDbCrDetail();
@@ -4974,6 +4994,7 @@
                             $('#NetTotal').val(txTotal.toFixed(6));
                             $('#BaseNetTotal').val(txTotal.toFixed(6));
                             $('#AdjPendAmt').val($('#NetTotal').val());
+                            $('#NetTotal1').html($('#NetTotal').val());
                             $('#TotalDiscountPercentage').val(0);
                             $('#TotalAmtAftrDiscount').val(0);
 
@@ -5201,6 +5222,7 @@
                         $('#BaseNetTotal').val(txTotal.toFixed(2));
 
                         $('#AdjPendAmt').val($('#NetTotal').val());
+                        $('#NetTotal1').html($('#NetTotal').val());
                         $('#TotalDiscountPercentage').val(0);
                         $('#TotalAmtAftrDiscount').val(0);
 
@@ -5289,6 +5311,7 @@
                     $('#NetTotal').val(txAmt);
                     $('#BaseNetTotal').val(txAmt);
                     $('#AdjPendAmt').val($('#NetTotal').val());
+                    $('#NetTotal1').html($('#NetTotal').val());
                     // $('#AdjNewRefNo').val($('#NetTotal').val());
 
                 },
@@ -7945,6 +7968,7 @@
                         $('#SaleBillDate').prop("disabled", false);
                         $('#ActualEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
                         $('#GRDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                               $('#CourierDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
                     } else {
                         // let d = $('#SaleBillEntryDate').val().split(" ")[0].split("-");
                         // // $('#SaleBillEntryDate').datepicker({ dateFormat: 'dd/mm/yy' })

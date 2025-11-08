@@ -302,6 +302,7 @@ namespace eTactWeb
             services.AddScoped<UserContextService>();
             services.TryAddTransient<ICustSaleNewRate , CustSaleNewRateBLL>();
             services.TryAddTransient<IVendorMater , VendorUserBLL>();
+            services.TryAddTransient<IEmployeeAdvancePayement , EmployeeAdvancePayementBLL>();
         }
 
 

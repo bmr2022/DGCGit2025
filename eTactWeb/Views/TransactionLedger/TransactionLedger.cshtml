@@ -359,9 +359,18 @@
         }
 
         $('#ReportType').on('change', function () {
-
             var selectedText = $(this).find("option:selected").text();
             $('#reportTitle').text(selectedText === "-Select-" ? "Report" : selectedText);
+
+            // 🧩 NEW: Clear stack if missing MonthlySummary
+            var selectedType = $(this).val();
+            if (selectedType === "MonthlySummary") {
+                DrilldownManager.clearStackIfMissing("MonthlySummary");
+            }
+            if (selectedType === "GROUPSUMMARY") {
+                DrilldownManager.clearStackIfMissing("GROUPSUMMARY");
+            }
+            // ✅ Continue your existing logic
             GetValidateData();
         });
 
@@ -949,7 +958,7 @@
                     });
 
                     DrilldownManager.push({
-                        currentForm: "TransactionLedger",
+                       currentForm: "TransactionLedger",
                         nextForm: "Voucher",
                         url: window.location.href
                     });
@@ -1000,7 +1009,7 @@
                case 'GROUPSUMMARY':
                 case 'GROUPDETAIL':
                     var parentCode = $('#ParentCode-' + seqno).val() || "";
-                   var accountCode = $('#AccountCode-' + seqno).val() || "";
+                    var accountCode = $('#AccountCode-' + seqno).val() || "";
 
                     switch (clickname) {
 
@@ -1013,18 +1022,18 @@
 
                             DrilldownManager.saveFormFilters("GROUPSUMMARY", {
                                 ReportType: "GROUPSUMMARY",
-                                 FromDate: $("#FromDate").val(),
+                                  FromDate: $("#FromDate").val(),
                                 ToDate: $("#ToDate").val(),
                                 LedgerName: $("#LedgerName").val(),
-                                ParentLedgerName: parentCode,
+                                ParentLedgerName: $("#ParentLedgerName").val(),
                                 VoucherType: $("#VoucherType").val(),
                                 Group_Ledger: $("#Group_Ledger").val()
                             });
 
                             DrilldownManager.push({
-                               currentForm: "GROUPSUMMARY",
-                                 nextForm: "GROUPDETAIL",
-                                 url: window.location.href
+                                currentForm: "GROUPSUMMARY",
+                                nextForm: "GROUPDETAIL",
+                                url: window.location.href
                             });
 
                             $('#ParentLedgerName').val(parentCode).trigger('change');
@@ -1043,8 +1052,8 @@
                                 ReportType: "GROUPDETAIL",
                                   FromDate: $("#FromDate").val(),
                                 ToDate: $("#ToDate").val(),
-                                LedgerName: accountCode,
-                                  ParentLedgerName: $("#ParentLedgerName").val(),
+                                LedgerName: $("#LedgerName").val(),
+                                ParentLedgerName: $("#ParentLedgerName").val(),
                                 VoucherType: $("#VoucherType").val(),
                                 Group_Ledger: $("#Group_Ledger").val(),
                             });

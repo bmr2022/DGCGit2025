@@ -8,6 +8,13 @@ namespace eTactwebHR.Controllers
 {
     public class EmployeeAdvancePayementController : Controller
     {
+        private readonly IEmployeeAdvancePayement _iemployeeAdvancePayement;
+        private readonly ILogger<EmployeeAdvancePayementController> _logger;
+        public EmployeeAdvancePayementController(ILogger<EmployeeAdvancePayementController> logger, IEmployeeAdvancePayement IEmployeeAdvancePayement)
+        {
+            _logger = logger;
+            _iemployeeAdvancePayement = IEmployeeAdvancePayement;
+        }
         [Route("{controller}/Index")]
         public async Task<IActionResult> EmployeeAdvancePayment(int ID, int YearCode, string Mode)
         {
@@ -18,6 +25,7 @@ namespace eTactwebHR.Controllers
             MainModel.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
             MainModel.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
             MainModel.CC = HttpContext.Session.GetString("Branch");
+            MainModel.AdvanceYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
 
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
             {
@@ -44,6 +52,14 @@ namespace eTactwebHR.Controllers
             HttpContext.Session.SetString("EmployeeAdvancePayement", serializedGateAttendance);
 
             return View(MainModel);
+        }
+
+        public async Task<JsonResult> FillEntryId()
+        {
+            var advanceYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+            var JSON = await _iemployeeAdvancePayement.FillEntryId(advanceYearCode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
         }
     }
 }
