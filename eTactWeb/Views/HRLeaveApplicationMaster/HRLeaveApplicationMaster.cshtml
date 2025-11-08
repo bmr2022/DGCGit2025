@@ -280,6 +280,7 @@
                                                 <tr>
                                                     <th>From Date<span><label class="mandatoryField">*</label></span></th>
                                                     <th>To Date<span><label class="mandatoryField">*</label></span></th>
+                                                    <th>Full/Harf Day<span><label class="mandatoryField">*</label></span></th>
                                                     <th>Leave Name<span><label class="mandatoryField">*</label></span></th>
                                                     <th>Leave Duration<label class="mandatoryField">*</label></th>
                                                     <th>Balance Leave Monthly<span><label class="mandatoryField">*</label></span></th>
@@ -293,13 +294,23 @@
                                                 <tr>
                                                     <td><input asp-for="FromDate" class="form-control" style="" onchange="CalculateLeaveDuration()" /></td>
                                                     <td><input asp-for="ToDate" class="form-control" style="" onchange="CalculateLeaveDuration()" /></td>
+                                                    <td>
+                                                        @* <input type="hidden" asp-for="HalfDayFullDay" value="@Model.HalfDayFullDay" /> *@
+                                                        <select asp-for="HalfDayFullDay" class="form-select" onchange="CalculateLeaveDuration()" required style="width:170px">
+                                                            <option value="">-Select-</option>
+                                                            <option value="FullDay">Full Day</option>
+                                                            <option value="HarfDay">HarfDay</option>
+
+                                                          
+                                                        </select>
+                                                    </td>
 
 
                                                     <td>
                                                         <input type="hidden" asp-for="LeaveEntryId" value="@Model.LeaveEntryId" />
-                                                        <select asp-for="LeaveName" class="form-select" required style="width:170px">
+                                                        <select asp-for="LeaveName" class="form-select"required style="width:170px">
                                                             @* <option value="@Model.AccountCode">-Select-</option> *@
-                                                            <option value="@Model.LeaveEntryId">-Select-</option>
+                                                           
                                                             @if (Model.Mode == "U" || Model.Mode == "V")
                                                             {
                                                                 <option value="@Model.LeaveEntryId" selected>@Model.LeaveName</option>
@@ -307,11 +318,11 @@
                                                         </select>
                                                     </td>
 
-                                                    <td><input asp-for="Duration" class="form-control numbers" style="" readonly /></td>
-                                                    <td><input asp-for="BalanceLeaveMonthly" class="form-control numbers" value="4" readonly /></td>
+                                                    <td><input asp-for="Duration" class="form-control numbers" readonly style="" /></td>
+                                                    <td><input asp-for="BalanceLeaveMonthly" class="form-control numbers" readonly  /></td>
 
-                                                    <td><input asp-for="BalanceLeaveYearly" class="form-control numbers" value="24" readonly/></td>
-                                                    <td><input asp-for="MaxLeaveInMonth" class="form-control numbers" value="4"  readonly /></td>
+                                                    <td><input asp-for="BalanceLeaveYearly" class="form-control numbers" /></td>
+                                                    <td><input asp-for="MaxLeaveInMonth" class="form-control numbers"    /></td>
 
 
                                                 </tr>
@@ -337,6 +348,7 @@
                                                     <th data-columnno="0" data-sortorder="asc" class="sortCol">SeqNo</th>
                                                     <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>From Date</th>
                                                     <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px;width:10px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>To Date</th>
+                                                    <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px;width:10px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Full/Harf Day</th>
                                                     <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Leave Name</th>
                                                   
                                                     <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Duration</th>
@@ -478,6 +490,7 @@
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="ActualEntryBy" class="form-label">ActualEntryBy</label>
                                     <input asp-for="ActualEntryBy " class="form-control" readonly />
+                                    <input type="hidden" asp-for="EntryByMachineName" value="@Environment.MachineName" class="form-control" readonly />
                                 </div>
                                 <div class="col-xl-1  col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                     <label asp-for="Updatedby" class="form-label">Updatedby</label>
@@ -628,6 +641,7 @@
         function CalculateLeaveDuration() { 
             var FromDate= $('#FromDate').val();
             var ToDate= $('#ToDate').val();
+            var HalfDayFullDay = $('#HalfDayFullDay').val();
             if (FromDate != "" && ToDate != "") {
                 var startDate = moment(FromDate, 'DD/MM/YYYY');
                 var endDate = moment(ToDate, 'DD/MM/YYYY');
@@ -638,6 +652,12 @@
                     $('#Duration').val('');
                 }
                 else {
+
+                    if (HalfDayFullDay == "HarfDay") {
+                        duration = duration - 0.5;
+                    }
+                  
+
                     $('#Duration').val(duration);
                 }
             }
@@ -778,6 +798,7 @@
 
         $(document).on('select2:select', '#LeaveName', function (e) {
             $('#LeaveEntryId').val($('#LeaveName').val())
+            GetBalanceandMaxLeaveTypeWise();
         });
         function FillEmpName() {
             $.ajax({
@@ -892,7 +913,47 @@
             });
         }
 
+        function GetBalanceandMaxLeaveTypeWise() {
+            var empId = $("#EmpName").val().trim();
+            var LeaveEntryId = $("#LeaveEntryId").val().trim();
+            var LeaveAppEntryDate = $("#LeaveAppEntryDate").val().trim();
+            if (!empId) return;
 
+            $.ajax({
+                url: '@Url.Action("GetBalanceandMaxLeaveTypeWise", "HRLeaveApplicationMaster")',
+                type: 'GET',
+                data: { empid: empId, LeaveAppEntryDate: LeaveAppEntryDate, LeaveEntryId: LeaveEntryId },
+                success: function (data) {
+                    // Parse JSON if response is string
+                    if (typeof data === "string") {
+                        try {
+                            data = JSON.parse(data);
+                        } catch (error) {
+                            console.error("Invalid JSON:", error);
+                            return;
+                        }
+                    }
+
+                    if (data && data.Result) {
+                        var result = data.Result;
+
+                        // ✅ 1️⃣ Fill Summary Info (Table)
+                        if (result.Table && result.Table.length > 0) {
+                            var summary = result.Table[0];
+                            $("#BalanceLeaveMonthly").prop("disabled", true).val(summary.BalanceLeaveMonthly ?? 0).trigger("input");
+                            $("#BalanceLeaveYearly").prop("disabled", true).val(summary.BalanceLeaveYearly ?? 0).trigger("input");
+                            $("#MaxLeaveInMonth").prop("disabled", true).val(summary.MaxLeaveInMonth ?? 0).trigger("input");
+                          
+                        }
+                    } else {
+                        console.warn("No Result found in response.");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching leave details:", xhr.responseText || error);
+                }
+            });
+        }
 
 
 
@@ -1380,6 +1441,7 @@
                 "FromDate": $('#FromDate').val(),
                 "ToDate": $('#ToDate').val(),
                 "Duration": $('#Duration').val(),
+                "HalfDayFullDay": $('#HalfDayFullDay').val(),
                 "BalanceLeaveMonthly": $('#BalanceLeaveMonthly').val(),
                 "BalanceLeaveYearly": $('#BalanceLeaveYearly').val(),
                 "MaxLeaveInMonth": $('#MaxLeaveInMonth').val(),
@@ -1496,10 +1558,12 @@
                                     $('#ToDate').val(obj[0].ToDate);
                                     $('#LeaveEntryId').val(obj[0].LeaveEntryId),
                                     $('#LeaveName').val(obj[0].LeaveEntryId).trigger('change');
+                                    $('#HalfDayFullDay').val(obj[0].HalfDayFullDay).trigger('change');
                                     $('#Duration').val(obj[0].Duration.toFixed(2))
                                     $('#BalanceLeaveMonthly').val(obj[0].BalanceLeaveMonthly);
                                     $('#BalanceLeaveYearly').val(obj[0].BalanceLeaveYearly.toFixed(2));
                                     $('#MaxLeaveInMonth').val(obj[0].MaxLeaveInMonth.toFixed(2));
+                                    
                                 })
                                 .catch((error) => {
                                     reject(error);

@@ -18,6 +18,7 @@ namespace eTactWeb.Services.Interface
 
         Task<ResponseResult> GetEmployeeDetail(int empid);
         Task<ResponseResult> GetLeaveDetail(int empid,string LeaveAppEntryDate);
+        Task<ResponseResult> GetBalanceandMaxLeaveTypeWise(int empid,string LeaveAppEntryDate,int LeaveEntryId);
 
         Task<ResponseResult> SaveData(HRLeaveApplicationMasterModel model, DataTable DT);
 

@@ -53,6 +53,11 @@ namespace eTactWeb.Data.BLL
             return await _HRLeaveApplicationMasterDAL.GetLeaveDetail(empid, LeaveAppEntryDate);
         }
 
+        public async Task<ResponseResult> GetBalanceandMaxLeaveTypeWise(int empid, string LeaveAppEntryDate,int LeaveEntryId)
+        {
+            return await _HRLeaveApplicationMasterDAL.GetBalanceandMaxLeaveTypeWise(empid, LeaveAppEntryDate, LeaveEntryId);
+        }
+
         public async Task<ResponseResult> SaveData(HRLeaveApplicationMasterModel model, DataTable DT)
         {
             //throw new NotImplementedException();

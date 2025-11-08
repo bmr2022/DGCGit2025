@@ -59,6 +59,7 @@ namespace eTactWeb.DOM.Models
         public int EmpId { get; set; }
         public int? LeaveEntryId { get; set; }
         public string? LeaveName { get; set; }
+        public string? EntryByMachineName { get; set; }
         public string? FromDate { get; set; }
         public string? ToDate { get; set; }
         public string? HalfDayFullDay { get; set; }

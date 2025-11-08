@@ -93,6 +93,29 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
+
+        public async Task<ResponseResult> GetBalanceandMaxLeaveTypeWise(int empid, string LeaveAppEntryDate,int LeaveEntryId)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@flag", "GetBalanceandMaxLeaveTypeWise"));
+                SqlParams.Add(new SqlParameter("@Empid", empid));
+                SqlParams.Add(new SqlParameter("@LeaveEntryId", LeaveEntryId));
+                SqlParams.Add(new SqlParameter("@LeaveAppEntryDate", CommonFunc.ParseFormattedDate(LeaveAppEntryDate)));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("HRSPLeaveApplicationMain", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
         public async Task<ResponseResult> GetLeaveName()
         {
             var _ResponseResult = new ResponseResult();
@@ -213,6 +236,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@DepartAppdate", DateTime.Parse(model.DepartAppdate)));
                 SqlParams.Add(new SqlParameter("@HRAppDate", DateTime.Parse(model.HRAppDate)));
                 SqlParams.Add(new SqlParameter("@ActualEntryBy", model.ActualEntryBy));
+                SqlParams.Add(new SqlParameter("@EntryByMachineName", model.EntryByMachineName));
                
                 SqlParams.Add(new SqlParameter("@Canceled", model.Canceled));
                 SqlParams.Add(new SqlParameter("@Approved", model.Approved));
