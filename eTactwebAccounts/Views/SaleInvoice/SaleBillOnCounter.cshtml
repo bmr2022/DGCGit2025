@@ -1286,9 +1286,14 @@
             // $('#Group_Code1').select2
             $("#NetTotal1").html($("#NetTotal").val())
                              $('.salebilloncounter').show();
+
+                             
+                   
             GetItemGroup();
             AutoFillItems();
             GetCompanyType();
+            showDetail();
+            $('#PendSOForSaleBill').modal('show');
                AutoFillPARTYNAMELIST();
             EditableRateAndDiscountONSaleInvoice();
 
@@ -1811,6 +1816,12 @@
             }
         });
 
+
+
+
+
+
+
         function GetCompanyType() {
 
 
@@ -1879,7 +1890,7 @@
                 "CurrentYear": $('#SaleBillYearCode').val(),
                 "BillFromStoreId": $('#BillFromStoreId').val(),
                 "accountCode": $('#AccountCode').val(),
-                "SONo": $('#SONo').val(),
+                "SONo": @ViewBag.sono,
                 "PartCode": $('#PartCode').val(),
                 "CompanyType": $('#Companytype').val()
 

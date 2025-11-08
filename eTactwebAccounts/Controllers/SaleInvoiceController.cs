@@ -905,7 +905,7 @@ namespace eTactWeb.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> SaleBillOnCounter(int ID, string Mode, int YearCode, string dashboardType = "", string fromDate = "", string toDate = "", string partCode = "", string itemName = "", string VoucherNo = "", string custName = "", string sono = "", string custOrderNo = "", string schNo = "", string performaInvNo = "", string saleQuoteNo = "", string domExportNEPZ = "", string Searchbox = "", string summaryDetail = "")
+        public async Task<IActionResult> SaleBillOnCounter(int ID, string Mode, int YearCode, string dashboardType = "", string fromDate = "", string toDate = "", string partCode = "", string itemName = "", string VoucherNo = "",int AccountCode=0, string custName = "", string sono = "", string custOrderNo = "", string schNo = "", string performaInvNo = "", string saleQuoteNo = "", string domExportNEPZ = "", string Searchbox = "", string summaryDetail = "")
         {
             var model = new SaleBillModel(); // Create a new model instance for the view
 
@@ -917,6 +917,11 @@ namespace eTactWeb.Controllers
             HttpContext.Session.Remove("KeyAdjChallanGrid");
 
             string referer = Request.Headers["Referer"].ToString();
+
+            ViewBag.AccountCode = AccountCode;
+            ViewBag.AccountName = custName;
+            ViewBag.sono = sono;
+
 
             // Remove session only if NOT coming from SaleBillList
             if (string.IsNullOrEmpty(referer) || !referer.Contains("SaleBillList", StringComparison.OrdinalIgnoreCase))

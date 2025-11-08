@@ -98,8 +98,8 @@
             @*   <select class="form-select" asp-for="AccountCode" asp-items="@(new SelectList(Model.AccountList,"Value","Text"))">
                                             <option value="">-Select-</option>
                                         </select> *@
-            <input type="text" asp-for="AccountName" id="AccountCodeText" class="form-control" value="@Model.AccountName" placeholder="Type Item Name..." />
-            <input type="hidden" asp-for="AccountCode" id="AccountCode" />
+            <input type="text" asp-for="AccountName" id="AccountCodeText" class="form-control" value="@ViewBag.AccountName" placeholder="Type Item Name..." />
+            <input type="hidden" asp-for="AccountCode" value="@ViewBag.AccountCode" id="AccountCode" />
             <input type="hidden" value="@Model.AccountCode" id="hiddenAccountCode" />
         </div>
 

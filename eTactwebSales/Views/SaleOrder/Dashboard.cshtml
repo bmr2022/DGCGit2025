@@ -45,21 +45,16 @@
                                     <option value="Detail">Detail</option>
                                 </select>
                             </div>
-                            <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
+                            <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12" style="width:170px">
                                 <label asp-for="CustomerName" class="form-label">Customer Name</label>
                                 <input asp-for="CustomerName" class="form-control" />
                                 <input asp-for="Year" type="hidden" value="@Model.Year" id="hiddenYearCode" />
                             </div>
-                            <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
+                            <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12" style="width:170px">
                                 <label asp-for="CustOrderNo" class="form-label">Customer Order No</label>
                                 <input asp-for="CustOrderNo" class="form-control" />
                             </div>
-                            <div class="col-lg-1 col-md-4 col-sm-12 col-xs-12">
-                                <label asp-for="CC" class="form-label">Branch</label>
-                                @*<select class="form-select" asp-for="Branch" asp-items="@(new SelectList(Model.BranchList,"Value","Text"))"></select>*@
-                                <select class="form-select" asp-for="CC" asp-items="@(new SelectList(Model.BranchList,"Value","Text"))"><option value="@Model.CC" selected></option></select>
-                                @*<input asp-for="CC" class="form-control" value="@Model.CC" />*@
-                            </div>
+                          
                             <div class="col-xxl-1 col-xl-1 col-lg-1 col-md-3 col-sm-6 col-xs-12">
                                 <label asp-for="SONo" class="form-label">SO No</label>
                                 @* <select class="form-select" asp-for="SONo" asp-items="@(new SelectList(Model.SONoList,"Value","Text"))">
@@ -178,11 +173,11 @@
    
     .fa-stack {
         display: inline-block;
-        height: 1.5em;
+        height: 2.0em;
         line-height: 2em;
         position: relative;
         vertical-align: middle;
-        width: 1.9em;
+        width: 1.0em;
     }
 
     #container > div {

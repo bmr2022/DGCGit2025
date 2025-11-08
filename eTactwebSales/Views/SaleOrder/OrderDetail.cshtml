@@ -3392,6 +3392,11 @@
                 $.notify("Cust order no is Already Used Please Enter Different Number..!", "error");
                 return;
             }
+            else if ($('#AccountCodeText').val()=='')
+            {
+                $.notify("Pleae enter party name ", "error");
+                return;
+            }
             else {
                 $('#SubmitionForm').modal("show");
                 // $("form").submit();
