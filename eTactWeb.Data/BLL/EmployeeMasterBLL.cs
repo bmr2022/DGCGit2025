@@ -68,9 +68,13 @@ namespace eTactWeb.Data.BLL
         {
             return await _EmployeeMasterDAL.GetEmployeeType();
         }
-          public async Task<ResponseResult> GetReportingMg()
+        public async Task<ResponseResult> GetReportingMg()
         {
             return await _EmployeeMasterDAL.GetReportingMg();
+        }
+        public async Task<ResponseResult> FILLAllowanceMode()
+        {
+            return await _EmployeeMasterDAL.FILLAllowanceMode();
         }
 
         public async Task<DOM.Models.Common.ResponseResult> SaveEmployeeMaster(EmployeeMasterModel model)

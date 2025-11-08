@@ -208,12 +208,12 @@
                 @* contactinformation *@
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="H_SAGrid">
-                        <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+                        <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#ContactSection" aria-expanded="true" aria-controls="B_SAGrid">
                             <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Contact Information</strong>
                         </button>
                     </h2>
 
-                    <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+                    <div id="ContactSection" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
                         <div class="accordion-body">
                             <div class="row g-2 gx-3" id="_ItemGrid">
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:100px;">
@@ -253,11 +253,11 @@
                 @* salarydetail *@
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="HPanel2">
-                        <button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#ODGrid" aria-expanded="false" aria-controls="ODGrid">
+                        <button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#SalarySection" aria-expanded="false" aria-controls="ODGrid">
                             <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Salary Detail</strong>
                         </button>
                     </h2>
-                    <div id="ODGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+                    <div id="SalarySection" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
                         <div class="accordion-body">
                             <div class="row g-2 gx-3" id="_ItemGrid">
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
@@ -368,7 +368,9 @@
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:300px;">
                                     <label asp-for="LateMarkingCalculationApplicable" class="form-label">Late Marking CalculationApplicable</label>
                                     <select asp-for="LateMarkingCalculationApplicable" class="form-control">
-                                        <option value="">Select</option>
+                                        <option value="">-Select-</option>
+                                        <option value="Y">Yes</option>
+                                        <option value="N">No</option>
                                     </select>
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:100px;">
@@ -384,12 +386,12 @@
                     @* allowance/deduction *@
                 <div class="accordion-item">
                 <h2 class="accordion-header" id="H_SAGrid">
-                    <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+                    <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#allowanceSection" aria-expanded="true" aria-controls="B_SAGrid">
                         <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Allowance/Deduction</strong>
                     </button>
                 </h2>
                
-                <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+                <div id="allowanceSection" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
                     <div class="accordion-body">
                         <div class="row g-2 gx-3" id="_ItemGrid">
                             <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;color:red;" >
@@ -404,9 +406,20 @@
                                 </select>
                             </div>
                                 
-                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px;color:red;">
+                                @* <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px;color:red;">
                                     <label asp-for="AllowanceMode" class="form-label">Mode*</label>
                                     <input asp-for="AllowanceMode" class="form-control" readonly />
+                                </div> *@
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="AllowanceMode" class="form-label" style="color:red;"> Mode* </label>
+
+                                    <select asp-for="AllowanceMode" class="form-control">
+                                        @* <option value="@Model.AccountCode">-Select-</option> *@
+                                        <option value="@Model.AllowanceMode">-Select-</option>
+                                        <option value="%">%</option>
+                                        <option value="Amt">Amt</option>
+                                       
+                                    </select>
                                 </div>
                             <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:100px;color:red;">
                                 <label asp-for="Percent" class="form-label">Percent</label>
@@ -416,15 +429,32 @@
                                 <label asp-for="AllowanceAmount" class="form-label">Amount*</label>
                                 <input asp-for="AllowanceAmount" class="form-control" />
                             </div>
-                            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;color:red;">
-                                    <label asp-for="AllowanceType" class="form-label">AllowanceType*</label>
+                           @*  <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;color:red;">
+                                    <label asp-for="AllowanceType" class="form-label">Allowance Type*</label>
                                     <input asp-for="AllowanceType" class="form-control" readonly />
-                            </div>
-                            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;color:red">
-                                    <label asp-for="PartyPay" class="form-label">PartOfPayslip*</label>
+                            </div> *@
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label id="Types" class="form-label" style="color:red;">Allowance Type*</label>
+                                    <select asp-for="AllowanceType" class="form-control">
+                                        @if (Model.Mode == "U" || Model.Mode == "V")
+                                        {
+                                            <option value="@Model.AllowanceType" selected>@Model.AllowanceType</option>
+                                        }
+                                    </select>
+                                </div>
+                            @* <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;color:red">
+                                    <label asp-for="PartyPay" class="form-label">Part Of Payslip*</label>
                                     <input asp-for="PartyPay" class="form-control" readonly/>
-                            </div>
-
+                            </div> *@
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label class="form-label" asp-for="PartyPay" style="color:red;">Part Of Payslip*</label>
+                                    <select asp-for="PartyPay" class="form-control">
+                                       <option value="" selected>-Select-</option>
+                                       <option value="Y" >Yes</option>
+                                       <option value="N" >No</option>
+                                        
+                                    </select>
+                                </div>
                                
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="margin-top:33px;">
                                     <button type="button" class="btn btn-sm btn-outline-danger " id="GridButton">
@@ -462,11 +492,11 @@
             @* job/workdetail *@
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="HPanel2">
-                        <button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#ODGrid" aria-expanded="false" aria-controls="ODGrid">
+                        <button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#jobSection" aria-expanded="false" aria-controls="ODGrid">
                             <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Job & Work Detail</strong>
                         </button>
                     </h2>
-                    <div id="ODGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+                    <div id="jobSection" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
                         <div class="accordion-body">
                             <div class="row g-2 gx-3" id="_ItemGrid">
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
@@ -573,12 +603,12 @@
             @* document/idproof *@
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="H_SAGrid">
-                        <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+                        <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#documentSection" aria-expanded="true" aria-controls="B_SAGrid">
                             <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Document & IDProof</strong>
                         </button>
                     </h2>
 
-                    <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+                    <div id="documentSection" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
                         <div class="accordion-body">
                             <div class="row g-2 gx-3" id="_ItemGrid">
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
@@ -612,18 +642,21 @@
 
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="HPanel2">
-                        <button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#ODGrid" aria-expanded="false" aria-controls="ODGrid">
+                    <button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#uploadsection" aria-expanded="false" aria-controls="ODGrid">
                             <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Upload Section</strong>
                         </button>
                     </h2>
-                    <div id="ODGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+                <div id="uploadsection" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
                         <div class="accordion-body">
                             <div class="row g-2 gx-3" id="_ItemGrid">
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
                                     <label asp-for="fileUpload" class="form-label">Upload File</label>
                                     <input type="file" asp-for="fileUpload" class="form-control" />
-                                    <button type="button" class="btn btn-primary mt-2">View</button>
+                                        <button type="button" id="btnView" class="btn btn-primary mt-2">View</button>
                                 </div>
+                            <div class="col-xl-1 col-lg-2 col-md-2 col-sm-6 col-xs-12 d-flex align-items-end">
+                                <button type="button" id="btnView" class="btn btn-primary w-100">View</button>
+                            </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
                                     <label asp-for="ThumbUnPress" class="form-label">Thumb UnPress</label>
                                     <input asp-for="ThumbUnPress" class="form-control" />
@@ -642,12 +675,12 @@
            @*  Eductional Qualification *@
             <div class="accordion-item">
                 <h2 class="accordion-header" id="H_SAGrid">
-                    <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+                    <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#EductionalSection" aria-expanded="true" aria-controls="B_SAGrid">
                         <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Eductional Qualification</strong>
                     </button>
                 </h2>
 
-                <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+                <div id="EductionalSection" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
                     <div class="accordion-body">
                         <div class="row g-2 gx-3" id="_ItemGrid">
                             <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
@@ -710,11 +743,11 @@
 
             <div class="accordion-item">
                 <h2 class="accordion-header" id="HPanel2">
-                    <button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#ODGrid" aria-expanded="false" aria-controls="ODGrid">
+                    <button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#ExperianceSection" aria-expanded="false" aria-controls="ODGrid">
                         <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Experiance Detail</strong>
                     </button>
                 </h2>
-                <div id="ODGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+                <div id="ExperianceSection" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
                     <div class="accordion-body">
                         <div class="row g-2 gx-3" id="_ItemGrid">
                             <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
@@ -776,12 +809,12 @@
             @* Exit Detail*@
             <div class="accordion-item">
                 <h2 class="accordion-header" id="H_SAGrid">
-                    <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+                    <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#ExitSection" aria-expanded="true" aria-controls="B_SAGrid">
                         <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Exit Detail</strong>
                     </button>
                 </h2>
 
-                <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+                <div id="ExitSection" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
                     <div class="accordion-body">
                         <div class="row g-2 gx-3" id="_ItemGrid">
                             <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
@@ -974,6 +1007,16 @@
             $('#JObShift').select2();
             $('#EmployeeType').select2();
             $('#ReportingMg').select2();
+            $('#Designation').select2();
+            $('#Department').select2();
+            $('#Category').select2();
+            $('#EmpGrade').select2();
+            $('#JoiningThrough').select2();
+            $('#WorkLocation').select2();
+            $('#AllowanceMode').select2();
+            $('#AllowanceType').select2();
+            $('#PartyPay').select2();
+            $('#LateMarkingCalculationApplicable').select2();
             $('#Branches').select2({
                 placeholder: "-Select Branch-",
                 width: '100%'
@@ -1019,6 +1062,7 @@
             GetJobShift();
             GetEmployeeType();
             GetReportingMg();
+            FILLAllowanceMode();
             $("#SalaryHead").change(function () {
                 var salaryHeadValue = $(this).val();
                 if (salaryHeadValue) {
@@ -1101,16 +1145,31 @@
                 checkField("#Shift", "Shift is required");
                 checkField("#EmpCode", "EmpCode is required");
                 checkField("#SalaryHead", "SalaryHead is required");
-                checkField("#AllowanceMode", "AllowanceMode is required");
-                checkField("#AllowanceType", "AllowanceType is required");
-                checkField("#PartyPay", "PartyPay is required");
+                //checkField("#AllowanceMode", "AllowanceMode is required");
+                //checkField("#AllowanceType", "AllowanceType is required");
+                // checkField("#PartyPay", "PartyPay is required");
 
                 if (!isValid) {
                     e.preventDefault(); 
                 }
             });
-        });
+            $('#btnView').click(function () {
+                var fileInput = $('#fileUpload')[0];
+                var file = fileInput.files[0];
 
+                if (!file) {
+                    $.notify("⚠️ Please select a file first!", {
+                        className: 'warn',
+                        position: "top center"
+                    });
+                    return;
+                }
+
+                var fileURL = URL.createObjectURL(file);
+                window.open(fileURL, '_blank');
+            });
+        });
+       
         $('#Department').on('change', function () {
             var selectedText = $(this).find('option:selected').text().trim();
             $('#DepartmentName').val(selectedText);
@@ -1456,7 +1515,34 @@
                 }
             });
         }
+        function FILLAllowanceMode() {
+            $.ajax({
+                url: '@Url.Action("FILLAllowanceMode", "EmployeeMaster")',
 
+                type: 'GET',
+                async: false,
+                success: function (response, status, error) {
+
+                    var Dropdown = $('#AllowanceType');
+                    var obj = $.parseJSON(response);
+                    Dropdown.empty();
+                    // PaymentModeDropdown.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, item) {
+                        Dropdown.append('<option value="' + item.SalaryPaymentMode + '">' + item.SalaryPaymentMode + '</option>');
+                    });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                        var AllowanceMode = '@Model.AllowanceType';
+                        $('#AllowanceMode').val(AllowanceMode).trigger("change");
+                        $('#AllowanceMode').val(AllowanceMode);
+                    }
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
         function GetEmpIdandEmpCode() {
             var mode = '@Model.Mode';
             if (mode === "U" || mode === "V") {
