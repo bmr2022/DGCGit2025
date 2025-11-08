@@ -277,6 +277,7 @@
                     $('#divDashboardGrid').html(result);
                     $('#totalRows').text($('#gateDashboardtable tr').length);
                     //countAllTotal();
+                    GetFormRights();
                 }
             });
         }
@@ -294,6 +295,7 @@
                     $('#divDashboardGrid').html(data);
                     $('#totalRows').text($('#gateDashboardtable tr').length);
                     //countAllTotal();
+                    GetFormRights();
                 },
                 error: function () {
                     console.log("Error fetching search results.");

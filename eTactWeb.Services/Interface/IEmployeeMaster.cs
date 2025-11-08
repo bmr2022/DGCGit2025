@@ -22,5 +22,6 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetJobShift();
         Task<ResponseResult> GetEmployeeType();
         Task<ResponseResult> GetReportingMg();
+        Task<ResponseResult> FILLAllowanceMode();
     }
 }

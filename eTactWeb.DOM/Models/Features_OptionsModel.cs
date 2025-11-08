@@ -698,8 +698,7 @@ namespace eTactWeb.DOM.Models
 			set => ShowHideOtherDetailTableData = value ? "Y" : "N";
 		}
 		public string ShowHideOtherDetailTableData { get; set; }
-
-
+		
 		public IList<Features_OptionsModel> features_OptionsModelsGrid { get; set; }
     }
 }

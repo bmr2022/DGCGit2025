@@ -91,6 +91,12 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+        public async Task<JsonResult> FILLAllowanceMode()
+        {
+            var JSON = await _IEmployeeMaster.FILLAllowanceMode();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
         public async Task<JsonResult> GetJobDepartMent()
         {
             var JSON = await _IEmployeeMaster.GetJobDepartMent();

@@ -278,7 +278,7 @@
                             </li> *@
                             <li>
 
-                                <a class="dropdown-item" id="Account Master" href="#">Features Options &raquo;</a>
+                                <a class="dropdown-item" id="Features Options" href="#">Features Options &raquo;</a>
 
                                 <ul class="submenu dropdown-menu">
                                     <li>
@@ -286,6 +286,12 @@
                                             <i class="fa fa-book fa-fw fa-lg" aria-hidden="true"></i> Sale Order Setting
                                         </a>
                                     </li>
+                                     <li>
+                                        <a class="dropdown-item" asp-action="Features_Options" asp-route-ID="0" asp-controller="Features_Options" id="Features_Options">
+                                            <i class="fa fa-book fa-fw fa-lg" aria-hidden="true"></i> Features_Options
+                                        </a>
+                                    </li>
+
                                     <li>
                                         <a class="dropdown-item" asp-action="FeaturesOptionsIssueeChallan" asp-route-ID="0" asp-controller="Features_Options" id="FeaturesOptionsIssueChallan">
                                             <i class="fa fa-book fa-fw fa-lg" aria-hidden="true"></i> Issue Challan Setting
@@ -3443,6 +3449,17 @@
     </script>
 }
 <style>
+    #Features\ Options + .submenu.dropdown-menu {
+        top: auto !important;
+        bottom: calc(20% - 5px) !important; 
+        left: 270px !important;
+        margin: 0 !important;
+        transform: none !important;
+        border-radius: 6px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        z-index: 9999;
+    }
+
     .nav-link:focus, .nav-link:hover {
         color: #ffeb3b !important;
     }
