@@ -248,9 +248,25 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
-
+        public async Task<ResponseResult> FillIssuedByEmpList(string Flag)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", Flag));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable(SP_NAME, SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
         // 8️⃣ INSERT TOOL ISSUE
-           public async Task<ResponseResult> InsertToolIssue(PPCToolIssueMainModel model, DataTable ToolGrid)
+        public async Task<ResponseResult> InsertToolIssue(PPCToolIssueMainModel model, DataTable ToolGrid)
            {
             var _ResponseResult = new ResponseResult();
             try
@@ -283,8 +299,8 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@UID", model.UID));
                 SqlParams.Add(new SqlParameter("@EntryByMachine", model.EntryByMachine ?? ""));
                 SqlParams.Add(new SqlParameter("@ActualEntryDate", actualEntryDate));
-                SqlParams.Add(new SqlParameter("@ActualEntryBy", model.ActualEntryBy ?? ""));
-                SqlParams.Add(new SqlParameter("@LastUpdatedBy", model.LastUpdatedBy ?? ""));
+                SqlParams.Add(new SqlParameter("@ActualEntryBy", model.ActualEntryBy));
+                SqlParams.Add(new SqlParameter("@LastUpdatedBy", model.LastUpdatedBy));
                 SqlParams.Add(new SqlParameter("@LastUpdatedDate", lastUpdatedDate));
                 SqlParams.Add(new SqlParameter("@pendingStatus", model.PendingStatus ?? ""));
 

@@ -78,7 +78,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _PPCToolIssueDAL.FillMachineList(Flag);
         }
-
+        public async Task<ResponseResult> FillIssuedByEmpList(string Flag)
+        {
+            return await _PPCToolIssueDAL.FillIssuedByEmpList(Flag);
+        }
         // 8️⃣ INSERT TOOL ISSUE
         public async Task<ResponseResult> InsertToolIssue(PPCToolIssueMainModel model, DataTable ToolGrid)
         {
