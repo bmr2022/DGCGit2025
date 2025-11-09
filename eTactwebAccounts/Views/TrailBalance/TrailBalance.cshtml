@@ -150,7 +150,8 @@
     <script>
 
         $(document).ready(function () {
-            
+
+            $('#ReportType').select2();
             $('#TrailBalanceGroupName').select2();
             $('#ParentGroupName').select2();
             $('#AccountName').select2();
@@ -473,6 +474,138 @@
 
             // Go to TransactionLedger
             window.location.href = '/TransactionLedger/Index';
+        }
+
+        function callDrillDown(elem) {
+
+            // ======================================================
+            // ✅ Step 1: Collect all filter input values
+            // ======================================================
+            let filters = {};
+            $("[data-filter], input[id], select[id]").each(function () {
+                let id = $(this).attr("id");
+                if (!id) return;
+
+                if ($(this).attr("type") === "checkbox") {
+                    filters[id] = $(this).is(":checked");
+                } else {
+                    filters[id] = $(this).val();
+                }
+            });
+
+            // ======================================================
+            // ✅ Step 2: Get current form and report info
+            // ======================================================
+            let formName = $("#FormName").val() || $("#ReportType").val() || "COMMON_FORM";
+            let ReportType = $('#ReportType').val();
+
+            // Save filters for current form
+            DrilldownManager.saveFormFilters(formName, filters);
+
+            var state = DrilldownManager.getStack();
+            if (state == null || state.length == 0) {
+                // Push current form onto navigation stack
+                DrilldownManager.pushNavigation({
+                    currentForm: formName,
+                    nextForm: ReportType || null,
+                    isRoot: true,
+                    url: window.location.href
+                });
+            }
+
+            // ======================================================
+            // ✅ Step 3: Extract drilldown parameters
+            // ======================================================
+            var controller = $(elem).data('controller');
+            var action = $(elem).data('action');
+            var groupname = $(elem).data('groupname');
+            var parentgroup = $(elem).data('parentgroup');
+            var accountcode = $(elem).data('accountcode');
+            var clickname = $(elem).data('clickname');
+            var seqno = $(elem).data('seqno');
+
+            // ======================================================
+            // ✅ Step 4: Drilldown logic
+            // ======================================================
+            switch (ReportType) {
+
+                // ======================================================
+                // 🔹 TrailBalance Summary → TrailBalance Summary
+                // ======================================================
+                case 'TRAILSUMMARY':
+                    DrilldownManager.saveFormFilters("TRAILSUMMARY", {
+                        FromDate: $("#FromDate").val(),
+                        ToDate: $("#ToDate").val(),
+                        ReportType: $("#ReportType").val(),
+                        TrailBalanceGroupName: $("#TrailBalanceGroupName").val(),
+                        ParentGroupName: $("#ParentGroupName").val(),
+                        AccountName: $("#AccountName").val()
+                    });
+
+                    DrilldownManager.push({
+                        currentForm: "TRAILSUMMARY",
+                        nextForm: "TRAILDETAIL",
+                        url: window.location.href
+                    });
+
+                    $('#TrailBalanceGroupName').val(groupname).trigger('change');
+                    $('#ReportType').val('TRAILDETAIL').trigger('change');
+                    $('#BackButton').show();
+                    break;
+
+                // ======================================================
+                // 🔹 TrailBalance Detail → TrailBalance Detail
+                // ======================================================
+                case 'TRAILDETAIL':
+
+                    switch (clickname) {
+                        case 'ParentClick':
+                            DrilldownManager.saveFormFilters("TRAILDETAIL", {
+                                FromDate: $("#FromDate").val(),
+                                ToDate: $("#ToDate").val(),
+                                ReportType: $("#ReportType").val(),
+                                TrailBalanceGroupName: $("#TrailBalanceGroupName").val(),
+                                ParentGroupName: $("#ParentGroupName").val(),
+                                AccountName: $("#AccountName").val()
+                            });
+
+                            DrilldownManager.push({
+                                currentForm: "TRAILDETAIL",
+                                nextForm: "TRAILDETAIL",
+                                url: window.location.href
+                            });
+
+                            $('#ParentGroupName').val(parentgroup).trigger('change');
+                            $('#ReportType').val('TRAILDETAIL').trigger('change');
+                            $('#BackButton').show();
+                            break;
+
+                        case 'LedgerClick':
+                            DrilldownManager.saveFormFilters("TRAILDETAIL", {
+                                FromDate: $("#FromDate").val(),
+                                ToDate: $("#ToDate").val(),
+                                ReportType: $("#ReportType").val(),
+                                TrailBalanceGroupName: $("#TrailBalanceGroupName").val(),
+                                ParentGroupName: $("#ParentGroupName").val(),
+                                AccountName: $("#AccountName").val()
+                            });
+
+                            DrilldownManager.push({
+                                currentForm: "TRAILDETAIL",
+                                nextForm: "TransactionLedger",
+                                url: window.location.href
+                            });
+
+                            window.location.href = `/${controller}/${action}?AccountCode=${accountcode}&ReportType=${"MonthlySummary"}`;
+                            break;
+                    }
+
+                    break;
+                default:
+                    console.warn("Unknown clickname for GROUPSUMMARY/GROUPDETAIL:", clickname);
+                    break;
+            }
+            return;
         }
 
         function saveHistory(action, params = {}) {

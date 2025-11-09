@@ -180,8 +180,6 @@
                         string rowClass = item.GroupLedger == "G" ? "bold-row" : "";
                         // <tr style="@((isBold) ? "font-weight: bold; font-size: 13px;" : "")" id="@Cntr" onclick="selection(this)">
                         <tr class="@(item.GroupLedger == "G" ? "bold-row" : "")" id="@Cntr" onclick="selection(this)">
-
-                            
                             <td>
                                 <a class="table-link link-success" asp-route-ID="@Cntr" asp-action="TrailBalance" asp-route-Mode="V" onclick="BackButtonData(event);">
                                     <span class="fa-stack">
@@ -197,21 +195,31 @@
                                 </a>
                             </td>
                             <th>@Cntr</th>
-                          <td>
-                              <input id="TrailBalanceGroupCode-@Cntr" value="@item.TrailBalanceGroupCode" type="hidden" />
-                              @item.TrailBalanceGroupName
+                            <td>
+                                <input id="TrailBalanceGroupCode-@Cntr" value="@item.TrailBalanceGroupCode" type="hidden" />
+                                @item.TrailBalanceGroupName
                             </td>
                             <td>
-  <a onclick="GetDataByParentGroupName(@Cntr)" class="table-link link-primary">
-    <input type="hidden" value="@item.ParentAccountCode" id="ParentAccountCode-@Cntr"/>
-    @item.ParentGroupName
-  </a>
-</td>
+                                <a onclick="callDrillDown(this)" class="table-link link-primary"
+                                   data-controller="TrailBalance"
+                                   data-action="Index"
+                                   data-seqno="@Cntr"
+                                   data-clickname="ParentClick"
+                                   data-parentgroup="@item.ParentAccountCode">
+                                    <input type="hidden" value="@item.ParentAccountCode" id="ParentAccountCode-@Cntr" />
+                                    @item.ParentGroupName
+                                </a>
+                            </td>
                             <td>
-                              <a onclick="GetDataByAccountName(@Cntr)" class="table-link link-primary">
-                                <input type="hidden" value="@item.AccountCode" id="AccountName-@Cntr"/>
-                                @item.AccountName
-                              </a>
+                                <a onclick="GetDataByAccountName(this)" class="table-link link-primary"
+                                   data-controller="TransactionLedger"
+                                   data-action="Index"
+                                   data-seqno="@Cntr"
+                                   data-clickname="LedgerClick"
+                                   data-accountcode="@item.AccountCode">
+                                    <input type="hidden" value="@item.AccountCode" id="AccountName-@Cntr" />
+                                    @item.AccountName
+                                </a>
                             </td>
                             <td id="totGroupOpnDrG-@Cntr" style="background-color:#D3D3D3">@item.GroupOpnDr</td>
                             <td id="totGroupOpnCrG-@Cntr" style="background-color:#D3D3D3">@item.GroupOpnCr</td>
@@ -245,6 +253,7 @@
     .hidden-column {
         display: none !important;
     }
+
     .sort-icon {
         padding: 5px;
         margin: 5px;
@@ -272,7 +281,6 @@
         font-weight: bold !important;
         font-size: 13px !important;
         color: green !important;
- 
     }
 </style>
 <script>
