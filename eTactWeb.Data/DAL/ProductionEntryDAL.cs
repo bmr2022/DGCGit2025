@@ -1420,6 +1420,7 @@ public class ProductionEntryDAL
             SqlParams.Add(new SqlParameter("@Entrydate", entDt == default ? string.Empty : entDt));
             SqlParams.Add(new SqlParameter("@Yearcode", model.YearCode == 0 ? 0 : model.YearCode));
             SqlParams.Add(new SqlParameter("@ProdAgainstReqPlanDirect", model.ProdAgainstPlanManual ?? ""));
+           
             SqlParams.Add(new SqlParameter("@NewProdRework", model.ProdType ?? ""));
             SqlParams.Add(new SqlParameter("@ShiftId", model.ShiftId == 0 ? 0 : model.ShiftId));
             SqlParams.Add(new SqlParameter("@ProdSlipNo", model.ProdSlipNo ?? ""));
@@ -1514,6 +1515,7 @@ public class ProductionEntryDAL
             SqlParams.Add(new SqlParameter("@Uid", model.Uid == 0 ? 0 : model.Uid));
             SqlParams.Add(new SqlParameter("@CC", model.CC == null ? "" : model.CC));
             SqlParams.Add(new SqlParameter("@EntryByMachineNo", model.EntrybyMachineName == null ? "" : model.EntrybyMachineName));
+            SqlParams.Add(new SqlParameter("@@EntryByMachineName", model.EntrybyMachineName == null ? "" : model.EntrybyMachineName));
             SqlParams.Add(new SqlParameter("@ActualEntryBy", model.ActualEnteredBy == 0 ? 0 : model.ActualEnteredBy));
             SqlParams.Add(new SqlParameter("@ActualEntryDate", actualDt == default ? string.Empty : actualDt));
             SqlParams.Add(new SqlParameter("@EntryByDesignation", model.EntryByDesignation == null ? "" : model.EntryByDesignation));
