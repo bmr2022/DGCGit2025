@@ -51,7 +51,7 @@
     @if (Model.SummaryDetail == "Summary")
     {
         <table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0" id="SOGrid">
-            <thead class="bg-gradient card-headerBG text-light" style="position:static;" id="SOThead">
+            <thead class="bg-gradient card-headerBG text-light"  id="SOThead">
                 <tr>
                     <th>Sr#</th>
                     <th>
@@ -271,6 +271,38 @@
                     }
                 }
             </tbody>
+            <tfoot class="bg-light fw-bold">
+                <tr>
+                    <td></td> <!-- Sr# -->
+                    <td>Totals</td> <!-- Action -->
+                    <td></td> <!-- SO No -->
+                    <td></td> <!-- Customer Name -->
+                    <td class="SaleOrderEntryDetail"></td> <!-- Customer Order No -->
+                    <td class="SaleOrderEntryDetail"></td> <!-- Order Type -->
+                    <td class="SaleOrderEntryDetail"></td> <!-- SO Type -->
+                    <td class="SaleOrderEntryDetail"></td> <!-- SO For -->
+                    <td></td> <!-- WEF -->
+                    <td class="SaleOrderOtherRequiredDetail"></td> <!-- SO Close Date -->
+                    <td class="SaleOrderOtherRequiredDetail"></td> <!-- Currency -->
+                    <td class="SaleOrderOtherRequiredDetail"></td> <!-- Customer Address -->
+                    <td class="SaleOrderOtherRequiredDetail"></td> <!-- Delivery Address -->
+                    <td class="SaleOrderOtherRequiredDetail"></td> <!-- Consignee -->
+                    <td class="SaleOrderOtherRequiredDetail"></td> <!-- Consignee Address -->
+                    <td class="SaleOrderOtherRequiredDetail" id="footerOrderAmt"></td> <!-- Amount -->
+                    <td id="OrderNetAmt"></td> <!-- Net Amount -->
+                    <td></td> <!-- SO Complete -->
+                    <td id="pendingAmt"></td> <!-- Pending Amt -->
+                    <td class="SaleOrderOtherRequiredDetail"></td> <!-- SO Confirm Date -->
+                    <td class="SaleOrderOtherRequiredDetail"></td> <!-- Approved -->
+                    <td></td> <!-- Created By -->
+                    <td class="SaleOrderOtherRequiredDetail"></td> <!-- Approved Date -->
+                    <td class="SaleOrderOtherRequiredDetail"></td> <!-- CC -->
+                    <td class="SaleOrderOtherRequiredDetail"></td> <!-- Updated On -->
+                    <td class="SaleOrderOtherRequiredDetail"></td> <!-- Created On -->
+                    <td class="SaleOrderOtherRequiredDetail"></td> <!-- Entry ID -->
+                    <td class="SaleOrderOtherRequiredDetail"></td> <!-- Year -->
+                </tr>
+            </tfoot>
         </table>
     }
     else
@@ -515,5 +547,6 @@
       
     }
 
+   
 </style>
 
