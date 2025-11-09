@@ -264,7 +264,7 @@
             // ✅ Initialize Select2 elements
             $('#LedgerName, #ParentLedgerName, #ReportType, #VoucherType, #Group_Ledger').select2();
 
-            // ✅ Load dropdown data (if these functions exist)
+            // ✅ Load dropdown data
             if (typeof FillParentLedgerName === 'function') FillParentLedgerName();
             if (typeof FillVoucherName === 'function') FillVoucherName();
             if (typeof FillLedgerName === 'function') FillLedgerName();
@@ -277,7 +277,6 @@
 
                 console.log("🔄 Restoring filters for:", formName, savedFilters);
 
-                // Helper to wait until a dropdown has options
                 function waitForSelect2(id, callback) {
                     const interval = setInterval(() => {
                         if ($(`#${id} option`).length > 0) {
@@ -304,7 +303,6 @@
                     else if ($el.hasClass("select2") || $el.hasClass("custom-select2")) {
                         if ($el.attr("id") === "LedgerName") {
                             waitForSelect2("LedgerName", () => {
-                                // ✅ Use normal change, not change.select2
                                 $el.val(savedFilters[key]).trigger("change");
                             });
                         } else {
@@ -317,8 +315,9 @@
                 }
             }
 
-            // ✅ Try restoring filters and state
+            // ✅ Restore filters safely
             try {
+                isRestoringFilters = true;
                 restoreFormFilters(currentForm);
 
                 const nextForm = DrilldownManager.getLastNextForm();
@@ -326,17 +325,25 @@
                     restoreFormFilters(nextForm);
                 }
 
-                DrilldownManager.restoreIfAvailable(currentForm);
+                // 🔁 Restore drilldown state AFTER filters restored
+                setTimeout(() => {
+                    DrilldownManager.restoreIfAvailable(currentForm);
+                    DrilldownManager.toggleBackButton();
+                }, 300);
+
             } catch (e) {
                 console.error("❌ Error restoring filters/state:", e);
+            } finally {
+                // 🟢 Re-enable validation & drilldown clearing
+                setTimeout(() => {
+                    isRestoringFilters = false;
+                }, 500);
             }
 
-            // ✅ Show or hide Back Button based on stack depth
-            DrilldownManager.toggleBackButton();
         });
 
         function GetValidateData() {
-
+            debugger
             if ($('#ReportType').val() == "TransactionLedgerSummary" || $('#ReportType').val() == "TransactionLedgerDetail") {
                 if ($('#LedgerName').val() == 0 || $('#LedgerName').prop('selectedIndex') == 0) {
                     $.notify('Account Code is mandatory to display details data', "error");
@@ -358,20 +365,91 @@
             }
         }
 
+        function restoreFormFilters(formName) {
+            if (!formName) return;
+
+            const savedFilters = DrilldownManager.restoreFilters(formName);
+            if (!savedFilters) return;
+
+            console.log("🔄 Restoring filters for:", formName, savedFilters);
+
+            // 🧠 Helper: Wait until a Select2 has loaded its options and the value exists
+            function waitForSelect2(id, value, callback) {
+                const interval = setInterval(() => {
+                    const $ddl = $(`#${id}`);
+                    const options = $ddl.find("option");
+                    if (options.length > 0) {
+                        const exists = options.filter(`[value="${value}"]`).length > 0;
+                        if (exists) {
+                            clearInterval(interval);
+                            $ddl.val(value).trigger("change"); // ✅ Set value only when exists
+                            if (callback) callback();
+                        }
+                    }
+                }, 100);
+
+                // ⏰ Safety timeout to stop interval after 5 seconds (avoid infinite loop)
+                setTimeout(() => clearInterval(interval), 5000);
+            }
+
+            // 🧠 Iterate through saved filters and restore
+            for (const key in savedFilters) {
+                const $el = $(`#${key}`);
+                if (!$el.length) continue;
+
+                const type = $el.attr('type');
+                const val = savedFilters[key];
+
+                if (type === 'checkbox') {
+                    $el.prop('checked', !!val).trigger('change');
+                    continue;
+                }
+
+                if (key === 'FromDate' || key === 'ToDate') {
+                    $el.datepicker("setDate", val);
+                }
+                else if ($el.hasClass("select2") || $el.hasClass("custom-select2")) {
+                    waitForSelect2($el.attr("id"), val, () => {
+                        // ⏳ Optional fallback: retry once more after delay
+                        setTimeout(() => {
+                            if (!$el.val() && val) {
+                                console.log(`Retrying to set value for ${key}`);
+                                $el.val(val).trigger('change');
+                            }
+                        }, 1200);
+                    });
+                }
+                else {
+                    $el.val(val).trigger('change');
+                }
+            }
+        }
+
+        // 🌐 Global variable (should exist before this script)
+        window.isRestoringFilters = window.isRestoringFilters || false;
+
+        // ✅ Report Type change handler
         $('#ReportType').on('change', function () {
             var selectedText = $(this).find("option:selected").text();
             $('#reportTitle').text(selectedText === "-Select-" ? "Report" : selectedText);
 
-            // 🧩 NEW: Clear stack if missing MonthlySummary
             var selectedType = $(this).val();
-            if (selectedType === "MonthlySummary") {
-                DrilldownManager.clearStackIfMissing("MonthlySummary");
+
+            // 🧠 Skip drilldown clear + validation when restoring filters
+            if (!isRestoringFilters) {
+                console.log("🔹 Manual ReportType change → running validation");
+
+                if (selectedType === "MonthlySummary") {
+                    DrilldownManager.clearStackIfMissing("MonthlySummary");
+                } else if (selectedType === "GROUPSUMMARY") {
+                    $('#LedgerName').prop('selectedIndex', 0).trigger('change');
+                    DrilldownManager.clearStackIfMissing("GROUPSUMMARY");
+                }
+
+                GetValidateData();
+            } else {
+                console.log("⏸ Skipping drilldown + validation during filter restore");
             }
-            if (selectedType === "GROUPSUMMARY") {
-                DrilldownManager.clearStackIfMissing("GROUPSUMMARY");
-            }
-            // ✅ Continue your existing logic
-            GetValidateData();
         });
 
         function BackButtonData(event) {
@@ -958,7 +1036,7 @@
                     });
 
                     DrilldownManager.push({
-                       currentForm: "TransactionLedger",
+                        currentForm: "TransactionLedger",
                         nextForm: "Voucher",
                         url: window.location.href
                     });
@@ -1006,7 +1084,7 @@
                 // ======================================================
                 // 🔹 GROUPSUMMARY → GROUPDETAIL → TransactionLedgerDetail
                 // ======================================================
-               case 'GROUPSUMMARY':
+                case 'GROUPSUMMARY':
                 case 'GROUPDETAIL':
                     var parentCode = $('#ParentCode-' + seqno).val() || "";
                     var accountCode = $('#AccountCode-' + seqno).val() || "";
@@ -1022,7 +1100,7 @@
 
                             DrilldownManager.saveFormFilters("GROUPSUMMARY", {
                                 ReportType: "GROUPSUMMARY",
-                                  FromDate: $("#FromDate").val(),
+                                FromDate: $("#FromDate").val(),
                                 ToDate: $("#ToDate").val(),
                                 LedgerName: $("#LedgerName").val(),
                                 ParentLedgerName: $("#ParentLedgerName").val(),
@@ -1050,7 +1128,7 @@
 
                             DrilldownManager.saveFormFilters("GROUPDETAIL", {
                                 ReportType: "GROUPDETAIL",
-                                  FromDate: $("#FromDate").val(),
+                                FromDate: $("#FromDate").val(),
                                 ToDate: $("#ToDate").val(),
                                 LedgerName: $("#LedgerName").val(),
                                 ParentLedgerName: $("#ParentLedgerName").val(),

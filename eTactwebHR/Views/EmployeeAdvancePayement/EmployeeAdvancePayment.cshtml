@@ -103,9 +103,16 @@
 									<input asp-for="AdvanceSlipNo" class="form-control" />
 								</div>
 
-								<div class="col-md-1">fi
+								<div class="col-md-1">
 									<label asp-for="EmpId" class="form-label">Emp Name</label>
 									<select asp-for="EmpId" class="form-select">
+										<option value="">-Select-</option>
+									</select>
+								</div>
+								
+								<div class="col-md-1">
+									<label asp-for="EmpCode" class="form-label">Emp Code</label>
+									<select asp-for="EmpCode" class="form-select">
 										<option value="">-Select-</option>
 									</select>
 								</div>
@@ -186,15 +193,29 @@
 								</div>
 
 								<div class="col-md-2">
-									<label asp-for="MgrApprovedbyEmpid" class="form-label">Mgr ApprovedbyEmp</label>
+									<label asp-for="MgrApprovedbyEmpid" class="form-label">MgrApprovedby Emp</label>
 									<select asp-for="MgrApprovedbyEmpid" class="form-select">
 										<option value="">-Select-</option>
 									</select>
 								</div>
 
 								<div class="col-md-2">
-									<label asp-for="HRApprovedbyEmpid" class="form-label">HR ApprovedbyEmp</label>
+									<label asp-for="MgrApprovedbyEmpCode" class="form-label">MgrApprovedby EmpCode</label>
+									<select asp-for="MgrApprovedbyEmpCode" class="form-select">
+										<option value="">-Select-</option>
+									</select>
+								</div>
+
+								<div class="col-md-2">
+									<label asp-for="HRApprovedbyEmpid" class="form-label">HRApprovedby Emp</label>
 									<select asp-for="HRApprovedbyEmpid" class="form-select">
+										<option value="">-Select-</option>
+									</select>
+								</div>
+								
+								<div class="col-md-2">
+									<label asp-for="HRApprovedbyEmpCode" class="form-label">HRApprovedby EmpCode</label>
+									<select asp-for="HRApprovedbyEmpCode" class="form-select">
 										<option value="">-Select-</option>
 									</select>
 								</div>
@@ -242,7 +263,16 @@
 
 								<div class="col-md-2">
 									<label asp-for="FinanceApprovalEmpid" class="form-label">FinanceApproval Empid</label>
-									<input asp-for="FinanceApprovalEmpid" class="form-control" />
+									<select asp-for="FinanceApprovalEmpid" class="form-select">
+										<option value="">-Select-</option>
+									</select>
+								</div>
+								
+								<div class="col-md-2">
+									<label asp-for="FinanceApprovalEmpCode" class="form-label">FinanceApproval EmpCode</label>
+									<select asp-for="FinanceApprovalEmpCode" class="form-select">
+										<option value="">-Select-</option>
+									</select>
 								</div>
 
 								<div class="col-md-2">
@@ -301,7 +331,7 @@
 									<input asp-for="StartRecoveryFromMonth" class="form-control" />  @* Month picker *@
 								</div>
 								<div class="col-md-2">
-									<label asp-for="FinalRevoveryDate" class="form-label">Final RevoveryDate</label>
+									<label asp-for="FinalRevoveryDate" class="form-label">Final RecoveryDate</label>
 									<input asp-for="FinalRevoveryDate" class="form-control" />
 								</div>
 								<div class="col-md-2">
@@ -342,7 +372,7 @@
 									<input asp-for="ActualEntryByName" class="form-control" />
 								</div>
 
-								<div class="col-md-1">
+								<div class="col-md-2">
 									<label asp-for="LastUpdatedBy" class="form-label">LastUpdated By</label>
 									<input type="hidden" asp-for="LastUpdatedBy" class="form-control" />
 									<input asp-for="LastUpdatedByEmpName" class="form-control" />
@@ -379,17 +409,17 @@
 
 								<div class="col-md-2">
 									<label asp-for="RequestEntryByMachine" class="form-label">Request EntryByMachine</label>
-									<input asp-for="RequestEntryByMachine" class="form-control" />
+									<input asp-for="RequestEntryByMachine" class="form-control" value="@Environment.MachineName" />
 								</div>
 
 								<div class="col-md-2">
 									<label asp-for="ApprovedBYMachine" class="form-label">ApprovedBY Machine</label>
-									<input asp-for="ApprovedBYMachine" class="form-control" />
+									<input asp-for="ApprovedBYMachine" class="form-control" value="@Environment.MachineName" />
 								</div>
 
 								<div class="col-md-2">
 									<label asp-for="CancelByMachine" class="form-label">CancelBy Machine</label>
-									<input asp-for="CancelByMachine" class="form-control" />
+									<input asp-for="CancelByMachine" class="form-control" value="@Environment.MachineName" />
 								</div>
 
 								<div class="col-md-1">
@@ -488,12 +518,74 @@
 	<script>
 		$(document).ready(function () {
 
-
 			if($('#Mode').val() != "U" && $('#Mode').val() != "V"){
 				FillEntryID();
+				FillEmpName();
+				FillEmpCode();
+				GetServerDate();
 			}
 
-			// $('#LastUpdatedBy').rules("remove", "required");
+					$('#AdvanceEntryId').rules("remove", "required");
+					$('#AdvanceYearCode').rules("remove", "required");
+					$('#AdvanceSlipNo').rules("remove", "required");
+					$('#EmpId').rules("remove", "required");
+					$('#EmpName').rules("remove", "required");
+					$('#EmpCode').rules("remove", "required");
+					$('#DesigId').rules("remove", "required");
+					$('#DepId').rules("remove", "required");
+					$('#DOJ').rules("remove", "required");
+					$('#BasicSalary').rules("remove", "required");
+					$('#NetSalary').rules("remove", "required");
+					$('#PresentDaysinCurrMonth').rules("remove", "required");
+					$('#PresentDaysInCurrYear').rules("remove", "required");
+					$('#CategoryId').rules("remove", "required");
+					$('#RequestDate').rules("remove", "required");
+					$('#EntryDate').rules("remove", "required");
+					$('#Purpose').rules("remove", "required");
+					$('#RequestedAmount').rules("remove", "required");
+					$('#ApprovedAmount').rules("remove", "required");
+					$('#PreviousPendAdvanceAmt').rules("remove", "required");
+					$('#PreviousPendLoanAmt').rules("remove", "required");
+					$('#MgrApprovaldate').rules("remove", "required");
+					$('#MgrApprovedbyEmpid').rules("remove", "required");
+					$('#MgrApprovedbyEmpName').rules("remove", "required");
+					$('#MgrApprovedbyEmpCode').rules("remove", "required");
+					$('#HRApprovedbyEmpid').rules("remove", "required");
+					$('#HRApprovedbyEmpName').rules("remove", "required");
+					$('#HRApprovedbyEmpCode').rules("remove", "required");
+					$('#HRApprovalDate').rules("remove", "required");
+					$('#FinanceApprovalEmpid').rules("remove", "required");
+					$('#FinanceApprovalEmpName').rules("remove", "required");
+					$('#FinanceApprovalEmpCode').rules("remove", "required");
+					$('#FinanceApprovalDate').rules("remove", "required");
+					$('#CanceledByEmpId').rules("remove", "required");
+					$('#CanceledByEmpName').rules("remove", "required");
+					$('#CanceledByEmpCode').rules("remove", "required");
+					$('#Canceled').rules("remove", "required");
+					$('#CancelOrApprovalremarks').rules("remove", "required");
+					$('#ModeOfPayment').rules("remove", "required");
+					$('#PaymentReferenceNo').rules("remove", "required");
+					$('#PaymentVoucherNo').rules("remove", "required");
+					$('#PaymentVoucherType').rules("remove", "required");
+					$('#PaymentRemark').rules("remove", "required");
+					$('#RecoveryMethod').rules("remove", "required");
+					$('#NoofInstallment').rules("remove", "required");
+					$('#StartRecoveryFromMonth').rules("remove", "required");
+					$('#AutoDeductionFromSalaryYN').rules("remove", "required");
+					$('#FinalRevoveryDate').rules("remove", "required");
+					$('#ActualFinalRecoveryDate').rules("remove", "required");
+					$('#StatusHoldCancelApproved').rules("remove", "required");
+					$('#LastUpdatedBy').rules("remove", "required");
+					$('#LastUpdatedByEmpName').rules("remove", "required");
+					$('#LastUpdationDate').rules("remove", "required");
+					$('#RequestEntryByMachine').rules("remove", "required");
+					$('#ApprovedBYMachine').rules("remove", "required");
+					$('#CancelByMachine').rules("remove", "required");
+					$('#ActualEntryBy').rules("remove", "required");
+					$('#ActualEntryByName').rules("remove", "required");
+					$('#CC').rules("remove", "required");
+					$('#UID').rules("remove", "required");
+
 		});
 
 		function FillEntryID() {
@@ -512,6 +604,171 @@
 				}
 			});
 		}
+		
+		function FillEmpName() {
+			$.ajax({
+				url: '@Url.Action("FillEmpName")',
+				type: 'POST',
+				success: function (data, status, xhr) {
+					var obj = $.parseJSON(data);
+					if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
+						$('#EmpId').empty();
+						$('#EmpId').append('<option value="">-Select-</option>');
+						$.each(obj.Result, function (index, Val) {
+							$('#EmpId').append('<option value="' + Val.Emp_Id + '">' + Val.EmpName + '</option>');
+						});
+
+						$('#MgrApprovedbyEmpid').empty();
+						$('#MgrApprovedbyEmpid').append('<option value="">-Select-</option>');
+						$.each(obj.Result, function (index, Val) {
+							$('#MgrApprovedbyEmpid').append('<option value="' + Val.Emp_Id + '">' + Val.EmpName + '</option>');
+						});
+
+						$('#HRApprovedbyEmpid').empty();
+						$('#HRApprovedbyEmpid').append('<option value="">-Select-</option>');
+						$.each(obj.Result, function (index, Val) {
+							$('#HRApprovedbyEmpid').append('<option value="' + Val.Emp_Id + '">' + Val.EmpName + '</option>');
+						});
+
+						$('#FinanceApprovalEmpid').empty();
+						$('#FinanceApprovalEmpid').append('<option value="">-Select-</option>');
+						$.each(obj.Result, function (index, Val) {
+							$('#FinanceApprovalEmpid').append('<option value="' + Val.Emp_Id + '">' + Val.EmpName + '</option>');
+						});
+					}
+				},
+				error: function (xhr, status, error) {
+					console.log('Failed to load Entry Id.');
+				}
+			});
+		}
+
+		$('#EmpId').change(function(){
+			FillEmployeeDetail();
+			$('#EmpCode').val($('#EmpId').val());
+		});
+
+		$('#EmpCode').change(function(){
+			FillEmployeeDetail();
+			$('#EmpId').val($('#EmpCode').val());
+		});
+
+		$('#HRApprovedbyEmpid').change(function(){
+			FillEmployeeDetail();
+			$('#HRApprovedbyEmpCode').val($('#HRApprovedbyEmpid').val());
+		});
+
+		$('#HRApprovedbyEmpCode').change(function(){
+			FillEmployeeDetail();
+			$('#HRApprovedbyEmpid').val($('#HRApprovedbyEmpCode').val());
+		});
+
+		$('#MgrApprovedbyEmpid').change(function(){
+			FillEmployeeDetail();
+			$('#MgrApprovedbyEmpCode').val($('#MgrApprovedbyEmpid').val());
+		});
+
+		$('#MgrApprovedbyEmpCode').change(function(){
+			FillEmployeeDetail();
+			$('#MgrApprovedbyEmpid').val($('#MgrApprovedbyEmpCode').val());
+		});
+
+		$('#FinanceApprovalEmpid').change(function(){
+			FillEmployeeDetail();
+			$('#FinanceApprovalEmpCode').val($('#FinanceApprovalEmpid').val());
+		});
+
+		$('#FinanceApprovalEmpCode').change(function(){
+			FillEmployeeDetail();
+			$('#FinanceApprovalEmpid').val($('#FinanceApprovalEmpCode').val());
+		});
+
+		function FillEmpCode() {
+			$.ajax({
+				url: '@Url.Action("FillEmployeeCode")',
+				type: 'POST',
+				success: function (data, status, xhr) {
+					var obj = $.parseJSON(data);
+					if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
+						$('#EmpCode').empty();
+						$('#EmpCode').append('<option value="">-Select-</option>');
+						$.each(obj.Result, function (index, Val) {
+							$('#EmpCode').append('<option value="' + Val.Emp_Id + '">' + Val.EmpCode + '</option>');
+						});
+
+						$('#HRApprovedbyEmpCode').empty();
+						$('#HRApprovedbyEmpCode').append('<option value="">-Select-</option>');
+						$.each(obj.Result, function (index, Val) {
+							$('#HRApprovedbyEmpCode').append('<option value="' + Val.Emp_Id + '">' + Val.EmpCode + '</option>');
+						});
+
+						$('#MgrApprovedbyEmpCode').empty();
+						$('#MgrApprovedbyEmpCode').append('<option value="">-Select-</option>');
+						$.each(obj.Result, function (index, Val) {
+							$('#MgrApprovedbyEmpCode').append('<option value="' + Val.Emp_Id + '">' + Val.EmpCode + '</option>');
+						});
+
+						$('#FinanceApprovalEmpCode').empty();
+						$('#FinanceApprovalEmpCode').append('<option value="">-Select-</option>');
+						$.each(obj.Result, function (index, Val) {
+							$('#FinanceApprovalEmpCode').append('<option value="' + Val.Emp_Id + '">' + Val.EmpCode + '</option>');
+						});
+					}
+				},
+				error: function (xhr, status, error) {
+					console.log('Failed to load Entry Id.');
+				}
+			});
+		}
+
+		function FillEmployeeDetail() {
+			$.ajax({
+				url: '@Url.Action("FillEmployeeDetail")',
+				data: {"empId": $('#EmpId').val()},
+				type: 'POST',
+				success: function (data, status, xhr) {
+					var obj = $.parseJSON(data);
+					if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
+						$('#DesigId').empty();
+						$('#DesigId').append('<option value="">-Select-</option>');
+						$.each(obj.Result, function (index, Val) {
+							$('#DesigId').append('<option value="' + Val.desigid + '">' + Val.Designation + '</option>');
+						});
+						$('#DepId').empty();
+						$('#DepId').append('<option value="">-Select-</option>');
+						$.each(obj.Result, function (index, Val) {
+							$('#DepId').append('<option value="' + Val.deptid + '">' + Val.DeptName + '</option>');
+						});
+					}
+				},
+				error: function (xhr, status, error) {
+					console.log('Failed to load Entry Id.');
+				}
+			});
+		}
+
+		 function GetServerDate() {
+				$.ajax({
+					type: "GET",
+					url: "@Url.Action("GetServerDate", "WorkOrder")",
+					success: function (result, status, error) {
+
+						var FinFromDate = parseDateToFormat($('#FinFromDate').val().split(" ")[0]);
+						var FinToDate = parseDateToFormat($('#FinToDate').val().split(" ")[0]);
+
+						$('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+						$('#DOJ').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+						$('#RequestDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+						$('#HRApprovalDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+						$('#FinanceApprovalDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+						$('#FinalRevoveryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+						$('#ActualFinalRecoveryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+						$('#LastUpdationDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+						$('#EntryDate').datepicker('option', 'minDate', FinFromDate);
+						$('#EntryDate').datepicker('option', 'maxDate', FinToDate);
+					}
+				});
+			}
 
 	</script>
 	@* 	<script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>

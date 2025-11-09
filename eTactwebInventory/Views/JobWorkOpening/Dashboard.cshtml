@@ -279,6 +279,7 @@
                 data: $('#SParam').serializeArray(),
                 success: function (data) {
                     $('#divJobWorkDashboardGrid').empty().append(data);
+                    GetFormRights();
                 },
                 error: function (response) {
                     alert(response.responseText);
@@ -307,6 +308,7 @@
                 data: $('#SParam').serializeArray(),
                 success: function (data) {
                     $('#divJobWorkDashboardGrid').empty().append(data);
+                    GetFormRights();
                 },
                 error: function (response) {
                     alert(response.responseText);

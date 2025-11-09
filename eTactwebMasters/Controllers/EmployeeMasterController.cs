@@ -129,6 +129,18 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+        public async Task<JsonResult> GetWorkLocation()
+        {
+            var JSON = await _IEmployeeMaster.GetWorkLocation();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> GetRefThrough()
+        {
+            var JSON = await _IEmployeeMaster.GetRefThrough();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
 
 
         [HttpPost]
