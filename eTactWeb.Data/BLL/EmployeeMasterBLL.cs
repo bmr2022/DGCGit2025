@@ -76,6 +76,14 @@ namespace eTactWeb.Data.BLL
         {
             return await _EmployeeMasterDAL.FILLAllowanceMode();
         }
+         public async Task<ResponseResult> GetWorkLocation()
+        {
+            return await _EmployeeMasterDAL.GetWorkLocation();
+        }
+         public async Task<ResponseResult> GetRefThrough()
+        {
+            return await _EmployeeMasterDAL.GetRefThrough();
+        }
 
         public async Task<DOM.Models.Common.ResponseResult> SaveEmployeeMaster(EmployeeMasterModel model)
         {

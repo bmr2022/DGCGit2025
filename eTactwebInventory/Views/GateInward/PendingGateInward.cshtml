@@ -186,6 +186,8 @@
 						var selectedData = [];
 		var rows = document.querySelectorAll('#GateDataTable tbody tr');
 		var seqCounter = 1;
+			var isValid = true;
+
 
 		for (var i = 0; i < rows.length; i++) {
 			var row = rows[i];
@@ -193,7 +195,22 @@
 
 			if (checkbox && checkbox.checked) {
 				var cells = row.querySelectorAll('td');
-				var qtyInput = cells[13].querySelector('input'); 
+				var qtyInput = cells[13].querySelector('input');
+					var pendQty = parseFloat(cells[12].textContent.trim()) || 0;
+					var qty = qtyInput ? parseFloat(qtyInput.value.trim()) || 0 : 0;
+
+					// ✅ Validation check
+					if (qty <= 0) {
+						alert(`❌ Error: Quantity must be greater than 0 in row ${i + 1}.`);
+						isValid = false;
+						break;
+					}
+					if (qty > pendQty) {
+						alert(`❌ Error: Quantity cannot be greater than Pending Quantity in row ${i + 1}.`);
+						isValid = false;
+						break;
+					}
+
 
 				var rowData = {
 			SeqNo: seqCounter,
@@ -231,6 +248,14 @@
 				seqCounter++; // Only increment if checkbox is checked
 			}
 		}
+			// Stop execution if any invalid qty
+			if (!isValid) return;
+
+			// ✅ Proceed only if data is valid
+			if (selectedData.length === 0) {
+				alert("⚠️ Please select at least one item.");
+				return;
+			}
 
 
 			// AJAX call to send to session

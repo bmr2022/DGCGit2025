@@ -278,7 +278,7 @@
                                 </div>
 
                                 <div class="card-body overflow-auto pb-0">
-                                    <div class="table-responsive" style="max-height:150px;">
+                                    <div class="table-responsive" style="max-height:250px;">
                                         <table class="table table-hover table-bordered table-striped" id="poTable">
                                             <thead class="bg-gradient card-headerBG text-light small" id="poThead" style="white-space:nowrap">
                                                 <tr id="headerRow">
@@ -1181,7 +1181,7 @@
             FillCurrency();
             FillCustomerAddress();
 
-                    $('#PendSOForSaleBill').modal('show');
+                    // $('#PendSOForSaleBill').modal('show');
                     showDetail();
                    
 
@@ -1292,8 +1292,8 @@
             GetItemGroup();
             AutoFillItems();
             GetCompanyType();
-            showDetail();
-            $('#PendSOForSaleBill').modal('show');
+            
+            
                AutoFillPARTYNAMELIST();
             EditableRateAndDiscountONSaleInvoice();
 
@@ -1317,6 +1317,12 @@
 
         // Initialize autocomplete mode by default
         enableAutocompleteMode();
+            showDetail();
+
+            FillSONO();
+            FillCurrency();
+            FillCustomerAddress();
+
             // Only for Update/View mode
              if (mode === "U" || mode === "V") {
                  $("#SaleBillNoContainer").show();
@@ -1371,7 +1377,7 @@
             calculatetotalqty();
 
                 $('.pendingso').click(function () {
-                    $('#PendSOForSaleBill').modal('show');
+                    // $('#PendSOForSaleBill').modal('show');
  showDetail();
                 });
 
@@ -1830,6 +1836,7 @@
 
                 url: "@Url.Action("GetCompanyType")",
                 dataType: "json",
+                async: false,
                 success: function (result, status, error) {
 
                     if (result != null) {
@@ -1889,8 +1896,9 @@
                 "InvoiceDate": $('#SaleBillDate').val(),
                 "CurrentYear": $('#SaleBillYearCode').val(),
                 "BillFromStoreId": $('#BillFromStoreId').val(),
+                "BillFromStoreId": $('#BillFromStoreId').val(),
                 "accountCode": $('#AccountCode').val(),
-                "SONo": @ViewBag.sono,
+                "SONo": "@(ViewBag.sono ?? "")",
                 "PartCode": $('#PartCode').val(),
                 "CompanyType": $('#Companytype').val()
 
@@ -1900,11 +1908,13 @@
                 url: '@Url.Action("ShowPendingSaleorderforBill")',
                 type: "POST",
                 data: data,
+                async:false,
                 success: function (data) {
                     if (data != null) {
 
                         var obj = $.parseJSON(data);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#PendSOForSaleBill').modal('show');
                             $('#divPendMRNGrid').empty();
                             var i = 1;
                             $.each(obj.Result.Table, function (index, val) {

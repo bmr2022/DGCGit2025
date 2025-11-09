@@ -23,5 +23,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetEmployeeType();
         Task<ResponseResult> GetReportingMg();
         Task<ResponseResult> FILLAllowanceMode();
+        Task<ResponseResult> GetWorkLocation();
+        Task<ResponseResult> GetRefThrough();
     }
 }
