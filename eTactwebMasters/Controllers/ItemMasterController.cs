@@ -2327,13 +2327,15 @@ public class ItemMasterController : Controller
             dt.Columns.Add("ChildBom", typeof(string));
             dt.Columns.Add("usedinMachorVehicle", typeof(string));
             dt.Columns.Add("Barcode", typeof(string));
-
+            int rowNumber = 1;
             foreach (var excelRow in request.ExcelData)
             {
                 List<string> errors = new List<string>(); // 🟢 Added for collecting validation errors
                 var validItemServAssetsOptions = new List<string> { "Item", "Service", "Asset" };
 
                 DataRow row = dt.NewRow();
+                string partCodeValue = excelRow.ContainsKey("PartCode") ? excelRow["PartCode"]?.ToString() : "";
+
 
                 foreach (var map in request.Mapping)
                 {
@@ -2360,7 +2362,8 @@ public class ItemMasterController : Controller
                                     return Json(new
                                     {
                                         StatusCode = 240,
-                                        StatusText = "Please Enter valid ItemServAssets"
+                                        StatusText = $"Invalid 'ItemServAssets' at Row {rowNumber}, PartCode: {partCodeValue}. " +
+                                         $"Allowed values are: Item, Service, Asset."
 
                                     });
                                 }
@@ -2390,8 +2393,9 @@ public class ItemMasterController : Controller
                                     return Json(new
                                     {
                                         StatusCode = 240,
-                                        StatusText = "Please Enter valid group"
-                                       
+                                        StatusText = $"Invalid 'ItemGroup' at Row {rowNumber}, PartCode: {partCodeValue}. " +
+                                         $"Group '{groupName}' not found."
+
                                     });
                                 }
                                    
@@ -2421,7 +2425,8 @@ public class ItemMasterController : Controller
                                     return Json(new
                                     {
                                         StatusCode = 240,
-                                        StatusText = "Please Enter valid category"
+                                        StatusText = $"Invalid 'ItemCategory' at Row {rowNumber}, PartCode: {partCodeValue}. " +
+                                         $"Category '{ItemCat}' not found."
 
                                     });
                                 }
@@ -2453,7 +2458,8 @@ public class ItemMasterController : Controller
                                     return Json(new
                                     {
                                         StatusCode = 240,
-                                        StatusText = "Please Enter valid Store"
+                                        StatusText = $"Invalid 'Store' at Row {rowNumber}, PartCode: {partCodeValue}. " +
+                                         $"Store '{StoreId}' not found."
 
                                     });
                                 }
@@ -2486,6 +2492,7 @@ public class ItemMasterController : Controller
                 }
 
                 dt.Rows.Add(row);
+                rowNumber++;
             }
 
             response = await _IItemMaster.UpdateMultipleItemDataFromExcel(dt, flag);
