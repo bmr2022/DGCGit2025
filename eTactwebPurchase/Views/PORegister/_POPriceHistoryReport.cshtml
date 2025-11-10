@@ -89,10 +89,10 @@
                             <td>@item.DisPer</td>
                             <td>@item.DisAmt</td>
                             <td id="POValue-@Cntr">@item.POValue</td>
-                            <td>@(item.POclosedate == null ? string.Empty : item.POclosedate.Split(" ")[0])</td>
                             <td>@(item.poAmmeffdate == null ? string.Empty : item.poAmmeffdate.Split(" ")[0])</td>
+                            <td>@(item.POclosedate == null ? string.Empty : item.POclosedate.Split(" ")[0])</td>
                             <td>@item.POEntryId</td>
-                            <td>@item.PoYear</td>
+                            <td>@item.POYearCode</td>
 
                         </tr>
                         srNo++;

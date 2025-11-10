@@ -66,6 +66,12 @@ namespace eTactWeb.DOM.Models
         public string PFNo { get; set; }
         public string ESINo { get; set; }
         public decimal GrossSalary { get; set; }
+        public string Country { get; set; }
+        public string City { get; set; }
+        public string ContactPersonname { get; set; }
+        public string ContactPersonNumber { get; set; }
+        public string HRPersonName { get; set; }
+        public string HRContactNo { get; set; }
         public decimal BasicSalary { get; set; }
         public string CalculatePfOn { get; set; }
         public string SalaryCalculation { get; set; }

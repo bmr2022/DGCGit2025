@@ -374,6 +374,12 @@
                                     </select>
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:100px;">
+                                    <label asp-for="EmpGrade" class="form-label" style="width:90px;">Emp Grade</label>
+                                    <select asp-for="EmpGrade" class="form-control">
+                                        <option value="">Select</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:100px;">
                                     <label asp-for="FixSalaryAmt" class="form-label">Fix SalaryAmt </label>
                                     <input asp-for="FixSalaryAmt" class="form-control" />
                                 </div>
@@ -503,17 +509,7 @@
                                     <label asp-for="JoiningDate" class="form-label">Joining Date</label>
                                     <input asp-for="JoiningDate" class="form-control" />
                                 </div>
-                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;color:red;">
-                                    <label asp-for="JobDepartment" class="form-label">JobDepartment*</label>
-                                    <input asp-for="JobDepartmentId" type="hidden" value="@Model.JobDepartmentId" />
-                                    <select asp-for="JobDepartment" class="form-control" style="width:150px;">
-                                        <option value="">-Select-</option>
-                                        @if (Model.Mode == "U" || Model.Mode == "V")
-                                        {
-                                            <option value="@Model.JobDepartmentId" selected>@Model.JobDepartment</option>
-                                        }
-                                    </select>
-                                </div>
+                               
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;color:red;">
                                     <label asp-for="JobDesignation" class="form-label">JobDesignation*</label>
                                     <input asp-for="JobDesignationId" type="hidden" value="@Model.JobDesignationId" />
@@ -544,24 +540,9 @@
                                         <option value="">Select</option>
                                     </select>
                                 </div>
-                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;color:red !important;">
-                                    <label asp-for="JObShift" class="form-label">JObShift*</label>
-                                    <input asp-for="JObShiftId" type="hidden" value="@Model.JObShiftId" />
-                                    <select asp-for="JObShift" class="form-control" style="width:150px;">
-                                        <option value="">-Select-</option>
-                                        @if (Model.Mode == "U" || Model.Mode == "V")
-                                        {
-                                            <option value="@Model.JObShiftId" selected>@Model.JObShift</option>
-                                        }
-                                    </select>
-                                </div>
+                               
                                 
-                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:100px;">
-                                    <label asp-for="EmpGrade" class="form-label" style="width:90px;">Emp Grade</label>
-                                    <select asp-for="EmpGrade" class="form-control">
-                                        <option value="">Select</option>
-                                    </select>
-                                </div>
+                                
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
                                     <label asp-for="JobProbationPeriod" class="form-label">JobProbationPeriod(Months)</label>
                                     <input asp-for="JobProbationPeriod" class="form-control" />

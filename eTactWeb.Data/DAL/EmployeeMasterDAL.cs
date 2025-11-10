@@ -596,392 +596,115 @@ namespace eTactWeb.Data.DAL
             }
             return model;
         }
-
-        public async Task<ResponseResult> SaveEmployeeMaster(EmployeeMasterModel model)
+        public async Task<ResponseResult> SaveEmployeeMaster(EmployeeMasterModel model, DataTable DtAllDed, DataTable DtEdu, DataTable dtexp, DataTable dtNjob)
         {
-            dynamic _ResponseResult = null;
-
+            var _ResponseResult = new ResponseResult();
             try
             {
-                DateTime? entDt = new DateTime();
-                DateTime? dojDt = new DateTime();
-                DateTime? dorDt = new DateTime();
-                DateTime? dobDt = new DateTime();
-                DateTime? DateOfProbation = new DateTime();
-                DateTime? DateOfConfirm = new DateTime();
+                var SqlParams = new List<dynamic>();
 
-                entDt = ParseDate(model.EntryDate);
-                dojDt = ParseDate(model.DateOfJoining);
-                dorDt = ParseDate(model.DateOfResignation);
-                dobDt = ParseDate(model.DOB);
-                DateOfProbation = ParseDate(model.ProbationStartDate);
-                DateOfConfirm = ParseDate(model.DateOfConfirmation);
+                // Determine Mode
+                string flag = (model.Mode == "UPDATE") ? "UPDATE" : "INSERT";
+                SqlParams.Add(new SqlParameter("@Flag", flag));
 
+                // Parse Dates
+                var entDt = ParseDate(model.EntryDate);
+                var dojDt = ParseDate(model.DateOfJoining);
+                var dorDt = ParseDate(model.DateOfResignation);
+                var dobDt = ParseDate(model.DOB);
+                var DateOfProbation = ParseDate(model.ProbationStartDate);
+                var DateOfConfirm = ParseDate(model.DateOfConfirmation);
+
+                // Branch list
                 string branchlist = string.Join(",", model.Branches ?? new List<string>());
-                if (!string.IsNullOrWhiteSpace(branchlist))
-                {
-                    foreach (var branchDb in model.Branches ?? new List<string>())
-                    {
-                        // Generate dynamic connection string for this branch
-                        string branchConnectionString = GetBranchConnectionString(branchDb);
-                        using (SqlConnection conn = new SqlConnection(branchConnectionString))
-                        {
-                            SqlCommand oCmd = new SqlCommand("HREmployeeMaster", conn)
-                            {
-                                CommandType = CommandType.StoredProcedure
-                            };
-                            if (model.Mode == "UPDATE")
-                            {
-                                oCmd.Parameters.AddWithValue("@Flag", model.Mode);
-                                oCmd.Parameters.AddWithValue("@empid", model.EmpId);
-                                oCmd.Parameters.AddWithValue("@desigEntryid", model.Designation);
-                                oCmd.Parameters.AddWithValue("@EmpCode", model.EmpCode);
-                                oCmd.Parameters.AddWithValue("@branchCC", model.Branch);
-                                oCmd.Parameters.AddWithValue("@EmpName", model.Name);
-                                oCmd.Parameters.AddWithValue("@EntryDate", entDt == null ? DBNull.Value : entDt);
-                                oCmd.Parameters.AddWithValue("@DOB", dobDt == null ? DBNull.Value : dobDt);
-                                oCmd.Parameters.AddWithValue("@DOJ", dojDt == null ? DBNull.Value : dojDt);
-                                oCmd.Parameters.AddWithValue("@DateOfJoining", dojDt == null ? DBNull.Value : dojDt);
-                                oCmd.Parameters.AddWithValue("@DOR", dorDt == null ? DBNull.Value : dorDt);
-                                oCmd.Parameters.AddWithValue("@DesignationId", model.Designation);
-                                oCmd.Parameters.AddWithValue("@shiftId", model.Shift);
-                                oCmd.Parameters.AddWithValue("@Deptid", model.Department);
-                                oCmd.Parameters.AddWithValue("@CategoryId", model.Category);
-                                oCmd.Parameters.AddWithValue("@Gender", model.Gender);
-                                oCmd.Parameters.AddWithValue("@NatureOfDuties", model.NatureOfDuties);
-                                oCmd.Parameters.AddWithValue("@DepartmentName", model.DepartmentName);
-                                oCmd.Parameters.AddWithValue("@DesignationName", model.DesignationName);
-                                oCmd.Parameters.AddWithValue("@CategoryName", model.CategoryName);
-                                oCmd.Parameters.AddWithValue("@branchlist", branchlist);
-                                oCmd.Parameters.AddWithValue("@active", "Y");
-                                oCmd.Parameters.AddWithValue("@ResignationDate", dorDt);
-                            }
-                            else
-                            {
-                                oCmd.Parameters.AddWithValue("@Flag", model.Mode);
-                                oCmd.Parameters.AddWithValue("@empid", model.EmpId);
-                                oCmd.Parameters.AddWithValue("@desigEntryid", model.Designation);
-                                oCmd.Parameters.AddWithValue("@EmpCode", model.EmpCode);
-                                oCmd.Parameters.AddWithValue("@CC", model.Branch);
-                                oCmd.Parameters.AddWithValue("@EmpName", model.Name);
-                                oCmd.Parameters.AddWithValue("@DepartmentName", model.DepartmentName);
-                                oCmd.Parameters.AddWithValue("@DesignationName", model.DesignationName);
-                                oCmd.Parameters.AddWithValue("@CategoryName", model.CategoryName);
-                                oCmd.Parameters.AddWithValue("@EntryDate", entDt == null ? DBNull.Value : entDt);
-                                oCmd.Parameters.AddWithValue("@DOB", dobDt == null ? DBNull.Value : dobDt);
-                                oCmd.Parameters.AddWithValue("@DOJ", dojDt == null ? DBNull.Value : dojDt);
-                                oCmd.Parameters.AddWithValue("@DateOfJoining", dojDt == null ? DBNull.Value : dojDt);
-                                oCmd.Parameters.AddWithValue("@DOR", dorDt == null ? DBNull.Value : dorDt);
-                                oCmd.Parameters.AddWithValue("@DesigId", model.Designation);
-                                oCmd.Parameters.AddWithValue("@shiftId", model.Shift);
-                                oCmd.Parameters.AddWithValue("@Deptid", model.Department);
-                                oCmd.Parameters.AddWithValue("@CategoryId", model.Category);
-                                oCmd.Parameters.AddWithValue("@NatureOfDuties", model.NatureOfDuties);
-                                oCmd.Parameters.AddWithValue("@Active", "Y");
-                                oCmd.Parameters.AddWithValue("@ResignationDate", dorDt);
-                                oCmd.Parameters.AddWithValue("@Gender", model.Gender);
-                                oCmd.Parameters.AddWithValue("@Nationality", model.Nationality);
-                                oCmd.Parameters.AddWithValue("@MaritalStatus", model.MaritalStatus);
-                                oCmd.Parameters.AddWithValue("@BloodGroup", model.BloodGroup);
-                                oCmd.Parameters.AddWithValue("@branchlist", branchlist);
 
-                                //Contact
-                                oCmd.Parameters.AddWithValue("@MobileNo1", model.MobileNo);
-                                oCmd.Parameters.AddWithValue("@MobileNo2", model.MobileNo2);
-                                oCmd.Parameters.AddWithValue("@EmailId", model.EmailId);
-                                oCmd.Parameters.AddWithValue("@CurrentAddress", model.CurrentAddress);
-                                oCmd.Parameters.AddWithValue("@PermanentAddress", model.permanentAddress);
-                                oCmd.Parameters.AddWithValue("@EmergancyContactNo", model.EmergencyContact);
-                                oCmd.Parameters.AddWithValue("@EmergancyContactRelation", model.EmergencyContactRelation);
+                // Common Parameters
+                SqlParams.Add(new SqlParameter("@EmpId", model.EmpId));
+                SqlParams.Add(new SqlParameter("@EmpCode", model.EmpCode ?? ""));
+                SqlParams.Add(new SqlParameter("@EmpName", model.Name ?? ""));
+                SqlParams.Add(new SqlParameter("@Deptid", model.Department));
+                SqlParams.Add(new SqlParameter("@CategoryId", model.Category));
+                SqlParams.Add(new SqlParameter("@DesignationId", model.Designation));
+                SqlParams.Add(new SqlParameter("@shiftId", model.Shift));
+                SqlParams.Add(new SqlParameter("@BranchCC", model.Branch ?? ""));
+                SqlParams.Add(new SqlParameter("@BranchList", branchlist));
+                SqlParams.Add(new SqlParameter("@Gender", model.Gender ?? ""));
+                SqlParams.Add(new SqlParameter("@NatureOfDuties", model.NatureOfDuties ?? ""));
+                SqlParams.Add(new SqlParameter("@Active", model.Active ?? "Y"));
+                SqlParams.Add(new SqlParameter("@EntryDate", entDt ?? (object)DBNull.Value));
+                SqlParams.Add(new SqlParameter("@DOB", dobDt ?? (object)DBNull.Value));
+                SqlParams.Add(new SqlParameter("@DOJ", dojDt ?? (object)DBNull.Value));
+                SqlParams.Add(new SqlParameter("@DOR", dorDt ?? (object)DBNull.Value));
+                SqlParams.Add(new SqlParameter("@ResignationDate", dorDt ?? (object)DBNull.Value));
 
-                                //salary
-                                oCmd.Parameters.AddWithValue("@BankName", model.BankName);
-                                oCmd.Parameters.AddWithValue("@BankAccountNo", model.AccountNo);
-                                oCmd.Parameters.AddWithValue("@PANNOTaxIdentificationNo", model.PANNo);
-                                oCmd.Parameters.AddWithValue("@AadharCardNoCountryCardNo", model.AdharNo);
-                                oCmd.Parameters.AddWithValue("@IBANSwiftCode", model.SwiftCode);
-                                oCmd.Parameters.AddWithValue("@PaymentMode", model.PaymentMode);
-                                oCmd.Parameters.AddWithValue("@PFNO", model.PFNo);
-                                oCmd.Parameters.AddWithValue("@ESINo", model.ESINo);
-                                oCmd.Parameters.AddWithValue("@GrossSalary", model.GrossSalary);
-                                oCmd.Parameters.AddWithValue("@BasicSalary", model.BasicSalary);
-                                oCmd.Parameters.AddWithValue("@CTC", model.CalculatePfOn);
-                                oCmd.Parameters.AddWithValue("@SalaryBasisHrs", model.SalaryBasis);
-                                oCmd.Parameters.AddWithValue("@SalaryCalculationBasisOn", model.SalaryCalculation);
-                                oCmd.Parameters.AddWithValue("@PFApplicable", model.PFApplicable);
-                                oCmd.Parameters.AddWithValue("@ApplyPFonAmt", model.ApplyPFFonmAmt);
-                                oCmd.Parameters.AddWithValue("@ApplyESIonAmt", model.ApplyESIFonmAmt);
-                                oCmd.Parameters.AddWithValue("@OTApplicable", model.OTApplicable);
-                                oCmd.Parameters.AddWithValue("@LeaveApplicable", model.LeaveApplicable);
-                                oCmd.Parameters.AddWithValue("@ESIApplicable", model.ESIApplicable);
-                                oCmd.Parameters.AddWithValue("@LateMarkingApplicable", model.LateMarkingCalculationApplicable);
-                                oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.FixSalaryAmt);
+                // Names
+                SqlParams.Add(new SqlParameter("@DepartmentName", model.DepartmentName ?? ""));
+                SqlParams.Add(new SqlParameter("@DesignationName", model.DesignationName ?? ""));
+                SqlParams.Add(new SqlParameter("@CategoryName", model.CategoryName ?? ""));
 
-                                //Allowance-Deduction
-                                //oCmd.Parameters.AddWithValue("@SalaryHeadId", model.SalaryHeadId);
-                                //oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.AllowanceMode);
-                                //oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.Percent);
-                                //oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.AllowanceAmount);
-                                //oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.AllowanceType);
-                                //oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.PartyPay);
+                // Contact Details
+                SqlParams.Add(new SqlParameter("@MobileNo1", model.MobileNo ?? ""));
+                SqlParams.Add(new SqlParameter("@MobileNo2", model.MobileNo2 ?? ""));
+                SqlParams.Add(new SqlParameter("@EmailId", model.EmailId ?? ""));
+                SqlParams.Add(new SqlParameter("@CurrentAddress", model.CurrentAddress ?? ""));
+                SqlParams.Add(new SqlParameter("@PermanentAddress", model.permanentAddress ?? ""));
+                SqlParams.Add(new SqlParameter("@EmergancyContactNo", model.EmergencyContact ?? ""));
+                SqlParams.Add(new SqlParameter("@EmergancyContactRelation", model.EmergencyContactRelation ?? ""));
 
-                                //Job&Work Detail
-                                //oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.DateOfJoining);
-                                //oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.JobDepartment);
-                                oCmd.Parameters.AddWithValue("@ReportingDesignationId", model.JobDesignation);
-                                //oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.ReportingMg);
-                                //oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.EmployeeType);
-                                //oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.WorkLocation);
-                                //oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.JObShift);
-                                //oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.EmpGrade);
-                                oCmd.Parameters.AddWithValue("@ProbationPeriod", model.JobProbationPeriod);
-                                oCmd.Parameters.AddWithValue("@DateOfProbation", DateOfProbation);
-                                //oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.ProbationEndDate);
-                                oCmd.Parameters.AddWithValue("@DateOfConfirm", DateOfConfirm);
-                                oCmd.Parameters.AddWithValue("@Referance1", model.JobReference1);
-                                oCmd.Parameters.AddWithValue("@Referencetwo", model.JobReference2);
-                                oCmd.Parameters.AddWithValue("@Through", model.JoiningThrough);
+                // Salary Details
+                SqlParams.Add(new SqlParameter("@BankName", model.BankName ?? ""));
+                SqlParams.Add(new SqlParameter("@BankAccountNo", model.AccountNo ?? ""));
+                SqlParams.Add(new SqlParameter("@PANNOTaxIdentificationNo", model.PANNo ?? ""));
+                SqlParams.Add(new SqlParameter("@AadharCardNoCountryCardNo", model.AdharNo ?? ""));
+                SqlParams.Add(new SqlParameter("@IBANSwiftCode", model.SwiftCode ?? ""));
+                SqlParams.Add(new SqlParameter("@PaymentMode", model.PaymentMode ?? ""));
+                SqlParams.Add(new SqlParameter("@PFNO", model.PFNo ?? ""));
+                SqlParams.Add(new SqlParameter("@ESINo", model.ESINo ?? ""));
+                SqlParams.Add(new SqlParameter("@GrossSalary", model.GrossSalary));
+                SqlParams.Add(new SqlParameter("@BasicSalary", model.BasicSalary));
+                SqlParams.Add(new SqlParameter("@PFApplicableon", model.CalculatePfOn ?? ""));
+                SqlParams.Add(new SqlParameter("@SalaryBasisHrs", model.SalaryBasis ));
+                SqlParams.Add(new SqlParameter("@SalaryCalculationBasisOn", model.SalaryCalculation ?? ""));
+                SqlParams.Add(new SqlParameter("@PFApplicable", model.PFApplicable));
+                SqlParams.Add(new SqlParameter("@ApplyPFonAmt", model.ApplyPFFonmAmt));
+                SqlParams.Add(new SqlParameter("@ApplyESIonAmt", model.ApplyESIFonmAmt));
+                SqlParams.Add(new SqlParameter("@OTApplicable", model.OTApplicable));
+                SqlParams.Add(new SqlParameter("@LeaveApplicable", model.LeaveApplicable));
+                SqlParams.Add(new SqlParameter("@ESIApplicable", model.ESIApplicable));
+                SqlParams.Add(new SqlParameter("@LateMarkingApplicable", model.LateMarkingCalculationApplicable));
+                SqlParams.Add(new SqlParameter("@FixSalaryAmount", model.FixSalaryAmt));
 
-                                //Document-IDproof
-                                oCmd.Parameters.AddWithValue("@NationalIdPassport", model.PassportNo);
-                                oCmd.Parameters.AddWithValue("@WorkPermitVisa", model.WorkPeritVisa);
-                                oCmd.Parameters.AddWithValue("@DrivingLicence", model.DrivingLicenseNo);
-                                oCmd.Parameters.AddWithValue("@MedicalInsuranceDetail", model.MedicalInsuranceDetail);
-                                //oCmd.Parameters.AddWithValue("@PANNOTaxIdentificationNo", model.PANNo);
+                // Job & Work Details
+                SqlParams.Add(new SqlParameter("@ReportingDesignationId", model.JobDesignation));
+                SqlParams.Add(new SqlParameter("@ProbationPeriod", model.JobProbationPeriod ));
+                SqlParams.Add(new SqlParameter("@DateOfProbation", DateOfProbation ?? (object)DBNull.Value));
+                SqlParams.Add(new SqlParameter("@DateOfConfirm", DateOfConfirm ?? (object)DBNull.Value));
+                SqlParams.Add(new SqlParameter("@Referance1", model.JobReference1 ?? ""));
+                SqlParams.Add(new SqlParameter("@Referencetwo", model.JobReference2 ?? ""));
+                SqlParams.Add(new SqlParameter("@Through", model.JoiningThrough ?? ""));
 
-                                //UploadSection
-                                oCmd.Parameters.AddWithValue("@ThumbPath", model.ThumbUnPress);
-                                //oCmd.Parameters.AddWithValue("@AadharCardNoCountryCardNo", model.AdharNo);
-                                //oCmd.Parameters.AddWithValue("@AadharCardNoCountryCardNo", model.fileUpload);
+                // Document / ID Proof
+                SqlParams.Add(new SqlParameter("@NationalIdPassport", model.PassportNo ?? ""));
+                SqlParams.Add(new SqlParameter("@WorkPermitVisa", model.WorkPeritVisa ?? ""));
+                SqlParams.Add(new SqlParameter("@DrivingLicence", model.DrivingLicenseNo ?? ""));
+                SqlParams.Add(new SqlParameter("@MedicalInsuranceDetail", model.MedicalInsuranceDetail ?? ""));
+                SqlParams.Add(new SqlParameter("@ThumbPath", model.ThumbUnPress ?? ""));
 
+                // Exit Details
+                SqlParams.Add(new SqlParameter("@NoticePeriod", model.NoticPeriod ));
+                SqlParams.Add(new SqlParameter("@GratutyEligibility", model.GratutyEligibility ?? ""));
 
-                                //Educational
-                                //oCmd.Parameters.AddWithValue("@DateOfConfirm", model.Qualification);
-                                //oCmd.Parameters.AddWithValue("@DateOfConfirm", model.Univercity_Sch);
-                                //oCmd.Parameters.AddWithValue("@DateOfConfirm", model.Per);
-                                //oCmd.Parameters.AddWithValue("@DateOfConfirm", model.InYear);
-                                //oCmd.Parameters.AddWithValue("@DateOfConfirm", model.Remark);
+                // Table-Valued Parameters
+                SqlParams.Add(new SqlParameter("@DtAllDed", DtAllDed));
+                SqlParams.Add(new SqlParameter("@DtEdu", DtEdu));
+                SqlParams.Add(new SqlParameter("@dtExp", dtexp));
+                SqlParams.Add(new SqlParameter("@dtNjob", dtNjob));
 
-
-                                //Experiance
-                                //oCmd.Parameters.AddWithValue("@DateOfConfirm", model.CompanyName);
-                                //oCmd.Parameters.AddWithValue("@DateOfConfirm", model.CFromDate);
-                                //oCmd.Parameters.AddWithValue("@DateOfConfirm", model.CToDate);
-                                //oCmd.Parameters.AddWithValue("@DateOfConfirm", model.Designation);
-                                //oCmd.Parameters.AddWithValue("@DateOfConfirm", model.Salary);
-
-
-                                //ExitDetail
-                                oCmd.Parameters.AddWithValue("@NoticePeriod", model.NoticPeriod);
-                                oCmd.Parameters.AddWithValue("@GratutyEligibility", model.GratutyEligibility);
-
-                            }
-
-
-                            conn.Open();
-                            Reader = await oCmd.ExecuteReaderAsync();
-                            if (Reader != null)
-                            {
-                                while (Reader.Read())
-                                {
-                                    _ResponseResult = new ResponseResult()
-                                    {
-                                        StatusCode = (HttpStatusCode)Reader["StatusCode"],
-                                        StatusText = Reader["StatusText"].ToString(),
-                                        Result = Reader["Result"].ToString()
-                                    };
-                                }
-                            }
-
-                        }
-
-                    }
-                }
-
-                else
-                { //Single Branch
-
-
-                    using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
-                    {
-                        SqlCommand oCmd = new SqlCommand("HREmployeeMaster", myConnection)
-                        {
-                            CommandType = CommandType.StoredProcedure
-                        };
-                        if (model.Mode == "UPDATE")
-                        {
-                            oCmd.Parameters.AddWithValue("@Flag", model.Mode);
-                            oCmd.Parameters.AddWithValue("@branchCC", model.Branch);
-                            oCmd.Parameters.AddWithValue("@EntryDate", entDt == null ? DBNull.Value : entDt);
-                            oCmd.Parameters.AddWithValue("@empid", model.EmpId);
-                            oCmd.Parameters.AddWithValue("@EmpCode", model.EmpCode);
-                            oCmd.Parameters.AddWithValue("@EmpName", model.Name);
-                            oCmd.Parameters.AddWithValue("@desigEntryid", model.Designation);
-                            //oCmd.Parameters.AddWithValue("@DesignationId", model.Designation);
-                            oCmd.Parameters.AddWithValue("@Deptid", model.Department);
-                            oCmd.Parameters.AddWithValue("@CategoryId", model.Category);
-                            oCmd.Parameters.AddWithValue("@DOJ", dojDt == null ? DBNull.Value : dojDt);
-                            oCmd.Parameters.AddWithValue("@DOB", dobDt == null ? DBNull.Value : dobDt);
-                            oCmd.Parameters.AddWithValue("@DateOfJoining", dojDt == null ? DBNull.Value : dojDt);
-                            oCmd.Parameters.AddWithValue("@shiftId", model.Shift);
-                            oCmd.Parameters.AddWithValue("@DOR", dorDt == null ? DBNull.Value : dorDt);
-                            oCmd.Parameters.AddWithValue("@active", model.Active);
-                            oCmd.Parameters.AddWithValue("@ResignationDate", dorDt);
-                            oCmd.Parameters.AddWithValue("@NatureOfDuties", model.NatureOfDuties);
-                            oCmd.Parameters.AddWithValue("@Gender", model.Gender);
-
-                            oCmd.Parameters.AddWithValue("@branchlist", branchlist);
-                            oCmd.Parameters.AddWithValue("@DepartmentName", model.DepartmentName);
-                            oCmd.Parameters.AddWithValue("@DesignationName", model.DesignationName);
-                            oCmd.Parameters.AddWithValue("@CategoryName", model.CategoryName);
-                        }
-                        else
-                        {
-                            oCmd.Parameters.AddWithValue("@Flag", model.Mode);
-                            oCmd.Parameters.AddWithValue("@CC", model.Branch);
-                            oCmd.Parameters.AddWithValue("@EntryDate", entDt == null ? DBNull.Value : entDt);
-                            oCmd.Parameters.AddWithValue("@empid", model.EmpId);
-                            oCmd.Parameters.AddWithValue("@desigEntryid", model.Designation);
-                            oCmd.Parameters.AddWithValue("@EmpCode", model.EmpCode);
-                            oCmd.Parameters.AddWithValue("@EmpName", model.Name);
-                            oCmd.Parameters.AddWithValue("@DesignationName", model.DesignationName);
-                            oCmd.Parameters.AddWithValue("@DepartmentName", model.DepartmentName);
-                            oCmd.Parameters.AddWithValue("@CategoryName", model.CategoryName);
-                            oCmd.Parameters.AddWithValue("@DOB", dobDt == null ? DBNull.Value : dobDt);
-                            oCmd.Parameters.AddWithValue("@DOJ", dojDt == null ? DBNull.Value : dojDt);
-                            oCmd.Parameters.AddWithValue("@DateOfJoining", dojDt == null ? DBNull.Value : dojDt);
-                            oCmd.Parameters.AddWithValue("@DesigId", model.Designation);
-                            oCmd.Parameters.AddWithValue("@shiftId", model.Shift);
-                            oCmd.Parameters.AddWithValue("@Active", model.Active);
-                            oCmd.Parameters.AddWithValue("@DOR", dorDt == null ? DBNull.Value : dorDt);
-                            oCmd.Parameters.AddWithValue("@NatureOfDuties", model.NatureOfDuties);
-                            oCmd.Parameters.AddWithValue("@Gender", model.Gender);
-                            oCmd.Parameters.AddWithValue("@Nationality", model.Nationality);
-                            oCmd.Parameters.AddWithValue("@MaritalStatus", model.MaritalStatus);
-                            oCmd.Parameters.AddWithValue("@BloodGroup", model.BloodGroup);
-                            oCmd.Parameters.AddWithValue("@branchlist", branchlist);
-
-                            //extra
-                            oCmd.Parameters.AddWithValue("@Deptid", model.Department);
-                            oCmd.Parameters.AddWithValue("@CategoryId", model.Category);
-                            oCmd.Parameters.AddWithValue("@ResignationDate", dorDt);
-
-                            //Contact
-                            oCmd.Parameters.AddWithValue("@MobileNo1", model.MobileNo);
-                            oCmd.Parameters.AddWithValue("@MobileNo2", model.MobileNo2);
-                            oCmd.Parameters.AddWithValue("@EmailId", model.EmailId);
-                            oCmd.Parameters.AddWithValue("@CurrentAddress", model.CurrentAddress);
-                            oCmd.Parameters.AddWithValue("@PermanentAddress", model.permanentAddress);
-                            oCmd.Parameters.AddWithValue("@EmergancyContactNo", model.EmergencyContact);
-                            oCmd.Parameters.AddWithValue("@EmergancyContactRelation", model.EmergencyContactRelation);
-
-                            //salary
-                            oCmd.Parameters.AddWithValue("@BankName", model.BankName);
-                            oCmd.Parameters.AddWithValue("@BankAccountNo", model.AccountNo);
-                            oCmd.Parameters.AddWithValue("@PANNOTaxIdentificationNo", model.PANNo);
-                            oCmd.Parameters.AddWithValue("@AadharCardNoCountryCardNo", model.AdharNo);
-                            oCmd.Parameters.AddWithValue("@IBANSwiftCode", model.SwiftCode);
-                            oCmd.Parameters.AddWithValue("@PaymentMode", model.PaymentMode);
-                            oCmd.Parameters.AddWithValue("@PFNO", model.PFNo);
-                            oCmd.Parameters.AddWithValue("@ESINo", model.ESINo);
-                            oCmd.Parameters.AddWithValue("@GrossSalary", model.GrossSalary);
-                            oCmd.Parameters.AddWithValue("@BasicSalary", model.BasicSalary);
-                            oCmd.Parameters.AddWithValue("@CTC", model.CalculatePfOn);
-                            oCmd.Parameters.AddWithValue("@SalaryBasisHrs", model.SalaryBasis);
-                            oCmd.Parameters.AddWithValue("@SalaryCalculationBasisOn", model.SalaryCalculation);
-                            oCmd.Parameters.AddWithValue("@PFApplicable", model.PFApplicable);
-                            oCmd.Parameters.AddWithValue("@ApplyPFonAmt", model.ApplyPFFonmAmt);
-                            oCmd.Parameters.AddWithValue("@ApplyESIonAmt", model.ApplyESIFonmAmt);
-                            oCmd.Parameters.AddWithValue("@OTApplicable", model.OTApplicable);
-                            oCmd.Parameters.AddWithValue("@LeaveApplicable", model.LeaveApplicable);
-                            oCmd.Parameters.AddWithValue("@ESIApplicable", model.ESIApplicable);
-                            oCmd.Parameters.AddWithValue("@LateMarkingApplicable", model.LateMarkingCalculationApplicable);
-                            oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.FixSalaryAmt);
-
-                            //Allowance-Deduction
-                            //oCmd.Parameters.AddWithValue("@SalaryHeadId", model.SalaryHeadId);
-                            //oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.AllowanceMode);
-                            //oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.Percent);
-                            //oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.AllowanceAmount);
-                            //oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.AllowanceType);
-                            //oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.PartyPay);
-
-                            //Job&Work Detail
-                            //oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.DateOfJoining);
-                            //oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.JobDepartment);
-                            oCmd.Parameters.AddWithValue("@ReportingDesignationId", model.JobDesignation);
-                            //oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.ReportingMg);
-                            //oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.EmployeeType);
-                            //oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.WorkLocation);
-                            //oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.JObShift);
-                            //oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.EmpGrade);
-                            oCmd.Parameters.AddWithValue("@ProbationPeriod", model.JobProbationPeriod);
-                            oCmd.Parameters.AddWithValue("@DateOfProbation", DateOfProbation);
-                            //oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.ProbationEndDate);
-                            oCmd.Parameters.AddWithValue("@DateOfConfirm", DateOfConfirm);
-                            oCmd.Parameters.AddWithValue("@Referance1", model.JobReference1);
-                            oCmd.Parameters.AddWithValue("@Referencetwo", model.JobReference2);
-                            oCmd.Parameters.AddWithValue("@Through", model.JoiningThrough);
-
-                            //Document-IDproof
-                            oCmd.Parameters.AddWithValue("@NationalIdPassport", model.PassportNo);
-                            oCmd.Parameters.AddWithValue("@WorkPermitVisa", model.WorkPeritVisa);
-                            oCmd.Parameters.AddWithValue("@DrivingLicence", model.DrivingLicenseNo);
-                            oCmd.Parameters.AddWithValue("@MedicalInsuranceDetail", model.MedicalInsuranceDetail);
-                            //oCmd.Parameters.AddWithValue("@PANNOTaxIdentificationNo", model.PANNo);
-
-                            //UploadSection
-                            oCmd.Parameters.AddWithValue("@ThumbPath", model.ThumbUnPress);
-                            //oCmd.Parameters.AddWithValue("@AadharCardNoCountryCardNo", model.AdharNo);
-                            //oCmd.Parameters.AddWithValue("@AadharCardNoCountryCardNo", model.fileUpload);
-
-
-                            //Educational
-                            //oCmd.Parameters.AddWithValue("@DateOfConfirm", model.Qualification);
-                            //oCmd.Parameters.AddWithValue("@DateOfConfirm", model.Univercity_Sch);
-                            //oCmd.Parameters.AddWithValue("@DateOfConfirm", model.Per);
-                            //oCmd.Parameters.AddWithValue("@DateOfConfirm", model.InYear);
-                            //oCmd.Parameters.AddWithValue("@DateOfConfirm", model.Remark);
-
-
-                            //Experiance
-                            //oCmd.Parameters.AddWithValue("@DateOfConfirm", model.CompanyName);
-                            //oCmd.Parameters.AddWithValue("@DateOfConfirm", model.CFromDate);
-                            //oCmd.Parameters.AddWithValue("@DateOfConfirm", model.CToDate);
-                            //oCmd.Parameters.AddWithValue("@DateOfConfirm", model.Designation);
-                            //oCmd.Parameters.AddWithValue("@DateOfConfirm", model.Salary);
-
-
-                            //ExitDetail
-                            oCmd.Parameters.AddWithValue("@NoticePeriod", model.NoticPeriod);
-                            oCmd.Parameters.AddWithValue("@GratutyEligibility", model.GratutyEligibility);
-
-                        }
-
-
-                        myConnection.Open();
-                        Reader = await oCmd.ExecuteReaderAsync();
-                        if (Reader != null)
-                        {
-                            while (Reader.Read())
-                            {
-                                _ResponseResult = new ResponseResult()
-                                {
-                                    StatusCode = (HttpStatusCode)Reader["StatusCode"],
-                                    StatusText = Reader["StatusText"].ToString(),
-                                    Result = Reader["Result"].ToString()
-                                };
-                            }
-                        }
-                    }
-                }
+                // Execute stored procedure
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("HREmployeeMaster", SqlParams);
             }
             catch (Exception ex)
             {
-                dynamic Error = new ExpandoObject();
-                Error.Message = ex.Message;
-                Error.Source = ex.Source;
-                Error.StackTrace = ex.StackTrace;
                 _ResponseResult = new ResponseResult()
                 {
                     StatusCode = HttpStatusCode.InternalServerError,
@@ -989,16 +712,418 @@ namespace eTactWeb.Data.DAL
                     Result = ex.Message
                 };
             }
-            finally
-            {
-                if (Reader != null)
-                {
-                    Reader.Close();
-                    Reader.Dispose();
-                }
-            }
+
             return _ResponseResult;
         }
+
+        //public async Task<ResponseResult> SaveEmployeeMaster(EmployeeMasterModel model, DataTable DtAllDed, DataTable DtEdu, DataTable dtexp, DataTable dtNjob)
+        //{
+        //    dynamic _ResponseResult = null;
+
+        //    try
+        //    {
+        //        DateTime? entDt = new DateTime();
+        //        DateTime? dojDt = new DateTime();
+        //        DateTime? dorDt = new DateTime();
+        //        DateTime? dobDt = new DateTime();
+        //        DateTime? DateOfProbation = new DateTime();
+        //        DateTime? DateOfConfirm = new DateTime();
+
+        //        entDt = ParseDate(model.EntryDate);
+        //        dojDt = ParseDate(model.DateOfJoining);
+        //        dorDt = ParseDate(model.DateOfResignation);
+        //        dobDt = ParseDate(model.DOB);
+        //        DateOfProbation = ParseDate(model.ProbationStartDate);
+        //        DateOfConfirm = ParseDate(model.DateOfConfirmation);
+
+        //        string branchlist = string.Join(",", model.Branches ?? new List<string>());
+        //        if (!string.IsNullOrWhiteSpace(branchlist))
+        //        {
+        //            foreach (var branchDb in model.Branches ?? new List<string>())
+        //            {
+        //                // Generate dynamic connection string for this branch
+        //                string branchConnectionString = GetBranchConnectionString(branchDb);
+        //                using (SqlConnection conn = new SqlConnection(branchConnectionString))
+        //                {
+        //                    SqlCommand oCmd = new SqlCommand("HREmployeeMaster", conn)
+        //                    {
+        //                        CommandType = CommandType.StoredProcedure
+        //                    };
+        //                    if (model.Mode == "UPDATE")
+        //                    {
+        //                        oCmd.Parameters.AddWithValue("@Flag", model.Mode);
+        //                        oCmd.Parameters.AddWithValue("@empid", model.EmpId);
+        //                        oCmd.Parameters.AddWithValue("@desigEntryid", model.Designation);
+        //                        oCmd.Parameters.AddWithValue("@EmpCode", model.EmpCode);
+        //                        oCmd.Parameters.AddWithValue("@branchCC", model.Branch);
+        //                        oCmd.Parameters.AddWithValue("@EmpName", model.Name);
+        //                        oCmd.Parameters.AddWithValue("@EntryDate", entDt == null ? DBNull.Value : entDt);
+        //                        oCmd.Parameters.AddWithValue("@DOB", dobDt == null ? DBNull.Value : dobDt);
+        //                        oCmd.Parameters.AddWithValue("@DOJ", dojDt == null ? DBNull.Value : dojDt);
+        //                        oCmd.Parameters.AddWithValue("@DateOfJoining", dojDt == null ? DBNull.Value : dojDt);
+        //                        oCmd.Parameters.AddWithValue("@DOR", dorDt == null ? DBNull.Value : dorDt);
+        //                        oCmd.Parameters.AddWithValue("@DesignationId", model.Designation);
+        //                        oCmd.Parameters.AddWithValue("@shiftId", model.Shift);
+        //                        oCmd.Parameters.AddWithValue("@Deptid", model.Department);
+        //                        oCmd.Parameters.AddWithValue("@CategoryId", model.Category);
+        //                        oCmd.Parameters.AddWithValue("@Gender", model.Gender);
+        //                        oCmd.Parameters.AddWithValue("@NatureOfDuties", model.NatureOfDuties);
+        //                        oCmd.Parameters.AddWithValue("@DepartmentName", model.DepartmentName);
+        //                        oCmd.Parameters.AddWithValue("@DesignationName", model.DesignationName);
+        //                        oCmd.Parameters.AddWithValue("@CategoryName", model.CategoryName);
+        //                        oCmd.Parameters.AddWithValue("@branchlist", branchlist);
+        //                        oCmd.Parameters.AddWithValue("@active", "Y");
+        //                        oCmd.Parameters.AddWithValue("@ResignationDate", dorDt);
+        //                    }
+        //                    else
+        //                    {
+        //                        oCmd.Parameters.AddWithValue("@Flag", model.Mode);
+        //                        oCmd.Parameters.AddWithValue("@empid", model.EmpId);
+        //                        oCmd.Parameters.AddWithValue("@desigEntryid", model.Designation);
+        //                        oCmd.Parameters.AddWithValue("@EmpCode", model.EmpCode);
+        //                        oCmd.Parameters.AddWithValue("@CC", model.Branch);
+        //                        oCmd.Parameters.AddWithValue("@EmpName", model.Name);
+        //                        oCmd.Parameters.AddWithValue("@DepartmentName", model.DepartmentName);
+        //                        oCmd.Parameters.AddWithValue("@DesignationName", model.DesignationName);
+        //                        oCmd.Parameters.AddWithValue("@CategoryName", model.CategoryName);
+        //                        oCmd.Parameters.AddWithValue("@EntryDate", entDt == null ? DBNull.Value : entDt);
+        //                        oCmd.Parameters.AddWithValue("@DOB", dobDt == null ? DBNull.Value : dobDt);
+        //                        oCmd.Parameters.AddWithValue("@DOJ", dojDt == null ? DBNull.Value : dojDt);
+        //                        oCmd.Parameters.AddWithValue("@DateOfJoining", dojDt == null ? DBNull.Value : dojDt);
+        //                        oCmd.Parameters.AddWithValue("@DOR", dorDt == null ? DBNull.Value : dorDt);
+        //                        oCmd.Parameters.AddWithValue("@DesigId", model.Designation);
+        //                        oCmd.Parameters.AddWithValue("@shiftId", model.Shift);
+        //                        oCmd.Parameters.AddWithValue("@Deptid", model.Department);
+        //                        oCmd.Parameters.AddWithValue("@CategoryId", model.Category);
+        //                        oCmd.Parameters.AddWithValue("@NatureOfDuties", model.NatureOfDuties);
+        //                        oCmd.Parameters.AddWithValue("@Active", "Y");
+        //                        oCmd.Parameters.AddWithValue("@ResignationDate", dorDt);
+        //                        oCmd.Parameters.AddWithValue("@Gender", model.Gender);
+        //                        oCmd.Parameters.AddWithValue("@Nationality", model.Nationality);
+        //                        oCmd.Parameters.AddWithValue("@MaritalStatus", model.MaritalStatus);
+        //                        oCmd.Parameters.AddWithValue("@BloodGroup", model.BloodGroup);
+        //                        oCmd.Parameters.AddWithValue("@branchlist", branchlist);
+
+        //                        //Contact
+        //                        oCmd.Parameters.AddWithValue("@MobileNo1", model.MobileNo);
+        //                        oCmd.Parameters.AddWithValue("@MobileNo2", model.MobileNo2);
+        //                        oCmd.Parameters.AddWithValue("@EmailId", model.EmailId);
+        //                        oCmd.Parameters.AddWithValue("@CurrentAddress", model.CurrentAddress);
+        //                        oCmd.Parameters.AddWithValue("@PermanentAddress", model.permanentAddress);
+        //                        oCmd.Parameters.AddWithValue("@EmergancyContactNo", model.EmergencyContact);
+        //                        oCmd.Parameters.AddWithValue("@EmergancyContactRelation", model.EmergencyContactRelation);
+
+        //                        //salary
+        //                        oCmd.Parameters.AddWithValue("@BankName", model.BankName);
+        //                        oCmd.Parameters.AddWithValue("@BankAccountNo", model.AccountNo);
+        //                        oCmd.Parameters.AddWithValue("@PANNOTaxIdentificationNo", model.PANNo);
+        //                        oCmd.Parameters.AddWithValue("@AadharCardNoCountryCardNo", model.AdharNo);
+        //                        oCmd.Parameters.AddWithValue("@IBANSwiftCode", model.SwiftCode);
+        //                        oCmd.Parameters.AddWithValue("@PaymentMode", model.PaymentMode);
+        //                        oCmd.Parameters.AddWithValue("@PFNO", model.PFNo);
+        //                        oCmd.Parameters.AddWithValue("@ESINo", model.ESINo);
+        //                        oCmd.Parameters.AddWithValue("@GrossSalary", model.GrossSalary);
+        //                        oCmd.Parameters.AddWithValue("@BasicSalary", model.BasicSalary);
+        //                        oCmd.Parameters.AddWithValue("@PFApplicableon", model.CalculatePfOn);
+        //                        oCmd.Parameters.AddWithValue("@SalaryBasisHrs", model.SalaryBasis);
+        //                        oCmd.Parameters.AddWithValue("@SalaryCalculationBasisOn", model.SalaryCalculation);
+        //                        oCmd.Parameters.AddWithValue("@PFApplicable", model.PFApplicable);
+        //                        oCmd.Parameters.AddWithValue("@ApplyPFonAmt", model.ApplyPFFonmAmt);
+        //                        oCmd.Parameters.AddWithValue("@ApplyESIonAmt", model.ApplyESIFonmAmt);
+        //                        oCmd.Parameters.AddWithValue("@OTApplicable", model.OTApplicable);
+        //                        oCmd.Parameters.AddWithValue("@LeaveApplicable", model.LeaveApplicable);
+        //                        oCmd.Parameters.AddWithValue("@ESIApplicable", model.ESIApplicable);
+        //                        oCmd.Parameters.AddWithValue("@LateMarkingApplicable", model.LateMarkingCalculationApplicable);
+        //                        oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.FixSalaryAmt);
+
+        //                        //Allowance-Deduction
+
+        //                        oCmd.Parameters.AddWithValue("@DtAllDed", DtAllDed);
+        //                        //oCmd.Parameters.AddWithValue("@SalaryHeadId", model.SalaryHeadId);
+        //                        //oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.AllowanceMode);
+        //                        //oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.Percent);
+        //                        //oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.AllowanceAmount);
+        //                        //oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.AllowanceType);
+        //                        //oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.PartyPay);
+
+        //                        //Job&Work Detail
+        //                        oCmd.Parameters.AddWithValue("@DateOfJoining", model.DateOfJoining);
+        //                        //oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.JobDepartment);
+        //                        oCmd.Parameters.AddWithValue("@ReportingDesignationId", model.JobDesignation);
+        //                        //oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.ReportingMg);
+        //                        //oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.EmployeeType);
+        //                        //oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.WorkLocation);
+        //                        //oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.JObShift);
+        //                        //oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.EmpGrade);
+        //                        oCmd.Parameters.AddWithValue("@ProbationPeriod", model.JobProbationPeriod);
+        //                        oCmd.Parameters.AddWithValue("@DateOfProbation", DateOfProbation);
+        //                        //oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.ProbationEndDate);
+        //                        oCmd.Parameters.AddWithValue("@DateOfConfirm", DateOfConfirm);
+        //                        oCmd.Parameters.AddWithValue("@Referance1", model.JobReference1);
+        //                        oCmd.Parameters.AddWithValue("@Referencetwo", model.JobReference2);
+        //                        oCmd.Parameters.AddWithValue("@Through", model.JoiningThrough);
+
+        //                        //Document-IDproof
+        //                        oCmd.Parameters.AddWithValue("@NationalIdPassport", model.PassportNo);
+        //                        oCmd.Parameters.AddWithValue("@WorkPermitVisa", model.WorkPeritVisa);
+        //                        oCmd.Parameters.AddWithValue("@DrivingLicence", model.DrivingLicenseNo);
+        //                        oCmd.Parameters.AddWithValue("@MedicalInsuranceDetail", model.MedicalInsuranceDetail);
+        //                        //oCmd.Parameters.AddWithValue("@PANNOTaxIdentificationNo", model.PANNo);
+
+        //                        //UploadSection
+        //                        oCmd.Parameters.AddWithValue("@ThumbPath", model.ThumbUnPress);
+        //                        //oCmd.Parameters.AddWithValue("@AadharCardNoCountryCardNo", model.AdharNo);
+        //                        //oCmd.Parameters.AddWithValue("@AadharCardNoCountryCardNo", model.C);
+
+
+        //                        //Educational
+        //                        oCmd.Parameters.AddWithValue("@DtEdu", DtEdu);
+        //                        //oCmd.Parameters.AddWithValue("@DateOfConfirm", model.Qualification);
+        //                        //oCmd.Parameters.AddWithValue("@DateOfConfirm", model.Univercity_Sch);
+        //                        //oCmd.Parameters.AddWithValue("@DateOfConfirm", model.Per);
+        //                        //oCmd.Parameters.AddWithValue("@DateOfConfirm", model.InYear);
+        //                        //oCmd.Parameters.AddWithValue("@DateOfConfirm", model.Remark);
+
+
+        //                        //Experiance
+        //                        oCmd.Parameters.AddWithValue("@dtExp", dtexp);
+        //                        //oCmd.Parameters.AddWithValue("@DateOfConfirm", model.CompanyName);
+        //                        //oCmd.Parameters.AddWithValue("@DateOfConfirm", model.CFromDate);
+        //                        //oCmd.Parameters.AddWithValue("@DateOfConfirm", model.CToDate);
+        //                        //oCmd.Parameters.AddWithValue("@DateOfConfirm", model.Designation);
+        //                        //oCmd.Parameters.AddWithValue("@DateOfConfirm", model.Salary);
+
+        //                        //natureofjob
+        //                        oCmd.Parameters.AddWithValue("@dtNjob", dtNjob);
+
+        //                        //ExitDetail
+        //                        oCmd.Parameters.AddWithValue("@NoticePeriod", model.NoticPeriod);
+        //                        oCmd.Parameters.AddWithValue("@GratutyEligibility", model.GratutyEligibility);
+
+        //                    }
+
+
+        //                    conn.Open();
+        //                    Reader = await oCmd.ExecuteReaderAsync();
+        //                    if (Reader != null)
+        //                    {
+        //                        while (Reader.Read())
+        //                        {
+        //                            _ResponseResult = new ResponseResult()
+        //                            {
+        //                                StatusCode = (HttpStatusCode)Reader["StatusCode"],
+        //                                StatusText = Reader["StatusText"].ToString(),
+        //                                Result = Reader["Result"].ToString()
+        //                            };
+        //                        }
+        //                    }
+
+        //                }
+
+        //            }
+        //        }
+
+        //        else
+        //        { //Single Branch
+
+
+        //            using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
+        //            {
+        //                SqlCommand oCmd = new SqlCommand("HREmployeeMaster", myConnection)
+        //                {
+        //                    CommandType = CommandType.StoredProcedure
+        //                };
+        //                if (model.Mode == "UPDATE")
+        //                {
+        //                    oCmd.Parameters.AddWithValue("@Flag", model.Mode);
+        //                    oCmd.Parameters.AddWithValue("@branchCC", model.Branch);
+        //                    oCmd.Parameters.AddWithValue("@EntryDate", entDt == null ? DBNull.Value : entDt);
+        //                    oCmd.Parameters.AddWithValue("@empid", model.EmpId);
+        //                    oCmd.Parameters.AddWithValue("@EmpCode", model.EmpCode);
+        //                    oCmd.Parameters.AddWithValue("@EmpName", model.Name);
+        //                    oCmd.Parameters.AddWithValue("@desigEntryid", model.Designation);
+        //                    //oCmd.Parameters.AddWithValue("@DesignationId", model.Designation);
+        //                    oCmd.Parameters.AddWithValue("@Deptid", model.Department);
+        //                    oCmd.Parameters.AddWithValue("@CategoryId", model.Category);
+        //                    oCmd.Parameters.AddWithValue("@DOJ", dojDt == null ? DBNull.Value : dojDt);
+        //                    oCmd.Parameters.AddWithValue("@DOB", dobDt == null ? DBNull.Value : dobDt);
+        //                    oCmd.Parameters.AddWithValue("@DateOfJoining", dojDt == null ? DBNull.Value : dojDt);
+        //                    oCmd.Parameters.AddWithValue("@shiftId", model.Shift);
+        //                    oCmd.Parameters.AddWithValue("@DOR", dorDt == null ? DBNull.Value : dorDt);
+        //                    oCmd.Parameters.AddWithValue("@active", model.Active);
+        //                    oCmd.Parameters.AddWithValue("@ResignationDate", dorDt);
+        //                    oCmd.Parameters.AddWithValue("@NatureOfDuties", model.NatureOfDuties);
+        //                    oCmd.Parameters.AddWithValue("@Gender", model.Gender);
+
+        //                    oCmd.Parameters.AddWithValue("@branchlist", branchlist);
+        //                    oCmd.Parameters.AddWithValue("@DepartmentName", model.DepartmentName);
+        //                    oCmd.Parameters.AddWithValue("@DesignationName", model.DesignationName);
+        //                    oCmd.Parameters.AddWithValue("@CategoryName", model.CategoryName);
+        //                }
+        //                else
+        //                {
+        //                    oCmd.Parameters.AddWithValue("@Flag", model.Mode);
+        //                    oCmd.Parameters.AddWithValue("@CC", model.Branch);
+        //                    oCmd.Parameters.AddWithValue("@EntryDate", entDt == null ? DBNull.Value : entDt);
+        //                    oCmd.Parameters.AddWithValue("@empid", model.EmpId);
+        //                    oCmd.Parameters.AddWithValue("@desigEntryid", model.Designation);
+        //                    oCmd.Parameters.AddWithValue("@EmpCode", model.EmpCode);
+        //                    oCmd.Parameters.AddWithValue("@EmpName", model.Name);
+        //                    oCmd.Parameters.AddWithValue("@DesignationName", model.DesignationName);
+        //                    oCmd.Parameters.AddWithValue("@DepartmentName", model.DepartmentName);
+        //                    oCmd.Parameters.AddWithValue("@CategoryName", model.CategoryName);
+        //                    oCmd.Parameters.AddWithValue("@DOB", dobDt == null ? DBNull.Value : dobDt);
+        //                    oCmd.Parameters.AddWithValue("@DOJ", dojDt == null ? DBNull.Value : dojDt);
+        //                    oCmd.Parameters.AddWithValue("@DateOfJoining", dojDt == null ? DBNull.Value : dojDt);
+        //                    oCmd.Parameters.AddWithValue("@DesigId", model.Designation);
+        //                    oCmd.Parameters.AddWithValue("@shiftId", model.Shift);
+        //                    oCmd.Parameters.AddWithValue("@Active", model.Active);
+        //                    oCmd.Parameters.AddWithValue("@DOR", dorDt == null ? DBNull.Value : dorDt);
+        //                    oCmd.Parameters.AddWithValue("@NatureOfDuties", model.NatureOfDuties);
+        //                    oCmd.Parameters.AddWithValue("@Gender", model.Gender);
+        //                    oCmd.Parameters.AddWithValue("@Nationality", model.Nationality);
+        //                    oCmd.Parameters.AddWithValue("@MaritalStatus", model.MaritalStatus);
+        //                    oCmd.Parameters.AddWithValue("@BloodGroup", model.BloodGroup);
+        //                    oCmd.Parameters.AddWithValue("@branchlist", branchlist);
+
+        //                    //extra
+        //                    oCmd.Parameters.AddWithValue("@Deptid", model.Department);
+        //                    oCmd.Parameters.AddWithValue("@CategoryId", model.Category);
+        //                    oCmd.Parameters.AddWithValue("@ResignationDate", dorDt);
+
+        //                    //Contact
+        //                    oCmd.Parameters.AddWithValue("@MobileNo1", model.MobileNo);
+        //                    oCmd.Parameters.AddWithValue("@MobileNo2", model.MobileNo2);
+        //                    oCmd.Parameters.AddWithValue("@EmailId", model.EmailId);
+        //                    oCmd.Parameters.AddWithValue("@CurrentAddress", model.CurrentAddress);
+        //                    oCmd.Parameters.AddWithValue("@PermanentAddress", model.permanentAddress);
+        //                    oCmd.Parameters.AddWithValue("@EmergancyContactNo", model.EmergencyContact);
+        //                    oCmd.Parameters.AddWithValue("@EmergancyContactRelation", model.EmergencyContactRelation);
+
+        //                    //salary
+        //                    oCmd.Parameters.AddWithValue("@BankName", model.BankName);
+        //                    oCmd.Parameters.AddWithValue("@BankAccountNo", model.AccountNo);
+        //                    oCmd.Parameters.AddWithValue("@PANNOTaxIdentificationNo", model.PANNo);
+        //                    oCmd.Parameters.AddWithValue("@AadharCardNoCountryCardNo", model.AdharNo);
+        //                    oCmd.Parameters.AddWithValue("@IBANSwiftCode", model.SwiftCode);
+        //                    oCmd.Parameters.AddWithValue("@PaymentMode", model.PaymentMode);
+        //                    oCmd.Parameters.AddWithValue("@PFNO", model.PFNo);
+        //                    oCmd.Parameters.AddWithValue("@ESINo", model.ESINo);
+        //                    oCmd.Parameters.AddWithValue("@GrossSalary", model.GrossSalary);
+        //                    oCmd.Parameters.AddWithValue("@BasicSalary", model.BasicSalary);
+        //                    oCmd.Parameters.AddWithValue("@CTC", model.CalculatePfOn);
+        //                    oCmd.Parameters.AddWithValue("@SalaryBasisHrs", model.SalaryBasis);
+        //                    oCmd.Parameters.AddWithValue("@SalaryCalculationBasisOn", model.SalaryCalculation);
+        //                    oCmd.Parameters.AddWithValue("@PFApplicable", model.PFApplicable);
+        //                    oCmd.Parameters.AddWithValue("@ApplyPFonAmt", model.ApplyPFFonmAmt);
+        //                    oCmd.Parameters.AddWithValue("@ApplyESIonAmt", model.ApplyESIFonmAmt);
+        //                    oCmd.Parameters.AddWithValue("@OTApplicable", model.OTApplicable);
+        //                    oCmd.Parameters.AddWithValue("@LeaveApplicable", model.LeaveApplicable);
+        //                    oCmd.Parameters.AddWithValue("@ESIApplicable", model.ESIApplicable);
+        //                    oCmd.Parameters.AddWithValue("@LateMarkingApplicable", model.LateMarkingCalculationApplicable);
+        //                    oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.FixSalaryAmt);
+
+        //                    //Allowance-Deduction
+        //                    //oCmd.Parameters.AddWithValue("@SalaryHeadId", model.SalaryHeadId);
+        //                    //oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.AllowanceMode);
+        //                    //oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.Percent);
+        //                    //oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.AllowanceAmount);
+        //                    //oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.AllowanceType);
+        //                    //oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.PartyPay);
+
+        //                    //Job&Work Detail
+        //                    //oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.DateOfJoining);
+        //                    //oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.JobDepartment);
+        //                    oCmd.Parameters.AddWithValue("@ReportingDesignationId", model.JobDesignation);
+        //                    //oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.ReportingMg);
+        //                    //oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.EmployeeType);
+        //                    //oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.WorkLocation);
+        //                    //oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.JObShift);
+        //                    //oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.EmpGrade);
+        //                    oCmd.Parameters.AddWithValue("@ProbationPeriod", model.JobProbationPeriod);
+        //                    oCmd.Parameters.AddWithValue("@DateOfProbation", DateOfProbation);
+        //                    //oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.ProbationEndDate);
+        //                    oCmd.Parameters.AddWithValue("@DateOfConfirm", DateOfConfirm);
+        //                    oCmd.Parameters.AddWithValue("@Referance1", model.JobReference1);
+        //                    oCmd.Parameters.AddWithValue("@Referencetwo", model.JobReference2);
+        //                    oCmd.Parameters.AddWithValue("@Through", model.JoiningThrough);
+
+        //                    //Document-IDproof
+        //                    oCmd.Parameters.AddWithValue("@NationalIdPassport", model.PassportNo);
+        //                    oCmd.Parameters.AddWithValue("@WorkPermitVisa", model.WorkPeritVisa);
+        //                    oCmd.Parameters.AddWithValue("@DrivingLicence", model.DrivingLicenseNo);
+        //                    oCmd.Parameters.AddWithValue("@MedicalInsuranceDetail", model.MedicalInsuranceDetail);
+        //                    //oCmd.Parameters.AddWithValue("@PANNOTaxIdentificationNo", model.PANNo);
+
+        //                    //UploadSection
+        //                    oCmd.Parameters.AddWithValue("@ThumbPath", model.ThumbUnPress);
+        //                    //oCmd.Parameters.AddWithValue("@AadharCardNoCountryCardNo", model.AdharNo);
+        //                    //oCmd.Parameters.AddWithValue("@AadharCardNoCountryCardNo", model.fileUpload);
+
+
+        //                    //Educational
+        //                    //oCmd.Parameters.AddWithValue("@DateOfConfirm", model.Qualification);
+        //                    //oCmd.Parameters.AddWithValue("@DateOfConfirm", model.Univercity_Sch);
+        //                    //oCmd.Parameters.AddWithValue("@DateOfConfirm", model.Per);
+        //                    //oCmd.Parameters.AddWithValue("@DateOfConfirm", model.InYear);
+        //                    //oCmd.Parameters.AddWithValue("@DateOfConfirm", model.Remark);
+
+
+        //                    //Experiance
+        //                    //oCmd.Parameters.AddWithValue("@DateOfConfirm", model.CompanyName);
+        //                    //oCmd.Parameters.AddWithValue("@DateOfConfirm", model.CFromDate);
+        //                    //oCmd.Parameters.AddWithValue("@DateOfConfirm", model.CToDate);
+        //                    //oCmd.Parameters.AddWithValue("@DateOfConfirm", model.Designation);
+        //                    //oCmd.Parameters.AddWithValue("@DateOfConfirm", model.Salary);
+
+
+        //                    //ExitDetail
+        //                    oCmd.Parameters.AddWithValue("@NoticePeriod", model.NoticPeriod);
+        //                    oCmd.Parameters.AddWithValue("@GratutyEligibility", model.GratutyEligibility);
+
+        //                }
+
+
+        //                myConnection.Open();
+        //                Reader = await oCmd.ExecuteReaderAsync();
+        //                if (Reader != null)
+        //                {
+        //                    while (Reader.Read())
+        //                    {
+        //                        _ResponseResult = new ResponseResult()
+        //                        {
+        //                            StatusCode = (HttpStatusCode)Reader["StatusCode"],
+        //                            StatusText = Reader["StatusText"].ToString(),
+        //                            Result = Reader["Result"].ToString()
+        //                        };
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        dynamic Error = new ExpandoObject();
+        //        Error.Message = ex.Message;
+        //        Error.Source = ex.Source;
+        //        Error.StackTrace = ex.StackTrace;
+        //        _ResponseResult = new ResponseResult()
+        //        {
+        //            StatusCode = HttpStatusCode.InternalServerError,
+        //            StatusText = "Error occurred while saving employee data.",
+        //            Result = ex.Message
+        //        };
+        //    }
+        //    finally
+        //    {
+        //        if (Reader != null)
+        //        {
+        //            Reader.Close();
+        //            Reader.Dispose();
+        //        }
+        //    }
+        //    return _ResponseResult;
+        //}
 
         public static DateTime? ParseDate(string? dateString)
         {

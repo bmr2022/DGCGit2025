@@ -85,9 +85,9 @@ namespace eTactWeb.Data.BLL
             return await _EmployeeMasterDAL.GetRefThrough();
         }
 
-        public async Task<DOM.Models.Common.ResponseResult> SaveEmployeeMaster(EmployeeMasterModel model)
+        public async Task<DOM.Models.Common.ResponseResult> SaveEmployeeMaster(EmployeeMasterModel model, DataTable DtAllDed, DataTable DtEdu, DataTable dtexp, DataTable dtNjob)
         {
-            return await _EmployeeMasterDAL.SaveEmployeeMaster(model);
+            return await _EmployeeMasterDAL.SaveEmployeeMaster(model, DtAllDed, DtEdu, dtexp, dtNjob);
         }
     }
 }
