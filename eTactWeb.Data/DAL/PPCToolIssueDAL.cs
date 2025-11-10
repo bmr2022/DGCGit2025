@@ -302,7 +302,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@ActualEntryBy", model.ActualEntryBy));
                 SqlParams.Add(new SqlParameter("@LastUpdatedBy", model.LastUpdatedBy));
                 SqlParams.Add(new SqlParameter("@LastUpdatedDate", lastUpdatedDate));
-                SqlParams.Add(new SqlParameter("@pendingStatus", model.PendingStatus ?? ""));
+                SqlParams.Add(new SqlParameter("@pendingStatus", model.pendingStatus ?? ""));
 
                 // Add TVP
                 var tvpParam = new SqlParameter("@dt", SqlDbType.Structured)

@@ -308,16 +308,15 @@ namespace eTactweb.Controllers
                 var result = await _IPPCToolIssue.InsertToolIssue(model, dtTool);
 
                 // 6️⃣ Handle response
-                if (result != null && result.StatusText == "Success" && result.StatusCode == HttpStatusCode.OK)
+                if (result != null && string.IsNullOrWhiteSpace(result.Message))
                 {
                     TempData["200"] = "Data Saved Successfully!";
                     HttpContext.Session.Remove("KeyToolIssueGrid");
                 }
                 else
                 {
-                    TempData["500"] = "Error while saving data!";
+                    TempData["500"] = result?.Message ?? "Error while saving data!";
                 }
-
                 return RedirectToAction("PPCToolIssue");
             }
             catch (Exception ex)
@@ -395,8 +394,8 @@ namespace eTactweb.Controllers
                     item.ForMachineId ?? 0,
                     string.IsNullOrWhiteSpace(item.SpecialInstruction) ? "" : item.SpecialInstruction,
                     string.IsNullOrWhiteSpace(item.WillBeConsumedOrReturned) ? "" : item.WillBeConsumedOrReturned,
-                    item.PendingStatus ?? (object)DBNull.Value,
-                    item.PendingQty.HasValue ? (object)item.PendingQty.Value : DBNull.Value
+                    item.PendingStatus ?? "Pen",
+                    item.PendingQty.HasValue ? item.PendingQty.Value : 0
 
                 );
             }

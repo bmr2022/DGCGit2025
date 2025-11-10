@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 //using Microsoft.DotNet.Scaffolding.Shared.Project;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
+using System.Data;
 using System.Globalization;
 using System.Net;
 
@@ -149,7 +150,18 @@ namespace eTactWeb.Controllers
         {
             model.Mode = model.Mode != "U" ? "SAVE" : "UPDATE";
             model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-            var Result = await _IEmployeeMaster.SaveEmployeeMaster(model);
+            string modelJson = HttpContext.Session.GetString("KeyEmployeeMasterGrid");
+            List<EmployeeMasterModel> EmployeeMasterDetail = new List<EmployeeMasterModel>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                EmployeeMasterDetail = JsonConvert.DeserializeObject<List<EmployeeMasterModel>>(modelJson);
+            }
+            var DtAllDed = GetDtAllDedTable(EmployeeMasterDetail);
+            var DtEdu = GetDtEduTable(EmployeeMasterDetail);
+            var dtexp = GetdtexpTable(EmployeeMasterDetail);
+            //var dtNjob = GetdtexpTable(EmployeeMasterDetail);
+            var dtNjob = GetdtNjobTable(EmployeeMasterDetail);
+            var Result = await _IEmployeeMaster.SaveEmployeeMaster(model, DtAllDed, DtEdu, dtexp, dtNjob);
 
             if (Result == null)
             {
@@ -196,13 +208,181 @@ namespace eTactWeb.Controllers
                     TempData["500"] = "500";
                 }
 
-
-               
-                //model.IsError = "true";
-                //return View("Error", Result);
             }
             return RedirectToAction(nameof(EmployeeMaster), new { ID = 0 });
 
+        }
+        private static DataTable GetDtAllDedTable(IList<EmployeeMasterModel> DetailList)
+        {
+            try
+            {
+                var DtAllDed = new DataTable();
+
+                DtAllDed.Columns.Add("EmpId", typeof(long));
+                DtAllDed.Columns.Add("EmpCode", typeof(string));
+                DtAllDed.Columns.Add("SeqNo", typeof(long));
+                DtAllDed.Columns.Add("SalHeadEntryId", typeof(long));
+                DtAllDed.Columns.Add("Mode", typeof(string));
+                DtAllDed.Columns.Add("Percentage", typeof(decimal));
+                DtAllDed.Columns.Add("Amount", typeof(decimal));
+                DtAllDed.Columns.Add("IncDecType", typeof(string));
+                DtAllDed.Columns.Add("PartofPaySlip", typeof(string));
+                DtAllDed.Columns.Add("PercentageOfSalaryHeadID", typeof(long));
+
+
+                foreach (var Item in DetailList)
+                {
+
+                    DtAllDed.Rows.Add(
+                        new object[]
+                        {
+                         Item.EmpId == 0 ? 0 : Item.EmpId,
+                Item.EmpCode ?? string.Empty,
+                Item.SrNo == 0 ? 0 : Item.SrNo,
+                Item.SalaryHeadId == 0 ? 0 : Item.SalaryHeadId,
+                Item.AllowanceMode ?? string.Empty,
+                Item.Percent == 0 ? 0 : Item.Percent,
+                Item.AllowanceAmount == 0 ? 0 : Item.AllowanceAmount,
+                Item.AllowanceType ?? string.Empty,
+                Item.PartyPay ?? string.Empty,
+                Item.Percent == 0 ? 0 : Item.Percent
+                    });
+                }
+                DtAllDed.Dispose();
+                return DtAllDed;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+        private static DataTable GetDtEduTable(IList<EmployeeMasterModel> DetailList)
+        {
+            try
+            {
+                var DtEdu = new DataTable();
+                DtEdu.Columns.Add("EmpId", typeof(long));
+                DtEdu.Columns.Add("EmpCode", typeof(string));
+                DtEdu.Columns.Add("SeqNo", typeof(long));
+                DtEdu.Columns.Add("Qualification", typeof(string));
+                DtEdu.Columns.Add("Univercity", typeof(string));
+                DtEdu.Columns.Add("Percentage", typeof(decimal));
+                DtEdu.Columns.Add("PassoutYear", typeof(long));
+                DtEdu.Columns.Add("Remarks", typeof(string));
+
+
+                foreach (var Item in DetailList)
+                {
+
+                    DtEdu.Rows.Add(
+                        new object[]
+                        {
+                        Item.EmpId == 0 ? 0 : Item.EmpId,                     // long
+                Item.EmpCode ?? string.Empty,                         // string
+                Item.SrNo == 0 ? 0 : Item.SrNo,                       // int
+                Item.Qualification ?? string.Empty,                   // string
+                Item.Univercity_Sch ?? string.Empty,                  // string
+                Item.Per is null ? 0 : Item.Per,                      // decimal?
+                Item.InYear == 0 ? 0 : Item.InYear,                   // int
+                Item.Remark ?? string.Empty
+
+                    });
+                }
+                DtEdu.Dispose();
+                return DtEdu;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+        private static DataTable GetdtexpTable(IList<EmployeeMasterModel> DetailList)
+        {
+            try
+            {
+                var dtExp = new DataTable();
+                dtExp.Columns.Add("EmpId", typeof(long));
+                dtExp.Columns.Add("EmpCode", typeof(string));
+                dtExp.Columns.Add("SeqNo", typeof(long));
+                dtExp.Columns.Add("CompanyName", typeof(string));
+                dtExp.Columns.Add("FromDate", typeof(DateTime));
+                dtExp.Columns.Add("ToDate", typeof(DateTime));
+                dtExp.Columns.Add("Designation", typeof(string));
+                dtExp.Columns.Add("NetSalaryAmt", typeof(decimal));
+                dtExp.Columns.Add("GrossSalary", typeof(decimal));
+                dtExp.Columns.Add("Country", typeof(string));
+                dtExp.Columns.Add("City", typeof(string));
+                dtExp.Columns.Add("ContactPersonname", typeof(string));
+                dtExp.Columns.Add("ContactPersonNumber", typeof(string));
+                dtExp.Columns.Add("HRPersonName", typeof(string));
+                dtExp.Columns.Add("HRContactNo", typeof(string));
+                dtExp.Columns.Add("Remarks", typeof(string));
+
+
+
+                foreach (var Item in DetailList)
+                {
+
+                    dtExp.Rows.Add(
+                        new object[]
+                        {
+                        Item.EmpId == 0 ? 0 : Item.EmpId,                         // long
+                Item.EmpCode ?? string.Empty,                             // string
+                Item.SrNo == 0 ? 0 : Item.SrNo,                           // int
+                Item.CompanyName ?? string.Empty,                         // string
+                Item.CFromDate ?? "",                           // string (or DateTime.ToString())
+                Item.CToDate ?? "",                             // string (or DateTime.ToString())
+                Item.Designation ?? string.Empty,                         // string
+                Item.Salary is 0 ? 0 : Item.Salary,                    // decimal?
+                Item.GrossSalary is 0 ? 0 : Item.GrossSalary,          // decimal?
+                Item.Country ?? string.Empty,                             // string
+                Item.City ?? string.Empty,                                // string
+                Item.ContactPersonname ?? string.Empty,                   // string
+                Item.ContactPersonNumber ?? string.Empty,                 // string
+                Item.HRPersonName ?? string.Empty,                        // string
+                Item.HRContactNo ?? string.Empty,                         // string
+                Item.Remark ?? string.Empty
+
+                    });
+                }
+                dtExp.Dispose();
+                return dtExp;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+        private static DataTable GetdtNjobTable(IList<EmployeeMasterModel> DetailList)
+        {
+            try
+            {
+                var dtNjob = new DataTable();
+                dtNjob.Columns.Add("EmpId", typeof(long));
+                dtNjob.Columns.Add("EmpCode", typeof(string));
+                dtNjob.Columns.Add("SeqNo", typeof(long));
+                dtNjob.Columns.Add("NatureOfjob", typeof(string));
+
+                foreach (var Item in DetailList)
+                {
+
+                    dtNjob.Rows.Add(
+                        new object[]
+                        {
+                         Item.EmpId == 0 ? 0 : Item.EmpId,           // long
+                Item.EmpCode ?? string.Empty,               // string
+                Item.SrNo == 0 ? 0 : Item.SrNo,             // int
+                Item.NatureOfDuties ?? string.Empty
+
+                    });
+                }
+                dtNjob.Dispose();
+                return dtNjob;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         public async Task<IActionResult> GetSearchData(string EmpCode, string ReportType)
