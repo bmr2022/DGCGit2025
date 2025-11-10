@@ -21,6 +21,7 @@ using System.Globalization;
 using System.Net;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using ClosedXML.Excel;
+using DocumentFormat.OpenXml.EMMA;
 
 namespace eTactWeb.Controllers
 {
@@ -2219,6 +2220,7 @@ namespace eTactWeb.Controllers
         public async Task<IActionResult> DeleteByID(int ID, int YC, string CC, string EntryByMachineName, string EntryDate, int ActualEntryBy, string FromDate = "", string ToDate = "", string SlipNo = "", string ItemName = "", string PartCode = "", string ProdPlanNo = "", string ProdSchNo = "", string ReqNo = "", string Searchbox = "", string DashboardType = "")
         {
             EntryByMachineName = Environment.MachineName;
+            ActualEntryBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
             var Result = await _IProductionEntry.DeleteByID(ID, YC, CC, EntryByMachineName, EntryDate, ActualEntryBy);
 
             if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
