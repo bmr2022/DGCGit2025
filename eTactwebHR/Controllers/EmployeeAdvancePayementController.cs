@@ -25,8 +25,8 @@ namespace eTactwebHR.Controllers
             var MainModel = new HRAdvanceModel();
             MainModel.FinFromDate = HttpContext.Session.GetString("FromDate");
             MainModel.FinToDate = HttpContext.Session.GetString("ToDate");
-            MainModel.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
-            MainModel.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            MainModel.ActualEntryBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            MainModel.ActualEntryByName = HttpContext.Session.GetString("EmpName");
             MainModel.CC = HttpContext.Session.GetString("Branch");
             MainModel.AdvanceYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
 
