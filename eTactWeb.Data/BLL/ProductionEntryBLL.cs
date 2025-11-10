@@ -115,9 +115,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _ProductionEntryDAL.SaveProductionEntry(model, GIGrid, OperatorGrid, BreakDownGrid, ScrapGrid, ProductGrid);
         }
-        public async Task<ResponseResult> DeleteByID(int ID, int YC, string CC, string EntryByMachineName, string EntryDate,int ActualEntryBy)
+        public async Task<ResponseResult> DeleteByID(int ID, int YC, string CC, string EntryByMachineName, string EntryDate,int ActualEntryBy,string IPAddress)
         {
-            return await _ProductionEntryDAL.DeleteByID(ID, YC, CC, EntryByMachineName, EntryDate,ActualEntryBy);
+            return await _ProductionEntryDAL.DeleteByID(ID, YC, CC, EntryByMachineName, EntryDate,ActualEntryBy, IPAddress);
         }
         public async Task<ResponseResult> FillEntryandGate(string Flag, int YearCode, string SPName)
         {

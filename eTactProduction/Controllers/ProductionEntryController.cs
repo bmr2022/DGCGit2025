@@ -326,6 +326,7 @@ namespace eTactWeb.Controllers
                 else
                 {
                     model.CC = HttpContext.Session.GetString("Branch");
+                    model.IPAddress = HttpContext.Session.GetString("ClientIP");
                     model.EntrybyMachineName = Environment.MachineName;
                     model.PreparedByEmpId = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
                     //model.ActualEnteredBy   = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
@@ -2221,7 +2222,8 @@ namespace eTactWeb.Controllers
         {
             EntryByMachineName = Environment.MachineName;
             ActualEntryBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
-            var Result = await _IProductionEntry.DeleteByID(ID, YC, CC, EntryByMachineName, EntryDate, ActualEntryBy);
+            string IPAddress = HttpContext.Session.GetString("ClientIP");
+            var Result = await _IProductionEntry.DeleteByID(ID, YC, CC, EntryByMachineName, EntryDate, ActualEntryBy, IPAddress);
 
             if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
             {

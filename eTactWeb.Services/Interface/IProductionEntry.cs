@@ -15,7 +15,7 @@ public interface IProductionEntry
     Task<ResponseResult> GetFeatureOption(string Flag, string SPName);
     Task<ResponseResult> SaveProductionEntry(ProductionEntryModel model, DataTable GIGrid, DataTable OperatorGrid, DataTable BreakDownGrid, DataTable ScrapGrid, DataTable ProductGrid);
     Task<ProductionEntryDashboard> GetDashboardData(string FromDate, string ToDate, string SlipNo, string ItemName, string PartCode, string ProdPlanNo, string ProdSchNo, string ReqNo, string DashboardType);
-    Task<ResponseResult> DeleteByID(int ID, int YC, string CC, string EntryByMachineName, string EntryDate, int ActualEntryBy);
+    Task<ResponseResult> DeleteByID(int ID, int YC, string CC, string EntryByMachineName, string EntryDate, int ActualEntryBy,string IPAddress);
     Task<ResponseResult> FillEntryandGate(string Flag, int YearCode, string SPName);
     Task<ResponseResult> FillShift();
     Task<ResponseResult> CheckAllowToAddNegativeStock();

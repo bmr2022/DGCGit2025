@@ -386,6 +386,29 @@ public class HomeController : Controller
 
         return model;
     }
+    private string GetClientIpAddress(HttpContext context)
+    {
+        string ip = context.Connection.RemoteIpAddress?.ToString();
+
+        // If behind proxy or load balancer
+        if (context.Request.Headers.ContainsKey("X-Forwarded-For"))
+        {
+            ip = context.Request.Headers["X-Forwarded-For"].ToString().Split(',')[0];
+        }
+
+        // Handle local requests (::1 means localhost in IPv6)
+        if (ip == "::1" || ip == "0:0:0:0:0:0:0:1")
+        {
+            // Get local IPv4 address of this machine
+            ip = Dns.GetHostEntry(Dns.GetHostName())
+                    .AddressList
+                    .FirstOrDefault(a => a.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)?
+                    .ToString();
+        }
+
+        return ip ?? "Unknown";
+    }
+
 
     public LoginModel GeteDTRModel()
     {
@@ -921,6 +944,10 @@ public class HomeController : Controller
             HttpContext.Session.SetString("DeptName", DepName);
             HttpContext.Session.SetString("DeptId", DepId.ToString());
             HttpContext.Session.SetString("RetailerOrManufacturar", RetailerOrManufacturar);
+            string ipAddress = GetClientIpAddress(HttpContext);
+
+            // Store in session
+            HttpContext.Session.SetString("ClientIP", ipAddress);
             //Task login = HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
         }
