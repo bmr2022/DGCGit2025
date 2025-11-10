@@ -478,11 +478,9 @@ public class GateAttendanceDAL
                         if (string.Equals(MainModel.DayOrMonthType, "Daily", StringComparison.OrdinalIgnoreCase))
                         {
                             // directly pick FromTime/ToTime style columns
-                            foreach (var col in allColumns.Where(c =>
-                                c.Equals("FromTime", StringComparison.OrdinalIgnoreCase) ||
-                                c.Equals("ToTime", StringComparison.OrdinalIgnoreCase)))
+                            foreach (var col in allColumns.Where(c => c.Equals("FromTime", StringComparison.OrdinalIgnoreCase) || c.Equals("ToTime", StringComparison.OrdinalIgnoreCase) || c.Equals("AttInTime", StringComparison.OrdinalIgnoreCase) ||  c.Equals("AttOutTime", StringComparison.OrdinalIgnoreCase)))
                             {
-                                detail.Attendance[col.ToLower()] = dr[col]?.ToString() ?? string.Empty;
+                                detail.Attendance[(col.ToLower().Contains("fromtime") || col.ToLower().Contains("attintime")) ? "fromtime" : "totime"] = dr[col]?.ToString() ?? string.Empty;
                             }
                         }
                         else if (string.Equals(MainModel.DayOrMonthType,"Monthly", StringComparison.OrdinalIgnoreCase))
