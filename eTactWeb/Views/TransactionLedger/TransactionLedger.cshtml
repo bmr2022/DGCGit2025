@@ -343,7 +343,7 @@
         });
 
         function GetValidateData() {
-            debugger
+             
             if ($('#ReportType').val() == "TransactionLedgerSummary" || $('#ReportType').val() == "TransactionLedgerDetail") {
                 if ($('#LedgerName').val() == 0 || $('#LedgerName').prop('selectedIndex') == 0) {
                     $.notify('Account Code is mandatory to display details data', "error");
@@ -452,30 +452,6 @@
             }
         });
 
-        function BackButtonData(event) {
-
-            event.preventDefault();
-
-            sessionStorage.setItem('FromDateBack', $('#FromDate').val());
-            sessionStorage.setItem('ToDateBack', $('#ToDate').val());
-            sessionStorage.setItem('ReportTypeBack', $('#ReportType').val());
-            sessionStorage.setItem('GroupLedgerBack', $('#Group_Ledger').val());
-            sessionStorage.setItem('ParentLedgerNameBack', $('#ParentLedgerName').val());
-            sessionStorage.setItem('LedgerNameBack', $('#LedgerName').val());
-            sessionStorage.setItem('VoucherTypeBack', $('#VoucherType').val());
-            sessionStorage.setItem('VoucherNoBack', $('#VoucherNo').val());
-            sessionStorage.setItem('INVNoBack', $('#INVNo').val());
-            sessionStorage.setItem('NarrationBack', $('#Narration').val());
-            sessionStorage.setItem('AmountBack', $('#Amount').val());
-            sessionStorage.setItem('DrBack', $('#Dr').val());
-            sessionStorage.setItem('CrBack', $('#Cr').val());
-            sessionStorage.setItem('GlobalSearchBack', $('#search-box').val());
-
-            var urlHref = $(event.currentTarget).attr("href");
-            var linkUrl = urlHref;
-            window.location.href = linkUrl;
-        }
-
         function confirmEdit(event) {
             event.preventDefault();
             sessionStorage.setItem('FromDateBack', $('#FromDate').val());
@@ -496,15 +472,6 @@
             var linkUrl = urlHref;
 
             window.location.href = linkUrl;
-        }
-
-        // Save history for TrialBalance drill-down
-        function saveHistory(action, params = {}) {
-
-            let history = JSON.parse(sessionStorage.getItem('HistoryStack')) || [];
-            history.push({ action, params });
-            sessionStorage.setItem('HistoryStack', JSON.stringify(history));
-            $('#BackButton').show();
         }
 
         function formatDate1(date) {
@@ -967,7 +934,6 @@
         }
 
         function callDrillDown(elem) {
-            debugger;
 
             // ======================================================
             // ✅ Step 1: Collect all filter input values

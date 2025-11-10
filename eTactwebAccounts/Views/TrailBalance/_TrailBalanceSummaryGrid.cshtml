@@ -163,7 +163,14 @@
                                 </a>
                             </td>
                             <th>@Cntr</th>
-                            <td style="color:blue;cursor:pointer;" onclick="GetDetailByGroupName(@Cntr)"><input type="hidden" id="TrailBalanceGroupCode-@Cntr" value="@item.TrailBalanceGroupCode" />@item.TrailBalanceGroupName</td>
+                            <td style="color:blue;cursor:pointer;" onclick="callDrillDown(this)"
+                                data-controller="TrailBalance"
+                                data-action="Index"
+                                data-seqno="@Cntr"
+                                data-clickname="GroupClick"
+                                data-groupname="@item.TrailBalanceGroupCode">
+                                <input type="hidden" id="TrailBalanceGroupCode-@Cntr" value="@item.TrailBalanceGroupCode" />@item.TrailBalanceGroupName
+                            </td>
                             <td id="totDrG-@Cntr" style="background-color:antiquewhite">@item.OpnDr</td>
                             <td id="totCrG-@Cntr" style="background-color:antiquewhite">@item.OpnCr</td>
                             <td id="totOpeningG-@Cntr"  >@item.TotalOpening</td>

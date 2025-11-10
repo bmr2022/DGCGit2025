@@ -314,6 +314,7 @@ public class ProductionEntryModel : ProductionEntryItemDetail
     public string? FinToDate { get; set; }
     public string? FromDate { get; set; }
     public string? ToDate { get; set; }
+    public string? IPAddress { get; set; }
     public int TransferMatYearCode {  get; set; }
     public string? EntrybyMachineName { get; set; }
     public int ID { get; set; }

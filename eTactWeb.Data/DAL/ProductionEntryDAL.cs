@@ -33,7 +33,7 @@ public class ProductionEntryDAL
         DBConnectionString = _connectionStringService.GetConnectionString();
         _httpContextAccessor = httpContextAccessor;
     }
-    public async Task<ResponseResult> DeleteByID(int ID, int YC, string CC, string EntryByMachineName, string EntryDate, int ActualEntryBy)
+    public async Task<ResponseResult> DeleteByID(int ID, int YC, string CC, string EntryByMachineName, string EntryDate, int ActualEntryBy,string IPAddress)
     {
         var _ResponseResult = new ResponseResult();
         var entrydt = ParseDate(EntryDate);
@@ -48,6 +48,7 @@ public class ProductionEntryDAL
             SqlParams.Add(new SqlParameter("@EntryByMachineName", EntryByMachineName));
             SqlParams.Add(new SqlParameter("@ActualEntryBy", ActualEntryBy));
             SqlParams.Add(new SqlParameter("@EntryDate", formattedEntryDate));
+            SqlParams.Add(new SqlParameter("@IPAddress", IPAddress));
             _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_ProductionEntry", SqlParams);
         }
         catch (Exception ex)
@@ -1420,6 +1421,7 @@ public class ProductionEntryDAL
             SqlParams.Add(new SqlParameter("@Entrydate", entDt == default ? string.Empty : entDt));
             SqlParams.Add(new SqlParameter("@Yearcode", model.YearCode == 0 ? 0 : model.YearCode));
             SqlParams.Add(new SqlParameter("@ProdAgainstReqPlanDirect", model.ProdAgainstPlanManual ?? ""));
+            SqlParams.Add(new SqlParameter("@IPAddress", model.IPAddress ?? ""));
            
             SqlParams.Add(new SqlParameter("@NewProdRework", model.ProdType ?? ""));
             SqlParams.Add(new SqlParameter("@ShiftId", model.ShiftId == 0 ? 0 : model.ShiftId));
