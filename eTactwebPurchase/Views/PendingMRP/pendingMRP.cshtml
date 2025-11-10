@@ -70,6 +70,7 @@
 										<option selected value="Y">Exclude projection</option>
 									</select>
 								</div>
+								<lable style="color:red">Please Refresh Bom To Generate MRP</lable>
 							</div>
 						</div>
 					</div>
@@ -104,7 +105,7 @@
 													<button class="btn btn-sm btn-outline-success me-3" type="button" id="SendToExcel">
 														<i class="fa-solid fa-upload fa-fw fa-lg "></i>Send To Excel
 													</button>
-													<button class="btn btn-sm btn-outline-primary me-3" type="button" id="GenerateMRP">
+													<button class="btn btn-sm btn-outline-primary me-3" disabled type="button" id="GenerateMRP">
 														<i class="fa fa-exchange" aria-hidden="true"></i> Generate MRP
 													</button>
 												</div>
@@ -218,6 +219,8 @@
 					$('#ajaxLoader').hide();
 					if ($.parseJSON(response).Result.length > 0) {
 						$.notify('Bom refresh successfully.', 'success');
+						$('#GenerateMRP').prop('disabled', false);
+
 					} else {
 						$.notify('Bom not refresh properly.', 'error');
 					}
