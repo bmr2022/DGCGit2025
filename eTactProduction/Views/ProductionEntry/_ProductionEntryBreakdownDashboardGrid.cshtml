@@ -64,21 +64,28 @@
                                     {
 
                                         <div id="editCursorDiv-@Cntr">
-                                            <a class="table-link link-primary" id="editCursor-@Cntr" asp-action="ProductionEntry" asp-route-Mode="U" asp-route-ID="@item.EntryId" asp-route-YC="@item.Yearcode" onclick="confirmEdit(event,'@item.EntryId','@item.Yearcode')">
+                                            <a class="table-link link-primary"
+                                               id="editCursor-@Cntr"
+                                               asp-action="ProductionEntry"
+                                               asp-route-Mode="U"
+                                               asp-route-ID="@item.PRODEntryId"
+                                               asp-route-YC="@item.PRODYearcode"
+                                               onclick="confirmEdit(event, '@item.PRODEntryId', '@item.PRODYearcode', '@item.ProdDate')">
                                                 <span class="fa-stack">
                                                     <i class="fa fa-square fa-stack-2x"></i>
                                                     <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
                                                 </span>
                                             </a>
                                         </div>
-                                        <div id="deleteCursorDiv-@Cntr">
-                                            <a class="table-link link-danger" id="deleteCursor-@Cntr" asp-action="DeleteByID" asp-route-ID="@item.EntryId" asp-route-YC="@item.Yearcode" asp-route-CC="@item.CC" asp-route-EntryByMachineName="@item.MachineName" asp-route-EntryDate="@item.Entrydate" onclick="confirmDelete(event)">
-                                                <span class="fa-stack">
-                                                    <i class="fa fa-square fa-stack-2x"></i>
-                                                    <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
-                                                </span>
-                                            </a>
-                                        </div>
+                                        <a href="@Url.Action("DeleteById", "ProductionEntry", new { ID = item.PRODEntryId, YC = item.PRODYearcode,Entrydate = item.Entrydate  })"
+                                           class="table-link link-danger"
+                                           onclick="confirmDelete(event, '@item.ProdSlipNo', '@item.PRODYearcode', '@item.ProdDate')"
+                                           title="Delete">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
                                     }
                                     else
                                     {
