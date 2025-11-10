@@ -122,7 +122,7 @@
     <script>
         $(document).ready(function () {
             GetServerDate();
-
+            GetFormRights();
             $('#PartCode').rules('remove', 'required');
 
             var currentDate = new Date();
@@ -487,6 +487,7 @@
                     $('#divDashboardGrid').empty().append(data);
                     var dashGrid = $('#gateDashboardtable tr').length;
                     $('#totalRows').text(dashGrid);
+                    GetFormRights();
                 },
                 error: function (response) {
                     alert(response.responseText);
@@ -509,6 +510,7 @@
                     $('#divDashboardGrid').empty().append(data);
                     var dashGrid = $('#gateDashboardtable tr').length;
                     $('#totalRows').text(dashGrid);
+                    GetFormRights();
                 },
                 error: function (response) {
                     alert(response.responseText);

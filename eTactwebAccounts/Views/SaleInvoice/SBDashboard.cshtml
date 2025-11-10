@@ -151,6 +151,7 @@
 {
     <script>
         $(document).ready(function () {
+            GetFormRights();
              var deleteMessage = '@TempData["DeleteMessage"]';
 
             if (deleteMessage) {
@@ -736,6 +737,7 @@
                     $('#divDashboardGrid').html(data);
                     $('#totalRows').text($('#gateDashboardtable tr').length);
                     //countAllTotal();
+                    GetFormRights();
                 },
                 error: function () {
                     console.log("Error fetching search results.");

@@ -100,10 +100,118 @@
 
 @section Scripts
 {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             GetDashBoardDetailData();
+        
         });
+            function GetFormRights() {
+
+            $.ajax({
+                url: "@Url.Action("GetFormRights")",
+                type: "POST",
+                async:false,
+                success: function (data) {
+
+                    if (data != null) {
+                        var obj = $.parseJSON(data);
+                        if (obj.Result.Table.length == 0) {
+                            var rowCounter = $('#gateDashboardtable tr').length;
+                            for (var i = 0; i <= rowCounter; i++) {
+                                $('#viewCursorDiv-' + i).empty();
+                                $('#viewCursorDiv-' + i).append(`<a class="table-link link-success noCursor" id="viewNoCursor"">
+                                                                                                <span class="fa-stack">
+                                                                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                                                                    <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                                                                                </span>
+                                                                                            </a>`);
+                            }
+                            for (var i = 0; i < rowCounter; i++) {
+                                $('#editCursorDiv-' + i).empty();
+                                $('#editCursorDiv-' + i).append(`<a class="table-link link-primary noCursor">
+                                                                                                        <span class="fa-stack">
+                                                                                                            <i class="fa fa-square fa-stack-2x"></i>
+                                                                                                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                                                                        </span>
+                                                                                                    </a>`);
+                            }
+                            for (var i = 0; i < rowCounter; i++) {
+                                $('#deleteCursorDiv-' + i).empty();
+                                $('#deleteCursorDiv-' + i).append(`<a class="table-link link-danger noCursor">
+                                                                                                        <span class="fa-stack">
+                                                                                                            <i class="fa fa-square fa-stack-2x"></i>
+                                                                                                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                                                                        </span>
+                                                                                                    </a>`);
+                            }
+                            $("#gateDashboardtable").css("display", "none");
+                            $(".totalrows").css("display", "none");
+                            $("#SParam").hide();
+                        }else{
+
+                            var optAll = obj.Result.Table[0].OptAll;
+                            var optSave = obj.Result.Table[0].OptSave;
+                            var optUpdate = obj.Result.Table[0].OptUpdate;
+                            var optDelete = obj.Result.Table[0].OptDelete;
+                            var optView = obj.Result.Table[0].OptView;
+                            var rowCounter = $('#divDashboardGrid tr').length;
+                            if (!optAll) {
+                                if (!optSave) {
+
+                                    $("#savebtn").css("pointer-events", "none");
+                                }else{
+                                    $("#savebtn").css("pointer-events", "");
+                                }
+                                if (!optView) {
+
+                                    for (var i = 0; i < rowCounter; i++) {
+                                        $('#viewCursorDiv-' + i).empty();
+                                        $('#viewCursorDiv-' + i).append(`<a class="table-link link-success noCursor" id="viewNoCursor"">
+                                                                <span class="fa-stack">
+                                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                                    <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                                                </span>
+                                                            </a>`);
+                                    }
+                                }
+                                if (!optUpdate) {
+                                    for (var i = 0; i < rowCounter; i++) {
+                                        $('#editCursorDiv-' + i).empty();
+                                        $('#editCursorDiv-' + i).append(`<a class="table-link link-primary noCursor">
+                                                                <span class="fa-stack">
+                                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                                    <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                                </span>
+                                                            </a>`);
+                                    }
+                                }
+                                if (!optDelete) {
+                                    for (var i = 0; i < rowCounter; i++) {
+                                        $('#deleteCursorDiv-' + i).empty();
+                                        $('#deleteCursorDiv-' + i).append(`<a class="table-link link-danger noCursor">
+                                                                <span class="fa-stack">
+                                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                                    <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                                </span>
+                                                            </a>`);
+                                    }
+                                }
+                                if (!(optUpdate || optDelete || optView)) {
+                                    $("#divDashboardGrid").css("display", "none");
+                                    $(".totalrows").css("display", "none");
+                                    $("#SParam").hide();
+                                }
+                            }
+                        }
+                    }
+                },
+                error: function (errMsg) {
+                    $.notify(errMsg, { position: "top center", className: "error" });
+                }
+            });
+        }
+
 
         $(document).ready(function () {
              
@@ -122,7 +230,7 @@
         //     $('#AccountCode').val($('#LedgerName').val());
         // })
         $(function () {
-           
+           GetFormRights();
             if ($('#gateDashboardtable tr').length < 1) {
                 var dashGrid = 0;
                 $('#totalRows').text(dashGrid);
@@ -198,6 +306,7 @@
                     if ($('#gateDashboardtable').val() == '') {
                         var dashGrid = 0;
                         $('#totalRows').text(dashGrid);
+                        GetFormRights();
                     } else {
                         var dashGrid = $('#gateDashboardtable tr').length;
                         $('#totalRows').text(dashGrid);
@@ -302,7 +411,7 @@
  
         
     </script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  
     <script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.19.1/jquery.validate.min.js"></script>
     <script src="https://ajax.aspnetcdn.com/ajax/mvc/5.2.3/jquery.validate.unobtrusive.min.js"></script>
     <script src="~/Scripts/table2excel.js"></script>

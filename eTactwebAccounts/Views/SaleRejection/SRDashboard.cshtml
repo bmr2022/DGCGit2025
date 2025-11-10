@@ -149,7 +149,7 @@
 {
     <script>
         $(document).ready(function () {
-
+            GetFormRights();
             var FromDate = parseDateToFormat($('#FinFromDate').val().split(" ")[0]);
             $("#FinFromDate").datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", FromDate);
             $('#FinToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
