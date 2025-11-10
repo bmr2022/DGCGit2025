@@ -55,8 +55,8 @@ namespace eTactweb.Controllers
             model.LastUpdatedDate = DateTime.Now;
 
             model.EntryByMachine = Environment.MachineName;
-            model.ActualEntryBy = HttpContext.Session.GetString("EmpName");
-            model.LastUpdatedBy = HttpContext.Session.GetString("EmpName");
+            model.ActualEntryBy = Convert.ToInt64(HttpContext.Session.GetString("UID"));
+            model.LastUpdatedBy = Convert.ToInt64(HttpContext.Session.GetString("UID"));
             model.Mode = "INSERT";
 
             string serializedGrid = JsonConvert.SerializeObject(model.ToolIssueDetails);
@@ -252,6 +252,23 @@ namespace eTactweb.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<JsonResult> FillIssuedByEmpList()
+        {
+            try
+            {
+                var result = await _IPPCToolIssue.FillIssuedByEmpList("FillIssuedByEmpList");
+                string jsonString = JsonConvert.SerializeObject(result);
+
+                return Json(jsonString); // return as string
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while filling EmpList.");
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
         [HttpPost]
         public async Task<IActionResult> InsertToolIssue(PPCToolIssueMainModel model)
         {
@@ -274,8 +291,8 @@ namespace eTactweb.Controllers
                 model.CC = HttpContext.Session.GetString("Branch") ?? "";
                 model.UID = Convert.ToInt64(HttpContext.Session.GetString("UID") ?? "0");
                 model.EntryByMachine = Environment.MachineName;
-                model.ActualEntryBy = HttpContext.Session.GetString("EmpName") ?? "";
-                model.LastUpdatedBy = HttpContext.Session.GetString("EmpName") ?? "";
+                model.ActualEntryBy = Convert.ToInt64(HttpContext.Session.GetString("UID") ?? "0");
+                model.LastUpdatedBy = Convert.ToInt64(HttpContext.Session.GetString("UID") ?? "0");
                 model.ToolIssueYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode") ?? "0");
 
                 // 3️⃣ Default nullable dates if empty
@@ -351,8 +368,8 @@ namespace eTactweb.Controllers
             foreach (var item in list)
             {
                 dt.Rows.Add(
-                     item.SeqNo,
-                   item.ToolIssueEntryId,
+                    item.SeqNo,
+                    item.ToolIssueEntryId,
                     item.ToolIssueYearCode,
                     item.ToolEntryId,
                     item.ToolYearCode,
@@ -369,18 +386,18 @@ namespace eTactweb.Controllers
                     item.RemainingToolLifeInMonths ?? 0,
                     item.ProdPlanEntryId ?? 0,
                     string.IsNullOrWhiteSpace(item.ProdPlanNo) ? "" : item.ProdPlanNo,
-                    item.ProdPlandate.HasValue ? (object)item.ProdPlandate.Value : DBNull.Value,
+                    item.ProdPlandate ?? DateTime.Now,
                     item.ProdPlanYearCode ?? 0,
                     item.ProdSchEntryId ?? 0, // NOT NULL bigint, pass 0 if null
-                    string.IsNullOrWhiteSpace(item.ProdSchNo) ? null : item.ProdSchNo, // nullable string
-                    item.ProdSchDate.HasValue ? (object)item.ProdSchDate.Value : DBNull.Value, // nullable datetime
+                    string.IsNullOrWhiteSpace(item.ProdSchNo) ? "" : item.ProdSchNo,
+                    item.ProdSchDate ?? DateTime.Now,
                     item.ProdSchYearCode ?? 0,
                     item.ForMachineId ?? 0,
                     string.IsNullOrWhiteSpace(item.SpecialInstruction) ? "" : item.SpecialInstruction,
                     string.IsNullOrWhiteSpace(item.WillBeConsumedOrReturned) ? "" : item.WillBeConsumedOrReturned,
-                    string.IsNullOrWhiteSpace(item.PendingStatus) ? null : item.PendingStatus, // nullable string
-                    item.PendingQty.HasValue ? (object)item.PendingQty.Value : DBNull.Value // nullable bigint
-                    
+                    item.PendingStatus ?? (object)DBNull.Value,
+                    item.PendingQty.HasValue ? (object)item.PendingQty.Value : DBNull.Value
+
                 );
             }
 

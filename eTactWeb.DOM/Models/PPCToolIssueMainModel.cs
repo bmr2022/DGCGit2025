@@ -23,8 +23,8 @@ namespace eTactWeb.DOM.Models
 		public long UID { get; set; }
 		public string EntryByMachine { get; set; }
 		public DateTime? ActualEntryDate { get; set; }
-		public string ActualEntryBy { get; set; }
-		public string LastUpdatedBy { get; set; }
+		public long ActualEntryBy { get; set; }
+		public long LastUpdatedBy { get; set; }
 		public DateTime? LastUpdatedDate { get; set; }
 		public string PendingStatus { get; set; }
 

@@ -312,8 +312,9 @@
                                 <div class="row g-2 gx-3">
                                     <div class="col-lg-2">
                                         <label asp-for="IssuedByEmpId" class="form-label">Issued By</label>
-                                        <select asp-for="IssuedByEmpId" class="form-select"
-                                                asp-items="ViewBag.Employees"></select>
+                                        <select asp-for="IssuedByEmpId" id="IssueEmpId" class="form-select">
+                                            <option value="">-- Select Emp --</option>
+                                        </select>
                                     </div>
                                     <div class="col-lg-2">
                                         <label asp-for="ApprovedByEmpId" class="form-label">Approved By</label>
@@ -503,7 +504,7 @@
                 console.error("❌ Error fetching tool list:", err);
             }
         });
-    }
+     }
 
 
     function FillToolBarCode(callback) {
@@ -657,6 +658,35 @@
             }
         });
     }
+
+         function FillIssueEmpList() {
+            $.ajax({
+                    url: '/PPCToolIssue/FillIssuedByEmpList',
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    console.log("IssueByEmp list",data);
+                    // ✅ Parse only if it's actually a string
+                    const obj = typeof data === "string" ? JSON.parse(data) : data;
+                        var select = $('#IssueEmpId');
+                    select.empty();
+                    select.append('<option value="">-- Select Emp --</option>');
+
+                    // ✅ Use obj instead of data
+                    if (obj.Result && obj.Result.length > 0) {
+                        $.each(obj.Result, function (i, item) {
+                            select.append($('<option>', {
+                                value: item.Emp_Id,
+                                text: item.EmpName
+                            }));
+                        });
+                    }
+                },
+                error: function (err) {
+                    console.error("❌ Error fetching issue emp list:", err);
+                }
+            });
+        }
 
     function FillProdPlan() {
             // console.log("🔹 FillProdPlan called");
@@ -858,7 +888,7 @@
         FillDepartmentList();
         FillToolList();
         FillMachineList();
-
+              FillIssueEmpList();
     function clearDependentFieldsForBarcode() {
         $('#SerialNo').empty().append('<option value="">-- Select Serial No --</option>');
         $('#ProdPlanNo').empty().append('<option value="">-- Select Prod Plan --</option>');
@@ -887,6 +917,7 @@
             clearDependentFields();
             FillToolBarCode();
             FillProdPlan();
+          
         });
 
     $(document).on('change', '#BarCode', function () {
