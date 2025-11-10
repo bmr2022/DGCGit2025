@@ -2223,6 +2223,7 @@ namespace eTactWeb.Controllers
             EntryByMachineName = Environment.MachineName;
             ActualEntryBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
             string IPAddress = HttpContext.Session.GetString("ClientIP");
+             CC = HttpContext.Session.GetString("Branch");
             var Result = await _IProductionEntry.DeleteByID(ID, YC, CC, EntryByMachineName, EntryDate, ActualEntryBy, IPAddress);
 
             if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
