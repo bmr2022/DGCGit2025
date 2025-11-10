@@ -167,17 +167,12 @@ namespace eTactWeb.Controllers
                         }
                         else
                         {
-                            if (HRLeaveApplicationDetail.Where(x => x.LeaveName == model.LeaveName).Any())
-                            {
-                                return StatusCode(207, "Duplicate");
-                            }
-                            else
-                            {
+                          
                                 model.SeqNo = HRLeaveApplicationDetail.Count + 1;
                                 ProductionGrid = HRLeaveApplicationDetail.Where(x => x != null).ToList();
                                 SSGrid.AddRange(ProductionGrid);
                                 ProductionGrid.Add(model);
-                            }
+                            
                         }
 
                         MainModel.ItemDetailGrid = ProductionGrid;
@@ -215,17 +210,12 @@ namespace eTactWeb.Controllers
                         }
                         else
                         {
-                            if (HRLeaveApplicationDetail.Where(x => x.LeaveName == model.LeaveName).Any())
-                            {
-                                return StatusCode(207, "Duplicate");
-                            }
-                            else
-                            {
+                           
                                 model.SeqNo = HRLeaveApplicationDetail.Count + 1;
                                 ProductionGrid = HRLeaveApplicationDetail.Where(x => x != null).ToList();
                                 SSGrid.AddRange(ProductionGrid);
                                 ProductionGrid.Add(model);
-                            }
+                            
 
                         }
 

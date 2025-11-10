@@ -1313,6 +1313,33 @@
             let fromDate = document.getElementById("FromDate").value;
             let toDate = document.getElementById("ToDate").value;
             let datePattern = /^\d{2}\/\d{2}\/\d{4}$/; // DD/MM/YYYY format
+            var UsedLeave = 0;
+            var currentLeaveEntryId = $("#LeaveEntryId").val(); // or pass it dynamically
+
+            $('#DivDetailGrid tr').each(function () {
+                var leaveEntryId = $(this).find('input[id^="LeaveEntryId-"]').val();
+                if (leaveEntryId === currentLeaveEntryId) {
+                    var durationText = $(this).find('td[id^="Duration-"]').text().trim();
+                    var duration = parseFloat(durationText);
+                    if (!isNaN(duration)) {
+                        UsedLeave += duration;
+                    }
+                }
+            });
+
+            var requestedLeave = parseFloat($("#Duration").val()) || 0;
+            var maxAllowedLeave = parseFloat($("#MaxAllowedLeave").val()) || 0;
+            var totalRequestedLeave = UsedLeave + requestedLeave;
+
+            if (totalRequestedLeave > maxAllowedLeave) {
+                AddErrorCls('Duration');
+                $.notify("Total Leave Requested Exceeds Max Allowed Leave", "error");
+                Err = 1;
+            } else {
+                RemoveErrorCls('Duration');
+            }
+
+
 
             if (!datePattern.test(fromDate)) {
                 AddErrorCls('Date');
@@ -1493,8 +1520,9 @@
         function ClearGrid() {
 
                 $('#LeaveName').prop('selectedIndex', 0).trigger("change"),
-                $('#FromDate').val(''),
-                $('#ToDate').val(''),
+                $('#HalfDayFullDay').prop('selectedIndex', 0).trigger("change"),
+                // $('#FromDate').val(''),
+                // $('#ToDate').val(''),
                 $('#CarriedForward').val(0),
                 $('#Duration').val(0),
                 $('#BalanceLeaveMonthly').val(0),

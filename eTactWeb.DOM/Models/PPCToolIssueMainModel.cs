@@ -26,7 +26,7 @@ namespace eTactWeb.DOM.Models
 		public long ActualEntryBy { get; set; }
 		public long LastUpdatedBy { get; set; }
 		public DateTime? LastUpdatedDate { get; set; }
-		public string PendingStatus { get; set; }
+		public string pendingStatus { get; set; }
 
 		// Dropdown lists (optional)
 		public IList<TextValue>? DepartmentList { get; set; }
