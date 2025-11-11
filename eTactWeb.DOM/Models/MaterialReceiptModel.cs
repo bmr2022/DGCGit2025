@@ -166,6 +166,7 @@ public class BatchDetailModel
 }
 public class MaterialReceiptModel : MaterialReceiptDetail
 {
+    public string? IPAddress { get; set; }
     public string? IsError { get; set; }
     public string? FinFromDate { get; set; }
     public string? FinToDate { get; set; }

@@ -111,9 +111,9 @@ namespace eTactWeb.Data.BLL
             return await _GateInwardDAL.GetEwayBillDataforPo(model, GIGrid);
         }
 
-        public async Task<ResponseResult> DeleteByID(int ID, int YC,int ActualEnteredBy, string EntryByMachineName, string gateno)
+        public async Task<ResponseResult> DeleteByID(int ID, int YC,int ActualEnteredBy, string EntryByMachineName, string gateno,string IPAddress)
         {
-            return await _GateInwardDAL.DeleteByID(ID, YC, ActualEnteredBy,  EntryByMachineName,  gateno);
+            return await _GateInwardDAL.DeleteByID(ID, YC, ActualEnteredBy,  EntryByMachineName,  gateno, IPAddress);
         }
         public async Task<ResponseResult> FillEntryandGate(string Flag, int YearCode, string SPName)
         {

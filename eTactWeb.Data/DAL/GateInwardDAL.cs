@@ -35,7 +35,7 @@ public class GateInwardDAL
 
         //DBConnectionString = configuration.GetConnectionString("eTactDB");
     }
-    public async Task<ResponseResult> DeleteByID(int ID, int YC,int ActualEnteredBy,string EntryByMachineName,string gateno)
+    public async Task<ResponseResult> DeleteByID(int ID, int YC,int ActualEnteredBy,string EntryByMachineName,string gateno, string IPAddress)
     {
         var _ResponseResult = new ResponseResult();
         try
@@ -47,7 +47,9 @@ public class GateInwardDAL
             SqlParams.Add(new SqlParameter("@ActualEnteredBy", ActualEnteredBy));
             SqlParams.Add(new SqlParameter("@EntryByMachineName", EntryByMachineName));
             SqlParams.Add(new SqlParameter("@gateno", gateno));
-           
+            SqlParams.Add(new SqlParameter("@IPAddress", IPAddress));
+
+
             _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_GateMainDetail", SqlParams);
         }
         catch (Exception ex)
@@ -471,6 +473,8 @@ public class GateInwardDAL
             SqlParams.Add(new SqlParameter("@lastUpdatedBy", model.UpdatedBy));
             SqlParams.Add(new SqlParameter("@VPSaleBillEntryId", model.VPSaleBillEntryId));
             SqlParams.Add(new SqlParameter("@lastupdated", updDt == default ? string.Empty : updDt));
+            SqlParams.Add(new SqlParameter("@IPAddress", model.IPAddress));
+
 
             SqlParams.Add(new SqlParameter("@DTSSGrid", GIGrid));
             _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_GateMainDetail", SqlParams);

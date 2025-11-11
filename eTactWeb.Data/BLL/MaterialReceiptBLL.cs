@@ -86,9 +86,9 @@ namespace eTactWeb.Data.BLL
         }
 
 
-        public async Task<ResponseResult> DeleteByID(int ID, int YC)
+        public async Task<ResponseResult> DeleteByID(int ID, int YC,string IPAddress)
         {
-            return await _MaterialReceiptDAL.DeleteByID(ID,  YC);
+            return await _MaterialReceiptDAL.DeleteByID(ID,  YC, IPAddress);
         }
         public async Task<ResponseResult> FillEntryandMRN(string Flag, int YearCode, string SPName)
         {
