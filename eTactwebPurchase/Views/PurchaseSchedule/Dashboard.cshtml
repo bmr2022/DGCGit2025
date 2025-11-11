@@ -240,7 +240,7 @@
 
                         var obj = $.parseJSON(data);
                         if (obj.Result.Table.length == 0) {
-                            var rowCounter = $('#divDashboardGrid tr').length;
+                            var rowCounter = $('#divDashboardGrid1 tr').length;
                             for (var i = 0; i < rowCounter; i++) {
                                 $('#viewCursorDiv-' + i).empty();
                                 $('#viewCursorDiv-' + i).append(`<a class="table-link link-success noCursor" id="viewNoCursor"">
@@ -277,8 +277,8 @@
                                                                 </span>
                                                             </a>`);
                             }
-                            
-                                $("#divDashboardGrid").css("display", "none");
+
+                            $("#divDashboardGrid1").css("display", "none");
                                 $(".totalrows").css("display", "none");
                                 $("#SParam").hide();
                            
@@ -290,7 +290,7 @@
                             var optUpdate = obj.Result.Table[0].OptUpdate;
                             var optDelete = obj.Result.Table[0].OptDelete;
                             var optView = obj.Result.Table[0].OptView;
-                            var rowCounter = $('#divDashboardGrid tr').length;
+                            var rowCounter = $('#divDashboardGrid1 tr').length;
                             if (!optAll) {
                                 if (!optView) {
 
@@ -327,7 +327,7 @@
                                     }
                                 }
                                 if (!(optUpdate || optDelete || optView)) {
-                                    $("#divDashboardGrid").css("display", "none");
+                                    $("#divDashboardGrid1").css("display", "none");
                                     $(".totalrows").css("display", "none");
                                     $("#SParam").hide();
                                 }

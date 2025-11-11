@@ -106,12 +106,21 @@ namespace eTactWeb.Data.DAL
             try
             {
                 var upDt = CommonFunc.ParseFormattedDate(DateTime.Today.ToString("dd/MM/yyyy"));
+                var doj = CommonFunc.ParseFormattedDate(model.DOJ);
+                var reqDt = CommonFunc.ParseFormattedDate(model.RequestDate);
+                var entryDt = CommonFunc.ParseFormattedDate(model.EntryDate);
+                var mgrAppDt = CommonFunc.ParseFormattedDate(model.MgrApprovaldate);
+                var hrAppDt = CommonFunc.ParseFormattedDate(model.HRApprovalDate);
+                var finAppDt = CommonFunc.ParseFormattedDate(model.FinanceApprovalDate);
+                var finRecoveryDt = CommonFunc.ParseFormattedDate(model.FinalRevoveryDate);
+                var actualFinRecoveryDt = CommonFunc.ParseFormattedDate(model.ActualFinalRecoveryDate);
+
                 var SqlParams = new List<dynamic>();
                 if (model.Mode == "V" || model.Mode == "U")
                 {
                     SqlParams.Add(new SqlParameter("@Flag", "Update"));
                     //SqlParams.Add(new SqlParameter("@UpdatedBy", model.LastUpdatedBy));
-                    //SqlParams.Add(new SqlParameter("@LastUpdationdate", upDt));
+                    //SqlParams.Add(new SqlParameter("@lastupdationdate", upDt));
                 }
                 else
                 {
@@ -120,59 +129,54 @@ namespace eTactWeb.Data.DAL
 
                 var currentDate = CommonFunc.ParseFormattedDate(DateTime.Today.ToString());
 
-                SqlParams.Add(new SqlParameter("@UpdatedBy", model.LastUpdatedBy));
-                SqlParams.Add(new SqlParameter("@LastUpdationdate", currentDate == default ? string.Empty : currentDate));
-
                 SqlParams.Add(new SqlParameter("@AdvanceEntryId", model.AdvanceEntryId));
                 SqlParams.Add(new SqlParameter("@AdvanceYearCode", model.AdvanceYearCode));
-                SqlParams.Add(new SqlParameter("@AdvanceSlipNo", model.AdvanceSlipNo));
+                SqlParams.Add(new SqlParameter("@AdvanceSlipNo", model.AdvanceSlipNo ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@EmpId", model.EmpId));
                 SqlParams.Add(new SqlParameter("@DesigId", model.DesigId));
                 SqlParams.Add(new SqlParameter("@DepId", model.DepId));
-                SqlParams.Add(new SqlParameter("@DOJ", model.DOJ));
+                SqlParams.Add(new SqlParameter("@DOJ", doj == default ? string.Empty : doj));
                 SqlParams.Add(new SqlParameter("@BasicSalary", model.BasicSalary));
                 SqlParams.Add(new SqlParameter("@NetSalary", model.NetSalary));
                 SqlParams.Add(new SqlParameter("@PresentDaysinCurrMonth", model.PresentDaysinCurrMonth));
                 SqlParams.Add(new SqlParameter("@PresentDaysInCurrYear", model.PresentDaysInCurrYear));
                 SqlParams.Add(new SqlParameter("@CategoryId", model.CategoryId));
-                SqlParams.Add(new SqlParameter("@RequestDate", model.RequestDate));
-                SqlParams.Add(new SqlParameter("@EntryDate", model.EntryDate));
-                SqlParams.Add(new SqlParameter("@Purpose", model.Purpose));
+                SqlParams.Add(new SqlParameter("@RequestDate", reqDt == default ? string.Empty : reqDt));
+                SqlParams.Add(new SqlParameter("@EntryDate", entryDt == default ? string.Empty : entryDt));
+                SqlParams.Add(new SqlParameter("@Purpose", model.Purpose ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@RequestedAmount", model.RequestedAmount));
-                SqlParams.Add(new SqlParameter("@ApprovedAmount", 0)); // constant
+                SqlParams.Add(new SqlParameter("@ApprovedAmount", model.ApprovedAmount)); 
                 SqlParams.Add(new SqlParameter("@PreviousPendAdvanceAmt", model.PreviousPendAdvanceAmt));
                 SqlParams.Add(new SqlParameter("@PreviousPendLoanAmt", model.PreviousPendLoanAmt));
-                SqlParams.Add(new SqlParameter("@MgrApprovaldate", model.MgrApprovaldate));
+                SqlParams.Add(new SqlParameter("@MgrApprovaldate", mgrAppDt == default ? string.Empty : mgrAppDt));
                 SqlParams.Add(new SqlParameter("@MgrApprovedbyEmpid", model.MgrApprovedbyEmpid));
                 SqlParams.Add(new SqlParameter("@HRApprovedbyEmpid", model.HRApprovedbyEmpid));
-                SqlParams.Add(new SqlParameter("@HRApprovalDate", model.HRApprovalDate));
+                SqlParams.Add(new SqlParameter("@HRApprovalDate", hrAppDt == default ? string.Empty : hrAppDt));
                 SqlParams.Add(new SqlParameter("@FinanceApprovalEmpid", model.FinanceApprovalEmpid));
-                SqlParams.Add(new SqlParameter("@FinanceApprovalDate", DBNull.Value)); // null
-                SqlParams.Add(new SqlParameter("@CanceledByEmpId", 0)); // constant
-                SqlParams.Add(new SqlParameter("@Canceled", "N")); // constant
-                SqlParams.Add(new SqlParameter("@CancelOrApprovalremarks", "")); // constant
-                SqlParams.Add(new SqlParameter("@ModeOfPayment", model.ModeOfPayment));
-                SqlParams.Add(new SqlParameter("@PaymentReferenceNo", model.PaymentReferenceNo));
-                SqlParams.Add(new SqlParameter("@PaymentVoucherNo", model.PaymentVoucherNo));
-                SqlParams.Add(new SqlParameter("@PaymentVoucherType", model.PaymentVoucherType));
-                SqlParams.Add(new SqlParameter("@PaymentRemark", model.PaymentRemark));
-                SqlParams.Add(new SqlParameter("@RecoveryMethod", model.RecoveryMethod));
+                SqlParams.Add(new SqlParameter("@FinanceApprovalDate", finAppDt == default ? string.Empty : finAppDt)); 
+                SqlParams.Add(new SqlParameter("@CanceledByEmpId", model.CanceledByEmpId)); 
+                SqlParams.Add(new SqlParameter("@Canceled", model.Canceled ?? string.Empty));
+                SqlParams.Add(new SqlParameter("@CancelOrApprovalremarks", model.CancelOrApprovalremarks ?? string.Empty)); 
+                SqlParams.Add(new SqlParameter("@ModeOfPayment", model.ModeOfPayment ?? string.Empty));
+                SqlParams.Add(new SqlParameter("@PaymentReferenceNo", model.PaymentReferenceNo ?? string.Empty));
+                SqlParams.Add(new SqlParameter("@PaymentVoucherNo", model.PaymentVoucherNo ?? string.Empty));
+                SqlParams.Add(new SqlParameter("@PaymentVoucherType", model.PaymentVoucherType ?? string.Empty));
+                SqlParams.Add(new SqlParameter("@PaymentRemark", model.PaymentRemark ?? string.Empty));
+                SqlParams.Add(new SqlParameter("@RecoveryMethod", model.RecoveryMethod ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@NoofInstallment", model.NoofInstallment));
-                SqlParams.Add(new SqlParameter("@StartRecoveryFromMonth", model.StartRecoveryFromMonth));
-                SqlParams.Add(new SqlParameter("@AutoDeductionFromSalaryYN", model.AutoDeductionFromSalaryYN));
-                SqlParams.Add(new SqlParameter("@FinalRevoveryDate", model.FinalRevoveryDate));
-                SqlParams.Add(new SqlParameter("@ActualFinalRecoveryDate", model.ActualFinalRecoveryDate));
-                SqlParams.Add(new SqlParameter("@StatusHoldCancelApproved", "")); // constant
-                SqlParams.Add(new SqlParameter("@LastUpdatedBy", DBNull.Value)); // null
-                SqlParams.Add(new SqlParameter("@LastUpdationDate", DBNull.Value)); // null
-                SqlParams.Add(new SqlParameter("@RequestEntryByMachine", model.RequestEntryByMachine));
-                SqlParams.Add(new SqlParameter("@ApprovedBYMachine", "")); // constant
-                SqlParams.Add(new SqlParameter("@CancelByMachine", DBNull.Value)); // null
+                SqlParams.Add(new SqlParameter("@StartRecoveryFromMonth", model.StartRecoveryFromMonth ?? string.Empty));
+                SqlParams.Add(new SqlParameter("@AutoDeductionFromSalaryYN", model.AutoDeductionFromSalaryYN ?? string.Empty));
+                SqlParams.Add(new SqlParameter("@FinalRevoveryDate", finRecoveryDt == default ? string.Empty : finRecoveryDt));
+                SqlParams.Add(new SqlParameter("@ActualFinalRecoveryDate", actualFinRecoveryDt == default ? string.Empty : actualFinRecoveryDt));
+                SqlParams.Add(new SqlParameter("@StatusHoldCancelApproved", model.StatusHoldCancelApproved ?? string.Empty)); 
+                SqlParams.Add(new SqlParameter("@RequestEntryByMachine", model.RequestEntryByMachine ?? string.Empty));
+                SqlParams.Add(new SqlParameter("@ApprovedBYMachine", model.ApprovedBYMachine ?? string.Empty)); 
+                SqlParams.Add(new SqlParameter("@CancelByMachine", model.CancelByMachine ?? string.Empty)); 
                 SqlParams.Add(new SqlParameter("@ActualEntryBy", model.ActualEntryBy));
-                SqlParams.Add(new SqlParameter("@CC", model.CC));
+                SqlParams.Add(new SqlParameter("@CC", model.CC ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@UID", model.UID));
 
-                _ResponseResult = await _IDataLogic.ExecuteDataTable("VPSpUserMasterForVendorPortal", SqlParams);
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("HRSPAdvanceMain", SqlParams);
 
             }
             catch (Exception ex)

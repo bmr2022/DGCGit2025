@@ -96,12 +96,15 @@
                             <th>@Cntr</th>
                             <td style="text-align:center;white-space: nowrap;">
                                 <div id="container">
+                                    <div class="d-flex">
+                                    <div id="viewCursorDiv-@Cntr">
                                     <a class="table-link link-success" asp-action="MRP" asp-route-Mode="V" asp-route-ID="@item.EntryID" asp-route-YC="@item.YearCode">
                                         <span class="fa-stack">
                                             <i class="fa fa-square fa-stack-2x"></i>
                                             <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
                                         </span>
                                     </a>
+                                    </div>
 
                                     @* <a class="table-link link-primary" asp-action="MRP" asp-route-Mode="U" asp-route-ID="@item.EntryID" asp-route-YC="@item.YearCode">
                         <span class="fa-stack">
@@ -111,6 +114,7 @@
                         </a> *@
                                     @if (item.YearCode == yearCode)
                                     {
+                                        <div id="deleteCursorDiv-@Cntr">
                                         <a class="table-link link-danger" asp-action="DeleteByID" asp-route-ID="@item.EntryID" onclick="confirmdelete(event)" asp-route-YC="@item.YearCode" asp-route-MRPNo="@item.MRPNo"
                                            asp-route-EntryByMachineName="@item.EntryByMachineName" asp-route-CreatedByEmpId="@item.CreatedByEmpId">
                                             <span class="fa-stack">
@@ -118,6 +122,7 @@
                                                 <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
                                             </span>
                                         </a>
+                                        </div>
                                     }
                                     else
                                     {
@@ -138,6 +143,7 @@
                                                 </a>
                                             </div>
                                     }
+                                </div>
                                 </div>
                             </td>
                             <td>@item.MRPNo</td>

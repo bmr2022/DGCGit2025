@@ -70,11 +70,12 @@ namespace eTactwebHR.Controllers
                     {
                         if (string.Equals(tMainModel.DayOrMonthType, "daily", StringComparison.OrdinalIgnoreCase))
                         {
-                            tMainModel.EmpAttDate = (tMainModel.EmpAttDate ?? DateTime.Now).AddDays(1);
+                            tMainModel.EmpAttDate = (!string.IsNullOrEmpty(tMainModel.strEmpAttDate) ? CommonFunc.ParseDate(tMainModel.strEmpAttDate)  : (tMainModel.EmpAttDate ?? DateTime.Now)).AddDays(1);
                         }
                         else if (string.Equals(tMainModel.DayOrMonthType, "monthly", StringComparison.OrdinalIgnoreCase))
                         {
-                            tMainModel.EmpAttDate = (tMainModel.EmpAttDate ?? DateTime.Now).AddMonths(1);
+                            tMainModel.EmpAttDate = new DateTime(tMainModel.GateAttYearCode, tMainModel.intEmpAttMonth ?? 1, 1, 0, 0, 0).AddMonths(1);
+                            tMainModel.intEmpAttMonth = tMainModel.EmpAttDate.HasValue ? tMainModel.EmpAttDate.Value.Month : 1;
                         }
                         tMainModel.strEmpAttDate = CommonFunc.ParseFormattedDate(tMainModel.EmpAttDate.Value.ToString("dd/MM/yyyy"));
 
@@ -92,13 +93,13 @@ namespace eTactwebHR.Controllers
                             else
                             {
                                 tMainModel.ID = 0;
-                                tMainModel.Mode = "I";
+                                tMainModel.Mode = "INSERT";
                             }
                         }
-                        else if (tMainModel.Mode == "I")
+                        else if (tMainModel.Mode == "INSERT")
                         {
                             tMainModel.ID = 0;
-                            tMainModel.Mode = "I";
+                            tMainModel.Mode = "INSERT";
                         }
 
                         tMainModel.GateAttYearCode = YearCode;
@@ -110,7 +111,10 @@ namespace eTactwebHR.Controllers
                         ViewBag.DeptList = await IDataLogic.GetDropDownList("FillDepartment", "HRSPGateAttendanceMainDetail");
                         ViewBag.DesigList = await IDataLogic.GetDropDownList("FillDesignation", "HRSPGateAttendanceMainDetail");
                         ViewBag.EmployeeList = await IDataLogic.GetDropDownList("FillEmployee", "HRSPGateAttendanceMainDetail");
-
+                        tMainModel.IsIncreamented = true;
+                        tMainModel.EmpCategoryId =  string.IsNullOrEmpty(tMainModel.EmpCategoryId) ? tMainModel.CategoryCode : tMainModel.EmpCategoryId;
+                        tMainModel.strEmpAttMonth = (tMainModel.intEmpAttMonth != null && tMainModel.intEmpAttMonth > 0) ? new DateTime(Convert.ToInt32(YearCode), Convert.ToInt32(tMainModel.intEmpAttMonth), 1).ToString("MMM") : tMainModel.strEmpAttMonth;
+                        tMainModel.GateAttDetailsList = new List<GateAttendanceModel>();
                         string serializedGrid = JsonConvert.SerializeObject(tMainModel);
                         HttpContext.Session.SetString("GateAttendance", serializedGrid);
                         HttpContext.Session.Remove("tempGateAttendance");
@@ -280,12 +284,15 @@ namespace eTactwebHR.Controllers
                         model.Branch = HttpContext.Session.GetString("Branch");
                         model.EntryByMachineName = HttpContext.Session.GetString("EmpName");
                         model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+
+                        string serializedtempGateAttendance = JsonConvert.SerializeObject(model);
+                        HttpContext.Session.SetString("tempGateAttendance", serializedtempGateAttendance); // this seted before NFromDateChange because It will sets up at on screen attandance date as per earlier date
                         if (!string.IsNullOrEmpty(model.DayOrMonthType) && string.Equals(model.DayOrMonthType, "monthly", StringComparison.OrdinalIgnoreCase))
                         {
-                            DateTime fromDate = new DateTime(MainModel.GateAttYearCode, 1, 1);
-                            DateTime toDate = new DateTime(MainModel.GateAttYearCode, 12, 31);
-                            MainModel.NFromDate = CommonFunc.ParseFormattedDate(fromDate.ToString("dd/MM/yyyy"));
-                            MainModel.NToDate = CommonFunc.ParseFormattedDate(toDate.ToString("dd/MM/yyyy"));
+                            DateTime fromDate = new DateTime(model.GateAttYearCode, 1, 1);
+                            DateTime toDate = new DateTime(model.GateAttYearCode, 12, 31);
+                            model.NFromDate = CommonFunc.ParseFormattedDate(fromDate.ToString("dd/MM/yyyy"));
+                            model.NToDate = CommonFunc.ParseFormattedDate(toDate.ToString("dd/MM/yyyy"));
                         }
                         else
                         {
@@ -297,8 +304,6 @@ namespace eTactwebHR.Controllers
                     string message = string.Empty;
                     if (Result != null)
                     {
-                        string serializedtempGateAttendance = JsonConvert.SerializeObject(model);
-                        HttpContext.Session.SetString("tempGateAttendance", serializedtempGateAttendance);
                         if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
                         {
                             ViewBag.isSuccess = true;

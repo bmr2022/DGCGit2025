@@ -9,7 +9,7 @@
     <h3 class="h3 mb-0 text-white lh-1">Account Master</h3>
     </div>
     </div>*@
-<form asp-action="EmployeeAdvancePayment" enctype="multipart/form-data" asp-controller="EmployeeAdvancePayment" method="post" autocomplete="off" class="form-horizontal">
+<form asp-action="EmployeeAdvancePayment" enctype="multipart/form-data" asp-controller="EmployeeAdvancePayement" method="post" autocomplete="off" class="form-horizontal">
 	<div class="card rounded shadow-lg">
 		<div class="card-header card-headerBG text-light justify-content-center bg-gradient">
 			<h4>
@@ -654,32 +654,26 @@
 		});
 
 		$('#HRApprovedbyEmpid').change(function(){
-			FillEmployeeDetail();
 			$('#HRApprovedbyEmpCode').val($('#HRApprovedbyEmpid').val());
 		});
 
 		$('#HRApprovedbyEmpCode').change(function(){
-			FillEmployeeDetail();
 			$('#HRApprovedbyEmpid').val($('#HRApprovedbyEmpCode').val());
 		});
 
 		$('#MgrApprovedbyEmpid').change(function(){
-			FillEmployeeDetail();
 			$('#MgrApprovedbyEmpCode').val($('#MgrApprovedbyEmpid').val());
 		});
 
 		$('#MgrApprovedbyEmpCode').change(function(){
-			FillEmployeeDetail();
 			$('#MgrApprovedbyEmpid').val($('#MgrApprovedbyEmpCode').val());
 		});
 
 		$('#FinanceApprovalEmpid').change(function(){
-			FillEmployeeDetail();
 			$('#FinanceApprovalEmpCode').val($('#FinanceApprovalEmpid').val());
 		});
 
 		$('#FinanceApprovalEmpCode').change(function(){
-			FillEmployeeDetail();
 			$('#FinanceApprovalEmpid').val($('#FinanceApprovalEmpCode').val());
 		});
 
@@ -762,6 +756,7 @@
 						$('#HRApprovalDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
 						$('#FinanceApprovalDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
 						$('#FinalRevoveryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+						$('#MgrApprovaldate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
 						$('#ActualFinalRecoveryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
 						$('#LastUpdationDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
 						$('#EntryDate').datepicker('option', 'minDate', FinFromDate);

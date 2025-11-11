@@ -43,11 +43,26 @@
                             int monthNo = (Model.intEmpAttMonth != null) ? Convert.ToInt32(Model.intEmpAttMonth) : 1;
                             @foreach (var dayCol in Model.DayHeaders)
                             {
-                                int dayNo = (int)Math.Ceiling(dayIndex / 2.0); 
-                                var date = new DateTime(Model.GateAttYearCode, monthNo, (int)Math.Ceiling(dayIndex / 2.0));
+                                int dayNo = 0;
+                                var date = new DateTime();
+                                if (Model.DayHeaders.Count > 120)
+                                {
+                                     dayNo = (int)Math.Ceiling(dayIndex / 4.0);
+                                     date = new DateTime(Model.GateAttYearCode, monthNo, (int)Math.Ceiling(dayIndex / 4.0));
+                                }
+                                else if (Model.DayHeaders.Count > 90)
+                                {
+                                     dayNo = (int)Math.Ceiling(dayIndex / 3.0);
+                                     date = new DateTime(Model.GateAttYearCode, monthNo, (int)Math.Ceiling(dayIndex / 3.0));
+                                }
+                                else if (Model.DayHeaders.Count > 60)
+                                {
+                                     dayNo = (int)Math.Ceiling(dayIndex / 2.0);
+                                     date = new DateTime(Model.GateAttYearCode, monthNo, (int)Math.Ceiling(dayIndex / 2.0));
+                                }
                                 string currentDay = date.DayOfWeek.ToString();
                                 var holiday = Model.HolidayList?.FirstOrDefault(h => h.HolidayYear == Model.GateAttYearCode && h.HolidayEffFrom >= date && h.HolidayEffTill <= date);
-                                bool isWeekoff = Model.HolidayList.Any(a => a.HolidayEffFrom == null && a.HolidayEffTill == null && a.DayName.Equals(currentDay, StringComparison.OrdinalIgnoreCase));
+                                bool isWeekoff = Model.HolidayList?.Any(a => a.HolidayEffFrom == null && a.HolidayEffTill == null && a.DayName.Equals(currentDay, StringComparison.OrdinalIgnoreCase)) ?? false;
                                 bool isHoliday = !isWeekoff && holiday != null;
                                 string cssClass = isWeekoff ? "weekoff-time" : (isHoliday ? "holiday-time" : "");
                                 bool allowEdit = (holiday != null && isHoliday && string.Equals(holiday?.AllowedCompOff, "YES", StringComparison.OrdinalIgnoreCase)) || !isHoliday;
