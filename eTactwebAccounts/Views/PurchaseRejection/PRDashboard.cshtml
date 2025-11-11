@@ -36,7 +36,7 @@
         </div>
         <div class="card-body">
             <div class="card overflow-auto">
-                <div class="card-body" id="divDashboardGrid">
+                <div class="card-body" id="+">
                     <partial name="_PRDashBoardGrid" />
                 </div>
             </div>
@@ -202,7 +202,7 @@
             }
         }
 
-        function GetFormRights() {
+         function GetFormRights() {
 
             $.ajax({
                 url: "@Url.Action("GetFormRights")",
@@ -307,7 +307,7 @@
                 }
             });
         }
-
+        
         $('#sendToExcel').click(function () {
             $("#PRDashboardGrid").table2excel({
                 filename: "PurchaseRejectionTable.xls"
