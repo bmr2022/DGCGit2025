@@ -430,8 +430,10 @@ public static class CommonFunc
                      && typeProperty.PropertyInfo.Name != "ProjQty2" && typeProperty.PropertyInfo.Name != "Excessper" && typeProperty.PropertyInfo.Name != "AmmApproved" && typeProperty.PropertyInfo.Name != "Qty"
                      && typeProperty.PropertyInfo.Name != "Unit" && typeProperty.PropertyInfo.Name != "AltQty" && typeProperty.PropertyInfo.Name != "AltUnit" && typeProperty.PropertyInfo.Name != "Rate"
                      && typeProperty.PropertyInfo.Name != "HSNNO" && typeProperty.PropertyInfo.Name != "OtherRateCurr" && typeProperty.PropertyInfo.Name != "UnitRate" && typeProperty.PropertyInfo.Name != "TolLimit"
-                     && typeProperty.PropertyInfo.Name != "Amount" && typeProperty.PropertyInfo.Name != "Remark" && typeProperty.PropertyInfo.Name != "StockQty" && typeProperty.PropertyInfo.Name != "StoreName" && typeProperty.PropertyInfo.Name != "Description"
-                     && typeProperty.PropertyInfo.Name != "ItemName" && typeProperty.PropertyInfo.Name != "PartCode" && typeProperty.PropertyInfo.Name != "DiscPer"&& typeProperty.PropertyInfo.Name != "TotalRecords"&& typeProperty.PropertyInfo.Name != "PageNumber"&& typeProperty.PropertyInfo.Name != "PageSize")
+                     && typeProperty.PropertyInfo.Name != "Amount" && typeProperty.PropertyInfo.Name != "Remark" && typeProperty.PropertyInfo.Name != "StockQty" && typeProperty.PropertyInfo.Name != "StoreName" 
+                     && typeProperty.PropertyInfo.Name != "Description"
+                     && typeProperty.PropertyInfo.Name != "CreatedByName"
+                     && typeProperty.PropertyInfo.Name != "ItemName" && typeProperty.PropertyInfo.Name != "PartCode" && typeProperty.PropertyInfo.Name != "DiscPer")
                     {
                         object value = row[typeProperty.PropertyInfo.Name];
                         object? safeValue = value == null || DBNull.Value.Equals(value) ? null : Convert.ChangeType(value, typeProperty.Type);
@@ -558,9 +560,7 @@ public static class CommonFunc
                     && typeProperty.PropertyInfo.Name != "pendingAmt"
                     && typeProperty.PropertyInfo.Name != "CreatedByName"
                     && typeProperty.PropertyInfo.Name != "SalesPersonEmailId"
-                    && typeProperty.PropertyInfo.Name != "ConsigneeAccountName" && typeProperty.PropertyInfo.Name != "SODelivery" && typeProperty.PropertyInfo.Name != "ResposibleSalesPersonID"
-                    && typeProperty.PropertyInfo.Name != "TotalRecords" && typeProperty.PropertyInfo.Name != "PageNumber" && typeProperty.PropertyInfo.Name != "PageSize"
-                    )
+                    && typeProperty.PropertyInfo.Name != "ConsigneeAccountName" && typeProperty.PropertyInfo.Name != "SODelivery" && typeProperty.PropertyInfo.Name != "ResposibleSalesPersonID")
                     {
                         object value = row[typeProperty.PropertyInfo.Name];
                         object? safeValue = value == null || DBNull.Value.Equals(value) ? null : Convert.ChangeType(value, typeProperty.Type);
@@ -1702,21 +1702,23 @@ public static class CommonFunc
                         && typeProperty.PropertyInfo.Name != "PrivateMark"
                         && typeProperty.PropertyInfo.Name != "GRNo"
                         && typeProperty.PropertyInfo.Name != "GRDate"
+                        && typeProperty.PropertyInfo.Name != "MobileNo"
                         && typeProperty.PropertyInfo.Name != "BillNo"
                         && typeProperty.PropertyInfo.Name != "BillDate"
                         && typeProperty.PropertyInfo.Name != "Message"
                         && typeProperty.PropertyInfo.Name != "CustomerName"
                         && typeProperty.PropertyInfo.Name != "AllowToAdjZeroAmt"
                         && typeProperty.PropertyInfo.Name != "SubInvoicetype"
-                         && typeProperty.PropertyInfo.Name != "MobileNo"
-                            && typeProperty.PropertyInfo.Name != "DriverContactNo"
-                            && typeProperty.PropertyInfo.Name != "DriverName"
-                            && typeProperty.PropertyInfo.Name != "DocThrough"
-                            && typeProperty.PropertyInfo.Name != "CourierDate"
-                            && typeProperty.PropertyInfo.Name != "CourierNo"
-                            && typeProperty.PropertyInfo.Name != "TransportGSTIN"
-                            && typeProperty.PropertyInfo.Name != "Termsandcondition"
-                            && typeProperty.PropertyInfo.Name != "DeliveryAddress"
+                        && typeProperty.PropertyInfo.Name != "DriverContactNo"
+                        && typeProperty.PropertyInfo.Name != "DriverName"
+                        && typeProperty.PropertyInfo.Name != "DocThrough"
+                        && typeProperty.PropertyInfo.Name != "CourierDate"
+                        && typeProperty.PropertyInfo.Name != "CourierNo"
+                        && typeProperty.PropertyInfo.Name != "TransportGSTIN"
+                        && typeProperty.PropertyInfo.Name != "Termsandcondition"
+                        && typeProperty.PropertyInfo.Name != "DeliveryAddress"
+                        && typeProperty.PropertyInfo.Name != "RoundOffAccountCode"
+
                         && typeProperty.PropertyInfo.Name != "TxTaxType" && typeProperty.PropertyInfo.Name != "TotalRecords"
                         && typeProperty.PropertyInfo.Name != "TxTaxTypeName" && typeProperty.PropertyInfo.Name != "BOMInd" && typeProperty.PropertyInfo.Name != "ProducedUnprod"
                         && typeProperty.PropertyInfo.Name != "TxType" && typeProperty.PropertyInfo.Name != "DashboardTypeBack"
@@ -1801,15 +1803,6 @@ public static class CommonFunc
                         && typeProperty.PropertyInfo.Name != "SubInvoicetype"
                         && typeProperty.PropertyInfo.Name != "AllowToAddNegativeStockInStore"
                         && typeProperty.PropertyInfo.Name != "AllowToAdjZeroAmt"
-                         && typeProperty.PropertyInfo.Name != "MobileNo"
-                            && typeProperty.PropertyInfo.Name != "DriverContactNo"
-                            && typeProperty.PropertyInfo.Name != "DriverName"
-                            && typeProperty.PropertyInfo.Name != "DocThrough"
-                            && typeProperty.PropertyInfo.Name != "CourierDate"
-                            && typeProperty.PropertyInfo.Name != "CourierNo"
-                            && typeProperty.PropertyInfo.Name != "TransportGSTIN"
-                            && typeProperty.PropertyInfo.Name != "Termsandcondition"
-                            && typeProperty.PropertyInfo.Name != "DeliveryAddress"
                         )
                     {
                         object value = row[typeProperty.PropertyInfo.Name];

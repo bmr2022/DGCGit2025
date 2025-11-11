@@ -127,7 +127,7 @@
                                             @if (item.YearCode == yearCode)
                                             {
                                                 <div id="editCursorDiv-@Cntr">
-                                                    <a class="table-link link-primary" asp-action="IssueChallanOnCounter" asp-route-Mode="U" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode" onclick="CheckGateEntryExists(event, @item.EntryId, @item.YearCode)">
+                                                    <a class="table-link link-primary" asp-action="IssueChallanOnCounter" asp-route-Mode="U" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode" onclick="CheckGateEntryExists(event, @item.EntryId, @item.YearCode,'@item.ChallanDate.Split(" ")[0]')">
                                                         <span class="fa-stack">
                                                             <i class="fa fa-square fa-stack-2x"></i>
                                                             <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
@@ -135,7 +135,7 @@
                                                     </a>
                                                 </div>
                                                 <div id="deleteCursorDiv-@Cntr">
-                                                    <a class="table-link link-danger" onclick="confirmdelete(event)" asp-action="DeleteByID" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode" asp-route-machineName="@item.MachinName" asp-route-actuaEntryBy="@item.ActualEnteredEMpBy">
+                                                    <a class="table-link link-danger" onclick="confirmdelete(event,'@item.ChallanDate.Split(" ")[0]')" asp-action="DeleteByID" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode" asp-route-machineName="@item.MachinName" asp-route-actuaEntryBy="@item.ActualEnteredEMpBy">
                                                         <span class="fa-stack">
                                                             <i class="fa fa-square fa-stack-2x"></i>
                                                             <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
@@ -197,7 +197,7 @@
                                             @if (item.YearCode == yearCode)
                                             {
                                                 <div id="editCursorDiv-@Cntr">
-                                                    <a class="table-link link-primary" asp-action="IssueNRGP" asp-route-Mode="U" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode" onclick="CheckGateEntryExists(event, @item.EntryId, @item.YearCode)">
+                                                    <a class="table-link link-primary" asp-action="IssueNRGP" asp-route-Mode="U" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode" onclick="CheckGateEntryExists(event, @item.EntryId, @item.YearCode,'@item.ChallanDate.Split(" ")[0]')">
                                                         <span class="fa-stack">
                                                             <i class="fa fa-square fa-stack-2x"></i>
                                                             <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
@@ -205,7 +205,7 @@
                                                     </a>
                                                 </div>
                                                 <div id="deleteCursorDiv-@Cntr">
-                                                    <a class="table-link link-danger" onclick="confirmdelete(event)" asp-action="DeleteByID" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode" asp-route-machineName="@item.MachinName" asp-route-actuaEntryBy="@item.ActualEnteredEMpBy">
+                                                    <a class="table-link link-danger" onclick="confirmdelete(event,'@item.ChallanDate.Split(" ")[0]','@item.AccountCode')" asp-action="DeleteByID" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode" asp-route-machineName="@item.MachinName" asp-route-actuaEntryBy="@item.ActualEnteredEMpBy">
                                                         <span class="fa-stack">
                                                             <i class="fa fa-square fa-stack-2x"></i>
                                                             <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
@@ -239,6 +239,7 @@
                                 <td>@item.ChallanType</td>
                                 <td id="RGPNRGPColor-@Cntr">@item.RGPNRGP</td>
                                 <td>@item.VendorName</td>
+                                <input type="hidden" class="AccountCode" value="@item.AccountCode" />
                                 <td>@item.ChallanDate.Split(" ")[0]</td>
                                 <td>@item.EntryId</td>
                                 <td>@item.EntryDate.Split(" ")[0]</td>

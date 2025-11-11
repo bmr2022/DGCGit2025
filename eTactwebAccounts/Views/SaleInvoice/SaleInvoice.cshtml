@@ -6581,7 +6581,7 @@
             if (parseFloat($('#Qty').val()) > MinQtyVal) {
                 AddErrorCls('Qty');
                 Err = 1;
-                $.notify("Qty should more then " + LowestStock + "  ...!", "error");
+                $.notify("Qty should not be more than " + LowestStock + "  ...!", "error");
                 return false;
             }
             else {
