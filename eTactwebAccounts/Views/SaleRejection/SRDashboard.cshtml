@@ -148,6 +148,19 @@
 @section Scripts
 {
     <script>
+            function  EditButtonData(event,AgainstVoucherNo) {
+                  event.preventDefault();
+                  if (AgainstVoucherNo && AgainstVoucherNo.trim() !== "" && AgainstVoucherNo!=="()") {
+            $.notify("This bill is linked with Against Voucher No: " + AgainstVoucherNo, "error");
+            return; // stop further execution
+        }
+        else{
+        var urlHref = $(event.currentTarget).attr("href");
+            var linkUrl = urlHref;
+                linkUrl = linkUrl + "&summaryDetail=" + $('#SummaryDetail').val() + "&partCode=" + $('#PartCode').val() + "&itemName=" + $('#ItemName').val() + "&VoucherNo=" + $('#SaleBillNo').val() + "&custName=" + $('#AccountName').val() + "&sono=" + $('#SONO').val() + "&schNo=" + $('#SchNo').val() + "&custOrderNo=" + $('#CustOrderNo').val() + "&performaInvNo=" + $('#PerformaInvNo').val() + "&saleQuoteNo=" + $('#SaleQuotNo').val() + "&domensticExportNEPZ=" + $('#DomesticExportNEPZ').val() + "&fromdate=" + $('#FinFromDate').val() + "&toDate=" + $('#FinToDate').val() + "&searchBox=" + $('#search-box').val();
+            window.location.href = linkUrl;
+            }
+        }
         $(document).ready(function () {
             GetFormRights();
             var FromDate = parseDateToFormat($('#FinFromDate').val().split(" ")[0]);
