@@ -39,7 +39,7 @@
                             </div>
                             <div class="col-xxl-1 col-xl-1 col-lg-1 col-md-3 col-sm-6 col-xs-12">
                                 <label asp-for="SummaryDetail" class="form-label">Summary/Detail</label>
-                                <select class="form-select" asp-for="SummaryDetail" onchange="GetSearchData();">
+                                <select class="form-select" asp-for="SummaryDetail" >
                                     <option value="">-Select-</option>
                                     <option value="Summary" selected>Summary</option>
                                     <option value="Detail">Detail</option>
@@ -147,7 +147,7 @@
             </div>
         </div>
         <div class="card-body">
-            <div class="card overflow-auto">
+            <div class="card overflow-auto" style="max-height: 500px;">
                 <div class="card-body" id="divDashboardGrid">
                     <partial name="_SODashboardGrid" />
                 </div>
@@ -157,7 +157,7 @@
                    @*  <strong class="me-3">Total Amount : <span id="OrderAmt"></span></strong>
                     <strong class="me-3">Total NetAmount : <span id="OrderNetAmt"></span></strong>
                     <strong class="me-3">Total PendAmount : <span id="pendingAmt"></span></strong> *@
-                    <strong>Total No Of Rows : <span id="lblTotalNoOfItems"></span></strong>
+                    @* <strong>Total No Of Rows : <span id="lblTotalNoOfItems"></span></strong> *@
                 </div>
             </div>
         </div>
@@ -268,7 +268,7 @@
                 $('#ItemName').val(itemNameBack);
             }
 
-            GetSearchData();
+            //GetSearchData();
 
             $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatDate(firstDayOfMonth));
             $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
@@ -622,7 +622,49 @@
                 }
             });
         }
+        function loadPage(pageNumber) {
 
+            var ReportType = $('#SummaryDetail').val();
+
+            var formData = $('#SParam').serializeArray();
+            formData.push({ name: 'pageNumber', value: pageNumber });
+            formData.push({ name: 'ReportType', value: ReportType });
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("GetSearchData", "SaleOrder")',
+                data: formData,
+                success: function (result) {
+                    $('#divDashboardGrid').empty();
+                    $('#divDashboardGrid').html(result);
+                    GetFormRights();
+                    GetFeatureOption();
+                    $('#totalRows').text($('#divDashboardGrid tr').length);
+                    //countAllTotal();
+                }
+            });
+        }
+        $("#search-box").on("input", function () {
+
+            var searchString = $(this).val().trim();
+            var dashboardType = $('#SummaryDetail').val();
+            $.ajax({
+                url: "/SaleOrder/GlobalSearch?searchString=" + searchString,
+                type: "GET",
+                data: { searchString: searchString, dashboardType: dashboardType },
+                success: function (data) {
+
+                    $('#divDashboardGrid').empty();
+                    $('#divDashboardGrid').html(data);
+                    GetFormRights();
+                    GetFeatureOption();
+                    $('#totalRows').text($('#divDashboardGrid tr').length);
+                    //countAllTotal();
+                },
+                error: function () {
+                    console.log("Error fetching search results.");
+                }
+            });
+        });
 
         function LockedFincialYear() {
             var YearCode = parseInt($('#hiddenYearCode').val());

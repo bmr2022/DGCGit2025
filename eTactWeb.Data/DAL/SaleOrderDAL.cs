@@ -1520,7 +1520,7 @@ namespace eTactWeb.Data.DAL
 
                             oCmd.Parameters.AddWithValue("@Flag", "dashboard");
                         else
-                            oCmd.Parameters.AddWithValue("@Flag", "SEARCH");
+                            oCmd.Parameters.AddWithValue("@Flag", "DETAILDASHBOARD");
                         oCmd.Parameters.AddWithValue("@CustomerName", model.CustomerName);
                         oCmd.Parameters.AddWithValue("@CustOrderNo", model.CustOrderNo);
                         oCmd.Parameters.AddWithValue("@Branch", model.CC);

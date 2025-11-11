@@ -660,34 +660,109 @@ public class SaleOrderController : Controller
         return Json(JsonString);
     }
 
-    public async Task<IActionResult> Dashboard()
-	{
-		HttpContext.Session.Remove("ItemList");
-		HttpContext.Session.Remove("TaxGrid");
-		_MemoryCache.Remove("KeyTaxGrid");
+    //   public async Task<IActionResult> Dashboard()
+    //{
+    //	HttpContext.Session.Remove("ItemList");
+    //	HttpContext.Session.Remove("TaxGrid");
+    //	_MemoryCache.Remove("KeyTaxGrid");
 
-		var _List = new List<TextValue>();
-		string EndDate = HttpContext.Session.GetString("ToDate");
-		var model = await _ISaleOrder.GetDashboardData(EndDate);
+    //	var _List = new List<TextValue>();
+    //	string EndDate = HttpContext.Session.GetString("ToDate");
+    //	var model = await _ISaleOrder.GetDashboardData(EndDate);
 
-		foreach (SaleOrderDashboard item in model.SODashboard)
-		{
-			TextValue _SONo = new()
-			{
-				Text = item.SONo.ToString(),
-				Value = item.SONo.ToString(),
-			};
-			_List.Add(_SONo);
-		}
-		model.BranchList = await _IDataLogic.GetDropDownList("BRANCH", "SP_GetDropDownList");
-		model.SONoList = _List;
-		model.CC = HttpContext.Session.GetString("Branch");
-		model.Year = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-		model.FromDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1).ToString("dd/MM/yyyy");
+    //	foreach (SaleOrderDashboard item in model.SODashboard)
+    //	{
+    //		TextValue _SONo = new()
+    //		{
+    //			Text = item.SONo.ToString(),
+    //			Value = item.SONo.ToString(),
+    //		};
+    //		_List.Add(_SONo);
+    //	}
+    //	model.BranchList = await _IDataLogic.GetDropDownList("BRANCH", "SP_GetDropDownList");
+    //	model.SONoList = _List;
+    //	model.CC = HttpContext.Session.GetString("Branch");
+    //	model.Year = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+    //	model.FromDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1).ToString("dd/MM/yyyy");
+    //       model.ToDate = DateTime.Now.ToString("dd/MM/yyyy");
+
+    //       return View(model);
+    //}
+    public async Task<IActionResult> Dashboard(string SearchBox = "", int pageNumber = 1, int pageSize = 50)
+    {
+       
+        HttpContext.Session.Remove("ItemList");
+        HttpContext.Session.Remove("TaxGrid");
+        _MemoryCache.Remove("KeyTaxGrid");
+
+       
+        string EndDate = HttpContext.Session.GetString("ToDate");
+        var model = await _ISaleOrder.GetDashboardData(EndDate);
+
+        // Prepare dropdown SONo list
+        var _List = new List<TextValue>();
+        foreach (SaleOrderDashboard item in model.SODashboard)
+        {
+            _List.Add(new TextValue
+            {
+                Text = item.SONo.ToString(),
+                Value = item.SONo.ToString(),
+            });
+        }
+
+        
+        model.BranchList = await _IDataLogic.GetDropDownList("BRANCH", "SP_GetDropDownList");
+        model.SONoList = _List;
+        model.CC = HttpContext.Session.GetString("Branch");
+        model.Year = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+        model.FromDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1).ToString("dd/MM/yyyy");
         model.ToDate = DateTime.Now.ToString("dd/MM/yyyy");
 
+        // Pagination + Search setup
+        var dashboardList = model?.SODashboard ?? new List<SaleOrderDashboard>();
+
+        // Search filter
+        if (!string.IsNullOrWhiteSpace(SearchBox))
+        {
+            dashboardList = dashboardList
+                .Where(i => i.GetType().GetProperties()
+                    .Where(p => p.PropertyType == typeof(string))
+                    .Select(p => p.GetValue(i)?.ToString())
+                    .Any(value => !string.IsNullOrEmpty(value) &&
+                                  value.Contains(SearchBox, StringComparison.OrdinalIgnoreCase)))
+                .ToList();
+        }
+
+        // Set total count before pagination
+        model.TotalRecords = dashboardList.Count;
+        model.PageNumber = pageNumber;
+        model.PageSize = pageSize;
+
+        // Apply pagination
+        model.SODashboard = dashboardList
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
+
+        // Cache data for reuse
+        MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+        {
+            AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+            SlidingExpiration = TimeSpan.FromMinutes(55),
+            Size = 1024,
+        };
+        _MemoryCache.Set("KeySaleOrderDashboard", dashboardList, cacheEntryOptions);
+
+        
+        string serializedGrid = JsonConvert.SerializeObject(dashboardList);
+        HttpContext.Session.SetString("KeySaleOrderDashboard", serializedGrid);
+
+        // If you are updating only part of the page (grid area)
+        // return PartialView("_SaleOrderDashboardGrid", model);
+
+       
         return View(model);
-	}
+    }
 
 
     public async Task<IActionResult> ShowGroupWiseItems(int Group_Code,int AccountCode)
@@ -1074,13 +1149,127 @@ public class SaleOrderController : Controller
 		return Json(JsonConvert.SerializeObject(JsonString));
 	}
 
-	public async Task<IActionResult> GetSearchData(SaleOrderDashboard model)
-	{
-		model = await _ISaleOrder.GetSearchData(model);
-		return PartialView("_SODashboardGrid", model);
-	}
+    //public async Task<IActionResult> GetSearchData(SaleOrderDashboard model)
+    //{
+    //	model = await _ISaleOrder.GetSearchData(model);
+    //	return PartialView("_SODashboardGrid", model);
+    //}
+    public async Task<IActionResult> GetSearchData(SaleOrderDashboard model,string ReportType, string SearchBox = "", int pageNumber = 1, int pageSize = 50)
+    {
+       
+        model = await _ISaleOrder.GetSearchData(model);
+        ReportType= model.SummaryDetail;
+       
+        var dashboardList = model?.SODashboard ?? new List<SaleOrderDashboard>();
 
-	public async Task<IActionResult> GetSOAmmCompletedSearchData(SaleOrderDashboard model)
+      
+        if (!string.IsNullOrWhiteSpace(SearchBox))
+        {
+            dashboardList = dashboardList
+                .Where(i => i.GetType().GetProperties()
+                    .Where(p => p.PropertyType == typeof(string))
+                    .Select(p => p.GetValue(i)?.ToString())
+                    .Any(value => !string.IsNullOrEmpty(value) &&
+                                  value.Contains(SearchBox, StringComparison.OrdinalIgnoreCase)))
+                .ToList();
+        }
+
+       
+        model.TotalRecords = dashboardList.Count;
+        model.PageNumber = pageNumber;
+        model.PageSize = pageSize;
+
+ 
+        model.SODashboard = dashboardList
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
+
+        
+        MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+        {
+            AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+            SlidingExpiration = TimeSpan.FromMinutes(55),
+            Size = 1024,
+        };
+        _MemoryCache.Set("KeySaleOrderSearch", dashboardList, cacheEntryOptions);
+
+        string serializedGrid = JsonConvert.SerializeObject(dashboardList);
+        HttpContext.Session.SetString("KeySaleOrderSearch", serializedGrid);
+
+        
+		if(ReportType == "Summary")
+		{
+			return PartialView("_SODashboardGrid", model);
+		}
+		else if(ReportType == "Detail")
+		{
+			return PartialView("_SODashboardDetailGrid", model);
+		}
+		return null;
+    }
+    [HttpGet]
+    public IActionResult GlobalSearch(string searchString = "", string dashboardType = "SaleOrderDashboard", int pageNumber = 1, int pageSize = 50)
+    {
+       
+        SaleOrderDashboard model = new SaleOrderDashboard();
+        model.SummaryDetail = dashboardType;
+
+      
+        if (!_MemoryCache.TryGetValue("KeySaleOrderSearch", out IList<SaleOrderDashboard> saleOrderList) || saleOrderList == null)
+        {
+            return PartialView("_SODashboardGrid", new List<SaleOrderDashboard>());
+        }
+
+       
+        List<SaleOrderDashboard> filteredResults;
+
+        if (string.IsNullOrWhiteSpace(searchString))
+        {
+            filteredResults = saleOrderList.ToList();
+        }
+        else
+        {
+            filteredResults = saleOrderList
+                .Where(i => i.GetType().GetProperties()
+                    .Where(p => p.PropertyType == typeof(string))
+                    .Select(p => p.GetValue(i)?.ToString())
+                    .Any(value => !string.IsNullOrEmpty(value) &&
+                                  value.Contains(searchString, StringComparison.OrdinalIgnoreCase)))
+                .ToList();
+
+           
+            if (filteredResults.Count == 0)
+            {
+                filteredResults = saleOrderList.ToList();
+            }
+        }
+
+        // Set pagination
+        model.TotalRecords = filteredResults.Count;
+        model.PageNumber = pageNumber;
+        model.PageSize = pageSize;
+
+       
+        model.SODashboard = filteredResults
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
+
+       
+        if (dashboardType == "Summary")
+        {
+            return PartialView("_SODashboardGrid", model);
+        }
+        else if (dashboardType == "Detail")
+        {
+            return PartialView("_SODashboardDetailGrid", model);
+        }
+        return null;
+
+    }
+
+    public async Task<IActionResult> GetSOAmmCompletedSearchData(SaleOrderDashboard model)
 	{
 		model = await _ISaleOrder.GetSOAmmCompletedSearchData(model);
 		model.Mode = "Completed";

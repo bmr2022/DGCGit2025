@@ -214,6 +214,10 @@ namespace eTactWeb.DOM.Models
         public IList<SaleOrderDashboard>? SODashboard { get; set; }
         public List<TextValue>? SONoList { get; set; }
         public IList<TextValue>? BranchList { get; set; }
+        //===Pagination===
+        public int TotalRecords { get; set; }
+        public int PageNumber { get; set; } = 1;
+        public int PageSize { get; set; }
     }
 
     [Serializable()]
