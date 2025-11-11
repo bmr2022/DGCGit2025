@@ -456,7 +456,7 @@ namespace eTactWeb.Controllers
                                     , "PaymentTerm", "Transporter", "Vehicleno", "ActualEnteredBy", "AccountCode"
                                     , "RoundOffAmt", "RoundoffType", "Taxableamt", "ToatlDiscountPercent", "TotalDiscountAmount", "MachineName", "SalerejRemark", "CC", "Uid"
                                      , "ActualEnteredByName", "ActualEntryDate", "LastUpdatedBy", "LastUpdatedByName"
-                                    , "LastUpdationDate", "BalanceSheetClosed", "SaleRejEntryId", "SaleRejYearCode", "Gateyearcode", "Mrnyearcode"
+                                    , "LastUpdationDate", "BalanceSheetClosed", "SaleRejEntryId", "SaleRejYearCode", "Gateyearcode", "Mrnyearcode", "AgainstVoucherNo"
                             );
                         model.saleRejectionDashboard = CommonFunc.DataTableToList<SaleRejectionDashboard>(DT, "SaleRejectionSummTable");
                     }
@@ -503,7 +503,7 @@ namespace eTactWeb.Controllers
                                     , "PaymentTerm", "Transporter", "Vehicleno", "ActualEnteredBy", "AccountCode"
                                     , "RoundOffAmt", "RoundoffType", "Taxableamt", "ToatlDiscountPercent", "TotalDiscountAmount", "MachineName", "SalerejRemark", "CC", "Uid"
                                      , "ActualEnteredByName", "ActualEntryDate", "LastUpdatedBy", "LastUpdatedByName"
-                                    , "LastUpdationDate", "BalanceSheetClosed", "SaleRejEntryId", "SaleRejYearCode", "Gateyearcode", "Mrnyearcode"
+                                    , "LastUpdationDate", "BalanceSheetClosed", "SaleRejEntryId", "SaleRejYearCode", "Gateyearcode", "Mrnyearcode", "AgainstVoucherNo"
                                 );
                         model.saleRejectionDashboard = CommonFunc.DataTableToList<SaleRejectionDashboard>(DT, "SaleRejectionSummTable");
                         if (summaryDetail == "Summary")
@@ -764,16 +764,34 @@ namespace eTactWeb.Controllers
         {
             var Result = await _saleRejection.DeleteByID(ID, YearCode, accountCode, createdBy, machineName, cc).ConfigureAwait(false);
 
-            if (Result.StatusText == "Deleted" || Result.StatusCode == HttpStatusCode.Gone || Result.StatusText == "Success")
+            if (Result.StatusText == "Success" || Result.StatusText == "deleted" || Result.StatusCode == HttpStatusCode.Gone)
             {
                 ViewBag.isSuccess = true;
                 TempData["410"] = "410";
+            }
+            else if (Result.StatusText == "Error" || Result.StatusCode == HttpStatusCode.Accepted)
+            {
+                ViewBag.isSuccess = true;
+                TempData["423"] = "423";
+                TempData["DeleteMessage"] = Result.StatusText;
+
             }
             else
             {
                 ViewBag.isSuccess = false;
                 TempData["500"] = "500";
+
             }
+            //if (Result.StatusText == "Deleted" || Result.StatusCode == HttpStatusCode.Gone || Result.StatusText == "Success")
+            //{
+            //    ViewBag.isSuccess = true;
+            //    TempData["410"] = "410";
+            //}
+            //else
+            //{
+            //    ViewBag.isSuccess = false;
+            //    TempData["500"] = "500";
+            //}
             return RedirectToAction("SRDashboard",new {fromDate = fromDate,toDate = toDate,custInvoiceNo = custInvoiceNo,accountName = accountName,mrnNo = mrnNo,gateNo = gateNo,partCode = partCode,itemName = itemName,againstBillNo = againstBillNo,voucherNo = voucherNo});
         }
         private static DataTable GetTaxDetailTable(List<TaxModel> TaxDetailList)
