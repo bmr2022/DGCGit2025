@@ -147,13 +147,13 @@
 								</div>
 
 								<div class="col-md-2">
-									<label asp-for="PresentDaysinCurrMonth" class="form-label">PresentDaysinCurrMonth</label>
+									<label asp-for="PresentDaysinCurrMonth" class="form-label">PresentDays in CurrMonth</label>
 									<input asp-for="PresentDaysinCurrMonth" class="form-control" />
 								</div>
 
 								<div class="col-md-2">
 									<label asp-for="PresentDaysInCurrYear" class="form-label">PresentDays InCurrYear</label>
-									<input asp-for="PresentDaysInCurrYear" class="form-control" />
+									<input asp-for="PresentDaysInCurrYear" class="form-control" /> 
 								</div>
 
 								<div class="col-md-1">
@@ -178,13 +178,13 @@
 
 
 								<div class="col-md-2">
-									<label asp-for="PreviousPendAdvanceAmt" class="form-label">Previous PendAdvanceAmt</label>
-									<input asp-for="PreviousPendAdvanceAmt" class="form-control" />
+									<label asp-for="PreviousPendAdvanceAmt" class="form-label">Previous PendAdvance Amt</label>
+									<input asp-for="PreviousPendAdvanceAmt" class="form-control" readonly/>
 								</div>
 
 								<div class="col-md-2">
-									<label asp-for="PreviousPendLoanAmt" class="form-label">Previous PendLoanAmt</label>
-									<input asp-for="PreviousPendLoanAmt" class="form-control" />
+									<label asp-for="PreviousPendLoanAmt" class="form-label">Previous PendLoan Amt</label>
+									<input asp-for="PreviousPendLoanAmt" class="form-control" readonly/>
 								</div>
 
 								<div class="col-md-2">
@@ -232,7 +232,12 @@
 
 								<div class="col-md-2">
 									<label asp-for="PaymentVoucherType" class="form-label">Payment VoucherType</label>
-									<input asp-for="PaymentVoucherType" class="form-control" />
+									<select asp-for="PaymentVoucherType" class="form-select">
+										<option value="">-Select-</option>
+										<option value="Bank Payment">Bank Payment</option>
+										<option value="Cash Payment">Cash Payment</option>
+										<option value="Journal">Journal</option>
+									</select>
 								</div>
 
 							</div>
@@ -240,12 +245,24 @@
 						</div>
 					</div>
 
-					<h2 class="accordion-header" id="B_ItemCategoryDetail">
-						<button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_AccountDetail" aria-expanded="true" aria-controls="B_AccountDetail">
-							<strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Fincial Details</strong>
+					<h2 class="accordion-header" id="H_FinancialDetail">
+						<button class="accordion-button collapsed text-light pnl4BG bg-gradient prodPlanGridBtn"
+								type="button"
+								data-bs-toggle="collapse"
+								data-bs-target="#B_FinancialDetail"
+								aria-expanded="false"
+								aria-controls="B_FinancialDetail">
+							<strong style="text-transform:uppercase">
+								<i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade"
+								   style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>
+								Financial Details
+							</strong>
 						</button>
 					</h2>
-					<div id="B_AccountDetail" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_AccountDetail">
+					<div id="B_FinancialDetail"
+						 class="accordion-collapse collapse pnl4 bg-gradient prodPlandiv"
+						 aria-labelledby="H_FinancialDetail"
+						 data-bs-parent="#MainAccordion">
 						<div class="accordion-body">
 							<input type="hidden" asp-for="FinFromDate" value="@Model.FinFromDate" />
 							<input type="hidden" asp-for="FinToDate" value="@Model.FinToDate" />
@@ -262,7 +279,7 @@
 								</div>
 
 								<div class="col-md-2">
-									<label asp-for="FinanceApprovalEmpid" class="form-label">FinanceApproval Empid</label>
+									<label asp-for="FinanceApprovalEmpid" class="form-label">FinanceApproval Emp</label>
 									<select asp-for="FinanceApprovalEmpid" class="form-select">
 										<option value="">-Select-</option>
 									</select>
@@ -304,12 +321,23 @@
 					</div>
 
 
-					<h2 class="accordion-header" id="B_ItemCategoryDetail">
-						<button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_AccountDetail" aria-expanded="true" aria-controls="B_AccountDetail">
-							<strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Recovery Details</strong>
+					<h2 class="accordion-header" id="H_RecoveryDetail">
+						<button class="accordion-button text-light pnl1BG bg-gradient"
+								type="button"
+								data-bs-toggle="collapse"
+								data-bs-target="#B_RecoveryDetail"
+								aria-expanded="true"
+								aria-controls="B_RecoveryDetail">
+							<strong>
+								<i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>
+								Recovery Details
+							</strong>
 						</button>
 					</h2>
-					<div id="B_AccountDetail" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_AccountDetail">
+					<div id="B_RecoveryDetail"
+						 class="accordion-collapse collapse show pnl1 bg-gradient"
+						 aria-labelledby="H_RecoveryDetail"
+						 data-bs-parent="#MainAccordion">
 						<div class="accordion-body">
 							<input type="hidden" asp-for="FinFromDate" value="@Model.FinFromDate" />
 							<input type="hidden" asp-for="FinToDate" value="@Model.FinToDate" />
@@ -350,12 +378,25 @@
 						</div>
 					</div>
 
-					<h2 class="accordion-header" id="B_ItemCategoryDetail">
-						<button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_AccountDetail" aria-expanded="true" aria-controls="B_AccountDetail">
-							<strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Workflow & Audit</strong>
-						</button>
-					</h2>
-					<div id="B_AccountDetail" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_AccountDetail">
+					<div class="accordion-item">
+						<h2 class="accordion-header" id="H_WFGrid">
+							<button class="accordion-button collapsed text-light pnl4BG bg-gradient prodPlanGridBtn"
+									type="button"
+									data-bs-toggle="collapse"
+									data-bs-target="#B_WFGrid"
+									aria-expanded="false"
+									aria-controls="B_WFGrid">
+								<strong style="text-transform:uppercase">
+									<i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade"
+									   style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>
+									Workflow & Audit
+								</strong>
+							</button>
+						</h2>
+						<div id="B_WFGrid"
+							 class="accordion-collapse collapse pnl4 bg-gradient prodPlandiv"
+							 aria-labelledby="H_WFGrid"
+							 data-bs-parent="#MainAccordion">
 						<div class="accordion-body">
 							<input type="hidden" asp-for="FinFromDate" value="@Model.FinFromDate" />
 							<input type="hidden" asp-for="FinToDate" value="@Model.FinToDate" />
@@ -363,24 +404,24 @@
 							<div class="row">
 								<div class="col-md-2">
 									<label asp-for="StatusHoldCancelApproved" class="form-label">StatusHold CancelApproved</label>
-									<input asp-for="StatusHoldCancelApproved" class="form-control" />
+									<input asp-for="StatusHoldCancelApproved" class="form-control" readonly/>
 								</div>
 
 								<div class="col-md-2">
 									<label asp-for="ActualEntryBy" class="form-label">ActualEntry By</label>
-									<input asp-for="ActualEntryBy" type="hidden" class="form-control" />
-									<input asp-for="ActualEntryByName" class="form-control" />
+									<input asp-for="ActualEntryBy" type="hidden" class="form-control"/>
+									<input asp-for="ActualEntryByName" class="form-control" readonly/>
 								</div>
 
 								<div class="col-md-2">
 									<label asp-for="LastUpdatedBy" class="form-label">LastUpdated By</label>
-									<input type="hidden" asp-for="LastUpdatedBy" class="form-control" />
-									<input asp-for="LastUpdatedByEmpName" class="form-control" />
+									<input type="hidden" asp-for="LastUpdatedBy" class="form-control"/>
+									<input asp-for="LastUpdatedByEmpName" class="form-control" readonly/>
 								</div>
 
 								<div class="col-md-2">
 									<label asp-for="LastUpdationDate" class="form-label">LastUpdation Date</label>
-									<input asp-for="LastUpdationDate" class="form-control" />
+									<input asp-for="LastUpdationDate" class="form-control" readonly/>
 								</div>
 							</div>
 						</div>
@@ -388,51 +429,50 @@
 				</div>
 
 				<div class="accordion-item">
-					@* <h2 class="accordion-header" id="HPanel2">
-						<button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#ODGrid" aria-expanded="false" aria-controls="ODGrid">
-							<strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Other Detail</strong>
-						</button>
-					</h2> *@
 
-					<h2 class="accordion-header" id="H_SAGrid">
-						<button class="accordion-button collapsed text-light pnl4BG bg-gradient prodPlanGridBtn" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
-							<strong style="text-transform:uppercase">
-								<i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;">
+					<div class="accordion-item">
+						<h2 class="accordion-header" id="H_OtherDetail">
+							<button class="accordion-button text-light pnl1BG bg-gradient"
+									type="button"
+									data-bs-toggle="collapse"
+									data-bs-target="#B_OtherDetail"
+									aria-expanded="true"
+									aria-controls="B_OtherDetail">
+								<strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Other Details</strong>
+							</button>
+						</h2>
+						<div id="B_OtherDetail"
+							 class="accordion-collapse collapse show pnl4 bg-gradient prodPlandiv"
+							 aria-labelledby="H_OtherDetail">
+							<div class="accordion-body">
+								<div class="row g-2 gx-3" id="_ItemGrid">
 
-								</i>Other Detail
-							</strong>
-						</button>
-					</h2>
-					<div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient prodPlandiv" aria-labelledby="H_SAGrid">
-						<div class="accordion-body">
-							<div class="row g-2 gx-3" id="_ItemGrid">
+									<div class="col-md-2">
+										<label asp-for="RequestEntryByMachine" class="form-label">Request EntryByMachine</label>
+										<input asp-for="RequestEntryByMachine" class="form-control" value="@Environment.MachineName" readonly/>
+									</div>
 
-								<div class="col-md-2">
-									<label asp-for="RequestEntryByMachine" class="form-label">Request EntryByMachine</label>
-									<input asp-for="RequestEntryByMachine" class="form-control" value="@Environment.MachineName" />
-								</div>
+									<div class="col-md-2">
+										<label asp-for="ApprovedBYMachine" class="form-label">ApprovedBY Machine</label>
+										<input asp-for="ApprovedBYMachine" class="form-control" value="@Environment.MachineName" readonly/>
+									</div>
 
-								<div class="col-md-2">
-									<label asp-for="ApprovedBYMachine" class="form-label">ApprovedBY Machine</label>
-									<input asp-for="ApprovedBYMachine" class="form-control" value="@Environment.MachineName" />
-								</div>
+									<div class="col-md-2">
+										<label asp-for="CancelByMachine" class="form-label">CancelBy Machine</label>
+										<input asp-for="CancelByMachine" class="form-control" value="@Environment.MachineName" readonly/>
+									</div>
 
-								<div class="col-md-2">
-									<label asp-for="CancelByMachine" class="form-label">CancelBy Machine</label>
-									<input asp-for="CancelByMachine" class="form-control" value="@Environment.MachineName" />
-								</div>
+									<div class="col-md-1">
+										<label asp-for="CC" class="form-label">Branch</label>
+										<input asp-for="CC" class="form-control" readonly/>
+									</div>
 
-								<div class="col-md-1">
-									<label asp-for="CC" class="form-label">Branch</label>
-									<input asp-for="CC" class="form-control" />
-								</div>
-
-								<div class="col-md-1">
-									<label asp-for="UID" class="form-label">UID</label>
-									<input asp-for="UID" class="form-control" />
+									<div class="col-md-1">
+										<label asp-for="UID" class="form-label">UID</label>
+										<input asp-for="UID" class="form-control" readonly/>
+									</div>
 								</div>
 							</div>
-						</div>
 
 					</div>
 				</div>
@@ -524,6 +564,9 @@
 				FillEmpCode();
 				GetServerDate();
 			}
+
+			FillMgmtEmployeeNameList();
+			FillFinancialEmployeeNameList();
 
 					$('#AdvanceEntryId').rules("remove", "required");
 					$('#AdvanceYearCode').rules("remove", "required");
@@ -618,11 +661,11 @@
 							$('#EmpId').append('<option value="' + Val.Emp_Id + '">' + Val.EmpName + '</option>');
 						});
 
-						$('#MgrApprovedbyEmpid').empty();
-						$('#MgrApprovedbyEmpid').append('<option value="">-Select-</option>');
-						$.each(obj.Result, function (index, Val) {
-							$('#MgrApprovedbyEmpid').append('<option value="' + Val.Emp_Id + '">' + Val.EmpName + '</option>');
-						});
+						// $('#MgrApprovedbyEmpid').empty();
+						// $('#MgrApprovedbyEmpid').append('<option value="">-Select-</option>');
+						// $.each(obj.Result, function (index, Val) {
+						// 	$('#MgrApprovedbyEmpid').append('<option value="' + Val.Emp_Id + '">' + Val.EmpName + '</option>');
+						// });
 
 						$('#HRApprovedbyEmpid').empty();
 						$('#HRApprovedbyEmpid').append('<option value="">-Select-</option>');
@@ -630,10 +673,64 @@
 							$('#HRApprovedbyEmpid').append('<option value="' + Val.Emp_Id + '">' + Val.EmpName + '</option>');
 						});
 
+						// $('#FinanceApprovalEmpid').empty();
+						// $('#FinanceApprovalEmpid').append('<option value="">-Select-</option>');
+						// $.each(obj.Result, function (index, Val) {
+						// 	$('#FinanceApprovalEmpid').append('<option value="' + Val.Emp_Id + '">' + Val.EmpName + '</option>');
+						// });
+					}
+				},
+				error: function (xhr, status, error) {
+					console.log('Failed to load Entry Id.');
+				}
+			});
+		}
+
+		function FillFinancialEmployeeNameList() {
+			$.ajax({
+				url: '@Url.Action("FillFinancialEmployeeNameList")',
+				type: 'POST',
+				success: function (data, status, xhr) {
+					var obj = $.parseJSON(data);
+					if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
+						
 						$('#FinanceApprovalEmpid').empty();
 						$('#FinanceApprovalEmpid').append('<option value="">-Select-</option>');
 						$.each(obj.Result, function (index, Val) {
 							$('#FinanceApprovalEmpid').append('<option value="' + Val.Emp_Id + '">' + Val.EmpName + '</option>');
+						});
+						
+						$('#FinanceApprovalEmpCode').empty();
+						$('#FinanceApprovalEmpCode').append('<option value="">-Select-</option>');
+						$.each(obj.Result, function (index, Val) {
+							$('#FinanceApprovalEmpCode').append('<option value="' + Val.Emp_Id + '">' + Val.EmpCode + '</option>');
+						});
+					}
+				},
+				error: function (xhr, status, error) {
+					console.log('Failed to load Entry Id.');
+				}
+			});
+		}
+
+
+		function FillMgmtEmployeeNameList() {
+			$.ajax({
+				url: '@Url.Action("FillMgmtEmployeeNameList")',
+				type: 'POST',
+				success: function (data, status, xhr) {
+					var obj = $.parseJSON(data);
+					if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
+						$('#MgrApprovedbyEmpid').empty();
+						$('#MgrApprovedbyEmpid').append('<option value="">-Select-</option>');
+						$.each(obj.Result, function (index, Val) {
+							$('#MgrApprovedbyEmpid').append('<option value="' + Val.Emp_Id + '">' + Val.EmpName + '</option>');
+						});
+
+						$('#MgrApprovedbyEmpCode').empty();
+						$('#MgrApprovedbyEmpCode').append('<option value="">-Select-</option>');
+						$.each(obj.Result, function (index, Val) {
+							$('#MgrApprovedbyEmpCode').append('<option value="' + Val.Emp_Id + '">' + Val.EmpCode + '</option>');
 						});
 					}
 				},
@@ -696,17 +793,17 @@
 							$('#HRApprovedbyEmpCode').append('<option value="' + Val.Emp_Id + '">' + Val.EmpCode + '</option>');
 						});
 
-						$('#MgrApprovedbyEmpCode').empty();
-						$('#MgrApprovedbyEmpCode').append('<option value="">-Select-</option>');
-						$.each(obj.Result, function (index, Val) {
-							$('#MgrApprovedbyEmpCode').append('<option value="' + Val.Emp_Id + '">' + Val.EmpCode + '</option>');
-						});
+						// $('#MgrApprovedbyEmpCode').empty();
+						// $('#MgrApprovedbyEmpCode').append('<option value="">-Select-</option>');
+						// $.each(obj.Result, function (index, Val) {
+						// 	$('#MgrApprovedbyEmpCode').append('<option value="' + Val.Emp_Id + '">' + Val.EmpCode + '</option>');
+						// });
 
-						$('#FinanceApprovalEmpCode').empty();
-						$('#FinanceApprovalEmpCode').append('<option value="">-Select-</option>');
-						$.each(obj.Result, function (index, Val) {
-							$('#FinanceApprovalEmpCode').append('<option value="' + Val.Emp_Id + '">' + Val.EmpCode + '</option>');
-						});
+						// $('#FinanceApprovalEmpCode').empty();
+						// $('#FinanceApprovalEmpCode').append('<option value="">-Select-</option>');
+						// $.each(obj.Result, function (index, Val) {
+						// 	$('#FinanceApprovalEmpCode').append('<option value="' + Val.Emp_Id + '">' + Val.EmpCode + '</option>');
+						// });
 					}
 				},
 				error: function (xhr, status, error) {
@@ -759,6 +856,8 @@
 						$('#MgrApprovaldate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
 						$('#ActualFinalRecoveryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
 						$('#LastUpdationDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+						$('#StartRecoveryFromMonth').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+						$('#PresentDaysinCurrMonth').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
 						$('#EntryDate').datepicker('option', 'minDate', FinFromDate);
 						$('#EntryDate').datepicker('option', 'maxDate', FinToDate);
 					}

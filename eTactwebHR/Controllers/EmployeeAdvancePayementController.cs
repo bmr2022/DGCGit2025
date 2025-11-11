@@ -70,6 +70,19 @@ namespace eTactwebHR.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+        public async Task<JsonResult> FillFinancialEmployeeNameList()
+        {
+            var JSON = await _iemployeeAdvancePayement.FillFinancialEmployeeNameList();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        
+        public async Task<JsonResult> FillMgmtEmployeeNameList()
+        {
+            var JSON = await _iemployeeAdvancePayement.FillMgmtEmployeeNameList();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
         
         public async Task<JsonResult> FillEmployeeCode()
         {
