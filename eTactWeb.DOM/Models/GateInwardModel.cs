@@ -269,6 +269,7 @@ public class GateInwardItemDetail : TimeStamp
     public decimal? PendQty { get; set; }
     public float? AltPendQty { get; set; }
     public int? AgainstChallanYearcode { get; set; }
+  
 
 }
 
@@ -278,6 +279,7 @@ public class GateInwardModel : GateInwardItemDetail
     public string? FinFromDate { get; set; }
     public string? FinToDate { get; set; }
     public string? EntrybyMachineName { get; set; }
+    public string? IPAddress { get; set; }
     public int ID { get; set; }
     //public string? Mode { get; set; }
     public int EntryId { get; set; }
