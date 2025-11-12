@@ -527,6 +527,14 @@ namespace eTactwebHR.Controllers
                 Attdate = new DateTime(YearCode, AttMonth, 1);
                 model.intEmpAttMonth = AttMonth;
             }
+            else
+            {
+                if (Attdate != null)
+                {
+                    model.EmpAttDate = Attdate;
+                    model.strEmpAttDate = Attdate.ToString("dd/MM/yyyy");
+                }
+            }
             model.HolidayList = GetHolidayList(EmpCatId, Attdate, YearCode)?.HolidayList ?? new List<GateAttendanceHolidayModel>();
             ViewBag.DeptList = await IDataLogic.GetDropDownList("FillDepartment", "HRSPGateAttendanceMainDetail");
             ViewBag.DesigList = await IDataLogic.GetDropDownList("FillDesignation", "HRSPGateAttendanceMainDetail");
@@ -543,7 +551,37 @@ namespace eTactwebHR.Controllers
                 ? new GateAttendanceModel()
                 : JsonConvert.DeserializeObject<GateAttendanceModel>(GateAttendanceJson);
             SetEmptyOrNullFields<GateAttendanceModel>(MainModel, model);
+            if (string.Equals(DayOrMonthType, "daily", StringComparison.OrdinalIgnoreCase))
+            {
+                if (Attdate != null)
+                {
+                    model.EmpAttDate = Attdate;
+                    model.strEmpAttDate = Attdate.ToString("dd/MM/yyyy");
+                    DateTime? currentDate = model.EmpAttDate;
+                    string currentDay = currentDate?.DayOfWeek.ToString() ?? "";
 
+                    var holiday = model.HolidayList?.FirstOrDefault(h => h.HolidayYear == model.GateAttYearCode && h.HolidayEffFrom >= currentDate && h.HolidayEffTill <= currentDate);
+
+                    bool isWeekoff = model.HolidayList?.Any(a => a.HolidayEffFrom == null && a.HolidayEffTill == null && a.DayName.Equals(currentDay, StringComparison.OrdinalIgnoreCase)) ?? false;
+
+                    bool isHoliday = !isWeekoff && holiday != null;
+
+                    string cssClass = isWeekoff ? "weekoff-time" : (isHoliday ? "holiday-time" : "");
+
+                    bool allowEdit = (holiday != null && isHoliday &&
+                        string.Equals(holiday?.AllowedCompOff, "YES", StringComparison.OrdinalIgnoreCase))
+                        || !isHoliday;
+
+                    if (isWeekoff)
+                        allowEdit = false;
+
+                    // Assign results to model
+                    ViewBag.IsWeekoff = isWeekoff;
+                    ViewBag.IsHoliday = isHoliday;
+                    ViewBag.AllowEdit = allowEdit;
+                    ViewBag.CssClass = cssClass;
+                }
+            }
             string serializedGateAttendance = JsonConvert.SerializeObject(MainModel);
             HttpContext.Session.SetString("GateAttendance", serializedGateAttendance);
             return PartialView("_GateManualAttendance", model);
