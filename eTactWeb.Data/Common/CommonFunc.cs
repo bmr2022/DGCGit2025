@@ -433,7 +433,8 @@ public static class CommonFunc
                      && typeProperty.PropertyInfo.Name != "Amount" && typeProperty.PropertyInfo.Name != "Remark" && typeProperty.PropertyInfo.Name != "StockQty" && typeProperty.PropertyInfo.Name != "StoreName" 
                      && typeProperty.PropertyInfo.Name != "Description"
                      && typeProperty.PropertyInfo.Name != "CreatedByName"
-                     && typeProperty.PropertyInfo.Name != "ItemName" && typeProperty.PropertyInfo.Name != "PartCode" && typeProperty.PropertyInfo.Name != "DiscPer")
+                     && typeProperty.PropertyInfo.Name != "ItemName" && typeProperty.PropertyInfo.Name != "PartCode" && typeProperty.PropertyInfo.Name != "DiscPer"
+                     && typeProperty.PropertyInfo.Name != "TotalRecords" && typeProperty.PropertyInfo.Name != "PageNumber" && typeProperty.PropertyInfo.Name != "PageSize")
                     {
                         object value = row[typeProperty.PropertyInfo.Name];
                         object? safeValue = value == null || DBNull.Value.Equals(value) ? null : Convert.ChangeType(value, typeProperty.Type);
@@ -560,7 +561,9 @@ public static class CommonFunc
                     && typeProperty.PropertyInfo.Name != "pendingAmt"
                     && typeProperty.PropertyInfo.Name != "CreatedByName"
                     && typeProperty.PropertyInfo.Name != "SalesPersonEmailId"
-                    && typeProperty.PropertyInfo.Name != "ConsigneeAccountName" && typeProperty.PropertyInfo.Name != "SODelivery" && typeProperty.PropertyInfo.Name != "ResposibleSalesPersonID")
+                    && typeProperty.PropertyInfo.Name != "ConsigneeAccountName" && typeProperty.PropertyInfo.Name != "SODelivery" && typeProperty.PropertyInfo.Name != "ResposibleSalesPersonID"
+                    && typeProperty.PropertyInfo.Name != "TotalRecords" && typeProperty.PropertyInfo.Name != "PageNumber" && typeProperty.PropertyInfo.Name != "PageSize"
+                    )
                     {
                         object value = row[typeProperty.PropertyInfo.Name];
                         object? safeValue = value == null || DBNull.Value.Equals(value) ? null : Convert.ChangeType(value, typeProperty.Type);
