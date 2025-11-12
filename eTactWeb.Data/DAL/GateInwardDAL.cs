@@ -240,7 +240,7 @@ public class GateInwardDAL
 
 
 
-	public async Task<PendingGateInwardDashboard>  GetPendingGateEntryDashboardData(int AccountCode, string PoNo, int PoYearCode, int ItemCode,
+	public async Task<PendingGateInwardDashboard>  GetPendingGateEntryDashboardData(int AccountCode,int docTypeId, string PoNo, int PoYearCode, int ItemCode,
   string FromDate, string ToDate,string Partcode,string ItemName,string GetDataFrom,string Invoiceno)
     {
         DataSet? oDataSet = new DataSet();
@@ -267,6 +267,7 @@ public class GateInwardDAL
 
 
                 oCmd.Parameters.AddWithValue("@AccountCode", AccountCode);
+                oCmd.Parameters.AddWithValue("@docTypeId", docTypeId);
                 oCmd.Parameters.AddWithValue("@PONo", PoNo);
                 oCmd.Parameters.AddWithValue("@POYearCode", PoYearCode);
                 oCmd.Parameters.AddWithValue("@itemcode", ItemCode);
