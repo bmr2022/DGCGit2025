@@ -45,6 +45,10 @@
         vertical-align: super;
     }
 
+    #SOGrid tbody td {
+        font-weight: normal !important;
+    }
+
 </style>
 
 <div class="table-responsive" style="max-height:350px;">
@@ -298,9 +302,9 @@
                     <td class="SaleOrderOtherRequiredDetail"></td> <!-- Consignee -->
                     <td class="SaleOrderOtherRequiredDetail"></td> <!-- Consignee Address -->
                 <td class="SaleOrderOtherRequiredDetail" id="">@totalBasicAmount.ToString("N2")</td> <!-- Amount footerOrderAmt-->
-                <td id="">@totalNetAmount.ToString("N2")</td> <!-- Net Amount -->
+                <td id="TotalNetAmont"></td> <!-- Net Amount -->
                     <td></td> <!-- SO Complete -->
-                <td id="">@totalPendingAmt.ToString("N2")</td> <!-- Pending Amt -->
+                <td id="TotalpendingAmt"></td> <!-- Pending Amt -->
                     <td class="SaleOrderOtherRequiredDetail"></td> <!-- SO Confirm Date -->
                     <td class="SaleOrderOtherRequiredDetail"></td> <!-- Approved -->
                     <td></td> <!-- Created By -->

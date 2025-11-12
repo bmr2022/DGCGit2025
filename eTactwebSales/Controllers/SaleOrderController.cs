@@ -572,9 +572,9 @@ public class SaleOrderController : Controller
 		string JsonString = JsonConvert.SerializeObject(JSON);
 		return Json(JsonString);
 	}
-	public async Task<JsonResult> GetTotalBYSp()
+	public async Task<JsonResult> GetTotalBYSp(SaleOrderDashboard model)
 	{
-		var JSON = await _ISaleOrder.GetTotalBYSp();
+		var JSON = await _ISaleOrder.GetTotalBYSp(model);
 		string JsonString = JsonConvert.SerializeObject(JSON);
 		return Json(JsonString);
 	}

@@ -25,9 +25,9 @@ public class SaleOrderBLL : ISaleOrder
     {
         return await _SaleOrderDAL.GetReportName();
     } 
-    public async Task<ResponseResult> GetTotalBYSp()
+    public async Task<ResponseResult> GetTotalBYSp(SaleOrderDashboard model)
     {
-        return await _SaleOrderDAL.GetTotalBYSp();
+        return await _SaleOrderDAL.GetTotalBYSp(model);
     }
     public async Task<ResponseResult> AutoFillPARTYNAMELIST( string SearchAccount)
     {
