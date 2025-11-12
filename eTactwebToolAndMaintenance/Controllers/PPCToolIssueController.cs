@@ -219,11 +219,11 @@ namespace eTactweb.Controllers
         }
 
         [HttpGet]
-        public async Task<JsonResult> FillProdPlanSchedule(long ToolIssueEntryId, string ProdPlanNo, long ProdPlanYearCode, long PlanNoEntryId)
+        public async Task<JsonResult> FillProdPlanSchedule(long ToolEntryId, string ProdPlanNo, long ProdPlanYearCode, long PlanNoEntryId)
         {
             try
             {
-                var result = await _IPPCToolIssue.FillProdPlanSchedule("FillProdPlanSchedule", ToolIssueEntryId, ProdPlanNo, ProdPlanYearCode, PlanNoEntryId);
+                var result = await _IPPCToolIssue.FillProdPlanSchedule("FillProdPlanSchedule", ToolEntryId, ProdPlanNo, ProdPlanYearCode, PlanNoEntryId);
                 string jsonString = JsonConvert.SerializeObject(result);
 
                 return Json(jsonString); // return as string
@@ -235,6 +235,39 @@ namespace eTactweb.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<JsonResult> FillProdPlanScheduleYearCode(long ToolEntryId, string ProdPlanNo, long ProdPlanYearCode, string ProdSchNo)
+        {
+            try
+            {
+                var result = await _IPPCToolIssue.FillProdPlanScheduleYearCode("FillProdPlanScheduleYearCode", ToolEntryId, ProdPlanNo, ProdPlanYearCode, ProdSchNo);
+                string jsonString = JsonConvert.SerializeObject(result);
+
+                return Json(jsonString); // return as string
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while filling production plan schedule Yearcode.");
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> FillProdPlanScheduleDetail(long ToolEntryId, string ProdPlanNo, long ProdPlanYearCode, string ProdSchNo, long ProdSchYearCode)
+        {
+            try
+            {
+                var result = await _IPPCToolIssue.FillProdPlanScheduleDetail("FillProdPlanScheduleDetail", ToolEntryId, ProdPlanNo, ProdPlanYearCode, ProdSchNo,ProdSchYearCode);
+                string jsonString = JsonConvert.SerializeObject(result);
+
+                return Json(jsonString); // return as string
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while filling production plan schedule Detail.");
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
         [HttpGet]
         public async Task<JsonResult> FillMachineList()
         {

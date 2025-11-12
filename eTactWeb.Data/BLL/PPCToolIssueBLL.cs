@@ -72,6 +72,14 @@ namespace eTactWeb.Data.BLL
         {
             return await _PPCToolIssueDAL.FillProdPlanSchedule(Flag, ToolIssueEntryId, ProdPlanNo, ProdPlanYearCode, PlanNoEntryId);
         }
+        public async Task<ResponseResult> FillProdPlanScheduleYearCode(string Flag, long ToolEntryId, string ProdPlanNo, long ProdPlanYearCode, string ProdSchNo)
+        {
+            return await _PPCToolIssueDAL.FillProdPlanScheduleYearCode(Flag, ToolEntryId, ProdPlanNo, ProdPlanYearCode, ProdSchNo);
+        }
+        public async Task<ResponseResult> FillProdPlanScheduleDetail(string Flag, long ToolEntryId, string ProdPlanNo, long ProdPlanYearCode, string ProdSchNo, long ProdSchYearCode)
+        {
+            return await _PPCToolIssueDAL.FillProdPlanScheduleDetail(Flag, ToolEntryId, ProdPlanNo, ProdPlanYearCode, ProdSchNo,ProdSchYearCode);
+        }
 
         // 7️⃣ FILL MACHINE LIST
         public async Task<ResponseResult> FillMachineList(string Flag)
