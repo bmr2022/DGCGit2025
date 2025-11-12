@@ -50,11 +50,11 @@
                                 </div>
                             </div>
 
-                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-1">
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-1 SaleBillEntryDetail">
                                 <label asp-for="PartCode" class="form-label">PartCode</label>
                                 <input asp-for="PartCode" class="form-control" />
                             </div>
-                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2 SaleBillEntryDetail">
                                 <label asp-for="ItemName" class="form-label">ItemName</label>
                                 <input asp-for="ItemName" class="form-control" />
                             </div>
@@ -80,27 +80,27 @@
                                 <label asp-for="AccountName" class="form-label">Cust Name</label>
                                 <input asp-for="AccountName" class="form-control" />
                             </div>
-                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2 SaleBillEntryDetail">
                                 <label asp-for="SONO" class="form-label">SONO</label>
                                 <input asp-for="SONO" class="form-control" />
                             </div>
-                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2 SaleBillEntryDetail">
                                 <label asp-for="CustOrderNo" class="form-label">Cust Order No</label>
                                 <input asp-for="CustOrderNo" class="form-control" />
                             </div>
-                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2 SaleBillEntryDetail">
                                 <label asp-for="SchNo" class="form-label">Schedule No</label>
                                 <input asp-for="SchNo" class="form-control" />
                             </div>
-                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2 SaleBillEntryDetail">
                                 <label asp-for="PerformaInvNo" class="form-label">Performa InvNo</label>
                                 <input asp-for="PerformaInvNo" class="form-control" />
                             </div>
-                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2 SaleBillEntryDetail">
                                 <label asp-for="SaleQuotNo" class="form-label">Sale Quot No</label>
                                 <input asp-for="SaleQuotNo" class="form-control" />
                             </div>
-                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2 SaleBillEntryDetail">
                                 <label asp-for="DomesticExportNEPZ" class="form-label">Domestic Export NEPZ</label>
                                 <input asp-for="DomesticExportNEPZ" class="form-control" />
                             </div>
@@ -824,6 +824,9 @@
 
                     $('#divDashboardGrid').empty();
                     $('#divDashboardGrid').html(data);
+                    GetFeatureOption();
+                    GetFormRights();
+                    GetFeatureOptions();
                     $('#totalRows').text($('#gateDashboardtable tr').length);
                     //countAllTotal();
                 },
