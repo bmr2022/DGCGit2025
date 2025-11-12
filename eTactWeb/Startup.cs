@@ -292,6 +292,7 @@ namespace eTactWeb
             services.TryAddScoped<IAssetsNdToolCategoryMaster, AssetsNdToolCategoryMasterBLL>();
             services.TryAddScoped<IHSNMaster, HSNMasterBLL>();
             services.TryAddScoped<IPPCToolIssue, PPCToolIssueBLL>();
+            services.TryAddScoped<IDeleteTransaction, DeleteTransactionBLL>();
             services.TryAddTransient<IMIRRegister, MIRRegisterBLL>();
             services.TryAddTransient<ICreditNote, CreditNoteBLL>();
             services.TryAddTransient<IBankReconciliation, BankReconciliationBLL>();

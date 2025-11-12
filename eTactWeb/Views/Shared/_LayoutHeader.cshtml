@@ -242,6 +242,17 @@
                                     <input class="userRightsPermission" type="hidden" value="SubVoucher" />
                                 </ul>
                             </li>
+                            <li>
+                                <a class="dropdown-item" href="#">Delete Transaction &raquo;</a>
+                                <ul class="submenu dropdown-menu">
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="DeleteTransaction" asp-action="DeleteTransaction" id="DeleteTransaction">
+                                            <i class="fa fa-circle-user fa-fw fa-lg" aria-hidden="true"></i> Delete Transaction
+                                        </a>
+                                    </li>
+                                    <input class="userRightsPermission" type="hidden" value="DeleteTransaction" />
+                                </ul>
+                            </li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
                                 <a class="dropdown-item" href="#">Company Detail &raquo;</a>

@@ -1,0 +1,220 @@
+﻿@model eTactWeb.DOM.Models.DeleteTransactionModel
+
+
+@{
+    ViewData["Title"] = "Delete Transaction";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+
+
+<div class="card bg-gradient mb-3 border-light shadow-lg">
+    <form asp-action="DeleteTranscation" method="post" id="deleteTrtansaction" autocomplete="off" class="form-horizontal">
+
+        <div class="card-header card-headerBG text-light bg-gradient">
+            <h5>
+                <strong>Delete Transaction</strong>
+                <span class="d-flex float-end" style="margin-top:-2px;">
+                    @*<partial name="_FormsButton" />*@
+                    <div class="row justify-content-between g-2">
+                        <div class="col-auto">
+                            @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
+                            <button type="submit" class="btn btn-primary btn-sm" id="submitBTN">
+                                <i class="fa-solid fa-chevron-circle-right"></i>
+                                SUBMIT
+                            </button>
+                        </div>
+                    </div>
+                </span>
+            </h5>
+        </div>
+        <div class="card-body bg-light pt-0">
+            <div class="accordion shadow-lg">
+                <div class="accordion-item" id="GI_Grid">
+                    <h2 class="accordion-header" id="H_RParameter">
+                        <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_RParameter" aria-expanded="true" aria-controls="B_RParameter">
+                            <i class="fa-brands fa-wpforms fa-lg fa-fw pr35"></i>
+                            Required Parameter
+                        </button>
+                    </h2>
+                    <div id="B_RParameter" class="accordion-collapse collapse show pnl1 bg-gradient" aria-labelledby="H_RParameter">
+                        <div class="accordion-body">
+                            <div class="row g-2 gx-3">
+                               
+                                <div class="col-lg-2">
+                                    <label asp-for="FormName" class="form-label">Form Name</label>
+                                    <select id="FormName" name="FormName" class="form-select">
+                                        <option value="">-- Select Form --</option>
+                                    </select>
+                                </div>
+                                <div class="col-lg-2">
+                                    <label asp-for="Action" class="form-label">Action</label>
+                                    <input asp-for="Action" id="" class="form-control" value="DELETE" readonly />
+                                </div>
+                                <div class="col-lg-2">
+                                    <label asp-for="YearCode" class="form-label">Year Code</label>
+                                    <input asp-for="YearCode" id="ToolIssueYearCode" class="form-control" readonly />
+                                </div>
+                                <div class="col-lg-2">
+                                    <label asp-for="SlipNo" class="form-label">Slip No</label>
+                                    <input type="text" id="SlipNo" name="SlipNo" class="form-control" />
+                                </div>
+                                <div class="col-lg-2">
+                                    <label asp-for="AccountName" class="form-label">Account Name</label>
+                                    <input asp-for="AccountName" id="AccountName" name="AccountName" class="form-control" readonly />
+                                    <input type="hidden" id="AccountCode" name="AccountCode" />
+                                </div>
+                                <div class="col-lg-2">
+                                    <label asp-for="EntryId" class="form-label">Entry Id</label>
+                                    <input asp-for="EntryId" id="EntryId" name="EntryId" class="form-control" readonly />
+                                </div>
+                                <div class="col-lg-2">
+                                    <label asp-for="BasicAmount" class="form-label">Basic Amount</label>
+                                    <input asp-for="BasicAmount" id="BasicAmount" name="BasicAmount" class="form-control" readonly />
+                                </div>
+                                <div class="col-lg-2">
+                                    <label asp-for="NetAmount" class="form-label">Net Amount</label>
+                                    <input asp-for="NetAmount" id="NetAmount" name="NetAmount" class="form-control" readonly />
+                                </div>
+                                <div class="col-lg-2">
+                                    <label asp-for="EntryDate" class="form-label">Entry Date</label>
+                                    <input type="text" id="EntryDate" name="EntryDate" class="form-control" readonly />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+    </form>
+</div>
+
+
+<script>
+
+        function FillFormName() {
+        $.ajax({
+            url: '/DeleteTransaction/GetFormName',
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                console.log("Formdata",data);
+                    const obj = typeof data === "string" ? JSON.parse(data) : data;
+                    const select = $('#FormName');
+                    select.empty();
+                    select.append('<option value="">-- Select Form --</option>');
+
+                    if (obj.Result && obj.Result.length > 0) {
+                        $.each(obj.Result, function (i, item) {
+                            select.append($('<option>', {
+                                value: item.MainTableName,
+                                text: item.FormName
+                            }));
+                        });
+                    }
+                    select.trigger('change.select2');
+            },
+            error: function (err) {
+                console.error("❌ Error fetching form names:", err);
+            }
+        });
+    }
+            function FillSlipNoAutoSuggest() {
+        const mainTableName = $('#FormName').val();
+        if (!mainTableName) {
+            $('#SlipNo').val('');
+            return;
+        }
+
+
+
+        $.ajax({
+            url: '/DeleteTransaction/GetSlipNoData',
+            type: 'GET',
+            data: { MainTableName: mainTableName },
+            dataType: 'json',
+            success: function (data) {
+                const obj = typeof data === "string" ? JSON.parse(data) : data;
+                const result = obj.Result || [];
+
+                if (result.length === 0) return;
+
+                const slipList = result.map(item => ({
+                    label: item.SlipNo,
+                    value: item.SlipNo,
+                    accountName: item.Account_Name, // match SP output
+                    accountCode: item.AccountCode,
+                    entryId: item.EntryId,
+                    basicAmount: item.BasicAmount,
+                    netAmount: item.NetAmount,
+                    entryDate: item.EntryDate
+                }));
+
+                $("#SlipNo").autocomplete({
+                    source: slipList,
+                    minLength: 1,
+                    select: function (event, ui) {
+                        $("#SlipNo").val(ui.item.value);
+                        FillSlipDetails(ui.item);
+                        return false;
+                    }
+                });
+            },
+            error: function (err) {
+                console.error("❌ Error fetching slip numbers:", err);
+            }
+        });
+    }
+
+    function FillSlipDetails(item) {
+        $('#AccountName').val(item.accountName);
+        $('#AccountCode').val(item.accountCode);
+        $('#EntryId').val(item.entryId);
+        $('#BasicAmount').val(item.basicAmount);
+        $('#NetAmount').val(item.netAmount);
+
+        if (item.entryDate) {
+            const d = new Date(item.entryDate);
+            const formattedDate = ('0' + d.getDate()).slice(-2) + '/' +
+                                  ('0' + (d.getMonth() + 1)).slice(-2) + '/' +
+                                  d.getFullYear();
+            $('#EntryDate').val(formattedDate);
+        } else {
+            $('#EntryDate').val('');
+        }
+    }
+
+        $(document).ready(function () {
+        // Load Form list initially
+        FillFormName();
+
+        // On FormName change → load slipnos
+        $('#FormName').on('change', function () {
+            FillSlipNoAutoSuggest();
+        });
+
+         const successMsg = '@TempData["SuccessMessage"]';
+            const errorMsg = '@TempData["ErrorMessage"]';
+
+            if (successMsg) {
+                $.notify(successMsg, {
+                    className: 'success',
+                    globalPosition: 'top center',
+                    autoHideDelay: 2000
+                });
+
+              
+                setTimeout(() => location.reload(), 2200);
+            }
+
+            if (errorMsg) {
+                $.notify(errorMsg, {
+                    className: 'error',
+                    globalPosition: 'top center',
+                    autoHideDelay: 4000
+                });
+            }
+    });
+
+</script>
+
+
+
