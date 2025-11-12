@@ -37,6 +37,10 @@
                                     </div>
                                 </div>
                             </div>
+                            <input asp-for="TotalBasicAmount" type="hidden" />
+                            <input asp-for="TotalNetAmont" type="hidden" />
+                            <input asp-for="TotalpendingAmt" type="hidden" />
+
                             <div class="col-xxl-1 col-xl-1 col-lg-1 col-md-3 col-sm-6 col-xs-12">
                                 <label asp-for="SummaryDetail" class="form-label">Summary/Detail</label>
                                 <select class="form-select" asp-for="SummaryDetail" >
@@ -281,7 +285,7 @@
             //GetSearchData();
             CheckApproved();
             TotalRows();
-
+            GetTotalBYSp();
 
             AutoComplete('VSALEORDER', 'CustomerName', 'CustomerName', null);
             AutoComplete('VSALEORDER', 'CustOrderNo', 'CustOrderNo', null);
@@ -636,6 +640,7 @@
                 success: function (result) {
                     $('#divDashboardGrid').empty();
                     $('#divDashboardGrid').html(result);
+                    TotalRows();
                     GetFormRights();
                     GetFeatureOption();
                     $('#totalRows').text($('#divDashboardGrid tr').length);
@@ -655,6 +660,7 @@
 
                     $('#divDashboardGrid').empty();
                     $('#divDashboardGrid').html(data);
+                    TotalRows();
                     GetFormRights();
                     GetFeatureOption();
                     $('#totalRows').text($('#divDashboardGrid tr').length);
@@ -665,7 +671,26 @@
                 }
             });
         });
+        function GetTotalBYSp() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetTotalBYSp")",
+                dataType: "json",
+                success: function (result, status, error) {
 
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        $('#TotalBasicAmount').val("");
+                        $('#TotalBasicAmount').val(obj.Result[0].EntryId);
+                        $('#TotalNetAmont').val("");
+                        $('#TotalNetAmont').val(obj.Result[0].ScheduleNo);
+                        $('#TotalpendingAmt').val("");
+                        $('#TotalpendingAmt').val(obj.Result[0].ScheduleNo);
+
+                    }
+                }
+            });
+        }
         function LockedFincialYear() {
             var YearCode = parseInt($('#hiddenYearCode').val());
             var rowCounter = $('#divDashboardGrid tr').length;

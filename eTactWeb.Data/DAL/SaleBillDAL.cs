@@ -1073,6 +1073,24 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
+        public async Task<ResponseResult> GetInvoiceTypeMain()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "getInvoiceType"));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_SaleBillMainDetail", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
         public async Task<ResponseResult> GetDashboardData(string summaryDetail, string partCode, string itemName, string saleBillno, string customerName, string sono, string custOrderNo, string schNo, string performaInvNo, string saleQuoteNo, string domensticExportNEPZ,string SubInvoicetype, string fromdate, string toDate,string SaleBillEntryFrom)
         {
             var _ResponseResult = new ResponseResult();
@@ -1369,6 +1387,7 @@ namespace eTactWeb.Data.DAL
         {
             try
             {
+                
                 var ItemGrid = new List<SaleBillDetail>();
                 var SaleBillGrid = new List<SaleBillDetail>();
                 var TaxGrid = new List<TaxModel>();
@@ -1494,6 +1513,14 @@ namespace eTactWeb.Data.DAL
                 model.SaleQuotNo = DS.Tables[0].Rows[0]["SaleQuotNo"]?.ToString();
                 model.PrivateMark = DS.Tables[0].Rows[0]["PrivateMark"]?.ToString();
                 model.GRNo = DS.Tables[0].Rows[0]["GRNo"]?.ToString();
+                //foreach (DataRow row in DS.Tables[0].Rows)
+                //{
+                //    string? value = row["SubInvoicetype"]?.ToString();
+                //    if (!string.IsNullOrEmpty(value))
+                //    {
+                //        model.SubInvoicetype.Add(value);
+                //    }
+                //}
                 model.SubInvoicetype = DS.Tables[0].Rows[0]["SubInvoicetype"]?.ToString();
                 model.GRDate = DS.Tables[0].Rows[0]["GRDate"]?.ToString();
                 model.SaleQuotEntryID = Convert.ToInt32(DS.Tables[0].Rows[0]["SaleQuotEntryID"]);
@@ -1968,6 +1995,31 @@ namespace eTactWeb.Data.DAL
             }
 
             return _ResponseResult;
+        }
+        public async Task<DataSet> GetInvoiceType()
+        {
+            var oDataSet = new DataSet();
+
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@flag", "getInvoiceType"));
+                var _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_SaleBillMainDetail", SqlParams);
+                if (_ResponseResult.Result != null && _ResponseResult.StatusCode == HttpStatusCode.OK && _ResponseResult.StatusText == "Success")
+                {
+                    _ResponseResult.Result.Tables[0].TableName = "InvoiceList";
+
+                    oDataSet = _ResponseResult.Result;
+                }
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return oDataSet;
         }
         public async Task<ResponseResult> GetFeatureOption()
         {

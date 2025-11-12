@@ -434,7 +434,8 @@ public static class CommonFunc
                      && typeProperty.PropertyInfo.Name != "Description"
                      && typeProperty.PropertyInfo.Name != "CreatedByName"
                      && typeProperty.PropertyInfo.Name != "ItemName" && typeProperty.PropertyInfo.Name != "PartCode" && typeProperty.PropertyInfo.Name != "DiscPer"
-                     && typeProperty.PropertyInfo.Name != "TotalRecords" && typeProperty.PropertyInfo.Name != "PageNumber" && typeProperty.PropertyInfo.Name != "PageSize")
+                     && typeProperty.PropertyInfo.Name != "TotalRecords" && typeProperty.PropertyInfo.Name != "PageNumber" && typeProperty.PropertyInfo.Name != "PageSize"
+                     && typeProperty.PropertyInfo.Name != "TotalBasicAmount" && typeProperty.PropertyInfo.Name != "TotalNetAmont" && typeProperty.PropertyInfo.Name != "TotalpendingAmt")
                     {
                         object value = row[typeProperty.PropertyInfo.Name];
                         object? safeValue = value == null || DBNull.Value.Equals(value) ? null : Convert.ChangeType(value, typeProperty.Type);
@@ -563,6 +564,7 @@ public static class CommonFunc
                     && typeProperty.PropertyInfo.Name != "SalesPersonEmailId"
                     && typeProperty.PropertyInfo.Name != "ConsigneeAccountName" && typeProperty.PropertyInfo.Name != "SODelivery" && typeProperty.PropertyInfo.Name != "ResposibleSalesPersonID"
                     && typeProperty.PropertyInfo.Name != "TotalRecords" && typeProperty.PropertyInfo.Name != "PageNumber" && typeProperty.PropertyInfo.Name != "PageSize"
+                    && typeProperty.PropertyInfo.Name != "TotalBasicAmount" && typeProperty.PropertyInfo.Name != "TotalNetAmont" && typeProperty.PropertyInfo.Name != "TotalpendingAmt"
                     )
                     {
                         object value = row[typeProperty.PropertyInfo.Name];
@@ -1728,6 +1730,7 @@ public static class CommonFunc
                         && typeProperty.PropertyInfo.Name != "YesNo" && typeProperty.PropertyInfo.Name != "AttachmentFile1" && typeProperty.PropertyInfo.Name != "AttachmentFile2" && typeProperty.PropertyInfo.Name != "AttachmentFile3"
                         && typeProperty.PropertyInfo.Name != "CreatedBy" && typeProperty.PropertyInfo.Name != "CreatedOn" && typeProperty.PropertyInfo.Name != "EID" && typeProperty.PropertyInfo.Name != "ID" && typeProperty.PropertyInfo.Name != "Mode"
                         && typeProperty.PropertyInfo.Name != "TxPageName" && typeProperty.PropertyInfo.Name != "UpdatedBy" && typeProperty.PropertyInfo.Name != "UpdatedOn"
+                        && typeProperty.PropertyInfo.Name != "SubInvoicetype" && typeProperty.PropertyInfo.Name != "SubInvoicetypeDetailList" && typeProperty.PropertyInfo.Name != "SubInvoicetypeList"&& typeProperty.PropertyInfo.Name != "SubInvoicetypeL"
                         && typeProperty.PropertyInfo.Name != "PageNumber" && typeProperty.PropertyInfo.Name != "SummaryDetailBack" && typeProperty.PropertyInfo.Name != "PageSize" && typeProperty.PropertyInfo.Name != "TotalRecords" && typeProperty.PropertyInfo.Name != "Group_name" && typeProperty.PropertyInfo.Name != "GroupCodeBack" && typeProperty.PropertyInfo.Name != "AccountCodeBack" && typeProperty.PropertyInfo.Name != "AccountNameBack" && typeProperty.PropertyInfo.Name != "VoucherTypeBack" && typeProperty.PropertyInfo.Name != "AccountList"
                         )
                     {

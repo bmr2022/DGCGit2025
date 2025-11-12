@@ -60,6 +60,8 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FILLPendingSONO();
         Task<ResponseResult> FillPendingPartCOde();
         Task<ResponseResult> GetFeatureOption();
+        Task<ResponseResult> GetInvoiceTypeMain();
+        Task<DataSet> GetInvoiceType();
         public Task<ResponseResult> AutoFillitem(string Flag, string SearchPartCode);
 
     }

@@ -572,6 +572,12 @@ public class SaleOrderController : Controller
 		string JsonString = JsonConvert.SerializeObject(JSON);
 		return Json(JsonString);
 	}
+	public async Task<JsonResult> GetTotalBYSp()
+	{
+		var JSON = await _ISaleOrder.GetTotalBYSp();
+		string JsonString = JsonConvert.SerializeObject(JSON);
+		return Json(JsonString);
+	}
     public async Task<IActionResult> GetlastSaleOrderDetail(string EntryDate, int currentYearcode, int AccountCode, int ItemCode)
     {
 
