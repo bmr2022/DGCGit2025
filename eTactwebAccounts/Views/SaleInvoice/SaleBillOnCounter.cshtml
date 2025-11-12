@@ -1292,7 +1292,7 @@
             GetItemGroup();
             AutoFillItems();
             GetCompanyType();
-            
+            GetInvoiceTypeMain();
             
                AutoFillPARTYNAMELIST();
             EditableRateAndDiscountONSaleInvoice();
@@ -1433,7 +1433,30 @@
             //             $('#EinvoicePopup').modal("hide");
             // });
             let generateEway = null;
+            function GetInvoiceTypeMain() {
+                $.ajax({
+                    url: '@Url.Action("GetInvoiceTypeMain")',
+                    type: 'GET',
+                    async: false,
+                    success: function (response, status, error) {
 
+                        var Dropdown = $('#SubInvoicetype');
+                        var obj = $.parseJSON(response);
+                        Dropdown.empty();
+
+
+                        $.each(obj.Result, function (index, store) {
+                            Dropdown.append('<option selected value="' + store.SubVoucherName + '">' + store.SubVoucherName + '</option>');
+                            // alert('Store Name: ' + store.Store_Name);
+                        });
+
+                    },
+                    error: function (xhr, status, error) {
+                        alert('Failed to load groups.');
+                    }
+                });
+
+            }
             $('#btnGenerateEinvoiceview').click(function (e) {
                 e.preventDefault();
                 $('#PasswordAllowPopup').modal("show");

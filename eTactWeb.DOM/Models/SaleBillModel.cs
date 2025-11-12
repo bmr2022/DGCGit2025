@@ -56,6 +56,10 @@ namespace eTactWeb.DOM.Models
         public int TotalRecords { get; set; }
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
+        public IList<string>? SubInvoicetypeL { get; set; }
+        public IList<SaleInvoiceTypeDetail>? SubInvoicetypeDetailList { get; set; }
+
+        public IList<TextValue>? SubInvoicetypeList { get; set; }
         public List<SaleBillDashboard>? SaleBillDataDashboard { get; set; }
     }
     public class SaleBillDetail : TaxModel
@@ -157,6 +161,8 @@ namespace eTactWeb.DOM.Models
         public string? AllowToAddNegativeStockInStore { get; set; }
         public string? SaleBillEntryFrom { get; set; }
         public string? SubInvoicetype { get; set; }
+       
+        
         public string? InvPrefix { get; set; }
         public string? SaleBillJobwork { get; set; }
         public string? AgainstVoucherNo { get; set; }
@@ -351,7 +357,12 @@ namespace eTactWeb.DOM.Models
             set => _YesNo = value;
         }
     }
+    [Serializable()]
+    public class SaleInvoiceTypeDetail
+    {
+        public string? SubVoucherName { get; set; }
 
+    }
     public class CustomerInputJobWorkIssueAdjustDetail
     {
         public int ItemCode { get; set; }

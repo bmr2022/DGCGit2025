@@ -37,6 +37,10 @@
                                     </div>
                                 </div>
                             </div>
+                           @*  <input asp-for="TotalBasicAmount" type="hidden" />
+                            <input asp-for="TotalNetAmont" type="hidden" />
+                            <input asp-for="TotalpendingAmt" type="hidden" /> *@
+
                             <div class="col-xxl-1 col-xl-1 col-lg-1 col-md-3 col-sm-6 col-xs-12">
                                 <label asp-for="SummaryDetail" class="form-label">Summary/Detail</label>
                                 <select class="form-select" asp-for="SummaryDetail" >
@@ -268,7 +272,7 @@
                 $('#ItemName').val(itemNameBack);
             }
 
-            //GetSearchData();
+            GetSearchData();
 
             $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatDate(firstDayOfMonth));
             $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
@@ -281,7 +285,7 @@
             //GetSearchData();
             CheckApproved();
             TotalRows();
-
+            GetTotalBYSp();
 
             AutoComplete('VSALEORDER', 'CustomerName', 'CustomerName', null);
             AutoComplete('VSALEORDER', 'CustOrderNo', 'CustOrderNo', null);
@@ -609,7 +613,7 @@
                 success: function (data) {
                     $('#divDashboardGrid').empty().append(data);
                     CheckApproved();
-
+                    GetTotalBYSp();
                     TotalRows();
                     GetFormRights();
                     GetFeatureOption();
@@ -636,6 +640,7 @@
                 success: function (result) {
                     $('#divDashboardGrid').empty();
                     $('#divDashboardGrid').html(result);
+                    TotalRows();
                     GetFormRights();
                     GetFeatureOption();
                     $('#totalRows').text($('#divDashboardGrid tr').length);
@@ -655,6 +660,7 @@
 
                     $('#divDashboardGrid').empty();
                     $('#divDashboardGrid').html(data);
+                    TotalRows();
                     GetFormRights();
                     GetFeatureOption();
                     $('#totalRows').text($('#divDashboardGrid tr').length);
@@ -665,7 +671,48 @@
                 }
             });
         });
+        function GetTotalBYSp() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetTotalBYSp")",   // Your MVC Action
+                data: $('#SParam').serialize(),       // Serialize form data
+                dataType: "json",
+                success: function (result) {
 
+                    // 🔹 Handle double-encoded JSON (escaped as string)
+                    if (typeof result === "string") {
+                        try {
+                            result = JSON.parse(result);
+                        } catch (e) {
+                            console.error("JSON parse error:", e);
+                            return;
+                        }
+                    }
+
+                    // 🔹 Validate and extract data
+                    if (result && result.Result && result.Result.length > 0) {
+                        var obj = result.Result[0];
+
+                        // Update totals with formatted numbers
+                        $('#TotalBasicAmount').text(parseFloat(obj.BasicAmount || 0).toFixed(2));
+                        $('#TotalNetAmont').text(parseFloat(obj.NetAmount || 0).toFixed(2));
+                        $('#TotalpendingAmt').text(parseFloat(obj.pendingAmt || 0).toFixed(2));
+                    } else {
+                        // If no data found, clear values
+                        $('#TotalBasicAmount').text("0.00");
+                        $('#TotalNetAmont').text("0.00");
+                        $('#TotalpendingAmt').text("0.00");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("AJAX error:", error);
+                    // Clear totals if AJAX fails
+                    $('#TotalBasicAmount').text("0.00");
+                    $('#TotalNetAmont').text("0.00");
+                    $('#TotalpendingAmt').text("0.00");
+                }
+            });
+        }
         function LockedFincialYear() {
             var YearCode = parseInt($('#hiddenYearCode').val());
             var rowCounter = $('#divDashboardGrid tr').length;

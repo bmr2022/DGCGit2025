@@ -9,6 +9,7 @@ namespace eTactWeb.Services.Interface
 		
 
 		Task<ResponseResult> GetAddress(string Code);
+		Task<ResponseResult> GetTotalBYSp(SaleOrderDashboard model);
 		Task<ResponseResult> AutoFillPARTYNAMELIST(string SearchAccount);
 
 

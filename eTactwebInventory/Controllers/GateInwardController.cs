@@ -640,6 +640,7 @@ namespace eTactWeb.Controllers
         }
         public async Task<IActionResult> GetPendingGateEntrySearchData(
     int AccountCode,
+    int docTypeId,
     string PoNo,
     int PoYearCode,
     int ItemCode,
@@ -659,7 +660,7 @@ namespace eTactWeb.Controllers
         {
             //model.Mode = "Search";
             var model = new PendingGateInwardDashboard();
-            model = await _IGateInward.GetPendingGateEntryDashboardData(AccountCode , PoNo, PoYearCode, ItemCode, FromDate, ToDate, PartCode, ItemName, GetDataFrom, Invoiceno);
+            model = await _IGateInward.GetPendingGateEntryDashboardData(AccountCode , docTypeId, PoNo, PoYearCode, ItemCode, FromDate, ToDate, PartCode, ItemName, GetDataFrom, Invoiceno);
            
             var modelList = model?.PendingGateEntryDashboard ?? new List<PendingGateInwardDashboard>();
 

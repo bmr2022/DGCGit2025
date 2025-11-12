@@ -901,9 +901,35 @@ namespace eTactWeb.Controllers
             model.AccountNameBack = AccountCodeBack;
             model.VoucherTypeBack = VoucherTypeBack;
             model.AccountList = AccountList;
+           
             return View(model);
         }
+        private async Task<SaleBillDashboard> BindModel(SaleBillDashboard model)
+        {
+            var oDataSet = new DataSet();
+            var _List = new List<TextValue>();
+            oDataSet = await _SaleBill.GetInvoiceType().ConfigureAwait(true);
 
+            if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+            {
+
+
+                foreach (DataRow row in oDataSet.Tables[0].Rows)
+                {
+                    _List.Add(new TextValue
+                    {
+                        Value = row["SubVoucherName"].ToString(),
+                        Text = row["SubVoucherName"].ToString()
+                    });
+                }
+                model.SubInvoicetypeList = _List;
+                _List = new List<TextValue>();
+
+            }
+
+
+            return model;
+        }
         [HttpGet]
         public async Task<IActionResult> SaleBillOnCounter(int ID, string Mode, int YearCode, string dashboardType = "", string fromDate = "", string toDate = "", string partCode = "", string itemName = "", string VoucherNo = "",int AccountCode=0, string custName = "", string sono = "", string custOrderNo = "", string schNo = "", string performaInvNo = "", string saleQuoteNo = "", string domExportNEPZ = "", string Searchbox = "", string summaryDetail = "")
         {
@@ -1094,6 +1120,7 @@ namespace eTactWeb.Controllers
                 model.SaleBillYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
                 model.SummaryDetail = "Summary";
                 model.SONO = "";
+                model = await BindModel(model).ConfigureAwait(false);
                 var Result = await _SaleBill.GetDashboardData(model.SummaryDetail, partCode, itemName, saleBillno, customerName, sono, custOrderNo, schNo, performaInvNo, saleQuoteNo, domensticExportNEPZ, SubInvoicetype, ParseFormattedDate(model.FinFromDate.Split(" ")[0]), common.CommonFunc.ParseFormattedDate(model.FinToDate.Split(" ")[0]), SaleBillEntryFrom).ConfigureAwait(true);
                 if (Result != null)
                 {
@@ -1140,6 +1167,12 @@ namespace eTactWeb.Controllers
             {
                 throw ex;
             }
+        }
+        public async Task<JsonResult> GetInvoiceTypeMain()
+        {
+            var JSON = await _SaleBill.GetInvoiceTypeMain();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
         }
         public async Task<IActionResult> GetSearchData(string summaryDetail, string partCode, string itemName, string saleBillno, string customerName, string sono, string custOrderNo, string schNo, string performaInvNo, string saleQuoteNo, string domensticExportNEPZ, string fromdate, string toDate, string SaleBillEntryFrom, string SubInvoicetype, int pageNumber = 1, int pageSize = 50, string SearchBox = "")
         {

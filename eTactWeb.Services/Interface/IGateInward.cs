@@ -30,7 +30,7 @@ public interface IGateInward
       Task<ResponseResult> GetFeatureOption();
 
     Task<GateInwardDashboard> GetDashboardData(string VendorName, string Gateno, string ItemName, string PartCode,string DocName, string PONO, string ScheduleNo, string FromDate, string ToDate,string DashboardType);
-    Task<PendingGateInwardDashboard> GetPendingGateEntryDashboardData(int AccountCode, string PoNo, int PoYearCode, int ItemCode,
+    Task<PendingGateInwardDashboard> GetPendingGateEntryDashboardData(int AccountCode,int docTypeId, string PoNo, int PoYearCode, int ItemCode,
     string FromDate, string ToDatePartCode,string PartCode, string ItemName,string GetDataFrom,string Invoiceno);
 
 

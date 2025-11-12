@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.Common;
+﻿using DocumentFormat.OpenXml.EMMA;
+using eTactWeb.Data.Common;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
@@ -345,6 +346,42 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "CheckAllowMultiBuyerSO"));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_SaleOrder", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> GetTotalBYSp(SaleOrderDashboard model)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var StartDate = CommonFunc.ParseFormattedDate(model.FromDate);
+                var EndDate = CommonFunc.ParseFormattedDate(model.ToDate);
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetTotalAmount"));
+                SqlParams.Add(new SqlParameter("@CustomerName", model.CustomerName));
+                SqlParams.Add(new SqlParameter("@CustOrderNo", model.CustOrderNo));
+                SqlParams.Add(new SqlParameter("@Branch", model.CC));
+                SqlParams.Add(new SqlParameter("@SONo", model.SONo));
+                SqlParams.Add(new SqlParameter("@OrderType", model.OrderType));
+                SqlParams.Add(new SqlParameter("@SOType", model.SOType));
+              
+                SqlParams.Add(new SqlParameter("@SOComplete", model.SOComplete));
+                SqlParams.Add(new SqlParameter("@StartDate", StartDate));
+                SqlParams.Add(new SqlParameter("@EndDate", EndDate));
+
+              
+
+               
+                 
+                   
+                    _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_SaleOrder", SqlParams);
             }
             catch (Exception ex)
             {

@@ -188,6 +188,9 @@ namespace eTactWeb.DOM.Models
         public string? Currency { get; set; }
 
         // === Miscellaneous Details ===
+        public decimal TotalBasicAmount { get; set; }
+        public decimal TotalNetAmont { get; set; }
+        public decimal TotalpendingAmt { get; set; }
         public string? CC { get; set; }
         public string? EID { get; set; }
         public string? FromDate { get; set; }
@@ -274,6 +277,9 @@ namespace eTactWeb.DOM.Models
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         //[Required]
         public int AmmNo { get; set; }
+        public decimal TotalBasicAmount { get; set; }
+        public decimal TotalNetAmont { get; set; }
+        public decimal TotalpendingAmt { get; set; }
         public string? TypeOfSave { get; set; }
 
         public string? Branch { get; set; }

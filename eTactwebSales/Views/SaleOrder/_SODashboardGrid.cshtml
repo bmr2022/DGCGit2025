@@ -45,6 +45,10 @@
         vertical-align: super;
     }
 
+    #SOGrid tbody td {
+        font-weight: normal !important;
+    }
+
 </style>
 
 <div class="table-responsive" style="max-height:350px;">
@@ -100,13 +104,18 @@
             <tbody id="divSOGrid">
                 @{
                     var @Cntr = 0;
-
+                decimal totalBasicAmount = 0;
+                decimal totalNetAmount = 0;
+                decimal totalPendingAmt = 0;
                     if (Model.SODashboard == null || Model.SODashboard.Count == 0)
                     {
                         <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
                     }
                     else
                     {
+                       
+                   
+
                         foreach (var item in Model.SODashboard)
                         {
                             Cntr = Cntr + 1;
@@ -264,12 +273,18 @@
                                 <td class="SaleOrderOtherRequiredDetail">@item.CreatedOn.Split(" ")[0]</td>
                                 <td class="FWB SaleOrderOtherRequiredDetail">@item.EntryID</td>
                                 <td class="SaleOrderOtherRequiredDetail">@item.Year</td>
+                               
                             </tr>
+                           
+                    totalBasicAmount += item.TotalBasicAmount;
+                    totalNetAmount += item.TotalNetAmont;
+                    totalPendingAmt += item.TotalpendingAmt;
+   
                         }
                     }
                 }
             </tbody>
-            <tfoot class="bg-light fw-bold">
+            <tfoot class="fw-bold">
                 <tr>
                     <td></td> <!-- Sr# -->
                     <td>Totals</td> <!-- Action -->
@@ -286,10 +301,10 @@
                     <td class="SaleOrderOtherRequiredDetail"></td> <!-- Delivery Address -->
                     <td class="SaleOrderOtherRequiredDetail"></td> <!-- Consignee -->
                     <td class="SaleOrderOtherRequiredDetail"></td> <!-- Consignee Address -->
-                    <td class="SaleOrderOtherRequiredDetail" id="footerOrderAmt"></td> <!-- Amount -->
-                    <td id="OrderNetAmt"></td> <!-- Net Amount -->
+                <td class="SaleOrderOtherRequiredDetail" id="">@totalBasicAmount.ToString("N2")</td> <!-- Amount footerOrderAmt-->
+                <td id="TotalNetAmont"></td> <!-- Net Amount -->
                     <td></td> <!-- SO Complete -->
-                    <td id="pendingAmt"></td> <!-- Pending Amt -->
+                <td id="TotalpendingAmt"></td> <!-- Pending Amt -->
                     <td class="SaleOrderOtherRequiredDetail"></td> <!-- SO Confirm Date -->
                     <td class="SaleOrderOtherRequiredDetail"></td> <!-- Approved -->
                     <td></td> <!-- Created By -->
@@ -356,16 +371,26 @@
     table tfoot {
         position: sticky;
         bottom: 0;
-        background: linear-gradient(180deg, #e9f7fe, #d4f0fa) !important;
-       
+        background: linear-gradient(180deg, #b3e0f5, #80d4f0) !important;
+        
+        color: #ffffff;
         z-index: 10; /* ensures it's above table rows */
         box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+        height: 40px;
     }
 
+    table tbody td {
+        font-size: 13px; 
+        font-weight: normal; 
+        
+        /* padding: 6px 8px; */
+    }
         table tfoot td {
             font-weight: bold;
             border-top: 2px solid #dee2e6;
-        }
+            font-size: 13px;
+            color: #222;
+    }
     #container {
         display: flex;
     }
@@ -386,6 +411,7 @@
         top: 0;
         height: 40px;
         z-index: 1;
+        font-size: 13px;
     }
 
     tbody td {
@@ -393,8 +419,7 @@
     }
 
     #SOGrid tbody td {
-        min-hight: 50px; /* increase or decrease as needed */
-      
+        min-hight: 50px; 
     }
 
    
