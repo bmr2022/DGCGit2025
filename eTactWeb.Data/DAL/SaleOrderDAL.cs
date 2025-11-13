@@ -1567,6 +1567,7 @@ namespace eTactWeb.Data.DAL
                         oCmd.Parameters.AddWithValue("@ItemName", model.ItemName);
                         oCmd.Parameters.AddWithValue("@PartCode", model.PartCode);
                         oCmd.Parameters.AddWithValue("@SOComplete", model.SOComplete);
+                        oCmd.Parameters.AddWithValue("@empName", model.CreatedByName);
                         //SqlParams.Add(new SqlParameter("@EntryDate", DateTime.ParseExact(model.EntryDate.ToString(), "dd-mm-yyyy", CultureInfo.InvariantCulture)));
 
                         oCmd.Parameters.AddWithValue("@StartDate", StartDate);

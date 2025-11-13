@@ -51,7 +51,7 @@
 
 </style>
 
-<div class="table-responsive" style="max-height:350px;">
+<div class="table-responsive" style="max-height:500px;">
         <table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0" id="SOGrid">
             <thead class="bg-gradient card-headerBG text-light"  id="SOThead">
                 <tr>
@@ -247,7 +247,7 @@
                                 <td id="hiddenPendingAmt-@Cntr">@item.pendingAmt</td>
                                 <td class="SaleOrderOtherRequiredDetail">@item.SOConfirmDate.Split(" ")[0]</td>
                                 <td class="SaleOrderOtherRequiredDetail">@item.Approved</td>
-                                <td class="">@item.CreatedByName</td>
+                                            <td class="">@item.CreatedByName</td>
                                 
                                 <td class="SaleOrderOtherRequiredDetail">
                                     @if (!string.IsNullOrEmpty(item.ApprovedDate))
@@ -376,7 +376,7 @@
         color: #ffffff;
         z-index: 10; /* ensures it's above table rows */
         box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
-        height: 40px;
+        height: 30px;
     }
 
     table tbody td {
@@ -409,7 +409,7 @@
         background-color: #127387;
         position: sticky;
         top: 0;
-        height: 40px;
+        height: 30px;
         z-index: 1;
         font-size: 13px;
     }
@@ -419,7 +419,7 @@
     }
 
     #SOGrid tbody td {
-        min-hight: 50px; 
+        min-hight: 40px; 
     }
 
    
