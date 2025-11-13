@@ -699,6 +699,18 @@
                                 $("#attendanceItemGrid").html(result);
                                 updateItemCount();
                                 //$("#lblItemCount").text($("#rowitemcount").val());
+                                if(DayOrMonthType.toLowerCase() == "daily")
+                                {
+                                    if ($('#isholiday').val().toLowerCase() == "true" || $('#isweekoff').val().toLowerCase() == "true") {
+                                        let message = $('#isholiday').val().toLowerCase() == "true"
+                                            ? "This day is a Holiday. Do you still want to edit attendance?"
+                                            : "This day is a Week-Off. Do you still want to edit attendance?";
+
+                                        if (!confirm(message)) {
+                                                    $("#attendanceItemGridbody").html("<input id='rowitemcount' type='hidden' value='0' /><tr><td colspan='8' class='text-center'>No records found.</td></tr>");
+                                        }
+                                    }
+                                }
                         },
                         error: function () {
                             console.log("Error loading attendance grid.");

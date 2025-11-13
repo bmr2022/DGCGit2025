@@ -5,6 +5,9 @@
     var deptList = ViewBag.DeptList as List<TextValue> ?? new();
     var desigList = ViewBag.DesigList as List<TextValue> ?? new();
     var employeeList = ViewBag.EmployeeList as List<TextValue> ?? new();
+    bool isHoliday = !string.IsNullOrEmpty(ViewBag.IsHoliday?.ToString()) ? Convert.ToBoolean(ViewBag.IsHoliday) : false;
+    bool isWeekoff = !string.IsNullOrEmpty(ViewBag.IsWeekoff?.ToString()) ? Convert.ToBoolean(ViewBag.IsWeekoff) : false;
+    bool allowEdit = !string.IsNullOrEmpty(ViewBag.AllowEdit?.ToString()) ? Convert.ToBoolean(ViewBag.AllowEdit) : false;
 }
 <style>
 
@@ -62,10 +65,10 @@
                                 }
                                 string currentDay = date.DayOfWeek.ToString();
                                 var holiday = Model.HolidayList?.FirstOrDefault(h => h.HolidayYear == Model.GateAttYearCode && h.HolidayEffFrom >= date && h.HolidayEffTill <= date);
-                                bool isWeekoff = Model.HolidayList?.Any(a => a.HolidayEffFrom == null && a.HolidayEffTill == null && a.DayName.Equals(currentDay, StringComparison.OrdinalIgnoreCase)) ?? false;
-                                bool isHoliday = !isWeekoff && holiday != null;
+                                isWeekoff = Model.HolidayList?.Any(a => a.HolidayEffFrom == null && a.HolidayEffTill == null && a.DayName.Equals(currentDay, StringComparison.OrdinalIgnoreCase)) ?? false;
+                                isHoliday = !isWeekoff && holiday != null;
                                 string cssClass = isWeekoff ? "weekoff-time" : (isHoliday ? "holiday-time" : "");
-                                bool allowEdit = (holiday != null && isHoliday && string.Equals(holiday?.AllowedCompOff, "YES", StringComparison.OrdinalIgnoreCase)) || !isHoliday;
+                                allowEdit = (holiday != null && isHoliday && string.Equals(holiday?.AllowedCompOff, "YES", StringComparison.OrdinalIgnoreCase)) || !isHoliday;
                                 if (isWeekoff) { allowEdit = false; }
                                 <th style="min-width:60px; resize: horizontal; width:70px;">
                                     @dayCol  <br />
@@ -77,23 +80,44 @@
                         else {
                             @foreach (var dayCol in Model.DayHeaders)
                             {
-                                <th style="min-width:60px; resize: horizontal; width:70px;">@dayCol</th>
+                                <th style="min-width:60px; resize: horizontal; width:70px;">
+                                    @dayCol <br />
+                                    @if (!allowEdit)
+                                    {
+                                        <input type="checkbox" id="checkDateChange_1" data-day="1" onclick="onclickCheckDate(1)" />
+                                    }
+                                </th>
                             }
                         }
                     }
                     else
                     {
-                        <th style="min-width:60px resize: horizontal; width:70px;">In Time</th>
-                        <th style="min-width:60px resize: horizontal; width:70px;">Out Time</th>
+                        <th style="min-width:60px; resize: horizontal; width:70px;">
+                            In Time <br />
+                            @if (!allowEdit)
+                            {
+                                <input type="checkbox" id="checkDateChange1" data-day="1" onclick="onclickCheckDate(1)" />
+                            }
+                        </th>
+
+                        <th style="min-width:60px; resize: horizontal; width:70px;">
+                            Out Time <br />
+                            @if (!allowEdit)
+                            {
+                                <input type="checkbox" id="checkDateChange2" data-day="1" onclick="onclickCheckDate(1)" />
+                            }
+                        </th>
                     }
                     <th style="min-width:120px; resize: horizontal; width:140px;">Department @* <input type="checkbox" id="checkDeptSync" /> *@</th>
                     <th style="min-width:120px; resize: horizontal; width:140px;">Designation @* <input type="checkbox" id="checkDesigSync" /> *@</th>
                 </tr>
             </thead>
-            <tbody class="itemgridBody">
+            <tbody class="itemgridBody" id="attendanceItemGridbody">
                 @if (Model?.GateAttDetailsList != null && Model.GateAttDetailsList.Any())
                 {
                     <input id="rowitemcount" type="hidden" value="@Model.GateAttDetailsList.Count" />
+                    <input type="hidden" id="isholiday" value="@isHoliday.ToString()" />
+                    <input type="hidden" id="isweekoff" value="@isWeekoff.ToString()" />
                     @for (int i = 0; i < Model.GateAttDetailsList.Count; i++)
                     {
                         <tr>
@@ -114,10 +138,9 @@
                                     var Tovalue = tokey != null ? Model.GateAttDetailsList[i].Attendance[tokey] : "";
                                     Fromvalue = string.IsNullOrWhiteSpace(Fromvalue) ? "" : (DateTime.TryParse(Fromvalue.Trim(), out var dt) ? dt.ToString("HH\\:mm") : "");
                                     Tovalue = string.IsNullOrWhiteSpace(Tovalue) ? "" : (DateTime.TryParse(Tovalue.Trim(), out var tdt) ? tdt.ToString("HH\\:mm") : "");
-                                    //var Fromvalue = Model.GateAttDetailsList[i].Attendance.ContainsKey("fromtime") ? Model.GateAttDetailsList[i].Attendance["fromtime"] : "";
-                                    //var Tovalue = Model.GateAttDetailsList[i].Attendance.ContainsKey("totime") ? Model.GateAttDetailsList[i].Attendance["totime"] : "";
-                                    <td><input type="time" id='@("txt_" + Model.GateAttDetailsList[i].EmpId + "_InTime")' name="Attendance[@Model.GateAttDetailsList[i].EmpId][InTime]" value="@Fromvalue" class="form-control form-control-sm att-input timepicker" data-empid="@Model.GateAttDetailsList[i].EmpId" data-type="InTime" /></td>
-                                    <td><input type="time" id='@("txt_" + Model.GateAttDetailsList[i].EmpId + "_OutTime")' name="Attendance[@Model.GateAttDetailsList[i].EmpId][OutTime]" value="@Tovalue" class="form-control form-control-sm att-input timepicker" data-empid="@Model.GateAttDetailsList[i].EmpId" data-type="OutTime" /></td>
+                                    string CssClass = ViewBag.CssClass;
+                                    <td><input type="time" id='@("txt_" + Model.GateAttDetailsList[i].EmpId + "_InTime")' name="Attendance[@Model.GateAttDetailsList[i].EmpId][InTime]" value="@(allowEdit ? Fromvalue : "")" class="form-control form-control-sm att-input timepicker" data-empid="@Model.GateAttDetailsList[i].EmpId" data-type="InTime" data-day="1" @(allowEdit ? "" : "disabled") /></td>
+                                    <td><input type="time" id='@("txt_" + Model.GateAttDetailsList[i].EmpId + "_OutTime")' name="Attendance[@Model.GateAttDetailsList[i].EmpId][OutTime]" value="@(allowEdit ? Tovalue : "")" class="form-control form-control-sm att-input timepicker" data-empid="@Model.GateAttDetailsList[i].EmpId" data-type="OutTime" data-day="1" @(allowEdit ? "" : "disabled") /></td>
                                 }
                                 else
                                 {
@@ -131,10 +154,10 @@
                                         var currentDate = new DateTime(Model.GateAttYearCode, monthNo, !string.IsNullOrEmpty(dayNo) ? Convert.ToInt32(dayNo) : 1);
                                         string currentDay = currentDate.DayOfWeek.ToString();
                                         var holiday = Model.HolidayList?.FirstOrDefault(h => h.HolidayYear == Model.GateAttYearCode && h.HolidayEffFrom >= currentDate && h.HolidayEffTill <= currentDate);
-                                        bool isWeekoff = Model.HolidayList.Any(a => a.HolidayEffFrom == null && a.HolidayEffTill == null && a.DayName.Equals(currentDay, StringComparison.OrdinalIgnoreCase));
-                                        bool isHoliday = !isWeekoff && holiday != null;
+                                        isWeekoff = Model.HolidayList.Any(a => a.HolidayEffFrom == null && a.HolidayEffTill == null && a.DayName.Equals(currentDay, StringComparison.OrdinalIgnoreCase));
+                                        isHoliday = !isWeekoff && holiday != null;
                                         string cssClass = isWeekoff ? "weekoff-time" : (isHoliday ? "holiday-time" : "");
-                                        bool allowEdit = (holiday != null && isHoliday && string.Equals(holiday?.AllowedCompOff, "YES", StringComparison.OrdinalIgnoreCase)) || !isHoliday;
+                                        allowEdit = (holiday != null && isHoliday && string.Equals(holiday?.AllowedCompOff, "YES", StringComparison.OrdinalIgnoreCase)) || !isHoliday;
                                         if(isWeekoff) { allowEdit = false; }
                                         value = allowEdit ? (string.IsNullOrWhiteSpace(value) ? "" : (DateTime.TryParse(value.Trim(), out var dt) ? dt.ToString("HH\\:mm") : "")) : "";
                                         <td><input type="time" id='@("txt_" + Model.GateAttDetailsList[i].EmpId + "_" + dayNo + "_" + type)' name="Attendance[@Model.GateAttDetailsList[i].EmpId][@dayCol]" value="@value" class="form-control form-control-sm att-input timepicker @cssClass" data-empid="@Model.GateAttDetailsList[i].EmpId" data-day="@dayNo" data-type="@type" @(allowEdit ? "" : "disabled") /></td>
@@ -149,10 +172,9 @@
                                 var Tovalue = tokey != null ? Model.GateAttDetailsList[i].Attendance[tokey] : "";
                                 Fromvalue = string.IsNullOrWhiteSpace(Fromvalue) ? "" : (DateTime.TryParse(Fromvalue.Trim(), out var dt) ? dt.ToString("HH\\:mm") : "");
                                 Tovalue = string.IsNullOrWhiteSpace(Tovalue) ? "" : (DateTime.TryParse(Tovalue.Trim(), out var tdt) ? tdt.ToString("HH\\:mm") : "");
-                                //var Fromvalue = Model.GateAttDetailsList[i].Attendance.ContainsKey("fromtime") ? Model.GateAttDetailsList[i].Attendance["fromtime"] : "";
-                                //var Tovalue = Model.GateAttDetailsList[i].Attendance.ContainsKey("totime") ? Model.GateAttDetailsList[i].Attendance["totime"] : "";
-                                <td><input type="time" id='@("txt_" + Model.GateAttDetailsList[i].EmpId + "_InTime")' name="Attendance[@Model.GateAttDetailsList[i].EmpId][InTime]" value="@Fromvalue" class="form-control form-control-sm att-input timepicker" data-empid="@Model.GateAttDetailsList[i].EmpId" data-type="InTime" /></td>
-                                <td><input type="time" id='@("txt_" + Model.GateAttDetailsList[i].EmpId + "_OutTime")' name="Attendance[@Model.GateAttDetailsList[i].EmpId][OutTime]" value="@Tovalue" class="form-control form-control-sm att-input timepicker" data-empid="@Model.GateAttDetailsList[i].EmpId" data-type="OutTime" /></td>
+                                string CssClass = ViewBag.CssClass;
+                                <td><input type="time" id='@("txt_" + Model.GateAttDetailsList[i].EmpId + "_InTime")' name="Attendance[@Model.GateAttDetailsList[i].EmpId][InTime]" value="@(allowEdit ? Fromvalue : "")" class="form-control form-control-sm att-input timepicker" data-empid="@Model.GateAttDetailsList[i].EmpId" data-type="InTime" data-day="1" @(allowEdit ? "" : "disabled") /></td>
+                                <td><input type="time" id='@("txt_" + Model.GateAttDetailsList[i].EmpId + "_OutTime")' name="Attendance[@Model.GateAttDetailsList[i].EmpId][OutTime]" value="@(allowEdit ? Tovalue : "")" class="form-control form-control-sm att-input timepicker" data-empid="@Model.GateAttDetailsList[i].EmpId" data-type="OutTime" data-day="1" @(allowEdit ? "" : "disabled") /></td>
                             }
 
                             <td>@Html.DropDownList($"dept_{Model.GateAttDetailsList[i].EmpId}", new SelectList(deptList, "Value", "Text", Model.GateAttDetailsList[i].DeptId), new { @class = "form-select form-select-sm dept-dd", @style = "pointer-events: none;", data_empid = Model.GateAttDetailsList[i].EmpId, onchange = "ondeptlistchange(" + Model.GateAttDetailsList[i].EmpId + ")" })</td>

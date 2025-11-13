@@ -677,7 +677,7 @@ namespace eTactWeb.Controllers
                         // return View("Error", Result);
                         return View(model);
                     }
-                    if (Result.StatusText == "TransDate" || Result.StatusCode == HttpStatusCode.InternalServerError)
+                    if (Result.StatusText == "SaveValidation" || Result.StatusCode == HttpStatusCode.InternalServerError)
                     {
                         ViewBag.isSuccess = false;
                         var input = "";
@@ -703,6 +703,17 @@ namespace eTactWeb.Controllers
                         _logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
                         //model.IsError = "true";
                         //return View("Error", Result);
+                        return Json(new
+                        {
+                            status = "Error",
+                            message = input,
+                            EntryId = model.SaleBillEntryId,
+                            InvoiceNo = model.SaleBillNo,
+                            YearCode = model.SaleBillYearCode,
+                            saleBillType = model.SupplyType,
+                            AccountCode = model.AccountCode
+
+                        });
                     }
 
                     HttpContext.Session.SetString("SaleInvoice", JsonConvert.SerializeObject(model));

@@ -194,17 +194,18 @@
                                         <option value="">-Select-</option>
                                     </select>
                                 </div>
-                              @*   <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                               <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="display:none">
                                     <label asp-for="TotalDiscountPercentage" class="form-label">Discount %</label>
                                     <input asp-for="TotalDiscountPercentage" class="form-control" min="0" max="100" />
                                 </div>
-                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="display:none">
                                     <label asp-for="TotalAmtAftrDiscount" class="form-label">Amt Aftr Discount</label>
                                     <input asp-for="TotalAmtAftrDiscount" class="form-control" readonly />
-                                </div> *@
+                                </div>
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="TotalRoundOffAmt" class="form-label">(+/-) RoundOff Amount</label>
                                     <input asp-for="TotalRoundOffAmt" class="form-control" readonly />
+                                    <input id="TotalRoundOffAmt1" class="form-control" type="hidden" readonly />
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="NetTotal" class="form-label">Net Total</label>

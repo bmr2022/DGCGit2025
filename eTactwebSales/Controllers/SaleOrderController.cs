@@ -703,22 +703,24 @@ public class SaleOrderController : Controller
 
        
         string EndDate = HttpContext.Session.GetString("ToDate");
-        var model = await _ISaleOrder.GetDashboardData(EndDate);
+		var model = new SaleOrderDashboard();
+        //var model = await _ISaleOrder.GetDashboardData(EndDate);
 
-        // Prepare dropdown SONo list
-        var _List = new List<TextValue>();
-        foreach (SaleOrderDashboard item in model.SODashboard)
-        {
-            _List.Add(new TextValue
-            {
-                Text = item.SONo.ToString(),
-                Value = item.SONo.ToString(),
-            });
-        }
+        //// Prepare dropdown SONo list
+        //var _List = new List<TextValue>();
+        //foreach (SaleOrderDashboard item in model.SODashboard)
+        //{
+        //    _List.Add(new TextValue
+        //    {
+        //        Text = item.SONo.ToString(),
+        //        Value = item.SONo.ToString(),
+        //    });
+        //}
 
-        
+
         model.BranchList = await _IDataLogic.GetDropDownList("BRANCH", "SP_GetDropDownList");
-        model.SONoList = _List;
+        //model.BranchList = await _IDataLogic.GetDropDownList("EmpNameWithCode", "SP_GetDropDownList");
+        //model.SONoList = _List;
         model.CC = HttpContext.Session.GetString("Branch");
         model.Year = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
         model.FromDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1).ToString("dd/MM/yyyy");
@@ -769,6 +771,9 @@ public class SaleOrderController : Controller
        
         return View(model);
     }
+
+
+
 
 
     public async Task<IActionResult> ShowGroupWiseItems(int Group_Code,int AccountCode)
@@ -1160,7 +1165,7 @@ public class SaleOrderController : Controller
     //	model = await _ISaleOrder.GetSearchData(model);
     //	return PartialView("_SODashboardGrid", model);
     //}
-    public async Task<IActionResult> GetSearchData(SaleOrderDashboard model,string ReportType, string SearchBox = "", int pageNumber = 1, int pageSize = 50)
+    public async Task<IActionResult> GetSearchData(SaleOrderDashboard model,string ReportType, string SearchBox = "", int pageNumber = 1, int pageSize = 15)
     {
        
         model = await _ISaleOrder.GetSearchData(model);

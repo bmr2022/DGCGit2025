@@ -88,18 +88,18 @@
 							<input asp-for="Mode" type="hidden" class="form-control" value="@Model.Mode" />
 							<div class="row">
 
-								<div class="col-md-2">
-									<label asp-for="AdvanceEntryId" class="form-label">Advance EntryId</label>
+								<div class="col-md-1">
+									<label asp-for="AdvanceEntryId" class="form-label">Adv EntryId</label>
 									<input asp-for="AdvanceEntryId" class="form-control" readonly />
 								</div>
 
-								<div class="col-md-2">
-									<label asp-for="AdvanceYearCode" class="form-label">Advance YearCode</label>
+								<div class="col-md-1">
+									<label asp-for="AdvanceYearCode" class="form-label">Adv YC</label>
 									<input asp-for="AdvanceYearCode" class="form-control" />
 								</div>
 
-								<div class="col-md-2">
-									<label asp-for="AdvanceSlipNo" class="form-label">Advance SlipNo</label>
+								<div class="col-md-1">
+									<label asp-for="AdvanceSlipNo" class="form-label">Adv SlipNo</label>
 									<input asp-for="AdvanceSlipNo" class="form-control" />
 								</div>
 
@@ -119,41 +119,42 @@
 
 								<div class="col-md-1">
 									<label asp-for="DesigId" class="form-label">Designation</label>
-									<select asp-for="DesigId" class="form-select">
-										<option value="">-Select-</option>
-									</select>
+								    <input type="hidden" asp-for="DesigId"/>
+								    <input asp-for="DesigName" class="form-control" readonly/>
 								</div>
 
 								<div class="col-md-1">
 									<label asp-for="DepId" class="form-label">Department</label>
-									<select asp-for="DepId" class="form-select">
+									@* <select asp-for="DepId" class="form-select">
 										<option value="">-Select-</option>
-									</select>
+									</select> *@
+									<input type="hidden" asp-for="DepId" />
+									<input asp-for="DeptName" class="form-control" readonly/>
 								</div>
 
 								<div class="col-md-1">
 									<label asp-for="DOJ" class="form-label">DOJ</label>
-									<input asp-for="DOJ"  class="form-control" />
+									<input asp-for="DOJ"  class="form-control" readonly/>
 								</div>
 
 								<div class="col-md-1">
 									<label asp-for="BasicSalary" class="form-label">Basic Salary</label>
-									<input asp-for="BasicSalary" class="form-control" />
+									<input asp-for="BasicSalary" class="form-control" readonly/>
 								</div>
 
 								<div class="col-md-1">
 									<label asp-for="NetSalary" class="form-label">Net Salary</label>
-									<input asp-for="NetSalary" class="form-control" />
+									<input asp-for="NetSalary" class="form-control" readonly/>
 								</div>
 
 								<div class="col-md-2">
 									<label asp-for="PresentDaysinCurrMonth" class="form-label">PresentDays in CurrMonth</label>
-									<input asp-for="PresentDaysinCurrMonth" class="form-control" />
+									<input asp-for="PresentDaysinCurrMonth" class="form-control" readonly/>
 								</div>
 
 								<div class="col-md-2">
 									<label asp-for="PresentDaysInCurrYear" class="form-label">PresentDays InCurrYear</label>
-									<input asp-for="PresentDaysInCurrYear" class="form-control" /> 
+									<input asp-for="PresentDaysInCurrYear" class="form-control" readonly/> 
 								</div>
 
 								<div class="col-md-1">
@@ -356,7 +357,7 @@
 
 								<div class="col-md-2">
 									<label asp-for="StartRecoveryFromMonth" class="form-label">StartRecovery FromMonth</label>
-									<input asp-for="StartRecoveryFromMonth" class="form-control" />  @* Month picker *@
+									<input asp-for="StartRecoveryFromMonth" class="form-control" readonly/>  @* Month picker *@
 								</div>
 								<div class="col-md-2">
 									<label asp-for="FinalRevoveryDate" class="form-label">Final RecoveryDate</label>
@@ -631,6 +632,21 @@
 
 		});
 
+		$('#submitBTN').click(function(){
+			if(($('#EmpId').val() == $('#FinanceApprovalEmpid').val()) || ($('#EmpCode').val() == $('#FinanceApprovalEmpCode').val())){
+				$.notify("Employee and Financial approved employee can not be same..!", "error");
+			}
+			else if($('#EmpId').val() == $('#MgrApprovedbyEmpid').val() || ($('#EmpCode').val() == $('#MgrApprovedbyEmpCode').val())){
+				$.notify("Employee and Mgr approved employee can not be same..!", "error");
+			}
+			else if($('#EmpId').val() == $('#HRApprovedbyEmpid').val() || ($('#EmpCode').val() == $('#HRApprovedbyEmpCode').val())){
+				$.notify("Employee and HR approved employee can not be same..!", "error");
+			}
+			else{
+			   $('form').submit();
+			}
+		});
+ 
 		function FillEntryID() {
 			$.ajax({
 				url: '@Url.Action("FillEntryId")',
@@ -820,16 +836,22 @@
 				success: function (data, status, xhr) {
 					var obj = $.parseJSON(data);
 					if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
-						$('#DesigId').empty();
-						$('#DesigId').append('<option value="">-Select-</option>');
-						$.each(obj.Result, function (index, Val) {
-							$('#DesigId').append('<option value="' + Val.desigid + '">' + Val.Designation + '</option>');
-						});
-						$('#DepId').empty();
-						$('#DepId').append('<option value="">-Select-</option>');
-						$.each(obj.Result, function (index, Val) {
-							$('#DepId').append('<option value="' + Val.deptid + '">' + Val.DeptName + '</option>');
-						});
+						// $('#DesigId').empty();
+						// $('#DesigId').append('<option value="">-Select-</option>');
+						// $.each(obj.Result, function (index, Val) {
+						// 	$('#DesigId').append('<option value="' + Val.desigid + '">' + Val.Designation + '</option>');
+						// });
+						// $('#DepId').empty();
+						// $('#DepId').append('<option value="">-Select-</option>');
+						// $.each(obj.Result, function (index, Val) {
+						// 	$('#DepId').append('<option value="' + Val.deptid + '">' + Val.DeptName + '</option>');
+						// });
+						$('#DesigName').val(obj.Result[0].Designation);
+						$('#DesigId').val(obj.Result[0].desigid);
+						$('#DeptName').val(obj.Result[0].DeptName);
+						$('#DepId').val(obj.Result[0].deptid);
+						$('#BasicSalary').val(obj.Result[0].GrossSalary);
+						$('#NetSalary').val(obj.Result[0].GrossSalary);
 					}
 				},
 				error: function (xhr, status, error) {

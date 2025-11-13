@@ -54,7 +54,7 @@
                                 <input asp-for="CustomerName" class="form-control" />
                                 <input asp-for="Year" type="hidden" value="@Model.Year" id="hiddenYearCode" />
                             </div>
-                            <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12" style="width:170px">
+                            <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12 SaleOrderEntryDetail" style="width:170px">
                                 <label asp-for="CustOrderNo" class="form-label">Customer Order No</label>
                                 <input asp-for="CustOrderNo" class="form-control" />
                             </div>
@@ -66,7 +66,7 @@
                                 </select>*@
                                 <input asp-for="SONo" class="form-control" />
                             </div>
-                            <div class="col-xxl-1 col-xl-1 col-lg-1 col-md-3 col-sm-6 col-xs-12">
+                            <div class="col-xxl-1 col-xl-1 col-lg-1 col-md-3 col-sm-6 col-xs-12 SaleOrderEntryDetail">
                                 <label asp-for="OrderType" class="form-label">Order Type</label>
                                 <select class="form-select" asp-for="OrderType">
                                     <option value="">-Select-</option>
@@ -74,7 +74,7 @@
                                     <option value="Domestic">Domestic</option>
                                 </select>
                             </div>
-                            <div class="col-xxl-1 col-xl-1 col-lg-1 col-md-3 col-sm-6 col-xs-12">
+                            <div class="col-xxl-1 col-xl-1 col-lg-1 col-md-3 col-sm-6 col-xs-12 SaleOrderEntryDetail">
                                 <label asp-for="SOType" class="form-label">SO Type</label>
                                 <select class="form-select" asp-for="SOType">
                                     <option value="">-Select-</option>
@@ -82,11 +82,11 @@
                                     <option value="CLOSE">CLOSE</option>
                                 </select>
                             </div>
-                            <div class="col-lg-1 col-md-4 col-sm-12 col-xs-12">
+                            <div class="col-lg-1 col-md-4 col-sm-12 col-xs-12 SaleOrderEntryDetail">
                                 <label asp-for="PartCode" class="form-label">Part Code</label>
                                 <input asp-for="PartCode" class="form-control" />
                             </div>
-                            <div class="col-lg-1 col-md-4 col-sm-12 col-xs-12">
+                            <div class="col-lg-1 col-md-4 col-sm-12 col-xs-12 SaleOrderEntryDetail">
                                 <label asp-for="ItemName" class="form-label">Item Name</label>
                                 <input asp-for="ItemName" class="form-control" />
                             </div>
@@ -99,6 +99,13 @@
                                     <option value="N" selected>Pending</option>
                                 </select>
                             </div>
+
+                              <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12 ">
+                                <label asp-for="CreatedByName" class="form-label">Created By </label>
+                                <input asp-for="CreatedByName" class="form-control" />
+                            </div>
+
+
                             
                             @*   <div class="col-lg-4 col-md-8 col-sm-6 col-xs-12 d-flex justify-content-evenly mt-3">
                             <button class="btn btn-sm btn-outline-info" type="button" onclick="GetSearchData();">
@@ -151,7 +158,7 @@
             </div>
         </div>
         <div class="card-body">
-            <div class="card overflow-auto" style="max-height: 500px;">
+            <div class="card overflow-auto" style="max-height: 700px;">
                 <div class="card-body" id="divDashboardGrid">
                     <partial name="_SODashboardGrid" />
                 </div>
@@ -177,7 +184,7 @@
    
     .fa-stack {
         display: inline-block;
-        height: 2.0em;
+        height: 1.5em;
         line-height: 2em;
         position: relative;
         vertical-align: middle;
@@ -195,13 +202,22 @@
         border-collapse: collapse;
     }
 
-        #SOGrid th, #SOGrid td {
+        #SOGrid th {
             border: 1px solid #ccc !important;
             /* padding: 8px !important; */
             text-align: center !important;
             vertical-align: middle !important;
             white-space: nowrap;
-        }
+        },
+
+        #SOGrid td {
+            border: 1px solid #ccc !important;
+            /* padding: 8px !important; */
+            text-align: left !important;
+            vertical-align: middle !important;
+            white-space: nowrap;
+        },
+
 
         #SOGrid thead {
             background-color: #007bff !important;
@@ -292,7 +308,7 @@
             AutoComplete('VSALEORDER', 'ItemName', 'ItemName', null);
             AutoComplete('VSALEORDER', 'PartCode', 'PartCode', null);
             AutoComplete('VSALEORDER', 'SONo', 'SONo', null);
-            AutoComplete('VSALEORDER', 'CC', 'CC', null);
+                AutoComplete('Employee_Master', 'CreatedByName', 'Emp_Name', null);
 
             sessionStorage.removeItem('FromDateBack');
             sessionStorage.removeItem('ToDateBack');
@@ -643,6 +659,7 @@
                     TotalRows();
                     GetFormRights();
                     GetFeatureOption();
+                        GetTotalBYSp();
                     $('#totalRows').text($('#divDashboardGrid tr').length);
                     //countAllTotal();
                 }
@@ -663,6 +680,7 @@
                     TotalRows();
                     GetFormRights();
                     GetFeatureOption();
+                    GetTotalBYSp();
                     $('#totalRows').text($('#divDashboardGrid tr').length);
                     //countAllTotal();
                 },
@@ -672,6 +690,7 @@
             });
         });
         function GetTotalBYSp() {
+
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("GetTotalBYSp")",   // Your MVC Action
