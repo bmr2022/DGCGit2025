@@ -10,5 +10,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetFormName(string Flag);
         Task<ResponseResult> GetSlipNoData(string Flag, string MainTableName);
         Task<ResponseResult> InsertAndDeleteTransaction(DeleteTransactionModel model);
+        Task<ResponseResult> UpdateExistingSlipNo(DeleteTransactionModel model);
+
     }
 }

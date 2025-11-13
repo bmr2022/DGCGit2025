@@ -208,14 +208,14 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
         // 6️⃣ FILL PROD PLAN SCHEDULE
-        public async Task<ResponseResult> FillProdPlanSchedule(string Flag, long ToolIssueEntryId, string ProdPlanNo, long ProdPlanYearCode, long PlanNoEntryId)
+        public async Task<ResponseResult> FillProdPlanSchedule(string Flag, long ToolEntryId, string ProdPlanNo, long ProdPlanYearCode, long PlanNoEntryId)
         {
             var _ResponseResult = new ResponseResult();
             try
             {
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", Flag));
-                SqlParams.Add(new SqlParameter("@ToolIssueEntryId", ToolIssueEntryId));
+                SqlParams.Add(new SqlParameter("@ToolIssueEntryId", ToolEntryId));
                 SqlParams.Add(new SqlParameter("@ProdPlanNo", ProdPlanNo));
                 SqlParams.Add(new SqlParameter("@ProdPlanYearCode", ProdPlanYearCode));
                 SqlParams.Add(new SqlParameter("@PlanNoEntryId", PlanNoEntryId));

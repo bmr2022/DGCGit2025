@@ -129,8 +129,65 @@ namespace eTactwebAdmin.Controllers
         }
 
 
+        [HttpPost]
+        public async Task<IActionResult> UpdateExistingSlipNo(DeleteTransactionModel model)
+        {
+            try
+            {
+                // 🔹 Session and system info
+                model.CC = HttpContext.Session.GetString("Branch");
+                model.ActionByEmpId = Convert.ToInt64(HttpContext.Session.GetString("UID") ?? "0");
+                model.MachineName = Environment.MachineName;
+                model.IPAddress = HttpContext.Session.GetString("ClientIP");
+                model.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
 
+                // 🔹 Step 1: Perform UpdateExistingSlipNo
+                model.Flag = "UpdateExistingSlipNo";
+                model.Action = "UpdateExistingSlipNo";
+                var updateResult = await _IDeleteTransaction.UpdateExistingSlipNo(model);
 
+                if (updateResult != null)
+                {
+                    // 🔹 Check for duplicate
+                    if (updateResult.StatusText?.ToLower() == "duplicate" || (int)updateResult.StatusCode == 201)
+                    {
+                        return Json(new { success = false, message = updateResult.Message ?? "New SlipNo already exists!" });
+                    }
+
+                    // 🔹 Check for success
+                    if (updateResult.StatusText?.ToLower() == "success" && updateResult.StatusCode == HttpStatusCode.OK)
+                    {
+                        // Step 2: Log INSERT
+                        model.Flag = "Insert";
+                        var insertResult = await _IDeleteTransaction.InsertAndDeleteTransaction(model);
+
+                        if (insertResult != null &&
+                            (insertResult.StatusText?.ToLower() == "success" || insertResult.StatusCode == HttpStatusCode.OK))
+                        {
+                            return Json(new { success = true, message = "Slip Number updated successfully!" });
+                        }
+                        else
+                        {
+                            return Json(new { success = false, message = "Slip Number updated, but failed to insert log entry." });
+                        }
+                    }
+
+                    // 🔹 Other messages from SP
+                    if (!string.IsNullOrEmpty(updateResult.StatusText))
+                    {
+                        return Json(new { success = false, message = updateResult.StatusText });
+                    }
+
+                    return Json(new { success = false, message = "Error while updating slip number." });
+                }
+
+                return Json(new { success = false, message = "No response from database." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
 
     }
 
