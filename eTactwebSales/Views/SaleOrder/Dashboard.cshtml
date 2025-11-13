@@ -659,6 +659,7 @@
                     TotalRows();
                     GetFormRights();
                     GetFeatureOption();
+                        GetTotalBYSp();
                     $('#totalRows').text($('#divDashboardGrid tr').length);
                     //countAllTotal();
                 }
@@ -679,6 +680,7 @@
                     TotalRows();
                     GetFormRights();
                     GetFeatureOption();
+                    GetTotalBYSp();
                     $('#totalRows').text($('#divDashboardGrid tr').length);
                     //countAllTotal();
                 },
@@ -688,6 +690,7 @@
             });
         });
         function GetTotalBYSp() {
+
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("GetTotalBYSp")",   // Your MVC Action
