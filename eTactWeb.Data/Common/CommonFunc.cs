@@ -423,7 +423,7 @@ public static class CommonFunc
                 {
                     if (typeProperty.PropertyInfo.Name != "AmmNo" && typeProperty.PropertyInfo.Name != "AmmApproved" && typeProperty.PropertyInfo.Name != "AmmEffDate" && typeProperty.PropertyInfo.Name != "EID"
                     && typeProperty.PropertyInfo.Name != "FromDate" && typeProperty.PropertyInfo.Name != "ToDate" && typeProperty.PropertyInfo.Name != "Mode"
-                    && typeProperty.PropertyInfo.Name != "ItemName" && typeProperty.PropertyInfo.Name != "SODashboard" && typeProperty.PropertyInfo.Name != "SONoList"
+                    && typeProperty.PropertyInfo.Name != "ItemName" && typeProperty.PropertyInfo.Name != "SODashboard" && typeProperty.PropertyInfo.Name != "SONoList" && typeProperty.PropertyInfo.Name != "EmployeeList"
                     && typeProperty.PropertyInfo.Name != "PartCode" && typeProperty.PropertyInfo.Name != "BranchList" && typeProperty.PropertyInfo.Name != "SummaryDetail" && typeProperty.PropertyInfo.Name != "AmendmentDate"
                      && typeProperty.PropertyInfo.Name != "ConsigneeAccountName" && typeProperty.PropertyInfo.Name != "SODelivery" && typeProperty.PropertyInfo.Name != "ResposibleSalesPersonID"
                      && typeProperty.PropertyInfo.Name != "AmendmentReason" && typeProperty.PropertyInfo.Name != "Color" && typeProperty.PropertyInfo.Name != "Rejper" && typeProperty.PropertyInfo.Name != "ProjQty1"
@@ -432,7 +432,7 @@ public static class CommonFunc
                      && typeProperty.PropertyInfo.Name != "HSNNO" && typeProperty.PropertyInfo.Name != "OtherRateCurr" && typeProperty.PropertyInfo.Name != "UnitRate" && typeProperty.PropertyInfo.Name != "TolLimit"
                      && typeProperty.PropertyInfo.Name != "Amount" && typeProperty.PropertyInfo.Name != "Remark" && typeProperty.PropertyInfo.Name != "StockQty" && typeProperty.PropertyInfo.Name != "StoreName" 
                      && typeProperty.PropertyInfo.Name != "Description"
-                     && typeProperty.PropertyInfo.Name != "CreatedByName"
+                     //&& typeProperty.PropertyInfo.Name != "CreatedByName"
                      && typeProperty.PropertyInfo.Name != "ItemName" && typeProperty.PropertyInfo.Name != "PartCode" && typeProperty.PropertyInfo.Name != "DiscPer"
                      && typeProperty.PropertyInfo.Name != "TotalRecords" && typeProperty.PropertyInfo.Name != "PageNumber" && typeProperty.PropertyInfo.Name != "PageSize"
                      && typeProperty.PropertyInfo.Name != "TotalBasicAmount" && typeProperty.PropertyInfo.Name != "TotalNetAmont" && typeProperty.PropertyInfo.Name != "TotalpendingAmt")
@@ -463,7 +463,7 @@ public static class CommonFunc
                      && typeProperty.PropertyInfo.Name != "TotalDisPercent" && typeProperty.PropertyInfo.Name != "TotalDiscAmt" && typeProperty.PropertyInfo.Name != "DespatchAdviseComplete" && typeProperty.PropertyInfo.Name != "PortToLoading"
                      && typeProperty.PropertyInfo.Name != "PortOfDischarge" && typeProperty.PropertyInfo.Name != "ResposibleSalesPersonID" && typeProperty.PropertyInfo.Name != "CustContactPerson" && typeProperty.PropertyInfo.Name != "SaleDocType"
                      && typeProperty.PropertyInfo.Name != "OtherDetail" && typeProperty.PropertyInfo.Name != "OrderDelayReason" && typeProperty.PropertyInfo.Name != "UID" && typeProperty.PropertyInfo.Name != "RoundOff"
-                     && typeProperty.PropertyInfo.Name != "UpdatedBy" && typeProperty.PropertyInfo.Name != "EntryByMachineName")
+                     && typeProperty.PropertyInfo.Name != "UpdatedBy" && typeProperty.PropertyInfo.Name != "EntryByMachineName" && typeProperty.PropertyInfo.Name != "EmployeeList")
                     {
                         object value = row[typeProperty.PropertyInfo.Name];
                         object? safeValue = value == null || DBNull.Value.Equals(value) ? null : Convert.ChangeType(value, typeProperty.Type);

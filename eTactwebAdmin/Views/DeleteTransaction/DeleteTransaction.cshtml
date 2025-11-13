@@ -13,18 +13,6 @@
         <div class="card-header card-headerBG text-light bg-gradient">
             <h5>
                 <strong>Delete Transaction</strong>
-                <span class="d-flex float-end" style="margin-top:-2px;">
-                    @*<partial name="_FormsButton" />*@
-                    <div class="row justify-content-between g-2">
-                        <div class="col-auto">
-                            @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
-                            <button type="submit" class="btn btn-primary btn-sm" id="submitBTN">
-                                <i class="fa-solid fa-chevron-circle-right"></i>
-                                SUBMIT
-                            </button>
-                        </div>
-                    </div>
-                </span>
             </h5>
         </div>
         <div class="card-body bg-light pt-0">
@@ -39,7 +27,8 @@
                     <div id="B_RParameter" class="accordion-collapse collapse show pnl1 bg-gradient" aria-labelledby="H_RParameter">
                         <div class="accordion-body">
                             <div class="row g-2 gx-3">
-                               
+
+                                <!-- Form Details -->
                                 <div class="col-lg-2">
                                     <label asp-for="FormName" class="form-label">Form Name</label>
                                     <select id="FormName" name="FormName" class="form-select">
@@ -47,41 +36,75 @@
                                     </select>
                                 </div>
                                 <div class="col-lg-2">
-                                    <label asp-for="Action" class="form-label">Action</label>
-                                    <input asp-for="Action" id="" class="form-control" value="DELETE" readonly />
-                                </div>
-                                <div class="col-lg-2">
                                     <label asp-for="YearCode" class="form-label">Year Code</label>
-                                    <input asp-for="YearCode" id="ToolIssueYearCode" class="form-control" readonly />
+                                    <input asp-for="YearCode" id="YearCode" class="form-control-plaintext" readonly />
                                 </div>
                                 <div class="col-lg-2">
                                     <label asp-for="SlipNo" class="form-label">Slip No</label>
                                     <input type="text" id="SlipNo" name="SlipNo" class="form-control" />
                                 </div>
-                                <div class="col-lg-2">
-                                    <label asp-for="AccountName" class="form-label">Account Name</label>
-                                    <input asp-for="AccountName" id="AccountName" name="AccountName" class="form-control" readonly />
-                                    <input type="hidden" id="AccountCode" name="AccountCode" />
+
+                                <!-- Info Details -->
+                                <!-- Info Details -->
+                                <div class="col-12 mt-3">
+                                    <div class="row gx-2 gy-1 align-items-center">
+
+                                        <div class="col-lg-2">
+                                            <label class="form-label fw-bold">Account Name</label>
+                                            <input id="AccountName" name="AccountName" class="form-control-plaintext p-0" readonly />
+                                            <input type="hidden" id="AccountCode" name="AccountCode" />
+                                        </div>
+
+                                        <div class="col-lg-2">
+                                            <label class="form-label fw-bold">Entry Id</label>
+                                            <input  id="EntryId" name="EntryId" class="form-control-plaintext p-0" readonly />
+                                        </div>
+
+                                        <div class="col-lg-2">
+                                            <label class="form-label fw-bold">Basic Amount</label>
+                                            <input id="BasicAmount" name="BasicAmount" class="form-control-plaintext p-0" readonly />
+                                        </div>
+
+                                        <div class="col-lg-2">
+                                            <label class="form-label fw-bold">Net Amount</label>
+                                            <input id="NetAmount" name="NetAmount" class="form-control-plaintext p-0" readonly />
+                                        </div>
+
+                                        <div class="col-lg-2">
+                                            <label class="form-label fw-bold">Entry Date</label>
+                                            <input type="text" id="EntryDate" name="EntryDate" class="form-control-plaintext p-0" readonly />
+                                        </div>
+
+                                    </div>
                                 </div>
+
                                 <div class="col-lg-2">
-                                    <label asp-for="EntryId" class="form-label">Entry Id</label>
-                                    <input asp-for="EntryId" id="EntryId" name="EntryId" class="form-control" readonly />
+                                    <label class="form-label fw-bold">New Slip No.</label>
+                                    <div class="input-group">
+                                        <span id="NewSlipPrefix" class="input-group-text d-none"></span> <!-- hidden by default -->
+                                        <input type="text" id="NewSlipNo" name="NewSlipNo" class="form-control w-auto" />
+                                    </div>
                                 </div>
-                                <div class="col-lg-2">
-                                    <label asp-for="BasicAmount" class="form-label">Basic Amount</label>
-                                    <input asp-for="BasicAmount" id="BasicAmount" name="BasicAmount" class="form-control" readonly />
+
+                                <!-- Buttons + Link + New Slip No -->
+                                <div class="col-12 mt-3 d-flex align-items-center gap-2">
+                                    <!-- Update button (frontend now, backend later) -->
+                                    <button type="button" id="btnUpdate" class="btn btn-primary" data-action="UPDATE">Update</button>
+
+                                    <!-- Delete button (submits form to backend) -->
+                                    <button type="submit" name="Action" value="DELETE" class="btn btn-danger">Delete</button>
+
+                                    <!-- Reset button (frontend) -->
+                                    <button type="button" id="btnReset" class="btn btn-secondary">Reset</button>
+
+                                    <!-- Update Existing Slip No (frontend now, backend later) -->
+                                    <button type="button" id="btnUpdateExisting" class="btn btn-link" data-action="UpdateExistingSlipNo">Update Existing Slip No</button>
                                 </div>
-                                <div class="col-lg-2">
-                                    <label asp-for="NetAmount" class="form-label">Net Amount</label>
-                                    <input asp-for="NetAmount" id="NetAmount" name="NetAmount" class="form-control" readonly />
-                                </div>
-                                <div class="col-lg-2">
-                                    <label asp-for="EntryDate" class="form-label">Entry Date</label>
-                                    <input type="text" id="EntryDate" name="EntryDate" class="form-control" readonly />
-                                </div>
+
                             </div>
                         </div>
                     </div>
+
 
                 </div>
     </form>
@@ -110,21 +133,20 @@
                             }));
                         });
                     }
-                    select.trigger('change.select2');
+                    
             },
             error: function (err) {
                 console.error("❌ Error fetching form names:", err);
             }
         });
     }
-            function FillSlipNoAutoSuggest() {
+      
+        function FillSlipNoAutoSuggest() {
         const mainTableName = $('#FormName').val();
         if (!mainTableName) {
             $('#SlipNo').val('');
             return;
         }
-
-
 
         $.ajax({
             url: '/DeleteTransaction/GetSlipNoData',
@@ -164,6 +186,9 @@
         });
     }
 
+    // Store full slip number when selecting a slip
+    let fullSlipNo = "";
+
     function FillSlipDetails(item) {
         $('#AccountName').val(item.accountName);
         $('#AccountCode').val(item.accountCode);
@@ -180,7 +205,78 @@
         } else {
             $('#EntryDate').val('');
         }
+
+        // Save full slip number for prefix
+        fullSlipNo = item.value || item.SlipNo;
+
+        // Clear prefix initially
+        $('#NewSlipPrefix').addClass('d-none').text('');
+        $('#NewSlipNo').val('');
     }
+
+    // Show prefix dynamically when user types
+    $('#NewSlipNo').on('input', function() {
+        const val = $(this).val();
+
+        if (val.length === 0) {
+            $('#NewSlipPrefix').addClass('d-none').text('');
+            return;
+        }
+
+        if (fullSlipNo) {
+            const lastSlashIndex = fullSlipNo.lastIndexOf('/');
+            const prefix = lastSlashIndex !== -1 ? fullSlipNo.substring(0, lastSlashIndex + 1) : '';
+            $('#NewSlipPrefix').removeClass('d-none').text(prefix);
+        }
+    });
+
+        // Reset form fields
+    $('#btnReset').click(function() {
+        $('#deleteTrtansaction')[0].reset();
+            $('#AccountName, #AccountCode, #EntryId, #BasicAmount, #NetAmount, #EntryDate, #NewSlipNo,#NewSlipPrefix').val('');
+    });
+
+
+    $('#btnUpdateExisting').click(function() {
+        let prefix = $('#NewSlipPrefix').text();
+        let suffix = $('#NewSlipNo').val();
+        let newSlipNo = prefix + suffix;
+    // Collect frontend form fields only
+        var formData = {
+        FormName: $('#FormName').val(),
+        SlipNo: $('#SlipNo').val(),
+        newSlipNo: newSlipNo,
+        AccountCode: $('#AccountCode').val(),
+        EntryId: $('#EntryId').val(),
+        BasicAmount: $('#BasicAmount').val(),
+        NetAmount: $('#NetAmount').val(),
+        EntryDate: $('#EntryDate').val()
+    };
+
+    // Validate required fields
+    if (!formData.SlipNo || !suffix || !formData.FormName) {
+        $.notify("Please select Form and enter Slip No & New Slip No.", { className: 'error', globalPosition: 'top center' });
+        return;
+    }
+
+    // Call backend
+    $.ajax({
+        url: '/DeleteTransaction/UpdateExistingSlipNo',
+        type: 'POST',
+        data: formData,
+        success: function (res) {
+            if(res.success){
+                $.notify(res.message, { className: 'success', globalPosition: 'top center' });
+            } else {
+                $.notify(res.message, { className: 'error', globalPosition: 'top center' });
+            }
+        },
+        error: function () {
+            $.notify("Something went wrong.", { className: 'error', globalPosition: 'top center' });
+        }
+    });
+});
+
 
         $(document).ready(function () {
         // Load Form list initially
@@ -215,6 +311,27 @@
     });
 
 </script>
+<style>
+    /* Make readonly inputs look like plain info */
+    input.form-control-plaintext {
+        border: none !important;
+        box-shadow: none !important;
+        background-color: transparent;
+    }
 
+        /* Prevent red border or shadow on focus */
+        input.form-control-plaintext:focus {
+            border: none !important;
+            box-shadow: none !important;
+            background-color: transparent;
+        }
+
+    /* Optional: make all readonly inputs text look consistent */
+    input.form-control-plaintext {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+</style>
 
 
