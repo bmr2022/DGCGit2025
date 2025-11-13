@@ -96,6 +96,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _PurchaseBillDAL.FillDocName(ShowAll);
         }
+        public async Task<ResponseResult> FillRoundOffAccount(string ShowAll)
+        {
+            return await _PurchaseBillDAL.FillRoundOffAccount(ShowAll);
+        }
         public async Task<ResponseResult> GetGstRegister(string Flag, int Code)
         {
             return await _PurchaseBillDAL.GetGstRegister(Flag, Code);

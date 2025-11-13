@@ -9,6 +9,7 @@ namespace eTactWeb.Services.Interface
         Task<string> GetItemServiceFORPO(string ItemService);
         Task<ResponseResult> DeleteByID(int ID, int YearCode, string Flag, string PurchVoucherNo, string InvNo, int EntryBy, string EntryByMachineName, DateTime EntryDate);
         Task<ResponseResult> CheckLockYear(int YearCode);
+        Task<ResponseResult> FillRoundOffAccount(string ShowAll);
         Task<ResponseResult> GetExchangeRate(string Currency);
         Task<ResponseResult> FillCurrency(int? AccountCode);
         Task<ResponseResult> FillDocName(string ShowAll);

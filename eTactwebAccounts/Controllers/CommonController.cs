@@ -53,7 +53,7 @@ namespace eTactWeb.Controllers
             HttpContext.Session.SetString(sessionKey, serializedObject);
         }
         #region For Dbit Credit Grid
-        public async Task<JsonResult> GetDbCrDataGrid(string PageName, int docAccountCode, int AccountCode, decimal? BillAmt, decimal? NetAmt)
+        public async Task<JsonResult> GetDbCrDataGrid(string PageName, int docAccountCode, int AccountCode, decimal? BillAmt, decimal? NetAmt,int RoundOffAccountCode,decimal? RoundOffAmount)
         {
             dynamic MainModel = new DirectPurchaseBillModel();
             dynamic TaxGrid = new List<TaxModel>();
@@ -216,7 +216,7 @@ namespace eTactWeb.Controllers
             //}
 
 
-            var JSON = await IDataLogic.GetDbCrDataGrid(DbCrGridd, TaxGridd, TdsGridd, PageName.ToUpper().ToString(), docAccountCode, AccountCode, BillAmt, NetAmt);
+            var JSON = await IDataLogic.GetDbCrDataGrid(DbCrGridd, TaxGridd, TdsGridd, PageName.ToUpper().ToString(), docAccountCode, AccountCode, BillAmt, NetAmt, RoundOffAccountCode, RoundOffAmount);
             //var JSON = "success" + PageName + "_" + AccountCode + "_" + NetAmt + "_" + BillAmt;
             string JsonString = JsonConvert.SerializeObject(JSON);
             var DrCrGridd = TransformJsonToDbCrModel(JsonString);
