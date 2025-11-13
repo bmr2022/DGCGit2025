@@ -193,6 +193,20 @@
                                     <select class="form-select" asp-for="Types" asp-items="@(new SelectList(Model.TypeList,"Value","Text"))">
                                     </select>
                                 </div>
+                                 <div class="col-12 col-lg-6">
+                                <span style="height:25px;" type="button" class="GridButton btn btn-sm btn-danger ">
+                                    <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
+                                </span>
+                                <span style="height:25px " type="button" class="btn btn-sm btn-warning bg-gradient" id="displaylistbutton" onclick="GetPendingChallanList(event,@Model.SEQNo)">
+                                    @* onclick="GetAdjustedChallan()" *@
+                                    <i class="fa fa-plus-circle fafw fa-lg"></i>  Pending ChallanList
+                                </span>
+                                <span style="height:25px" type="button" class="btn btn-sm btn-primary bg-gradient" id="displaylistbutton" onclick="GetAdjustedChallan()">
+                                    @* onclick="GetAdjustedChallan()" *@
+                                    <i class="fa fa-plus-circle fafw fa-lg"></i>  Click To Adjust Challan
+                                </span>
+                                <div></div>
+
 
 
                             </div>
@@ -212,19 +226,7 @@
                                 <button style="height:30px;" class="accordion-button collapsed text-light pnl4BG bg-gradient flex-grow-1" type="button" data-bs-toggle="collapse" data-bs-target="#B_RGrid" aria-expanded="true" aria-controls="B_RGrid">
                                     <strong><i class="fa-solid fa-table-list fa-lg fa-fw pr35"></i>Customer JobWork Issue Grid</strong>
 
-                                    <span style="height:25px; margin-left:400px;" type="button" class="GridButton btn btn-sm btn-danger ">
-                                        <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
-                                    </span>
-                                    <span style="height:25px;margin-left:7px; " type="button" class="btn btn-sm btn-warning bg-gradient" id="displaylistbutton" onclick="GetPendingChallanList(event,@Model.SEQNo)">
-                                        @* onclick="GetAdjustedChallan()" *@
-                                        <i class="fa fa-plus-circle fafw fa-lg"></i>  Pending ChallanList
-                                    </span>
-                                    <span style="height:25px;margin-left:7px; " type="button" class="btn btn-sm btn-primary bg-gradient" id="displaylistbutton" onclick="GetAdjustedChallan()">
-                                        @* onclick="GetAdjustedChallan()" *@
-                                        <i class="fa fa-plus-circle fafw fa-lg"></i>  Click To Adjust Challan
-                                    </span>
-                                  
-
+                                   
                                     @*  <button class="btn btn-sm btn-outline-primary bg-gradient" id="clicktoAdjustButton" onclick="GetAdjustedChallan(event)" style="margin-left:40px;margin-top:10px;"><i class="fa fa-plus-circle fafw fa-lg"></i>  Click To Adjust Challan</button> *@
 
 

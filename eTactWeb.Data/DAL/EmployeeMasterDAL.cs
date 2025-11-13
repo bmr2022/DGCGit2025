@@ -604,7 +604,7 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
 
                 // Determine Mode
-                string flag = (model.Mode == "UPDATE") ? "UPDATE" : "INSERT";
+                string flag = (model.Mode == "UPDATE") ? "UPDATE" : "SAVE";
                 SqlParams.Add(new SqlParameter("@Flag", flag));
 
                 // Parse Dates
@@ -633,7 +633,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@Active", model.Active ?? "Y"));
                 SqlParams.Add(new SqlParameter("@EntryDate", entDt ?? (object)DBNull.Value));
                 SqlParams.Add(new SqlParameter("@DOB", dobDt ?? (object)DBNull.Value));
-                SqlParams.Add(new SqlParameter("@DOJ", dojDt ?? (object)DBNull.Value));
+                SqlParams.Add(new SqlParameter("@DateOfJoining", dojDt ?? (object)DBNull.Value));
                 SqlParams.Add(new SqlParameter("@DOR", dorDt ?? (object)DBNull.Value));
                 SqlParams.Add(new SqlParameter("@ResignationDate", dorDt ?? (object)DBNull.Value));
 

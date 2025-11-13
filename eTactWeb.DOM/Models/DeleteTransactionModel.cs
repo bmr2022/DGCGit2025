@@ -21,6 +21,7 @@ namespace eTactWeb.DOM.Models
         public string IPAddress { get; set; }
 
         public string SlipNo { get; set; }
+        public string newSlipNo { get; set; }
         public string AccountName { get; set; }
         public long AccountCode { get; set; }
         public long EntryId { get; set; }

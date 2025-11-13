@@ -56,11 +56,13 @@ else
         <table class="table table-responsive table-hover table-bordered PMRPGrid TbCss text-nowrap mb-0" id="ReportTable">
             <thead class="bg-gradient card-headerBG text-light PMRPThead" style="position:static;" id="dashRThead">
                 <tr>
-                    <th>Action</th>
+                   
                     <th>Sr#</th>
                     <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Store Name</th>
                     <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Transaction Type</th>
                     <th data-columnno="18" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Party Name</th>
+                    <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bill No</th>
+
 
                     <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Trans Date</th>
                     <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PartCode</th>
@@ -76,7 +78,6 @@ else
                     <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Min Level</th>
                     <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Unit</th>
                     <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Stock</th>
-                    <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bill No</th>
                     <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bill Date</th>
                     <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MRN No</th>
                     <th data-columnno="20" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Batch No</th>
@@ -102,18 +103,13 @@ else
                             Cntr = Cntr + 1;
 
                             <tr id="SAGridRow-@Cntr">
-                                <td>
-                                    <a class="table-link link-danger" onclick="DeleteRow(this.id)" id="@Cntr">
-                                            <span class="fa-stack">
-                                                <i class="fa fa-square fa-stack-2x"></i>
-                                                <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
-                                            </span>
-                                        </a></td>
+                               
                                        
-                                <th>@item.SeqNo</th>
+                                <th>@Cntr</th>
                                 <td>@item.StoreName<input type="hidden" asp-for="TotalRecords" value="@item.TotalRecords" /></td>
                                 <td>@item.TransactionType</td>
                                 <td>@item.PartyName</td>
+                                <td>@item.BillNo</td>
                                 @if (item.TransDate != null)
                                 {
                                     <td>@item.TransDate.Split(" ")[0]</td>
@@ -144,7 +140,7 @@ else
                                 <td>@item.MinLevel</td>
                                 <td>@item.AltUnit</td>
                                 <td>@item.AltStock</td>
-                                <td>@item.BillNo</td>
+                               
                                 @if (item.BillDate != null)
                                 {
                                     <td>@item.BillDate.Split(" ")[0]</td>

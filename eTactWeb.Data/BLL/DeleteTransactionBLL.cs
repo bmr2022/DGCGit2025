@@ -34,6 +34,11 @@ namespace eTactWeb.Data.BLL
         {
             return await _DeleteTransactionDAL.InsertAndDeleteTransaction(model);
         }
+
+        public async Task<ResponseResult> UpdateExistingSlipNo(DeleteTransactionModel model)
+        {
+            return await _DeleteTransactionDAL.UpdateExistingSlipNo(model);
+        }
     }
 
 

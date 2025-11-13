@@ -76,6 +76,7 @@ namespace eTactWeb.Data.DAL
             new SqlParameter("@FormName", model.FormName),
             new SqlParameter("@Action", model.Action),
             new SqlParameter("@SlipNo", model.SlipNo),
+            new SqlParameter("@newSlipNo", model.newSlipNo),
             new SqlParameter("@EntryDate", CommonFunc.ParseFormattedDate( model.EntryDate) ?? (object)DBNull.Value),
             new SqlParameter("@YearCode", model.YearCode),
             new SqlParameter("@EntryId", model.EntryId),
@@ -90,8 +91,50 @@ namespace eTactWeb.Data.DAL
 
         };
 
-                _ResponseResult = await _IDataLogic.ExecuteDataTable("AdminSPDeleteTransactions", SqlParams);
+                _ResponseResult = await _IDataLogic.ExecuteDataTable(SP_NAME, SqlParams);
             }
+            catch (Exception ex)
+            {
+                _ResponseResult.StatusText = "Error";
+                _ResponseResult.Message = ex.Message;
+            }
+
+            return _ResponseResult;
+        }
+
+
+
+
+        public async Task<ResponseResult> UpdateExistingSlipNo(DeleteTransactionModel model)
+        {
+            var _ResponseResult = new ResponseResult();
+
+            try
+            {
+                var SqlParams = new List<dynamic>
+        {
+            new SqlParameter("@Flag", model.Flag),
+            new SqlParameter("@FormName", model.FormName),
+            new SqlParameter("@Action", model.Action),
+            new SqlParameter("@SlipNo", model.SlipNo),
+            new SqlParameter("@newSlipNo", model.newSlipNo),
+            new SqlParameter("@EntryDate", CommonFunc.ParseFormattedDate( model.EntryDate) ?? (object)DBNull.Value),
+            new SqlParameter("@YearCode", model.YearCode),
+            new SqlParameter("@EntryId", model.EntryId),
+            new SqlParameter("@AccountCode", model.AccountCode),
+            new SqlParameter("@NetAmount", model.NetAmount),
+            new SqlParameter("@BasicAmount", model.BasicAmount),
+            new SqlParameter("@CC", model.CC),
+            new SqlParameter("@MachineName", model.MachineName),
+            new SqlParameter("@ActionByEmpId", model.ActionByEmpId),
+            new SqlParameter("@IPAddress", model.IPAddress),
+            new SqlParameter("@MainTableName", model.FormName),
+
+        };
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable(SP_NAME, SqlParams);
+            }
+
             catch (Exception ex)
             {
                 _ResponseResult.StatusText = "Error";

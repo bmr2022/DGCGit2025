@@ -480,11 +480,14 @@ namespace eTactWeb.Controllers
                             TempData["200"] = "200";
                             HttpContext.Session.Remove("KeyGateInwardItemDetail");
                             HttpContext.Session.Remove("KeyGateInwardGrid");
+                            model.AccountCode = 0;
                         }
                         if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
                         {
                             ViewBag.isSuccess = true;
                             TempData["202"] = "202";
+                            model.AccountCode = 0;
+                            
                         }
                         if (Result.StatusText == "Duplicate")
                         {
@@ -533,6 +536,7 @@ namespace eTactWeb.Controllers
                         }
                     }
                     var model1 = await BindModels(null);
+                    model1.AccountCode = 0;
                     model1.FinFromDate = HttpContext.Session.GetString("FromDate");
                     model1.FinToDate = HttpContext.Session.GetString("ToDate");
                     model1.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
@@ -540,7 +544,7 @@ namespace eTactWeb.Controllers
                     model1.PreparedByEmp = HttpContext.Session.GetString("EmpName");
                     model1.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
                     model1.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                    return View(model1);
+                    return RedirectToAction("GateInward");
 
                 }
             }
