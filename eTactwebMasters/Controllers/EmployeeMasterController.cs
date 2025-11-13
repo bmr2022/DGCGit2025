@@ -151,29 +151,48 @@ namespace eTactWeb.Controllers
             model.Mode = model.Mode != "U" ? "SAVE" : "UPDATE";
             model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
             string modelJson = HttpContext.Session.GetString("KeyEmployeeMasterGrid");
+            string jsonAllDed = HttpContext.Session.GetString("KeyEmployeeMasterGrid_AllDed");
+            string jsonEdu = HttpContext.Session.GetString("KeyEmployeeMasterGrid_Edu");
+            string jsonExp = HttpContext.Session.GetString("KeyEmployeeMasterGrid_Exp");
+            string jsonNJob = HttpContext.Session.GetString("KeyEmployeeMasterGrid_NJob");
+            var listAllDed = !string.IsNullOrEmpty(jsonAllDed) ?
+       JsonConvert.DeserializeObject<List<EmployeeMasterModel>>(jsonAllDed) :
+       new List<EmployeeMasterModel>();
+
+            var listEdu = !string.IsNullOrEmpty(jsonEdu) ?
+                JsonConvert.DeserializeObject<List<EmployeeMasterModel>>(jsonEdu) :
+                new List<EmployeeMasterModel>();
+
+            var listExp = !string.IsNullOrEmpty(jsonExp) ?
+                JsonConvert.DeserializeObject<List<EmployeeMasterModel>>(jsonExp) :
+                new List<EmployeeMasterModel>();
+
+            var listNJob = !string.IsNullOrEmpty(jsonNJob) ?
+                JsonConvert.DeserializeObject<List<EmployeeMasterModel>>(jsonNJob) :
+                new List<EmployeeMasterModel>();
             List<EmployeeMasterModel> EmployeeMasterDetail = new List<EmployeeMasterModel>();
             if (!string.IsNullOrEmpty(modelJson))
             {
                 EmployeeMasterDetail = JsonConvert.DeserializeObject<List<EmployeeMasterModel>>(modelJson);
             }
-            var DtAllDed = GetDtAllDedTable(EmployeeMasterDetail);
-            var DtEdu = GetDtEduTable(EmployeeMasterDetail);
-            var dtexp = GetdtexpTable(EmployeeMasterDetail);
+            var DtAllDed = GetDtAllDedTable(listAllDed, model);
+            var DtEdu = GetDtEduTable(listEdu, model);
+            var dtexp = GetdtexpTable(listExp, model);
             //var dtNjob = GetdtexpTable(EmployeeMasterDetail);
-            var dtNjob = GetdtNjobTable(EmployeeMasterDetail);
+            var dtNjob = GetdtNjobTable(listNJob, model);
             var Result = await _IEmployeeMaster.SaveEmployeeMaster(model, DtAllDed, DtEdu, dtexp, dtNjob);
 
             if (Result == null)
             {
                 ViewBag.isSuccess = false;
                 TempData["Message"] = "Something Went Wrong, Please Try Again.";
-                return RedirectToAction(nameof(DashBoard));
+                
             }
             else if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
             {
                 ViewBag.isSuccess = true;
                 TempData["200"] = "200";
-                return RedirectToAction(nameof(DashBoard));
+               
             }
             else if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.Ambiguous)
             {
@@ -184,7 +203,7 @@ namespace eTactWeb.Controllers
             {
                 ViewBag.isSuccess = true;
                 TempData["202"] = "202";
-                return RedirectToAction(nameof(DashBoard));
+               
             }
             if (Result.StatusText == "Error")
             {
@@ -212,7 +231,7 @@ namespace eTactWeb.Controllers
             return RedirectToAction(nameof(EmployeeMaster), new { ID = 0 });
 
         }
-        private static DataTable GetDtAllDedTable(IList<EmployeeMasterModel> DetailList)
+        private static DataTable GetDtAllDedTable(IList<EmployeeMasterModel> DetailList, EmployeeMasterModel model)
         {
             try
             {
@@ -236,8 +255,8 @@ namespace eTactWeb.Controllers
                     DtAllDed.Rows.Add(
                         new object[]
                         {
-                         Item.EmpId == 0 ? 0 : Item.EmpId,
-                Item.EmpCode ?? string.Empty,
+                         model.EmpId == 0 ? 0 : model.EmpId,
+                model.EmpCode ?? string.Empty,
                 Item.SrNo == 0 ? 0 : Item.SrNo,
                 Item.SalaryHeadId == 0 ? 0 : Item.SalaryHeadId,
                 Item.AllowanceMode ?? string.Empty,
@@ -256,7 +275,7 @@ namespace eTactWeb.Controllers
                 throw;
             }
         }
-        private static DataTable GetDtEduTable(IList<EmployeeMasterModel> DetailList)
+        private static DataTable GetDtEduTable(IList<EmployeeMasterModel> DetailList, EmployeeMasterModel model)
         {
             try
             {
@@ -277,8 +296,8 @@ namespace eTactWeb.Controllers
                     DtEdu.Rows.Add(
                         new object[]
                         {
-                        Item.EmpId == 0 ? 0 : Item.EmpId,                     // long
-                Item.EmpCode ?? string.Empty,                         // string
+                        model.EmpId == 0 ? 0 : model.EmpId,                     // long
+                model.EmpCode ?? string.Empty,                         // string
                 Item.SrNo == 0 ? 0 : Item.SrNo,                       // int
                 Item.Qualification ?? string.Empty,                   // string
                 Item.Univercity_Sch ?? string.Empty,                  // string
@@ -296,7 +315,7 @@ namespace eTactWeb.Controllers
                 throw;
             }
         }
-        private static DataTable GetdtexpTable(IList<EmployeeMasterModel> DetailList)
+        private static DataTable GetdtexpTable(IList<EmployeeMasterModel> DetailList, EmployeeMasterModel model)
         {
             try
             {
@@ -326,12 +345,12 @@ namespace eTactWeb.Controllers
                     dtExp.Rows.Add(
                         new object[]
                         {
-                        Item.EmpId == 0 ? 0 : Item.EmpId,                         // long
-                Item.EmpCode ?? string.Empty,                             // string
+                        model.EmpId == 0 ? 0 : model.EmpId,                         // long
+                model.EmpCode ?? string.Empty,                             // string
                 Item.SrNo == 0 ? 0 : Item.SrNo,                           // int
                 Item.CompanyName ?? string.Empty,                         // string
-                Item.CFromDate ?? "",                           // string (or DateTime.ToString())
-                Item.CToDate ?? "",                             // string (or DateTime.ToString())
+                Item.CFromDate ,                           // string (or DateTime.ToString())
+                Item.CToDate,                             // string (or DateTime.ToString())
                 Item.Designation ?? string.Empty,                         // string
                 Item.Salary is 0 ? 0 : Item.Salary,                    // decimal?
                 Item.GrossSalary is 0 ? 0 : Item.GrossSalary,          // decimal?
@@ -341,7 +360,7 @@ namespace eTactWeb.Controllers
                 Item.ContactPersonNumber ?? string.Empty,                 // string
                 Item.HRPersonName ?? string.Empty,                        // string
                 Item.HRContactNo ?? string.Empty,                         // string
-                Item.Remark ?? string.Empty
+                Item.ExeRemark ?? string.Empty
 
                     });
                 }
@@ -353,7 +372,7 @@ namespace eTactWeb.Controllers
                 throw;
             }
         }
-        private static DataTable GetdtNjobTable(IList<EmployeeMasterModel> DetailList)
+        private static DataTable GetdtNjobTable(IList<EmployeeMasterModel> DetailList, EmployeeMasterModel model)
         {
             try
             {
@@ -369,8 +388,8 @@ namespace eTactWeb.Controllers
                     dtNjob.Rows.Add(
                         new object[]
                         {
-                         Item.EmpId == 0 ? 0 : Item.EmpId,           // long
-                Item.EmpCode ?? string.Empty,               // string
+                         model.EmpId == 0 ? 0 : model.EmpId,           // long
+                model.EmpCode ?? string.Empty,               // string
                 Item.SrNo == 0 ? 0 : Item.SrNo,             // int
                 Item.NatureOfDuties ?? string.Empty
 
@@ -455,7 +474,7 @@ namespace eTactWeb.Controllers
         {
             try
             {
-                string modelJson = HttpContext.Session.GetString("KeyEmployeeMasterGrid");
+                string modelJson = HttpContext.Session.GetString("KeyEmployeeMasterGrid_AllDed");
                 IList<EmployeeMasterModel> EmployeeMasterGrid = new List<EmployeeMasterModel>();
                 if (!string.IsNullOrEmpty(modelJson))
                 {
@@ -494,7 +513,7 @@ namespace eTactWeb.Controllers
 
                     MainModel.EmployeeMasterGrid = OrderGrid;
 
-                    HttpContext.Session.SetString("KeyEmployeeMasterGrid", JsonConvert.SerializeObject(MainModel.EmployeeMasterGrid));
+                    HttpContext.Session.SetString("KeyEmployeeMasterGrid_AllDed", JsonConvert.SerializeObject(MainModel.EmployeeMasterGrid));
                 }
                 else
                 {
@@ -513,7 +532,7 @@ namespace eTactWeb.Controllers
             IList<EmployeeMasterModel> EmployeeMasterGrid = new List<EmployeeMasterModel>();
             if (Mode == "U")
             {
-                string modelJson = HttpContext.Session.GetString("KeyEmployeeMasterGrid");
+                string modelJson = HttpContext.Session.GetString("KeyEmployeeMasterGrid_AllDed");
                 if (!string.IsNullOrEmpty(modelJson))
                 {
                     EmployeeMasterGrid = JsonConvert.DeserializeObject<IList<EmployeeMasterModel>>(modelJson);
@@ -521,7 +540,7 @@ namespace eTactWeb.Controllers
             }
             else
             {
-                string modelJson = HttpContext.Session.GetString("KeyEmployeeMasterGrid");
+                string modelJson = HttpContext.Session.GetString("KeyEmployeeMasterGrid_AllDed");
                 if (!string.IsNullOrEmpty(modelJson))
                 {
                     EmployeeMasterGrid = JsonConvert.DeserializeObject<IList<EmployeeMasterModel>>(modelJson);
@@ -541,7 +560,7 @@ namespace eTactWeb.Controllers
             var MainModel = new EmployeeMasterModel();
             if (Mode == "U")
             {
-                string modelJson = HttpContext.Session.GetString("KeyEmployeeMasterGrid");
+                string modelJson = HttpContext.Session.GetString("KeyEmployeeMasterGrid_AllDed");
                 List<EmployeeMasterModel> EmployeeMasterGrid = new List<EmployeeMasterModel>();
                 if (!string.IsNullOrEmpty(modelJson))
                 {
@@ -562,7 +581,7 @@ namespace eTactWeb.Controllers
                     }
                     MainModel.EmployeeMasterGrid = EmployeeMasterGrid;
 
-                    HttpContext.Session.SetString("KeyEmployeeMasterGrid", JsonConvert.SerializeObject(MainModel.EmployeeMasterGrid));
+                    HttpContext.Session.SetString("KeyEmployeeMasterGrid_AllDed", JsonConvert.SerializeObject(MainModel.EmployeeMasterGrid));
                 }
             }
 
@@ -572,7 +591,7 @@ namespace eTactWeb.Controllers
         {
             try
             {
-                string modelJson = HttpContext.Session.GetString("KeyEmployeeMasterEductionGrid");
+                string modelJson = HttpContext.Session.GetString("KeyEmployeeMasterGrid_Edu");
                 IList<EmployeeMasterModel> EmployeeMasterGrid = new List<EmployeeMasterModel>();
                 if (!string.IsNullOrEmpty(modelJson))
                 {
@@ -611,7 +630,7 @@ namespace eTactWeb.Controllers
 
                     MainModel.EmployeeMasterGrid = OrderGrid;
 
-                    HttpContext.Session.SetString("KeyEmployeeMasterEductionGrid", JsonConvert.SerializeObject(MainModel.EmployeeMasterGrid));
+                    HttpContext.Session.SetString("KeyEmployeeMasterGrid_Edu", JsonConvert.SerializeObject(MainModel.EmployeeMasterGrid));
                 }
                 else
                 {
@@ -630,7 +649,7 @@ namespace eTactWeb.Controllers
             IList<EmployeeMasterModel> EmployeeMasterGrid = new List<EmployeeMasterModel>();
             if (Mode == "U")
             {
-                string modelJson = HttpContext.Session.GetString("KeyEmployeeMasterEductionGrid");
+                string modelJson = HttpContext.Session.GetString("KeyEmployeeMasterGrid_Edu");
                 if (!string.IsNullOrEmpty(modelJson))
                 {
                     EmployeeMasterGrid = JsonConvert.DeserializeObject<IList<EmployeeMasterModel>>(modelJson);
@@ -638,7 +657,7 @@ namespace eTactWeb.Controllers
             }
             else
             {
-                string modelJson = HttpContext.Session.GetString("KeyEmployeeMasterEductionGrid");
+                string modelJson = HttpContext.Session.GetString("KeyEmployeeMasterGrid_Edu");
                 if (!string.IsNullOrEmpty(modelJson))
                 {
                     EmployeeMasterGrid = JsonConvert.DeserializeObject<IList<EmployeeMasterModel>>(modelJson);
@@ -658,7 +677,7 @@ namespace eTactWeb.Controllers
             var MainModel = new EmployeeMasterModel();
             if (Mode == "U")
             {
-                string modelJson = HttpContext.Session.GetString("KeyEmployeeMasterEductionGrid");
+                string modelJson = HttpContext.Session.GetString("KeyEmployeeMasterGrid_Edu");
                 List<EmployeeMasterModel> EmployeeMasterGrid = new List<EmployeeMasterModel>();
                 if (!string.IsNullOrEmpty(modelJson))
                 {
@@ -679,7 +698,7 @@ namespace eTactWeb.Controllers
                     }
                     MainModel.EmployeeMasterGrid = EmployeeMasterGrid;
 
-                    HttpContext.Session.SetString("KeyEmployeeMasterEductionGrid", JsonConvert.SerializeObject(MainModel.EmployeeMasterGrid));
+                    HttpContext.Session.SetString("KeyEmployeeMasterGrid_Edu", JsonConvert.SerializeObject(MainModel.EmployeeMasterGrid));
                 }
             }
 
@@ -689,7 +708,7 @@ namespace eTactWeb.Controllers
         {
             try
             {
-                string modelJson = HttpContext.Session.GetString("KeyEmployeeMasterExperianceGrid");
+                string modelJson = HttpContext.Session.GetString("KeyEmployeeMasterGrid_Exp");
                 IList<EmployeeMasterModel> EmployeeMasterGrid = new List<EmployeeMasterModel>();
                 if (!string.IsNullOrEmpty(modelJson))
                 {
@@ -728,7 +747,7 @@ namespace eTactWeb.Controllers
 
                     MainModel.EmployeeMasterGrid = OrderGrid;
 
-                    HttpContext.Session.SetString("KeyEmployeeMasterExperianceGrid", JsonConvert.SerializeObject(MainModel.EmployeeMasterGrid));
+                    HttpContext.Session.SetString("KeyEmployeeMasterGrid_Exp", JsonConvert.SerializeObject(MainModel.EmployeeMasterGrid));
                 }
                 else
                 {
@@ -747,7 +766,7 @@ namespace eTactWeb.Controllers
             IList<EmployeeMasterModel> EmployeeMasterGrid = new List<EmployeeMasterModel>();
             if (Mode == "U")
             {
-                string modelJson = HttpContext.Session.GetString("KeyEmployeeMasterExperianceGrid");
+                string modelJson = HttpContext.Session.GetString("KeyEmployeeMasterGrid_Exp");
                 if (!string.IsNullOrEmpty(modelJson))
                 {
                     EmployeeMasterGrid = JsonConvert.DeserializeObject<IList<EmployeeMasterModel>>(modelJson);
@@ -755,7 +774,7 @@ namespace eTactWeb.Controllers
             }
             else
             {
-                string modelJson = HttpContext.Session.GetString("KeyEmployeeMasterExperianceGrid");
+                string modelJson = HttpContext.Session.GetString("KeyEmployeeMasterGrid_Exp");
                 if (!string.IsNullOrEmpty(modelJson))
                 {
                     EmployeeMasterGrid = JsonConvert.DeserializeObject<IList<EmployeeMasterModel>>(modelJson);
@@ -775,7 +794,7 @@ namespace eTactWeb.Controllers
             var MainModel = new EmployeeMasterModel();
             if (Mode == "U")
             {
-                string modelJson = HttpContext.Session.GetString("KeyEmployeeMasterExperianceGrid");
+                string modelJson = HttpContext.Session.GetString("KeyEmployeeMasterGrid_Exp");
                 List<EmployeeMasterModel> EmployeeMasterGrid = new List<EmployeeMasterModel>();
                 if (!string.IsNullOrEmpty(modelJson))
                 {
@@ -796,7 +815,7 @@ namespace eTactWeb.Controllers
                     }
                     MainModel.EmployeeMasterGrid = EmployeeMasterGrid;
 
-                    HttpContext.Session.SetString("KeyEmployeeMasterExperianceGrid", JsonConvert.SerializeObject(MainModel.EmployeeMasterGrid));
+                    HttpContext.Session.SetString("KeyEmployeeMasterGrid_Exp", JsonConvert.SerializeObject(MainModel.EmployeeMasterGrid));
                 }
             }
             return PartialView("_EmployeeMasterExperianceGrid", MainModel);
