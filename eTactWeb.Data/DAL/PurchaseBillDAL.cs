@@ -219,6 +219,25 @@ public class PurchaseBillDAL
         {
             var SqlParams = new List<dynamic>();
             SqlParams.Add(new SqlParameter("@Flag", "FILLDocName"));
+            SqlParams.Add(new SqlParameter("@ShowAllR", ShowAll));
+
+            _ResponseResult = await _IDataLogic.ExecuteDataSet("AccSP_PurchaseBillMainDetail", SqlParams);
+        }
+        catch (Exception ex)
+        {
+            dynamic Error = new ExpandoObject();
+            Error.Message = ex.Message;
+            Error.Source = ex.Source;
+        }
+        return _ResponseResult;
+    }
+    public async Task<ResponseResult> FillRoundOffAccount(string ShowAll)
+    {
+        var _ResponseResult = new ResponseResult();
+        try
+        {
+            var SqlParams = new List<dynamic>();
+            SqlParams.Add(new SqlParameter("@Flag", "FillRoundOffAccount"));
             SqlParams.Add(new SqlParameter("@ShowAll", ShowAll));
 
             _ResponseResult = await _IDataLogic.ExecuteDataSet("AccSP_PurchaseBillMainDetail", SqlParams);
@@ -1348,6 +1367,7 @@ public class PurchaseBillDAL
             SqlParams.Add(new SqlParameter("@PORemarks", string.Empty));
             SqlParams.Add(new SqlParameter("@VendoreAddress", model.VendorAddress));
             SqlParams.Add(new SqlParameter("@paymentDay", model.PaymentDays));
+            SqlParams.Add(new SqlParameter("@roundoffaccountcode", model.RoundOffAccountCode));
 
             RoundFloatColumns(ItemDetailDT);
             RoundFloatColumns(TaxDetailDT);
