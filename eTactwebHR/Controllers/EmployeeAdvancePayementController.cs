@@ -26,6 +26,7 @@ namespace eTactwebHR.Controllers
             MainModel.FinFromDate = HttpContext.Session.GetString("FromDate");
             MainModel.FinToDate = HttpContext.Session.GetString("ToDate");
             MainModel.ActualEntryBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            MainModel.UID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
             MainModel.ActualEntryByName = HttpContext.Session.GetString("EmpName");
             MainModel.CC = HttpContext.Session.GetString("Branch");
             MainModel.AdvanceYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));

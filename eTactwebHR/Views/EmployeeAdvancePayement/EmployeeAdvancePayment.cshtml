@@ -103,14 +103,14 @@
 									<input asp-for="AdvanceSlipNo" class="form-control" />
 								</div>
 
-								<div class="col-md-1">
+								<div class="col-md-2">
 									<label asp-for="EmpId" class="form-label">Emp Name</label>
 									<select asp-for="EmpId" class="form-select">
 										<option value="">-Select-</option>
 									</select>
 								</div>
 								
-								<div class="col-md-1">
+								<div class="col-md-2">
 									<label asp-for="EmpCode" class="form-label">Emp Code</label>
 									<select asp-for="EmpCode" class="form-select">
 										<option value="">-Select-</option>
@@ -179,7 +179,7 @@
 
 
 								<div class="col-md-2">
-									<label asp-for="PreviousPendAdvanceAmt" class="form-label">Previous PendAdvance Amt</label>
+									<label asp-for="PreviousPendAdvanceAmt" class="form-label">Prev PendAdvance Amt</label>
 									<input asp-for="PreviousPendAdvanceAmt" class="form-control" readonly/>
 								</div>
 
@@ -194,7 +194,7 @@
 								</div>
 
 								<div class="col-md-2">
-									<label asp-for="MgrApprovedbyEmpid" class="form-label">MgrApprovedby Emp</label>
+									<label asp-for="MgrApprovedbyEmpid" class="form-label">MgrApprovedby EmpName</label>
 									<select asp-for="MgrApprovedbyEmpid" class="form-select">
 										<option value="">-Select-</option>
 									</select>
@@ -208,7 +208,7 @@
 								</div>
 
 								<div class="col-md-2">
-									<label asp-for="HRApprovedbyEmpid" class="form-label">HRApprovedby Emp</label>
+									<label asp-for="HRApprovedbyEmpid" class="form-label">HRApprovedby EmpName</label>
 									<select asp-for="HRApprovedbyEmpid" class="form-select">
 										<option value="">-Select-</option>
 									</select>
@@ -280,7 +280,7 @@
 								</div>
 
 								<div class="col-md-2">
-									<label asp-for="FinanceApprovalEmpid" class="form-label">FinanceApproval Emp</label>
+									<label asp-for="FinanceApprovalEmpid" class="form-label">FinanceApproval EmpName</label>
 									<select asp-for="FinanceApprovalEmpid" class="form-select">
 										<option value="">-Select-</option>
 									</select>
@@ -642,6 +642,9 @@
 			else if($('#EmpId').val() == $('#HRApprovedbyEmpid').val() || ($('#EmpCode').val() == $('#HRApprovedbyEmpCode').val())){
 				$.notify("Employee and HR approved employee can not be same..!", "error");
 			}
+			else if($('#FinalRevoveryDate').val() >= $('#StartRecoveryFromMonth').val()){
+				$.notify("Final recovery date must be greter then Start recovery date..!", "error");
+			}
 			else{
 			   $('form').submit();
 			}
@@ -851,7 +854,7 @@
 						$('#DeptName').val(obj.Result[0].DeptName);
 						$('#DepId').val(obj.Result[0].deptid);
 						$('#BasicSalary').val(obj.Result[0].GrossSalary);
-						$('#NetSalary').val(obj.Result[0].GrossSalary);
+						$('#NetSalary').val(obj.Result[0].Netsalary);
 					}
 				},
 				error: function (xhr, status, error) {
@@ -880,6 +883,7 @@
 						$('#LastUpdationDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
 						$('#StartRecoveryFromMonth').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
 						$('#PresentDaysinCurrMonth').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+						$('#PresentDaysInCurrYear').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
 						$('#EntryDate').datepicker('option', 'minDate', FinFromDate);
 						$('#EntryDate').datepicker('option', 'maxDate', FinToDate);
 					}
