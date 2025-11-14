@@ -1182,6 +1182,13 @@ namespace eTactWeb.Controllers
                 throw ex;
             }
         }
+      
+        public async Task<JsonResult> GetTotalAmount(SaleBillDashboard model)
+        {
+            var result = await _SaleBill.GetTotalAmount(model);
+            string JsonString = JsonConvert.SerializeObject(result);
+            return Json(JsonString);
+        }
         public async Task<JsonResult> GetInvoiceTypeMain()
         {
             var JSON = await _SaleBill.GetInvoiceTypeMain();

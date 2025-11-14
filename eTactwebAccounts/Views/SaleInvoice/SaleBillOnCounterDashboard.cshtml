@@ -213,13 +213,53 @@
                 }
             });
         }
-       
+        function GetTotalAmounts() {
+
+            // Collect form values
+            let formData = $('#SParam').serializeArray();
+
+            // Add multiselect values manually (serializeArray doesn't include multiple correctly)
+            let invoiceTypes = $('#SubInvoicetypeL').val() || [];
+            formData.push({ name: 'SubInvoicetypeL', value: invoiceTypes });
+
+            $.ajax({
+                url: '/SaleInvoice/GetTotalAmount',
+                type: 'GET',
+                data: formData,
+                dataType: 'json',
+
+                success: function (data) {
+                    console.log("data", data);
+
+                    const obj = typeof data === "string" ? JSON.parse(data) : data;
+
+                    if (obj && obj.Result && obj.Result.length > 0) {
+                        let row = obj.Result[0];
+
+                        // Update totals
+                        $('#tfootNetAmt').text(row.TotalNetAmt?.toFixed(2) ?? "0.00");
+                        $('#tfootBillAmt').text(row.basicamount?.toFixed(2) ?? "0.00");
+                    } else {
+                        $('#tfootNetAmt').text("0.00");
+                        $('#tfootBillAmt').text("0.00");
+                    }
+                },
+
+
+                error: function (err) {
+                    console.error("❌ Error fetching totals:", err);
+                }
+            });
+        }
+
+
         $(document).ready(function () {
             $('.invoice-type-select').select2({
             placeholder: "Select Invoice Types",
             allowClear: true,
             width: "100%"
         });
+            GetTotalAmounts();
             var deleteMessage = '@TempData["DeleteMessage"]';
 
             if (deleteMessage) {
@@ -282,7 +322,8 @@
             GetSearchData();
          
             GetFeatureOption();
-            CalculateTotalAmt();
+            //CalculateTotalAmt();
+            GetTotalAmounts();
             sessionStorage.removeItem('FromDateBack');
             sessionStorage.removeItem('ToDateBack');
             sessionStorage.removeItem('PartCodeBack');
@@ -787,7 +828,7 @@
                      GetFeatureOptions();
                     GetFormRights();
                     GetFeatureOption();
-                    CalculateTotalAmt();
+                    GetTotalAmounts();
                     CheckInv();
                     YearEditDeleteRight();
                 },
@@ -799,16 +840,19 @@
                 }
             });
         }
-        function loadPage(pageNumber) {
 
+        function loadPage(pageNumber) {
+            console.log("page", pageNumber);
 
             var dashboardType = $('#SummaryDetail').val();
 
             var formData = $('#SParam').serializeArray();
             formData.push({ name: 'fromdate', value: $('#FinFromDate').val() });
             formData.push({ name: 'toDate', value: $('#FinToDate').val() });
-            console.log(formData);
             formData.push({ name: 'pageNumber', value: pageNumber });
+            formData.push({ name: 'pageSize', value: 15 }); // always include pageSize
+            formData.push({ name: 'SearchBox', value: $('#SearchBox').val() }); // optional
+
             $.ajax({
                 type: 'GET',
                 url: '@Url.Action("GetSearchData", "SaleInvoice")',
@@ -816,13 +860,13 @@
                 success: function (result) {
                     $('#divDashboardGrid').empty();
                     $('#divDashboardGrid').html(result);
-                    $('#totalRows').text($('#gateDashboardtable tr').length);
                     GetFormRights();
                     GetFeatureOption();
-                    //countAllTotal();
+                    GetTotalAmounts();
                 }
             });
         }
+
         $("#search-box").on("input", function () {
 
             var searchString = $(this).val().trim();
@@ -834,12 +878,29 @@
                 data: { searchString: searchString, dashboardType: dashboardType },
                 success: function (data) {
 
+
+
                     $('#divDashboardGrid').empty();
                     $('#divDashboardGrid').html(data);
+                    // Rebind features, rights, totals
                     GetFeatureOption();
                     GetFormRights();
                     GetFeatureOptions();
-                    $('#totalRows').text($('#gateDashboardtable tr').length);
+                    GetTotalAmounts();
+                    CheckInv();
+                    YearEditDeleteRight();
+
+                    // Rebind pagination buttons
+                    $('#divDashboardGrid .pagination a').click(function (e) {
+                        e.preventDefault();
+                        var page = $(this).data('page');
+                        loadPage(page);
+                    });
+
+                    // Update footer count
+                    const totalRows = $('#divDashboardGrid tr').length - 1; // subtract header
+                    $('#totalRows').text(totalRows);
+                 //   $('#totalRows').text($('#gateDashboardtable tr').length);
                     //countAllTotal();
                 },
                 error: function () {

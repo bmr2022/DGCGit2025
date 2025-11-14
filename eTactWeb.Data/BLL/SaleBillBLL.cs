@@ -26,7 +26,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _SaleBillDAL.AutoFillitem(Flag, SearchPartCode);
         }
-
+        public async Task<ResponseResult> GetTotalAmount(SaleBillDashboard model)
+        {
+            return await _SaleBillDAL.GetTotalAmount(model);
+        }
         public async Task<ResponseResult> FILLPendingSONO()
         {
             return await _SaleBillDAL.FILLPendingSONO();

@@ -100,6 +100,46 @@ namespace eTactWeb.Data.DAL
 
             return Result;
         }
+        public async Task<ResponseResult> GetTotalAmount(SaleBillDashboard m)
+        {
+            var Result = new ResponseResult();
+
+            try
+            {
+                var SqlParams = new List<dynamic>();
+
+                SqlParams.Add(new SqlParameter("@Flag", "GetTotalAmount"));
+                SqlParams.Add(new SqlParameter("@FromDate", CommonFunc.ParseFormattedDate(m.FinFromDate)));
+                SqlParams.Add(new SqlParameter("@ToDate", CommonFunc.ParseFormattedDate(m.FinToDate)));
+                SqlParams.Add(new SqlParameter("@salebillno", m.SaleBillNo ?? ""));
+                SqlParams.Add(new SqlParameter("@customerName", m.CustomerName ?? ""));
+                SqlParams.Add(new SqlParameter("@SOno", m.SONO ?? ""));
+                SqlParams.Add(new SqlParameter("@custOrderNo", m.CustOrderNo ?? ""));
+                SqlParams.Add(new SqlParameter("@ScheduleNo", m.SchNo ?? ""));
+                SqlParams.Add(new SqlParameter("@PerformaInvNo", m.PerformaInvNo ?? ""));
+                SqlParams.Add(new SqlParameter("@SaleQuotNo", m.SaleQuotNo ?? ""));
+                SqlParams.Add(new SqlParameter("@DomesticExportNEPZ", m.DomesticExportNEPZ ?? ""));
+
+                // List<string> SubInvoicetypeL → CSV string
+                string selectedTypes = (m.SubInvoicetypeL != null && m.SubInvoicetypeL.Any())
+                    ? string.Join(",", m.SubInvoicetypeL)
+                    : "";
+
+                SqlParams.Add(new SqlParameter("@SubInvoicetype", selectedTypes));
+
+                Result = await _IDataLogic.ExecuteDataTable("SP_SaleBillMainDetail", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return Result;
+        }
+
+
         public async Task<SaleBillModel> GetlastBillDetail(string invoicedate, int currentYearcode, int AccountCode,int ItemCode)
         {
             var resultList = new SaleBillModel();

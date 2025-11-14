@@ -748,25 +748,7 @@ else
         }
     </ul>
 }
-<script>
-        function calculateFooterTotals() {
-        let billAmt = 0;
-        let netAmt = 0;
 
-        document.querySelectorAll("#divSBDashboardGrid tr").forEach(row => {
-            const bill = parseFloat(row.children[11]?.innerText) || 0; // col 12 (index 11)
-            const net = parseFloat(row.children[16]?.innerText) || 0;  // col 17 (index 16)
-
-            billAmt += bill;
-            netAmt += net;
-        });
-
-        document.getElementById("tfootBillAmt").innerText = billAmt.toFixed(2);
-        document.getElementById("tfootNetAmt").innerText = netAmt.toFixed(2);
-    }
-
-    calculateFooterTotals();
-</script>
 <style>
     #container {
         display: flex;

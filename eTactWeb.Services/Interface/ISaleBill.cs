@@ -61,6 +61,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FillPendingPartCOde();
         Task<ResponseResult> GetFeatureOption();
         Task<ResponseResult> GetInvoiceTypeMain();
+        Task<ResponseResult> GetTotalAmount(SaleBillDashboard model);
         Task<DataSet> GetInvoiceType();
         public Task<ResponseResult> AutoFillitem(string Flag, string SearchPartCode);
 
