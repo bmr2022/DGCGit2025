@@ -68,10 +68,10 @@
                                 </select>
                             </div> *@
                             <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                <label asp-for="SubInvoicetypeL" class="control-label">Invoice Type</label>
+                                <label asp-for="SubInvoicetype" class="control-label">Invoice Type</label>
                                 <select class="form-select invoice-type-select"
                                         multiple="multiple"
-                                        asp-for="SubInvoicetypeL"
+                                        asp-for="SubInvoicetype"
                                         asp-items="@(new SelectList(Model.SubInvoicetypeList, "Value", "Text"))">
                                 </select>
                             </div>
@@ -219,8 +219,8 @@
             let formData = $('#SParam').serializeArray();
 
             // Add multiselect values manually (serializeArray doesn't include multiple correctly)
-            let invoiceTypes = $('#SubInvoicetypeL').val() || [];
-            formData.push({ name: 'SubInvoicetypeL', value: invoiceTypes });
+            let invoiceTypes = $('#SubInvoicetype').val() || [];
+            formData.push({ name: 'SubInvoicetype', value: invoiceTypes });
 
             $.ajax({
                 url: '/SaleInvoice/GetTotalAmount',
@@ -340,15 +340,15 @@
             sessionStorage.removeItem('summaryDetailBack');
 
             $('#PartCode').rules('remove', 'required');
-            $("#SubInvoicetype").multiselect({
-                templates: {
-                    button: '<button type="button" class="multiselect btn btn-sm btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><span class="multiselect-selected-text"></span></button>',
-                },
-                enableFiltering: true,
-                includeSelectAllOption: true,
-                buttonWidth: 250,
-                enableCaseInsensitiveFiltering: true
-            });
+            // $("#SubInvoicetype").multiselect({
+            //     templates: {
+            //         button: '<button type="button" class="multiselect btn btn-sm btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><span class="multiselect-selected-text"></span></button>',
+            //     },
+            //     enableFiltering: true,
+            //     includeSelectAllOption: true,
+            //     buttonWidth: 250,
+            //     enableCaseInsensitiveFiltering: true
+            // });
         });
 
         function CalculateTotalAmt() {
