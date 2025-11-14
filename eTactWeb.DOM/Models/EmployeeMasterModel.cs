@@ -149,6 +149,7 @@ namespace eTactWeb.DOM.Models
         public string  GratutyEligibility { get; set; }   
         public string  ResignationDate { get; set; }   
         public string  Active { get; set; }   
+        public string EntryByMachineName { get; set; }   
 
 
     }

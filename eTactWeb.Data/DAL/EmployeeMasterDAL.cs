@@ -608,12 +608,12 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@Flag", flag));
 
                 // Parse Dates
-                var entDt = ParseDate(model.EntryDate);
-                var dojDt = ParseDate(model.DateOfJoining);
-                var dorDt = ParseDate(model.DateOfResignation);
-                var dobDt = ParseDate(model.DOB);
-                var DateOfProbation = ParseDate(model.ProbationStartDate);
-                var DateOfConfirm = ParseDate(model.DateOfConfirmation);
+                var entDt = CommonFunc.ParseFormattedDate(model.EntryDate);
+                var dojDt = CommonFunc.ParseFormattedDate(model.DateOfJoining);
+                var dorDt = CommonFunc.ParseFormattedDate(model.DateOfResignation);
+                var dobDt = CommonFunc.ParseFormattedDate(model.DOB);
+                var DateOfProbation = CommonFunc.ParseFormattedDate(model.ProbationStartDate);
+                var DateOfConfirm = CommonFunc.ParseFormattedDate(model.DateOfConfirmation);
 
                 // Branch list
                 string branchlist = string.Join(",", model.Branches ?? new List<string>());
@@ -624,7 +624,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@EmpName", model.Name ?? ""));
                 SqlParams.Add(new SqlParameter("@Deptid", model.Department));
                 SqlParams.Add(new SqlParameter("@CategoryId", model.Category));
-                SqlParams.Add(new SqlParameter("@DesignationId", model.Designation));
+                SqlParams.Add(new SqlParameter("@desigEntryid", model.Designation));
                 SqlParams.Add(new SqlParameter("@shiftId", model.Shift));
                 SqlParams.Add(new SqlParameter("@BranchCC", model.Branch ?? ""));
                 SqlParams.Add(new SqlParameter("@BranchList", branchlist));
@@ -636,6 +636,9 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@DateOfJoining", dojDt ?? (object)DBNull.Value));
                 SqlParams.Add(new SqlParameter("@DOR", dorDt ?? (object)DBNull.Value));
                 SqlParams.Add(new SqlParameter("@ResignationDate", dorDt ?? (object)DBNull.Value));
+                SqlParams.Add(new SqlParameter("@BloodGroup", model.BloodGroup));
+                SqlParams.Add(new SqlParameter("@Nationality", model.Nationality));
+                SqlParams.Add(new SqlParameter("@MaritalStatus", model.MaritalStatus));
 
                 // Names
                 SqlParams.Add(new SqlParameter("@DepartmentName", model.DepartmentName ?? ""));
@@ -688,11 +691,13 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@WorkPermitVisa", model.WorkPeritVisa ?? ""));
                 SqlParams.Add(new SqlParameter("@DrivingLicence", model.DrivingLicenseNo ?? ""));
                 SqlParams.Add(new SqlParameter("@MedicalInsuranceDetail", model.MedicalInsuranceDetail ?? ""));
-                SqlParams.Add(new SqlParameter("@ThumbPath", model.ThumbUnPress ?? ""));
+                //SqlParams.Add(new SqlParameter("@ThumbPath", model.ThumbUnPress ?? ""));
+                SqlParams.Add(new SqlParameter("@ThumbPath", model.fileUpload ?? ""));
 
                 // Exit Details
                 SqlParams.Add(new SqlParameter("@NoticePeriod", model.NoticPeriod ));
                 SqlParams.Add(new SqlParameter("@GratutyEligibility", model.GratutyEligibility ?? ""));
+                SqlParams.Add(new SqlParameter("EntryByMachineName", model.EntryByMachineName ?? ""));
 
                 // Table-Valued Parameters
                 SqlParams.Add(new SqlParameter("@DtAllDed", DtAllDed));

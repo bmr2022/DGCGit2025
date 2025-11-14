@@ -1317,7 +1317,10 @@
 
         // Initialize autocomplete mode by default
         enableAutocompleteMode();
+
+            if (mode != "U" && mode != "V") {
             showDetail();
+            }
 
             FillSONO();
             FillCurrency();
