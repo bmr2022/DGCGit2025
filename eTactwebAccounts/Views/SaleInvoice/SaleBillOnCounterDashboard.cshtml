@@ -68,9 +68,12 @@
                                 </select>
                             </div> *@
                             <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                <label asp-for="SubInvoicetype" class="control-label">Invoice Type</label>
-                                <br />
-                                <select class="form-select" multiple="multiple" asp-for="SubInvoicetype" asp-items="@(new SelectList(Model.SubInvoicetypeList, "Value", "Text"))"></select>
+                                <label asp-for="SubInvoicetypeL" class="control-label">Invoice Type</label>
+                                <select class="form-select invoice-type-select"
+                                        multiple="multiple"
+                                        asp-for="SubInvoicetypeL"
+                                        asp-items="@(new SelectList(Model.SubInvoicetypeList, "Value", "Text"))">
+                                </select>
                             </div>
                             <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
                                 <label asp-for="SaleBillNo" class="form-label">Sale Billno</label>
@@ -178,6 +181,9 @@
         flex: 1;
         /* margin-right: 10px; */
     }
+    .datepicker{
+        z-index:10;
+    }
 </style>
 
 @section Scripts
@@ -209,6 +215,11 @@
         }
        
         $(document).ready(function () {
+            $('.invoice-type-select').select2({
+            placeholder: "Select Invoice Types",
+            allowClear: true,
+            width: "100%"
+        });
             var deleteMessage = '@TempData["DeleteMessage"]';
 
             if (deleteMessage) {
@@ -805,8 +816,9 @@
                 success: function (result) {
                     $('#divDashboardGrid').empty();
                     $('#divDashboardGrid').html(result);
-                    GetFormRights();
                     $('#totalRows').text($('#gateDashboardtable tr').length);
+                    GetFormRights();
+                    GetFeatureOption();
                     //countAllTotal();
                 }
             });

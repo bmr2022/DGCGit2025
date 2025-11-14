@@ -1,11 +1,65 @@
 ﻿@model eTactWeb.DOM.Models.SaleBillDashboard
 
+<style>
 
+    #container {
+        display: flex;
+    }
+
+        #container > div {
+            flex: 1;
+        }
+
+    .salebilltable {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .salebilltableHead th {
+        background-color: #127387;
+        position: sticky;
+        top: 0;
+        height: 30px;
+        z-index: 1;
+        font-size: 13px;
+    }
+
+
+    .salebilltable tbody td {
+        min-hight: 40px;
+    }
+   
+
+    table tfoot {
+        position: sticky;
+        bottom: 0;
+        background: linear-gradient(180deg, #b3e0f5, #80d4f0) !important;
+        color: #222;
+        z-index: 1; /* ensures it's above table rows */
+        box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+        height: 30px;
+    }
+
+    table tbody td { 
+        font-size: 13px; 
+        font-weight: normal !important;
+        color: #222;
+        /*     /* padding: 6px 8px; */
+    }
+
+    table tfoot td {
+        font-weight: normal;
+        border-top: 2px solid #dee2e6;
+        font-size: 13px;
+        color: #222;
+    }
+    
+</style>
 @if (Model.SummaryDetail == "Detail")
 {
     <div style="overflow-x: auto; overflow-y: auto; max-height: 400px;">
-        <table class="table table-hover table-bordered TbCss text-nowrap mb-0" id="SBDashboardGrid">
-            <thead class="bg-gradient card-headerBG text-light">
+        <table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0 salebilltable" id="SBDashboardGrid">
+            <thead class="bg-gradient card-headerBG text-light salebilltableHead">
                 <tr>
                     <th>Sr#</th>
                     <th>Action</th>
@@ -304,14 +358,30 @@
                     }
                 }
             </tbody>
+            <tfoot class="bg-light fw-bold">
+                <tr>
+                    <td></td>
+                    <td>Total</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    @* Column 12 → BillAmt Total *@
+                    <td class="text-center text-primary" id="tfootBillAmt"></td>
+
+                    @* Column 17 → Net Amount Total *@
+                    <td class="text-center text-success" id="tfootNetAmt"></td>
+                    <td></td>
+                </tr>
+            </tfoot>
+
         </table>
     </div>
 }
 else
 {
     <div style="overflow-x: auto; overflow-y: auto; max-height: 400px;">
-    <table class="table table-hover table-bordered TbCss text-nowrap mb-0" id="SBDashboardGrid">
-        <thead class="bg-gradient card-headerBG text-light">
+        <table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0 salebilltable" id="SBDashboardGrid">
+            <thead class="bg-gradient card-headerBG text-light salebilltableHead">
                 <tr>
                 <th>Sr#</th>
                 <th>Action</th>
@@ -604,6 +674,22 @@ else
                 }
             }
         </tbody>
+            <tfoot class="bg-light fw-bold">
+                <tr>
+                    <td></td>
+                    <td>Total</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    @* Column 12 → BillAmt Total *@
+                    <td class="text-center text-primary" id="tfootBillAmt"></td>
+
+                    @* Column 17 → Net Amount Total *@
+                    <td class="text-center text-success" id="tfootNetAmt"></td>
+                    <td></td>
+                </tr>
+            </tfoot>
+
     </table>
     </div>
 }
@@ -615,9 +701,9 @@ else
         displayedRows = Model.TotalRecords;
     }
 }
-<center><strong class="me-3">TOTAL ROWS  : <span>@displayedRows</span></strong>
-    <strong class="me-3">TOTAL AMT : <span id="TotalAmt"></span></strong>
-    </center>
+@* <center><strong class="me-3">TOTAL ROWS  : <span>@displayedRows</span></strong> *@
+@*     <strong class="me-3">TOTAL AMT : <span id="TotalAmt"></span></strong> *@
+@*     </center> *@
 @{
     int totalPages = (int)Math.Ceiling((double)Model.TotalRecords / Model.PageSize);
 }
@@ -662,6 +748,25 @@ else
         }
     </ul>
 }
+<script>
+        function calculateFooterTotals() {
+        let billAmt = 0;
+        let netAmt = 0;
+
+        document.querySelectorAll("#divSBDashboardGrid tr").forEach(row => {
+            const bill = parseFloat(row.children[11]?.innerText) || 0; // col 12 (index 11)
+            const net = parseFloat(row.children[16]?.innerText) || 0;  // col 17 (index 16)
+
+            billAmt += bill;
+            netAmt += net;
+        });
+
+        document.getElementById("tfootBillAmt").innerText = billAmt.toFixed(2);
+        document.getElementById("tfootNetAmt").innerText = netAmt.toFixed(2);
+    }
+
+    calculateFooterTotals();
+</script>
 <style>
     #container {
         display: flex;
@@ -669,7 +774,7 @@ else
 
         #container > div {
             flex: 1;
-            /* margin-right: 10px; */
+            /* margin-right: 10px;
         }
 
     .pagination {
