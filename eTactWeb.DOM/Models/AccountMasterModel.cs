@@ -103,7 +103,9 @@ namespace eTactWeb.DOM.Models
         public string? SSL { get; set; }
         public string? SSLNo { get; set; }
         public string? State { get; set; }
+        public string? DataBaseName { get; set; }
         public IList<TextValue>? StateList { get; set; }
+        public IList<TextValue>? DatabaseList { get; set; }
         public string? SubGroup { get; set; }
         public string? SubSubGroup { get; set; }
         public string? TDS { get; set; }

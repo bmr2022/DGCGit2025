@@ -238,8 +238,10 @@ namespace eTactWeb.Data.DAL
                         _AccountMasterModel.MSMENo = dr["MSMENo"].ToString();
                         _AccountMasterModel.MSMEType = dr["MSMEType"].ToString();
                         _AccountMasterModel.DiscountCategory = dr["DiscountCategory"].ToString();
-                        _AccountMasterModel.GroupDiscountCategory = Convert.ToInt32(dr["GroupDiscountCategory"].ToString());
+                        _AccountMasterModel.GroupDiscountCategory = dr["GroupDiscountCategory"] == DBNull.Value ? 0 : Convert.ToInt32(dr["GroupDiscountCategory"].ToString());
+                       
                         _AccountMasterModel.Region = dr["Region"].ToString();
+                        _AccountMasterModel.DataBaseName = dr["DatabaseName"].ToString();
                      
                     }
                 }
@@ -501,6 +503,16 @@ namespace eTactWeb.Data.DAL
                                         Value = dr["Account_Code"].ToString()
                                     }).ToList();
                         }
+
+                        if (Flag == "GetDatabaseName")
+                        {
+                            List = (from DataRow dr in oDataTable.Rows
+                                    select new TextValue
+                                    {
+                                        Text = dr["Company_Name"].ToString(),
+                                        Value = dr["Company_Name"].ToString()
+                                    }).ToList();
+                        }
                     }
                 }
             }
@@ -647,6 +659,7 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@DiscountCategory", model.DiscountCategory);
                     oCmd.Parameters.AddWithValue("@GroupDiscountCategory", model.GroupDiscountCategory);
                     oCmd.Parameters.AddWithValue("@SalePersonEmpId", model.SalePersonEmpId);
+                    oCmd.Parameters.AddWithValue("@DatabaseName", model.DataBaseName);
 
                     oCmd.Parameters.AddWithValue("@CreatedBy", model.CreatedBy);
                     if (model.Mode == "Update")
