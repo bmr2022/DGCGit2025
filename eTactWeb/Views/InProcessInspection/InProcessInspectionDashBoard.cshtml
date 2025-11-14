@@ -229,6 +229,7 @@
                     $('#divDashboardGrid').empty().append(data);
                     var totalRows = $('#divDashboardGrid tbody tr').length;
                     $('#totalRows').text(totalRows);
+                    GetFormRights();
                 },
                 error: function (response) {
                     alert(response.responseText);
@@ -256,6 +257,7 @@
                     $('#divDashboardGrid').html(data);
                     $('#totalRows').text($('#divDashboardGrid tr').length);
                     //countAllTotal();
+                    GetFormRights();
                 },
                 error: function () {
                     console.log("Error fetching search results.");
@@ -287,6 +289,7 @@
                     $('#divDashboardGrid').html(result);
                     $('#totalRows').text($('#divDashboardGrid tr').length);
                     //countAllTotal();
+                    GetFormRights();
                 }
             });
         }

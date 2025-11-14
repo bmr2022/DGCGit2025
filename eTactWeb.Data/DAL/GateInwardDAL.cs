@@ -35,7 +35,7 @@ public class GateInwardDAL
 
         //DBConnectionString = configuration.GetConnectionString("eTactDB");
     }
-    public async Task<ResponseResult> DeleteByID(int ID, int YC,int ActualEnteredBy,string EntryByMachineName,string gateno)
+    public async Task<ResponseResult> DeleteByID(int ID, int YC,int ActualEnteredBy,string EntryByMachineName,string gateno, string IPAddress)
     {
         var _ResponseResult = new ResponseResult();
         try
@@ -47,7 +47,9 @@ public class GateInwardDAL
             SqlParams.Add(new SqlParameter("@ActualEnteredBy", ActualEnteredBy));
             SqlParams.Add(new SqlParameter("@EntryByMachineName", EntryByMachineName));
             SqlParams.Add(new SqlParameter("@gateno", gateno));
-           
+            SqlParams.Add(new SqlParameter("@IPAddress", IPAddress));
+
+
             _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_GateMainDetail", SqlParams);
         }
         catch (Exception ex)
@@ -238,7 +240,7 @@ public class GateInwardDAL
 
 
 
-	public async Task<PendingGateInwardDashboard>  GetPendingGateEntryDashboardData(int AccountCode, string PoNo, int PoYearCode, int ItemCode,
+	public async Task<PendingGateInwardDashboard>  GetPendingGateEntryDashboardData(int AccountCode,int docTypeId, string PoNo, int PoYearCode, int ItemCode,
   string FromDate, string ToDate,string Partcode,string ItemName,string GetDataFrom,string Invoiceno)
     {
         DataSet? oDataSet = new DataSet();
@@ -265,6 +267,7 @@ public class GateInwardDAL
 
 
                 oCmd.Parameters.AddWithValue("@AccountCode", AccountCode);
+                oCmd.Parameters.AddWithValue("@docTypeId", docTypeId);
                 oCmd.Parameters.AddWithValue("@PONo", PoNo);
                 oCmd.Parameters.AddWithValue("@POYearCode", PoYearCode);
                 oCmd.Parameters.AddWithValue("@itemcode", ItemCode);
@@ -471,6 +474,8 @@ public class GateInwardDAL
             SqlParams.Add(new SqlParameter("@lastUpdatedBy", model.UpdatedBy));
             SqlParams.Add(new SqlParameter("@VPSaleBillEntryId", model.VPSaleBillEntryId));
             SqlParams.Add(new SqlParameter("@lastupdated", updDt == default ? string.Empty : updDt));
+            SqlParams.Add(new SqlParameter("@IPAddress", model.IPAddress));
+
 
             SqlParams.Add(new SqlParameter("@DTSSGrid", GIGrid));
             _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_GateMainDetail", SqlParams);

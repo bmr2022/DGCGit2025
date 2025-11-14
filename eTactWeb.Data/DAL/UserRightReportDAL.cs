@@ -141,6 +141,8 @@ namespace eTactWeb.Data.DAL
                         command.Parameters.AddWithValue("@EmployeeName", EmployeeName ?? string.Empty);
                         command.Parameters.AddWithValue("@FormName", FormName ?? string.Empty);
                         command.Parameters.AddWithValue("@ModuleName", ModuleName ?? string.Empty);
+                        command.Parameters.AddWithValue("@fromdate", fromDate ?? string.Empty);
+                        command.Parameters.AddWithValue("@todate", toDate ?? string.Empty);
                     }
                     else if(ReportType== "LogBook")
                     {
@@ -150,6 +152,8 @@ namespace eTactWeb.Data.DAL
                         command.Parameters.AddWithValue("@FormName", FormName ?? string.Empty);
                         command.Parameters.AddWithValue("@ModuleName", ModuleName ?? string.Empty);
                         command.Parameters.AddWithValue("@MachineName", MachineName ?? string.Empty);
+                        command.Parameters.AddWithValue("@fromdate", fromDate ?? string.Empty);
+                        command.Parameters.AddWithValue("@todate", toDate ?? string.Empty);
                     }
                     
 

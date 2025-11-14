@@ -677,7 +677,7 @@ namespace eTactWeb.Controllers
                         // return View("Error", Result);
                         return View(model);
                     }
-                    if (Result.StatusText == "TransDate" || Result.StatusCode == HttpStatusCode.InternalServerError)
+                    if (Result.StatusText == "SaveValidation" || Result.StatusCode == HttpStatusCode.InternalServerError)
                     {
                         ViewBag.isSuccess = false;
                         var input = "";
@@ -703,6 +703,17 @@ namespace eTactWeb.Controllers
                         _logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
                         //model.IsError = "true";
                         //return View("Error", Result);
+                        return Json(new
+                        {
+                            status = "Error",
+                            message = input,
+                            EntryId = model.SaleBillEntryId,
+                            InvoiceNo = model.SaleBillNo,
+                            YearCode = model.SaleBillYearCode,
+                            saleBillType = model.SupplyType,
+                            AccountCode = model.AccountCode
+
+                        });
                     }
 
                     HttpContext.Session.SetString("SaleInvoice", JsonConvert.SerializeObject(model));
@@ -901,9 +912,35 @@ namespace eTactWeb.Controllers
             model.AccountNameBack = AccountCodeBack;
             model.VoucherTypeBack = VoucherTypeBack;
             model.AccountList = AccountList;
+           
             return View(model);
         }
+        private async Task<SaleBillDashboard> BindModel(SaleBillDashboard model)
+        {
+            var oDataSet = new DataSet();
+            var _List = new List<TextValue>();
+            oDataSet = await _SaleBill.GetInvoiceType().ConfigureAwait(true);
 
+            if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+            {
+
+
+                foreach (DataRow row in oDataSet.Tables[0].Rows)
+                {
+                    _List.Add(new TextValue
+                    {
+                        Value = row["SubVoucherName"].ToString(),
+                        Text = row["SubVoucherName"].ToString()
+                    });
+                }
+                model.SubInvoicetypeList = _List;
+                _List = new List<TextValue>();
+
+            }
+
+
+            return model;
+        }
         [HttpGet]
         public async Task<IActionResult> SaleBillOnCounter(int ID, string Mode, int YearCode, string dashboardType = "", string fromDate = "", string toDate = "", string partCode = "", string itemName = "", string VoucherNo = "",int AccountCode=0, string custName = "", string sono = "", string custOrderNo = "", string schNo = "", string performaInvNo = "", string saleQuoteNo = "", string domExportNEPZ = "", string Searchbox = "", string summaryDetail = "")
         {
@@ -1094,6 +1131,7 @@ namespace eTactWeb.Controllers
                 model.SaleBillYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
                 model.SummaryDetail = "Summary";
                 model.SONO = "";
+                model = await BindModel(model).ConfigureAwait(false);
                 var Result = await _SaleBill.GetDashboardData(model.SummaryDetail, partCode, itemName, saleBillno, customerName, sono, custOrderNo, schNo, performaInvNo, saleQuoteNo, domensticExportNEPZ, SubInvoicetype, ParseFormattedDate(model.FinFromDate.Split(" ")[0]), common.CommonFunc.ParseFormattedDate(model.FinToDate.Split(" ")[0]), SaleBillEntryFrom).ConfigureAwait(true);
                 if (Result != null)
                 {
@@ -1140,6 +1178,12 @@ namespace eTactWeb.Controllers
             {
                 throw ex;
             }
+        }
+        public async Task<JsonResult> GetInvoiceTypeMain()
+        {
+            var JSON = await _SaleBill.GetInvoiceTypeMain();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
         }
         public async Task<IActionResult> GetSearchData(string summaryDetail, string partCode, string itemName, string saleBillno, string customerName, string sono, string custOrderNo, string schNo, string performaInvNo, string saleQuoteNo, string domensticExportNEPZ, string fromdate, string toDate, string SaleBillEntryFrom, string SubInvoicetype, int pageNumber = 1, int pageSize = 50, string SearchBox = "")
         {
@@ -2070,6 +2114,339 @@ namespace eTactWeb.Controllers
 
             string my_connection_string;
             string webRootPath = _IWebHostEnvironment.WebRootPath;
+
+            // Create a single master report
+            var masterReport = new WebReport();
+            masterReport.Report = new Report();
+
+            var ReportName = _SaleBill.GetReportName();
+            string reportPath = "";
+
+            if (!String.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
+            {
+                reportPath = webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0];
+                masterReport.Report.Load(reportPath);
+            }
+
+            string[] copyTypes = { "Original", "Duplicate", "Triplicate", "Office Copy" };
+            my_connection_string = _connectionStringService.GetConnectionString();
+
+            // Set connection for master report
+            masterReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+            masterReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
+            masterReport.Report.SetParameterValue("MyParameter", my_connection_string);
+            masterReport.Report.SetParameterValue("entryparam", EntryId);
+            masterReport.Report.SetParameterValue("yearparam", YearCode);
+
+            // Clear existing pages first
+            masterReport.Report.Pages.Clear();
+
+            int pageCounter = 0;
+
+            foreach (var copyType in copyTypes)
+            {
+                var tempReport = new Report();
+                if (!string.IsNullOrEmpty(reportPath))
+                {
+                    tempReport.Load(reportPath);
+                }
+
+                // Set parameters
+                tempReport.SetParameterValue("entryparam", EntryId);
+                tempReport.SetParameterValue("yearparam", YearCode);
+                tempReport.SetParameterValue("copyType", copyType);
+                tempReport.SetParameterValue("MyParameter", my_connection_string);
+
+                tempReport.Dictionary.Connections[0].ConnectionString = my_connection_string;
+                tempReport.Dictionary.Connections[0].ConnectionStringExpression = "";
+
+                // Prepare the temp report
+                tempReport.Prepare();
+                tempReport.Refresh();
+
+                // Add pages to master report
+                for (int i = 0; i < tempReport.Pages.Count; i++)
+                {
+                    PageBase page = tempReport.Pages[i];
+                    masterReport.Report.Pages.Add(page);
+                    pageCounter++;
+                }
+            }
+
+            // Now modify ALL text objects in the master report to show correct copy types
+            ApplyCopyTypesToMasterReport(masterReport.Report, copyTypes);
+
+            // Prepare the master report
+            try
+            {
+                masterReport.Report.Prepare();
+                masterReport.Report.Refresh();
+            }
+            catch (Exception ex)
+            {
+                // Handle error
+            }
+
+            List<WebReport> reports = new List<WebReport>();
+            reports.Add(masterReport);
+            return View(reports);
+        }
+
+        private void ApplyCopyTypesToMasterReport(Report masterReport, string[] copyTypes)
+        {
+            int pagesPerCopyType = masterReport.Pages.Count / copyTypes.Length;
+
+            for (int copyIndex = 0; copyIndex < copyTypes.Length; copyIndex++)
+            {
+                string currentCopyType = copyTypes[copyIndex];
+                int startPage = copyIndex * pagesPerCopyType;
+                int endPage = Math.Min(startPage + pagesPerCopyType, masterReport.Pages.Count);
+
+                for (int pageIndex = startPage; pageIndex < endPage; pageIndex++)
+                {
+                    if (pageIndex < masterReport.Pages.Count)
+                    {
+                        ModifyPageCopyType(masterReport.Pages[pageIndex], currentCopyType);
+                    }
+                }
+            }
+        }
+
+        private void ModifyPageCopyType(PageBase page, string copyType)
+        {
+            if (page is ReportPage reportPage)
+            {
+                foreach (Base obj in reportPage.AllObjects)
+                {
+                    if (obj is TextObject textObj)
+                    {
+                        // Check if this text object is displaying copy type
+                        // Look for parameter expressions or specific patterns
+                        string text = textObj.Text ?? "";
+
+                        // If it contains copyType parameter or common copy type texts
+                        if (text.Contains("[CopyType]") ||
+                            text.Contains("copyType") ||
+                            text.ToLower().Contains("original") ||
+                            text.ToLower().Contains("duplicate") ||
+                            text.ToLower().Contains("triplicate") ||
+                            text.ToLower().Contains("office copy"))
+                        {
+                            // Replace the entire text with the current copy type
+                            textObj.Text = copyType;
+                        }
+                    }
+                }
+            }
+        }
+        public IActionResult PrintReportprintingorginalinALL(int EntryId, int YearCode = 0, string Type = "", string InvoiceNo = "", int AccountCode = 0)
+        {
+            var ReportData = _SaleBill.GetReportData(EntryId, YearCode, Type, InvoiceNo, AccountCode);
+
+            string my_connection_string;
+            string webRootPath = _IWebHostEnvironment.WebRootPath;
+
+            // Create a single master report
+            var masterReport = new WebReport();
+            masterReport.Report = new Report();
+
+            var ReportName = _SaleBill.GetReportName();
+            string reportPath = "";
+
+            if (!String.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
+            {
+                reportPath = webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0];
+                masterReport.Report.Load(reportPath);
+            }
+
+            string[] copyTypes = { "Original", "Duplicate", "Triplicate", "Office Copy" };
+            my_connection_string = _connectionStringService.GetConnectionString();
+
+            // Set connection for master report
+            masterReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+            masterReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
+            masterReport.Report.SetParameterValue("MyParameter", my_connection_string);
+            masterReport.Report.SetParameterValue("entryparam", EntryId);
+            masterReport.Report.SetParameterValue("yearparam", YearCode);
+
+            // Clear existing pages first
+            masterReport.Report.Pages.Clear();
+
+            foreach (var copyType in copyTypes)
+            {
+                var tempReport = new Report();
+                if (!string.IsNullOrEmpty(reportPath))
+                {
+                    tempReport.Load(reportPath);
+                }
+
+                // Set parameters
+                tempReport.SetParameterValue("entryparam", EntryId);
+                tempReport.SetParameterValue("yearparam", YearCode);
+                tempReport.SetParameterValue("copyType", copyType);
+                tempReport.SetParameterValue("MyParameter", my_connection_string);
+
+                tempReport.Dictionary.Connections[0].ConnectionString = my_connection_string;
+                tempReport.Dictionary.Connections[0].ConnectionStringExpression = "";
+
+                // Prepare the temp report
+                tempReport.Prepare();
+                tempReport.Refresh();
+
+                // Add pages to master report
+                for (int i = 0; i < tempReport.Pages.Count; i++)
+                {
+                    PageBase page = tempReport.Pages[i];
+                    masterReport.Report.Pages.Add(page);
+                }
+            }
+
+            // Set default copyType for master report
+            masterReport.Report.SetParameterValue("copyType", "Original");
+
+            // Prepare the master report (this should work now)
+            try
+            {
+                masterReport.Report.Prepare();
+                masterReport.Report.Refresh();
+            }
+            catch (Exception ex)
+            {
+                // If there's still an error, use the separate reports approach
+               // return Solution1Approach(EntryId, YearCode, Type, InvoiceNo, AccountCode);
+            }
+
+            List<WebReport> reports = new List<WebReport>();
+            reports.Add(masterReport);
+            return View(reports);
+        }
+        public IActionResult PrintReportSEPARATEPRINTWORKING(int EntryId, int YearCode = 0, string Type = "", string InvoiceNo = "", int AccountCode = 0)
+        {
+            string my_connection_string = _connectionStringService.GetConnectionString();
+            string webRootPath = _IWebHostEnvironment.WebRootPath;
+
+            List<WebReport> reports = new List<WebReport>();
+            string[] copyTypes = { "Original", "Duplicate", "Triplicate", "Office Copy" };
+
+            var ReportName = _SaleBill.GetReportName();
+
+            if (String.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
+            {
+                // Handle error - no report template found
+                return View(reports);
+            }
+
+            string reportPath = webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0];
+
+            foreach (var copyType in copyTypes)
+            {
+                var webReport = new WebReport();
+                webReport.Report.Load(reportPath);
+
+                // Set all parameters
+                webReport.Report.SetParameterValue("entryparam", EntryId);
+                webReport.Report.SetParameterValue("yearparam", YearCode);
+                webReport.Report.SetParameterValue("copyType", copyType);
+                webReport.Report.SetParameterValue("MyParameter", my_connection_string);
+
+                webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+                webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
+
+                reports.Add(webReport);
+            }
+
+            return View(reports);
+        }
+
+        public IActionResult PrintReportWORKING(int EntryId, int YearCode = 0, string Type = "", string InvoiceNo = "", int AccountCode = 0)
+        {
+            var ReportData = _SaleBill.GetReportData(EntryId, YearCode, Type, InvoiceNo, AccountCode);
+
+            string my_connection_string;
+            string webRootPath = _IWebHostEnvironment.WebRootPath;
+
+            // Create a single master report
+            var masterReport = new WebReport();
+            masterReport.Report = new Report();
+
+            var ReportName = _SaleBill.GetReportName();
+            if (!String.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
+            {
+                masterReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0]);
+            }
+
+            string[] copyTypes = { "Duplicate", "Triplicate", "Office Copy" };
+            my_connection_string = _connectionStringService.GetConnectionString();
+
+            foreach (var copyType in copyTypes)
+            {
+                var tempReport = new Report();
+                if (!String.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
+                {
+                    tempReport.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0]);
+                }
+
+                tempReport.SetParameterValue("entryparam", EntryId);
+                tempReport.SetParameterValue("yearparam", YearCode);
+                tempReport.SetParameterValue("copyType", copyType);
+
+                tempReport.Dictionary.Connections[0].ConnectionString = my_connection_string;
+                tempReport.Dictionary.Connections[0].ConnectionStringExpression = "";
+                tempReport.SetParameterValue("MyParameter", my_connection_string);
+
+                tempReport.Prepare();
+
+                foreach (var dataSource in tempReport.Dictionary.DataSources)
+                {
+                    if (dataSource is TableDataSource tableDataSource)
+                    {
+                        tableDataSource.Enabled = true;
+                        tableDataSource.Init();
+                    }
+                }
+                tempReport.Refresh();
+
+                //Use index-based loop to avoid modification during enumeration
+                for (int i = 0; i < tempReport.Pages.Count; i++)
+                {
+                    PageBase page = tempReport.Pages[i]; // Use PageBase instead of ReportPage
+                    masterReport.Report.Pages.Add(page);
+                }
+
+
+            }
+
+            // Set connection for master report
+            masterReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+            masterReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
+            masterReport.Report.SetParameterValue("MyParameter", my_connection_string);
+           masterReport.Report.SetParameterValue("CopyType","Original");
+       
+
+            // Prepare the master report
+            masterReport.Report.Prepare();
+            foreach (var dataSource in masterReport.Report.Dictionary.DataSources)
+            {
+                if (dataSource is TableDataSource tableDataSource)
+                {
+                    tableDataSource.Enabled = true;
+                    tableDataSource.Init();
+                }
+            }
+            masterReport.Report.Refresh();
+
+            List<WebReport> reports = new List<WebReport>();
+            reports.Add(masterReport);
+            return View(reports);
+
+        }
+
+        public IActionResult PrintReportSeparatePrint(int EntryId, int YearCode = 0, string Type = "", string InvoiceNo = "", int AccountCode = 0)
+        {
+            var ReportData = _SaleBill.GetReportData(EntryId, YearCode, Type, InvoiceNo, AccountCode);
+
+            string my_connection_string;
+            string webRootPath = _IWebHostEnvironment.WebRootPath;
             List<WebReport> reports = new List<WebReport>();
             string[] copyTypes = { "Original", "Duplicate", "Triplicate", "Office Copy" };
             foreach (var copyType in copyTypes)
@@ -2079,15 +2456,15 @@ namespace eTactWeb.Controllers
                 var ReportName = _SaleBill.GetReportName();
                 webReport.Report.Dispose();
                 webReport.Report = new Report();
-                //if (!String.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
-                //{
-                //    webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0]); // from database
-                //}
-                //else
-                //{
-
-                //}
-                webReport.Report.Load(webRootPath + "\\SaleEstimate.frx"); // default report
+                if (!String.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
+                {
+                    webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0]); // from database
+                }
+                else
+                {
+                    webReport.Report.Load(webRootPath + "\\SaleBill.frx");
+                }
+                //  // default report
                 webReport.Report.SetParameterValue("entryparam", EntryId);
                 webReport.Report.SetParameterValue("yearparam", YearCode);
                 my_connection_string = _connectionStringService.GetConnectionString();
@@ -2112,28 +2489,6 @@ namespace eTactWeb.Controllers
             }
             return View(reports);
 
-            //Additional CODE STARTS
-            // Create 4 copies with tags
-            //string[] tags = { "Original", "Duplicate", "Triplicate", "Office Copy" };
-            //var preparedPages = new List<ReportPage>();
-            //foreach (var tag in tags)
-            //{
-            //    // Set the tag value
-            //    webReport.Report.SetParameterValue("CopyTag", tag);
-            //    // Append pages for this copy
-            //    using (var tempReport = new Report())
-            //    {
-            //        tempReport.Load("path-to-your-report.frx");
-            //        tempReport.Prepare();
-            //        preparedPages.AddRange(tempReport.Pages);
-            //    }
-            //}
-            //// Combine all copies into one print job
-            //foreach (var page in preparedPages)
-            //{
-            //    webReport.Report.Pages.Add(page);
-            //}
-            ////Additional CODE END HERE
 
 
 

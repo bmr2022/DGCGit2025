@@ -90,9 +90,9 @@ public class DataLogicBLL : IDataLogic
     {
         return _DataLogicDAL.isDuplicate(ColumnValue, ColumnName, TableName);
     }
-    public async Task<ResponseResult> GetDbCrDataGrid(DataTable DbCrGridd, DataTable TaxDetailDT, DataTable TDSDetailDT, string FormName,int? docAccountCode, int? AccountCode, decimal? ItemNetAmount, decimal? NetTotal)
+    public async Task<ResponseResult> GetDbCrDataGrid(DataTable DbCrGridd, DataTable TaxDetailDT, DataTable TDSDetailDT, string FormName,int? docAccountCode, int? AccountCode, decimal? ItemNetAmount, decimal? NetTotal,int?  RoundOffAccountCode,decimal?  RoundOffAmount )
     {
-        return await _DataLogicDAL.GetDbCrDataGrid(DbCrGridd, TaxDetailDT, TDSDetailDT, FormName, docAccountCode, AccountCode, ItemNetAmount, NetTotal);
+        return await _DataLogicDAL.GetDbCrDataGrid(DbCrGridd, TaxDetailDT, TDSDetailDT, FormName, docAccountCode, AccountCode, ItemNetAmount, NetTotal, RoundOffAccountCode, RoundOffAmount);
     }
     public async Task<AdjustmentModel> GetPendVouchBillAgainstRefPopupByID(int AC, int? YC, int? PayRecEntryId, int? PayRecYearcode, string DRCR, string TransVouchType, string TransVouchDate, string Flag)
     {

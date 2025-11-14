@@ -517,7 +517,7 @@ public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string MrnNo
                 else
                 {
                     model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-
+                    model.IPAddress = HttpContext.Session.GetString("ClientIP");
                     model.CC = HttpContext.Session.GetString("Branch");
                     model.ItemDetailGrid = MaterialReceiptDetail;
                     model.BatchDetailGrid = BatchDetail;
@@ -1473,7 +1473,8 @@ public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string MrnNo
 
         public async Task<IActionResult> DeleteByID(int ID, int YC, string FromDate = "", string ToDate = "", string VendorName = "", string MrnNo = "", string GateNo = "", string PONo = "", string ItemName = "", string PartCode = "", string Type = "")
         {
-            var Result = await _IMaterialReceipt.DeleteByID(ID, YC);
+            string IPAddress = HttpContext.Session.GetString("ClientIP");
+            var Result = await _IMaterialReceipt.DeleteByID(ID, YC, IPAddress);
 
             if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
             {

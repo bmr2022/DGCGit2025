@@ -374,6 +374,12 @@
                                     </select>
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:100px;">
+                                    <label asp-for="EmpGrade" class="form-label" style="width:90px;">Emp Grade</label>
+                                    <select asp-for="EmpGrade" class="form-control">
+                                        <option value="">Select</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:100px;">
                                     <label asp-for="FixSalaryAmt" class="form-label">Fix SalaryAmt </label>
                                     <input asp-for="FixSalaryAmt" class="form-control" />
                                 </div>
@@ -503,17 +509,7 @@
                                     <label asp-for="JoiningDate" class="form-label">Joining Date</label>
                                     <input asp-for="JoiningDate" class="form-control" />
                                 </div>
-                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;color:red;">
-                                    <label asp-for="JobDepartment" class="form-label">JobDepartment*</label>
-                                    <input asp-for="JobDepartmentId" type="hidden" value="@Model.JobDepartmentId" />
-                                    <select asp-for="JobDepartment" class="form-control" style="width:150px;">
-                                        <option value="">-Select-</option>
-                                        @if (Model.Mode == "U" || Model.Mode == "V")
-                                        {
-                                            <option value="@Model.JobDepartmentId" selected>@Model.JobDepartment</option>
-                                        }
-                                    </select>
-                                </div>
+                               
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;color:red;">
                                     <label asp-for="JobDesignation" class="form-label">JobDesignation*</label>
                                     <input asp-for="JobDesignationId" type="hidden" value="@Model.JobDesignationId" />
@@ -544,24 +540,9 @@
                                         <option value="">Select</option>
                                     </select>
                                 </div>
-                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;color:red !important;">
-                                    <label asp-for="JObShift" class="form-label">JObShift*</label>
-                                    <input asp-for="JObShiftId" type="hidden" value="@Model.JObShiftId" />
-                                    <select asp-for="JObShift" class="form-control" style="width:150px;">
-                                        <option value="">-Select-</option>
-                                        @if (Model.Mode == "U" || Model.Mode == "V")
-                                        {
-                                            <option value="@Model.JObShiftId" selected>@Model.JObShift</option>
-                                        }
-                                    </select>
-                                </div>
+                               
                                 
-                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:100px;">
-                                    <label asp-for="EmpGrade" class="form-label" style="width:90px;">Emp Grade</label>
-                                    <select asp-for="EmpGrade" class="form-control">
-                                        <option value="">Select</option>
-                                    </select>
-                                </div>
+                                
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
                                     <label asp-for="JobProbationPeriod" class="form-label">JobProbationPeriod(Months)</label>
                                     <input asp-for="JobProbationPeriod" class="form-control" />
@@ -770,6 +751,35 @@
                                 <label asp-for="Salary" class="form-label">Salary</label>
                                 <input asp-for="Salary" class="form-control" />
                             </div>
+                            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                <label asp-for="Country" class="form-label">Country</label>
+                                <input asp-for="Country" class="form-control" />
+                            </div>
+                            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                <label asp-for="City" class="form-label">City</label>
+                                <input asp-for="City" class="form-control" />
+                            </div>
+                            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                <label asp-for="ContactPersonname" class="form-label">Contact Person name</label>
+                                <input asp-for="ContactPersonname" class="form-control" />
+                            </div>
+                            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                <label asp-for="ContactPersonNumber" class="form-label">Contact Person Number</label>
+                                <input asp-for="ContactPersonNumber" class="form-control" />
+                            </div>
+                            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                <label asp-for="HRPersonName" class="form-label">HR Person Name</label>
+                                <input asp-for="HRPersonName" class="form-control" />
+                            </div>
+                            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                <label asp-for="HRContactNo" class="form-label">HR Contact No</label>
+                                <input asp-for="HRContactNo" class="form-control" />
+                            </div>
+                            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                <label asp-for="ExeRemark" class="form-label">Remark</label>
+                                <input asp-for="ExeRemark" class="form-control" />
+                            </div>
+
                             <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="margin-top:33px;">
                                 <button type="button" class="btn btn-sm btn-outline-danger " id="GridButtonExperiance">
                                     <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
@@ -793,6 +803,13 @@
                                         <th>To</th>
                                         <th>Designation</th>
                                         <th>Salary</th>
+                                        <th>Country</th>
+                                        <th>City</th>
+                                        <th>Contact Person name</th>
+                                        <th>Contact Person Number</th>
+                                        <th>HR Person Name</th>
+                                        <th>HR Contact No</th>
+                                        <th>Remark</th>
 
                                     </tr>
                                 </thead>
@@ -1442,6 +1459,13 @@
                 CToDate: $('#CToDate').val(),
                 Desigation: $('#Desigation').val(),
                 Salary: $('#Salary').val(),
+                Country: $('#Country').val(),
+                City: $('#City').val(),
+                ContactPersonname: $('#ContactPersonname').val(),
+                ContactPersonNumber: $('#ContactPersonNumber').val(),
+                HRPersonName: $('#HRPersonName').val(),
+                HRContactNo: $('#HRContactNo').val(),
+                ExeRemark: $('#ExeRemark').val(),
             };
             console.log(SchData);
             $.ajax({
@@ -1486,6 +1510,13 @@
                         $('#CToDate').val(obj[0].CToDate);
                         $('#Desigation').val(obj[0].Desigation);
                         $('#Salary').val(obj[0].Salary);
+                        $('#Country').val(obj[0].Country);
+                        $('#City').val(obj[0].City);
+                        $('#ContactPersonname').val(obj[0].ContactPersonname);
+                        $('#ContactPersonNumber').val(obj[0].ContactPersonNumber);
+                        $('#HRPersonName').val(obj[0].HRPersonName);
+                        $('#HRContactNo').val(obj[0].HRContactNo);
+                        $('#ExeRemark').val(obj[0].ExeRemark);
 
                         var rowCount = $('#divStockGridExperiance tr').length;
                         for (var i = 1; i <= rowCount + 1; i++) {

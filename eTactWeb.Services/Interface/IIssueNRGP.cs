@@ -38,7 +38,7 @@ namespace eTactWeb.Services.Interface
         public Task<ResponseResult> FillChallanType(string RGPNRGP);
         public Task<ResponseResult> StockableItems(string Flag, int ItemCode);
         public Task<ResponseResult> GetDashboardData(INDashboard model);
-        public Task<ResponseResult> DeleteByID(int ID, int YC, string machineName, int actuaEntryBy);
+        public Task<ResponseResult> DeleteByID(int ID, int YC, string machineName, int actuaEntryBy,int AccountCode,string IPAddress);
         public Task<IssueNRGPModel> GetViewByID(int ID, int YC, string Mode);
         public Task<ResponseResult> CheckGateEntry(int ID, int YC);
         public Task<ResponseResult> SaveIssueNRGP(IssueNRGPModel model, DataTable INGrid, DataTable TaxDetailDT);

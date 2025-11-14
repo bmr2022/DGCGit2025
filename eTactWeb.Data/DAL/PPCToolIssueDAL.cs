@@ -208,14 +208,14 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
         // 6️⃣ FILL PROD PLAN SCHEDULE
-        public async Task<ResponseResult> FillProdPlanSchedule(string Flag, long ToolIssueEntryId, string ProdPlanNo, long ProdPlanYearCode, long PlanNoEntryId)
+        public async Task<ResponseResult> FillProdPlanSchedule(string Flag, long ToolEntryId, string ProdPlanNo, long ProdPlanYearCode, long PlanNoEntryId)
         {
             var _ResponseResult = new ResponseResult();
             try
             {
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", Flag));
-                SqlParams.Add(new SqlParameter("@ToolIssueEntryId", ToolIssueEntryId));
+                SqlParams.Add(new SqlParameter("@ToolIssueEntryId", ToolEntryId));
                 SqlParams.Add(new SqlParameter("@ProdPlanNo", ProdPlanNo));
                 SqlParams.Add(new SqlParameter("@ProdPlanYearCode", ProdPlanYearCode));
                 SqlParams.Add(new SqlParameter("@PlanNoEntryId", PlanNoEntryId));
@@ -230,6 +230,51 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
+
+        public async Task<ResponseResult> FillProdPlanScheduleYearCode(string Flag, long ToolEntryId, string ProdPlanNo, long ProdPlanYearCode, string ProdSchNo)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", Flag));
+                SqlParams.Add(new SqlParameter("@ToolEntryId", ToolEntryId));
+                SqlParams.Add(new SqlParameter("@ProdPlanNo", ProdPlanNo));
+                SqlParams.Add(new SqlParameter("@ProdPlanYearCode", ProdPlanYearCode));
+                SqlParams.Add(new SqlParameter("@ProdSchNo", ProdSchNo));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable(SP_NAME, SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+
+        public async Task<ResponseResult> FillProdPlanScheduleDetail(string Flag, long ToolEntryId, string ProdPlanNo, long ProdPlanYearCode, string ProdSchNo, long ProdSchYearCode)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", Flag));
+                SqlParams.Add(new SqlParameter("@ToolEntryId", ToolEntryId));
+                SqlParams.Add(new SqlParameter("@ProdPlanNo", ProdPlanNo));
+                SqlParams.Add(new SqlParameter("@ProdPlanYearCode", ProdPlanYearCode));
+                SqlParams.Add(new SqlParameter("@ProdSchNo", ProdSchNo));
+                SqlParams.Add(new SqlParameter("@ProdSchYearCode", ProdSchYearCode));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable(SP_NAME, SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
         // 7️⃣ FILL MACHINE LIST
         public async Task<ResponseResult> FillMachineList(string Flag)
         {
@@ -302,7 +347,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@ActualEntryBy", model.ActualEntryBy));
                 SqlParams.Add(new SqlParameter("@LastUpdatedBy", model.LastUpdatedBy));
                 SqlParams.Add(new SqlParameter("@LastUpdatedDate", lastUpdatedDate));
-                SqlParams.Add(new SqlParameter("@pendingStatus", model.PendingStatus ?? ""));
+                SqlParams.Add(new SqlParameter("@pendingStatus", model.pendingStatus ?? ""));
 
                 // Add TVP
                 var tvpParam = new SqlParameter("@dt", SqlDbType.Structured)

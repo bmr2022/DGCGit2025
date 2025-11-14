@@ -750,6 +750,7 @@ namespace eTactWeb.Controllers
                     model.ActualEnteredEMpBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                     model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                     model.Uid = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                    model.IPAddress = HttpContext.Session.GetString("ClientIP");
 
                     INGrid = GetDetailTable(NRGPDetail, "");
                     if (TaxGrid != null)
@@ -1311,11 +1312,12 @@ namespace eTactWeb.Controllers
             }
         }
 
-        public async Task<IActionResult> DeleteByID(int ID, int YC, string machineName, int actuaEntryBy, int ItemCode, string PartCode, string ItemName, string VendorName, string RGPNRGP, string ChallanNo, string ChallanType, string FromDate, string ToDate)
+        public async Task<IActionResult> DeleteByID(int ID, int YC, string machineName, int actuaEntryBy, int ItemCode, string PartCode, string ItemName, string VendorName, string RGPNRGP, string ChallanNo, string ChallanType, string FromDate, string ToDate,int AccountCode)
         {
             actuaEntryBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            string IPAddress = HttpContext.Session.GetString("ClientIP");
 
-            var Result = await _IIssueNRGP.DeleteByID(ID, YC, machineName, actuaEntryBy).ConfigureAwait(false);
+            var Result = await _IIssueNRGP.DeleteByID(ID, YC, machineName, actuaEntryBy,AccountCode,IPAddress).ConfigureAwait(false);
 
             if (Result.StatusText == "Deleted" || Result.StatusCode == HttpStatusCode.Gone)
             {
@@ -1433,7 +1435,7 @@ namespace eTactWeb.Controllers
                 var _List = new List<TextValue>();
                 DataSet DS = Result.Result;
 
-                var DT = DS.Tables[0].DefaultView.ToTable(true, "VendorName", "ChallanNo",
+                var DT = DS.Tables[0].DefaultView.ToTable(true, "VendorName","AccountCode", "ChallanNo",
                     "ChallanDate", "EntryDate", "DeliveryAddress", "VendorStateCode",
                                 "Remarks", "Closed", "EntryId", "YearCode", "RGPNRGP",
                                  "ChallanType", "ActualEnteredEmp", "ActualEntryDate",
@@ -1485,7 +1487,7 @@ namespace eTactWeb.Controllers
                 var _List = new List<TextValue>();
                 DataSet DS = Result.Result;
 
-                var DT = DS.Tables[0].DefaultView.ToTable(true, "VendorName", "ChallanNo",
+                var DT = DS.Tables[0].DefaultView.ToTable(true, "VendorName", "ChallanNo","AccountCode",
                     "ChallanDate", "EntryDate", "DeliveryAddress", "VendorStateCode",
                                 "Remarks", "Closed", "EntryId", "YearCode", "RGPNRGP",
                                  "ChallanType", "ActualEnteredEmp", "ActualEntryDate",
@@ -1529,7 +1531,7 @@ namespace eTactWeb.Controllers
             }
             else
             {
-                DT = DS.Tables[0].DefaultView.ToTable(true, "VendorName", "ChallanNo",
+                DT = DS.Tables[0].DefaultView.ToTable(true, "VendorName", "ChallanNo","AccountCode",
                    "ChallanDate", "EntryDate", "DeliveryAddress", "VendorStateCode",
                                "Remarks", "Closed", "EntryId", "YearCode", "RGPNRGP",
                                 "ChallanType", "ActualEnteredEmp", "ActualEntryDate",

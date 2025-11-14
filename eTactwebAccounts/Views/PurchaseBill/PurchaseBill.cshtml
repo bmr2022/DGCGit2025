@@ -194,17 +194,32 @@
                                         <option value="">-Select-</option>
                                     </select>
                                 </div>
-                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+
+                                <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12" id="RoundOff">
+                                    <label asp-for="RoundOffAccountCode" class="form-label" style="color: red;">Account*</label>
+                                    <div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
+                                        <input asp-for="RDT" class="form-check-input" type="checkbox" role="switch" />Show All
+                                    </div>
+                                    <select asp-for="RoundOffAccountCode" class="form-control">
+                                        <option value="0">-Select-</option>
+                                    </select>
+                                    @if (Model.Mode == "U" || Model.Mode == "V")
+                                    {
+                                            <input type="hidden" asp-for="RoundOffAccountCode" id="hiddenRoundOffAccountCode" />
+                                    }
+                                </div>
+                               <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="display:none">
                                     <label asp-for="TotalDiscountPercentage" class="form-label">Discount %</label>
                                     <input asp-for="TotalDiscountPercentage" class="form-control" min="0" max="100" />
                                 </div>
-                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="display:none">
                                     <label asp-for="TotalAmtAftrDiscount" class="form-label">Amt Aftr Discount</label>
                                     <input asp-for="TotalAmtAftrDiscount" class="form-control" readonly />
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="TotalRoundOffAmt" class="form-label">(+/-) RoundOff Amount</label>
                                     <input asp-for="TotalRoundOffAmt" class="form-control" readonly />
+                                    <input id="TotalRoundOffAmt1" class="form-control" type="hidden" readonly />
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="NetTotal" class="form-label">Net Total</label>
@@ -581,9 +596,11 @@
             // $('#AccountCode').select2();
             GetFormRights();
             LockedFinancialYear();
-          
+              var dtValue = $('#RDT').prop("checked") == true ? "T" : "F";
+
+             FillRoundOffAccount(dtValue);
             FillTDSTaxType();
-                
+           $('#RoundOffAccountCode').select2();
             FillCurrency();
                      GetExchnageRate();
             GetGateNoFormRights();
@@ -834,6 +851,38 @@
                   GetExchnageRate()
                    toggleExchangeRate();
               });
+                 $('#RDT').change(function () {
+               var dtValue = $('#RDT').prop("checked") == true ? "T" : "F";
+               FillDocument(dtValue);
+           });
+
+              function FillRoundOffAccount(dt) {
+               var showAllDoc = dt;
+               $.ajax({
+                   type: "POST",
+                      url: "@Url.Action("FillRoundOffAccount")",
+                   data: { "ShowAllDoc": showAllDoc },
+                   dataType: "json",
+                   async: false,
+                   success: function (result, status, error) {
+                       if (result != null) {
+
+                           var obj = $.parseJSON(result);
+                           $('#RoundOffAccountCode').empty();
+                           // $('#RoundOffAccountCode').append('<option value="0">-Select-</option>');
+                           if (obj.StatusCode != 500) {
+                               $.each(obj.Result.Table, function (index, val) {
+                                   $('#RoundOffAccountCode').append("<option value=" + val.Account_Code + ">" + val.Account_Name + "</option>");
+                               });
+                           }
+                       }
+
+                       if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                                 $('#RoundOffAccountCode').val($('#hiddeRoundOffAccountCode').val()).trigger("change");
+                       }
+                   }
+               });
+           }
 
         function selectDocNamesForAllRows() {
             var rowCounter = $('#PBPendingItemDetail tr').length;

@@ -101,7 +101,7 @@ namespace eTactWeb.DOM.Models
         public string VendorName { get; set; }
         public string ChallanEntryFrom { get; set; }
 
-        
+        public int AccountCode { get; set; }
         public string ChallanDate { get; set; }
         public string ChallanNo { get; set; }
         public string RGPNRGP { get; set; }
@@ -164,9 +164,10 @@ namespace eTactWeb.DOM.Models
     public class INDashboard : IssueNRGPDashboard
     {
         public int ItemCode { get; set; }
+        public int AccountCode { get; set; }
         public string PartCode { get; set; }
         public string ItemName { get; set; }
-        public int AccountCode { get; set; }
+        
         public string FromDate { get; set; }
         public string ToDate { get; set; }
         public string FromDate1 { get; set; }
@@ -179,6 +180,7 @@ namespace eTactWeb.DOM.Models
         public int EntryId { get; set; }
         public int YearCode { get; set; }
         public string EntryDate { get; set; }
+        public string? IPAddress { get; set; }
         public string AllowToAddNegativeStockInStore { get; set; }
 
         public string AllowToChangeStore { get; set; }

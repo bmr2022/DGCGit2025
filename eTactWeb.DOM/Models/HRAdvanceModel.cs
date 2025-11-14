@@ -16,7 +16,9 @@ namespace eTactWeb.DOM.Models
         public string EmpName { get; set; }
         public string EmpCode { get; set; }
         public int DesigId { get; set; }
+        public string DesigName { get; set; }
         public int DepId { get; set; }
+        public string DeptName { get; set; }
         public string DOJ { get; set; }
         public decimal BasicSalary { get; set; }
         public decimal NetSalary { get; set; }

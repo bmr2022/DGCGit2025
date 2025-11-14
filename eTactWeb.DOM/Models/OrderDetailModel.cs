@@ -188,6 +188,9 @@ namespace eTactWeb.DOM.Models
         public string? Currency { get; set; }
 
         // === Miscellaneous Details ===
+        public decimal TotalBasicAmount { get; set; }
+        public decimal TotalNetAmont { get; set; }
+        public decimal TotalpendingAmt { get; set; }
         public string? CC { get; set; }
         public string? EID { get; set; }
         public string? FromDate { get; set; }
@@ -214,6 +217,11 @@ namespace eTactWeb.DOM.Models
         public IList<SaleOrderDashboard>? SODashboard { get; set; }
         public List<TextValue>? SONoList { get; set; }
         public IList<TextValue>? BranchList { get; set; }
+        public IList<TextValue>? EmployeeList { get; set; }
+        //===Pagination===
+        public int TotalRecords { get; set; }
+        public int PageNumber { get; set; } = 1;
+        public int PageSize { get; set; }
     }
 
     [Serializable()]
@@ -270,6 +278,9 @@ namespace eTactWeb.DOM.Models
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         //[Required]
         public int AmmNo { get; set; }
+        public decimal TotalBasicAmount { get; set; }
+        public decimal TotalNetAmont { get; set; }
+        public decimal TotalpendingAmt { get; set; }
         public string? TypeOfSave { get; set; }
 
         public string? Branch { get; set; }

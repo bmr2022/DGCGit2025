@@ -39,6 +39,7 @@ namespace eTactWeb.DOM.Models
         public string PODate { get; set; }
         public string POtype { get; set; }
         public string POclosedate { get; set; }
+        public string POCloseDate { get; set; }
         public string poAmmeffdate { get; set; }
         public string ordertype { get; set; }        
         public string POFOR { get; set; }
@@ -59,6 +60,7 @@ namespace eTactWeb.DOM.Models
         public string GateNo { get; set; }
         public int GateYearCode { get; set; }
         public int POEntryId { get; set; }
+        public int POYearCode { get; set; }
         public string GateDate { get; set; }
         public string BillQty { get; set; }
         public string RECQty { get; set; }

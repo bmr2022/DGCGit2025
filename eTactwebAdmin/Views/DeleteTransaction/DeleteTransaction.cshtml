@@ -1,0 +1,337 @@
+﻿@model eTactWeb.DOM.Models.DeleteTransactionModel
+
+
+@{
+    ViewData["Title"] = "Delete Transaction";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+
+
+<div class="card bg-gradient mb-3 border-light shadow-lg">
+    <form asp-action="DeleteTranscation" method="post" id="deleteTrtansaction" autocomplete="off" class="form-horizontal">
+
+        <div class="card-header card-headerBG text-light bg-gradient">
+            <h5>
+                <strong>Delete Transaction</strong>
+            </h5>
+        </div>
+        <div class="card-body bg-light pt-0">
+            <div class="accordion shadow-lg">
+                <div class="accordion-item" id="GI_Grid">
+                    <h2 class="accordion-header" id="H_RParameter">
+                        <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_RParameter" aria-expanded="true" aria-controls="B_RParameter">
+                            <i class="fa-brands fa-wpforms fa-lg fa-fw pr35"></i>
+                            Required Parameter
+                        </button>
+                    </h2>
+                    <div id="B_RParameter" class="accordion-collapse collapse show pnl1 bg-gradient" aria-labelledby="H_RParameter">
+                        <div class="accordion-body">
+                            <div class="row g-2 gx-3">
+
+                                <!-- Form Details -->
+                                <div class="col-lg-2">
+                                    <label asp-for="FormName" class="form-label">Form Name</label>
+                                    <select id="FormName" name="FormName" class="form-select">
+                                        <option value="">-- Select Form --</option>
+                                    </select>
+                                </div>
+                                <div class="col-lg-2">
+                                    <label asp-for="YearCode" class="form-label">Year Code</label>
+                                    <input asp-for="YearCode" id="YearCode" class="form-control-plaintext" readonly />
+                                </div>
+                                <div class="col-lg-2">
+                                    <label asp-for="SlipNo" class="form-label">Slip No</label>
+                                    <input type="text" id="SlipNo" name="SlipNo" class="form-control" />
+                                </div>
+
+                                <!-- Info Details -->
+                                <!-- Info Details -->
+                                <div class="col-12 mt-3">
+                                    <div class="row gx-2 gy-1 align-items-center">
+
+                                        <div class="col-lg-2">
+                                            <label class="form-label fw-bold">Account Name</label>
+                                            <input id="AccountName" name="AccountName" class="form-control-plaintext p-0" readonly />
+                                            <input type="hidden" id="AccountCode" name="AccountCode" />
+                                        </div>
+
+                                        <div class="col-lg-2">
+                                            <label class="form-label fw-bold">Entry Id</label>
+                                            <input  id="EntryId" name="EntryId" class="form-control-plaintext p-0" readonly />
+                                        </div>
+
+                                        <div class="col-lg-2">
+                                            <label class="form-label fw-bold">Basic Amount</label>
+                                            <input id="BasicAmount" name="BasicAmount" class="form-control-plaintext p-0" readonly />
+                                        </div>
+
+                                        <div class="col-lg-2">
+                                            <label class="form-label fw-bold">Net Amount</label>
+                                            <input id="NetAmount" name="NetAmount" class="form-control-plaintext p-0" readonly />
+                                        </div>
+
+                                        <div class="col-lg-2">
+                                            <label class="form-label fw-bold">Entry Date</label>
+                                            <input type="text" id="EntryDate" name="EntryDate" class="form-control-plaintext p-0" readonly />
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-2">
+                                    <label class="form-label fw-bold">New Slip No.</label>
+                                    <div class="input-group">
+                                        <span id="NewSlipPrefix" class="input-group-text d-none"></span> <!-- hidden by default -->
+                                        <input type="text" id="NewSlipNo" name="NewSlipNo" class="form-control w-auto" />
+                                    </div>
+                                </div>
+
+                                <!-- Buttons + Link + New Slip No -->
+                                <div class="col-12 mt-3 d-flex align-items-center gap-2">
+                                    <!-- Update button (frontend now, backend later) -->
+                                    <button type="button" id="btnUpdate" class="btn btn-primary" data-action="UPDATE">Update</button>
+
+                                    <!-- Delete button (submits form to backend) -->
+                                    <button type="submit" name="Action" value="DELETE" class="btn btn-danger">Delete</button>
+
+                                    <!-- Reset button (frontend) -->
+                                    <button type="button" id="btnReset" class="btn btn-secondary">Reset</button>
+
+                                    <!-- Update Existing Slip No (frontend now, backend later) -->
+                                    <button type="button" id="btnUpdateExisting" class="btn btn-link" data-action="UpdateExistingSlipNo">Update Existing Slip No</button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+    </form>
+</div>
+
+
+<script>
+
+        function FillFormName() {
+        $.ajax({
+            url: '/DeleteTransaction/GetFormName',
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                console.log("Formdata",data);
+                    const obj = typeof data === "string" ? JSON.parse(data) : data;
+                    const select = $('#FormName');
+                    select.empty();
+                    select.append('<option value="">-- Select Form --</option>');
+
+                    if (obj.Result && obj.Result.length > 0) {
+                        $.each(obj.Result, function (i, item) {
+                            select.append($('<option>', {
+                                value: item.MainTableName,
+                                text: item.FormName
+                            }));
+                        });
+                    }
+                    
+            },
+            error: function (err) {
+                console.error("❌ Error fetching form names:", err);
+            }
+        });
+    }
+      
+        function FillSlipNoAutoSuggest() {
+        const mainTableName = $('#FormName').val();
+        if (!mainTableName) {
+            $('#SlipNo').val('');
+            return;
+        }
+
+        $.ajax({
+            url: '/DeleteTransaction/GetSlipNoData',
+            type: 'GET',
+            data: { MainTableName: mainTableName },
+            dataType: 'json',
+            success: function (data) {
+                const obj = typeof data === "string" ? JSON.parse(data) : data;
+                const result = obj.Result || [];
+
+                if (result.length === 0) return;
+
+                const slipList = result.map(item => ({
+                    label: item.SlipNo,
+                    value: item.SlipNo,
+                    accountName: item.Account_Name, // match SP output
+                    accountCode: item.AccountCode,
+                    entryId: item.EntryId,
+                    basicAmount: item.BasicAmount,
+                    netAmount: item.NetAmount,
+                    entryDate: item.EntryDate
+                }));
+
+                $("#SlipNo").autocomplete({
+                    source: slipList,
+                    minLength: 1,
+                    select: function (event, ui) {
+                        $("#SlipNo").val(ui.item.value);
+                        FillSlipDetails(ui.item);
+                        return false;
+                    }
+                });
+            },
+            error: function (err) {
+                console.error("❌ Error fetching slip numbers:", err);
+            }
+        });
+    }
+
+    // Store full slip number when selecting a slip
+    let fullSlipNo = "";
+
+    function FillSlipDetails(item) {
+        $('#AccountName').val(item.accountName);
+        $('#AccountCode').val(item.accountCode);
+        $('#EntryId').val(item.entryId);
+        $('#BasicAmount').val(item.basicAmount);
+        $('#NetAmount').val(item.netAmount);
+
+        if (item.entryDate) {
+            const d = new Date(item.entryDate);
+            const formattedDate = ('0' + d.getDate()).slice(-2) + '/' +
+                                  ('0' + (d.getMonth() + 1)).slice(-2) + '/' +
+                                  d.getFullYear();
+            $('#EntryDate').val(formattedDate);
+        } else {
+            $('#EntryDate').val('');
+        }
+
+        // Save full slip number for prefix
+        fullSlipNo = item.value || item.SlipNo;
+
+        // Clear prefix initially
+        $('#NewSlipPrefix').addClass('d-none').text('');
+        $('#NewSlipNo').val('');
+    }
+
+    // Show prefix dynamically when user types
+    $('#NewSlipNo').on('input', function() {
+        const val = $(this).val();
+
+        if (val.length === 0) {
+            $('#NewSlipPrefix').addClass('d-none').text('');
+            return;
+        }
+
+        if (fullSlipNo) {
+            const lastSlashIndex = fullSlipNo.lastIndexOf('/');
+            const prefix = lastSlashIndex !== -1 ? fullSlipNo.substring(0, lastSlashIndex + 1) : '';
+            $('#NewSlipPrefix').removeClass('d-none').text(prefix);
+        }
+    });
+
+        // Reset form fields
+    $('#btnReset').click(function() {
+        $('#deleteTrtansaction')[0].reset();
+            $('#AccountName, #AccountCode, #EntryId, #BasicAmount, #NetAmount, #EntryDate, #NewSlipNo,#NewSlipPrefix').val('');
+    });
+
+
+    $('#btnUpdateExisting').click(function() {
+        let prefix = $('#NewSlipPrefix').text();
+        let suffix = $('#NewSlipNo').val();
+        let newSlipNo = prefix + suffix;
+    // Collect frontend form fields only
+        var formData = {
+        FormName: $('#FormName').val(),
+        SlipNo: $('#SlipNo').val(),
+        newSlipNo: newSlipNo,
+        AccountCode: $('#AccountCode').val(),
+        EntryId: $('#EntryId').val(),
+        BasicAmount: $('#BasicAmount').val(),
+        NetAmount: $('#NetAmount').val(),
+        EntryDate: $('#EntryDate').val()
+    };
+
+    // Validate required fields
+    if (!formData.SlipNo || !suffix || !formData.FormName) {
+        $.notify("Please select Form and enter Slip No & New Slip No.", { className: 'error', globalPosition: 'top center' });
+        return;
+    }
+
+    // Call backend
+    $.ajax({
+        url: '/DeleteTransaction/UpdateExistingSlipNo',
+        type: 'POST',
+        data: formData,
+        success: function (res) {
+            if(res.success){
+                $.notify(res.message, { className: 'success', globalPosition: 'top center' });
+            } else {
+                $.notify(res.message, { className: 'error', globalPosition: 'top center' });
+            }
+        },
+        error: function () {
+            $.notify("Something went wrong.", { className: 'error', globalPosition: 'top center' });
+        }
+    });
+});
+
+
+        $(document).ready(function () {
+        // Load Form list initially
+        FillFormName();
+
+        // On FormName change → load slipnos
+        $('#FormName').on('change', function () {
+            FillSlipNoAutoSuggest();
+        });
+
+         const successMsg = '@TempData["SuccessMessage"]';
+            const errorMsg = '@TempData["ErrorMessage"]';
+
+            if (successMsg) {
+                $.notify(successMsg, {
+                    className: 'success',
+                    globalPosition: 'top center',
+                    autoHideDelay: 2000
+                });
+
+              
+                setTimeout(() => location.reload(), 2200);
+            }
+
+            if (errorMsg) {
+                $.notify(errorMsg, {
+                    className: 'error',
+                    globalPosition: 'top center',
+                    autoHideDelay: 4000
+                });
+            }
+    });
+
+</script>
+<style>
+    /* Make readonly inputs look like plain info */
+    input.form-control-plaintext {
+        border: none !important;
+        box-shadow: none !important;
+        background-color: transparent;
+    }
+
+        /* Prevent red border or shadow on focus */
+        input.form-control-plaintext:focus {
+            border: none !important;
+            box-shadow: none !important;
+            background-color: transparent;
+        }
+
+    /* Optional: make all readonly inputs text look consistent */
+    input.form-control-plaintext {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+</style>
+
+

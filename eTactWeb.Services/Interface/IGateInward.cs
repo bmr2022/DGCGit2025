@@ -21,7 +21,7 @@ public interface IGateInward
     Task<ResponseResult> SaveGateInward(GateInwardModel model, DataTable GIGrid);
     Task<GateInwardModel> GetEwayBillDataforPo(GateInwardModel model, DataTable GIGrid);
 
-    Task<ResponseResult> DeleteByID(int ID, int YC,int ActualEnteredBy,string EntryByMachineName,string gateno);
+    Task<ResponseResult> DeleteByID(int ID, int YC,int ActualEnteredBy,string EntryByMachineName,string gateno,string IPAddress);
     Task<ResponseResult> FillEntryandGate(string Flag, int YearCode, string SPName);
     Task<ResponseResult> CheckEditOrDelete(string GateNo, int YearCode);
     Task<ResponseResult> FillPendQty(int ItemCode, int PartyCode, string PONO, int POYear, int Year, string SchNo, int SchYearCode, int ProcessId, int EntryId, int YearCode);
@@ -30,7 +30,7 @@ public interface IGateInward
       Task<ResponseResult> GetFeatureOption();
 
     Task<GateInwardDashboard> GetDashboardData(string VendorName, string Gateno, string ItemName, string PartCode,string DocName, string PONO, string ScheduleNo, string FromDate, string ToDate,string DashboardType);
-    Task<PendingGateInwardDashboard> GetPendingGateEntryDashboardData(int AccountCode, string PoNo, int PoYearCode, int ItemCode,
+    Task<PendingGateInwardDashboard> GetPendingGateEntryDashboardData(int AccountCode,int docTypeId, string PoNo, int PoYearCode, int ItemCode,
     string FromDate, string ToDatePartCode,string PartCode, string ItemName,string GetDataFrom,string Invoiceno);
 
 

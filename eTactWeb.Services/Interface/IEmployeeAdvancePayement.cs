@@ -12,6 +12,8 @@ namespace eTactWeb.Services.Interface
     {
         Task<ResponseResult> FillEntryId(int yearCode);
         Task<ResponseResult> FillEmpName();
+        Task<ResponseResult> FillFinancialEmployeeNameList();
+        Task<ResponseResult> FillMgmtEmployeeNameList();
         Task<ResponseResult> FillEmpCode();
         Task<ResponseResult> FillEmployeeDetail(int empId);
         Task<ResponseResult> SaveEmployeeAdvancePayment(HRAdvanceModel model);

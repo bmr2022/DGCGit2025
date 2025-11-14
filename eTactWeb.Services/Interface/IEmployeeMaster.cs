@@ -12,7 +12,7 @@ namespace eTactWeb.Services.Interface
         Task<EmployeeMasterModel> GetDashboardData(EmployeeMasterModel model);
         Task<EmployeeMasterModel> GetSearchData(EmployeeMasterModel model, string EmpCode, string ReportType);
 
-        Task<ResponseResult> SaveEmployeeMaster(EmployeeMasterModel model);
+        Task<ResponseResult> SaveEmployeeMaster(EmployeeMasterModel model, DataTable DtAllDed,DataTable DtEdu,DataTable dtexp,DataTable dtNjob);
         Task<ResponseResult> GetFormRights(int uId);
         Task<ResponseResult> GetEmpIdandEmpCode(string designation, string department);
         Task<ResponseResult> GetSalaryHead();

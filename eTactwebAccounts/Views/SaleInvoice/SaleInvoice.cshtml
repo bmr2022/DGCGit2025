@@ -1748,7 +1748,7 @@
         //     });
         // }
 
-
+        
         function AddMultipleItems() {
             $('#SaleOrderGroupWiseItem').modal('show');
             $('#MultiItemBody').empty();
@@ -1762,7 +1762,6 @@
 
 
         function ShowGroupWiseItems() {
-            var groupname = '';
             if ($('#Group_Code1 option:selected').text().trim() == '-Select-')
                 groupname = '';
             else
@@ -6581,7 +6580,7 @@
             if (parseFloat($('#Qty').val()) > MinQtyVal) {
                 AddErrorCls('Qty');
                 Err = 1;
-                $.notify("Qty should more then " + LowestStock + "  ...!", "error");
+                $.notify("Qty should not be more than " + LowestStock + "  ...!", "error");
                 return false;
             }
             else {

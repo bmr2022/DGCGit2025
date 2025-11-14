@@ -12,6 +12,7 @@ namespace eTactWeb.DOM.Models
     {
         public int SaleRejEntryId { get; set; }
         public int SaleRejYearCode { get; set; }
+       public string ? AgainstVoucherNo { get; set; }
         public string SaleRejEntryDate { get; set; }
         public string GateNo { get; set; }
         public int Gateyearcode { get; set; }

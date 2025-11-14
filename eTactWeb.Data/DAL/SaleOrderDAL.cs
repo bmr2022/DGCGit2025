@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.Common;
+﻿using DocumentFormat.OpenXml.EMMA;
+using eTactWeb.Data.Common;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
@@ -345,6 +346,42 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "CheckAllowMultiBuyerSO"));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_SaleOrder", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> GetTotalBYSp(SaleOrderDashboard model)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var StartDate = CommonFunc.ParseFormattedDate(model.FromDate);
+                var EndDate = CommonFunc.ParseFormattedDate(model.ToDate);
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetTotalAmount"));
+                SqlParams.Add(new SqlParameter("@CustomerName", model.CustomerName));
+                SqlParams.Add(new SqlParameter("@CustOrderNo", model.CustOrderNo));
+                SqlParams.Add(new SqlParameter("@Branch", model.CC));
+                SqlParams.Add(new SqlParameter("@SONo", model.SONo));
+                SqlParams.Add(new SqlParameter("@OrderType", model.OrderType));
+                SqlParams.Add(new SqlParameter("@SOType", model.SOType));
+              
+                SqlParams.Add(new SqlParameter("@SOComplete", model.SOComplete));
+                SqlParams.Add(new SqlParameter("@StartDate", StartDate));
+                SqlParams.Add(new SqlParameter("@EndDate", EndDate));
+
+              
+
+               
+                 
+                   
+                    _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_SaleOrder", SqlParams);
             }
             catch (Exception ex)
             {
@@ -1428,7 +1465,7 @@ namespace eTactWeb.Data.DAL
                                 "AmmNo","AmmEffDate","Address","DeliveryAddress","ConsigneeAccountCode","OrderAmt","OrderNetAmt", "FreightPaidBy", "InsuApplicable", "ModeTransport","DeliverySch",
                                 "PackingChgApplicable", "DeliveryTerms", "SOComplete", "PreparedBy", "TotalDiscount", "SODeliveryDate", "TotalDisPercent", "TotalDiscAmt", "DespatchAdviseComplete", "PortToLoading", "PortOfDischarge",
                                 "ResponsibleSalesPersonID","CustContactPerson","SaleDocType","OtherDetail","SOConfirmDate","OrderDelayReason","Approved","ApprovedDate","ApprovedBy", "UID","UpdatedOn","UpdatedBy", "CreatedOn","RoundOff",
-                                "EntryByMachineName", "SalesPersonEmailId", "eMailFromCC1", "eMailFromCC2", "eMailFromCC3", "pendingAmt", "CreatedByName");
+                                "EntryByMachineName", "SalesPersonEmailId", "eMailFromCC1", "eMailFromCC2", "eMailFromCC3", "pendingAmt");
                         oDT.TableName = "SODASHBOARD";
 
                         Result.SODashboard = CommonFunc.DataTableToList<SaleOrderDashboard>(oDT);
@@ -1520,7 +1557,7 @@ namespace eTactWeb.Data.DAL
 
                             oCmd.Parameters.AddWithValue("@Flag", "dashboard");
                         else
-                            oCmd.Parameters.AddWithValue("@Flag", "SEARCH");
+                            oCmd.Parameters.AddWithValue("@Flag", "DETAILDASHBOARD");
                         oCmd.Parameters.AddWithValue("@CustomerName", model.CustomerName);
                         oCmd.Parameters.AddWithValue("@CustOrderNo", model.CustOrderNo);
                         oCmd.Parameters.AddWithValue("@Branch", model.CC);
@@ -1530,6 +1567,7 @@ namespace eTactWeb.Data.DAL
                         oCmd.Parameters.AddWithValue("@ItemName", model.ItemName);
                         oCmd.Parameters.AddWithValue("@PartCode", model.PartCode);
                         oCmd.Parameters.AddWithValue("@SOComplete", model.SOComplete);
+                        oCmd.Parameters.AddWithValue("@empName", model.CreatedByName);
                         //SqlParams.Add(new SqlParameter("@EntryDate", DateTime.ParseExact(model.EntryDate.ToString(), "dd-mm-yyyy", CultureInfo.InvariantCulture)));
 
                         oCmd.Parameters.AddWithValue("@StartDate", StartDate);

@@ -22,7 +22,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> SaveMaterialReceipt(MaterialReceiptModel model, DataTable MRGrid, DataTable BatchGrid);
 
         Task<ResponseResult> AltUnitConversion(int ItemCode, decimal AltQty, decimal UnitQty);
-        Task<ResponseResult> DeleteByID(int ID, int YC);
+        Task<ResponseResult> DeleteByID(int ID, int YC,string IPAddress);
         Task<ResponseResult> FillEntryandMRN(string Flag,int YearCode, string SPName);
         Task<IList<TextValue>> GetEmployeeList();
 

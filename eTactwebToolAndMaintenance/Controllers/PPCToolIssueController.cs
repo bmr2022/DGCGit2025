@@ -219,11 +219,11 @@ namespace eTactweb.Controllers
         }
 
         [HttpGet]
-        public async Task<JsonResult> FillProdPlanSchedule(long ToolIssueEntryId, string ProdPlanNo, long ProdPlanYearCode, long PlanNoEntryId)
+        public async Task<JsonResult> FillProdPlanSchedule(long ToolEntryId, string ProdPlanNo, long ProdPlanYearCode, long PlanNoEntryId)
         {
             try
             {
-                var result = await _IPPCToolIssue.FillProdPlanSchedule("FillProdPlanSchedule", ToolIssueEntryId, ProdPlanNo, ProdPlanYearCode, PlanNoEntryId);
+                var result = await _IPPCToolIssue.FillProdPlanSchedule("FillProdPlanSchedule", ToolEntryId, ProdPlanNo, ProdPlanYearCode, PlanNoEntryId);
                 string jsonString = JsonConvert.SerializeObject(result);
 
                 return Json(jsonString); // return as string
@@ -235,6 +235,39 @@ namespace eTactweb.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<JsonResult> FillProdPlanScheduleYearCode(long ToolEntryId, string ProdPlanNo, long ProdPlanYearCode, string ProdSchNo)
+        {
+            try
+            {
+                var result = await _IPPCToolIssue.FillProdPlanScheduleYearCode("FillProdPlanScheduleYearCode", ToolEntryId, ProdPlanNo, ProdPlanYearCode, ProdSchNo);
+                string jsonString = JsonConvert.SerializeObject(result);
+
+                return Json(jsonString); // return as string
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while filling production plan schedule Yearcode.");
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> FillProdPlanScheduleDetail(long ToolEntryId, string ProdPlanNo, long ProdPlanYearCode, string ProdSchNo, long ProdSchYearCode)
+        {
+            try
+            {
+                var result = await _IPPCToolIssue.FillProdPlanScheduleDetail("FillProdPlanScheduleDetail", ToolEntryId, ProdPlanNo, ProdPlanYearCode, ProdSchNo,ProdSchYearCode);
+                string jsonString = JsonConvert.SerializeObject(result);
+
+                return Json(jsonString); // return as string
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while filling production plan schedule Detail.");
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
         [HttpGet]
         public async Task<JsonResult> FillMachineList()
         {
@@ -308,16 +341,15 @@ namespace eTactweb.Controllers
                 var result = await _IPPCToolIssue.InsertToolIssue(model, dtTool);
 
                 // 6️⃣ Handle response
-                if (result != null && result.StatusText == "Success" && result.StatusCode == HttpStatusCode.OK)
+                if (result != null && string.IsNullOrWhiteSpace(result.Message))
                 {
                     TempData["200"] = "Data Saved Successfully!";
                     HttpContext.Session.Remove("KeyToolIssueGrid");
                 }
                 else
                 {
-                    TempData["500"] = "Error while saving data!";
+                    TempData["500"] = result?.Message ?? "Error while saving data!";
                 }
-
                 return RedirectToAction("PPCToolIssue");
             }
             catch (Exception ex)
@@ -395,8 +427,8 @@ namespace eTactweb.Controllers
                     item.ForMachineId ?? 0,
                     string.IsNullOrWhiteSpace(item.SpecialInstruction) ? "" : item.SpecialInstruction,
                     string.IsNullOrWhiteSpace(item.WillBeConsumedOrReturned) ? "" : item.WillBeConsumedOrReturned,
-                    item.PendingStatus ?? (object)DBNull.Value,
-                    item.PendingQty.HasValue ? (object)item.PendingQty.Value : DBNull.Value
+                    item.PendingStatus ?? "Pen",
+                    item.PendingQty.HasValue ? item.PendingQty.Value : 0
 
                 );
             }

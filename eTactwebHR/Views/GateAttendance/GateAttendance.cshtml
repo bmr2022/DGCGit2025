@@ -171,12 +171,12 @@
                                         UPDATE
                                     </button>
                                 </div>
-                                <span class="d-flex float-end" style="margin-top:-2px;">
+                                <div class="col-auto">
                                     <a asp-action="GateAttendance" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient" id="savebtn">
                                         <i class="fa fa-plus-circle fafw fa-lg" aria-hidden="true"></i>
                                         Add New
                                     </a>
-                                </span>
+                                </div>
                             }
                             else
                             {
@@ -202,7 +202,6 @@
             $('#EntryByMachineName').val($('#machineName').text());
             $('.DH').fadeOut();
             if ('@Model.Mode' != '' && parseInt('@Model.ID') != 0) {
-
             }
             else {
                 window.setInterval(function () {
@@ -250,7 +249,7 @@
             var today = new Date(); today.setHours(0,0,0,0);
             var defaultDate = (today < minDate) ? minDate : (today > maxDate ? maxDate : today);
             fillEntryId();
-            if ($('#Mode').val() == "U" || $('#Mode').val() == "V" || $('#IsIncreamented').val() == "true") {
+            if ($('#Mode').val() == "U" || $('#Mode').val() == "V" || $('#IsIncreamented').val().toLowerCase() == "true") {
                 //var strEmpAttDate = $('#strEmpAttDate').val().split("-").join("/");
                 //strEmpAttDate = parseDateToFormat(strEmpAttDate.split(" ")[0]);
                 var strEmpAttDate = $('#strEmpAttDate').val();
@@ -263,7 +262,7 @@
             EmpAttDateOnChange();
             $('#EmployeeCode').select2();
             updateItemCount();
-            if($('#IsIncreamented').val() == 'true') {
+            if($('#IsIncreamented').val().toLowerCase() == 'true') {
                 ShowManualAttandance();
             }
         });
@@ -506,7 +505,7 @@
                     $.notify("Please fill the missing attendance entries or unselect them before saving.", "error");
                     IsErr = 1;
                 }
-                if (!model.GateAttDetailsList || model.GateAttDetailsList.length === 0) {
+                else if (!model.GateAttDetailsList || model.GateAttDetailsList.length === 0) {
                     $.notify("Please select at least one employee before submitting.", "error");
                     IsErr = 1;
                 }
@@ -618,7 +617,7 @@
                 if (obj && obj.toLowerCase() === "daily") {
                     $('.dvEmpAttDate').show();
                     $('.dvGateAttEntryDay').show();
-                    if($('#Mode').val() != 'V' && $('#Mode').val() != 'U' && $('#IsIncreamented').val() == 'false') {
+                    if($('#Mode').val() != 'V' && $('#Mode').val() != 'U' && $('#IsIncreamented').val().toLowerCase() == 'false') {
                         $('#strEmpAttDate').select(0);
                     }
                     $('.dvEmpAttMonth').hide();
@@ -628,7 +627,7 @@
                 else if (obj && obj.toLowerCase() === "monthly") {
                     $('.dvEmpAttMonth').show();
                     $('.dvEmpAttDate').hide();
-                    if($('#Mode').val() != 'V' && $('#Mode').val() != 'U' && $('#IsIncreamented').val() == 'false') {
+                    if($('#Mode').val() != 'V' && $('#Mode').val() != 'U' && $('#IsIncreamented').val().toLowerCase() == 'false') {
                         $('#strEmpAttMonth').val('');
                     }
                     else {
@@ -646,7 +645,7 @@
                 else {
                     $('.dvEmpAttDate').show();
                     $('.dvGateAttEntryDay').show();
-                    if($('#Mode').val() != 'V' && $('#Mode').val() != 'U' && $('#IsIncreamented').val() == 'false') {
+                    if($('#Mode').val() != 'V' && $('#Mode').val() != 'U' && $('#IsIncreamented').val().toLowerCase() == 'false') {
                         $('#strEmpAttDate').select(0);
                     }
                     $('.dvEmpAttMonth').hide();
@@ -700,6 +699,18 @@
                                 $("#attendanceItemGrid").html(result);
                                 updateItemCount();
                                 //$("#lblItemCount").text($("#rowitemcount").val());
+                                if(DayOrMonthType.toLowerCase() == "daily")
+                                {
+                                    if ($('#isholiday').val().toLowerCase() == "true" || $('#isweekoff').val().toLowerCase() == "true") {
+                                        let message = $('#isholiday').val().toLowerCase() == "true"
+                                            ? "This day is a Holiday. Do you still want to edit attendance?"
+                                            : "This day is a Week-Off. Do you still want to edit attendance?";
+
+                                        if (!confirm(message)) {
+                                                    $("#attendanceItemGridbody").html("<input id='rowitemcount' type='hidden' value='0' /><tr><td colspan='8' class='text-center'>No records found.</td></tr>");
+                                        }
+                                    }
+                                }
                         },
                         error: function () {
                             console.log("Error loading attendance grid.");

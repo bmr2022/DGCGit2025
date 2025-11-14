@@ -544,6 +544,8 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@ActualEntryDate", model.ActualEntryDate));
                 SqlParams.Add(new SqlParameter("@ActualEnteredBy", model.CreatedBy));
                 SqlParams.Add(new SqlParameter("@EntryByMachineName", model.EntryByMachineName ?? string.Empty));
+                SqlParams.Add(new SqlParameter("@IPAddress", model.@IPAddress));
+
 
 
                 SqlParams.Add(new SqlParameter("@DTSSGrid", MRGrid));
@@ -756,7 +758,7 @@ namespace eTactWeb.Data.DAL
             }
             return model;
         }
-        public async Task<ResponseResult> DeleteByID(int ID, int YC)
+        public async Task<ResponseResult> DeleteByID(int ID, int YC, string IPAddress)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -765,6 +767,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@Flag", "DELETE"));
                 SqlParams.Add(new SqlParameter("@EntryID", ID));
                 SqlParams.Add(new SqlParameter("@YearCode", YC));
+                SqlParams.Add(new SqlParameter("@IPAddress", IPAddress));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_MRN", SqlParams);
             }
             catch (Exception ex)

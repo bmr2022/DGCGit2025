@@ -194,7 +194,7 @@
                                         <option value="">-Select-</option>
                                     </select>
                                 </div>
-                                <div class="col-xl-1 col-lg-2 col-md-4 col-sm-6 col-xs-12ShowOtherReqFields">
+                                <div class="col-xl-1 col-lg-2 col-md-4 col-sm-6 col-xs-12 ShowOtherReqFields">
                                     <label asp-for="GateYearCode" class="form-label" style="color: red;">Gate YC*</label>
                                     @if (Model.Mode == "U" || Model.Mode == "V")
                                     {
@@ -218,7 +218,7 @@
                                     <input asp-for="ChallanDate" class="form-control" readonly />
                                 </div>
 
-                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 ToStore">
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12 ToStore">
                                     <label asp-for="AccountCode" class="control-label" style="color: red;">Vendor*</label>
                                     @if (Model.Mode == "U" || Model.Mode == "V")
                                     {
@@ -563,15 +563,20 @@
     {
     <script>
         $(document).ready(function () {
-           
-            $('#AccountCode').select2();
+
+            GetFeatureOption();
+            if ("@Model.ShowOtherReqFields" != "N") {
+                $('#AccountCode').select2();
+            }
+            
+            
             $('#DocTypeCode').select2();
             $('#ChallanType').select2();
             $('#gateno').select2();
             AutoFillPARTYNAMELIST();
 
             GetFormRights();
-            GetFeatureOption();
+           
             $('#PartCode').select2();
             $('#ItemCode').select2();
             GetGateNo();
@@ -675,7 +680,7 @@
 
                     $('#AccountCode').val(ui.item.accountCode);
                     /*    CheckOrderNo();*/
-                    onchangeaccountcode();
+                    // onchangeaccountcode();
 
 
                     return false;

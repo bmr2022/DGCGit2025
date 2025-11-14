@@ -31,6 +31,14 @@ namespace eTactWeb.Data.BLL
         {
             return await _EmployeeAdvancePayementDAL.FillEmpName();
         }
+        public async Task<ResponseResult> FillFinancialEmployeeNameList()
+        {
+            return await _EmployeeAdvancePayementDAL.FillFinancialEmployeeNameList();
+        }
+        public async Task<ResponseResult> FillMgmtEmployeeNameList()
+        {
+            return await _EmployeeAdvancePayementDAL.FillMgmtEmployeeNameList();
+        }
         public async Task<ResponseResult> FillEmpCode()
         {
             return await _EmployeeAdvancePayementDAL.FillEmpCode();

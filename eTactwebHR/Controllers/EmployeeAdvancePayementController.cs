@@ -25,8 +25,9 @@ namespace eTactwebHR.Controllers
             var MainModel = new HRAdvanceModel();
             MainModel.FinFromDate = HttpContext.Session.GetString("FromDate");
             MainModel.FinToDate = HttpContext.Session.GetString("ToDate");
-            MainModel.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
-            MainModel.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            MainModel.ActualEntryBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            MainModel.UID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            MainModel.ActualEntryByName = HttpContext.Session.GetString("EmpName");
             MainModel.CC = HttpContext.Session.GetString("Branch");
             MainModel.AdvanceYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
 
@@ -67,6 +68,19 @@ namespace eTactwebHR.Controllers
         public async Task<JsonResult> FillEmpName()
         {
             var JSON = await _iemployeeAdvancePayement.FillEmpName();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> FillFinancialEmployeeNameList()
+        {
+            var JSON = await _iemployeeAdvancePayement.FillFinancialEmployeeNameList();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        
+        public async Task<JsonResult> FillMgmtEmployeeNameList()
+        {
+            var JSON = await _iemployeeAdvancePayement.FillMgmtEmployeeNameList();
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }

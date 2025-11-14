@@ -21,6 +21,7 @@ using System.Globalization;
 using System.Net;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using ClosedXML.Excel;
+using DocumentFormat.OpenXml.EMMA;
 
 namespace eTactWeb.Controllers
 {
@@ -325,6 +326,7 @@ namespace eTactWeb.Controllers
                 else
                 {
                     model.CC = HttpContext.Session.GetString("Branch");
+                    model.IPAddress = HttpContext.Session.GetString("ClientIP");
                     model.EntrybyMachineName = Environment.MachineName;
                     model.PreparedByEmpId = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
                     //model.ActualEnteredBy   = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
@@ -2219,7 +2221,10 @@ namespace eTactWeb.Controllers
         public async Task<IActionResult> DeleteByID(int ID, int YC, string CC, string EntryByMachineName, string EntryDate, int ActualEntryBy, string FromDate = "", string ToDate = "", string SlipNo = "", string ItemName = "", string PartCode = "", string ProdPlanNo = "", string ProdSchNo = "", string ReqNo = "", string Searchbox = "", string DashboardType = "")
         {
             EntryByMachineName = Environment.MachineName;
-            var Result = await _IProductionEntry.DeleteByID(ID, YC, CC, EntryByMachineName, EntryDate, ActualEntryBy);
+            ActualEntryBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            string IPAddress = HttpContext.Session.GetString("ClientIP");
+             CC = HttpContext.Session.GetString("Branch");
+            var Result = await _IProductionEntry.DeleteByID(ID, YC, CC, EntryByMachineName, EntryDate, ActualEntryBy, IPAddress);
 
             if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
             {

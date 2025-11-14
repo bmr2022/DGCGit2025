@@ -265,6 +265,7 @@
                     var totalRows = $('#divDashboardGrid tbody tr').length;
                     $('#totalRows').text(totalRows);
                     // RowCount();
+                    GetFormRights();
                 },
                 error: function (response) {
                     alert(response.responseText);

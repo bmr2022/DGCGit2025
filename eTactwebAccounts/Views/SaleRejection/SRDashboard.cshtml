@@ -148,8 +148,25 @@
 @section Scripts
 {
     <script>
+            function  EditButtonData(event,AgainstVoucherNo) {
+                  event.preventDefault();
+                  if (AgainstVoucherNo && AgainstVoucherNo.trim() !== "" && AgainstVoucherNo!=="()") {
+            $.notify("This bill is linked with Against Voucher No: " + AgainstVoucherNo, "error");
+            return; // stop further execution
+        }
+        else{
+        var urlHref = $(event.currentTarget).attr("href");
+            var linkUrl = urlHref;
+            window.location.href = linkUrl;
+            }
+        }
         $(document).ready(function () {
+                    var deleteMessage = '@TempData["DeleteMessage"]';
 
+                if (deleteMessage) {
+                    $.notify(deleteMessage, "error");
+                }
+            GetFormRights();
             var FromDate = parseDateToFormat($('#FinFromDate').val().split(" ")[0]);
             $("#FinFromDate").datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", FromDate);
             $('#FinToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');

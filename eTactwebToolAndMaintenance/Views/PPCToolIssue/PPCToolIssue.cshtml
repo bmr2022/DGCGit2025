@@ -5,6 +5,21 @@
     ViewData["Title"] = "PPCToolIssue";
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
+@if (TempData["200"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["200"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (TempData["500"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["500"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
 <style>
     #ReqWithoutBom th {
         background-color: #127387;
@@ -217,7 +232,7 @@
                                                     <td><input name="ToolIssueDetails[0].ProdPlanEntryId" id="ProdPlanEntryId" class="form-control" placeholder="Plan ID" /></td>
 
                                                     <td><input name="ToolIssueDetails[0].ProdSchNo" id="ProdSchNo" class="form-control" placeholder="Enter Production Schedule No" /></td>
-                                                    <td><input name="ToolIssueDetails[0].ProdSchDate" id="ProdSchDate"  class="form-control" placeholder="Select Production Schedule Date" /></td>
+                                                    <td><input name="ToolIssueDetails[0].ProdSchDate" id="ProdSchDate" class="form-control datepicker" placeholder="Select Production Schedule Date" /></td>
                                                     <td>
                                                         <select name="ToolIssueDetails[0].ForMachineId" id="ForMachineId" class="form-select">
                                                             <option value="">-- Select Machine --</option>
@@ -331,16 +346,16 @@
                                         <input asp-for="CC" class="form-control" readonly />
                                     </div>
                                     <div class="col-lg-2">
-                                        <label asp-for="PendingStatus" class="form-label">Pending Status</label>
-                                        <select asp-for="PendingStatus" class="form-select">
-                                            <option value="Pending">Pending</option>
-                                            <option value="Approved">Approved</option>
-                                            <option value="Rejected">Rejected</option>
+                                        <label asp-for="pendingStatus" class="form-label">Pending Status</label>
+                                        <select asp-for="pendingStatus" class="form-select">
+                                            <option value="Pen">Pending</option>
+                                            <option value="App">Approved</option>
+                                            <option value="Rej">Rejected</option>
                                         </select>
                                     </div>
                                     <div class="col-lg-2">
                                         <label asp-for="LastUpdatedDate" class="form-label">Last Updated</label>
-                                        <input asp-for="LastUpdatedDate"  class="form-control" readonly />
+                                        <input asp-for="LastUpdatedDate" class="form-control datepicker" readonly />
                                     </div>
 
                                 </div>
@@ -546,7 +561,7 @@
             });
         }
 
-        function FillToolSerialNo(callback) {
+     function FillToolSerialNo(callback) {
             const toolId = $('#ToolEntryId').val();
             const barcode = $('#BarCode').val();
             const editingValue = $('#SerialNo').data('editing-value');
@@ -598,7 +613,7 @@
             data: { ToolEntryId, barcode, SerialNo },
             dataType: 'json',
             success: function (data) {
-                // console.log("✅ BarcodeDetails List:", data);
+                // console.log("BarcodeDetails List:", data);
 
                 const obj = typeof data === "string" ? JSON.parse(data) : data;
                 const result = obj.Result?.[0] || obj[0];
@@ -659,7 +674,7 @@
         });
     }
 
-         function FillIssueEmpList() {
+     function FillIssueEmpList() {
             $.ajax({
                     url: '/PPCToolIssue/FillIssuedByEmpList',
                 type: 'GET',
@@ -790,13 +805,113 @@
                 // 🟢 Fill all fields from SP result
                 $('#ProdPlanEntryId').val(result.PlanNoEntryId || '');
                 $('#ProdPlanDate').val(formatted);
-              
+                FillProdPlanSchedule();
             },
             error: function (err) {
                 console.error("❌ Error fetching FillProdPlanDate detail:", err);
             }
         });
     }
+
+
+    function FillProdPlanSchedule() {
+        const toolId = $('#ToolEntryId').val();
+        const ProdPlanNo = $('#ProdPlanNo').val();
+	    const ProdPlanYearCode = $('#ProdPlanYearCode').val();
+		const PlanNoEntryId = $('#ProdPlanEntryId').val();
+            if (!toolId || !ProdPlanNo || !ProdPlanYearCode || !PlanNoEntryId) return;
+
+        $.ajax({
+            url: '/PPCToolIssue/FillProdPlanSchedule',
+            type: 'GET',
+            data: { ToolEntryId: toolId,ProdPlanNo,ProdPlanYearCode,PlanNoEntryId },
+            dataType: 'json',
+            success: function (data) {
+                 console.log("FillProdPlanSchedule No List:", data);
+
+                const obj = typeof data === "string" ? JSON.parse(data) : data;
+                const result = obj.Result && obj.Result.length > 0 ? obj.Result[0] : null;
+
+                if (!result) {
+                        console.warn("No detail found for FillProdPlanSchedule");
+                    return;
+                }
+
+                $('#ProdSchNo').val(result.ProdSchNo || '');
+                   FillProdPlanScheduleYearCode();
+            },
+            error: function (err) {
+                    console.error("Error fetching FillProdPlanSchedule:", err);
+            }
+        });
+    }
+
+
+
+        function FillProdPlanScheduleYearCode() {
+            const toolId = $('#ToolEntryId').val();
+            const ProdPlanNo = $('#ProdPlanNo').val();
+            const ProdPlanYearCode = $('#ProdPlanYearCode').val();
+            const ProdSchNo = $('#ProdSchNo').val();
+            if (!toolId || !ProdPlanNo || !ProdPlanYearCode || !ProdSchNo) return;
+
+            $.ajax({
+                url: '/PPCToolIssue/FillProdPlanScheduleYearCode',
+                type: 'GET',
+                    data: { ToolEntryId: toolId,ProdPlanNo,ProdPlanYearCode,ProdSchNo },
+                dataType: 'json',
+                success: function (data) {
+                    console.log("FillProdPlanScheduleYearCode No List:", data);
+
+                    const obj = typeof data === "string" ? JSON.parse(data) : data;
+                    const result = obj.Result && obj.Result.length > 0 ? obj.Result[0] : null;
+
+                    if (!result) {
+                                console.warn("No detail found for FillProdPlanScheduleYearCode");
+                        return;
+                    }
+
+                     $('#ProdSchYearCode').val(result.ProdSchYearCode || '');
+                     FillProdPlanScheduleDetail();
+                },
+                error: function (err) {
+                     console.error("Error fetching FillProdPlanScheduleYearCode:", err);
+                }
+            });
+        }
+
+             function FillProdPlanScheduleDetail() {
+                const toolId = $('#ToolEntryId').val();
+                const ProdPlanNo = $('#ProdPlanNo').val();
+                const ProdPlanYearCode = $('#ProdPlanYearCode').val();
+                const ProdSchNo = $('#ProdSchNo').val();
+			    const ProdSchYearCode = $('#ProdSchYearCode').val();
+                if (!toolId || !ProdPlanNo || !ProdPlanYearCode || !ProdSchNo) return;
+
+                $.ajax({
+                            url: '/PPCToolIssue/FillProdPlanScheduleDetail',
+                            type: 'GET',
+                            data: { ToolEntryId: toolId,ProdPlanNo,ProdPlanYearCode,ProdSchNo },
+                            dataType: 'json',
+                            success: function (data) {
+                                 console.log("FillProdPlanScheduleDetail No List:", data);
+
+                                const obj = typeof data === "string" ? JSON.parse(data) : data;
+                                const result = obj.Result && obj.Result.length > 0 ? obj.Result[0] : null;
+
+                                if (!result) {
+                                    console.warn("No detail found for FillProdPlanScheduleDetail");
+                                    return;
+                                }
+
+                                $('#ProdSchEntryId').val(result.ProdSchEntryId || '');
+
+                            },
+                            error: function (err) {
+                                 console.error("Error fetching FillProdPlanScheduleDetail:", err);
+                            }
+                });
+         }
 
     $(function () {
         $(".datepicker").datepicker({

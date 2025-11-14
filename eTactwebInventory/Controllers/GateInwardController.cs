@@ -458,6 +458,7 @@ namespace eTactWeb.Controllers
                     model.PreparedByEmpId = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
                     //model.ActualEnteredBy   = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
                     model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                    model.IPAddress = HttpContext.Session.GetString("ClientIP");
                     if (model.Mode == "U")
                     {
                         model.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
@@ -479,11 +480,14 @@ namespace eTactWeb.Controllers
                             TempData["200"] = "200";
                             HttpContext.Session.Remove("KeyGateInwardItemDetail");
                             HttpContext.Session.Remove("KeyGateInwardGrid");
+                            model.AccountCode = 0;
                         }
                         if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
                         {
                             ViewBag.isSuccess = true;
                             TempData["202"] = "202";
+                            model.AccountCode = 0;
+                            
                         }
                         if (Result.StatusText == "Duplicate")
                         {
@@ -532,6 +536,7 @@ namespace eTactWeb.Controllers
                         }
                     }
                     var model1 = await BindModels(null);
+                    model1.AccountCode = 0;
                     model1.FinFromDate = HttpContext.Session.GetString("FromDate");
                     model1.FinToDate = HttpContext.Session.GetString("ToDate");
                     model1.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
@@ -539,7 +544,7 @@ namespace eTactWeb.Controllers
                     model1.PreparedByEmp = HttpContext.Session.GetString("EmpName");
                     model1.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
                     model1.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                    return View(model1);
+                    return RedirectToAction("GateInward");
 
                 }
             }
@@ -639,6 +644,7 @@ namespace eTactWeb.Controllers
         }
         public async Task<IActionResult> GetPendingGateEntrySearchData(
     int AccountCode,
+    int docTypeId,
     string PoNo,
     int PoYearCode,
     int ItemCode,
@@ -658,7 +664,7 @@ namespace eTactWeb.Controllers
         {
             //model.Mode = "Search";
             var model = new PendingGateInwardDashboard();
-            model = await _IGateInward.GetPendingGateEntryDashboardData(AccountCode , PoNo, PoYearCode, ItemCode, FromDate, ToDate, PartCode, ItemName, GetDataFrom, Invoiceno);
+            model = await _IGateInward.GetPendingGateEntryDashboardData(AccountCode , docTypeId, PoNo, PoYearCode, ItemCode, FromDate, ToDate, PartCode, ItemName, GetDataFrom, Invoiceno);
            
             var modelList = model?.PendingGateEntryDashboard ?? new List<PendingGateInwardDashboard>();
 
@@ -1491,7 +1497,8 @@ namespace eTactWeb.Controllers
         {
             int ActualEnteredBy= Convert.ToInt32(HttpContext.Session.GetString("UID"));
             var EntryByMachineName = @Environment.MachineName;
-            var Result = await _IGateInward.DeleteByID(ID, YC, ActualEnteredBy,  EntryByMachineName, GateNo);
+            string IPAddress = HttpContext.Session.GetString("ClientIP");
+            var Result = await _IGateInward.DeleteByID(ID, YC, ActualEnteredBy,  EntryByMachineName, GateNo, IPAddress);
 
             if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
             {

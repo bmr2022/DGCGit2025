@@ -625,7 +625,7 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
-        internal async Task<ResponseResult> DeleteByID(int ID, int YC, string machineName, int actuaEntryBy)
+        internal async Task<ResponseResult> DeleteByID(int ID, int YC, string machineName, int actuaEntryBy, int AccountCode, string IPAddress)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -636,6 +636,9 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@YearCode", YC));
                 SqlParams.Add(new SqlParameter("@MachinName", machineName));
                 SqlParams.Add(new SqlParameter("@ActualEnteredBy", actuaEntryBy));
+                SqlParams.Add(new SqlParameter("@AccountCode", AccountCode));
+                SqlParams.Add(new SqlParameter("@IPAddress", IPAddress));
+
 
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_IssueNRGP", SqlParams);
             }
@@ -897,6 +900,8 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@Distance", model.Distance));
                 SqlParams.Add(new SqlParameter("@IssByEmpId", model.IssByEmpCode));
                 SqlParams.Add(new SqlParameter("@AllowToAddNegativeStockInStore", model.AllowToAddNegativeStockInStore));
+                SqlParams.Add(new SqlParameter("@IPAddress", model.IPAddress));
+
 
                 if (model.Mode == "U")
                 {
