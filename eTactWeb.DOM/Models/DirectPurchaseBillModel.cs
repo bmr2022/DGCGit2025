@@ -411,6 +411,7 @@ public class DirectPurchaseBillModel : DPBItemDetail
     public string? FinToDate { get; set; }
     public string? TypeOfSave { get; set; }
     public int AccountCode { get; set; }
+    public int RoundOffAccountCode { get; set; }
     public IList<TextValue>? AccountList { get; set; }
 
     public string? Branch { get; set; }

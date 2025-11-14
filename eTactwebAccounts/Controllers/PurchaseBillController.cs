@@ -417,6 +417,12 @@ public class PurchaseBillController : Controller
         MainModel.PartCodeList = await IDataLogic.GetDropDownListWithCustomeVar("GetPendingMRNListForPurchaseBill", partcodeparams, true);
         return MainModel;
     }
+    public async Task<JsonResult> FillRoundOffAccount(string ShowAllDoc)
+    {
+        var JSON = await IPurchaseBill.FillRoundOffAccount(ShowAllDoc);
+        string JsonString = JsonConvert.SerializeObject(JSON);
+        return Json(JsonString);
+    }
     public async Task<PBDashBoard> BindDashboardList(PBDashBoard MainModel, Dictionary<string, object> commonparams)
     {
         var docnameparams = new Dictionary<string, object>() { { "@flag", "FillDocumentDASHBOARD" } };
@@ -2063,7 +2069,7 @@ public class PurchaseBillController : Controller
         TaxGridd = GetTaxDetailTable(TaxGrid);
         TdsGridd = GetTDSDetailTable(TdsGrid, MainModel);
 
-        var JSON = await IDataLogic.GetDbCrDataGrid(DbCrGridd, TaxGridd, TdsGridd, "PurchaseBill", MainModel.DocTypeID, MainModel.AccountCode, MainModel.ItemNetAmount, MainModel.NetTotal);
+        var JSON = await IDataLogic.GetDbCrDataGrid(DbCrGridd, TaxGridd, TdsGridd, "PurchaseBill", MainModel.DocTypeID, MainModel.AccountCode, MainModel.ItemNetAmount, MainModel.NetTotal,MainModel.RoundOffAccountCode,MainModel.TotalRoundOffAmt);
         string JsonString = JsonConvert.SerializeObject(JSON);
         return Json(JsonString);
     }

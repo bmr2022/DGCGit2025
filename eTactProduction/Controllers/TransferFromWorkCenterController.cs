@@ -101,7 +101,7 @@ namespace eTactWeb.Controllers
 
 						if (TransferFromWorkCenterDetail[i] != null)
 						{
-							//TransferFromWorkCenterDetail[i].seqno = seqNo++;
+							TransferFromWorkCenterDetail[i].SeqNo = seqNo++;
 							SSGrid.AddRange(IssueGrid);
 							IssueGrid.Add(TransferFromWorkCenterDetail[i]);
 
@@ -113,7 +113,7 @@ namespace eTactWeb.Controllers
 					}
 				}
 
-				return PartialView("_TransferFromWCItemGrid", MainModel);
+				return PartialView("_TransferFromWcGrid", MainModel);
 			}
 			catch (Exception ex)
 			{
