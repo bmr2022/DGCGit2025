@@ -846,12 +846,37 @@
 
             var dashboardType = $('#SummaryDetail').val();
 
-            var formData = $('#SParam').serializeArray();
-            formData.push({ name: 'fromdate', value: $('#FinFromDate').val() });
-            formData.push({ name: 'toDate', value: $('#FinToDate').val() });
-            formData.push({ name: 'pageNumber', value: pageNumber });
-            formData.push({ name: 'pageSize', value: 15 }); // always include pageSize
-            formData.push({ name: 'SearchBox', value: $('#SearchBox').val() }); // optional
+            // var formData = $('#SParam').serializeArray();
+            // formData.push({ name: 'fromdate', value: $('#FinFromDate').val() });
+            // formData.push({ name: 'toDate', value: $('#FinToDate').val() });
+            // formData.push({ name: 'pageNumber', value: pageNumber });
+            // formData.push({ name: 'pageSize', value: 15 }); // always include pageSize
+            // formData.push({ name: 'SearchBox', value: $('#SearchBox').val() }); // optional
+
+
+            var formData = {
+                summaryDetail: $('#SummaryDetail').val(),
+                partCode: $('#PartCode').val(),
+                itemName: $('#ItemName').val(),
+                saleBillNo: $('#SaleBillNo').val(),
+                customerName: $('#AccountName').val(),
+                sono: $('#SONO').val() == 0 ? "" : $('#SONO').val(),
+                custOrderNo: $('#CustOrderNo').val(),
+                schNo: $('#SchNo').val(),
+                performaInvNo: $('#PerformaInvNo').val(),
+                saleQuotNo: $('#SaleQuotNo').val(),
+                domesticExportNEPZ: $('#DomesticExportNEPZ').val(),
+                fromDate: $('#FinFromDate').val(),
+                toDate: $('#FinToDate').val(),
+                SaleBillEntryFrom: "EntryFromCounter",
+                SubInvoicetype: $('#SubInvoicetype').val() ? $('#SubInvoicetype').val().join(',') : ''
+            };
+
+            // Add new properties
+            formData.pageNumber = pageNumber;
+            formData.pageSize = 15;
+            formData.SearchBox = $('#SearchBox').val();
+
 
             $.ajax({
                 type: 'GET',
@@ -863,6 +888,7 @@
                     GetFormRights();
                     GetFeatureOption();
                     GetTotalAmounts();
+                    GetFeatureOptions();
                 }
             });
         }

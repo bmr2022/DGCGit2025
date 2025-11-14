@@ -1135,46 +1135,46 @@ namespace eTactWeb.Controllers
                 string selectedInvoiceTypes = SubInvoicetypeL != null
     ? string.Join(",", SubInvoicetypeL)
     : "";
-                var Result = await _SaleBill.GetDashboardData(model.SummaryDetail, partCode, itemName, saleBillno, customerName, sono, custOrderNo, schNo, performaInvNo, saleQuoteNo, domensticExportNEPZ, selectedInvoiceTypes, ParseFormattedDate(model.FinFromDate.Split(" ")[0]), common.CommonFunc.ParseFormattedDate(model.FinToDate.Split(" ")[0]), SaleBillEntryFrom).ConfigureAwait(true);
-                if (Result != null)
-                {
-                    var _List = new List<TextValue>();
-                    DataSet DS = Result.Result;
-                    if (DS != null)
-                    {
-                        var DT = DS.Tables[0].DefaultView.ToTable(true, "SaleBillNo", "SaleBillDate", "GSTNO", "AccountCode", "AccountName", "SupplyType", "CustAddress", "StateNameofSupply", "AgainstVoucherNo"
-                            , "CityofSupply", "DocumentHead", "ConsigneeAccountName", "ConsigneeAddress", "PaymentTerm", "Currency", "BillAmt", "TaxableAmt", "GSTAmount", "RoundType", "RoundOffAmt", "INVNetAmt"
-                            , "Ewaybillno", "EInvNo", "EinvGenerated", "CountryOfSupply", "TransporterdocNo", "TransportModeBYRoadAIR", "DispatchTo", "DispatchThrough", "Remark", "Approved", "ApprovDate", "ApprovedBy", "ExchangeRate"
-                            , "SaleBillEntryId", "SaleBillYearCode", "SaleBillEntryDate", "Shippingdate", "DistanceKM", "vehicleNo", "TransporterName", "DomesticExportNEPZ", "PaymentCreditDay", "ReceivedAmt", "pendAmount"
-                            , "CancelBill", "Canceldate", "CancelBy", "Cancelreason", "BankName", "FreightPaid", "DispatchDelayReason", "AttachmentFilePath1", "AttachmentFilePath2", "AttachmentFilePath3", "DocketNo", "DispatchDelayreson", "Commodity", "CC"
-                            , "Uid", "MachineName", "ActualEnteredByName", "ActualEntryDate", "LastUpdatedByName"
-                            , "LastUpdationDate", "TypeItemServAssets", "SaleBillJobwork", "PerformaInvNo", "PerformaInvDate", "PerformaInvYearCode"
-                            , "BILLAgainstWarrenty", "ExportInvoiceNo", "InvoiceTime", "RemovalDate", "RemovalTime", "EntryFreezToAccounts", "BalanceSheetClosed", "SaleQuotNo", "SaleQuotDate", "salesperson_name", "SalesPersonMobile", "SaleBillEntryFrom"
-                            );
-                        model.SaleBillDataDashboard = CommonFunc.DataTableToList<SaleBillDashboard>(DT, "SaleBillSummTable");
-                    }
+                //var Result = await _SaleBill.GetDashboardData(model.SummaryDetail, partCode, itemName, saleBillno, customerName, sono, custOrderNo, schNo, performaInvNo, saleQuoteNo, domensticExportNEPZ, selectedInvoiceTypes, ParseFormattedDate(model.FinFromDate.Split(" ")[0]), common.CommonFunc.ParseFormattedDate(model.FinToDate.Split(" ")[0]), SaleBillEntryFrom).ConfigureAwait(true);
+                //if (Result != null)
+                //{
+                //    var _List = new List<TextValue>();
+                //    DataSet DS = Result.Result;
+                //    if (DS != null)
+                //    {
+                //        var DT = DS.Tables[0].DefaultView.ToTable(true, "SaleBillNo", "SaleBillDate", "GSTNO", "AccountCode", "AccountName", "SupplyType", "CustAddress", "StateNameofSupply", "AgainstVoucherNo"
+                //            , "CityofSupply", "DocumentHead", "ConsigneeAccountName", "ConsigneeAddress", "PaymentTerm", "Currency", "BillAmt", "TaxableAmt", "GSTAmount", "RoundType", "RoundOffAmt", "INVNetAmt"
+                //            , "Ewaybillno", "EInvNo", "EinvGenerated", "CountryOfSupply", "TransporterdocNo", "TransportModeBYRoadAIR", "DispatchTo", "DispatchThrough", "Remark", "Approved", "ApprovDate", "ApprovedBy", "ExchangeRate"
+                //            , "SaleBillEntryId", "SaleBillYearCode", "SaleBillEntryDate", "Shippingdate", "DistanceKM", "vehicleNo", "TransporterName", "DomesticExportNEPZ", "PaymentCreditDay", "ReceivedAmt", "pendAmount"
+                //            , "CancelBill", "Canceldate", "CancelBy", "Cancelreason", "BankName", "FreightPaid", "DispatchDelayReason", "AttachmentFilePath1", "AttachmentFilePath2", "AttachmentFilePath3", "DocketNo", "DispatchDelayreson", "Commodity", "CC"
+                ////            , "Uid", "MachineName", "ActualEnteredByName", "ActualEntryDate", "LastUpdatedByName"
+                ////            , "LastUpdationDate", "TypeItemServAssets", "SaleBillJobwork", "PerformaInvNo", "PerformaInvDate", "PerformaInvYearCode"
+                ////            , "BILLAgainstWarrenty", "ExportInvoiceNo", "InvoiceTime", "RemovalDate", "RemovalTime", "EntryFreezToAccounts", "BalanceSheetClosed", "SaleQuotNo", "SaleQuotDate", "salesperson_name", "SalesPersonMobile", "SaleBillEntryFrom"
+                ////            );
+                ////        model.SaleBillDataDashboard = CommonFunc.DataTableToList<SaleBillDashboard>(DT, "SaleBillSummTable");
+                ////    }
 
-                    if (Flag != "True")
-                    {
-                        model.FromDate1 = fromdate;
-                        model.ToDate1 = toDate;
-                        model.FinFromDate = fromdate;
-                        model.FinToDate = toDate;
-                        model.SaleBillNo = saleBillno;
-                        model.PartCode = partCode;
-                        model.ItemName = itemName;
-                        model.AccountName = customerName;
-                        model.SONO = sono;
-                        model.CustOrderNo = custOrderNo;
-                        model.SchNo = schNo;
-                        model.PerformaInvNo = performaInvNo;
-                        model.SaleQuotNo = saleQuoteNo;
-                        model.DomesticExportNEPZ = domensticExportNEPZ;
-                        model.SummaryDetail = summaryDetail;
-                        model.Searchbox = searchBox;
-                        return View(model);
-                    }
-                }
+                //    if (Flag != "True")
+                //    {
+                //        model.FromDate1 = fromdate;
+                //        model.ToDate1 = toDate;
+                //        model.FinFromDate = fromdate;
+                //        model.FinToDate = toDate;
+                //        model.SaleBillNo = saleBillno;
+                //        model.PartCode = partCode;
+                //        model.ItemName = itemName;
+                //        model.AccountName = customerName;
+                //        model.SONO = sono;
+                //        model.CustOrderNo = custOrderNo;
+                //        model.SchNo = schNo;
+                //        model.PerformaInvNo = performaInvNo;
+                //        model.SaleQuotNo = saleQuoteNo;
+                //        model.DomesticExportNEPZ = domensticExportNEPZ;
+                //        model.SummaryDetail = summaryDetail;
+                //        model.Searchbox = searchBox;
+                //        return View(model);
+                //    }
+                //}
                 return View(model);
             }
             catch (Exception ex)
