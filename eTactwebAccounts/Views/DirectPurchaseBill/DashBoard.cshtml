@@ -92,6 +92,41 @@
                 }
             });
         }
+
+        function GetTotalAmounts() {
+            console.log("call amount");
+            // Collect form values
+            let formData = $('#SParam').serializeArray();
+
+            $.ajax({
+                url: '/DirectPurchaseBill/GetTotalAmounts',
+                type: 'POST',
+                data: formData,
+                dataType: 'json',
+
+                success: function (data) {
+                    console.log("data", data);
+
+                    const obj = typeof data === "string" ? JSON.parse(data) : data;
+
+                    if (obj && obj.Result && obj.Result.length > 0) {
+                        let row = obj.Result[0];
+
+                        // Update totals
+                        $('#tfootNetAmt').text(row.TotalNetAmt?.toFixed(2) ?? "0.00");
+                        $('#tfootBillAmt').text(row.basicamount?.toFixed(2) ?? "0.00");
+                    } else {
+                        $('#tfootNetAmt').text("0.00");
+                        $('#tfootBillAmt').text("0.00");
+                    }
+                },
+
+
+                error: function (err) {
+                    console.error(" Error fetching totals:", err);
+                }
+            });
+        }
         function CalculateTotalAmt() {
             var rowCount = $('#DPBDashboardGrid tr').length;
             var totalAmt = 0;
@@ -184,7 +219,7 @@
             GetSearchData();
               GetFeatureOption();
             CalculateTotalAmt();
-               GetFormRights();
+            GetTotalAmounts();
             $("#search-box").val($('#search-box').val()).trigger('keyup');
 
             setTimeout(function () {
@@ -401,15 +436,11 @@
         function GetSearchData() {
             if ($('#DashboardType').val() == "Summary") {
                 GetSummaryData();
-                   GetFormRights();
-                   GetFeatureOption();
-                CalculateTotalAmt();
+
                
             } else {
                 GetDetailData();
-                   GetFormRights();
-                GetFeatureOption();
-                CalculateTotalAmt();
+                 
             }
         }
 
@@ -424,6 +455,10 @@
                     CheckApprovedOrNot();
                     var dashGrid = $('#DPBDashboardGrid tr').length - 1;
                     $('#totalRows').text(dashGrid);
+                    GetFormRights();
+                    GetFeatureOption();
+                    CalculateTotalAmt();
+                    GetTotalAmounts();
                 },
                 error: function (response) {
                     alert(response.responseText);
@@ -449,6 +484,7 @@
                       GetFormRights();
                     GetFeatureOption();
                     CalculateTotalAmt();
+                    GetTotalAmounts();
 
                 },
                 error: function (response) {
@@ -471,8 +507,10 @@
                     CheckApprovedOrNot();
                     var dashGrid = $('#DPBDashboardGrid tr').length - 1;
                     $('#totalRows').text(dashGrid);
-                      GetFormRights();
-
+                    GetFormRights();
+                    GetFeatureOption();
+                    CalculateTotalAmt();
+                    GetTotalAmounts();
                 },
                 error: function (response) {
                     alert(response.responseText);
@@ -508,6 +546,9 @@
                     $('#totalRows').text($('#gateDashboardtable tr').length);
                     //countAllTotal();
                     GetFormRights();
+                    GetFeatureOption();
+                    CalculateTotalAmt();
+                    GetTotalAmounts();
                 }
             });
         }
@@ -526,6 +567,9 @@
                     $('#totalRows').text($('#gateDashboardtable tr').length);
                     //countAllTotal();
                     GetFormRights();
+                    GetFeatureOption();
+                    CalculateTotalAmt();
+                    GetTotalAmounts();
                 },
                 error: function () {
                     console.log("Error fetching search results.");
