@@ -8111,11 +8111,10 @@
         });
 
         $('#SaleBillDate').change(function () {
-            ClearGrid();
-            btnClearTax();
-            ClearAdjustmentGrid();
-            ClearDRCRGrid();
-            ClearCustomerJWGrid();
+
+            
+
+            
 
             let billDate = $(this).datepicker("getDate");
             $('#SaleBillEntryDate').datepicker("setDate", billDate);

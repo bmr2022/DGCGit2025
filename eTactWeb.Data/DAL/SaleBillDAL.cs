@@ -100,7 +100,7 @@ namespace eTactWeb.Data.DAL
 
             return Result;
         }
-        public async Task<ResponseResult> GetTotalAmount(SaleBillDashboard m)
+        public async Task<ResponseResult> GetTotalAmount(string summaryDetail, string partCode, string itemName, string saleBillno, string customerName, string sono, string custOrderNo, string schNo, string performaInvNo, string saleQuoteNo, string domensticExportNEPZ, string SubInvoicetype, string fromdate, string toDate, string SaleBillEntryFrom)
         {
             var Result = new ResponseResult();
 
@@ -109,23 +109,23 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
 
                 SqlParams.Add(new SqlParameter("@Flag", "GetTotalAmount"));
-                SqlParams.Add(new SqlParameter("@FromDate", CommonFunc.ParseFormattedDate(m.FinFromDate)));
-                SqlParams.Add(new SqlParameter("@ToDate", CommonFunc.ParseFormattedDate(m.FinToDate)));
-                SqlParams.Add(new SqlParameter("@salebillno", m.SaleBillNo ?? ""));
-                SqlParams.Add(new SqlParameter("@customerName", m.CustomerName ?? ""));
-                SqlParams.Add(new SqlParameter("@SOno", m.SONO ?? ""));
-                SqlParams.Add(new SqlParameter("@custOrderNo", m.CustOrderNo ?? ""));
-                SqlParams.Add(new SqlParameter("@ScheduleNo", m.SchNo ?? ""));
-                SqlParams.Add(new SqlParameter("@PerformaInvNo", m.PerformaInvNo ?? ""));
-                SqlParams.Add(new SqlParameter("@SaleQuotNo", m.SaleQuotNo ?? ""));
-                SqlParams.Add(new SqlParameter("@DomesticExportNEPZ", m.DomesticExportNEPZ ?? ""));
-
-                // List<string> SubInvoicetypeL → CSV string
-                string selectedTypes = (m.SubInvoicetypeL != null && m.SubInvoicetypeL.Any())
-                    ? string.Join(",", m.SubInvoicetypeL)
-                    : "";
-
-                SqlParams.Add(new SqlParameter("@SubInvoicetype", selectedTypes));
+                
+                SqlParams.Add(new SqlParameter("@SummDetail", summaryDetail));
+                SqlParams.Add(new SqlParameter("@partcode", partCode ?? ""));
+                SqlParams.Add(new SqlParameter("@ItemName", itemName ?? ""));
+                SqlParams.Add(new SqlParameter("@salebillno", saleBillno ?? ""));
+                SqlParams.Add(new SqlParameter("@customerName", customerName ?? ""));
+                SqlParams.Add(new SqlParameter("@SOno", sono));
+                SqlParams.Add(new SqlParameter("@SaleBillEntryFrom", SaleBillEntryFrom));
+                SqlParams.Add(new SqlParameter("@custOrderNo", custOrderNo ?? ""));
+                SqlParams.Add(new SqlParameter("@ScheduleNo", schNo ?? ""));
+                SqlParams.Add(new SqlParameter("@PerformaInvNo", performaInvNo ?? ""));
+                SqlParams.Add(new SqlParameter("@SaleQuotNo", saleQuoteNo ?? ""));
+                SqlParams.Add(new SqlParameter("@DomesticExportNEPZ", domensticExportNEPZ ?? ""));
+                SqlParams.Add(new SqlParameter("@FromDate", fromdate));
+                SqlParams.Add(new SqlParameter("@ToDate", toDate));
+                SqlParams.Add(new SqlParameter("@SubInvoicetype", SubInvoicetype));
+                
 
                 Result = await _IDataLogic.ExecuteDataTable("SP_SaleBillMainDetail", SqlParams);
             }
@@ -745,6 +745,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@DispatchTo", model.DispatchTo ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@DispatchThrough", model.DispatchThrough ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@DocTypeAccountCode", model.DocTypeAccountCode));
+                SqlParams.Add(new SqlParameter("@RoundOffAccountCode", model.RoundOffAccountCode));
                 SqlParams.Add(new SqlParameter("@PaymentTerm", model.PaymentTerm));
                 SqlParams.Add(new SqlParameter("@BillAmt", model.BillAmt));
                 SqlParams.Add(new SqlParameter("@BillAmtWord", model.BillAmtWord ?? string.Empty));

@@ -379,7 +379,7 @@
 }
 else
 {
-    <div style="overflow-x: auto; overflow-y: auto; max-height: 400px;">
+    <div style="overflow-x: auto; overflow-y: auto; max-height: 500px;">
         <table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0 salebilltable" id="SBDashboardGrid">
             <thead class="bg-gradient card-headerBG text-light salebilltableHead">
                 <tr>
@@ -389,9 +389,10 @@ else
 <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sale BillDate</th>
 <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Customer Name</th>
 <th data-columnno="4" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>GST No</th>
-<th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bill Amt</th>
+                    <th data-columnno="12" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bill Amt</th>
 <th data-columnno="13" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Taxable</th>
 <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>INVNetAmt</th>
+<th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Tax Category</th>
 <th data-columnno="5" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Supply Type</th>
 <th data-columnno="6" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>State Name Supply</th>
 <th data-columnno="7" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>City Name Supply</th>
@@ -481,12 +482,8 @@ else
                     {
                         Cntr = Cntr + 1;
                             // <tr id="SbRow-@Cntr" class="sbDashboardRow" style="@(item.SaleBillJobwork == "S" ? "background-color: #fff5d5;" : "background-color:#fde5fc;")">
-                            <tr id="SbRow-@Cntr" class="sbDashboardRow"
-    style="background-color:@(
-        !string.IsNullOrWhiteSpace(item.AgainstVoucherNo) 
-            ? "rgb(13, 202, 240)" 
-            : (item.SaleBillJobwork == "S" ? "#fff5d5" : "#fde5fc")
-    );">
+                            <tr id="SbRow-@Cntr" class="sbDashboardRow">
+
                             <th>@srNo
                                     <input type="hidden" id="AgainstVoucherNo-@Cntr" value="@item.AgainstVoucherNo" />
                                 </th>
@@ -593,9 +590,10 @@ else
                             <td>@(item.SaleBillDate == null ? string.Empty : item.SaleBillDate.Split(" ")[0])</td>
                             <td>@item.AccountName</td>
                                 <td class="SaleBillOtherRequiredDetail">@item.GSTNO</td>
-                                <td id="BillAmt-@Cntr">@item.BillAmt</td>
+                                <td class="SaleBillOtherRequiredDetail" id="BillAmt-@Cntr">@item.BillAmt</td>
                                 <td class="SaleBillOtherRequiredDetail">@item.TaxableAmt</td>
                                 <td id="INVNetAmt-@Cntr">@item.INVNetAmt</td>
+                                <td></td>
                                 <td class="SaleBillOtherRequiredDetail">@item.SupplyType</td>
                                 <td class="SaleBillOtherRequiredDetail">@item.StateNameofSupply</td>
                                 <td class="SaleBillOtherRequiredDetail">@item.CityofSupply</td>
@@ -682,10 +680,11 @@ else
                     <td></td>
                     <td></td>
                     @* Column 12 → BillAmt Total *@
-                    <td class="text-center text-primary" id="tfootBillAmt"></td>
-
+                    @* <td class="text-center text-primary" id="tfootBillAmt"></td>
+ *@
                     @* Column 17 → Net Amount Total *@
                     <td class="text-center text-success" id="tfootNetAmt"></td>
+                    <td></td>
                     <td></td>
                 </tr>
             </tfoot>
