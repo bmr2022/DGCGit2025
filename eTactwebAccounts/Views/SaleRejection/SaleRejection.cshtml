@@ -532,7 +532,7 @@
                     }
 
                     if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-                              $('#RoundOffAccountCode').val($('#hiddeRoundOffAccountCode').val()).trigger("change");
+                               $('#RoundOffAccountCode').val($('#hiddenRoundOffAccountCode').val()).trigger("change");
                     }
                 }
             });
@@ -545,6 +545,13 @@
 
             FillRoundOffAccount(dtValue);
                 $('#RoundOffAccountCode').select2();
+                   if ($("#Mode").val() === "U" || $("#Mode").val() === "V") {
+                    let code = $("#hiddenRoundOffAccountCode").val();
+
+                    if (code !== null && code !== undefined && code !== "" && Number(code) > 0) {
+                        $("#RoundOff").show();
+                    }
+                }
             if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
                 NewEntryId();
                 btnClearTax();

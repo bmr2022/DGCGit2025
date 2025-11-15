@@ -681,7 +681,7 @@ public class TaxController : Controller
                     MainModel = JsonConvert.DeserializeObject<PurchaseBillModel>(modelJson);
                 }
 
-                ItemDetailGrid = MainModel.ItemDetailGrid != null ? MainModel.ItemDetailGrid : MainModel.ItemDetailGridd;
+                ItemDetailGrid =  MainModel.ItemDetailGridd;
                 var _ItemGrid = new List<PBItemDetail>();
                 _ItemGrid = ItemDetailGrid;
                 var Amount = 0.0;
