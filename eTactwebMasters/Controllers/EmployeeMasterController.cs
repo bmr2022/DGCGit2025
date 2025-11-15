@@ -1,4 +1,6 @@
-﻿using eTactWeb.DOM.Models;
+﻿using DocumentFormat.OpenXml.Wordprocessing;
+using eTactWeb.Data.Common;
+using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
 //using Microsoft.DotNet.Scaffolding.Shared.Project;
@@ -7,6 +9,7 @@ using Newtonsoft.Json;
 using System.Data;
 using System.Globalization;
 using System.Net;
+using static eTactWeb.DOM.Models.Common;
 
 namespace eTactWeb.Controllers
 {
@@ -31,7 +34,12 @@ namespace eTactWeb.Controllers
                 model.DOB = DateTime.Today.ToString("dd/MM/yyyy").Replace("-", "/");
                 model.DateOfJoining = DateTime.Today.ToString("dd/MM/yyyy").Replace("-", "/");
                 model.DateOfResignation = DateTime.Today.ToString("dd/MM/yyyy").Replace("-", "/");
+                model.ApprovalDate = DateTime.Today.ToString("dd/MM/yyyy").Replace("-", "/");
+                model.ActualEntryDate = DateTime.Today.ToString("dd/MM/yyyy").Replace("-", "/");
                 model.Branch = HttpContext.Session.GetString("Branch");
+                model.ApprovedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+                model.ActualEntrybyId = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+                //model.EntryByEmpName = HttpContext.Session.GetString("EmpName");
                 model.Mode = Mode;
                 model.Active = "Y";
 
@@ -55,16 +63,70 @@ namespace eTactWeb.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> DashBoard()
+        //public async Task<IActionResult> DashBoard()
+        //{
+        //    var model = new EmployeeMasterModel();
+        //    model.Mode = "Dashboard";
+        //    model = await _IEmployeeMaster.GetDashboardData(model);
+        //    //model.EmployeeMasterList = model.EmployeeMasterList.DistinctBy(x => x.EmpId).ToList();
+
+        //    return View(model);
+
+        //}
+        public async Task<IActionResult> DashBoard(string ReportType, string FromDate, string ToDate)
         {
             var model = new EmployeeMasterModel();
-            model.Mode = "Dashboard";
-            model = await _IEmployeeMaster.GetDashboardData(model);
-            model.EmployeeMasterList = model.EmployeeMasterList.DistinctBy(x => x.EmpId).ToList();
+            var yearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+            DateTime now = DateTime.Now;
+            DateTime firstDayOfMonth = new DateTime(yearCode, now.Month, 1);
+            Dictionary<int, string> monthNames = new Dictionary<int, string>
+            {
+                {1, "Jan"}, {2, "Feb"}, {3, "Mar"}, {4, "Apr"}, {5, "May"}, {6, "Jun"},
+                {7, "Jul"}, {8, "Aug"}, {9, "Sep"}, {10, "Oct"}, {11, "Nov"}, {12, "Dec"}
+            };
+
+            model.FromDate = $"{firstDayOfMonth.Day}/{monthNames[firstDayOfMonth.Month]}/{firstDayOfMonth.Year}";
+            model.ToDate = $"{now.Day}/{monthNames[now.Month]}/{now.Year}";
+            
+            //model.ReportType = "SUMMARY";
+            var Result = await _IEmployeeMaster.GetDashboardData(model);
+
+            if (Result.Result != null)
+            {
+                var _List = new List<TextValue>();
+                DataSet DS = Result.Result;
+                if (DS != null && DS.Tables.Count > 0)
+                {
+                    var dt = DS.Tables[0];
+                    model.EmployeeMasterGrid = CommonFunc.DataTableToList<EmployeeMasterModel>(dt, "EmployeeMasterDashBoard");
+                }
+
+            }
 
             return View(model);
+        }
+        public async Task<IActionResult> GetDetailData(string FromDate, string ToDate, string ReportType)
+        {
+            //model.Mode = "Search";
+            var model = new EmployeeMasterModel();
+            model = await _IEmployeeMaster.GetDashboardDetailData();
+
+            return PartialView("_EmployeeMasterDashboardSummary", model);
 
         }
+        //public async Task<IActionResult> GetDetailData(string FromDate, string ToDate, string ReportType)
+        //{
+        //    try
+        //    {
+        //        var model = await _IEmployeeMaster.GetDashboardDetailData();
+        //        return PartialView("_EmployeeMasterDashboardSummary", model);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Response.StatusCode = 500; // required for AJAX error
+        //        return Json(new { Message = ex.Message });
+        //    }
+        //}
 
         public async Task<JsonResult> GetFormRights()
         {
@@ -408,7 +470,7 @@ namespace eTactWeb.Controllers
         {
             var model = new EmployeeMasterModel();
             model.Mode = "Search";
-            model = await _IEmployeeMaster.GetSearchData(model, EmpCode, ReportType).ConfigureAwait(true);
+            //model = await _IEmployeeMaster.GetSearchData(model, EmpCode, ReportType).ConfigureAwait(true);
             model.EmployeeMasterList = model.EmployeeMasterList?.DistinctBy(x => x.EmpId).ToList() ?? new List<EmployeeMasterModel>();
             if (ReportType == "DashBoardSummary")
             {

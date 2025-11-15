@@ -232,6 +232,7 @@ namespace eTactWeb.Data.DAL
                                                         EmployeeType = dr["EmpType"]?.ToString() ?? string.Empty,
                                                         JObShiftId = dr["ShiftId"] != DBNull.Value ? Convert.ToInt32(dr["ShiftId"]) : 0,
                                                         EmpGrade = dr["GradeId"]?.ToString() ?? string.Empty,
+                                                        //give error
                                                         ProbationPeriod = dr["ProbationPeriod"] != DBNull.Value ? Convert.ToInt32(dr["ProbationPeriod"]) : 0,
                                                    
                                                         DateOfConfirmation = dr["DateOfConfirm"] != DBNull.Value ? Convert.ToDateTime(dr["DateOfConfirm"]).ToString("yyyy-MM-dd") : string.Empty,
@@ -519,10 +520,32 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        public async Task<EmployeeMasterModel> GetDashboardData(EmployeeMasterModel model)
+        internal async Task<ResponseResult> GetDashboardData(EmployeeMasterModel model)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                var Flag = "";
+                SqlParams.Add(new SqlParameter("@Flag", "DashBoard"));
+                //SqlParams.Add(new SqlParameter("@REportType", model.ReportType));
+                //SqlParams.Add(new SqlParameter("@Fromdate", model.FromDate));
+                //SqlParams.Add(new SqlParameter("@Todate", model.ToDate));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("HREmployeeMaster", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+        public async Task<EmployeeMasterModel> GetDashboardDetailData()
         {
             DataSet? oDataSet = new DataSet();
-
+            var model = new EmployeeMasterModel();
             try
             {
                 using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
@@ -531,56 +554,121 @@ namespace eTactWeb.Data.DAL
                     {
                         CommandType = CommandType.StoredProcedure
                     };
+                    oCmd.Parameters.AddWithValue("@Flag", "DashBoard");
+                    //oCmd.Parameters.AddWithValue("@ReportType", "SUMMARY");
+                    //oCmd.Parameters.AddWithValue("@Fromdate", FromDate);
+                    //oCmd.Parameters.AddWithValue("@Todate", ToDate);
 
-                    oCmd.Parameters.AddWithValue("@Flag", model.Mode);
-                    oCmd.Parameters.AddWithValue("@Deptid", string.IsNullOrEmpty(model.Department) ? (object)DBNull.Value : model.Department);
-                    oCmd.Parameters.AddWithValue("@ShiftId", string.IsNullOrEmpty(model.Shift) ? (object)DBNull.Value : model.Shift);
-                    oCmd.Parameters.AddWithValue("@DesignationId", string.IsNullOrEmpty(model.Designation) ? (object)DBNull.Value : model.Designation);
-                    oCmd.Parameters.AddWithValue("@CategoryId", string.IsNullOrEmpty(model.Category) ? (object)DBNull.Value : model.Category);
-                    oCmd.Parameters.AddWithValue("@EmpCode", string.IsNullOrEmpty(model.EmpCode) ? null : model.EmpCode.Trim());
-                    oCmd.Parameters.AddWithValue("@empid", model.EmpId);
-                    oCmd.Parameters.AddWithValue("@EmpName", string.IsNullOrEmpty(model.Name) ? null : model.Name.Trim());
-                    oCmd.Parameters.AddWithValue("@branchCC", string.IsNullOrEmpty(model.Branch) ? null : model.Branch.Trim());
-                    oCmd.Parameters.AddWithValue("@Entrydate", model.EntryDate ?? (object)DBNull.Value);
-                    oCmd.Parameters.AddWithValue("@DOJ", model.DateOfJoining ?? (object)DBNull.Value);
-                    oCmd.Parameters.AddWithValue("@DOB", model.DOB ?? (object)DBNull.Value);
-                    oCmd.Parameters.AddWithValue("@active", model.Active);
-                    oCmd.Parameters.AddWithValue("@DOR", model.DateOfResignation ?? (object)DBNull.Value);
-                    oCmd.Parameters.AddWithValue("@NatureOfDuties", string.IsNullOrEmpty(model.NatureOfDuties) ? null : model.NatureOfDuties.Trim());
-                   
                     await myConnection.OpenAsync();
-
                     using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
                     {
                         oDataAdapter.Fill(oDataSet);
                     }
                 }
-
                 if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
                 {
-                    model.EmployeeMasterList = (from DataRow dr in oDataSet.Tables[0].Rows
-                                                select new EmployeeMasterModel
-                                                {
-                                                    EmpId = Convert.ToInt32(dr["Emp_Id"]),
-                                                    EmpCode = dr["Emp_Code"].ToString(),
-                                                    Name = dr["Emp_Name"].ToString(),
-                                                    Department = dr["DeptName"].ToString(),
-                                                    Branch = dr["branchCC"].ToString(),
-                                                    Shift = dr["ShiftName"].ToString(),
-                                                    Designation = dr["Designation"].ToString(),
-                                                    Category = dr["Category"].ToString(),
-                                                    NatureOfDuties = dr["NatureOfDuties"].ToString(),
-                                                    DateOfJoining = dr["DateOfJoining"].ToString(),
-                                                    EntryDate = dr["Entry_Date"].ToString(),
-                                                    DateOfResignation = dr["ResignationDate"].ToString(),
-                                                    DOB = dr["DOB"].ToString(),
-                                                    Gender = dr["Gender"].ToString(),
-                                                    Active = dr["Active"].ToString()
-                                                }).ToList();
-                }
-                else
-                {
-                    model.EmployeeMasterList = new List<EmployeeMasterModel>();
+                    model.EmployeeMasterGrid = (from DataRow dr in oDataSet.Tables[0].Rows
+                                      select new EmployeeMasterModel
+                                      {
+                                          EmpId = dr["Emp_Id"] != DBNull.Value ? Convert.ToInt32(dr["Emp_Id"]) : 0,
+                                          EntryDate = dr["EntryDate"] != DBNull.Value ? Convert.ToString(dr["EntryDate"]) : string.Empty,
+                                          EmpCode = dr["Emp_Code"] != DBNull.Value ? Convert.ToString(dr["Emp_Code"]) : string.Empty,
+                                          //CardNo = dr["CardNo"] != DBNull.Value ? Convert.ToString(dr["CardNo"]) : string.Empty,
+                                          //ApplicationCode = dr["ApplicationCode"] != DBNull.Value ? Convert.ToString(dr["ApplicationCode"]) : string.Empty,
+                                          Name = dr["Emp_Name"] != DBNull.Value ? Convert.ToString(dr["Emp_Name"]) : string.Empty,
+                                          EmployeeType = dr["EmpType"] != DBNull.Value ? Convert.ToString(dr["EmpType"]) : string.Empty,
+                                          //WagesType = dr["WagesType"] != DBNull.Value ? Convert.ToString(dr["WagesType"]) : string.Empty,
+                                          //Shift = dr["ShiftId"] != DBNull.Value ? Convert.ToString(dr["ShiftId"]) : "",
+                                          //EmpGrade = dr["GradeId"] != DBNull.Value ? Convert.ToString(dr["GradeId"]) : "",
+                                          //deptId = dr["DeptName"] != DBNull.Value ? Convert.ToInt32(dr["DeptName"]) : 0,
+                                          //DesigId = dr["DesigId"] != DBNull.Value ? Convert.ToInt32(dr["DesigId"]) : 0,
+                                          DateOfJoining = dr["DateOfJoining"] != DBNull.Value ? Convert.ToString(dr["DateOfJoining"]) : string.Empty,
+                                          DateOfConfirmation = dr["DateOfConfirm"] != DBNull.Value ? Convert.ToString(dr["DateOfConfirm"]) : string.Empty,
+                                          ProbationEndDate = dr["DateOfProbation"] != DBNull.Value ? Convert.ToString(dr["DateOfProbation"]) : string.Empty,
+                                          NatureOfDuties = dr["NatureOfDuties"] != DBNull.Value ? Convert.ToString(dr["NatureOfDuties"]) : string.Empty,
+                                          JobReference1 = dr["Referance1"] != DBNull.Value ? Convert.ToString(dr["Referance1"]) : string.Empty,
+                                          //Branch = dr["BranchCC"] != DBNull.Value ? Convert.ToString(dr["BranchCC"]) : string.Empty,
+                                          //Uid = dr["Uid"] != DBNull.Value ? Convert.ToInt32(dr["Uid"]) : 0,
+                                          CategoryId = dr["CategoryId"] != DBNull.Value ? Convert.ToInt32(dr["CategoryId"]) : 0,
+                                          //EmpReqNo = dr["EmpReqNo"] != DBNull.Value ? Convert.ToString(dr["EmpReqNo"]) : string.Empty,
+                                          //EmpReqYearcode = dr["EmpReqYearcode"] != DBNull.Value ? Convert.ToInt32(dr["EmpReqYearcode"]) : 0,
+                                          //EmpReqEntryId = dr["EmpReqEntryId"] != DBNull.Value ? Convert.ToInt32(dr["EmpReqEntryId"]) : 0,
+                                          //EmpReqDate = dr["EmpReqDate"] != DBNull.Value ? Convert.ToString(dr["EmpReqDate"]) : string.Empty,
+                                          //Desigation = dr["ReportingDesignationId"] != DBNull.Value ? Convert.ToInt32(dr["ReportingDesignationId"]) : 0,
+                                          ProbationPeriod = dr["ProbationPeriod"] != DBNull.Value ? Convert.ToInt32(dr["ProbationPeriod"]) : 0,
+                                          JobReference2 = dr["Referencetwo"] != DBNull.Value ? Convert.ToString(dr["Referencetwo"]) : string.Empty,
+                                          JoiningThrough = dr["Through"] != DBNull.Value ? Convert.ToString(dr["Through"]) : string.Empty,
+                                          WorkLocation = dr["WorkLocation"] != DBNull.Value ? Convert.ToString(dr["WorkLocation"]) : string.Empty,
+                                          //ThroughName = dr["ThroughName"] != DBNull.Value ? Convert.ToString(dr["ThroughName"]) : string.Empty,
+                                          //ThroughId = dr["ThroughId"] != DBNull.Value ? Convert.ToInt32(dr["ThroughId"]) : 0,
+                                          //SignaturePath = dr["SignaturePath"] != DBNull.Value ? Convert.ToString(dr["SignaturePath"]) : string.Empty,
+                                          //PhotographPath = dr["PhotographPath"] != DBNull.Value ? Convert.ToString(dr["PhotographPath"]) : string.Empty,
+                                          fileUpload = dr["ThumbPath"] != DBNull.Value ? Convert.ToString(dr["ThumbPath"]) : string.Empty,
+                                          //ApplicableFrom = dr["ApplicableFrom"] != DBNull.Value ? Convert.ToString(dr["ApplicableFrom"]) : string.Empty,
+                                          //ApplicableTo = dr["ApplicableTo"] != DBNull.Value ? Convert.ToString(dr["ApplicableTo"]) : string.Empty,
+                                          ApprovedBy = dr["ApprovedBy"] != DBNull.Value ? Convert.ToInt32(dr["ApprovedBy"]) : 0,
+                                          ApprovalDate = dr["ApprovalDate"] != DBNull.Value ? Convert.ToString(dr["ApprovalDate"]) : string.Empty,
+                                          ResignationDate = dr["ResignationDate"] != DBNull.Value ? Convert.ToString(dr["ResignationDate"]) : string.Empty,
+                                          ActualEntryDate = dr["ActualEntryDate"] != DBNull.Value ? Convert.ToString(dr["ActualEntryDate"]) : string.Empty,
+                                          ActualEntrybyId = dr["ActualEntrybyId"] != DBNull.Value ? Convert.ToInt32(dr["ActualEntrybyId"]) : 0,
+                                          LastUpdatedBy = dr["LastUpdatedBy"] != DBNull.Value ? Convert.ToInt32(dr["LastUpdatedBy"]) : 0,
+                                          LastUpdationDate = dr["LastUpdationdate"] != DBNull.Value ? Convert.ToString(dr["LastUpdationdate"]) : string.Empty,
+                                          DOB = dr["DOB"] != DBNull.Value ? Convert.ToString(dr["DOB"]) : string.Empty,
+                                          Gender = dr["Gender"] != DBNull.Value ? Convert.ToString(dr["Gender"]) : string.Empty,
+                                          Nationality = dr["Nationality"] != DBNull.Value ? Convert.ToString(dr["Nationality"]) : string.Empty,
+                                          MaritalStatus = dr["MaritalStatus"] != DBNull.Value ? Convert.ToString(dr["MaritalStatus"]) : string.Empty,
+                                          BloodGroup = dr["BloodGroup"] != DBNull.Value ? Convert.ToString(dr["BloodGroup"]) : string.Empty,
+                                          MobileNo = dr["MobileNo1"] != DBNull.Value ? Convert.ToString(dr["MobileNo1"]) : string.Empty,
+                                          MobileNo2 = dr["MobileNo2"] != DBNull.Value ? Convert.ToString(dr["MobileNo2"]) : string.Empty,
+                                          EmailId = dr["EmailId"] != DBNull.Value ? Convert.ToString(dr["EmailId"]) : string.Empty,
+                                          CurrentAddress = dr["CurrentAddress"] != DBNull.Value ? Convert.ToString(dr["CurrentAddress"]) : string.Empty,
+                                          permanentAddress = dr["PermanentAddress"] != DBNull.Value ? Convert.ToString(dr["PermanentAddress"]) : string.Empty,
+                                          //EmergancyContactName = dr["EmergancyContactName"] != DBNull.Value ? Convert.ToString(dr["EmergancyContactName"]) : string.Empty,
+                                          EmergencyContact = dr["EmergancyContactNo"] != DBNull.Value ? Convert.ToString(dr["EmergancyContactNo"]) : string.Empty,
+                                          EmergencyContactRelation = dr["EmergancyContactRelation"] != DBNull.Value ? Convert.ToString(dr["EmergancyContactRelation"]) : string.Empty,
+                                          BankName = dr["BankName"] != DBNull.Value ? Convert.ToString(dr["BankName"]) : string.Empty,
+                                          AccountNo = dr["BankAccountNo"] != DBNull.Value ? Convert.ToString(dr["BankAccountNo"]) : string.Empty,
+                                          PaymentMode = dr["PaymentMode"] != DBNull.Value ? Convert.ToString(dr["PaymentMode"]) : string.Empty,
+                                          PFNo = dr["PFNO"] != DBNull.Value ? Convert.ToString(dr["PFNO"]) : string.Empty,
+                                          ESINo = dr["ESINo"] != DBNull.Value ? Convert.ToString(dr["ESINo"]) : string.Empty,
+                                          GrossSalary = dr["GrossSalary"] != DBNull.Value ? Convert.ToDecimal(dr["GrossSalary"]) : 0,
+                                          BasicSalary = dr["BasicSalary"] != DBNull.Value ? Convert.ToDecimal(dr["BasicSalary"]) : 0,
+                                          //CalculatePfOn = dr["CTC"] != DBNull.Value ? Convert.ToDecimal(dr["CTC"]) : 0,
+                                          PFApplicable = dr["PFApplicable"] != DBNull.Value ? Convert.ToString(dr["PFApplicable"]) : string.Empty,
+                                          ESIApplicable = dr["ESIApplicable"] != DBNull.Value ? Convert.ToString(dr["ESIApplicable"]) : string.Empty,
+                                          ApplyPFFonmAmt = dr["PFApplicableon"] != DBNull.Value ? Convert.ToDecimal(dr["PFApplicableon"]) : 0,
+                                          ApplyESIFonmAmt = dr["ESIApplicableon"] != DBNull.Value ? Convert.ToDecimal(dr["ESIApplicableon"]) : 0,
+                                          //ApplyPFonAmt = dr["ApplyPFonAmt"] != DBNull.Value ? Convert.ToDecimal(dr["ApplyPFonAmt"]) : 0,
+                                          SalaryCalculation = dr["SalaryCalculationBasisOn"] != DBNull.Value ? Convert.ToString(dr["SalaryCalculationBasisOn"]) : string.Empty,
+                                          SalaryBasisHr = dr["SalaryBasisHrs"] != DBNull.Value ? Convert.ToDecimal(dr["SalaryBasisHrs"]) : 0,
+                                          OTApplicable = dr["OTApplicable"] != DBNull.Value ? Convert.ToString(dr["OTApplicable"]) : string.Empty,
+                                          LeaveApplicable = dr["LeaveApplicable"] != DBNull.Value ? Convert.ToString(dr["LeaveApplicable"]) : string.Empty,
+                                          LateMarkingCalculationApplicable = dr["LateMarkingApplicable"] != DBNull.Value ? Convert.ToString(dr["LateMarkingApplicable"]) : string.Empty,
+                                          FixSalaryAmt = dr["FixSalaryAmount"] != DBNull.Value ? Convert.ToDecimal(dr["FixSalaryAmount"]) : 0,
+                                          ReportingMg = dr["ReportingManager"] != DBNull.Value ? Convert.ToString(dr["ReportingManager"]) : string.Empty,
+                                          PanNo = dr["PANNOTaxIdentificationNo"] != DBNull.Value ? Convert.ToString(dr["PANNOTaxIdentificationNo"]) : string.Empty,
+                                          AdharNo = dr["AadharCardNoCountryCardNo"] != DBNull.Value ? Convert.ToString(dr["AadharCardNoCountryCardNo"]) : string.Empty,
+                                          SwiftCode = dr["IBANSwiftCode"] != DBNull.Value ? Convert.ToString(dr["IBANSwiftCode"]) : string.Empty,
+                                          PassportNo = dr["NationalIdPassport"] != DBNull.Value ? Convert.ToString(dr["NationalIdPassport"]) : string.Empty,
+                                          WorkPeritVisa = dr["WorkPermitVisa"] != DBNull.Value ? Convert.ToString(dr["WorkPermitVisa"]) : string.Empty,
+                                          DrivingLicenseNo = dr["DrivingLicence"] != DBNull.Value ? Convert.ToString(dr["DrivingLicence"]) : string.Empty,
+                                          MedicalInsuranceDetail = dr["MedicalInsuranceDetail"] != DBNull.Value ? Convert.ToString(dr["MedicalInsuranceDetail"]) : string.Empty,
+                                          //BioMetricAccessCardNo = dr["BioMetricAccessCardNo"] != DBNull.Value ? Convert.ToString(dr["BioMetricAccessCardNo"]) : string.Empty,
+                                          //LeaveEntitlement = dr["LeaveEntitlement"] != DBNull.Value ? Convert.ToString(dr["LeaveEntitlement"]) : string.Empty,
+                                          NoticPeriod = dr["NoticePeriod"] != DBNull.Value ? Convert.ToInt32(dr["NoticePeriod"]) : 0,
+                                          GratutyEligibility = dr["GratutyEligibility"] != DBNull.Value ? Convert.ToString(dr["GratutyEligibility"]) : string.Empty,
+                                          Active = dr["Active"] != DBNull.Value ? Convert.ToString(dr["Active"]) : string.Empty,
+                                          EntryByMachineName = dr["EntryByMachineName"] != DBNull.Value ? Convert.ToString(dr["EntryByMachineName"]) : string.Empty,
+                                          //IPAddress = dr["IPAddress"] != DBNull.Value ? Convert.ToString(dr["IPAddress"]) : string.Empty,
+
+                                          Designation = dr["Designation"] != DBNull.Value ? Convert.ToString(dr["Designation"]) : string.Empty,
+                                          Department = dr["DeptName"] != DBNull.Value ? Convert.ToString(dr["DeptName"]) : string.Empty,
+                                          Category = dr["Category"] != DBNull.Value ? Convert.ToString(dr["Category"]) : string.Empty,
+                                          JObShift = dr["ShiftName"] != DBNull.Value ? Convert.ToString(dr["ShiftName"]) : string.Empty
+
+                                      }).ToList();
+
+
                 }
 
             }
@@ -589,6 +677,7 @@ namespace eTactWeb.Data.DAL
                 dynamic Error = new ExpandoObject();
                 Error.Message = ex.Message;
                 Error.Source = ex.Source;
+                //throw new Exception($"Error converting column: {ex.Data["ColumnName"]} | Value: {ex.Data["ColumnValue"]} | Message: {ex.Message}");
             }
             finally
             {
@@ -596,6 +685,84 @@ namespace eTactWeb.Data.DAL
             }
             return model;
         }
+
+        //public async Task<EmployeeMasterModel> GetDashboardData(EmployeeMasterModel model)
+        //{
+        //    DataSet? oDataSet = new DataSet();
+
+        //    try
+        //    {
+        //        using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
+        //        {
+        //            SqlCommand oCmd = new SqlCommand("HREmployeeMaster", myConnection)
+        //            {
+        //                CommandType = CommandType.StoredProcedure
+        //            };
+
+        //            oCmd.Parameters.AddWithValue("@Flag", model.Mode);
+        //            oCmd.Parameters.AddWithValue("@Deptid", string.IsNullOrEmpty(model.Department) ? (object)DBNull.Value : model.Department);
+        //            oCmd.Parameters.AddWithValue("@ShiftId", string.IsNullOrEmpty(model.Shift) ? (object)DBNull.Value : model.Shift);
+        //            oCmd.Parameters.AddWithValue("@DesignationId", string.IsNullOrEmpty(model.Designation) ? (object)DBNull.Value : model.Designation);
+        //            oCmd.Parameters.AddWithValue("@CategoryId", string.IsNullOrEmpty(model.Category) ? (object)DBNull.Value : model.Category);
+        //            oCmd.Parameters.AddWithValue("@EmpCode", string.IsNullOrEmpty(model.EmpCode) ? null : model.EmpCode.Trim());
+        //            oCmd.Parameters.AddWithValue("@empid", model.EmpId);
+        //            oCmd.Parameters.AddWithValue("@EmpName", string.IsNullOrEmpty(model.Name) ? null : model.Name.Trim());
+        //            oCmd.Parameters.AddWithValue("@branchCC", string.IsNullOrEmpty(model.Branch) ? null : model.Branch.Trim());
+        //            oCmd.Parameters.AddWithValue("@Entrydate", model.EntryDate ?? (object)DBNull.Value);
+        //            oCmd.Parameters.AddWithValue("@DOJ", model.DateOfJoining ?? (object)DBNull.Value);
+        //            oCmd.Parameters.AddWithValue("@DOB", model.DOB ?? (object)DBNull.Value);
+        //            oCmd.Parameters.AddWithValue("@active", model.Active);
+        //            oCmd.Parameters.AddWithValue("@DOR", model.DateOfResignation ?? (object)DBNull.Value);
+        //            oCmd.Parameters.AddWithValue("@NatureOfDuties", string.IsNullOrEmpty(model.NatureOfDuties) ? null : model.NatureOfDuties.Trim());
+
+        //            await myConnection.OpenAsync();
+
+        //            using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
+        //            {
+        //                oDataAdapter.Fill(oDataSet);
+        //            }
+        //        }
+
+        //        if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+        //        {
+        //            model.EmployeeMasterList = (from DataRow dr in oDataSet.Tables[0].Rows
+        //                                        select new EmployeeMasterModel
+        //                                        {
+        //                                            EmpId = Convert.ToInt32(dr["Emp_Id"]),
+        //                                            EmpCode = dr["Emp_Code"].ToString(),
+        //                                            Name = dr["Emp_Name"].ToString(),
+        //                                            Department = dr["DeptName"].ToString(),
+        //                                            Branch = dr["branchCC"].ToString(),
+        //                                            Shift = dr["ShiftName"].ToString(),
+        //                                            Designation = dr["Designation"].ToString(),
+        //                                            Category = dr["Category"].ToString(),
+        //                                            NatureOfDuties = dr["NatureOfDuties"].ToString(),
+        //                                            DateOfJoining = dr["DateOfJoining"].ToString(),
+        //                                            EntryDate = dr["Entry_Date"].ToString(),
+        //                                            DateOfResignation = dr["ResignationDate"].ToString(),
+        //                                            DOB = dr["DOB"].ToString(),
+        //                                            Gender = dr["Gender"].ToString(),
+        //                                            Active = dr["Active"].ToString()
+        //                                        }).ToList();
+        //        }
+        //        else
+        //        {
+        //            model.EmployeeMasterList = new List<EmployeeMasterModel>();
+        //        }
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        dynamic Error = new ExpandoObject();
+        //        Error.Message = ex.Message;
+        //        Error.Source = ex.Source;
+        //    }
+        //    finally
+        //    {
+        //        oDataSet.Dispose();
+        //    }
+        //    return model;
+        //}
         public async Task<ResponseResult> SaveEmployeeMaster(EmployeeMasterModel model, DataTable DtAllDed, DataTable DtEdu, DataTable dtexp, DataTable dtNjob)
         {
             var _ResponseResult = new ResponseResult();
@@ -692,12 +859,20 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@DrivingLicence", model.DrivingLicenseNo ?? ""));
                 SqlParams.Add(new SqlParameter("@MedicalInsuranceDetail", model.MedicalInsuranceDetail ?? ""));
                 //SqlParams.Add(new SqlParameter("@ThumbPath", model.ThumbUnPress ?? ""));
-                SqlParams.Add(new SqlParameter("@ThumbPath", model.fileUpload ?? ""));
+                 SqlParams.Add(new SqlParameter("@ThumbPath", model.fileUpload ?? ""));
 
                 // Exit Details
-                SqlParams.Add(new SqlParameter("@NoticePeriod", model.NoticPeriod ));
-                SqlParams.Add(new SqlParameter("@GratutyEligibility", model.GratutyEligibility ?? ""));
-                SqlParams.Add(new SqlParameter("EntryByMachineName", model.EntryByMachineName ?? ""));
+                 SqlParams.Add(new SqlParameter("@NoticePeriod", model.NoticPeriod ));
+                 SqlParams.Add(new SqlParameter("@GratutyEligibility", model.GratutyEligibility ?? ""));
+
+                SqlParams.Add(new SqlParameter("@EntryByMachineName", model.EntryByMachineName ?? ""));
+                SqlParams.Add(new SqlParameter("@LastUpdationDate", model.LastUpdationDate ));
+                SqlParams.Add(new SqlParameter("@LastUpdatedBy", model.UpdatedBy ));
+                SqlParams.Add(new SqlParameter("@ApprovedBy", model.ApprovedBy ));
+                SqlParams.Add(new SqlParameter("@ApprovalDate", model.ApprovalDate));
+
+                SqlParams.Add(new SqlParameter("@ActualEntrybyId", model.ActualEntrybyId));
+                SqlParams.Add(new SqlParameter("@ActualEntryDate", model.ActualEntryDate));
 
                 // Table-Valued Parameters
                 SqlParams.Add(new SqlParameter("@DtAllDed", DtAllDed));

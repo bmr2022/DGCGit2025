@@ -60,7 +60,7 @@
                     <div class="card-body">
                         <div class="card overflow-auto">
                             <div class="card-body" id="divDashboardGrid">
-                                <partial name="_EmployeeMasterDashboardSummary" />
+                            <partial name="_EmployeeMasterDashboardSummary" />
                             </div>
                         </div>
                     </div>
@@ -206,6 +206,7 @@
             $('#totalRows').text(dashGrid);
 
             GetFormRights();
+            GetSearchData();
         });
 
         $(document).on("click", ".sortCol", function () {
@@ -246,27 +247,60 @@
                 window.location.href = linkUrl;
             }
         }
-
         function GetSearchData() {
-            var data = $('#SParam').serialize();
             $.ajax({
-                url: '@Url.Action("GetSearchData")',
+                url: '@Url.Action("GetDetailData")',
                 type: "POST",
-                data: { "EmpCode": $('#EmpCode').val(), "ReportType": $('#ReportType').val() },
+                data: {
+                    EmpCode: $('#EmpCode').val(),
+                    ReportType: $('#ReportType').val()
+                },
                 async: false,
+
                 success: function (data) {
                     $('#divDashboardGrid').empty().append(data);
-                    var dashGrid = $('#EmployeeMasterBody tr').length;
+                    let dashGrid = $('#EmployeeMasterBody tr').length;
                     $('#totalRows').text(dashGrid);
                 },
-                error: function (response) {
-                    alert(response.responseText);
-                },
-                failure: function (response) {
-                    alert(response.responseText);
+
+                error: function (xhr) {
+                    let msg = "";
+
+                    if (xhr.responseJSON && xhr.responseJSON.Message) {
+                        msg = xhr.responseJSON.Message;   // shows: Error converting column: GradeId | Value: ABC | Message: Input string...
+                    }
+                    else if (xhr.responseText) {
+                        msg = xhr.responseText;
+                    }
+                    else {
+                        msg = "Unknown error occurred.";
+                    }
+
+                    alert(msg);
                 }
             });
         }
+
+        // function GetSearchData() {
+        //     var data = $('#SParam').serialize();
+        //     $.ajax({
+        //         url: '@Url.Action("GetDetailData")',
+        //         type: "POST",
+        //         data: { "EmpCode": $('#EmpCode').val(), "ReportType": $('#ReportType').val() },
+        //         async: false,
+        //         success: function (data) {
+        //             $('#divDashboardGrid').empty().append(data);
+        //             var dashGrid = $('#EmployeeMasterBody tr').length;
+        //             $('#totalRows').text(dashGrid);
+        //         },
+        //         error: function (response) {
+        //             console.log(response.responseText);
+        //         },
+        //         failure: function (response) {
+        //             console.log(response.responseText);
+        //         }
+        //     });
+        // }
 
         $("#search-box").on("keyup", function () {
             var value = $(this).val().toLowerCase();
