@@ -190,40 +190,45 @@
 
 								<div class="col-md-2">
 									<label asp-for="MgrApprovaldate" class="form-label">Mgr Approvaldate</label>
-									<input asp-for="MgrApprovaldate" class="form-control" />
+									<input asp-for="MgrApprovaldate" class="form-control" readonly/>
 								</div>
 
 								<div class="col-md-2">
 									<label asp-for="MgrApprovedbyEmpid" class="form-label">MgrApprovedby EmpName</label>
-									<select asp-for="MgrApprovedbyEmpid" class="form-select">
+									@* <select asp-for="MgrApprovedbyEmpid" class="form-select">
 										<option value="">-Select-</option>
-									</select>
+									</select> *@
+									<input asp-for="MgrApprovedbyEmpid" class="form-control" readonly />
 								</div>
 
 								<div class="col-md-2">
 									<label asp-for="MgrApprovedbyEmpCode" class="form-label">MgrApprovedby EmpCode</label>
-									<select asp-for="MgrApprovedbyEmpCode" class="form-select">
+									@* <select asp-for="MgrApprovedbyEmpCode" class="form-select">
 										<option value="">-Select-</option>
-									</select>
+									</select> *@
+									<input asp-for="MgrApprovedbyEmpCode" class="form-control" readonly/>
 								</div>
 
 								<div class="col-md-2">
 									<label asp-for="HRApprovedbyEmpid" class="form-label">HRApprovedby EmpName</label>
-									<select asp-for="HRApprovedbyEmpid" class="form-select">
+								@* 	<select asp-for="HRApprovedbyEmpid" class="form-select">
 										<option value="">-Select-</option>
-									</select>
+									</select> *@
+
+									<input asp-for="HRApprovedbyEmpid" class="form-control" readonly />
 								</div>
 								
 								<div class="col-md-2">
 									<label asp-for="HRApprovedbyEmpCode" class="form-label">HRApprovedby EmpCode</label>
-									<select asp-for="HRApprovedbyEmpCode" class="form-select">
+								@* 	<select asp-for="HRApprovedbyEmpCode" class="form-select">
 										<option value="">-Select-</option>
-									</select>
+									</select> *@
+									<input asp-for="HRApprovedbyEmpCode" class="form-control" readonly />
 								</div>
 
 								<div class="col-md-2">
 									<label asp-for="HRApprovalDate" class="form-label">HR ApprovalDate</label>
-									<input asp-for="HRApprovalDate"  class="form-control" />
+									<input asp-for="HRApprovalDate"  class="form-control" readonly/>
 								</div>
 
 								<div class="col-md-2">
@@ -276,26 +281,28 @@
 
 								<div class="col-md-2">
 									<label asp-for="ApprovedAmount" class="form-label">Approved Amount</label>
-									<input asp-for="ApprovedAmount" class="form-control" />
+									<input asp-for="ApprovedAmount" class="form-control" readonly/>
 								</div>
 
 								<div class="col-md-2">
 									<label asp-for="FinanceApprovalEmpid" class="form-label">FinanceApproval EmpName</label>
-									<select asp-for="FinanceApprovalEmpid" class="form-select">
+									@* <select asp-for="FinanceApprovalEmpid" class="form-select">
 										<option value="">-Select-</option>
-									</select>
+									</select> *@
+									<input asp-for="FinanceApprovalEmpid" class="form-control" readonly/>
 								</div>
 								
 								<div class="col-md-2">
 									<label asp-for="FinanceApprovalEmpCode" class="form-label">FinanceApproval EmpCode</label>
-									<select asp-for="FinanceApprovalEmpCode" class="form-select">
+									@* <select asp-for="FinanceApprovalEmpCode" class="form-select">
 										<option value="">-Select-</option>
-									</select>
+									</select> *@
+									<input asp-for="FinanceApprovalEmpCode" class="form-control" readonly/>
 								</div>
 
 								<div class="col-md-2">
 									<label asp-for="FinanceApprovalDate" class="form-label">Finance ApprovalDate</label>
-									<input asp-for="FinanceApprovalDate" class="form-control" />
+									<input asp-for="FinanceApprovalDate" class="form-control" readonly/>
 								</div>
 
 								<div class="col-md-2">
@@ -372,7 +379,7 @@
 								</div>
 								<div class="col-md-2">
 									<label asp-for="ActualFinalRecoveryDate" class="form-label">ActualFinal RecoveryDate</label>
-									<input asp-for="ActualFinalRecoveryDate" class="form-control" />
+									<input asp-for="ActualFinalRecoveryDate" class="form-control" readonly/>
 								</div>
 
 							</div>
@@ -566,8 +573,9 @@
 				GetServerDate();
 			}
 
-			FillMgmtEmployeeNameList();
-			FillFinancialEmployeeNameList();
+			// FillMgmtEmployeeNameList();
+			// FillFinancialEmployeeNameList();
+			FillPreviousAdanaceLoanDetail();
 
 					$('#AdvanceEntryId').rules("remove", "required");
 					$('#AdvanceYearCode').rules("remove", "required");
@@ -645,6 +653,17 @@
 			else if($('#FinalRevoveryDate').val() >= $('#StartRecoveryFromMonth').val()){
 				$.notify("Final recovery date must be greter then Start recovery date..!", "error");
 			}
+			else if (parseFloat($('#RequestedAmount').val()) > parseFloat($('#BasicSalary').val())) {
+				if ($('#MgrApprovedbyEmpid').val() == '' || $('#FinanceApprovalEmpid').val() == '') {
+					$.notify("MgrApprovedby and FinanceApprovalBy are mandatory..!", "error");
+				}
+			} 
+			else if (parseFloat($('#ApprovedAmount').val()) > parseFloat($('#RequestedAmount').val())) {
+				$.notify("Approved amount cannot be greter then requested amount..!", "error");
+			}
+			// else if (parseFloat($('#PreviousPendAdvanceAmt').val()) > ) {
+
+			// }
 			else{
 			   $('form').submit();
 			}
@@ -659,6 +678,26 @@
 					if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
 						$('#AdvanceEntryId').val(obj.Result[0].EntryId);
 						$('#AdvanceSlipNo').val(obj.Result[0].AdvanceSlipNo);
+					}
+				},
+				error: function (xhr, status, error) {
+					console.log('Failed to load Entry Id.');
+				}
+			});
+		}
+
+		function FillPreviousAdanaceLoanDetail() {
+			$.ajax({
+				url: '@Url.Action("FillPreviousAdanaceLoanDetail")',
+				data: { "empId": $('#EmpId').val(), "requestedDate": $('#RequestDate').val() },
+				type: 'POST',
+				success: function (data, status, xhr) {
+					var obj = $.parseJSON(data);
+					if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
+						$('#PreviousPendAdvanceAmt').val(obj.Result[0].PrevPendAdavAmt);
+						$('#PreviousPendLoanAmt').val(obj.Result[0].PrevPendLoanAmt);
+						// $('#PresentDaysinCurrMonth').val(obj.Result[0].PresentDaysinCurrMonth);
+						// $('#PresentDaysInCurrYear').val(obj.Result[0].PresentDaysInCurrYear);
 					}
 				},
 				error: function (xhr, status, error) {
@@ -875,15 +914,15 @@
 						$('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
 						$('#DOJ').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
 						$('#RequestDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
-						$('#HRApprovalDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
-						$('#FinanceApprovalDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
-						$('#FinalRevoveryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
-						$('#MgrApprovaldate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+						// $('#HRApprovalDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+						// $('#FinanceApprovalDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+						// $('#FinalRevoveryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+						// $('#MgrApprovaldate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
 						$('#ActualFinalRecoveryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
 						$('#LastUpdationDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
 						$('#StartRecoveryFromMonth').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
-						$('#PresentDaysinCurrMonth').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
-						$('#PresentDaysInCurrYear').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+						// $('#PresentDaysinCurrMonth').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+						// $('#PresentDaysInCurrYear').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
 						$('#EntryDate').datepicker('option', 'minDate', FinFromDate);
 						$('#EntryDate').datepicker('option', 'maxDate', FinToDate);
 					}

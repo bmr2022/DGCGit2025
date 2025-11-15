@@ -27,6 +27,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _EmployeeAdvancePayementDAL.FillEntryId(yearCode);
         }
+        public async Task<ResponseResult> FillPreviousAdanaceLoanDetail(int empId, string requestedDate)
+		{
+            return await _EmployeeAdvancePayementDAL.FillPreviousAdanaceLoanDetail(empId,requestedDate);
+        }
         public async Task<ResponseResult> FillEmpName()
         {
             return await _EmployeeAdvancePayementDAL.FillEmpName();

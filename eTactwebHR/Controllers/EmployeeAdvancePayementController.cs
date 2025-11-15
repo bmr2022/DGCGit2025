@@ -65,6 +65,12 @@ namespace eTactwebHR.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+        public async Task<JsonResult> FillPreviousAdanaceLoanDetail(int empId,string requestedDate)
+        {
+            var JSON = await _iemployeeAdvancePayement.FillPreviousAdanaceLoanDetail(empId,requestedDate);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
         public async Task<JsonResult> FillEmpName()
         {
             var JSON = await _iemployeeAdvancePayement.FillEmpName();
