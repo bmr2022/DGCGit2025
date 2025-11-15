@@ -9,9 +9,10 @@ namespace eTactWeb.Services.Interface
 
         Task<EmployeeMasterModel> GetByID(int ID);
 
-        Task<EmployeeMasterModel> GetDashboardData(EmployeeMasterModel model);
-        Task<EmployeeMasterModel> GetSearchData(EmployeeMasterModel model, string EmpCode, string ReportType);
-
+        //Task<EmployeeMasterModel> GetSearchData(EmployeeMasterModel model, string EmpCode, string ReportType);
+        //Task<EmployeeMasterModel> GetDashboardData(EmployeeMasterModel model);
+        Task<ResponseResult> GetDashboardData(EmployeeMasterModel model);
+        Task<EmployeeMasterModel> GetDashboardDetailData();
         Task<ResponseResult> SaveEmployeeMaster(EmployeeMasterModel model, DataTable DtAllDed,DataTable DtEdu,DataTable dtexp,DataTable dtNjob);
         Task<ResponseResult> GetFormRights(int uId);
         Task<ResponseResult> GetEmpIdandEmpCode(string designation, string department);

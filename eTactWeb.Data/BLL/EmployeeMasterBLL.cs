@@ -27,9 +27,18 @@ namespace eTactWeb.Data.BLL
             return await _EmployeeMasterDAL.GetByID(ID);
         }
 
-        public async Task<EmployeeMasterModel> GetDashboardData(EmployeeMasterModel model)
+        //public async Task<EmployeeMasterModel> GetDashboardData(EmployeeMasterModel model)
+        //{
+        //    return await _EmployeeMasterDAL.GetDashboardData(model);
+        //}
+
+        public async Task<ResponseResult> GetDashboardData(EmployeeMasterModel model)
         {
-            return await _EmployeeMasterDAL.GetDashboardData(model);
+            return await  _EmployeeMasterDAL.GetDashboardData(model);
+        }
+        public async Task<EmployeeMasterModel> GetDashboardDetailData()
+        {
+            return await _EmployeeMasterDAL.GetDashboardDetailData();
         }
         public Task<DOM.Models.Common.ResponseResult> GetFormRights(int uId)
         {

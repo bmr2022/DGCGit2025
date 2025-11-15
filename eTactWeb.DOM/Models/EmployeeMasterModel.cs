@@ -24,7 +24,7 @@ namespace eTactWeb.DOM.Models
         public string? CategoryName { get; set; }
         public IList<TextValue>? DepartmentList { get; set; }
         public string? Category { get; set; }
-        public string? CategoryId { get; set; }
+        public int? CategoryId { get; set; }
         public IList<TextValue>? CategoryList { get; set; }
         public bool IsStaff { get; set; }
         public string? DateOfJoining { get; set; }
@@ -150,6 +150,14 @@ namespace eTactWeb.DOM.Models
         public string  ResignationDate { get; set; }   
         public string  Active { get; set; }   
         public string EntryByMachineName { get; set; }   
+        public int ApprovedBy { get; set; }   
+        public int ActualEntrybyId { get; set; }   
+        public int LastUpdatedBy { get; set; }   
+        public string ApprovalDate { get; set; }   
+        public string LastUpdationDate { get; set; }   
+        public string ActualEntryDate { get; set; }   
+        public string FromDate { get; set; }   
+        public string ToDate { get; set; }   
 
 
     }
