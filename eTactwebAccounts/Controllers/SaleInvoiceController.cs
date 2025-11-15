@@ -1114,7 +1114,7 @@ namespace eTactWeb.Controllers
 
         [HttpGet]
         [Route("{controller}/SaleBillOnCounterDashboard")]
-        public async Task<IActionResult> SaleBillOnCounterDashboard(string summaryDetail = "", string Flag = "True", string partCode = "", string itemName = "", string saleBillno = "", string customerName = "", string sono = "", string custOrderNo = "", string schNo = "", string performaInvNo = "", string saleQuoteNo = "", string domensticExportNEPZ = "", string SubInvoicetype = "", string fromdate = "", string toDate = "", string searchBox = "", string SaleBillEntryFrom = "")
+        public async Task<IActionResult> SaleBillOnCounterDashboard(string summaryDetail = "", string Flag = "True", string partCode = "", string itemName = "", string saleBillno = "", string customerName = "", string sono = "", string custOrderNo = "", string schNo = "", string performaInvNo = "", string saleQuoteNo = "", string domensticExportNEPZ = "", List<string>? SubInvoicetypeL = null, string fromdate = "", string toDate = "", string searchBox = "", string SaleBillEntryFrom = "")
         {
             try
             {
@@ -1132,46 +1132,49 @@ namespace eTactWeb.Controllers
                 model.SummaryDetail = "Summary";
                 model.SONO = "";
                 model = await BindModel(model).ConfigureAwait(false);
-                var Result = await _SaleBill.GetDashboardData(model.SummaryDetail, partCode, itemName, saleBillno, customerName, sono, custOrderNo, schNo, performaInvNo, saleQuoteNo, domensticExportNEPZ, SubInvoicetype, ParseFormattedDate(model.FinFromDate.Split(" ")[0]), common.CommonFunc.ParseFormattedDate(model.FinToDate.Split(" ")[0]), SaleBillEntryFrom).ConfigureAwait(true);
-                if (Result != null)
-                {
-                    var _List = new List<TextValue>();
-                    DataSet DS = Result.Result;
-                    if (DS != null)
-                    {
-                        var DT = DS.Tables[0].DefaultView.ToTable(true, "SaleBillNo", "SaleBillDate", "GSTNO", "AccountCode", "AccountName", "SupplyType", "CustAddress", "StateNameofSupply", "AgainstVoucherNo"
-                            , "CityofSupply", "DocumentHead", "ConsigneeAccountName", "ConsigneeAddress", "PaymentTerm", "Currency", "BillAmt", "TaxableAmt", "GSTAmount", "RoundType", "RoundOffAmt", "INVNetAmt"
-                            , "Ewaybillno", "EInvNo", "EinvGenerated", "CountryOfSupply", "TransporterdocNo", "TransportModeBYRoadAIR", "DispatchTo", "DispatchThrough", "Remark", "Approved", "ApprovDate", "ApprovedBy", "ExchangeRate"
-                            , "SaleBillEntryId", "SaleBillYearCode", "SaleBillEntryDate", "Shippingdate", "DistanceKM", "vehicleNo", "TransporterName", "DomesticExportNEPZ", "PaymentCreditDay", "ReceivedAmt", "pendAmount"
-                            , "CancelBill", "Canceldate", "CancelBy", "Cancelreason", "BankName", "FreightPaid", "DispatchDelayReason", "AttachmentFilePath1", "AttachmentFilePath2", "AttachmentFilePath3", "DocketNo", "DispatchDelayreson", "Commodity", "CC"
-                            , "Uid", "MachineName", "ActualEnteredByName", "ActualEntryDate", "LastUpdatedByName"
-                            , "LastUpdationDate", "TypeItemServAssets", "SaleBillJobwork", "PerformaInvNo", "PerformaInvDate", "PerformaInvYearCode"
-                            , "BILLAgainstWarrenty", "ExportInvoiceNo", "InvoiceTime", "RemovalDate", "RemovalTime", "EntryFreezToAccounts", "BalanceSheetClosed", "SaleQuotNo", "SaleQuotDate", "salesperson_name", "SalesPersonMobile", "SaleBillEntryFrom"
-                            );
-                        model.SaleBillDataDashboard = CommonFunc.DataTableToList<SaleBillDashboard>(DT, "SaleBillSummTable");
-                    }
+                string selectedInvoiceTypes = SubInvoicetypeL != null
+    ? string.Join(",", SubInvoicetypeL)
+    : "";
+                //var Result = await _SaleBill.GetDashboardData(model.SummaryDetail, partCode, itemName, saleBillno, customerName, sono, custOrderNo, schNo, performaInvNo, saleQuoteNo, domensticExportNEPZ, selectedInvoiceTypes, ParseFormattedDate(model.FinFromDate.Split(" ")[0]), common.CommonFunc.ParseFormattedDate(model.FinToDate.Split(" ")[0]), SaleBillEntryFrom).ConfigureAwait(true);
+                //if (Result != null)
+                //{
+                //    var _List = new List<TextValue>();
+                //    DataSet DS = Result.Result;
+                //    if (DS != null)
+                //    {
+                //        var DT = DS.Tables[0].DefaultView.ToTable(true, "SaleBillNo", "SaleBillDate", "GSTNO", "AccountCode", "AccountName", "SupplyType", "CustAddress", "StateNameofSupply", "AgainstVoucherNo"
+                //            , "CityofSupply", "DocumentHead", "ConsigneeAccountName", "ConsigneeAddress", "PaymentTerm", "Currency", "BillAmt", "TaxableAmt", "GSTAmount", "RoundType", "RoundOffAmt", "INVNetAmt"
+                //            , "Ewaybillno", "EInvNo", "EinvGenerated", "CountryOfSupply", "TransporterdocNo", "TransportModeBYRoadAIR", "DispatchTo", "DispatchThrough", "Remark", "Approved", "ApprovDate", "ApprovedBy", "ExchangeRate"
+                //            , "SaleBillEntryId", "SaleBillYearCode", "SaleBillEntryDate", "Shippingdate", "DistanceKM", "vehicleNo", "TransporterName", "DomesticExportNEPZ", "PaymentCreditDay", "ReceivedAmt", "pendAmount"
+                //            , "CancelBill", "Canceldate", "CancelBy", "Cancelreason", "BankName", "FreightPaid", "DispatchDelayReason", "AttachmentFilePath1", "AttachmentFilePath2", "AttachmentFilePath3", "DocketNo", "DispatchDelayreson", "Commodity", "CC"
+                ////            , "Uid", "MachineName", "ActualEnteredByName", "ActualEntryDate", "LastUpdatedByName"
+                ////            , "LastUpdationDate", "TypeItemServAssets", "SaleBillJobwork", "PerformaInvNo", "PerformaInvDate", "PerformaInvYearCode"
+                ////            , "BILLAgainstWarrenty", "ExportInvoiceNo", "InvoiceTime", "RemovalDate", "RemovalTime", "EntryFreezToAccounts", "BalanceSheetClosed", "SaleQuotNo", "SaleQuotDate", "salesperson_name", "SalesPersonMobile", "SaleBillEntryFrom"
+                ////            );
+                ////        model.SaleBillDataDashboard = CommonFunc.DataTableToList<SaleBillDashboard>(DT, "SaleBillSummTable");
+                ////    }
 
-                    if (Flag != "True")
-                    {
-                        model.FromDate1 = fromdate;
-                        model.ToDate1 = toDate;
-                        model.FinFromDate = fromdate;
-                        model.FinToDate = toDate;
-                        model.SaleBillNo = saleBillno;
-                        model.PartCode = partCode;
-                        model.ItemName = itemName;
-                        model.AccountName = customerName;
-                        model.SONO = sono;
-                        model.CustOrderNo = custOrderNo;
-                        model.SchNo = schNo;
-                        model.PerformaInvNo = performaInvNo;
-                        model.SaleQuotNo = saleQuoteNo;
-                        model.DomesticExportNEPZ = domensticExportNEPZ;
-                        model.SummaryDetail = summaryDetail;
-                        model.Searchbox = searchBox;
-                        return View(model);
-                    }
-                }
+                //    if (Flag != "True")
+                //    {
+                //        model.FromDate1 = fromdate;
+                //        model.ToDate1 = toDate;
+                //        model.FinFromDate = fromdate;
+                //        model.FinToDate = toDate;
+                //        model.SaleBillNo = saleBillno;
+                //        model.PartCode = partCode;
+                //        model.ItemName = itemName;
+                //        model.AccountName = customerName;
+                //        model.SONO = sono;
+                //        model.CustOrderNo = custOrderNo;
+                //        model.SchNo = schNo;
+                //        model.PerformaInvNo = performaInvNo;
+                //        model.SaleQuotNo = saleQuoteNo;
+                //        model.DomesticExportNEPZ = domensticExportNEPZ;
+                //        model.SummaryDetail = summaryDetail;
+                //        model.Searchbox = searchBox;
+                //        return View(model);
+                //    }
+                //}
                 return View(model);
             }
             catch (Exception ex)
@@ -1179,19 +1182,32 @@ namespace eTactWeb.Controllers
                 throw ex;
             }
         }
+      
+        public async Task<JsonResult> GetTotalAmount(string summaryDetail, string partCode, string itemName, string saleBillno, string customerName, string sono, string custOrderNo, string schNo, string performaInvNo, string saleQuoteNo, string domensticExportNEPZ, string fromdate, string toDate, string SaleBillEntryFrom, List<string> SubInvoicetype, int pageNumber = 1, int pageSize = 15, string SearchBox = "")
+        {
+            string selectedInvoiceTypes = SubInvoicetype != null
+   ? string.Join(",", SubInvoicetype)
+   : "";
+            var result = await _SaleBill.GetTotalAmount(summaryDetail, partCode, itemName, saleBillno, customerName, sono, custOrderNo, schNo, performaInvNo, saleQuoteNo, domensticExportNEPZ, selectedInvoiceTypes, ParseFormattedDate((fromdate).Split(" ")[0]), ParseFormattedDate(toDate.Split(" ")[0]), SaleBillEntryFrom).ConfigureAwait(true);
+            string JsonString = JsonConvert.SerializeObject(result);
+            return Json(JsonString);
+        }
         public async Task<JsonResult> GetInvoiceTypeMain()
         {
             var JSON = await _SaleBill.GetInvoiceTypeMain();
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<IActionResult> GetSearchData(string summaryDetail, string partCode, string itemName, string saleBillno, string customerName, string sono, string custOrderNo, string schNo, string performaInvNo, string saleQuoteNo, string domensticExportNEPZ, string fromdate, string toDate, string SaleBillEntryFrom, string SubInvoicetype, int pageNumber = 1, int pageSize = 50, string SearchBox = "")
+        public async Task<IActionResult> GetSearchData(string summaryDetail, string partCode, string itemName, string saleBillno, string customerName, string sono, string custOrderNo, string schNo, string performaInvNo, string saleQuoteNo, string domensticExportNEPZ, string fromdate, string toDate, string SaleBillEntryFrom, List<string> SubInvoicetype, int pageNumber = 1, int pageSize = 15, string SearchBox = "")
         {
             try
             {
                 var model = new SaleBillDashboard();
                 model.SaleBillYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-                var Result = await _SaleBill.GetDashboardData(summaryDetail, partCode, itemName, saleBillno, customerName, sono, custOrderNo, schNo, performaInvNo, saleQuoteNo, domensticExportNEPZ, SubInvoicetype, ParseFormattedDate((fromdate).Split(" ")[0]), ParseFormattedDate(toDate.Split(" ")[0]), SaleBillEntryFrom).ConfigureAwait(true);
+                string selectedInvoiceTypes = SubInvoicetype != null
+   ? string.Join(",", SubInvoicetype)
+   : "";
+                var Result = await _SaleBill.GetDashboardData(summaryDetail, partCode, itemName, saleBillno, customerName, sono, custOrderNo, schNo, performaInvNo, saleQuoteNo, domensticExportNEPZ, selectedInvoiceTypes, ParseFormattedDate((fromdate).Split(" ")[0]), ParseFormattedDate(toDate.Split(" ")[0]), SaleBillEntryFrom).ConfigureAwait(true);
                 if (Result != null)
                 {
                     var _List = new List<TextValue>();
@@ -1299,7 +1315,7 @@ namespace eTactWeb.Controllers
             }
         }
         [HttpGet]
-        public IActionResult GlobalSearch(string searchString, string dashboardType = "Summary", int pageNumber = 1, int pageSize = 50)
+        public IActionResult GlobalSearch(string searchString, string dashboardType = "Summary", int pageNumber = 1, int pageSize = 15)
         {
             SaleBillDashboard model = new SaleBillDashboard();
             if (string.IsNullOrWhiteSpace(searchString))

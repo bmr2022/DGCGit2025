@@ -1,11 +1,65 @@
 ﻿@model eTactWeb.DOM.Models.SaleBillDashboard
 
+<style>
 
+    #container {
+        display: flex;
+    }
+
+        #container > div {
+            flex: 1;
+        }
+
+    .salebilltable {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .salebilltableHead th {
+        background-color: #127387;
+        position: sticky;
+        top: 0;
+        height: 30px;
+        z-index: 1;
+        font-size: 13px;
+    }
+
+
+    .salebilltable tbody td {
+        min-hight: 40px;
+    }
+   
+
+    table tfoot {
+        position: sticky;
+        bottom: 0;
+        background: linear-gradient(180deg, #b3e0f5, #80d4f0) !important;
+        color: #222;
+        z-index: 1; /* ensures it's above table rows */
+        box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+        height: 30px;
+    }
+
+    table tbody td { 
+        font-size: 13px; 
+        font-weight: normal !important;
+        color: #222;
+        /*     /* padding: 6px 8px; */
+    }
+
+    table tfoot td {
+        font-weight: normal;
+        border-top: 2px solid #dee2e6;
+        font-size: 13px;
+        color: #222;
+    }
+    
+</style>
 @if (Model.SummaryDetail == "Detail")
 {
-    <div style="overflow-x: auto; overflow-y: auto; max-height: 400px;">
-        <table class="table table-hover table-bordered TbCss text-nowrap mb-0" id="SBDashboardGrid">
-            <thead class="bg-gradient card-headerBG text-light">
+    <div style="overflow-x: auto; overflow-y: auto; max-height: 450px;">
+        <table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0 salebilltable" id="SBDashboardGrid">
+            <thead class="bg-gradient card-headerBG text-light salebilltableHead">
                 <tr>
                     <th>Sr#</th>
                     <th>Action</th>
@@ -304,14 +358,30 @@
                     }
                 }
             </tbody>
+            <tfoot class="bg-light fw-bold">
+                <tr>
+                    <td></td>
+                    <td>Total</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    @* Column 12 → BillAmt Total *@
+                    <td class="text-center text-primary" id="tfootBillAmt"></td>
+
+                    @* Column 17 → Net Amount Total *@
+                    <td class="text-center text-success" id="tfootNetAmt"></td>
+                    <td></td>
+                </tr>
+            </tfoot>
+
         </table>
     </div>
 }
 else
 {
-    <div style="overflow-x: auto; overflow-y: auto; max-height: 400px;">
-    <table class="table table-hover table-bordered TbCss text-nowrap mb-0" id="SBDashboardGrid">
-        <thead class="bg-gradient card-headerBG text-light">
+    <div style="overflow-x: auto; overflow-y: auto; max-height: 500px;">
+        <table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0 salebilltable" id="SBDashboardGrid">
+            <thead class="bg-gradient card-headerBG text-light salebilltableHead">
                 <tr>
                 <th>Sr#</th>
                 <th>Action</th>
@@ -319,9 +389,10 @@ else
 <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sale BillDate</th>
 <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Customer Name</th>
 <th data-columnno="4" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>GST No</th>
-<th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bill Amt</th>
+                    <th data-columnno="12" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bill Amt</th>
 <th data-columnno="13" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Taxable</th>
 <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>INVNetAmt</th>
+<th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Tax Category</th>
 <th data-columnno="5" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Supply Type</th>
 <th data-columnno="6" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>State Name Supply</th>
 <th data-columnno="7" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>City Name Supply</th>
@@ -411,12 +482,8 @@ else
                     {
                         Cntr = Cntr + 1;
                             // <tr id="SbRow-@Cntr" class="sbDashboardRow" style="@(item.SaleBillJobwork == "S" ? "background-color: #fff5d5;" : "background-color:#fde5fc;")">
-                            <tr id="SbRow-@Cntr" class="sbDashboardRow"
-    style="background-color:@(
-        !string.IsNullOrWhiteSpace(item.AgainstVoucherNo) 
-            ? "rgb(13, 202, 240)" 
-            : (item.SaleBillJobwork == "S" ? "#fff5d5" : "#fde5fc")
-    );">
+                            <tr id="SbRow-@Cntr" class="sbDashboardRow">
+
                             <th>@srNo
                                     <input type="hidden" id="AgainstVoucherNo-@Cntr" value="@item.AgainstVoucherNo" />
                                 </th>
@@ -523,9 +590,10 @@ else
                             <td>@(item.SaleBillDate == null ? string.Empty : item.SaleBillDate.Split(" ")[0])</td>
                             <td>@item.AccountName</td>
                                 <td class="SaleBillOtherRequiredDetail">@item.GSTNO</td>
-                                <td id="BillAmt-@Cntr">@item.BillAmt</td>
+                                <td class="SaleBillOtherRequiredDetail" id="BillAmt-@Cntr">@item.BillAmt</td>
                                 <td class="SaleBillOtherRequiredDetail">@item.TaxableAmt</td>
                                 <td id="INVNetAmt-@Cntr">@item.INVNetAmt</td>
+                                <td></td>
                                 <td class="SaleBillOtherRequiredDetail">@item.SupplyType</td>
                                 <td class="SaleBillOtherRequiredDetail">@item.StateNameofSupply</td>
                                 <td class="SaleBillOtherRequiredDetail">@item.CityofSupply</td>
@@ -604,6 +672,23 @@ else
                 }
             }
         </tbody>
+            <tfoot class="bg-light fw-bold">
+                <tr>
+                    <td></td>
+                    <td>Total</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    @* Column 12 → BillAmt Total *@
+                    @* <td class="text-center text-primary" id="tfootBillAmt"></td>
+ *@
+                    @* Column 17 → Net Amount Total *@
+                    <td class="text-center text-success" id="tfootNetAmt"></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tfoot>
+
     </table>
     </div>
 }
@@ -615,9 +700,9 @@ else
         displayedRows = Model.TotalRecords;
     }
 }
-<center><strong class="me-3">TOTAL ROWS  : <span>@displayedRows</span></strong>
-    <strong class="me-3">TOTAL AMT : <span id="TotalAmt"></span></strong>
-    </center>
+@* <center><strong class="me-3">TOTAL ROWS  : <span>@displayedRows</span></strong> *@
+@*     <strong class="me-3">TOTAL AMT : <span id="TotalAmt"></span></strong> *@
+@*     </center> *@
 @{
     int totalPages = (int)Math.Ceiling((double)Model.TotalRecords / Model.PageSize);
 }
@@ -662,6 +747,7 @@ else
         }
     </ul>
 }
+
 <style>
     #container {
         display: flex;
@@ -669,7 +755,7 @@ else
 
         #container > div {
             flex: 1;
-            /* margin-right: 10px; */
+            /* margin-right: 10px;
         }
 
     .pagination {

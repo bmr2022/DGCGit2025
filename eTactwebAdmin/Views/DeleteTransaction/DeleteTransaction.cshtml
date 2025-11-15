@@ -81,7 +81,6 @@
                                 <div class="col-lg-2">
                                     <label class="form-label fw-bold">New Slip No.</label>
                                     <div class="input-group">
-                                        <span id="NewSlipPrefix" class="input-group-text d-none"></span> <!-- hidden by default -->
                                         <input type="text" id="NewSlipNo" name="NewSlipNo" class="form-control w-auto" />
                                     </div>
                                 </div>
@@ -186,8 +185,7 @@
         });
     }
 
-    // Store full slip number when selecting a slip
-    let fullSlipNo = "";
+
 
     function FillSlipDetails(item) {
         $('#AccountName').val(item.accountName);
@@ -206,29 +204,9 @@
             $('#EntryDate').val('');
         }
 
-        // Save full slip number for prefix
-        fullSlipNo = item.value || item.SlipNo;
-
-        // Clear prefix initially
-        $('#NewSlipPrefix').addClass('d-none').text('');
         $('#NewSlipNo').val('');
     }
 
-    // Show prefix dynamically when user types
-    $('#NewSlipNo').on('input', function() {
-        const val = $(this).val();
-
-        if (val.length === 0) {
-            $('#NewSlipPrefix').addClass('d-none').text('');
-            return;
-        }
-
-        if (fullSlipNo) {
-            const lastSlashIndex = fullSlipNo.lastIndexOf('/');
-            const prefix = lastSlashIndex !== -1 ? fullSlipNo.substring(0, lastSlashIndex + 1) : '';
-            $('#NewSlipPrefix').removeClass('d-none').text(prefix);
-        }
-    });
 
         // Reset form fields
     $('#btnReset').click(function() {
@@ -237,45 +215,51 @@
     });
 
 
-    $('#btnUpdateExisting').click(function() {
-        let prefix = $('#NewSlipPrefix').text();
-        let suffix = $('#NewSlipNo').val();
-        let newSlipNo = prefix + suffix;
-    // Collect frontend form fields only
+    $('#btnUpdateExisting').click(function () {
+
+        let newSlipNo = $('#NewSlipNo').val().trim();
+
         var formData = {
-        FormName: $('#FormName').val(),
-        SlipNo: $('#SlipNo').val(),
-        newSlipNo: newSlipNo,
-        AccountCode: $('#AccountCode').val(),
-        EntryId: $('#EntryId').val(),
-        BasicAmount: $('#BasicAmount').val(),
-        NetAmount: $('#NetAmount').val(),
-        EntryDate: $('#EntryDate').val()
-    };
+            FormName: $('#FormName').val(),
+            SlipNo: $('#SlipNo').val(),
+            newSlipNo: newSlipNo,
+            AccountCode: $('#AccountCode').val(),
+            EntryId: $('#EntryId').val(),
+            BasicAmount: $('#BasicAmount').val(),
+            NetAmount: $('#NetAmount').val(),
+            EntryDate: $('#EntryDate').val()
+        };
 
-    // Validate required fields
-    if (!formData.SlipNo || !suffix || !formData.FormName) {
-        $.notify("Please select Form and enter Slip No & New Slip No.", { className: 'error', globalPosition: 'top center' });
-        return;
-    }
-
-    // Call backend
-    $.ajax({
-        url: '/DeleteTransaction/UpdateExistingSlipNo',
-        type: 'POST',
-        data: formData,
-        success: function (res) {
-            if(res.success){
-                $.notify(res.message, { className: 'success', globalPosition: 'top center' });
-            } else {
-                $.notify(res.message, { className: 'error', globalPosition: 'top center' });
-            }
-        },
-        error: function () {
-            $.notify("Something went wrong.", { className: 'error', globalPosition: 'top center' });
+        // Validate required fields
+        if (!formData.FormName || !formData.SlipNo || !formData.newSlipNo) {
+            $.notify("Please select Form, enter Slip No and New Slip No.", {
+                className: 'error',
+                globalPosition: 'top center'
+            });
+            return;
         }
+
+        // Call backend
+        $.ajax({
+            url: '/DeleteTransaction/UpdateExistingSlipNo',
+            type: 'POST',
+            data: formData,
+            success: function (res) {
+                if (res.success) {
+                    $.notify(res.message, { className: 'success', globalPosition: 'top center' });
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1500);
+                } else {
+                    $.notify(res.message, { className: 'error', globalPosition: 'top center' });
+                }
+            },
+            error: function () {
+                $.notify("Something went wrong.", { className: 'error', globalPosition: 'top center' });
+            }
+        });
     });
-});
+
 
 
         $(document).ready(function () {

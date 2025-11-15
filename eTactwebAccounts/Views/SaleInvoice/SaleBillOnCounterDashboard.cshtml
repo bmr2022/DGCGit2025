@@ -69,8 +69,11 @@
                             </div> *@
                             <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                 <label asp-for="SubInvoicetype" class="control-label">Invoice Type</label>
-                                <br />
-                                <select class="form-select" multiple="multiple" asp-for="SubInvoicetype" asp-items="@(new SelectList(Model.SubInvoicetypeList, "Value", "Text"))"></select>
+                                <select class="form-select invoice-type-select"
+                                        multiple="multiple"
+                                        asp-for="SubInvoicetype"
+                                        asp-items="@(new SelectList(Model.SubInvoicetypeList, "Value", "Text"))">
+                                </select>
                             </div>
                             <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
                                 <label asp-for="SaleBillNo" class="form-label">Sale Billno</label>
@@ -178,6 +181,9 @@
         flex: 1;
         /* margin-right: 10px; */
     }
+    .datepicker{
+        z-index:10;
+    }
 </style>
 
 @section Scripts
@@ -207,8 +213,68 @@
                 }
             });
         }
-       
+        function GetTotalAmounts() {
+
+            var formData = {
+                'summaryDetail': $('#SummaryDetail').val(),
+                'partCode': $('#PartCode').val(),
+                'itemName': $('#ItemName').val(),
+                'saleBillNo': $('#SaleBillNo').val(),
+                'customerName': $('#AccountName').val(),
+                'sono': $('#SONO').val() == 0 ? "" : $('#SONO').val(),
+                'custOrderNo': $('#CustOrderNo').val(),
+                'schNo': $('#SchNo').val(),
+                'performaInvNo': $('#PerformaInvNo').val(),
+                'saleQuotNo': $('#SaleQuotNo').val(),
+                'domesticExportNEPZ': $('#DomesticExportNEPZ').val(),
+                'fromDate': $('#FinFromDate').val(),
+                'toDate': $('#FinToDate').val(),
+                // 'SubInvoicetype': $('#SubInvoicetype').val(),
+                'SaleBillEntryFrom': "EntryFromCounter"
+                // 'SubInvoicetype': $('#SubInvoicetype').val() ? $('#SubInvoicetype').val().join(',') : ''
+            };
+
+            let invoiceTypes = $('#SubInvoicetype').val() || [];
+            formData.SubInvoicetype = invoiceTypes;
+            $.ajax({
+                url: '/SaleInvoice/GetTotalAmount',
+                type: 'GET',
+                data: formData,
+                traditional: true,
+                dataType: 'json',
+
+                success: function (data) {
+                    console.log("data", data);
+
+                    const obj = typeof data === "string" ? JSON.parse(data) : data;
+
+                    if (obj && obj.Result && obj.Result.length > 0) {
+                        let row = obj.Result[0];
+
+                        // Update totals
+                        $('#tfootNetAmt').text(row.TotalNetAmt?.toFixed(2) ?? "0.00");
+                        $('#tfootBillAmt').text(row.basicamount?.toFixed(2) ?? "0.00");
+                    } else {
+                        $('#tfootNetAmt').text("0.00");
+                        $('#tfootBillAmt').text("0.00");
+                    }
+                },
+
+
+                error: function (err) {
+                    console.error("❌ Error fetching totals:", err);
+                }
+            });
+        }
+
+
         $(document).ready(function () {
+            $('.invoice-type-select').select2({
+            placeholder: "Select Invoice Types",
+            allowClear: true,
+            width: "100%"
+        });
+            GetTotalAmounts();
             var deleteMessage = '@TempData["DeleteMessage"]';
 
             if (deleteMessage) {
@@ -271,7 +337,8 @@
             GetSearchData();
          
             GetFeatureOption();
-            CalculateTotalAmt();
+            //CalculateTotalAmt();
+            GetTotalAmounts();
             sessionStorage.removeItem('FromDateBack');
             sessionStorage.removeItem('ToDateBack');
             sessionStorage.removeItem('PartCodeBack');
@@ -288,15 +355,15 @@
             sessionStorage.removeItem('summaryDetailBack');
 
             $('#PartCode').rules('remove', 'required');
-            $("#SubInvoicetype").multiselect({
-                templates: {
-                    button: '<button type="button" class="multiselect btn btn-sm btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><span class="multiselect-selected-text"></span></button>',
-                },
-                enableFiltering: true,
-                includeSelectAllOption: true,
-                buttonWidth: 250,
-                enableCaseInsensitiveFiltering: true
-            });
+            // $("#SubInvoicetype").multiselect({
+            //     templates: {
+            //         button: '<button type="button" class="multiselect btn btn-sm btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><span class="multiselect-selected-text"></span></button>',
+            //     },
+            //     enableFiltering: true,
+            //     includeSelectAllOption: true,
+            //     buttonWidth: 250,
+            //     enableCaseInsensitiveFiltering: true
+            // });
         });
 
         function CalculateTotalAmt() {
@@ -762,9 +829,12 @@
                 'fromDate': $('#FinFromDate').val(),
                 'toDate': $('#FinToDate').val(),
                 // 'SubInvoicetype': $('#SubInvoicetype').val(),
-                'SaleBillEntryFrom': "EntryFromCounter",
-                'SubInvoicetype': $('#SubInvoicetype').val() ? $('#SubInvoicetype').val().join(',') : ''
+                'SaleBillEntryFrom': "EntryFromCounter"
+                // 'SubInvoicetype': $('#SubInvoicetype').val() ? $('#SubInvoicetype').val().join(',') : ''
             };
+
+            let invoiceTypes = $('#SubInvoicetype').val() || [];
+            formData.SubInvoicetype = invoiceTypes;
 
             $.ajax({
                 url: '@Url.Action("GetSearchData")',
@@ -776,7 +846,7 @@
                      GetFeatureOptions();
                     GetFormRights();
                     GetFeatureOption();
-                    CalculateTotalAmt();
+                    GetTotalAmounts();
                     CheckInv();
                     YearEditDeleteRight();
                 },
@@ -788,16 +858,44 @@
                 }
             });
         }
-        function loadPage(pageNumber) {
 
+        function loadPage(pageNumber) {
+            console.log("page", pageNumber);
 
             var dashboardType = $('#SummaryDetail').val();
 
-            var formData = $('#SParam').serializeArray();
-            formData.push({ name: 'fromdate', value: $('#FinFromDate').val() });
-            formData.push({ name: 'toDate', value: $('#FinToDate').val() });
-            console.log(formData);
-            formData.push({ name: 'pageNumber', value: pageNumber });
+            // var formData = $('#SParam').serializeArray();
+            // formData.push({ name: 'fromdate', value: $('#FinFromDate').val() });
+            // formData.push({ name: 'toDate', value: $('#FinToDate').val() });
+            // formData.push({ name: 'pageNumber', value: pageNumber });
+            // formData.push({ name: 'pageSize', value: 15 }); // always include pageSize
+            // formData.push({ name: 'SearchBox', value: $('#SearchBox').val() }); // optional
+
+
+            var formData = {
+                summaryDetail: $('#SummaryDetail').val(),
+                partCode: $('#PartCode').val(),
+                itemName: $('#ItemName').val(),
+                saleBillNo: $('#SaleBillNo').val(),
+                customerName: $('#AccountName').val(),
+                sono: $('#SONO').val() == 0 ? "" : $('#SONO').val(),
+                custOrderNo: $('#CustOrderNo').val(),
+                schNo: $('#SchNo').val(),
+                performaInvNo: $('#PerformaInvNo').val(),
+                saleQuotNo: $('#SaleQuotNo').val(),
+                domesticExportNEPZ: $('#DomesticExportNEPZ').val(),
+                fromDate: $('#FinFromDate').val(),
+                toDate: $('#FinToDate').val(),
+                SaleBillEntryFrom: "EntryFromCounter",
+                SubInvoicetype: $('#SubInvoicetype').val() ? $('#SubInvoicetype').val().join(',') : ''
+            };
+
+            // Add new properties
+            formData.pageNumber = pageNumber;
+            formData.pageSize = 15;
+            formData.SearchBox = $('#SearchBox').val();
+
+
             $.ajax({
                 type: 'GET',
                 url: '@Url.Action("GetSearchData", "SaleInvoice")',
@@ -806,11 +904,13 @@
                     $('#divDashboardGrid').empty();
                     $('#divDashboardGrid').html(result);
                     GetFormRights();
-                    $('#totalRows').text($('#gateDashboardtable tr').length);
-                    //countAllTotal();
+                    GetFeatureOption();
+                    GetTotalAmounts();
+                    GetFeatureOptions();
                 }
             });
         }
+
         $("#search-box").on("input", function () {
 
             var searchString = $(this).val().trim();
@@ -822,12 +922,29 @@
                 data: { searchString: searchString, dashboardType: dashboardType },
                 success: function (data) {
 
+
+
                     $('#divDashboardGrid').empty();
                     $('#divDashboardGrid').html(data);
+                    // Rebind features, rights, totals
                     GetFeatureOption();
                     GetFormRights();
                     GetFeatureOptions();
-                    $('#totalRows').text($('#gateDashboardtable tr').length);
+                    GetTotalAmounts();
+                    CheckInv();
+                    YearEditDeleteRight();
+
+                    // Rebind pagination buttons
+                    $('#divDashboardGrid .pagination a').click(function (e) {
+                        e.preventDefault();
+                        var page = $(this).data('page');
+                        loadPage(page);
+                    });
+
+                    // Update footer count
+                    const totalRows = $('#divDashboardGrid tr').length - 1; // subtract header
+                    $('#totalRows').text(totalRows);
+                 //   $('#totalRows').text($('#gateDashboardtable tr').length);
                     //countAllTotal();
                 },
                 error: function () {

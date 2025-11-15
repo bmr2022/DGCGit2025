@@ -26,7 +26,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _SaleBillDAL.AutoFillitem(Flag, SearchPartCode);
         }
-
+        public async Task<ResponseResult> GetTotalAmount(string summaryDetail, string partCode, string itemName, string saleBillno, string customerName, string sono, string custOrderNo, string schNo, string performaInvNo, string saleQuoteNo, string domensticExportNEPZ, string SubInvoicetype, string fromdate, string toDate, string SaleBillEntryFrom)
+        {
+            return await _SaleBillDAL.GetTotalAmount(summaryDetail, partCode, itemName, saleBillno, customerName, sono, custOrderNo, schNo, performaInvNo, saleQuoteNo, domensticExportNEPZ, SubInvoicetype, fromdate, toDate, SaleBillEntryFrom);
+        }
         public async Task<ResponseResult> FILLPendingSONO()
         {
             return await _SaleBillDAL.FILLPendingSONO();

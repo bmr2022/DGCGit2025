@@ -73,6 +73,7 @@
                         <div class="accordion-body">
                             <div class="row g-2 gx-3 align-items-center">
                                     <input type="hidden" value="@Model.Mode" asp-for="Mode" />
+                                <input type="hidden" value="@Environment.MachineName" asp-for="EntryByMachineName" />
                                 <div class="col-lg-2">
                                     <label asp-for="Branch" class="form-label">Branch</label>
                                     <input asp-for="Branch" class="form-control" readonly />

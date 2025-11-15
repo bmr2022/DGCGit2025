@@ -89,6 +89,7 @@ namespace eTactWeb.Controllers
                 //model.StateList = _IAccountMaster.GetDropDownList("StateMaster");
                 //model.ParentGroupList = _IAccountMaster.GetDropDownList("VPrimaryAccountHeadMaster");
                 model.StateList = await _IDataLogic.GetDropDownList("StateMaster", "SP_AccountMaster");
+                model.DatabaseList = await _IAccountMaster.GetDropDownList("GetDatabaseName");
                 model.ParentGroupList = await _IDataLogic.GetDropDownList("VPrimaryAccountHeadMaster", "SP_AccountMaster");
                 model.DiscountCategoryList = await _IDataLogic.GetDropDownList("GetDiscountCategory", "SP_AccountMaster");
                 model.GroupDiscountCategoryList = await _IDataLogic.GetDropDownList("GetGroupDiscountCategory", "SP_AccountMaster");
@@ -108,6 +109,7 @@ namespace eTactWeb.Controllers
                 model.Mode = Mode;
                 //model.StateList = _IAccountMaster.GetDropDownList("StateMaster");
                 //model.ParentGroupList = _IAccountMaster.GetDropDownList("VPrimaryAccountHeadMaster");
+                model.DatabaseList = await _IAccountMaster.GetDropDownList("GetDatabaseName");
                 model.StateList = await _IDataLogic.GetDropDownList("StateMaster", "SP_AccountMaster");
                 model.ParentGroupList = await _IDataLogic.GetDropDownList("VPrimaryAccountHeadMaster", "SP_AccountMaster");
                 model.DiscountCategoryList = await _IDataLogic.GetDropDownList("GetDiscountCategory", "SP_AccountMaster");

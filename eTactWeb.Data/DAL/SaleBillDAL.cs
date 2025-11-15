@@ -100,6 +100,46 @@ namespace eTactWeb.Data.DAL
 
             return Result;
         }
+        public async Task<ResponseResult> GetTotalAmount(string summaryDetail, string partCode, string itemName, string saleBillno, string customerName, string sono, string custOrderNo, string schNo, string performaInvNo, string saleQuoteNo, string domensticExportNEPZ, string SubInvoicetype, string fromdate, string toDate, string SaleBillEntryFrom)
+        {
+            var Result = new ResponseResult();
+
+            try
+            {
+                var SqlParams = new List<dynamic>();
+
+                SqlParams.Add(new SqlParameter("@Flag", "GetTotalAmount"));
+                
+                SqlParams.Add(new SqlParameter("@SummDetail", summaryDetail));
+                SqlParams.Add(new SqlParameter("@partcode", partCode ?? ""));
+                SqlParams.Add(new SqlParameter("@ItemName", itemName ?? ""));
+                SqlParams.Add(new SqlParameter("@salebillno", saleBillno ?? ""));
+                SqlParams.Add(new SqlParameter("@customerName", customerName ?? ""));
+                SqlParams.Add(new SqlParameter("@SOno", sono));
+                SqlParams.Add(new SqlParameter("@SaleBillEntryFrom", SaleBillEntryFrom));
+                SqlParams.Add(new SqlParameter("@custOrderNo", custOrderNo ?? ""));
+                SqlParams.Add(new SqlParameter("@ScheduleNo", schNo ?? ""));
+                SqlParams.Add(new SqlParameter("@PerformaInvNo", performaInvNo ?? ""));
+                SqlParams.Add(new SqlParameter("@SaleQuotNo", saleQuoteNo ?? ""));
+                SqlParams.Add(new SqlParameter("@DomesticExportNEPZ", domensticExportNEPZ ?? ""));
+                SqlParams.Add(new SqlParameter("@FromDate", fromdate));
+                SqlParams.Add(new SqlParameter("@ToDate", toDate));
+                SqlParams.Add(new SqlParameter("@SubInvoicetype", SubInvoicetype));
+                
+
+                Result = await _IDataLogic.ExecuteDataTable("SP_SaleBillMainDetail", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return Result;
+        }
+
+
         public async Task<SaleBillModel> GetlastBillDetail(string invoicedate, int currentYearcode, int AccountCode,int ItemCode)
         {
             var resultList = new SaleBillModel();
