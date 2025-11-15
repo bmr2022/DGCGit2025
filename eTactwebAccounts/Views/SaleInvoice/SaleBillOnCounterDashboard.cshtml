@@ -215,17 +215,32 @@
         }
         function GetTotalAmounts() {
 
-            // Collect form values
-            let formData = $('#SParam').serializeArray();
+            var formData = {
+                'summaryDetail': $('#SummaryDetail').val(),
+                'partCode': $('#PartCode').val(),
+                'itemName': $('#ItemName').val(),
+                'saleBillNo': $('#SaleBillNo').val(),
+                'customerName': $('#AccountName').val(),
+                'sono': $('#SONO').val() == 0 ? "" : $('#SONO').val(),
+                'custOrderNo': $('#CustOrderNo').val(),
+                'schNo': $('#SchNo').val(),
+                'performaInvNo': $('#PerformaInvNo').val(),
+                'saleQuotNo': $('#SaleQuotNo').val(),
+                'domesticExportNEPZ': $('#DomesticExportNEPZ').val(),
+                'fromDate': $('#FinFromDate').val(),
+                'toDate': $('#FinToDate').val(),
+                // 'SubInvoicetype': $('#SubInvoicetype').val(),
+                'SaleBillEntryFrom': "EntryFromCounter"
+                // 'SubInvoicetype': $('#SubInvoicetype').val() ? $('#SubInvoicetype').val().join(',') : ''
+            };
 
-            // Add multiselect values manually (serializeArray doesn't include multiple correctly)
             let invoiceTypes = $('#SubInvoicetype').val() || [];
-            formData.push({ name: 'SubInvoicetype', value: invoiceTypes });
-
+            formData.SubInvoicetype = invoiceTypes;
             $.ajax({
                 url: '/SaleInvoice/GetTotalAmount',
                 type: 'GET',
                 data: formData,
+                traditional: true,
                 dataType: 'json',
 
                 success: function (data) {
@@ -814,9 +829,12 @@
                 'fromDate': $('#FinFromDate').val(),
                 'toDate': $('#FinToDate').val(),
                 // 'SubInvoicetype': $('#SubInvoicetype').val(),
-                'SaleBillEntryFrom': "EntryFromCounter",
-                'SubInvoicetype': $('#SubInvoicetype').val() ? $('#SubInvoicetype').val().join(',') : ''
+                'SaleBillEntryFrom': "EntryFromCounter"
+                // 'SubInvoicetype': $('#SubInvoicetype').val() ? $('#SubInvoicetype').val().join(',') : ''
             };
+
+            let invoiceTypes = $('#SubInvoicetype').val() || [];
+            formData.SubInvoicetype = invoiceTypes;
 
             $.ajax({
                 url: '@Url.Action("GetSearchData")',

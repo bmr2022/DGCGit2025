@@ -1183,9 +1183,12 @@ namespace eTactWeb.Controllers
             }
         }
       
-        public async Task<JsonResult> GetTotalAmount(SaleBillDashboard model)
+        public async Task<JsonResult> GetTotalAmount(string summaryDetail, string partCode, string itemName, string saleBillno, string customerName, string sono, string custOrderNo, string schNo, string performaInvNo, string saleQuoteNo, string domensticExportNEPZ, string fromdate, string toDate, string SaleBillEntryFrom, List<string> SubInvoicetype, int pageNumber = 1, int pageSize = 15, string SearchBox = "")
         {
-            var result = await _SaleBill.GetTotalAmount(model);
+            string selectedInvoiceTypes = SubInvoicetype != null
+   ? string.Join(",", SubInvoicetype)
+   : "";
+            var result = await _SaleBill.GetTotalAmount(summaryDetail, partCode, itemName, saleBillno, customerName, sono, custOrderNo, schNo, performaInvNo, saleQuoteNo, domensticExportNEPZ, selectedInvoiceTypes, ParseFormattedDate((fromdate).Split(" ")[0]), ParseFormattedDate(toDate.Split(" ")[0]), SaleBillEntryFrom).ConfigureAwait(true);
             string JsonString = JsonConvert.SerializeObject(result);
             return Json(JsonString);
         }
@@ -1195,14 +1198,14 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<IActionResult> GetSearchData(string summaryDetail, string partCode, string itemName, string saleBillno, string customerName, string sono, string custOrderNo, string schNo, string performaInvNo, string saleQuoteNo, string domensticExportNEPZ, string fromdate, string toDate, string SaleBillEntryFrom, List<string> SubInvoicetypeL, int pageNumber = 1, int pageSize = 15, string SearchBox = "")
+        public async Task<IActionResult> GetSearchData(string summaryDetail, string partCode, string itemName, string saleBillno, string customerName, string sono, string custOrderNo, string schNo, string performaInvNo, string saleQuoteNo, string domensticExportNEPZ, string fromdate, string toDate, string SaleBillEntryFrom, List<string> SubInvoicetype, int pageNumber = 1, int pageSize = 15, string SearchBox = "")
         {
             try
             {
                 var model = new SaleBillDashboard();
                 model.SaleBillYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-                string selectedInvoiceTypes = SubInvoicetypeL != null
-   ? string.Join(",", SubInvoicetypeL)
+                string selectedInvoiceTypes = SubInvoicetype != null
+   ? string.Join(",", SubInvoicetype)
    : "";
                 var Result = await _SaleBill.GetDashboardData(summaryDetail, partCode, itemName, saleBillno, customerName, sono, custOrderNo, schNo, performaInvNo, saleQuoteNo, domensticExportNEPZ, selectedInvoiceTypes, ParseFormattedDate((fromdate).Split(" ")[0]), ParseFormattedDate(toDate.Split(" ")[0]), SaleBillEntryFrom).ConfigureAwait(true);
                 if (Result != null)
