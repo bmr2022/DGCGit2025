@@ -745,6 +745,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@DispatchTo", model.DispatchTo ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@DispatchThrough", model.DispatchThrough ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@DocTypeAccountCode", model.DocTypeAccountCode));
+                SqlParams.Add(new SqlParameter("@RoundOffAccountCode", model.RoundOffAccountCode));
                 SqlParams.Add(new SqlParameter("@PaymentTerm", model.PaymentTerm));
                 SqlParams.Add(new SqlParameter("@BillAmt", model.BillAmt));
                 SqlParams.Add(new SqlParameter("@BillAmtWord", model.BillAmtWord ?? string.Empty));

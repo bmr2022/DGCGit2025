@@ -99,6 +99,7 @@ namespace eTactWeb.Data.DAL
             //model.PurchaseRejectionVoucherDate = DS.Tables[0].Rows[0]["PurchaseRejectionVoucherDate"]?.ToString();
             //model.AgainstSalePurchase = DS.Tables[0].Rows[0]["AgainstSalePurchase"]?.ToString();
             model.AccountCode = DS.Tables[0].Rows[0]["AccountCode"] != DBNull.Value ? Convert.ToInt32(DS.Tables[0].Rows[0]["AccountCode"]) : 0;
+            model.RoundOffAccountCode = DS.Tables[0].Rows[0]["RoundOffAccountCode"] != DBNull.Value ? Convert.ToInt32(DS.Tables[0].Rows[0]["RoundOffAccountCode"]) : 0;
             model.AccountName = DS.Tables[0].Rows[0]["VendorName"]?.ToString();
             model.CustVendAddress = DS.Tables[0].Rows[0]["VendoreAddress"]?.ToString();
             model.StateNameofSupply = DS.Tables[0].Rows[0]["StateName"]?.ToString();
@@ -726,6 +727,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@Distance", model.Distance ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@BillAmt", model.ItemNetAmount));
                 SqlParams.Add(new SqlParameter("@RoundOffAmt", model.RoundOffAmt));
+                SqlParams.Add(new SqlParameter("@roundoffaccountcode", model.RoundOffAccountCode));
                 //SqlParams.Add(new SqlParameter("@RoundOffAmt", model.TotalRoundOffAmt));
                 SqlParams.Add(new SqlParameter("@RoundoffType", model.RoundoffType ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@Taxableamt", model.NetTotal));

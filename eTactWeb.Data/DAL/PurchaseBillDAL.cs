@@ -990,7 +990,8 @@ public class PurchaseBillDAL
                     MainModel.StrMRNEntryDate = oDataSet.Tables[0].Rows[0]["MRNDate"].ToString();
                     MainModel.GateNo = oDataSet.Tables[0].Rows[0]["GateNo"].ToString();
                     MainModel.GateYearCode = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[0]["GateYearcode"].ToString()) ? 0 : Convert.ToInt32(oDataSet.Tables[0].Rows[0]["GateYearcode"]); 
-                    MainModel.GateEntryId = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[0]["GateEntryId"].ToString()) ? 0 : Convert.ToInt32(oDataSet.Tables[0].Rows[0]["GateEntryId"]); 
+                    MainModel.GateEntryId = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[0]["GateEntryId"].ToString()) ? 0 : Convert.ToInt32(oDataSet.Tables[0].Rows[0]["GateEntryId"]);
+                    MainModel.RoundOffAccountCode = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[0]["RoundOffAccountCode"].ToString()) ? 0 : Convert.ToInt32(oDataSet.Tables[0].Rows[0]["RoundOffAccountCode"]); 
                     MainModel.StrGateDate = oDataSet.Tables[0].Rows[0]["GateDate"].ToString();
                     MainModel.GSTNO = oDataSet.Tables[0].Rows[0]["GSTNO"].ToString();
                     MainModel.GSTRegistered = oDataSet.Tables[0].Rows[0]["GSTRegistered"].ToString();

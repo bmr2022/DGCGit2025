@@ -242,11 +242,28 @@
                                         <option value="">-Select-</option>
                                     </select>
                                 </div>
-                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" id="RoundOff">
+                                    <div class="d-flex align-items-center">
+                                        <label asp-for="RoundOffAccountCode" class="form-label text-danger mb-0">Account*</label>
+                                        <div class="form-check form-switch">
+                                            <input asp-for="RDT" class="form-check-input" type="checkbox" role="switch" />
+                                            <label class="form-check-label">Show All</label>
+                                        </div>
+                                    </div>
+
+                                    <select asp-for="RoundOffAccountCode" class="form-select mt-1">
+                                        <option value="0">-Select-</option>
+                                    </select>
+                                    @if (Model.Mode == "U" || Model.Mode == "V")
+                                    {
+                                        <input type="hidden" asp-for="RoundOffAccountCode" id="hiddenRoundOffAccountCode" />
+                                    }
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="display:none">
                                     <label asp-for="TotalDiscountPercentage" class="form-label">Discount %</label>
                                     <input asp-for="TotalDiscountPercentage" class="form-control" min="0" max="100" />
                                 </div>
-                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="display:none">
                                     <label asp-for="TotalAmtAftrDiscount" class="form-label">Amt Aftr Discount</label>
 
                                     <input asp-for="TotalAmtAftrDiscount" class="form-control" readonly />
@@ -646,6 +663,39 @@
         $(":focusable").each(function () {
             $(this).attr("tabindex", ++tabIndx);
         });
+              $('#RoundOffAccountCode').change(function () {
+                     CalculateAdjAmt('NetTotal');
+                     GetDbCrDetail();
+             AddAdjstmntDetail1();
+          });
+            function FillRoundOffAccount(dt) {
+             var showAllDoc = dt;
+             $.ajax({
+                 type: "POST",
+                 url: "@Url.Action("FillRoundOffAccount", "PurchaseBill")",
+                 data: { "ShowAllDoc": showAllDoc },
+                 dataType: "json",
+                 async: false,
+                 success: function (result, status, error) {
+                     if (result != null) {
+
+                         var obj = $.parseJSON(result);
+                         $('#RoundOffAccountCode').empty();
+                         $('#RoundOffAccountCode').append('<option value="0">-Select-</option>');
+                         if (obj.StatusCode != 500) {
+                             $.each(obj.Result.Table, function (index, val) {
+                                 $('#RoundOffAccountCode').append("<option value=" + val.Account_Code + ">" + val.Account_Name + "</option>");
+                             });
+                         }
+                     }
+
+                     if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                               $('#RoundOffAccountCode').val($('#hiddeRoundOffAccountCode').val()).trigger("change");
+                     }
+                 }
+             });
+         }
+
         $(document).ready(function () {
             if ($('#DPBType').val() == 'Import') {
                 $('#Rate').prop("disabled", true);
@@ -669,6 +719,10 @@
             // $('#ItemCode').select2();
             $('#PONo').select2();
             $('#ScheduleNo').select2();
+                  var dtValue = $('#RDT').prop("checked") == true ? "T" : "F";
+
+                 FillRoundOffAccount(dtValue);
+                     $('#RoundOffAccountCode').select2();
                     GetFeatureOption();
             AutoFillPARTYNAMELIST();
           
@@ -3791,6 +3845,12 @@
 
     .select2-search__field {
         z-index: 10000 !important; /* Adjust the value as needed */
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        color: #444;
+        line-height: 28px;
+        width: 200px;
     }
 </style>
 
