@@ -7,7 +7,7 @@
     var yearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("YearCode"));
 }
 <div class="table-responsive" style="max-height:350px;">
-    <table class="table table-bordered TbCss text-nowrap mb-0" id="DPBDashboardGrid">
+    <table class="table table-bordered  TbCss text-nowrap mb-0" id="DPBDashboardGrid">
         <thead class="bg-gradient card-headerBG text-light" style="position:static;" id="dashDPBThead">
             @if (Model.DashboardType != null && Model.DashboardType.ToLower() == "taxdetail")
             {
@@ -311,6 +311,20 @@
                 }
             }
         </tbody>
+        <tfoot class="bg-light fw-bold">
+            <tr>
+                <td></td>
+                <td>Total</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td class="text-center text-primary" id="tfootBillAmt"></td>
+                <td class="text-center text-success" id="tfootNetAmt"></td>
+                <td></td>
+            </tr>
+        </tfoot>
     </table>
 
 </div>
@@ -320,7 +334,7 @@
     {
         displayedRows = Model.TotalRecords;
     }
-    <center><strong>TOTAL ROWS  : <span>@displayedRows</span></strong></center>
+   
 }
 
 <style>
@@ -350,13 +364,28 @@
         color: #000; /* Keep text readable */
     }
 
-   
-
-
     tbody td {
-        /* Table cell styles */
+        font-size: 13px;
+        font-weight: normal !important;
+        color: #222;
     }
 
+    table tfoot {
+        position: sticky;
+        bottom: 0;
+        background: linear-gradient(180deg, #b3e0f5, #80d4f0) !important;
+        color: #222;
+        z-index: 1; /* ensures it's above table rows */
+        box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+        height: 30px;
+    }
+
+        table tfoot td {
+            font-weight: bold;
+            border-top: 2px solid #dee2e6;
+            font-size: 13px;
+            color: #222;
+        }
     .sort-icon {
         padding: 5px;
         margin: 5px;

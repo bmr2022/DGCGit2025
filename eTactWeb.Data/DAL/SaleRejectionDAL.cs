@@ -202,6 +202,7 @@ namespace eTactWeb.Data.DAL
             model.Gateyearcode = Convert.ToInt32(DS.Tables[0].Rows[0]["Gateyearcode"]);
             model.GateDate = DS.Tables[0].Rows[0]["GateDate"]?.ToString();
             model.MRNEntryId = Convert.ToInt32(DS.Tables[0].Rows[0]["MRNEntryId"]);
+            model.RoundOffAccountCode = Convert.ToInt32(DS.Tables[0].Rows[0]["RoundOffAccountCode"]);
             model.MrnNo = DS.Tables[0].Rows[0]["MrnNo"]?.ToString();
             model.MRNDate = DS.Tables[0].Rows[0]["MRNDate"]?.ToString();
             model.Mrnyearcode = Convert.ToInt32(DS.Tables[0].Rows[0]["Mrnyearcode"]);
@@ -506,8 +507,8 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@Transporter", model.Transporter ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@Vehicleno", model.Vehicleno ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@BillAmt", model.ItemNetAmount));
-
                 SqlParams.Add(new SqlParameter("@RoundOffAmt", model.RoundOffAmt));
+                SqlParams.Add(new SqlParameter("@roundoffaccountcode", model.RoundOffAccountCode));
                 SqlParams.Add(new SqlParameter("@RoundoffType", model.RoundoffType ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@Taxableamt", model.NetTotal));
                 SqlParams.Add(new SqlParameter("@ToatlDiscountPercent", model.TotalDiscountPercentage));

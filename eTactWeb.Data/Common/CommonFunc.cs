@@ -1698,6 +1698,7 @@ public static class CommonFunc
                         && typeProperty.PropertyInfo.Name != "TxRoundOff"
                         && typeProperty.PropertyInfo.Name != "TxSeqNo"
                         && typeProperty.PropertyInfo.Name != "RackID"
+                        && typeProperty.PropertyInfo.Name != "RDT"
                         && typeProperty.PropertyInfo.Name != "AdditionalDiscount"
                         && typeProperty.PropertyInfo.Name != "AllowToChangeSaleBillStoreName"
                         && typeProperty.PropertyInfo.Name != "PackingCharges"
