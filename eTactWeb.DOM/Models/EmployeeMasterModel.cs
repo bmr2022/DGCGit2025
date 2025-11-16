@@ -38,6 +38,11 @@ namespace eTactWeb.DOM.Models
         public string? Reference { get; set; }
         public bool IsNewEmployee { get; set; }
         public IList<EmployeeMasterModel>? EmployeeMasterGrid { get; set; }
+        public List<EmployeeMasterModel> AllowanceDeductionList { get; set; }
+        public List<EmployeeMasterModel> EducationList { get; set; }
+        public List<EmployeeMasterModel> ExperienceList { get; set; }
+        public List<EmployeeMasterModel> NatureOfJobList { get; set; }
+
 
         //public string AadharCardNumber { get; set; }
         //public string CompanyCardNumber { get; set; }
