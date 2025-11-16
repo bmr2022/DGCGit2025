@@ -141,11 +141,11 @@
 
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="MobileNo" class="form-label">MobileNo</label>
-                                    <input asp-for="MobileNo " class="form-control numbers" maxlength="10" minlength="10" />
+                                    <input asp-for="MobileNo" class="form-control numbers"  type="text" readonly />
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="PhoneNo" class="form-label">PhoneNo</label>
-                                    <input asp-for="PhoneNo " class="form-control numbers" maxlength="10" minlengh="10"/>
+                                    <input asp-for="PhoneNo" class="form-control numbers" type="text" readonly    />
                                 </div>
 
                                
@@ -178,19 +178,19 @@
                                 </div>
 
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="TotalYearlyLeave" class="form-label">TotalYearlyLeave</label>
+                                    <label asp-for="TotalYearlyLeave" class="form-label">Tot YearlyLeave</label>
                                     <input asp-for="TotalYearlyLeave " class="form-control numbers" readonly />
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="TotalMonthlyLeave" class="form-label">TotalMonthlyLeave</label>
+                                    <label asp-for="TotalMonthlyLeave" class="form-label">Tot Month Leave</label>
                                     <input asp-for="TotalMonthlyLeave " class="form-control numbers" readonly />
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="GrossSalary" class="form-label">GrossSalary</label>
+                                    <label asp-for="GrossSalary" class="form-label">Gross Salary</label>
                                     <input asp-for="GrossSalary " class="form-control" readonly />
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="BalanceMonthlyLeave" class="form-label">Balance Monthly Leave</label>
+                                    <label asp-for="BalanceMonthlyLeave" class="form-label">Bal Monthly Leave</label>
                                     <input asp-for="BalanceMonthlyLeave " class="form-control numbers" readonly />
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
@@ -202,7 +202,7 @@
                                     <input asp-for="TraineePermanent " class="form-control numbers" readonly />
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="BalanceAdvanceAmt" class="form-label">Balance Advance Amt</label>
+                                    <label asp-for="BalanceAdvanceAmt" class="form-label">Bal Adv Amt</label>
                                     <input asp-for="BalanceAdvanceAmt " class="form-control numbers" readonly />
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
@@ -210,15 +210,15 @@
                                     <input asp-for="DepartHeadApprovedBy " class="form-control " readonly />
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="HRApprovedBy" class="form-label">HRApprovedBy</label>
+                                    <label asp-for="HRApprovedBy" class="form-label">HR ApprovedBy</label>
                                     <input asp-for="HRApprovedBy " class="form-control"  readonly/>
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="DepartAppdate" class="form-label">DepartAppdate</label>
+                                    <label asp-for="DepartAppdate" class="form-label">Depart App Dt</label>
                                     <input asp-for="DepartAppdate " class="form-control" readonly />
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="HRAppDate" class="form-label">HRAppDate</label>
+                                    <label asp-for="HRAppDate" class="form-label">HR App Dt</label>
                                     <input asp-for="HRAppDate " class="form-control" readonly />
                                 </div>
                                  <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
@@ -231,11 +231,11 @@
                                 </div>
 
                                  <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="totalpresentDaysTillYet" class="form-label">Total presentDays TillYet</label>
+                                    <label asp-for="totalpresentDaysTillYet" class="form-label">Tot Pre Days TillYet</label>
                                     <input asp-for="totalpresentDaysTillYet " class="form-control" />
                                 </div> 
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="totalpresentDaysinCurrentMonth" class="form-label">Total presentDays in CurrentMonth</label>
+                                    <label asp-for="totalpresentDaysinCurrentMonth" class="form-label">Tot Pre Days in Cur Month</label>
                                     <input asp-for="totalpresentDaysinCurrentMonth " class="form-control" />
                                 </div>
 
@@ -253,7 +253,7 @@
                             <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_DetailGrid"
                                     aria-expanded="true" aria-controls="B_DetailGrid">
 
-                                <i class="fa-brands fa-wpforms fa-lg fa-fw pr-3"></i> LEAVE Application DETAIL SECTION
+                                <i class="fa-brands fa-wpforms fa-lg fa-fw pr-3"></i> Leave Application Deatil Section
 
 
                             </button>
@@ -282,9 +282,9 @@
                                                     <th>To Date<span><label class="mandatoryField">*</label></span></th>
                                                     <th>Full/Harf Day<span><label class="mandatoryField">*</label></span></th>
                                                     <th>Leave Name<span><label class="mandatoryField">*</label></span></th>
-                                                    <th>Leave Duration<label class="mandatoryField">*</label></th>
-                                                    <th>Balance Leave Monthly<span><label class="mandatoryField">*</label></span></th>
-                                                    <th>Balance Leave Yearly<span><label class="mandatoryField">*</label></span></th>
+                                                    <th>Leave Dur<label class="mandatoryField">*</label></th>
+                                                    <th>Bal Leave Monthly<span><label class="mandatoryField">*</label></span></th>
+                                                    <th>Bal Leave Yearly<span><label class="mandatoryField">*</label></span></th>
                                                     <th>Max Leave In Month<span><label class="mandatoryField">*</label></span></th>
 
 
@@ -352,9 +352,9 @@
                                                     <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Leave Name</th>
                                                   
                                                     <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Duration</th>
-                                                    <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BalanceLeaveMonthly</th>
-                                                    <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BalanceLeaveYearly</th>
-                                                    <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MaxLeaveInMonth</th>
+                                                    <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bal LeaveMonthly</th>
+                                                    <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bal LeaveYearly</th>
+                                                    <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Max LeaveInMonth</th>
 
 
                                                 </tr>
