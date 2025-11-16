@@ -62,7 +62,7 @@ namespace eTactWeb.Controllers
 
             return PartialView("_TransactionLedgerGrid", model);
         }
-        public async Task<IActionResult> GetTransactionLedgerMonthlySummaryDetailsData(string FromentryDate, string ToEntryDate, int AccountCode)
+        public async Task<IActionResult> GetTransactionLedgerMonthlySummaryDetailsData(string FromentryDate, string ToEntryDate, int AccountCode,string ReportType)
         {
             var model = new TransactionLedgerModel();
             model = await _TransactionLedger.GetTransactionLedgerMonthlySummaryDetailsData(FromentryDate, ToEntryDate, AccountCode);

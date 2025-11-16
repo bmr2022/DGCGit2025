@@ -101,7 +101,7 @@
                                     <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="TrailBalance" asp-action="TrailBalance">
                                         <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
                                     </a>
-                                    <a href="#" class="btn btn-primary btn-sm ms-3" onclick="PressBack();" id="BackButton">
+                                    <a href="#" class="btn btn-primary btn-sm ms-3" onclick="goBack();" id="BackButton">
                                         <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
                                         BACK
                                     </a>
@@ -151,99 +151,148 @@
 
         $(document).ready(function () {
 
-            $('#ReportType').select2();
-            $('#TrailBalanceGroupName').select2();
-            $('#ParentGroupName').select2();
-            $('#AccountName').select2();
-            var hiddenCols = {};
+            let currentForm = "TrailBalanceForm"; // Give form a name
             let currentDate = new Date();
 
-            // FromDate model thi value
-            let fromDateRaw = '@Model.FromDate'; // e.g. "01/Apr/2025 00:00:00"
+            // Initialize Select2 fields
+            $('#ReportType, #TrailBalanceGroupName, #ParentGroupName, #AccountName').select2();
+
+            /* ----------------------------------------------------------
+               DATE FORMATTER (Same as first script)
+            -----------------------------------------------------------*/
+            let fromDateRaw = '@Model.FromDate';  // e.g. "01/Apr/2025 00:00:00"
 
             function convertToDDMMYYYY(dateStr) {
                 if (!dateStr) return '';
-                let parts = dateStr.split(" ");
-                let datePart = parts[0]; // "01/Apr/2025"
-                let [day, mon, year] = datePart.split("/");
 
-                const months = {
-                    Jan: "01", Feb: "02", Mar: "03", Apr: "04",
-                    May: "05", Jun: "06", Jul: "07", Aug: "08",
-                    Sep: "09", Oct: "10", Nov: "11", Dec: "12"
-                };
+                try {
+                    let datePart = dateStr.trim().split(" ")[0];   // "01/Apr/2025"
 
-                return `${day}/${months[mon]}/${year}`;
+                    // Already DD/MM/YYYY
+                    if (/^\d{2}\/\d{2}\/\d{4}$/.test(datePart)) return datePart;
+
+                    let [day, mon, year] = datePart.includes('/')
+                        ? datePart.split('/')
+                        : datePart.split('-');
+
+                    const months = {
+                        Jan: "01", Feb: "02", Mar: "03", Apr: "04",
+                        May: "05", Jun: "06", Jul: "07", Aug: "08",
+                        Sep: "09", Oct: "10", Nov: "11", Dec: "12"
+                    };
+
+                    let monthNum = months[mon] || mon.padStart(2, '0');
+                    return `${day}/${monthNum}/${year}`;
+                }
+                catch (e) {
+                    console.error("Invalid date:", dateStr, e);
+                    return '';
+                }
             }
 
             let fromDateFormatted = convertToDDMMYYYY(fromDateRaw);
 
             $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' })
-                .datepicker("setDate", fromDateFormatted);
+                .datepicker("setDate", fromDateFormatted || currentDate);
 
             $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' })
-                .datepicker("setDate", 'now');
+                .datepicker("setDate", currentDate);
 
-            $('#BackButton').hide();
 
-            // Run all dropdown fills, and when all done → restore session state
+            /* ----------------------------------------------------------
+               WAIT FOR SELECT2 TO LOAD (Same pattern as first script)
+            -----------------------------------------------------------*/
+            function waitForSelect2(id, callback) {
+                const interval = setInterval(() => {
+                    if ($(`#${id} option`).length > 0) {
+                        clearInterval(interval);
+                        callback();
+                    }
+                }, 100);
+            }
+
+            /* ----------------------------------------------------------
+               RESTORE FORM FILTERS (Same pattern as first script)
+            -----------------------------------------------------------*/
+            function restoreFormFilters(formName) {
+
+                const savedFilters = DrilldownManager.restoreFilters(formName);
+                if (!savedFilters) return;
+
+                for (const key in savedFilters) {
+
+                    const $el = $(`#${key}`);
+                    if (!$el.length) continue;
+
+                    const type = $el.attr('type');
+
+                    if (type === 'checkbox') {
+                        $el.prop('checked', !!savedFilters[key]).trigger('change');
+                        continue;
+                    }
+
+                    if (key === "FromDate" || key === "ToDate") {
+                        $el.datepicker("setDate", savedFilters[key]);
+                    }
+                    else if ($el.hasClass("select2")) {
+
+                        // Wait where needed
+                        if ($el.attr("id") === "AccountName") {
+                            waitForSelect2("AccountName", () => {
+                                $el.val(savedFilters[key]).trigger("change");
+                            });
+                        } else {
+                            $el.val(savedFilters[key]).trigger("change");
+                        }
+                    }
+                    else {
+                        $el.val(savedFilters[key]).trigger("change");
+                    }
+                }
+            }
+
+
+            /* ----------------------------------------------------------
+               LOAD DROPDOWNS FIRST, THEN RESTORE (Like your first script)
+            -----------------------------------------------------------*/
             $.when(
                 FillGroupList(),
                 FillParentGroupList(),
                 FillAccountList()
             ).done(function () {
-                // Restore last state from HistoryStack
-                let history = JSON.parse(sessionStorage.getItem('HistoryStack')) || [];
-                let trialParentCode = sessionStorage.getItem('TrialParentCode');
-                let trialAccountName = sessionStorage.getItem('TrailAccountName');
-                let trialReportType = sessionStorage.getItem('TrailReportType');
 
-                if (history.length > 0) {
-                    let lastStep = history[history.length - 1];
-                    const action = lastStep.action;
-                    const params = lastStep.params;
+                try {
+                    isRestoringFilters = true;
 
-                    switch (action) {
-                        case 'TrailDetail':
-                            $('#TrailBalanceGroupName').val(params.groupCode).trigger("change");
-                            $('#ReportType').val("TRAILDETAIL").trigger('change');
-                            break;
-                        case 'TrailParent':
-                            $('#TrailBalanceGroupName').val(params.groupCode).trigger("change");
-                            $('#ParentGroupName').val(params.parentCode).trigger("change");
-                            $('#ReportType').val("TRAILDETAIL").trigger('change');
-                            break;
-                        case 'TrailAccount':
-                            $('#TrailBalanceGroupName').val(params.groupCode).trigger("change");
-                            $('#ParentGroupName').val(params.parentCode).trigger("change");
-                            $('#AccountName').val(params.accountName).trigger("change");
-                            $('#ReportType').val("TRAILDETAIL").trigger('change');
+                    restoreFormFilters(currentForm);
 
-                            history.pop();
-                            sessionStorage.setItem('HistoryStack', JSON.stringify(history));
-                            break;
+                    // Additionally restore NextForm (if any)
+                    const nextForm = DrilldownManager.getLastNextForm();
+                    if (nextForm && nextForm !== currentForm) {
+                        restoreFormFilters(nextForm);
                     }
 
-                    $('#BackButton').show();
-                } else if (trialReportType || trialParentCode || trialAccountName) {
-                    if (trialReportType) $('#ReportType').val(trialReportType).trigger('change');
-                    if (trialParentCode) $('#ParentGroupName').val(trialParentCode).trigger('change');
-                    if (trialAccountName) $('#AccountName').val(trialAccountName).trigger('change');
-                    $('#BackButton').show();
-                }
+                    setTimeout(() => {
+                        DrilldownManager.restoreIfAvailable(currentForm);
+                        DrilldownManager.toggleBackButton();
+                    }, 300);
 
-                // Clear once restored
-                sessionStorage.removeItem('TrialParentCode');
-                sessionStorage.removeItem('TrailAccountName');
-                sessionStorage.removeItem('TrailReportType');
+                } catch (e) {
+                    console.error("Error restoring filters:", e);
+                } finally {
+                    setTimeout(() => { isRestoringFilters = false; }, 500);
+                }
 
                 // After everything, load data
                 GetTrailBalanceDetailsData();
             });
 
-            /** -------------------------------
-             * Column Hide/Show Handler
-             * ------------------------------- */
+
+            /* ----------------------------------------------------------
+               COLUMN HIDE/SHOW LOGIC (Unchanged)
+            -----------------------------------------------------------*/
+            var hiddenCols = {};
+
             $('.toggle-col').on('click', function () {
                 var $th = $(this).closest('th');
                 var colIndex = $th.index() + 1;
@@ -272,9 +321,10 @@
                 $('#hidden-cols-panel').toggle();
             });
 
-            /** -------------------------------
-             * Report Fields Loader
-             * ------------------------------- */
+
+            /* ----------------------------------------------------------
+               REPORT FIELDS
+            -----------------------------------------------------------*/
             function loadReportFields(reportType) {
                 let html = '';
                 if (reportType === "TRAILDETAIL") {
@@ -286,37 +336,35 @@
             }
 
             $("#ReportType").change(function () {
-                let reportType = $(this).val();
-                loadReportFields(reportType);
+                loadReportFields($(this).val());
                 updateButtonTitle();
             });
 
             loadReportFields($("#ReportType").val());
 
-            /** -------------------------------
-             * Bold Rows Styling
-             * ------------------------------- */
-            $(".bold-row").each(function () {
-                $(this).css({ "font-weight": "bold", "font-size": "16px", "color": "green" });
-                $(this).find("input").css("color", "green");
-            });
 
-            /** -------------------------------
-             * Dynamic Button Title
-             * ------------------------------- */
+            /* ----------------------------------------------------------
+               BUTTON TITLE
+            -----------------------------------------------------------*/
             function updateButtonTitle() {
                 let reportType = $("#ReportType").val();
                 let newTitle = (reportType === "TRAILSUMMARY")
                     ? "Trail Balance Summary"
                     : "Trail Balance Detail";
+
                 $("#dynamicText").text(newTitle);
             }
             updateButtonTitle();
 
-            /** -------------------------------
-             * Datepickers
-             * ------------------------------- */
-        });
+
+            /* ----------------------------------------------------------
+               BOLD ROWS
+            -----------------------------------------------------------*/
+            $(".bold-row").css({ "font-weight": "bold", "font-size": "16px", "color": "green" })
+                .find("input").css("color", "green");
+
+
+        }); 
 
         function FillGroupList() {
 
@@ -477,7 +525,7 @@
         }
 
         function callDrillDown(elem) {
-
+            debugger
             // ======================================================
             // ✅ Step 1: Collect all filter input values
             // ======================================================
@@ -590,13 +638,24 @@
                                 AccountName: $("#AccountName").val()
                             });
 
+                            DrilldownManager.saveFormFilters("MonthlySummary", {
+                                LedgerName: accountcode,
+                                AccountCode: accountcode,
+                                AccountName: accountcode,
+                                TrailBalanceGroupName: $("#TrailBalanceGroupName").val(),
+                                ParentGroupName: $("#ParentGroupName").val(),
+                                FromDate: $("#FromDate").val(),
+                                ToDate: $("#ToDate").val(),
+                                ReportType: "MonthlySummary"
+                            });
+
                             DrilldownManager.push({
                                 currentForm: "TRAILDETAIL",
-                                nextForm: "TransactionLedger",
+                                nextForm: "MonthlySummary",
                                 url: window.location.href
                             });
 
-                            window.location.href = `/${controller}/${action}?AccountCode=${accountcode}&ReportType=${"MonthlySummary"}`;
+                            window.location.href = `/${controller}/${action}`;
                             break;
                     }
 

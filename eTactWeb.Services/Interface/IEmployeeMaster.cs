@@ -5,7 +5,7 @@ namespace eTactWeb.Services.Interface
 {
     public interface IEmployeeMaster
     {
-        Task<ResponseResult> DeleteByID(int ID, string EmpName);
+        Task<ResponseResult> DeleteByID(int ID, string EmpName,int ActualEntrybyId, string EntryByMachineName);
 
         Task<EmployeeMasterModel> GetByID(int ID);
 
