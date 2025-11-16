@@ -222,15 +222,9 @@
     <script>
 
         $(document).ready(function () {
-
-            // ✅ Identify current form
             var currentForm = $("#ReportType").val();
-
-            // ✅ Initialize datepickers
             $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' });
             $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' });
-
-            // ✅ Set default FromDate (from model) and ToDate (today)
             let fromDateRaw = '@Model.FromDate';
             let currentDate = new Date();
 
@@ -261,21 +255,16 @@
             $('#FromDate').datepicker("setDate", fromDateFormatted || currentDate);
             $('#ToDate').datepicker("setDate", currentDate);
 
-            // ✅ Initialize Select2 elements
             $('#LedgerName, #ParentLedgerName, #ReportType, #VoucherType, #Group_Ledger').select2();
 
-            // ✅ Load dropdown data
             if (typeof FillParentLedgerName === 'function') FillParentLedgerName();
             if (typeof FillVoucherName === 'function') FillVoucherName();
             if (typeof FillLedgerName === 'function') FillLedgerName();
 
-            // ✅ Restore saved filters
             function restoreFormFilters(formName) {
                 if (!formName) return;
                 const savedFilters = DrilldownManager.restoreFilters(formName);
                 if (!savedFilters) return;
-
-                console.log("🔄 Restoring filters for:", formName, savedFilters);
 
                 function waitForSelect2(id, callback) {
                     const interval = setInterval(() => {
@@ -315,7 +304,6 @@
                 }
             }
 
-            // ✅ Restore filters safely
             try {
                 isRestoringFilters = true;
                 restoreFormFilters(currentForm);
@@ -325,7 +313,6 @@
                     restoreFormFilters(nextForm);
                 }
 
-                // 🔁 Restore drilldown state AFTER filters restored
                 setTimeout(() => {
                     DrilldownManager.restoreIfAvailable(currentForm);
                     DrilldownManager.toggleBackButton();
@@ -334,7 +321,6 @@
             } catch (e) {
                 console.error("❌ Error restoring filters/state:", e);
             } finally {
-                // 🟢 Re-enable validation & drilldown clearing
                 setTimeout(() => {
                     isRestoringFilters = false;
                 }, 500);
@@ -343,7 +329,7 @@
         });
 
         function GetValidateData() {
-             
+
             if ($('#ReportType').val() == "TransactionLedgerSummary" || $('#ReportType').val() == "TransactionLedgerDetail") {
                 if ($('#LedgerName').val() == 0 || $('#LedgerName').prop('selectedIndex') == 0) {
                     $.notify('Account Code is mandatory to display details data', "error");
@@ -367,13 +353,8 @@
 
         function restoreFormFilters(formName) {
             if (!formName) return;
-
             const savedFilters = DrilldownManager.restoreFilters(formName);
             if (!savedFilters) return;
-
-            console.log("🔄 Restoring filters for:", formName, savedFilters);
-
-            // 🧠 Helper: Wait until a Select2 has loaded its options and the value exists
             function waitForSelect2(id, value, callback) {
                 const interval = setInterval(() => {
                     const $ddl = $(`#${id}`);
@@ -382,17 +363,14 @@
                         const exists = options.filter(`[value="${value}"]`).length > 0;
                         if (exists) {
                             clearInterval(interval);
-                            $ddl.val(value).trigger("change"); // ✅ Set value only when exists
+                            $ddl.val(value).trigger("change"); 
                             if (callback) callback();
                         }
                     }
                 }, 100);
-
-                // ⏰ Safety timeout to stop interval after 5 seconds (avoid infinite loop)
                 setTimeout(() => clearInterval(interval), 5000);
             }
 
-            // 🧠 Iterate through saved filters and restore
             for (const key in savedFilters) {
                 const $el = $(`#${key}`);
                 if (!$el.length) continue;
@@ -410,7 +388,6 @@
                 }
                 else if ($el.hasClass("select2") || $el.hasClass("custom-select2")) {
                     waitForSelect2($el.attr("id"), val, () => {
-                        // ⏳ Optional fallback: retry once more after delay
                         setTimeout(() => {
                             if (!$el.val() && val) {
                                 console.log(`Retrying to set value for ${key}`);
@@ -425,17 +402,12 @@
             }
         }
 
-        // 🌐 Global variable (should exist before this script)
         window.isRestoringFilters = window.isRestoringFilters || false;
 
-        // ✅ Report Type change handler
         $('#ReportType').on('change', function () {
             var selectedText = $(this).find("option:selected").text();
             $('#reportTitle').text(selectedText === "-Select-" ? "Report" : selectedText);
-
             var selectedType = $(this).val();
-
-            // 🧠 Skip drilldown clear + validation when restoring filters
             if (!isRestoringFilters) {
                 console.log("🔹 Manual ReportType change → running validation");
 
@@ -447,8 +419,6 @@
                 }
 
                 GetValidateData();
-            } else {
-                console.log("⏸ Skipping drilldown + validation during filter restore");
             }
         });
 
