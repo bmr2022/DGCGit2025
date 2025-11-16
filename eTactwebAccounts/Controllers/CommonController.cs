@@ -494,7 +494,8 @@ namespace eTactWeb.Controllers
                     Math.Round(Item.Rate, 2, MidpointRounding.AwayFromZero),
                     Math.Round(Item.DiscPer, 2, MidpointRounding.AwayFromZero),
                     Math.Round(Item.DiscRs, 2, MidpointRounding.AwayFromZero),
-                    Math.Round(Item.Amount, 2, MidpointRounding.AwayFromZero),
+                     Math.Round(Convert.ToDecimal(Item.Amount != null ? Item.Amount : 0), 2, MidpointRounding.AwayFromZero),
+                    //Math.Round(Item.Amount, 2, MidpointRounding.AwayFromZero),
                     "CR",
                         });
                 }

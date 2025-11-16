@@ -19,10 +19,15 @@
                     </span>
                 </h5>
             </div>
+          @*   @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+            } *@
             <div class="card-body">
                 <div class="card">
                     <div class="card-body">
                         <div class="row">
+                            <input type="hidden" value="@Environment.MachineName" asp-for="EntryByMachineName" />
                             <div class="col col-auto col-md-2 col-sm-6 col-xs-6">
                                 <label for="state" class="control-label">Employee Code</label>
                                 <input asp-for="EmpCode" class="form-control form-control-sm" id="EmpCode" data-val="false" />

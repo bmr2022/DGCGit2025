@@ -752,8 +752,8 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@TaxableAmt", model.TaxableAmt));
                 SqlParams.Add(new SqlParameter("@TaxbaleAmtInWord", model.TaxbaleAmtInWord ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@GSTAmount", model.GSTAmount));
-                SqlParams.Add(new SqlParameter("@RoundType", model.RoundTypea ?? string.Empty));
-                SqlParams.Add(new SqlParameter("@RoundOffAmt", model.RoundOffAmt));
+                SqlParams.Add(new SqlParameter("@RoundType", model.TotalRoundOff ?? string.Empty));
+                SqlParams.Add(new SqlParameter("@RoundOffAmt", model.TotalRoundOffAmt));
                 SqlParams.Add(new SqlParameter("@DiscountPercent", model.DiscountPercent));
                 SqlParams.Add(new SqlParameter("@DiscountAmt", model.DiscountAmt));
                 SqlParams.Add(new SqlParameter("@NetAmtInWords", model.NetAmtInWords ?? string.Empty));
@@ -1449,6 +1449,7 @@ namespace eTactWeb.Data.DAL
 
                 model.SaleBillEntryId = Convert.ToInt32(DS.Tables[0].Rows[0]["SaleBillEntryId"]);
                 model.SaleBillYearCode = Convert.ToInt32(DS.Tables[0].Rows[0]["SaleBillYearCode"]);
+                model.RoundOffAccountCode = Convert.ToInt32(DS.Tables[0].Rows[0]["RoundOffAccountCode"]);
                 model.SaleBillEntryDate = DS.Tables[0].Rows[0]["SaleBillEntryDate"]?.ToString();
                 model.InvPrefix = DS.Tables[0].Rows[0]["InvPrefix"]?.ToString();
                 model.SaleBillJobwork = DS.Tables[0].Rows[0]["SaleBillJobwork"]?.ToString();
@@ -1501,10 +1502,14 @@ namespace eTactWeb.Data.DAL
                 model.TaxbaleAmtInWord = DS.Tables[0].Rows[0]["TaxbaleAmtInWord"]?.ToString();
                 model.GSTAmount = Convert.ToInt32(DS.Tables[0].Rows[0]["GSTAmount"]);
                 model.RoundTypea = DS.Tables[0].Rows[0]["RoundType"]?.ToString();
-                model.RoundOffAmt = Convert.ToInt32(DS.Tables[0].Rows[0]["RoundOffAmt"]);
+                model.TotalRoundOff = DS.Tables[0].Rows[0]["RoundType"]?.ToString();
+                //model.RoundOffAmt = Convert.ToInt32(DS.Tables[0].Rows[0]["RoundOffAmt"]);
+                model.RoundOffAmt = Convert.ToDecimal(DS.Tables[0].Rows[0]["RoundOffAmt"]);
+                model.TotalRoundOffAmt = Convert.ToDecimal(DS.Tables[0].Rows[0]["RoundOffAmt"]);
                 model.DiscountPercent = Convert.ToInt32(DS.Tables[0].Rows[0]["DiscountPercent"]);
                 model.DiscountAmt = Convert.ToInt32(DS.Tables[0].Rows[0]["DiscountAmt"]);
                 model.INVNetAmt = Convert.ToInt32(DS.Tables[0].Rows[0]["INVNetAmt"]);
+                model.NetTotal = Convert.ToInt32(DS.Tables[0].Rows[0]["INVNetAmt"]);
                 model.NetAmtInWords = DS.Tables[0].Rows[0]["NetAmtInWords"]?.ToString();
                 model.Remark = DS.Tables[0].Rows[0]["Remark"]?.ToString();
                 model.PermitNo = DS.Tables[0].Rows[0]["PermitNo"]?.ToString();

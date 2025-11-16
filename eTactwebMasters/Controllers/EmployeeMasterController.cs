@@ -483,31 +483,28 @@ namespace eTactWeb.Controllers
             return null;
         }
 
-        public async Task<IActionResult> DeleteByID(int ID, string EmpName)
+        public async Task<IActionResult> DeleteByID(int ID, string EmpName, int ActualEntrybyId, string EntryByMachineName)
         {
-            var IsDelete = _IDataLogic.IsDelete(ID, "Emp_Id");
+            //var IsDelete = _IDataLogic.IsDelete(ID, "Emp_Id",  ActualEntrybyId,  EntryByMachineName);
 
-            if (IsDelete == 0)
-            {
-                var Result = await _IEmployeeMaster.DeleteByID(ID, EmpName).ConfigureAwait(true);
+                var Result = await _IEmployeeMaster.DeleteByID(ID, EmpName,  ActualEntrybyId,  EntryByMachineName).ConfigureAwait(true);
 
                 if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
                 {
                     ViewBag.isSuccess = true;
                     TempData["410"] = "410";
                 }
+                else if (Result.StatusCode == HttpStatusCode.BadRequest)  
+                {
+                    TempData["ErrorMessage"] = Result.StatusText;     
+                    ViewBag.isSuccess = false;
+                }
                 else
                 {
                     ViewBag.isSuccess = false;
                     TempData["423"] = "423";
                 }
-            }
-            else
-            {
-                ViewBag.isSuccess = false;
-                TempData["423"] = "423";
-            }
-
+            
             return RedirectToAction(nameof(DashBoard));
         }
         public static DateTime ParseDate(string dateString)
@@ -573,9 +570,9 @@ namespace eTactWeb.Controllers
 
                     }
 
-                    MainModel.EmployeeMasterGrid = OrderGrid;
+                    MainModel.AllowanceDeductionList = OrderGrid;
 
-                    HttpContext.Session.SetString("KeyEmployeeMasterGrid_AllDed", JsonConvert.SerializeObject(MainModel.EmployeeMasterGrid));
+                    HttpContext.Session.SetString("KeyEmployeeMasterGrid_AllDed", JsonConvert.SerializeObject(MainModel.AllowanceDeductionList));
                 }
                 else
                 {
@@ -690,9 +687,9 @@ namespace eTactWeb.Controllers
 
                     }
 
-                    MainModel.EmployeeMasterGrid = OrderGrid;
+                    MainModel.EducationList = OrderGrid;
 
-                    HttpContext.Session.SetString("KeyEmployeeMasterGrid_Edu", JsonConvert.SerializeObject(MainModel.EmployeeMasterGrid));
+                    HttpContext.Session.SetString("KeyEmployeeMasterGrid_Edu", JsonConvert.SerializeObject(MainModel.EducationList));
                 }
                 else
                 {
@@ -807,9 +804,9 @@ namespace eTactWeb.Controllers
 
                     }
 
-                    MainModel.EmployeeMasterGrid = OrderGrid;
+                    MainModel.ExperienceList = OrderGrid;
 
-                    HttpContext.Session.SetString("KeyEmployeeMasterGrid_Exp", JsonConvert.SerializeObject(MainModel.EmployeeMasterGrid));
+                    HttpContext.Session.SetString("KeyEmployeeMasterGrid_Exp", JsonConvert.SerializeObject(MainModel.ExperienceList));
                 }
                 else
                 {

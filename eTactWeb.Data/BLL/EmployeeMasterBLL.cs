@@ -17,9 +17,9 @@ namespace eTactWeb.Data.BLL
             _EmployeeMasterDAL = new EmployeeMasterDAL(config, dataLogicDAL, connectionStringService);
             _DataLogicDAL = dataLogicDAL;
         }
-        public async Task<DOM.Models.Common.ResponseResult> DeleteByID(int ID, string EmpName)
+        public async Task<DOM.Models.Common.ResponseResult> DeleteByID(int ID, string EmpName, int ActualEntrybyId, string EntryByMachineName)
         {
-            return await _EmployeeMasterDAL.DeleteByID(ID, EmpName);
+            return await _EmployeeMasterDAL.DeleteByID(ID, EmpName, ActualEntrybyId, EntryByMachineName);
         }
 
         public async Task<EmployeeMasterModel> GetByID(int ID)
