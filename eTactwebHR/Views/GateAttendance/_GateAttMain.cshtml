@@ -55,7 +55,7 @@
         </div>
         <div class="dvEmpAttDate col-xxl-1 col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
             <label asp-for="strEmpAttDate" class="form-label">Attendance Date</label>
-            <input asp-for="strEmpAttDate" class="form-control datePickerControl" onchange="EmpAttDateOnChange()" />
+            <input asp-for="strEmpAttDate" class="form-control datePickerControl" onkeydown="return false;" onpaste="return false;" autocomplete="off" onchange="EmpAttDateOnChange()" />
         </div>
         <div class="dvEmpAttMonth col-xxl-1 col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width: 9.33%;">
             <input asp-for="intEmpAttMonth" type="hidden" />
@@ -67,6 +67,10 @@
         <div class="dvGateAttEntryDay col-xxl-1 col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width: 9.33%;">
             <label asp-for="GateAttEntryDay" class="form-label">Attendance Day</label>
             <input asp-for="GateAttEntryDay" class="form-control" tabindex="6" style="background-color:lightblue;" readonly/>
+        </div>
+        <div class="dvGateAttEntryOffDay col-xxl-1 col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width: 9.33%;padding-top: 3px; display: none;">
+            <span>&nbsp;</span>
+            <span tabindex="27" style="border: none;font-weight: 600;text-decoration: underline;display:block;" id="GateAttEntryOffDay" name="GateAttEntryOffDay" fdprocessedid="lyctkb"></span>
         </div>
         <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-xs-12">
             <label asp-for="EmployeeCode" class="form-label">Employee Name*</label>
