@@ -96,7 +96,7 @@
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="HPanel2">
                         <button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#BPanel2" aria-expanded="true" aria-controls="BPanel2">
-                            <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Item Detail Grid</strong>
+                            <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Attendance Grid</strong>
                         </button>
                         @* <button class="GridButton btn btn-sm btn-outline-danger" style="width:150px; text-wrap-mode: nowrap;" type="button">
                             <i class="fa-solid fa-angles-down fa-fw fa-lg "></i>ADD TO GRID
@@ -254,6 +254,7 @@
                 //strEmpAttDate = parseDateToFormat(strEmpAttDate.split(" ")[0]);
                 var strEmpAttDate = $('#strEmpAttDate').val();
                 $('#strEmpAttDate').datepicker("destroy").datepicker({ dateFormat: 'dd/M/yy' }).datepicker("setDate", strEmpAttDate);
+                isallcheckedonmodify = true;
             }
             else {
                 $('#strEmpAttDate').val('').datepicker("destroy").datepicker({dateFormat: 'dd/M/yy', minDate: minDate, maxDate: maxDate}).datepicker("setDate", defaultDate);
@@ -610,275 +611,6 @@
             if (e.which == 13) e.preventDefault();
         });
     </script>
-
-    <script type="text/javascript">
-            function DayorMonthChange(e) {
-                var obj = $('#DayOrMonthType :selected').val();
-                if (obj && obj.toLowerCase() === "daily") {
-                    $('.dvEmpAttDate').show();
-                    $('.dvGateAttEntryDay').show();
-                    if($('#Mode').val() != 'V' && $('#Mode').val() != 'U' && $('#IsIncreamented').val().toLowerCase() == 'false') {
-                        $('#strEmpAttDate').select(0);
-                    }
-                    $('.dvEmpAttMonth').hide();
-                    $('#strEmpAttMonth').prop("selectedIndex", 0);
-                    $('#CategoryCode').val($('#EmpCategoryId').val());
-                }
-                else if (obj && obj.toLowerCase() === "monthly") {
-                    $('.dvEmpAttMonth').show();
-                    $('.dvEmpAttDate').hide();
-                    if($('#Mode').val() != 'V' && $('#Mode').val() != 'U' && $('#IsIncreamented').val().toLowerCase() == 'false') {
-                        $('#strEmpAttMonth').val('');
-                    }
-                    else {
-                        if(ValidateNull($('#intEmpAttMonth').val())) {
-                            $('#strEmpAttMonth').prop("selectedIndex", $('#intEmpAttMonth').val());
-                        }
-                        else{
-                            $('#strEmpAttMonth').val($('#strEmpAttMonth').val());
-                        }
-                        $('#CategoryCode').val($('#EmpCategoryId').val());
-                    }
-                    $('.dvGateAttEntryDay').hide();
-                    $('#strEmpAttDate').val("");
-                }
-                else {
-                    $('.dvEmpAttDate').show();
-                    $('.dvGateAttEntryDay').show();
-                    if($('#Mode').val() != 'V' && $('#Mode').val() != 'U' && $('#IsIncreamented').val().toLowerCase() == 'false') {
-                        $('#strEmpAttDate').select(0);
-                    }
-                    $('.dvEmpAttMonth').hide();
-                    $('#strEmpAttMonth').prop("selectedIndex", 0);
-                }
-            }
-
-            function EmpAttDateOnChange() {
-                let dateStr = document.getElementById("strEmpAttDate").value;
-                if (dateStr) {
-                    let date = new Date(dateStr);
-                    let options = { weekday: 'long' };
-                    let dayName = date.toLocaleDateString('en-US', options);
-                    let year = date.getFullYear();
-                    console.log("Day:", dayName, "Year:", year);
-                    $('#GateAttEntryDay').val(dayName);
-                }
-            }
-
-            function ShowManualAttandance() {
-                var date = $("#strEmpAttDate").val();
-                var attmonth = $("#strEmpAttMonth").val();
-                var yearcode = $("#GateAttYearCode").val();
-                var DayOrMonthType = $("#DayOrMonthType").val();
-                var EmpCatId = $("#CategoryCode").val();
-                var IsErr = 0;
-                if (!DayOrMonthType) {
-                        $.notify("Please select a Day or Month.", "error");
-                        IsErr = 1;
-                }
-                if (DayOrMonthType) {
-                        if (DayOrMonthType.toLowerCase() == "daily" && (date == null || date ==undefined || date == "")) {
-                               $.notify("Please select a Attendance Date", "error");
-                                IsErr = 1;
-                        }
-                        if (DayOrMonthType.toLowerCase() == "monthly" && (attmonth == null || attmonth ==undefined || attmonth == "" || attmonth == "0")) {
-                                 $.notify("Please select a Attendance Month", "error");
-                                 IsErr = 1;
-                        }
-                        if (DayOrMonthType.toLowerCase() == "monthly" && (EmpCatId == null || EmpCatId ==undefined || EmpCatId == "" || EmpCatId == "0")) {
-                                 $.notify("Please select Category", "error");
-                                 IsErr = 1;
-                        }
-                }
-                if (IsErr === 0) {
-                    $.ajax({
-                        url: '/GateAttendance/LoadAttendanceGrid',
-                        type: 'GET',
-                        data: { DayOrMonthType: DayOrMonthType, Attdate: date, AttMonth: attmonth, YearCode: yearcode, EmpCatId: EmpCatId  },
-                        success: function (result) {
-                                $("#attendanceItemGrid").html(result);
-                                updateItemCount();
-                                //$("#lblItemCount").text($("#rowitemcount").val());
-                                if(DayOrMonthType.toLowerCase() == "daily")
-                                {
-                                    if ($('#isholiday').val().toLowerCase() == "true" || $('#isweekoff').val().toLowerCase() == "true") {
-                                        let message = $('#isholiday').val().toLowerCase() == "true"
-                                            ? "This day is a Holiday. Do you still want to edit attendance?"
-                                            : "This day is a Week-Off. Do you still want to edit attendance?";
-
-                                        if (!confirm(message)) {
-                                                    $("#attendanceItemGridbody").html("<input id='rowitemcount' type='hidden' value='0' /><tr><td colspan='8' class='text-center'>No records found.</td></tr>");
-                                                    $('#GateAttEntryOffDay').text('');
-                                                    $('.dvGateAttEntryOffDay').hide();
-                                        }
-                                        else {
-                                            var textblock = $('#isholiday').val().toLowerCase() == "true" ? "Holiday" : "Week-Off";
-                                            var textclass = $('#isholiday').val().toLowerCase() == "true" ? "holiday-time lighten" : "weekoff-time lighten";
-                                            $('#GateAttEntryDay').addClass(textclass);
-                                            $('#GateAttEntryOffDay').addClass(textclass);
-                                            $('#GateAttEntryOffDay').text(textblock);
-                                            $('.dvGateAttEntryOffDay').show();
-                                        }
-                                    }
-                                    else {
-                                        $('#GateAttEntryOffDay').text('');
-                                        $('.dvGateAttEntryOffDay').hide();
-                                    }
-                                }
-                        },
-                        error: function () {
-                            console.log("Error loading attendance grid.");
-                        }
-                    });
-                }
-            }
-         function updateItemCount() {
-            var count = $("#attendanceItemGrid tbody tr").length;
-            $("#lblItemCount").text(count);
-        }
-            function fillEntryId() {
-                //ENTRYID
-                $.ajax({
-                    type: "GET",
-                    url: "@Url.Action("FillEntryId")",
-                    dataType: "json",
-                    data: { "YearCode": $('#GateAttYearCode').val() },
-                    success: function (result, status, error) {
-                        if($('#Mode').val() != 'V' && $('#Mode').val() != 'U') {
-                            if (result != null) {
-                                var obj = $.parseJSON(result);
-                                var EntryId = obj.Result.Table[0] != null ? obj.Result.Table[0].EntryId : (obj.Result.Table1[0] != null ? obj.Result.Table1[0].EntryId : 0);
-                                $('#GateAttEntryId').val(EntryId);
-                            }
-                        }
-                    }
-                });
-            }
-        function initItemGridResize() {
-          document.querySelectorAll('.itemgridTable').forEach(function (table) {
-            if (table.dataset.resizable === "true") return;
-            table.dataset.resizable = "true";
-
-            // Remove old colgroup to recalc widths fresh
-            const oldColgroup = table.querySelector('colgroup');
-            if (oldColgroup) oldColgroup.remove();
-
-            const ths = table.querySelectorAll('thead th');
-            const colgroup = document.createElement('colgroup');
-
-            ths.forEach(th => {
-              const col = document.createElement('col');
-              const naturalWidth = th.offsetWidth;
-              let initWidth;
-
-              // Intime / Outtime columns → compact (30px minimum)
-              if (/\d+\(in|outtime\)/i.test(th.textContent)) {
-                initWidth = Math.max(30, naturalWidth);
-              }
-              else {
-                // Descriptive columns → wider (≥120px)
-                initWidth = Math.max(120, naturalWidth);
-              }
-
-              col.style.width = initWidth + 'px';
-              colgroup.appendChild(col);
-            });
-
-            table.insertBefore(colgroup, table.firstChild);
-
-            const cols = table.querySelectorAll('col');
-
-            ths.forEach((th, i) => {
-              if (th.querySelector('.resize-handle')) return;
-
-              const handle = document.createElement('div');
-              handle.className = 'resize-handle';
-              th.style.position = 'relative';
-              th.appendChild(handle);
-
-              let startX, startWidth;
-
-              handle.addEventListener('mousedown', function (e) {
-                startX = e.clientX;
-                startWidth = cols[i].offsetWidth;
-                document.addEventListener('mousemove', onMouseMove);
-                document.addEventListener('mouseup', onMouseUp);
-              });
-
-              function onMouseMove(e) {
-                const diff = e.clientX - startX;
-                let newWidth = startWidth + diff;
-
-                // Enforce different minimums
-                if (/\d+\(in|outtime\)/i.test(th.textContent)) {
-                  if (newWidth < 30) newWidth = 30;
-                } else {
-                  if (newWidth < 120) newWidth = 120;
-                }
-
-                cols[i].style.width = newWidth + 'px';
-              }
-
-              function onMouseUp() {
-                document.removeEventListener('mousemove', onMouseMove);
-                document.removeEventListener('mouseup', onMouseUp);
-              }
-            });
-          });
-        }
-        function onclickCheckEmp() {
-            const master = document.getElementById("checkAllEmp");
-            document.querySelectorAll("input[name='selectedEmpIds']").forEach(cb => cb.checked = master.checked);
-        }
-        function checkUncheckEmp(empid) {
-            const all = document.querySelectorAll("input[name='selectedEmpIds']");
-            const checked = document.querySelectorAll("input[name='selectedEmpIds']:checked");
-            document.getElementById("checkAllEmp").checked = (all.length === checked.length);
-        }
-        function ondeptlistchange(empid) {
-            if (document.getElementById("checkDeptSync")?.checked) {
-                    let dropdown = document.getElementById("dept_" + empid);
-            if (dropdown) {
-                document.querySelectorAll(".dept-dd").forEach(other => {
-                    other.value = dropdown.value;
-                });
-            }
-            }
-        }
-        function ondesiglistchange(empid) {
-            if (document.getElementById("checkDesigSync")?.checked) {
-                   let dropdown = document.getElementById("desig_" + empid);
-            if (dropdown) {
-                document.querySelectorAll(".desig-dd").forEach(other => {
-                    other.value = dropdown.value;
-                });
-            }
-            }
-        }
-        function onclickCheckDate(dayNo) {
-            let checkboxes = document.querySelectorAll("input[type='checkbox'][data-day='" + dayNo + "']");
-            let isChecked = event.target.checked;
-            checkboxes.forEach(cb => cb.checked = isChecked);
-
-            document.querySelectorAll("input.att-input[data-day='" + dayNo + "']").forEach(function (el)
-            {
-                if (isChecked) {
-                    el.removeAttribute("disabled");
-                } else {
-                    el.setAttribute("disabled", "disabled");
-                }
-            });
-        }
-        document.addEventListener('DOMContentLoaded', initItemGridResize);
-        function PressBack() {
-            sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());
-            sessionStorage.setItem('ToDateBack', $('#ToDateBack').val());
-            // sessionStorage.setItem('DashboardTypeBack', $('#DashboardTypeBack').val());
-            // sessionStorage.setItem('AttendanceEntryMethodTypeBack', $('#AttendanceEntryMethodTypeBack').val());
-            sessionStorage.setItem('GlobalSearchBack', $('#GlobalSearchBack').val());
-            window.history.back();
-        }
-    </script>
 }
 <!-- jQuery FIRST -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -984,6 +716,348 @@
     }
 
     .lighten {
-        filter: brightness(120%);
+        filter: brightness(135%);
     }
 </style>
+
+<script type="text/javascript">
+    let isallcheckedonmodify = false;
+    function DayorMonthChange(e) {
+            var obj = $('#DayOrMonthType :selected').val();
+            if (obj && obj.toLowerCase() === "daily") {
+                $('.dvEmpAttDate').show();
+                $('.dvGateAttEntryDay').show();
+                if($('#Mode').val() != 'V' && $('#Mode').val() != 'U' && $('#IsIncreamented').val().toLowerCase() == 'false') {
+                    $('#strEmpAttDate').select(0);
+                }
+                else {
+                    if(isallcheckedonmodify == true && ($('#Mode').val() == "U" || $('#Mode').val() == "V")) {
+                        document.getElementById("checkAllEmp").checked = true;
+                        onclickCheckEmp();
+                        isallcheckedonmodify = false;
+                    }
+                }
+                $('.dvEmpAttMonth').hide();
+                $('#strEmpAttMonth').prop("selectedIndex", 0);
+                 $('#CategoryCode').val($('#EmpCategoryId').val());
+            }
+            else if (obj && obj.toLowerCase() === "monthly") {
+                $('.dvEmpAttMonth').show();
+                $('.dvEmpAttDate').hide();
+                if($('#Mode').val() != 'V' && $('#Mode').val() != 'U' && $('#IsIncreamented').val().toLowerCase() == 'false') {
+                    $('#strEmpAttMonth').val('');
+                }
+                else {
+                    if(ValidateNull($('#intEmpAttMonth').val())) {
+                        $('#strEmpAttMonth').prop("selectedIndex", $('#intEmpAttMonth').val());
+                    }
+                    else{
+                        $('#strEmpAttMonth').val($('#strEmpAttMonth').val());
+                    }
+                    $('#CategoryCode').val($('#EmpCategoryId').val());
+                    if(isallcheckedonmodify == true && ($('#Mode').val() == "U" || $('#Mode').val() == "V")) {
+                        document.getElementById("checkAllEmp").checked = true;
+                        onclickCheckEmp();
+                        isallcheckedonmodify = false;
+                    }
+                }
+                $('.dvGateAttEntryDay').hide();
+                $('#strEmpAttDate').val("");
+            }
+            else {
+                $('.dvEmpAttDate').show();
+                $('.dvGateAttEntryDay').show();
+                if($('#Mode').val() != 'V' && $('#Mode').val() != 'U' && $('#IsIncreamented').val().toLowerCase() == 'false') {
+                    $('#strEmpAttDate').select(0);
+                }
+                else {
+                    if(isallcheckedonmodify == true && ($('#Mode').val() == "U" || $('#Mode').val() == "V")) {
+                        document.getElementById("checkAllEmp").checked = true;
+                        onclickCheckEmp();
+                        isallcheckedonmodify = false;
+                    }
+                }
+                $('.dvEmpAttMonth').hide();
+                $('#strEmpAttMonth').prop("selectedIndex", 0);
+            }
+        }
+
+    function EmpAttDateOnChange() {
+            let dateStr = document.getElementById("strEmpAttDate").value;
+            if (dateStr) {
+                let date = new Date(dateStr);
+                let options = { weekday: 'long' };
+                let dayName = date.toLocaleDateString('en-US', options);
+                let year = date.getFullYear();
+                console.log("Day:", dayName, "Year:", year);
+                $('#GateAttEntryDay').val(dayName);
+            }
+        }
+
+    function ShowManualAttandance() {
+            var date = $("#strEmpAttDate").val();
+            var attmonth = $("#strEmpAttMonth").val();
+            var yearcode = $("#GateAttYearCode").val();
+            var DayOrMonthType = $("#DayOrMonthType").val();
+            var EmpCatId = $("#CategoryCode").val();
+            var IsErr = 0;
+            if (!DayOrMonthType) {
+                    $.notify("Please select a Day or Month.", "error");
+                    IsErr = 1;
+            }
+            if (DayOrMonthType) {
+                    if (DayOrMonthType.toLowerCase() == "daily" && (date == null || date ==undefined || date == "")) {
+                           $.notify("Please select a Attendance Date", "error");
+                            IsErr = 1;
+                    }
+                    if (DayOrMonthType.toLowerCase() == "monthly" && (attmonth == null || attmonth ==undefined || attmonth == "" || attmonth == "0")) {
+                             $.notify("Please select a Attendance Month", "error");
+                             IsErr = 1;
+                    }
+                    if (DayOrMonthType.toLowerCase() == "monthly" && (EmpCatId == null || EmpCatId ==undefined || EmpCatId == "" || EmpCatId == "0")) {
+                             $.notify("Please select Category", "error");
+                             IsErr = 1;
+                    }
+            }
+            if (IsErr === 0) {
+                $.ajax({
+                    url: '/GateAttendance/LoadAttendanceGrid',
+                    type: 'GET',
+                    data: { DayOrMonthType: DayOrMonthType, Attdate: date, AttMonth: attmonth, YearCode: yearcode, EmpCatId: EmpCatId  },
+                    success: function (result) {
+                            $("#attendanceItemGrid").html(result);
+                            updateItemCount();
+                            if(DayOrMonthType.toLowerCase() == "daily")
+                            {
+                                if ($('#isholiday').val().toLowerCase() == "true" || $('#isweekoff').val().toLowerCase() == "true") {
+                                    let message = $('#isholiday').val().toLowerCase() == "true"
+                                        ? "This day is a Holiday. Do you still want to edit attendance?"
+                                        : "This day is a Week-Off. Do you still want to edit attendance?";
+
+                                    if (!confirm(message)) {
+                                                $("#attendanceItemGridbody").html("<input id='rowitemcount' type='hidden' value='0' /><tr id='norecord'><td colspan='8' class='text-center'>No records found.</td></tr>");
+                                                $('#GateAttEntryOffDay').text('');
+                                                $('.dvGateAttEntryOffDay').hide();
+                                    }
+                                    else {
+                                        var textblock = $('#isholiday').val().toLowerCase() == "true" ? "Holiday" : "Week-Off";
+                                        var textclass = $('#isholiday').val().toLowerCase() == "true" ? "holiday-time lighten" : "weekoff-time lighten";
+                                        $('#GateAttEntryDay').addClass(textclass);
+                                        $('#GateAttEntryOffDay').addClass(textclass);
+                                        $('#GateAttEntryOffDay').text(textblock);
+                                        $('.dvGateAttEntryOffDay').show();
+                                    }
+                                }
+                                else {
+                                    $('#GateAttEntryOffDay').text('');
+                                    $('.dvGateAttEntryOffDay').hide();
+                                }
+                            }
+                    },
+                    error: function () {
+                        console.log("Error loading attendance grid.");
+                    }
+                });
+            }
+        }
+    function updateItemCount() {
+        var count = $("#attendanceItemGrid tbody tr").length;
+        if($("#norecord").length && count > 0) {
+            count = count - 1;
+        }
+        $("#lblItemCount").text(count);
+    }
+    function fillEntryId() {
+            //ENTRYID
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("FillEntryId")",
+                dataType: "json",
+                data: { "YearCode": $('#GateAttYearCode').val() },
+                success: function (result, status, error) {
+                    if($('#Mode').val() != 'V' && $('#Mode').val() != 'U') {
+                        if (result != null) {
+                            var obj = $.parseJSON(result);
+                            var EntryId = obj.Result.Table[0] != null ? obj.Result.Table[0].EntryId : (obj.Result.Table1[0] != null ? obj.Result.Table1[0].EntryId : 0);
+                            $('#GateAttEntryId').val(EntryId);
+                        }
+                    }
+                }
+            });
+        }
+    function initItemGridResize() {
+      document.querySelectorAll('.itemgridTable').forEach(function (table) {
+        if (table.dataset.resizable === "true") return;
+        table.dataset.resizable = "true";
+
+        // Remove old colgroup to recalc widths fresh
+        const oldColgroup = table.querySelector('colgroup');
+        if (oldColgroup) oldColgroup.remove();
+
+        const ths = table.querySelectorAll('thead th');
+        const colgroup = document.createElement('colgroup');
+
+        ths.forEach(th => {
+          const col = document.createElement('col');
+          const naturalWidth = th.offsetWidth;
+          let initWidth;
+
+          // Intime / Outtime columns → compact (30px minimum)
+          if (/\d+\(in|outtime\)/i.test(th.textContent)) {
+            initWidth = Math.max(30, naturalWidth);
+          }
+          else {
+            // Descriptive columns → wider (≥120px)
+            initWidth = Math.max(120, naturalWidth);
+          }
+
+          col.style.width = initWidth + 'px';
+          colgroup.appendChild(col);
+        });
+
+        table.insertBefore(colgroup, table.firstChild);
+
+        const cols = table.querySelectorAll('col');
+
+        ths.forEach((th, i) => {
+          if (th.querySelector('.resize-handle')) return;
+
+          const handle = document.createElement('div');
+          handle.className = 'resize-handle';
+          th.style.position = 'relative';
+          th.appendChild(handle);
+
+          let startX, startWidth;
+
+          handle.addEventListener('mousedown', function (e) {
+            startX = e.clientX;
+            startWidth = cols[i].offsetWidth;
+            document.addEventListener('mousemove', onMouseMove);
+            document.addEventListener('mouseup', onMouseUp);
+          });
+
+          function onMouseMove(e) {
+            const diff = e.clientX - startX;
+            let newWidth = startWidth + diff;
+
+            // Enforce different minimums
+            if (/\d+\(in|outtime\)/i.test(th.textContent)) {
+              if (newWidth < 30) newWidth = 30;
+            } else {
+              if (newWidth < 120) newWidth = 120;
+            }
+
+            cols[i].style.width = newWidth + 'px';
+          }
+
+          function onMouseUp() {
+            document.removeEventListener('mousemove', onMouseMove);
+            document.removeEventListener('mouseup', onMouseUp);
+          }
+        });
+      });
+    }
+    function onclickCheckEmp() {
+        const master = document.getElementById("checkAllEmp");
+        document.querySelectorAll("input[name='selectedEmpIds']").forEach(cb => cb.checked = master.checked);
+    }
+    function checkUncheckEmp(empid) {
+        const all = document.querySelectorAll("input[name='selectedEmpIds']");
+        const checked = document.querySelectorAll("input[name='selectedEmpIds']:checked");
+        document.getElementById("checkAllEmp").checked = (all.length === checked.length);
+    }
+    function ondeptlistchange(empid) {
+        if (document.getElementById("checkDeptSync")?.checked) {
+                let dropdown = document.getElementById("dept_" + empid);
+        if (dropdown) {
+            document.querySelectorAll(".dept-dd").forEach(other => {
+                other.value = dropdown.value;
+            });
+        }
+        }
+    }
+    function ondesiglistchange(empid) {
+        if (document.getElementById("checkDesigSync")?.checked) {
+               let dropdown = document.getElementById("desig_" + empid);
+        if (dropdown) {
+            document.querySelectorAll(".desig-dd").forEach(other => {
+                other.value = dropdown.value;
+            });
+        }
+        }
+    }
+    function onclickCheckDate(dayNo) {
+        let checkboxes = document.querySelectorAll("input[type='checkbox'][data-day='" + dayNo + "']");
+        let isChecked = event.target.checked;
+        checkboxes.forEach(cb => cb.checked = isChecked);
+
+        document.querySelectorAll("input.att-input[data-day='" + dayNo + "']").forEach(function (el)
+        {
+            if (isChecked) {
+                el.removeAttribute("disabled");
+            } else {
+                el.setAttribute("disabled", "disabled");
+            }
+        });
+    }
+    document.addEventListener('DOMContentLoaded', initItemGridResize);
+    function PressBack() {
+        sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());
+        sessionStorage.setItem('ToDateBack', $('#ToDateBack').val());
+        // sessionStorage.setItem('DashboardTypeBack', $('#DashboardTypeBack').val());
+        // sessionStorage.setItem('AttendanceEntryMethodTypeBack', $('#AttendanceEntryMethodTypeBack').val());
+        sessionStorage.setItem('GlobalSearchBack', $('#GlobalSearchBack').val());
+        window.history.back();
+    }
+    // function convertToAmPm(time24) {
+    //     if (!time24 || !/^\d{2}:\d{2}$/.test(time24)) return time24;
+
+    //     let [h, m] = time24.split(":").map(Number);
+    //     let suffix = h >= 12 ? 'PM' : 'AM';
+
+    //     if (h === 0) h = 12;
+    //     else if (h > 12) h -= 12;
+
+    //     return `${h}:${m.toString().padStart(2, '0')} ${suffix}`;
+    // }
+
+    // $(".timepicker").each(function () {
+    //     let value = $(this).val();
+
+    //     // Skip empty
+    //     if (!value) return;
+
+    //     // Skip already AM/PM
+    //     if (value.toLowerCase().includes("am") || value.toLowerCase().includes("pm")) return;
+
+    //     // Convert 24 hr → AM/PM
+    //     $(this).val(convertToAmPm(value));
+    // });
+
+    // $(document).on("focus", ".timepicker", function () {
+    //     let $input = $(this);
+
+    //     // prevent multiple pickers
+    //     if ($input.data("added-picker")) return;
+    //     $input.data("added-picker", true);
+
+    //     let picker = $('<select class="simple-timepicker"></select>');
+
+    //     for (let hour = 1; hour <= 12; hour++) {
+    //         for (let min = 0; min < 60; min += 5) {
+    //             let h = hour;
+    //             let m = min.toString().padStart(2, "0");
+    //             picker.append(`<option>${h}:${m} AM</option>`);
+    //             picker.append(`<option>${h}:${m} PM</option>`);
+    //         }
+    //     }
+
+    //     picker.insertAfter($input).show();
+
+    //     picker.on("change", function () {
+    //         $input.val($(this).val());
+    //         picker.remove();
+    //         $input.data("added-picker", false);
+    //     });
+    // });
+</script>
