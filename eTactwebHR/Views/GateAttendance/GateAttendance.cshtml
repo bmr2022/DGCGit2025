@@ -708,7 +708,21 @@
 
                                         if (!confirm(message)) {
                                                     $("#attendanceItemGridbody").html("<input id='rowitemcount' type='hidden' value='0' /><tr><td colspan='8' class='text-center'>No records found.</td></tr>");
+                                                    $('#GateAttEntryOffDay').text('');
+                                                    $('.dvGateAttEntryOffDay').hide();
                                         }
+                                        else {
+                                            var textblock = $('#isholiday').val().toLowerCase() == "true" ? "Holiday" : "Week-Off";
+                                            var textclass = $('#isholiday').val().toLowerCase() == "true" ? "holiday-time lighten" : "weekoff-time lighten";
+                                            $('#GateAttEntryDay').addClass(textclass);
+                                            $('#GateAttEntryOffDay').addClass(textclass);
+                                            $('#GateAttEntryOffDay').text(textblock);
+                                            $('.dvGateAttEntryOffDay').show();
+                                        }
+                                    }
+                                    else {
+                                        $('#GateAttEntryOffDay').text('');
+                                        $('.dvGateAttEntryOffDay').hide();
                                     }
                                 }
                         },
@@ -967,5 +981,9 @@
     .holiday-time {
         color: #5b00ff !important;
         font-weight: bold;
+    }
+
+    .lighten {
+        filter: brightness(120%);
     }
 </style>

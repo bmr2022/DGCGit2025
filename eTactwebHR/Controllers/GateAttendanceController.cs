@@ -156,6 +156,23 @@ namespace eTactwebHR.Controllers
                 MainModel.intEmpAttMonth = string.IsNullOrWhiteSpace(MainModel.strEmpAttMonth) ? 0 : new[] { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" }.Select((m, i) => new { m, i }).FirstOrDefault(x => MainModel.strEmpAttMonth.StartsWith(x.m, StringComparison.OrdinalIgnoreCase))?.i + 1 ?? 0;
                 MainModel = await BindModels(MainModel).ConfigureAwait(false);
                 MainModel.HolidayList = (!string.IsNullOrEmpty(MainModel.EmpCategoryId) && MainModel.EmpAttDate != null) ? GetHolidayList(Convert.ToInt32(MainModel.EmpCategoryId), MainModel.EmpAttDate ?? new DateTime(MainModel.GateAttYearCode, 1, 1), YearCode)?.HolidayList ?? new List<GateAttendanceHolidayModel>() : null;
+                if (string.Equals(MainModel.DayOrMonthType, "daily", StringComparison.OrdinalIgnoreCase))
+                {
+                    DateTime? currentDate = MainModel.EmpAttDate;
+                    string currentDay = currentDate?.DayOfWeek.ToString() ?? "";
+                    var holiday = MainModel.HolidayList?.FirstOrDefault(h => h.HolidayYear == MainModel.GateAttYearCode && h.HolidayEffFrom >= currentDate && h.HolidayEffTill <= currentDate);
+                    bool isWeekoff = MainModel.HolidayList?.Any(a => a.HolidayEffFrom == null && a.HolidayEffTill == null && a.DayName.Equals(currentDay, StringComparison.OrdinalIgnoreCase)) ?? false;
+                    bool isHoliday = !isWeekoff && holiday != null;
+                    string cssClass = isWeekoff ? "weekoff-time" : (isHoliday ? "holiday-time" : "");
+                    bool allowEdit = (holiday != null && isHoliday && string.Equals(holiday?.AllowedCompOff, "YES", StringComparison.OrdinalIgnoreCase)) || !isHoliday;
+                    if (isWeekoff)
+                        allowEdit = false;
+
+                    ViewBag.IsWeekoff = isWeekoff;
+                    ViewBag.IsHoliday = isHoliday;
+                    ViewBag.AllowEdit = allowEdit;
+                    ViewBag.CssClass = cssClass;
+                }
                 ViewBag.DeptList = await IDataLogic.GetDropDownList("FillDepartment", "HRSPGateAttendanceMainDetail");
                 ViewBag.DesigList = await IDataLogic.GetDropDownList("FillDesignation", "HRSPGateAttendanceMainDetail");
                 //ViewBag.ShiftList = await IDataLogic.GetDropDownList("FillShift", "HRSPGateAttendanceMainDetail");
@@ -814,6 +831,46 @@ namespace eTactwebHR.Controllers
 
             return View(MainModel);
         }
+        //public async Task<GateAttDashBoard> BindDashboardList(GateAttDashBoard MainModel, Dictionary<string, object> commonparams)
+        //{
+        //    var docnameparams = new Dictionary<string, object>() { { "@flag", "FillDocumentDASHBOARD" } };
+        //    docnameparams.AddRange(commonparams);
+        //    MainModel.DocumentNameList = await IDataLogic.GetDropDownListWithCustomeVar("AccSP_PurchaseBillMainDetail", docnameparams, true);
+
+        //    var vendornameparams = new Dictionary<string, object>() { { "@flag", "FillVendorNameDASHBOARD" } };
+        //    vendornameparams.AddRange(commonparams);
+        //    MainModel.VendorNameList = await IDataLogic.GetDropDownListWithCustomeVar("AccSP_PurchaseBillMainDetail", vendornameparams, true);
+
+        //    var vouchnoparams = new Dictionary<string, object>() { { "@flag", "FillVoucherNoDASHBOARD" } };
+        //    vouchnoparams.AddRange(commonparams);
+        //    MainModel.VoucherNoList = await IDataLogic.GetDropDownListWithCustomeVar("AccSP_PurchaseBillMainDetail", vouchnoparams, true);
+
+        //    var invparams = new Dictionary<string, object>() { { "@flag", "FillInvoiceNoDASHBOARD" } };
+        //    invparams.AddRange(commonparams);
+        //    MainModel.InvoiceNoList = await IDataLogic.GetDropDownListWithCustomeVar("AccSP_PurchaseBillMainDetail", invparams, true);
+
+        //    var mrnnoparams = new Dictionary<string, object>() { { "@flag", "FillMrnNoDASHBOARD" } };
+        //    mrnnoparams.AddRange(commonparams);
+        //    MainModel.MRNNoList = await IDataLogic.GetDropDownListWithCustomeVar("AccSP_PurchaseBillMainDetail", mrnnoparams, true);
+
+        //    var gatenoparams = new Dictionary<string, object>() { { "@flag", "FillGateNoDASHBOARD" } };
+        //    gatenoparams.AddRange(commonparams);
+        //    MainModel.GateNoList = await IDataLogic.GetDropDownListWithCustomeVar("AccSP_PurchaseBillMainDetail", gatenoparams, true);
+
+        //    var partcodeparams = new Dictionary<string, object>() { { "@flag", "FillPartCodeDASHBOARD" } };
+        //    partcodeparams.AddRange(commonparams);
+        //    MainModel.PartCodeList = await IDataLogic.GetDropDownListWithCustomeVar("AccSP_PurchaseBillMainDetail", partcodeparams, true);
+
+        //    var itemnameparams = new Dictionary<string, object>() { { "@flag", "FillItemNameDASHBOARD" } };
+        //    itemnameparams.AddRange(commonparams);
+        //    MainModel.ItemNameList = await IDataLogic.GetDropDownListWithCustomeVar("AccSP_PurchaseBillMainDetail", itemnameparams, true);
+
+        //    var hsnnoparams = new Dictionary<string, object>() { { "@flag", "FillHSNNODASHBOARD" } };
+        //    hsnnoparams.AddRange(commonparams);
+        //    MainModel.HSNNOList = await IDataLogic.GetDropDownListWithCustomeVar("AccSP_PurchaseBillMainDetail", hsnnoparams, true);
+
+        //    return MainModel;
+        //}
         public async Task<IActionResult> GetSearchData(GateAttDashBoard model, int pageNumber = 1, int pageSize = 25, string SearchBox = "")
         {
             model.Mode = "SEARCH";
