@@ -1020,8 +1020,12 @@
                     txSum += parseFloat($('#txGridAmount-' + (i + 1)).text()) == '.00' || $('#txGridAmount-' + (i + 1)).text() == '' ? 0 : parseFloat($('#txGridAmount-' + (i + 1)).text());
                 }
             }
-
-            var txTotal = sum + txSum;
+                    var TotalRoundOffAmt=0;
+                            if ($("#TotalRoundOff").val() == "Y") {
+                            TotalRoundOffAmt=  parseFloat(  $('#TotalRoundOffAmt').val());
+                     }
+                         var txTotal = sum + txSum+TotalRoundOffAmt;
+           // var txTotal = sum + txSum;
             $('#NetTotal').val(txTotal.toFixed(2));
             $('#AdjPendAmt').val($('#NetTotal').val());
             $('#CostCenterId').select2();
