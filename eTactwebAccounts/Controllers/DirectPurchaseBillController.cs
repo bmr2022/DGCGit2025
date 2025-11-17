@@ -380,6 +380,7 @@ namespace eTactWeb.Controllers
                             HttpContext.Session.Remove("KeyTaxGrid");
                             HttpContext.Session.Remove("KeyTDSGrid");
                             HttpContext.Session.Remove("DirectPurchaseBill");
+                            return Json(new { status = "Success" });
                         }
                         else if (Result.StatusText == "Inserted Successfully" && Result.StatusCode == HttpStatusCode.Accepted)
                         {
@@ -388,6 +389,7 @@ namespace eTactWeb.Controllers
                             HttpContext.Session.Remove("KeyTaxGrid");
                             HttpContext.Session.Remove("KeyTDSGrid");
                             HttpContext.Session.Remove("DirectPurchaseBill");
+                            return Json(new { status = "Success" });
                         }
                         else if (Result.StatusText == "Updated Successfully" && Result.StatusCode == HttpStatusCode.Accepted)
                         {
@@ -396,7 +398,8 @@ namespace eTactWeb.Controllers
                             HttpContext.Session.Remove("KeyTaxGrid");
                             HttpContext.Session.Remove("KeyTDSGrid");
                             HttpContext.Session.Remove("DirectPurchaseBill");
-                            return RedirectToAction(nameof(DirectPurchaseBill));
+                            //return RedirectToAction(nameof(DirectPurchaseBill));
+                            return Json(new { status = "Success" });
                         }
                         else if (Result.StatusText == "Deleted Successfully" && Result.StatusCode == HttpStatusCode.Accepted)
                         {
@@ -1019,6 +1022,12 @@ namespace eTactWeb.Controllers
             return Json(JsonString);
         }
 
+        public async Task<JsonResult> GetTotalAmount(DPBDashBoard model)
+        {
+            var JSON = await IDirectPurchaseBill.GetTotalAmount(model);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
         public async Task<IActionResult> GetSearchData(DPBDashBoard model, int pageNumber = 1, int pageSize = 25, string SearchBox = "")
         {
             model.Mode = "SEARCH";

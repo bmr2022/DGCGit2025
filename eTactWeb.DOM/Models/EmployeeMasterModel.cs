@@ -76,7 +76,7 @@ namespace eTactWeb.DOM.Models
         public string CalculatePfOn { get; set; }
         public string SalaryCalculation { get; set; }
         public decimal SalaryBasis { get; set; }
-        public decimal SalaryBasisHr { get; set; }
+        public int SalaryBasisHr { get; set; }
         public string PFApplicable { get; set; }
         public decimal ApplyPFFonmAmt { get; set; }
         public decimal ApplyESIFonmAmt { get; set; }
@@ -131,7 +131,7 @@ namespace eTactWeb.DOM.Models
         //Educational Qualification
         public string Qualification { get; set; }   
         public string Univercity_Sch { get; set; }   
-        public string Per { get; set; }   
+        public decimal Per { get; set; }   
         public int InYear { get; set; }   
         public string Remark { get; set; }   
 
@@ -163,6 +163,11 @@ namespace eTactWeb.DOM.Models
         public string ActualEntryDate { get; set; }   
         public string FromDate { get; set; }   
         public string ToDate { get; set; }   
+        public string GridMode { get; set; }   
+        public int Edu_SrNo { get; set; }   
+        public int Exp_SrNo { get; set; }   
+        public string Edu_GridMode { get; set; }   
+        public string Exp_GridMode { get; set; }   
 
 
     }

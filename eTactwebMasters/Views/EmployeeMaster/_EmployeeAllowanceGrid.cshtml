@@ -1,5 +1,5 @@
 ﻿@model eTactWeb.DOM.Models.EmployeeMasterModel;
-@if (Model.EmployeeMasterGrid == null)
+@if (Model.AllowanceDeductionList == null)
 {
     <tr class="text-center">
         <td colspan="25" class="text-black-50"><strong>NO DATA ADDED</strong></td>
@@ -8,7 +8,7 @@
 else
 {
     var @Cntr = 0;
-    foreach (var item in Model.EmployeeMasterGrid)
+    foreach (var item in Model.AllowanceDeductionList)
     {
         Cntr = Cntr + 1;
         <tr class="small " style="white-space:nowrap">

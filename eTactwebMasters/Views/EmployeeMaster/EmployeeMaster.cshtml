@@ -74,6 +74,13 @@
                             <div class="row g-2 gx-3 align-items-center">
                                     <input type="hidden" value="@Model.Mode" asp-for="Mode" />
                                 <input type="hidden" value="@Environment.MachineName" asp-for="EntryByMachineName" />
+                                <input asp-for="GridMode" type="hidden" class="form-control" value="@Model.GridMode" />
+                                <input type="hidden" id="SrNo" value="" asp-for ="@Model.SrNo"/>
+                                <input type="hidden" id="Edu_SrNo" asp-for="Edu_SrNo" />
+                                <input type="hidden" id="Edu_GridMode" asp-for="Edu_GridMode" />
+                                <input type="hidden" id="Exp_SrNo" asp-for="Exp_SrNo" />
+                                <input type="hidden" id="Exp_GridMode" asp-for="Exp_GridMode" />
+
                                 <div class="col-lg-2">
                                     <label asp-for="Branch" class="form-label">Branch</label>
                                     <input asp-for="Branch" class="form-control" readonly />
@@ -1085,7 +1092,7 @@
             $("#SalaryHead").change(function () {
                 var salaryHeadValue = $(this).val();
                 if (salaryHeadValue) {
-                    GetSalaryMode();
+                    //GetSalaryMode();
                 }
             });
             $('#SalaryHead').change(function () {
@@ -1161,7 +1168,7 @@
                         isValid = false;
                     }
                 }
-                @Model.EmpCode
+              
                
                 checkField("#Name", "Name is required");
                 checkField("#Designation", "Designation is required");
@@ -1170,7 +1177,7 @@
                 checkField("#DateOfResignation", "Date Of Resignation is required");
                 checkField("#Shift", "Shift is required");
                 checkField("#EmpCode", "EmpCode is required");
-                checkField("#SalaryHead", "SalaryHead is required");
+                //checkField("#SalaryHead", "SalaryHead is required");
                 //checkField("#AllowanceMode", "AllowanceMode is required");
                 //checkField("#AllowanceType", "AllowanceType is required");
                 // checkField("#PartyPay", "PartyPay is required");
@@ -1257,132 +1264,295 @@
             $('#SalaryHead,#SalaryHeadId').val("").trigger("change");//Drop
 
             $('#Percent, #AllowanceAmount').val(0);
+            $('#GridMode').val("");
+            $('#SrNo').val("");
 
 
             // $('select').prop('selectedIndex', 0);
         }
+        // $('#GridButton').click(function (e) {
+        //     e.preventDefault();
+             
+        //     var SchData = {
+        //         SalaryHeadId: $('#SalaryHead').val(),
+        //         SalaryHead: $('#SalaryHead option:selected').text(),
+        //         AllowanceMode: $('#AllowanceMode').val(),
+        //         Percent: $('#Percent').val(),
+        //         AllowanceAmount: $('#AllowanceAmount').val() ,
+        //         AllowanceType: $('#AllowanceType').val(),
+        //         PartyPay: $('#PartyPay').val()
+        //         //SalaryHead: $('#SalaryHead').find(":selected").text(),
+               
+        //     };
+        //     console.log(SchData);
+        //     $.ajax({
+        //         type: "POST",
+        //         url: '@Url.Action("AddToGridData", "EmployeeMaster")',
+        //         data: { model: SchData },
+        //         success: function (result, status, xhr) {
+        //             if (xhr.status == 200 && xhr.responseText == result) {
+
+        //                 $('#divStockGrid').html(result);
+        //                 //TotalNoOfRows();
+        //                 ClearItems();
+        //             } else if (xhr.status == 207) {
+        //                 $.notify('Duplicate Item...!', "info");
+        //             }
+        //         },
+        //         error: function () {
+        //             $.notify('Something Went Wrong, Please Try Again.', "error");
+        //         }
+        //     });
+        // });
+        // var EditEachItem = false;
+
+        // function EditItemRow(SrNO) {
+
+        //     if (EditEachItem) {
+        //         $.notify('Cannot edit item while another item is being added to the grid!', "error");
+        //         return;
+        //     }
+
+        //     $.ajax({
+        //         url: '@Url.Action("EditItemRow")',
+        //         type: "POST",
+        //         data: { SrNO: SrNO, Mode: "U" },
+        //         success: function (data) {
+
+        //             var obj = $.parseJSON(data);
+        //             if (obj != null) {
+        //                 EditEachItem = true;
+
+        //                 $('#SalaryHead').val(obj[0].SalaryHeadId).trigger("change");
+        //                 $('#SalaryHeadId').val(obj[0].SalaryHeadId).trigger("change");
+        //                 $('#AllowanceMode').val(obj[0].AllowanceMode);
+        //                 $('#Percent').val(obj[0].Percent);
+        //                 $('#AllowanceAmount').val(obj[0].AllowanceAmount);
+        //                 $('#AllowanceType').val(obj[0].AllowanceType);
+        //                 $('#PartyPay').val(obj[0].PartyPay);
+                        
+        //                 var rowCount = $('#divStockGrid tr').length;
+        //                 for (var i = 1; i <= rowCount + 1; i++) {
+        //                     $('#editItemGrid-' + i).css("pointer-events", "none");
+        //                     $('#editItemGrid-' + i).css("cursor", "not-allowed");
+        //                 }
+
+        //                 DeleteItemRow(SrNO);
+        //             }
+        //         },
+        //         error: function (response) {
+        //             $.notify(response.responseText, "error");
+        //         }
+        //     });
+        // }
+        // function DeleteItemRow(SrNO) {
+
+        //     $.ajax({
+        //         url: '@Url.Action("DeleteItemRow")',
+        //         type: "POST",
+        //         data: { SrNO: SrNO, Mode: "U" },
+        //         success: function (data, status, xhr) {
+        //             $('#divStockGrid').html(data);
+        //             $.notify("Process deleted from Grid", "info");
+        //             EditEachItem = false;
+
+        //         },
+        //         error: function (response, status, xhr) {
+
+        //             $.notify("Cannot delete item that exists in Other Grid!!!", "error");
+        //         },
+        //         failure: function (response, status, xhr) {
+        //             alert(response.responseText);
+        //             $.notify(response.responseText, "error");
+        //         }
+        //     });
+        // }
         $('#GridButton').click(function (e) {
             e.preventDefault();
-             
+
+            EditEachItem = false;
+
+            function isNullOrEmpty(val) {
+                return val === undefined || val === null || val.trim() === "";
+            }
+
+            var srArray = [];
+            $('#divStockGrid tr').each(function () {
+                var srText = $(this).find('td[id^=SrNo]').text();
+                if (!isNullOrEmpty(srText) && !isNaN(parseInt(srText))) {
+                    srArray.push(parseInt(srText));
+                }
+            });
+
+            var highestSrNo = srArray.length > 0 ? Math.max(...srArray) : 0;
+
+            var srNo = $('#SrNo').val();
+            var mode = $('#GridMode').val();
+
+            if (mode !== "U" && (!srNo || srNo == "0" || srNo == "")) {
+                mode = "";
+                $('#GridMode').val("");
+            }
+
+            var finalSrNo;
+
+            if (srNo && srNo != "0" && mode === "U") {
+                finalSrNo = srNo;
+            } else {
+                finalSrNo = highestSrNo + 1; // for add
+            }
+
+            $('#SrNo').val(finalSrNo);
+
             var SchData = {
-                SalaryHead: $('#SalaryHead').val(),
-                SalaryHeadId: $('#SalaryHeadId').val(),
+                SalaryHeadId: $('#SalaryHead').val(),
+                SalaryHead: $('#SalaryHead option:selected').text(),
                 AllowanceMode: $('#AllowanceMode').val(),
                 Percent: $('#Percent').val(),
-                AllowanceAmount: $('#AllowanceAmount').val() ,
+                AllowanceAmount: $('#AllowanceAmount').val(),
                 AllowanceType: $('#AllowanceType').val(),
                 PartyPay: $('#PartyPay').val(),
-                SalaryHead: $('#SalaryHead').find(":selected").text(),
-               
+                SrNo: finalSrNo,
+                GridMode: mode
             };
+
             console.log(SchData);
+
             $.ajax({
                 type: "POST",
                 url: '@Url.Action("AddToGridData", "EmployeeMaster")',
                 data: { model: SchData },
                 success: function (result, status, xhr) {
-                    if (xhr.status == 200 && xhr.responseText == result) {
+                    $('#divStockGrid').html(result);
 
-                        $('#divStockGrid').html(result);
-                        //TotalNoOfRows();
-                        ClearItems();
-                    } else if (xhr.status == 207) {
-                        $.notify('Duplicate Item...!', "info");
-                    }
-                },
-                error: function () {
-                    $.notify('Something Went Wrong, Please Try Again.', "error");
+                    $('#SrNo').val("");
+                    $('#GridMode').val("");
+
+                    EditEachItem = false;
+
+                    ClearItems();
                 }
             });
         });
         var EditEachItem = false;
-
-        function EditItemRow(SrNO) {
+        function EditItemRow(SrNo) {
 
             if (EditEachItem) {
-                $.notify('Cannot edit item while another item is being added to the grid!', "error");
+                $.notify('Cannot edit item while another item is being added!', "error");
                 return;
             }
 
             $.ajax({
                 url: '@Url.Action("EditItemRow")',
                 type: "POST",
-                data: { SrNO: SrNO, Mode: "U" },
+                data: { SrNo: SrNo, Mode: "U" },
                 success: function (data) {
 
                     var obj = $.parseJSON(data);
+
                     if (obj != null) {
+
                         EditEachItem = true;
 
+                        $('#SrNo').val(obj[0].SrNo);
+                        $('#GridMode').val("U");
                         $('#SalaryHead').val(obj[0].SalaryHeadId).trigger("change");
-                        $('#SalaryHeadId').val(obj[0].SalaryHeadId).trigger("change");
-                        $('#AllowanceMode').val(obj[0].AllowanceMode);
-                        $('#Percent').val(obj[0].Percent);
-                        $('#AllowanceAmount').val(obj[0].AllowanceAmount);
-                        $('#AllowanceType').val(obj[0].AllowanceType);
-                        $('#PartyPay').val(obj[0].PartyPay);
-                        
+                                        $('#SalaryHeadId').val(obj[0].SalaryHeadId).trigger("change");
+                                        $('#AllowanceMode').val(obj[0].AllowanceMode);
+                                        $('#Percent').val(obj[0].Percent);
+                                        $('#AllowanceAmount').val(obj[0].AllowanceAmount);
+                                        $('#AllowanceType').val(obj[0].AllowanceType);
+                                        $('#PartyPay').val(obj[0].PartyPay);
+                        // Disable all edit icons
                         var rowCount = $('#divStockGrid tr').length;
                         for (var i = 1; i <= rowCount + 1; i++) {
-                            $('#editItemGrid-' + i).css("pointer-events", "none");
-                            $('#editItemGrid-' + i).css("cursor", "not-allowed");
+                            $('#editItemGrid-' + i).css("pointer-events", "none")
+                                .css("cursor", "not-allowed");
                         }
 
-                        DeleteItemRow(SrNO);
+                        DeleteItemRow(SrNo);
                     }
-                },
-                error: function (response) {
-                    $.notify(response.responseText, "error");
                 }
             });
         }
-        function DeleteItemRow(SrNO) {
+        function DeleteItemRow(SrNo) {
 
             $.ajax({
                 url: '@Url.Action("DeleteItemRow")',
                 type: "POST",
-                data: { SrNO: SrNO, Mode: "U" },
-                success: function (data, status, xhr) {
+                data: { SrNo: SrNo, Mode: "U" },
+                success: function (data) {
+
                     $('#divStockGrid').html(data);
-                    $.notify("Process deleted from Grid", "info");
+                    $.notify("Item deleted", "info");
+
                     EditEachItem = false;
-
-                },
-                error: function (response, status, xhr) {
-
-                    $.notify("Cannot delete item that exists in Other Grid!!!", "error");
-                },
-                failure: function (response, status, xhr) {
-                    alert(response.responseText);
-                    $.notify(response.responseText, "error");
                 }
             });
         }
+        //-------new Code-------------
         $('#GridButtonEduction').click(function (e) {
             e.preventDefault();
-             
+
+            EditEachEductionItem = false;
+
+            function isNullOrEmpty(val) {
+                return val === undefined || val === null || val.trim() === "";
+            }
+
+            var srArray = [];
+            $('#divStockGridEduction tr').each(function () {
+                var srText = $(this).find('td[id^=SrNo]').text();
+                if (!isNullOrEmpty(srText) && !isNaN(parseInt(srText))) {
+                    srArray.push(parseInt(srText));
+                }
+            });
+
+            var highestSrNo = srArray.length > 0 ? Math.max(...srArray) : 0;
+
+            var srNo = $('#Edu_SrNo').val();
+            var mode = $('#Edu_GridMode').val();
+
+            if (mode !== "U" && (!srNo || srNo === "0" || srNo === "")) {
+                mode = "";
+                $('#Edu_GridMode').val("");
+            }
+
+            var finalSrNo;
+
+            if (srNo && srNo !== "0" && mode === "U") {
+                finalSrNo = srNo;
+            } else {
+                finalSrNo = highestSrNo + 1; // for add
+            }
+
+            $('#Edu_SrNo').val(finalSrNo);
+
             var SchData = {
+                Edu_SrNo: finalSrNo,
                 Qualification: $('#Qualification').val(),
                 Univercity_Sch: $('#Univercity_Sch').val(),
                 Per: $('#Per').val(),
                 InYear: $('#InYear').val(),
                 Remark: $('#Remark').val(),
-               
+                GridMode: mode
             };
+
             console.log(SchData);
+
             $.ajax({
                 type: "POST",
                 url: '@Url.Action("AddToGridDataEduction", "EmployeeMaster")',
                 data: { model: SchData },
                 success: function (result, status, xhr) {
-                    if (xhr.status == 200 && xhr.responseText == result) {
 
-                        $('#divStockGridEduction').html(result);
-                        TotalNoOfRows();
-                        ClearItems();
-                    } else if (xhr.status == 207) {
-                        $.notify('Duplicate Item...!', "info");
-                    }
+                    $('#divStockGridEduction').html(result);
+
+                    $('#Edu_SrNo').val("");
+                    $('#Edu_GridMode').val("");
+                    EditEachEductionItem = false;
+
+                    ClearItems_Education();
                 },
                 error: function () {
                     $.notify('Something Went Wrong, Please Try Again.', "error");
@@ -1391,22 +1561,27 @@
         });
         var EditEachEductionItem = false;
 
-        function EditEductionItemRow(SrNO) {
+        function EditEductionItemRow(Edu_SrNo) {
 
             if (EditEachEductionItem) {
-                $.notify('Cannot edit item while another item is being added to the grid!', "error");
+                $.notify('Cannot edit item while another item is being added!', "error");
                 return;
             }
 
             $.ajax({
                 url: '@Url.Action("EditEductionItemRow")',
                 type: "POST",
-                data: { SrNO: SrNO, Mode: "U" },
+                data: { Edu_SrNo: Edu_SrNo, Edu_GridMode: "U" },
                 success: function (data) {
 
                     var obj = $.parseJSON(data);
+
                     if (obj != null) {
+
                         EditEachEductionItem = true;
+
+                        $('#Edu_SrNo').val(obj[0].SrNo);
+                        $('#Edu_GridMode').val("U");
 
                         $('#Qualification').val(obj[0].Qualification);
                         $('#Univercity_Sch').val(obj[0].Univercity_Sch);
@@ -1416,45 +1591,166 @@
 
                         var rowCount = $('#divStockGridEduction tr').length;
                         for (var i = 1; i <= rowCount + 1; i++) {
-                            $('#editItemGrid-' + i).css("pointer-events", "none");
-                            $('#editItemGrid-' + i).css("cursor", "not-allowed");
+                            $('#eduEditItemGrid-' + i).css("pointer-events", "none")
+                                .css("cursor", "not-allowed");
                         }
 
-                        DeleteEductionItemRow(SrNO);
+                        DeleteEductionItemRow(Edu_SrNo);
                     }
-                },
-                error: function (response) {
-                    $.notify(response.responseText, "error");
                 }
             });
         }
-        function DeleteEductionItemRow(SrNO) {
+        function DeleteEductionItemRow(Edu_SrNo) {
 
             $.ajax({
                 url: '@Url.Action("DeleteEductionItemRow")',
                 type: "POST",
-                data: { SrNO: SrNO, Mode: "U" },
-                success: function (data, status, xhr) {
+                data: { Edu_SrNo: Edu_SrNo, Edu_GridMode: "U" },
+                success: function (data) {
+
                     $('#divStockGridEduction').html(data);
-                    $.notify("Process deleted from Grid", "info");
+                    $.notify("Item deleted", "info");
+
                     EditEachEductionItem = false;
-
-                },
-                error: function (response, status, xhr) {
-
-                    $.notify("Cannot delete item that exists in Other Grid!!!", "error");
-                },
-                failure: function (response, status, xhr) {
-                    alert(response.responseText);
-                    $.notify(response.responseText, "error");
                 }
             });
         }
 
+        // $('#GridButtonEduction').click(function (e) {
+        //     e.preventDefault();
+             
+        //     var SchData = {
+        //         Qualification: $('#Qualification').val(),
+        //         Univercity_Sch: $('#Univercity_Sch').val(),
+        //         Per: $('#Per').val(),
+        //         InYear: $('#InYear').val(),
+        //         Remark: $('#Remark').val(),
+               
+        //     };
+        //     console.log(SchData);
+        //     $.ajax({
+        //         type: "POST",
+        //         url: '@Url.Action("AddToGridDataEduction", "EmployeeMaster")',
+        //         data: { model: SchData },
+        //         success: function (result, status, xhr) {
+        //             if (xhr.status == 200 && xhr.responseText == result) {
+
+        //                 $('#divStockGridEduction').html(result);
+        //                 TotalNoOfRows();
+        //                 ClearItems();
+        //             } else if (xhr.status == 207) {
+        //                 $.notify('Duplicate Item...!', "info");
+        //             }
+        //         },
+        //         error: function () {
+        //             $.notify('Something Went Wrong, Please Try Again.', "error");
+        //         }
+        //     });
+        // });
+        // var EditEachEductionItem = false;
+
+        // function EditEductionItemRow(SrNO) {
+
+        //     if (EditEachEductionItem) {
+        //         $.notify('Cannot edit item while another item is being added to the grid!', "error");
+        //         return;
+        //     }
+
+        //     $.ajax({
+        //         url: '@Url.Action("EditEductionItemRow")',
+        //         type: "POST",
+        //         data: { SrNO: SrNO, Mode: "U" },
+        //         success: function (data) {
+
+        //             var obj = $.parseJSON(data);
+        //             if (obj != null) {
+        //                 EditEachEductionItem = true;
+
+        //                 $('#Qualification').val(obj[0].Qualification);
+        //                 $('#Univercity_Sch').val(obj[0].Univercity_Sch);
+        //                 $('#Per').val(obj[0].Per);
+        //                 $('#InYear').val(obj[0].InYear);
+        //                 $('#Remark').val(obj[0].Remark);
+
+        //                 var rowCount = $('#divStockGridEduction tr').length;
+        //                 for (var i = 1; i <= rowCount + 1; i++) {
+        //                     $('#editItemGrid-' + i).css("pointer-events", "none");
+        //                     $('#editItemGrid-' + i).css("cursor", "not-allowed");
+        //                 }
+
+        //                 DeleteEductionItemRow(SrNO);
+        //             }
+        //         },
+        //         error: function (response) {
+        //             $.notify(response.responseText, "error");
+        //         }
+        //     });
+        // }
+        // function DeleteEductionItemRow(SrNO) {
+
+        //     $.ajax({
+        //         url: '@Url.Action("DeleteEductionItemRow")',
+        //         type: "POST",
+        //         data: { SrNO: SrNO, Mode: "U" },
+        //         success: function (data, status, xhr) {
+        //             $('#divStockGridEduction').html(data);
+        //             $.notify("Process deleted from Grid", "info");
+        //             EditEachEductionItem = false;
+
+        //         },
+        //         error: function (response, status, xhr) {
+
+        //             $.notify("Cannot delete item that exists in Other Grid!!!", "error");
+        //         },
+        //         failure: function (response, status, xhr) {
+        //             alert(response.responseText);
+        //             $.notify(response.responseText, "error");
+        //         }
+        //     });
+        // }
+        //--------------New Code----------
         $('#GridButtonExperiance').click(function (e) {
             e.preventDefault();
-             
+
+            EditEachExperianceItem = false;
+
+            // function same as education
+            function isNullOrEmpty(val) {
+                return val === undefined || val === null || val.trim() === "";
+            }
+
+            // get all SrNo from table
+            var srArray = [];
+            $('#divStockGridExperiance tr').each(function () {
+                var srText = $(this).find('td[id^=SrNo]').text();
+                if (!isNullOrEmpty(srText) && !isNaN(parseInt(srText))) {
+                    srArray.push(parseInt(srText));
+                }
+            });
+
+            var highestSrNo = srArray.length > 0 ? Math.max(...srArray) : 0;
+
+            var srNo = $('#Exp_SrNo').val();
+            var mode = $('#Exp_GridMode').val();
+
+            // If inserting new
+            if (mode !== "U" && (!srNo || srNo === "0" || srNo === "")) {
+                mode = "";
+                $('#Exp_GridMode').val("");
+            }
+
+            var finalSrNo;
+
+            if (srNo && srNo !== "0" && mode === "U") {
+                finalSrNo = srNo; // update
+            } else {
+                finalSrNo = highestSrNo + 1; // new add
+            }
+
+            $('#Exp_SrNo').val(finalSrNo);
+
             var SchData = {
+                SrNo: finalSrNo,
                 CompanyName: $('#CompanyName').val(),
                 CFromDate: $('#CFromDate').val(),
                 CToDate: $('#CToDate').val(),
@@ -1467,20 +1763,22 @@
                 HRPersonName: $('#HRPersonName').val(),
                 HRContactNo: $('#HRContactNo').val(),
                 ExeRemark: $('#ExeRemark').val(),
+                GridMode: mode
             };
-            console.log(SchData);
+
             $.ajax({
                 type: "POST",
                 url: '@Url.Action("AddToGridDataExperiance", "EmployeeMaster")',
                 data: { model: SchData },
                 success: function (result, status, xhr) {
-                    if (xhr.status == 200 && xhr.responseText == result) {
-                        $('#divStockGridExperiance').html(result);
-                        TotalNoOfRows();
-                        ClearItems();
-                    } else if (xhr.status == 207) {
-                        $.notify('Duplicate Item...!', "info");
-                    }
+
+                    $('#divStockGridExperiance').html(result);
+                    ClearExperianceFields();
+
+                    $('#Exp_SrNo').val("");
+                    $('#Exp_GridMode').val("");
+
+                    EditEachExperianceItem = false;
                 },
                 error: function () {
                     $.notify('Something Went Wrong, Please Try Again.', "error");
@@ -1489,22 +1787,27 @@
         });
         var EditEachExperianceItem = false;
 
-        function EditExperianceItemRow(SrNO) {
+        function EditExperianceItemRow(Exp_SrNo) {
 
             if (EditEachExperianceItem) {
-                $.notify('Cannot edit item while another item is being added to the grid!', "error");
+                $.notify("You are already editing another row!", "error");
                 return;
             }
 
             $.ajax({
                 url: '@Url.Action("EditExperianceItemRow")',
                 type: "POST",
-                data: { SrNO: SrNO, Mode: "U" },
+                data: { Exp_SrNo: Exp_SrNo, Exp_GridMode: "U" },
                 success: function (data) {
 
                     var obj = $.parseJSON(data);
+
                     if (obj != null) {
+
                         EditEachExperianceItem = true;
+
+                        $('#Exp_SrNo').val(obj[0].Exp_SrNo);
+                        $('#Exp_GridMode').val("U");
 
                         $('#CompanyName').val(obj[0].CompanyName);
                         $('#CFromDate').val(obj[0].CFromDate);
@@ -1519,13 +1822,13 @@
                         $('#HRContactNo').val(obj[0].HRContactNo);
                         $('#ExeRemark').val(obj[0].ExeRemark);
 
-                        var rowCount = $('#divStockGridExperiance tr').length;
-                        for (var i = 1; i <= rowCount + 1; i++) {
-                            $('#editItemGrid-' + i).css("pointer-events", "none");
-                            $('#editItemGrid-' + i).css("cursor", "not-allowed");
-                        }
+                        // disable all edit buttons
+                        $('#divStockGridExperiance a[id^="editItemGrid-"]').css({
+                            "pointer-events": "none",
+                            "cursor": "not-allowed"
+                        });
 
-                        DeleteExperianceItemRow(SrNO);
+                        DeleteExperianceItemRow(Exp_SrNo);
                     }
                 },
                 error: function (response) {
@@ -1533,28 +1836,127 @@
                 }
             });
         }
-        function DeleteExperianceItemRow(SrNO) {
+        function DeleteExperianceItemRow(Exp_SrNo) {
 
             $.ajax({
                 url: '@Url.Action("DeleteExperianceItemRow")',
                 type: "POST",
-                data: { SrNO: SrNO, Mode: "U" },
-                success: function (data, status, xhr) {
+                data: { Exp_SrNo: Exp_SrNo, Exp_GridMode: "U" },
+                success: function (data) {
                     $('#divStockGridExperiance').html(data);
-                    $.notify("Process deleted from Grid", "info");
+                    $.notify("Record Deleted from Grid", "info");
                     EditEachExperianceItem = false;
-
                 },
-                error: function (response, status, xhr) {
-
-                    $.notify("Cannot delete item that exists in Other Grid!!!", "error");
-                },
-                failure: function (response, status, xhr) {
-                    alert(response.responseText);
-                    $.notify(response.responseText, "error");
+                error: function () {
+                    $.notify("Cannot delete item that exists in other references!", "error");
                 }
             });
         }
+
+        // $('#GridButtonExperiance').click(function (e) {
+        //     e.preventDefault();
+             
+        //     var SchData = {
+        //         CompanyName: $('#CompanyName').val(),
+        //         CFromDate: $('#CFromDate').val(),
+        //         CToDate: $('#CToDate').val(),
+        //         Desigation: $('#Desigation').val(),
+        //         Salary: $('#Salary').val(),
+        //         Country: $('#Country').val(),
+        //         City: $('#City').val(),
+        //         ContactPersonname: $('#ContactPersonname').val(),
+        //         ContactPersonNumber: $('#ContactPersonNumber').val(),
+        //         HRPersonName: $('#HRPersonName').val(),
+        //         HRContactNo: $('#HRContactNo').val(),
+        //         ExeRemark: $('#ExeRemark').val(),
+        //     };
+        //     console.log(SchData);
+        //     $.ajax({
+        //         type: "POST",
+        //         url: '@Url.Action("AddToGridDataExperiance", "EmployeeMaster")',
+        //         data: { model: SchData },
+        //         success: function (result, status, xhr) {
+        //             if (xhr.status == 200 && xhr.responseText == result) {
+        //                 $('#divStockGridExperiance').html(result);
+        //                 TotalNoOfRows();
+        //                 ClearItems();
+        //             } else if (xhr.status == 207) {
+        //                 $.notify('Duplicate Item...!', "info");
+        //             }
+        //         },
+        //         error: function () {
+        //             $.notify('Something Went Wrong, Please Try Again.', "error");
+        //         }
+        //     });
+        // });
+        // var EditEachExperianceItem = false;
+
+        // function EditExperianceItemRow(SrNO) {
+
+        //     if (EditEachExperianceItem) {
+        //         $.notify('Cannot edit item while another item is being added to the grid!', "error");
+        //         return;
+        //     }
+
+        //     $.ajax({
+        //         url: '@Url.Action("EditExperianceItemRow")',
+        //         type: "POST",
+        //         data: { SrNO: SrNO, Mode: "U" },
+        //         success: function (data) {
+
+        //             var obj = $.parseJSON(data);
+        //             if (obj != null) {
+        //                 EditEachExperianceItem = true;
+
+        //                 $('#CompanyName').val(obj[0].CompanyName);
+        //                 $('#CFromDate').val(obj[0].CFromDate);
+        //                 $('#CToDate').val(obj[0].CToDate);
+        //                 $('#Desigation').val(obj[0].Desigation);
+        //                 $('#Salary').val(obj[0].Salary);
+        //                 $('#Country').val(obj[0].Country);
+        //                 $('#City').val(obj[0].City);
+        //                 $('#ContactPersonname').val(obj[0].ContactPersonname);
+        //                 $('#ContactPersonNumber').val(obj[0].ContactPersonNumber);
+        //                 $('#HRPersonName').val(obj[0].HRPersonName);
+        //                 $('#HRContactNo').val(obj[0].HRContactNo);
+        //                 $('#ExeRemark').val(obj[0].ExeRemark);
+
+        //                 var rowCount = $('#divStockGridExperiance tr').length;
+        //                 for (var i = 1; i <= rowCount + 1; i++) {
+        //                     $('#editItemGrid-' + i).css("pointer-events", "none");
+        //                     $('#editItemGrid-' + i).css("cursor", "not-allowed");
+        //                 }
+
+        //                 DeleteExperianceItemRow(SrNO);
+        //             }
+        //         },
+        //         error: function (response) {
+        //             $.notify(response.responseText, "error");
+        //         }
+        //     });
+        // }
+        // function DeleteExperianceItemRow(SrNO) {
+
+        //     $.ajax({
+        //         url: '@Url.Action("DeleteExperianceItemRow")',
+        //         type: "POST",
+        //         data: { SrNO: SrNO, Mode: "U" },
+        //         success: function (data, status, xhr) {
+        //             $('#divStockGridExperiance').html(data);
+        //             $.notify("Process deleted from Grid", "info");
+        //             EditEachExperianceItem = false;
+
+        //         },
+        //         error: function (response, status, xhr) {
+
+        //             $.notify("Cannot delete item that exists in Other Grid!!!", "error");
+        //         },
+        //         failure: function (response, status, xhr) {
+        //             alert(response.responseText);
+        //             $.notify(response.responseText, "error");
+        //         }
+        //     });
+        // }
         function FILLAllowanceMode() {
             $.ajax({
                 url: '@Url.Action("FILLAllowanceMode", "EmployeeMaster")',
@@ -1700,7 +2102,7 @@
                 success: function (result) {
                     if (result != null) {
                         var obj = $.parseJSON(result);
-                        $('#AllowanceMode').val(obj.Result[0].PaymentMode);
+                        //$('#AllowanceMode').val(obj.Result[0].PaymentMode);
                         $('#Percent').val(obj.Result[0].CalculationPercentage);
                         $('#AllowanceType').val(obj.Result[0].TypeOfSalary);
                         $('#PartyPay').val(obj.Result[0].PartOfPayslip);

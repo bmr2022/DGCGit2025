@@ -94,14 +94,28 @@
         }
 
         function GetTotalAmounts() {
-            console.log("call amount");
-            // Collect form values
-            let formData = $('#SParam').serializeArray();
 
+
+        let dataObj = {
+        TypeITEMSERVASSETS: $('#TypeITEMSERVASSETS').val(),
+        DocumentType: $('#DocumentType').val(),
+        PurchVouchNo: $('#PurchVouchNo').val(),
+        InvoiceNo: $('#InvoiceNo').val(),
+        VendorName: $('#VendorName').val(),
+        PartCode: $('#PartCode').val(),
+        ItemName: $('#ItemName').val(),
+        HSNNo: $('#HSNNo').val(),
+        FromDate: $('#FromDate').val(),
+        ToDate: $('#ToDate').val(),
+        DashboardType: $('#DashboardType').val(),
+        };
+
+        console.log("dataforamount",dataObj);
             $.ajax({
-                url: '/DirectPurchaseBill/GetTotalAmounts',
-                type: 'POST',
-                data: formData,
+                url: '/DirectPurchaseBill/GetTotalAmount',
+                type: 'GET',
+                data: dataObj,
+                traditional: true,
                 dataType: 'json',
 
                 success: function (data) {
@@ -113,8 +127,8 @@
                         let row = obj.Result[0];
 
                         // Update totals
-                        $('#tfootNetAmt').text(row.TotalNetAmt?.toFixed(2) ?? "0.00");
-                        $('#tfootBillAmt').text(row.basicamount?.toFixed(2) ?? "0.00");
+                        $('#tfootNetAmt').text(row.NetAmount?.toFixed(2) ?? "0.00");
+                        $('#tfootBillAmt').text(row.BasicAmount?.toFixed(2) ?? "0.00");
                     } else {
                         $('#tfootNetAmt').text("0.00");
                         $('#tfootBillAmt').text("0.00");
@@ -123,10 +137,45 @@
 
 
                 error: function (err) {
-                    console.error(" Error fetching totals:", err);
+                    console.error("❌ Error fetching totals:", err);
                 }
             });
         }
+
+        // function GetTotalAmounts() {
+        //     console.log("call amount");
+        //     Collect form values
+        //     let formData = $('#SParam').serializeArray();
+
+        //     $.ajax({
+        //         url: '/DirectPurchaseBill/GetTotalAmounts',
+        //         type: 'POST',
+        //         data: formData,
+        //         dataType: 'json',
+
+        //         success: function (data) {
+        //             console.log("data", data);
+
+        //             const obj = typeof data === "string" ? JSON.parse(data) : data;
+
+        //             if (obj && obj.Result && obj.Result.length > 0) {
+        //                 let row = obj.Result[0];
+
+        //                 Update totals
+        //                 $('#tfootNetAmt').text(row.TotalNetAmt?.toFixed(2) ?? "0.00");
+        //                 $('#tfootBillAmt').text(row.basicamount?.toFixed(2) ?? "0.00");
+        //             } else {
+        //                 $('#tfootNetAmt').text("0.00");
+        //                 $('#tfootBillAmt').text("0.00");
+        //             }
+        //         },
+
+
+        //         error: function (err) {
+        //             console.error(" Error fetching totals:", err);
+        //         }
+        //     });
+        // }
         function CalculateTotalAmt() {
             var rowCount = $('#DPBDashboardGrid tr').length;
             var totalAmt = 0;

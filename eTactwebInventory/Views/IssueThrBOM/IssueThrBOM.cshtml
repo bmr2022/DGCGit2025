@@ -1924,14 +1924,31 @@
                         //else{
                         //$('MainGridIssueQty-' + i).css("border", "1px solid black");
                         //}
-                        if (parseFloat($('#MainGridIssueQty-' + i).val()) > parseFloat($('#MainGridReqQty-' + i).val())) {
-                            $('#MainGridIssueQty-' + i).css("border", "1px solid red");
-                            $.notify("Issue Qty cannot be greater than Req Qty", "error");
-                            Err = 1;
-                        }
-                        else {
-                            $('#MainGridIssueQty-' + i).css("border", "1px solid black");
-                        }
+                if (parseFloat($('#MainGridStdPacking-' + i).val()) > 0) {
+                    if (parseFloat($('#MainGridIssueQty-' + i).val()) > (parseFloat($('#MainGridStdPacking-' + i).val()) + parseFloat($('#MainGridReqQty-' + i).val()))) {
+                        $('#MainGridIssueQty-' + i).css("border", "1px solid red");
+                        $.notify("Issue Qty cannot be greater than Req Qty", "error");
+                        Err = 1;
+                    }
+
+                    else {
+                        $('#MainGridIssueQty-' + i).css("border", "1px solid black");
+                    }
+
+                }
+
+                else {
+
+                    if (parseFloat($('#MainGridIssueQty-' + i).val()) > parseFloat($('#MainGridReqQty-' + i).val())) {
+                        $('#MainGridIssueQty-' + i).css("border", "1px solid red");
+                        $.notify("Issue Qty cannot be greater than Req Qty", "error");
+                        Err = 1;
+                    }
+                    else {
+                        $('#MainGridIssueQty-' + i).css("border", "1px solid black");
+                    }
+                }
+
                 if (parseFloat($('#MainGridIssueQty-' + i).val()) > parseFloat($('#MainGridLotStock-' + i).val()) || parseFloat($('#MainGridIssueQty-' + i).val()) > parseFloat($('#MainGridTotalStock-' + i).val())) {
                     $('#MainGridIssueQty-' + i).css("border", "1px solid red");
                     $.notify("Issue Qty cannot be greater than Stock", "error");

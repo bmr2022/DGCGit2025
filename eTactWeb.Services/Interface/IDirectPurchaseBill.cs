@@ -32,6 +32,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetScheduleData(string PONo, int? POYear, string Billdate, int? AccountCode, int? ItemCode);
         Task<ResponseResult> FillVouchNumber(int YearCode, string VODate);
         Task<ResponseResult> AltUnitConversion(int ItemCode, decimal AltQty, decimal UnitQty);
+        Task<ResponseResult> GetTotalAmount(DPBDashBoard model);
 
         Task<DPBDashBoard> GetSummaryData(DPBDashBoard model);
         Task<DPBDashBoard> GetDetailData(DPBDashBoard model);
