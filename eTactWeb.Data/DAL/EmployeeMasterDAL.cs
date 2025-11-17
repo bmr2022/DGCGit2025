@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.Common;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using eTactWeb.Data.Common;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
@@ -152,58 +153,164 @@ namespace eTactWeb.Data.DAL
                 if (t0.Rows.Count > 0)
                 {
                     DataRow r = t0.Rows[0];
-
                     model.EmpId = Convert.ToInt32(r["Emp_Id"]);
                     model.EmpCode = r["Emp_Code"]?.ToString();
                     model.Name = r["Emp_Name"]?.ToString();
-                    model.EntryDate = r["Entry_Date"] != DBNull.Value
-                                      ? Convert.ToDateTime(r["Entry_Date"]).ToString("dd/MM/yyyy")
-                                      : "";
-
+                    model.Department = r["DeptId"]?.ToString();
+                    model.Category = r["CategoryId"]?.ToString();
+                    model.Designation = r["DesigId"]?.ToString();
+                    model.Shift = r["ShiftId"]?.ToString();
                     model.Branch = r["CC"]?.ToString();
-                    //model.des = r["DesigId"]?.ToString();
-                    //model.DeptId = r["DeptId"]?.ToString();
-                    //model.CategoryId = r["CategoryId"]?.ToString();
-
-                    model.DOB = r["DOB"] != DBNull.Value ? Convert.ToDateTime(r["DOB"]).ToString("dd/MM/yyyy") : "";
-                    model.DateOfJoining = r["DateOfJoining"] != DBNull.Value ? Convert.ToDateTime(r["DateOfJoining"]).ToString("dd/MM/yyyy") : "";
-                    model.ResignationDate = r["ResignationDate"] != DBNull.Value ? Convert.ToDateTime(r["ResignationDate"]).ToString("dd/MM/yyyy") : "";
-
-                    //model.ShiftId = r["ShiftId"]?.ToString();
-                    model.Gender = r["Gender"]?.ToString();
-                    model.NatureOfDuties = r["NatureOfDuties"]?.ToString();
-                    model.Active = r["Active"]?.ToString();
-
-                    //model.CardNo = r["CardNo"]?.ToString();
-                    //model.ApplicationCode = r["ApplicationCode"]?.ToString();
-                    //model.EmpType = r["EmpType"]?.ToString();
-                    //model.WagesType = r["WagesType"]?.ToString();
-                    //model.GradeId = r["GradeId"]?.ToString();
-
-                    model.DateOfConfirmation = r["DateOfConfirm"] != DBNull.Value ? Convert.ToDateTime(r["DateOfConfirm"]).ToString("dd/MM/yyyy") : "";
-                    model.ProbationEndDate = r["DateOfProbation"] != DBNull.Value ? Convert.ToDateTime(r["DateOfProbation"]).ToString("dd/MM/yyyy") : "";
-
-                    model.JobReference1 = r["Referance1"]?.ToString();
-                    //model.ui = r["Uid"]?.ToString();
-
-                    //model.EmpReqNo = r["EmpReqNo"]?.ToString();
-                    //model.EmpReqYearcode = r["EmpReqYearcode"] != DBNull.Value ? Convert.ToInt32(r["EmpReqYearcode"]) : 0;
-                    //model.EmpReqEntryId = r["EmpReqEntryId"] != DBNull.Value ? Convert.ToInt32(r["EmpReqEntryId"]) : 0;
-
-                    model.ActualEntryDate = r["ActualEntryDate"] != DBNull.Value
-                                          ? Convert.ToDateTime(r["ActualEntryDate"]).ToString("dd/MM/yyyy")
-                                          : "";
-
-                    model.ActualEntrybyId = r["ActualEntrybyId"] != DBNull.Value ? Convert.ToInt32(r["ActualEntrybyId"]) : 0;
-                    model.LastUpdatedBy = Convert.ToInt32(r["LastUpdatedBy"]?.ToString());
-                    model.LastUpdationDate = r["LastUpdationDate"] != DBNull.Value ? Convert.ToDateTime(r["LastUpdationDate"]).ToString("dd/MM/yyyy") : "";
-
-                    model.EntryByMachineName = r["EntryByMachineName"]?.ToString();
-                    //model.IPAddress = r["IPAddress"]?.ToString();
-
                     model.MobileNo = r["MobileNo1"]?.ToString();
                     model.MobileNo2 = r["MobileNo2"]?.ToString();
                     model.EmailId = r["EmailId"]?.ToString();
+                    model.CurrentAddress = r["CurrentAddress"]?.ToString();
+                    model.permanentAddress = r["PermanentAddress"]?.ToString();
+                    model.EmergencyContact = r["EmergancyContactNo"]?.ToString();
+                    model.EmergencyContactRelation = r["EmergancyContactRelation"]?.ToString();
+                    model.Gender = r["Gender"]?.ToString();
+                    model.BloodGroup = r["BloodGroup"]?.ToString();
+                    model.Nationality = r["Nationality"]?.ToString();
+                    model.MaritalStatus = r["MaritalStatus"]?.ToString();
+                    model.EntryDate = r["Entry_Date"] != DBNull.Value
+                ? Convert.ToDateTime(r["Entry_Date"]).ToString("dd/MM/yyyy")
+                : "";
+
+                    model.DOB = r["DOB"] != DBNull.Value
+                              ? Convert.ToDateTime(r["DOB"]).ToString("dd/MM/yyyy")
+                              : "";
+
+                    model.DateOfJoining = r["DateOfJoining"] != DBNull.Value
+                                        ? Convert.ToDateTime(r["DateOfJoining"]).ToString("dd/MM/yyyy")
+                                        : "";
+
+                    model.ResignationDate = r["ResignationDate"] != DBNull.Value
+                                          ? Convert.ToDateTime(r["ResignationDate"]).ToString("dd/MM/yyyy")
+                                          : "";
+
+                    model.ProbationEndDate = r["DateOfProbation"] != DBNull.Value
+                                          ? Convert.ToDateTime(r["DateOfProbation"]).ToString("dd/MM/yyyy")
+                                          : "";
+
+                    model.DateOfConfirmation = r["DateOfConfirm"] != DBNull.Value
+                                        ? Convert.ToDateTime(r["DateOfConfirm"]).ToString("dd/MM/yyyy")
+                                        : "";
+                    model.NatureOfDuties = r["NatureOfDuties"]?.ToString();
+                    model.Active = r["Active"]?.ToString();
+
+                    // This is what you asked
+                    model.Designation = r["ReportingDesignationId"]?.ToString();
+
+                    model.ProbationPeriod = r["ProbationPeriod"] != DBNull.Value
+                                            ? Convert.ToInt32(r["ProbationPeriod"])
+                                            : 0;
+
+                    model.JobReference1 = r["Referance1"]?.ToString();
+                    model.ReportingMg = r["ReportingManager"]?.ToString();
+                    model.EmployeeType = r["EmpType"]?.ToString();
+                    //upload section
+                    //model.Aadhar = r["EmpType"]?.ToString();
+
+                 
+                    model.JobReference2 = r["Referencetwo"]?.ToString();
+
+                    model.JoiningThrough = r["Through"]?.ToString();
+
+                    model.ThumbUnPress = r["ThumbPath"]?.ToString();
+                    model.PassportNo = r["NationalIdPassport"]?.ToString();
+                    model.WorkPeritVisa = r["WorkPermitVisa"]?.ToString();
+                    model.DrivingLicenseNo = r["DrivingLicence"]?.ToString();
+                    model.MedicalInsuranceDetail = r["MedicalInsuranceDetail"]?.ToString();
+                    model.BankName = r["BankName"]?.ToString();
+                    model.AccountNo = r["BankAccountNo"]?.ToString();
+                    model.PANNo = r["PANNOTaxIdentificationNo"]?.ToString();
+                    model.AdharNo = r["AadharCardNoCountryCardNo"]?.ToString();
+                    model.SwiftCode = r["IBANSwiftCode"]?.ToString();
+                    model.PaymentMode = r["PaymentMode"]?.ToString();
+                    model.PFNo = r["PFNO"]?.ToString();
+                    model.ESINo = r["ESINo"]?.ToString();
+                    model.GrossSalary =Convert.ToDecimal( r["GrossSalary"]?.ToString());
+                    model.BasicSalary = Convert.ToDecimal(r["BasicSalary"]?.ToString());
+                    model.CalculatePfOn = r["PFApplicableon"]?.ToString();
+                    model.SalaryBasis =Convert.ToDecimal( r["SalaryBasisHrs"]?.ToString());
+                    model.SalaryCalculation = r["SalaryCalculationBasisOn"]?.ToString();
+                    model.PFApplicable = r["PFApplicable"]?.ToString();
+                    model.ApplyPFFonmAmt =Convert.ToDecimal( r["ApplyPFonAmt"]?.ToString());
+                    model.ApplyESIFonmAmt =Convert.ToDecimal( r["ApplyESIonAmt"]?.ToString());
+                    model.OTApplicable = r["OTApplicable"]?.ToString();
+                    model.LeaveApplicable = r["LeaveApplicable"]?.ToString();
+                    model.ESIApplicable = r["ESIApplicable"]?.ToString();
+                    model.LateMarkingCalculationApplicable = r["LateMarkingApplicable"]?.ToString();
+                    model.FixSalaryAmt =Convert.ToDecimal( r["FixSalaryAmount"]?.ToString())
+                        ;
+                    model.NoticPeriod =Convert.ToInt32( r["NoticePeriod"]?.ToString());
+                    model.GratutyEligibility = r["GratutyEligibility"]?.ToString();
+                    model.EntryByMachineName = r["EntryByMachineName"]?.ToString();
+                    model.LastUpdationDate = r["LastUpdationDate"]?.ToString();
+                    model.UpdatedBy = Convert.ToInt32(r["LastUpdatedBy"]?.ToString());
+                    model.ApprovedBy = Convert.ToInt32(r["ApprovedBy"]?.ToString());
+
+                    model.ApprovalDate = r["ApprovalDate"] != DBNull.Value
+                                        ? Convert.ToDateTime(r["ApprovalDate"]).ToString("dd/MM/yyyy")
+                                        : "";
+
+                    model.ActualEntrybyId = Convert.ToInt32(r["ActualEntrybyId"]);
+                    model.ActualEntryDate = r["ActualEntryDate"] != DBNull.Value
+                                           ? Convert.ToDateTime(r["ActualEntryDate"]).ToString("dd/MM/yyyy")
+                                           : "";
+
+                    //------OldCell DATA-----
+                    //model.EmpId = Convert.ToInt32(r["Emp_Id"]);
+                    //model.EmpCode = r["Emp_Code"]?.ToString();
+                    //model.Name = r["Emp_Name"]?.ToString();
+                    //model.EntryDate = r["Entry_Date"] != DBNull.Value
+                    //                  ? Convert.ToDateTime(r["Entry_Date"]).ToString("dd/MM/yyyy")
+                    //                  : "";
+
+                    //model.Branch = r["CC"]?.ToString();
+                    ////model.des = r["DesigId"]?.ToString();
+                    ////model.DeptId = r["DeptId"]?.ToString();
+                    ////model.CategoryId = r["CategoryId"]?.ToString();
+
+                    //model.DOB = r["DOB"] != DBNull.Value ? Convert.ToDateTime(r["DOB"]).ToString("dd/MM/yyyy") : "";
+                    //model.DateOfJoining = r["DateOfJoining"] != DBNull.Value ? Convert.ToDateTime(r["DateOfJoining"]).ToString("dd/MM/yyyy") : "";
+                    //model.ResignationDate = r["ResignationDate"] != DBNull.Value ? Convert.ToDateTime(r["ResignationDate"]).ToString("dd/MM/yyyy") : "";
+
+                    ////model.ShiftId = r["ShiftId"]?.ToString();
+                    //model.Gender = r["Gender"]?.ToString();
+                    //model.NatureOfDuties = r["NatureOfDuties"]?.ToString();
+                    //model.Active = r["Active"]?.ToString();
+
+                    ////model.CardNo = r["CardNo"]?.ToString();
+                    ////model.ApplicationCode = r["ApplicationCode"]?.ToString();
+                    ////model.EmpType = r["EmpType"]?.ToString();
+                    ////model.WagesType = r["WagesType"]?.ToString();
+                    ////model.GradeId = r["GradeId"]?.ToString();
+
+                    //model.DateOfConfirmation = r["DateOfConfirm"] != DBNull.Value ? Convert.ToDateTime(r["DateOfConfirm"]).ToString("dd/MM/yyyy") : "";
+                    //model.ProbationEndDate = r["DateOfProbation"] != DBNull.Value ? Convert.ToDateTime(r["DateOfProbation"]).ToString("dd/MM/yyyy") : "";
+
+                    //model.JobReference1 = r["Referance1"]?.ToString();
+                    ////model.ui = r["Uid"]?.ToString();
+
+                    ////model.EmpReqNo = r["EmpReqNo"]?.ToString();
+                    ////model.EmpReqYearcode = r["EmpReqYearcode"] != DBNull.Value ? Convert.ToInt32(r["EmpReqYearcode"]) : 0;
+                    ////model.EmpReqEntryId = r["EmpReqEntryId"] != DBNull.Value ? Convert.ToInt32(r["EmpReqEntryId"]) : 0;
+
+                    //model.ActualEntryDate = r["ActualEntryDate"] != DBNull.Value
+                    //                      ? Convert.ToDateTime(r["ActualEntryDate"]).ToString("dd/MM/yyyy")
+                    //                      : "";
+
+                    //model.ActualEntrybyId = r["ActualEntrybyId"] != DBNull.Value ? Convert.ToInt32(r["ActualEntrybyId"]) : 0;
+                    //model.LastUpdatedBy = Convert.ToInt32(r["LastUpdatedBy"]?.ToString());
+                    //model.LastUpdationDate = r["LastUpdationDate"] != DBNull.Value ? Convert.ToDateTime(r["LastUpdationDate"]).ToString("dd/MM/yyyy") : "";
+
+                    //model.EntryByMachineName = r["EntryByMachineName"]?.ToString();
+                    ////model.IPAddress = r["IPAddress"]?.ToString();
+
+                    //model.MobileNo = r["MobileNo1"]?.ToString();
+                    //model.MobileNo2 = r["MobileNo2"]?.ToString();
+                    //model.EmailId = r["EmailId"]?.ToString();
                 }
 
                 /*TABLE 1 → ALLOWANCE/DEDUCTION GRID*/
@@ -218,7 +325,7 @@ namespace eTactWeb.Data.DAL
                             SrNo = Convert.ToInt32(row["SeqNo"]),
                             SalaryHeadId = Convert.ToInt32(row["SalHeadEntryId"]),
                             SalaryHead = row["SalaryHead"].ToString(),
-                            Mode = row["Mode"].ToString(),
+                            PaymentMode = row["Mode"].ToString(),
                             Percent = row["Percentage"] != DBNull.Value ? Convert.ToDecimal(row["Percentage"]) : 0,
                             AllowanceAmount = row["Amount"] != DBNull.Value ? Convert.ToDecimal(row["Amount"]) : 0,
                              AllowanceType= row["IncDecType"].ToString(),
@@ -229,7 +336,7 @@ namespace eTactWeb.Data.DAL
                         });
                     }
 
-                    model.EmployeeMasterGrid = AllowanceList;
+                    model.AllowanceDeductionList = AllowanceList;
                 }
 
                 /* ---------------------------------------------------
@@ -243,10 +350,10 @@ namespace eTactWeb.Data.DAL
                     {
                         EduList.Add(new EmployeeMasterModel
                         {
-                            SrNo = Convert.ToInt32(row["SeqNo"]),
+                            Edu_SrNo = Convert.ToInt32(row["SeqNo"]),
                             Qualification = row["Qualification"]?.ToString(),
                             Univercity_Sch = row["Univercity"]?.ToString(),
-                            Percent = row["Percentage"] != DBNull.Value ? Convert.ToDecimal(row["Percentage"]) : 0,
+                            Per = row["Percentage"] != DBNull.Value ? Convert.ToDecimal(row["Percentage"]) : 0,
                             InYear = Convert.ToInt32(row["PassoutYear"]?.ToString()),
                             Remark = row["Remarks"]?.ToString()
                         });
@@ -266,10 +373,10 @@ namespace eTactWeb.Data.DAL
                     {
                         ExpList.Add(new EmployeeMasterModel
                         {
-                            SrNo = Convert.ToInt32(row["SeqNo"]),
+                            Exp_SrNo = Convert.ToInt32(row["SeqNo"]),
                             CompanyName = row["CompanyName"]?.ToString(),
-                            FromDate = row["FromDate"] != DBNull.Value ? Convert.ToDateTime(row["FromDate"]).ToString("dd/MM/yyyy") : "",
-                            ToDate = row["ToDate"] != DBNull.Value ? Convert.ToDateTime(row["ToDate"]).ToString("dd/MM/yyyy") : "",
+                            CFromDate = row["FromDate"] != DBNull.Value ? Convert.ToDateTime(row["FromDate"]).ToString("dd/MM/yyyy") : "",
+                            CToDate = row["ToDate"] != DBNull.Value ? Convert.ToDateTime(row["ToDate"]).ToString("dd/MM/yyyy") : "",
                             Designation = row["Designation"]?.ToString(),
                             Salary = row["NetSalaryAmt"] != DBNull.Value ? Convert.ToDecimal(row["NetSalaryAmt"]) : 0,
                             GrossSalary = row["GrossSalary"] != DBNull.Value ? Convert.ToDecimal(row["GrossSalary"]) : 0,
@@ -420,7 +527,7 @@ namespace eTactWeb.Data.DAL
                                                         ApplyESIFonmAmt = dr["ApplyESIonAmt"] != DBNull.Value ? Convert.ToDecimal(dr["ApplyESIonAmt"]) : 0,
                                                         SalaryCalculation = dr["SalaryCalculationBasisOn"]?.ToString() ?? string.Empty,
                                                        
-                                                        SalaryBasisHr = dr["SalaryBasisHrs"] != DBNull.Value ? Convert.ToDecimal(dr["SalaryBasisHrs"]) : 0,
+                                                        SalaryBasisHr = dr["SalaryBasisHrs"] != DBNull.Value ? Convert.ToInt32(dr["SalaryBasisHrs"]) : 0,
                                                         OTApplicable = dr["OTApplicable"]?.ToString() ?? string.Empty,
                                                         LeaveApplicable = dr["LeaveApplicable"]?.ToString() ?? string.Empty,
                                                         LateMarkingCalculationApplicable = dr["LateMarkingApplicable"]?.ToString() ?? string.Empty,
@@ -913,7 +1020,7 @@ namespace eTactWeb.Data.DAL
                                           ApplyPFFonmAmt = Convert.ToDecimal(dr["PFApplicableon"]),
                                           ApplyESIFonmAmt = Convert.ToDecimal(dr["ESIApplicableon"]),
                                           SalaryCalculation = Convert.ToString(dr["SalaryCalculationBasisOn"]),
-                                          SalaryBasisHr = Convert.ToDecimal(dr["SalaryBasisHrs"]),
+                                          SalaryBasisHr = Convert.ToInt32(dr["SalaryBasisHrs"]),
                                           OTApplicable = Convert.ToString(dr["OTApplicable"]),
                                           LeaveApplicable = Convert.ToString(dr["LeaveApplicable"]),
                                           LateMarkingCalculationApplicable = Convert.ToString(dr["LateMarkingApplicable"]),

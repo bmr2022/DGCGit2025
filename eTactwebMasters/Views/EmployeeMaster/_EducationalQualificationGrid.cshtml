@@ -1,5 +1,5 @@
 ﻿@model eTactWeb.DOM.Models.EmployeeMasterModel;
-@if (Model.EmployeeMasterGrid == null)
+@if (Model.EducationList == null)
 {
     <tr class="text-center">
         <td colspan="25" class="text-black-50"><strong>NO DATA ADDED</strong></td>
@@ -8,7 +8,7 @@
 else
 {
     var @Cntr = 0;
-    foreach (var item in Model.EmployeeMasterGrid)
+    foreach (var item in Model.EducationList)
     {
         Cntr = Cntr + 1;
         <tr class="small " style="white-space:nowrap">
@@ -30,13 +30,13 @@ else
                 }
                 else
                 {
-                    <a class="table-link link-primary" onclick="EditEductionItemRow(@item.SrNo);">
+                    <a class="table-link link-primary" onclick="EditEductionItemRow(@item.Edu_SrNo);">
                         <span class="fa-stack">
                             <i class="fa fa-square fa-stack-2x"></i>
                             <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
                         </span>
                     </a>
-                    <a class="table-link link-danger" onclick="DeleteEductionItemRow(@item.SrNo);">
+                    <a class="table-link link-danger" onclick="DeleteEductionItemRow(@item.Edu_SrNo);">
                         <span class="fa-stack">
                             <i class="fa fa-square fa-stack-2x"></i>
                             <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
@@ -44,7 +44,7 @@ else
                     </a>
                 }
             </td>
-            <td id="SrNO-@Cntr"><input type="hidden" value="@item.SrNo" />@item.SrNo</td>
+            <td id="Edu_SrNo-@Cntr"><input type="hidden" value="@item.Edu_SrNo" />@item.Edu_SrNo</td>
 
             <td>@item.Qualification </td>
             <td>@item.Univercity_Sch </td>
