@@ -380,6 +380,7 @@ namespace eTactWeb.Controllers
                             HttpContext.Session.Remove("KeyTaxGrid");
                             HttpContext.Session.Remove("KeyTDSGrid");
                             HttpContext.Session.Remove("DirectPurchaseBill");
+                            return Json(new { status = "Success" });
                         }
                         else if (Result.StatusText == "Inserted Successfully" && Result.StatusCode == HttpStatusCode.Accepted)
                         {
@@ -388,6 +389,7 @@ namespace eTactWeb.Controllers
                             HttpContext.Session.Remove("KeyTaxGrid");
                             HttpContext.Session.Remove("KeyTDSGrid");
                             HttpContext.Session.Remove("DirectPurchaseBill");
+                            return Json(new { status = "Success" });
                         }
                         else if (Result.StatusText == "Updated Successfully" && Result.StatusCode == HttpStatusCode.Accepted)
                         {
@@ -396,7 +398,8 @@ namespace eTactWeb.Controllers
                             HttpContext.Session.Remove("KeyTaxGrid");
                             HttpContext.Session.Remove("KeyTDSGrid");
                             HttpContext.Session.Remove("DirectPurchaseBill");
-                            return RedirectToAction(nameof(DirectPurchaseBill));
+                            //return RedirectToAction(nameof(DirectPurchaseBill));
+                            return Json(new { status = "Success" });
                         }
                         else if (Result.StatusText == "Deleted Successfully" && Result.StatusCode == HttpStatusCode.Accepted)
                         {
