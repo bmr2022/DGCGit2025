@@ -120,7 +120,9 @@ namespace eTactWeb.Data.DAL
             model.BillAmt = DS.Tables[0].Rows[0]["BillAmt"] != DBNull.Value ? Convert.ToSingle(DS.Tables[0].Rows[0]["BillAmt"]) : 0;
             model.NetTotal = DS.Tables[0].Rows[0]["BillAmt"] != DBNull.Value ? Convert.ToDecimal(DS.Tables[0].Rows[0]["BillAmt"]) : 0;
             model.RoundOffAmt = DS.Tables[0].Rows[0]["RoundOffAmt"] != DBNull.Value ? Convert.ToSingle(DS.Tables[0].Rows[0]["RoundOffAmt"]) : 0;
+            model.TotalRoundOffAmt = DS.Tables[0].Rows[0]["RoundOffAmt"] != DBNull.Value ? Convert.ToDecimal(DS.Tables[0].Rows[0]["RoundOffAmt"]) : 0;
             model.RoundoffType = DS.Tables[0].Rows[0]["RoundoffType"]?.ToString();
+            model.TotalRoundOff = DS.Tables[0].Rows[0]["RoundoffType"]?.ToString();
             model.Taxableamt = DS.Tables[0].Rows[0]["Taxableamt"] != DBNull.Value ? Convert.ToSingle(DS.Tables[0].Rows[0]["Taxableamt"]) : 0;
             model.ToatlDiscountPercent = DS.Tables[0].Rows[0]["ToatlDiscountPercent"] != DBNull.Value ? Convert.ToSingle(DS.Tables[0].Rows[0]["ToatlDiscountPercent"]) : 0;
             model.TotalDiscountAmount = DS.Tables[0].Rows[0]["TotalDiscountAmount"] != DBNull.Value ? Convert.ToSingle(DS.Tables[0].Rows[0]["TotalDiscountAmount"]) : 0;
@@ -726,10 +728,10 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@Vehicleno", model.Vehicleno ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@Distance", model.Distance ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@BillAmt", model.ItemNetAmount));
-                SqlParams.Add(new SqlParameter("@RoundOffAmt", model.RoundOffAmt));
+                SqlParams.Add(new SqlParameter("@RoundOffAmt", model.TotalRoundOffAmt));
                 SqlParams.Add(new SqlParameter("@roundoffaccountcode", model.RoundOffAccountCode));
                 //SqlParams.Add(new SqlParameter("@RoundOffAmt", model.TotalRoundOffAmt));
-                SqlParams.Add(new SqlParameter("@RoundoffType", model.RoundoffType ?? string.Empty));
+                SqlParams.Add(new SqlParameter("@RoundoffType", model.TotalRoundOff ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@Taxableamt", model.NetTotal));
                 //SqlParams.Add(new SqlParameter("@ToatlDiscountPercent", model.TotalDiscountPercentage));
                 SqlParams.Add(new SqlParameter("@ToatlDiscountPercent", model.ToatlDiscountPercent));

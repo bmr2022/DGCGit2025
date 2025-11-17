@@ -935,7 +935,7 @@
                      }
 
                      if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-                                     $('#RoundOffAccountCode').val($('#hiddenRoundOffAccountCode').val()).trigger("change");
+                                     $('#RoundOffAccountCode').val($('#hiddenRoundOffAccountCode').val());
                      }
                  }
              });
@@ -1663,27 +1663,60 @@
             var showAllDoc = document.getElementById('DA').checked ? "T" : "F";
             FillDocument(showAllDoc);
         });
-        /* $('.btnClearTax').click(function () {
+        $('.btnClearTax').click(function () {
             btnClearTax();
-        }); */
-        function btnClearTax() {
-            $.ajax({
-                type: "POST",
-                url: "@Url.Action("ClearTaxGrid")",
-                data: {},
-                dataType: "json",
-                success: function (result, status, error) {
-                    $('#divTaxGrid').empty();
-                    var NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
-                    $('#divTaxGrid').html(NoData);
-                    var txAmt = $('#lblItemNetAmount').text();
-                    $('#NetTotal').val(txAmt);
-                },
-                error: function (req, status, error) {
-                    alert(error);
-                }
-            });
-        }
+        });
+                 function btnClearTax() {
+                  $.ajax({
+                      type: "POST",
+                      url: "@Url.Action("ClearTaxGrid")",
+                            data: {},
+                      dataType: "json",
+                      success: function (result, status, error) {
+                          $('#divTaxGrid').empty();
+                          var NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
+                          $('#divTaxGrid').html(NoData);
+
+                  if($('#divTDSGrid tr td').length>1){
+                  btnClearTDS();
+
+                  }
+                                var txAmt =   parseFloat($('#ItemNetAmount').val());
+                        
+                          $('#NetTotal').val(txAmt);
+                            GetDbCrDetail();
+                             var AdjGrid = $('#divAdjItemList tr td').length;
+                    if (AdjGrid >= 1 ) {
+                 ClearAdjustmentGrid();
+                  AddAdjstmntDetail1();
+                    }
+                           // ClearAdjustmentGrid();
+
+                      },
+                      error: function (req, status, error) {
+                          alert(error);
+                      }
+                  });
+              }
+
+        // function btnClearTax() {
+        //     $.ajax({
+        //         type: "POST",
+        //         url: "@Url.Action("ClearTaxGrid")",
+        //         data: {},
+        //         dataType: "json",
+        //         success: function (result, status, error) {
+        //             $('#divTaxGrid').empty();
+        //             var NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
+        //             $('#divTaxGrid').html(NoData);
+        //             var txAmt = $('#lblItemNetAmount').text();
+        //             $('#NetTotal').val(txAmt);
+        //         },
+        //         error: function (req, status, error) {
+        //             alert(error);
+        //         }
+        //     });
+        // }
         function FillDocument(showAllDoc) {
             $.ajax({
                 type: "POST",

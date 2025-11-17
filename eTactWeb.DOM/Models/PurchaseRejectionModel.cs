@@ -209,7 +209,7 @@ namespace eTactWeb.DOM.Models
         public decimal TotalDiscountPercentage { get; set; }
 
         public string? TotalRoundOff { get; set; }
-        public bool? RDT { get; set; }
+        public bool RDT { get; set; }
         public int? RoundOffAccountCode { get; set; }
         [Column(TypeName = "decimal(10, 4)")]
         public decimal TotalRoundOffAmt { get; set; }

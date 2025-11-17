@@ -1354,6 +1354,7 @@ namespace eTactWeb.Controllers
 
             return PartialView("_PurchaseRejectionGrid", MainModel);
         }
+      
         public async Task<JsonResult> ClearTaxGrid()
         {
             HttpContext.Session.Remove("KeyTaxGrid");
