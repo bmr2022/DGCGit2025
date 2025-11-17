@@ -53,6 +53,18 @@ namespace eTactWeb.Controllers
                 model.DOB = FormatDate(model.DOB);
                 model.DateOfJoining = FormatDate(model.DateOfJoining);
                 model.DateOfResignation = FormatDate(model.DateOfResignation);
+
+                HttpContext.Session.SetString("KeyEmployeeMasterGrid_AllDed",
+                  JsonConvert.SerializeObject(model.AllowanceDeductionList));
+
+                HttpContext.Session.SetString("KeyEmployeeMasterGrid_Edu",
+                    JsonConvert.SerializeObject(model.EducationList));
+
+                HttpContext.Session.SetString("KeyEmployeeMasterGrid_Exp",
+                    JsonConvert.SerializeObject(model.ExperienceList));
+
+                HttpContext.Session.SetString("KeyEmployeeMasterGrid_NJob",
+                    JsonConvert.SerializeObject(model.NatureOfJobList));
             }
 
             model.DesignationList = await _IDataLogic.GetDropDownList("FillDesignation", "HREmployeeMaster");
@@ -360,10 +372,10 @@ namespace eTactWeb.Controllers
                         {
                         model.EmpId == 0 ? 0 : model.EmpId,                     // long
                 model.EmpCode ?? string.Empty,                         // string
-                Item.SrNo == 0 ? 0 : Item.SrNo,                       // int
+                Item.Edu_SrNo == 0 ? 0 : Item.Edu_SrNo,                       // int
                 Item.Qualification ?? string.Empty,                   // string
                 Item.Univercity_Sch ?? string.Empty,                  // string
-                Item.Per is null ? 0 : Item.Per,                      // decimal?
+                Item.Per ==0 ? 0 : Item.Per,                      // decimal?
                 Item.InYear == 0 ? 0 : Item.InYear,                   // int
                 Item.Remark ?? string.Empty
 
@@ -409,11 +421,11 @@ namespace eTactWeb.Controllers
                         {
                         model.EmpId == 0 ? 0 : model.EmpId,                         // long
                 model.EmpCode ?? string.Empty,                             // string
-                Item.SrNo == 0 ? 0 : Item.SrNo,                           // int
+                Item.Exp_SrNo == 0 ? 0 : Item.Exp_SrNo,                           // int
                 Item.CompanyName ?? string.Empty,                         // string
                 Item.CFromDate ,                           // string (or DateTime.ToString())
                 Item.CToDate,                             // string (or DateTime.ToString())
-                Item.Designation ?? string.Empty,                         // string
+                Item.Desigation ?? string.Empty,                         // string
                 Item.Salary is 0 ? 0 : Item.Salary,                    // decimal?
                 Item.GrossSalary is 0 ? 0 : Item.GrossSalary,          // decimal?
                 Item.Country ?? string.Empty,                             // string
@@ -529,355 +541,654 @@ namespace eTactWeb.Controllers
             return DateTime.TryParse(date, out DateTime parsedDate) ? parsedDate.ToString("dd/MM/yyyy") : date;
         }
 
+        //public IActionResult AddToGridData(EmployeeMasterModel model)
+        //{
+        //    try
+        //    {
+        //        string modelJson = HttpContext.Session.GetString("KeyEmployeeMasterGrid_AllDed");
+        //        IList<EmployeeMasterModel> EmployeeMasterGrid = new List<EmployeeMasterModel>();
+        //        if (!string.IsNullOrEmpty(modelJson))
+        //        {
+        //            EmployeeMasterGrid = JsonConvert.DeserializeObject<IList<EmployeeMasterModel>>(modelJson);
+        //        }
+
+        //        var MainModel = new EmployeeMasterModel();
+        //        var WorkOrderPGrid = new List<EmployeeMasterModel>();
+        //        var OrderGrid = new List<EmployeeMasterModel>();
+        //        var ssGrid = new List<EmployeeMasterModel>();
+
+        //        if (model != null)
+        //        {
+        //            if (EmployeeMasterGrid == null )
+        //            {
+        //                model.SrNo = 1;
+        //                OrderGrid.Add(model);
+        //            }
+        //            else
+        //            {
+        //                if (EmployeeMasterGrid.Any(x => (x.SalaryHead == model.SalaryHead)))
+        //                {
+        //                    return StatusCode(207, "Duplicate");
+        //                }
+        //                else
+        //                {
+        //                    //count = WorkOrderProcessGrid.Count();
+        //                    model.SrNo = EmployeeMasterGrid.Count + 1;
+        //                    OrderGrid = EmployeeMasterGrid.Where(x => x != null).ToList();
+        //                    ssGrid.AddRange(OrderGrid);
+        //                    OrderGrid.Add(model);
+
+        //                }
+
+        //            }
+
+        //            MainModel.AllowanceDeductionList = OrderGrid;
+
+        //            HttpContext.Session.SetString("KeyEmployeeMasterGrid_AllDed", JsonConvert.SerializeObject(MainModel.AllowanceDeductionList));
+        //        }
+        //        else
+        //        {
+        //            ModelState.TryAddModelError("Error", " List Cannot Be Empty...!");
+        //        }
+        //        return PartialView("_EmployeeAllowanceGrid", MainModel);
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw ex;
+        //    }
+        //}
         public IActionResult AddToGridData(EmployeeMasterModel model)
         {
             try
             {
-                string modelJson = HttpContext.Session.GetString("KeyEmployeeMasterGrid_AllDed");
-                IList<EmployeeMasterModel> EmployeeMasterGrid = new List<EmployeeMasterModel>();
-                if (!string.IsNullOrEmpty(modelJson))
+                string jsonString = HttpContext.Session.GetString("KeyEmployeeMasterGrid_AllDed");
+                IList<EmployeeMasterModel> GridDetail = new List<EmployeeMasterModel>();
+
+                if (!string.IsNullOrEmpty(jsonString))
                 {
-                    EmployeeMasterGrid = JsonConvert.DeserializeObject<IList<EmployeeMasterModel>>(modelJson);
+                    GridDetail = JsonConvert.DeserializeObject<List<EmployeeMasterModel>>(jsonString);
                 }
 
                 var MainModel = new EmployeeMasterModel();
-                var WorkOrderPGrid = new List<EmployeeMasterModel>();
-                var OrderGrid = new List<EmployeeMasterModel>();
-                var ssGrid = new List<EmployeeMasterModel>();
 
                 if (model != null)
                 {
-                    if (EmployeeMasterGrid == null)
+                    
+                    bool isDuplicate = GridDetail.Any(x =>
+                        x.SalaryHead == model.SalaryHead);
+                            
+                        if (isDuplicate)
+                        return StatusCode(207, "Duplicate");
+
+                    if (model.GridMode == "U")
                     {
-                        model.SrNo = 1;
-                        OrderGrid.Add(model);
+
+                        GridDetail.Add(model);
                     }
                     else
                     {
-                        if (EmployeeMasterGrid.Any(x => (x.SalaryHead == model.SalaryHead)))
-                        {
-                            return StatusCode(207, "Duplicate");
-                        }
-                        else
-                        {
-                            //count = WorkOrderProcessGrid.Count();
-                            model.SrNo = EmployeeMasterGrid.Count + 1;
-                            OrderGrid = EmployeeMasterGrid.Where(x => x != null).ToList();
-                            ssGrid.AddRange(OrderGrid);
-                            OrderGrid.Add(model);
 
+                        int nextSeqNo = GridDetail.Count > 0 ? GridDetail.Max(x => x.SrNo) + 1 : 1;
+                        model.SrNo = nextSeqNo;
+                        if (model.SrNo <= 0)
+                        {
+                            int nextSeqNo1 = GridDetail.Count > 0 ? GridDetail.Max(x => x.SrNo) + 1 : 1;
+                            model.SrNo = nextSeqNo1;
                         }
-
+                        GridDetail.Add(model);
                     }
 
-                    MainModel.AllowanceDeductionList = OrderGrid;
 
+                    MainModel.AllowanceDeductionList = GridDetail.OrderBy(x => x.SrNo).ToList();
                     HttpContext.Session.SetString("KeyEmployeeMasterGrid_AllDed", JsonConvert.SerializeObject(MainModel.AllowanceDeductionList));
                 }
-                else
-                {
-                    ModelState.TryAddModelError("Error", " List Cannot Be Empty...!");
-                }
-                return PartialView("_EmployeeAllowanceGrid", MainModel);
 
+                return PartialView("_EmployeeAllowanceGrid", MainModel);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
-        public IActionResult EditItemRow(int SrNO, string Mode)
+        //public IActionResult EditItemRow(int SrNO, string Mode)
+        //{
+        //    IList<EmployeeMasterModel> EmployeeMasterGrid = new List<EmployeeMasterModel>();
+        //    if (Mode == "U")
+        //    {
+        //        string modelJson = HttpContext.Session.GetString("KeyEmployeeMasterGrid_AllDed");
+        //        if (!string.IsNullOrEmpty(modelJson))
+        //        {
+        //            EmployeeMasterGrid = JsonConvert.DeserializeObject<IList<EmployeeMasterModel>>(modelJson);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        string modelJson = HttpContext.Session.GetString("KeyEmployeeMasterGrid_AllDed");
+        //        if (!string.IsNullOrEmpty(modelJson))
+        //        {
+        //            EmployeeMasterGrid = JsonConvert.DeserializeObject<IList<EmployeeMasterModel>>(modelJson);
+        //        }
+        //    }
+        //    IEnumerable<EmployeeMasterModel> SSBreakdownGrid = EmployeeMasterGrid;
+        //    if (EmployeeMasterGrid != null)
+        //    {
+        //        SSBreakdownGrid = EmployeeMasterGrid.Where(x => x.SrNo == SrNO);
+        //    }
+        //    string JsonString = JsonConvert.SerializeObject(SSBreakdownGrid);
+        //    return Json(JsonString);
+        //}
+        public async Task<JsonResult> EditItemRow(int SrNo,string Mode)
         {
-            IList<EmployeeMasterModel> EmployeeMasterGrid = new List<EmployeeMasterModel>();
-            if (Mode == "U")
+            var MainModel = new EmployeeMasterModel();
+            string jsonString = HttpContext.Session.GetString("KeyEmployeeMasterGrid_AllDed");
+            IList<EmployeeMasterModel> GridDetail = new List<EmployeeMasterModel>();
+
+            if (!string.IsNullOrEmpty(jsonString))
             {
-                string modelJson = HttpContext.Session.GetString("KeyEmployeeMasterGrid_AllDed");
-                if (!string.IsNullOrEmpty(modelJson))
-                {
-                    EmployeeMasterGrid = JsonConvert.DeserializeObject<IList<EmployeeMasterModel>>(modelJson);
-                }
+                GridDetail = JsonConvert.DeserializeObject<List<EmployeeMasterModel>>(jsonString);
             }
-            else
-            {
-                string modelJson = HttpContext.Session.GetString("KeyEmployeeMasterGrid_AllDed");
-                if (!string.IsNullOrEmpty(modelJson))
-                {
-                    EmployeeMasterGrid = JsonConvert.DeserializeObject<IList<EmployeeMasterModel>>(modelJson);
-                }
-            }
-            IEnumerable<EmployeeMasterModel> SSBreakdownGrid = EmployeeMasterGrid;
-            if (EmployeeMasterGrid != null)
-            {
-                SSBreakdownGrid = EmployeeMasterGrid.Where(x => x.SrNo == SrNO);
-            }
-            string JsonString = JsonConvert.SerializeObject(SSBreakdownGrid);
+
+            var result = GridDetail.Where(x => x.SrNo == SrNo).ToList();
+            string JsonString = JsonConvert.SerializeObject(result);
             return Json(JsonString);
         }
 
-        public IActionResult DeleteItemRow(int SrNO, string Mode)
+        //public IActionResult DeleteItemRow(int SrNO, string Mode)
+        //{
+        //    var MainModel = new EmployeeMasterModel();
+        //    if (Mode == "U")
+        //    {
+        //        string modelJson = HttpContext.Session.GetString("KeyEmployeeMasterGrid_AllDed");
+        //        List<EmployeeMasterModel> EmployeeMasterGrid = new List<EmployeeMasterModel>();
+        //        if (!string.IsNullOrEmpty(modelJson))
+        //        {
+        //            EmployeeMasterGrid = JsonConvert.DeserializeObject<List<EmployeeMasterModel>>(modelJson);
+        //        }
+        //        int Indx = SrNO - 1;
+
+        //        if (EmployeeMasterGrid != null && EmployeeMasterGrid.Count > 0)
+        //        {
+        //            EmployeeMasterGrid.RemoveAt(Convert.ToInt32(Indx));
+
+        //            Indx = 0;
+
+        //            foreach (var item in EmployeeMasterGrid)
+        //            {
+        //                Indx++;
+        //                item.SrNo = Indx;
+        //            }
+        //            MainModel.AllowanceDeductionList = EmployeeMasterGrid;
+
+        //            HttpContext.Session.SetString("KeyEmployeeMasterGrid_AllDed", JsonConvert.SerializeObject(MainModel.EmployeeMasterGrid));
+        //        }
+        //    }
+
+        //    return PartialView("_EmployeeAllowanceGrid", MainModel);
+        //}
+        public IActionResult DeleteItemRow(int SrNo, string Mode)
         {
             var MainModel = new EmployeeMasterModel();
-            if (Mode == "U")
+            string jsonString = HttpContext.Session.GetString("KeyEmployeeMasterGrid_AllDed");
+            IList<EmployeeMasterModel> ControlPlanDetail = new List<EmployeeMasterModel>();
+
+            if (!string.IsNullOrEmpty(jsonString))
             {
-                string modelJson = HttpContext.Session.GetString("KeyEmployeeMasterGrid_AllDed");
-                List<EmployeeMasterModel> EmployeeMasterGrid = new List<EmployeeMasterModel>();
-                if (!string.IsNullOrEmpty(modelJson))
-                {
-                    EmployeeMasterGrid = JsonConvert.DeserializeObject<List<EmployeeMasterModel>>(modelJson);
-                }
-                int Indx = SrNO - 1;
+                ControlPlanDetail = JsonConvert.DeserializeObject<List<EmployeeMasterModel>>(jsonString);
+            }
 
-                if (EmployeeMasterGrid != null && EmployeeMasterGrid.Count > 0)
-                {
-                    EmployeeMasterGrid.RemoveAt(Convert.ToInt32(Indx));
+            if (ControlPlanDetail != null && ControlPlanDetail.Count > 0)
+            {
+                var itemToRemove = ControlPlanDetail.FirstOrDefault(x => x.SrNo == SrNo);
+                if (itemToRemove != null)
+                    ControlPlanDetail.Remove(itemToRemove);
 
-                    Indx = 0;
-
-                    foreach (var item in EmployeeMasterGrid)
-                    {
-                        Indx++;
-                        item.SrNo = Indx;
-                    }
-                    MainModel.EmployeeMasterGrid = EmployeeMasterGrid;
-
-                    HttpContext.Session.SetString("KeyEmployeeMasterGrid_AllDed", JsonConvert.SerializeObject(MainModel.EmployeeMasterGrid));
-                }
+                MainModel.AllowanceDeductionList = ControlPlanDetail.OrderBy(x => x.SrNo).ToList();
+                HttpContext.Session.SetString("KeyEmployeeMasterGrid_AllDed", JsonConvert.SerializeObject(MainModel.AllowanceDeductionList));
             }
 
             return PartialView("_EmployeeAllowanceGrid", MainModel);
         }
+        //new code 
         public IActionResult AddToGridDataEduction(EmployeeMasterModel model)
         {
             try
             {
-                string modelJson = HttpContext.Session.GetString("KeyEmployeeMasterGrid_Edu");
-                IList<EmployeeMasterModel> EmployeeMasterGrid = new List<EmployeeMasterModel>();
-                if (!string.IsNullOrEmpty(modelJson))
+                string jsonString = HttpContext.Session.GetString("KeyEmployeeMasterGrid_Edu");
+                IList<EmployeeMasterModel> GridDetail = new List<EmployeeMasterModel>();
+
+                if (!string.IsNullOrEmpty(jsonString))
                 {
-                    EmployeeMasterGrid = JsonConvert.DeserializeObject<IList<EmployeeMasterModel>>(modelJson);
+                    GridDetail = JsonConvert.DeserializeObject<List<EmployeeMasterModel>>(jsonString);
                 }
 
                 var MainModel = new EmployeeMasterModel();
-                var WorkOrderPGrid = new List<EmployeeMasterModel>();
-                var OrderGrid = new List<EmployeeMasterModel>();
-                var ssGrid = new List<EmployeeMasterModel>();
 
                 if (model != null)
                 {
-                    if (EmployeeMasterGrid == null)
+                    // Duplicate check — change condition as needed
+                    bool isDuplicate = GridDetail.Any(x =>
+                        x.Qualification == model.Qualification);
+
+                    if (isDuplicate)
+                        return StatusCode(207, "Duplicate");
+
+                    // Update mode
+                    if (model.Edu_GridMode == "U")
                     {
-                        model.SrNo = 1;
-                        OrderGrid.Add(model);
+                        GridDetail.Add(model);
                     }
                     else
                     {
-                        if (EmployeeMasterGrid.Any(x => (x.SrNo == model.SrNo)))
-                        {
-                            return StatusCode(207, "Duplicate");
-                        }
-                        else
-                        {
-                            //count = WorkOrderProcessGrid.Count();
-                            model.SrNo = EmployeeMasterGrid.Count + 1;
-                            OrderGrid = EmployeeMasterGrid.Where(x => x != null).ToList();
-                            ssGrid.AddRange(OrderGrid);
-                            OrderGrid.Add(model);
+                        // Insert mode — assign SrNo
+                        int nextSeqNo = GridDetail.Count > 0 ? GridDetail.Max(x => x.Edu_SrNo) + 1 : 1;
+                        model.Edu_SrNo = nextSeqNo;
 
+                        if (model.Edu_SrNo <= 0)
+                        {
+                            int nextSeqNo1 = GridDetail.Count > 0 ? GridDetail.Max(x => x.Edu_SrNo) + 1 : 1;
+                            model.Edu_SrNo = nextSeqNo1;
                         }
-
+                        GridDetail.Add(model);
                     }
 
-                    MainModel.EducationList = OrderGrid;
+                    MainModel.EducationList = GridDetail.OrderBy(x => x.Edu_SrNo).ToList();
+                    HttpContext.Session.SetString("KeyEmployeeMasterGrid_Edu",
+                        JsonConvert.SerializeObject(MainModel.EducationList));
+                }
 
-                    HttpContext.Session.SetString("KeyEmployeeMasterGrid_Edu", JsonConvert.SerializeObject(MainModel.EducationList));
-                }
-                else
-                {
-                    ModelState.TryAddModelError("Error", " List Cannot Be Empty...!");
-                }
                 return PartialView("_EducationalQualificationGrid", MainModel);
-
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
-        public IActionResult EditEductionItemRow(int SrNO, string Mode)
+        public async Task<JsonResult> EditEductionItemRow(int Edu_SrNo, string Edu_GridMode)
         {
-            IList<EmployeeMasterModel> EmployeeMasterGrid = new List<EmployeeMasterModel>();
-            if (Mode == "U")
+            IList<EmployeeMasterModel> GridDetail = new List<EmployeeMasterModel>();
+            string jsonString = HttpContext.Session.GetString("KeyEmployeeMasterGrid_Edu");
+
+            if (!string.IsNullOrEmpty(jsonString))
             {
-                string modelJson = HttpContext.Session.GetString("KeyEmployeeMasterGrid_Edu");
-                if (!string.IsNullOrEmpty(modelJson))
-                {
-                    EmployeeMasterGrid = JsonConvert.DeserializeObject<IList<EmployeeMasterModel>>(modelJson);
-                }
+                GridDetail = JsonConvert.DeserializeObject<IList<EmployeeMasterModel>>(jsonString);
             }
-            else
-            {
-                string modelJson = HttpContext.Session.GetString("KeyEmployeeMasterGrid_Edu");
-                if (!string.IsNullOrEmpty(modelJson))
-                {
-                    EmployeeMasterGrid = JsonConvert.DeserializeObject<IList<EmployeeMasterModel>>(modelJson);
-                }
-            }
-            IEnumerable<EmployeeMasterModel> SSBreakdownGrid = EmployeeMasterGrid;
-            if (EmployeeMasterGrid != null)
-            {
-                SSBreakdownGrid = EmployeeMasterGrid.Where(x => x.SrNo == SrNO);
-            }
-            string JsonString = JsonConvert.SerializeObject(SSBreakdownGrid);
+
+            var result = GridDetail.Where(x => x.Edu_SrNo == Edu_SrNo).ToList();
+            string JsonString = JsonConvert.SerializeObject(result);
+
             return Json(JsonString);
         }
-
-        public IActionResult DeleteEductionItemRow(int SrNO, string Mode)
+        public IActionResult DeleteEductionItemRow(int Edu_SrNo, string Edu_GridMode)
         {
             var MainModel = new EmployeeMasterModel();
-            if (Mode == "U")
+            string jsonString = HttpContext.Session.GetString("KeyEmployeeMasterGrid_Edu");
+            IList<EmployeeMasterModel> GridDetail = new List<EmployeeMasterModel>();
+
+            if (!string.IsNullOrEmpty(jsonString))
             {
-                string modelJson = HttpContext.Session.GetString("KeyEmployeeMasterGrid_Edu");
-                List<EmployeeMasterModel> EmployeeMasterGrid = new List<EmployeeMasterModel>();
-                if (!string.IsNullOrEmpty(modelJson))
+                GridDetail = JsonConvert.DeserializeObject<List<EmployeeMasterModel>>(jsonString);
+            }
+
+            if (GridDetail != null && GridDetail.Count > 0)
+            {
+                var itemToRemove = GridDetail.FirstOrDefault(x => x.Edu_SrNo == Edu_SrNo);
+                if (itemToRemove != null)
+                    GridDetail.Remove(itemToRemove);
+
+                // Reassign SrNo in correct order
+                int counter = 1;
+                foreach (var item in GridDetail)
                 {
-                    EmployeeMasterGrid = JsonConvert.DeserializeObject<List<EmployeeMasterModel>>(modelJson);
+                    item.Edu_SrNo = counter;
+                    counter++;
                 }
-                int Indx = SrNO - 1;
 
-                if (EmployeeMasterGrid != null && EmployeeMasterGrid.Count > 0)
-                {
-                    EmployeeMasterGrid.RemoveAt(Convert.ToInt32(Indx));
-
-                    Indx = 0;
-
-                    foreach (var item in EmployeeMasterGrid)
-                    {
-                        Indx++;
-                        item.SrNo = Indx;
-                    }
-                    MainModel.EmployeeMasterGrid = EmployeeMasterGrid;
-
-                    HttpContext.Session.SetString("KeyEmployeeMasterGrid_Edu", JsonConvert.SerializeObject(MainModel.EmployeeMasterGrid));
-                }
+                MainModel.EducationList = GridDetail.OrderBy(x => x.Edu_SrNo).ToList();
+                HttpContext.Session.SetString("KeyEmployeeMasterGrid_Edu",
+                    JsonConvert.SerializeObject(MainModel.EducationList));
             }
 
             return PartialView("_EducationalQualificationGrid", MainModel);
         }
+
+
+        //public IActionResult AddToGridDataEduction(EmployeeMasterModel model)
+        //{
+        //    try
+        //    {
+        //        string modelJson = HttpContext.Session.GetString("KeyEmployeeMasterGrid_Edu");
+        //        IList<EmployeeMasterModel> EmployeeMasterGrid = new List<EmployeeMasterModel>();
+        //        if (!string.IsNullOrEmpty(modelJson))
+        //        {
+        //            EmployeeMasterGrid = JsonConvert.DeserializeObject<IList<EmployeeMasterModel>>(modelJson);
+        //        }
+
+        //        var MainModel = new EmployeeMasterModel();
+        //        var WorkOrderPGrid = new List<EmployeeMasterModel>();
+        //        var OrderGrid = new List<EmployeeMasterModel>();
+        //        var ssGrid = new List<EmployeeMasterModel>();
+
+        //        if (model != null)
+        //        {
+        //            if (EmployeeMasterGrid == null)
+        //            {
+        //                model.SrNo = 1;
+        //                OrderGrid.Add(model);
+        //            }
+        //            else
+        //            {
+        //                if (EmployeeMasterGrid.Any(x => (x.SrNo == model.SrNo)))
+        //                {
+        //                    return StatusCode(207, "Duplicate");
+        //                }
+        //                else
+        //                {
+        //                    //count = WorkOrderProcessGrid.Count();
+        //                    model.SrNo = EmployeeMasterGrid.Count + 1;
+        //                    OrderGrid = EmployeeMasterGrid.Where(x => x != null).ToList();
+        //                    ssGrid.AddRange(OrderGrid);
+        //                    OrderGrid.Add(model);
+
+        //                }
+
+        //            }
+
+        //            MainModel.EducationList = OrderGrid;
+
+        //            HttpContext.Session.SetString("KeyEmployeeMasterGrid_Edu", JsonConvert.SerializeObject(MainModel.EducationList));
+        //        }
+        //        else
+        //        {
+        //            ModelState.TryAddModelError("Error", " List Cannot Be Empty...!");
+        //        }
+        //        return PartialView("_EducationalQualificationGrid", MainModel);
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw ex;
+        //    }
+        //}
+        //public IActionResult EditEductionItemRow(int SrNO, string Mode)
+        //{
+        //    IList<EmployeeMasterModel> EmployeeMasterGrid = new List<EmployeeMasterModel>();
+        //    if (Mode == "U")
+        //    {
+        //        string modelJson = HttpContext.Session.GetString("KeyEmployeeMasterGrid_Edu");
+        //        if (!string.IsNullOrEmpty(modelJson))
+        //        {
+        //            EmployeeMasterGrid = JsonConvert.DeserializeObject<IList<EmployeeMasterModel>>(modelJson);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        string modelJson = HttpContext.Session.GetString("KeyEmployeeMasterGrid_Edu");
+        //        if (!string.IsNullOrEmpty(modelJson))
+        //        {
+        //            EmployeeMasterGrid = JsonConvert.DeserializeObject<IList<EmployeeMasterModel>>(modelJson);
+        //        }
+        //    }
+        //    IEnumerable<EmployeeMasterModel> SSBreakdownGrid = EmployeeMasterGrid;
+        //    if (EmployeeMasterGrid != null)
+        //    {
+        //        SSBreakdownGrid = EmployeeMasterGrid.Where(x => x.SrNo == SrNO);
+        //    }
+        //    string JsonString = JsonConvert.SerializeObject(SSBreakdownGrid);
+        //    return Json(JsonString);
+        //}
+
+        //public IActionResult DeleteEductionItemRow(int SrNO, string Mode)
+        //{
+        //    var MainModel = new EmployeeMasterModel();
+        //    if (Mode == "U")
+        //    {
+        //        string modelJson = HttpContext.Session.GetString("KeyEmployeeMasterGrid_Edu");
+        //        List<EmployeeMasterModel> EmployeeMasterGrid = new List<EmployeeMasterModel>();
+        //        if (!string.IsNullOrEmpty(modelJson))
+        //        {
+        //            EmployeeMasterGrid = JsonConvert.DeserializeObject<List<EmployeeMasterModel>>(modelJson);
+        //        }
+        //        int Indx = SrNO - 1;
+
+        //        if (EmployeeMasterGrid != null && EmployeeMasterGrid.Count > 0)
+        //        {
+        //            EmployeeMasterGrid.RemoveAt(Convert.ToInt32(Indx));
+
+        //            Indx = 0;
+
+        //            foreach (var item in EmployeeMasterGrid)
+        //            {
+        //                Indx++;
+        //                item.SrNo = Indx;
+        //            }
+        //            MainModel.EducationList = EmployeeMasterGrid;
+
+        //            HttpContext.Session.SetString("KeyEmployeeMasterGrid_Edu", JsonConvert.SerializeObject(MainModel.EmployeeMasterGrid));
+        //        }
+        //    }
+
+        //    return PartialView("_EducationalQualificationGrid", MainModel);
+        //}
+        //new code
         public IActionResult AddToGridDataExperiance(EmployeeMasterModel model)
         {
             try
             {
-                string modelJson = HttpContext.Session.GetString("KeyEmployeeMasterGrid_Exp");
-                IList<EmployeeMasterModel> EmployeeMasterGrid = new List<EmployeeMasterModel>();
-                if (!string.IsNullOrEmpty(modelJson))
+                string jsonString = HttpContext.Session.GetString("KeyEmployeeMasterGrid_Exp");
+                IList<EmployeeMasterModel> GridDetail = new List<EmployeeMasterModel>();
+
+                if (!string.IsNullOrEmpty(jsonString))
                 {
-                    EmployeeMasterGrid = JsonConvert.DeserializeObject<IList<EmployeeMasterModel>>(modelJson);
+                    GridDetail = JsonConvert.DeserializeObject<List<EmployeeMasterModel>>(jsonString);
                 }
 
                 var MainModel = new EmployeeMasterModel();
-                var WorkOrderPGrid = new List<EmployeeMasterModel>();
-                var OrderGrid = new List<EmployeeMasterModel>();
-                var ssGrid = new List<EmployeeMasterModel>();
 
                 if (model != null)
                 {
-                    if (EmployeeMasterGrid == null)
+                    // Duplicate check (Modify condition as needed)
+                    bool isDuplicate = GridDetail.Any(x =>
+                        x.CompanyName == model.CompanyName);
+
+                    if (isDuplicate)
+                        return StatusCode(207, "Duplicate");
+
+                    if (model.Exp_GridMode == "U")
                     {
-                        model.SrNo = 1;
-                        OrderGrid.Add(model);
+                        GridDetail.Add(model);
                     }
                     else
                     {
-                        if (EmployeeMasterGrid.Any(x => (x.SrNo == model.SrNo)))
-                        {
-                            return StatusCode(207, "Duplicate");
-                        }
-                        else
-                        {
-                            //count = WorkOrderProcessGrid.Count();
-                            model.SrNo = EmployeeMasterGrid.Count + 1;
-                            OrderGrid = EmployeeMasterGrid.Where(x => x != null).ToList();
-                            ssGrid.AddRange(OrderGrid);
-                            OrderGrid.Add(model);
+                        int nextSeqNo = GridDetail.Count > 0 ? GridDetail.Max(x => x.Exp_SrNo) + 1 : 1;
+                        model.Exp_SrNo = nextSeqNo;
 
+                        if (model.Exp_SrNo <= 0)
+                        {
+                            int nextSeqNo1 = GridDetail.Count > 0 ? GridDetail.Max(x => x.Exp_SrNo) + 1 : 1;
+                            model.Exp_SrNo = nextSeqNo1;
                         }
 
+                        GridDetail.Add(model);
                     }
 
-                    MainModel.ExperienceList = OrderGrid;
+                    MainModel.ExperienceList = GridDetail.OrderBy(x => x.Exp_SrNo).ToList();
+                    HttpContext.Session.SetString("KeyEmployeeMasterGrid_Exp",
+                        JsonConvert.SerializeObject(MainModel.ExperienceList));
+                }
 
-                    HttpContext.Session.SetString("KeyEmployeeMasterGrid_Exp", JsonConvert.SerializeObject(MainModel.ExperienceList));
-                }
-                else
-                {
-                    ModelState.TryAddModelError("Error", " List Cannot Be Empty...!");
-                }
                 return PartialView("_EmployeeMasterExperianceGrid", MainModel);
-
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
-        public IActionResult EditExperianceItemRow(int SrNO, string Mode)
+        public async Task<JsonResult> EditExperianceItemRow(int Exp_SrNo, string Exp_GridMode)
         {
-            IList<EmployeeMasterModel> EmployeeMasterGrid = new List<EmployeeMasterModel>();
-            if (Mode == "U")
+            IList<EmployeeMasterModel> GridDetail = new List<EmployeeMasterModel>();
+            string jsonString = HttpContext.Session.GetString("KeyEmployeeMasterGrid_Exp");
+
+            if (!string.IsNullOrEmpty(jsonString))
             {
-                string modelJson = HttpContext.Session.GetString("KeyEmployeeMasterGrid_Exp");
-                if (!string.IsNullOrEmpty(modelJson))
-                {
-                    EmployeeMasterGrid = JsonConvert.DeserializeObject<IList<EmployeeMasterModel>>(modelJson);
-                }
+                GridDetail = JsonConvert.DeserializeObject<IList<EmployeeMasterModel>>(jsonString);
             }
-            else
-            {
-                string modelJson = HttpContext.Session.GetString("KeyEmployeeMasterGrid_Exp");
-                if (!string.IsNullOrEmpty(modelJson))
-                {
-                    EmployeeMasterGrid = JsonConvert.DeserializeObject<IList<EmployeeMasterModel>>(modelJson);
-                }
-            }
-            IEnumerable<EmployeeMasterModel> SSBreakdownGrid = EmployeeMasterGrid;
-            if (EmployeeMasterGrid != null)
-            {
-                SSBreakdownGrid = EmployeeMasterGrid.Where(x => x.SrNo == SrNO);
-            }
-            string JsonString = JsonConvert.SerializeObject(SSBreakdownGrid);
+
+            var result = GridDetail.Where(x => x.Exp_SrNo == Exp_SrNo).ToList();
+            string JsonString = JsonConvert.SerializeObject(result);
+
             return Json(JsonString);
         }
-
-        public IActionResult DeleteExperianceItemRow(int SrNO, string Mode)
+        public IActionResult DeleteExperianceItemRow(int Exp_SrNo, string Exp_GridMode)
         {
             var MainModel = new EmployeeMasterModel();
-            if (Mode == "U")
+            string jsonString = HttpContext.Session.GetString("KeyEmployeeMasterGrid_Exp");
+
+            IList<EmployeeMasterModel> GridDetail = new List<EmployeeMasterModel>();
+
+            if (!string.IsNullOrEmpty(jsonString))
             {
-                string modelJson = HttpContext.Session.GetString("KeyEmployeeMasterGrid_Exp");
-                List<EmployeeMasterModel> EmployeeMasterGrid = new List<EmployeeMasterModel>();
-                if (!string.IsNullOrEmpty(modelJson))
-                {
-                    EmployeeMasterGrid = JsonConvert.DeserializeObject<List<EmployeeMasterModel>>(modelJson);
-                }
-                int Indx = SrNO - 1;
-
-                if (EmployeeMasterGrid != null && EmployeeMasterGrid.Count > 0)
-                {
-                    EmployeeMasterGrid.RemoveAt(Convert.ToInt32(Indx));
-
-                    Indx = 0;
-
-                    foreach (var item in EmployeeMasterGrid)
-                    {
-                        Indx++;
-                        item.SrNo = Indx;
-                    }
-                    MainModel.EmployeeMasterGrid = EmployeeMasterGrid;
-
-                    HttpContext.Session.SetString("KeyEmployeeMasterGrid_Exp", JsonConvert.SerializeObject(MainModel.EmployeeMasterGrid));
-                }
+                GridDetail = JsonConvert.DeserializeObject<List<EmployeeMasterModel>>(jsonString);
             }
+
+            if (GridDetail != null && GridDetail.Count > 0)
+            {
+                var itemToRemove = GridDetail.FirstOrDefault(x => x.Exp_SrNo == Exp_SrNo);
+                if (itemToRemove != null)
+                    GridDetail.Remove(itemToRemove);
+
+                // Re-arrange SrNo after delete
+                int counter = 1;
+                foreach (var item in GridDetail)
+                {
+                    item.Exp_SrNo = counter;
+                    counter++;
+                }
+
+                MainModel.ExperienceList = GridDetail.OrderBy(x => x.Exp_SrNo).ToList();
+
+                HttpContext.Session.SetString("KeyEmployeeMasterGrid_Exp",
+                    JsonConvert.SerializeObject(MainModel.ExperienceList));
+            }
+
             return PartialView("_EmployeeMasterExperianceGrid", MainModel);
         }
+
+        //public IActionResult AddToGridDataExperiance(EmployeeMasterModel model)
+        //{
+        //    try
+        //    {
+        //        string modelJson = HttpContext.Session.GetString("KeyEmployeeMasterGrid_Exp");
+        //        IList<EmployeeMasterModel> EmployeeMasterGrid = new List<EmployeeMasterModel>();
+        //        if (!string.IsNullOrEmpty(modelJson))
+        //        {
+        //            EmployeeMasterGrid = JsonConvert.DeserializeObject<IList<EmployeeMasterModel>>(modelJson);
+        //        }
+
+        //        var MainModel = new EmployeeMasterModel();
+        //        var WorkOrderPGrid = new List<EmployeeMasterModel>();
+        //        var OrderGrid = new List<EmployeeMasterModel>();
+        //        var ssGrid = new List<EmployeeMasterModel>();
+
+        //        if (model != null)
+        //        {
+        //            if (EmployeeMasterGrid == null)
+        //            {
+        //                model.SrNo = 1;
+        //                OrderGrid.Add(model);
+        //            }
+        //            else
+        //            {
+        //                if (EmployeeMasterGrid.Any(x => (x.SrNo == model.SrNo)))
+        //                {
+        //                    return StatusCode(207, "Duplicate");
+        //                }
+        //                else
+        //                {
+        //                    //count = WorkOrderProcessGrid.Count();
+        //                    model.SrNo = EmployeeMasterGrid.Count + 1;
+        //                    OrderGrid = EmployeeMasterGrid.Where(x => x != null).ToList();
+        //                    ssGrid.AddRange(OrderGrid);
+        //                    OrderGrid.Add(model);
+
+        //                }
+
+        //            }
+
+        //            MainModel.ExperienceList = OrderGrid;
+
+        //            HttpContext.Session.SetString("KeyEmployeeMasterGrid_Exp", JsonConvert.SerializeObject(MainModel.ExperienceList));
+        //        }
+        //        else
+        //        {
+        //            ModelState.TryAddModelError("Error", " List Cannot Be Empty...!");
+        //        }
+        //        return PartialView("_EmployeeMasterExperianceGrid", MainModel);
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw ex;
+        //    }
+        //}
+        //public IActionResult EditExperianceItemRow(int SrNO, string Mode)
+        //{
+        //    IList<EmployeeMasterModel> EmployeeMasterGrid = new List<EmployeeMasterModel>();
+        //    if (Mode == "U")
+        //    {
+        //        string modelJson = HttpContext.Session.GetString("KeyEmployeeMasterGrid_Exp");
+        //        if (!string.IsNullOrEmpty(modelJson))
+        //        {
+        //            EmployeeMasterGrid = JsonConvert.DeserializeObject<IList<EmployeeMasterModel>>(modelJson);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        string modelJson = HttpContext.Session.GetString("KeyEmployeeMasterGrid_Exp");
+        //        if (!string.IsNullOrEmpty(modelJson))
+        //        {
+        //            EmployeeMasterGrid = JsonConvert.DeserializeObject<IList<EmployeeMasterModel>>(modelJson);
+        //        }
+        //    }
+        //    IEnumerable<EmployeeMasterModel> SSBreakdownGrid = EmployeeMasterGrid;
+        //    if (EmployeeMasterGrid != null)
+        //    {
+        //        SSBreakdownGrid = EmployeeMasterGrid.Where(x => x.SrNo == SrNO);
+        //    }
+        //    string JsonString = JsonConvert.SerializeObject(SSBreakdownGrid);
+        //    return Json(JsonString);
+        //}
+
+        //public IActionResult DeleteExperianceItemRow(int SrNO, string Mode)
+        //{
+        //    var MainModel = new EmployeeMasterModel();
+        //    if (Mode == "U")
+        //    {
+        //        string modelJson = HttpContext.Session.GetString("KeyEmployeeMasterGrid_Exp");
+        //        List<EmployeeMasterModel> EmployeeMasterGrid = new List<EmployeeMasterModel>();
+        //        if (!string.IsNullOrEmpty(modelJson))
+        //        {
+        //            EmployeeMasterGrid = JsonConvert.DeserializeObject<List<EmployeeMasterModel>>(modelJson);
+        //        }
+        //        int Indx = SrNO - 1;
+
+        //        if (EmployeeMasterGrid != null && EmployeeMasterGrid.Count > 0)
+        //        {
+        //            EmployeeMasterGrid.RemoveAt(Convert.ToInt32(Indx));
+
+        //            Indx = 0;
+
+        //            foreach (var item in EmployeeMasterGrid)
+        //            {
+        //                Indx++;
+        //                item.SrNo = Indx;
+        //            }
+        //            MainModel.ExperienceList = EmployeeMasterGrid;
+
+        //            HttpContext.Session.SetString("KeyEmployeeMasterGrid_Exp", JsonConvert.SerializeObject(MainModel.EmployeeMasterGrid));
+        //        }
+        //    }
+        //    return PartialView("_EmployeeMasterExperianceGrid", MainModel);
+        //}
     }
 }
