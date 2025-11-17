@@ -1019,6 +1019,12 @@ namespace eTactWeb.Controllers
             return Json(JsonString);
         }
 
+        public async Task<JsonResult> GetTotalAmount(DPBDashBoard model)
+        {
+            var JSON = await IDirectPurchaseBill.GetTotalAmount(model);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
         public async Task<IActionResult> GetSearchData(DPBDashBoard model, int pageNumber = 1, int pageSize = 25, string SearchBox = "")
         {
             model.Mode = "SEARCH";

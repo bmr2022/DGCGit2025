@@ -702,6 +702,41 @@ public class DirectPurchaseBillDAL
         return DashBoardData;
     }
 
+    public async Task<ResponseResult> GetTotalAmount(DPBDashBoard model)
+         
+    {
+        var _ResponseResult = new ResponseResult();
+        try
+        {
+            var SqlParams = new List<dynamic>();
+            SqlParams.Add(new SqlParameter("@Flag", "getTotalAmount"));
+            SqlParams.Add(new SqlParameter("@YearCode", model.YearCode));
+            SqlParams.Add(new SqlParameter("@SummDetail", model.SummaryDetail));
+            SqlParams.Add(new SqlParameter("@PurchVoucherNo", model.PurchVouchNo));
+            SqlParams.Add(new SqlParameter("@InvNo", model.InvoiceNo));
+            SqlParams.Add(new SqlParameter("@partcode", model.PartCode));
+            SqlParams.Add(new SqlParameter("@Vendorname", model.VendorName));
+            SqlParams.Add(new SqlParameter("@ItemName", model.ItemName));
+            SqlParams.Add(new SqlParameter("@GSTType", model.GSTType));
+            SqlParams.Add(new SqlParameter("@TypeITEMSERVASSETS", model.TypeITEMSERVASSETS));
+            SqlParams.Add(new SqlParameter("@DocumentType", model.DocumentType));
+            SqlParams.Add(new SqlParameter("@HSNNo", model.HSNNo));
+            SqlParams.Add(new SqlParameter("@FromDate", CommonFunc.ParseFormattedDate(model.FromDate)));
+            SqlParams.Add(new SqlParameter("@ToDate", CommonFunc.ParseFormattedDate(model.ToDate)));
+
+
+
+            _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_DirectPurchaseBillMainDetail", SqlParams);
+
+        }
+        catch (Exception ex)
+        {
+            dynamic Error = new ExpandoObject();
+            Error.Message = ex.Message;
+            Error.Source = ex.Source;
+        }
+        return _ResponseResult;
+    }
     public async Task<DPBDashBoard> GetDetailData(DPBDashBoard model)
     {
         var DashBoardData = new DPBDashBoard();
