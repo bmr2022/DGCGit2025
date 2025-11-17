@@ -508,6 +508,7 @@
                $('#RoundOffAccountCode').change(function () {
                     CalculateAdjAmt('NetTotal');
                     GetDbCrDetail();
+                        onInvoiceChange('SalerejCreditNoteVoucherNo');
             AddAdjstmntDetail1();
          });
            function FillRoundOffAccount(dt) {
@@ -532,7 +533,7 @@
                     }
 
                     if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-                               $('#RoundOffAccountCode').val($('#hiddenRoundOffAccountCode').val()).trigger("change");
+                               $('#RoundOffAccountCode').val($('#hiddenRoundOffAccountCode').val());
                     }
                 }
             });

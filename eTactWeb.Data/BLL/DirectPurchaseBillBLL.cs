@@ -140,7 +140,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _DirectPurchaseBillDAL.GetDashBoardData();
         }
-
+        async Task<ResponseResult> IDirectPurchaseBill.GetTotalAmount(DPBDashBoard model)
+        {
+            return await _DirectPurchaseBillDAL.GetTotalAmount(model);
+        }
         async Task<DPBDashBoard> IDirectPurchaseBill.GetSummaryData(DPBDashBoard model)
         {
             return await _DirectPurchaseBillDAL.GetSummaryData(model);
