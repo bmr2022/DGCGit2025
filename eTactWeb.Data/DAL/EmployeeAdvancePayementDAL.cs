@@ -64,6 +64,26 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
+        public async Task<ResponseResult> FillAdvanceType(int empId, string requestedDate)
+		{
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "PreviousAdanaceLoanDetail"));
+                SqlParams.Add(new SqlParameter("@Empid", empId));
+                SqlParams.Add(new SqlParameter("@RequestDate", requestedDate));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("HRSPAdvanceMain", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
         public async Task<ResponseResult> FillEmpName()
         {
             var _ResponseResult = new ResponseResult();

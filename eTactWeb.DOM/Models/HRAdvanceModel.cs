@@ -21,7 +21,9 @@ namespace eTactWeb.DOM.Models
         public string DeptName { get; set; }
         public string DOJ { get; set; }
         public decimal BasicSalary { get; set; }
+        public decimal GrossSalary { get; set; }
         public decimal NetSalary { get; set; }
+        public string AdvanceType { get; set; }
         public decimal PresentDaysinCurrMonth { get; set; }
         public decimal PresentDaysInCurrYear { get; set; }
         public int CategoryId { get; set; }
