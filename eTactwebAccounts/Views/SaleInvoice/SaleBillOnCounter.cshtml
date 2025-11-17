@@ -1205,22 +1205,44 @@
                     $("#AccountCodeText").val(ui.item.value).data("Account_Code", ui.item.accountCode);
 
                     $('#AccountCode').val(ui.item.accountCode);
+
+                      let hasSONO = false;
+
+    $("#divSaleBillList tr").each(function () {
+        let sono = $(this).find("td[id^='GridSONO-']").text().trim();
+        if (sono !== "" && sono !== "0") {
+            hasSONO = true;
+            return false; // break loop
+        }
+
+    });
+
+    if (hasSONO) {
+        ClearGrid();
+        btnClearTax();
+        ClearAdjustmentGrid();
+      
+        ClearCustomerJWGrid();
+    }
                     FillSONO();
             FillCurrency();
             FillCustomerAddress();
 
                     // $('#PendSOForSaleBill').modal('show');
                     showDetail();
+                    // ClearDRCRGrid();
+                    // GetDbCrDetail();
                    
 
-            if ($('#divTaxGrid tr td').length > 1) {
-                btnClearTax();
-            }
-            if ($('#divSaleBillList tr td').length > 1) {
-                //ClearGrid();
-            }
+            // if ($('#divTaxGrid tr td').length > 1) {
+            //     btnClearTax();
+            // }
+            // if ($('#divSaleBillList tr td').length > 1) {
+            //     //ClearGrid();
+            // }
             if ($('#divdbCrItemList tr td').length > 1) {
-                ClearDRCRGrid();
+                // ClearDRCRGrid();
+                // GetDbCrDetail();
             }
                     return false;
                 },
@@ -1356,6 +1378,8 @@
             
                AutoFillPARTYNAMELIST();
             EditableRateAndDiscountONSaleInvoice();
+
+
 
             const domesticExport = $('#DomesticExportNEPZ').val();
             const $supplyType = $('#SupplyType');
@@ -5811,7 +5835,7 @@
                             else
                             {
                                
-                                 $("#PartCodeText").val("").focus();
+                                 // $("#PartCodeText").val("").focus();
                                 //          AddMultipleItems();
                                 //           ShowGroupWiseItems();
                             }
@@ -5873,7 +5897,7 @@
                                     onItemSelected("ItemCode");
                                 } else {
                                    // alert("Invalid Item Name entered!");
-                                    $("#ItemNameText").val("").focus();
+                                    // $("#ItemNameText").val("").focus();
                                     //        AddMultipleItems();
                                     //         ShowGroupWiseItems();
                                 }
