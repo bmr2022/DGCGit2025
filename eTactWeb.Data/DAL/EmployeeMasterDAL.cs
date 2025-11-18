@@ -520,7 +520,7 @@ namespace eTactWeb.Data.DAL
                                                         ESINo = dr["ESINo"]?.ToString() ?? string.Empty,
                                                         GrossSalary = dr["GrossSalary"] != DBNull.Value ? Convert.ToDecimal(dr["GrossSalary"]) : 0,
                                                         BasicSalary = dr["BasicSalary"] != DBNull.Value ? Convert.ToDecimal(dr["BasicSalary"]) : 0,
-                                                        CalculatePfOn = dr["CTC"]?.ToString() ?? string.Empty,
+                                                        //CTC = Convert.ToDecimaldr(["CTC"]?.ToString() ?? 0),
                                                         PFApplicable = dr["PFApplicable"]?.ToString() ?? string.Empty,
                                                         ESIApplicable = dr["ESIApplicable"]?.ToString() ?? string.Empty,
                                                         ApplyPFFonmAmt = dr["ApplyPFonAmt"] != DBNull.Value ? Convert.ToDecimal(dr["ApplyPFonAmt"]) : 0,
@@ -757,6 +757,81 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
+        public async Task<ResponseResult> GetReqNo(string EntryDate)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "FillEmpRequisitionNO"));
+                SqlParams.Add(new SqlParameter("@Entrydate", EntryDate));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("HREmployeeMaster", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> GetEmpGrade()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "FillEmpGrade"));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("HREmployeeMaster", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> GetCalculatePfOn()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "FillCalculatePfOn"));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("HREmployeeMaster", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+
+         public async Task<ResponseResult> GetWagesType()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "FillEmpWages"));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("HREmployeeMaster", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+
         public async Task<ResponseResult> GetJobDesignation()
         {
             var _ResponseResult = new ResponseResult();
@@ -1139,129 +1214,290 @@ namespace eTactWeb.Data.DAL
         //    }
         //    return model;
         //}
-        public async Task<ResponseResult> SaveEmployeeMaster(EmployeeMasterModel model, DataTable DtAllDed, DataTable DtEdu, DataTable dtexp, DataTable dtNjob)
+
+
+        //--------------correct method but only save not update----------------
+        //public async Task<ResponseResult> SaveEmployeeMaster(EmployeeMasterModel model, DataTable DtAllDed, DataTable DtEdu, DataTable dtexp, DataTable dtNjob)
+        //{
+        //    var _ResponseResult = new ResponseResult();
+        //    try
+        //    {
+        //        var SqlParams = new List<dynamic>();
+
+        //        // Determine Mode
+        //        string flag = (model.Mode == "UPDATE") ? "UPDATE" : "SAVE";
+        //        SqlParams.Add(new SqlParameter("@Flag", flag));
+
+        //        // Parse Dates
+        //        var entDt = CommonFunc.ParseFormattedDate(model.EntryDate);
+        //        var dojDt = CommonFunc.ParseFormattedDate(model.DateOfJoining);
+        //        var dorDt = CommonFunc.ParseFormattedDate(model.DateOfResignation);
+        //        var dobDt = CommonFunc.ParseFormattedDate(model.DOB);
+        //        var DateOfProbation = CommonFunc.ParseFormattedDate(model.ProbationStartDate);
+        //        var DateOfConfirm = CommonFunc.ParseFormattedDate(model.DateOfConfirmation);
+
+        //        // Branch list
+        //        string branchlist = string.Join(",", model.Branches ?? new List<string>());
+
+        //        // Common Parameters
+        //        SqlParams.Add(new SqlParameter("@EmpId", model.EmpId));
+        //        SqlParams.Add(new SqlParameter("@EmpCode", model.EmpCode ?? ""));
+        //        SqlParams.Add(new SqlParameter("@EmpName", model.Name ?? ""));
+        //        SqlParams.Add(new SqlParameter("@Deptid", model.Department));
+        //        SqlParams.Add(new SqlParameter("@CategoryId", model.Category));
+        //        SqlParams.Add(new SqlParameter("@desigEntryid", model.Designation));
+        //        SqlParams.Add(new SqlParameter("@shiftId", model.Shift));
+        //        SqlParams.Add(new SqlParameter("@CC", model.Branch ?? ""));
+        //        SqlParams.Add(new SqlParameter("@BranchList", branchlist));
+        //        SqlParams.Add(new SqlParameter("@Gender", model.Gender ?? ""));
+        //        SqlParams.Add(new SqlParameter("@NatureOfDuties", model.NatureOfDuties ?? ""));
+        //        SqlParams.Add(new SqlParameter("@Active", model.Active ?? "Y"));
+        //        SqlParams.Add(new SqlParameter("@EntryDate", entDt ?? (object)DBNull.Value));
+        //        SqlParams.Add(new SqlParameter("@DOB", dobDt ?? (object)DBNull.Value));
+        //        SqlParams.Add(new SqlParameter("@DateOfJoining", dojDt ?? (object)DBNull.Value));
+        //        SqlParams.Add(new SqlParameter("@DOR", dorDt ?? (object)DBNull.Value));
+        //        SqlParams.Add(new SqlParameter("@ResignationDate", dorDt ?? (object)DBNull.Value));
+        //        SqlParams.Add(new SqlParameter("@BloodGroup", model.BloodGroup));
+        //        SqlParams.Add(new SqlParameter("@Nationality", model.Nationality));
+        //        SqlParams.Add(new SqlParameter("@MaritalStatus", model.MaritalStatus));
+        //        SqlParams.Add(new SqlParameter("@CardNo", model.CardNo));
+        //        SqlParams.Add(new SqlParameter("@ApplicationCode", model.ApplicationCode));
+
+        //        // Names
+        //        SqlParams.Add(new SqlParameter("@DepartmentName", model.DepartmentName ?? ""));
+        //        SqlParams.Add(new SqlParameter("@DesignationName", model.DesignationName ?? ""));
+        //        SqlParams.Add(new SqlParameter("@CategoryName", model.CategoryName ?? ""));
+
+        //        // Contact Details
+        //        SqlParams.Add(new SqlParameter("@MobileNo1", model.MobileNo ?? ""));
+        //        SqlParams.Add(new SqlParameter("@MobileNo2", model.MobileNo2 ?? ""));
+        //        SqlParams.Add(new SqlParameter("@EmailId", model.EmailId ?? ""));
+        //        SqlParams.Add(new SqlParameter("@CurrentAddress", model.CurrentAddress ?? ""));
+        //        SqlParams.Add(new SqlParameter("@PermanentAddress", model.permanentAddress ?? ""));
+        //        SqlParams.Add(new SqlParameter("@EmergancyContactNo", model.EmergencyContact ?? ""));
+        //        SqlParams.Add(new SqlParameter("@EmergancyContactRelation", model.EmergencyContactRelation ?? ""));
+        //        SqlParams.Add(new SqlParameter("@EmergancyContactName", model.EmergencyContactRelationName ?? ""));
+
+        //        // Salary Details
+        //        SqlParams.Add(new SqlParameter("@BankName", model.BankName ?? ""));
+        //        SqlParams.Add(new SqlParameter("@BankAccountNo", model.AccountNo ?? ""));
+        //        SqlParams.Add(new SqlParameter("@PANNOTaxIdentificationNo", model.PANNo ?? ""));
+        //        SqlParams.Add(new SqlParameter("@AadharCardNoCountryCardNo", model.AdharNo ?? ""));
+        //        SqlParams.Add(new SqlParameter("@IBANSwiftCode", model.SwiftCode ?? ""));
+        //        SqlParams.Add(new SqlParameter("@PaymentMode", model.PaymentMode ?? ""));
+        //        SqlParams.Add(new SqlParameter("@PFNO", model.PFNo ?? ""));
+        //        SqlParams.Add(new SqlParameter("@ESINo", model.ESINo ?? ""));
+        //        SqlParams.Add(new SqlParameter("@GrossSalary", model.GrossSalary));
+        //        SqlParams.Add(new SqlParameter("@BasicSalary", model.BasicSalary));
+        //        SqlParams.Add(new SqlParameter("@PFApplicableon", model.CalculatePfOn ?? ""));
+        //        SqlParams.Add(new SqlParameter("@SalaryBasisHrs", model.SalaryBasis ));
+        //        SqlParams.Add(new SqlParameter("@SalaryCalculationBasisOn", model.SalaryCalculation ?? ""));
+        //        SqlParams.Add(new SqlParameter("@PFApplicable", model.PFApplicable));
+        //        SqlParams.Add(new SqlParameter("@ApplyPFonAmt", model.ApplyPFFonmAmt));
+        //        SqlParams.Add(new SqlParameter("@ApplyESIonAmt", model.ApplyESIFonmAmt));
+        //        SqlParams.Add(new SqlParameter("@OTApplicable", model.OTApplicable));
+        //        SqlParams.Add(new SqlParameter("@LeaveApplicable", model.LeaveApplicable));
+        //        SqlParams.Add(new SqlParameter("@ESIApplicable", model.ESIApplicable));
+        //        SqlParams.Add(new SqlParameter("@LateMarkingApplicable", model.LateMarkingCalculationApplicable));
+        //        SqlParams.Add(new SqlParameter("@FixSalaryAmount", model.FixSalaryAmt));
+        //        SqlParams.Add(new SqlParameter("@CTC", model.CTC));
+        //        SqlParams.Add(new SqlParameter("@EmpType", model.EmployeeType));
+        //        SqlParams.Add(new SqlParameter("@WagesType", model.WagesType));
+        //        SqlParams.Add(new SqlParameter("@GradeId", model.GradeId));
+        //        //SqlParams.Add(new SqlParameter("@NetSalaryAmt", model.NetSalaryAmt));
+
+        //        // Job & Work Details
+        //        SqlParams.Add(new SqlParameter("@ReportingDesignationId", model.JobDesignation));
+        //        SqlParams.Add(new SqlParameter("@ProbationPeriod", model.JobProbationPeriod ));
+        //        SqlParams.Add(new SqlParameter("@DateOfProbation", DateOfProbation ?? (object)DBNull.Value));
+        //        SqlParams.Add(new SqlParameter("@DateOfConfirm", DateOfConfirm ?? (object)DBNull.Value));
+        //        SqlParams.Add(new SqlParameter("@Referance1", model.JobReference1 ?? ""));
+        //        SqlParams.Add(new SqlParameter("@Referencetwo", model.JobReference2 ?? ""));
+        //        SqlParams.Add(new SqlParameter("@ThroughId", model.ThroughId ));
+
+        //        // Document / ID Proof
+        //        SqlParams.Add(new SqlParameter("@NationalIdPassport", model.PassportNo ?? ""));
+        //        SqlParams.Add(new SqlParameter("@WorkPermitVisa", model.WorkPeritVisa ?? ""));
+        //        SqlParams.Add(new SqlParameter("@DrivingLicence", model.DrivingLicenseNo ?? ""));
+        //        SqlParams.Add(new SqlParameter("@MedicalInsuranceDetail", model.MedicalInsuranceDetail ?? ""));
+        //        //SqlParams.Add(new SqlParameter("@ThumbPath", model.ThumbUnPress ?? ""));
+        //         SqlParams.Add(new SqlParameter("@ThumbPath", model.fileUpload ?? ""));
+        //         //SqlParams.Add(new SqlParameter("@Adhar", model.AadharCard ?? ""));
+        //         SqlParams.Add(new SqlParameter("@SignaturePath", model.SignaturePath ?? ""));
+        //         SqlParams.Add(new SqlParameter("@PhotographPath", model.PhotographPath ?? ""));
+
+        //        // Exit Details
+        //         SqlParams.Add(new SqlParameter("@NoticePeriod", model.NoticPeriod ));
+        //         SqlParams.Add(new SqlParameter("@GratutyEligibility", model.GratutyEligibility ?? ""));
+
+        //        SqlParams.Add(new SqlParameter("@EntryByMachineName", model.EntryByMachineName ?? ""));
+        //        SqlParams.Add(new SqlParameter("@LastUpdationDate", model.LastUpdationDate ));
+        //        SqlParams.Add(new SqlParameter("@LastUpdatedBy", model.UpdatedBy ));
+        //        SqlParams.Add(new SqlParameter("@ApprovedBy", model.ApprovedBy ));
+        //        SqlParams.Add(new SqlParameter("@ApprovalDate", model.ApprovalDate));
+
+        //        SqlParams.Add(new SqlParameter("@ActualEntrybyId", model.ActualEntrybyId));
+        //        SqlParams.Add(new SqlParameter("@ActualEntryDate", model.ActualEntryDate));
+
+        //        SqlParams.Add(new SqlParameter("@EmpReqNo", model.EmpReqNo));
+        //        SqlParams.Add(new SqlParameter("@EmpReqYearcode", model.EmpReqYearcode));
+        //        SqlParams.Add(new SqlParameter("@EmpReqEntryId", model.EmpReqEntryId));
+        //        SqlParams.Add(new SqlParameter("@EmpReqDate", model.EmpReqDate));
+
+        //        // Table-Valued Parameters
+        //        SqlParams.Add(new SqlParameter("@DtAllDed", DtAllDed));
+        //        SqlParams.Add(new SqlParameter("@DtEdu", DtEdu));
+        //        SqlParams.Add(new SqlParameter("@dtExp", dtexp));
+        //        SqlParams.Add(new SqlParameter("@dtNjob", dtNjob));
+
+        //        // Execute stored procedure
+        //        _ResponseResult = await _IDataLogic.ExecuteDataTable("HREmployeeMaster", SqlParams);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _ResponseResult = new ResponseResult()
+        //        {
+        //            StatusCode = HttpStatusCode.InternalServerError,
+        //            StatusText = "Error occurred while saving employee data.",
+        //            Result = ex.Message
+        //        };
+        //    }
+
+        //    return _ResponseResult;
+        //}
+
+        //method with update new
+        public async Task<ResponseResult> SaveEmployeeMaster(EmployeeMasterModel model,
+                                                     DataTable DtAllDed, DataTable DtEdu,
+                                                     DataTable dtExp, DataTable dtNjob)
         {
-            var _ResponseResult = new ResponseResult();
+            var response = new ResponseResult();
+
             try
             {
                 var SqlParams = new List<dynamic>();
 
-                // Determine Mode
-                string flag = (model.Mode == "UPDATE") ? "UPDATE" : "SAVE";
-                SqlParams.Add(new SqlParameter("@Flag", flag));
+                // --------------------- MODE ---------------------
+                string mode = (model.Mode == "UPDATE") ? "UPDATE" : "SAVE";
+                SqlParams.Add(new SqlParameter("@Flag", mode));
 
-                // Parse Dates
+                // --------------------- DATES ---------------------
                 var entDt = CommonFunc.ParseFormattedDate(model.EntryDate);
                 var dojDt = CommonFunc.ParseFormattedDate(model.DateOfJoining);
-                var dorDt = CommonFunc.ParseFormattedDate(model.DateOfResignation);
+                var resDt = CommonFunc.ParseFormattedDate(model.DateOfResignation);
                 var dobDt = CommonFunc.ParseFormattedDate(model.DOB);
-                var DateOfProbation = CommonFunc.ParseFormattedDate(model.ProbationStartDate);
-                var DateOfConfirm = CommonFunc.ParseFormattedDate(model.DateOfConfirmation);
+                var probationDate = CommonFunc.ParseFormattedDate(model.ProbationStartDate);
+                var dateOfConfirm = CommonFunc.ParseFormattedDate(model.DateOfConfirmation);
 
-                // Branch list
                 string branchlist = string.Join(",", model.Branches ?? new List<string>());
 
-                // Common Parameters
+                // --------------------- BASIC EMPLOYEE DETAILS ---------------------
                 SqlParams.Add(new SqlParameter("@EmpId", model.EmpId));
                 SqlParams.Add(new SqlParameter("@EmpCode", model.EmpCode ?? ""));
                 SqlParams.Add(new SqlParameter("@EmpName", model.Name ?? ""));
-                SqlParams.Add(new SqlParameter("@Deptid", model.Department));
+                SqlParams.Add(new SqlParameter("@EmpType", model.EmployeeType ?? ""));
+                SqlParams.Add(new SqlParameter("@WagesType", model.WagesType ?? ""));
+                SqlParams.Add(new SqlParameter("@GradeId", model.GradeId));
+
+                SqlParams.Add(new SqlParameter("@DeptId", model.Department));
                 SqlParams.Add(new SqlParameter("@CategoryId", model.Category));
                 SqlParams.Add(new SqlParameter("@desigEntryid", model.Designation));
-                SqlParams.Add(new SqlParameter("@shiftId", model.Shift));
-                SqlParams.Add(new SqlParameter("@BranchCC", model.Branch ?? ""));
+                SqlParams.Add(new SqlParameter("@ShiftId", model.Shift));
+
+                SqlParams.Add(new SqlParameter("@CC", model.Branch ?? ""));
                 SqlParams.Add(new SqlParameter("@BranchList", branchlist));
-                SqlParams.Add(new SqlParameter("@Gender", model.Gender ?? ""));
-                SqlParams.Add(new SqlParameter("@NatureOfDuties", model.NatureOfDuties ?? ""));
-                SqlParams.Add(new SqlParameter("@Active", model.Active ?? "Y"));
+
+                // --------------------- PERSONAL INFO ---------------------
                 SqlParams.Add(new SqlParameter("@EntryDate", entDt ?? (object)DBNull.Value));
                 SqlParams.Add(new SqlParameter("@DOB", dobDt ?? (object)DBNull.Value));
                 SqlParams.Add(new SqlParameter("@DateOfJoining", dojDt ?? (object)DBNull.Value));
-                SqlParams.Add(new SqlParameter("@DOR", dorDt ?? (object)DBNull.Value));
-                SqlParams.Add(new SqlParameter("@ResignationDate", dorDt ?? (object)DBNull.Value));
-                SqlParams.Add(new SqlParameter("@BloodGroup", model.BloodGroup));
-                SqlParams.Add(new SqlParameter("@Nationality", model.Nationality));
-                SqlParams.Add(new SqlParameter("@MaritalStatus", model.MaritalStatus));
+                SqlParams.Add(new SqlParameter("@ResignationDate", resDt ?? (object)DBNull.Value));
 
-                // Names
-                SqlParams.Add(new SqlParameter("@DepartmentName", model.DepartmentName ?? ""));
-                SqlParams.Add(new SqlParameter("@DesignationName", model.DesignationName ?? ""));
-                SqlParams.Add(new SqlParameter("@CategoryName", model.CategoryName ?? ""));
+                SqlParams.Add(new SqlParameter("@Gender", model.Gender ?? ""));
+                SqlParams.Add(new SqlParameter("@BloodGroup", model.BloodGroup ?? ""));
+                SqlParams.Add(new SqlParameter("@Nationality", model.Nationality ?? ""));
+                SqlParams.Add(new SqlParameter("@MaritalStatus", model.MaritalStatus ?? ""));
 
-                // Contact Details
+                // --------------------- CONTACT INFO ---------------------
                 SqlParams.Add(new SqlParameter("@MobileNo1", model.MobileNo ?? ""));
                 SqlParams.Add(new SqlParameter("@MobileNo2", model.MobileNo2 ?? ""));
                 SqlParams.Add(new SqlParameter("@EmailId", model.EmailId ?? ""));
                 SqlParams.Add(new SqlParameter("@CurrentAddress", model.CurrentAddress ?? ""));
                 SqlParams.Add(new SqlParameter("@PermanentAddress", model.permanentAddress ?? ""));
+
                 SqlParams.Add(new SqlParameter("@EmergancyContactNo", model.EmergencyContact ?? ""));
                 SqlParams.Add(new SqlParameter("@EmergancyContactRelation", model.EmergencyContactRelation ?? ""));
+                SqlParams.Add(new SqlParameter("@EmergancyContactName", model.EmergencyContactRelationName ?? ""));
 
-                // Salary Details
+                // --------------------- SALARY DETAILS ---------------------
                 SqlParams.Add(new SqlParameter("@BankName", model.BankName ?? ""));
                 SqlParams.Add(new SqlParameter("@BankAccountNo", model.AccountNo ?? ""));
                 SqlParams.Add(new SqlParameter("@PANNOTaxIdentificationNo", model.PANNo ?? ""));
                 SqlParams.Add(new SqlParameter("@AadharCardNoCountryCardNo", model.AdharNo ?? ""));
                 SqlParams.Add(new SqlParameter("@IBANSwiftCode", model.SwiftCode ?? ""));
                 SqlParams.Add(new SqlParameter("@PaymentMode", model.PaymentMode ?? ""));
+
                 SqlParams.Add(new SqlParameter("@PFNO", model.PFNo ?? ""));
                 SqlParams.Add(new SqlParameter("@ESINo", model.ESINo ?? ""));
                 SqlParams.Add(new SqlParameter("@GrossSalary", model.GrossSalary));
                 SqlParams.Add(new SqlParameter("@BasicSalary", model.BasicSalary));
-                SqlParams.Add(new SqlParameter("@PFApplicableon", model.CalculatePfOn ?? ""));
-                SqlParams.Add(new SqlParameter("@SalaryBasisHrs", model.SalaryBasis ));
-                SqlParams.Add(new SqlParameter("@SalaryCalculationBasisOn", model.SalaryCalculation ?? ""));
-                SqlParams.Add(new SqlParameter("@PFApplicable", model.PFApplicable));
-                SqlParams.Add(new SqlParameter("@ApplyPFonAmt", model.ApplyPFFonmAmt));
-                SqlParams.Add(new SqlParameter("@ApplyESIonAmt", model.ApplyESIFonmAmt));
-                SqlParams.Add(new SqlParameter("@OTApplicable", model.OTApplicable));
-                SqlParams.Add(new SqlParameter("@LeaveApplicable", model.LeaveApplicable));
-                SqlParams.Add(new SqlParameter("@ESIApplicable", model.ESIApplicable));
-                SqlParams.Add(new SqlParameter("@LateMarkingApplicable", model.LateMarkingCalculationApplicable));
-                SqlParams.Add(new SqlParameter("@FixSalaryAmount", model.FixSalaryAmt));
+                SqlParams.Add(new SqlParameter("@CTC", model.CTC));
 
-                // Job & Work Details
+                SqlParams.Add(new SqlParameter("@PFApplicable", model.PFApplicable));
+                SqlParams.Add(new SqlParameter("@ESIApplicable", model.ESIApplicable));
+
+                // --------------------- JOB DETAILS ---------------------
                 SqlParams.Add(new SqlParameter("@ReportingDesignationId", model.JobDesignation));
-                SqlParams.Add(new SqlParameter("@ProbationPeriod", model.JobProbationPeriod ));
-                SqlParams.Add(new SqlParameter("@DateOfProbation", DateOfProbation ?? (object)DBNull.Value));
-                SqlParams.Add(new SqlParameter("@DateOfConfirm", DateOfConfirm ?? (object)DBNull.Value));
+                SqlParams.Add(new SqlParameter("@ProbationPeriod", model.JobProbationPeriod));
+                SqlParams.Add(new SqlParameter("@DateOfProbation", probationDate ?? (object)DBNull.Value));
+                SqlParams.Add(new SqlParameter("@DateOfConfirm", dateOfConfirm ?? (object)DBNull.Value));
+
                 SqlParams.Add(new SqlParameter("@Referance1", model.JobReference1 ?? ""));
                 SqlParams.Add(new SqlParameter("@Referencetwo", model.JobReference2 ?? ""));
-                SqlParams.Add(new SqlParameter("@Through", model.JoiningThrough ?? ""));
+                SqlParams.Add(new SqlParameter("@ThroughId", model.ThroughId));
 
-                // Document / ID Proof
+                // --------------------- DOCUMENTS ---------------------
                 SqlParams.Add(new SqlParameter("@NationalIdPassport", model.PassportNo ?? ""));
                 SqlParams.Add(new SqlParameter("@WorkPermitVisa", model.WorkPeritVisa ?? ""));
                 SqlParams.Add(new SqlParameter("@DrivingLicence", model.DrivingLicenseNo ?? ""));
                 SqlParams.Add(new SqlParameter("@MedicalInsuranceDetail", model.MedicalInsuranceDetail ?? ""));
-                //SqlParams.Add(new SqlParameter("@ThumbPath", model.ThumbUnPress ?? ""));
-                 SqlParams.Add(new SqlParameter("@ThumbPath", model.fileUpload ?? ""));
 
-                // Exit Details
-                 SqlParams.Add(new SqlParameter("@NoticePeriod", model.NoticPeriod ));
-                 SqlParams.Add(new SqlParameter("@GratutyEligibility", model.GratutyEligibility ?? ""));
+                SqlParams.Add(new SqlParameter("@ThumbPath", model.fileUpload ?? ""));
+                SqlParams.Add(new SqlParameter("@SignaturePath", model.SignaturePath ?? ""));
+                SqlParams.Add(new SqlParameter("@PhotographPath", model.PhotographPath ?? ""));
 
+                // --------------------- EXIT DETAILS ---------------------
+                SqlParams.Add(new SqlParameter("@NoticePeriod", model.NoticPeriod));
+                SqlParams.Add(new SqlParameter("@GratutyEligibility", model.GratutyEligibility ?? ""));
+
+                // --------------------- AUDIT DETAILS ---------------------
                 SqlParams.Add(new SqlParameter("@EntryByMachineName", model.EntryByMachineName ?? ""));
-                SqlParams.Add(new SqlParameter("@LastUpdationDate", model.LastUpdationDate ));
-                SqlParams.Add(new SqlParameter("@LastUpdatedBy", model.UpdatedBy ));
-                SqlParams.Add(new SqlParameter("@ApprovedBy", model.ApprovedBy ));
+                SqlParams.Add(new SqlParameter("@LastUpdatedBy", model.UpdatedBy));
                 SqlParams.Add(new SqlParameter("@ApprovalDate", model.ApprovalDate));
+                SqlParams.Add(new SqlParameter("@ApprovedBy", model.ApprovedBy));
 
+                // If UPDATE → send ActualEntry, else NULL
                 SqlParams.Add(new SqlParameter("@ActualEntrybyId", model.ActualEntrybyId));
                 SqlParams.Add(new SqlParameter("@ActualEntryDate", model.ActualEntryDate));
 
-                // Table-Valued Parameters
+                // --------------------- REQUEST DETAILS ---------------------
+                SqlParams.Add(new SqlParameter("@EmpReqNo", model.EmpReqNo));
+                SqlParams.Add(new SqlParameter("@EmpReqYearcode", model.EmpReqYearcode));
+                SqlParams.Add(new SqlParameter("@EmpReqEntryId", model.EmpReqEntryId));
+                SqlParams.Add(new SqlParameter("@EmpReqDate", model.EmpReqDate));
+
+                // --------------------- TABLE-TVP ---------------------
                 SqlParams.Add(new SqlParameter("@DtAllDed", DtAllDed));
                 SqlParams.Add(new SqlParameter("@DtEdu", DtEdu));
-                SqlParams.Add(new SqlParameter("@dtExp", dtexp));
+                SqlParams.Add(new SqlParameter("@dtExp", dtExp));
                 SqlParams.Add(new SqlParameter("@dtNjob", dtNjob));
 
-                // Execute stored procedure
-                _ResponseResult = await _IDataLogic.ExecuteDataTable("HREmployeeMaster", SqlParams);
+                // --------------------- EXECUTE ---------------------
+                response = await _IDataLogic.ExecuteDataTable("HREmployeeMaster", SqlParams);
             }
             catch (Exception ex)
             {
-                _ResponseResult = new ResponseResult()
+                response = new ResponseResult()
                 {
                     StatusCode = HttpStatusCode.InternalServerError,
                     StatusText = "Error occurred while saving employee data.",
@@ -1269,8 +1505,9 @@ namespace eTactWeb.Data.DAL
                 };
             }
 
-            return _ResponseResult;
+            return response;
         }
+
 
         //public async Task<ResponseResult> SaveEmployeeMaster(EmployeeMasterModel model, DataTable DtAllDed, DataTable DtEdu, DataTable dtexp, DataTable dtNjob)
         //{
