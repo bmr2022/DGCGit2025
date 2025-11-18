@@ -1114,14 +1114,15 @@ namespace eTactWeb.Controllers
 
         [HttpGet]
         [Route("{controller}/SaleBillOnCounterDashboard")]
-        public async Task<IActionResult> SaleBillOnCounterDashboard(string summaryDetail = "", string Flag = "True", string partCode = "", string itemName = "", string saleBillno = "", string customerName = "", string sono = "", string custOrderNo = "", string schNo = "", string performaInvNo = "", string saleQuoteNo = "", string domensticExportNEPZ = "", List<string>? SubInvoicetypeL = null, string fromdate = "", string toDate = "", string searchBox = "", string SaleBillEntryFrom = "")
+        public async Task<IActionResult> SaleBillOnCounterDashboard(string redirectFrom, string summaryDetail = "", string Flag = "True", string partCode = "", string itemName = "", string saleBillno = "", string customerName = "", string sono = "", string custOrderNo = "", string schNo = "", string performaInvNo = "", string saleQuoteNo = "", string domensticExportNEPZ = "", List<string>? SubInvoicetypeL = null, string fromdate = "", string toDate = "", string searchBox = "", string SaleBillEntryFrom = "")
         {
             try
             {
+
                 HttpContext.Session.Remove("KeySaleBillGrid");
                 HttpContext.Session.Remove("KeyTaxGrid");
                 var model = new SaleBillDashboard();
-
+                ViewBag.RedirectFrom = redirectFrom;
                 var FromDt = HttpContext.Session.GetString("FromDate");
                 model.FinFromDate = Convert.ToDateTime(FromDt).ToString("dd/MM/yyyy");
                 //DateTime ToDate = DateTime.Today;
@@ -1198,11 +1199,12 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<IActionResult> GetSearchData(string summaryDetail, string partCode, string itemName, string saleBillno, string customerName, string sono, string custOrderNo, string schNo, string performaInvNo, string saleQuoteNo, string domensticExportNEPZ, string fromdate, string toDate, string SaleBillEntryFrom, List<string> SubInvoicetype, int pageNumber = 1, int pageSize = 15, string SearchBox = "")
+        public async Task<IActionResult> GetSearchData( string redirectFrom,string summaryDetail, string partCode, string itemName, string saleBillno, string customerName, string sono, string custOrderNo, string schNo, string performaInvNo, string saleQuoteNo, string domensticExportNEPZ, string fromdate, string toDate, string SaleBillEntryFrom, List<string> SubInvoicetype, int pageNumber = 1, int pageSize = 15, string SearchBox = "")
         {
             try
             {
                 var model = new SaleBillDashboard();
+                ViewBag.RedirectFrom = redirectFrom;
                 model.SaleBillYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
                 string selectedInvoiceTypes = SubInvoicetype != null
    ? string.Join(",", SubInvoicetype)
