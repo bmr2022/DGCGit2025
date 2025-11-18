@@ -38,6 +38,7 @@ namespace eTactWeb.Controllers
                 model.ActualEntryDate = DateTime.Today.ToString("dd/MM/yyyy").Replace("-", "/");
                 model.Branch = HttpContext.Session.GetString("Branch");
                 model.ApprovedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+                model.EmpReqYearcode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
                 model.ActualEntrybyId = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
                 //model.EntryByEmpName = HttpContext.Session.GetString("EmpName");
                 model.Mode = Mode;
@@ -192,6 +193,31 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+        public async Task<JsonResult> GetReqNo(string EntryDate)
+        {
+            var JSON = await _IEmployeeMaster.GetReqNo(EntryDate);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> GetEmpGrade()
+        {
+            var JSON = await _IEmployeeMaster.GetEmpGrade();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> GetWagesType()
+        {
+            var JSON = await _IEmployeeMaster.GetWagesType();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+          public async Task<JsonResult> GetCalculatePfOn()
+        {
+            var JSON = await _IEmployeeMaster.GetCalculatePfOn();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
         public async Task<JsonResult> GetEmployeeType()
         {
             var JSON = await _IEmployeeMaster.GetEmployeeType();

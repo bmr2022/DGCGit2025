@@ -57,6 +57,18 @@ namespace eTactWeb.Data.BLL
         {
             return await _EmployeeMasterDAL.GetSalaryHead();
         }
+        public async Task<ResponseResult> GetReqNo(string EntryDate)
+        {
+            return await _EmployeeMasterDAL.GetReqNo(EntryDate);
+        }
+        public async Task<ResponseResult> GetEmpGrade()
+        {
+            return await _EmployeeMasterDAL.GetEmpGrade();
+        }
+        public async Task<ResponseResult> GetWagesType()
+        {
+            return await _EmployeeMasterDAL.GetWagesType();
+        }
         public async Task<ResponseResult> GetSalaryMode(int SalaryHeadId)
         {
             return await _EmployeeMasterDAL.GetSalaryMode(SalaryHeadId);
@@ -89,9 +101,13 @@ namespace eTactWeb.Data.BLL
         {
             return await _EmployeeMasterDAL.GetWorkLocation();
         }
-         public async Task<ResponseResult> GetRefThrough()
+        public async Task<ResponseResult> GetRefThrough()
         {
             return await _EmployeeMasterDAL.GetRefThrough();
+        }
+        public async Task<ResponseResult> GetCalculatePfOn()
+        {
+            return await _EmployeeMasterDAL.GetCalculatePfOn();
         }
 
         public async Task<DOM.Models.Common.ResponseResult> SaveEmployeeMaster(EmployeeMasterModel model, DataTable DtAllDed, DataTable DtEdu, DataTable dtexp, DataTable dtNjob)

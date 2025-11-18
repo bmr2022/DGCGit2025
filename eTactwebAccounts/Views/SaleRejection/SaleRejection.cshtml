@@ -508,7 +508,7 @@
                $('#RoundOffAccountCode').change(function () {
                     CalculateAdjAmt('NetTotal');
                     GetDbCrDetail();
-                        onInvoiceChange('SalerejCreditNoteVoucherNo');
+                       ClearAdjustmentGrid();
             AddAdjstmntDetail1();
          });
            function FillRoundOffAccount(dt) {
@@ -1195,6 +1195,7 @@
              ClearAdjustmentGrid();
               AddAdjstmntDetail1();
                 }
+                    $("#TotalRoundOff").val("N").trigger('change');
                  },
                  error: function (req, status, error) {
                      alert(error);

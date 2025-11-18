@@ -362,14 +362,14 @@
 										<option value="">-Select-</option>
 									</select>
 								</div>
-								@* <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+								<div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12 allowtobilldiscount" >
 									<label asp-for="TotalDiscountPercentage" class="form-label">Discount %</label>
 									<input asp-for="TotalDiscountPercentage" class="form-control" min="0" max="100" />
-								</div> *@
-							@* 	<div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+								</div> 
+								<div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12 allowtobilldiscount">
 									<label asp-for="TotalAmtAftrDiscount" class="form-label">Amt Aftr Discount</label>
 									<input asp-for="TotalAmtAftrDiscount" class="form-control" readonly />
-								</div> *@
+								</div> 
 								<div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
 									<label asp-for="NetTotal" class="form-label">Net Total</label>
 									<input asp-for="NetTotal" class="form-control" readonly />
@@ -730,14 +730,14 @@
 				$('#Rate').prop("disabled", false);
 				$('#OtherRateCurr').prop("disabled", true);
 			}
-			// const myInput = document.getElementById("TotalDiscountPercentage");
+			const myInput = document.getElementById("TotalDiscountPercentage");
 
-			// myInput.addEventListener("input", function (event) {
-			// 	const inputValue = parseInt(event.target.value);
-			// 	if (isNaN(inputValue) || inputValue > 100) {
-			// 		event.target.value = ""; // Clear the input value if it's not a valid number or greater than 100
-			// 	}
-			// });
+			myInput.addEventListener("input", function (event) {
+				const inputValue = parseInt(event.target.value);
+				if (isNaN(inputValue) || inputValue > 100) {
+					event.target.value = ""; // Clear the input value if it's not a valid number or greater than 100
+				}
+			});
 			$('#AccountCode').select2();
 			// $('#PartCode').select2();
 			// $('#ItemCode').select2();
@@ -746,6 +746,7 @@
 			GetFormRights();
 			LockedFinancialYear();
 			FillCurrency();
+			GetFeaturesOptions();
 			$('#POTypeServItem').val('Item');
 			FillItems();
 			//add by mayuri
@@ -1341,7 +1342,32 @@ formData.append("Mode", $('#Mode').val());
 				}
 			});
 		}
+				  function GetFeaturesOptions() {
+					$.ajax({
+						type: "POST",
+						data: {},
+								url: "@Url.Action("GetFeaturesOptions")",
+						dataType: "json",
+						success: function (result, status, error) {
+							if (result != null) {
+								var obj = $.parseJSON(result);
+								if (obj.Result != null && obj.Result.length > 0) {
+									var feature = obj.Result[0];
 
+									// New DirectPurchaseBill flags
+											if (feature.allowtobilldiscount === "Y") {
+										$('.allowtobilldiscount').show();
+									} else {
+												$('.allowtobilldiscount').hide();
+									}
+
+								}
+							}
+						}
+					});
+				}
+
+				
 		function FillVendors() {
 
 			$.ajax({

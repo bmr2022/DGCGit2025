@@ -208,7 +208,15 @@
                                     <select class="form-select" multiple="multiple" asp-for="Branches"></select>
 
                                 </div>
-                                
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:250px;">
+                                    <label asp-for="CardNo" class="form-label">Card No</label>
+                                    <input asp-for="CardNo" class="form-control" />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                    <label asp-for="ApplicationCode" class="form-label">Application Code </label>
+                                    <input asp-for="ApplicationCode" class="form-control" />
+                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -251,6 +259,10 @@
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
                                     <label asp-for="EmergencyContactRelation" class="form-label">EmergencyContact Relation</label>
                                     <input asp-for="EmergencyContactRelation" class="form-control" />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                    <label asp-for="EmergencyContactRelationName" class="form-label">EmergencyContact Relation Name</label>
+                                    <input asp-for="EmergencyContactRelationName" class="form-control" />
                                 </div>
 
                             </div>
@@ -322,7 +334,7 @@
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
                                     <label asp-for="CalculatePfOn" class="form-label">Calculate Pf On</label>
                                     <select asp-for="CalculatePfOn" class="form-control">
-                                        <option value="">Select</option>
+                                        <option value="">--Select--</option>
                                     </select>
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
@@ -382,14 +394,31 @@
                                     </select>
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:100px;">
-                                    <label asp-for="EmpGrade" class="form-label" style="width:90px;">Emp Grade</label>
-                                    <select asp-for="EmpGrade" class="form-control">
-                                        <option value="">Select</option>
+                                    <label asp-for="GradeId" class="form-label" style="width:90px;">Emp Grade</label>
+
+                                    <select id="GradeId" name="GradeId" class="form-control">
+                                        <option value="">--Select--</option>
                                     </select>
                                 </div>
+
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:100px;">
                                     <label asp-for="FixSalaryAmt" class="form-label">Fix SalaryAmt </label>
                                     <input asp-for="FixSalaryAmt" class="form-control" />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:180px;">
+                                    <label asp-for="NetSalaryAmt" class="form-label">Net SalaryAmt </label>
+                                    <input asp-for="NetSalaryAmt" class="form-control" />
+                                </div>
+
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:100px;">
+                                    <label asp-for="CTC" class="form-label">CTC</label>
+                                    <input asp-for="CTC" class="form-control" />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:300px;">
+                                    <label asp-for="WagesType" class="form-label">Wages Type</label>
+                                    <select asp-for="WagesType" class="form-control" style="width:270px;">
+                                        <option value="">-Select-</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -576,12 +605,11 @@
                                     <input asp-for="JobReference2" class="form-control" />
                                 </div>
 
-                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px;">
-                                    <label asp-for="JoiningThrough" class="form-label">Joining Through</label>
-                                    <select asp-for="JoiningThrough" class="form-control">
-                                        <option value="">-Select-</option>
-                                    </select>
-                                </div>
+                                <label asp-for="ThroughId" class="form-label">Joining Through</label>
+                                <select asp-for="ThroughId" id="JoiningThrough" class="form-control">
+                                    <option value="">--Select--</option>
+                                </select>
+
                             </div>
                         </div>
 
@@ -635,9 +663,9 @@
                             <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Upload Section</strong>
                         </button>
                     </h2>
-                <div id="uploadsection" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+                    <div id="uploadsection" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
                         <div class="accordion-body">
-                            <div class="row g-2 gx-3" id="_ItemGrid">
+                          <div class="row g-2 gx-3" id="_ItemGrid">
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 mb-4" style="width:200px;">
                                     <label asp-for="fileUpload" class="form-label">Upload File</label>
                                     <input type="file" asp-for="fileUpload" class="form-control" />
@@ -645,16 +673,39 @@
                             <div class="col-xl-1 col-lg-2 col-md-2 col-sm-6 col-xs-12 d-flex align-items-end mb-4">
                                 <button type="button" id="btnView" class="btn btn-primary w-100">View</button>
                             </div>
-                            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 mb-4" style="width:200px;">
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 mb-4" style="width:200px;">
                                     <label asp-for="ThumbUnPress" class="form-label">Thumb UnPress</label>
-                                    <input asp-for="ThumbUnPress" class="form-control" />
+                                    <input type="file" asp-for="ThumbUnPress" class="form-control" />
+                                </div>
+                            <div class="col-xl-1 col-lg-2 col-md-2 col-sm-6 col-xs-12 d-flex align-items-end mb-4">
+                                <button type="button" id="btnViewThumb" class="btn btn-primary w-100">View</button>
+                            </div>
+                            
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 mb-4" style="width:200px;">
+                                        <label asp-for="AadharCard" class="form-label">Aadhar Card</label>
+                                        <input type="file" asp-for="AadharCard" class="form-control" />
+                                </div>
+                                <div class="col-xl-1 col-lg-2 col-md-2 col-sm-6 col-xs-12 d-flex align-items-end mb-4">
+                                     <button type="button" id="btnViewAadharCard" class="btn btn-primary w-100">View</button>
+                                </div>
+                              
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 mb-4" style="width:200px;">
+                                        <label asp-for="SignaturePath" class="form-label">Signature </label>
+                                        <input type="file" asp-for="SignaturePath" class="form-control" />
+                                </div>
+                                <div class="col-xl-1 col-lg-2 col-md-2 col-sm-6 col-xs-12 d-flex align-items-end mb-4">
+                                  <button type="button" id="btnViewSignature" class="btn btn-primary w-100">View</button>
+                                </div>
+                               
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 mb-4" style="width:200px;">
+                                            <label asp-for="PhotographPath" class="form-label">Photograph </label>
+                                            <input type="file" asp-for="PhotographPath" class="form-control" />
+                                    </div>
+                                <div class="col-xl-1 col-lg-2 col-md-2 col-sm-6 col-xs-12 d-flex align-items-end mb-4">
+                                  <button type="button" id="btnViewPhotograph" class="btn btn-primary w-100">View</button>
                                 </div>
 
-                            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 mb-4" style="width:200px;">
-                                    <label asp-for="Aadhar" class="form-label">Aadhar</label>
-                                    <input asp-for="Aadhar" class="form-control" />
-                                </div>
-                            </div>
+                          </div>
                         </div>
 
                     </div>
@@ -868,6 +919,40 @@
                 </div>
 
             </div>
+            @* Experiance Deatil *@
+
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="HPanel2">
+                    <button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#OtherDetailSection" aria-expanded="false" aria-controls="ODGrid">
+                        <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Other Detail</strong>
+                    </button>
+                </h2>
+                <div id="OtherDetailSection" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+                    <div class="accordion-body">
+                        <div class="row g-2 gx-3" id="_ItemGrid">
+                            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px;">
+                                <label asp-for="EmpReqNo" class="form-label">Emp ReqNo</label>
+                                <select asp-for="EmpReqNo" class="form-control">
+                                    <option value="">-Select-</option>
+                                </select>
+                            </div>
+                            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                <label asp-for="EmpReqYearcode" class="form-label">Emp Req Yearcode</label>
+                                <input asp-for="EmpReqYearcode" class="form-control" />
+                            </div>
+                            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                <label asp-for="EmpReqEntryId" class="form-label">Emp Req EntryId</label>
+                                <input asp-for="EmpReqEntryId" class="form-control" />
+                            </div>
+                            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                <label asp-for="EmpReqDate" class="form-label">Emp Req Date</label>
+                                <input asp-for="EmpReqDate" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
         </div>
            
 
@@ -947,6 +1032,8 @@
             $('#permanentAddress').rules("remove", "required");
             $('#EmergencyContact').rules("remove", "required");
             $('#EmergencyContactRelation').rules("remove", "required");
+            $('#CardNo').rules("remove", "required");
+            $('#ApplicationCode').rules("remove", "required");
 
             $('#BankName').rules("remove", "required");
             $('#AccountNo').rules("remove", "required");
@@ -975,6 +1062,7 @@
             $('#AllowanceAmount').rules("remove", "required");
             $('#AllowanceType').rules("remove", "required");
             $('#PartyPay').rules("remove", "required");
+            $('#WagesType').rules("remove", "required");
 
             $('#JoiningDate').rules("remove", "required");
             $('#JobDepartment').rules("remove", "required");
@@ -983,7 +1071,7 @@
             $('#EmployeeType').rules("remove", "required");
             $('#WorkLocation').rules("remove", "required");
             $('#JObShift').rules("remove", "required");
-            $('#EmpGrade').rules("remove", "required");
+            $('#GradeId ').rules("remove", "required");
             $('#JobProbationPeriod').rules("remove", "required");
             $('#ProbationStartDate').rules("remove", "required");
             $('#ProbationEndDate').rules("remove", "required");
@@ -1000,7 +1088,9 @@
 
             $('#fileUpload').rules("remove", "required");
             $('#ThumbUnPress').rules("remove", "required");
-            $('#Aadhar').rules("remove", "required");
+            $('#AadharCard').rules("remove", "required");
+            $('#SignaturePath').rules("remove", "required");
+            $('#PhotographPath').rules("remove", "required");
 
             $('#Qualification').rules("remove", "required");
             $('#Univercity_Sch').rules("remove", "required");
@@ -1019,6 +1109,11 @@
             $('#ResignationDate').rules("remove", "required");
             $('#Active').rules("remove", "required");
 
+            $('#EmpReqNo').rules("remove", "required");
+            $('#EmpReqYearcode').rules("remove", "required");
+            $('#EmpReqEntryId').rules("remove", "required");
+            $('#EmpReqDate').rules("remove", "required");
+
             var mode = '@Model.Mode';
             $('#Nationality').select2();
             $('#MaritalStatus').select2();
@@ -1034,18 +1129,44 @@
             $('#Designation').select2();
             $('#Department').select2();
             $('#Category').select2();
-            $('#EmpGrade').select2();
+            $('#GradeId ').select2();
             $('#JoiningThrough').select2();
             $('#WorkLocation').select2();
             $('#AllowanceMode').select2();
             $('#AllowanceType').select2();
             $('#PartyPay').select2();
+            $('#WagesType').select2();
             $('#LateMarkingCalculationApplicable').select2();
+            $('#EmpReqNo').select2();
+            $('#CalculatePfOn').select2();
             $('#Branches').select2({
                 placeholder: "-Select Branch-",
                 width: '100%'
             });
             GetBranchList();
+            function getFormattedToday() {
+                const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+                let today = new Date();
+                let day = String(today.getDate()).padStart(2, '0');
+                let month = months[today.getMonth()];
+                let year = today.getFullYear();
+
+                return `${day}/${month}/${year}`;
+            }
+            var formattedToday = getFormattedToday();
+
+            $('#ResignationDate').datepicker({ dateFormat: 'dd/M/yy' }).val(formattedToday);
+            $('#JoiningDate').datepicker({ dateFormat: 'dd/M/yy' }).val(formattedToday);
+            $('#DateOfConfirmation').datepicker({ dateFormat: 'dd/M/yy' }).val(formattedToday);
+            $('#ProbationStartDate').datepicker({ dateFormat: 'dd/M/yy' }).val(formattedToday);
+            $('#ProbationEndDate').datepicker({ dateFormat: 'dd/M/yy' }).val(formattedToday);
+            $('#CFromDate').datepicker({ dateFormat: 'dd/M/yy' }).val(formattedToday);
+            $('#CToDate').datepicker({ dateFormat: 'dd/M/yy' }).val(formattedToday);
+            $('#EmpReqDate').datepicker({ dateFormat: 'dd/M/yy' }).val(formattedToday);
+            $('#EmpReqDate').datepicker({ dateFormat: 'dd/M/yy' }).val(formattedToday);
+
             // Set selected branches from hidden inputs
             var selectedBranches = [];
             $('.hiddenBranch').each(function () {
@@ -1054,13 +1175,14 @@
             $('#Branches').val(selectedBranches).trigger('change');
 
 
-            $('#ResignationDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');;
-            $('#JoiningDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');;
-            $('#DateOfConfirmation').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');;
-            $('#ProbationStartDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');;
-            $('#ProbationEndDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');;
-            $('#CFromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');;
-            $('#CToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');;
+            // $('#ResignationDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+            // $('#JoiningDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+            // $('#DateOfConfirmation').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+            // $('#ProbationStartDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+            // $('#ProbationEndDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+            // $('#CFromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+            // $('#CToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+            // $('#EmpReqDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
             
             if (mode === "U" || mode === "V") {
                 $('#EntryDate').val('@Model.EntryDate');
@@ -1071,8 +1193,10 @@
                 
                 $('#DateOfJoining, #DateOfResignation').datepicker({ dateFormat: 'dd/mm/yy' });
             } else {
-                
-                $('#EntryDate, #DateOfJoining, #DOB').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+
+                $('#EntryDate, #DateOfJoining, #DOB')
+                    .datepicker({ dateFormat: 'dd/M/yy' })
+                    .val(formattedToday);
             }
 
             
@@ -1089,6 +1213,10 @@
             FILLAllowanceMode();
             GetWorkLocation();
             GetRefThrough();
+            GetReqNo();
+            GetEmpGrade();
+            GetWagesType();
+            GetCalculatePfOn();
             $("#SalaryHead").change(function () {
                 var salaryHeadValue = $(this).val();
                 if (salaryHeadValue) {
@@ -1202,7 +1330,13 @@
                 window.open(fileURL, '_blank');
             });
         });
-       
+        $('#EmpGrade').change(function () {
+            $('#GradeId').val($('#EmpGrade').val());
+        });
+        $('#EmpGrade').change(function () {
+            $('#GradeId').val($('#EmpGrade').val());
+        });
+
         $('#Department').on('change', function () {
             var selectedText = $(this).find('option:selected').text().trim();
             $('#DepartmentName').val(selectedText);
@@ -2013,26 +2147,26 @@
                 }
             });
         }
-        function GetRefThrough() {
+        function GetReqNo() {
+            var EntryDate = $('#EntryDate').val();
             $.ajax({
-                url: '@Url.Action("GetRefThrough", "EmployeeMaster")',
-
+                url: '@Url.Action("GetReqNo", "EmployeeMaster")',
                 type: 'GET',
+                data: { EntryDate: EntryDate },
                 async: false,
                 success: function (response, status, error) {
-
-                    var Dropdown = $('#JoiningThrough');
+                    var Dropdown = $('#EmpReqNo');
                     var obj = $.parseJSON(response);
                     Dropdown.empty();
                     // PaymentModeDropdown.append('<option value="">--Select--</option>');
 
                     $.each(obj.Result, function (index, item) {
-                        Dropdown.append('<option value="' + item.Referance + '">' + item.Referance + '</option>');
+                        Dropdown.append('<option value="' + item.EmpReqNo + '">' + item.EmpReqNo + '</option>');
                     });
                     if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-                        var JoiningThrough = '@Model.JoiningThrough';
-                        $('#JoiningThrough').val(JoiningThrough).trigger("change");
-                        $('#JoiningThrough').val(JoiningThrough);
+                        var EmpReqNo = '@Model.EmpReqNo';
+                        $('#EmpReqNo').val(EmpReqNo).trigger("change");
+                        $('#EmpReqNo').val(EmpReqNo);
                     }
 
                 },
@@ -2041,6 +2175,120 @@
                 }
             });
         }
+        function GetEmpGrade() {
+            $.ajax({
+                url: '@Url.Action("GetEmpGrade", "EmployeeMaster")',
+                type: 'GET',
+                success: function (response) {
+
+                    var Dropdown = $('#GradeId');
+                    var obj = $.parseJSON(response);
+                    Dropdown.empty();
+
+                    Dropdown.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, item) {
+                        Dropdown.append('<option value="' + item.GradeEntryID + '">' + item.EmpGrade + '</option>');
+                    });
+
+                    // For Update / View
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                        var GradeId = '@Model.GradeId';
+                        Dropdown.val(GradeId);
+                    }
+                },
+                error: function () {
+                    alert('Failed to load grades.');
+                }
+            });
+        }
+        function GetCalculatePfOn() {
+            $.ajax({
+                url: '@Url.Action("GetCalculatePfOn", "EmployeeMaster")',
+                type: 'GET',
+                success: function (response) {
+
+                    var Dropdown = $('#CalculatePfOn');
+                    var obj = $.parseJSON(response);
+                    Dropdown.empty();
+
+                    Dropdown.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, item) {
+                        Dropdown.append('<option value="' + item.SalaryHead + '">' + item.SalaryHead + '</option>');
+                    });
+
+                    // For Update / View
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                        var CalculatePfOn = '@Model.CalculatePfOn';
+                        Dropdown.val(CalculatePfOn);
+                    }
+                },
+                error: function () {
+                    alert('Failed to load grades.');
+                }
+            });
+        }
+
+        function GetWagesType() {
+            $.ajax({
+                url: '@Url.Action("GetWagesType", "EmployeeMaster")',
+                type: 'GET',
+                async: false,
+                success: function (response, status, error) {
+                    var Dropdown = $('#WagesType');
+                    var obj = $.parseJSON(response);
+                    Dropdown.empty();
+                    // PaymentModeDropdown.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, item) {
+                        Dropdown.append('<option value="' + item.EmpWagesType + '">' + item.EmpWagesType + '</option>');
+                    });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                        var WagesType = '@Model.WagesType';
+                        $('#WagesType').val(WagesType).trigger("change");
+                        $('#WagesType').val(WagesType);
+                    }
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+
+        function GetRefThrough() {
+            $.ajax({
+                url: '@Url.Action("GetRefThrough", "EmployeeMaster")',
+                type: 'GET',
+                success: function (response) {
+
+                    var Dropdown = $('#JoiningThrough');
+                    Dropdown.empty();
+
+                    // Add default option
+                    Dropdown.append('<option value="">--Select--</option>');
+
+                    var data = JSON.parse(response);
+
+                    $.each(data.Result, function (i, item) {
+                        Dropdown.append(
+                            '<option value="' + item.EmpRefId + '">' + item.Referance + '</option>'
+                        );
+                    });
+
+                    // Set selected value in Update or View mode
+                    if ($("#Mode").val() == "U" || $("#Mode").val() == "V") {
+                        var selectedId = '@Model.ThroughId';
+                        $('#JoiningThrough').val(selectedId);
+                    }
+                },
+                error: function () {
+                    alert('Failed to load reference.');
+                }
+            });
+        }
+
 
         function GetEmpIdandEmpCode() {
             var mode = '@Model.Mode';

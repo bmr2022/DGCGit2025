@@ -1796,6 +1796,7 @@ namespace eTactWeb.Controllers
             int SchYearCode = Convert.ToInt32(Request.Form["SchYearCode"]);
             string Currency = Request.Form["Currency"];
             string Flag = Request.Form["Flag"];
+            string docTypeName = Request.Form["docTypeName"];
 
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             List<DPBItemDetail> data = new List<DPBItemDetail>();
@@ -1812,7 +1813,7 @@ namespace eTactWeb.Controllers
                     var itemName = worksheet.Cells[row, 2].Value?.ToString()?.Trim();
                     var rateValue = worksheet.Cells[row, 3].Value?.ToString();
                     var qtyValue = worksheet.Cells[row, 4].Value?.ToString();
-                    var docTypeText ="Purchase Account";
+                    var docTypeText = docTypeName;
                     var locationValue = worksheet.Cells[row, 6].Value?.ToString();
 
                     // 🔹 Basic Required Field Validation
@@ -1897,7 +1898,7 @@ namespace eTactWeb.Controllers
                         ItemText = itemName,
                         ItemCode = itemCodeValue,
                         PartCode = partcode,
-                        HSNNo = Convert.ToInt32(HsnNo.ToString()),
+                        HSNNo = string.IsNullOrEmpty(HsnNo?.ToString()) ? 0 : Convert.ToInt32(HsnNo),
                         DPBQty = qty,
                         BillQty = qty,
                         Unit = Unit.ToString(),

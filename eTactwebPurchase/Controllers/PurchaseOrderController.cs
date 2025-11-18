@@ -766,6 +766,12 @@ public class PurchaseOrderController : Controller
         string JsonString = JsonConvert.SerializeObject(JSON);
         return Json(JsonString);
     }
+    public async Task<JsonResult> GetFeaturesOptions()
+    {
+        var JSON = await IPurchaseOrder.GetFeaturesOptions();
+        string JsonString = JsonConvert.SerializeObject(JSON);
+        return Json(JsonString);
+    }
     public async Task<JsonResult> ClearTaxGrid(int YearCode)
     {
         //IMemoryCache.Remove("KeyTaxGrid");

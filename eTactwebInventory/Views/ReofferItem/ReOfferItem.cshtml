@@ -1709,8 +1709,8 @@ $('#DivDetailGrid').on('click', '.deleteRowBtn', function () {
 
                                 '<td><input id="ProcessId' + i + '"  value=""  class="textbox"></td>' +
 
-                                 '<td><input id="BatchNo' + i + '" value=' + val.BatchNo + ' class="textbox"></td>' +
-                                '<td><input id="uniqueBatchno' + i + '" value=' + val.uniqueBatchno + ' class="textbox"></td>' +
+                                 '<td><input id="BatchNo' + i + '" value=' + JSON.stringify(val.BatchNo || "") + ' class="textbox"></td>' +
+'<td><input id="uniqueBatchno' + i + '" value=' + JSON.stringify(val.uniqueBatchno || "") + ' class="textbox"></td>' +
                                  '<td><input id="Rate' + i + '"  value="" style="width:60px;" class="textbox number"></td>' +
                                 '<td><input id="rateinother' + i + '"  value="" style="width:60px;" class="textbox number"></td>' +
                                 '<td><input id="Remarks' + i + '"  value=""  class="textbox" style="width:120px;"></td>' +
