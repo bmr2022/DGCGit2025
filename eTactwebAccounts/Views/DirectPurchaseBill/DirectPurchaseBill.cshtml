@@ -710,7 +710,7 @@
               $('#RoundOffAccountCode').change(function () {
                      CalculateAdjAmt('NetTotal');
                      GetDbCrDetail();
-
+                            ClearAdjustmentGrid();
              AddAdjstmntDetail1();
           });
             function FillRoundOffAccount(dt) {
@@ -3619,6 +3619,7 @@
             AddAdjstmntDetail1();
               }
                      // ClearAdjustmentGrid();
+                                $("#TotalRoundOff").val("N").trigger('change');
                      
                 },
                 error: function (req, status, error) {

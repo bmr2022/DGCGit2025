@@ -57,6 +57,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _PurchaseOrderDAL.PoallowtoprintWithoutApproval();
         }
+        public async Task<ResponseResult> GetFeaturesOptions()
+        {
+            return await _PurchaseOrderDAL.GetFeaturesOptions();
+        }
         public async Task<ResponseResult> NewAmmEntryId(int PoAmendYearCode)
         {
             return await _PurchaseOrderDAL.NewAmmEntryId(PoAmendYearCode);

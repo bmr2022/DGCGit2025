@@ -29,6 +29,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetQuotData(string Flag, string QuotNo);
 
         Task<ResponseResult> PoallowtoprintWithoutApproval();
+        Task<ResponseResult> GetFeaturesOptions();
         Task<ResponseResult> FillEntryandPONumber(int YearCode);
         Task<ResponseResult> FillItems(string Type, string ShowAllItem,string SearchItemCode,string SearchPartCode);
         Task<ResponseResult> FillPONumber(int YearCode, string Ordertype, string Podate);
