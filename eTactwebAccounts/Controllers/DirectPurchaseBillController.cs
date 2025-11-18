@@ -1812,7 +1812,7 @@ namespace eTactWeb.Controllers
                     var itemName = worksheet.Cells[row, 2].Value?.ToString()?.Trim();
                     var rateValue = worksheet.Cells[row, 3].Value?.ToString();
                     var qtyValue = worksheet.Cells[row, 4].Value?.ToString();
-                    var docTypeText ="Purchase Account";
+                    var docTypeText = worksheet.Cells[row, 7].Value?.ToString();
                     var locationValue = worksheet.Cells[row, 6].Value?.ToString();
 
                     // 🔹 Basic Required Field Validation
