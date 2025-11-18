@@ -37,6 +37,15 @@
                     <option value="Assets">Asset</option>
                 </select>
             </div>
+            <div class="col-md-1 col-sm-6 col-xs-6">
+                    <label for="state" class="control-label">PageSize</label>
+                <select asp-for="PageSize" class="form-control form-control-sm">
+                    <option value="15">15</option>
+                        <option value="50" selected>50</option>
+                        <option value="100">100</option>
+                        <option value="150">150</option>
+                </select>
+            </div>
                 <div class="col-sm-2 col-md-6 col-lg-4 col-xl-2">
                     <label class="form-label">Global search</label>
                     <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">

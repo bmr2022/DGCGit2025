@@ -230,7 +230,7 @@
                     url: '@Url.Action("GetAllColumns")',
                     type: "POST",
                     async: false,
-                    data: { Item_Name: $('#Item_Name').val(), PartCode: $('#PartCode').val(), ParentCode: $('#ParentName').val(), ItemType: $('#POServType').val(), HsnNo: $('#HSNNO').val(), UniversalPartCode: $('#UniversalPartCode').val(), Flag: "Search" },
+                    data: { Item_Name: $('#Item_Name').val(), PartCode: $('#PartCode').val(), ParentCode: $('#ParentName').val(), ItemType: $('#POServType').val(), HsnNo: $('#HSNNO').val(), UniversalPartCode: $('#UniversalPartCode').val(), pageSize: $('#PageSize').val(), Flag: "Search" },
                     success: function (data) {
                         $('#divDashboardGrid').empty();
                         $('.ShowAllDiv').empty();
@@ -252,7 +252,7 @@
                     url: '@Url.Action("GetSearchData")',
                     type: "POST",
                     async: false,
-                    data: { Item_Name: $('#Item_Name').val(), PartCode: $('#PartCode').val(), ParentCode: $('#ParentName').val(), ItemType: $('#POServType').val(), HsnNo: $('#HSNNO').val(), UniversalPartCode: $('#UniversalPartCode').val(), Flag: "Search" },
+                    data: { Item_Name: $('#Item_Name').val(), PartCode: $('#PartCode').val(), ParentCode: $('#ParentName').val(), ItemType: $('#POServType').val(), HsnNo: $('#HSNNO').val(), UniversalPartCode: $('#UniversalPartCode').val(), pageSize: $('#PageSize').val(), Flag: "Search" },
                     success: function (data) {
                         $('#divDashboardGrid').empty();
                         $('.ShowAllDiv').empty();
@@ -275,13 +275,14 @@
         $("#search-box").on("input", function () {
             var searchString = $(this).val().trim();
             var ShowAll = $('#ShowAllSwitch').is(':checked');
+            var pageSize= $('#PageSize').val();
             globalSearchString = searchString;
             isGlobalSearch = searchString !== "";
 
             $.ajax({
                 url: "/ItemMaster/GlobalSearch",
                 type: "GET",
-                data: { searchString: searchString, pageNumber: 1, ShowAll: ShowAll }, // Always reset to first page on new search
+                data: { searchString: searchString, pageNumber: 1, ShowAll: ShowAll, pageSize: pageSize }, // Always reset to first page on new search
                 success: function (data) {
                     $('#divDashboardGrid').empty();
                     $('.ShowAllDiv').empty().append(data);
@@ -408,9 +409,19 @@
              
             var url = '';
             var ShowAll = $('#ShowAllSwitch').is(':checked');
-            var data = $('#SParam').serializeArray();
-            data.push({ name: 'pageNumber', value: pageNumber });
-            data.push({ name: 'ShowAll', value: ShowAll });
+
+            var data = {
+                Item_Name: $('#Item_Name').val(),
+                PartCode: $('#PartCode').val(),
+                ParentCode: $('#ParentName').val(),
+                ItemType: $('#POServType').val(),
+                HsnNo: $('#HSNNO').val(),
+                pageSize: $('#PageSize').val(),
+                Flag: "Search",
+                pageNumber: pageNumber,
+                ShowAll: ShowAll
+            };
+
             if (isGlobalSearch) {
                 url = '/ItemMaster/GlobalSearch';
                 data = [
@@ -449,7 +460,7 @@
                 $.ajax({
                     url: '@Url.Action("GetAllColumns")',
                     type: "POST",
-                    data: { Item_Name: $('#Item_Name').val(), PartCode: $('#PartCode').val(), ParentCode: $('#ParentName').val(), ItemType: $('#POServType').val(), HsnNo: $('#HSNNO').val(), Flag: "Search" },
+                    data: { Item_Name: $('#Item_Name').val(), PartCode: $('#PartCode').val(), ParentCode: $('#ParentName').val(), ItemType: $('#POServType').val(), HsnNo: $('#HSNNO').val(), pageSize: $('#PageSize').val(), Flag: "Search" },
                     success: function (data) {
 
                         $('#divDashboardGrid').empty();
@@ -471,7 +482,7 @@
                 $.ajax({
                     url: '@Url.Action("GetSearchData")',
                     type: "POST",
-                    data: { Item_Name: $('#Item_Name').val(), PartCode: $('#PartCode').val(), ParentCode: $('#ParentName').val(), ItemType: $('#POServType').val(), HsnNo: $('#HSNNO').val(), Flag: "Search" },
+                    data: { Item_Name: $('#Item_Name').val(), PartCode: $('#PartCode').val(), ParentCode: $('#ParentName').val(), ItemType: $('#POServType').val(), HsnNo: $('#HSNNO').val(), pageSize: $('#PageSize').val(), Flag: "Search" },
                     success: function (data) {
                         $('#divDashboardGrid').empty();
                         $('.ShowAllDiv').empty();

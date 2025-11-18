@@ -89,7 +89,8 @@ public class ItemMasterController : Controller
         model.SerialNo = SerialNo;
         model.OldPartCode = OldPartCode;
         model.Package = Package;
-        model.HSNNO = HsnNo == null ? 0 : Convert.ToInt32(HsnNo);
+        model.HSNNO = HsnNo;
+        //model.HSNNO = HsnNo == null ? 0 : Convert.ToInt32(HsnNo);
 
         // return View(model);
         if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
@@ -118,7 +119,7 @@ public class ItemMasterController : Controller
         model.MasterList = allData.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
         return PartialView("_IMGrid", model);
     }
-    public async Task<IActionResult> GetAllColumns(string Item_Name, string PartCode, string ParentCode, string ItemType, string HsnNo, string UniversalPartCode, string Flag, int pageNumber = 1, int pageSize = 50)
+    public async Task<IActionResult> GetAllColumns(string Item_Name, string PartCode, string ParentCode, string ItemType, string HsnNo, string UniversalPartCode, string Flag, int pageNumber = 1, int pageSize = 0)
     {
         ItemMasterModel model = new ItemMasterModel();
         model.SwitchAll = "true";
@@ -1485,7 +1486,8 @@ public class ItemMasterController : Controller
                         SalePrice = Convert.ToInt32(worksheet.Cells[row, headersMap["SalePrice"]].Value ?? 0),
                         PurchasePrice = Convert.ToInt32(worksheet.Cells[row, headersMap["PurchasePrice"]].Value ?? 0),
                         CostPrice = Convert.ToInt32(worksheet.Cells[row, headersMap["CostPrice"]].Value ?? 0),
-                        HSNNO = Convert.ToInt32(worksheet.Cells[row, headersMap["HSNNO"]].Value ?? 0),
+                        
+                        HSNNO = worksheet.Cells[row, headersMap.ContainsKey("HSNNO") ? headersMap["HSNNO"] : headersMap["HSNNO"]].Text?.Trim(),
                         StoreName = worksheet.Cells[row, headersMap.ContainsKey("Store") ? headersMap["Store"] : headersMap["StoreName"]].Text?.Trim(),
                         Package = worksheet.Cells[row, headersMap["Package"]].Text?.Trim(),
                         VoltageVlue = worksheet.Cells[row, headersMap["VoltageValue"]].Text?.Trim(),
@@ -1642,7 +1644,7 @@ public class ItemMasterController : Controller
 
                        
                     }
-                        model.HSNNO = Convert.ToInt32(hsnString);
+                        model.HSNNO = hsnString;
                         break;
 
 
@@ -2209,7 +2211,7 @@ public class ItemMasterController : Controller
                     ItemNameExists = ItemNameExists,
                     ItemName = GetCellValue(worksheet, row, 2),
                     Unit = GetCellValue(worksheet, row, 3),
-                    HSNNo = GetCellIntValue(worksheet, row, 4),
+                    HSNNo = GetCellValue(worksheet, row, 4),
                     ItemGroup = GetCellValue(worksheet, row, 5),
                     ItemCategory = GetCellValue(worksheet, row, 6),
                     MinLevel = GetCellIntValue(worksheet, row, 7),

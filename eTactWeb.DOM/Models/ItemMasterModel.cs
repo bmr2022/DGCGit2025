@@ -98,7 +98,7 @@ namespace eTactWeb.DOM.Models
         public FeatureOption? FeatureOption { get; set; }
 
         [NotMapped]
-        public int HSNNO { get; set; }
+        public string? HSNNO { get; set; }
 
         public string? ImageURL { get; set; }
         public int IsDelete { get; set; }
@@ -259,7 +259,7 @@ namespace eTactWeb.DOM.Models
         public int ItemCategoryCode { get; set; }
         public string Unit { get; set; }
         public string AlternateUnit { get; set; }
-        public int HSNNO { get; set; }
+        public string? HSNNO { get; set; }
         public decimal MinimumLevel { get; set; }
         public decimal MaximumLevel { get; set; }
         public int StdPacking { get; set; }
@@ -354,7 +354,7 @@ namespace eTactWeb.DOM.Models
         public string? PartCodeExists {  get; set; }
         public string? ItemNameExists {  get; set; }
         public string? Unit { get; set; }
-        public int HSNNo { get; set; }
+        public string? HSNNo { get; set; }
         public string? ItemGroup { get; set; }
         public int ItemGroupCode { get; set; }
         public int ItemCategoryCode { get; set; }
