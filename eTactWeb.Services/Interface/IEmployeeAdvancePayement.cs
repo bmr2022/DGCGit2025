@@ -12,6 +12,7 @@ namespace eTactWeb.Services.Interface
     {
         Task<ResponseResult> FillEntryId(int yearCode);
         Task<ResponseResult> FillEmpName();
+        Task<ResponseResult> FillAdvanceType();
         Task<ResponseResult> FillPreviousAdanaceLoanDetail(int empId, string requestedDate);
         Task<ResponseResult> FillFinancialEmployeeNameList();
         Task<ResponseResult> FillMgmtEmployeeNameList();
