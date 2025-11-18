@@ -49,7 +49,7 @@
             <label asp-for="DPBType" class="form-label">Order Type</label>
             <select class="form-select" asp-for="DPBType"  asp-items="Model.DPBTypeList"></select>
         </div>
-        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 DirectPurchaseBillEntryDetail">
             <label asp-for="DPBTypeServItem" class="form-label">Item Type</label>
             <select asp-for="DPBTypeServItem" class="form-select"  asp-items="@(new SelectList(Model.DPBTypeServList,"Value","Text"))">
                 <option value="0" selected>-Select-</option>
@@ -112,7 +112,7 @@
         </div>
         <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 DirectPurchaseBillCurrency">
             <label asp-for="Currency" class="form-label">Currency</label>
-            <input type="hidden" asp-for="Currency" id="hiddenCurrency" value="@Model.Currency" />
+            <input type="hidden" id="hiddenCurrency" value="@Model.Currency" />
             <select class="form-select" asp-for="Currency"  ></select>
         </div>
         <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 DirectPurchaseBillCurrency">
