@@ -44,6 +44,24 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
+        public async Task<ResponseResult> FillAdvanceType()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "AdvanceType"));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("HRSPAdvanceMain", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
         public async Task<ResponseResult> FillPreviousAdanaceLoanDetail(int empId, string requestedDate)
 		{
             var _ResponseResult = new ResponseResult();
@@ -240,7 +258,8 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@PaymentRemark", model.PaymentRemark ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@RecoveryMethod", model.RecoveryMethod ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@NoofInstallment", model.NoofInstallment));
-                SqlParams.Add(new SqlParameter("@StartRecoveryFromMonth", model.StartRecoveryFromMonth ?? string.Empty));
+                //SqlParams.Add(new SqlParameter("@StartRecoveryFromMonth", model.StartRecoveryFromMonth ?? string.Empty));
+                SqlParams.Add(new SqlParameter("@StartRecoveryFromMonth", string.Empty));
                 SqlParams.Add(new SqlParameter("@AutoDeductionFromSalaryYN", model.AutoDeductionFromSalaryYN ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@FinalRevoveryDate", finRecoveryDt == default ? string.Empty : finRecoveryDt));
                 SqlParams.Add(new SqlParameter("@ActualFinalRecoveryDate", actualFinRecoveryDt == default ? string.Empty : actualFinRecoveryDt));
@@ -249,6 +268,8 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@ApprovedBYMachine", model.ApprovedBYMachine ?? string.Empty)); 
                 SqlParams.Add(new SqlParameter("@CancelByMachine", model.CancelByMachine ?? string.Empty)); 
                 SqlParams.Add(new SqlParameter("@ActualEntryBy", model.ActualEntryBy));
+                SqlParams.Add(new SqlParameter("@AdvanceType", model.AdvanceType ?? string.Empty));
+                SqlParams.Add(new SqlParameter("@GrossSalary", model.GrossSalary));
                 SqlParams.Add(new SqlParameter("@CC", model.CC ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@UID", model.UID));
 
