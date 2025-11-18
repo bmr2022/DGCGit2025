@@ -251,6 +251,12 @@
 									</select>
 								</div>
 
+								<div class="col-md-2">
+									<label asp-for="AdvanceType" class="form-label">Advance Type</label>
+									<select asp-for="AdvanceType" class="form-select">
+										<option value="">-Select-</option>
+									</select>
+								</div>
 							</div>
 
 						</div>
@@ -577,7 +583,7 @@
 				FillEmpCode();
 				GetServerDate();
 			}
-
+			FillAdvanceType();
 			// FillMgmtEmployeeNameList();
 			// FillFinancialEmployeeNameList();
 			FillPreviousAdanaceLoanDetail();
@@ -628,6 +634,11 @@
 					$('#RecoveryMethod').rules("remove", "required");
 					$('#NoofInstallment').rules("remove", "required");
 					$('#StartRecoveryFromMonth').rules("remove", "required");
+
+					$("#StartRecoveryFromMonth").prop("required", false);
+					$("#StartRecoveryFromMonth").removeAttr("data-val-required");
+					$("#StartRecoveryFromMonth").removeAttr("data-val");
+
 					$('#AutoDeductionFromSalaryYN').rules("remove", "required");
 					$('#FinalRevoveryDate').rules("remove", "required");
 					$('#ActualFinalRecoveryDate').rules("remove", "required");
@@ -646,15 +657,15 @@
 		});
 
 		$('#submitBTN').click(function(){
-		
-			if($('#AdvanceType').val() != 'Medical'){
+
+			if($('#AdvanceType').val() != 'medical'){
 			    if($('#EmpId').val() == ''){
 					$.notify("Employee name is manadatory..!", "error");
 				}
-				else if($('#GrossSalary').val() > 0){
+				else if(parseFloat($('#GrossSalary').val()) <= 0){
 					$.notify("Gross salary more then 0..!", "error");
 				}
-				else ($('#PresentDaysInCurrYear').val() > 90){
+				else if($('#PresentDaysInCurrYear').val() >= 90){
 					$.notify("Present day in current year greter then 90..!", "error");
 				}
 			}
@@ -700,6 +711,26 @@
 					if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
 						$('#AdvanceEntryId').val(obj.Result[0].EntryId);
 						$('#AdvanceSlipNo').val(obj.Result[0].AdvanceSlipNo);
+					}
+				},
+				error: function (xhr, status, error) {
+					console.log('Failed to load Entry Id.');
+				}
+			});
+		}
+
+		function FillAdvanceType() {
+			$.ajax({
+				url: '@Url.Action("FillAdvanceType")',
+				type: 'POST',
+				success: function (data, status, xhr) {
+					var obj = $.parseJSON(data);
+					if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
+						$('#AdvanceType').empty();
+						$('#AdvanceType').append('<option value="">-Select-</option>');
+						$.each(obj.Result, function (index, Val) {
+							$('#AdvanceType').append('<option value="' + Val.AdvanceType + '">' + Val.AdvanceType + '</option>');
+						});
 					}
 				},
 				error: function (xhr, status, error) {
