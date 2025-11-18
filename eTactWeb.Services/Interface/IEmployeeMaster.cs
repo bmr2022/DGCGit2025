@@ -26,5 +26,9 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FILLAllowanceMode();
         Task<ResponseResult> GetWorkLocation();
         Task<ResponseResult> GetRefThrough();
+        Task<ResponseResult> GetReqNo(string EntryDate);
+        Task<ResponseResult> GetEmpGrade();
+        Task<ResponseResult> GetWagesType();
+        Task<ResponseResult> GetCalculatePfOn();
     }
 }

@@ -36,6 +36,8 @@ namespace eTactWeb.DOM.Models
         public string NatureOfDuties { get; set; }
         public int ProbationPeriod { get; set; }
         public string? Reference { get; set; }
+        public string? CardNo { get; set; }
+        public string? ApplicationCode { get; set; }
         public bool IsNewEmployee { get; set; }
         public IList<EmployeeMasterModel>? EmployeeMasterGrid { get; set; }
         public List<EmployeeMasterModel> AllowanceDeductionList { get; set; }
@@ -61,6 +63,7 @@ namespace eTactWeb.DOM.Models
         public string permanentAddress { get; set; }
         public string EmergencyContact { get; set; }
         public string EmergencyContactRelation { get; set; }
+        public string EmergencyContactRelationName { get; set; }
         //Salary Detail
         public string BankName { get; set; }
         public string AccountNo { get; set; }
@@ -86,6 +89,10 @@ namespace eTactWeb.DOM.Models
         public string ESIApplicable { get; set; }
         public string LateMarkingCalculationApplicable { get; set; }
         public decimal FixSalaryAmt { get; set; }
+        public decimal NetSalaryAmt { get; set; }
+        public decimal CTC { get; set; }
+        public string WagesType { get; set; }
+
 
         //Allowance/Deduction
         public string SalaryHead { get; set; }
@@ -107,6 +114,7 @@ namespace eTactWeb.DOM.Models
         public string WorkLocation{ get; set; }
         public string JObShift{ get; set; }     
         public int JObShiftId{ get; set; }     
+        public int GradeId { get; set; }     
         public string EmpGrade{ get; set; }     
         public decimal JobProbationPeriod{ get; set; }     
         public string ProbationStartDate{ get; set; }     
@@ -126,7 +134,9 @@ namespace eTactWeb.DOM.Models
         //Upload Section
         public string fileUpload { get; set; }    
         public string ThumbUnPress { get; set; }    
-        public string Aadhar { get; set; }   
+        public string AadharCard { get; set; }   
+        public string SignaturePath { get; set; }   
+        public string PhotographPath { get; set; }   
 
         //Educational Qualification
         public string Qualification { get; set; }   
@@ -168,6 +178,12 @@ namespace eTactWeb.DOM.Models
         public int Exp_SrNo { get; set; }   
         public string Edu_GridMode { get; set; }   
         public string Exp_GridMode { get; set; }   
+        //Other Detail
+        public string EmpReqNo { get; set; }   
+        public int EmpReqYearcode { get; set; }   
+        public int EmpReqEntryId { get; set; }   
+        public string EmpReqDate { get; set; }   
+        public int ThroughId { get; set; }   
 
 
     }
