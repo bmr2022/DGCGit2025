@@ -1898,7 +1898,7 @@ namespace eTactWeb.Controllers
                         ItemText = itemName,
                         ItemCode = itemCodeValue,
                         PartCode = partcode,
-                        HSNNo = Convert.ToInt32(HsnNo.ToString()),
+                        HSNNo = string.IsNullOrEmpty(HsnNo?.ToString()) ? 0 : Convert.ToInt32(HsnNo),
                         DPBQty = qty,
                         BillQty = qty,
                         Unit = Unit.ToString(),
