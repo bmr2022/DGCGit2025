@@ -141,6 +141,11 @@
 									<label asp-for="BasicSalary" class="form-label">Basic Salary</label>
 									<input asp-for="BasicSalary" class="form-control" readonly/>
 								</div>
+								
+								<div class="col-md-1">
+									<label asp-for="GrossSalary" class="form-label">Gross Salary</label>
+									<input asp-for="GrossSalary" class="form-control" readonly />
+								</div>
 
 								<div class="col-md-1">
 									<label asp-for="NetSalary" class="form-label">Net Salary</label>
@@ -641,7 +646,19 @@
 		});
 
 		$('#submitBTN').click(function(){
-			if(($('#EmpId').val() == $('#FinanceApprovalEmpid').val()) || ($('#EmpCode').val() == $('#FinanceApprovalEmpCode').val())){
+		
+			if($('#AdvanceType').val() != 'Medical'){
+			    if($('#EmpId').val() == ''){
+					$.notify("Employee name is manadatory..!", "error");
+				}
+				else if($('#GrossSalary').val() > 0){
+					$.notify("Gross salary more then 0..!", "error");
+				}
+				else ($('#PresentDaysInCurrYear').val() > 90){
+					$.notify("Present day in current year greter then 90..!", "error");
+				}
+			}
+			else if(($('#EmpId').val() == $('#FinanceApprovalEmpid').val()) || ($('#EmpCode').val() == $('#FinanceApprovalEmpCode').val())){
 				$.notify("Employee and Financial approved employee can not be same..!", "error");
 			}
 			else if($('#EmpId').val() == $('#MgrApprovedbyEmpid').val() || ($('#EmpCode').val() == $('#MgrApprovedbyEmpCode').val())){
@@ -650,14 +667,19 @@
 			else if($('#EmpId').val() == $('#HRApprovedbyEmpid').val() || ($('#EmpCode').val() == $('#HRApprovedbyEmpCode').val())){
 				$.notify("Employee and HR approved employee can not be same..!", "error");
 			}
-			else if($('#FinalRevoveryDate').val() >= $('#StartRecoveryFromMonth').val()){
-				$.notify("Final recovery date must be greter then Start recovery date..!", "error");
+			else if($('#FinalRevoveryDate').val() != '' && $('#StartRecoveryFromMonth').val() != ''){
+				if($('#FinalRevoveryDate').val() >= $('#StartRecoveryFromMonth').val()){
+					$.notify("Final recovery date must be greter then Start recovery date..!", "error");
+				}
 			}
 			else if (parseFloat($('#RequestedAmount').val()) > parseFloat($('#BasicSalary').val())) {
 				if ($('#MgrApprovedbyEmpid').val() == '' || $('#FinanceApprovalEmpid').val() == '') {
 					$.notify("MgrApprovedby and FinanceApprovalBy are mandatory..!", "error");
 				}
-			} 
+			}
+			else if(parseFloat($('#PreviousPendAdvanceAmt').val()) > (parseFloat($('#GrossSalary').val()) * 3)){
+				$.notify("Advance amount cannot more then 3 times of Gross salary..!", "error");
+			}
 			else if (parseFloat($('#ApprovedAmount').val()) > parseFloat($('#RequestedAmount').val())) {
 				$.notify("Approved amount cannot be greter then requested amount..!", "error");
 			}
@@ -893,6 +915,7 @@
 						$('#DeptName').val(obj.Result[0].DeptName);
 						$('#DepId').val(obj.Result[0].deptid);
 						$('#BasicSalary').val(obj.Result[0].GrossSalary);
+						$('#GrossSalary').val(obj.Result[0].GrossSalary);
 						$('#NetSalary').val(obj.Result[0].Netsalary);
 					}
 				},
@@ -920,7 +943,7 @@
 						// $('#MgrApprovaldate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
 						$('#ActualFinalRecoveryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
 						$('#LastUpdationDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
-						$('#StartRecoveryFromMonth').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+						// $('#StartRecoveryFromMonth').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
 						// $('#PresentDaysinCurrMonth').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
 						// $('#PresentDaysInCurrYear').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
 						$('#EntryDate').datepicker('option', 'minDate', FinFromDate);
