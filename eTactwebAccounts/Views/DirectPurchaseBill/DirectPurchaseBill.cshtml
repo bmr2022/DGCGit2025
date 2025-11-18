@@ -392,6 +392,50 @@
 </div>
 
 
+<div class="modal fade" id="PasswordAllowPopup" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+     aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="staticBackdropLabel">Confirmation </h3>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row g-2 gx-3">
+                            <div class="card">
+                                <div class="card-body overflow-auto pb-0">
+                                    <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-xs-12">
+                                        <div class="d-flex align-items-center">
+                                            <h6 class="mb-0 me-2">Do You Want Save&Print or Save & E-way Bill?</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="progress my-2" style="height: 4px;">
+                        <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" id="btnClose">Save</button>
+                    <button type="button" class="btn btn-danger" id="btnSaveAndDashBoard">Save & DashBoard</button>
+                    <a href="#" class="btn btn-primary" id="btnPrint">
+                        <i class="fa fa-print"></i> Save & Print
+                    </a>
+                    <a href="#" class="btn btn-primary" id="btnPrintEmail">
+                        <i class="fa fa-print"></i> Save & Print & Email
+                    </a>
+                    <button type="button" class="btn btn-danger" id="btnEwayBill">Save & EWay Bill</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 @section Scripts
 {
     <script>
@@ -1831,30 +1875,126 @@
             return true;
         }
 
-        $('form').submit(function (event) {
-            //var poEffDate = $(this).val();
-            //var poDate = $('#PODate').val();
-            //if (poEffDate < poDate) {
-            //    $.notify("PO EFF Date cannot be less than PO Date", "error");
-            //    $('#WEF').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-            //}
-            //else {
-            //    $("form").submit();
-            //}
-            $('#PartCode').prop('selectedIndex', 1).trigger("change");
+        // $('form').submit(function (event) {
+        //     //var poEffDate = $(this).val();
+        //     //var poDate = $('#PODate').val();
+        //     //if (poEffDate < poDate) {
+        //     //    $.notify("PO EFF Date cannot be less than PO Date", "error");
+        //     //    $('#WEF').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+        //     //}
+        //     //else {
+        //     //    $("form").submit();
+        //     //}
+        //     $('#PartCode').prop('selectedIndex', 1).trigger("change");
 
-            $('.btn-outline-primary').prop('disabled', true).html('Validating Form... <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
-            if (!ValidateForm()) {
-                event.preventDefault(); // Prevent the form from submitting via the browser
-                $('.btn-outline-primary').prop('disabled', false).html('<i class="fa-solid fa-chevron-circle-right fa-fw fa-lg"></i> SUBMIT');
-            }
-            else {
-                //event.stopPropagation(); // Prevent calling function inside this function.
-                var form = $(this);
-                var url = form.attr('action'); //get submit url [replace url here if desired]
-                $("form :input").prop("disabled", false);
-            }
+        //     $('.btn-outline-primary').prop('disabled', true).html('Validating Form... <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
+        //     if (!ValidateForm()) {
+        //         event.preventDefault(); // Prevent the form from submitting via the browser
+        //         $('.btn-outline-primary').prop('disabled', false).html('<i class="fa-solid fa-chevron-circle-right fa-fw fa-lg"></i> SUBMIT');
+        //     }
+        //     else {
+        //         //event.stopPropagation(); // Prevent calling function inside this function.
+        //         var form = $(this);
+        //         var url = form.attr('action'); //get submit url [replace url here if desired]
+        //         $("form :input").prop("disabled", false);
+        //     }
+        // });
+
+        // $('#submitBTN').click(function (e) {
+        //     e.preventDefault();
+        //     $('#PasswordAllowPopup').modal("show");
+
+        // });
+
+
+        // When user clicks "Print"
+        $('#btnPrint').click(function () {
+            const printWindow = window.open('', '_blank'); // Open blank tab first (browser-safe)
+
+            $('#PasswordAllowPopup').modal("hide");
+
+            setTimeout(() => {
+                submitForm(true, false, false, printWindow, null, false, false); // Send true and window object
+            }, 300);
         });
+        $('#btnSaveAndDashBoard').click(function () {
+            const printWindow = window.open('', '_blank'); // Open blank tab first (browser-safe)
+
+            submitForm(false, false, false, null, null, true, false);
+            $('#PasswordAllowPopup').modal("hide");
+        });
+        $('#btnPrintEmail').click(function () {
+            const printWindow = window.open('', '_blank'); // Open blank tab first (browser-safe)
+            const sendWindow = window.open('', '_blank'); // Open blank tab first (browser-safe)
+
+
+            $('#PasswordAllowPopup').modal("hide");
+
+            setTimeout(() => {
+                submitForm(true, true, false, printWindow, sendWindow, false, false); // Send true and window object
+            }, 300);
+        });
+        
+        
+        $('#btnClose').click(function () {
+            $('#PasswordAllowPopup').modal("hide");
+
+            setTimeout(() => {
+                submitForm(false, false, false, null, null, false, false); // no print
+            }, 300);
+        });
+
+        function submitForm(shouldPrint, shouldSend, ShouldEway, printWindow, sendWindow, GoToDashBoard, Partialview) {
+            $('#ShouldPrint').val(shouldPrint); // Set hidden input
+            $('#ShouldEway').val(ShouldEway); // Set hidden input
+            const formData = $('form').serialize(); // Properly serialize full form
+            var Email = $('#Email').val();
+            var CC1 = $('#CC1').val();
+            var CC2 = $('#CC2').val();
+            var CC3 = $('#CC3').val();
+            var ChallanNo = $('#ChallanNo').val();
+
+            $.ajax({
+                type: "POST",
+                url: $('form').attr('action'),
+                data: formData,
+                dataType: 'json', // Expect JSON response
+                success: function (res) {
+                    console.log("Server response:", res);
+
+                    if (res && res.status === "Success") {
+                        if (GoToDashBoard) {
+                            window.location.href = '/DirectPurchaseBill/DashBoard?Flag=True';
+                        } else {
+                            if (shouldPrint && res.entryId && res.yearCode && printWindow && !shouldSend) {
+                                const printUrl = '/NRGP/PrintReport?EntryId=' + res.entryId + '&YearCode=' + res.yearCode;
+                                printWindow.location.href = printUrl;
+                            }
+                            else if (Partialview) {
+                                window.location.href = '/NRGP/IssueChallanOnCounter?ID=' + res.entryId + '&Mode=U&YC=' + res.yearCode;
+
+                            }
+                            else if (shouldPrint && shouldSend) {
+                                const printUrl = '/NRGP/PrintReport?EntryId=' + res.entryId + '&YearCode=' + res.yearCode;
+                                const sendUrl = '/NRGP/SendReport?EntryId=' + res.entryId + '&YearCode=' + res.yearCode + '&EmailTo=' + Email + '&CC1=' + CC1 + '&CC2=' + CC2 + '&CC3=' + CC3 + '&Challanno=' + ChallanNo;
+                                printWindow.location.href = printUrl;
+                                /* sendWindow.location.href = sendUrl; */
+                                $.get(sendUrl);
+
+                            }
+
+                            window.location.href = '/DirectPurchaseBill/DirectPurchaseBill';
+                        }
+                    } else {
+                        alert(res.message || "Something went wrong.");
+                    }
+                },
+                error: function (xhr) {
+                    console.error("Error occurred:", xhr.responseText);
+                    alert("Save failed.");
+                }
+            });
+        }
 
 
         $('#PODate,#InvDate,#ScheduleDate,#AmmEffDate,#AdjDueDate,#AdjAgnstVouchDate,#AdjPODate').on('keydown', function (e) {
@@ -2789,7 +2929,7 @@
                         var obj = $.parseJSON(result);
                                  var message = obj.Result.Table[0].Status;
                         if (obj.Result.Table[0].Status == 'Success') {
-                            $('form').submit();
+                            $('#PasswordAllowPopup').modal("show");
                         }
                         else {
                              $.notify(message, "error");

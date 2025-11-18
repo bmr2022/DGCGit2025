@@ -380,6 +380,7 @@ namespace eTactWeb.Controllers
                             HttpContext.Session.Remove("KeyTaxGrid");
                             HttpContext.Session.Remove("KeyTDSGrid");
                             HttpContext.Session.Remove("DirectPurchaseBill");
+                            return Json(new { status = "Success" });
                         }
                         else if (Result.StatusText == "Inserted Successfully" && Result.StatusCode == HttpStatusCode.Accepted)
                         {
@@ -388,6 +389,7 @@ namespace eTactWeb.Controllers
                             HttpContext.Session.Remove("KeyTaxGrid");
                             HttpContext.Session.Remove("KeyTDSGrid");
                             HttpContext.Session.Remove("DirectPurchaseBill");
+                            return Json(new { status = "Success" });
                         }
                         else if (Result.StatusText == "Updated Successfully" && Result.StatusCode == HttpStatusCode.Accepted)
                         {
@@ -396,7 +398,8 @@ namespace eTactWeb.Controllers
                             HttpContext.Session.Remove("KeyTaxGrid");
                             HttpContext.Session.Remove("KeyTDSGrid");
                             HttpContext.Session.Remove("DirectPurchaseBill");
-                            return RedirectToAction(nameof(DirectPurchaseBill));
+                            //return RedirectToAction(nameof(DirectPurchaseBill));
+                            return Json(new { status = "Success" });
                         }
                         else if (Result.StatusText == "Deleted Successfully" && Result.StatusCode == HttpStatusCode.Accepted)
                         {
@@ -1809,7 +1812,7 @@ namespace eTactWeb.Controllers
                     var itemName = worksheet.Cells[row, 2].Value?.ToString()?.Trim();
                     var rateValue = worksheet.Cells[row, 3].Value?.ToString();
                     var qtyValue = worksheet.Cells[row, 4].Value?.ToString();
-                    var docTypeText = worksheet.Cells[row, 7].Value?.ToString();
+                    var docTypeText ="Purchase Account";
                     var locationValue = worksheet.Cells[row, 6].Value?.ToString();
 
                     // 🔹 Basic Required Field Validation
