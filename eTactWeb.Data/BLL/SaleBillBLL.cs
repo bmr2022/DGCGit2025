@@ -217,6 +217,15 @@ namespace eTactWeb.Data.BLL
         {
             return await _SaleBillDAL.GetMaxSaleInvoiceEntryDate(YearCode);
         }
+        public async Task<ResponseResult> GetItemDetail(string PartCode)
+        {
+            return await _SaleBillDAL.GetItemDetail(PartCode);
+        }
+        public async Task<ResponseResult> GetStoreId(string storename)
+        {
+            return await _SaleBillDAL.GetStoreId(storename);
+        }
+
         public async Task<ResponseResult> GetFeatureOption()
         {
             return await _SaleBillDAL.GetFeatureOption();

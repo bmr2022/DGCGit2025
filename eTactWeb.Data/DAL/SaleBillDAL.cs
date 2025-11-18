@@ -74,7 +74,48 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
+    public async Task<ResponseResult> GetItemDetail(string Partcode)
+    {
+        var _ResponseResult = new ResponseResult();
 
+        try
+        {
+            var SqlParams = new List<dynamic>();
+
+            SqlParams.Add(new SqlParameter("@flag", "GetItemDetail"));
+            SqlParams.Add(new SqlParameter("@partcode", Partcode));
+            _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_DirectPurchaseBillMainDetail", SqlParams);
+        }
+        catch (Exception ex)
+        {
+            dynamic Error = new ExpandoObject();
+            Error.Message = ex.Message;
+            Error.Source = ex.Source;
+        }
+
+        return _ResponseResult;
+    }
+        public async Task<ResponseResult> GetStoreId(string storename)
+        {
+            var _ResponseResult = new ResponseResult();
+
+            try
+            {
+                var SqlParams = new List<dynamic>();
+
+                SqlParams.Add(new SqlParameter("@Flag", "getstoreid"));
+                SqlParams.Add(new SqlParameter("@StoreName", storename));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_GetDropDownList", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
         public async Task<ResponseResult> AutoFillitem(string Flag, string SearchPartCode)
         {
             var Result = new ResponseResult();

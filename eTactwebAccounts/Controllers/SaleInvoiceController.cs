@@ -31,6 +31,7 @@ using DocumentFormat.OpenXml.Vml.Office;
 using OfficeOpenXml.Style;
 using OfficeOpenXml;
 using System.Drawing;
+using System.Security.Cryptography.X509Certificates;
 
 
 
@@ -828,6 +829,121 @@ namespace eTactWeb.Controllers
             catch (Exception ex)
             {
                 return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+
+
+        public async Task<JsonResult> GetItemDetail(string PartCode)
+        {
+            var JSON = await _SaleBill.GetItemDetail(PartCode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        [HttpPost]
+        public async Task<IActionResult> UploadExcel(IFormFile excelFile)
+        {
+            if (excelFile == null || excelFile.Length == 0)
+                return BadRequest("Please upload Excel file!");
+
+            try
+            {
+                List<SaleBillDetail> itemList = new List<SaleBillDetail>();
+
+                using (var stream = new MemoryStream())
+                {
+                    await excelFile.CopyToAsync(stream);
+
+                    // ✅ FIX: Set EPPlus License
+                    ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+                    using (var package = new ExcelPackage(stream))
+                    {
+                        ExcelWorksheet worksheet = package.Workbook.Worksheets.FirstOrDefault();
+                        if (worksheet == null)
+                            return BadRequest("Excel sheet is empty!");
+
+                        int rowCount = worksheet.Dimension.Rows;
+
+                        // Loop rows (skip header)
+                        for (int row = 2; row <= rowCount; row++)
+                        {
+                            string partCode = worksheet.Cells[row, 1]?.Value?.ToString()?.Trim();
+                            string rateStr = worksheet.Cells[row, 2]?.Value?.ToString()?.Trim();
+                            string qtyStr = worksheet.Cells[row, 3]?.Value?.ToString()?.Trim();
+                            string disStr = worksheet.Cells[row, 4]?.Value?.ToString()?.Trim();
+                            string storename = worksheet.Cells[row, 5].Value.ToString();
+
+                            if (string.IsNullOrWhiteSpace(partCode))
+                                return BadRequest($"Part Code missing at row {row}");
+
+                            var itemData = await _SaleBill.AutoFillitem("AutoFillPartCode", partCode);
+
+                            if (itemData == null || itemData.Result == null)
+                                return BadRequest($"Partcode not available: {partCode}");
+
+                            // Convert the Result object to JObject
+                            var json = JsonConvert.SerializeObject(itemData);
+                            var obj = JObject.Parse(json);
+
+                            var res = obj["Result"] is JArray a ? a[0] : obj["Result"];
+
+                            string itemName = res["ItemName"]?.ToString();
+                            int itemCode = Convert.ToInt32(res["Item_Code"]);
+
+                            var storedata = await _SaleBill.GetStoreId(storename);
+                            var jsonstore = JsonConvert.SerializeObject(storedata);
+                            var objstore = JObject.Parse(jsonstore);
+                            var resStore = objstore["Result"] is JArray b ? b[0] : objstore["Result"];
+                            var storeid = resStore["storeid"]?.ToString();
+
+                            var GetItem = GetItemDetail(worksheet.Cells[row, 1].Value.ToString());
+
+                            JObject Jsonstring = JObject.Parse(GetItem.Result.Value.ToString());
+                            var Unit = Jsonstring["Result"][0]["Unit"];
+                            var HsnNo = Jsonstring["Result"][0]["HsnNo"];
+
+                            decimal rate = string.IsNullOrWhiteSpace(rateStr) ? 0 : Convert.ToDecimal(rateStr);
+                            decimal qty = string.IsNullOrWhiteSpace(qtyStr) ? 0 : Convert.ToDecimal(qtyStr);
+                            decimal dis = string.IsNullOrWhiteSpace(disStr) ? 0 : Convert.ToDecimal(disStr);
+
+                            decimal basicAmt = rate * qty;
+                            decimal disAmt = (basicAmt * dis) / 100;
+                            decimal netAmt = basicAmt - disAmt;
+
+                            itemList.Add(new SaleBillDetail
+                            {
+                                PartCode = partCode,
+                                ItemName = itemName,
+                                ItemCode=itemCode,
+                                Unit = Unit.ToString(),
+                                HSNNo = Convert.ToInt32(HsnNo.ToString()),
+                                Qty = (float)qty,
+                                Rate = (float)rate,
+                                DiscountPer = (float)dis,
+                                Amount = basicAmt,
+                                DiscountAmt = disAmt,
+                                ItemNetAmount = netAmt,
+                                StoreName = storename,
+                                StoreId = Convert.ToInt32(storeid.ToString()),
+                                Batchno="1",
+                                Uniquebatchno= "1"
+                            });
+                        }
+                    }
+                }
+
+                // Bind data to partial view
+                SaleBillModel sbModel = new SaleBillModel();
+                sbModel.ItemDetailGrid = itemList;
+                sbModel.saleBillDetails = itemList;
+                HttpContext.Session.SetString("KeySaleBillGrid", JsonConvert.SerializeObject(sbModel.ItemDetailGrid));
+                HttpContext.Session.SetString("SaleBillModel", JsonConvert.SerializeObject(sbModel));
+                return PartialView("_SaleBillGrid", sbModel);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Error while uploading Excel: " + ex.Message);
             }
         }
 
