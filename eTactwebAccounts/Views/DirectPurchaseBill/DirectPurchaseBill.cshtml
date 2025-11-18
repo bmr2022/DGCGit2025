@@ -1295,6 +1295,7 @@
             formData.append("SchYearCode", 0);
             formData.append("Flag", "DirectPurchaseBill");
             formData.append("Currency", $('#Currency').find(":selected").text());
+            formData.append("docTypeName", $('#docTypeId').find(":selected").text().trim());
             formData.append("excelFile", fileInput.prop("files")[0]);
 
 
@@ -1573,7 +1574,7 @@
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         $('#Currency').empty();
-                        $('#Currency').append("<option value='' disabled>-Select-</option>");
+                        $('#Currency').append("<option value='' >-Select-</option>");
                         $.each(obj.Result.Table, function (index, val) {
                             $('#Currency').append("<option value=" + val.entry_id + " selected>" + val.Currency + "</option>");
                               if (val.IsDefault === "Y") {

@@ -1237,7 +1237,7 @@ public class DirectPurchaseBillDAL
             SqlParams.Add(new SqlParameter("@PaymentTerm", model.PaymentTerms));
             SqlParams.Add(new SqlParameter("@Transporter", model.Transport));
             SqlParams.Add(new SqlParameter("@Vehicleno", model.VehicleNo));
-            SqlParams.Add(new SqlParameter("@CurrencyId", Convert.ToInt32(model.Currency)));
+            SqlParams.Add(new SqlParameter("@CurrencyId", (model.Currency)));
             SqlParams.Add(new SqlParameter("@ExchangeRate", model.ExchangeRate));
             SqlParams.Add(new SqlParameter("@ConversionFactor", model.ExchangeRate));
             SqlParams.Add(new SqlParameter("@BillAmt", (float)Math.Round(model.ItemNetAmount, 2)));
