@@ -1,0 +1,217 @@
+﻿@* @model eTactWeb.DOM.Models.SaleBillDashboard *@
+
+<style>
+
+    #container {
+        display: flex;
+    }
+
+        #container > div {
+            flex: 1;
+        }
+
+    .salebilltable {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .salebilltableHead th {
+        background-color: #127387;
+        position: sticky;
+        top: 0;
+        height: 30px;
+        z-index: 1;
+        font-size: 13px;
+    }
+
+
+    .salebilltable tbody td {
+        min-hight: 40px;
+    }
+
+
+    table tfoot {
+        position: sticky;
+        bottom: 0;
+        background: linear-gradient(180deg, #b3e0f5, #80d4f0) !important;
+        color: #222;
+        z-index: 1; /* ensures it's above table rows */
+        box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+        height: 30px;
+    }
+
+    table tbody td {
+        font-size: 13px;
+        font-weight: normal !important;
+        color: #222;
+        /*     /* padding: 6px 8px; */
+    }
+
+    table tfoot td {
+        font-weight: normal;
+        border-top: 2px solid #dee2e6;
+        font-size: 13px;
+        color: #222;
+    }
+</style>
+
+    <div style="overflow-x: auto; overflow-y: auto; max-height: 500px;">
+        @* <table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0 salebilltable" id="SBDashboardGrid"> *@
+        @*     <thead class="bg-gradient card-headerBG text-light salebilltableHead"> *@
+        @*         <tr> *@
+        @*             <th>Sr#</th> *@
+        @*             <th>Action</th> *@
+        @*             <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sale Bill No</th> *@
+        @*             <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sale BillDate</th> *@
+        @*             <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Customer Name</th> *@
+        @*             <th data-columnno="4" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>GST No</th> *@
+        @*             <th data-columnno="12" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bill Amt</th> *@
+        @*             <th data-columnno="13" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Taxable</th> *@
+        @*             <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>INVNetAmt</th> *@
+        @*             <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Tax Category</th> *@
+        @*             <th data-columnno="5" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Supply Type</th> *@
+        @*             <th data-columnno="6" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>State Name Supply</th> *@
+        @*             <th data-columnno="7" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>City Name Supply</th> *@
+        @*             <th data-columnno="8" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Consignee Name</th> *@
+        @*             <th data-columnno="9" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Consignee Address</th> *@
+        @*             <th data-columnno="10" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Payment Term</th> *@
+        @*             <th data-columnno="11" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Currency</th> *@
+        @*             <th data-columnno="14" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>GST Amount</th> *@
+        @*             <th data-columnno="15" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RoundType</th> *@
+        @*             <th data-columnno="16" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RountOffAmt</th> *@
+        @*             <th data-columnno="18" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>EwayBillNo</th> *@
+        @*             <th data-columnno="19" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>EInvNo</th> *@
+        @*             <th data-columnno="20" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>EinvGenerated</th> *@
+        @*             <th data-columnno="21" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>TransporterdocNo</th> *@
+        @*             <th data-columnno="22" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>TransportModeBYRoadAIR</th> *@
+        @*             <th data-columnno="23" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>DispatchTo</th> *@
+        @*             <th data-columnno="24" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>DispatchThrough</th> *@
+        @*             <th data-columnno="25" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ExchangeRate</th> *@
+        @*             <th data-columnno="26" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>currExchangeRate</th> *@
+        @*             <th data-columnno="27" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SaleBillEntryId</th> *@
+        @*             <th data-columnno="28" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SaleBillYearCode</th> *@
+        @*             <th data-columnno="29" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SaleBillEntryDate</th> *@
+        @*             <th data-columnno="30" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Shippingdate</th> *@
+        @*             <th data-columnno="31" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>DistanceKM</th> *@
+        @*             <th data-columnno="32" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>vehicleNo</th> *@
+        @*             <th data-columnno="33" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>TransporterName</th> *@
+        @*             <th data-columnno="34" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>DomesticExportNEPZ</th> *@
+        @*             <th data-columnno="35" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail "><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PaymentCreditDay</th> *@
+        @*             <th data-columnno="36" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ReceivedAmt</th> *@
+        @*             <th data-columnno="37" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>pendAmount</th> *@
+        @*             <th data-columnno="38" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>CancelBill</th> *@
+        @*             <th data-columnno="39" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Canceldate</th> *@
+        @*             <th data-columnno="40" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>CancelBy</th> *@
+        @*             <th data-columnno="41" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Cancelreason</th> *@
+        @*             <th data-columnno="42" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BankName</th> *@
+        @*             <th data-columnno="43" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>FreightPaid</th> *@
+        @*             <th data-columnno="44" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>DispatchDelayReason</th> *@
+        @*             <th data-columnno="45" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AttachmentFilePath1</th> *@
+        @*             <th data-columnno="46" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AttachmentFilePath2</th> *@
+        @*             <th data-columnno="47" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AttachmentFilePath3</th> *@
+        @*             <th data-columnno="48" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>DocketNo</th> *@
+        @*             <th data-columnno="49" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>DispatchDelayreson</th> *@
+        @*             <th data-columnno="50" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Commodity</th> *@
+        @*             <th data-columnno="51" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>TypeItemServAssets</th> *@
+        @*             <th data-columnno="52" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SaleBillJobwork</th> *@
+        @*             <th data-columnno="53" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PerformaInvNo</th> *@
+        @*             <th data-columnno="54" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PerformaInvDate</th> *@
+        @*             <th data-columnno="55" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PerformaInvYearCode</th> *@
+        @*             <th data-columnno="56" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BILLAgainstWarrenty</th> *@
+        @*             <th data-columnno="57" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ExportInvoiceNo</th> *@
+        @*             <th data-columnno="58" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>InvoiceTime</th> *@
+        @*             <th data-columnno="59" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RemovalDate</th> *@
+        @*             <th data-columnno="60" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RemovalTime</th> *@
+        @*             <th data-columnno="61" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>EntryFreezToAccounts</th> *@
+        @*             <th data-columnno="62" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BalanceSheetClosed</th> *@
+        @*             <th data-columnno="63" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SaleQuotNo</th> *@
+        @*             <th data-columnno="64" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SaleQuotDate</th> *@
+        @*             <th data-columnno="65" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>salesperson_name</th> *@
+        @*             <th data-columnno="66" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SalesPersonMobile</th> *@
+        @*             <th data-columnno="67" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Remark</th> *@
+        @*             <th data-columnno="68" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Approved</th> *@
+        @*             <th data-columnno="69" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ApprovDate</th> *@
+        @*             <th data-columnno="70" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ApprovedBy</th> *@
+        @*             <th data-columnno="71" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Cust Address</th> *@
+        @*             <th data-columnno="72" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Last Updated By</th> *@
+        @*             <th data-columnno="73" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Last Updated Date</th> *@
+        @*             <th data-columnno="74" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Branch</th> *@
+        @*             <th data-columnno="75" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>UID</th> *@
+        @*             <th data-columnno="76" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Actual Entry Name</th> *@
+        @*             <th data-columnno="77" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Actual Entry Date</th> *@
+        @*             <th data-columnno="78" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Entry By MachineName</th> *@
+
+        @*         </tr> *@
+        @*     </thead> *@
+        @*     <tbody id="divSBDashboardGrid"> *@
+        @*     </tbody> *@
+           
+        @* </table> *@
+    </div>
+}
+
+<style>
+    #container {
+        display: flex;
+    }
+
+        #container > div {
+            flex: 1;
+            /* margin-right: 10px;
+            }
+
+        .pagination {
+            display: flex;
+            justify - content: center;
+            align - items: center;
+            list - style: none;
+            padding: 0;
+            margin: 20px auto;
+            gap: 5px; /* Space between buttons */
+            white - space: nowrap; /* Keeps it in a single line */
+        }
+
+    /*     .fa-stack {
+            display: inline-block;
+            height: 1.5em;
+            line-height: 2em;
+            position: relative;
+            vertical-align: middle;
+            width: 1.9em;
+        } */
+    .page - item {
+        display: inline - block;
+    }
+
+    .page - link {
+        display: flex;
+        align - items: center;
+        justify - content: center;
+        width: 40px;
+        height: 40px;
+        text - decoration: none;
+        color: black;
+        border: 1px solid #ddd;
+        font - size: 16px;
+        background - color: white;
+        border - radius: 5px;
+        transition: background 0.3s;
+    }
+
+    .page - item.active.page - link {
+        background - color: #4CAF50;
+        color: white;
+        border: 1px solid #4CAF50;
+    }
+
+    .page - item.disabled.page - link {
+        background - color: #f0f0f0;
+        color: #999;
+        cursor: default;
+    }
+
+    .page - link: hover: not(.disabled): not(.active) {
+        background - color: #ddd;
+    }
+</style>
+
