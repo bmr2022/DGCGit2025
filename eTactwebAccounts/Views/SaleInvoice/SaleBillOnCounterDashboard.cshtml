@@ -828,7 +828,8 @@
                 'domesticExportNEPZ': $('#DomesticExportNEPZ').val(),
                 'fromDate': $('#FinFromDate').val(),
                 'toDate': $('#FinToDate').val(),
-                // 'SubInvoicetype': $('#SubInvoicetype').val(),
+                'redirectFrom': '@ViewBag.RedirectFrom',
+                        // 'SubInvoicetype': $('#SubInvoicetype').val(),
                 'SaleBillEntryFrom': "EntryFromCounter"
                 // 'SubInvoicetype': $('#SubInvoicetype').val() ? $('#SubInvoicetype').val().join(',') : ''
             };
@@ -887,7 +888,8 @@
                 fromDate: $('#FinFromDate').val(),
                 toDate: $('#FinToDate').val(),
                 SaleBillEntryFrom: "EntryFromCounter",
-                SubInvoicetype: $('#SubInvoicetype').val() ? $('#SubInvoicetype').val().join(',') : ''
+                redirectFrom: '@ViewBag.RedirectFrom',
+                        SubInvoicetype: $('#SubInvoicetype').val() ? $('#SubInvoicetype').val().join(',') : ''
             };
 
             // Add new properties
