@@ -96,20 +96,38 @@
                                     <!-- Reset button (frontend) -->
                                     <button type="button" id="btnReset" class="btn btn-secondary">Reset</button>
 
+                                    <button type="button" id="muldelete" class="btn btn-danger">Multiple Delete</button>
+
+
                                     <!-- Update Existing Slip No (frontend now, backend later) -->
                                     <button type="button" id="btnUpdateExisting" class="btn btn-link" data-action="UpdateExistingSlipNo">Update Existing Slip No</button>
                                 </div>
 
-                            </div>
-                        </div>
-                    </div>
+
+                                <div class="card-body d-none" id="saleBillContainer">
+                                    <div class="card overflow-auto">
+                                        <div class="card-body" id="salebillDashboardGrid">
+                                            <a asp-controller="SaleInvoice"
+                                               asp-action="SaleBillOnCounterDashboard"
+                                               asp-route-redirectFrom="admindelete">
+                                                Open Dashboard
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
 
 
-                </div>
-    </form>
+                            </div> 
+                        </div> 
+                    </div> 
+                </div> 
+            </div> 
+        </div> 
+
+    </form> 
 </div>
-
-
+@section Scripts
+{
 <script>
 
         function FillFormName() {
@@ -292,9 +310,27 @@
                     autoHideDelay: 4000
                 });
             }
+
+        $("#muldelete").click(function () {
+                let formName = $("#FormName").val();
+
+                if (!formName) {
+                    $.notify("Select Form first!", { className: "error", globalPosition: "top center" });
+                    return;
+                }
+
+                if (formName.toLowerCase() === "salebillmain") {
+                    // Navigate automatically to dashboard with parameter
+                    const redirectUrl = "/SaleInvoice/SaleBillOnCounterDashboard?redirectFrom=admindelete";
+                    window.location.href = redirectUrl;
+                } else {
+                    $.notify("Multiple delete is only available for Sale Bill form!", { className: "error", globalPosition: "top center" });
+                }
+            });
     });
 
 </script>
+}
 <style>
     /* Make readonly inputs look like plain info */
     input.form-control-plaintext {
