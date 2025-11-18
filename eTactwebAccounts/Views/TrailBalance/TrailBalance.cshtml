@@ -607,6 +607,27 @@
                 case 'TRAILDETAIL':
 
                     switch (clickname) {
+                        case 'GroupClick':
+                            DrilldownManager.saveFormFilters("TRAILDETAIL", {
+                                FromDate: $("#FromDate").val(),
+                                ToDate: $("#ToDate").val(),
+                                ReportType: $("#ReportType").val(),
+                                TrailBalanceGroupName: $("#TrailBalanceGroupName").val(),
+                                ParentGroupName: $("#ParentGroupName").val(),
+                                AccountName: $("#AccountName").val()
+                            });
+
+                            DrilldownManager.push({
+                               currentForm: "TRAILDETAIL",
+                                nextForm: "TRAILDETAIL",
+                                url: window.location.href
+                            });
+
+                            $('#TrailBalanceGroupName').val(groupname).trigger('change');
+                            $('#ReportType').val('TRAILDETAIL').trigger('change');
+                            $('#BackButton').show();
+                            break;
+
                         case 'ParentClick':
                             DrilldownManager.saveFormFilters("TRAILDETAIL", {
                                 FromDate: $("#FromDate").val(),
@@ -649,11 +670,14 @@
                                 ReportType: "MonthlySummary"
                             });
 
-                            DrilldownManager.push({
+                            DrilldownManager.pushNavigation({
                                 currentForm: "TRAILDETAIL",
                                 nextForm: "MonthlySummary",
+                                isRoot: false,
                                 url: window.location.href
                             });
+
+                            sessionStorage.setItem("DRILL_IS_REDIRECT_TO_MONTHLYSUMMARY", "1");
 
                             window.location.href = `/${controller}/${action}`;
                             break;
