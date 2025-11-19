@@ -1025,6 +1025,7 @@ public class DirectPurchaseBillDAL
                             CostCenter = (!string.IsNullOrEmpty(row["CostCenterId"].ToString())) ? Convert.ToInt32(row["CostCenterId"]) : 0,
                             CostCenterName = row["CostCenterName"].ToString(),
                             ItemLocation = row["ItemLocation"].ToString(),
+                            GroupName = row["GroupName"].ToString(),
                         });
                     }
 
