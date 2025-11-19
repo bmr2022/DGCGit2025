@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Data;
+using System.Net;
 using eTactWeb.Data.Common;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
@@ -135,12 +136,12 @@ namespace eTactwebHR.Controllers
                         if (Result.StatusText == "Success")
                         {
                             TempData["Message"] = "Vendor created successfully!";
-                            return RedirectToAction("Index", "VendorUser");
+                            return RedirectToAction("Index", "EmployeeAdvancePayement");
                         }
                         else
                         {
                             TempData["422"] = Result.StatusText;
-                            return RedirectToAction("Index", "VendorUser");
+                            return RedirectToAction("Index", "EmployeeAdvancePayement");
                         }
                     }
 
@@ -148,8 +149,8 @@ namespace eTactwebHR.Controllers
                     {
                         ViewBag.isSuccess = true;
                         TempData["202"] = "202";
-                        var modelUpdate = new VendorUserModel();
-                        return RedirectToAction("VendorUser", modelUpdate);
+                        var modelUpdate = new HRAdvanceModel();
+                        return RedirectToAction("EmployeeAdvancePayement", modelUpdate);
                     }
                     if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
                     {
@@ -201,5 +202,36 @@ namespace eTactwebHR.Controllers
 
             return View(model);
         }
+
+        public async Task<IActionResult> EAPDashboard()
+        {
+            try
+            {
+                var model = new HRAdvanceDashboard();
+
+                //var Result = await _iemployeeAdvancePayement.GetDashboardData().ConfigureAwait(true);
+                //if (Result != null)
+                //{
+                //    var _List = new List<TextValue>();
+                //    DataSet DS = Result.Result;
+                //    if (DS != null)
+                //    {
+                //        var DT = DS.Tables[0].DefaultView.ToTable(true, "UserEntryId", "AccountCode", "AccountName", "UserId", "Password", "Active", "AllowTodelete", "AllowtoUpdate"
+                //                , "rightsForReport", "RightsForPurchaseModule", "RightsForQCmodule", "RightsforAccountModule"
+                //                 , "AdminUser", "ourServerName", "databaseName", "BranchName", "ActualEntryBy", "ActualEntryDate", "SaleBillPrefix", "VendorEmpName"
+                //                 , "LastUpdationdate", "EntryByMachineName", "ActualEntryBYName", "UpdatedByName", "LastUpdatedBy");
+
+                //        model.HRAdvanceDashboards = CommonFunc.DataTableToList<HRAdvanceDashboard>(DT, "HRAdvanceDashboard");
+                //    }
+                //}
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
     }
 }

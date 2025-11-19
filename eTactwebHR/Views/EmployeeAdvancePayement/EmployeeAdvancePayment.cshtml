@@ -237,11 +237,6 @@
 								</div>
 
 								<div class="col-md-2">
-									<label asp-for="PaymentVoucherNo" class="form-label">Payment VoucherNo</label>
-									<input asp-for="PaymentVoucherNo" class="form-control" />
-								</div>
-
-								<div class="col-md-2">
 									<label asp-for="PaymentVoucherType" class="form-label">Payment VoucherType</label>
 									<select asp-for="PaymentVoucherType" class="form-select">
 										<option value="">-Select-</option>
@@ -249,6 +244,11 @@
 										<option value="Cash Payment">Cash Payment</option>
 										<option value="Journal">Journal</option>
 									</select>
+								</div>
+
+								<div class="col-md-2">
+									<label asp-for="PaymentVoucherNo" class="form-label">Payment VoucherNo</label>
+									<input asp-for="PaymentVoucherNo" class="form-control" />
 								</div>
 
 								<div class="col-md-2">
@@ -657,7 +657,7 @@
 		});
 
 		$('#submitBTN').click(function(){
-
+		    $('#StartRecoveryFromMonth').rules("remove", "required");
 			if($('#AdvanceType').val() != 'medical'){
 			    if($('#EmpId').val() == ''){
 					$.notify("Employee name is manadatory..!", "error");
