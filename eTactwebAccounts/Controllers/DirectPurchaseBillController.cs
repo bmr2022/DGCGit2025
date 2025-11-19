@@ -23,6 +23,13 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Drawing.Drawing2D;
 using System.Runtime.Caching;
 using DocumentFormat.OpenXml.Vml.Office;
+using DocumentFormat.OpenXml.Spreadsheet;
+using PdfSharp.Drawing.BarCodes;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ViewEngines;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Org.BouncyCastle.Crypto.Engines;
 
 namespace eTactWeb.Controllers
 {
@@ -34,13 +41,14 @@ namespace eTactWeb.Controllers
         private readonly IConfiguration iconfiguration;
         private readonly IMemoryCache _MemoryCache;
         private readonly ConnectionStringService _connectionStringService;
+        private readonly ICompositeViewEngine _viewEngine;
         public ILogger<DirectPurchaseBillModel> _Logger { get; set; }
         public CultureInfo CI { get; private set; }
         public EncryptDecrypt EncryptDecrypt { get; private set; }
         public IDataLogic IDataLogic { get; private set; }
         public IDirectPurchaseBill IDirectPurchaseBill { get; set; }
 
-        public DirectPurchaseBillController(IDirectPurchaseBill iDirectPurchaseBill, IDataLogic iDataLogic, ILogger<DirectPurchaseBillModel> logger, EncryptDecrypt encryptDecrypt, IMemoryCacheService iMemoryCacheService, IWebHostEnvironment iWebHostEnvironment, IConfiguration configuration, IMemoryCache iMemoryCache, ConnectionStringService connectionStringService)
+        public DirectPurchaseBillController(IDirectPurchaseBill iDirectPurchaseBill, IDataLogic iDataLogic, ILogger<DirectPurchaseBillModel> logger, EncryptDecrypt encryptDecrypt, IMemoryCacheService iMemoryCacheService, IWebHostEnvironment iWebHostEnvironment, IConfiguration configuration, IMemoryCache iMemoryCache, ConnectionStringService connectionStringService, ICompositeViewEngine viewEngine)
         {
             _iMemoryCacheService = iMemoryCacheService;
             IDirectPurchaseBill = iDirectPurchaseBill;
@@ -52,6 +60,7 @@ namespace eTactWeb.Controllers
             iconfiguration = configuration;
             _MemoryCache = iMemoryCache;
             _connectionStringService = connectionStringService;
+            _viewEngine = viewEngine;
         }
 
         [HttpGet]
@@ -1786,7 +1795,7 @@ namespace eTactWeb.Controllers
             return Json(JsonString);
         }
         [HttpPost]
-        public IActionResult UploadExcel()
+        public async Task<IActionResult> UploadExcel()
         {
             var excelFile = Request.Form.Files[0];
             string pono = Request.Form["PoNo"];
@@ -1799,137 +1808,216 @@ namespace eTactWeb.Controllers
             string docTypeName = Request.Form["docTypeName"];
 
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-            List<DPBItemDetail> data = new List<DPBItemDetail>();
+
+            List<DPBItemDetail> successList = new List<DPBItemDetail>();
+            List<string> errorList = new List<string>();
 
             using (var stream = excelFile.OpenReadStream())
             using (var package = new ExcelPackage(stream))
             {
-                var worksheet = package.Workbook.Worksheets[0];
+                var sheet = package.Workbook.Worksheets[0];
                 int cnt = 1;
 
-                for (int row = 2; row <= worksheet.Dimension.Rows; row++)
+                for (int row = 2; row <= sheet.Dimension.Rows; row++)
                 {
-                    // Read cell values safely
-                    var itemName = worksheet.Cells[row, 2].Value?.ToString()?.Trim();
-                    var rateValue = worksheet.Cells[row, 3].Value?.ToString();
-                    var qtyValue = worksheet.Cells[row, 4].Value?.ToString();
-                    var docTypeText = docTypeName;
-                    var locationValue = worksheet.Cells[row, 6].Value?.ToString();
-
-                    // 🔹 Basic Required Field Validation
-                 
-                    if (string.IsNullOrEmpty(qtyValue) || !decimal.TryParse(qtyValue, out decimal qty) || qty <= 0)
-                        return BadRequest($"Row {row}: Valid Quantity is required.");
-
-                    if (string.IsNullOrEmpty(docTypeText))
-                        return BadRequest($"Row {row}: Document Type is required.");
-
-                    // 🔹 Fetch Item Code from DB
-                    var itemCodeResult = IDirectPurchaseBill.GetItemCode(worksheet.Cells[row, 1].Value.ToString());
-                    int partcode = 0;
-                    int itemCodeValue = 0;
-
-                    if (itemCodeResult.Result.Result != null)
+                    try
                     {
-                        partcode = itemCodeResult.Result.Result.Rows.Count <= 0 ? 0 : (int)itemCodeResult.Result.Result.Rows[0].ItemArray[0];
-                        itemCodeValue = partcode;
+                        string partText = sheet.Cells[row, 1].Value?.ToString();
+                        string itemName = sheet.Cells[row, 2].Value?.ToString()?.Trim();
+                        string rateValue = sheet.Cells[row, 3].Value?.ToString();
+                        string qtyValue = sheet.Cells[row, 4].Value?.ToString();
+                        string locationValue = sheet.Cells[row, 6].Value?.ToString();
+
+                        // ❗✔ VALIDATE REQUIRED FIELDS
+                        if (string.IsNullOrEmpty(qtyValue) ||
+                            !decimal.TryParse(qtyValue, out decimal qty) || qty <= 0)
+                        {
+                            errorList.Add($"Row {row} → Invalid Quantity");
+                            continue;
+                        }
+
+                        if (string.IsNullOrEmpty(docTypeName))
+                        {
+                            errorList.Add($"Row {row} → Document Type missing");
+                            continue;
+                        }
+
+                        // FETCH ITEM CODE
+                        var itemCodeRes = IDirectPurchaseBill.GetItemCode(partText);
+                        int partcode = itemCodeRes.Result.Result.Rows.Count <= 0
+                                        ? 0
+                                        : (int)itemCodeRes.Result.Result.Rows[0].ItemArray[0];
+
+                        if (partcode == 0)
+                        {
+                            errorList.Add($"Row {row} → Invalid Part Code");
+                            continue;
+                        }
+
+                        var GetExchange = GetExchangeRate(Currency);
+                        var GetDocTypeId1 = GetDocTypeId(docTypeName);
+                        var GetItem = GetItemDetail(partText);
+
+                        JObject json = JObject.Parse(GetItem.Result.Value.ToString());
+                        var Unit = json["Result"][0]["Unit"];
+                        var HsnNo = json["Result"][0]["HsnNo"];
+                        var AltUnit = json["Result"][0]["AlternateUnit"];
+                        var Rackid = json["Result"][0]["Rackid"]?.ToString();
+                        var purchaseprice = json["Result"][0]["purchaseprice"].ToString();
+                        var item_name = json["Result"][0]["item_name"].ToString();
+
+                        string location = !string.IsNullOrEmpty(locationValue)
+                                            ? locationValue
+                                            : (!string.IsNullOrEmpty(Rackid) ? Rackid : null);
+
+                        if (string.IsNullOrEmpty(location))
+                        {
+                            errorList.Add($"Row {row} → Location missing");
+                            continue;
+                        }
+
+                        if (string.IsNullOrEmpty(itemName)) itemName = item_name;
+
+                        if (string.IsNullOrEmpty(itemName))
+                        {
+                            errorList.Add($"Row {row} → Item Name missing");
+                            continue;
+                        }
+
+                        // *************** DUPLICATE PARTCODE CHECK ***************
+                        if (successList.Any(x => x.PartCode == partcode))
+                        {
+                            errorList.Add($"Row {row} → Duplicate Part Code: {partcode}");
+                            continue;
+                        }
+
+                        decimal rate;
+                        if (!string.IsNullOrEmpty(rateValue) && decimal.TryParse(rateValue, out decimal excelRate))
+                            rate = excelRate;
+                        else if (!string.IsNullOrEmpty(purchaseprice) && decimal.TryParse(purchaseprice, out decimal dbRate))
+                            rate = dbRate;
+                        else
+                        {
+                            errorList.Add($"Row {row} → Invalid Rate");
+                            continue;
+                        }
+
+                        JObject AltRate = JObject.Parse(GetExchange.Result.Value.ToString());
+                        decimal AltRateToken = (decimal)AltRate["Result"][0]["IndianValue"];
+                        decimal OtherRate = rate * AltRateToken;
+
+                        JObject DocTypeJson = JObject.Parse(GetDocTypeId1.Result.Value.ToString());
+                        int DocTypeId = (int)DocTypeJson["Result"][0]["DocTypeId"];
+
+                        decimal discountPer = Convert.ToDecimal(sheet.Cells[row, 5].Value?.ToString() ?? "0");
+                        decimal discountRs = qty * rate * (discountPer / 100);
+                        decimal amount = (qty * rate) - discountRs;
+
+                        // ADD TO SUCCESS LIST
+                        successList.Add(new DPBItemDetail
+                        {
+                            SeqNo = cnt++,
+                            PartText = partText,
+                            ItemText = itemName,
+                            ItemCode = partcode,
+                            PartCode = partcode,
+                            HSNNo = string.IsNullOrEmpty(HsnNo?.ToString()) ? 0 : Convert.ToInt32(HsnNo),
+                            DPBQty = qty,
+                            BillQty = qty,
+                            Unit = Unit.ToString(),
+                            AltQty = 0,
+                            AltUnit = AltUnit.ToString(),
+                            AltPendQty = 0,
+                            Process = 0,
+                            Rate = rate,
+                            OtherRateCurr = OtherRate,
+                            UnitRate = "",
+                            DiscPer = discountPer,
+                            DiscRs = Math.Round(discountRs, 2),
+                            Amount = Math.Round(amount, 2),
+                            TxRemark = "",
+                            Description = "",
+                            AdditionalRate = 0,
+                            Color = "",
+                            CostCenter = 0,
+                            ItemLocation = location,
+                            DocTypeText = docTypeName,
+                            docTypeId = DocTypeId
+                        });
+                       
                     }
-
-                    // 🔹 Validate PartCode
-                    if (partcode == 0)
-                        return BadRequest($"Row {row}: Invalid Part Code or Item not found.");
-
-                    // Continue your original logic...
-                    var GetExchange = GetExchangeRate(Currency);
-                    var GetDocTypeId1 = GetDocTypeId(docTypeText);
-                    var GetItem = GetItemDetail(worksheet.Cells[row, 1].Value.ToString());
-
-                    JObject Jsonstring = JObject.Parse(GetItem.Result.Value.ToString());
-                    var Unit = Jsonstring["Result"][0]["Unit"];
-                    var HsnNo = Jsonstring["Result"][0]["HsnNo"];
-                    var AlternateUnit = Jsonstring["Result"][0]["AlternateUnit"];
-                    var Rackid = Jsonstring["Result"][0]["Rackid"]?.ToString();
-                    var purchaseprice = Jsonstring["Result"][0]["purchaseprice"].ToString();
-                    var item_name = Jsonstring["Result"][0]["item_name"].ToString();
-
-
-                    string location = !string.IsNullOrWhiteSpace(locationValue) ? locationValue: (!string.IsNullOrWhiteSpace(Rackid) ? Rackid : null);
-
-                    if (string.IsNullOrWhiteSpace(location))
-                        return BadRequest($"Row {row}: Location is required.");
-
-                    if (string.IsNullOrWhiteSpace(itemName))  itemName = item_name;
-                    if (string.IsNullOrWhiteSpace(itemName))
-                        return BadRequest($"Row {row}: Item Name is required.");
-
-                    decimal rate = 0;
-
-                    if (!string.IsNullOrWhiteSpace(rateValue) && decimal.TryParse(rateValue, out decimal excelRate))
+                    catch (Exception ex)
                     {
-                        rate = excelRate;
+                        errorList.Add($"Row {row} → Error: {ex.Message}");
+                        continue;
                     }
-                    else if (!string.IsNullOrWhiteSpace(purchaseprice) && decimal.TryParse(purchaseprice, out decimal dbRate))
-                    {
-                        rate = dbRate;
-                    }
-                    else
-                    {
-                        return BadRequest($"Row {row}: Valid Rate is required.");
-                    }
-                    if (rate <= 0)
-                    {
-                        return BadRequest($"Row {row}: Rate must be greater than 0.");
-                    }
-
-                    JObject AltRate = JObject.Parse(GetExchange.Result.Value.ToString());
-                    decimal AltRateToken = (decimal)AltRate["Result"][0]["IndianValue"];
-                    var RateInOther = rate * AltRateToken;
-
-                    JObject DocTypeIdjson = JObject.Parse(GetDocTypeId1.Result.Value.ToString());
-                    int DocTypeId = (int)DocTypeIdjson["Result"][0]["DocTypeId"];
-
-                    var DisRs = qty * rate * (Convert.ToDecimal(worksheet.Cells[row, 5].Value?.ToString() ?? "0") / 100);
-                    var Amount = (qty * rate) - DisRs;
-
-                    data.Add(new DPBItemDetail()
-                    {
-                        SeqNo = cnt++,
-                        PartText = worksheet.Cells[row, 1].Value?.ToString(),
-                        ItemText = itemName,
-                        ItemCode = itemCodeValue,
-                        PartCode = partcode,
-                        HSNNo = string.IsNullOrEmpty(HsnNo?.ToString()) ? 0 : Convert.ToInt32(HsnNo),
-                        DPBQty = qty,
-                        BillQty = qty,
-                        Unit = Unit.ToString(),
-                        AltQty = 0,
-                        AltUnit = AlternateUnit.ToString(),
-                        AltPendQty = 0,
-                        Process = 0,
-                        Rate = rate,
-                        OtherRateCurr = RateInOther,
-                        UnitRate = "",
-                        DiscPer = Convert.ToDecimal(worksheet.Cells[row, 5].Value?.ToString() ?? "0"),
-                        DiscRs = Math.Round(DisRs, 2),
-                        Amount = Math.Round(Amount, 2),
-                        TxRemark = "",
-                        Description = "",
-                        AdditionalRate = 0,
-                        Color = "",
-                        CostCenter = 0,
-                        ItemLocation = location,
-                        DocTypeText = docTypeText,
-                        docTypeId = DocTypeId,
-                    });
                 }
             }
+           
 
-            // ✅ Continue with session logic...
-            var MainModel = new DirectPurchaseBillModel { ItemDetailGrid = data };
-            string serializedMainModel = JsonConvert.SerializeObject(MainModel);
-            HttpContext.Session.SetString("DirectPurchaseBill", serializedMainModel);
+            // SAVE ONLY SUCCESS ROWS
+            var MainModel = new DirectPurchaseBillModel
+            {
+                ItemDetailGrid = successList,
+                ErrorList = errorList  // ← add this property in your model
+            };
 
-            return PartialView("_DPBItemGrid", MainModel);
+            DirectPurchaseBillModel vm = new DirectPurchaseBillModel();
+            vm.ItemDetailGrid = successList;
+
+
+            HttpContext.Session.SetString("DirectPurchaseBill", JsonConvert.SerializeObject(MainModel));
+            // ⭐ Render partial view HTML
+            string html = "";
+            try
+            {
+                html = await RenderViewToStringAsync("_DPBItemGrid", vm);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Render Error: " + ex.Message);
+            }
+
+            return Json(new
+            {
+                html = html,
+                errorList = errorList
+            });
+        }
+
+        private async Task<string> RenderViewToStringAsync(string viewName, object model)
+        {
+            var httpContext = new DefaultHttpContext
+            {
+                RequestServices = HttpContext.RequestServices
+            };
+
+            var actionContext = new ActionContext(httpContext, RouteData, ControllerContext.ActionDescriptor);
+
+            using var sw = new StringWriter();
+
+            var viewResult = _viewEngine.FindView(actionContext, viewName, false);
+
+            if (viewResult.View == null)
+                throw new Exception($"View {viewName} not found.");
+
+            var viewDictionary = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
+            {
+                Model = model
+            };
+
+            var viewContext = new ViewContext(
+                actionContext,
+                viewResult.View,
+                viewDictionary,
+                TempData,
+                sw,
+                new HtmlHelperOptions()
+            );
+
+            await viewResult.View.RenderAsync(viewContext);
+
+            return sw.ToString();
         }
 
         //[HttpPost]
