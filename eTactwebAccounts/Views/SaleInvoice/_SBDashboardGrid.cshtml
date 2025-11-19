@@ -498,7 +498,22 @@ else
                                         @if (isAdminDelete)
                                         {
                                             <!-- Show checkbox only -->
-                                            <input type="checkbox" class="select-delete-checkbox" value="@item.SaleBillEntryId" />
+                                   
+                                        <input type="checkbox" class="multi-delete-checkbox" />
+
+                                        <input type="hidden" class="hdID" value="@item.SaleBillEntryId" />
+                                        <input type="hidden" class="hdYC" value="@item.SaleBillYearCode" />
+                                        <input type="hidden" class="hdCreatedBy" value="@item.ActualEnteredBy" />
+                                        <input type="hidden" class="hdMachine" value="@item.MachineName" />
+                                        
+                                        <input type="hidden" class="hdsalebillno" value="@item.SaleBillNo" />
+                                        <input type="hidden" class="hdsalebilldate" value="@item.SaleBillDate" />
+                                            <input type="hidden" class="hdAccountname" value="@item.AccountName" />
+                                        <input type="hidden" class="hdAccountcode" value="@item.AccountCode" />
+                                            <input type="hidden" class="hdBillAmt" value="@item.BillAmt" />
+                                            <input type="hidden" class="hdInvNetAmt" value="@item.INVNetAmt" />
+
+
                                         }
                                         else
                                         {
@@ -704,6 +719,8 @@ else
             </tfoot>
 
     </table>
+        
+
     </div>
 }
 @{
@@ -722,6 +739,7 @@ else
 }
 @if (Model.TotalRecords > 0)
 {
+    <div class="d-flex justify-content-between align-items-center mb-3">
     <ul class="pagination d-flex align-items-center">
         @if (Model.PageNumber > 1)
         {
@@ -760,6 +778,10 @@ else
             </li>
         }
     </ul>
+        <!-- Delete Button -->
+        <button id="btnGetSelected" class="btn btn-danger">Delete</button>
+
+    </div>
 }
 
 <style>

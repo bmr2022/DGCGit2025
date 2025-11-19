@@ -1,4 +1,6 @@
-﻿using eTactWeb.Data.Common;
+﻿using DocumentFormat.OpenXml.EMMA;
+using DocumentFormat.OpenXml.Vml.Office;
+using eTactWeb.Data.Common;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Http.Internal;
@@ -1440,7 +1442,7 @@ namespace eTactWeb.Data.DAL
             return model;
         }
 
-        internal async Task<ResponseResult> DeleteByID(int ID, int YC, string machineName)
+        internal async Task<ResponseResult> DeleteByID(int ID, int YC, string machineName,int UpdatedBy)
         {
             var ResponseResult = new ResponseResult();
             try
@@ -1452,6 +1454,8 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@YearCode", YC));
                 SqlParams.Add(new SqlParameter("@SaleBillEntryDate", DateTime.Now));
                 SqlParams.Add(new SqlParameter("@EntryByMachineName", machineName));
+                SqlParams.Add(new SqlParameter("@UpdatedBy", UpdatedBy));
+
 
                 ResponseResult = await _IDataLogic.ExecuteDataTable("SP_SaleBillMainDetail", SqlParams);
 
@@ -2128,5 +2132,45 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
+
+
+        public async Task<ResponseResult> InsertInAdminDeleteLog(int EntryId, string slipno, int Accountcode,  string EntryDate, decimal netAmount, decimal Basicamount, string IPAddress, int ActionById, string Action, int Yearcode, string CC, string machine)
+        {
+            var _ResponseResult = new ResponseResult();
+
+            try
+            {
+                var SqlParams = new List<dynamic>
+        {
+            new SqlParameter("@Flag", "Insert"),
+            new SqlParameter("@FormName", "Sale Bill"),
+            new SqlParameter("@Action", Action),
+            new SqlParameter("@SlipNo", slipno??""),
+            new SqlParameter("@newSlipNo", ""),
+            new SqlParameter("@EntryDate", CommonFunc.ParseFormattedDate(EntryDate) ?? (object)DBNull.Value),
+            new SqlParameter("@YearCode", Yearcode),
+            new SqlParameter("@EntryId", EntryId),
+            new SqlParameter("@AccountCode", Accountcode),
+            new SqlParameter("@NetAmount", netAmount),
+            new SqlParameter("@BasicAmount", Basicamount),
+            new SqlParameter("@CC", CC),
+            new SqlParameter("@MachineName", machine),
+            new SqlParameter("@ActionByEmpId", ActionById),
+            new SqlParameter("@IPAddress", IPAddress),
+            new SqlParameter("@MainTableName", "SaleBillMain"),
+
+        };
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("AdminSPDeleteTransactions", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                _ResponseResult.StatusText = "Error";
+                _ResponseResult.Message = ex.Message;
+            }
+
+            return _ResponseResult;
+        }
+
     }
 }
