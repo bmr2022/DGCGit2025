@@ -1832,13 +1832,13 @@ namespace eTactWeb.Controllers
                         if (string.IsNullOrEmpty(qtyValue) ||
                             !decimal.TryParse(qtyValue, out decimal qty) || qty <= 0)
                         {
-                            errorList.Add($"Row {row} → Invalid Quantity");
+                            errorList.Add($"Row {row} → Invalid Quantity for partcode: {partText} qty : {qtyValue} Rate:{rateValue} ");
                             continue;
                         }
 
                         if (string.IsNullOrEmpty(docTypeName))
                         {
-                            errorList.Add($"Row {row} → Document Type missing");
+                            errorList.Add($"Row {row} → Document Type missing for partcode: {partText} qty : {qtyValue} Rate:{rateValue}  ");
                             continue;
                         }
 
@@ -1850,7 +1850,7 @@ namespace eTactWeb.Controllers
 
                         if (partcode == 0)
                         {
-                            errorList.Add($"Row {row} → Invalid Part Code");
+                            errorList.Add($"Row {row} → Invalid Part Code: {partText} qty : {qtyValue} Rate:{rateValue}");
                             continue;
                         }
 
@@ -1872,7 +1872,7 @@ namespace eTactWeb.Controllers
 
                         if (string.IsNullOrEmpty(location))
                         {
-                            errorList.Add($"Row {row} → Location missing");
+                            errorList.Add($"Row {row} → Location missing for partcode :{partText} qty : {qtyValue} Rate:{rateValue}");
                             continue;
                         }
 
@@ -1880,14 +1880,14 @@ namespace eTactWeb.Controllers
 
                         if (string.IsNullOrEmpty(itemName))
                         {
-                            errorList.Add($"Row {row} → Item Name missing");
+                            errorList.Add($"Row {row} → Item Name missing  for partcode :{partText} qty : {qtyValue} Rate:{rateValue}");
                             continue;
                         }
 
                         // *************** DUPLICATE PARTCODE CHECK ***************
                         if (successList.Any(x => x.PartCode == partcode))
                         {
-                            errorList.Add($"Row {row} → Duplicate Part Code: {partcode}");
+                            errorList.Add($"Row {row} → Duplicate Part Code: {partcode} qty : {qtyValue} Rate:{rateValue}");
                             continue;
                         }
 
@@ -1898,7 +1898,7 @@ namespace eTactWeb.Controllers
                             rate = dbRate;
                         else
                         {
-                            errorList.Add($"Row {row} → Invalid Rate");
+                            errorList.Add($"Row {row} → Invalid Rate qty : {qtyValue} Rate:{rateValue}");
                             continue;
                         }
 
