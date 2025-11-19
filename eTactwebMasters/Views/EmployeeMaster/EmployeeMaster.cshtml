@@ -73,6 +73,7 @@
                         <div class="accordion-body">
                             <div class="row g-2 gx-3 align-items-center">
                                     <input type="hidden" value="@Model.Mode" asp-for="Mode" />
+                                <input type="hidden" value="@Model.IPAddress" asp-for="IPAddress" />
                                 <input type="hidden" value="@Environment.MachineName" asp-for="EntryByMachineName" />
                                 <input asp-for="GridMode" type="hidden" class="form-control" value="@Model.GridMode" />
                                 <input type="hidden" id="SrNo" value="" asp-for ="@Model.SrNo"/>
@@ -260,7 +261,7 @@
                                     <label asp-for="EmergencyContactRelation" class="form-label">EmergencyContact Relation</label>
                                     <input asp-for="EmergencyContactRelation" class="form-control" />
                                 </div>
-                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:250px;">
                                     <label asp-for="EmergencyContactRelationName" class="form-label">EmergencyContact Relation Name</label>
                                     <input asp-for="EmergencyContactRelationName" class="form-control" />
                                 </div>
@@ -333,7 +334,7 @@
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
                                     <label asp-for="CalculatePfOn" class="form-label">Calculate Pf On</label>
-                                    <select asp-for="CalculatePfOn" class="form-control">
+                                    <select asp-for="CalculatePfOn" class="form-control"style="width:190px;">
                                         <option value="">--Select--</option>
                                     </select>
                                 </div>
@@ -394,9 +395,9 @@
                                     </select>
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:100px;">
-                                    <label asp-for="GradeId" class="form-label" style="width:90px;">Emp Grade</label>
+                                    <label asp-for="GradeId" class="form-label" >Emp Grade</label>
 
-                                    <select id="GradeId" name="GradeId" class="form-control">
+                                    <select id="GradeId" name="GradeId" class="form-control" style="width:90px;">
                                         <option value="">--Select--</option>
                                     </select>
                                 </div>
@@ -604,11 +605,12 @@
                                     <label asp-for="JobReference2" class="form-label">JobReference2 </label>
                                     <input asp-for="JobReference2" class="form-control" />
                                 </div>
-
-                                <label asp-for="ThroughId" class="form-label">Joining Through</label>
-                                <select asp-for="ThroughId" id="JoiningThrough" class="form-control">
-                                    <option value="">--Select--</option>
-                                </select>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                    <label asp-for="ThroughId" class="form-label">Joining Through</label>
+                                    <select asp-for="ThroughId" id="JoiningThrough" class="form-control">
+                                        <option value="">--Select--</option>
+                                    </select>
+                                </<div>
 
                             </div>
                         </div>
@@ -1063,6 +1065,7 @@
             $('#AllowanceType').rules("remove", "required");
             $('#PartyPay').rules("remove", "required");
             $('#WagesType').rules("remove", "required");
+            $('#IPAddress').rules("remove", "required");
 
             $('#JoiningDate').rules("remove", "required");
             $('#JobDepartment').rules("remove", "required");
@@ -1314,12 +1317,25 @@
                     e.preventDefault(); 
                 }
             });
+            $('#btnViewAadharCard').click(function () {
+                viewSelectedFile('#AadharUpload');
+            });
+            $('#btnViewSignature').click(function () {
+                viewSelectedFile('#SignatureUpload');
+            });
+            $('#btnViewPhotograph').click(function () {
+                viewSelectedFile('#PhotographUpload');
+            });
             $('#btnView').click(function () {
-                var fileInput = $('#fileUpload')[0];
+                viewSelectedFile('#PhotographUpload');
+            });
+
+            function viewSelectedFile(inputId) {
+                var fileInput = $(inputId)[0];
                 var file = fileInput.files[0];
 
                 if (!file) {
-                    $.notify(" Please select a file first!", {
+                    $.notify("Please select a file first!", {
                         className: 'warn',
                         position: "top center"
                     });
@@ -1328,7 +1344,8 @@
 
                 var fileURL = URL.createObjectURL(file);
                 window.open(fileURL, '_blank');
-            });
+            }
+
         });
         $('#EmpGrade').change(function () {
             $('#GradeId').val($('#EmpGrade').val());

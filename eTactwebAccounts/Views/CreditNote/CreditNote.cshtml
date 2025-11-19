@@ -981,6 +981,7 @@
         function FillCreditNotePopUp() {
 
             var showAllBill = $('#ShowAllBill').is(':checked') ? 'Y' : 'N';
+                 var currentItemCode = $('#ItemCode').val();
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("FillCreditNotePopUp")",
@@ -1000,7 +1001,18 @@
                                 var dueDate = val.DueDate == null ? "" : val.DueDate.split("T")[0];
                                 var soDate = val.SOdate == null ? "" : val.SOdate.split("T")[0];
                                 var poDate = val.PODate == null ? "" : val.PODate.split("T")[0];
+                                     var isChecked = "";
 
+                                  if (creditNotePopupGrid.length > 0) {
+                                      var alreadySelected = creditNotePopupGrid.some(function (x) {
+                                       return (
+                                           (x.InvoiceNo == val.InvoiceNo  || x.ItemCode == val.ItemCode)
+                                       );
+                                   });
+                                   if (alreadySelected) {
+                                       isChecked = "checked";
+                                   }
+                               }
                                 html += '<tr id="CNPopUpRow-' + i + '" style="font-size: 12px;">' +
                                     '<td>' + i + '</td>' +
                                     '<td><input type="checkBox" id="chkCreditNote-' + i + '" value="' + i + '" onchange="BasicPopUpItemGrid()"/></td>' +
@@ -1045,7 +1057,7 @@
                                 $('#chkCreditNote-' + creditNotePopupGrid[j].CheckBoxNo).prop("checked", true);
                             }
                         }
-
+                              SyncPopupToMainGrid(currentItemCode);
                         if ($('#AgainstSalePurchase').val() == 'SALE') {
                             $('.hnPOfields').hide();
                             $('.hnSOfields').show();
@@ -1055,6 +1067,52 @@
                             $('.hnPOfields').show();
                         }
                     }
+                }
+            });
+        }
+                   function SyncPopupToMainGrid() {
+
+            let popupRows = $('#divAddCreditNotePopupDataGrid tr');
+            let mainRows = $('#divAddCreditNoteList tr');
+
+            if (popupRows.length === 0 || mainRows.length === 0) return;
+
+            // STEP 1: Clear all checkboxes & reset rows
+            mainRows.each(function () {
+                $(this).find('input[type="checkbox"]').prop('checked', false);
+                $(this).removeClass("table-success");
+            });
+
+            // STEP 2: Build list of popup unique keys
+            let popupKeys = [];
+
+            popupRows.each(function () {
+                let uniqueKey = $(this).find('input[id^="popUpUniqueKey-"]').val();
+                if (uniqueKey) popupKeys.push(uniqueKey.trim());
+            });
+
+            // STEP 3: Loop through main grid and match against popup
+            mainRows.each(function () {
+
+                let row = $(this);
+                let rowId = row.attr("id");
+                if (!rowId) return;
+
+                // Extract number from id="CNRow-1"
+                let i = rowId.split("-")[1];
+
+                let entryId   = ($('#saleBillEntryId-' + i).text() || '').trim();
+                let yearCode  = ($('#SaleBillYearCode-' + i).text() || '').trim();
+                let invoiceNo = ($('#InvoiceNo-' + i).text() || '').trim();
+                let pbitemCode = $('#itemCode-' + i).val();
+                let itemCode = $('#ItemCode').val();
+
+                let rowKey = entryId + '_' + yearCode + '_' + invoiceNo + '_' + pbitemCode + '_' + itemCode;
+
+                // STEP 4: If popup contains this row → check it + highlight
+                if (popupKeys.includes(rowKey)) {
+                    $('#chkCreditNote-' + i).prop("checked", true);
+                    row.addClass("table-success");
                 }
             });
         }
