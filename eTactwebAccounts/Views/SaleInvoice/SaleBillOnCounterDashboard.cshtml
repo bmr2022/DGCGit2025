@@ -157,6 +157,7 @@
                 <div class="card-body" id="divDashboardGrid">
                     <partial name="_SBDashboardGrid" />
                 </div>
+                
             </div>
         </div>
     </div>
@@ -266,7 +267,29 @@
                 }
             });
         }
+        function getSelectedRowsData() {
+        var rows = [];
 
+        $(".multi-delete-checkbox:checked").each(function () {
+            var $row = $(this).closest("tr");
+
+            rows.push({
+                ID: $row.find(".hdID").val(),
+                YC: $row.find(".hdYC").val(),
+                createdBy: $row.find(".hdCreatedBy").val(),
+                machine:$row.find(".hdMachine").val(),  
+                SlipNo: $row.find(".hdsalebillno").val(),
+                AccountName: $row.find(".hdAccountname").val(),
+                AccountCode: $row.find(".hdAccountcode").val(),
+                EntryDate: $row.find(".hdsalebilldate").val(),
+                NetAmount: $row.find(".hdBillAmt").val(),
+                BasicAmount: $row.find(".hdInvNetAmt").val(),
+
+            });
+        });
+
+        return rows;
+        }
 
         $(document).ready(function () {
             $('.invoice-type-select').select2({
@@ -274,6 +297,49 @@
             allowClear: true,
             width: "100%"
         });
+                     // Event delegation: works for dynamically loaded button
+              $(document).on('click', '#btnGetSelected', function () {
+
+            var rows = getSelectedRowsData();   // Correct function name
+
+            if (rows.length === 0) {
+                $.notify("Please select at least one entry.", "warn");
+                return;
+            }
+
+            // Browser confirm popup
+            if (!confirm("Are you sure you want to delete " + rows.length + " entries?")) {
+                return;
+            }
+            var $btn = $('#btnGetSelected');
+            $btn.prop("disabled", true).text("Processing...");
+
+            $.ajax({
+                url: "/SaleInvoice/DeleteMultiple",
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(rows),
+                success: function (res) {
+
+                    if (res.success) {
+                        $.notify("Selected entries deleted successfully.", "success");
+                        setTimeout(() => {
+                    $btn.prop("disabled", false).text("Delete");
+                    location.reload();
+                        }, 800);
+                    }
+                    else {
+                        $.notify("Some entries could not be deleted.", "error");
+                        $btn.prop("disabled", false).text("Delete");
+                    }
+                },
+                error: function () {
+                    $.notify("Server error occurred.", "error");
+                }
+            });
+
+        });
+
             GetTotalAmounts();
             var deleteMessage = '@TempData["DeleteMessage"]';
 

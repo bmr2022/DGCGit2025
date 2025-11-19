@@ -480,7 +480,8 @@ namespace eTactWeb.Controllers
 
         public async Task<IActionResult> DeleteByID(int ID, int YC, string entryByMachineName, string partCode = "", string itemName = "", string saleBillno = "", string customerName = "", int sono = 0, string custOrderNo = "", string schNo = "", string performaInvNo = "", string saleQuoteNo = "", string domensticExportNEPZ = "", string fromdate = "", string toDate = "", string Searchbox = "")
         {
-            var Result = await _SaleBill.DeleteByID(ID, YC, entryByMachineName).ConfigureAwait(false);
+            int UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpId"));
+            var Result = await _SaleBill.DeleteByID(ID, YC, entryByMachineName, UpdatedBy).ConfigureAwait(false);
 
             if (Result.StatusText == "Deleted" || Result.StatusCode == HttpStatusCode.Gone || Result.StatusText == "Success")
             {

@@ -41,6 +41,8 @@ namespace eTactWeb.Controllers
                 model.EmpReqYearcode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
                 model.ActualEntrybyId = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
                 //model.EntryByEmpName = HttpContext.Session.GetString("EmpName");
+                model.IPAddress = HttpContext.Session.GetString("ClientIP");
+
                 model.Mode = Mode;
                 model.Active = "Y";
 
@@ -474,35 +476,29 @@ namespace eTactWeb.Controllers
         }
         private static DataTable GetdtNjobTable(IList<EmployeeMasterModel> DetailList, EmployeeMasterModel model)
         {
-            try
-            {
-                var dtNjob = new DataTable();
-                dtNjob.Columns.Add("EmpId", typeof(long));
-                dtNjob.Columns.Add("EmpCode", typeof(string));
-                dtNjob.Columns.Add("SeqNo", typeof(long));
-                dtNjob.Columns.Add("NatureOfjob", typeof(string));
+            var dtNjob = new DataTable();
+            dtNjob.Columns.Add("EmpId", typeof(long));
+            dtNjob.Columns.Add("EmpCode", typeof(string));
+            dtNjob.Columns.Add("SeqNo", typeof(long));
+            dtNjob.Columns.Add("NatureOfjob", typeof(string));
 
-                foreach (var Item in DetailList)
-                {
-
-                    dtNjob.Rows.Add(
-                        new object[]
-                        {
-                         model.EmpId == 0 ? 0 : model.EmpId,           // long
-                model.EmpCode ?? string.Empty,               // string
-                Item.SrNo == 0 ? 0 : Item.SrNo,             // int
-                Item.NatureOfDuties ?? string.Empty
-
-                    });
-                }
-                dtNjob.Dispose();
+            // If list is null or empty, return empty table (no error)
+            if (DetailList == null || DetailList.Count == 0)
                 return dtNjob;
-            }
-            catch (Exception ex)
+
+            foreach (var Item in DetailList.Where(x => x != null))
             {
-                throw;
+                dtNjob.Rows.Add(
+                    model.EmpId == 0 ? (object)DBNull.Value : model.EmpId,
+                    string.IsNullOrEmpty(model.EmpCode) ? (object)DBNull.Value : model.EmpCode,
+                    Item.SrNo == 0 ? (object)DBNull.Value : Item.SrNo,
+                    string.IsNullOrEmpty(Item.NatureOfDuties) ? (object)DBNull.Value : Item.NatureOfDuties
+                );
             }
+
+            return dtNjob;
         }
+
 
         public async Task<IActionResult> GetSearchData(string EmpCode, string ReportType)
         {
