@@ -178,7 +178,7 @@ namespace eTactWeb.DOM.Models
         public string? AgstInvDate { get; set; }
         public int AgstInvYearCode { get; set; }
 
-
+        public List<string> ErrorList { get; set; }
         public string? BILLAgainstWarrenty { get; set; }
         public string? RemovalDate { get; set; }
         public string? RemovalTime { get; set; }

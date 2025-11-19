@@ -2143,7 +2143,7 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>
         {
             new SqlParameter("@Flag", "Insert"),
-            new SqlParameter("@FormName", "Sale Bill"),
+            new SqlParameter("@FormName", "SaleBillMain"),
             new SqlParameter("@Action", Action),
             new SqlParameter("@SlipNo", slipno??""),
             new SqlParameter("@newSlipNo", ""),

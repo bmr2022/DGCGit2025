@@ -310,6 +310,17 @@
                     autoHideDelay: 4000
                 });
             }
+            var form = document.getElementById("deleteTrtansaction");
+
+            form.addEventListener("submit", function (e) {
+                // Show browser confirmation
+                var confirmDelete = confirm("Are you sure you want to delete this Entry?");
+                if (!confirmDelete) {
+                    // User clicked Cancel → prevent form submission
+                    e.preventDefault();
+                }
+                // If user clicks OK → form submits normally
+            });
 
         $("#muldelete").click(function () {
                 let formName = $("#FormName").val();
