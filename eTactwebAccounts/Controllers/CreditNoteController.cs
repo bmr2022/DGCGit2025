@@ -794,29 +794,63 @@ namespace eTactWeb.Controllers
                 throw;
             }
         }
+        //public async Task<JsonResult> FillDetailFromPopupGrid(List<AccCreditNoteAgainstBillDetail> model, int itemCode, int popCt)
+        //{
+        //    // 1. Load old session data if available
+        //    List<AccCreditNoteAgainstBillDetail> sessionData = new List<AccCreditNoteAgainstBillDetail>();
+        //    var existingJson = HttpContext.Session.GetString("KeyCreditNotePopupGrid");
+        //    if (!string.IsNullOrEmpty(existingJson))
+        //    {
+        //        sessionData = JsonConvert.DeserializeObject<List<AccCreditNoteAgainstBillDetail>>(existingJson);
+        //    }
+
+        //    // 2. Add new incoming data to old data
+        //    sessionData.AddRange(model);
+
+        //    // 4. Process updated grid
+        //    var dataGrid = GetDetailFromPopup(sessionData);
+        //    var JSON = await _creditNote.FillDetailFromPopupGrid(dataGrid, itemCode, popCt);
+
+        //    // 5. Save updated session data
+        //    HttpContext.Session.SetString("KeyCreditNotePopupGrid", JsonConvert.SerializeObject(sessionData));
+
+        //    // 6. Return JSON result
+        //    return Json(JsonConvert.SerializeObject(JSON));
+        //}
         public async Task<JsonResult> FillDetailFromPopupGrid(List<AccCreditNoteAgainstBillDetail> model, int itemCode, int popCt)
         {
-            // 1. Load old session data if available
-            List<AccCreditNoteAgainstBillDetail> sessionData = new List<AccCreditNoteAgainstBillDetail>();
-            var existingJson = HttpContext.Session.GetString("KeyCreditNotePopupGrid");
-            if (!string.IsNullOrEmpty(existingJson))
+            // Get previously stored popup data from Session
+            List<AccCreditNoteAgainstBillDetail> existingPopupGrid = new List<AccCreditNoteAgainstBillDetail>();
+            string modelPRJson = HttpContext.Session.GetString("KeyCreditNotePopupGrid");
+
+            if (!string.IsNullOrEmpty(modelPRJson))
+                existingPopupGrid = JsonConvert.DeserializeObject<List<AccCreditNoteAgainstBillDetail>>(modelPRJson);
+
+            if (existingPopupGrid == null)
+                existingPopupGrid = new List<AccCreditNoteAgainstBillDetail>();
+
+            if (model != null && model.Any())
             {
-                sessionData = JsonConvert.DeserializeObject<List<AccCreditNoteAgainstBillDetail>>(existingJson);
+                // 1️⃣ Remove old rows for the currently selected ItemCode
+                existingPopupGrid.RemoveAll(p => p.ItemCode == itemCode);
+
+                // 2️⃣ Add only the newly checked rows for this ItemCode
+                existingPopupGrid.AddRange(model);
             }
 
-            // 2. Add new incoming data to old data
-            sessionData.AddRange(model);
+            // Optional: sort by ItemCode or InvoiceNo for display
+            existingPopupGrid = existingPopupGrid.OrderBy(x => x.ItemCode).ThenBy(x => x.InvoiceNo).ToList();
 
-            // 4. Process updated grid
-            var dataGrid = GetDetailFromPopup(sessionData);
+            // 3️⃣ Save updated list back to session
+            HttpContext.Session.SetString("KeyCreditNotePopupGrid", JsonConvert.SerializeObject(existingPopupGrid));
+
+            // 4️⃣ Return JSON for grid display
+            var dataGrid = GetDetailFromPopup(existingPopupGrid);
             var JSON = await _creditNote.FillDetailFromPopupGrid(dataGrid, itemCode, popCt);
 
-            // 5. Save updated session data
-            HttpContext.Session.SetString("KeyCreditNotePopupGrid", JsonConvert.SerializeObject(sessionData));
-
-            // 6. Return JSON result
             return Json(JsonConvert.SerializeObject(JSON));
         }
+
         public async Task<JsonResult> GetHSNUNIT(int itemCode)
         {
             var JSON = await _creditNote.GetHSNUNIT(itemCode);
