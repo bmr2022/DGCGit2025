@@ -2693,38 +2693,39 @@
                 minLength: 1
             });
         });
-             $('#RoundOffAccountCode').change(function () {
-                    CalculateAdjAmt('NetTotal');
-                    GetDbCrDetail();
-            AddAdjstmntDetail1();
-         });
-           function FillRoundOffAccount(dt) {
-            var showAllDoc = dt;
-            $.ajax({
-                type: "POST",
-                url: "@Url.Action("FillRoundOffAccount", "PurchaseBill")",
-                data: { "ShowAllDoc": showAllDoc },
-                dataType: "json",
-                async: false,
-                success: function (result, status, error) {
-                    if (result != null) {
+              $('#RoundOffAccountCode').change(function () {
+                      CalculateAdjAmt('NetTotal');
+                      GetDbCrDetail();
+                                ClearAdjustmentGrid();
+              AddAdjstmntDetail1();
+           });
+             function FillRoundOffAccount(dt) {
+              var showAllDoc = dt;
+              $.ajax({
+                  type: "POST",
+                  url: "@Url.Action("FillRoundOffAccount", "PurchaseBill")",
+                  data: { "ShowAllDoc": showAllDoc },
+                  dataType: "json",
+                  async: false,
+                  success: function (result, status, error) {
+                      if (result != null) {
 
-                        var obj = $.parseJSON(result);
-                        $('#RoundOffAccountCode').empty();
-                        $('#RoundOffAccountCode').append('<option value="0">-Select-</option>');
-                        if (obj.StatusCode != 500) {
-                            $.each(obj.Result.Table, function (index, val) {
-                                $('#RoundOffAccountCode').append("<option value=" + val.Account_Code + ">" + val.Account_Name + "</option>");
-                            });
-                        }
-                    }
+                          var obj = $.parseJSON(result);
+                          $('#RoundOffAccountCode').empty();
+                          $('#RoundOffAccountCode').append('<option value="0">-Select-</option>');
+                          if (obj.StatusCode != 500) {
+                              $.each(obj.Result.Table, function (index, val) {
+                                  $('#RoundOffAccountCode').append("<option value=" + val.Account_Code + ">" + val.Account_Name + "</option>");
+                              });
+                          }
+                      }
 
-                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-                              $('#RoundOffAccountCode').val($('#hiddenRoundOffAccountCode').val());
-                    }
-                }
-            });
-        }
+                      if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                                       $('#RoundOffAccountCode').val($('#hiddenRoundOffAccountCode').val());
+                      }
+                  }
+              });
+          }
 
         async function CheckDuplicate(n, v) {
             $.ajax({
@@ -2811,8 +2812,8 @@
          var dtValue = $('#RDT').prop("checked") == true ? "T" : "F";
 
            FillRoundOffAccount(dtValue);
-               $('#RoundOffAccountCode').select2();
-                 if ($("#Mode").val() === "U" || $("#Mode").val() === "V") {
+                      $('#RoundOffAccountCode').select2();
+                                  if ($("#Mode").val() === "U" || $("#Mode").val() === "V") {
                    let code = $("#hiddenRoundOffAccountCode").val();
 
                    if (code !== null && code !== undefined && code !== "" && Number(code) > 0) {
@@ -4202,8 +4203,18 @@
 
             // Final Net Total
             let net = baseTotal + packing + forwarding + courier + gst + taxTotal - CashDisRs - AdditionalDiscount;
-
+              if ($("#TotalRoundOff").val() == "Y") {
+              let roundOffAmt = Math.round(net) - net;  // Difference to round to nearest whole number
+        $('#TotalRoundOffAmt').val(roundOffAmt.toFixed(2));  // Display roundoff amount
+        net = Math.round(net);  // Round net to nearest integer
+              }
             $('#NetTotal').val(net.toFixed(2));
+              if ($('#divSaleBillList tr td').length > 1) {
+                GetDbCrDetail();
+            ClearAdjustmentGrid();
+            AddAdjstmntDetail1();
+            }
+           
         }
 
         function NetAmountAfterDiscount() {
@@ -4227,10 +4238,16 @@
             var netAmt = baseAmt - (discAmt + additionalDisAmt)
                 + PackingCharges + ForwardingCharges + CourieerCharges + GST;
 
+
+                 if ($("#TotalRoundOff").val() == "Y") {
+              let roundOffAmt = Math.round(netAmt) - netAmt;  // Difference to round to nearest whole number
+        $('#TotalRoundOffAmt').val(roundOffAmt.toFixed(2));  // Display roundoff amount
+        netAmt = Math.round(netAmt);  // Round net to nearest integer
+              }
             $('#NetTotal').val(netAmt.toFixed(2));
             $('#AdjPendAmt').val(netAmt.toFixed(2));
-
-            // GetDbCrDetail();
+            
+             GetDbCrDetail();
 
             ClearAdjustmentGrid();
             AddAdjstmntDetail1();
@@ -4714,6 +4731,7 @@
                     $('#NetTotal').val(txAmt);
                     $('#BaseNetTotal').val(txAmt);
                     $('#AdjPendAmt').val($('#NetTotal').val());
+                         $("#TotalRoundOff").val("N").trigger('change');
                     // $('#AdjNewRefNo').val($('#NetTotal').val());
 
                 },
@@ -4771,6 +4789,7 @@
 
                     BasicTotal();
                     FillSOPendQty();
+                            $("#TotalRoundOff").val("N").trigger('change');
                 },
                 error: function (req, status, error) {
                     alert(error);
