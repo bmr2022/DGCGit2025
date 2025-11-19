@@ -1,7 +1,11 @@
 ﻿@using System.Globalization
 @model eTactWeb.DOM.Models.DirectPurchaseBillModel
 
+
+
 <input type="hidden" asp-for="ItemNetAmount" class="form-control" />
+
+
 
 @if (Model.ItemDetailGrid == null)
 {
@@ -110,6 +114,7 @@ else
             <td class="OtherFieldOFDirectPurchaseBillDetailTable">@item.ProcessName</td>
             <td class="OtherFieldOFDirectPurchaseBillDetailTable">@item.Description</td>
             <td>@item.ItemLocation</td>
+            <td>@item.GroupName</td>
             <td class="OtherFieldOFDirectPurchaseBillDetailTable">@(item.CostCenterName ?? string.Empty)</td>
         </tr>
     }

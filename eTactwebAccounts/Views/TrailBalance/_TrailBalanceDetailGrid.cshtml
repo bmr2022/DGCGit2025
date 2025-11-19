@@ -158,10 +158,6 @@
                         <span>Under Group</span>
                     </div>
                 </th>
-
-                @* <th data-columnno="21" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Group Id</th>
-                <th data-columnno="22" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>TB Seq</th>
-                <th data-columnno="24" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Group Ledger</th> *@
             </tr>
         </thead>
         <tbody id="divStockRegisterBody">
@@ -196,8 +192,15 @@
                             </td>
                             <th>@Cntr</th>
                             <td>
-                                <input id="TrailBalanceGroupCode-@Cntr" value="@item.TrailBalanceGroupCode" type="hidden" />
-                                @item.TrailBalanceGroupName
+                                <a onclick="callDrillDown(this)" class="table-link link-primary"
+                                   data-controller="TrailBalance"
+                                   data-action="Index"
+                                   data-seqno="@Cntr"
+                                   data-clickname="GroupClick"
+                                   data-groupname="@item.TrailBalanceGroupCode">
+                                    <input id="TrailBalanceGroupCode-@Cntr" value="@item.TrailBalanceGroupCode" type="hidden" />
+                                    @item.TrailBalanceGroupName
+                                </a>
                             </td>
                             <td>
                                 <a onclick="callDrillDown(this)" class="table-link link-primary"

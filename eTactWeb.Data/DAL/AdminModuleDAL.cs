@@ -88,7 +88,7 @@ namespace eTactWeb.Data.DAL
                 {
                     var SqlParams = new List<dynamic>();
                     SqlParams.Add(new SqlParameter("@Flag", "DeleteByID"));
-                    SqlParams.Add(new SqlParameter("@RowID", ID));
+                    SqlParams.Add(new SqlParameter("@EmpID", ID));
                     
 
                    
@@ -297,7 +297,7 @@ namespace eTactWeb.Data.DAL
                     {
                         CommandType = CommandType.StoredProcedure
                     };
-                    oCmd.Parameters.AddWithValue("@RowID", ID);
+                    oCmd.Parameters.AddWithValue("@EmpID", ID);
                     oCmd.Parameters.AddWithValue("@Flag", "GetByID");
                     await myConnection.OpenAsync();
                     using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))

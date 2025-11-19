@@ -295,7 +295,8 @@ public class DPBItemDetail : TaxModel, ITDSModel
 
     [Column(TypeName = "decimal(10, 4)")]
     public decimal Amount { get; set; }
-
+    public string? GroupName { get; set; }
+  
     public string? Color { get; set; }
     public string? ItemLocation { get; set; }
     public int CostCenter { get; set; }
@@ -400,8 +401,10 @@ public class DirectPurchaseBillModel : DPBItemDetail
             new() { Value = "N", Text = "No" },
         };
 
+    public List<string> ErrorList { get; set; }  // ← ADD THIS
     //just for display
     public string? UniversalPartCode { get; set; }
+   
     public string? AccountName { get; set; }
     public string? UniversalDescription { get; set; }
 

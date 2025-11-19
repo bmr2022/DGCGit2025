@@ -266,6 +266,12 @@
             if($('#IsIncreamented').val().toLowerCase() == 'true') {
                 ShowManualAttandance();
             }
+            const url = new URL(window.location.href);
+             if (url.searchParams.has("IsIncreament")) {
+                let ref = url.searchParams.get("IsIncreament");
+                url.searchParams.delete("IsIncreament");
+                window.history.replaceState({}, "", url.toString());
+            }
         });
 
           function parseCustomDate(str) {
@@ -473,7 +479,7 @@
                 missingEmpList.forEach(emp => emp.row.css("background-color", "#ffe6e6"));
 
                 let msgList = missingEmpList.map(emp => `${emp.srNo}. ${emp.name} (${emp.code})`).join("\n");
-                let msg = `The following employees have missing time entries. Please enter the required time for them, or Do you want to unselect them?: \n\n${msgList}\n\n`;
+                let msg = `The following employees have missing time entries. Please enter the required time for them, or Do you want to mark them as Absent? click Cancel for any modification: \n\n${msgList}\n\n`;
 
                 if (confirm(msg)) {
                     missingEmpList.forEach(emp => {
@@ -486,6 +492,42 @@
                     return false; // stop save
                 }
             }
+             // ADD UNCHECKED EMPLOYEES WITH EMPTY ATTENDANCE — ONLY IF SHIFT EXISTS
+            document.querySelectorAll("input[name='selectedEmpIds']").forEach(function (cb) {
+                 if (!cb.checked) {
+                    var empId = cb.value;
+                    var row = cb.closest("tr");
+                    if (!row) return model;
+                    // shift required
+                    var EmpShiftIdEl = row.querySelector("[name='GateAttDetailsList[" + empId + "].ActualEmpShiftId']");
+                    if (!EmpShiftIdEl) return model;
+                    var deptEl = row.querySelector("[name='dept_" + empId + "']");
+                    var desigEl = row.querySelector("[name='desig_" + empId + "']");
+                    var CategoryEl = row.querySelector("[name='GateAttDetailsList[" + empId + "].CategoryId']");
+                    var empObj = {
+                        EmpId: parseInt(empId, 10) || 0,
+                        DeptId: deptEl ? parseInt(deptEl.value, 10) || 0 : 0,
+                        DesignationEntryId: desigEl ? parseInt(desigEl.value, 10) || 0 : 0,
+                        ActualEmpShiftId: EmpShiftIdEl ? parseInt(EmpShiftIdEl.value, 10) || 0 : 0,
+                        CategoryId: CategoryEl ? parseInt(CategoryEl.value, 10) || 0 : 0,
+                        Attendance: {}
+                    }
+                    // find all attendance inputs for this employee
+                    row.querySelectorAll("input[name^='Attendance[" + empId + "]']").forEach(function (inp) {
+                        var name = inp.getAttribute("name");
+                        // SAME REGEX you used for checked employees
+                        var keyMatch = name.match(/\]\[(\d+)\((.*?)\)\]/) || name.match(/\[(\d+)\]\[([A-Za-z]+)\]?]/);
+                        if (keyMatch) {
+                            let day = keyMatch[1];
+                            let type = keyMatch[2]; // InTime / OutTime
+                            var dictKey = (type.toLowerCase() === "intime" ? "AttInTime" : "AttOutTime") + day;
+                            empObj.Attendance[dictKey] = ""; // EMPTY VALUE
+                        }
+                    });
+                    // finally add into model
+                    model.GateAttDetailsList.push(empObj);
+                }
+            });
             return model;
         }
         $("#submitBTN, #UpdateButton").on("click", function(e) 
@@ -503,13 +545,13 @@
             else {
                 var model = collectGateAttendanceModel();
                 if (model == null || model == false) {
-                    $.notify("Please fill the missing attendance entries or unselect them before saving.", "error");
+                    $.notify("Please fill the missing attendance entries either it will be added as Absentwhen you click on ok.", "error");
                     IsErr = 1;
                 }
-                else if (!model.GateAttDetailsList || model.GateAttDetailsList.length === 0) {
-                    $.notify("Please select at least one employee before submitting.", "error");
-                    IsErr = 1;
-                }
+                // else if (!model.GateAttDetailsList || model.GateAttDetailsList.length === 0) {
+                //     $.notify("Please select at least one employee before submitting.", "error");
+                //     IsErr = 1;
+                // }
                 if(IsErr==1){
                     event.preventDefault();
                     resetButtonText('#submitBTN, #UpdateButton');
@@ -525,17 +567,20 @@
                         success: function (res) {
                             if (res != null && res.isSuccess == true) {
                                 $.notify(res?.message || "Attendance saved successfully!", "success");
+                                resetButtonText('#submitBTN, #UpdateButton');
                                 setTimeout(function () {
                                     window.location.href = '@Url.Action("GateAttendance", "GateAttendance")' + '?ID=' + res.ID + '&Mode=' + $('#Mode').val() + '&YearCode=' + $('#GateAttYearCode').val() + '&IsIncreament=' + true;
                                 }, 1500);       
                             }
                             else if (res != null && res.isSuccess == false) {
                                 $.notify(res?.message || "Something went wrong", "error");
+                                resetButtonText('#submitBTN, #UpdateButton');
                             }
                         },
                         error: function (xhr) {
                             $.notify("Error saving attendance", "error");
                             console.error("AJAX error:", xhr.responseText);
+                            resetButtonText('#submitBTN, #UpdateButton');
                         }
                     });
                 }

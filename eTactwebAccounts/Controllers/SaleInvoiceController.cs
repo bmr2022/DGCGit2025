@@ -32,6 +32,13 @@ using OfficeOpenXml.Style;
 using OfficeOpenXml;
 using System.Drawing;
 using System.Security.Cryptography.X509Certificates;
+using DocumentFormat.OpenXml.EMMA;
+using Org.BouncyCastle.Ocsp;
+using Microsoft.AspNetCore.Mvc.ViewEngines;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Org.BouncyCastle.Crypto.Engines;
 
 
 
@@ -48,10 +55,12 @@ namespace eTactWeb.Controllers
         private readonly ILogger<SaleBillController> _logger;
         private readonly ICustomerJobWorkIssue _ICustomerJobWorkIssue;
         private readonly ICommon _ICommon;
+        private readonly ICompositeViewEngine _viewEngine;
+
         public IWebHostEnvironment _IWebHostEnvironment { get; }
         private readonly IMemoryCache _MemoryCache;
         private readonly ConnectionStringService _connectionStringService;
-        public SaleInvoiceController(ILogger<SaleBillController> logger, IDataLogic iDataLogic, ISaleBill iSaleBill, IEinvoiceService IEinvoiceService, IConfiguration configuration, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, ICustomerJobWorkIssue CustomerJobWorkIssue, IMemoryCache iMemoryCache, ICommon ICommon, ConnectionStringService connectionStringService)
+        public SaleInvoiceController(ILogger<SaleBillController> logger, IDataLogic iDataLogic, ISaleBill iSaleBill, IEinvoiceService IEinvoiceService, IConfiguration configuration, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, ICustomerJobWorkIssue CustomerJobWorkIssue, IMemoryCache iMemoryCache, ICommon ICommon, ConnectionStringService connectionStringService, ICompositeViewEngine viewEngine)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
@@ -63,6 +72,7 @@ namespace eTactWeb.Controllers
             _MemoryCache = iMemoryCache;
             _ICommon = ICommon;
             _connectionStringService = connectionStringService;
+            _viewEngine = viewEngine;
         }
         public async Task<JsonResult> AutoFillPartCode(string SearchPartCode)
         {
@@ -841,111 +851,182 @@ namespace eTactWeb.Controllers
             return Json(JsonString);
         }
         [HttpPost]
-        public async Task<IActionResult> UploadExcel(IFormFile excelFile)
+        public async Task<IActionResult> UploadExcel()
         {
-            if (excelFile == null || excelFile.Length == 0)
-                return BadRequest("Please upload Excel file!");
+            var excelFile = Request.Form.Files[0];
+            
 
-            try
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+            List<SaleBillDetail> successList = new List<SaleBillDetail>();
+            List<string> errorList = new List<string>();
+
+            using (var stream = excelFile.OpenReadStream())
+            using (var package = new ExcelPackage(stream))
             {
-                List<SaleBillDetail> itemList = new List<SaleBillDetail>();
+                var sheet = package.Workbook.Worksheets[0];
+                int seq = 1;
 
-                using (var stream = new MemoryStream())
+                for (int row = 2; row <= sheet.Dimension.Rows; row++)
                 {
-                    await excelFile.CopyToAsync(stream);
-
-                    // ✅ FIX: Set EPPlus License
-                    ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-
-                    using (var package = new ExcelPackage(stream))
+                    try
                     {
-                        ExcelWorksheet worksheet = package.Workbook.Worksheets.FirstOrDefault();
-                        if (worksheet == null)
-                            return BadRequest("Excel sheet is empty!");
+                        string partCode = sheet.Cells[row, 1].Value?.ToString()?.Trim();
+                        string rateStr = sheet.Cells[row, 2].Value?.ToString()?.Trim();
+                        string qtyStr = sheet.Cells[row, 3].Value?.ToString()?.Trim();
+                        string disStr = sheet.Cells[row, 4].Value?.ToString()?.Trim();
+                        string storename = sheet.Cells[row, 5]?.Value?.ToString()?.Trim() ?? "";
 
-                        int rowCount = worksheet.Dimension.Rows;
-
-                        // Loop rows (skip header)
-                        for (int row = 2; row <= rowCount; row++)
+                        if (string.IsNullOrEmpty(partCode))
                         {
-                            string partCode = worksheet.Cells[row, 1]?.Value?.ToString()?.Trim();
-                            string rateStr = worksheet.Cells[row, 2]?.Value?.ToString()?.Trim();
-                            string qtyStr = worksheet.Cells[row, 3]?.Value?.ToString()?.Trim();
-                            string disStr = worksheet.Cells[row, 4]?.Value?.ToString()?.Trim();
-                            string storename = worksheet.Cells[row, 5].Value.ToString();
-
-                            if (string.IsNullOrWhiteSpace(partCode))
-                                return BadRequest($"Part Code missing at row {row}");
-
-                            var itemData = await _SaleBill.AutoFillitem("AutoFillPartCode", partCode);
-
-                            if (itemData == null || itemData.Result == null)
-                                return BadRequest($"Partcode not available: {partCode}");
-
-                            // Convert the Result object to JObject
-                            var json = JsonConvert.SerializeObject(itemData);
-                            var obj = JObject.Parse(json);
-
-                            var res = obj["Result"] is JArray a ? a[0] : obj["Result"];
-
-                            string itemName = res["ItemName"]?.ToString();
-                            int itemCode = Convert.ToInt32(res["Item_Code"]);
-
-                            var storedata = await _SaleBill.GetStoreId(storename);
-                            var jsonstore = JsonConvert.SerializeObject(storedata);
-                            var objstore = JObject.Parse(jsonstore);
-                            var resStore = objstore["Result"] is JArray b ? b[0] : objstore["Result"];
-                            var storeid = resStore["storeid"]?.ToString();
-
-                            var GetItem = GetItemDetail(worksheet.Cells[row, 1].Value.ToString());
-
-                            JObject Jsonstring = JObject.Parse(GetItem.Result.Value.ToString());
-                            var Unit = Jsonstring["Result"][0]["Unit"];
-                            var HsnNo = Jsonstring["Result"][0]["HsnNo"];
-
-                            decimal rate = string.IsNullOrWhiteSpace(rateStr) ? 0 : Convert.ToDecimal(rateStr);
-                            decimal qty = string.IsNullOrWhiteSpace(qtyStr) ? 0 : Convert.ToDecimal(qtyStr);
-                            decimal dis = string.IsNullOrWhiteSpace(disStr) ? 0 : Convert.ToDecimal(disStr);
-
-                            decimal basicAmt = rate * qty;
-                            decimal disAmt = (basicAmt * dis) / 100;
-                            decimal netAmt = basicAmt - disAmt;
-
-                            itemList.Add(new SaleBillDetail
-                            {
-                                PartCode = partCode,
-                                ItemName = itemName,
-                                ItemCode=itemCode,
-                                Unit = Unit.ToString(),
-                                HSNNo = Convert.ToInt32(HsnNo.ToString()),
-                                Qty = (float)qty,
-                                Rate = (float)rate,
-                                DiscountPer = (float)dis,
-                                Amount = basicAmt,
-                                DiscountAmt = disAmt,
-                                ItemNetAmount = netAmt,
-                                StoreName = storename,
-                                StoreId = Convert.ToInt32(storeid.ToString()),
-                                Batchno="1",
-                                Uniquebatchno= "1"
-                            });
+                            errorList.Add($"Row {row} → Part Code missing");
+                            continue;
                         }
+
+                        if (!decimal.TryParse(qtyStr, out decimal qty) || qty <= 0)
+                        {
+                            errorList.Add($"Row {row} → Invalid Quantity: {qtyStr}");
+                            continue;
+                        }
+
+                        if (!decimal.TryParse(rateStr, out decimal rate))
+                        {
+                            errorList.Add($"Row {row} → Invalid Rate: {rateStr}");
+                            continue;
+                        }
+
+                        if (!decimal.TryParse(disStr, out decimal discountPer))
+                            discountPer = 0;
+
+                        // Check duplicate
+                        if (successList.Any(x => x.PartCode == partCode))
+                        {
+                            errorList.Add($"Row {row} → Duplicate Part Code: {partCode}");
+                            continue;
+                        }
+
+                        // Fetch item details
+                        var itemData = await _SaleBill.AutoFillitem("AutoFillPartCode", partCode);
+                      
+                        if (itemData?.Result == null || itemData.Result.Rows.Count == 0)
+                        {
+                            errorList.Add($"Row {row} → Part code not found: {partCode}");
+                            continue;
+                        }
+
+                        // Access first row
+                        var rowData = itemData.Result.Rows[0];
+                        string itemName = rowData["ItemName"].ToString();
+                        int itemCode = Convert.ToInt32(rowData["Item_Code"]);
+                        // Get store ID
+                        var storeData = await _SaleBill.GetStoreId(storename);
+                        JObject storeJson = JObject.Parse(JsonConvert.SerializeObject(storeData));
+                        var storeRes = storeJson["Result"][0];
+                        int storeId = Convert.ToInt32(storeRes["storeid"]);
+
+                        // Get more item details
+                        var getItem = GetItemDetail(partCode);
+                        JObject jsonDetail = JObject.Parse(getItem.Result.Value.ToString());
+                        var unit = jsonDetail["Result"][0]["Unit"];
+                        var hsnNo = jsonDetail["Result"][0]["HsnNo"];
+
+                        decimal basicAmt = qty * rate;
+                        decimal discountAmt = basicAmt * (discountPer / 100);
+                        decimal netAmt = basicAmt - discountAmt;
+
+                        successList.Add(new SaleBillDetail
+                        {
+                            SeqNo = seq++,
+                            PartCode = partCode,
+                            ItemName = itemName,
+                            ItemCode = itemCode,
+                            Unit = unit.ToString(),
+                            HSNNo = Convert.ToInt32(hsnNo.ToString()),
+                            Qty = (float)qty,
+                            Rate = (float)rate,
+                            DiscountPer = (float)discountPer,
+                            Amount = basicAmt,
+                            DiscountAmt = discountAmt,
+                            ItemNetAmount = netAmt,
+                            StoreName = storename,
+                            StoreId = storeId,
+                            Batchno = "1",
+                            Uniquebatchno = "1"
+                        });
+                    }
+                    catch (Exception ex)
+                    {
+                        errorList.Add($"Row {row} → Error: {ex.Message}");
                     }
                 }
+            }
 
-                // Bind data to partial view
-                SaleBillModel sbModel = new SaleBillModel();
-                sbModel.ItemDetailGrid = itemList;
-                sbModel.saleBillDetails = itemList;
-                HttpContext.Session.SetString("KeySaleBillGrid", JsonConvert.SerializeObject(sbModel.ItemDetailGrid));
-                HttpContext.Session.SetString("SaleBillModel", JsonConvert.SerializeObject(sbModel));
-                return PartialView("_SaleBillGrid", sbModel);
+            // Prepare model
+            SaleBillModel sbModel = new SaleBillModel
+            {
+                ItemDetailGrid = successList,
+                saleBillDetails = successList,
+                ErrorList = errorList // Add ErrorList property to your SaleBillModel
+            };
+
+            HttpContext.Session.SetString("KeySaleBillGrid", JsonConvert.SerializeObject(successList));
+            HttpContext.Session.SetString("SaleBillModel", JsonConvert.SerializeObject(sbModel));
+
+            // Render partial view
+            string html = "";
+            try
+            {
+                html = await RenderViewToStringAsync("_SaleBillGrid", sbModel);
             }
             catch (Exception ex)
             {
-                return BadRequest("Error while uploading Excel: " + ex.Message);
+                return BadRequest("Render Error: " + ex.Message);
             }
+
+            return Json(new
+            {
+                html = html,
+                errorList = errorList
+            });
         }
+
+
+        private async Task<string> RenderViewToStringAsync(string viewName, object model)
+        {
+            var httpContext = new DefaultHttpContext
+            {
+                RequestServices = HttpContext.RequestServices
+            };
+
+            var actionContext = new ActionContext(httpContext, RouteData, ControllerContext.ActionDescriptor);
+
+            using var sw = new StringWriter();
+
+            var viewResult = _viewEngine.FindView(actionContext, viewName, false);
+
+            if (viewResult.View == null)
+                throw new Exception($"View {viewName} not found.");
+
+            var viewDictionary = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
+            {
+                Model = model
+            };
+
+            var viewContext = new ViewContext(
+                actionContext,
+                viewResult.View,
+                viewDictionary,
+                TempData,
+                sw,
+                new HtmlHelperOptions()
+            );
+
+            await viewResult.View.RenderAsync(viewContext);
+
+            return sw.ToString();
+        }
+
+
 
         [HttpGet]
         public async Task<IActionResult> SaleInvoice(int ID, string Mode, int YearCode, string DashboardType = "", string FromDate = "", string ToDate = "", string partCode = "", string itemName = "", string VoucherNo = "", string custName = "", string sono = "", string custOrderNo = "", string schNo = "", string PerformaInvNo = "", string saleQuoteNo = "", string domExportNEPZ = "", string Searchbox = "", string summaryDetail = "", int? GroupName = null, int? AccountCode = null, int? AccountCodeBack = null, string VoucherTypeBack = "", string[] AccountList = null, string? Narration = "", float? Amount = null, string? DR = "", string? CR = "")
@@ -2668,7 +2749,10 @@ namespace eTactWeb.Controllers
 
         public async Task<IActionResult> DeleteByID(int ID, int YC, string entryByMachineName, string partCode = "", string itemName = "", string saleBillno = "", string customerName = "", int sono = 0, string custOrderNo = "", string schNo = "", string performaInvNo = "", string saleQuoteNo = "", string domensticExportNEPZ = "", string fromdate = "", string toDate = "", string Searchbox = "", string Page = "")
         {
-            var Result = await _SaleBill.DeleteByID(ID, YC, entryByMachineName).ConfigureAwait(false);
+           
+           int UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpId"));
+
+            var Result = await _SaleBill.DeleteByID(ID, YC, entryByMachineName, UpdatedBy).ConfigureAwait(false);
 
             //if (result.statustext == "deleted" || result.statuscode == httpstatuscode.gone || result.statustext == "success")
             //{
@@ -3110,6 +3194,77 @@ namespace eTactWeb.Controllers
                 return Content($"Error generating Excel: {ex.Message}");
             }
         }
+
+
+
+        [HttpPost]
+
+        public async Task<IActionResult> DeleteMultiple([FromBody] List<Dictionary<string, string>> list)
+        {
+            bool allDeleted = true;
+            bool anyDeleted = false;
+            decimal netAmount = 0;
+            decimal basicAmount = 0;
+            // Temporary store success items (no model used)
+            var successRows = new List<Dictionary<string, string>>();
+            foreach (var row in list)
+            {
+                var id = Convert.ToInt32(row["ID"]);
+                var yc = Convert.ToInt32(row["YC"]);
+                var machine = row["machine"];
+                int UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+                var slipNo = row["SlipNo"];
+                var AccountCode = Convert.ToInt32(row["AccountCode"]);
+                var AccountName = row["AccountName"];
+                var EntryDate = row["EntryDate"];
+               
+                decimal.TryParse(row["NetAmount"]?.ToString(), out netAmount);
+                decimal.TryParse(row["BasicAmount"]?.ToString(), out basicAmount);
+                var IPAddress = HttpContext.Session.GetString("ClientIP");
+                var CC = HttpContext.Session.GetString("CC");
+
+                int YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+                var Action = "Multiple Delete";
+             
+                // REUSE YOUR EXISTING SINGLE DELETE DAL
+                var result = await _SaleBill.DeleteByID(id, yc, machine, UpdatedBy);
+                bool isSuccess =
+                    result.StatusText == "Success" ||
+                    result.StatusText == "deleted" ||
+                    result.StatusCode == HttpStatusCode.Gone;
+
+                if (isSuccess)
+                {
+                    anyDeleted = true;
+
+                    // keep successful rows
+                    successRows.Add(row);
+                }
+                else
+                {
+                    allDeleted = false;
+                }
+            }
+            //  Insert logs ONLY for successfully deleted rows
+            foreach (var row in successRows)
+            {
+                var logResult = await _SaleBill.InsertInAdminDeleteLog(
+                     Convert.ToInt32(row["ID"]),
+                    row["SlipNo"],
+                    Convert.ToInt32(row["AccountCode"]),
+                    row["EntryDate"],
+                    netAmount,
+                    basicAmount, 
+                    HttpContext.Session.GetString("ClientIP"),
+                    Convert.ToInt32(HttpContext.Session.GetString("EmpID")),
+                    "Multiple Delete",
+                    Convert.ToInt32(HttpContext.Session.GetString("YearCode")),
+                    HttpContext.Session.GetString("Branch"), row["machine"]
+                );
+            }
+            return Json(new { success = allDeleted });
+        }
+
 
     }
 

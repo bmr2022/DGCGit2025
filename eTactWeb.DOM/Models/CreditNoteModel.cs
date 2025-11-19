@@ -122,6 +122,8 @@ namespace eTactWeb.DOM.Models
         public int CheckBoxNo { get; set; }
         public string CreditNoteInvoiceNo { get; set; } = string.Empty;
         public string CreditNoteVoucherNo { get; set; } = string.Empty;
+        public string? InvoiceNo { get; set; } = string.Empty;
+        public string? InvoiceDate { get; set; } = string.Empty;
         public string? AgainstSaleBillBillNo { get; set; }
         public int? AgainstSaleBillYearCode { get; set; }
         public string? AgainstSaleBillDate { get; set; }

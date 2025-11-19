@@ -446,6 +446,8 @@ namespace eTactwebHR.Controllers
                     {
                         ModelState.AddModelError(Err.Key, Err.Value);
                     }
+                    var message = string.Join(", ", ErrList?.Select(a => a.Key + ":- " + a.Value).ToList());
+                    return Json(new { isSuccess = false, message = message });
                 }
             }
             catch (Exception ex)

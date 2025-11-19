@@ -184,6 +184,7 @@ namespace eTactWeb.DOM.Models
         public int EmpReqEntryId { get; set; }   
         public string EmpReqDate { get; set; }   
         public int ThroughId { get; set; }   
+        public string IPAddress { get; set; }   
 
 
     }

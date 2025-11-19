@@ -145,8 +145,7 @@
                             </div>
                             <div class="card">
                                 <div class="d-flex justify-content-end mb-2">
-
-
+                                    
                                     <div class="col-auto" style="display:none">
                                         <button type="button" class="EXPORT btn btn-sm btn-outline-success" id="sendToExcel">
                                             <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> EXPORT
@@ -201,13 +200,17 @@
                                                     <th data-columnno="19" data-sortorder="asc" class="sortCol OtherFieldOFDirectPurchaseBillDetailTable"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Process</th>
                                                     <th data-columnno="20" data-sortorder="asc" class="sortCol OtherFieldOFDirectPurchaseBillDetailTable"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Description</th>
                                                     <th data-columnno="20" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Location</th>
+                                                    <th data-columnno="20" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Group Name</th>
                                                     <th data-columnno="21" data-sortorder="asc" class="sortCol OtherFieldOFDirectPurchaseBillDetailTable"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Cost Center</th>
                                                 </tr>
                                             </thead>
                                             <tbody id="divPOItemList">
                                                 <partial name="_DPBItemGrid" />
+                                              
+
                                             </tbody>
                                         </table>
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -215,10 +218,10 @@
                                 <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
                             <div class="row g-2 gx-3">
-                                <div class="col-12 text-center">
-                                    <strong>BASIC TOTAL : <i class="fa-solid fa-indian-rupee-sign fa-fw fa-1x"></i><span id="lblItemNetAmount"></span></strong>
-                                    <strong>, TOTAL NO OF ITEMS : <span id="lblItemCount"></span></strong>
+                                <div id="excelErrorBox" class="alert alert-danger" style="display:none;">
+                                    <ul id="excelErrorList"></ul>
                                 </div>
+
                             </div>
                         </div>
                     </div>
@@ -434,6 +437,9 @@
         </div>
     </div>
 </div>
+
+
+
 
 
 @section Scripts
@@ -1347,18 +1353,48 @@
                 processData: false,
                 contentType: false,
                 success: function (result) {
-                    if (result == "Not Done") {
-                        $.notify("Pend Qty cannot be less than 0!Please Try again!", "error");
+                    // if (result == "Not Done") {
+                    //     $.notify("Pend Qty cannot be less than 0!Please Try again!", "error");
+                    // }
+                    // else if (result == "Duplicate") {
+                    //     $.notify("Duplicate Item Not allowed", "error");
+                    // }
+                    // else if (result == "Partcode not available") {
+                    //     $.notify("Imported Partcode is not available, Please check!!!", "error");
+                    // }
+                     // else {
+                    // 🔥 SHOW ERRORS
+                    // 🔹 Show error list
+                    if (result.errorList && result.errorList.length > 0) {
+                        $("#excelErrorList").empty();
+
+                        result.errorList.forEach(function (msg) {
+                            $("#excelErrorList").append("<li>" + msg + "</li>");
+                        });
+
+                        $("#excelErrorBox").show();
+                    } else {
+                        $("#excelErrorBox").hide();
                     }
-                    else if (result == "Duplicate") {
-                        $.notify("Duplicate Item Not allowed", "error");
-                    }
-                    else if (result == "Partcode not available") {
-                        $.notify("Imported Partcode is not available, Please check!!!", "error");
-                    }
-                    else {
+
+                    // LOAD PARTIAL VIEW
+                    if (result.html) {
                         $('#divPOItemList').empty();
-                        $('#divPOItemList').html(result);
+                        $("#divPOItemList").html(result.html);
+                    }
+
+                    // if (result.errorList.length > 0) {
+                    //     $("#excelErrorList").empty();
+                    //     result.errorList.forEach(function (err) {
+                    //         $("#excelErrorList").append("<li>" + err + "</li>");
+                    //     });
+
+                    //     $("#excelErrorBox").show();
+                    // } else {
+                    //     $("#excelErrorBox").hide();
+                    // }
+                    //     $('#divPOItemList').empty();
+                    //     $('#divPOItemList').html(result);
                                var rowCount = $('#divPOItemList tr').length;
                              var columnCount = $('#divPOItemList tr td').length;
                              var taxRowCount = $('#divTaxGrid tr').length;
@@ -1400,7 +1436,7 @@
                    }
                        //   ClearAdjustmentGrid();
                          AddAdjstmntDetail1();
-                    }
+                    // }
                 },
                      error: function (xhr) {
               // ✅ This will catch your C# BadRequest messages
@@ -2120,6 +2156,7 @@
                         else if (obj.StatusCode == 200 && obj.StatusText == "Success") {
                             $('#Unit').val(obj.Result[0].Unit);
                             $('#ItemLocation').val(obj.Result[0].Location);
+                            $('#GroupName').val(obj.Result[0].Group_name);
                             $('#HSNNo').val((obj.Result[0].HSNNo != null && parseInt(obj.Result[0].HSNNo) >= 0) ? parseInt(obj.Result[0].HSNNo) : 0);
                             $('#PkgStd').val(obj.Result[0].StdPacking);
                             $('#AltUnit').val(obj.Result[0].AltUnit == null ? 'NA' : obj.Result[0].AltUnit);
@@ -2128,7 +2165,7 @@
                     }
                 },
                 error: function (result, status, xhr) {
-                    $.notify(result.responseText, "error");
+                    $.notify(result.responseText, "error"); 
                 }
             });
         }
@@ -3354,6 +3391,7 @@
                     'Description': $('#Description').val(),
                     'CostCenter': $('#CostCenter').val(),
                     'ItemLocation': $('#ItemLocation').val(),
+                    'GroupName': $('#GroupName').val(),
                     'CostCenterName': $('#CostCenter option:selected').text(),
                     'Mode': $('#Mode').val() == "U" ? "U" : "INSERT"
                 }
@@ -3487,6 +3525,7 @@
                                 $('#Rate').val(obj[0].Rate);
                                 $('#Unit').val(obj[0].Unit);
                                     $('#ItemLocation').val(obj[0].ItemLocation);
+                                    $('#GroupName').val(obj[0].GroupName);
                                 updateForm(obj);
                                     $('#PartCode').val(obj[0].PartCode);
                                     $('#ItemCode').val(obj[0].ItemCode);
@@ -3755,6 +3794,7 @@
                 $('#Remark').val(''), $('#Description').val(''), $('#StoreName').prop('selectedIndex', 0), $('#SizeDetail').val('0'), $('#AmendmentNo').val('0'), $('#AmendmentDate').val(''),
                 $('#AmendmentReason').val(''),
                 $('#ItemLocation').val(''),
+                $('#GroupName').val(''),
                 $('#Color').val(''), $('#Process').prop('selectedIndex', 0).removeClass('is-invalid'), $('#TolLimitQty').val('0.00'), $('#TolLimitPercent').val('0.00'),
                 $('#OldRate').val('0.00'), $('#AdditionalRate').val('0.00'), $('#FirstMonthTentQty').val('0.00'), $('#SecMonthTentQty').val('0.00'), $('#CostCenter').prop('selectedIndex', 0);
         }

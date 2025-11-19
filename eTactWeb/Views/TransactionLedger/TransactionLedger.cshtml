@@ -222,6 +222,17 @@
     <script>
 
         $(document).ready(function () {
+            if (sessionStorage.getItem("DRILL_IS_REDIRECT_TO_MONTHLYSUMMARY") === "1") {
+
+                DrilldownManager.pushNavigation({
+                   currentForm: "TransactionLedgerSummary",
+                    nextForm: "MonthlySummary",
+                    isRoot: false,
+                    url: window.location.href
+                });
+
+                sessionStorage.removeItem("DRILL_IS_REDIRECT_TO_MONTHLYSUMMARY");
+            }
             var currentForm = $("#ReportType").val();
             $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' });
             $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' });

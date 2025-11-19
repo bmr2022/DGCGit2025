@@ -147,7 +147,7 @@
                         Cntr = Cntr + 1;
 
                         <tr id="@Cntr" onclick="selection(this)">
-                           
+
                             <td>
                                 <a class="table-link link-success" asp-route-ID="@Cntr" asp-action="TrailBalance" asp-route-Mode="V" onclick="BackButtonData(event);">
                                     <span class="fa-stack">
@@ -163,17 +163,19 @@
                                 </a>
                             </td>
                             <th>@Cntr</th>
-                            <td style="color:blue;cursor:pointer;" onclick="callDrillDown(this)"
-                                data-controller="TrailBalance"
-                                data-action="Index"
-                                data-seqno="@Cntr"
-                                data-clickname="GroupClick"
-                                data-groupname="@item.TrailBalanceGroupCode">
-                                <input type="hidden" id="TrailBalanceGroupCode-@Cntr" value="@item.TrailBalanceGroupCode" />@item.TrailBalanceGroupName
+                            <td>
+                                <a onclick="callDrillDown(this)" class="table-link link-primary"
+                                   data-controller="TrailBalance"
+                                   data-action="Index"
+                                   data-seqno="@Cntr"
+                                   data-clickname="GroupClick"
+                                   data-groupname="@item.TrailBalanceGroupCode">
+                                    <input type="hidden" id="TrailBalanceGroupCode-@Cntr" value="@item.TrailBalanceGroupCode" />@item.TrailBalanceGroupName
+                                </a>
                             </td>
                             <td id="totDrG-@Cntr" style="background-color:antiquewhite">@item.OpnDr</td>
                             <td id="totCrG-@Cntr" style="background-color:antiquewhite">@item.OpnCr</td>
-                            <td id="totOpeningG-@Cntr"  >@item.TotalOpening</td>
+                            <td id="totOpeningG-@Cntr">@item.TotalOpening</td>
                             <td id="totCurrDrG-@Cntr" style="background-color:#DAE0E2">@item.CurrDrAmt</td>
                             <td id="totCurrCrG-@Cntr" style="background-color:#DAE0E2">@item.CurrCrAmt</td>
                             <td id="totNetCurrAmtG-@Cntr" style="background-color:#ddffcc">@item.NetCurrentAmt</td>
@@ -201,6 +203,7 @@
     .hidden-column {
         display: none !important;
     }
+
     .sort-icon, .toggle-col {
         cursor: pointer;
     }
@@ -230,7 +233,7 @@
 </style>
 @* <script>
     $(document).ready(function () {
-         
+
         $('.toggle-col').on('click', function () {
             var colIndex = $(this).data('col'); // Get column index (1-based)
             var $icon = $(this).find('i');
