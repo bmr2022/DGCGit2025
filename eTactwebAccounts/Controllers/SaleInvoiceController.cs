@@ -32,6 +32,8 @@ using OfficeOpenXml.Style;
 using OfficeOpenXml;
 using System.Drawing;
 using System.Security.Cryptography.X509Certificates;
+using DocumentFormat.OpenXml.EMMA;
+using Org.BouncyCastle.Ocsp;
 
 
 
@@ -864,7 +866,7 @@ namespace eTactWeb.Controllers
                             return BadRequest("Excel sheet is empty!");
 
                         int rowCount = worksheet.Dimension.Rows;
-
+                        int seq = 1;   // NEW → Start sequence
                         // Loop rows (skip header)
                         for (int row = 2; row <= rowCount; row++)
                         {
@@ -913,6 +915,7 @@ namespace eTactWeb.Controllers
 
                             itemList.Add(new SaleBillDetail
                             {
+                                SeqNo= seq++,
                                 PartCode = partCode,
                                 ItemName = itemName,
                                 ItemCode=itemCode,
@@ -2668,7 +2671,10 @@ namespace eTactWeb.Controllers
 
         public async Task<IActionResult> DeleteByID(int ID, int YC, string entryByMachineName, string partCode = "", string itemName = "", string saleBillno = "", string customerName = "", int sono = 0, string custOrderNo = "", string schNo = "", string performaInvNo = "", string saleQuoteNo = "", string domensticExportNEPZ = "", string fromdate = "", string toDate = "", string Searchbox = "", string Page = "")
         {
-            var Result = await _SaleBill.DeleteByID(ID, YC, entryByMachineName).ConfigureAwait(false);
+           
+           int UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpId"));
+
+            var Result = await _SaleBill.DeleteByID(ID, YC, entryByMachineName, UpdatedBy).ConfigureAwait(false);
 
             //if (result.statustext == "deleted" || result.statuscode == httpstatuscode.gone || result.statustext == "success")
             //{
@@ -3110,6 +3116,77 @@ namespace eTactWeb.Controllers
                 return Content($"Error generating Excel: {ex.Message}");
             }
         }
+
+
+
+        [HttpPost]
+
+        public async Task<IActionResult> DeleteMultiple([FromBody] List<Dictionary<string, string>> list)
+        {
+            bool allDeleted = true;
+            bool anyDeleted = false;
+            decimal netAmount = 0;
+            decimal basicAmount = 0;
+            // Temporary store success items (no model used)
+            var successRows = new List<Dictionary<string, string>>();
+            foreach (var row in list)
+            {
+                var id = Convert.ToInt32(row["ID"]);
+                var yc = Convert.ToInt32(row["YC"]);
+                var machine = row["machine"];
+                int UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+                var slipNo = row["SlipNo"];
+                var AccountCode = Convert.ToInt32(row["AccountCode"]);
+                var AccountName = row["AccountName"];
+                var EntryDate = row["EntryDate"];
+               
+                decimal.TryParse(row["NetAmount"]?.ToString(), out netAmount);
+                decimal.TryParse(row["BasicAmount"]?.ToString(), out basicAmount);
+                var IPAddress = HttpContext.Session.GetString("ClientIP");
+                var CC = HttpContext.Session.GetString("CC");
+
+                int YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+                var Action = "Multiple Delete";
+             
+                // REUSE YOUR EXISTING SINGLE DELETE DAL
+                var result = await _SaleBill.DeleteByID(id, yc, machine, UpdatedBy);
+                bool isSuccess =
+                    result.StatusText == "Success" ||
+                    result.StatusText == "deleted" ||
+                    result.StatusCode == HttpStatusCode.Gone;
+
+                if (isSuccess)
+                {
+                    anyDeleted = true;
+
+                    // keep successful rows
+                    successRows.Add(row);
+                }
+                else
+                {
+                    allDeleted = false;
+                }
+            }
+            //  Insert logs ONLY for successfully deleted rows
+            foreach (var row in successRows)
+            {
+                var logResult = await _SaleBill.InsertInAdminDeleteLog(
+                     Convert.ToInt32(row["ID"]),
+                    row["SlipNo"],
+                    Convert.ToInt32(row["AccountCode"]),
+                    row["EntryDate"],
+                    netAmount,
+                    basicAmount, 
+                    HttpContext.Session.GetString("ClientIP"),
+                    Convert.ToInt32(HttpContext.Session.GetString("EmpID")),
+                    "Multiple Delete",
+                    Convert.ToInt32(HttpContext.Session.GetString("YearCode")),
+                    HttpContext.Session.GetString("Branch"), row["machine"]
+                );
+            }
+            return Json(new { success = allDeleted });
+        }
+
 
     }
 

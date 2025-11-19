@@ -53,7 +53,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FillSOSchedule(string sono,string accountCode, int soYearCode, int ItemCode); 
         Task<ResponseResult> GetDashboardData(string summaryDetail, string partCode, string itemName, string saleBillno, string customerName, string sono, string custOrderNo, string schNo, string performaInvNo, string saleQuoteNo, string domensticExportNEPZ,string SubInvoicetype, string fromdate, string toDate,string SaleBillEntryFrom);
         Task<SaleBillModel> GetViewByID(int ID, string Mode, int YC);
-        Task<ResponseResult> DeleteByID(int ID, int YC, string machineName);
+        Task<ResponseResult> DeleteByID(int ID, int YC, string machineName,int UpdatedBy);
 
         Task<ResponseResult> FillStoreList();
         Task<ResponseResult> FillCustomerListForPending();
@@ -69,5 +69,6 @@ namespace eTactWeb.Services.Interface
         Task<DataSet> GetInvoiceType();
         public Task<ResponseResult> AutoFillitem(string Flag, string SearchPartCode);
 
+        Task<ResponseResult> InsertInAdminDeleteLog(int EntryId,string slipno, int Accountcode, string EntryDate, decimal netAmount, decimal Basicamount, string IPAddress,int ActionById,string Action,int Yearcode, string CC, string machine);
     }
 }

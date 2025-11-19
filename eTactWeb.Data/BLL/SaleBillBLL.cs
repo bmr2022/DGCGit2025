@@ -201,9 +201,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _SaleBillDAL.GetViewByID(ID, YC, Mode);
         }          
-        public async Task<ResponseResult> DeleteByID(int ID, int YC, string machineName)
+        public async Task<ResponseResult> DeleteByID(int ID, int YC, string machineName,int UpdatedBy)
         {
-            return await _SaleBillDAL.DeleteByID(ID, YC,machineName);
+            return await _SaleBillDAL.DeleteByID(ID, YC,machineName,UpdatedBy);
         }          
         public  async Task<AdjChallanDetail> GetAdjustedChallanDetailsData(DataTable adjustedData, int YearCode, string EntryDate, string ChallanDate, int AccountCode)
         {
@@ -243,7 +243,9 @@ namespace eTactWeb.Data.BLL
             return await _SaleBillDAL.FillCustomerListForPending();
         }
 
-
-
+        public async Task<ResponseResult> InsertInAdminDeleteLog(int EntryId,string slipno, int Accountcode,  string EntryDate, decimal netAmount, decimal Basicamount, string IPAddress, int ActionById, string Action, int Yearcode,string CC,string machine)
+        {
+            return await _SaleBillDAL.InsertInAdminDeleteLog(EntryId, slipno,Accountcode,EntryDate,netAmount,Basicamount,IPAddress,ActionById,Action,Yearcode,CC,machine);
+        }
     }
 }
