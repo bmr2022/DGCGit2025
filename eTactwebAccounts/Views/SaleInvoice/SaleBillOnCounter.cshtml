@@ -375,8 +375,18 @@
                                             </tbody>
                                         </table>
                                     </div>
+                                    <div class="row g-2 gx-3">
+                                        <div id="excelErrorBox" class="alert alert-danger" style="display:none;">
+                                            <ul id="excelErrorList"></ul>
+                                        </div>
+
+                                    </div>
                                 </div>
                             </div>
+
+
+
+
                             <div class="card">
                                 <div class="card-body overflow-auto pb-0 jobWorkChalln">
                                     <table class="table table-hover table-bordered table-striped IssueNRGPTb">
@@ -1212,8 +1222,6 @@
             var fileInput = $('#ExcelFile');
             var file = fileInput.prop("files")[0];
 
-            var Err = 0;
-
             if (!file) {
                 AddErrorCls('ExcelFile');
                 $.notify("Please select an Excel file.", "error");
@@ -1222,12 +1230,12 @@
                 RemoveErrorCls('ExcelFile');
             }
 
+            var formData = new FormData();
+            formData.append("excelFile", file);
 
-         var formData = new FormData();
-
-        formData.append("excelFile", file);
-
-
+            // Optional: send extra fields if needed
+            // formData.append("Flag", $('#Flag').val());
+            // formData.append("StoreName", $('#StoreName').val());
 
             $.ajax({
                 url: "@Url.Action("UploadExcel")",
@@ -1238,68 +1246,82 @@
 
                 success: function (result) {
 
-                    $('#divSaleBillList').empty();
-                    $('#divSaleBillList').html(result);
-                                   GetFeatureOption();
-
-                    var rowCount = $('#divSaleBillList tr').length;
-                    var columnCount = $('#divSaleBillList tr td').length;
-
-                    // Item Count
-                    if (columnCount > 1)
-                        $('#lblItemCount').text(rowCount);
-                    else
-                        $('#lblItemCount').text(0);
-
-                    // Total & Tax
-                    var sum = 0;
-                    for (var i = 1; i <= rowCount; i++) {
-                        sum += parseFloat($('#GridAmount-' + i).text() == '.00' ? 0 : $('#GridAmount-' + i).text());
+                    // ===== SHOW ERRORS IN DIV =====
+                    if (result.errorList && result.errorList.length > 0) {
+                        $("#excelErrorList").empty();
+                        result.errorList.forEach(function (msg) {
+                            $("#excelErrorList").append("<li>" + msg + "</li>");
+                        });
+                        $("#excelErrorBox").show();
+                    } else {
+                        $("#excelErrorBox").hide();
                     }
 
+                    // ===== LOAD PARTIAL VIEW =====
+                    if (result.html) {
+                        $('#divSaleBillList').empty();
+                        $('#divSaleBillList').html(result.html);
+                    }
+
+                    // ===== CALCULATE ITEMS & AMOUNTS =====
+                    var rowCount = $('#divSaleBillList tr').length;
+                           var columnCount = $('#divSaleBillList tr td').length;
+                    var taxRowCount = $('#divTaxGrid tr').length;
+                    var sum = 0;
+
+                    // No of items
+                    $('#lblItemCount').text(columnCount > 1 ? rowCount : 0);
+
+                    for (var i = 1; i <= rowCount; i++) {
+                        var amt = $('#GridAmount-' + i).text();
+                        sum += parseFloat(amt === '.00' ? 0 : amt);
+                    }
                     $('#ItemNetAmount').val(sum);
                     $('#lblItemNetAmount').text(sum.toFixed(2));
 
+                    // Tax calculation
                     var txSum = 0;
-                    var taxRowCount = $('#divTaxGrid tr').length;
-
                     if ($('#divTaxGrid tr td').length > 1) {
                         for (var i = 1; i <= taxRowCount; i++) {
-                            txSum += parseFloat($('#txGridAmount-' + i).text() == '.00' ? 0 : $('#txGridAmount-' + i).text());
+                            var txAmt = $('#txGridAmount-' + i).text();
+                            txSum += parseFloat(txAmt === '.00' ? 0 : txAmt);
                         }
                     }
 
                     var txTotal = sum + txSum;
                     $('#NetTotal').val(txTotal.toFixed(2));
 
+                    // Reset discount & rounding
                     $('#TotalDiscountPercentage').val(0);
                     $('#TotalAmtAftrDiscount').val(0);
                     $('#TotalRoundOffAmt').val(0.00);
 
-                   
-                    CalculateAmount();
-
-                    GetItemGroup();
+                    // Call helper functions
+                    CalculateRate();
                     GetTaxPartItem();
                     GetDbCrDetail();
-                              var AdjGrid = $('#divAdjItemList tr td').length;
-                          if (AdjGrid >= 1 ) {
-                       ClearAdjustmentGrid();
-                          }
-                              //   ClearAdjustmentGrid();
-                                AddAdjstmntDetail1();
-                    
+                    GetFeatureOption();
+
+                    // Adjustment grid
+                    if ($('#divAdjItemList tr td').length >= 1) {
+                        ClearAdjustmentGrid();
+                    }
+                    AddAdjstmntDetail1();
                 },
 
                 error: function (xhr) {
                     if (xhr.status === 400) {
-                        $.notify(xhr.responseText, "error");
+                        // Show controller BadRequest message in error div
+                        $("#excelErrorList").empty().append("<li>" + xhr.responseText + "</li>");
+                        $("#excelErrorBox").show();
                     } else {
                         $.notify("Unexpected error occurred while uploading Excel.", "error");
                     }
                 }
             });
         }
+
+
 
 
                 function AutoFillPARTYNAMELIST() {
