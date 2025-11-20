@@ -30,6 +30,7 @@ using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Org.BouncyCastle.Crypto.Engines;
+using ClosedXML.Excel;
 
 namespace eTactWeb.Controllers
 {
@@ -2018,6 +2019,75 @@ namespace eTactWeb.Controllers
             await viewResult.View.RenderAsync(viewContext);
 
             return sw.ToString();
+        }
+        [HttpGet]
+        public IActionResult ExportDPBToExcel()
+        {
+            // Get all rows from session or DB
+            string modelJson = HttpContext.Session.GetString("KeyDPBList");
+            List<DPBDashBoard> dpbList = new List<DPBDashBoard>();
+
+            if (!string.IsNullOrEmpty(modelJson))
+                dpbList = JsonConvert.DeserializeObject<List<DPBDashBoard>>(modelJson);
+
+            if (dpbList == null || dpbList.Count == 0)
+                return NotFound("No data available to export.");
+
+            using var workbook = new XLWorkbook();
+            var sheet = workbook.Worksheets.Add("DirectPurchaseBill");
+
+            // Add headers
+            string[] headers = {
+        "Sr#", "Entry ID", "Entry Date", "Voucher No", "Voucher Date", "Invoice No",
+        "Invoice Date", "Vendor Name", "Vendor Address", "GST Type", "State Name",
+        "Order Type", "Service", "Transporter", "Vehicle No", "Payment Terms",
+        "Currency", "Bill Amount", "Net Amount", "Created On", "Updated On",
+        "Created By", "Updated By"
+    };
+
+            for (int i = 0; i < headers.Length; i++)
+                sheet.Cell(1, i + 1).Value = headers[i];
+
+            // Add data
+            int row = 2;
+            int srNo = 1;
+            foreach (var item in dpbList)
+            {
+                sheet.Cell(row, 1).Value = srNo++;
+                sheet.Cell(row, 2).Value = item.EntryID;
+                sheet.Cell(row, 3).Value = item.EntryDate?.ToString("dd/MM/yyyy") ?? "";
+                sheet.Cell(row, 4).Value = item.PurchVouchNo;
+                sheet.Cell(row, 5).Value = item.VoucherDate;
+                sheet.Cell(row, 6).Value = item.InvoiceNo;
+                sheet.Cell(row, 7).Value = item.InvoiceDate?.ToString("dd/MM/yyyy") ?? "";
+                sheet.Cell(row, 8).Value = item.VendorName;
+                sheet.Cell(row, 9).Value = item.VendorAddress;
+                sheet.Cell(row, 10).Value = item.GSTType;
+                sheet.Cell(row, 11).Value = item.StateName;
+                sheet.Cell(row, 12).Value = item.DomesticImport;
+                sheet.Cell(row, 13).Value = item.TypeITEMSERVASSETS;
+                sheet.Cell(row, 14).Value = item.Transporter;
+                sheet.Cell(row, 15).Value = item.VehicleNo;
+                sheet.Cell(row, 16).Value = item.PaymentTerms;
+                sheet.Cell(row, 17).Value = item.Currency;
+                sheet.Cell(row, 18).Value = item.BasicAmount;
+                sheet.Cell(row, 19).Value = item.NetAmount;
+                sheet.Cell(row, 20).Value = item.CreatedOn?.ToString("dd/MM/yyyy") ?? "";
+                sheet.Cell(row, 21).Value = item.UpdatedOn?.ToString("dd/MM/yyyy") ?? "";
+                sheet.Cell(row, 22).Value = item.EnteredBy;
+                sheet.Cell(row, 23).Value = item.UpdatedByName;
+                row++;
+            }
+
+            sheet.Columns().AdjustToContents();
+
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            stream.Position = 0;
+
+            return File(stream.ToArray(),
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                        "DirectPurchaseBill.xlsx");
         }
 
         //[HttpPost]
