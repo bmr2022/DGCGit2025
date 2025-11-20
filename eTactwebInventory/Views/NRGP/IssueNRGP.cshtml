@@ -1,8 +1,12 @@
 ﻿@model eTactWeb.DOM.Models.IssueNRGPModel
+@inject IHttpContextAccessor HttpContextAccessor
+
 @{
     ViewData["Title"] = "Issue NonRetuanable Challan";
 
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
+    string RetailerOrManufacturar = HttpContextAccessor.HttpContext.Session.GetString("RetailerOrManufacturar");
+
 }
 <style>
 
@@ -1137,10 +1141,12 @@
                     $.notify('Please Select Removal Time...!', "error");
                     return false;
                 }
+                if (RetailerOrManufacturar != "Retailer") { 
                          if ($("#IssByEmpCodeName").val() === '' || $("#IssByEmpCodeName").val() === null || $("#IssByEmpCodeName").val()==='0') {
                        $.notify('Please Select Issue by emp...!', "error");
                        return false;
                    }
+                }
                 if ($('#VehicleNo').val() != '') {
                     var inputValue = $('#VehicleNo').val();
                     if (inputValue.length > 10) {

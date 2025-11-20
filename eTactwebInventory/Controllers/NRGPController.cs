@@ -301,6 +301,16 @@ namespace eTactWeb.Controllers
                 model.FinFromDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString("FromDate"));
                 model.FinToDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString("ToDate"));
                 model = await BindModel(model);
+                if (featuresoptions?.Result?.Result != null &&
+                featuresoptions.Result.Result.Rows.Count > 0)
+                {
+                    model.AllowToChangeStore =
+                        featuresoptions.Result.Result.Rows[0]["AllowToChangeStore"]?.ToString() ?? "";
+                }
+                else
+                {
+                    model.AllowToChangeStore = "";
+                }
 
                 model.ID = ID;
 
@@ -1340,9 +1350,20 @@ namespace eTactWeb.Controllers
             string formattedFromDate = fromDt.ToString("dd/MMM/yyyy 00:00:00");
             DateTime toDt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", null);
             string formattedToDate = toDt.ToString("dd/MMM/yyyy 00:00:00");
+            string RetailerOrManufacturar = HttpContext.Session.GetString("RetailerOrManufacturar");
 
-            return RedirectToAction("Dashboard", new { FromDate = formattedFromDate, ToDate = formattedToDate, ItemCode = ItemCode, PartCode = PartCode, ItemName = ItemName, VendorName = VendorName, RGPNRGP = RGPNRGP, ChallanNo = ChallanNo, ChallanType = ChallanType });
+            if(RetailerOrManufacturar != "Retailer")
+                {
+                return RedirectToAction("Dashboard", new { FromDate = formattedFromDate, ToDate = formattedToDate, ItemCode = ItemCode, PartCode = PartCode, ItemName = ItemName, VendorName = VendorName, RGPNRGP = RGPNRGP, ChallanNo = ChallanNo, ChallanType = ChallanType });
+
+            }
+            {
+                return RedirectToAction("IssueChallanOnCounterDashboard", new { FromDate = formattedFromDate, ToDate = formattedToDate, ItemCode = ItemCode, PartCode = PartCode, ItemName = ItemName, VendorName = VendorName, RGPNRGP = RGPNRGP, ChallanNo = ChallanNo, ChallanType = ChallanType });
+
+            }
+
         }
+
 
         public IActionResult DeleteItemRow(string SeqNo)
         {
@@ -1439,7 +1460,7 @@ namespace eTactWeb.Controllers
                     "ChallanDate", "EntryDate", "DeliveryAddress", "VendorStateCode",
                                 "Remarks", "Closed", "EntryId", "YearCode", "RGPNRGP",
                                  "ChallanType", "ActualEnteredEmp", "ActualEntryDate",
-                               "UpdatedByEmpName", "UpdatedDate", "MachinName", "SalesPersonEmailId", "eMailFromCC1", "eMailFromCC2", "eMailFromCC3", "ChallanEntryFrom");
+                               "UpdatedByEmpName", "UpdatedDate", "MachinName", "SalesPersonEmailId", "eMailFromCC1", "eMailFromCC2", "eMailFromCC3", "ChallanEntryFrom","Amount");
 
                 model.INNDashboard = CommonFunc.DataTableToList<IssueNRGPDashboard>(DT, "IssueNRGPDetail");
                 model.FromDate1 = FromDate;
@@ -1535,7 +1556,7 @@ namespace eTactWeb.Controllers
                    "ChallanDate", "EntryDate", "DeliveryAddress", "VendorStateCode",
                                "Remarks", "Closed", "EntryId", "YearCode", "RGPNRGP",
                                 "ChallanType", "ActualEnteredEmp", "ActualEntryDate",
-                               "UpdatedByEmpName", "UpdatedDate", "MachinName","SalesPersonEmailId", "eMailFromCC1", "eMailFromCC2", "eMailFromCC3", "ChallanEntryFrom");
+                               "UpdatedByEmpName", "UpdatedDate", "MachinName","SalesPersonEmailId", "eMailFromCC1", "eMailFromCC2", "eMailFromCC3", "ChallanEntryFrom","Amount");
                 model.INNDashboard = CommonFunc.DataTableToList<IssueNRGPDashboard>(DT, "IssueNRGPDetail");
             }
 

@@ -331,6 +331,7 @@
                                                     <th>HSN No</th>
                                                     <th>Unit</th>
                                                     <th>Location</th>
+                                                    <th>Group Name</th>
 
                                                     <th>Amount</th>
                                                     <th>Remark</th>
@@ -385,6 +386,7 @@
                                                     <td><input asp-for="HSNNo" style="width:70px !important" readonly /></td>
                                                     <td><input asp-for="unit" style="width:70px !important" readonly /></td>
                                                     <td><input asp-for="ItemLocation" style="width:70px !important" readonly /></td>
+                                                    <td><input asp-for="GroupName" style="width:70px !important" readonly /></td>
 
                                                     <td><input asp-for="Amount" style="width:70px !important" readonly /></td>
                                                     <td><input asp-for="RemarkDetail" /></td>
@@ -515,6 +517,7 @@
                                                     <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rate</th>
                                                     <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Amount</th>
                                                     <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Location</th>
+                                                    <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Group Name</th>
                                                     <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PurchasePrice</th>
                                                     <th data-columnno="15" data-sortorder="asc" class="sortCol ShowHideOtherDetailTableData"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Qty</th>
                                                     <th data-columnno="16" data-sortorder="asc" class="sortCol ShowHideOtherDetailTableData"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Unit</th>
@@ -857,7 +860,7 @@
                 var entrydate = parseDateToFormat($("#EntryDate").val());
                 var challanDate = parseDateToFormat($("#ChallanDate").val());
 
-                if (!ValidateSubmit()) return;
+            if (!ValidateSubmit()) return;
                 var CheckTaxFileds = false;
                 var TaxRow = $('#divTaxGrid tr').length;
                 if ($('#divTaxGrid tr td').length > 1) {
@@ -952,9 +955,9 @@
             }, 300);
         });
                  $('#btnSaveAndDashBoard').click(function () {
-                           const printWindow = window.open('', '_blank'); // Open blank tab first (browser-safe)
+                           /* const printWindow = window.open('', '_blank'); // Open blank tab first (browser-safe) */
 
-                                    submitForm(true, false, false, printWindow, null,true,false);
+            submitForm(false, false, false, null, null, true, false);
                                    $('#PasswordAllowPopup').modal("hide");
                    });
         $('#btnPrintEmail').click(function () {
@@ -1203,10 +1206,11 @@
                 $.notify('Please Select Removal Time...!', "error");
                 return false;
             }
-            if ($("#IssByEmpCodeName").val() === '' || $("#IssByEmpCodeName").val() === null || $("#IssByEmpCodeName").val() === '0') {
+
+           /*  if ($("#IssByEmpCodeName").val() === '' || $("#IssByEmpCodeName").val() === null || $("#IssByEmpCodeName").val() === '0') {
                 $.notify('Please Select Issue by emp...!', "error");
                 return false;
-            }
+            } */
             if ($('#VehicleNo').val() != '') {
                 var inputValue = $('#VehicleNo').val();
                 if (inputValue.length > 10) {
@@ -3727,6 +3731,7 @@
                 "PurchasePrice": $('#PurchasePrice').val(),
                 "ProcessId": $('#ProcessId').val(),
                 "ItemLocation": $('#ItemLocation').val(),
+                "GroupName": $('#GroupName').val(),
                 "ProcessName": ProcessName,
                 "Storeid": $('#Storeid').val(),
                 "StoreName": StoreName,
@@ -4325,6 +4330,7 @@
                             $('#unit').val(obj.Result[0].Unit);
                             $('#HSNNo').val(obj.Result[0].HSNNo);
                             $('#ItemLocation').val(obj.Result[0].Location);
+                            $('#GroupName').val(obj.Result[0].Group_name);
                             $('#AltUnit').val(obj.Result[0].AltUnit == null ? 'NA' : obj.Result[0].AltUnit);
                             !$('#AltUnit').val() ? $('#UnitRate').prop('disabled', true) : $('#UnitRate').prop('disabled', false);
                         }
@@ -4469,6 +4475,7 @@
                                 $('#AltQty').val(obj[0].AltQty);
                                 $('#AltUnit').val(obj[0].AltUnit);
                                 $('#ItemLocation').val(obj[0].ItemLocation);
+                                $('#GroupName').val(obj[0].GroupName);
                                 $('#RemarkDetail').val(obj[0].RemarkDetail);
                                 $('#Purpose').val(obj[0].Purpose);
                                 $('#PONO').val(obj[0].PONO);
