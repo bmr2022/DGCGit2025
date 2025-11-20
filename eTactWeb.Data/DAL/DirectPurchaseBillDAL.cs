@@ -600,7 +600,7 @@ public class DirectPurchaseBillDAL
                                                   AgainstInvNo = dr["AgainstInvNo"].ToString(),
                                                   AgainstVoucherNo = dr["AgainstVoucherNo"].ToString(),
                                                   AgainstVoucherDate = string.IsNullOrEmpty(dr["AgainstVoucherDate"].ToString()) ? new DateTime() : Convert.ToDateTime(dr["AgainstVoucherDate"]),
-                                              }).OrderBy(a => a.EntryID).ToList();
+                                              }).OrderByDescending(a => a.EntryID).ToList();
             }
         }
         catch (Exception ex)
@@ -686,7 +686,7 @@ public class DirectPurchaseBillDAL
                                                   NetAmount = !string.IsNullOrEmpty(dr["NetAmt"].ToString()) ? Convert.ToSingle(dr["NetAmt"]) : 0,
                                                   AgainstVoucherNo = dr["AgainstVoucherNo"].ToString(),
                                                   AgainstInvNo = dr["AgainstInvNo"].ToString()
-                                              }).OrderBy(a => a.EntryID).ToList();
+                                              }).OrderByDescending(a => a.EntryID).ToList();
             }
         }
         catch (Exception ex)
@@ -978,7 +978,10 @@ public class DirectPurchaseBillDAL
                     MainModel.TotalAmtAftrDiscount = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[0]["TotalDiscountAmount"].ToString()) ? 0 : Convert.ToDecimal(oDataSet.Tables[0].Rows[0]["TotalDiscountAmount"]);
                     MainModel.TotalRoundOff = oDataSet.Tables[0].Rows[0]["RoundoffType"].ToString();
                     MainModel.TotalRoundOffAmt = Convert.ToDecimal(oDataSet.Tables[0].Rows[0]["RoundOffAmt"]);
-                    MainModel.CreatedBy = Convert.ToInt32(oDataSet.Tables[0].Rows[0]["ActualEntryBy"].ToString());
+                    MainModel.TaxableExpenss = Convert.ToDecimal(oDataSet.Tables[0].Rows[0]["TaxableExpenss"]);
+                    MainModel.OtherExpenss = Convert.ToDecimal(oDataSet.Tables[0].Rows[0]["OtherExpenss"]);
+                    MainModel.TotalRoundOffAmt = Convert.ToDecimal(oDataSet.Tables[0].Rows[0]["RoundOffAmt"]);
+                    MainModel.AdditionalDiscount = Convert.ToInt32(oDataSet.Tables[0].Rows[0]["AdditionalDiscount"].ToString());
                     MainModel.CretaedByName = oDataSet.Tables[0].Rows[0]["EntryByMachine"].ToString();
 
                     MainModel.Remark = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[0]["Remark"].ToString()) ? string.Empty : oDataSet.Tables[0].Rows[0]["Remark"].ToString();
@@ -1272,6 +1275,9 @@ public class DirectPurchaseBillDAL
             SqlParams.Add(new SqlParameter("@PORemarks", string.Empty));
             SqlParams.Add(new SqlParameter("@VendoreAddress", model.VendorAddress));
             SqlParams.Add(new SqlParameter("@paymentDay", model.PaymentDays));
+            SqlParams.Add(new SqlParameter("@TaxableExpenss", model.TaxableExpenss));
+            SqlParams.Add(new SqlParameter("@OtherExpenss", model.OtherExpenss));
+            SqlParams.Add(new SqlParameter("@AdditionalDiscount", model.AdditionalDiscount));
 
             RoundFloatColumns(ItemDetailDT);
             RoundFloatColumns(TaxDetailDT);
