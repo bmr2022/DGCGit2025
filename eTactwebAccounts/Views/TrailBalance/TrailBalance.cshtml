@@ -151,14 +151,15 @@
 
         $(document).ready(function () {
 
-            let currentForm = "TrailBalanceForm"; // Give form a name
+            let currentForm = "TRAILDETAIL_Ledger";
             let currentDate = new Date();
 
             // Initialize Select2 fields
             $('#ReportType, #TrailBalanceGroupName, #ParentGroupName, #AccountName').select2();
 
+
             /* ----------------------------------------------------------
-               DATE FORMATTER (Same as first script)
+               DATE FORMATTER (convert server date to dd/mm/yyyy)
             -----------------------------------------------------------*/
             let fromDateRaw = '@Model.FromDate';  // e.g. "01/Apr/2025 00:00:00"
 
@@ -166,9 +167,8 @@
                 if (!dateStr) return '';
 
                 try {
-                    let datePart = dateStr.trim().split(" ")[0];   // "01/Apr/2025"
+                    let datePart = dateStr.trim().split(" ")[0];
 
-                    // Already DD/MM/YYYY
                     if (/^\d{2}\/\d{2}\/\d{4}$/.test(datePart)) return datePart;
 
                     let [day, mon, year] = datePart.includes('/')
@@ -192,15 +192,15 @@
 
             let fromDateFormatted = convertToDDMMYYYY(fromDateRaw);
 
-            $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' })
+            $("#FromDate").datepicker({ dateFormat: "dd/mm/yy" })
                 .datepicker("setDate", fromDateFormatted || currentDate);
 
-            $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' })
+            $("#ToDate").datepicker({ dateFormat: "dd/mm/yy" })
                 .datepicker("setDate", currentDate);
 
 
             /* ----------------------------------------------------------
-               WAIT FOR SELECT2 TO LOAD (Same pattern as first script)
+               WAIT FOR SELECT2 (for async dropdown data)
             -----------------------------------------------------------*/
             function waitForSelect2(id, callback) {
                 const interval = setInterval(() => {
@@ -211,49 +211,55 @@
                 }, 100);
             }
 
+
             /* ----------------------------------------------------------
-               RESTORE FORM FILTERS (Same pattern as first script)
+               RESTORE UI FILTERS Using JSMaster.restoreFilters()
             -----------------------------------------------------------*/
-            function restoreFormFilters(formName) {
+            function applySavedFilters(formName) {
 
-                const savedFilters = DrilldownManager.restoreFilters(formName);
-                if (!savedFilters) return;
+                const saved = DrilldownManager.restoreFilters(formName);
+                if (!saved) return;
 
-                for (const key in savedFilters) {
+                for (const key in saved) {
 
-                    const $el = $(`#${key}`);
+                    const $el = $("#" + key);
                     if (!$el.length) continue;
 
-                    const type = $el.attr('type');
-
-                    if (type === 'checkbox') {
-                        $el.prop('checked', !!savedFilters[key]).trigger('change');
+                    // Checkbox
+                    if ($el.attr("type") === "checkbox") {
+                        $el.prop("checked", !!saved[key]).trigger("change");
                         continue;
                     }
 
-                    if (key === "FromDate" || key === "ToDate") {
-                        $el.datepicker("setDate", savedFilters[key]);
+                    // Datepicker
+                    if ($el.hasClass("hasDatepicker")) {
+                        $el.datepicker("setDate", saved[key]);
+                        continue;
                     }
-                    else if ($el.hasClass("select2")) {
 
-                        // Wait where needed
-                        if ($el.attr("id") === "AccountName") {
+                    // Select2
+                    if ($el.hasClass("select2")) {
+
+                        // Special waiting condition
+                        if (key === "AccountName") {
                             waitForSelect2("AccountName", () => {
-                                $el.val(savedFilters[key]).trigger("change");
+                                $el.val(saved[key]).trigger("change");
                             });
                         } else {
-                            $el.val(savedFilters[key]).trigger("change");
+                            $el.val(saved[key]).trigger("change");
                         }
+
+                        continue;
                     }
-                    else {
-                        $el.val(savedFilters[key]).trigger("change");
-                    }
+
+                    // Default textbox/select
+                    $el.val(saved[key]).trigger("change");
                 }
             }
 
 
             /* ----------------------------------------------------------
-               LOAD DROPDOWNS FIRST, THEN RESTORE (Like your first script)
+               LOAD DROPDOWNS → THEN APPLY FILTERS → THEN LOAD DATA
             -----------------------------------------------------------*/
             $.when(
                 FillGroupList(),
@@ -262,34 +268,26 @@
             ).done(function () {
 
                 try {
-                    isRestoringFilters = true;
+                    debugger
+                    // Restore for current page
+                    applySavedFilters(currentForm);
 
-                    restoreFormFilters(currentForm);
-
-                    // Additionally restore NextForm (if any)
-                    const nextForm = DrilldownManager.getLastNextForm();
-                    if (nextForm && nextForm !== currentForm) {
-                        restoreFormFilters(nextForm);
-                    }
-
+                    // UI Sync after restore
                     setTimeout(() => {
-                        DrilldownManager.restoreIfAvailable(currentForm);
                         DrilldownManager.toggleBackButton();
                     }, 300);
 
                 } catch (e) {
-                    console.error("Error restoring filters:", e);
-                } finally {
-                    setTimeout(() => { isRestoringFilters = false; }, 500);
+                    console.error("Error restoring saved filters:", e);
                 }
 
-                // After everything, load data
+                // Finally load data
                 GetTrailBalanceDetailsData();
             });
 
 
             /* ----------------------------------------------------------
-               COLUMN HIDE/SHOW LOGIC (Unchanged)
+               COLUMN HIDE/SHOW
             -----------------------------------------------------------*/
             var hiddenCols = {};
 
@@ -314,6 +312,7 @@
                     $icon.removeClass('fa-eye').addClass('fa-eye-slash');
                     delete hiddenCols[colIndex];
                 }
+
                 updateHiddenColPanel();
             });
 
@@ -323,7 +322,7 @@
 
 
             /* ----------------------------------------------------------
-               REPORT FIELDS
+               REPORT FIELDS BASED ON REPORT TYPE
             -----------------------------------------------------------*/
             function loadReportFields(reportType) {
                 let html = '';
@@ -358,13 +357,12 @@
 
 
             /* ----------------------------------------------------------
-               BOLD ROWS
+               STYLE BOLD SUMMARY ROWS
             -----------------------------------------------------------*/
             $(".bold-row").css({ "font-weight": "bold", "font-size": "16px", "color": "green" })
                 .find("input").css("color", "green");
 
-
-        }); 
+        });
 
         function FillGroupList() {
 
@@ -608,7 +606,7 @@
 
                     switch (clickname) {
                         case 'GroupClick':
-                            DrilldownManager.saveFormFilters("TRAILDETAIL", {
+                            DrilldownManager.saveFormFilters("TRAILDETAIL_Group", {
                                 FromDate: $("#FromDate").val(),
                                 ToDate: $("#ToDate").val(),
                                 ReportType: $("#ReportType").val(),
@@ -618,8 +616,8 @@
                             });
 
                             DrilldownManager.push({
-                               currentForm: "TRAILDETAIL",
-                                nextForm: "TRAILDETAIL",
+                               currentForm: "TRAILDETAIL_Group",
+                                nextForm: "TRAILDETAIL_Parent",
                                 url: window.location.href
                             });
 
@@ -629,7 +627,7 @@
                             break;
 
                         case 'ParentClick':
-                            DrilldownManager.saveFormFilters("TRAILDETAIL", {
+                            DrilldownManager.saveFormFilters("TRAILDETAIL_Parent", {
                                 FromDate: $("#FromDate").val(),
                                 ToDate: $("#ToDate").val(),
                                 ReportType: $("#ReportType").val(),
@@ -639,8 +637,8 @@
                             });
 
                             DrilldownManager.push({
-                                currentForm: "TRAILDETAIL",
-                                nextForm: "TRAILDETAIL",
+                                currentForm: "TRAILDETAIL_Parent",
+                                nextForm: "TRAILDETAIL_Ledger",
                                 url: window.location.href
                             });
 
@@ -650,7 +648,7 @@
                             break;
 
                         case 'LedgerClick':
-                            DrilldownManager.saveFormFilters("TRAILDETAIL", {
+                            DrilldownManager.saveFormFilters("TRAILDETAIL_Ledger", {
                                 FromDate: $("#FromDate").val(),
                                 ToDate: $("#ToDate").val(),
                                 ReportType: $("#ReportType").val(),
@@ -671,7 +669,7 @@
                             });
 
                             DrilldownManager.pushNavigation({
-                                currentForm: "TRAILDETAIL",
+                                currentForm: "TRAILDETAIL_Ledger",
                                 nextForm: "MonthlySummary",
                                 isRoot: false,
                                 url: window.location.href

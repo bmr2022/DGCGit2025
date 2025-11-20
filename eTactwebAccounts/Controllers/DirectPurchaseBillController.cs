@@ -1708,6 +1708,7 @@ namespace eTactWeb.Controllers
                     ScheduleYear = model.ScheduleYear,
                     ScheduleDate = model.ScheduleDate,
                     ItemLocation = model.ItemLocation,
+                    GroupName = model.GroupName,
 
                     Unit = model.Unit,
                 });
