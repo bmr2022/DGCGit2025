@@ -1235,8 +1235,8 @@
 
             // Optional: send extra fields if needed
             // formData.append("Flag", $('#Flag').val());
-             formData.append("StoreName", $('#StoreId').val());
-            formData.append("StoreId", $('#StoreId').find(':selected').text());
+            formData.append("StoreId", $('#StoreId').val());
+            formData.append("StoreName", $('#StoreId').find(':selected').text());
 
             $.ajax({
                 url: "@Url.Action("UploadExcel")",
