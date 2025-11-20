@@ -183,33 +183,31 @@
                                         <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
                                     </span>
                                 </a>
-                               @* <a class="table-link link-danger" onclick="DeleteRow(this.id)" id="@Cntr">
-                                    <span class="fa-stack">
-                                        <i class="fa fa-square fa-stack-2x"></i>
-                                        <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
-                                    </span>
-                                </a> *@
                             </td>
                             <th>@Cntr</th>
                             <td>
                                 <a onclick="callDrillDown(this)" class="table-link link-primary"
-                                   data-controller="TrailBalance"
+                                   data-controller="TransactionLedger"
                                    data-action="Index"
                                    data-seqno="@Cntr"
                                    data-clickname="GroupClick"
+                                   data-groupledger="@item.GroupLedger"
                                    data-groupname="@item.TrailBalanceGroupCode">
                                     <input id="TrailBalanceGroupCode-@Cntr" value="@item.TrailBalanceGroupCode" type="hidden" />
+                                    <input type="hidden" id="GroupLedger-@Cntr" value="@item.GroupLedger" />
                                     @item.TrailBalanceGroupName
                                 </a>
                             </td>
                             <td>
                                 <a onclick="callDrillDown(this)" class="table-link link-primary"
-                                   data-controller="TrailBalance"
+                                   data-controller="TransactionLedger"
                                    data-action="Index"
                                    data-seqno="@Cntr"
                                    data-clickname="ParentClick"
+                                   data-groupledger="@item.GroupLedger"
                                    data-parentgroup="@item.ParentAccountCode">
                                     <input type="hidden" value="@item.ParentAccountCode" id="ParentAccountCode-@Cntr" />
+                                    <input type="hidden" id="GroupLedger-@Cntr" value="@item.GroupLedger" />
                                     @item.ParentGroupName
                                 </a>
                             </td>
@@ -219,8 +217,10 @@
                                    data-action="Index"
                                    data-seqno="@Cntr"
                                    data-clickname="LedgerClick"
+                                   data-groupledger="@item.GroupLedger"
                                    data-accountcode="@item.AccountCode">
                                     <input type="hidden" value="@item.AccountCode" id="AccountName-@Cntr" />
+                                    <input type="hidden" id="GroupLedger-@Cntr" value="@item.GroupLedger" />
                                     @item.AccountName
                                 </a>
                             </td>

@@ -27,7 +27,7 @@ namespace eTactwebAccounts.Controllers
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
         }
-        [Route("{controller}/Index")]
+        [Route("{controller}/TrailBalance")]
         [HttpGet]
         public async Task<ActionResult> TrailBalance()
         {
