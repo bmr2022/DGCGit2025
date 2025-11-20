@@ -4,6 +4,8 @@
 @inject IHttpContextAccessor HttpContextAccessor
 @{
     var yearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("YearCode"));
+    // string RetailerOrManufacturar = HttpContextAccessor.HttpContext.Session.GetString("RetailerOrManufacturar");
+
 }
 
 <style>
@@ -79,22 +81,23 @@
                     <th>Sr#</th>
                     <th>Action</th>
                     <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Challan No</th>
-                    <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Challan Type</th>
-                    <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RGP/NRGP</th>
+                    <th data-columnno="2" data-sortorder="asc" class="sortCol ShowHideEntryDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Challan Type</th>
+                    <th data-columnno="3" data-sortorder="asc" class="sortCol ShowHideEntryDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RGP/NRGP</th>
                     <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Vendor Name</th>
                     <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Challan Date</th>
-                    <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Entry ID</th>
-                    <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Entry Date</th>
-                    <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Vendor State Code</th>
-                    <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Remarks</th>
-                    <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Closed</th>
+                    <th data-columnno="6" data-sortorder="asc" class="sortCol ShowHideEntryDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Entry ID</th>
+                    <th data-columnno="7" data-sortorder="asc" class="sortCol ShowHideEntryDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Entry Date</th>
+                    <th data-columnno="8" data-sortorder="asc" class="sortCol ShowHideEntryDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Vendor State Code</th>
+                    <th data-columnno="9" data-sortorder="asc" class="sortCol ShowHideEntryDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Remarks</th>
+                    <th data-columnno="10" data-sortorder="asc" class="sortCol ShowHideEntryDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Closed</th>
+                    <th data-columnno="10" data-sortorder="asc" class="sortCol "><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Net Total</th>
                     <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Actual Entered By</th>
-                    <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Actual Entry Date</th>
-                    <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Updated By</th>
-                    <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Updated Date</th>
-                    <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Machine Name</th>
-                    <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>YearCode</th>
-                    <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Delivery Address</th>
+                    <th data-columnno="12" data-sortorder="asc" class="sortCol ShowHideEntryDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Actual Entry Date</th>
+                    <th data-columnno="13" data-sortorder="asc" class="sortCol ShowHideEntryDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Updated By</th>
+                    <th data-columnno="14" data-sortorder="asc" class="sortCol ShowHideEntryDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Updated Date</th>
+                    <th data-columnno="15" data-sortorder="asc" class="sortCol ShowHideEntryDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Machine Name</th>
+                    <th data-columnno="16" data-sortorder="asc" class="sortCol ShowHideEntryDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>YearCode</th>
+                    <th data-columnno="17" data-sortorder="asc" class="sortCol ShowHideEntryDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Delivery Address</th>
                 </tr>
             </thead>
             <tbody id="divINGrid">
@@ -255,23 +258,24 @@
                                     </div>
                                 </td>
                                 <td>@item.ChallanNo</td>
-                                <td>@item.ChallanType</td>
-                                <td id="RGPNRGPColor-@Cntr">@item.RGPNRGP</td>
+                                <td class="ShowHideEntryDetail">@item.ChallanType</td>
+                                <td class="ShowHideEntryDetail" id="RGPNRGPColor-@Cntr">@item.RGPNRGP</td>
                                 <td>@item.VendorName</td>
                                 <input type="hidden" class="AccountCode" value="@item.AccountCode" />
                                 <td>@item.ChallanDate.Split(" ")[0]</td>
-                                <td>@item.EntryId</td>
-                                <td>@item.EntryDate.Split(" ")[0]</td>
-                                <td>@item.VendorStateCode</td>
-                                <td>@item.Remarks</td>
-                                <td>@item.closed</td>
+                                <td class="ShowHideEntryDetail">@item.EntryId</td>
+                                <td class="ShowHideEntryDetail">@item.EntryDate.Split(" ")[0]</td>
+                                <td class="ShowHideEntryDetail">@item.VendorStateCode</td>
+                                <td class="ShowHideEntryDetail">@item.Remarks</td>
+                                <td class="ShowHideEntryDetail">@item.closed</td>
+                                <td>@item.Amount</td>
                                 <td>@item.ActualEnteredEmp</td>
-                                <td>@item.ActualEntryDate.Split(" ")[0]</td>
-                                <td>@item.UpdatedByEmpName</td>
-                                <td>@item.UpdatedDate</td>
-                                <td>@item.MachinName</td>
-                                <td>@item.YearCode</td>
-                                <td>@item.DeliveryAddress</td>
+                                <td class="ShowHideEntryDetail">@item.ActualEntryDate.Split(" ")[0]</td>
+                                <td class="ShowHideEntryDetail">@item.UpdatedByEmpName</td>
+                                <td class="ShowHideEntryDetail">@item.UpdatedDate</td>
+                                <td class="ShowHideEntryDetail">@item.MachinName</td>
+                                <td class="ShowHideEntryDetail">@item.YearCode</td>
+                                <td class="ShowHideEntryDetail">@item.DeliveryAddress</td>
                             </tr>
                         }
                     }
@@ -281,18 +285,18 @@
                 <tr>
                     <td></td>
                     <td>Total</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td class="ShowHideEntryDetail"></td>
+                    <td class="ShowHideEntryDetail"></td>
+                    <td class="ShowHideEntryDetail"></td>
+                    <td class="ShowHideEntryDetail"></td>
+                    <td class="ShowHideEntryDetail"></td>
+                    <td class="ShowHideEntryDetail"></td>
+                    <td class="ShowHideEntryDetail"></td>
+                    <td class="ShowHideEntryDetail"></td>
+                    <td class="ShowHideEntryDetail"></td>
+                    <td class="ShowHideEntryDetail"></td>
+                    <td class="ShowHideEntryDetail"></td>
+                    <td class="ShowHideEntryDetail"></td>
                     <td></td>
                     <td></td>
                     <td class="text-center text-primary" id="tfootBillAmt"></td>

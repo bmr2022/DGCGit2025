@@ -23,6 +23,7 @@ namespace eTactWeb.DOM.Models
         public int ItemCode { get; set; }
         public string PartCode { get; set; }
         public string ItemName { get; set; }
+        public string GroupName { get; set; }
         public int HSNNo { get; set; }
         public bool IC1 { get; set; }
         public string unit { get; set; }

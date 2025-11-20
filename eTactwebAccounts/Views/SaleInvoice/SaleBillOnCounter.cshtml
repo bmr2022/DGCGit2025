@@ -1235,7 +1235,8 @@
 
             // Optional: send extra fields if needed
             // formData.append("Flag", $('#Flag').val());
-            // formData.append("StoreName", $('#StoreName').val());
+            formData.append("StoreId", $('#StoreId').val());
+            formData.append("StoreName", $('#StoreId').find(':selected').text());
 
             $.ajax({
                 url: "@Url.Action("UploadExcel")",
@@ -1261,6 +1262,14 @@
                     if (result.html) {
                         $('#divSaleBillList').empty();
                         $('#divSaleBillList').html(result.html);
+                    }
+                    if ($('#SaleBillJobwork').val() == 'J') {
+                        $('.jobWorkChalln').show();
+                        $('.gridHiddenField').show();
+
+                    } else {
+                        $('.jobWorkChalln').hide();
+                        $('.gridHiddenField').hide();
                     }
 
                     // ===== CALCULATE ITEMS & AMOUNTS =====
@@ -1297,7 +1306,7 @@
                     $('#TotalRoundOffAmt').val(0.00);
 
                     // Call helper functions
-                    CalculateRate();
+                    
                     GetTaxPartItem();
                     GetDbCrDetail();
                     GetFeatureOption();

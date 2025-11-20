@@ -854,7 +854,8 @@ namespace eTactWeb.Controllers
         public async Task<IActionResult> UploadExcel()
         {
             var excelFile = Request.Form.Files[0];
-            
+            string StoreName = Request.Form["StoreName"];
+            int StoreId = Convert.ToInt32(Request.Form["StoreId"]);
 
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
@@ -875,7 +876,7 @@ namespace eTactWeb.Controllers
                         string rateStr = sheet.Cells[row, 2].Value?.ToString()?.Trim();
                         string qtyStr = sheet.Cells[row, 3].Value?.ToString()?.Trim();
                         string disStr = sheet.Cells[row, 4].Value?.ToString()?.Trim();
-                        string storename = sheet.Cells[row, 5]?.Value?.ToString()?.Trim() ?? "";
+                        //string storename = sheet.Cells[row, 5]?.Value?.ToString()?.Trim() ?? "";
 
                         if (string.IsNullOrEmpty(partCode))
                         {
@@ -919,16 +920,19 @@ namespace eTactWeb.Controllers
                         string itemName = rowData["ItemName"].ToString();
                         int itemCode = Convert.ToInt32(rowData["Item_Code"]);
                         // Get store ID
-                        var storeData = await _SaleBill.GetStoreId(storename);
-                        JObject storeJson = JObject.Parse(JsonConvert.SerializeObject(storeData));
-                        var storeRes = storeJson["Result"][0];
-                        int storeId = Convert.ToInt32(storeRes["storeid"]);
+                        //var storeData = await _SaleBill.GetStoreId(storename);
+                        //JObject storeJson = JObject.Parse(JsonConvert.SerializeObject(storeData));
+                        //var storeRes = storeJson["Result"][0];
+                        //int storeId = Convert.ToInt32(storeRes["storeid"]);
 
                         // Get more item details
                         var getItem = GetItemDetail(partCode);
                         JObject jsonDetail = JObject.Parse(getItem.Result.Value.ToString());
                         var unit = jsonDetail["Result"][0]["Unit"];
                         var hsnNo = jsonDetail["Result"][0]["HsnNo"];
+                        var GroupCode = jsonDetail["Result"][0]["GroupCode"];
+                        var Rackid = jsonDetail["Result"][0]["Rackid"]?.ToString();
+                        var Group_name = jsonDetail["Result"][0]["Group_name"]?.ToString();
 
                         decimal basicAmt = qty * rate;
                         decimal discountAmt = basicAmt * (discountPer / 100);
@@ -941,15 +945,18 @@ namespace eTactWeb.Controllers
                             ItemName = itemName,
                             ItemCode = itemCode,
                             Unit = unit.ToString(),
-                            HSNNo = Convert.ToInt32(hsnNo.ToString()),
+                            RackID = Rackid.ToString(),
+                            Group_name = Group_name.ToString(),
+                            Group_Code = string.IsNullOrEmpty(GroupCode?.ToString()) ? 0 : Convert.ToInt32(GroupCode),
+                            HSNNo = string.IsNullOrEmpty(hsnNo?.ToString()) ? 0 : Convert.ToInt32(hsnNo),
                             Qty = (float)qty,
                             Rate = (float)rate,
                             DiscountPer = (float)discountPer,
                             Amount = basicAmt,
                             DiscountAmt = discountAmt,
                             ItemNetAmount = netAmt,
-                            StoreName = storename,
-                            StoreId = storeId,
+                            StoreName = StoreName,
+                            StoreId = StoreId,
                             Batchno = "1",
                             Uniquebatchno = "1"
                         });

@@ -251,6 +251,7 @@
             FillChallanType();
             RowCount();
             GetSearchData();
+            GetFeatureOption();
            
         });
         function GetFormRights() {
@@ -366,6 +367,7 @@
                 GetDetailDashboardData();
             } else {
                 GetSearchData();
+                GetFeatureOption();
             }
         }
 
@@ -430,6 +432,64 @@
             $("#divINGrid tr").not(CurrentRow).css({ 'background-color': '' });
         }
 
+        function GetFeatureOption() {
+
+            $.ajax({
+                type: "POST",
+                data: {},
+                url: "@Url.Action("GetFeatureOption")",
+                dataType: "json",
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.Result != null) {
+
+                            if (obj.Result[0].ShowHideEntryDetail === "N") {
+                                $('.ShowHideEntryDetail').hide();
+                            } else {
+                                $('.ShowHideEntryDetail').show();
+                            }
+
+                            if (obj.Result[0].ShowHideSaleBillCustomerDetail === "N") {
+                                $('.SaleBillCustomerDetail').hide();
+                            } else {
+                                $('.SaleBillCustomerDetail').show();
+                            }
+
+                            if (obj.Result[0].ShowHideOtherRequiredDetail === "N") {
+                                $('.ShowHideOtherRequiredDetail').hide();
+                            } else {
+                                $('.ShowHideOtherRequiredDetail').show();
+                            }
+
+                            if (obj.Result[0].AllowToChangeStore === "N") {
+                                $('.AllowToChangeStore').hide();
+                            } else {
+                                $('.AllowToChangeStore').show();
+                            }
+
+                            if (obj.Result[0].ShowHideOtherDetailTableData === "N") {
+                                $('.ShowHideOtherDetailTableData').hide();
+                            } else {
+                                $('.ShowHideOtherDetailTableData').show();
+                            }
+                            if (obj.Result[0].ShowHideOtherDetail === "N") {
+                                $('.ShowHideOtherDetail').hide();
+                            } else {
+                                $('.ShowHideOtherDetail').show();
+
+                            }
+
+
+
+
+
+                        }
+                    }
+                }
+            });
+        }
 
 
 
@@ -498,6 +558,7 @@
                     $('#divINDashboardGrid').empty().append(data);
                     RowCount();
                     GetFormRights();
+                    GetFeatureOption();
                     //RGPNRGPColor();
                 },
                 error: function (response) {
@@ -717,7 +778,7 @@
                         $.notify(obj.Result[0].StatusText, "error");
                     }
                     else {
-                        var url = '/NRGP/Index?ID=' + encodeURIComponent(ID)
+                        var url = '/NRGP/IssueChallanOnCounter?ID=' + encodeURIComponent(ID)
                             + '&Mode=U'
                             + '&YC=' + encodeURIComponent(YC)
                             + "&ItemCode=" + encodeURIComponent($('#ItemCode').val())

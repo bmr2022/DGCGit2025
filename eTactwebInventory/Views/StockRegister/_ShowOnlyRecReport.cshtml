@@ -3,7 +3,6 @@
     <table class="table table-responsive table-hover table-bordered PMRPGrid TbCss text-nowrap mb-0" id="ReportTable">
         <thead class="bg-gradient card-headerBG text-light PMRPThead" style="position:static;" id="dashRThead">
             <tr>
-                <th>Action</th>
                 <th>Sr#</th>
                 <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Store Name</th>
                 <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Transaction Type</th>
@@ -39,14 +38,7 @@
                         Cntr = Cntr + 1;
 
                         <tr id="SAGridRow-@Cntr">
-                        <td>
-                                <a class="table-link link-danger" onclick="DeleteRow(this.id)" id="@Cntr">
-                                    <span class="fa-stack">
-                                        <i class="fa fa-square fa-stack-2x"></i>
-                                        <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
-                                    </span>
-                                </a>
-                        </td>
+                       
                             <th>@item.SeqNo</th>
                             <td>@item.StoreName</td>
                             <td>@item.TransactionType</td>

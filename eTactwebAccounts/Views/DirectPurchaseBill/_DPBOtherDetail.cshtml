@@ -20,6 +20,28 @@
             <input asp-for="PaymentTerms" class="form-control" />
         </div>
 
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 HideShowOtherDiscount">
+            <label asp-for="TaxableExpenss" class="form-label">Taxable Expenss</label>
+            <input type="hidden" id="BaseNetTotal" value="@Model.NetTotal" />
+            @* <input asp-for="CashDisRs" class="form-control"  /> *@
+            <input asp-for="TaxableExpenss" class="form-control" onkeyup="NetAmountAfterDiscount()" />
+        </div>
+
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12 HideShowOtherDiscount">
+            <label asp-for="OtherExpenss" class="form-label">Other Expenss</label>
+            <input type="hidden" id="BaseNetTotal" value="@Model.NetTotal" />
+            @* <input asp-for="CashDisRs" class="form-control"  /> *@
+            <input asp-for="OtherExpenss" class="form-control" onkeyup="NetAmountAfterDiscount()" />
+        </div>
+
+       
+
+        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12 HideShowOtherDiscount">
+            <label asp-for="AdditionalDiscount" class="form-label">Additional Discount</label>
+            @* <input asp-for="AdditionalDiscount" class="form-control"  /> *@
+            <input asp-for="AdditionalDiscount" class="form-control" onkeyup="NetAmountAfterDiscount()" />
+        </div>
+
         @* <div class="DH col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
         <label asp-for="ResposibleEmplforQC" class="form-label">Resp Emp for QC</label>
         <select asp-for="ResposibleEmplforQC" class="form-select" asp-items="@(new SelectList(Model.PreparedByList,"Value","Text"))">

@@ -18,7 +18,7 @@
                 <td style="background-color: #e09ef0;"><input type="text" id="PartCode-@Cntr" value="@item.PartCode" readonly></input><input id="ItemCode-@Cntr" type="hidden" value="@item.ItemCode" /></td>
                 <td><input type="text" id="ItemName-@Cntr" value="@item.ItemName" readonly></td>
 
-                <td><input id="Qty-@Cntr" type="number" style="width:70px;background-color:lightpink" onkeyup="CalculateRateForMalti(@Cntr)"/></td>
+                <td><input id="Qty-@Cntr" type="number" value="@item.LotStock" style="width:70px;background-color:lightpink" onkeyup="CalculateRateForMalti(@Cntr)" /></td>
                 <td><input type="number" id="Rate-@Cntr" style="width:70px" value="@item.Rate" onkeyup="CalculateRateForMalti(@Cntr)"></td>
                 <td><input type="number" id="DiscountPer-@Cntr" style="width:70px" value="@item.DiscountPer" onkeyup="CalculateRateForMalti(@Cntr)"  /></td>
                 <td><input type="number" id="DiscountAmt-@Cntr" style="width:70px" value="@item.DiscountAmt"  /></td>

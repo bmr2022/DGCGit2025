@@ -475,13 +475,17 @@
             });
         }
 
-        $('#sendToExcel').click(function () {
-            $("#DPBDashboardGrid").table2excel({
-                filename: "DirectPurchaseBillTable.xls"
-            });
+        // $('#sendToExcel').click(function () {
+        //     $("#DPBDashboardGrid").table2excel({
+        //         filename: "DirectPurchaseBillTable.xls"
+        //     });
+        // });
+
+         $('#sendToExcel').click(function () {
+                 var dashboardType = $('#DashboardType').val();
+                // Send DashboardType in query string
+        window.location.href = '/DirectPurchaseBill/ExportDPBDashboardToExcel?dashboardType=' + dashboardType;
         });
-
-
         function GetSearchData() {
             if ($('#DashboardType').val() == "Summary") {
                 GetSummaryData();

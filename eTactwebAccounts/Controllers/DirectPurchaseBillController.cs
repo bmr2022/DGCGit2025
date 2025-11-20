@@ -30,6 +30,7 @@ using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Org.BouncyCastle.Crypto.Engines;
+using ClosedXML.Excel;
 
 namespace eTactWeb.Controllers
 {
@@ -1092,6 +1093,8 @@ namespace eTactWeb.Controllers
             };
 
             _MemoryCache.Set("KeyDirectPurchaseBillList_Summary", modelList, cacheEntryOptions);
+            HttpContext.Session.SetString("KeyDPBDashboard",JsonConvert.SerializeObject(modelList));
+            HttpContext.Session.SetString("KeyDPBDashboardType", model.DashboardType);
             return PartialView("_DashBoardGrid", model);
         }
         public async Task<IActionResult> GetDetailData(DPBDashBoard model, int pageNumber = 1, int pageSize = 25, string SearchBox = "")
@@ -1158,6 +1161,8 @@ namespace eTactWeb.Controllers
 
                 _MemoryCache.Set("KeyDirectPurchaseBillList_Detail", modelList, cacheEntryOptions);
             }
+            HttpContext.Session.SetString("KeyDPBDashboard", JsonConvert.SerializeObject(modelList));
+
             return PartialView("_DashBoardGrid", model);
         }
         [HttpGet]
@@ -1866,6 +1871,7 @@ namespace eTactWeb.Controllers
                         var Rackid = json["Result"][0]["Rackid"]?.ToString();
                         var purchaseprice = json["Result"][0]["purchaseprice"].ToString();
                         var item_name = json["Result"][0]["item_name"].ToString();
+                        var Group_name = json["Result"][0]["Group_name"].ToString();
 
                         string location = !string.IsNullOrEmpty(locationValue)
                                             ? locationValue
@@ -1931,6 +1937,7 @@ namespace eTactWeb.Controllers
                             AltPendQty = 0,
                             Process = 0,
                             Rate = rate,
+                            GroupName = Group_name,
                             OtherRateCurr = OtherRate,
                             UnitRate = "",
                             DiscPer = discountPer,
@@ -2020,6 +2027,114 @@ namespace eTactWeb.Controllers
 
             return sw.ToString();
         }
+        [HttpGet]
+        public IActionResult ExportDPBDashboardToExcel(string dashboardType)
+        {
+            string modelJson = HttpContext.Session.GetString("KeyDPBDashboard");
+           // string dashboardType = HttpContext.Session.GetString("KeyDPBDashboardType"); // Summary / Detail / TAXDetail
+
+            List<DPBDashBoard> dashboardList = new List<DPBDashBoard>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                dashboardList = JsonConvert.DeserializeObject<List<DPBDashBoard>>(modelJson);
+            }
+
+            if (dashboardList == null || dashboardList.Count == 0)
+                return NotFound("No data available to export.");
+
+            using var workbook = new XLWorkbook();
+            var worksheet = workbook.Worksheets.Add("DPB Dashboard");
+
+            // ================================
+            //  IF SUMMARY → ONLY 9 COLUMNS
+            // ================================
+            if (dashboardType == "Summary")
+            {
+                string[] headers = {
+            "Sr#", "Entry ID", "Entry Date", "Voucher No",
+            "Invoice No", "Vendor Name", "Bill Amount",
+            "Net Amount", "Created By"
+        };
+
+                for (int i = 0; i < headers.Length; i++)
+                    worksheet.Cell(1, i + 1).Value = headers[i];
+
+                int row = 2, sr = 1;
+
+                foreach (var item in dashboardList)
+                {
+                    worksheet.Cell(row, 1).Value = sr++;
+                    worksheet.Cell(row, 2).Value = item.EntryID;
+                    worksheet.Cell(row, 3).Value = item.EntryDate?.ToString("dd/MM/yyyy");
+                    worksheet.Cell(row, 4).Value = item.PurchVouchNo;
+                    worksheet.Cell(row, 5).Value = item.InvoiceNo;
+                    worksheet.Cell(row, 6).Value = item.VendorName;
+                    worksheet.Cell(row, 7).Value = item.BasicAmount;
+                    worksheet.Cell(row, 8).Value = item.NetAmount;
+                    worksheet.Cell(row, 9).Value = item.EnteredBy;
+
+                    row++;
+                }
+            }
+            else if (dashboardType == "Detail" || dashboardType == "TAXDetail")
+
+            {
+                string[] headers = {
+            "Sr#", "Entry ID", "Entry Date", "Voucher No", "Voucher Date", "Invoice No", "Invoice Date",
+            "Vendor Name", "Vendor Address", "GST Type", "State Name", "Order Type", "Service",
+            "Transporter", "Vehicle No", "Payment Terms", "Currency", "Bill Amount", "Net Amount",
+            "Created On", "Updated On", "Created By", "Updated By"
+        };
+
+                for (int i = 0; i < headers.Length; i++)
+                    worksheet.Cell(1, i + 1).Value = headers[i];
+
+                int row = 2, sr = 1;
+
+                foreach (var item in dashboardList)
+                {
+                    worksheet.Cell(row, 1).Value = sr++;
+                    worksheet.Cell(row, 2).Value = item.EntryID;
+                    worksheet.Cell(row, 3).Value = item.EntryDate?.ToString("dd/MM/yyyy");
+                    worksheet.Cell(row, 4).Value = item.PurchVouchNo;
+                    worksheet.Cell(row, 5).Value = item.VoucherDate;
+                    worksheet.Cell(row, 6).Value = item.InvoiceNo;
+                    worksheet.Cell(row, 7).Value = item.InvoiceDate?.ToString("dd/MM/yyyy");
+                    worksheet.Cell(row, 8).Value = item.VendorName;
+                    worksheet.Cell(row, 9).Value = item.VendorAddress;
+                    worksheet.Cell(row, 10).Value = item.GSTType;
+                    worksheet.Cell(row, 11).Value = item.StateName;
+                    worksheet.Cell(row, 12).Value = item.DomesticImport;
+                    worksheet.Cell(row, 13).Value = item.TypeITEMSERVASSETS;
+                    worksheet.Cell(row, 14).Value = item.Transporter;
+                    worksheet.Cell(row, 15).Value = item.VehicleNo;
+                    worksheet.Cell(row, 16).Value = item.PaymentTerms;
+                    worksheet.Cell(row, 17).Value = item.Currency;
+                    worksheet.Cell(row, 18).Value = item.BasicAmount;
+                    worksheet.Cell(row, 19).Value = item.NetAmount;
+                    worksheet.Cell(row, 20).Value = item.CreatedOn?.ToString("dd/MM/yyyy");
+                    worksheet.Cell(row, 21).Value = item.UpdatedOn?.ToString("dd/MM/yyyy");
+                    worksheet.Cell(row, 22).Value = item.EnteredBy;
+                    worksheet.Cell(row, 23).Value = item.UpdatedByName;
+
+                    row++;
+                }
+            }
+
+            worksheet.Columns().AdjustToContents();
+
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            stream.Position = 0;
+
+            return File(
+                stream.ToArray(),
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                "DPBDashboardReport.xlsx"
+            );
+        }
+
+
 
         //[HttpPost]
         //public IActionResult UploadExcel()
