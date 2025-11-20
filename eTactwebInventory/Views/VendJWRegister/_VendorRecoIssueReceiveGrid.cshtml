@@ -44,7 +44,6 @@ else
                     <th class="sortCol" data-sortorder="asc" data-columnno="16"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Completely Receive</th>
                     <th class="sortCol" data-sortorder="asc" data-columnno="17"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Closed</th>
                      *@
-                    <th>Action</th>
                     <th>Sr#</th>
                     <th>Issue Challan No</th>
                     <th>Challan Date</th>
@@ -81,14 +80,7 @@ else
                             Cntr = Cntr + 1;
 
                             <tr id="SAGridRow-@Cntr" onclick="FreezeSelection(this)">
-                                <td>
-                                    <a class="table-link link-danger" onclick="DeleteRow(this.id)" id="@Cntr">
-                                        <span class="fa-stack">
-                                            <i class="fa fa-square fa-stack-2x"></i>
-                                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
-                                        </span>
-                                    </a>
-                                </td>
+                              
                                 <th>@srNo</th>
                                 <td style="background-color: #e09ef0;">@item.IssueChallanNo</td>
                                 <td>@(item.ChallanDate == null ? string.Empty : item.ChallanDate.Split(" ")[0])</td>
