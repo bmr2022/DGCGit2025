@@ -1640,6 +1640,7 @@ public static class CommonFunc
                 {
                     if (typeProperty.PropertyInfo.Name != "SummaryDetail" && typeProperty.PropertyInfo.Name != "saleBillDashboard" && typeProperty.PropertyInfo.Name != "StateCode"
                         && typeProperty.PropertyInfo.Name != "saleBillDetails" && typeProperty.PropertyInfo.Name != "ItemDetailGrid" && typeProperty.PropertyInfo.Name != "_YesNo" && typeProperty.PropertyInfo.Name != "YesNoList"
+                        && typeProperty.PropertyInfo.Name != "ErrorList"
                         && typeProperty.PropertyInfo.Name != "TransporterId" && typeProperty.PropertyInfo.Name != "ConsigneeAccountcode" && typeProperty.PropertyInfo.Name != "PNConsingee"
                         && typeProperty.PropertyInfo.Name != "InvPrefix" && typeProperty.PropertyInfo.Name != "PN1" && typeProperty.PropertyInfo.Name != "DocTypeAccountCode"
                         && typeProperty.PropertyInfo.Name != "DocTypeAccountCode" && typeProperty.PropertyInfo.Name != "DocTypeAccountName" && typeProperty.PropertyInfo.Name != "TaxbaleAmtInWord"
