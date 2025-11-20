@@ -5,7 +5,6 @@
         <table class="table table-responsive table-hover table-bordered PMRPGrid TbCss text-nowrap mb-0" id="ReportTable">
             <thead class="bg-gradient card-headerBG text-light PMRPThead" style="position:static;" id="dashRThead">
                 <tr>
-                    <th>Action</th>
                     <th>Sr#</th>
                     <th>Vendor Name</th>
                     <th>PONO</th>
@@ -51,14 +50,7 @@
                             Cntr1 = Cntr1 + 1;
 
                             <tr id="SAGridRow-@Cntr1">
-                                <td>
-                                    <a class="table-link link-danger" onclick="DeleteRow(this.id)" id="@Cntr1">
-                                        <span class="fa-stack">
-                                            <i class="fa fa-square fa-stack-2x"></i>
-                                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
-                                        </span>
-                                    </a>
-                                </td>
+                                
                                 <th>@srNo1</th>
                                 <td>@item.VendorName</td>
                                 <td>@item.PONO</td>
