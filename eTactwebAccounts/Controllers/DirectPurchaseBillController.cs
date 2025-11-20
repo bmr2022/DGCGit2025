@@ -1867,6 +1867,7 @@ namespace eTactWeb.Controllers
                         var Rackid = json["Result"][0]["Rackid"]?.ToString();
                         var purchaseprice = json["Result"][0]["purchaseprice"].ToString();
                         var item_name = json["Result"][0]["item_name"].ToString();
+                        var Group_name = json["Result"][0]["Group_name"].ToString();
 
                         string location = !string.IsNullOrEmpty(locationValue)
                                             ? locationValue
@@ -1932,6 +1933,7 @@ namespace eTactWeb.Controllers
                             AltPendQty = 0,
                             Process = 0,
                             Rate = rate,
+                            GroupName = Group_name,
                             OtherRateCurr = OtherRate,
                             UnitRate = "",
                             DiscPer = discountPer,

@@ -423,6 +423,9 @@ public class DirectPurchaseBillModel : DPBItemDetail
 
     [Column(TypeName = "decimal(10, 4)")]
     public decimal Currency { get; set; }
+    public decimal TaxableExpenss { get; set; }
+    public decimal OtherExpenss { get; set; }
+    public decimal AdditionalDiscount { get; set; }
 
     public IList<TextValue>? CurrencyList { get; set; }
     public IList<TextValue>? DepartmentList { get; set; }
