@@ -258,8 +258,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@PaymentRemark", model.PaymentRemark ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@RecoveryMethod", model.RecoveryMethod ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@NoofInstallment", model.NoofInstallment));
-                //SqlParams.Add(new SqlParameter("@StartRecoveryFromMonth", model.StartRecoveryFromMonth ?? string.Empty));
-                SqlParams.Add(new SqlParameter("@StartRecoveryFromMonth", string.Empty));
+                SqlParams.Add(new SqlParameter("@StartRecoveryFromMonth", model.StartRecoveryFromMonth ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@AutoDeductionFromSalaryYN", model.AutoDeductionFromSalaryYN ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@FinalRevoveryDate", finRecoveryDt == default ? string.Empty : finRecoveryDt));
                 SqlParams.Add(new SqlParameter("@ActualFinalRecoveryDate", actualFinRecoveryDt == default ? string.Empty : actualFinRecoveryDt));

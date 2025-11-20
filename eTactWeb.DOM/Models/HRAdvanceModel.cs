@@ -58,8 +58,8 @@ namespace eTactWeb.DOM.Models
         public string PaymentRemark { get; set; }
         public string RecoveryMethod { get; set; }
         public int NoofInstallment { get; set; }
-        public string StartRecoveryFromMonth { get; set; }
-        public string AutoDeductionFromSalaryYN { get; set; }
+        public string? StartRecoveryFromMonth { get; set; }
+        public string? AutoDeductionFromSalaryYN { get; set; }
         public string? FinalRevoveryDate { get; set; }
         public string? ActualFinalRecoveryDate { get; set; }
         public string? StatusHoldCancelApproved { get; set; }
@@ -76,5 +76,12 @@ namespace eTactWeb.DOM.Models
 
         public string FinFromDate { get; set;}
         public string FinToDate { get; set; }
+        public HRAdvanceDashboard? HRAdvanceDashboards { get; set; }
+    }
+
+    public class HRAdvanceDashboard
+    {
+        public string? SummaryDetail { get; set; }
+        public List<HRAdvanceDashboard>? HRAdvanceDashboards { get; set; }
     }
 }
