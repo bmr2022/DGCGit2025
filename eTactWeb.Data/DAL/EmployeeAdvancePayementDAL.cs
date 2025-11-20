@@ -8,6 +8,7 @@ using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
 using static eTactWeb.DOM.Models.Common;
+using eTactWeb.Data.Common;
 
 namespace eTactWeb.Data.DAL
 {
@@ -183,6 +184,28 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@Flag", "EmployeeDetail"));
                 SqlParams.Add(new SqlParameter("@Empid", empId));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("HRSPAdvanceMain", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> GetDashboardData(string fromDate,string toDate)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                fromDate = CommonFunc.ParseFormattedDate(fromDate);
+                toDate = CommonFunc.ParseFormattedDate(toDate);
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "DASHBOARD"));
+                SqlParams.Add(new SqlParameter("@fromdate", fromDate));
+                SqlParams.Add(new SqlParameter("@todate", toDate));
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("HRSPAdvanceMain", SqlParams);
             }
             catch (Exception ex)
             {

@@ -1,0 +1,198 @@
+﻿@model eTactWeb.DOM.Models.HRAdvanceDashboard
+@using Microsoft.AspNetCore.Http
+@using System.Reflection.PortableExecutable
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+	var yearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("YearCode"));
+}
+
+<div class="table-responsive VUDashboardData" style="max-height:350px;">
+	<table class="table table-hover table-bordered TbCss text-nowrap mb-0" id="VUDashboard">
+		<thead class="bg-gradient card-headerBG text-light " id="dashPOThead">
+			<tr>
+				<th>Sr#</th>
+				<th>Action</th>
+				<th data-columnno="1" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> AdvanceEntryId </th>
+				<th data-columnno="2" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> AdvanceYearCode </th>
+				<th data-columnno="3" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> AdvanceSlipNo </th>
+				<th data-columnno="4" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> EmpId </th>
+				<th data-columnno="5" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> EmpName </th>
+				<th data-columnno="6" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> EmpCode </th>
+				<th data-columnno="7" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> DesigId </th>
+				<th data-columnno="8" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> DesigName </th>
+				<th data-columnno="9" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> DepId </th>
+				<th data-columnno="10" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> DeptName </th>
+				<th data-columnno="11" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> DOJ </th>
+				<th data-columnno="12" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> BasicSalary </th>
+				<th data-columnno="13" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> GrossSalary </th>
+				<th data-columnno="14" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> NetSalary </th>
+				<th data-columnno="15" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> AdvanceType </th>
+				<th data-columnno="16" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> PresentDaysinCurrMonth </th>
+				<th data-columnno="17" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> PresentDaysInCurrYear </th>
+				<th data-columnno="18" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> CategoryId </th>
+				<th data-columnno="19" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> RequestDate </th>
+				<th data-columnno="20" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> EntryDate </th>
+				<th data-columnno="21" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> Purpose </th>
+				<th data-columnno="22" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> RequestedAmount </th>
+				<th data-columnno="23" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> ApprovedAmount </th>
+				<th data-columnno="24" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> PreviousPendAdvanceAmt </th>
+				<th data-columnno="25" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> PreviousPendLoanAmt </th>
+				<th data-columnno="26" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> MgrApprovaldate </th>
+				<th data-columnno="27" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> MgrApprovedbyEmpid </th>
+				<th data-columnno="28" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> MgrApprovedbyEmpName </th>
+				<th data-columnno="29" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> MgrApprovedbyEmpCode </th>
+				<th data-columnno="30" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> HRApprovedbyEmpid </th>
+				<th data-columnno="31" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> HRApprovedbyEmpName </th>
+				<th data-columnno="32" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> HRApprovedbyEmpCode </th>
+				<th data-columnno="33" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> HRApprovalDate </th>
+				<th data-columnno="34" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> FinanceApprovalEmpid </th>
+				<th data-columnno="35" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> FinanceApprovalEmpName </th>
+				<th data-columnno="36" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> FinanceApprovalEmpCode </th>
+				<th data-columnno="37" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> FinanceApprovalDate </th>
+				<th data-columnno="38" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> CanceledByEmpId </th>
+				<th data-columnno="39" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> CanceledByEmpName </th>
+				<th data-columnno="40" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> CanceledByEmpCode </th>
+				<th data-columnno="41" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> Canceled </th>
+				<th data-columnno="42" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> CancelOrApprovalremarks </th>
+				<th data-columnno="43" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> ModeOfPayment </th>
+				<th data-columnno="44" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> PaymentReferenceNo </th>
+				<th data-columnno="45" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> PaymentVoucherNo </th>
+				<th data-columnno="46" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> PaymentVoucherType </th>
+				<th data-columnno="47" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> PaymentRemark </th>
+				<th data-columnno="48" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> RecoveryMethod </th>
+				<th data-columnno="49" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> NoofInstallment </th>
+				<th data-columnno="50" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> StartRecoveryFromMonth </th>
+				<th data-columnno="51" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> AutoDeductionFromSalaryYN </th>
+				<th data-columnno="52" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> FinalRevoveryDate </th>
+				<th data-columnno="53" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> ActualFinalRecoveryDate </th>
+				<th data-columnno="54" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> StatusHoldCancelApproved </th>
+				<th data-columnno="55" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> LastUpdatedBy </th>
+				<th data-columnno="56" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> LastUpdatedByEmpName </th>
+				<th data-columnno="57" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> LastUpdationDate </th>
+				<th data-columnno="58" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> RequestEntryByMachine </th>
+				<th data-columnno="59" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> ApprovedBYMachine </th>
+				<th data-columnno="60" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> CancelByMachine </th>
+				<th data-columnno="61" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> ActualEntryBy </th>
+				<th data-columnno="62" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> ActualEntryByName </th>
+				<th data-columnno="63" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> CC </th>
+				<th data-columnno="64" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> UID </th>
+
+			</tr>
+		</thead>
+		<tbody id="VUDashboardGrid">
+			@{
+				var @Cntr = 0;
+				if (Model.HRAdvanceDashboards == null || Model.HRAdvanceDashboards.Count == 0)
+				{
+					<tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+				}
+				else
+				{
+					foreach (var item in Model.HRAdvanceDashboards)
+					{
+
+						Cntr = Cntr + 1;
+						<tr id="vendorUserDashboardRow-@Cntr">
+							<th>@Cntr</th>
+							<td style="text-align:center;white-space: nowrap;">
+								<div id="container">
+									<div class="d-flex">
+										<div id="viewCursorDiv-@Cntr">
+											<a class="table-link link-success" asp-action="VendorUser" asp-route-Mode="V" asp-route-ID="@item.AdvanceEntryId">
+												<span class="fa-stack">
+													<i class="fa fa-square fa-stack-2x"></i>
+													<i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+												</span>
+											</a>
+										</div>
+										<div id="editCursorDiv-@Cntr">
+											<a class="table-link link-primary" asp-action="VendorUser" asp-route-Mode="U" asp-route-ID="@item.AdvanceEntryId">
+												<span class="fa-stack">
+													<i class="fa fa-square fa-stack-2x"></i>
+													<i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+												</span>
+											</a>
+										</div>
+										<div id="deleteCursorDiv-@Cntr">
+											<a class="table-link link-danger" onclick="confirmDelete(event)" asp-action="DeleteByID" asp-route-userEntryId="@item.AdvanceEntryId">
+												<span class="fa-stack">
+													<i class="fa fa-square fa-stack-2x"></i>
+													<i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+												</span>
+											</a>
+										</div>
+									</div>
+								</div>
+							</td>
+
+							<td>@item.AdvanceEntryId</td>
+							<td>@item.AdvanceYearCode</td>
+							<td>@item.AdvanceSlipNo</td>
+							<td>@item.EmpId</td>
+							<td>@item.EmpName</td>
+							<td>@item.EmpCode</td>
+							<td>@item.DesigId</td>
+							<td>@item.DesigName</td>
+							<td>@item.DepId</td>
+							<td>@item.DeptName</td>
+							<td>@item.DOJ</td>
+							<td>@item.BasicSalary</td>
+							<td>@item.GrossSalary</td>
+							<td>@item.NetSalary</td>
+							<td>@item.AdvanceType</td>
+							<td>@item.PresentDaysinCurrMonth</td>
+							<td>@item.PresentDaysInCurrYear</td>
+							<td>@item.CategoryId</td>
+							<td>@item.RequestDate</td>
+							<td>@item.EntryDate</td>
+							<td>@item.Purpose</td>
+							<td>@item.RequestedAmount</td>
+							<td>@item.ApprovedAmount</td>
+							<td>@item.PreviousPendAdvanceAmt</td>
+							<td>@item.PreviousPendLoanAmt</td>
+							<td>@item.MgrApprovaldate</td>
+							<td>@item.MgrApprovedbyEmpid</td>
+							<td>@item.MgrApprovedbyEmpName</td>
+							<td>@item.MgrApprovedbyEmpCode</td>
+							<td>@item.HRApprovedbyEmpid</td>
+							<td>@item.HRApprovedbyEmpName</td>
+							<td>@item.HRApprovedbyEmpCode</td>
+							<td>@item.HRApprovalDate</td>
+							<td>@item.FinanceApprovalEmpid</td>
+							<td>@item.FinanceApprovalEmpName</td>
+							<td>@item.FinanceApprovalEmpCode</td>
+							<td>@item.FinanceApprovalDate</td>
+							<td>@item.CanceledByEmpId</td>
+							<td>@item.CanceledByEmpName</td>
+							<td>@item.CanceledByEmpCode</td>
+							<td>@item.Canceled</td>
+							<td>@item.CancelOrApprovalremarks</td>
+							<td>@item.ModeOfPayment</td>
+							<td>@item.PaymentReferenceNo</td>
+							<td>@item.PaymentVoucherNo</td>
+							<td>@item.PaymentVoucherType</td>
+							<td>@item.PaymentRemark</td>
+							<td>@item.RecoveryMethod</td>
+							<td>@item.NoofInstallment</td>
+							<td>@item.StartRecoveryFromMonth</td>
+							<td>@item.AutoDeductionFromSalaryYN</td>
+							<td>@item.FinalRevoveryDate</td>
+							<td>@item.ActualFinalRecoveryDate</td>
+							<td>@item.StatusHoldCancelApproved</td>
+							<td>@item.LastUpdatedBy</td>
+							<td>@item.LastUpdatedByEmpName</td>
+							<td>@item.LastUpdationDate</td>
+							<td>@item.RequestEntryByMachine</td>
+							<td>@item.ApprovedBYMachine</td>
+							<td>@item.CancelByMachine</td>
+							<td>@item.ActualEntryBy</td>
+							<td>@item.ActualEntryByName</td>
+							<td>@item.CC</td>
+							<td>@item.UID</td>
+						</tr>
+					}
+				}
+			}
+		</tbody>
+	</table>
+</div>

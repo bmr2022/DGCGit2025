@@ -79,9 +79,8 @@ namespace eTactWeb.DOM.Models
         public HRAdvanceDashboard? HRAdvanceDashboards { get; set; }
     }
 
-    public class HRAdvanceDashboard
+    public class HRAdvanceDashboard : HRAdvanceModel
     {
-        public string? SummaryDetail { get; set; }
         public List<HRAdvanceDashboard>? HRAdvanceDashboards { get; set; }
     }
 }

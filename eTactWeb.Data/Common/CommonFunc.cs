@@ -1636,6 +1636,53 @@ public static class CommonFunc
                         typeProperty.PropertyInfo.SetValue(obj, safeValue, null);
                     }
                 }
+                else if (Tbname == "HRAdvanceDashboard" || table.TableName == "HRAdvanceDashboard")
+                {
+                    if (typeProperty.PropertyInfo.Name != "VendorUserDashboards"
+                        && typeProperty.PropertyInfo.Name != "FinFromDate"
+                        && typeProperty.PropertyInfo.Name != "FinToDate"
+                        && typeProperty.PropertyInfo.Name != "AdvanceEntryId"
+                        && typeProperty.PropertyInfo.Name != "AdvanceYearCode"
+                        && typeProperty.PropertyInfo.Name != "EmpId"
+                        && typeProperty.PropertyInfo.Name != "EmpName"
+                        && typeProperty.PropertyInfo.Name != "DesigId"
+                        && typeProperty.PropertyInfo.Name != "DesigName"
+                        && typeProperty.PropertyInfo.Name != "DepId"
+                        && typeProperty.PropertyInfo.Name != "DeptName"
+                        && typeProperty.PropertyInfo.Name != "CategoryId"
+                        && typeProperty.PropertyInfo.Name != "MgrApprovedbyEmpid"
+                        && typeProperty.PropertyInfo.Name != "MgrApprovedbyEmpName"
+                        && typeProperty.PropertyInfo.Name != "MgrApprovedbyEmpCode"
+                        && typeProperty.PropertyInfo.Name != "HRApprovedbyEmpName"
+                        && typeProperty.PropertyInfo.Name != "HRApprovedbyEmpCode"
+                        && typeProperty.PropertyInfo.Name != "FinanceApprovalEmpid"
+                        && typeProperty.PropertyInfo.Name != "FinanceApprovalEmpName"
+                        && typeProperty.PropertyInfo.Name != "FinanceApprovalEmpCode"
+                        && typeProperty.PropertyInfo.Name != "CanceledByEmpId"
+                        && typeProperty.PropertyInfo.Name != "CanceledByEmpName"
+                        && typeProperty.PropertyInfo.Name != "CanceledByEmpCode"
+                        && typeProperty.PropertyInfo.Name != "LastUpdatedByEmpName"
+                        && typeProperty.PropertyInfo.Name != "ActualEntryByName"
+                        && typeProperty.PropertyInfo.Name != "UID"
+                        && typeProperty.PropertyInfo.Name != "HRAdvanceDashboards"
+                        && typeProperty.PropertyInfo.Name != "Active"
+                        && typeProperty.PropertyInfo.Name != "CreatedBy"
+                        && typeProperty.PropertyInfo.Name != "CreatedOn"
+                        && typeProperty.PropertyInfo.Name != "EID"
+                        && typeProperty.PropertyInfo.Name != "ID"
+                        && typeProperty.PropertyInfo.Name != "Mode"
+                        && typeProperty.PropertyInfo.Name != "TxPageName"
+                        && typeProperty.PropertyInfo.Name != "UpdatedBy"
+                        && typeProperty.PropertyInfo.Name != "UpdatedOn"
+                        )
+                    {
+                        object value = row[typeProperty.PropertyInfo.Name];
+                        object? safeValue = value == null || DBNull.Value.Equals(value)
+                            ? null : Convert.ChangeType(value, typeProperty.Type);
+
+                        typeProperty.PropertyInfo.SetValue(obj, safeValue, null);
+                    }
+                }
                 else if (Tbname == "SaleBillSummTable")
                 {
                     if (typeProperty.PropertyInfo.Name != "SummaryDetail" && typeProperty.PropertyInfo.Name != "saleBillDashboard" && typeProperty.PropertyInfo.Name != "StateCode"
