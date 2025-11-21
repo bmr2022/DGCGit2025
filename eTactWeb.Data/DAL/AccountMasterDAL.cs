@@ -510,7 +510,7 @@ namespace eTactWeb.Data.DAL
                                     select new TextValue
                                     {
                                         Text = dr["Company_Name"].ToString(),
-                                        Value = dr["Company_Name"].ToString()
+                                        Value = dr["Database_Name"].ToString()
                                     }).ToList();
                         }
                     }
