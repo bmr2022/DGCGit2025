@@ -75,6 +75,7 @@ namespace eTactWeb.Data.DAL
                                                            CurrCrTotal = row["CurrCrTotal"] == DBNull.Value ? 0 : Convert.ToDecimal(row["CurrCrTotal"]),
                                                            TBSeq = row["TBSeq"] == DBNull.Value ? 0 : Convert.ToInt32(row["TBSeq"]),
                                                            TrailBalanceGroupCode = row["TrailBalanceGroupCode"] == DBNull.Value ? 0 : Convert.ToInt32(row["TrailBalanceGroupCode"]),
+                                                           GroupLedger = row["Group/Ledger"] == DBNull.Value ? string.Empty : row["Group/Ledger"].ToString(),
 
                                                        }).ToList();
                     }

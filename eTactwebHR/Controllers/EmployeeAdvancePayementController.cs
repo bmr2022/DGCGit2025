@@ -203,27 +203,76 @@ namespace eTactwebHR.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> EAPDashboard()
+        public async Task<IActionResult> EAPDashboard(string fromDate, string toDate)
         {
             try
             {
                 var model = new HRAdvanceDashboard();
+                fromDate = fromDate ?? ParseFormattedDate(HttpContext.Session.GetString("FromDate"));
+                toDate = toDate ?? ParseFormattedDate(HttpContext.Session.GetString("ToDate"));
 
-                //var Result = await _iemployeeAdvancePayement.GetDashboardData().ConfigureAwait(true);
-                //if (Result != null)
-                //{
-                //    var _List = new List<TextValue>();
-                //    DataSet DS = Result.Result;
-                //    if (DS != null)
-                //    {
-                //        var DT = DS.Tables[0].DefaultView.ToTable(true, "UserEntryId", "AccountCode", "AccountName", "UserId", "Password", "Active", "AllowTodelete", "AllowtoUpdate"
-                //                , "rightsForReport", "RightsForPurchaseModule", "RightsForQCmodule", "RightsforAccountModule"
-                //                 , "AdminUser", "ourServerName", "databaseName", "BranchName", "ActualEntryBy", "ActualEntryDate", "SaleBillPrefix", "VendorEmpName"
-                //                 , "LastUpdationdate", "EntryByMachineName", "ActualEntryBYName", "UpdatedByName", "LastUpdatedBy");
+                var Result = await _iemployeeAdvancePayement.GetDashboardData(fromDate,toDate).ConfigureAwait(true);
+                if (Result != null)
+                {
+                    var _List = new List<TextValue>();
+                    DataSet DS = Result.Result;
+                    if (DS != null)
+                    {
+                        var DT = DS.Tables[0].DefaultView.ToTable(true,
+                                                                 "AdvanceSlipNo",
+                                                                 "EmpCode",
+                                                                 "EmployeeName",
+                                                                 "Designation",
+                                                                 "Department",
+                                                                 "RequestDate",
+                                                                 "EntryDate",
+                                                                 "RequestedAmount",
+                                                                 "AdvanceType",
+                                                                 "Purpose",
+                                                                 "DOJ",
+                                                                 "BasicSalary",
+                                                                 "Grosssalary",
+                                                                 "NetSalary",
+                                                                 "PresentDaysinCurrMonth",
+                                                                 "PresentDaysInCurrYear",
+                                                                 "ApprovedAmount",
+                                                                 "PreviousPendAdvanceAmt",
+                                                                 "PreviousPendLoanAmt",
+                                                                 "MgrApprovaldate",
+                                                                 "ApprovByMgr",
+                                                                 "ApprovByHR",
+                                                                 "HRApprovedbyEmpid",
+                                                                 "HRApprovalDate",
+                                                                 "ApprByFinCode",
+                                                                 "ApprovByFin",
+                                                                 "FinanceApprovalDate",
+                                                                 "Canceled",
+                                                                 "CancelOrApprovalremarks",
+                                                                 "ModeOfPayment",
+                                                                 "PaymentReferenceNo",
+                                                                 "PaymentVoucherNo",
+                                                                 "PaymentVoucherType",
+                                                                 "PaymentRemark",
+                                                                 "RecoveryMethod",
+                                                                 "NoofInstallment",
+                                                                 "StartRecoveryFromMonth",
+                                                                 "AutoDeductionFromSalaryYN",
+                                                                 "FinalRevoveryDate",
+                                                                 "ActualFinalRecoveryDate",
+                                                                 "StatusHoldCancelApproved",
+                                                                 "LastUpdatedBy",
+                                                                 "LastUpdationDate",
+                                                                 "RequestEntryByMachine",
+                                                                 "ApprovedBYMachine",
+                                                                 "CancelByMachine",
+                                                                 "ActualEntryBy",
+                                                                 "CC"
+                                                             );
 
-                //        model.HRAdvanceDashboards = CommonFunc.DataTableToList<HRAdvanceDashboard>(DT, "HRAdvanceDashboard");
-                //    }
-                //}
+
+                        model.HRAdvanceDashboards = CommonFunc.DataTableToList<HRAdvanceDashboard>(DT, "HRAdvanceDashboard");
+                    }
+                }
                 return View(model);
             }
             catch (Exception ex)

@@ -20,5 +20,6 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FillEmpCode();
         Task<ResponseResult> FillEmployeeDetail(int empId);
         Task<ResponseResult> SaveEmployeeAdvancePayment(HRAdvanceModel model);
+        Task<ResponseResult> GetDashboardData(string fromDate, string toDate);
     }
 }

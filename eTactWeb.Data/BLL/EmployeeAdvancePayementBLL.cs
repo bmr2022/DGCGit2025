@@ -59,5 +59,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _EmployeeAdvancePayementDAL.SaveEmployeeAdvancePayment(model);
         }
+        public async Task<ResponseResult> GetDashboardData(string fromDate, string toDate)
+        {
+            return await _EmployeeAdvancePayementDAL.GetDashboardData(fromDate, toDate);
+        }
     }
 }
