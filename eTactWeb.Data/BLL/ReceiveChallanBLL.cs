@@ -25,6 +25,15 @@ namespace eTactWeb.Data.BLL
         {
             return await _ReceiveChallanDAL.GetFormRights(userID);
         }
+        public async Task<ResponseResult> ListOfPendingChallaFromOtherBranch(int AccountCode)
+        {
+            return await _ReceiveChallanDAL.ListOfPendingChallaFromOtherBranch(AccountCode);
+        }
+
+        public async Task<ResponseResult> PendingChallaItemDetailFromOtherBranch(int AccountCode, int EntryId, int YearCode)
+        {
+            return await _ReceiveChallanDAL.PendingChallaItemDetailFromOtherBranch( AccountCode,  EntryId,  YearCode);
+        }
         public async Task<ResponseResult> NewEntryId(int YearCode)
         {
             return await _ReceiveChallanDAL.NewEntryId(YearCode);

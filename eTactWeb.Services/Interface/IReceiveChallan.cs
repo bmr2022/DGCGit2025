@@ -15,6 +15,9 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetMRNNo(int yearcode,string FromDate,string ToDate);
         Task<ResponseResult> GetGateNo(int yearcode, string FromDate, string ToDate);
         Task<ResponseResult> GetMRNDetail(int EntryId);
+        Task<ResponseResult> ListOfPendingChallaFromOtherBranch(int AccountCode);
+        Task<ResponseResult> PendingChallaItemDetailFromOtherBranch(int AccountCode, int EntryId, int YearCode);
+
         Task<ResponseResult> GetGateDetail(string GateNo, int GateYc,int GateEntryId, string FromDate, string ToDate, string Flag);
         Task<ResponseResult> GetMRNYear(string MRNNO);
         Task<ResponseResult> GetMRNDate(string MRNNO,int MRNYC);

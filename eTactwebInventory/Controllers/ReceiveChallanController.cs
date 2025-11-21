@@ -108,6 +108,19 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+        public async Task<JsonResult> ListOfPendingChallaFromOtherBranch(int AccountCode)
+        {
+            var JSON = await IReceiveChallan.ListOfPendingChallaFromOtherBranch(AccountCode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
+        public async Task<JsonResult> PendingChallaItemDetailFromOtherBranch(int AccountCode,int EntryId,int YearCode)
+        {
+            var JSON = await IReceiveChallan.PendingChallaItemDetailFromOtherBranch(AccountCode, EntryId, YearCode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
 
         [Route("{controller}/Dashboard")]
         public async Task<IActionResult> RCDashboard(string AccountName, string PartCode, string ItemName, string GateNo, string ChallanNo, string SummaryDetail, string Flag = "True", string FromDate = "", string ToDate = "")
