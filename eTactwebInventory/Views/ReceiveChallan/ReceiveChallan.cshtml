@@ -593,6 +593,7 @@
 
 
                                                 <th style="width:250px;">Vendor Name</th>
+                                                <th style="width:150px;">Company Name</th>
                                                 <th style="width:80px;">Issue Date</th>
                                                 <th style="width:100px;">Total Qty</th>
                                                 <th style="width:100px;">Total Amount</th>
@@ -743,14 +744,18 @@
                                     '<button id="AcceptedQtySHA' + i + '" ' +
                                     'style="background-color: #b2b3f0;" ' +
                                     'class="btn btn-sm me-1 mt-2" ' +
-                                    'onclick="PendingChallaItemDetailFromOtherBranch(\'' + val.Accountcode + '\',' + val.EntryId + ',' + val.YearCode + ');">' +
-                                    'Select' +
+                                    'onclick="PendingChallaItemDetailFromOtherBranch('
+                                    + val.AccountCode + ','
+                                    + val.EntryId + ','
+                                    + val.YearCode + ',\''
+                                    + val.SourceDB + '\');">'+                                    'Select' +
                                     '</button>' +
                                     '</td>' +
 
                                     '<td><input id="ChallanNo' + i + '" class="form-control no-cursor" value="' + val.ChallanNo + '"/><input id="EntryId' + i + '" type="hidden" value="' + val.EntryId + '"/><input id="YearCode' + i + '" type="hidden" value="' + val.YearCode + '"/></td>' +
 
-                                    '<td><input id="Vendor' + i + '" class="form-control no-cursor" value="' + val.Vendor + '"/><input id="Accountcode' + i + '" type="hidden" value="' + val.Accountcode + '"/></td>' +
+                                    '<td><input id="Vendor' + i + '" class="form-control no-cursor" value="' + val.Vendor + '"/><input id="Accountcode' + i + '" type="hidden" value="' + val.AccountCode + '"/></td>' +
+                                    '<td><input id="SourceCompany' + i + '" class="form-control no-cursor" value="' + val.SourceCompany + '"/><input id="SourceDB' + i + '" type="hidden" value="' + val.SourceDB + '"/></td>' +
                                     '<td><input id="IssueDate' + i + '" class="form-control no-cursor" value="' + val.IssueDate + '"/></td>' +
                                     '<td><input id="TotalQty' + i + '" class="form-control no-cursor" value="' + val.TotalQty + '"/></td>' +
                                     '<td><input id="TotalAmount' + i + '" class="form-control no-cursor" value="' + val.TotalAmount + '"/></td>' +
@@ -788,11 +793,11 @@
         }
 
 
-        function PendingChallaItemDetailFromOtherBranch( accountcode,  EntryId,  YearCode) {
+        function PendingChallaItemDetailFromOtherBranch(accountcode, EntryId, YearCode, SourceDB) {
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("PendingChallaItemDetailFromOtherBranch")",
-                data: { accountcode: accountcode, EntryId: EntryId, YearCode: YearCode },
+                data: { accountcode: accountcode, EntryId: EntryId, YearCode: YearCode, SourceDB: SourceDB },
                 async: false,
                 success: function (result, status, error) {
                     if (result != null) {

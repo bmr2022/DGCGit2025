@@ -115,9 +115,9 @@ namespace eTactWeb.Controllers
             return Json(JsonString);
         }
 
-        public async Task<JsonResult> PendingChallaItemDetailFromOtherBranch(int AccountCode,int EntryId,int YearCode)
+        public async Task<JsonResult> PendingChallaItemDetailFromOtherBranch(int AccountCode,int EntryId,int YearCode,string SourceDB)
         {
-            var JSON = await IReceiveChallan.PendingChallaItemDetailFromOtherBranch(AccountCode, EntryId, YearCode);
+            var JSON = await IReceiveChallan.PendingChallaItemDetailFromOtherBranch(AccountCode, EntryId, YearCode, SourceDB);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }

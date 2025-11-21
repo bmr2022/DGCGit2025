@@ -30,9 +30,9 @@ namespace eTactWeb.Data.BLL
             return await _ReceiveChallanDAL.ListOfPendingChallaFromOtherBranch(AccountCode);
         }
 
-        public async Task<ResponseResult> PendingChallaItemDetailFromOtherBranch(int AccountCode, int EntryId, int YearCode)
+        public async Task<ResponseResult> PendingChallaItemDetailFromOtherBranch(int AccountCode, int EntryId, int YearCode, string SourceDB)
         {
-            return await _ReceiveChallanDAL.PendingChallaItemDetailFromOtherBranch( AccountCode,  EntryId,  YearCode);
+            return await _ReceiveChallanDAL.PendingChallaItemDetailFromOtherBranch( AccountCode,  EntryId,  YearCode, SourceDB);
         }
         public async Task<ResponseResult> NewEntryId(int YearCode)
         {

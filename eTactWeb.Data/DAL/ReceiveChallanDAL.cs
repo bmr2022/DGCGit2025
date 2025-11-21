@@ -85,7 +85,7 @@ namespace eTactWeb.Data.DAL
 
 
 
-        public async Task<ResponseResult> PendingChallaItemDetailFromOtherBranch(int AccountCode, int EntryId, int YearCode)
+        public async Task<ResponseResult> PendingChallaItemDetailFromOtherBranch(int AccountCode, int EntryId, int YearCode, string SourceDB)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -98,6 +98,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@AccountCode", AccountCode));
                 SqlParams.Add(new SqlParameter("@issueChallanEntryId", EntryId));
                 SqlParams.Add(new SqlParameter("@issueChallanYearcode", YearCode));
+                SqlParams.Add(new SqlParameter("@DatabaseName", SourceDB));
 
 
 
