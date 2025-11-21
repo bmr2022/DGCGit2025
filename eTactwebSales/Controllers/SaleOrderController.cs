@@ -34,6 +34,7 @@ using Newtonsoft.Json.Linq;
 using eTactWeb.Services;
 using DocumentFormat.OpenXml.EMMA;
 using OfficeOpenXml.Style;
+using ClosedXML.Excel;
 
 
 
@@ -2645,5 +2646,120 @@ public class SaleOrderController : Controller
         }
     }
 
+
+    [HttpGet]
+    public IActionResult ExportSODashboardToExcel()
+    {
+        string modelJson = HttpContext.Session.GetString("KeySaleOrderSearch");
+        // Save SODashboard list into session while loading grid
+
+        List<SaleOrderDashboard> soList = new List<SaleOrderDashboard>();
+
+        if (!string.IsNullOrEmpty(modelJson))
+        {
+            soList = JsonConvert.DeserializeObject<List<SaleOrderDashboard>>(modelJson);
+        }
+
+        if (soList == null || soList.Count == 0)
+            return NotFound("No data available to export.");
+
+        using var workbook = new XLWorkbook();
+        var worksheet = workbook.Worksheets.Add("SO Dashboard");
+
+        // ✅ All your table headers (same order as your HTML grid)
+        string[] headers = {
+        "Sr#", "SO No", "Customer Name", "Customer Order No", "Order Type", "SO Type",
+        "SO For", "WEF", "SO Close Date", "Currency", "Customer Address",
+        "Delivery Address", "Consignee", "Consignee Address", "Part Code",
+        "Item Name", "HSN No", "Qty", "Unit", "Alt Qty", "Alt Unit",
+        "Rate", "Other Rate Curr", "Rate/Unit", "Disc %", "Disc Rs",
+        "Amount", "Tol Limit", "Description", "Amend No", "Amend Date",
+        "Amend Reason", "Color", "Rej %", "Excess %", "Proj Qty1",
+        "Proj Qty2", "Order Amount", "Order Net Amount", "SO Confirm Date",
+        "Approved", "SO Complete", "Approved Date", "CC", "Updated On",
+        "Created On", "Entry ID", "Year"
+    };
+
+        // ✅ Write headers
+        for (int i = 0; i < headers.Length; i++)
+            worksheet.Cell(1, i + 1).Value = headers[i];
+
+        int row = 2;
+        int sr = 1;
+
+        foreach (var item in soList)
+        {
+            worksheet.Cell(row, 1).Value = sr++;
+            worksheet.Cell(row, 2).Value = item.SONo;
+            worksheet.Cell(row, 3).Value = item.CustomerName;
+            worksheet.Cell(row, 4).Value = item.CustOrderNo;
+            worksheet.Cell(row, 5).Value = item.OrderType;
+            worksheet.Cell(row, 6).Value = item.SOType;
+            worksheet.Cell(row, 7).Value = item.SOFor;
+            worksheet.Cell(row, 8).Value = SafeDate(item.WEF);
+            worksheet.Cell(row, 9).Value = SafeDate(item.SOCloseDate);
+            worksheet.Cell(row, 10).Value = item.Currency;
+            worksheet.Cell(row, 11).Value = item.CustomerAddress;
+            worksheet.Cell(row, 12).Value = item.DeliveryAddress;
+            worksheet.Cell(row, 13).Value = item.Consignee;
+            worksheet.Cell(row, 14).Value = item.ConsigneeAddress;
+            worksheet.Cell(row, 15).Value = item.PartCode;
+            worksheet.Cell(row, 16).Value = item.ItemName;
+            worksheet.Cell(row, 17).Value = item.HSNNO;
+            worksheet.Cell(row, 18).Value = item.Qty;
+            worksheet.Cell(row, 19).Value = item.Unit;
+            worksheet.Cell(row, 20).Value = item.AltQty;
+            worksheet.Cell(row, 21).Value = item.AltUnit;
+            worksheet.Cell(row, 22).Value = item.Rate;
+            worksheet.Cell(row, 23).Value = item.OtherRateCurr;
+            worksheet.Cell(row, 24).Value = item.UnitRate;
+            worksheet.Cell(row, 25).Value = item.DiscPer;
+            worksheet.Cell(row, 26).Value = item.TotalDiscAmt;
+            worksheet.Cell(row, 27).Value = item.Amount;
+            worksheet.Cell(row, 28).Value = item.TolLimit;
+            worksheet.Cell(row, 29).Value = item.Description;
+            worksheet.Cell(row, 30).Value = item.AmmNo;
+            worksheet.Cell(row, 31).Value = SafeDate(item.AmendmentDate);
+            worksheet.Cell(row, 32).Value = item.AmendmentReason;
+            worksheet.Cell(row, 33).Value = item.Color;
+            worksheet.Cell(row, 34).Value = item.Rejper;
+            worksheet.Cell(row, 35).Value = item.Excessper;
+            worksheet.Cell(row, 36).Value = item.ProjQty1;
+            worksheet.Cell(row, 37).Value = item.ProjQty2;
+            worksheet.Cell(row, 38).Value = item.OrderAmt;
+            worksheet.Cell(row, 39).Value = item.OrderNetAmt;
+            worksheet.Cell(row, 40).Value = SafeDate(item.SOConfirmDate);
+            worksheet.Cell(row, 41).Value = item.Approved;
+            worksheet.Cell(row, 42).Value = item.SOComplete;
+            worksheet.Cell(row, 43).Value = SafeDate(item.ApprovedDate);
+            worksheet.Cell(row, 44).Value = item.CC;
+            worksheet.Cell(row, 45).Value = SafeDate(item.UpdatedOn);
+            worksheet.Cell(row, 46).Value = SafeDate(item.CreatedOn);
+            worksheet.Cell(row, 47).Value = item.EntryID;
+            worksheet.Cell(row, 48).Value = item.Year;
+
+            row++;
+        }
+
+        worksheet.Columns().AdjustToContents();
+
+        using var stream = new MemoryStream();
+        workbook.SaveAs(stream);
+        stream.Position = 0;
+
+        return File(
+            stream.ToArray(),
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            "SODashboardReport.xlsx"
+        );
+
+    }
+    private string SafeDate(string input)
+    {
+        if (string.IsNullOrEmpty(input))
+            return "";
+
+        return input.Contains(" ") ? input.Split(" ")[0] : input;
+    }
 
 }
