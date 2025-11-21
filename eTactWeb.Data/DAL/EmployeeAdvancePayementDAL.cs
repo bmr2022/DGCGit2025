@@ -23,7 +23,8 @@ namespace eTactWeb.Data.DAL
         {
             _IDataLogic = iDataLogic;
             _connectionStringService = connectionStringService;
-            DBConnectionString = _connectionStringService.GetConnectionString();
+            DBConnectionString = configuration.GetConnectionString("eTactDB");
+            //DBConnectionString = _connectionStringService.GetConnectionString();
         }
 
         public async Task<ResponseResult> FillEntryId(int yearCode)
