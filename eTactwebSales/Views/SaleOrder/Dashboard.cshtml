@@ -336,21 +336,25 @@
 
             $('#SONo').rules('remove', 'required');
 
-            $("#btnExcel").click(function () {
-                var table = $("#SOGrid");
-                if (table.length === 0) {
-                    console.error("Table element with ID 'SOGrid' not found.");
-                    return;
-                }
+            // $("#btnExcel").click(function () {
+            //     var table = $("#SOGrid");
+            //     if (table.length === 0) {
+            //         console.error("Table element with ID 'SOGrid' not found.");
+            //         return;
+            //     }
 
-                try {
-                    table.table2excel({
-                        filename: "Table.xls"
-                    });
-                } catch (error) {
-                    console.error("An error occurred while exporting to Excel:", error);
-                }
-            });
+            //     try {
+            //         table.table2excel({
+            //             filename: "Table.xls"
+            //         });
+            //     } catch (error) {
+            //         console.error("An error occurred while exporting to Excel:", error);
+            //     }
+            // });
+
+                    $('#btnExcel').click(function () {
+            window.location.href = '/SaleOrder/ExportSODashboardToExcel';
+        });
 
             GetFeatureOption();
         });
