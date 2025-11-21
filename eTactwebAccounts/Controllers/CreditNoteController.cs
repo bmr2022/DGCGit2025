@@ -53,9 +53,10 @@ namespace eTactWeb.Controllers
 
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
             {
+               
+                model = await _creditNote.GetViewByID(ID, YearCode, Mode);
                 model.FinFromDate = HttpContext.Session.GetString("FromDate");
                 model.FinToDate = HttpContext.Session.GetString("ToDate");
-                model = await _creditNote.GetViewByID(ID, YearCode, Mode);
                 model.Mode = Mode;
                 model.ID = ID;
             }
@@ -566,6 +567,7 @@ namespace eTactWeb.Controllers
             DTSSGrid.Columns.Add("SOEntryId", typeof(int));
             DTSSGrid.Columns.Add("BatchNo", typeof(string));
             DTSSGrid.Columns.Add("UniqueBatchNo", typeof(string));
+            DTSSGrid.Columns.Add("DocAccountCode", typeof(int));
             DTSSGrid.Columns.Add("BillAmount", typeof(float));
             DTSSGrid.Columns.Add("PaidAmt", typeof(float));
             DTSSGrid.Columns.Add("RemainingAmt", typeof(float));
@@ -616,6 +618,7 @@ namespace eTactWeb.Controllers
                     Item.SOEntryId,
                     Item.BatchNo == null ? string.Empty : Item.BatchNo,
                     Item.UniqueBatchNo == null ? string.Empty : Item.UniqueBatchNo,
+                    Item.DocAccountCode,
                      Item.BillAmount,
                     Item.PaidAmt,
                     Item.RemainingAmt
@@ -624,72 +627,155 @@ namespace eTactWeb.Controllers
             DTSSGrid.Dispose();
             return DTSSGrid;
         }
-        public IActionResult DeleteItemRow(int itemCode, string Mode)
+        public IActionResult DeleteItemRow(int itemCode, string Mode, int Seq, string uniquekeyid, bool IsDeleteAll = false)
         {
             var MainModel = new AccCreditNoteModel();
-            if (Mode == "U")
+            //_MemoryCache.TryGetValue("KeyPurchaseRejectionGrid", out List<AccPurchaseRejectionDetail> purchaseRejectionDetail);
+            string modelPRGridJson = HttpContext.Session.GetString("KeyCreditNoteGrid");
+            List<AccCreditNoteDetail> purchaseRejectionDetail = new List<AccCreditNoteDetail>();
+            if (!string.IsNullOrEmpty(modelPRGridJson))
             {
-                string modelJson = HttpContext.Session.GetString("KeyCreditNoteGrid");
-                List<AccCreditNoteDetail> creditNoteDetail = new List<AccCreditNoteDetail>();
-                if (!string.IsNullOrEmpty(modelJson))
-                {
-                    creditNoteDetail = JsonConvert.DeserializeObject<List<AccCreditNoteDetail>>(modelJson);
-                }
-
-                if (creditNoteDetail != null && creditNoteDetail.Count > 0)
-                {
-                    creditNoteDetail.RemoveAll(x => x.ItemCode == itemCode);
-
-                    MainModel.AccCreditNoteDetails = creditNoteDetail;
-
-                    string serializedGrid = JsonConvert.SerializeObject(MainModel.AccCreditNoteDetails);
-                    HttpContext.Session.SetString("KeyCreditNoteGrid", serializedGrid);
-                }
+                purchaseRejectionDetail = JsonConvert.DeserializeObject<List<AccCreditNoteDetail>>(modelPRGridJson);
             }
-            else
+            string modelPRAgainstGridJson = HttpContext.Session.GetString("KeyCreditNoteGrid");
+            List<AccCreditNoteAgainstBillDetail> PRPopupGrid = new List<AccCreditNoteAgainstBillDetail>();
+            if (!string.IsNullOrEmpty(modelPRAgainstGridJson))
             {
-                string modelJson = HttpContext.Session.GetString("KeyCreditNoteGrid");
-                List<AccCreditNoteDetail> creditNoteDetail = new List<AccCreditNoteDetail>();
-                if (!string.IsNullOrEmpty(modelJson))
-                {
-                    creditNoteDetail = JsonConvert.DeserializeObject<List<AccCreditNoteDetail>>(modelJson);
-                }
-
-                if (creditNoteDetail != null && creditNoteDetail.Count > 0)
-                {
-                    creditNoteDetail.RemoveAll(x => x.ItemCode == itemCode);
-                    MainModel.AccCreditNoteDetails = creditNoteDetail;
-
-                    string serializedGrid = JsonConvert.SerializeObject(MainModel.AccCreditNoteDetails);
-                    HttpContext.Session.SetString("KeyCreditNoteGrid", serializedGrid);
-                }
+                PRPopupGrid = JsonConvert.DeserializeObject<List<AccCreditNoteAgainstBillDetail>>(modelPRAgainstGridJson);
             }
+            string uniquekey = string.Empty;
+            if (purchaseRejectionDetail != null && purchaseRejectionDetail.Count > 0)
+            {
+                MainModel.AccCreditNoteDetails = purchaseRejectionDetail;
+                if (!IsDeleteAll)
+                {
+                    uniquekey = purchaseRejectionDetail.Where(x => x.ItemCode == itemCode && x.SeqNo == Seq).Select(x => x.hdnuniquekey).FirstOrDefault()?.ToString() ?? (uniquekeyid ?? string.Empty);
+                    //purchaseRejectionDetail.RemoveAll(x => x.ItemCode == itemCode && x.SeqNo == Seq);
+                    foreach (var item in purchaseRejectionDetail.ToList())
+                    {
+                        if (item.ItemCode == itemCode && item.SeqNo == Seq)
+                        {
+                            MainModel.AccCreditNoteDetails.Remove(item);
+                        }
+                    }
+                    //MainModel.AccPurchaseRejectionDetails = purchaseRejectionDetail;
+                }
+                else
+                {
+                    MainModel.AccCreditNoteDetails = new List<AccCreditNoteDetail>();
+                }
 
+                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                    SlidingExpiration = TimeSpan.FromMinutes(55),
+                    Size = 1024,
+                };
+
+                //_MemoryCache.Set("KeyPurchaseRejectionGrid", MainModel.AccPurchaseRejectionDetails, cacheEntryOptions);
+                HttpContext.Session.SetString("KeyCreditNoteGrid", JsonConvert.SerializeObject(MainModel.AccCreditNoteDetails));
+            }
+          
             return PartialView("_CreditNoteGrid", MainModel);
         }
-        public async Task<JsonResult> EditItemRows(int itemCode)
+
+        //public IActionResult DeleteItemRow(int itemCode, string Mode)
+        //{
+        //    var MainModel = new AccCreditNoteModel();
+        //    if (Mode == "U")
+        //    {
+        //        string modelJson = HttpContext.Session.GetString("KeyCreditNoteGrid");
+        //        List<AccCreditNoteDetail> creditNoteDetail = new List<AccCreditNoteDetail>();
+        //        if (!string.IsNullOrEmpty(modelJson))
+        //        {
+        //            creditNoteDetail = JsonConvert.DeserializeObject<List<AccCreditNoteDetail>>(modelJson);
+        //        }
+
+        //        if (creditNoteDetail != null && creditNoteDetail.Count > 0)
+        //        {
+        //            creditNoteDetail.RemoveAll(x => x.ItemCode == itemCode);
+
+        //            MainModel.AccCreditNoteDetails = creditNoteDetail;
+
+        //            string serializedGrid = JsonConvert.SerializeObject(MainModel.AccCreditNoteDetails);
+        //            HttpContext.Session.SetString("KeyCreditNoteGrid", serializedGrid);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        string modelJson = HttpContext.Session.GetString("KeyCreditNoteGrid");
+        //        List<AccCreditNoteDetail> creditNoteDetail = new List<AccCreditNoteDetail>();
+        //        if (!string.IsNullOrEmpty(modelJson))
+        //        {
+        //            creditNoteDetail = JsonConvert.DeserializeObject<List<AccCreditNoteDetail>>(modelJson);
+        //        }
+
+        //        if (creditNoteDetail != null && creditNoteDetail.Count > 0)
+        //        {
+        //            creditNoteDetail.RemoveAll(x => x.ItemCode == itemCode);
+        //            MainModel.AccCreditNoteDetails = creditNoteDetail;
+
+        //            string serializedGrid = JsonConvert.SerializeObject(MainModel.AccCreditNoteDetails);
+        //            HttpContext.Session.SetString("KeyCreditNoteGrid", serializedGrid);
+        //        }
+        //    }
+
+        //    return PartialView("_CreditNoteGrid", MainModel);
+        //}
+        //public async Task<JsonResult> EditItemRows(int itemCode)
+        //{
+        //    var MainModel = new AccCreditNoteModel();
+        //    string modelJson = HttpContext.Session.GetString("KeyCreditNoteGrid");
+        //    List<AccCreditNoteDetail> creditNoteGrid = new List<AccCreditNoteDetail>();
+        //    if (!string.IsNullOrEmpty(modelJson))
+        //    {
+        //        creditNoteGrid = JsonConvert.DeserializeObject<List<AccCreditNoteDetail>>(modelJson);
+        //    }
+        //    string modelPopupGridJson = HttpContext.Session.GetString("KeyCreditNotePopupGrid");
+        //    List<AccCreditNoteAgainstBillDetail> creditNotePopupGrid = new List<AccCreditNoteAgainstBillDetail>();
+        //    if (!string.IsNullOrEmpty(modelPopupGridJson))
+        //    {
+        //        creditNotePopupGrid = JsonConvert.DeserializeObject<List<AccCreditNoteAgainstBillDetail>>(modelPopupGridJson);
+        //    }
+
+        //    var combinedData = new
+        //    {
+        //        CreditNoteGrid = creditNoteGrid?.Where(x => x.ItemCode == itemCode),
+        //        CreditNotePopupGrid = creditNotePopupGrid
+        //    };
+        //    string JsonString = JsonConvert.SerializeObject(combinedData);
+        //    return Json(JsonString);
+        //}
+        public async Task<JsonResult> EditItemRows(int itemCode, int Seq)
         {
             var MainModel = new AccCreditNoteModel();
-            string modelJson = HttpContext.Session.GetString("KeyCreditNoteGrid");
-            List<AccCreditNoteDetail> creditNoteGrid = new List<AccCreditNoteDetail>();
-            if (!string.IsNullOrEmpty(modelJson))
-            {
-                creditNoteGrid = JsonConvert.DeserializeObject<List<AccCreditNoteDetail>>(modelJson);
-            }
-            string modelPopupGridJson = HttpContext.Session.GetString("KeyCreditNotePopupGrid");
+            string modelPRJson = HttpContext.Session.GetString("KeyCreditNotePopupGrid");
+            string modelPRGridJson = HttpContext.Session.GetString("KeyCreditNoteGrid");
             List<AccCreditNoteAgainstBillDetail> creditNotePopupGrid = new List<AccCreditNoteAgainstBillDetail>();
-            if (!string.IsNullOrEmpty(modelPopupGridJson))
+            List<AccCreditNoteDetail> creditNoteGrid = new List<AccCreditNoteDetail>();
+            if (!string.IsNullOrEmpty(modelPRJson))
             {
-                creditNotePopupGrid = JsonConvert.DeserializeObject<List<AccCreditNoteAgainstBillDetail>>(modelPopupGridJson);
+                creditNotePopupGrid = JsonConvert.DeserializeObject<List<AccCreditNoteAgainstBillDetail>>(modelPRJson);
             }
-
+            if (!string.IsNullOrEmpty(modelPRGridJson))
+            {
+                creditNoteGrid = JsonConvert.DeserializeObject<List<AccCreditNoteDetail>>(modelPRGridJson);
+            }
+            //_MemoryCache.TryGetValue("KeyPurchaseRejectionGrid", out List<AccPurchaseRejectionDetail> purchaseRejectionGrid);
+            //_MemoryCache.TryGetValue("KeyPurchaseRejectionPopupGrid", out IList<AccPurchaseRejectionAgainstBillDetail> purchaseRejectionPopupGrid);
+            //var CNGrid = creditNoteGrid.Where(x => x.ItemCode == itemCode);
             var combinedData = new
             {
-                CreditNoteGrid = creditNoteGrid?.Where(x => x.ItemCode == itemCode),
+                CreditNoteGrid = creditNoteGrid?.Where(x => x.ItemCode == itemCode && x.SeqNo == Seq),
                 CreditNotePopupGrid = creditNotePopupGrid
             };
             string JsonString = JsonConvert.SerializeObject(combinedData);
             return Json(JsonString);
+        }
+        public async Task<JsonResult> ClearTaxGrid()
+        {
+            HttpContext.Session.Remove("KeyTaxGrid");
+            return Json(new { Result = "Success" });
         }
         private static DataTable GetDetailFromPopup(List<AccCreditNoteAgainstBillDetail> List)
         {
@@ -737,6 +823,9 @@ namespace eTactWeb.Controllers
                 table.Columns.Add("BatchNo", typeof(string));
                 table.Columns.Add("UniqueBatchNo", typeof(string));
                 table.Columns.Add("DocAccountCode", typeof(int));
+                table.Columns.Add("BillAmount", typeof(float));
+                table.Columns.Add("PaidAmt", typeof(float));
+                table.Columns.Add("RemainingAmt", typeof(float));
 
                 foreach (AccCreditNoteAgainstBillDetail Item in List)
                 {
@@ -783,7 +872,10 @@ namespace eTactWeb.Controllers
                    Item.SOEntryId,
                    Item.BatchNo ?? string.Empty,
                    Item.UniqueBatchNo ?? string.Empty,
-                   Item.DocAccountCode 
+                 Item.DocAccountCode,
+                     Item.BillAmount,
+                    Item.PaidAmt,
+                    Item.RemainingAmt
                         });
                 }
 
@@ -813,6 +905,7 @@ namespace eTactWeb.Controllers
 
         //    // 5. Save updated session data
         //    HttpContext.Session.SetString("KeyCreditNotePopupGrid", JsonConvert.SerializeObject(sessionData));
+
 
         //    // 6. Return JSON result
         //    return Json(JsonConvert.SerializeObject(JSON));

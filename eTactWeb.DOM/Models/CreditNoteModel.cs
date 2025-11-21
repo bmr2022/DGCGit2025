@@ -114,6 +114,7 @@ namespace eTactWeb.DOM.Models
         public string ItemSize { get; set; } = string.Empty;
         public string ItemDescription { get; set; } = string.Empty;
         public string Remark { get; set; } = string.Empty;
+        public string hdnuniquekey { get; set; }
         public DbCrModel DRCRGrid { get; set; }
     }
     public class AccCreditNoteAgainstBillDetail : TaxModel
