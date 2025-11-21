@@ -209,7 +209,7 @@
                                     <input asp-for="GateDate" class="form-control" readonly />
                                 </div>
 
-                                <div class="col-xl-1 col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                                <div class="col-xl-1 col-lg-2 col-md-4 col-sm-6 col-xs-12 ShowOtherReqFields">
                                     <label asp-for="ChallanNo" class="form-label" style="color: red;">Challan No*</label>
                                     <input asp-for="ChallanNo" class="form-control" readonly />
                                 </div>
@@ -559,6 +559,84 @@
     </form>
 </div>
 
+
+
+<div class="modal fade" style="display:none" id="PendingChallaFromOtherBranchModel" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document" ">
+        <div class="modal-content">
+            <div class="modal-header">
+
+
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row g-2 gx-3">
+
+                            <div class="card-body text-center overflow-auto pb-0   ">
+                                <div class="d-flex align-items-center mb-2">
+                                   
+                                    <div class="col-md-2 me-3" style="margin-left:50px">
+                                        <input type="text" class="form-control" id="search-box1" placeholder="Search..." style="background-color:#FFFACD;">
+                                    </div>
+
+                                </div>
+                                <div class="table-responsive" style="max-height:350px;">
+                                    <table class="table table-hover table-bordered table-striped" id="GateDataTable" style="table-layout: fixed;">
+                                        <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+                                            <tr>
+                                                <th style="width:60px;">Action </th>
+
+                                                <th style="width:120px;">Challan No</th>
+
+
+                                                <th style="width:250px;">Vendor Name</th>
+                                                <th style="width:80px;">Issue Date</th>
+                                                <th style="width:100px;">Total Qty</th>
+                                                <th style="width:100px;">Total Amount</th>
+
+                                                <th style="width:100px;">Net Amount</th>
+
+                                               
+
+
+                                            </tr>
+                                        </thead>
+                                        <tbody id="PendingChallaFromOtherBranchGrid">
+                                            <tr class="text-center">
+                                                <td colspan="25" class="text-black-50"><strong>NO DATA YET</strong></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="progress my-2" style="height: 4px;">
+                        <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <div class="row g-2 gx-3">
+                        <div class="col-12 text-center">
+                            <strong>Total No Of Items : <span id="lblTotalNoOfItemsPendSO"></span></strong>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class=" btn btn-sm btn-outline-success me-2" onclick="AddPendSOToGrid(event)">
+                        <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
+                    </button>
+
+                    <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 @section Scripts
     {
     <script>
@@ -635,6 +713,146 @@
             $('#InvoiceNo').rules("remove", "required");
         });
 
+        function ListOfPendingChallaFromOtherBranch() {
+
+            var data = {
+              
+                "AccountCode": $('#AccountCode').val(),
+               
+
+            }
+
+            $.ajax({
+                url: '@Url.Action("ListOfPendingChallaFromOtherBranch")',
+                type: "POST",
+                data: data,
+                async: false,
+                success: function (data) {
+                    if (data != null) {
+
+                        var obj = $.parseJSON(data);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#PendingChallaFromOtherBranchModel').modal('show');
+                            $('#PendingChallaFromOtherBranchGrid').empty();
+                            var i = 1;
+                            $.each(obj.Result.Table, function (index, val) {
+
+                                var html = '';
+                                html += '<tr>' +
+                                    '<td style="text-align:center;">' +
+                                    '<button id="AcceptedQtySHA' + i + '" ' +
+                                    'style="background-color: #b2b3f0;" ' +
+                                    'class="btn btn-sm me-1 mt-2" ' +
+                                    'onclick="PendingChallaItemDetailFromOtherBranch(\'' + val.Accountcode + '\',' + val.EntryId + ',' + val.YearCode + ');">' +
+                                    'Select' +
+                                    '</button>' +
+                                    '</td>' +
+
+                                    '<td><input id="ChallanNo' + i + '" class="form-control no-cursor" value="' + val.ChallanNo + '"/><input id="EntryId' + i + '" type="hidden" value="' + val.EntryId + '"/><input id="YearCode' + i + '" type="hidden" value="' + val.YearCode + '"/></td>' +
+
+                                    '<td><input id="Vendor' + i + '" class="form-control no-cursor" value="' + val.Vendor + '"/><input id="Accountcode' + i + '" type="hidden" value="' + val.Accountcode + '"/></td>' +
+                                    '<td><input id="IssueDate' + i + '" class="form-control no-cursor" value="' + val.IssueDate + '"/></td>' +
+                                    '<td><input id="TotalQty' + i + '" class="form-control no-cursor" value="' + val.TotalQty + '"/></td>' +
+                                    '<td><input id="TotalAmount' + i + '" class="form-control no-cursor" value="' + val.TotalAmount + '"/></td>' +
+                                    '<td><input id="NetAmount' + i + '" class="form-control no-cursor" value="' + val.NetAmount + '"/></td>' +
+                                    
+                                   
+                                    '</tr>';
+
+                                $('#PendingChallaFromOtherBranchGrid').append(html);
+
+                                var count = $('#PendingChallaFromOtherBranchGrid tr').length;
+                                $('#totalRows').text(count);
+                                $("#lblTotalNoOfItemsPendSO").html(count);
+                                i++;
+                            });
+
+                        }
+                        else {
+                            $('#divPendMRNGrid').empty();
+                            var count = $('#divPendMRNGrid tr').length;
+                            $("#lblTotalNoOfItemsPendSO").html(count);
+                            $('#totalRows').text(count);
+                            $('#divPendMRNGrid').append('<tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>')
+
+                        }
+                    }
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+
+        function PendingChallaItemDetailFromOtherBranch( accountcode,  EntryId,  YearCode) {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("PendingChallaItemDetailFromOtherBranch")",
+                data: { accountcode: accountcode, EntryId: EntryId, YearCode: YearCode },
+                async: false,
+                success: function (result, status, error) {
+                    if (result != null) {
+
+                        var obj = $.parseJSON(result);
+                        for (var i = 0; i < obj.Result.length; i++) {
+                            var resultItem = obj.Result[i];
+
+                            for (var key in resultItem) {
+                                if (resultItem[key] === null) {
+                                    resultItem[key] = "";
+                                }
+                            }
+                        }
+                        var html = '';
+                        $('#divReceiveGrid').empty();
+                        var i = 1;
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $.each(obj.Result.Table, function (index, val) {
+                                html += '<tr>' +
+                                    '<td><input id="PartCode' + i + '" value=' + JSON.stringify(val.Partcode) + ' class="textbox" readonly><input type="hidden" id="ItemCode' + i + '" value=' + val.Item_Code + '></td>' +
+                                    '<td><input id="ItemName' + i + '" value=' + JSON.stringify(val.ItemName) + ' readonly class="textbox"></td>' +
+                                    '<td><input id="RecQty' + i + '" value=' + val.Qty + ' style="width:60px;background-color:#ffd6dd;" class="textbox" onchange="GateAmount();" oninput="handleInput(this)"></td>' +
+                                    '<td><input id="Unit' + i + '" value=' + val.unit + ' readonly style="width:70px;" class="textbox"></td>' +
+                                    '<td><input id="Rate' + i + '" value=' + val.Rate + ' style="width:60px;" class="textbox" onchange="GateAmount();" oninput="handleInput(this)" onkeyup="ItemRate(' + val.Item_Code + ', this.value);"></td>' +
+                                    '<td><input id="GateAmount' + i + '" value="" class="textbox" style="width:60px;" readonly></td>' +
+                                    '<td><input id="IssuedQty' + i + '" value=' + val.Qty + ' style="width:60px;" readonly value="" class="textbox" style="width: 60px;"></td>' +
+                                    '<td><input id="PendQty' + i + '" class=" textbox"value=' + val.PendQty + ' style="width: 60px;" readonly></td>' +
+                                    '<td><select id="Produced' + i + '" style="background-color:#ffd6dd;" class="textbox"><option value="">-Select-</option><option value="Yes" selected>Yes</option><option value="No">No</option></select></td>' +
+                                    '<td><input id="RemarkDetail' + i + '" value="" style="width:120px;" class="textbox"></td>' +
+                                    '<td><input id="GateQty' + i + '" value="" readonly style="width:60px;" class="textbox"></td>' +
+                                    '<td><select id="StoreName' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="StoreChange(' + i + ')"><option value="" selected>-Select-</option></select></td>' +
+                                        '<td><input id="ICEntryId' + i + '" value=' + val.AgainstChallanEntryId + ' readonly style="width:90px;" class="textbox"></td>' +
+                                        '<td><input id="ICYC' + i + '" value=' + val.AgainstChallanYearCode + ' readonly style=`"width:90px;" class="textbox"></td>' +
+                                        '<td><input class="textbox" style="width:120px;" id="ICNo' + i + '" value=' + val.AgainstChallanNo + ' readonly></td>' +
+                                    '<td><input id="PendToIssue' + i + '" value="" readonly style="width:60px;" class="textbox"></td>' +
+                                        '<td><input id="BatchNo' + i + '" value=' + JSON.stringify(val.BatchNo) + ' readonly style="width:60px;" class="textbox"></td>' +
+                                        '<td><input id="UniqueBatchNo' + i + '" value=' + JSON.stringify(val.uniquebatchno) + ' readonly class="textbox"></td>' +
+                                        '<td><input id="ItemSize' + i + '" style="width:100px;" class="textbox" value=' + val.ItemSize + '></td>' +
+                                        '<td><input id="AltUnit' + i + '" readonly style="width:100px;" class="textbox" value=' + val.AltUnit + '></td>' +
+                                        '<td><input id="AltQty' + i + '" readonly style="width:100px;" class="textbox" value=' + val.AltQty + '></td>' +
+                                    '<td><input id="PONO' + i + '" readonly style="width:100px;" class="textbox" value=""></td>' +
+                                    '<td><input id="PoYC' + i + '" readonly style="width:100px;" class="textbox" value=""></td>' +
+                                    '<td><input id="PODate' + i + '" readonly style="width:100px;" class="textbox" value=""></td>' +
+                                    '<td><input id="SchNo' + i + '" readonly style="width:100px;" class="textbox" value=""></td>' +
+                                    '<td><input id="SchDate' + i + '" readonly style="width:100px;" class="textbox" value=""></td>' +
+                                    '<td><input id="SchYC' + i + '" readonly style="width:100px;" class="textbox" value=""></td>' +
+                                    '</tr>';
+                                i++;
+                            });
+                            $('#divReceiveGrid').append(html);
+                            $('#PendingChallaFromOtherBranchModel').modal('hide');
+                            GateAmount();
+                        }
+                    }
+                }
+            });
+        }
+
+
 
         function AutoFillPARTYNAMELIST() {
             // Source for PartCodeText
@@ -681,6 +899,7 @@
                     $('#AccountCode').val(ui.item.accountCode);
                     /*    CheckOrderNo();*/
                     // onchangeaccountcode();
+                    ListOfPendingChallaFromOtherBranch();
 
 
                     return false;

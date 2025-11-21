@@ -56,6 +56,65 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
+        public async Task<ResponseResult> ListOfPendingChallaFromOtherBranch(int AccountCode)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                
+
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "ListOfPendingChallaFromOtherBranch"));
+              
+                SqlParams.Add(new SqlParameter("@AccountCode", AccountCode));
+               
+
+               
+                    _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_ReceiveChallan", SqlParams);
+                
+
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+
+
+
+        public async Task<ResponseResult> PendingChallaItemDetailFromOtherBranch(int AccountCode, int EntryId, int YearCode)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+
+
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "PendingChallaItemDetailFromOtherBranch"));
+
+                SqlParams.Add(new SqlParameter("@AccountCode", AccountCode));
+                SqlParams.Add(new SqlParameter("@issueChallanEntryId", EntryId));
+                SqlParams.Add(new SqlParameter("@issueChallanYearcode", YearCode));
+
+
+
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_ReceiveChallan", SqlParams);
+
+
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+
+
         public async Task<ResponseResult> GetFormRights(int userID)
         {
             var _ResponseResult = new ResponseResult();
