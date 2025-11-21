@@ -475,6 +475,8 @@ namespace eTactWeb.Data.DAL
                                                   REQNo = dr["REQNo"].ToString(),
                                                   ReqDate = dr["ReqDate"].ToString(),
                                                   EntryDate = dr["EntryDate"].ToString(),
+                                                  EntryTime = dr["EntryTime"].ToString().Split(' ')[1].Split('.')[0],
+
                                                   WorkCenter = dr["WorkCenter"].ToString(),
                                                   WONo = dr["WONO"].ToString(),
                                                   BranchName = dr["BranchName"].ToString(),
@@ -569,6 +571,8 @@ namespace eTactWeb.Data.DAL
             model.YearCode = Convert.ToInt32(DS.Tables[0].Rows[0]["YearCode"]);
             model.Prefix = DS.Tables[0].Rows[0]["Prefix"].ToString();
             model.EntryDate = DS.Tables[0].Rows[0]["EntryDate"].ToString();
+            model.EntryTime = DS.Tables[0].Rows[0]["EntryTime"].ToString().Split(' ')[1].Split('.')[0];
+
             model.WODate= DS.Tables[0].Rows[0]["ProdSchDate"].ToString();
             model.CC = DS.Tables[0].Rows[0]["CC"].ToString();
             model.ReqTime= DS.Tables[0].Rows[0]["ReqTime"].ToString();
@@ -712,6 +716,8 @@ namespace eTactWeb.Data.DAL
                                                   REQNo = dr["REQNo"].ToString(),
                                                   ReqDate = dr["ReqDate"].ToString(),
                                                   EntryDate = dr["EntryDate"].ToString(),
+                                                  EntryTime = dr["EntryTime"].ToString().Split(' ')[1].Split('.')[0],
+
                                                   WorkCenter = dr["WorkCenter"].ToString(),
                                                   WONo = dr["WONO"].ToString(),
                                                   BranchName = dr["BranchName"].ToString(),

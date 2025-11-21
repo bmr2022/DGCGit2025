@@ -31,6 +31,9 @@ else
                     <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Req No</th>
                     <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Req Date</th>
                     <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>EntryDate</th>
+
+                    <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>EntryTime</th>
+
                     <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Work Center</th>
                     <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Dept Name</th>
                     <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>WONO</th>
@@ -143,6 +146,14 @@ else
                                 {
                                     <td>@item.EntryDate</td>
 
+                                }
+                                @if (!string.IsNullOrEmpty(item.EntryTime))
+                                {
+                                    <td>@item.EntryTime</td>
+                                }
+                                else
+                                {
+                                    <td>-</td>
                                 }
                                 <td>@item.WorkCenter</td>
                                 <td>@item.DeptName</td>

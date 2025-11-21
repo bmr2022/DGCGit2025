@@ -326,8 +326,11 @@ namespace eTactWeb.Controllers
                     DataSet DS = Result.Result;
                     if (DS != null)
                     {
-                        var DT = DS.Tables[0].DefaultView.ToTable(false, "REQNo", "ReqDate", "EntryDate", "WorkCenter", "DeptName","WONO",
-                           "BranchName", "Reason", "Cancel", "MachName", "WOYearcode", "EntryId","YearCode","TotalReqQty","TotalPendQty","Completed", "CreatedByName", "UpdatedByName");
+                        var DT = DS.Tables[0].DefaultView.ToTable(false,
+   "REQNo", "ReqDate", "EntryDate", "EntryTime", "WorkCenter", "DeptName", "WONO",
+   "BranchName", "Reason", "Cancel", "MachName", "WOYearcode",
+   "EntryId", "YearCode", "TotalReqQty", "TotalPendQty", "Completed",
+   "CreatedByName", "UpdatedByName");
                         model.ReqMainDashboard = CommonFunc.DataTableToList<RWBDashboard>(DT, "ReqDashboard");
                     }
                 }
@@ -563,6 +566,10 @@ namespace eTactWeb.Controllers
         }
         private async Task<RequisitionWithoutBOMModel> BindModel(RequisitionWithoutBOMModel model)
         {
+            if (model.ID == 0)
+            {
+                model.EntryTime = DateTime.Now.ToString("hh:mm tt");
+            }
             var oDataSet = new DataSet();
             var _List = new List<TextValue>();
             oDataSet = await _IReqWithoutBOM.BindAllDropDowns("BINDALLDROPDOWN");

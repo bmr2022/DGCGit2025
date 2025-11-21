@@ -893,7 +893,9 @@ namespace eTactWeb.Data.DAL
                                               select new IssueThrBomMainDashboard
                                               {
                                                   IssueSlipno = dr["IssueSlipNo"].ToString(),
-                                                  IssueDate = dr["IssueDate"].ToString(),                                                                                                     
+                                                  IssueDate = dr["IssueDate"].ToString(),
+                                                  EntryTime = dr["EntryTime"].ToString().Split(' ')[1].Split('.')[0],
+
                                                   ReqNo = dr["ReqNo"].ToString(),                                                
                                                   ReqDate = dr["ReqDate"].ToString(),                                                
                                                   ReqYearCode = Convert.ToInt32(dr["ReqYearCode"].ToString()),
@@ -936,7 +938,9 @@ namespace eTactWeb.Data.DAL
             int cnt = 1;
             model.EntryId = Convert.ToInt32(DS.Tables[0].Rows[0]["IssWithBOMEntryId"]);
             model.YearCode = Convert.ToInt32(DS.Tables[0].Rows[0]["IssWithBOMYearCode"]);
-            model.EntryDate = DS.Tables[0].Rows[0]["IssWithBOMEntryDate"].ToString();            
+            model.EntryDate = DS.Tables[0].Rows[0]["IssWithBOMEntryDate"].ToString();  
+                        model.EntryTime = DS.Tables[0].Rows[0]["EntryTime"].ToString().Split(' ')[1].Split('.')[0];
+
             model.IssueSlipNo = DS.Tables[0].Rows[0]["IssWithBOMIssueSlipNo"].ToString();
             model.IssueDate = DS.Tables[0].Rows[0]["IssWithBOMIssueDate"].ToString();
             model.WONO = DS.Tables[0].Rows[0]["WONO"].ToString();
@@ -1112,6 +1116,8 @@ namespace eTactWeb.Data.DAL
                                                       ReqDate = dr["ReqDate"].ToString(),
                                                       IssueSlipno = dr["IssueSlipno"].ToString(),
                                                       IssueDate = dr["IssueDate"].ToString(),
+                                                      EntryTime = dr["EntryTime"].ToString().Split(' ')[1].Split('.')[0],
+
                                                       RMItemName = dr["RMItem"].ToString(),
                                                       RMPartCode = dr["RMPartCode"].ToString(),
                                                       ReqQty = Convert.ToSingle(dr["ReqQty"]),

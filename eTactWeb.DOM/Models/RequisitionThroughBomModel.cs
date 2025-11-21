@@ -17,6 +17,8 @@ namespace eTactWeb.DOM.Models
         public string? FinToDate {  get; set; }
         public string? Prefix { get; set; } 
         public string? EntryDate { get; set; }
+
+        public string? EntryTime { get; set; }
         public string? REQNo { get; set; }
         public string ReqDate { get; set; }
         public string ReqTime { get; set; }
@@ -109,6 +111,8 @@ namespace eTactWeb.DOM.Models
 
         public string ReqDate { get; set; }
         public string EntryDate { get; set; }
+
+        public string EntryTime { get; set; }
         public string WorkCenter { get; set; }
         public string WONo { get; set; }
         public string BranchName { get; set; }

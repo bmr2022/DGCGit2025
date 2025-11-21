@@ -40,6 +40,9 @@ else{
 
                 <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Req No</th>
                 <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Req Date</th>
+
+                    <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Entry Time</th>
+
                 <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Req Year Code</th>
                 <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Issue SlipNo</th>
                 <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Issue Date</th>
@@ -135,9 +138,25 @@ else{
                             {                                
                             <td>@item.ReqDate.Split(" ")[0]</td>
                             }
+                                @if (!string.IsNullOrEmpty(item.EntryTime))
+                                {
+                                    <td>@item.EntryTime</td>
+                                }
+                                else
+                                {
+                                    <td>-</td>
+                                }
                         <td>@item.ReqYearCode </td>
                         <td>@item.IssueSlipNo</td>
                         <td>@item.IssueDate.Split(" ")[0]</td>
+                                @if (!string.IsNullOrEmpty(item.EntryTime))
+                                {
+                                    <td>@item.EntryTime</td>
+                                }
+                                else
+                                {
+                                    <td>-</td>
+                                }
                         <td>@item.EntryId</td>
                         <td>@item.YearCode</td>
                         <td>@item.WorkCenterDescription</td>

@@ -290,6 +290,8 @@ namespace eTactWeb.Data.DAL
                 model.EntryId = Convert.ToInt32(DS.Tables[0].Rows[0]["IssWOBOMEntryId"]);
                 model.YearCode = Convert.ToInt32(DS.Tables[0].Rows[0]["IssWOBOMYearCode"]);
                 model.EntryDate = DS.Tables[0].Rows[0]["IssWOBOMEntryDate"].ToString();
+                model.EntryTime = DS.Tables[0].Rows[0]["EntryTime"].ToString().Split(' ')[1].Split('.')[0];
+
                 model.PreFix = DS.Tables[0].Rows[0]["PreFix"].ToString();
                 model.IssueSlipNo = DS.Tables[0].Rows[0]["IssWOBOMSlipNo"].ToString();
                 model.IssueDate = DS.Tables[0].Rows[0]["IssWOBOMIssueDate"].ToString();
@@ -491,6 +493,8 @@ namespace eTactWeb.Data.DAL
                                                      ReqYearCode = Convert.ToInt32(dr["ReqYearCode"]),
                                                      IssueSlipNo = dr["IssueSlipNo"].ToString(),
                                                      IssueDate = dr["IssueDate"].ToString(),
+                                                     EntryTime = dr["EntryTime"].ToString().Split(' ')[1].Split('.')[0],
+
                                                      WorkCenterDescription = dr["WorkCenterDescription"].ToString(),
                                                      // ActualEnteredBy = Convert.ToInt32(dr["ActualEnteredBy"]),
                                                      //MachineCode = dr["Machinecode"].ToString(),
@@ -574,6 +578,8 @@ namespace eTactWeb.Data.DAL
                                                      PartCode = dr["PartCode"].ToString(),
                                                      IssueSlipNo = dr["IssueSlipNo"].ToString(),
                                                      IssueDate = dr["IssueDate"].ToString(),
+                                                     EntryTime = dr["EntryTime"].ToString().Split(' ')[1].Split('.')[0],
+
                                                      WorkCenterDescription = dr["WorkCenterDescription"].ToString(),
                                                  }).ToList();
                 }

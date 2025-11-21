@@ -29,6 +29,9 @@ else
                     <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Req Year Code</th>
                     <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Issue SlipNo</th>
                     <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Issue Date</th>
+
+                    <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Entry Time</th>
+
                     <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RMIteam Name</th>
                     <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RMPart Code</th>
                     <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Req Qty</th>
@@ -152,6 +155,14 @@ else
                                 else
                                 {
                                     <td>@item.IssueDate.Split(" ")[0]</td>
+                                }
+                                @if (!string.IsNullOrEmpty(item.EntryTime))
+                                {
+                                    <td>@item.EntryTime</td>
+                                }
+                                else
+                                {
+                                    <td>-</td>
                                 }
                                 <td>@item.RMItemName </td>
                                 <td>@item.RMPartCode </td>

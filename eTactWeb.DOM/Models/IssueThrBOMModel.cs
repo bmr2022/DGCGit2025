@@ -14,6 +14,7 @@ namespace eTactWeb.DOM.Models
         public string? FromDate { get; set; }
         public string? ToDate { get; set; }
         public string EntryDate { get; set; }
+        public string EntryTime { get; set; }
         public string PreFix { get; set; }
         public string IssueSlipNo { get; set; }
         public string? IssueDate { get; set; }
@@ -164,6 +165,7 @@ namespace eTactWeb.DOM.Models
         public string FGPartCode { get; set; }
         public string IssueSlipno { get; set; }
         public string IssueDate { get; set; }
+        public string EntryTime { get; set; }
         public string RMItemName { get; set; }       
         public string RMPartCode { get; set; }
         public float ReqQty { get; set; }

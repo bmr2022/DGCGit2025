@@ -15,6 +15,7 @@ namespace eTactWeb.DOM.Models
         public string? FromDate { get; set; }
         public string? ToDate { get; set; }
         public string EntryDate { get; set; }
+        public string EntryTime { get; set; }
         public string PreFix { get; set; }
         public string IssueSlipNo { get; set; }
         public string? IssueDate { get; set; }
@@ -129,6 +130,7 @@ namespace eTactWeb.DOM.Models
         public int ReqYearCode { get; set; }
         public string IssueSlipNo { get; set; }
         public string IssueDate { get; set; }
+        public string EntryTime { get; set; }
         public string? DashboardType { get; set; }
         public string WorkCenterDescription { get; set; }
         public string RecDepartment { get; set; }
