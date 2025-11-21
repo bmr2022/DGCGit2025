@@ -509,8 +509,9 @@
             $('#PartCode').select2();
             $('#ItemCode').select2();
             $('#AccountCode').select2();
-            FillItems($('#ItemSA').is(':checked'));
+            
             FillCustomerName();
+               FillItems($('#ItemSA').is(':checked'));
             FillDocument("F");
             FillStore();
             BasicTotal();
@@ -692,6 +693,42 @@
                 }
             });
         }
+         $('.btnClearTax').click(function () {
+            btnClearTax();
+        });
+                 function btnClearTax() {
+                  $.ajax({
+                      type: "POST",
+                      url: "@Url.Action("ClearTaxGrid")",
+                            data: {},
+                      dataType: "json",
+                      success: function (result, status, error) {
+                          $('#divTaxGrid').empty();
+                          var NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
+                          $('#divTaxGrid').html(NoData);
+
+                  if($('#divTDSGrid tr td').length>1){
+                  btnClearTDS();
+
+                  }
+                                var txAmt =   parseFloat($('#ItemNetAmount').val());
+                        
+                          $('#NetTotal').val(txAmt);
+                            GetDbCrDetail();
+                             var AdjGrid = $('#divAdjItemList tr td').length;
+                    if (AdjGrid >= 1 ) {
+                 ClearAdjustmentGrid();
+                  AddAdjstmntDetail1();
+                    }
+                                 $("#TotalRoundOff").val("N").trigger('change');
+                           // ClearAdjustmentGrid();
+
+                      },
+                      error: function (req, status, error) {
+                          alert(error);
+                      }
+                  });
+              }
 
         function PopUpDataGrid() {
 
@@ -716,7 +753,7 @@
         }
         var creditNotePopupGrid = [];
         var EditEachItem = false;
-        function EditItemRows(itemCode) {
+        function EditItemRows(itemCode,seq) {
             var RowCount = $('#divAddCreditNoteList tr').length;
             if (EditEachItem) {
                 $.notify('Cannot Edit item while AddtoGrid  Existing Item!!!', "error");
@@ -730,9 +767,11 @@
                     success: function (data) {
                         var obj = $.parseJSON(data);
                         if (obj != null) {
-
-                            ClearDRCRGrid();
-                            ClearAdjustmentGrid();
+                                ClearTax();
+                               btnClearTax();
+                               ClearDRCRGrid();
+                               ClearAdjustmentGrid();
+                          
                             EditEachItem = true;
                             creditNotePopupGrid = obj.CreditNotePopupGrid;
                             obj = obj.CreditNoteGrid;
@@ -765,7 +804,25 @@
                                 $('#editItemGrid-' + i).css("pointer-events", "none");
                                 $('#editItemGrid-' + i).css("cursor", "not-allowed");
                             }
-                            DeleteItemRow(itemCode);
+                                          if (creditNotePopupGrid && creditNotePopupGrid.length > 0) {
+                   EditEachItem = true; // restore checked rows
+                             FillCreditNotePopUp();// only add rows for current item
+               }
+                               DeleteItemRow(itemCode, seq);
+                           }
+                       },
+                       error: function (response) {
+                           $.notify(response.responseText, "error");
+                       },
+                       failure: function (response) {
+                           $.notify(response.responseText, "error");
+                       }
+                   }).done(function () {
+                       GetDbCrDetail();
+                   });
+               }
+           }
+                         /*    DeleteItemRow(itemCode);
                         }
                     },
                     error: function (response) {
@@ -778,7 +835,7 @@
                     GetDbCrDetail();
                 });
             }
-        }
+        } */
 
         function ClearDRCRGrid() {
             $.ajax({
@@ -797,21 +854,92 @@
                 }
             });
         }
+                function ClearPopupItemGrid() {
+               setUniqueKeysFromRenderedPopup();
 
-        function ClearPopupItemGrid() {
+               const currentItemCode = ($("#ItemCode").val() || "").trim();
+
+               const existingItemKeys = [];
+                     $('#divAddCreditNotePopupDataGrid').find('tr').each(function (index) {
+                   const row = $(this);
+                   const key = index + 1;
+                   const uniqueKey = ($('#hdnuniquekey-' + key).val() || '').trim();
+                   const parts = uniqueKey.split('_');
+                   const itemCode = parts[parts.length - 1];
+
+                   if (itemCode && !existingItemKeys.includes(itemCode)) {
+                       existingItemKeys.push(itemCode);
+                   }
+               });
+
+                  $('#divAddCreditNotePopupDataGrid').find('tr').each(function (index) {
+                   const i = index + 1;
+                   const $row = $(this);
+                   const popupItemCode = ($row.find('#popupItemCode-' + i).val() || '').trim();
+
+                   // Hide if popup item matches current item OR already exists in main grid
+                   if (popupItemCode === currentItemCode ) {
+                       $row.hide();
+                   } else {
+                       $row.show();
+                   }
+               });
+
+                   BasicItemGridTotal();
+               BasicTotal();
+           }
+
+       /*  function ClearPopupItemGrid() {
             $('#divAddCreditNotePopupDataGrid').empty();
             var NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
             $('#divAddCreditNotePopupDataGrid').html(NoData);
             BasicItemGridTotal();
-        }
+        } */
 
-        function DeleteItemRow(itemCode) {
+           function setUniqueKeysFromRenderedPopup() {
+                  $('#divAddCreditNotePopupDataGrid tr').each(function (index) {
+                   const j = index + 1;
+                         const itemCode = $(`#popupItemCode-${j}`).val() || "";
+                      const purchBillItemCode = $(`#popupPurchBillItemCode-${j}`).val() || "";
+                      const entryId = $(`#popUpsaleBillEntryId-${j}`).text().trim();
+                      const yearCode = $(`#popUpSaleBillYearCode-${j}`).text().trim();
+                      const invoiceNo = $(`#popUpInvoiceNo-${j}`).text().trim();
+                  
+                   let matched = false;
+                      $('#divAddCreditNoteList tr').each(function () {
+                       const count = $(this).index();
+                          const gridItemCode = $(`#GridIC-${count}`).val();
+                     
+                    /*    if (gridItemCode === itemCode &&
+                           gridBatchNo === batchNo &&
+                           gridUniqueBatchNo === uniqueBatchNo) { */
+                                   if (gridItemCode === itemCode) {
+                           const uniqueKey = `${entryId}_${yearCode}_${invoiceNo}_${purchBillItemCode}_${itemCode}`;
+                           const $hdn = $(`#hdnuniquekey-${count}`);
+                           if ($hdn.length && !$hdn.val()) {
+                               $hdn.val(uniqueKey);
+                           }
+                           const exists = popUpItems.some(x => x.key === itemCode && x.value === uniqueKey);
+                           if (!exists && uniqueKey) {
+                               popUpItems.push({ key: itemCode, value: uniqueKey });
+                           }
+                           matched = true;
+                       }
+                   });
+                   if (!matched) {
+                       console.warn(`No match found for popup row ${j} (itemCode: ${itemCode})`);
+                   }
+               });
+               console.log("Final Unique Key Set:", popUpItems);
+           }
+
+            function DeleteItemRow(itemCode, seq, IsDeleteAll) {
 
             $.ajax({
                 url: '@Url.Action("DeleteItemRow")',
                 type: "POST",
                 async: false,
-                data: { "itemCode": itemCode, "Mode": $('#Mode').val() },
+                data: { "itemCode": itemCode, "Mode": $('#Mode').val(), "Seq": seq, "uniquekeyid": $('#hdnuniquekey-' + seq).val(), "IsDeleteAll": IsDeleteAll },
                 success: function (data, status, xhr) {
                     $('#divAddCreditNoteList').html(data);
 
@@ -838,7 +966,8 @@
                 }
             }).done(function () {
                 GetTaxPartItem();
-                GetDbCrDetail();
+                    btnClearTax();
+                   GetDbCrDetail();
             });
         }
 
@@ -1006,7 +1135,8 @@
                                   if (creditNotePopupGrid.length > 0) {
                                       var alreadySelected = creditNotePopupGrid.some(function (x) {
                                        return (
-                                           (x.InvoiceNo == val.InvoiceNo  || x.ItemCode == val.ItemCode)
+                                              (x.AgainstSaleBillBillNo == val.InvoiceNo  || x.ItemCode == val.ItemCode)&&
+                                                    (x.AgainstSaleBillEntryId == val.SaleBillEntryId ) 
                                        );
                                    });
                                    if (alreadySelected) {
@@ -1015,7 +1145,7 @@
                                }
                                 html += '<tr id="CNPopUpRow-' + i + '" style="font-size: 12px;">' +
                                     '<td>' + i + '</td>' +
-                                    '<td><input type="checkBox" id="chkCreditNote-' + i + '" value="' + i + '" onchange="BasicPopUpItemGrid()"/></td>' +
+                                                '<td><input type="checkBox" id="chkCreditNote-' + i + '" value="' + i + '" ' + isChecked + ' onchange="BasicPopUpItemGrid()"/></td>' +
                                     '<td id="saleBillEntryId-' + i + '">' + val.SaleBillEntryId + '<input type="hidden" id="itemCode-' + i + '" value="' + val.ItemCode + '"/></td>' +
                                     '<td id="SaleBillYearCode-' + i + '">' + val.SaleBillYearCode + '</td>' +
                                     '<td id="SaleBillNo-' + i + '">' + val.SaleBillNo + '</td>' +
@@ -1051,12 +1181,12 @@
                         }
                         $('#divCreditNoteDataGrid').append(html);
 
-                        if (EditEachItem) {
+                      /*   if (EditEachItem) {
                             var popUpGrid = creditNotePopupGrid.length;
                             for (var j = 0; j < popUpGrid; j++) {
                                 $('#chkCreditNote-' + creditNotePopupGrid[j].CheckBoxNo).prop("checked", true);
                             }
-                        }
+                        } */
                               SyncPopupToMainGrid(currentItemCode);
                         if ($('#AgainstSalePurchase').val() == 'SALE') {
                             $('.hnPOfields').hide();
@@ -1162,9 +1292,7 @@
         var html = '';
         var popUpItems = [];
             function FillPopUpGridDetails(modeId) {
-                let html = '';
-                let billQty = 0;
-                let billRate = 0;
+            
                 let j = 1;
 
                 if (modeId === 'U' || modeId === 'V') {
@@ -1240,228 +1368,216 @@
             }
                 var isAddItem = false;
            var isAddToPopgrid = false;
-            function FillDetailFromPopupGrid(e) {
-            let data = [];
-            e.preventDefault();
-            let rowCount = $('#divCreditNoteDataGrid tr').length;
-            for (let i = 1; i <= rowCount; i++) {
-                let row = $('#CNPopUpRow-' + i);
-                if (row.length === 0) continue;
-                if ($('#chkCreditNote-' + i).is(':checked')) {
 
-                    let dataObj = {
-                        "CheckBoxNo": $('#chkCreditNote-' + i).val(),
-                        "CreditNoteInvoiceNo": $('#CreditNoteEntryId').val() || "",
-                        "CreditNoteVoucherNo": $('#CreditNoteVoucherNo').val() || "",
-                        "AgainstSaleBillBillNo": row.find('#SaleBillNo-' + i).text() || "",
-                        "AgainstSaleBillYearCode": row.find('#SaleBillYearCode-' + i).text() || "",
-                        "AgainstSaleBillDate": row.find('#SaleBillDate-' + i).text() || "",
-                        "AgainstSaleBillEntryId": row.find('#saleBillEntryId-' + i).text() || "",
-                        "AgainstSaleBillVoucherNo": row.find('#InvoiceNo-' + i).text() || "",
-                        "SaleBillType": "",
-                        "AgainstPurchaseBillBillNo": "",
-                        "AgainstPurchaseBillYearCode": row.find('#PurchBillYearCode').text() || "",
-                        "AgainstPurchaseBillDate": "",
-                        "AgainstPurchaseBillEntryId": row.find('#PurchBillEntryId').text() || "",
-                        "AgainstPurchaseVoucherNo": "",
-                        "PurchaseBillType": "",
-                        "ItemCode": $('#ItemCode').val() || "",
-                        "PartCode": $('#PartCode').find(':selected').text() !== '-Select-' ? $('#PartCode').find(':selected').text() : "",
-                        "ItemName": $('#ItemName').find(':selected').text() !== '-Select-' ? $('#ItemName').find(':selected').text() : "",
-                        "BillQty": row.find('#BillQty-' + i).text() || "",
-                        "Unit": $('#Unit').val() || "",
-                        "BillRate": row.find('#BillRate-' + i).text() || "",
-                           "BillAmount": row.find('#INVNetAmt-' + i).text() || "",
-                           "PaidAmt": row.find('#PaidAmt-' + i).text() || "",
-                           "RemainingAmt": row.find('#RemainingAmt-' + i).text() || "",
-                        "DiscountPer": row.find('#disPer-' + i).text() || "",
-                        "DiscountAmt": row.find('#DisAmt-' + i).text() || "",
-                        "ItemSize": $('#ItemSize').val() || "",
-                        "Amount": $('#ItemAmount-' + i).val() || "",
-                        "PONO": row.find('#pono-' + i).text() || "",
-                        "PODate": row.find('#poDate-' + i).text() || "",
-                        "POEntryId": row.find('#poEntryId-' + i).text() || "",
-                        "POYearCode": row.find('#poYearCode-' + i).text() || "",
-                        "DocAccountCode": row.find('#DocAccountCode-' + i).text() || "",
-                        "PoRate": 0,
-                        "PoAmmNo": "",
-                        "SONO": "",
-                        "SOYearCode": 0,
-                        "SODate": "",
-                        "CustOrderNo": "",
-                        "SOEntryId": "",
-                        "BatchNo": "",
-                        "UniqueBatchNo": "",
-                        "AltQty": 0,
-                        "AltUnit": ""
-                    };
-                    data.push(dataObj);
-                }
-            }
 
-            $.ajax({
-                type: "POST",
-                data: { "model": data, "itemCode": $('#ItemCode').val(), "popCt": 1 },
-                url: "@Url.Action("FillDetailFromPopupGrid")",
-                dataType: "json",
-                async: false,
-                success: function (result, status, error) {
+                                  function FillDetailFromPopupGrid(e) {
+         let data = [];
+         e.preventDefault();
+         let rowCount = $('#divCreditNoteDataGrid tr').length;
+         for (let i = 1; i <= rowCount; i++) {
+             let row = $('#CNPopUpRow-' + i);
+             if (row.length === 0) continue;
+             if ($('#chkCreditNote-' + i).is(':checked')) {
 
-                    if (result != null) {
+                 let dataObj = {
+                     "CheckBoxNo": $('#chkCreditNote-' + i).val(),
+                     "CreditNoteInvoiceNo": $('#CreditNoteEntryId').val() || "",
+                     "CreditNoteVoucherNo": $('#CreditNoteVoucherNo').val() || "",
+                     "AgainstSaleBillBillNo": row.find('#SaleBillNo-' + i).text() || "",
+                     "AgainstSaleBillYearCode": row.find('#SaleBillYearCode-' + i).text() || "",
+                     "AgainstSaleBillDate": row.find('#SaleBillDate-' + i).text() || "",
+                     "AgainstSaleBillEntryId": row.find('#saleBillEntryId-' + i).text() || "",
+                     "AgainstSaleBillVoucherNo": row.find('#InvoiceNo-' + i).text() || "",
+                     "SaleBillType": "",
+                     "AgainstPurchaseBillBillNo": "",
+                     "AgainstPurchaseBillYearCode": row.find('#PurchBillYearCode').text() || "",
+                     "AgainstPurchaseBillDate": "",
+                     "AgainstPurchaseBillEntryId": row.find('#PurchBillEntryId').text() || "",
+                     "AgainstPurchaseVoucherNo": "",
+                     "PurchaseBillType": "",
+                     "ItemCode": $('#ItemCode').val() || "",
+                     "PartCode": $('#PartCode').find(':selected').text() !== '-Select-' ? $('#PartCode').find(':selected').text() : "",
+                     "ItemName": $('#ItemName').find(':selected').text() !== '-Select-' ? $('#ItemName').find(':selected').text() : "",
+                     "BillQty": row.find('#BillQty-' + i).text() || "",
+                     "Unit": $('#Unit').val() || "",
+                     "BillRate": row.find('#BillRate-' + i).text() || "",
+                        "BillAmount": row.find('#INVNetAmt-' + i).text() || "",
+                        "PaidAmt": row.find('#PaidAmt-' + i).text() || "",
+                        "RemainingAmt": row.find('#RemainingAmt-' + i).text() || "",
+                     "DiscountPer": row.find('#disPer-' + i).text() || "",
+                     "DiscountAmt": row.find('#DisAmt-' + i).text() || "",
+                     "ItemSize": $('#ItemSize').val() || "",
+                     "Amount": $('#ItemAmount-' + i).val() || "",
+                     "PONO": row.find('#pono-' + i).text() || "",
+                     "PODate": row.find('#poDate-' + i).text() || "",
+                     "POEntryId": row.find('#poEntryId-' + i).text() || "",
+                     "POYearCode": row.find('#poYearCode-' + i).text() || "",
+                     "DocAccountCode": row.find('#DocAccountCode-' + i).text() || "",
+                     "PoRate": 0,
+                     "PoAmmNo": "",
+                     "SONO": "",
+                     "SOYearCode": 0,
+                     "SODate": "",
+                     "CustOrderNo": "",
+                     "SOEntryId": "",
+                     "BatchNo": "",
+                     "UniqueBatchNo": "",
+                     "AltQty": 0,
+                     "AltUnit": ""
+                 };
+                 data.push(dataObj);
+             }
+         }
 
-                        var obj = $.parseJSON(result);
-                        var rowCount = $('#divAddCreditNoteList tr').length;
-                        for (var i = 1; i <= rowCount; i++) {
-                            $('#discAmt-' + i).text(obj.Result[i - 1].DiscountAmt == null ? 0 : (obj.Result[i - 1].DiscountAmt).toFixed(2));
-                            $('#billQty-' + i).text((obj.Result[i - 1].BillQty) == null ? 0 : (obj.Result[i - 1].BillQty).toFixed(2));
-                            $('#discPer-' + i).text((obj.Result[i - 1].DiscountPer) == null ? 0 : (obj.Result[i - 1].DiscountPer).toFixed(2));
-                            $('#billRate-' + i).text((obj.Result[i - 1].BillRate) == null ? 0 : (obj.Result[i - 1].BillRate).toFixed(2));
-                              $('#DocTypeAccountCode').text(obj.Result[i - 1]?.DocTypeAccountCode ?? 0);
-                        }
+         $.ajax({
+             type: "POST",
+             data: { "model": data, "itemCode": $('#ItemCode').val(), "popCt": 1 },
+             url: "@Url.Action("FillDetailFromPopupGrid")",
+             dataType: "json",
+             async: false,
+             success: function (result, status, error) {
 
-                        if (obj.Result != null) {
-                            var j = 1;
-                                      let existingRowCount = $('#divAddCreditNotePopupDataGrid tr').length;
-                               var j = existingRowCount > 0 ? existingRowCount : 0;
-                                  var checkedRowsCount = $('#divCreditNoteDataGrid tr').length;
-                               /* if(html == null) { */
-                               popUpItems = [];
-                                     
-                                      if (html != null) {
-               let existingRows = [];
-                  $('#divAddCreditNotePopupDataGrid tr').each(function () {
-                   let existingItemCode = $(this).find('input[id^="popupItemCode-"]').val();
-                   if (existingItemCode && existingItemCode != $('#ItemCode').val()) {
-                       existingRows.push($(this).prop('outerHTML'));
-                   }
-               });
-                                      popuphtml = existingRows.join('');
-               let j = existingRows.length + 1;
-                  let checkedRowsCount = $('#divCreditNoteDataGrid tr').length;
+                 if (result != null) {
 
-               for (let i = 1; i <= checkedRowsCount; i++) {
-                      if ($('#chkCreditNote-' + i).is(':checked')) {
-                             let entryId = ($('#saleBillEntryId-' + i).text() || '').trim();
-                          let yearCode = ($('#SaleBillYearCode-' + i).text() || '').trim();
-                       let invoiceNo = ($('#InvoiceNo-' + i).text() || '').trim();
-                       let pbitemCode = $('#itemCode-' + i).val();
-                       let itemCode = $('#ItemCode').val();
-                     
-                       let uniqueKey = entryId + '_' + yearCode + '_' + invoiceNo + '_' + pbitemCode + '_' + itemCode;
+                     var obj = $.parseJSON(result);
+                     var rowCount = $('#divAddCreditNoteList tr').length;
+                     for (var i = 1; i <= rowCount; i++) {
+                         /* $('#discAmt-' + i).text(obj.Result[i - 1].DiscountAmt == null ? 0 : (obj.Result[i - 1].DiscountAmt).toFixed(2)); */
+                                     $('#discAmt-' + i).text((obj.Result[i - 1].DiscountAmt) == null ? 0 : (obj.Result[i - 1].DiscountAmt).toFixed(2));
+                         $('#billQty-' + i).text((obj.Result[i - 1].BillQty) == null ? 0 : (obj.Result[i - 1].BillQty).toFixed(2));
+                         $('#discPer-' + i).text((obj.Result[i - 1].DiscountPer) == null ? 0 : (obj.Result[i - 1].DiscountPer).toFixed(2));
+                         $('#billRate-' + i).text((obj.Result[i - 1].BillRate) == null ? 0 : (obj.Result[i - 1].BillRate).toFixed(2));
+                           $('#DocTypeAccountCode').text(obj.Result[i - 1]?.DocTypeAccountCode ?? 0);
+                     }
 
-                       // ✅ Prevent duplicate insertion
-                       if (!popuphtml.includes(uniqueKey)) {
-                           popuphtml += `
-                                  <tr id="CNPopUpDataRow-${j}" style="font-size: 12px;">
-                                   <td>${j}</td>
-                                   <td id="partCode-${j}">
-                                       ${$('#PartCode').find(':selected').text()}
-                                          <input type="hidden" id="popupItemCode-${j}" value="${itemCode}" />
-                                       <input type="hidden" id="popUpUniqueKey-${j}" value="${uniqueKey}" />
-                                   </td>
-                                      <td id="popUpItemName-${j}">${$('#ItemName').find(':selected').text()}</td>
-                                      <td id="popUpsaleBillEntryId-${j}">${entryId}</td>
-                                      <td id="popUpSaleBillYearCode-${j}">${yearCode}</td>
-                                            <td id="popUpSaleBillNo-${j}">${invoiceNo}</td>
-                                                     <td id="popUpSaleBillDate-${j}">${$('#InvoiceDate-' + i).text()}</td>
-                                         <td id="popUpInvoiceNo-${j}">${invoiceNo}</td>
-                                         <td id="popUpInvoiceDate-${j}">${$('#InvoiceDate-' + i).text()}</td>
-                                   <td id="popUpBillQty-${j}">${$('#BillQty-' + i).text()}</td>
-                                   <td id="popUpBillRate-${j}">${$('#BillRate-' + i).text()}</td>
-                                         <td id="popUpDocTypeAccountCode-${j}">${$('#DocTypeAccountCode-' + i).text()}</td>
-                               </tr>`;
-                           j++;
-                                popUpItems.push({ key: $('#ItemCode').val(), value: uniqueKey });
-                       }
-                   }
-               }
-           }
+                     if (obj.Result != null) {
+                        
+                               billQty = 0;
+                               billRate = 0;
+                                   let existingRowCount = $('#divAddCreditNotePopupDataGrid tr').length;
+                            var j = existingRowCount > 0 ? existingRowCount : 0;
+                               var checkedRowsCount = $('#divCreditNoteDataGrid tr').length;
+                            /* if(html == null) { */
                             popUpItems = [];
-                      
-                                popuphtml = "";
-                                  for (var i = 1; i <= checkedRowsCount; i++) {
-                                      if ($('#chkCreditNote-' + i).is(':checked')) {
-                                             let entryId = ($('#saleBillEntryId-' + i).text() || '').trim();
-                                let yearCode = ($('#SaleBillYearCode-' + i).text() || '').trim();
-                             let invoiceNo = ($('#InvoiceNo-' + i).text() || '').trim();
-                             let pbitemCode = $('#itemCode-' + i).val();
-                             let itemCode = $('#ItemCode').val();
-                                       let uniqueKey = entryId + '_' + yearCode + '_' + invoiceNo + '_' + pbitemCode + '_' + itemCode;
-                                       /* let keyToCheck = $('#DocAccountCode').val() + '_' + $('#ItemCode').val(); */
-                                       let keyToCheck = $('#ItemCode').val();
-                                       let exists = popUpItems.some(x => x.key === keyToCheck && x.value === uniqueKey);
-                                       if (uniqueKey) {
-                                       /*     if (!exists) { */
-                                               j++;
-                                               /* popUpItems.push({key: $('#DocAccountCode').val() + '_' + $('#ItemCode').val(), value: uniqueKey}); */
-                                                    popUpItems.push({ key: $('#ItemCode').val(), value: uniqueKey });
-                                                  popuphtml += '<tr id="CNPopUpDataRow-' + j + '" style="font-size: 12px;">' +
-                                                   '<td>' + j + '</td>' +
-                                                      '<td id="partCode-' + j + '">' + $('#PartCode').find(':selected').text() + '<input type="hidden" id="popupItemCode-' + j + '" value="' + $('#ItemCode').val() + '"/><input type="hidden" id="popupPurchBillItemCode-' + j + '" value="' + $('#itemCode-' + i).val() + '"/><input type="hidden" id="popUpBatchNo-' + j + '" value="" /><input type="hidden" id="popUpUniqueBatchNo-' + j + '" value="" /></td>' +
-                                                               '<td id="popUpItemName-' + j + '"> ' + $('#ItemCode').find(':selected').text() + '</td>' +
-                                              '<td id="popUpsaleBillEntryId-' + j + '"> '+ $('#saleBillEntryId-' + i).text() + '</td>' +
-                                              '<td id="popUpSaleBillYearCode-' + j + '"> ' + $('#SaleBillYearCode-' + i).text() + '</td>' +
-                                              '<td id="popUpSaleBillNo-' + j + '"> ' + $('#SaleBillNo-' + i).text() + '</td>' +
-                                              '<td id="popUpSaleBillDate-' + j + '"> '+ $('#SaleBillDate-' + i).text() + '</td>' +
-                                              '<td id="popUpPurchBillEntryId-' + j + '"> ' + $('#PurchBillEntryId-' + i).text() + '</td>' +
-                                              '<td id="popUpPurchBillYearCode-' + j + '"> '+ $('#PurchBillYearCode-' + i).text() + '</td>' +
-                                              '<td id="popUpInvoiceNo-' + j + '"> '+ $('#InvoiceNo-' + i).text() + '</td>' +
-                                              '<td id="popUpInvoiceDate-' + j + '"> '+ $('#InvoiceDate-' + i).text() + '</td>' +
-                                              '<td id="popUpINVNetAmt-' + j + '"> '+ $('#INVNetAmt-' + i).text() + '</td>' +
-                                              '<td id="popUpDueDate-' + j + '"> '+ $('#DueDate-' + i).text() + '</td>' +
-                                              '<td id="popUpPaidAmt-' + j + '"> '+ $('#PaidAmt-' + i).text() + '</td>' +
-                                              '<td id="popUpRemainingAm-' + j + '"> ' + $('#RemainingAmt-' + i).text() + '</td>' +
-                                              '<td id="popUpBillQty-' + j + '"> ' + $('#BillQty-' + i).text() + '</td>' +
-                                              '<td id="popUpBillRate-' + j + '"> ' + $('#BillRate-' + i).text() + '</td>' +
-                                              '<td id="popUpItemAmount-' + j + '"> ' + $('#ItemAmount-' + i).text() + '</td>' +
-                                              '<td id="popUpdisPer-' + j + '"> '+ $('#disPer-' + i).text() + '</td>' +
-                                              '<td id="popUpDisAmt-' + j + '"> '+ $('#DisAmt-' + i).text() + '</td>' +
-                                              '<td id="popUpsono-' + j + '"> ' + $('#sono-' + i).text() + '</td>' +
-                                              '<td id="popUpcustOrderNo-' + j + '"> '+ $('#custOrderNo-' + i).text() + '</td>' +
-                                              '<td id="popUpsoDate-' + j + '"> ' + $('#soDate-' + i).text() + '</td>' +
-                                              '<td id="popUppono-' + j + '"> '+ $('#pono-' + i).text() + '</td>' +
-                                              '<td id="popUppoDate-' + j + '"> '+ $('#poDate-' + i).text() + '</td>' +
-                                              '<td id="popUppoEntryId-' + j + '"> '+ $('#poEntryId-' + i).text() + '</td>' +
-                                              '<td id="popUppoYearCode-' + j + '"> '+ $('#poYearCode-' + i).text() + '</td>' +
-                                              '<td id="popUpDocTypeAccountCode-' + j + '"> '+ $('#DocTypeAccountCode-' + i).text() + '</td>' +
-                                                   '</tr>';
-                                           }
-                                       /* } */
-                                       billQty += ($('#BillQty-' + i).text() == '' ? 0 : parseFloat($('#BillQty-' + i).text()));
-                                       billRate += ($('#BillRate-' + i).text() == '' ? 0 : parseFloat($('#BillRate-' + i).text()));
-                                                   DocTypeAccountCode =($('#DocTypeAccountCode-' + i).text());
-                                   }
-                               }
-                                         creditNotePopupGrid = data;
-                                        $('#addCreditNotePopupModel').modal("hide");
-                           } else {
-                            /*    html += '<tr id="Row-' + i + '">' +
-                                   '<td colspan="10" class="text-black-50 text-center"><strong class="text-danger">NO DATA ADDED</strong></td>' +
-                                   '</tr>'; */
-                           }
-                               $('#BillQty').val(billQty.toFixed(2));
-                           $('#BillRate').val(billRate.toFixed(2));
-                              $('#DocAccountCode').val(DocTypeAccountCode);
-                           $('#RejectedQty').val($('#BillQty').val());
-                           $('#CRNRate').val($('#BillRate').val());
-                           CalculateItemAmount();
 
-                           BasicTotal();
-                          
-                       }
-                   }
-               });
-           }
+                                   if (html != null) {
+            let existingRows = [];
+               $('#divAddCreditNotePopupDataGrid tr').each(function () {
+                let existingItemCode = $(this).find('input[id^="popupItemCode-"]').val();
+                if (existingItemCode && existingItemCode != $('#ItemCode').val()) {
+                    existingRows.push($(this).prop('outerHTML'));
+                }
+            });
+                                   popuphtml = existingRows.join('');
+            let j = existingRows.length + 1;
+               let checkedRowsCount = $('#divCreditNoteDataGrid tr').length;
 
-                            /* $('#addCreditNotePopupModel').modal("hide");
+            for (let i = 1; i <= checkedRowsCount; i++) {
+                   if ($('#chkCreditNote-' + i).is(':checked')) {
+                          let entryId = ($('#saleBillEntryId-' + i).text() || '').trim();
+                       let yearCode = ($('#SaleBillYearCode-' + i).text() || '').trim();
+                    let invoiceNo = ($('#InvoiceNo-' + i).text() || '').trim();
+                    let pbitemCode = $('#itemCode-' + i).val();
+                    let itemCode = $('#ItemCode').val();
+
+                    let uniqueKey = entryId + '_' + yearCode + '_' + invoiceNo + '_' + pbitemCode + '_' + itemCode;
+
+                    // ✅ Prevent duplicate insertion
+                           if (!popuphtml.includes(uniqueKey)) {
+            popuphtml += `
+                <tr id="CNPopUpDataRow-${j}" style="font-size: 12px;">
+                    <td>${j}</td>
+                    <td id="partCode-${j}">
+                        ${$('#PartCode').find(':selected').text()}
+                        <input type="hidden" id="popupItemCode-${j}" value="${itemCode}" />
+                        <input type="hidden" id="popUpUniqueKey-${j}" value="${uniqueKey}" />
+                    </td>
+                    <td id="popUpsaleBillEntryId-${j}">${entryId}</td>
+                    <td id="popUpSaleBillYearCode-${j}">${yearCode}</td>
+                    <td id="popUpSaleBillNo-${j}">${invoiceNo}</td>
+                    <td id="popUpSaleBillDate-${j}">${$('#InvoiceDate-' + i).text()}</td>
+                    <td id="popUpInvoiceNo-${j}">${invoiceNo}</td>
+                    <td id="popUpInvoiceDate-${j}">${$('#InvoiceDate-' + i).text()}</td>
+                    <td id="popUpBillQty-${j}">${$('#BillQty-' + i).text()}</td>
+                    <td id="popUpBillRate-${j}">${$('#BillRate-' + i).text()}</td>
+                    <td id="popUpDocTypeAccountCode-${j}">${$('#DocTypeAccountCode-' + i).text()}</td>
+                </tr>`;
+
+            j++;
+
+            popUpItems.push({
+                key: $('#ItemCode').val(),
+                value: uniqueKey
+            });
+        }
+
+            }
+        }
+        }
+                         popUpItems = [];
+
+                             popuphtml = "";
+                               for (var i = 1; i <= checkedRowsCount; i++) {
+                                   if ($('#chkCreditNote-' + i).is(':checked')) {
+                                          let entryId = ($('#saleBillEntryId-' + i).text() || '').trim();
+                             let yearCode = ($('#SaleBillYearCode-' + i).text() || '').trim();
+                          let invoiceNo = ($('#InvoiceNo-' + i).text() || '').trim();
+                          let pbitemCode = $('#itemCode-' + i).val();
+                          let itemCode = $('#ItemCode').val();
+                                    let uniqueKey = entryId + '_' + yearCode + '_' + invoiceNo + '_' + pbitemCode + '_' + itemCode;
+                                    /* let keyToCheck = $('#DocAccountCode').val() + '_' + $('#ItemCode').val(); */
+                                    let keyToCheck = $('#ItemCode').val();
+                                    let exists = popUpItems.some(x => x.key === keyToCheck && x.value === uniqueKey);
+                                    if (uniqueKey) {
+                                    /*     if (!exists) { */
+                                            j++;
+                                            /* popUpItems.push({key: $('#DocAccountCode').val() + '_' + $('#ItemCode').val(), value: uniqueKey}); */
+                                                 popUpItems.push({ key: $('#ItemCode').val(), value: uniqueKey });
+                                               popuphtml += '<tr id="CNPopUpDataRow-' + j + '" style="font-size: 12px;">' +
+                                                '<td>' + j + '</td>' +
+                                                   '<td id="partCode-' + j + '">' + $('#PartCode').find(':selected').text() + '<input type="hidden" id="popupItemCode-' + j + '" value="' + $('#ItemCode').val() + '"/><input type="hidden" id="popupPurchBillItemCode-' + j + '" value="' + $('#itemCode-' + i).val() + '"/><input type="hidden" id="popUpBatchNo-' + j + '" value="" /><input type="hidden" id="popUpUniqueBatchNo-' + j + '" value="" /></td>' +
+                                                            '<td id="popUpItemName-' + j + '"> ' + $('#ItemCode').find(':selected').text() + '</td>' +
+                                           '<td id="popUpsaleBillEntryId-' + j + '"> '+ $('#saleBillEntryId-' + i).text() + '</td>' +
+                                           '<td id="popUpSaleBillYearCode-' + j + '"> ' + $('#SaleBillYearCode-' + i).text() + '</td>' +
+                                           '<td id="popUpSaleBillNo-' + j + '"> ' + $('#SaleBillNo-' + i).text() + '</td>' +
+                                           '<td id="popUpSaleBillDate-' + j + '"> '+ $('#SaleBillDate-' + i).text() + '</td>' +
+                                           '<td id="popUpPurchBillEntryId-' + j + '"> ' + $('#PurchBillEntryId-' + i).text() + '</td>' +
+                                           '<td id="popUpPurchBillYearCode-' + j + '"> '+ $('#PurchBillYearCode-' + i).text() + '</td>' +
+                                           '<td id="popUpInvoiceNo-' + j + '"> '+ $('#InvoiceNo-' + i).text() + '</td>' +
+                                           '<td id="popUpInvoiceDate-' + j + '"> '+ $('#InvoiceDate-' + i).text() + '</td>' +
+                                           '<td id="popUpINVNetAmt-' + j + '"> '+ $('#INVNetAmt-' + i).text() + '</td>' +
+                                           '<td id="popUpDueDate-' + j + '"> '+ $('#DueDate-' + i).text() + '</td>' +
+                                           '<td id="popUpPaidAmt-' + j + '"> '+ $('#PaidAmt-' + i).text() + '</td>' +
+                                           '<td id="popUpRemainingAm-' + j + '"> ' + $('#RemainingAmt-' + i).text() + '</td>' +
+                                           '<td id="popUpBillQty-' + j + '"> ' + $('#BillQty-' + i).text() + '</td>' +
+                                           '<td id="popUpBillRate-' + j + '"> ' + $('#BillRate-' + i).text() + '</td>' +
+                                           '<td id="popUpItemAmount-' + j + '"> ' + $('#ItemAmount-' + i).text() + '</td>' +
+                                           '<td id="popUpdisPer-' + j + '"> '+ $('#disPer-' + i).text() + '</td>' +
+                                           '<td id="popUpDisAmt-' + j + '"> '+ $('#DisAmt-' + i).text() + '</td>' +
+                                           '<td id="popUpsono-' + j + '"> ' + $('#sono-' + i).text() + '</td>' +
+                                           '<td id="popUpcustOrderNo-' + j + '"> '+ $('#custOrderNo-' + i).text() + '</td>' +
+                                           '<td id="popUpsoDate-' + j + '"> ' + $('#soDate-' + i).text() + '</td>' +
+                                           '<td id="popUppono-' + j + '"> '+ $('#pono-' + i).text() + '</td>' +
+                                           '<td id="popUppoDate-' + j + '"> '+ $('#poDate-' + i).text() + '</td>' +
+                                           '<td id="popUppoEntryId-' + j + '"> '+ $('#poEntryId-' + i).text() + '</td>' +
+                                           '<td id="popUppoYearCode-' + j + '"> '+ $('#poYearCode-' + i).text() + '</td>' +
+                                           '<td id="popUpDocTypeAccountCode-' + j + '"> '+ $('#DocTypeAccountCode-' + i).text() + '</td>' +
+                                                '</tr>';
+                                        }
+                                    /* } */
+                                    billQty += ($('#BillQty-' + i).text() == '' ? 0 : parseFloat($('#BillQty-' + i).text()));
+                                    billRate += ($('#BillRate-' + i).text() == '' ? 0 : parseFloat($('#BillRate-' + i).text()));
+                                                DocTypeAccountCode =($('#DocTypeAccountCode-' + i).text());
+                                }
+                            }
+                                      creditNotePopupGrid = data;
+                                     $('#addCreditNotePopupModel').modal("hide");
                         } else {
-                            html += '<tr id="Row-' + i + '">' +
+                         /*    html += '<tr id="Row-' + i + '">' +
                                 '<td colspan="10" class="text-black-50 text-center"><strong class="text-danger">NO DATA ADDED</strong></td>' +
-                                '</tr>';
+                                '</tr>'; */
                         }
-                        // $('#divAddCreditNotePopupDataGrid').append(html);
-
-                        $('#BillQty').val(billQty.toFixed(2));
+                            $('#BillQty').val(billQty.toFixed(2));
                         $('#BillRate').val(billRate.toFixed(2));
                            $('#DocAccountCode').val(DocTypeAccountCode);
                         $('#RejectedQty').val($('#BillQty').val());
@@ -1469,12 +1585,11 @@
                         CalculateItemAmount();
 
                         BasicTotal();
+
                     }
                 }
-
             });
-        } */
-
+        }
         $('#CheckAll').click(function () {
             $('#divCreditNoteDataGrid tr:visible').each(function () {
                 var checkbox = $(this).find('input[type="checkbox"]');
@@ -1536,7 +1651,7 @@
                     var rowcount = $('#divAddCreditNotePopupDataGrid tr').length;
                //var rowcount = popupitems.length;
                for (var i = 0; i < rowcount; i++) {
-                   if ($('#itemcode').val() != popupitems[i]) {
+                         if ($('#itemcode').val() != popUpItems[i]) {
                        error = true;
                        err = 1;
                        break;
@@ -1718,7 +1833,8 @@
                                 txSum += parseFloat($('#txGridAmount-' + i).text() == '.00' ? 0 : $('#txGridAmount-' + i).text());
                             }
                         }
-
+                        sum=parseFloat($("#lblItemGridNetAmount").html());
+                               $('#ItemNetAmount').val(sum.toFixed(2));
                         var txTotal = sum + txSum;
 
                         $('#NetTotal').val(txTotal.toFixed(2));

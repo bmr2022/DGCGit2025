@@ -544,6 +544,12 @@ public static class CommonFunc
                                    && typeProperty.PropertyInfo.Name != "VoucherNoBack"
                                    && typeProperty.PropertyInfo.Name != "AccountList"
                                    && typeProperty.PropertyInfo.Name != "Message"
+                                   && typeProperty.PropertyInfo.Name != "hdnuniquekey"
+                                   && typeProperty.PropertyInfo.Name != "InvoiceNo"
+                                   && typeProperty.PropertyInfo.Name != "InvoiceDate"
+                                   && typeProperty.PropertyInfo.Name != "BillAmount"
+                                   && typeProperty.PropertyInfo.Name != "PaidAmt"
+                                   && typeProperty.PropertyInfo.Name != "RemainingAmt"
                                     )
                     {
                         object value = row[typeProperty.PropertyInfo.Name];
