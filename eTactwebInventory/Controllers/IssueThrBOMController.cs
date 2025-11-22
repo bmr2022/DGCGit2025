@@ -449,9 +449,15 @@ namespace eTactWeb.Controllers
                                         return StatusCode(203, $"Stock can't be zero for PartCode: {item.PartCode}");
                                     }
                                 }
-                                if (IssueThrBomDetailGrid.Where(x => x.ItemCode == item.ItemCode && x.BatchNo == item.BatchNo && x.uniqueBatchNo == item.uniqueBatchNo).Any())
+
+                                var duplicateItem = IssueThrBomDetailGrid.FirstOrDefault(x => x.ItemName == item.ItemName && x.BatchNo == item.BatchNo && x.uniqueBatchNo == item.uniqueBatchNo);
+
+                                if (duplicateItem != null)
                                 {
-                                    return StatusCode(207, "Duplicate");
+                                    var message = $"Duplicate found: ItemName = {duplicateItem.ItemName}, " +
+                                     $"BatchNo = {duplicateItem.BatchNo}, " +
+                                     $"uniqueBatchNo = {duplicateItem.uniqueBatchNo}";
+                                    return StatusCode(207, message);
                                 }
                                 else
                                 {
@@ -460,6 +466,18 @@ namespace eTactWeb.Controllers
                                     SSGrid.AddRange(IssueGrid);
                                     IssueGrid.Add(item);
                                 }
+
+                                //if (IssueThrBomDetailGrid.Where(x => x.ItemCode == item.ItemCode && x.BatchNo == item.BatchNo && x.uniqueBatchNo == item.uniqueBatchNo).Any())
+                                //{
+                                //    return StatusCode(207, "Duplicate");
+                                //}
+                                //else
+                                //{
+                                //    item.seqno = IssueThrBomDetailGrid.Count + 1;
+                                //    IssueGrid = IssueThrBomDetailGrid.Where(x => x != null).ToList();
+                                //    SSGrid.AddRange(IssueGrid);
+                                //    IssueGrid.Add(item);
+                                //}
                             }
                             MainModel.ItemDetailGrid = IssueGrid;
 

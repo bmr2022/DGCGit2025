@@ -1812,10 +1812,15 @@
                         type: "POST",
                         data: { model: ItemData },
                         success: function (data, status, xhr) {
-                            if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
-                                $.notify('Duplicate Item Not Allowed.', "info");
+                            // if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
+                            //     $.notify('Duplicate Item Not Allowed.', "info");
                                
-                            }
+                            // }
+                                    if (xhr.status === 207) {
+                                    $.notify(xhr.responseText, "info");
+                                    return;
+                                }
+
                             else if (xhr.status === 203) {
                                 $.notify(xhr.responseText, "info");
                             }
