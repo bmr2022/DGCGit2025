@@ -1644,11 +1644,8 @@ public static class CommonFunc
                 }
                 else if (Tbname == "HRAdvanceDashboard" || table.TableName == "HRAdvanceDashboard")
                 {
-                    if (typeProperty.PropertyInfo.Name != "VendorUserDashboards"
-                        && typeProperty.PropertyInfo.Name != "FinFromDate"
+                    if ( typeProperty.PropertyInfo.Name != "FinFromDate"
                         && typeProperty.PropertyInfo.Name != "FinToDate"
-                        && typeProperty.PropertyInfo.Name != "AdvanceEntryId"
-                        && typeProperty.PropertyInfo.Name != "AdvanceYearCode"
                         && typeProperty.PropertyInfo.Name != "EmpId"
                         && typeProperty.PropertyInfo.Name != "EmpName"
                         && typeProperty.PropertyInfo.Name != "DesigId"
@@ -1668,7 +1665,6 @@ public static class CommonFunc
                         && typeProperty.PropertyInfo.Name != "CanceledByEmpName"
                         && typeProperty.PropertyInfo.Name != "CanceledByEmpCode"
                         && typeProperty.PropertyInfo.Name != "LastUpdatedByEmpName"
-                        && typeProperty.PropertyInfo.Name != "ActualEntryByName"
                         && typeProperty.PropertyInfo.Name != "UID"
                         && typeProperty.PropertyInfo.Name != "HRAdvanceDashboards"
                         && typeProperty.PropertyInfo.Name != "Active"
@@ -1680,6 +1676,7 @@ public static class CommonFunc
                         && typeProperty.PropertyInfo.Name != "TxPageName"
                         && typeProperty.PropertyInfo.Name != "UpdatedBy"
                         && typeProperty.PropertyInfo.Name != "UpdatedOn"
+                        && typeProperty.PropertyInfo.Name != "ActualEntryBy"
                         )
                     {
                         object value = row[typeProperty.PropertyInfo.Name];

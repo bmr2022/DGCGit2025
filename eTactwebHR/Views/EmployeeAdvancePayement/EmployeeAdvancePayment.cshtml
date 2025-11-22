@@ -108,6 +108,10 @@
 									<select asp-for="EmpId" class="form-select">
 										<option value="">-Select-</option>
 									</select>
+									@if (Model.Mode == "U" || Model.Mode == "V") 
+									{
+										<input type="hidden" value="@Model.EmpId" id="hiddenEmpId"/>
+									}
 								</div>
 								
 								<div class="col-md-2">
@@ -115,6 +119,10 @@
 									<select asp-for="EmpCode" class="form-select">
 										<option value="">-Select-</option>
 									</select>
+									@if (Model.Mode == "U" || Model.Mode == "V")
+									{
+										<input type="hidden" value="@Model.EmpCode" id="hiddenEmpCode"/>
+									}
 								</div>
 
 								<div class="col-md-1">
@@ -579,13 +587,13 @@
 
 			if($('#Mode').val() != "U" && $('#Mode').val() != "V"){
 				FillEntryID();
-				FillEmpName();
-				FillEmpCode();
 				GetServerDate();
 			}
 			FillAdvanceType();
 			// FillMgmtEmployeeNameList();
 			// FillFinancialEmployeeNameList();
+			FillEmpName();
+			FillEmpCode();
 			FillPreviousAdanaceLoanDetail();
 
 					$('#AdvanceEntryId').rules("remove", "required");
@@ -789,6 +797,10 @@
 						// $.each(obj.Result, function (index, Val) {
 						// 	$('#FinanceApprovalEmpid').append('<option value="' + Val.Emp_Id + '">' + Val.EmpName + '</option>');
 						// });
+
+						if($('#Mode').val() == "U" || $('#Mode').val() == "V"){
+							$('#EmpId').val($('#hiddenEmpId').val());
+						}
 					}
 				},
 				error: function (xhr, status, error) {
@@ -915,6 +927,10 @@
 						// $.each(obj.Result, function (index, Val) {
 						// 	$('#FinanceApprovalEmpCode').append('<option value="' + Val.Emp_Id + '">' + Val.EmpCode + '</option>');
 						// });
+
+						if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+							$('#EmpCode').val($('#hiddenEmpCode').val());
+						}
 					}
 				},
 				error: function (xhr, status, error) {

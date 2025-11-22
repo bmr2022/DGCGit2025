@@ -27,6 +27,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _EmployeeAdvancePayementDAL.FillEntryId(yearCode);
         }
+        public async Task<HRAdvanceModel> GetViewByID(int ID,int yearCode, string mode)
+        {
+            return await _EmployeeAdvancePayementDAL.GetViewByID(ID,yearCode, mode);
+        }
         public async Task<ResponseResult> FillAdvanceType()
         {
             return await _EmployeeAdvancePayementDAL.FillAdvanceType();

@@ -72,7 +72,6 @@
 				<th data-columnno="58" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> RequestEntryByMachine </th>
 				<th data-columnno="59" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> ApprovedBYMachine </th>
 				<th data-columnno="60" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> CancelByMachine </th>
-				<th data-columnno="61" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> ActualEntryBy </th>
 				<th data-columnno="62" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> ActualEntryByName </th>
 				<th data-columnno="63" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> CC </th>
 				<th data-columnno="64" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span> UID </th>
@@ -98,7 +97,7 @@
 								<div id="container">
 									<div class="d-flex">
 										<div id="viewCursorDiv-@Cntr">
-											<a class="table-link link-success" asp-action="VendorUser" asp-route-Mode="V" asp-route-ID="@item.AdvanceEntryId">
+											<a class="table-link link-success" asp-action="EmployeeAdvancePayment" asp-route-Mode="V" asp-route-ID="@item.AdvanceEntryId" asp-route-yearCode="@item.AdvanceYearCode">
 												<span class="fa-stack">
 													<i class="fa fa-square fa-stack-2x"></i>
 													<i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
@@ -106,7 +105,7 @@
 											</a>
 										</div>
 										<div id="editCursorDiv-@Cntr">
-											<a class="table-link link-primary" asp-action="VendorUser" asp-route-Mode="U" asp-route-ID="@item.AdvanceEntryId">
+											<a class="table-link link-primary" asp-action="EmployeeAdvancePayment" asp-route-Mode="U" asp-route-ID="@item.AdvanceEntryId" asp-route-yearCode="@item.AdvanceYearCode">
 												<span class="fa-stack">
 													<i class="fa fa-square fa-stack-2x"></i>
 													<i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
@@ -185,7 +184,6 @@
 							<td>@item.RequestEntryByMachine</td>
 							<td>@item.ApprovedBYMachine</td>
 							<td>@item.CancelByMachine</td>
-							<td>@item.ActualEntryBy</td>
 							<td>@item.ActualEntryByName</td>
 							<td>@item.CC</td>
 							<td>@item.UID</td>

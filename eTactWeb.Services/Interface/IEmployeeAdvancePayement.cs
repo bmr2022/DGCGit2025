@@ -11,6 +11,7 @@ namespace eTactWeb.Services.Interface
     public interface IEmployeeAdvancePayement
     {
         Task<ResponseResult> FillEntryId(int yearCode);
+        Task<HRAdvanceModel> GetViewByID(int ID, int yearCode, string mode);
         Task<ResponseResult> FillEmpName();
         //Task<ResponseResult> GetDashboardData(string accountName = "", int? userId = null);
         Task<ResponseResult> FillAdvanceType();

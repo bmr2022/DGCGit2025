@@ -34,6 +34,7 @@ namespace eTactwebHR.Controllers
 
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
             {
+                MainModel = await _iemployeeAdvancePayement.GetViewByID(ID,YearCode, Mode).ConfigureAwait(false);
                 MainModel.Mode = Mode;
                 MainModel.ID = ID;
                
@@ -219,6 +220,8 @@ namespace eTactwebHR.Controllers
                     if (DS != null)
                     {
                         var DT = DS.Tables[0].DefaultView.ToTable(true,
+                                                                   "AdvanceEntryId",
+                                                                   "AdvanceYearCode",
                                                                  "AdvanceSlipNo",
                                                                  "EmpCode",
                                                                  "EmployeeName",
@@ -265,7 +268,7 @@ namespace eTactwebHR.Controllers
                                                                  "RequestEntryByMachine",
                                                                  "ApprovedBYMachine",
                                                                  "CancelByMachine",
-                                                                 "ActualEntryBy",
+                                                                 "ActualEntryByName",
                                                                  "CC"
                                                              );
 

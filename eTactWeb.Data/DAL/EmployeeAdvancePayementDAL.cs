@@ -308,5 +308,173 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
+        internal async Task<HRAdvanceModel> GetViewByID(int ID,int yearCode, string mode)
+        {
+            var model = new HRAdvanceModel();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+
+                SqlParams.Add(new SqlParameter("@Flag", "VIEWBYID"));
+                SqlParams.Add(new SqlParameter("@AdvanceEntryId", ID));
+                SqlParams.Add(new SqlParameter("@AdvanceYearCode", yearCode));
+
+                var ResponseResult = await _IDataLogic.ExecuteDataSet("HRSPAdvanceMain", SqlParams);
+
+                if (ResponseResult.Result != null && ResponseResult.StatusCode == HttpStatusCode.OK && ResponseResult.StatusText == "Success")
+                {
+                    PrepareView(ResponseResult.Result, ref model, mode);
+                }
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return model;
+        }
+
+        private static HRAdvanceModel PrepareView(DataSet DS, ref HRAdvanceModel? model, string mode)
+        {
+            try
+            {
+                int cnt = 0;
+
+				var row = DS.Tables[0].Rows[0];
+
+				model.AdvanceSlipNo = row["AdvanceSlipNo"]?.ToString();
+				model.EmpCode = row["EmpCode"]?.ToString();
+				model.EmpName = row["EmployeeName"]?.ToString();     // emp_name ---> emp_code
+				model.DesigName = row["Designation"]?.ToString();
+				model.DeptName = row["Department"]?.ToString();
+
+				model.RequestDate = row["RequestDate"]?.ToString();
+				model.EntryDate = row["EntryDate"]?.ToString();
+				model.RequestedAmount = row["RequestedAmount"] != DBNull.Value ? Convert.ToDecimal(row["RequestedAmount"]) : 0;
+				model.AdvanceType = row["AdvanceType"]?.ToString();
+				model.Purpose = row["Purpose"]?.ToString();
+
+				model.DOJ = row["DOJ"]?.ToString();
+				model.BasicSalary = row["BasicSalary"] != DBNull.Value ? Convert.ToDecimal(row["BasicSalary"]) : 0;
+				model.GrossSalary = row["GrossSalary"] != DBNull.Value ? Convert.ToDecimal(row["GrossSalary"]) : 0;
+				model.NetSalary = row["NetSalary"] != DBNull.Value ? Convert.ToDecimal(row["NetSalary"]) : 0;
+
+				model.PresentDaysinCurrMonth =
+					row["PresentDaysinCurrMonth"] != DBNull.Value ? Convert.ToDecimal(row["PresentDaysinCurrMonth"]) : 0;
+
+				model.PresentDaysInCurrYear =
+					row["PresentDaysInCurrYear"] != DBNull.Value ? Convert.ToDecimal(row["PresentDaysInCurrYear"]) : 0;
+
+				model.ApprovedAmount =
+					row["ApprovedAmount"] != DBNull.Value ? Convert.ToDecimal(row["ApprovedAmount"]) : 0;
+
+				model.PreviousPendAdvanceAmt =
+					row["PreviousPendAdvanceAmt"] != DBNull.Value ? Convert.ToDecimal(row["PreviousPendAdvanceAmt"]) : 0;
+
+				model.PreviousPendLoanAmt =
+					row["PreviousPendLoanAmt"] != DBNull.Value ? Convert.ToDecimal(row["PreviousPendLoanAmt"]) : 0;
+
+				/* ------------------- Manager Approval ------------------- */
+
+				model.MgrApprovaldate = row["MgrApprovaldate"]?.ToString();
+				model.MgrApprovedbyEmpName = row["ApprovByMgr"]?.ToString();
+				model.MgrApprovedbyEmpid =
+					row["MgrEmpId"] != DBNull.Value ? Convert.ToInt32(row["MgrEmpId"]) : null;
+
+				/* ------------------- HR Approval ------------------------- */
+
+				model.HRApprovedbyEmpName = row["ApprovByHR"]?.ToString();
+				model.HRApprovedbyEmpid =
+					row["HREmpid"] != DBNull.Value ? Convert.ToInt32(row["HREmpid"]) : null;
+
+				model.HRApprovalDate = row["HRApprovalDate"]?.ToString();
+
+				/* ------------------- Finance Approval -------------------- */
+
+				model.FinanceApprovalEmpid =
+					row["FinEmpId"] != DBNull.Value ? Convert.ToInt32(row["FinEmpId"]) : null;
+
+				model.FinanceApprovalEmpCode = row["ApprByFinCode"]?.ToString();
+				model.FinanceApprovalEmpName = row["ApprovByFin"]?.ToString();
+				model.FinanceApprovalDate = row["FinanceApprovalDate"]?.ToString();
+
+				/* ------------------- Cancellation ------------------------ */
+
+				model.Canceled = row["Canceled"]?.ToString();
+				model.CancelOrApprovalremarks = row["CancelOrApprovalremarks"]?.ToString();
+				model.CanceledByEmpId =
+					row["CanceledByEmpId"] != DBNull.Value ? Convert.ToInt32(row["CanceledByEmpId"]) : null;
+
+				/* ------------------- Payment Details --------------------- */
+
+				model.ModeOfPayment = row["ModeOfPayment"]?.ToString();
+				model.PaymentReferenceNo = row["PaymentReferenceNo"]?.ToString();
+				model.PaymentVoucherNo = row["PaymentVoucherNo"]?.ToString();
+				model.PaymentVoucherType = row["PaymentVoucherType"]?.ToString();
+				model.PaymentRemark = row["PaymentRemark"]?.ToString();
+
+				/* ------------------- Recovery Details -------------------- */
+
+				model.RecoveryMethod = row["RecoveryMethod"]?.ToString();
+				model.NoofInstallment =
+					row["NoofInstallment"] != DBNull.Value ? Convert.ToInt32(row["NoofInstallment"]) : 0;
+
+				model.StartRecoveryFromMonth = row["StartRecoveryFromMonth"]?.ToString();
+				model.AutoDeductionFromSalaryYN = row["AutoDeductionFromSalaryYN"]?.ToString();
+				model.FinalRevoveryDate = row["FinalRevoveryDate"]?.ToString();
+				model.ActualFinalRecoveryDate = row["ActualFinalRecoveryDate"]?.ToString();
+
+				model.StatusHoldCancelApproved = row["StatusHoldCancelApproved"]?.ToString();
+
+				/* ------------------- Machine ----------------------------- */
+
+				model.RequestEntryByMachine = row["RequestEntryByMachine"]?.ToString();
+				model.ApprovedBYMachine = row["ApprovedBYMachine"]?.ToString();
+				model.CancelByMachine = row["CancelByMachine"]?.ToString();
+
+				/* ------------------- Actual Entry ------------------------ */
+
+				model.ActualEntryBy =
+					row["ActualEntryBy"] != DBNull.Value ? Convert.ToInt32(row["ActualEntryBy"]) : null;
+
+				model.ActualEntryByName = row["ActualEntryBy"]?.ToString();     // actualEntryBy emp_name--->code
+
+				/* ------------------- Common Fields ----------------------- */
+
+				model.CC = row["CC"]?.ToString();
+				model.UID = row["UID"] != DBNull.Value ? Convert.ToInt32(row["UID"]) : 0;
+
+				/* ------------------- IDs from SELECT --------------------- */
+
+				model.EmpId = row["EmpId"] != DBNull.Value ? Convert.ToInt32(row["EmpId"]) : 0;
+				model.DesigId = row["DesigId"] != DBNull.Value ? Convert.ToInt32(row["DesigId"]) : 0;
+				model.DepId = row["DepId"] != DBNull.Value ? Convert.ToInt32(row["DepId"]) : 0;
+				model.CategoryId = row["CategoryId"] != DBNull.Value ? Convert.ToInt32(row["CategoryId"]) : 0;
+
+				model.AdvanceEntryId = row["AdvanceEntryId"] != DBNull.Value ? Convert.ToInt32(row["AdvanceEntryId"]) : 0;
+				model.AdvanceYearCode = row["AdvanceYearCode"] != DBNull.Value ? Convert.ToInt32(row["AdvanceYearCode"]) : 0;
+
+
+				if (mode == "U" || mode == "V")
+                {
+                    if (DS.Tables[0].Rows[0]["UpdatedByEMp"].ToString() != "")
+                    {
+                        model.LastUpdatedBy = DS.Tables[0].Rows[0]["LastUpdatedBy"] != DBNull.Value ? Convert.ToInt32(DS.Tables[0].Rows[0]["LastUpdatedBy"]) : null;
+                        model.LastUpdatedByEmpName = DS.Tables[0].Rows[0]["UpdatedByEMp"]?.ToString();
+                        model.LastUpdationDate = DS.Tables[0].Rows[0]["LastUpdationdate"]?.ToString();
+                    }
+                }
+
+                return model;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+
     }
 }
