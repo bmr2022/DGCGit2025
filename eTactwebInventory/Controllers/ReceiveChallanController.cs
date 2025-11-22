@@ -587,6 +587,7 @@ namespace eTactWeb.Controllers
             DTSSGrid.Columns.Add("IssueChallanYearCode", typeof(int));
             DTSSGrid.Columns.Add("IssueChallanNo", typeof(string));
             DTSSGrid.Columns.Add("ItemCode", typeof(int));
+            DTSSGrid.Columns.Add("PartCode", typeof(string));
             DTSSGrid.Columns.Add("SeqNo", typeof(int));
             DTSSGrid.Columns.Add("Unit", typeof(string));
             DTSSGrid.Columns.Add("RecQty", typeof(float));
@@ -623,6 +624,7 @@ namespace eTactWeb.Controllers
                     Item.IssueChallanYearCode,
                     Item.IssueChallanNo ?? "",
                     Item.ItemCode,
+                    "",
                     Item.SeqNo,
                     Item.Unit ?? "",
                     Item.RecQty,
