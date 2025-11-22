@@ -22,8 +22,12 @@ namespace eTactWeb.Data.DAL
         {
             _connectionStringHelper = connectionStringHelper;
             //configuration = config;
-            DBConnectionString = configuration.GetConnectionString("eTactDB");
+            //DBConnectionString = configuration.GetConnectionString("eTactDB");
+            //_connectionStringService = connectionStringService;
+
+            //DBConnectionString = configuration.GetConnectionString("eTactDB");
             _connectionStringService = connectionStringService;
+            DBConnectionString = _connectionStringService.GetConnectionString();
             //DBConnectionString = _connectionStringService.GetConnectionString();
 
             //DBConnectionString = _connectionStringHelper.GetConnectionStringForCompany();
