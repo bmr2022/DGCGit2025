@@ -67,6 +67,9 @@
                     <button type="reset" class="btn btn-sm btn-outline-danger" onclick="Reload();" style="padding:3px;height:30px;width:100px;margin-left:20px;">
                         <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
                     </button>
+                                <div class="form-check form-switch d-flex justify-content-center mt-2" style="padding:3px;margin-left:50px;">
+                                    <input id="ShowAllSwitch" class="form-check-input" type="checkbox" role="switch" />&nbsp;&nbsp;&nbsp;&nbsp;<label class="form-label">Show/Hide All Columns</label>
+                                </div>
                 </div>
                         </div>
                     </div>
@@ -161,22 +164,26 @@
             }
         }
 
-        $('#sendToExcel').click(function () {
-            $("#AccountTable").table2excel({
-                filename: "AccountTable.xls"
-            });
-        });
-        var currentSearchColumn = null;
-        $("#search-box").on("keyup", function () {
-            var value = $(this).val().toLowerCase();
-            $("#bodyAccountDash tr").filter(function () {
-                if (currentSearchColumn !== null) {
-                    var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
-                    $(this).toggle(columnText.indexOf(value) > -1);
-                } else {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
-                }
-            });
+        // $('#sendToExcel').click(function () {
+        //     $("#AccountTable").table2excel({
+        //         filename: "AccountTable.xls"
+        //     });
+        // });
+        // var currentSearchColumn = null;
+        // $("#search-box").on("keyup", function () {
+        //     var value = $(this).val().toLowerCase();
+        //     $("#bodyAccountDash tr").filter(function () {
+        //         if (currentSearchColumn !== null) {
+        //             var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
+        //             $(this).toggle(columnText.indexOf(value) > -1);
+        //         } else {
+        //             $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+        //         }
+        //     });
+        // });
+
+        $("#sendToExcel").click(function () {
+            window.location.href = "/AccountMaster/ExportAccountExcel";
         });
 
 

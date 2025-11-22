@@ -645,6 +645,15 @@
             $("#Entry_Date").datepicker({ minDate: 0 });
             $('#Account_Name').keyup(function () { $("#DisplayName").val(this.value).change(); });
             $('#TDS').change();
+              $('#ParentAccountCode').select2();
+                
+        if ("@Model.Mode=='U'") {
+            var parentID = $('#ParentAccountCode').val();
+
+            if (parentID !== "" && parentID !== null) {
+                OnParentGroup(parentID);   // 🔥 FIX → sets HideShow & IsSDSC
+            }
+        }
         });
 
         function RemoveOptionsfromPAC() {
@@ -916,246 +925,55 @@
                 $('#TDSPartyCategery').append('<option>-Select-</option>');
             }
         });
+                      $("button[type='submit']").click(function () {
 
+            IsErr = 0;
+            $(".valid").removeClass('is-invalid');
 
-        $("button[type='submit']").click(function () {
-            $(".valid").each(function () {
-                $(this).removeClass('is-invalid');
-                IsErr = 0;
-            });
+            validateRequired("Entry_Date");
+            validateRequired("ParentAccountCode");
+            validateRequired("DisplayName");
+            validateRequired("Account_Name");
+            validateRequired("SubGroup");
+            validateRequired("AccountType");
+            validateRequired("MainGroup");
+            validateRequired("SubSubGroup");
+            validateRequired("UnderGroup");
 
-            //H_AccountDetail
+            let sg = $('#SubGroup').val();
+            let cd = $('#CreditDays').val();
 
-            if (!$('#Entry_Date').val()) {
-                AddErrorCls('Entry_Date');
+            if ((sg === "Sundry Debtors" || sg === "Sundry Creditors") &&
+                (!cd || cd === "" || cd === "0")) {
+
+                $.notify("Credit Days is required for Sundry Debtors or Sundry Creditors!", "error");
+                AddErrorCls('CreditDays');
                 IsErr = 1;
             }
-
-            if (!$('#ParentAccountCode').val()) {
-                AddErrorCls('ParentAccountCode');
-                IsErr = 1;
-            }
-
-            if (!$('#DisplayName').val()) {
-                AddErrorCls('DisplayName');
-                IsErr = 1;
-            }
-            else {
-                IsErr = 0;
-                $('#DisplayName').removeClass('is-invalid');
-            }
-
-            if (!$('#Account_Name').val()) {
-                AddErrorCls('Account_Name');
-                IsErr = 1;
-            }
-
-            if (!$('#SubGroup').val()) {
-                AddErrorCls('SubGroup');
-                IsErr = 1;
-            }
-
-            if (!$('#AccountType').val()) {
-                AddErrorCls('AccountType');
-                IsErr = 1;
-            }
-
-            if (!$('#MainGroup').val()) {
-                AddErrorCls('MainGroup');
-                IsErr = 1;
-            }
-
-            if (!$('#SubSubGroup').val()) {
-                AddErrorCls('SubSubGroup');
-                IsErr = 1;
-            }
-
-            if (!$('#UnderGroup').val()) {
-                AddErrorCls('UnderGroup');
-                IsErr = 1;
-            }
-                    if (($('#SubGroup').val() === "Sundry Debtors" || $('#SubGroup').val() === "Sundry Creditors") &&
-            ($('#CreditDays').val() === "" || $('#CreditDays').val() == null)) {
-
-            $.notify("Credit Days is required for Sundry Debtors or Sundry Creditors!", "error");
-            AddErrorCls('CreditDays'); // optional: highlight the field
-          IsErr = 1;
-            }
-
-            //if(!$('#DebCredCode').val())
-            //{
-            //    AddErrorCls('DebCredCode');
-            //    IsErr=1;
-            //}
-
-            //if(!$('#Party_Code').val())
-            //{
-            //    AddErrorCls('Party_Code');
-            //    IsErr=1;
-            //}
-
-            IsErr == 1 ? ShowErrorFld('H_AccountDetail') : HideErrorFld('H_AccountDetail');
 
             if (HideShow == 1) {
-                if (IsSDSC == 1)//in case of SUBGROUP = Sundry Debtors OR Sundry Creditors
-                {
-                    //H_AddressDetail
 
-                    if (!$('#ComAddress').val()) {
-                        AddErrorCls('ComAddress');
-                        IsErr = 1;
-                    }
+                if (IsSDSC == 1) {
+                    validateRequired("ComAddress");
+                    validateRequired("Country");
+                    validateRequired("State");
+                    validateRequired("City");
+                    validateRequired("PinCode");
+                    validateRequired("PhoneNo");
+                    validateRequired("MobileNo");
+                    validateRequired("ContactPerson");
 
-                    //if(!$('#ComAddress1').val())
-                    //{
-                    //    AddErrorCls('ComAddress1');
-                    //    IsErr=1;
-                    //}
-
-                    if (!$('#Country').val()) {
-                        AddErrorCls('Country');
-                        IsErr = 1;
-                    }
-
-                    if (!$('#State').val()) {
-                        AddErrorCls('State');
-                        IsErr = 1;
-                    }
-
-                    if (!$('#City').val()) {
-                        AddErrorCls('City');
-                        IsErr = 1;
-                    }
-
-                    if (!$('#PinCode').val()) {
-                        AddErrorCls('PinCode');
-                        IsErr = 1;
-                    }
-
-                    if (!$('#PhoneNo').val()) {
-                        AddErrorCls('PhoneNo');
-                        IsErr = 1;
-                    }
-
-                    if (!$('#MobileNo').val()) {
-                        AddErrorCls('MobileNo');
-                        IsErr = 1;
-                    }
-
-                    if (!$('#ContactPerson').val()) {
-                        AddErrorCls('ContactPerson');
-                        IsErr = 1;
-                    }
-
-                    IsErr == 1 ? ShowErrorFld('H_AddressDetail') : HideErrorFld('H_AddressDetail');
-
-                    //H_TaxDetail
-
-
-                    if (!$('#PartyType').val()) {
-                        AddErrorCls('PartyType');
-                        IsErr = 1;
-                    }
-
-                    if (!$('#GSTRegistered').val()) {
-                        AddErrorCls('GSTRegistered');
-                        IsErr = 1;
-                    }
-                    else {
-                        if ($('#GSTRegistered').val() === "Y") {
-                            if (!$('#GSTNO').val()) {
-                                AddErrorCls('GSTNO');
-                                IsErr = 1;
-                            }
-                            else {
-                                if ($('#GSTRegistered').val() === 'Y') {
-                                    if ($('#GSTNO').val().length !== 15) {
-                                        IsErr = 1;
-                                        AddErrorCls('GSTNO');
-                                    }
-                                }
-                            }
-
-                            if (!$('#GSTPartyTypes').val()) {
-                                AddErrorCls('GSTPartyTypes');
-                                IsErr = 1;
-                            }
-
-                            if (!$('#GSTTAXTYPE').val()) {
-                                AddErrorCls('GSTTAXTYPE');
-                                IsErr = 1;
-                            }
-                        }
-                        if ($('#GSTRegistered').val() === "N") {
-                            $('#GSTNO').val('');
-                            RemoveErrorCls('GSTNO');
-                            $('#GSTPartyTypes').prop('selectedIndex', 0);
-                            RemoveErrorCls('GSTPartyTypes');
-                            $('#GSTTAXTYPE').prop('selectedIndex', 0);
-                            RemoveErrorCls('GSTTAXTYPE');
-                        }
-                    }
-
-
-                    if (!$('#TDS').val()) {
-                        AddErrorCls('TDS');
-                        IsErr = 1;
-                    }
-                    else {
-                        if ($('#TDS').val() == "Y") {
-                            if (!$('#TDSRate').val()) {
-                                AddErrorCls('TDSRate');
-                                IsErr = 1;
-                            }
-
-                            if (!$('#TDSPartyCategery').val()) {
-                                AddErrorCls('TDSPartyCategery');
-                                IsErr = 1;
-                            }
-                        }
-                        if ($('#TDS').val() == "N") {
-                            IsErr = 0;
-                            $('#TDSRate').removeClass('is-invalid');
-                            $('#TDSPartyCategery').removeClass('is-invalid');
-                        }
-
-                        if (!$('#PANNO').val()) {
-                            AddErrorCls('PANNO');
-                            IsErr = 1;
-                        }
-                    }
-
-                    IsErr == 1 ? ShowErrorFld('H_TaxDetail') : HideErrorFld('H_TaxDetail');
-
+                    (IsErr == 1) ? ShowErrorFld('H_AddressDetail') : HideErrorFld('H_AddressDetail');
+                    validateGST();
+                    validateTDS();
+                    (IsErr == 1) ? ShowErrorFld('H_TaxDetail') : HideErrorFld('H_TaxDetail');
                 }
                 else {
-                    if ($('#GSTRegistered').val() == 'Y' || $('#TDS').val() == "Y") {
+                    if ($('#GSTRegistered').val() == 'Y' || $('#TDS').val() == 'Y') {
                         ShowErrorFld('H_TaxDetail');
 
-                        if ($('#GSTRegistered').val() == 'Y') {
-                            if (!$('#GSTNO').val()) {
-                                AddErrorCls('GSTNO');
-                                IsErr = 1;
-                            }
-                            else {
-                                if ($('#GSTNO').val().length != 15) {
-                                    IsErr = 1;
-                                    AddErrorCls('GSTNO');
-                                }
-                            }
-                        }
-
-                        if ($('#TDS').val() == "Y") {
-                            if (!$('#TDSRate').val()) {
-                                AddErrorCls('TDSRate');
-                                IsErr = 1;
-                            }
-
-                            if (!$('#TDSPartyCategery').val()) {
-                                AddErrorCls('TDSPartyCategery');
-                                IsErr = 1;
-                            }
-                        }
+                        validateGST();
+                        validateTDS();
                     }
                     else {
                         HideErrorFld('H_TaxDetail');
@@ -1163,22 +981,347 @@
                 }
             }
 
-            console.log('IsErr : ' + IsErr);
-
+            console.log("IsErr = " + IsErr);
             if (IsErr == 1) return false;
-            if (IsErr == 0) return true;
-
-            //$("input[required],select[required]").each(function ()
-            //{
-            //    $(this).addClass('is-invalid');
-            //});
-            //$(".valid").each(function ()
-            //{
-            //    $(this).removeClass('is-invalid');
-            //});
+            return true;
         });
+        function validateRequired(id) {
+            if (!$('#' + id).val()) {
+                AddErrorCls(id);
+                IsErr = 1;
+            }
+        }
+        function validateGST() {
 
-        $('#ParentAccountCode').select2();
+            let gstReg = $('#GSTRegistered').val();
+
+            if (gstReg === "Y") {
+
+                let gstNo = $('#GSTNO').val().trim();
+
+                if (!gstNo) {
+                    AddErrorCls('GSTNO');
+                    IsErr = 1;
+                }
+                else if (gstNo.length !== 15) {
+                    AddErrorCls('GSTNO');
+                    IsErr = 1;
+                }
+
+                if (!$('#GSTPartyTypes').val()) {
+                    AddErrorCls('GSTPartyTypes');
+                    IsErr = 1;
+                }
+
+                if (!$('#GSTTAXTYPE').val()) {
+                    AddErrorCls('GSTTAXTYPE');
+                    IsErr = 1;
+                }
+            }
+
+            // GST Registered = NO → clear fields + remove errors
+            if (gstReg === "N") {
+                $('#GSTNO').val('');
+                RemoveErrorCls('GSTNO');
+
+                $('#GSTPartyTypes').prop('selectedIndex', 0);
+                RemoveErrorCls('GSTPartyTypes');
+
+                $('#GSTTAXTYPE').prop('selectedIndex', 0);
+                RemoveErrorCls('GSTTAXTYPE');
+            }
+        }
+        function validateTDS() {
+
+            let tds = $('#TDS').val();
+
+            if (tds === "Y") {
+
+                if (!$('#TDSRate').val()) {
+                    AddErrorCls('TDSRate');
+                    IsErr = 1;
+                }
+
+                if (!$('#TDSPartyCategery').val()) {
+                    AddErrorCls('TDSPartyCategery');
+                    IsErr = 1;
+                }
+            }
+
+            // If TDS = NO → clean errors
+            if (tds === "N") {
+                RemoveErrorCls('TDSRate');
+                RemoveErrorCls('TDSPartyCategery');
+            }
+
+            // PAN NO mandatory
+            if (!$('#PANNO').val()) {
+                AddErrorCls('PANNO');
+                IsErr = 1;
+            }
+        }
+
+        // $("button[type='submit']").click(function () {
+        //     $(".valid").each(function () {
+        //         $(this).removeClass('is-invalid');
+        //         IsErr = 0;
+        //     });
+
+        //     //H_AccountDetail
+
+        //     if (!$('#Entry_Date').val()) {
+        //         AddErrorCls('Entry_Date');
+        //         IsErr = 1;
+        //     }
+
+        //     if (!$('#ParentAccountCode').val()) {
+        //         AddErrorCls('ParentAccountCode');
+        //         IsErr = 1;
+        //     }
+
+        //     if (!$('#DisplayName').val()) {
+        //         AddErrorCls('DisplayName');
+        //         IsErr = 1;
+        //     }
+        //     else {
+        //         IsErr = 0;
+        //         $('#DisplayName').removeClass('is-invalid');
+        //     }
+
+        //     if (!$('#Account_Name').val()) {
+        //         AddErrorCls('Account_Name');
+        //         IsErr = 1;
+        //     }
+
+        //     if (!$('#SubGroup').val()) {
+        //         AddErrorCls('SubGroup');
+        //         IsErr = 1;
+        //     }
+
+        //     if (!$('#AccountType').val()) {
+        //         AddErrorCls('AccountType');
+        //         IsErr = 1;
+        //     }
+
+        //     if (!$('#MainGroup').val()) {
+        //         AddErrorCls('MainGroup');
+        //         IsErr = 1;
+        //     }
+
+        //     if (!$('#SubSubGroup').val()) {
+        //         AddErrorCls('SubSubGroup');
+        //         IsErr = 1;
+        //     }
+
+        //     if (!$('#UnderGroup').val()) {
+        //         AddErrorCls('UnderGroup');
+        //         IsErr = 1;
+        //     }
+        //             if (($('#SubGroup').val() === "Sundry Debtors" || $('#SubGroup').val() === "Sundry Creditors") &&
+        //     ($('#CreditDays').val() === "" ||  $('#CreditDays').val() == 0  || $('#CreditDays').val() == null)) {
+
+        //     $.notify("Credit Days is required for Sundry Debtors or Sundry Creditors!", "error");
+        //     AddErrorCls('CreditDays'); // optional: highlight the field
+        //   IsErr = 1;
+        //     }
+
+        //     //if(!$('#DebCredCode').val())
+        //     //{
+        //     //    AddErrorCls('DebCredCode');
+        //     //    IsErr=1;
+        //     //}
+
+        //     //if(!$('#Party_Code').val())
+        //     //{
+        //     //    AddErrorCls('Party_Code');
+        //     //    IsErr=1;
+        //     //}
+
+        //     IsErr == 1 ? ShowErrorFld('H_AccountDetail') : HideErrorFld('H_AccountDetail');
+
+        //     if (HideShow == 1) {
+        //         if (IsSDSC == 1)//in case of SUBGROUP = Sundry Debtors OR Sundry Creditors
+        //         {
+        //             //H_AddressDetail
+
+        //             if (!$('#ComAddress').val()) {
+        //                 AddErrorCls('ComAddress');
+        //                 IsErr = 1;
+        //             }
+
+        //             //if(!$('#ComAddress1').val())
+        //             //{
+        //             //    AddErrorCls('ComAddress1');
+        //             //    IsErr=1;
+        //             //}
+
+        //             if (!$('#Country').val()) {
+        //                 AddErrorCls('Country');
+        //                 IsErr = 1;
+        //             }
+
+        //             if (!$('#State').val()) {
+        //                 AddErrorCls('State');
+        //                 IsErr = 1;
+        //             }
+
+        //             if (!$('#City').val()) {
+        //                 AddErrorCls('City');
+        //                 IsErr = 1;
+        //             }
+
+        //             if (!$('#PinCode').val()) {
+        //                 AddErrorCls('PinCode');
+        //                 IsErr = 1;
+        //             }
+
+        //             if (!$('#PhoneNo').val()) {
+        //                 AddErrorCls('PhoneNo');
+        //                 IsErr = 1;
+        //             }
+
+        //             if (!$('#MobileNo').val()) {
+        //                 AddErrorCls('MobileNo');
+        //                 IsErr = 1;
+        //             }
+
+        //             if (!$('#ContactPerson').val()) {
+        //                 AddErrorCls('ContactPerson');
+        //                 IsErr = 1;
+        //             }
+
+        //             IsErr == 1 ? ShowErrorFld('H_AddressDetail') : HideErrorFld('H_AddressDetail');
+
+        //             //H_TaxDetail
+
+
+        //             if (!$('#PartyType').val()) {
+        //                 AddErrorCls('PartyType');
+        //                 IsErr = 1;
+        //             }
+
+        //             if (!$('#GSTRegistered').val()) {
+        //                 AddErrorCls('GSTRegistered');
+        //                 IsErr = 1;
+        //             }
+        //             else {
+        //                 if ($('#GSTRegistered').val() === "Y") {
+        //                     if (!$('#GSTNO').val()) {
+        //                         AddErrorCls('GSTNO');
+        //                         IsErr = 1;
+        //                     }
+        //                     else {
+        //                         if ($('#GSTRegistered').val() === 'Y') {
+        //                             if ($('#GSTNO').val().length !== 15) {
+        //                                 IsErr = 1;
+        //                                 AddErrorCls('GSTNO');
+        //                             }
+        //                         }
+        //                     }
+
+        //                     if (!$('#GSTPartyTypes').val()) {
+        //                         AddErrorCls('GSTPartyTypes');
+        //                         IsErr = 1;
+        //                     }
+
+        //                     if (!$('#GSTTAXTYPE').val()) {
+        //                         AddErrorCls('GSTTAXTYPE');
+        //                         IsErr = 1;
+        //                     }
+        //                 }
+        //                 if ($('#GSTRegistered').val() === "N") {
+        //                     $('#GSTNO').val('');
+        //                     RemoveErrorCls('GSTNO');
+        //                     $('#GSTPartyTypes').prop('selectedIndex', 0);
+        //                     RemoveErrorCls('GSTPartyTypes');
+        //                     $('#GSTTAXTYPE').prop('selectedIndex', 0);
+        //                     RemoveErrorCls('GSTTAXTYPE');
+        //                 }
+        //             }
+
+
+        //             if (!$('#TDS').val()) {
+        //                 AddErrorCls('TDS');
+        //                 IsErr = 1;
+        //             }
+        //             else {
+        //                 if ($('#TDS').val() == "Y") {
+        //                     if (!$('#TDSRate').val()) {
+        //                         AddErrorCls('TDSRate');
+        //                         IsErr = 1;
+        //                     }
+
+        //                     if (!$('#TDSPartyCategery').val()) {
+        //                         AddErrorCls('TDSPartyCategery');
+        //                         IsErr = 1;
+        //                     }
+        //                 }
+        //                 if ($('#TDS').val() == "N") {
+        //                     IsErr = 0;
+        //                     $('#TDSRate').removeClass('is-invalid');
+        //                     $('#TDSPartyCategery').removeClass('is-invalid');
+        //                 }
+
+        //                 if (!$('#PANNO').val()) {
+        //                     AddErrorCls('PANNO');
+        //                     IsErr = 1;
+        //                 }
+        //             }
+
+        //             IsErr == 1 ? ShowErrorFld('H_TaxDetail') : HideErrorFld('H_TaxDetail');
+
+        //         }
+        //         else {
+        //             if ($('#GSTRegistered').val() == 'Y' || $('#TDS').val() == "Y") {
+        //                 ShowErrorFld('H_TaxDetail');
+
+        //                 if ($('#GSTRegistered').val() == 'Y') {
+        //                     if (!$('#GSTNO').val()) {
+        //                         AddErrorCls('GSTNO');
+        //                         IsErr = 1;
+        //                     }
+        //                     else {
+        //                         if ($('#GSTNO').val().length != 15) {
+        //                             IsErr = 1;
+        //                             AddErrorCls('GSTNO');
+        //                         }
+        //                     }
+        //                 }
+
+        //                 if ($('#TDS').val() == "Y") {
+        //                     if (!$('#TDSRate').val()) {
+        //                         AddErrorCls('TDSRate');
+        //                         IsErr = 1;
+        //                     }
+
+        //                     if (!$('#TDSPartyCategery').val()) {
+        //                         AddErrorCls('TDSPartyCategery');
+        //                         IsErr = 1;
+        //                     }
+        //                 }
+        //             }
+        //             else {
+        //                 HideErrorFld('H_TaxDetail');
+        //             }
+        //         }
+        //     }
+
+        //     console.log('IsErr : ' + IsErr);
+
+        //     if (IsErr == 1) return false;
+        //     if (IsErr == 0) return true;
+
+        //     //$("input[required],select[required]").each(function ()
+        //     //{
+        //     //    $(this).addClass('is-invalid');
+        //     //});
+        //     //$(".valid").each(function ()
+        //     //{
+        //     //    $(this).removeClass('is-invalid');
+        //     //});
+        // });
+
+      
 
     </script>
 }

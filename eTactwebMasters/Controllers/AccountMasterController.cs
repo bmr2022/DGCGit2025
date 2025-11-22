@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Globalization;
 using System.Data;
+using OfficeOpenXml;
 
 namespace eTactWeb.Controllers
 {
@@ -43,6 +44,8 @@ namespace eTactWeb.Controllers
             model = await _IAccountMaster.GetDashboardData(model);
             model.ParentGroupList = await _IDataLogic.GetDropDownList("VPrimaryAccountHeadMaster", "SP_AccountMaster");
             HttpContext.Session.SetString("Model", JsonConvert.SerializeObject(model));
+            string jsonData = JsonConvert.SerializeObject(model);
+            HttpContext.Session.SetString("AccountList", jsonData);
             return View(model);
            // return RedirectToAction("DashBoard", "AccountMaster");
 
@@ -212,13 +215,117 @@ namespace eTactWeb.Controllers
         {
             model.Mode = "Search";
             model = await _IAccountMaster.GetDashboardData(model);
+            string jsonData = JsonConvert.SerializeObject(model);
+            HttpContext.Session.SetString("AccountList", jsonData);
             return PartialView("_AccMasterDashboard", model);
         }
         public async Task<IActionResult> GetDetailData(AccountMasterModel model)
         {
             model.Mode = "DetailSearch";
             model = await _IAccountMaster.GetDetailDashboardData(model);
+            string jsonData = JsonConvert.SerializeObject(model);
+            HttpContext.Session.SetString("AccountList", jsonData);
             return PartialView("_AccMasterDashboard", model);
+        }
+
+        public IActionResult ExportAccountExcel()
+        {
+            // Get JSON from Session
+            var json = HttpContext.Session.GetString("AccountList");
+            if (string.IsNullOrEmpty(json))
+            {
+                return Content("No data found in session");
+            }
+
+            var model = System.Text.Json.JsonSerializer.Deserialize<AccountMasterModel>(json);
+
+            if (model == null || model.AccountMasterList == null || !model.AccountMasterList.Any())
+            {
+                return Content("No data found");
+            }
+
+            using (var package = new OfficeOpenXml.ExcelPackage())
+            {
+                ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+                var ws = package.Workbook.Worksheets.Add("AccountMaster");
+
+                // ======================
+                // 🔵 HEADER ROW
+                // ======================
+                string[] headers =
+                {
+            "Account Code","Account Name","Parent Account Name","Parent Account Code","Sub Group",
+            "Main Group","Under Group","Com Address","Com Address 1","Pin Code","City","State",
+            "Country","GST No","Phone No","Mobile No","Contact Person","Party Type","GST Registered",
+            "GST Party Type","GST Tax Type","Segment","SSL No","PAN No","TDS","TDS Rate","TDS Party Category",
+            "Responsible Employee","Responsible Emp Contact","Sales Person Name","Sales Person Email",
+            "Sales Person Mobile","Purchase Person Name","Purchase Person Email","Purchase Person Mobile",
+            "QC Person Email","Website"
+        };
+
+                for (int i = 0; i < headers.Length; i++)
+                {
+                    ws.Cells[1, i + 1].Value = headers[i];
+                }
+
+                // ======================
+                // 🔵 DATA ROWS
+                // ======================
+                int row = 2;
+
+                foreach (var x in model.AccountMasterList)
+                {
+                    ws.Cells[row, 1].Value = x.Account_Code;
+                    ws.Cells[row, 2].Value = x.Account_Name;
+                    ws.Cells[row, 3].Value = x.ParentAccountName;
+                    ws.Cells[row, 4].Value = x.ParentAccountCode;
+                    ws.Cells[row, 5].Value = x.SubGroup;
+                    ws.Cells[row, 6].Value = x.MainGroup;
+                    ws.Cells[row, 7].Value = x.UnderGroup;
+                    ws.Cells[row, 8].Value = x.ComAddress;
+                    ws.Cells[row, 9].Value = x.ComAddress1;
+                    ws.Cells[row, 10].Value = x.PinCode;
+                    ws.Cells[row, 11].Value = x.City;
+                    ws.Cells[row, 12].Value = x.State;
+                    ws.Cells[row, 13].Value = x.Country;
+                    ws.Cells[row, 14].Value = x.GSTNO;
+                    ws.Cells[row, 15].Value = x.PhoneNo;
+                    ws.Cells[row, 16].Value = x.MobileNo;
+                    ws.Cells[row, 17].Value = x.ContactPerson;
+                    ws.Cells[row, 18].Value = x.PartyType;
+                    ws.Cells[row, 19].Value = x.GSTRegistered;
+                    ws.Cells[row, 20].Value = x.GSTPartyTypes;
+                    ws.Cells[row, 21].Value = x.GSTTAXTYPE;
+                    ws.Cells[row, 22].Value = x.Segment;
+                    ws.Cells[row, 23].Value = x.SSLNo;
+                    ws.Cells[row, 24].Value = x.PANNO;
+                    ws.Cells[row, 25].Value = x.TDS;
+                    ws.Cells[row, 26].Value = x.TDSRate;
+                    ws.Cells[row, 27].Value = x.TDSPartyCategery;
+                    ws.Cells[row, 28].Value = x.ResponsibleEmployee;
+                    ws.Cells[row, 29].Value = x.ResponsibleEmpContactNo;
+                    ws.Cells[row, 30].Value = x.SalesPersonName;
+                    ws.Cells[row, 31].Value = x.SalesPersonEmailId;
+                    ws.Cells[row, 32].Value = x.SalesPersonMobile;
+                    ws.Cells[row, 33].Value = x.PurchPersonName;
+                    ws.Cells[row, 34].Value = x.PurchasePersonEmailId;
+                    ws.Cells[row, 35].Value = x.PurchMobileNo;
+                    ws.Cells[row, 36].Value = x.QCPersonEmailId;
+                    ws.Cells[row, 37].Value = x.WebSite_Add;
+
+                    row++;
+                }
+
+                // Autofit
+                ws.Cells[ws.Dimension.Address].AutoFitColumns();
+
+                // Download Excel
+                var file = package.GetAsByteArray();
+                return File(file,
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    "AccountMaster.xlsx");
+            }
         }
 
         public async Task<IActionResult> GetTDSPartyList()

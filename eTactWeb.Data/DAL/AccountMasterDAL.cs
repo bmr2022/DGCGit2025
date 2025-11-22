@@ -284,27 +284,122 @@ namespace eTactWeb.Data.DAL
                         oDataAdapter.Fill(oDataSet);
                     }
                 }
-
-                if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                if (model.Mode == "SearchALL")
                 {
-                    model.AccountMasterList = (from DataRow dr in oDataSet.Tables[0].Rows
-                                               select new AccountMasterModel
-                                               {
-                                                   Account_Code = Convert.ToInt32(dr["Account_Code"]),
-                                                   Account_Name = dr["Account_Name"].ToString(),
-                                                   ParentAccountName = dr["ParentAccount"].ToString(),
-                                                   ParentAccountCode = Convert.ToInt32(dr["ParentAccountCode"]),
-                                                   SubGroup = dr["SubGroup"].ToString(),
-                                                   MainGroup = dr["MainGroup"].ToString(),
-                                                   UnderGroup = dr["UnderGroup"].ToString(),
-                                                   ComAddress = dr["ComAddress"].ToString(),
-                                                   ComAddress1 = dr["ComAddress1"].ToString(),
-                                                   PinCode = dr["PinCode"].ToString(),
-                                                   City = dr["City"].ToString(),
-                                                   State = dr["State"].ToString(),
-                                                   Country = dr["Country"].ToString(),
-                                                   GSTNO = dr["GSTNO"].ToString(),
-                                               }).ToList();
+                    if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                    {
+                        model.AccountMasterList = (from DataRow dr in oDataSet.Tables[0].Rows
+                                                   select new AccountMasterModel
+                                                   {
+                                                       Account_Code = Convert.ToInt32(dr["Account_Code"]),
+                                                       DebCredCode = dr["DebCredCode"].ToString(),
+                                                       Party_Code = dr["Party_Code"].ToString(),
+                                                       Entry_Date = dr["Entry_Date"].ToString(),
+                                                       
+                                                       Account_Name = dr["Account_Name"].ToString(),
+                                                       DisplayName = dr["DisplayName"].ToString(),
+                                                       ParentAccountName = dr["ParentAccount"].ToString(),
+                                                       MainGroup = dr["MainGroup"].ToString(),
+                                                       AccountType = dr["AccountType"].ToString(),
+                                                       SubGroup = dr["SubGroup"].ToString(),
+                                                       SubSubGroup = dr["SubSubGroup"].ToString(),
+                                                       UnderGroup = dr["UnderGroup"].ToString(),
+                                                       ComAddress = dr["ComAddress"].ToString(),
+                                                       ComAddress1 = dr["ComAddress1"].ToString(),
+                                                       PinCode = dr["PinCode"].ToString(),
+                                                       City = dr["City"].ToString(),
+                                                       State = dr["State"].ToString(),
+                                                       Country = dr["Country"].ToString(),
+                                                       PhoneNo = dr["PhoneNo"].ToString(),
+                                                       MobileNo = dr["MobileNo"].ToString(),
+                                                       ContactPerson = dr["ContactPerson"].ToString(),
+                                                       PartyType = dr["PartyType"].ToString(),
+                                                       GSTRegistered = dr["GSTRegistered"].ToString(),
+                                                       GSTNO = dr["GSTNO"].ToString(),
+                                                       GSTPartyTypes = dr["GSTPartyTypes"].ToString(),
+                                                       GSTTAXTYPE = dr["GSTTAXTYPE"].ToString(),
+                                                       Segment = dr["Segment"].ToString(),
+                                                       SSLNo = dr["SSLNo"].ToString(),
+                                                       PANNO = dr["PANNO"].ToString(),
+                                                       TDS = dr["TDS"].ToString(),
+                                                       TDSRate = dr["TDSRate"].ToString(),
+                                                       TDSPartyCategery = dr["TDSPartyCategery"].ToString(),
+                                                       ResponsibleEmployee = dr["ResponsibleEmployee"].ToString(),
+                                                       ResponsibleEmpContactNo = dr["ResponsibleEmpContactNo"].ToString(),
+                                                       SalesPersonName = dr["SalesPersonName"].ToString(),
+                                                       SalesPersonEmailId = dr["SalesPersonEmailId"].ToString(),
+                                                       SalesPersonMobile = dr["SalesPersonMobile"].ToString(),
+                                                       PurchPersonName = dr["PurchPersonName"].ToString(),
+                                                       PurchasePersonEmailId = dr["PurchasePersonEmailId"].ToString(),
+                                                       PurchMobileNo = dr["PurchMobileNo"].ToString(),
+                                                       QCPersonEmailId = dr["QCPersonEmailId"].ToString(),
+                                                       WebSite_Add = dr["WebSite_Add"].ToString(),
+                                                       EMail = dr["EMail"].ToString(),
+                                                       RANGE = dr["RANGE"].ToString(),
+                                                       Division = dr["Division"].ToString(),
+                                                       Commodity = dr["Commodity"].ToString(),
+                                                       WorkingAdd1 = dr["WorkingAdd1"].ToString(),
+                                                       WorkingAdd2 = dr["WorkingAdd2"].ToString(),
+                                                       RateOfInt = dr["RateOfInt"].ToString(),
+                                                       CreditLimit = dr["CreditLimit"].ToString(),
+                                                       CreditDays = dr["CreditDays"].ToString(),
+                                                       SSL = dr["SSL"].ToString(),
+                                                       BankAccount_No = dr["BankAccount_No"].ToString(),
+                                                       BankAddress = dr["BankAddress"].ToString(),
+                                                       BankIFSCCode = dr["BankIFSCCode"].ToString(),
+                                                       BankSwiftCode = dr["BankSwiftCode"].ToString(),
+                                                       InterbranchSaleBILL = dr["InterbranchSaleBILL"].ToString(),
+                                                       salesperson_name = dr["salesperson_name"].ToString(),
+                                                       salesemailid = dr["salesemailid"].ToString(),
+                                                       salesmobileno = dr["salesmobileno"].ToString(),
+                                                       Approved_By = dr["Approved_By"].ToString(),
+                                                       Approved = dr["Approved"].ToString(),
+                                                       ApprovalDate = dr["ApprovalDate"].ToString(),
+                                                       
+                                                       BlackListed = dr["BlackListed"].ToString(),
+                                                       BlackListed_By = dr["BlackListed_By"].ToString(),
+                                                       
+                                                       YearCode = dr["YearCode"] == DBNull.Value ? 0 : Convert.ToInt32(dr["YearCode"]),
+                                                       Uid = dr["Uid"].ToString(),
+                                                       CC = dr["CC"].ToString(),
+                                                       
+                                                       CreatedBy = dr["CreatedBy"] == DBNull.Value ? 0 : Convert.ToInt32(dr["CreatedBy"]),
+                                                       CreatedOn = dr["CreatedOn"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(dr["CreatedOn"]),
+                                                      
+                                                       UpdatedBy = dr["UpdatedBy"] == DBNull.Value ? 0 : Convert.ToInt32(dr["UpdatedBy"]),
+                                                       UpdatedOn = dr["UpdatedOn"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(dr["UpdatedOn"]),
+                                                       Active = dr["Active"].ToString(),
+                                                       ParentAccountCode = Convert.ToInt32(dr["ParentAccountCode"]),
+                                                      
+
+                                                   }).ToList();
+                    }
+                }
+                else
+                { 
+
+                    if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                    {
+                        model.AccountMasterList = (from DataRow dr in oDataSet.Tables[0].Rows
+                                                   select new AccountMasterModel
+                                                   {
+                                                       Account_Code = Convert.ToInt32(dr["Account_Code"]),
+                                                       Account_Name = dr["Account_Name"].ToString(),
+                                                       ParentAccountName = dr["ParentAccount"].ToString(),
+                                                       ParentAccountCode = Convert.ToInt32(dr["ParentAccountCode"]),
+                                                       SubGroup = dr["SubGroup"].ToString(),
+                                                       MainGroup = dr["MainGroup"].ToString(),
+                                                       UnderGroup = dr["UnderGroup"].ToString(),
+                                                       ComAddress = dr["ComAddress"].ToString(),
+                                                       ComAddress1 = dr["ComAddress1"].ToString(),
+                                                       PinCode = dr["PinCode"].ToString(),
+                                                       City = dr["City"].ToString(),
+                                                       State = dr["State"].ToString(),
+                                                       Country = dr["Country"].ToString(),
+                                                       GSTNO = dr["GSTNO"].ToString(),
+                                                   }).ToList();
+                    }
+
                 }
 
                 //var ilst = model.AccountMasterList.Select(m => new TextValue
