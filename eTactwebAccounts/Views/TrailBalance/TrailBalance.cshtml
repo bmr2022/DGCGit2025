@@ -151,151 +151,105 @@
 
         $(document).ready(function () {
 
-            let currentForm = "TRAILDETAIL_Ledger";
-            let currentDate = new Date();
+            // -----------------------------
+            // PAGE FORM NAME (IMPORTANT)
+            // -----------------------------
+            const currentForm = $("#ReportType").val();  // AUTO-DETECT SUMMARY / DETAIL / LEDGER
+            const currentDate = new Date();
 
-            // Initialize Select2 fields
+
+            // -----------------------------
+            // INIT SELECT2 & DATEPICKERS
+            // -----------------------------
             $('#ReportType, #TrailBalanceGroupName, #ParentGroupName, #AccountName').select2();
 
+            $("#FromDate").datepicker({ dateFormat: "dd/mm/yy" });
+            $("#ToDate").datepicker({ dateFormat: "dd/mm/yy" });
 
-            /* ----------------------------------------------------------
-               DATE FORMATTER (convert server date to dd/mm/yyyy)
-            -----------------------------------------------------------*/
-            let fromDateRaw = '@Model.FromDate';  // e.g. "01/Apr/2025 00:00:00"
 
+            // -----------------------------
+            // FORMAT SERVER DATE
+            // -----------------------------
             function convertToDDMMYYYY(dateStr) {
                 if (!dateStr) return '';
-
                 try {
-                    let datePart = dateStr.trim().split(" ")[0];
+                    let raw = dateStr.split(" ")[0];
 
-                    if (/^\d{2}\/\d{2}\/\d{4}$/.test(datePart)) return datePart;
+                    if (/^\d{2}\/\d{2}\/\d{4}$/.test(raw))
+                        return raw;
 
-                    let [day, mon, year] = datePart.includes('/')
-                        ? datePart.split('/')
-                        : datePart.split('-');
+                    let [day, mon, year] = raw.includes('/') ? raw.split('/') : raw.split('-');
 
                     const months = {
-                        Jan: "01", Feb: "02", Mar: "03", Apr: "04",
-                        May: "05", Jun: "06", Jul: "07", Aug: "08",
-                        Sep: "09", Oct: "10", Nov: "11", Dec: "12"
+                        Jan: "01", Feb: "02", Mar: "03", Apr: "04", May: "05", Jun: "06",
+                        Jul: "07", Aug: "08", Sep: "09", Oct: "10", Nov: "11", Dec: "12"
                     };
 
-                    let monthNum = months[mon] || mon.padStart(2, '0');
-                    return `${day}/${monthNum}/${year}`;
-                }
-                catch (e) {
+                    let mm = months[mon] || mon.padStart(2, '0');
+                    return `${day}/${mm}/${year}`;
+
+                } catch (e) {
                     console.error("Invalid date:", dateStr, e);
                     return '';
                 }
             }
 
-            let fromDateFormatted = convertToDDMMYYYY(fromDateRaw);
+            // -----------------------------
+            // SET DEFAULT DATES
+            // -----------------------------
+            let fromDate = convertToDDMMYYYY('@Model.FromDate');
+            $("#FromDate").datepicker("setDate", fromDate || currentDate);
+            $("#ToDate").datepicker("setDate", currentDate);
 
-            $("#FromDate").datepicker({ dateFormat: "dd/mm/yy" })
-                .datepicker("setDate", fromDateFormatted || currentDate);
 
-            $("#ToDate").datepicker({ dateFormat: "dd/mm/yy" })
-                .datepicker("setDate", currentDate);
-
-
-            /* ----------------------------------------------------------
-               WAIT FOR SELECT2 (for async dropdown data)
-            -----------------------------------------------------------*/
+            // -----------------------------
+            // WAIT FOR SELECT2
+            // -----------------------------
             function waitForSelect2(id, callback) {
-                const interval = setInterval(() => {
+                const check = setInterval(() => {
                     if ($(`#${id} option`).length > 0) {
-                        clearInterval(interval);
+                        clearInterval(check);
                         callback();
                     }
                 }, 100);
             }
 
 
-            /* ----------------------------------------------------------
-               RESTORE UI FILTERS Using JSMaster.restoreFilters()
-            -----------------------------------------------------------*/
-            function applySavedFilters(formName) {
-
-                const saved = DrilldownManager.restoreFilters(formName);
-                if (!saved) return;
-
-                for (const key in saved) {
-
-                    const $el = $("#" + key);
-                    if (!$el.length) continue;
-
-                    // Checkbox
-                    if ($el.attr("type") === "checkbox") {
-                        $el.prop("checked", !!saved[key]).trigger("change");
-                        continue;
-                    }
-
-                    // Datepicker
-                    if ($el.hasClass("hasDatepicker")) {
-                        $el.datepicker("setDate", saved[key]);
-                        continue;
-                    }
-
-                    // Select2
-                    if ($el.hasClass("select2")) {
-
-                        // Special waiting condition
-                        if (key === "AccountName") {
-                            waitForSelect2("AccountName", () => {
-                                $el.val(saved[key]).trigger("change");
-                            });
-                        } else {
-                            $el.val(saved[key]).trigger("change");
-                        }
-
-                        continue;
-                    }
-
-                    // Default textbox/select
-                    $el.val(saved[key]).trigger("change");
-                }
-            }
+            // -----------------------------
+            // ⭐ RESTORE ALL FILTERS
+            // -----------------------------
+            initDrillRestore(currentForm);
 
 
-            /* ----------------------------------------------------------
-               LOAD DROPDOWNS → THEN APPLY FILTERS → THEN LOAD DATA
-            -----------------------------------------------------------*/
+            // -----------------------------
+            // LOAD ALL DROPDOWNS
+            // -----------------------------
             $.when(
                 FillGroupList(),
                 FillParentGroupList(),
                 FillAccountList()
             ).done(function () {
 
-                try {
-                    debugger
-                    // Restore for current page
-                    applySavedFilters(currentForm);
+                setTimeout(() => {
+                    DrilldownManager.toggleBackButton();
+                }, 300);
 
-                    // UI Sync after restore
-                    setTimeout(() => {
-                        DrilldownManager.toggleBackButton();
-                    }, 300);
-
-                } catch (e) {
-                    console.error("Error restoring saved filters:", e);
-                }
-
-                // Finally load data
+                // LOAD SUMMARY / DETAIL / LEDGER GRID
                 GetTrailBalanceDetailsData();
             });
 
 
-            /* ----------------------------------------------------------
-               COLUMN HIDE/SHOW
-            -----------------------------------------------------------*/
+            // -----------------------------
+            // COLUMN SHOW/HIDE
+            // -----------------------------
             var hiddenCols = {};
 
             $('.toggle-col').on('click', function () {
+
                 var $th = $(this).closest('th');
                 var colIndex = $th.index() + 1;
                 var $icon = $(this).find('i');
-                const isVisible = !$('table tr th:nth-child(' + colIndex + ')').hasClass('hidden-column');
+                var isVisible = !$('table tr th:nth-child(' + colIndex + ')').hasClass('hidden-column');
 
                 if (isVisible) {
                     $('table tr').each(function () {
@@ -321,16 +275,20 @@
             });
 
 
-            /* ----------------------------------------------------------
-               REPORT FIELDS BASED ON REPORT TYPE
-            -----------------------------------------------------------*/
+            // -----------------------------
+            // REPORT TYPE — SHOW FIELDS
+            // -----------------------------
             function loadReportFields(reportType) {
-                let html = '';
+
+                let html = "";
+
                 if (reportType === "TRAILDETAIL") {
-                    html = `<!-- TRAILDETAIL HTML INPUTS HERE -->`;
-                } else if (reportType === "TRAILSUMMARY") {
-                    html = `<!-- TRAILSUMMARY HTML INPUTS HERE -->`;
+                    html = `<!-- TRAILDETAIL HTML -->`;
                 }
+                else if (reportType === "TRAILSUMMARY") {
+                    html = `<!-- TRAILSUMMARY HTML -->`;
+                }
+
                 $("#reportFields").html(html);
             }
 
@@ -342,25 +300,31 @@
             loadReportFields($("#ReportType").val());
 
 
-            /* ----------------------------------------------------------
-               BUTTON TITLE
-            -----------------------------------------------------------*/
+            // -----------------------------
+            // BUTTON TITLE
+            // -----------------------------
             function updateButtonTitle() {
+
                 let reportType = $("#ReportType").val();
-                let newTitle = (reportType === "TRAILSUMMARY")
+
+                let title = (reportType === "TRAILSUMMARY")
                     ? "Trail Balance Summary"
                     : "Trail Balance Detail";
 
-                $("#dynamicText").text(newTitle);
+                $("#dynamicText").text(title);
             }
+
             updateButtonTitle();
 
 
-            /* ----------------------------------------------------------
-               STYLE BOLD SUMMARY ROWS
-            -----------------------------------------------------------*/
-            $(".bold-row").css({ "font-weight": "bold", "font-size": "16px", "color": "green" })
-                .find("input").css("color", "green");
+            // -----------------------------
+            // STYLE SUMMARY ROWS
+            // -----------------------------
+            $(".bold-row").css({
+                "font-weight": "bold",
+                "font-size": "16px",
+                "color": "green"
+            }).find("input").css("color", "green");
 
         });
 
@@ -465,167 +429,6 @@
             FillAccountList();
         });
 
-        function GetDetailByGroupName(cntr) {
-            // Save OLD state first
-            let currentGroup = $('#TrailBalanceGroupName').val();
-            let currentReportType = $('#ReportType').val();
-            saveHistory('TrailDetail', { groupCode: currentGroup, reportType: currentReportType });
-
-            // Apply NEW state
-            let groupCode = $("#TrailBalanceGroupCode-" + cntr).val();
-            $('#TrailBalanceGroupName').val(groupCode).trigger('change');
-            $('#ReportType').val("TRAILDETAIL").trigger('change');
-        }
-
-        function GetDataByParentGroupName(cntr) {
-            // Save OLD state first
-            let currentGroup = $('#TrailBalanceGroupName').val();
-            let currentParent = $('#ParentGroupName').val();
-            let currentReportType = $('#ReportType').val();
-            saveHistory('TrailParent', { groupCode: currentGroup, parentCode: currentParent, reportType: currentReportType });
-
-            // Apply NEW state
-            let groupCode = $("#TrailBalanceGroupCode-" + cntr).val();
-            let parentCode = $("#ParentAccountCode-" + cntr).val();
-            $('#TrailBalanceGroupName').val(groupCode).trigger("change");
-            $('#ParentGroupName').val(parentCode).trigger("change");
-            $('#ReportType').val("TRAILDETAIL").trigger("change");
-        }
-
-        function GetDataByAccountName(cntr) {
-            // Save OLD state
-            let currentGroup = $('#TrailBalanceGroupName').val();
-            let currentParent = $('#ParentGroupName').val();
-            let currentAccount = $('#AccountName').val();
-            let currentReportType = $('#ReportType').val();
-            saveHistory('TrailAccount', {
-                groupCode: currentGroup,
-                parentCode: currentParent,
-                accountName: currentAccount,
-                reportType: currentReportType
-            });
-
-            // Save for TransactionLedger page
-            let groupCode = $("#TrailBalanceGroupCode-" + cntr).val();
-            let parentCode = $("#ParentAccountCode-" + cntr).val();
-            let accountName = $("#AccountName-" + cntr).val();
-
-            sessionStorage.setItem('GroupCode', groupCode);     // ✅ Added
-            sessionStorage.setItem('ParentCode', parentCode);
-            sessionStorage.setItem('AccountName', accountName);
-            sessionStorage.setItem('ReportType', "MonthlySummary");
-
-            // Mark current page
-            sessionStorage.setItem('CurrentPage', 'TransactionLedger');
-
-            // Go to TransactionLedger
-            window.location.href = '/TransactionLedger/Index';
-        }
-
-        function callDrillDown(elem) {
-
-            let controller = $(elem).data("controller");
-            let action = $(elem).data("action");
-            let clickname = $(elem).data("clickname");
-            let groupname = $(elem).data("groupname");
-            let parentgroup = $(elem).data("parentgroup");
-            let accountcode = $(elem).data("accountcode");
-
-            let ReportType = $("#ReportType").val();
-            let formName = $("#FormName").val() || ReportType || "COMMON_FORM";
-
-            // --- Save full current filter state ---
-            let filters = {};
-            $("[id]").each(function () {
-                let id = $(this).attr("id");
-                if (!id) return;
-
-                if ($(this).attr("type") === "checkbox")
-                    filters[id] = $(this).is(":checked");
-                else
-                    filters[id] = $(this).val();
-            });
-
-            DrilldownManager.saveFormFilters(formName, filters);
-
-            // --- Push stack entry ---
-            DrilldownManager.pushNavigation({
-                currentForm: formName,
-                nextForm: "TransactionLedger",
-                isRoot: false,
-                url: window.location.href
-            });
-
-            // --- Save drilldown-specific filters ---
-            DrilldownManager.saveFormFilters("TransactionLedger", {
-                GroupName: groupname,
-                ParentGroup: parentgroup,
-                AccountCode: accountcode,
-                FromDate: $("#FromDate").val(),
-                ToDate: $("#ToDate").val()
-            });
-
-            // --- Special case: Ledger → MonthlySummary ---
-            if (clickname === "LedgerClick") {
-                DrilldownManager.saveFormFilters("MonthlySummary", {
-                    AccountCode: accountcode,
-                    LedgerName: accountcode,
-                    FromDate: $("#FromDate").val(),
-                    ToDate: $("#ToDate").val()
-                });
-
-                sessionStorage.setItem("DRILL_IS_REDIRECT_TO_MONTHLYSUMMARY", "1");
-            }
-
-            // --- Redirect ---
-            window.location.href = `/${controller}/${action}`;
-        }
-
-        function saveHistory(action, params = {}) {
-            // Load existing history or create empty
-            let history = JSON.parse(sessionStorage.getItem('HistoryStack')) || [];
-
-            // Push new action
-            history.push({ action, params });
-
-            // Save back
-            sessionStorage.setItem('HistoryStack', JSON.stringify(history));
-
-            // Show back button
-            $('#BackButton').show();
-        }
-
-        function PressBack() {
-            let history = JSON.parse(sessionStorage.getItem('HistoryStack')) || [];
-            if (history.length === 0) { $('#BackButton').hide(); return; }
-
-            let lastStep = history.pop();
-            sessionStorage.setItem('HistoryStack', JSON.stringify(history));
-
-            switch (lastStep.action) {
-                case 'TrailDetail':
-                    $('#TrailBalanceGroupName').val(lastStep.params.groupCode).trigger("change");
-                    $('#ReportType').val("TRAILSUMMARY").trigger("change");
-                    break;
-
-                case 'TrailParent':
-                    $('#TrailBalanceGroupName').val(lastStep.params.groupCode).trigger("change");
-                    $('#ParentGroupName').val(lastStep.params.parentCode).trigger("change");
-                    $('#ReportType').val("TRAILDETAIL").trigger("change");
-                    break;
-
-                case 'TrailAccount':
-                    // Go back to TransactionLedger
-                    sessionStorage.setItem('ParentCode', lastStep.params.parentCode);
-                    sessionStorage.setItem('AccountName', lastStep.params.accountName);
-                    sessionStorage.setItem('ReportType', lastStep.params.reportType || "MonthlySummary");
-                    window.location.href = '/TransactionLedger/Index';
-                    break;
-            }
-
-            if (history.length === 0) $('#BackButton').hide();
-        }
-
         function selection(CurrentRow) {
 
             //$(CurrentRow).css({ 'background-color': '#00bcd4' });
@@ -640,6 +443,7 @@
         $("#ReportType").change(function () {
             GetTrailBalanceDetailsData();
         });
+
         function updateHiddenColPanel() {
             const $panel = $('#hidden-cols-panel');
             $panel.empty();
@@ -778,6 +582,7 @@
             $('#totCurrDRTotal').val(isNaN(TotCurrDRTotal) ? 0 : TotCurrDRTotal.toFixed(2));
             $('#totCurrCRTotal').val(isNaN(TotCurrCRTotal) ? 0 : TotCurrCRTotal.toFixed(2));
         }
+
         function getFirstDayOfMonth(dateString) {
             const [day, month, year] = dateString.split('/');
 
@@ -828,7 +633,6 @@
         });
 
         $(document).on("click", ".sortCol", function () {
-            ;
             var $column = $(this).parent().closest("th");
             var colno = $(this).data('columnno');
             var currentOrder = $(this).data('sortorder');
@@ -927,7 +731,6 @@
             countAllTotal();
             $('#totalRows').text($('#divStockMainRegister tr').length - 1);
         }
-
 
     </script>
 

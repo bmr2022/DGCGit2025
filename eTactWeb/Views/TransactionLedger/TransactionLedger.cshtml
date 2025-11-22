@@ -222,110 +222,57 @@
     <script>
 
         $(document).ready(function () {
-            var currentForm = $("#ReportType").val();
-            $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' });
-            $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' });
-            let fromDateRaw = '@Model.FromDate';
-            let currentDate = new Date();
 
-            function convertToDDMMYYYY(dateStr) {
-                if (!dateStr) return '';
-                try {
-                    let datePart = dateStr.trim().split(" ")[0];
-                    if (/^\d{2}\/\d{2}\/\d{4}$/.test(datePart)) return datePart;
+            const currentForm = $("#ReportType").val() || "TransactionLedger";
 
-                    let parts = datePart.includes('-') ? datePart.split('-') : datePart.split('/');
-                    if (parts.length !== 3) return '';
-
-                    let [day, mon, year] = parts;
-                    const months = {
-                        Jan: "01", Feb: "02", Mar: "03", Apr: "04",
-                        May: "05", Jun: "06", Jul: "07", Aug: "08",
-                        Sep: "09", Oct: "10", Nov: "11", Dec: "12"
-                    };
-                    let monthNum = months[mon] || mon.padStart(2, '0');
-                    return `${day}/${monthNum}/${year}`;
-                } catch (e) {
-                    console.error('Invalid date format:', dateStr, e);
-                    return '';
-                }
-            }
-
-            let fromDateFormatted = convertToDDMMYYYY(fromDateRaw);
-            $('#FromDate').datepicker("setDate", fromDateFormatted || currentDate);
-            $('#ToDate').datepicker("setDate", currentDate);
-
+            $("#FromDate").datepicker({ dateFormat: "dd/mm/yy" });
+            $("#ToDate").datepicker({ dateFormat: "dd/mm/yy" });
             $('#LedgerName, #ParentLedgerName, #ReportType, #VoucherType, #Group_Ledger').select2();
 
-            if (typeof FillParentLedgerName === 'function') FillParentLedgerName();
-            if (typeof FillVoucherName === 'function') FillVoucherName();
-            if (typeof FillLedgerName === 'function') FillLedgerName();
+            // WAIT FOR ALL DROPDOWNS TO LOAD
+            $.when(
+                FillParentLedgerName(),
+                FillVoucherName(),
+                FillLedgerName()
+            ).done(function () {
 
-            function restoreFormFilters(formName) {
-                if (!formName) return;
-                const savedFilters = DrilldownManager.restoreFilters(formName);
-                if (!savedFilters) return;
+                /* --------------------------------------------------
+                   ⭐ 1) RESTORE FILTERS (AFTER FILLS ARE DONE)
+                -------------------------------------------------- */
+                initDrillRestore(currentForm);
 
-                function waitForSelect2(id, callback) {
-                    const interval = setInterval(() => {
-                        if ($(`#${id} option`).length > 0) {
-                            clearInterval(interval);
-                            callback();
-                        }
-                    }, 100);
+                /* --------------------------------------------------
+                   ⭐ 2) RESTORE ReportType CORRECTLY IN SELECT2 UI
+                      (This is the fix for your issue)
+                -------------------------------------------------- */
+                let restoredMode = sessionStorage.getItem("DRILL__TARGET_FORM");
+
+                if (restoredMode) {
+                    console.log("Restored ReportType:", restoredMode);
+
+                    $("#ReportType").val(restoredMode).trigger("change.select2");
                 }
 
-                for (const key in savedFilters) {
-                    const $el = $(`#${key}`);
-                    if (!$el.length) continue;
+                /* --------------------------------------------------
+                   ⭐ 3) Also apply drill values to dropdowns
+                -------------------------------------------------- */
+                const group = sessionStorage.getItem("DRILL__GROUP");
+                const parent = sessionStorage.getItem("DRILL__PARENT");
+                const account = sessionStorage.getItem("DRILL__ACCOUNT");
 
-                    const type = $el.attr('type');
+                if (group) $("#Group_Ledger").val(group).trigger("change.select2");
+                if (parent) $("#ParentLedgerName").val(parent).trigger("change.select2");
+                if (account) $("#LedgerName").val(account).trigger("change.select2");
 
-                    if (type === 'checkbox') {
-                        $el.prop('checked', !!savedFilters[key]).trigger('change');
-                        continue;
-                    }
+                sessionStorage.removeItem("DRILL__GROUP");
+                sessionStorage.removeItem("DRILL__PARENT");
+                sessionStorage.removeItem("DRILL__ACCOUNT");
+                sessionStorage.removeItem("DRILL__TARGET_FORM");
 
-                    if (key === 'FromDate' || key === 'ToDate') {
-                        $el.datepicker("setDate", savedFilters[key]);
-                    }
-                    else if ($el.hasClass("select2") || $el.hasClass("custom-select2")) {
-                        if ($el.attr("id") === "LedgerName") {
-                            waitForSelect2("LedgerName", () => {
-                                $el.val(savedFilters[key]).trigger("change");
-                            });
-                        } else {
-                            $el.val(savedFilters[key]).trigger("change");
-                        }
-                    }
-                    else {
-                        $el.val(savedFilters[key]).trigger("change");
-                    }
-                }
-            }
+                DrilldownManager.toggleBackButton();
 
-            try {
-                isRestoringFilters = true;
-                restoreFormFilters(currentForm);
-
-                const nextForm = DrilldownManager.getLastNextForm();
-                if (nextForm && nextForm !== currentForm) {
-                    restoreFormFilters(nextForm);
-                }
-
-                setTimeout(() => {
-                    DrilldownManager.restoreIfAvailable(currentForm);
-                    DrilldownManager.toggleBackButton();
-                }, 300);
-
-            } catch (e) {
-                console.error("❌ Error restoring filters/state:", e);
-            } finally {
-                setTimeout(() => {
-                    isRestoringFilters = false;
-                }, 500);
-            }
-
+                GetValidateData();
+            });
         });
 
         function GetValidateData() {
@@ -348,57 +295,6 @@
                     return false;
                 }
                 GetTransactionLedgerMonthlySummaryDetailsData();
-            }
-        }
-
-        function restoreFormFilters(formName) {
-            if (!formName) return;
-            const savedFilters = DrilldownManager.restoreFilters(formName);
-            if (!savedFilters) return;
-            function waitForSelect2(id, value, callback) {
-                const interval = setInterval(() => {
-                    const $ddl = $(`#${id}`);
-                    const options = $ddl.find("option");
-                    if (options.length > 0) {
-                        const exists = options.filter(`[value="${value}"]`).length > 0;
-                        if (exists) {
-                            clearInterval(interval);
-                            $ddl.val(value).trigger("change"); 
-                            if (callback) callback();
-                        }
-                    }
-                }, 100);
-                setTimeout(() => clearInterval(interval), 5000);
-            }
-
-            for (const key in savedFilters) {
-                const $el = $(`#${key}`);
-                if (!$el.length) continue;
-
-                const type = $el.attr('type');
-                const val = savedFilters[key];
-
-                if (type === 'checkbox') {
-                    $el.prop('checked', !!val).trigger('change');
-                    continue;
-                }
-
-                if (key === 'FromDate' || key === 'ToDate') {
-                    $el.datepicker("setDate", val);
-                }
-                else if ($el.hasClass("select2") || $el.hasClass("custom-select2")) {
-                    waitForSelect2($el.attr("id"), val, () => {
-                        setTimeout(() => {
-                            if (!$el.val() && val) {
-                                console.log(`Retrying to set value for ${key}`);
-                                $el.val(val).trigger('change');
-                            }
-                        }, 1200);
-                    });
-                }
-                else {
-                    $el.val(val).trigger('change');
-                }
             }
         }
 
