@@ -463,7 +463,20 @@ public static class CommonFunc
                      && typeProperty.PropertyInfo.Name != "TotalDisPercent" && typeProperty.PropertyInfo.Name != "TotalDiscAmt" && typeProperty.PropertyInfo.Name != "DespatchAdviseComplete" && typeProperty.PropertyInfo.Name != "PortToLoading"
                      && typeProperty.PropertyInfo.Name != "PortOfDischarge" && typeProperty.PropertyInfo.Name != "ResposibleSalesPersonID" && typeProperty.PropertyInfo.Name != "CustContactPerson" && typeProperty.PropertyInfo.Name != "SaleDocType"
                      && typeProperty.PropertyInfo.Name != "OtherDetail" && typeProperty.PropertyInfo.Name != "OrderDelayReason" && typeProperty.PropertyInfo.Name != "UID" && typeProperty.PropertyInfo.Name != "RoundOff"
-                     && typeProperty.PropertyInfo.Name != "UpdatedBy" && typeProperty.PropertyInfo.Name != "EntryByMachineName" && typeProperty.PropertyInfo.Name != "EmployeeList")
+                     && typeProperty.PropertyInfo.Name != "UpdatedBy" 
+                     && typeProperty.PropertyInfo.Name != "pendingAmt"
+                     && typeProperty.PropertyInfo.Name != "CreatedByName"
+                     && typeProperty.PropertyInfo.Name != "TotalBasicAmount"
+                     && typeProperty.PropertyInfo.Name != "TotalNetAmont"
+                     && typeProperty.PropertyInfo.Name != "TotalpendingAmt"
+                     && typeProperty.PropertyInfo.Name != "eMailFromCC1"
+                     && typeProperty.PropertyInfo.Name != "eMailFromCC2"
+                     && typeProperty.PropertyInfo.Name != "eMailFromCC3"
+                     && typeProperty.PropertyInfo.Name != "SalesPersonEmailId"
+                     && typeProperty.PropertyInfo.Name != "TotalRecords"
+                     && typeProperty.PropertyInfo.Name != "PageNumber" && typeProperty.PropertyInfo.Name != "PageSize"
+
+                     && typeProperty.PropertyInfo.Name != "EntryByMachineName" && typeProperty.PropertyInfo.Name != "EmployeeList")
                     {
                         object value = row[typeProperty.PropertyInfo.Name];
                         object? safeValue = value == null || DBNull.Value.Equals(value) ? null : Convert.ChangeType(value, typeProperty.Type);
