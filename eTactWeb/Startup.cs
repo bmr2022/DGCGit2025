@@ -12,6 +12,7 @@ using eTactWeb.Services;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
 using etactwebBOT.Services;
+using OfficeOpenXml;
 
 namespace eTactWeb
 {
@@ -72,6 +73,8 @@ namespace eTactWeb
             var cultureInfo = new CultureInfo("en-GB");
             CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
             CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
             services.AddHttpClient<WrenAiService>();
             services.Configure<RequestLocalizationOptions>(options =>
             {
