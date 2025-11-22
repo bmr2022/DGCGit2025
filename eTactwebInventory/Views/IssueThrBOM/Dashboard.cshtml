@@ -164,7 +164,7 @@
                    
                 }
             });
-
+            SummaryData();
             AutoComplete('VIssueWithBom', 'ReqNo', 'ReqNo', null);
             AutoComplete('VIssueWithBom', 'FGItemName', 'FGITEMNAME', null);
             AutoComplete('VIssueWithBom', 'FGPartCode', 'FGPARTCODE', null);
@@ -243,7 +243,10 @@
                     Flag: "",
                     DashboardType: "",
                     IssueSlipNo: $('#IssueSlipNo').val(),
-                    ReqNo: $('#ReqNo').val()
+                    ReqNo: $('#ReqNo').val(),
+                    PartCode: $("#FGPartCode").val(),
+                    ItemName: $("#FGItemName").val(),
+                     WCName: $("#WCName").val()
                 };
             }
             formData.pageNumber = pageNumber;
@@ -537,7 +540,7 @@
             $.ajax({
                 url: '@Url.Action("FGDetailData","IssueThrBOM")',
                 type: "POST",
-                data: { FromDate: $('#FromDate').val(), Todate: $('#ToDate').val(), Flag: "", DashboardType: "", IssueSlipNo: $('#IssueSlipNo').val(), ReqNo: $('#ReqNo').val(), FGPartCode: $('#FGPartCode').val(), GlobalSearch: $('#search-box').val(), FGItemName: $('#FGItemName').val() },
+                data: { FromDate: $('#FromDate').val(), Todate: $('#ToDate').val(), Flag: "", DashboardType: "", IssueSlipNo: $('#IssueSlipNo').val(), ReqNo: $('#ReqNo').val(), FGPartCode: $('#FGPartCode').val(), GlobalSearch: $('#search-box').val(), FGItemName: $('#FGItemName').val() , WCName: $("#WCName").val() },
                 async:false,
                 success: function (data) {
                     $('#divDashboardGrid').empty().append(data);
@@ -557,7 +560,7 @@
             $.ajax({
                 url: '@Url.Action("SummaryData","IssueThrBOM")',
                 type: "POST",
-                data: { FromDate: $('#FromDate').val(), Todate: $('#ToDate').val(), Flag: "", DashboardType: "", IssueSlipNo: $('#IssueSlipNo').val(),ReqNo: $('#ReqNo').val() },
+                data: { FromDate: $('#FromDate').val(), Todate: $('#ToDate').val(), Flag: "", DashboardType: "", IssueSlipNo: $('#IssueSlipNo').val(),ReqNo: $('#ReqNo').val() , WCName: $("#WCName").val(), PartCode: $("#FGPartCode").val(), ItemName: $("#FGItemName").val()},
                 async:false,
                 success: function (data) {
                     $('#divDashboardGrid').empty().append(data);

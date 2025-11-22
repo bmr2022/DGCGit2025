@@ -397,7 +397,7 @@
             $.ajax({
                 url: '@Url.Action("GetSearchData")',
                 type: "POST",
-                data: { ReqNo : $('#ReqNo').val(), WorkCenter : $('#WorkCenterDescription').val(), FromDate : $('#FromDate').val(),ToDate : $('#ToDate').val() },
+                data: { ReqNo : $('#ReqNo').val(), ItemName: $('#Item_Name').val(), PartCode: $('#PartCode').val(), WorkCenter : $('#WorkCenterDescription').val(), FromDate : $('#FromDate').val(),ToDate : $('#ToDate').val() },
                 success: function (data) {
                     $('#divDashboardGrid').empty().append(data);
                     var dashGrid = $('#divDashboardGrid tr').length - 1;

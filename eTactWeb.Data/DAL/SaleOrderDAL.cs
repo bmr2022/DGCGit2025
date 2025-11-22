@@ -1811,8 +1811,13 @@ namespace eTactWeb.Data.DAL
                             model.OrderType = oDataSet.Tables[0].Rows[0]["OrderType"].ToString();
                             model.CustOrderNo = oDataSet.Tables[0].Rows[0]["CustOrderNo"].ToString();
                             model.SONo = Convert.ToInt32(oDataSet.Tables[0].Rows[0]["SONo"]);
-                            model.PackingCharges = Convert.ToDecimal(oDataSet.Tables[0].Rows[0]["PackingCharges"]);
-                            model.ForwardingCharges = Convert.ToDecimal(oDataSet.Tables[0].Rows[0]["ForwardingCharges"]);
+                            model.PackingCharges = oDataSet.Tables[0].Rows[0]["PackingCharges"] == DBNull.Value
+    ? 0
+    : Convert.ToDecimal(oDataSet.Tables[0].Rows[0]["PackingCharges"]);
+
+                            model.ForwardingCharges = oDataSet.Tables[0].Rows[0]["ForwardingCharges"] == DBNull.Value
+                                ? 0
+                                : Convert.ToDecimal(oDataSet.Tables[0].Rows[0]["ForwardingCharges"]);
                             model.SODate = oDataSet.Tables[0].Rows[0]["SODate"].ToString();
                             model.WEF = oDataSet.Tables[0].Rows[0]["WEF"].ToString();
                             model.SOCloseDate = oDataSet.Tables[0].Rows[0]["SOCloseDate"].ToString();

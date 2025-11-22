@@ -41,9 +41,9 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetDashboardData(string FromDate, string ToDate, string DashboardType, string IssueSlipNo, string ReqNo);
         Task<IssueThrBom> GetViewByID(int ID, int YearCode);
         Task<ResponseResult> DeleteByID(int ID, int YearCode);
-        Task<IssueThrBomMainDashboard> FGDetailData(string FromDate, string Todate, string Flag = "", string DashboardType = "FGSUMM", string IssueSlipNo = "", string ReqNo = "", string FGPartCode = "", string FGItemName = "");
+        Task<IssueThrBomMainDashboard> FGDetailData(string FromDate, string Todate, string Flag = "", string DashboardType = "FGSUMM", string IssueSlipNo = "", string ReqNo = "", string FGPartCode = "", string FGItemName = "", string WCName = "");
         Task<IssueThrBomMainDashboard> RMDetailData(string FromDate, string Todate, string WCName,string PartCode,string ItemName, string Flag = "", string DashboardType = "RMDETAIL", string IssueSlipNo = "", string ReqNo = "", string GlobalSearch = "", string FGPartCode = "", string FGItemName = "");
-        Task<IssueThrBomMainDashboard> SummaryData(string FromDate, string Todate, string Flag = "", string DashboardType = "SUMM", string IssueSlipNo = "", string ReqNo = "");
+        Task<IssueThrBomMainDashboard> SummaryData(string FromDate, string Todate, string Flag = "", string DashboardType = "SUMM", string IssueSlipNo = "", string ReqNo = "", string PartCode="", string ItemName="", string WCName= "");
 
         Task<ResponseResult> ChkStockBeforeSaving(string ReqNo, int ReqYearCode, int EntryId,int YearCode, DataTable DTItemGrid);
 

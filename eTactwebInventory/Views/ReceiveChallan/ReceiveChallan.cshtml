@@ -1,9 +1,11 @@
 ﻿@model eTactWeb.DOM.Models.ReceiveChallanModel
-
+@inject IHttpContextAccessor HttpContextAccessor
 @{
     ViewData["Title"] = "Receive Challan";
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
+    string RetailerOrManufacturar = HttpContextAccessor.HttpContext.Session.GetString("RetailerOrManufacturar");
 }
+
 <style>
     .select2-container--default .select2-results > .select2-results__options {
         background-color: #e0f2f1; /* Dropdown background color */
@@ -740,18 +742,19 @@
 
                                 var html = '';
                                 html += '<tr>' +
-                                    '<td style="text-align:center;">' +
-                                    '<button id="AcceptedQtySHA' + i + '" ' +
-                                    'style="background-color: #b2b3f0;" ' +
-                                    'class="btn btn-sm me-1 mt-2" ' +
-                                    'onclick="PendingChallaItemDetailFromOtherBranch('
-                                    + val.AccountCode + ','
-                                    + val.EntryId + ','
-                                    + val.YearCode + ',\''
-                                    + val.SourceDB + '\');">'+                                    'Select' +
-                                    '</button>' +
-                                    '</td>' +
-
+                                   '<td style="text-align:center;">' +
+'<button id="AcceptedQtySHA' + i + '" ' +
+'style="background-color: #b2b3f0;" ' +
+'class="btn btn-sm me-1 mt-2" ' +
+'onclick="PendingChallaItemDetailFromOtherBranch(' +
+      val.AccountCode + ',' +
+      val.EntryId + ',' +
+      val.YearCode + ',\'' +
+      val.ChallanNo + '\',\'' +
+      val.SourceDB + '\');">' +
+'Select' +
+'</button>' +
+'</td>' +
                                     '<td><input id="ChallanNo' + i + '" class="form-control no-cursor" value="' + val.ChallanNo + '"/><input id="EntryId' + i + '" type="hidden" value="' + val.EntryId + '"/><input id="YearCode' + i + '" type="hidden" value="' + val.YearCode + '"/></td>' +
 
                                     '<td><input id="Vendor' + i + '" class="form-control no-cursor" value="' + val.Vendor + '"/><input id="Accountcode' + i + '" type="hidden" value="' + val.AccountCode + '"/></td>' +
@@ -793,7 +796,7 @@
         }
 
 
-        function PendingChallaItemDetailFromOtherBranch(accountcode, EntryId, YearCode, SourceDB) {
+        function PendingChallaItemDetailFromOtherBranch(accountcode, EntryId, YearCode,ChallanNo, SourceDB) {
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("PendingChallaItemDetailFromOtherBranch")",
@@ -853,6 +856,11 @@
                             FillStore();
                             GateAmount();
                         }
+
+
+
+                        $('#ChallanNo').val(ChallanNo);
+                        
                     }
                 }
             });
@@ -1168,21 +1176,28 @@
                 SameStore = false;
             }
         });
+        var retailerOrManufacturer = "@RetailerOrManufacturar";
 
         $('#submitBTN').click(function (event) {
 
             event.preventDefault();
 
+
             var Gridcount = $('#divReceiveChallanGrid tr td').length;
             if (Gridcount < 2) {
                 $.notify('Please enter any value in Grid.', 'error');
             }
-            else if ($('#GateYearCode').prop('selectedIndex') == 0) {
+            else if (retailerOrManufacturer != "Retailer") { 
+            if ($('#GateYearCode').prop('selectedIndex') == 0) {
                 $.notify('Please Select GateYearCode', 'error');
             }
             else if ($('#ChallanType').prop('selectedIndex') == 0) {
                 $.notify('Please Select ChallanType', 'error');
             }
+                else {
+                    $("form").submit();
+                }
+        }
             else {
                 $("form").submit();
             }
@@ -1640,18 +1655,35 @@
                 success: function (result, status, error) {
                     if (result != null) {
                         var obj = $.parseJSON(result);
+
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+
+                            // 🔍 find MAIN STORE EntryID
+                            var mainStoreId = null;
+                            $.each(obj.Result, function (index, val) {
+                                if (val.Store_Type === "MAIN STORE") {
+                                    mainStoreId = val.EntryID;
+                                }
+                            });
+
                             var RowCount = $('#divReceiveGrid tr').length;
+
+                            // fill all store dropdowns
                             for (var i = 1; i <= RowCount; i++) {
-                                $('#StoreName' + i).empty();
-                                $('#StoreName' + i).append('<option value="" disabled selected>-Select-</option>');
+                                var ddl = $('#StoreName' + i);
+                                ddl.empty();
+                                ddl.append('<option value="" disabled selected>-Select-</option>');
 
                                 $.each(obj.Result, function (index, val) {
-                                    $('#StoreName' + i).append('<option value="' + val.EntryID + '">' + val.store_name + '</option>');
+                                    ddl.append('<option value="' + val.EntryID + '">' + val.store_name + '</option>');
                                 });
+
+                                // if retailer → auto-select MAIN STORE
+                                if (retailerOrManufacturer === 'Retailer' && mainStoreId != null) {
+                                    ddl.val(mainStoreId);
+                                }
                             }
                         }
-
                     }
                 }
             });
@@ -1718,7 +1750,7 @@
                              
                             $('#gateno').empty();
                             $('#gateno').append('<option disabled selected>-Select-</option>');
-                            $.notify("Gate No: " + obj.Result.Message, 'error');
+                            // $.notify("Gate No: " + obj.Result.Message, 'error');
                         }
                     }
                 }

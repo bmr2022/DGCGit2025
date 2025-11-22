@@ -51,9 +51,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _IssuewithoutBomDAL.GetDashboardData(FromDate, Todate, Flag);
         }
-        public async Task<IssueWOBomMainDashboard> GetSearchData(string REQNo, string ReqDate, string IssueSlipNo, string IssueDate, string WorkCenter, string YearCode, string ReqYearCode, string FromDate, string ToDate)
+        public async Task<IssueWOBomMainDashboard> GetSearchData(string REQNo, string ReqDate, string IssueSlipNo, string IssueDate, string WorkCenter, string YearCode, string ReqYearCode, string FromDate, string ToDate, string PartCode, string ItemName)
         {
-            return await _IssuewithoutBomDAL.GetSearchData(REQNo, ReqDate, IssueSlipNo, IssueDate, WorkCenter, YearCode, ReqYearCode, FromDate, ToDate);
+            return await _IssuewithoutBomDAL.GetSearchData(REQNo, ReqDate, IssueSlipNo, IssueDate, WorkCenter, YearCode, ReqYearCode, FromDate, ToDate, PartCode, ItemName);
         }
 
         public async Task<IssueWOBomMainDashboard> GetDetailData(string REQNo, string ReqDate, string PartCode, string Item_Name, string IssueSlipNo, string IssueDate, string WorkCenter, string YearCode, string ReqYearCode, string FromDate, string ToDate)

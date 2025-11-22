@@ -86,8 +86,22 @@
                                     <select asp-for="Schno" class="form-select">
                                     </select>
                                 </div>
-                                 
                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="PartCode" class="form-label">PartCode </label>
+                                    <input type="text" id="PartCodeText" class="form-control" placeholder="Type Part Code..." />
+                                    <input type="hidden" asp-for="PartCode" id="PartCode" class="form-control" />
+                                </div>
+
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="ItemName" class="form-label">ItemName</label>
+                                    <input type="text" id="ItemNameText" class="form-control" placeholder="Type Item Name..." />
+                                    <input type="hidden" asp-for="ItemName" id="PartCode" class="form-control" />
+                                    @*   <select class="form-select" asp-for="ItemCode" style="heigt:190px;width:300px;">
+													<option value="0">-Select-</option>
+													</select> *@
+
+                                </div>
+                              @*   <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                     <label asp-for="PartCode" class="form-label">Part Code</label>
                                     <select asp-for="PartCode" class="form-select">
                                     </select>
@@ -96,7 +110,7 @@
                                     <label asp-for="ItemName" class="form-label">Item Name</label>
                                     <select asp-for="ItemName" class="form-select">
                                     </select>
-                                </div>
+                                </div> *@
                                 
                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                     <label asp-for="docname" class="form-label">Document Type</label>
@@ -266,17 +280,17 @@
                  $('#gateno').select2();
             $('#PONo').select2();
             $('#Schno').select2();
-            $('#ItemName').select2();
-            $('#PartCode').select2();
+          /*   $('#ItemName').select2();
+            $('#PartCode').select2(); */
             $('#docname').select2();
 
             $('#invoiceNo').select2();
             $('#VendorName').select2();
             $('#ReportType').select2();
-
+              FillItems();
             FillGateNo();
 
-            FillItemNamePartcode();
+            /* FillItemNamePartcode(); */
             FillDocument();
             FillVendor();
             FillInvoice();
@@ -285,6 +299,113 @@
 
              GetGateRegisterData();//INITIAL - ON LOAD METHOD
         });
+           function FillItems() {
+              // Source for PartCodeText
+              const partCodeSource = function (request, response) {
+                  $.ajax({
+                         url: '@Url.Action("FillItems", "WIPStockRegister")',
+                      type: 'POST',
+                      data: {
+
+                          SearchItemCode: '',
+                          SearchPartCode: request.term
+                      },
+                      success: function (result) {
+                          let obj = typeof result === "string" ? JSON.parse(result) : result;
+
+                          if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
+                              let filtered = obj.Result.Table.filter(function (item) {
+                                  let term = request.term.toLowerCase();
+                                  return item.PartCode.toLowerCase().includes(term);
+                              });
+
+                              response($.map(filtered, function (item) {
+                                  return {
+                                      label: item.PartCode,
+                                      value: item.PartCode,
+                                      itemName: item.ItemName,
+                                      itemCode: item.Item_Code
+                                  };
+                              }));
+                          } else {
+                              response([]);
+                          }
+                      }
+                  });
+              };
+
+              // Source for ItemNameText
+              const itemNameSource = function (request, response) {
+                  $.ajax({
+                        url: '@Url.Action("FillItems", "WIPStockRegister")',
+                      type: 'POST',
+                      data: {
+
+                          SearchItemCode: request.term,
+                          SearchPartCode: ''
+                      },
+                      success: function (result) {
+                          let obj = typeof result === "string" ? JSON.parse(result) : result;
+
+                          if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
+                              let filtered = obj.Result.Table.filter(function (item) {
+                                  let term = request.term.toLowerCase();
+                                  return item.ItemName.toLowerCase().includes(term);
+                              });
+
+                              response($.map(filtered, function (item) {
+                                  return {
+                                      label: item.ItemName,
+                                      value: item.Item_Code,
+                                      itemName: item.ItemName,
+                                      itemCode: item.Item_Code,
+                                      partCode: item.PartCode
+                                  };
+                              }));
+                          } else {
+                              response([]);
+                          }
+                      }
+                  });
+              };
+
+              // Autocomplete for PartCodeText
+              $("#PartCodeText").autocomplete({
+                  source: partCodeSource,
+                  select: function (event, ui) {
+                      $("#PartCodeText").val(ui.item.value).data("itemcode", ui.item.itemCode);
+                      $("#ItemNameText").val(ui.item.itemName);
+                      $('#ItemName').val(ui.item.itemName);
+                      $('#PartCode').val(ui.item.partCode);
+                      /* GetItemPartCode("PartCode"); */
+                      return false;
+                  },
+                  focus: function (event, ui) {
+                      $("#PartCodeText").val(ui.item.value);
+                      return false;
+                  },
+                  minLength: 2
+              });
+
+              // Autocomplete for ItemNameText
+              $("#ItemNameText").autocomplete({
+                  source: itemNameSource,
+                  select: function (event, ui) {
+                      $("#ItemNameText").val(ui.item.itemName).data("itemcode", ui.item.itemCode);
+                      $("#PartCodeText").val(ui.item.partCode);
+                      $('#ItemName').val(ui.item.itemName);
+                      $('#PartCode').val(ui.item.partCode);
+
+                      return false;
+                  },
+                  focus: function (event, ui) {
+                      $("#ItemNameText").val(ui.item.itemName);
+                      return false;
+                  },
+                  minLength: 2
+              });
+          }
+
                       function GetGateDetail(GateNo, GateYearCode) {
             var modal = new bootstrap.Modal(document.getElementById('PopupModel'));
             modal.show();
@@ -729,7 +850,7 @@
                 data: {
 
                     // $('#gateno').val() === '0' ? '' : $('#gateno').val()
-                          "ReportType": $('#ReportType').val(), "FromDate": $('#FromDate').val(), "ToDate": $('#ToDate').val(), "gateno": $('#gateno').val(), "docname": $('#docname').val() == '0' ? '' : $('#docname').val(), "PONo": $('#PONo').val() == '0' ? '' : $('#PONo').val(), "SchNo": $('#SchNo').val() == '0' ? '' : $('#SchNo').val(), "PartCode": $('#PartCode').val() == '0' ? '' : $('#PartCode').val(), "ItemName": $('#ItemName').val() == '0' ? '' : $('#ItemName').val(), "invoiceNo": $('#invoiceNo').val() == '0' ? '' : $('#invoiceNo').val(), "VendorName": $('#VendorName').val() == '0' ? '' : $('#VendorName').val(),"RecUnit":$("#RecUnit").val()
+                                  "ReportType": $('#ReportType').val(), "FromDate": $('#FromDate').val(), "ToDate": $('#ToDate').val(), "gateno": $('#gateno').val(), "docname": $('#docname').val() == '0' ? '' : $('#docname').val(), "PONo": $('#PONo').val() == '0' ? '' : $('#PONo').val(), "SchNo": $('#SchNo').val() == '0' ? '' : $('#SchNo').val(), "PartCode": $('#PartCodeText').val() == '0' ? '' : $('#PartCodeText').val(), "ItemName": $('#ItemNameText').val() == '0' ? '' : $('#ItemNameText').val(), "invoiceNo": $('#invoiceNo').val() == '0' ? '' : $('#invoiceNo').val(), "VendorName": $('#VendorName').val() == '0' ? '' : $('#VendorName').val(),"RecUnit":$("#RecUnit").val()
                 },
                 success: function (result, status, error) {
                     
@@ -759,6 +880,7 @@
                     $('#divStockMainRegister').empty();
                     $('#divStockMainRegister').html(data);
                     $('#totalRows').text($('#divStockMainRegister tr').length);
+                        countAllTotal();
                     //countAllTotal();
                 },
                 error: function () {
@@ -1154,7 +1276,8 @@
             FillGateNo();
             FillDocument();
             FillInvoice();
-            FillItemNamePartcode();
+            /* FillItemNamePartcode(); */
+              FillItems();
             FillPONO();
             FillSchNo();
 
@@ -1165,7 +1288,8 @@
             FillGateNo();
             FillDocument();
             FillInvoice();
-            FillItemNamePartcode();
+              FillItems();
+             /* FillItemNamePartcode (); */
             FillPONO();
             FillSchNo();
         })
