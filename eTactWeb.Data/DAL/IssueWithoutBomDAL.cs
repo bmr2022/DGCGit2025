@@ -450,7 +450,7 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
-        public async Task<IssueWOBomMainDashboard> GetSearchData(string REQNo, string ReqDate, string IssueSlipNo, string IssueDate, string WorkCenter, string YearCode, string ReqYearCode, string FromDate, string ToDate)
+        public async Task<IssueWOBomMainDashboard> GetSearchData(string REQNo, string ReqDate, string IssueSlipNo, string IssueDate, string WorkCenter, string YearCode, string ReqYearCode, string FromDate, string ToDate, string PartCode, string ItemName)
         {
             DataSet? oDataSet = new DataSet();
             var model = new IssueWOBomMainDashboard();
@@ -472,6 +472,8 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@ReqYearCode", ReqYearCode);
                     oCmd.Parameters.AddWithValue("@FromDate", ParseFormattedDate(FromDate));
                     oCmd.Parameters.AddWithValue("@ToDate", ParseFormattedDate(ToDate));
+                    oCmd.Parameters.AddWithValue("@partcode", PartCode);
+                    oCmd.Parameters.AddWithValue("@Item_name", ItemName);
 
                     await myConnection.OpenAsync();
                     using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))

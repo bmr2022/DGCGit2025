@@ -785,11 +785,11 @@ namespace eTactWeb.Controllers
             }
         }
 
-        public async Task<IActionResult> GetSearchData(string REQNo, string ReqDate, string IssueSlipNo, string IssueDate, string WorkCenter, string YearCode, string ReqYearCode, string FromDate, string ToDate, int pageNumber = 1, int pageSize = 50, string SearchBox = "")
+        public async Task<IActionResult> GetSearchData(string REQNo, string ReqDate, string IssueSlipNo, string IssueDate, string WorkCenter, string YearCode, string ReqYearCode, string FromDate, string ToDate, int pageNumber = 1, int pageSize = 50, string SearchBox = "", string PartCode="", string ItemName="")
         {
             //model.Mode = "Search";
             var model = new IssueWOBomMainDashboard();
-            model = await _IIssueWOBOM.GetSearchData(REQNo, ReqDate, IssueSlipNo, IssueDate, WorkCenter, YearCode, ReqYearCode, FromDate, ToDate);
+            model = await _IIssueWOBOM.GetSearchData(REQNo, ReqDate, IssueSlipNo, IssueDate, WorkCenter, YearCode, ReqYearCode, FromDate, ToDate, PartCode,ItemName);
             var modelList = model?.IssueWOBOMDashboard ?? new List<IssueWOBomMainDashboard>();
 
 
@@ -843,11 +843,11 @@ namespace eTactWeb.Controllers
             return PartialView("_IssueWithoutBomDashboardGrid", model);
         }
 
-        public async Task<IActionResult> GetDetailData(string REQNo, string ReqDate, string PartCode, string Item_Name, string IssueSlipNo, string IssueDate, string WorkCenter, string YearCode, string ReqYearCode, string FromDate, string ToDate, int pageNumber = 1, int pageSize = 50, string SearchBox = "")
+        public async Task<IActionResult> GetDetailData(string REQNo, string ReqDate, string PartCode, string ItemName, string IssueSlipNo, string IssueDate, string WorkCenter, string YearCode, string ReqYearCode, string FromDate, string ToDate, int pageNumber = 1, int pageSize = 50, string SearchBox = "")
         {
             //model.Mode = "Search";
             var model = new IssueWOBomMainDashboard();
-            model = await _IIssueWOBOM.GetDetailData(REQNo, ReqDate, PartCode, Item_Name, IssueSlipNo, IssueDate, WorkCenter, YearCode, ReqYearCode, FromDate, ToDate);
+            model = await _IIssueWOBOM.GetDetailData(REQNo, ReqDate, PartCode, ItemName, IssueSlipNo, IssueDate, WorkCenter, YearCode, ReqYearCode, FromDate, ToDate);
             model.DashboardType = "Detail";
             var modelList = model?.IssueWOBOMDashboard ?? new List<IssueWOBomMainDashboard>();
 

@@ -28,8 +28,8 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetDashboardData(string Fromdate, string ToDate, string Flag);
         Task<ResponseResult> GetDataForDelete(int ID,int YC);
         Task<ResponseResult> CheckLastTransDate(long itemCode,string batchno, string uniqbatchno);
-        Task<IssueWOBomMainDashboard> GetSearchData(string REQNo, string ReqDate, string IssueSlipNo, string IssueDate, string WorkCenter, string YearCode, string ReqYearCode, string FromDate, string ToDate);
-        Task<IssueWOBomMainDashboard> GetDetailData(string REQNo, string ReqDate, string PartCode, string Item_Name, string IssueSlipNo, string IssueDate, string WorkCenter, string YearCode, string ReqYearCode, string FromDate, string ToDate);
+        Task<IssueWOBomMainDashboard> GetSearchData(string REQNo, string ReqDate, string IssueSlipNo, string IssueDate, string WorkCenter, string YearCode, string ReqYearCode, string FromDate, string ToDate, string PartCode, string ItemName);
+        Task<IssueWOBomMainDashboard> GetDetailData(string REQNo, string ReqDate, string PartCode, string ItemName, string IssueSlipNo, string IssueDate, string WorkCenter, string YearCode, string ReqYearCode, string FromDate, string ToDate);
         Task<IssueWithoutBom> GetViewByID(int ID, int YearCode);
         Task<ResponseResult> GetNewEntry(int YearCode);
         Task<ResponseResult> GetAllowBatch();
