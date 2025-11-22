@@ -1318,11 +1318,11 @@ namespace eTactWeb.Controllers
             _MemoryCache.Set("KeyIssThrBOMList_RMDETAIL", modelList, cacheEntryOptions);
             return PartialView("_IssueWithBomDashboardGrid", model);
         }
-        public async Task<IActionResult> SummaryData(string FromDate, string Todate, string Flag = "", string DashboardType = "SUMM", string IssueSlipNo = "", string ReqNo = "", int pageNumber = 1, int pageSize = 50, string SearchBox = "")
+        public async Task<IActionResult> SummaryData(string FromDate, string Todate, string WCName="", string PartCode="", string ItemName="" ,string Flag = "", string DashboardType = "SUMM", string IssueSlipNo = "", string ReqNo = "", int pageNumber = 1, int pageSize = 50, string SearchBox = "")
         {
             //model.Mode = "Search";
             var model = new IssueThrBomMainDashboard();
-            model = await _IIssueThrBOM.SummaryData(FromDate, Todate, Flag, DashboardType, IssueSlipNo, ReqNo);
+            model = await _IIssueThrBOM.SummaryData(FromDate, Todate, Flag, DashboardType, IssueSlipNo, ReqNo,PartCode,ItemName, WCName);
             model.Mode = "SUMM";
             var modelList = model?.IssueThrBOMDashboard ?? new List<IssueThrBomMainDashboard>();
 
