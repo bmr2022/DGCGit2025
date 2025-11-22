@@ -165,7 +165,7 @@ else
                                 <td>@item.WOYearcode</td>
                                 <td>@item.EntryId</td>
                                 <td>@item.YearCode</td>
-                                <td>@item.TotalReqQty</td>
+                                <td id="ReqQty-@Cntr">@item.TotalReqQty</td>
                                 <td>@item.TotalPendQty</td>
                                 <td>@item.CreatedBy</td>
                                 <td>@item.UpdatedBy</td>
@@ -177,7 +177,8 @@ else
             </tbody>
         </table>
     </div>
-    <center><strong>TOTAL ROWS : <span id="totalRows"></span></strong></center>
+    <center><strong>TOTAL ROWS : <span id="totalRows" style="margin-right: 40px;"></span></strong><strong>TOTAL REQ QTY : <span id="totalReqQty"></span></strong></center>
+
 }
 <style>
     #container {
@@ -186,7 +187,7 @@ else
 
         #container > div {
             flex: 1;
-            margin-right: 10px; /* Adjust margin as needed */
+            /* margin-right: 10px; /* Adjust margin as needed */ */
         }
 
     #ReqBomTable {
@@ -219,6 +220,15 @@ else
     .descCol {
         font-size: 15px;
         vertical-align: super;
+    }
+
+    .fa-stack {
+        display: inline-block;
+        height: 1.5em;
+        line-height: 2em;
+        position: relative;
+        vertical-align: middle;
+        width: 1.9em;
     }
 </style>
 

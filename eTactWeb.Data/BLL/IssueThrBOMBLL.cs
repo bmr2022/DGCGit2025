@@ -139,17 +139,17 @@ namespace eTactWeb.Data.BLL
         {
             return await _IssueThrBOMDAL.DeleteByID(ID, YC);
         }
-        public async Task<IssueThrBomMainDashboard> FGDetailData(string FromDate, string Todate, string Flag = "", string DashboardType = "FGSUMM", string IssueSlipNo = "", string ReqNo = "", string FGPartCode = "", string FGItemName = "")
+        public async Task<IssueThrBomMainDashboard> FGDetailData(string FromDate, string Todate, string Flag = "", string DashboardType = "FGSUMM", string IssueSlipNo = "", string ReqNo = "", string FGPartCode = "", string FGItemName = "", string WCName = "")
         {
-            return await _IssueThrBOMDAL.FGDetailData(FromDate, Todate, Flag, DashboardType, IssueSlipNo, ReqNo, FGPartCode, FGItemName);
+            return await _IssueThrBOMDAL.FGDetailData(FromDate, Todate, Flag, DashboardType, IssueSlipNo, ReqNo, FGPartCode, FGItemName,WCName);
         } 
         public async Task<IssueThrBomMainDashboard> RMDetailData(string FromDate, string Todate, string WCName, string PartCode,string ItemName, string Flag = "", string DashboardType = "RMDETAIL", string IssueSlipNo = "", string ReqNo = "", string GlobalSearch = "", string FGPartCode = "", string FGItemName = "")
         {
             return await _IssueThrBOMDAL.RMDetailData(FromDate, Todate, WCName, PartCode, ItemName, Flag, DashboardType, IssueSlipNo, ReqNo, GlobalSearch, FGPartCode, FGItemName);
         }
-        public async Task<IssueThrBomMainDashboard> SummaryData(string FromDate, string Todate, string Flag = "", string DashboardType = "SUMM", string IssueSlipNo = "", string ReqNo = "")
+        public async Task<IssueThrBomMainDashboard> SummaryData(string FromDate, string Todate, string Flag = "", string DashboardType = "SUMM", string IssueSlipNo = "", string ReqNo = "", string PartCode = "", string ItemName = "", string WCName="")
         {
-            return await _IssueThrBOMDAL.SummaryData(FromDate, Todate, Flag, DashboardType, IssueSlipNo, ReqNo);
+            return await _IssueThrBOMDAL.SummaryData(FromDate, Todate, Flag, DashboardType, IssueSlipNo, ReqNo,PartCode,ItemName, WCName);
         }
 
         public async Task<ResponseResult> ChkStockBeforeSaving(string ReqNo, int ReqYearCode, int EntryId, int YearCode, DataTable DTItemGrid)

@@ -449,9 +449,15 @@ namespace eTactWeb.Controllers
                                         return StatusCode(203, $"Stock can't be zero for PartCode: {item.PartCode}");
                                     }
                                 }
-                                if (IssueThrBomDetailGrid.Where(x => x.ItemCode == item.ItemCode && x.BatchNo == item.BatchNo && x.uniqueBatchNo == item.uniqueBatchNo).Any())
+
+                                var duplicateItem = IssueThrBomDetailGrid.FirstOrDefault(x => x.ItemName == item.ItemName && x.BatchNo == item.BatchNo && x.uniqueBatchNo == item.uniqueBatchNo);
+
+                                if (duplicateItem != null)
                                 {
-                                    return StatusCode(207, "Duplicate");
+                                    var message = $"Duplicate found: ItemName = {duplicateItem.ItemName}, " +
+                                     $"BatchNo = {duplicateItem.BatchNo}, " +
+                                     $"uniqueBatchNo = {duplicateItem.uniqueBatchNo}";
+                                    return StatusCode(207, message);
                                 }
                                 else
                                 {
@@ -460,6 +466,18 @@ namespace eTactWeb.Controllers
                                     SSGrid.AddRange(IssueGrid);
                                     IssueGrid.Add(item);
                                 }
+
+                                //if (IssueThrBomDetailGrid.Where(x => x.ItemCode == item.ItemCode && x.BatchNo == item.BatchNo && x.uniqueBatchNo == item.uniqueBatchNo).Any())
+                                //{
+                                //    return StatusCode(207, "Duplicate");
+                                //}
+                                //else
+                                //{
+                                //    item.seqno = IssueThrBomDetailGrid.Count + 1;
+                                //    IssueGrid = IssueThrBomDetailGrid.Where(x => x != null).ToList();
+                                //    SSGrid.AddRange(IssueGrid);
+                                //    IssueGrid.Add(item);
+                                //}
                             }
                             MainModel.ItemDetailGrid = IssueGrid;
 
@@ -1300,11 +1318,11 @@ namespace eTactWeb.Controllers
             _MemoryCache.Set("KeyIssThrBOMList_RMDETAIL", modelList, cacheEntryOptions);
             return PartialView("_IssueWithBomDashboardGrid", model);
         }
-        public async Task<IActionResult> SummaryData(string FromDate, string Todate, string Flag = "", string DashboardType = "SUMM", string IssueSlipNo = "", string ReqNo = "", int pageNumber = 1, int pageSize = 50, string SearchBox = "")
+        public async Task<IActionResult> SummaryData(string FromDate, string Todate, string WCName="", string PartCode="", string ItemName="" ,string Flag = "", string DashboardType = "SUMM", string IssueSlipNo = "", string ReqNo = "", int pageNumber = 1, int pageSize = 50, string SearchBox = "")
         {
             //model.Mode = "Search";
             var model = new IssueThrBomMainDashboard();
-            model = await _IIssueThrBOM.SummaryData(FromDate, Todate, Flag, DashboardType, IssueSlipNo, ReqNo);
+            model = await _IIssueThrBOM.SummaryData(FromDate, Todate, Flag, DashboardType, IssueSlipNo, ReqNo,PartCode,ItemName, WCName);
             model.Mode = "SUMM";
             var modelList = model?.IssueThrBOMDashboard ?? new List<IssueThrBomMainDashboard>();
 

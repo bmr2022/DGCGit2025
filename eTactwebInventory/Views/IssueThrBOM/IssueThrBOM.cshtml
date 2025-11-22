@@ -331,6 +331,9 @@
                         <partial name="_DisplayIssueThrbomDetailModal" />
 
                         <div class="card">
+                            <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12" style="margin-top:10px;margin-left:950px">
+                                <input type="text" class="form-control" id="search-box-2" style="background-color:#FFFACD" placeholder="Search...">
+                            </div>
                             <div class="card-body overflow-auto pb-0" style="max-height:240px;">
                                 <table class="table table-hover table-bordered table-striped">
                                     <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap" id="IssueThrBomGrid">
@@ -1812,10 +1815,15 @@
                         type: "POST",
                         data: { model: ItemData },
                         success: function (data, status, xhr) {
-                            if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
-                                $.notify('Duplicate Item Not Allowed.', "info");
+                            // if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
+                            //     $.notify('Duplicate Item Not Allowed.', "info");
                                
-                            }
+                            // }
+                                    if (xhr.status === 207) {
+                                    $.notify(xhr.responseText, "info");
+                                    return;
+                                }
+
                             else if (xhr.status === 203) {
                                 $.notify(xhr.responseText, "info");
                             }
@@ -2279,6 +2287,44 @@
             return val ? val.toString().toLowerCase() : "";
         }
 
+                $("#search-box-2").on("keyup", function () {
+
+            var value = $(this).val().toLowerCase();
+
+            $("#divIssueThrBOMGridAdd tr").each(function () {
+
+                if (currentSearchColumn !== null) {
+
+                    let cell = $(this).find("td").eq(currentSearchColumn);
+                    let columnText = getCellValue(cell);
+
+                    $(this).toggle(columnText.includes(value));
+
+                } else {
+
+                    let rowText = "";
+
+                    $(this).find("td").each(function () {
+                        rowText += " " + getCellValue($(this));
+                    });
+
+                    $(this).toggle(rowText.includes(value));
+                }
+
+            });
+        });
+
+
+        $(document).on("click", "th[data-columnno]", function () {
+
+            currentSearchColumn = $(this).data("columnno");
+
+            $("th").removeClass("table-active");
+            $(this).addClass("table-active");
+
+            $("#search-box-2").val("").trigger("keyup");
+        });
+        
 
                 var editingNow = false;
                 function EditItemRowFromGrid(SeqNo) {

@@ -144,11 +144,12 @@
 
 @section Scripts
     {
+       
     <script>
         var GlobalSearchBack = "";
         var FromDateBack = "";
         var ToDateBack = "";
-        $(function () {
+         $(function () {
 
             FromDateBack = sessionStorage.getItem('FromDateBack');
             ToDateBack = sessionStorage.getItem('ToDateBack');
@@ -161,8 +162,14 @@
             var DashboardTypeBack = sessionStorage.getItem('DashboardTypeBack');
             GlobalSearchBack = sessionStorage.getItem('GlobalSearchBack');
 
+             var totalReqQty = 0;
+
+     
             var dashGrid = $('#ReqBomTbody tr').length;
             $('#totalRows').text(dashGrid);
+      
+
+
             GetFormRights();
 
             //$("#FromDate").datepicker({ changeMonth: true, changeYear: true, dateFormat: 'dd/mm/yy' });
@@ -233,6 +240,7 @@
                 $('#search-box').val(GlobalSearchBack);
             }
             GetSearchData();
+                 BasicTotal();
             $("#search-box").val($('#search-box').val()).trigger('keyup');
 
             //$('#ToDate').change(function () {
@@ -251,7 +259,36 @@
             sessionStorage.removeItem('DashboardTypeBack');
             sessionStorage.removeItem('GlobalSearchBack');
         });
+                function BasicTotal() {
 
+            var sum = 0;
+            var rowCount = $('#divDashboardGrid tr').length;
+
+            for (var i = 1; i <= rowCount; i++) {
+
+                let val = $('#ReqQty-' + i).text().trim();
+                let num = parseFloat(val);
+
+                if (isNaN(num)) num = 0;
+
+                sum += num;
+            }
+
+            $("#totalReqQty").text(sum.toFixed(2));
+        }
+
+        //   function BasicTotal() {
+        //     var columnCount = $('#divDashboardGrid tr td').length;
+        //     var sum = 0;
+        //     var rowCount = $('#divDashboardGrid tr').length;
+
+        //     for (var i = 1; i <= rowCount; i++) {
+
+        //         sum += parseFloat($('#ReqQty-' + i).text() == '.00' ? 0 : $('#ReqQty-' + i).text());
+        //     }
+        //   $("#totalReqQty").text(sum.toFixed(2));
+
+        // }
         function BackButtonData(event) {
              
             event.preventDefault();
@@ -512,8 +549,11 @@
                      
                     $('#divDashboardGrid').empty().append(data);
                     GetFormRights();
+                   
                     var dashGrid = $('#ReqBomTbody tr').length;
+
                     $('#totalRows').text(dashGrid);
+                    BasicTotal();
                     //$('#search-box').val(GlobalSearchBack);
                     //$("#search-box").val($('#search-box').val()).trigger('keyup');
                     //$('#FromDate').val(FromDateBack);
@@ -557,6 +597,7 @@
                     GetFormRights();
                     var dashGrid = $('#ReqBomTbody tr').length;
                     $('#totalRows').text(dashGrid);
+                    BasicTotal();
                     //$('#search-box').val(GlobalSearchBack);
                     //$("#search-box").val($('#search-box').val()).trigger('keyup');
                     //$('#FromDate').val(FromDateBack);

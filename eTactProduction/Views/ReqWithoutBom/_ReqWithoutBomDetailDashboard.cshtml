@@ -129,7 +129,7 @@
                             }
                             <td>@item.ItemName</td>
                             <td>@item.PartCode</td>
-                            <td>@item.Qty</td>
+                            <td >@item.Qty</td>
                             <td>@item.Unit</td>
                             <td>@item.AltQty</td>
                             <td>@item.AltUnit</td>
@@ -163,7 +163,7 @@
                             <td>@item.WOYearcode</td>
                             <td>@item.EntryId</td>
                             <td>@item.YearCode</td>
-                            <td>@item.TotalReqQty</td>
+                            <td id="ReqQty-@Cntr">@item.TotalReqQty</td>
                             <td>@item.TotalPendQty</td>
                         </tr>
                     }
@@ -172,6 +172,5 @@
         </tbody>
     </table>
 </div>
-<center><strong>TOTAL ROWS : <span id="totalRows"></span></strong></center>
-
+<center><strong>TOTAL ROWS : <span id="totalRows" style="margin-right: 40px;"></span></strong><strong>TOTAL REQ QTY : <span id="totalReqQty"></span></strong></center>
 

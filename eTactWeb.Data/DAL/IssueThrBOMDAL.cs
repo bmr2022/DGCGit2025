@@ -15,6 +15,7 @@ using System.Xml.Linq;
 using static eTactWeb.DOM.Models.Common;
 using static eTactWeb.Data.Common.CommonFunc;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using PdfSharp.Drawing.BarCodes;
 
 namespace eTactWeb.Data.DAL
 {
@@ -698,7 +699,7 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         } 
         
-        public async Task<IssueThrBomMainDashboard> FGDetailData(string FromDate, string Todate, string Flag = "", string DashboardType = "FGSUMM", string IssueSlipNo = "", string ReqNo = "", string FGPartCode = "", string FGItemName = "")
+        public async Task<IssueThrBomMainDashboard> FGDetailData(string FromDate, string Todate, string Flag = "", string DashboardType = "FGSUMM", string IssueSlipNo = "", string ReqNo = "", string FGPartCode = "", string FGItemName = "",string WCName="")
         {
             DataSet? oDataSet = new DataSet();
             var model = new IssueThrBomMainDashboard();
@@ -720,7 +721,10 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@FromDate", fromDt);
                     oCmd.Parameters.AddWithValue("@ToDate", toDt);
                     oCmd.Parameters.AddWithValue("@IssueSlipNo", IssueSlipNo);
-                    oCmd.Parameters.AddWithValue("@REQNo", ReqNo);                                                                                                                   
+                    oCmd.Parameters.AddWithValue("@REQNo", ReqNo);
+                    oCmd.Parameters.AddWithValue("@wcname", WCName);
+                    oCmd.Parameters.AddWithValue("@partcode", FGPartCode);
+                    oCmd.Parameters.AddWithValue("@Item_name", FGItemName);
                     await myConnection.OpenAsync();
                     using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
                     {
@@ -857,7 +861,7 @@ namespace eTactWeb.Data.DAL
             }
             return model;
         }
-        public async Task<IssueThrBomMainDashboard> SummaryData(string FromDate, string Todate, string Flag = "", string DashboardType = "SUMM", string IssueSlipNo = "", string ReqNo = "")
+        public async Task<IssueThrBomMainDashboard> SummaryData(string FromDate, string Todate, string Flag = "", string DashboardType = "SUMM", string IssueSlipNo = "", string ReqNo = "", string PartCode = "", string ItemName = "",string WCName="")
 
         {
             DataSet? oDataSet = new DataSet();
@@ -880,7 +884,10 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@FromDate", fromDt);
                     oCmd.Parameters.AddWithValue("@ToDate", toDt);
                     oCmd.Parameters.AddWithValue("@IssueSlipNo", IssueSlipNo);
-                    oCmd.Parameters.AddWithValue("@REQNo", ReqNo);                                                  
+                    oCmd.Parameters.AddWithValue("@REQNo", ReqNo);
+                    oCmd.Parameters.AddWithValue("@wcname", WCName);
+                    oCmd.Parameters.AddWithValue("@partcode", PartCode);
+                    oCmd.Parameters.AddWithValue("@Item_name", ItemName);
                     await myConnection.OpenAsync();
                     using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
                     {
