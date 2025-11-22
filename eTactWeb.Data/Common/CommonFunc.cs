@@ -1158,6 +1158,33 @@ public static class CommonFunc
                     }
 
                 }
+                else if (Tbname == "AccLedgerOpeningCarryforward" || table.TableName == "AccLedgerOpeningCarryforward")
+                {
+                    if (typeProperty.PropertyInfo.Name != "CreatedBy" &&
+                        typeProperty.PropertyInfo.Name != "SrNO"
+                        && typeProperty.PropertyInfo.Name != "GroupAccountCode"
+                         && typeProperty.PropertyInfo.Name != "ParentAccountCode"
+                         && typeProperty.PropertyInfo.Name != "OpeningForYear"
+                         && typeProperty.PropertyInfo.Name != "Mode"
+                         && typeProperty.PropertyInfo.Name != "PreviousAmount"
+                         && typeProperty.PropertyInfo.Name != "UpdatedByEmpId"
+                         && typeProperty.PropertyInfo.Name != "UpdatedByEmpId"
+                         && typeProperty.PropertyInfo.Name != "Account_Name"
+                         && typeProperty.PropertyInfo.Name != "FinToDate"
+                         && typeProperty.PropertyInfo.Name != "FinFromDate"
+                         && typeProperty.PropertyInfo.Name != "LedgerOpeningEntryDashBoardGrid"
+                         && typeProperty.PropertyInfo.Name != "Active"
+                         && typeProperty.PropertyInfo.Name != "CreatedOn"
+                         && typeProperty.PropertyInfo.Name != "EID"
+                         && typeProperty.PropertyInfo.Name != "ID"
+                         )
+                    {
+                        object value = row[typeProperty.PropertyInfo.Name];
+                        object? safeValue = value == null || DBNull.Value.Equals(value) ? null : Convert.ChangeType(value, typeProperty.Type);
+                        typeProperty.PropertyInfo.SetValue(obj, safeValue, null);
+                    }
+
+                }
                 else if (Tbname == "IssueNRGPDetail" || table.TableName == "IssueNRGPDetail")
                 {
                     if (typeProperty.PropertyInfo.Name != "INDasboard" && typeProperty.PropertyInfo.Name != "INNDashboard"

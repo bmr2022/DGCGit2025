@@ -1,0 +1,223 @@
+﻿@model eTactWeb.DOM.Models.LedgerOpeningCarryforwardModel;
+@{
+    ViewData["Title"] = "Ledger Opening Carry Forward DashBoard";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+<div class="shadow-lg">
+    <form id="SParam" method="post" asp-controller="" asp-action="" autocomplete="off">
+        <div class="card rounded border-light bg-gradient">
+            <div class="card-header card-headerBG text-light bg-gradient">
+                <h5>
+                    Ledger Opening Entry - <strong>Dashboard</strong>
+                    <span class="d-flex float-end" style="margin-top:-2px;">
+                        <a asp-action="LedgerOpeningEntry" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient" id="savebtn">
+                            <i class="fa fa-plus-circle fafw fa-lg" aria-hidden="true"></i>
+                            Add New
+                        </a>
+                    </span>
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="card overflow-auto">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                <div class="row">
+                                    <div class="col">
+                                        <label class="form-label">From Date</label>
+                                        <input asp-for="FromDate" class="form-control" />
+                                    </div>
+                                    <div class="col">
+                                        <label class="form-label">To Date</label>
+                                        <input asp-for="ToDate" class="form-control" />
+                                    </div>
+                                   
+                                    <input asp-for="FromDate1" type="hidden" />
+                                    <input asp-for="ToDate1" type="hidden" />
+                                    <input type="hidden" asp-for="EntryByMachine" value="@Environment.MachineName" />
+                                    <input type="hidden" class="form-control" asp-for="ParentAccountCode" />
+                                    <input type="hidden" name="GroupAccountCode" asp-for="GroupAccountCode" value="@Model.GroupAccountCode" />
+                                    <input type="hidden" asp-for="ActualEntryDate" class="form-control" value="@Model.ActualEntryDate" />
+                                    <input type="hidden" asp-for="CC" class="form-control" value="@Model.CC" />
+                                    <input type="hidden" asp-for="EntryByEmpId" class="form-control" value="@Model.EntryByEmpId" />
+                                    <input type="hidden" asp-for="UpdatedByEmpId" class="form-control" value="@Model.UpdatedByEmpId" />
+                                    <input type="hidden" asp-for="Updationdate" class="form-control" value="@Model.Updationdate" />
+                                    <input type="hidden" asp-for="Amount" class="form-control" value="@Model.Amount" />
+                                    <input type="hidden" value="@Model.Mode" asp-for="Mode" />
+                                    <input type="hidden" asp-for="ID" name="ID" value="@Model.ID" />
+                                    <input type="hidden" asp-for="AccountCode" name="AccountCode" value="@Model.AccountCode" />
+
+                                </div>
+
+                            </div>
+                            <div class="col">
+                                <label class="form-label">Logged in fin year</label>
+                                <input asp-for="LoggedInFinYear" class="form-control" disabled />
+                            </div>
+                            <div class="col">
+                                <label class="form-label">Carry Forward Closing of</label>
+                                <select name="CarryForwardClosing" asp-for="CarryForwardClosing" id="CarryForwardClosing" class="form-select">
+                                    <option value="">-- Select Year --</option>
+                                </select>
+                            </div>
+
+
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                                <label class="form-label">Global search</label>
+                                <input type="text" class="form-control" asp-for="Searchbox" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
+                            </div>
+                            <div class=" d-flex justify-content-center mt-3 col-sm-5 col-md-8 col-lg-6 col-xl-4" width="inherit">
+                                <button class="btn btn-sm btn-outline-info" type="button" style=" padding:3px;height:30px;width:150px;margin-right:20px;" onclick="CarryForwardLedgerBalance()">
+                                    Carry Frw Led Bal
+                                </button>
+                                <button class="btn btn-sm btn-outline-info" type="button" style=" padding:3px;height:30px;width:150px;margin-right:20px;" onclick="">
+                                    Carry Frw Outstanding
+                                </button>
+                                <button class="btn btn-sm btn-outline-info" type="button" style="padding:0px;height:30px;width:100px;" onclick="GetSearchDetailData();">
+                                    <i class="fa-solid fa-magnifying-glass fa-fw fa-lg"></i>SEARCH
+                                </button>
+                                <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
+                                    <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
+                                </button>
+                                <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="LedgerOpeningEntry" asp-action="LedgerOpeningEntryDashBoard">
+                                    <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body pb-0 pt-0">
+                <div class="progress" style="height: 4px;">
+                    <div class="progress-bar progress-bar-striped bg-info" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="card overflow-auto">
+                    <div class="card-body" id="divDashboardGrid">
+                        <partial name="_LedgerOpeningCarryforwardDashBoardGrid" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+    </form>
+</div>
+
+@section Scripts 
+{
+    <script>
+        function getCalendarYearDates() {
+            var today = new Date();
+            var year = today.getFullYear();
+
+            var yearStart = new Date(year, 0, 1);  // 01 January
+            var yearEnd   = new Date(year, 11, 31); // 31 December
+
+            return { start: yearStart, end: yearEnd };
+        }
+
+        function formatDate(date) {
+            var day = ("0" + date.getDate()).slice(-2);
+            var month = ("0" + (date.getMonth() + 1)).slice(-2);
+            var year = date.getFullYear();
+            return day + "/" + month + "/" + year;
+        }
+
+        var yearDates = getCalendarYearDates();
+
+        $('#FromDate').datepicker({
+            dateFormat: 'dd/mm/yy'
+        }).datepicker("setDate", formatDate(yearDates.start))
+          .prop("disabled", true);
+
+        $('#ToDate').datepicker({
+            dateFormat: 'dd/mm/yy'
+        }).datepicker("setDate", formatDate(yearDates.end))
+          .prop("disabled", true);
+
+                 function CarryForwardLedgerBalance() {
+            var year = $('#CarryForwardClosing').val();
+
+            if (!year) {
+               alert("Please select Carry Forward Year!");
+                return;
+            }
+
+            console.log("Selected Year:", year);
+
+            $.ajax({
+                url: '/LedgerOpeningCarryforward/CarryForwardLedgerBalance',
+                type: 'POST',
+                data: { CarryForwardYear: year },
+                success: function (res) {
+                    console.log("Backend Response:", res);
+
+                    if (res.success) {
+                        // success notify
+                        alert(res.message);
+
+                        // reload after 3 seconds
+                        setTimeout(function () {
+                            location.reload();
+                        }, 3000); // 3 seconds
+                    } else {
+                       alert("Error during Carry Forward"); // error alert
+                    }
+                },
+                error: function (err) {
+                    console.error("Error:", err);
+                    // $notify("Error during Carry Forward", "error");
+                    alert("Error during Carry Forward", "error")
+                }
+            });
+        }
+
+
+
+        function FILLFINYEAR() {
+            $.ajax({
+                url: '/LedgerOpeningCarryforward/FILLFINYEAR',
+                type: 'GET',
+                success: function (obj) {
+
+                    console.log("Full Object:", obj);
+                    console.log("Result:", obj.Result);
+                    console.log("Is Array:", Array.isArray(obj.Result));
+
+                    var select = $('#CarryForwardClosing');
+                    select.empty();
+                    select.append('<option value="">-- Select Year --</option>');
+
+                    if (obj.result && Array.isArray(obj.result) && obj.result.length > 0) {
+
+                obj.result.forEach(function (item) {
+                    select.append(
+                        `<option value="${item.year}">${item.year}</option>`
+                    );
+                });
+
+            } else {
+                console.warn("No data found in result", obj);
+            }
+        },
+                error: function (err) {
+                    console.error("Ajax Error:", err);
+                }
+            });
+        }
+
+
+
+        $(document).ready(function () {
+            console.log("Page loaded - calling FILLFINYEAR()");
+            FILLFINYEAR();
+        });
+
+    </script>
+
+}
