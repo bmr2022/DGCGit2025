@@ -274,7 +274,7 @@
             }
         });
 
-          function parseCustomDate(str) {
+        function parseCustomDate(str) {
             var parts = str.split("/");
             var day = parseInt(parts[0], 10);
             var monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
@@ -324,61 +324,58 @@
         });
 
         $(document).on("click", ".sortCol", function () {
-            var $column = $(this).parent().closest("th");
-            var colno = $(this).data('columnno');
-            var currentOrder = $(this).data('sortorder');
-            var $table = $(this).parent().closest("table");
-            var tableid = tableid[0]?.id;
-
-            $('.sortCol').css('color', 'white');
+            var colno = parseInt($(this).attr("data-columnno")); // SAFEST
+            var tableid = $(this).closest("table")[0].id;        // ALWAYS CORRECT
+            var currentOrder = $(this).data("sortorder");
+            $('.sortCol').css('color', 'white').find("i").removeClass("fa-arrow-up fa-arrow-down");
             if (currentOrder === 'asc') {
                 sortTable(colno, false, tableid);
                 $(this).data('sortorder', 'desc');
-                $(this).css('color', 'yellow'); // Visual indication of descending order
-                //$(this).css('font-size', 'larger'); // Visual indication of descending order
-                $(this).find('i:first').removeClass('fa-arrow-up');
-                $(this).find('i:first').addClass('fa-arrow-down');
+                $(this).css('color', 'yellow').find('i:first').removeClass('fa-arrow-up').addClass('fa-arrow-down');
             } else {
                 sortTable(colno, true, tableid);
                 $(this).data('sortorder', 'asc');
-                $(this).css('color', 'yellow');
-                // $(this).css('font-size', 'larger'); // Visual indication of ascending order
-                $(this).find('i:first').removeClass('fa-arrow-down');
-                $(this).find('i:first').addClass('fa-arrow-up');
+                $(this).css('color', 'yellow').find('i:first').removeClass('fa-arrow-down').addClass('fa-arrow-up');
             }
         });
 
         function sortTable(columnIndex, ascending, tableid) {
-            var table = $('#' + tableid);
-            var rows = table.find('tbody > tr').toArray();
-            rows.sort(function (a, b) {
-                var aValue = $(a).find('td').eq(columnIndex).text();
-                var bValue = $(b).find('td').eq(columnIndex).text();
-                var aIntValue = 0;
-                var bIntValue = 0;
-                if (/^\d*\.?\d+$/.test(aValue) && /^\d*\.?\d+$/.test(bValue)) {
-                    aIntValue = parseInt(aValue, 10);
-                    bIntValue = parseInt(bValue, 10);
-                }
-                if (aIntValue > 0) {
-                    if (ascending) {
-                        return aValue - bValue;
-                    } else {
-                        return bValue - aValue;
+                const table = $('#' + tableid);
+                const rows = table.find('tbody > tr').toArray();
+                const getCellValue = td => $(td).find("input[type='checkbox']").length ? $(td).clone().find("input").remove().end().text().trim() : $(td).find("input[type!='checkbox']").val()?.trim() || $(td).find("select option:selected").text()?.trim() || $(td).text().trim();
+                rows.sort((a, b) => {
+                    let tdA = $(a).find('td').eq(columnIndex), tdB = $(b).find('td').eq(columnIndex);
+                    let aVal = getCellValue(tdA);
+                    let bVal = getCellValue(tdB);
+                    aVal = aVal.trim(); bVal = bVal.trim();
+                    const isTimeA = /^\d{2}:\d{2}$/.test(aVal) || aVal === "--:--";
+                    const isTimeB = /^\d{2}:\d{2}$/.test(bVal) || bVal === "--:--";
+                    if (isTimeA && isTimeB) {
+                        if (aVal === "--:--") return 1;
+                        if (bVal === "--:--") return -1;
+                        const [ah, am] = aVal.split(":").map(Number), [bh, bm] = bVal.split(":").map(Number);
+                        const tA = ah * 60 + am, tB = bh * 60 + bm;
+                        return ascending ? tA - tB : tB - tA;
                     }
-                } else {
-                    if (ascending) {
-                        return aValue.localeCompare(bValue);
-                    } else {
-                        return bValue.localeCompare(aValue);
+                    const aNum = parseFloat(aVal), bNum = parseFloat(bVal);
+                    const aIsNum = !isNaN(aNum), bIsNum = !isNaN(bNum);
+                    if (aIsNum && !bIsNum) return ascending ? -1 : 1;
+                    if (!aIsNum && bIsNum) return ascending ? 1 : -1;
+                    if (aIsNum && bIsNum) {
+                        if (aNum !== bNum) return ascending ? aNum - bNum : bNum - aNum;
+                        return ascending ? aVal.length - bVal.length : bVal.length - aVal.length;
                     }
-                }
-            });
-            $.each(rows, function (index, row) {
-                table.children('tbody').append(row);
-            });
+                    const len = Math.max(aVal.length, bVal.length);
+                    for (let i = 0; i < len; i++) {
+                        const aChar = aVal[i] || "", bChar = bVal[i] || "";
+                        if (aChar === bChar) continue;
+                        const diff = aChar.localeCompare(bChar);
+                        return ascending ? diff : -diff;
+                    }
+                    return ascending ? aVal.length - bVal.length : bVal.length - aVal.length;
+                });
+                $.each(rows, (i, r) => table.children('tbody').append(r));
         }
-
         $(document).on('select2:open', () => {
             document.querySelector('.select2-search__field').focus();
         });
@@ -1054,55 +1051,4 @@
         sessionStorage.setItem('GlobalSearchBack', $('#GlobalSearchBack').val());
         window.history.back();
     }
-    // function convertToAmPm(time24) {
-    //     if (!time24 || !/^\d{2}:\d{2}$/.test(time24)) return time24;
-
-    //     let [h, m] = time24.split(":").map(Number);
-    //     let suffix = h >= 12 ? 'PM' : 'AM';
-
-    //     if (h === 0) h = 12;
-    //     else if (h > 12) h -= 12;
-
-    //     return `${h}:${m.toString().padStart(2, '0')} ${suffix}`;
-    // }
-
-    // $(".timepicker").each(function () {
-    //     let value = $(this).val();
-
-    //     // Skip empty
-    //     if (!value) return;
-
-    //     // Skip already AM/PM
-    //     if (value.toLowerCase().includes("am") || value.toLowerCase().includes("pm")) return;
-
-    //     // Convert 24 hr → AM/PM
-    //     $(this).val(convertToAmPm(value));
-    // });
-
-    // $(document).on("focus", ".timepicker", function () {
-    //     let $input = $(this);
-
-    //     // prevent multiple pickers
-    //     if ($input.data("added-picker")) return;
-    //     $input.data("added-picker", true);
-
-    //     let picker = $('<select class="simple-timepicker"></select>');
-
-    //     for (let hour = 1; hour <= 12; hour++) {
-    //         for (let min = 0; min < 60; min += 5) {
-    //             let h = hour;
-    //             let m = min.toString().padStart(2, "0");
-    //             picker.append(`<option>${h}:${m} AM</option>`);
-    //             picker.append(`<option>${h}:${m} PM</option>`);
-    //         }
-    //     }
-
-    //     picker.insertAfter($input).show();
-
-    //     picker.on("change", function () {
-    //         $input.val($(this).val());
-    //         picker.remove();
-    //         $input.data("added-picker", false);
-    //     });
-    // });
 </script>
