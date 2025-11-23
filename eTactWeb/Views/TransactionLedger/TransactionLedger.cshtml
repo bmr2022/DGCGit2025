@@ -222,7 +222,7 @@
     <script>
 
         $(document).ready(function () {
-
+            debugger
             const currentForm = $("#ReportType").val() || "TransactionLedger";
 
             $("#FromDate").datepicker({ dateFormat: "dd/mm/yy" });
@@ -236,42 +236,34 @@
                 FillLedgerName()
             ).done(function () {
 
-                /* --------------------------------------------------
-                   ⭐ 1) RESTORE FILTERS (AFTER FILLS ARE DONE)
-                -------------------------------------------------- */
-                initDrillRestore(currentForm);
+                // restore filters & drill values
+                setTimeout(() => {
 
-                /* --------------------------------------------------
-                   ⭐ 2) RESTORE ReportType CORRECTLY IN SELECT2 UI
-                      (This is the fix for your issue)
-                -------------------------------------------------- */
-                let restoredMode = sessionStorage.getItem("DRILL__TARGET_FORM");
+                    // ⭐ RESTORE DRILLDOWN FILTERS
+                    initDrillRestore(currentForm);
 
-                if (restoredMode) {
-                    console.log("Restored ReportType:", restoredMode);
+                    // ⭐ RESTORE ReportType that was selected before drilling
+                    let mode = sessionStorage.getItem("DRILL__TARGET_FORM");
+                    if (mode) {
+                        $("#ReportType").val(mode).trigger("change.select2");
+                    }
 
-                    $("#ReportType").val(restoredMode).trigger("change.select2");
-                }
+                    // ⭐ RESTORE drop-down drill selection
+                    const group = sessionStorage.getItem("DRILL__GROUP");
+                    const parent = sessionStorage.getItem("DRILL__PARENT");
+                    const account = sessionStorage.getItem("DRILL__ACCOUNT");
 
-                /* --------------------------------------------------
-                   ⭐ 3) Also apply drill values to dropdowns
-                -------------------------------------------------- */
-                const group = sessionStorage.getItem("DRILL__GROUP");
-                const parent = sessionStorage.getItem("DRILL__PARENT");
-                const account = sessionStorage.getItem("DRILL__ACCOUNT");
+                    if (group) $("#Group_Ledger").val(group).trigger("change.select2");
+                    if (parent) $("#ParentLedgerName").val(parent).trigger("change.select2");
+                    if (account) $("#LedgerName").val(account).trigger("change.select2");
 
-                if (group) $("#Group_Ledger").val(group).trigger("change.select2");
-                if (parent) $("#ParentLedgerName").val(parent).trigger("change.select2");
-                if (account) $("#LedgerName").val(account).trigger("change.select2");
+                    // ⭐ SHOW BACK BUTTON (if stack > 1)
+                    DrilldownManager.toggleBackButton("#BackButton");
 
-                sessionStorage.removeItem("DRILL__GROUP");
-                sessionStorage.removeItem("DRILL__PARENT");
-                sessionStorage.removeItem("DRILL__ACCOUNT");
-                sessionStorage.removeItem("DRILL__TARGET_FORM");
+                    // NOW LOAD GRID / DATA
+                    GetValidateData();
 
-                DrilldownManager.toggleBackButton();
-
-                GetValidateData();
+                }, 200);
             });
         });
 
