@@ -1124,7 +1124,7 @@
                 btnClearTax();
             }
             if ($('#divSaleBillList tr td').length > 1) {
-                //ClearGrid();
+                ClearGrid();
             }
             if ($('#divdbCrItemList tr td').length > 1) {
                 ClearDRCRGrid();
@@ -3392,8 +3392,8 @@
             $('#divAdjItemList').html(NoData);
             CalculateAdjAmt('NetTotal');
             DueDateCalculation();
-            AddAdjstmntDetail1();
             ClearAdjustmentGrid();
+            AddAdjstmntDetail1();
         });
 
         function PasswordCheck() {
@@ -5515,6 +5515,7 @@
                         $('#CustAddress').val(obj.Result.Table[0].Address);
                         $('#GSTNO').empty();
                         $('#GSTNO').val(obj.Result.Table[0].GSTNO);
+                        $('#GSTRegistered').val(obj.Result.Table[0].GSTRegistered);
                         $('#StateCode').empty();
                         $('#StateCode').val(obj.Result.Table[0].statecode);
                         $('#StateNameofSupply').empty();
@@ -5630,15 +5631,15 @@
             });
         }
 
-        $('#SubmitButton').click(function () {
-            if ($('#divAdjItemList tr td').length > 1) {
-                $.notify('Adjustgrid is manadatory...!', "error");
-            }
-            else {
-                $("form").submit();
-                $('#SubmitionForm').modal("show");
-            }
-        })
+        // $('#SubmitButton').click(function () {
+        //     if ($('#divAdjItemList tr td').length > 1) {
+        //         $.notify('Adjustgrid is manadatory...!', "error");
+        //     }
+        //     else {
+        //         $("form").submit();
+        //         $('#SubmitionForm').modal("show");
+        //     }
+        // })
         // $('#btnPrint').click(function () {
         //     const printWindow = window.open('', '_blank', 'width=900,height=700,toolbar=no,menubar=no,scrollbars=yes,resizable=yes');
 
@@ -5767,7 +5768,41 @@
 
                 if ($('#divSaleBillList tr td').length <= 1) {
                     $.notify('Sale Bill Grid Should Have Atleast 1 Item...!', "error");
-                } else if ($('#GSTRegistered').val() == 'Y') {
+                } 
+                var itemType = $("#TypeItemServAssets option:selected").text().trim();
+
+        var hsnError = false;
+
+        $('#divSaleBillList tr').each(function () {
+
+            var hsn = $(this).find("[id^='HSNNo-']").text().trim();
+
+            if (hsn === "" || hsn === "0") {
+                $.notify('HSN Code should not be empty or 0 in Sale Bill grid...!', "error");
+                hsnError = true;
+                return false;   // break .each loop
+            }
+
+            if (itemType === "Service") {
+                if (!/^99\d{4}$/.test(hsn)) {
+                    $.notify('For Services, HSN must start with 99 and be 6 digits...', "error");
+                    hsnError = true;
+                    return false;
+                }
+            } else {
+                if (!/^\d{6,8}$/.test(hsn)) {
+                    $.notify('HSN Code must be 6 to 8 digits...', "error");
+                    hsnError = true;
+                    return false;
+                }
+            }
+
+        });
+
+        // ❗ If any HSN failed → STOP HERE (do not continue)
+        if (hsnError) return;
+
+                 if ($('#GSTRegistered').val() == 'Y') {
                     if ($('#divTaxGrid tr td').length <= 1 && $('#DomesticExportNEPZ').val() == "DOMESTIC") {
                         $.notify('Tax Grid Should Have Atleast 1 Item...!', "error");
                     } else {

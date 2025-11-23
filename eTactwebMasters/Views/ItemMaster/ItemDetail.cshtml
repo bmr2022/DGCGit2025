@@ -158,7 +158,7 @@
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                         <label asp-for="HSNNO" class="form-label">HSN No</label>
-                                        <input asp-for="HSNNO" class="form-control" required />
+                                        <input asp-for="HSNNO" class="form-control"  />
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                         <label asp-for="Unit" class="form-label">Unit<span style="color:red">*</span></label>
@@ -1167,7 +1167,8 @@
             $('#ReUploadItem').change(function () {
                 $('#ReUploadItem').is(':checked') == true ? $('.ReUploadItemFile').fadeIn() : ($('.ReUploadItemFile').fadeOut(), $('#UploadItemImage').val(''));
             });
-
+                var selectedText = $("#ItemType").find('option:selected').text().trim();
+            $('#ItemTypeName').val(selectedText);
         });
 
         $('#ParentCode').on('change', function () {
@@ -1178,6 +1179,8 @@
             var selectedText = $(this).find('option:selected').text().trim();
             $('#ItemTypeName').val(selectedText);
         });
+
+    
         function CheckDuplicate(n, v) {
              
             $.ajax({
@@ -1336,11 +1339,50 @@
                $('#ProdInMachine3').removeClass('valid').addClass('is-invalid');
                      Err = 1;
         }
-           var hsn = $('#HSNNO').val().trim();
-            if (hsn !== "" && hsn !== "0" && !/^\d{6,8}$/.test(hsn)) {
-            $('#HSNNO').removeClass('valid').addClass('is-invalid');
-            Err = 1;
+        //    var hsn = $('#HSNNO').val().trim();
+        //     if (hsn !== "" && hsn !== "0" && !/^\d{6,8}$/.test(hsn)) {
+        //     $('#HSNNO').removeClass('valid').addClass('is-invalid');
+        //     Err = 1;
+        // }
+
+                var itemType = $("#ItemServAssets").val();
+        var hsn = $('#HSNNO').val().trim();
+                var itemTypeName = $("#ItemTypeName").val().trim().toUpperCase();
+
+        if (itemTypeName.includes("FINISHED GOODS")) {
+
+            if (hsn === "" || hsn === "0") {
+                $("#HSNNO").addClass("is-invalid");
+                $.notify("HSN Code is mandatory for Finished Goods!", "error");
+                Err = 1;
+            } else {
+                $("#HSNNO").removeClass("is-invalid").addClass("valid");
+            }
         }
+
+        if (itemType === "Service") {
+
+            // HSN must start with 99 and be exactly 6 digits
+              if (hsn !== "" && hsn !== "0"&& !/^99\d{4}$/.test(hsn)) {
+                $('#HSNNO').removeClass('valid').addClass('is-invalid');
+                $.notify("For Service items, HSN must start with 99 and be exactly 6 digits...!", "error");
+                Err = 1;
+            } else {
+                $('#HSNNO').removeClass('is-invalid').addClass('valid');
+            }
+
+        } else {
+
+            // For non-service, your old rule: 6–8 digits allowed
+            if (hsn !== "" && hsn !== "0" && !/^\d{6,8}$/.test(hsn)) {
+                $('#HSNNO').removeClass('valid').addClass('is-invalid');
+                $.notify("HSN Code must be 6 to 8 digits for goods...!", "error");
+                Err = 1;
+            } else {
+                $('#HSNNO').removeClass('is-invalid').addClass('valid');
+            }
+        }
+
           if ("@Model.FeatureOption.IsStoreMandatoryInItemMaster" == true || "@Model.FeatureOption.IsStoreMandatoryInItemMaster" == "True") {
          var Store = $('#Store').val().trim();
                 if (Store === "" || Store === "0") {

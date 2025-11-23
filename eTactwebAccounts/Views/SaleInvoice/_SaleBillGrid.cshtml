@@ -57,7 +57,7 @@ else
             <td>@item.CustOrderNo</td>
             <td class="SaleBillScheduleDetail">@item.SchNo</td>
             <td class="SaleBillScheduleDetail">@(item.Schdate != null ? (item.Schdate).Split(" ")[0] : item.Schdate)</td>
-            <td>@item.HSNNo</td>
+            <td id="HSNNo-@Cntr">@item.HSNNo</td>
             <td>@item.StoreName</td>
             <td>@item.RackID</td>
             <td id="GridBatchNo-@Cntr">@item.Batchno</td>
