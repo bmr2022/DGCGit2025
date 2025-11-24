@@ -20,6 +20,7 @@ namespace eTactWeb.DOM.Models
         public int AgainstMRNYearCode { get; set; }
         public string BillOrChallan{ get; set; }
         public string gateno { get; set; }
+        public string? DatabaseName { get; set; }
         public int GateYearCode { get; set; }
         public string ChallanNo { get; set; }
         public string ChallanDate { get; set; }

@@ -624,7 +624,7 @@ namespace eTactWeb.Controllers
                     Item.IssueChallanYearCode,
                     Item.IssueChallanNo ?? "",
                     Item.ItemCode,
-                    "",
+                    Item.PartCode,
                     Item.SeqNo,
                     Item.Unit ?? "",
                     Item.RecQty,

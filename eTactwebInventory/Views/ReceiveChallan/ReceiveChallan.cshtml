@@ -104,6 +104,7 @@
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <input type="hidden" value="@Model.Mode" asp-for="Mode" />
                                     <input type="hidden" asp-for="SeqNo" id="hiddenSeqNo" />
+                                    <input type="hidden" asp-for="DatabaseName" />
                                     <label asp-for="EntryId" class="form-label">Entry ID</label>
                                     <input asp-for="EntryId" class="form-control" readonly />
                                 </div>
@@ -860,6 +861,7 @@
 
 
                         $('#ChallanNo').val(ChallanNo);
+                        $('#DatabaseName').val(SourceDB);
                         
                     }
                 }
@@ -1512,6 +1514,14 @@
 
             window.history.back();
         }
+        function sanitizeInput(value) {
+            if (!value) return '';
+            return value
+                .trim()                        // remove leading/trailing spaces
+                .replace(/\s+/g, '_')          // replace all spaces with underscore
+                .replace(/[^\w\-]/g, '');      // remove all special characters except letters, numbers, and underscore
+        }
+
 
         $('#GridButton').click(function (e) {
             e.preventDefault();

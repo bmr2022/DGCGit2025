@@ -497,6 +497,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@CreatedOn", createdDt));
                 SqlParams.Add(new SqlParameter("@CC", model.CC ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@UID", model.UID));
+                SqlParams.Add(new SqlParameter("@RecFromDataBase", model.DatabaseName));
 
                 SqlParams.Add(new SqlParameter("@DTSSGrid", RCGrid));
 
