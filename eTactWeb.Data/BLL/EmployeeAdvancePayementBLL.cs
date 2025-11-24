@@ -67,5 +67,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _EmployeeAdvancePayementDAL.GetDashboardData(fromDate, toDate);
         }
+        public async Task<ResponseResult> DeleteByID(int advEntryId, int advYearCode, int actualEntryBy, string entryByMachineName)
+        {
+            return await _EmployeeAdvancePayementDAL.DeleteByID(advEntryId, advYearCode,actualEntryBy,entryByMachineName);
+        }
     }
 }

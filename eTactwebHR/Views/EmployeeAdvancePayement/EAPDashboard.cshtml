@@ -97,6 +97,14 @@
 
 		});
 
+		function confirmDelete(event) {
+			event.preventDefault();
+			   if (confirm("Are you sure you want to delete this entry?")) {
+				var linkUrl = $(event.currentTarget).attr("href");
+				window.location.href = linkUrl;
+			}
+		}
+
 		var currentSearchColumn = null;
 
 		$("#search-box").on("keyup", function () {

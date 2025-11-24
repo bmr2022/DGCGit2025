@@ -113,7 +113,7 @@
 										<input type="hidden" value="@Model.EmpId" id="hiddenEmpId"/>
 									}
 								</div>
-								
+
 								<div class="col-md-2">
 									<label asp-for="EmpCode" class="form-label">Emp Code</label>
 									<select asp-for="EmpCode" class="form-select">
@@ -122,13 +122,13 @@
 									@if (Model.Mode == "U" || Model.Mode == "V")
 									{
 										<input type="hidden" value="@Model.EmpCode" id="hiddenEmpCode"/>
-									}
+									}	
 								</div>
 
 								<div class="col-md-1">
 									<label asp-for="DesigId" class="form-label">Designation</label>
-								    <input type="hidden" asp-for="DesigId"/>
-								    <input asp-for="DesigName" class="form-control" readonly/>
+									<input type="hidden" asp-for="DesigId"/>
+									<input asp-for="DesigName" class="form-control" readonly/>
 								</div>
 
 								<div class="col-md-1">
@@ -149,7 +149,7 @@
 									<label asp-for="BasicSalary" class="form-label">Basic Salary</label>
 									<input asp-for="BasicSalary" class="form-control" readonly/>
 								</div>
-								
+
 								<div class="col-md-1">
 									<label asp-for="GrossSalary" class="form-label">Gross Salary</label>
 									<input asp-for="GrossSalary" class="form-control" readonly />
@@ -224,16 +224,16 @@
 
 								<div class="col-md-2">
 									<label asp-for="HRApprovedbyEmpid" class="form-label">HRApprovedby EmpName</label>
-								@* 	<select asp-for="HRApprovedbyEmpid" class="form-select">
+									@* 	<select asp-for="HRApprovedbyEmpid" class="form-select">
 										<option value="">-Select-</option>
 									</select> *@
 
 									<input asp-for="HRApprovedbyEmpid" class="form-control" readonly />
 								</div>
-								
+
 								<div class="col-md-2">
 									<label asp-for="HRApprovedbyEmpCode" class="form-label">HRApprovedby EmpCode</label>
-								@* 	<select asp-for="HRApprovedbyEmpCode" class="form-select">
+									@* 	<select asp-for="HRApprovedbyEmpCode" class="form-select">
 										<option value="">-Select-</option>
 									</select> *@
 									<input asp-for="HRApprovedbyEmpCode" class="form-control" readonly />
@@ -264,6 +264,11 @@
 									<select asp-for="AdvanceType" class="form-select">
 										<option value="">-Select-</option>
 									</select>
+
+									@if(Model.Mode == "U" || Model.Mode == "V")
+									{
+										<input type="hidden" value="@Model.AdvanceType" id="hiddenAdvanceType"/>
+									}
 								</div>
 							</div>
 
@@ -739,6 +744,10 @@
 						$.each(obj.Result, function (index, Val) {
 							$('#AdvanceType').append('<option value="' + Val.AdvanceType + '">' + Val.AdvanceType + '</option>');
 						});
+
+						if($('#Mode').val() == "U" || $('#Mode').val() == "V"){
+							$('#AdvanceType').val($('#hiddenAdvanceType').val());
+						}
 					}
 				},
 				error: function (xhr, status, error) {
@@ -929,7 +938,7 @@
 						// });
 
 						if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-							$('#EmpCode').val($('#hiddenEmpCode').val());
+							$('#EmpCode').val($('#hiddenEmpId').val());
 						}
 					}
 				},
