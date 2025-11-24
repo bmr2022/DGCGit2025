@@ -25,7 +25,7 @@ namespace eTactWeb.DOM.Models
         public string? ContactPerson { get; set; }
         public string? Country { get; set; }
         public string? CreditDays { get; set; }
-        public string? CreditLimit { get; set; }
+        public decimal? CreditLimit { get; set; }
         public string? DebCredCode { get; set; }
         public string? DisplayName { get; set; }
         public string? Division { get; set; }
@@ -90,7 +90,7 @@ namespace eTactWeb.DOM.Models
         public string? PurchPersonName { get; set; }
         public string? QCPersonEmailId { get; set; }
         public string? RANGE { get; set; }
-        public string? RateOfInt { get; set; }
+        public decimal? RateOfInt { get; set; }
         public string? ResponsibleEmpContactNo { get; set; }
         public string? ResponsibleEmployee { get; set; }
         public string? salesemailid { get; set; }

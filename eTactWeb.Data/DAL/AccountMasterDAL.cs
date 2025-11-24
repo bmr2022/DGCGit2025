@@ -211,8 +211,9 @@ namespace eTactWeb.Data.DAL
                         _AccountMasterModel.Commodity = dr["Commodity"].ToString();
                         _AccountMasterModel.WorkingAdd1 = dr["WorkingAdd1"].ToString();
                         _AccountMasterModel.WorkingAdd2 = dr["WorkingAdd2"].ToString();
-                        _AccountMasterModel.RateOfInt = dr["RateOfInt"].ToString();
-                        _AccountMasterModel.CreditLimit = dr["CreditLimit"].ToString();
+                        _AccountMasterModel.RateOfInt = Convert.ToDecimal(dr["RateOfInt"].ToString());
+                        _AccountMasterModel.CreditLimit = Convert.ToDecimal(dr["CreditLimit"].ToString());
+                       
                         _AccountMasterModel.CreditDays = dr["CreditDays"].ToString();
                         _AccountMasterModel.SSL = dr["SSL"].ToString();
                         _AccountMasterModel.BankAccount_No = dr["BankAccount_No"].ToString();
@@ -340,8 +341,9 @@ namespace eTactWeb.Data.DAL
                                                        Commodity = dr["Commodity"].ToString(),
                                                        WorkingAdd1 = dr["WorkingAdd1"].ToString(),
                                                        WorkingAdd2 = dr["WorkingAdd2"].ToString(),
-                                                       RateOfInt = dr["RateOfInt"].ToString(),
-                                                       CreditLimit = dr["CreditLimit"].ToString(),
+                                                      
+                                                       RateOfInt = dr["RateOfInt"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["RateOfInt"]),
+                                                       CreditLimit = dr["CreditLimit"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["CreditLimit"]),
                                                        CreditDays = dr["CreditDays"].ToString(),
                                                        SSL = dr["SSL"].ToString(),
                                                        BankAccount_No = dr["BankAccount_No"].ToString(),
@@ -445,6 +447,32 @@ namespace eTactWeb.Data.DAL
             }
             return model;
         }
+        public int SafeToInt(object value)
+        {
+            if (value == DBNull.Value || value == null) return 0;
+            int.TryParse(value.ToString(), out int result);
+            return result;
+        }
+
+        public string SafeToString(object value)
+        {
+            return value == DBNull.Value || value == null ? "" : value.ToString();
+        }
+
+        public DateTime? SafeToDateTime(object value)
+        {
+            if (value == DBNull.Value || value == null) return null;
+            DateTime.TryParse(value.ToString(), out DateTime dt);
+            return dt;
+        }
+
+        public decimal SafeToDecimal(object value)
+        {
+            if (value == DBNull.Value || value == null) return 0;
+            decimal.TryParse(value.ToString(), out decimal result);
+            return result;
+        }
+
         public async Task<AccountMasterModel> GetDetailDashboardData(AccountMasterModel model)
         {
             DataSet? oDataSet = new DataSet();
@@ -475,43 +503,83 @@ namespace eTactWeb.Data.DAL
                     model.AccountMasterList = (from DataRow dr in oDataSet.Tables[0].Rows
                                                select new AccountMasterModel
                                                {
-                                                   Account_Code = Convert.ToInt32(dr["Account_Code"]),
-                                                   Account_Name = dr["Account_Name"].ToString(),
-                                                   ParentAccountName = dr["ParentAccount"].ToString(),
-                                                   ParentAccountCode = Convert.ToInt32(dr["ParentAccountCode"]),
-                                                   SubGroup = dr["SubGroup"].ToString(),
-                                                   MainGroup = dr["MainGroup"].ToString(),
-                                                   UnderGroup = dr["UnderGroup"].ToString(),
-                                                   ComAddress = dr["ComAddress"].ToString(),
-                                                   ComAddress1 = dr["ComAddress1"].ToString(),
-                                                   PinCode = dr["PinCode"].ToString(),
-                                                   City = dr["City"].ToString(),
-                                                   State = dr["State"].ToString(),
-                                                   Country = dr["Country"].ToString(),
-                                                   GSTNO = dr["GSTNO"].ToString(),
-                                                   PhoneNo = dr["PhoneNo"].ToString(),
-                                                   MobileNo = dr["MobileNo"].ToString(),
-                                                   ContactPerson = dr["ContactPerson"].ToString(),
-                                                   PartyType = dr["PartyType"].ToString(),
-                                                   GSTRegistered = dr["GSTRegistered"].ToString(),
-                                                   GSTPartyTypes = dr["GSTPartyTypes"].ToString(),
-                                                   GSTTAXTYPE = dr["GSTTAXTYPE"].ToString(),
-                                                   Segment = dr["Segment"].ToString(),
-                                                   SSLNo = dr["SSLNo"].ToString(),
-                                                   PANNO = dr["PANNO"].ToString(),
-                                                   TDS = dr["TDS"].ToString(),
-                                                   TDSRate = dr["TDSRate"].ToString(),
-                                                   TDSPartyCategery = dr["TDSPartyCategery"].ToString(),
-                                                   ResponsibleEmployee = dr["ResponsibleEmployee"].ToString(),
-                                                   ResponsibleEmpContactNo = dr["ResponsibleEmpContactNo"].ToString(),
-                                                   SalesPersonName = dr["SalesPersonName"].ToString(),
-                                                   SalesPersonEmailId = dr["SalesPersonEmailId"].ToString(),
-                                                   SalesPersonMobile = dr["SalesPersonMobile"].ToString(),
-                                                   PurchPersonName = dr["PurchPersonName"].ToString(),
-                                                   PurchasePersonEmailId = dr["PurchasePersonEmailId"].ToString(),
-                                                   PurchMobileNo = dr["PurchMobileNo"].ToString(),
-                                                   QCPersonEmailId = dr["QCPersonEmailId"].ToString(),
-                                                   WebSite_Add = dr["WebSite_Add"].ToString(),
+                                                   Account_Code = SafeToInt(dr["Account_Code"]),
+                                                   DebCredCode = SafeToString(dr["DebCredCode"]),
+                                                   Party_Code = SafeToString(dr["Party_Code"]),
+                                                   Entry_Date = SafeToString(dr["Entry_Date"]),
+                                                   Account_Name = SafeToString(dr["Account_Name"]),
+                                                   DisplayName = SafeToString(dr["DisplayName"]),
+                                                   ParentAccountName = SafeToString(dr["ParentAccount"]),
+                                                   MainGroup = SafeToString(dr["MainGroup"]),
+                                                   AccountType = SafeToString(dr["AccountType"]),
+                                                   SubGroup = SafeToString(dr["SubGroup"]),
+                                                   SubSubGroup = SafeToString(dr["SubSubGroup"]),
+                                                   UnderGroup = SafeToString(dr["UnderGroup"]),
+                                                   ComAddress = SafeToString(dr["ComAddress"]),
+                                                   ComAddress1 = SafeToString(dr["ComAddress1"]),
+                                                   PinCode = SafeToString(dr["PinCode"]),
+                                                   City = SafeToString(dr["City"]),
+                                                   State = SafeToString(dr["State"]),
+                                                   Country = SafeToString(dr["Country"]),
+                                                   PhoneNo = SafeToString(dr["PhoneNo"]),
+                                                   MobileNo = SafeToString(dr["MobileNo"]),
+                                                   ContactPerson = SafeToString(dr["ContactPerson"]),
+                                                   PartyType = SafeToString(dr["PartyType"]),
+                                                   GSTRegistered = SafeToString(dr["GSTRegistered"]),
+                                                   GSTNO = SafeToString(dr["GSTNO"]),
+                                                   GSTPartyTypes = SafeToString(dr["GSTPartyTypes"]),
+                                                   GSTTAXTYPE = SafeToString(dr["GSTTAXTYPE"]),
+                                                   Segment = SafeToString(dr["Segment"]),
+                                                   SSLNo = SafeToString(dr["SSLNo"]),
+                                                   PANNO = SafeToString(dr["PANNO"]),
+                                                   TDS = SafeToString(dr["TDS"]),
+                                                   TDSRate = SafeToString(dr["TDSRate"]),
+                                                   TDSPartyCategery = SafeToString(dr["TDSPartyCategery"]),
+                                                   ResponsibleEmployee = SafeToString(dr["ResponsibleEmployee"]),
+                                                   ResponsibleEmpContactNo = SafeToString(dr["ResponsibleEmpContactNo"]),
+                                                   SalesPersonName = SafeToString(dr["SalesPersonName"]),
+                                                   SalesPersonEmailId = SafeToString(dr["SalesPersonEmailId"]),
+                                                   SalesPersonMobile = SafeToString(dr["SalesPersonMobile"]),
+                                                   PurchPersonName = SafeToString(dr["PurchPersonName"]),
+                                                   PurchasePersonEmailId = SafeToString(dr["PurchasePersonEmailId"]),
+                                                   PurchMobileNo = SafeToString(dr["PurchMobileNo"]),
+                                                   QCPersonEmailId = SafeToString(dr["QCPersonEmailId"]),
+                                                   WebSite_Add = SafeToString(dr["WebSite_Add"]),
+                                                   EMail = SafeToString(dr["EMail"]),
+                                                   RANGE = SafeToString(dr["RANGE"]),
+                                                   Division = SafeToString(dr["Division"]),
+                                                   Commodity = SafeToString(dr["Commodity"]),
+                                                   WorkingAdd1 = SafeToString(dr["WorkingAdd1"]),
+                                                   WorkingAdd2 = SafeToString(dr["WorkingAdd2"]),
+                                                   RateOfInt = SafeToDecimal(dr["RateOfInt"]),
+                                                   CreditLimit = SafeToDecimal(dr["CreditLimit"]),
+                                                   CreditDays = SafeToString(dr["CreditDays"]),
+                                                   SSL = SafeToString(dr["SSL"]),
+                                                   BankAccount_No = SafeToString(dr["BankAccount_No"]),
+                                                   BankAddress = SafeToString(dr["BankAddress"]),
+                                                   BankIFSCCode = SafeToString(dr["BankIFSCCode"]),
+                                                   BankSwiftCode = SafeToString(dr["BankSwiftCode"]),
+                                                   InterbranchSaleBILL = SafeToString(dr["InterbranchSaleBILL"]),
+                                                   salesperson_name = SafeToString(dr["salesperson_name"]),
+                                                   salesemailid = SafeToString(dr["salesemailid"]),
+                                                   salesmobileno = SafeToString(dr["salesmobileno"]),
+                                                   Approved_By = SafeToString(dr["Approved_By"]),
+                                                   Approved = SafeToString(dr["Approved"]),
+                                                   ApprovalDate = SafeToString(dr["ApprovalDate"]),
+                                                   BlackListed = SafeToString(dr["BlackListed"]),
+                                                   BlackListed_By = SafeToString(dr["BlackListed_By"]),
+                                                   YearCode = SafeToInt(dr["YearCode"]),
+                                                   Uid = SafeToString(dr["Uid"]),
+                                                   CC = SafeToString(dr["CC"]),
+                                                   CreatedBy = SafeToInt(dr["CreatedBy"]),
+                                                   CreatedOn = SafeToDateTime(dr["CreatedOn"]),
+                                                   UpdatedBy = SafeToInt(dr["UpdatedBy"]),
+                                                   UpdatedOn = SafeToDateTime(dr["UpdatedOn"]),
+                                                   Active = SafeToString(dr["Active"]),
+                                                   ParentAccountCode = SafeToInt(dr["ParentAccountCode"]),
+
+                                                   
+
                                                }).ToList();
                 }
 
