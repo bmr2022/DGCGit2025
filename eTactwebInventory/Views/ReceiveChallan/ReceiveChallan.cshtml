@@ -328,7 +328,7 @@
                                 </div>
                                 <div class="d-flex">
                                     <div class="col-md-10">
-                                        <button type="button" class="GridButton btn btn-sm btn-outline-danger mt-2" id="GridButton">
+                                        <button type="button" class="GridButton btn btn-sm btn-outline-danger mt-2" id="GridButton" onclick="gridbutton(event)">
                                             <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
                                         </button>
                                     </div>
@@ -862,6 +862,9 @@
 
                         $('#ChallanNo').val(ChallanNo);
                         $('#DatabaseName').val(SourceDB);
+
+
+                        gridbutton(event);
                         
                     }
                 }
@@ -1523,7 +1526,7 @@
         }
 
 
-        $('#GridButton').click(function (e) {
+        function gridbutton(e) {
             e.preventDefault();
             EditEachItem = false;
 
@@ -1615,7 +1618,7 @@
                     $.notify('Something Went Wrong, Please Try Again.', "error");
                 }
             });
-        });
+        };
 
         function GetServerDate() {
              
