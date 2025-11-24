@@ -223,27 +223,44 @@
 
 
         function GetSearchData() {
-            $('#ShowAllSwitch').prop("checked", false)
-            //var data = $('#SParam').serialize();
+
+            var btn = $("#btnSearch");
+            var originalText = btn.text();
+
+            // Change text to Processing
+            btn.text("Processing...");
+            btn.prop("disabled", true);
+
+            $('#ShowAllSwitch').prop("checked", false);
+
             if ($(this).is(':checked') == true) {
                 $.ajax({
                     url: '@Url.Action("GetAllColumns")',
                     type: "POST",
-                    async: false,
-                    data: { Item_Name: $('#Item_Name').val(), PartCode: $('#PartCode').val(), ParentCode: $('#ParentName').val(), ItemType: $('#POServType').val(), HsnNo: $('#HSNNO').val(), UniversalPartCode: $('#UniversalPartCode').val(), pageSize: $('#PageSize').val(), Flag: "Search" },
+                    data: {
+                        Item_Name: $('#Item_Name').val(),
+                        PartCode: $('#PartCode').val(),
+                        ParentCode: $('#ParentName').val(),
+                        ItemType: $('#POServType').val(),
+                        HsnNo: $('#HSNNO').val(),
+                        UniversalPartCode: $('#UniversalPartCode').val(),
+                        pageSize: $('#PageSize').val(),
+                        Flag: "Search"
+                    },
                     success: function (data) {
                         $('#divDashboardGrid').empty();
-                        $('.ShowAllDiv').empty();
-                        $('.ShowAllDiv').append(data);
-                        // var dashGrid = $('#divDashboardGrid tr').length;
-                        // $('#totalRows').text(dashGrid);
+                        $('.ShowAllDiv').empty().append(data);
                         GetFormRights();
                     },
-                    error: function (response) {
-                        alert(response.responseText);
+                    complete: function () {
+                        // Back to Search after load
+                        btn.text(originalText);
+                        btn.prop("disabled", false);
                     },
-                    failure: function (response) {
-                        alert(response.responseText);
+                    error: function () {
+                        btn.text(originalText);
+                        btn.prop("disabled", false);
+                        alert("Error while loading data.");
                     }
                 });
             }
@@ -251,25 +268,38 @@
                 $.ajax({
                     url: '@Url.Action("GetSearchData")',
                     type: "POST",
-                    async: false,
-                    data: { Item_Name: $('#Item_Name').val(), PartCode: $('#PartCode').val(), ParentCode: $('#ParentName').val(), ItemType: $('#POServType').val(), HsnNo: $('#HSNNO').val(), UniversalPartCode: $('#UniversalPartCode').val(), pageSize: $('#PageSize').val(), Flag: "Search" },
+                    data: {
+                        Item_Name: $('#Item_Name').val(),
+                        PartCode: $('#PartCode').val(),
+                        ParentCode: $('#ParentName').val(),
+                        ItemType: $('#POServType').val(),
+                        HsnNo: $('#HSNNO').val(),
+                        UniversalPartCode: $('#UniversalPartCode').val(),
+                        pageSize: $('#PageSize').val(),
+                        Flag: "Search"
+                    },
                     success: function (data) {
                         $('#divDashboardGrid').empty();
-                        $('.ShowAllDiv').empty();
-                        $('.ShowAllDiv').append(data);
+                        $('.ShowAllDiv').empty().append(data);
+
                         var dashGrid = $('#divDashboardGrid tr').length;
                         $('#totalRows').text(dashGrid);
+
                         GetFormRights();
                     },
-                    error: function (response) {
-                        alert(response.responseText);
+                    complete: function () {
+                        btn.text(originalText);
+                        btn.prop("disabled", false);
                     },
-                    failure: function (response) {
-                        alert(response.responseText);
+                    error: function () {
+                        btn.text(originalText);
+                        btn.prop("disabled", false);
+                        alert("Error while loading data.");
                     }
                 });
             }
         }
+
         var isGlobalSearch = false;
         var globalSearchString = "";
         $("#search-box").on("input", function () {
