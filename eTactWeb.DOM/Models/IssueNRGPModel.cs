@@ -129,6 +129,8 @@ namespace eTactWeb.DOM.Models
         public string unit { get; set; }
         public float Rate { get; set; }
         public decimal Amount { get; set; }
+        public decimal TotalAmount { get; set; }
+        
         public float PurchasePrice { get; set; }
         public float AltQty { get; set; }
         public string altUnit { get; set; }

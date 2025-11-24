@@ -1460,7 +1460,7 @@ namespace eTactWeb.Controllers
                     "ChallanDate", "EntryDate", "DeliveryAddress", "VendorStateCode",
                                 "Remarks", "Closed", "EntryId", "YearCode", "RGPNRGP",
                                  "ChallanType", "ActualEnteredEmp", "ActualEntryDate",
-                               "UpdatedByEmpName", "UpdatedDate", "MachinName", "SalesPersonEmailId", "eMailFromCC1", "eMailFromCC2", "eMailFromCC3", "ChallanEntryFrom","Amount");
+                               "UpdatedByEmpName", "UpdatedDate", "MachinName", "SalesPersonEmailId", "eMailFromCC1", "eMailFromCC2", "eMailFromCC3", "ChallanEntryFrom","Amount","TotalAmount");
 
                 model.INNDashboard = CommonFunc.DataTableToList<IssueNRGPDashboard>(DT, "IssueNRGPDetail");
                 model.FromDate1 = FromDate;
@@ -1556,7 +1556,7 @@ namespace eTactWeb.Controllers
                    "ChallanDate", "EntryDate", "DeliveryAddress", "VendorStateCode",
                                "Remarks", "Closed", "EntryId", "YearCode", "RGPNRGP",
                                 "ChallanType", "ActualEnteredEmp", "ActualEntryDate",
-                               "UpdatedByEmpName", "UpdatedDate", "MachinName","SalesPersonEmailId", "eMailFromCC1", "eMailFromCC2", "eMailFromCC3", "ChallanEntryFrom","Amount");
+                               "UpdatedByEmpName", "UpdatedDate", "MachinName","SalesPersonEmailId", "eMailFromCC1", "eMailFromCC2", "eMailFromCC3", "ChallanEntryFrom","Amount","TotalAmount");
                 model.INNDashboard = CommonFunc.DataTableToList<IssueNRGPDashboard>(DT, "IssueNRGPDetail");
             }
 
@@ -1836,6 +1836,12 @@ namespace eTactWeb.Controllers
             }
             var INDetail = INGrid.Where(x => x.SEQNo == SeqNo);
             string JsonString = JsonConvert.SerializeObject(INDetail);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> GetTotalAmount(INDashboard model)
+        {
+            var JSON = await _IIssueNRGP.GetTotalAmount(model);
+            string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
     }

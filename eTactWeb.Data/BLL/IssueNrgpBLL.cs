@@ -157,6 +157,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _IssueNRGPDAL.GetDashboardData(model);
         }
+      public  async Task<ResponseResult> GetTotalAmount(INDashboard model)
+        {
+            return await _IssueNRGPDAL.GetTotalAmount(model);
+        }
         public async Task<ResponseResult> DeleteByID(int ID, int YC, string machineName, int actuaEntryBy, int AccountCode, string IPAddress)
         {
             return await _IssueNRGPDAL.DeleteByID(ID, YC,machineName,actuaEntryBy,AccountCode,IPAddress);

@@ -536,7 +536,7 @@
                 data: $('#SParam').serializeArray(),
                 success: function (data) {
                     $('#divINDashboardGrid').empty().append(data);
-
+                    GetTotalAmounts();
                 },
                 error: function (response) {
                     alert(response.responseText);
@@ -559,6 +559,7 @@
                     RowCount();
                     GetFormRights();
                     GetFeatureOption();
+                    GetTotalAmounts()
                     //RGPNRGPColor();
                 },
                 error: function (response) {
@@ -876,6 +877,55 @@
                 console.error("An error occurred while exporting to Excel:", error);
             }
         });
+        function buildDataObj() {
+
+    var dataObj = {
+        PartCode: $('#PartCode').val(),
+        ItemName: $('#ItemName').val(),
+        VendorName: $('#VendorName').val(),
+        RGPNRGP: $('#RGPNRGP').val(),
+        ChallanNo: $('#ChallanNo').val(),
+        ChallanType: $('#ChallanType').val(),
+        FromDate: $('#FromDate').val(),
+        ToDate: $('#ToDate').val(),
+        SummaryDetail: $('#SummaryDetail').val(),
+        ChallanEntryFrom: $('#ChallanEntryFrom').val()
+    };
+
+    return dataObj;
+}
+     function GetTotalAmounts() {
+                 var dataObj = buildDataObj();
+                    $.ajax({
+                url: '/NRGP/GetTotalAmount',
+                type: 'GET',
+                data: dataObj,
+                traditional: true,
+                dataType: 'json',
+
+                success: function (data) {
+                    console.log("data", data);
+
+                    const obj = typeof data === "string" ? JSON.parse(data) : data;
+
+                    if (obj && obj.Result && obj.Result.length > 0) {
+                        let row = obj.Result[0];
+
+                        // Update totals
+                        $('#tfootNetAmt').text(row.NetAmount?.toFixed(2) ?? "0.00");
+                        $('#tfootBillAmt').text(row.BasicAmount?.toFixed(2) ?? "0.00");
+                    } else {
+                        $('#tfootNetAmt').text("0.00");
+                        $('#tfootBillAmt').text("0.00");
+                    }
+                },
+
+
+                error: function (err) {
+                    console.error("Error fetching totals:", err);
+                }
+            });
+        }
 
     </script>
     <script src="~/Scripts/table2excel.js"></script>
