@@ -254,12 +254,14 @@
                                     </div>
                                     <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                         <label asp-for="AccountCode" class="form-label" style="color:  red;">Party Name</label>
-                                        <div class="form-check form-switch mx-3 w-auto position-absolute d-inline" style="width:180px">
+                                        @* <div class="form-check form-switch mx-3 w-auto position-absolute d-inline" style="width:180px">
                                             <input asp-for="PN1" class="form-check-input" type="checkbox" role="switch" readonly disabled />Show All
                                         </div>
                                         <select class="form-select" asp-for="AccountCode" style="width:220px;" asp-items="@(new SelectList(Model.AccountList,"Value","Text"))" readonly>
                                             <option value="">-Select-</option>
-                                        </select>
+                                        </select> *@
+                                        <input type="text" asp-for="AccountName" id="AccountCodeText" class="form-control" value="@Model.AccountName" placeholder="Type Party Name..." />
+                                        <input type="hidden" asp-for="AccountCode" id="AccountCode" />
                                         <input type="hidden" value="@Model.AccountCode" id="hiddenAccountCode" />
                                     </div>
                                     <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
@@ -296,7 +298,7 @@
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="AmmNo" class="form-label" style="color:  red;">Amm No*</label>
-                                        <input asp-for="AmmNo" class="form-control" readonly disabled tabindex="-1" />
+                                        <input asp-for="AmmNo" class="form-control" readonly  tabindex="-1" />
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="AmmEffDate" class="form-label" style="color:  red;">Amm eff Date*</label>
@@ -4536,14 +4538,14 @@
                 RemoveErrorCls('Rate');
             }
 
-            if (isNaN(parseFloat($('#OtherRateCurr').val())) || parseFloat($('#OtherRateCurr').val()) == 0 || parseFloat($('#OtherRateCurr').val()) < -1) {
-                AddErrorCls('OtherRateCurr');
-                $.notify('OtherRate cannot be 0.', "error");
-                return;
-            }
-            else {
-                RemoveErrorCls('OtherRateCurr');
-            }
+            // if (isNaN(parseFloat($('#OtherRateCurr').val())) || parseFloat($('#OtherRateCurr').val()) == 0 || parseFloat($('#OtherRateCurr').val()) < -1) {
+            //     AddErrorCls('OtherRateCurr');
+            //     $.notify('OtherRate cannot be 0.', "error");
+            //     return;
+            // }
+            // else {
+            //     RemoveErrorCls('OtherRateCurr');
+            // }
 
           
 
@@ -5080,10 +5082,14 @@
             });
         }
 
-        $('#Rate').keyup(function () {
-            $('#OtherRateCurr').val($(this).val());
-        });
+        $('#Rate').on('input', function () {
+            let val = $(this).val();
 
+            // Allow only digits and decimal
+            val = val.replace(/[^0-9.]/g, '');
+
+            $('#OtherRateCurr').val(val);
+        });
         $('.Schedule').click(function () {
 
             $('.modal-header').addClass('bg-graident bg-warning');
