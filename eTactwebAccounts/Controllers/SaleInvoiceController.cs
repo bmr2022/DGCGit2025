@@ -39,6 +39,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Org.BouncyCastle.Crypto.Engines;
+using ClosedXML.Excel;
 
 
 
@@ -1480,10 +1481,14 @@ namespace eTactWeb.Controllers
                         }
                     }
 
+                    var fullData = model.SaleBillDataDashboard.ToList();  // full list before paging
+                    HttpContext.Session.SetString("KeySBDashboard",
+                        JsonConvert.SerializeObject(fullData));
+
                     model.TotalRecords = model.SaleBillDataDashboard.Count;
                     model.PageNumber = pageNumber;
                     model.PageSize = pageSize;
-
+                    
                     model.SaleBillDataDashboard = model.SaleBillDataDashboard
                         .Skip((pageNumber - 1) * pageSize)
                         .Take(pageSize)
@@ -1512,6 +1517,8 @@ namespace eTactWeb.Controllers
                     _MemoryCache.Set("KeySaleBillList_Detail", model.SaleBillDataDashboard, cacheEntryOptions);
 
                 }
+                //HttpContext.Session.SetString("KeySBDashboard", JsonConvert.SerializeObject(model.SaleBillDataDashboard));
+
                 model.SummaryDetail = summaryDetail;
                 return PartialView("_SBDashboardGrid", model);
             }
@@ -3272,7 +3279,157 @@ namespace eTactWeb.Controllers
             return Json(new { success = allDeleted });
         }
 
+        [HttpGet]
+        public IActionResult ExportSBDashboardToExcel()
+        {
+            string modelJson = HttpContext.Session.GetString("KeySBDashboard");
+
+            List<SaleBillDashboard> dashboardList = new List<SaleBillDashboard>();
+
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                dashboardList = JsonConvert.DeserializeObject<List<SaleBillDashboard>>(modelJson);
+            }
+
+            if (dashboardList == null || dashboardList.Count == 0)
+                return NotFound("No data available to export.");
+
+            using var workbook = new XLWorkbook();
+            var worksheet = workbook.Worksheets.Add("Sale Bill Dashboard");
+
+            // ==============================
+            // HEADERS (Same as your table)
+            // ==============================
+            string[] headers = {
+        "Sr#", "Sale Bill No", "Sale Bill Date", "Customer Name", "GST No",
+        "Bill Amt", "Taxable", "INV Net Amt", "Supply Type",
+        "State Name Supply", "Country Name Supply", "Consignee Name",
+        "Consignee Address", "Payment Term", "Currency",
+        "Document Head", "SONO", "Cust Order No", "SO Date",
+        "Sch No", "Sch Date", "SO Amend No", "SO Amend Date",
+        "Part Code", "Item Name", "Cust PartCode", "HSN No",
+        "Unit", "No Of Case", "Bill Qty", "Bill Rate", "Item Amount",
+        "Store Name", "Batch No", "Unique Batch No", "Lot Stock",
+        "Total Stock", "Rate In Other Curr", "Alt Unit", "Alt Qty",
+        "SO Pend Qty", "Alt SO Pend Qty", "Discount Per",
+        "Item Discount Amt", "Packets Detail", "Other Detail",
+        "Item Remark", "Remark", "GST Amount", "Round Type",
+        "Round Off Amt", "Eway Bill No", 
+        "EInv No", "EInv Generated", "Transporter Doc No",
+        "Transport Mode", "Dispatch To", "Dispatch Through",
+        "Exchange Rate", "Currency Exchange Rate",
+        "SaleBillEntryId", "SaleBillYearCode", "SaleBillEntryDate",
+        "Shipping Date", "Distance KM", "Vehicle No", "Transporter Name",
+        "Domestic Export", "Payment Credit Day", "Received Amt",
+        "Pending Amount", "Cancel Bill", "Cancel Date", "Cancel By",
+        "Cancel Reason", "Bank Name", "Freight Paid"
+    };
+
+            // Write headers
+            for (int i = 0; i < headers.Length; i++)
+                worksheet.Cell(1, i + 1).Value = headers[i];
+
+            int row = 2;
+            int sr = 1;
+
+            foreach (var item in dashboardList)
+            {
+                int col = 1;
+
+                worksheet.Cell(row, col++).Value = sr++;
+                worksheet.Cell(row, col++).Value = item.SaleBillNo;
+                worksheet.Cell(row, col++).Value = item.SaleBillDate;
+                worksheet.Cell(row, col++).Value = item.CustomerName;
+                worksheet.Cell(row, col++).Value = item.GSTNO;
+                worksheet.Cell(row, col++).Value = item.BillAmt;
+                worksheet.Cell(row, col++).Value = item.TaxableAmt;
+                worksheet.Cell(row, col++).Value = item.INVNetAmt;
+                worksheet.Cell(row, col++).Value = item.SupplyType;
+                worksheet.Cell(row, col++).Value = item.StateNameofSupply;
+                worksheet.Cell(row, col++).Value = item.CountryOfSupply;
+                worksheet.Cell(row, col++).Value = item.ConsigneeAccountName;
+                worksheet.Cell(row, col++).Value = item.ConsigneeAddress;
+                worksheet.Cell(row, col++).Value = item.PaymentTerm;
+                worksheet.Cell(row, col++).Value = item.Currency;
+                worksheet.Cell(row, col++).Value = item.DocketNo;
+                worksheet.Cell(row, col++).Value = item.SONO;
+                worksheet.Cell(row, col++).Value = item.CustOrderNo;
+                worksheet.Cell(row, col++).Value = item.SODate;
+                worksheet.Cell(row, col++).Value = item.SchNo;
+                worksheet.Cell(row, col++).Value = item.Schdate;
+                worksheet.Cell(row, col++).Value = item.SOAmendNo;
+                worksheet.Cell(row, col++).Value = item.SOAmendDate;
+                worksheet.Cell(row, col++).Value = item.PartCode;
+                worksheet.Cell(row, col++).Value = item.ItemName;
+                worksheet.Cell(row, col++).Value = item.CustomerPartCode;
+                worksheet.Cell(row, col++).Value = item.HSNNo;
+                worksheet.Cell(row, col++).Value = item.Unit;
+                worksheet.Cell(row, col++).Value = item.NoofCase;
+                worksheet.Cell(row, col++).Value = item.Qty;
+                worksheet.Cell(row, col++).Value = item.Rate;
+                worksheet.Cell(row, col++).Value = item.ItemNetAmount;
+                worksheet.Cell(row, col++).Value = item.StoreName;
+                worksheet.Cell(row, col++).Value = item.Batchno;
+                worksheet.Cell(row, col++).Value = item.Uniquebatchno;
+                worksheet.Cell(row, col++).Value = item.LotStock;
+                worksheet.Cell(row, col++).Value = item.TotalStock;
+                worksheet.Cell(row, col++).Value = item.RateInOtherCurr;
+                worksheet.Cell(row, col++).Value = item.AltUnit;
+                worksheet.Cell(row, col++).Value = item.AltQty;
+                worksheet.Cell(row, col++).Value = item.SOPendQty;
+                worksheet.Cell(row, col++).Value = item.AltSOPendQty;
+                worksheet.Cell(row, col++).Value = item.DiscountPer;
+                worksheet.Cell(row, col++).Value = item.DiscountAmt;
+                worksheet.Cell(row, col++).Value = item.PacketsDetail;
+                worksheet.Cell(row, col++).Value = item.OtherDetail;
+                worksheet.Cell(row, col++).Value = item.ItemRemark;
+                worksheet.Cell(row, col++).Value = item.Remark;
+                worksheet.Cell(row, col++).Value = item.GSTAmount;
+                worksheet.Cell(row, col++).Value = item.RoundTypea;
+                worksheet.Cell(row, col++).Value = item.RoundOffAmt;
+                worksheet.Cell(row, col++).Value = item.Ewaybillno;
+                worksheet.Cell(row, col++).Value = item.EInvNo;
+                worksheet.Cell(row, col++).Value = item.EinvGenerated;
+                worksheet.Cell(row, col++).Value = item.TransporterdocNo;
+                worksheet.Cell(row, col++).Value = item.TransportModeBYRoadAIR;
+                worksheet.Cell(row, col++).Value = item.DispatchTo;
+                worksheet.Cell(row, col++).Value = item.DispatchThrough;
+                worksheet.Cell(row, col++).Value = item.ExchangeRate;
+                worksheet.Cell(row, col++).Value = item.currExchangeRate;
+                worksheet.Cell(row, col++).Value = item.SaleBillEntryId;
+                worksheet.Cell(row, col++).Value = item.SaleBillYearCode;
+                worksheet.Cell(row, col++).Value = item.SaleBillEntryDate;
+                worksheet.Cell(row, col++).Value = item.Shippingdate;
+                worksheet.Cell(row, col++).Value = item.DistanceKM;
+                worksheet.Cell(row, col++).Value = item.vehicleNo;
+                worksheet.Cell(row, col++).Value = item.TransporterName;
+                worksheet.Cell(row, col++).Value = item.DomesticExportNEPZ;
+                worksheet.Cell(row, col++).Value = item.PaymentCreditDay;
+                worksheet.Cell(row, col++).Value = item.DiscountAmt;
+                worksheet.Cell(row, col++).Value = item.SOPendQty;
+                worksheet.Cell(row, col++).Value = item.CancelBill;
+                worksheet.Cell(row, col++).Value = item.Canceldate;
+                worksheet.Cell(row, col++).Value = item.CancelBy;
+                worksheet.Cell(row, col++).Value = item.Cancelreason;
+                worksheet.Cell(row, col++).Value = item.BankName;
+                worksheet.Cell(row, col++).Value = item.FreightPaid;
+
+                row++;
+            }
+
+            worksheet.Columns().AdjustToContents();
+
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            stream.Position = 0;
+
+            return File(
+                stream.ToArray(),
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                "SaleBillDashboard.xlsx"
+            );
+        }
 
     }
 
-    }
+}
