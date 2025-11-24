@@ -150,14 +150,13 @@
     <script>
 
         $(document).ready(function () {
+            const navEntry = performance.getEntriesByType("navigation")[0]?.type;
 
-            // -----------------------------
-            // PAGE FORM NAME (IMPORTANT)
-            // -----------------------------
-            const currentForm = $("#ReportType").val();  // AUTO-DETECT SUMMARY / DETAIL / LEDGER
+            if (navEntry !== "back_forward") {
+                // User opened TrailBalance directly → clear drilldown stack
+                sessionStorage.removeItem("DD_STACK");
+            }
             const currentDate = new Date();
-
-
             // -----------------------------
             // INIT SELECT2 & DATEPICKERS
             // -----------------------------
@@ -214,13 +213,6 @@
                 }, 100);
             }
 
-
-            // -----------------------------
-            // ⭐ RESTORE ALL FILTERS
-            // -----------------------------
-            initDrillRestore(currentForm);
-
-
             // -----------------------------
             // LOAD ALL DROPDOWNS
             // -----------------------------
@@ -229,16 +221,21 @@
                 FillParentGroupList(),
                 FillAccountList()
             ).done(function () {
+                var f = ddLoadFilters("TrailBalance");
+                if (!f) return;
 
-                setTimeout(() => {
-                    DrilldownManager.toggleBackButton();
-                }, 300);
-
+                $("#FromDate").val(f.FromDate);
+                $("#ToDate").val(f.ToDate);
+                $("#ReportType").val(f.ReportType).trigger("change");
+                $("#GroupList").val(f.GroupList).trigger("change");
+                $("#ParentGroupList").val(f.ParentGroupList).trigger("change");
+                $("#AccountList").val(f.AccountList).trigger("change");
+                $("#Search").val(f.Search);
                 // LOAD SUMMARY / DETAIL / LEDGER GRID
                 GetTrailBalanceDetailsData();
             });
-
-
+            GetTrailBalanceDetailsData();
+            ddInitPage("BackButton", null);
             // -----------------------------
             // COLUMN SHOW/HIDE
             // -----------------------------
@@ -730,6 +727,18 @@
             //$('#ReportTable tr:eq(' + indexToRemove + ')').remove();
             countAllTotal();
             $('#totalRows').text($('#divStockMainRegister tr').length - 1);
+        }
+
+        function getTrailBalanceFilters() {
+            return {
+                FromDate: $("#FromDate").val(),
+                ToDate: $("#ToDate").val(),
+                ReportType: $("#ReportType").val(),
+                TrailBalanceGroupName: $("#TrailBalanceGroupName").val(),
+                ParentGroupName: $("#ParentGroupName").val(),
+                AccountName: $("#AccountName").val(),
+                Search: $("#search-box").val()
+            };
         }
 
     </script>
