@@ -31,6 +31,10 @@
                             <input asp-for="ToDateBack" type="hidden" value="@Model.ToDateBack" />
                             @* <input asp-for="DashboardTypeBack" type="hidden" value="@Model.DashboardTypeBack" />
                             <input asp-for="AttendanceEntryMethodTypeBack" type="hidden" value="@Model.AttendanceEntryMethodTypeBack" /> *@
+                            <input asp-for="DashDepartmentBack" type="hidden" value="@Model.DashDepartmentBack" />
+                            <input asp-for="DashCategoryBack" type="hidden" value="@Model.DashCategoryBack" />
+                            <input asp-for="DashDesignationBack" type="hidden" value="@Model.DashDesignationBack" />
+                            <input asp-for="DashEmployeeBack" type="hidden" value="@Model.DashEmployeeBack" />
                             <input asp-for="GlobalSearchBack" type="hidden" value="@Model.GlobalSearchBack" />
 
                             <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
@@ -148,6 +152,10 @@
                             <input asp-for="ToDateBack" type="hidden" value="@Model.ToDateBack" />
                             @* <input asp-for="DashboardTypeBack" type="hidden" value="@Model.DashboardTypeBack" />
                             <input asp-for="AttendanceEntryMethodTypeBack" type="hidden" value="@Model.AttendanceEntryMethodTypeBack" /> *@
+                            <input asp-for="DashDepartmentBack" type="hidden" value="@Model.DashDepartmentBack" />
+                            <input asp-for="DashCategoryBack" type="hidden" value="@Model.DashCategoryBack" />
+                            <input asp-for="DashDesignationBack" type="hidden" value="@Model.DashDesignationBack" />
+                            <input asp-for="DashEmployeeBack" type="hidden" value="@Model.DashEmployeeBack" />
                             <input asp-for="GlobalSearchBack" type="hidden" value="@Model.GlobalSearchBack" />
 
                             <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
@@ -1048,6 +1056,10 @@
         sessionStorage.setItem('ToDateBack', $('#ToDateBack').val());
         // sessionStorage.setItem('DashboardTypeBack', $('#DashboardTypeBack').val());
         // sessionStorage.setItem('AttendanceEntryMethodTypeBack', $('#AttendanceEntryMethodTypeBack').val());
+        sessionStorage.setItem('DashDepartmentBack', $('#DashDepartmentBack').val());
+        sessionStorage.setItem('DashCategoryBack', $('#DashCategoryBack').val());
+        sessionStorage.setItem('DashDesignationBack', $('#DashDesignationBack').val());
+        sessionStorage.setItem('DashEmployeeBack', $('#DashEmployeeBack').val());
         sessionStorage.setItem('GlobalSearchBack', $('#GlobalSearchBack').val());
         window.history.back();
     }

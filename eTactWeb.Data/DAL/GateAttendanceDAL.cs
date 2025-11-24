@@ -289,7 +289,7 @@ public class GateAttendanceDAL
             if (model.Mode == "UPDATE")
             {
                 SqlParams.Add(new SqlParameter("@UpdatedByEmpId", model.UpdatedBy ?? 0));
-                //SqlParams.Add(new SqlParameter("@EneterdBy", model.UpdatedBy ?? 0));
+                SqlParams.Add(new SqlParameter("@ActualEnteredBy", model.CreatedBy != null ? model.CreatedBy : (model.UpdatedBy != null ? model.UpdatedBy : 0)));
                 SqlParams.Add(new SqlParameter("@LastUpdationDate", CurrentDateTime == default ? null : CurrentDateTime));
                 SqlParams.Add(new SqlParameter("@ActualEntryDate", EntryDt == default ? null : EntryDt));
             }

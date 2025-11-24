@@ -24,6 +24,7 @@ using PdfSharp.Drawing.BarCodes;
 using DocumentFormat.OpenXml.EMMA;
 using DocumentFormat.OpenXml.VariantTypes;
 using DocumentFormat.OpenXml.Spreadsheet;
+using DocumentFormat.OpenXml.Bibliography;
 
 namespace eTactwebHR.Controllers
 {
@@ -57,7 +58,7 @@ namespace eTactwebHR.Controllers
             return View();
         }
         [HttpGet]
-        public async Task<IActionResult> GateAttendance(int ID, int YearCode, string Mode, string? AttendanceEntryMethodType, string FromDate = "", string ToDate = "", string DashboardType = "", string Searchbox = "", bool IsIncreament = false)
+        public async Task<IActionResult> GateAttendance(int ID, int YearCode, string Mode, string? AttendanceEntryMethodType, string FromDate = "", string ToDate = "", string DashDepartment = "", string DashCategory = "", string DashDesignation = "", string DashEmployee = "", string Searchbox = "", bool IsIncreament = false)
         {
             GateAttendanceModel tMainModel = new();
             if (IsIncreament)
@@ -215,7 +216,10 @@ namespace eTactwebHR.Controllers
             MainModel.FromDateBack = FromDate;
             MainModel.ToDateBack = ToDate;
             //MainModel.AttendanceEntryMethodTypeBack = AttendanceEntryMethodType != null && AttendanceEntryMethodType != "0" && AttendanceEntryMethodType != "undefined" ? AttendanceEntryMethodType : "";
-            //MainModel.DashboardTypeBack = DashboardType != null && DashboardType != "0" && DashboardType != "undefined" ? DashboardType : "";
+            MainModel.DashDepartmentBack = DashDepartment != null && DashDepartment != "0" && DashDepartment != "undefined" ? DashDepartment : "";
+            MainModel.DashCategoryBack = DashCategory != null && DashCategory != "0" && DashCategory != "undefined" ? DashCategory : "";
+            MainModel.DashDesignationBack = DashDesignation != null && DashDesignation != "0" && DashDesignation != "undefined" ? DashDesignation : "";
+            MainModel.DashEmployeeBack = DashEmployee != null && DashEmployee != "0" && DashEmployee != "undefined" ? DashEmployee : "";
             MainModel.GlobalSearchBack = Searchbox != null && Searchbox != "0" && Searchbox != "undefined" ? Searchbox : "";
 
             string serializedGateAttendance = JsonConvert.SerializeObject(MainModel);
@@ -823,56 +827,58 @@ namespace eTactwebHR.Controllers
                 return "";
             }
         }
-        public async Task<IActionResult> DashBoard()
+        public async Task<IActionResult> DashBoard(string FromDate = "", string ToDate = "", string DashDepartment = "", string DashCategory = "", string DashDesignation = "", string DashEmployee = "", string Searchbox = "", string Flag = "True")
         {
             HttpContext.Session.Remove("GateAttendance");
             var _List = new List<TextValue>();
             var MainModel = await IGateAttendance.GetDashBoardData(null);
+
+            PBDashBoard model = new PBDashBoard();
+            DateTime now = DateTime.Now;
+            DateTime firstDayOfMonth = new DateTime(now.Year, now.Month, 1);
+            DateTime today = DateTime.Now;
+            var commonparams = new Dictionary<string, object>()
+        {
+            { "@fromdate", firstDayOfMonth },
+            { "@Todate", today }
+        };
+            MainModel = await BindDashboardList(MainModel, commonparams);
             MainModel.FromDate = new DateTime(DateTime.Today.Year, 1, 1).ToString("dd/MM/yyyy").Replace("-", "/");
             MainModel.ToDate = new DateTime(DateTime.Today.Year + 1, 12, 31).ToString("dd/MM/yyyy").Replace("-", "/");// Last day in December this year
-
+            if (Flag != "True")
+            {
+                MainModel.FromDate = FromDate;
+                MainModel.ToDate = ToDate;
+                MainModel.DashDepartment = DashDepartment != null && DashDepartment != "0" && DashDepartment != "undefined" ? DashDepartment : "0";
+                MainModel.DashCategory = DashCategory != null && DashCategory != "0" && DashCategory != "undefined" ? DashCategory : "0";
+                MainModel.DashDesignation = DashDesignation != null && DashDesignation != "0" && DashDesignation != "undefined" ? DashDesignation : "0";
+                MainModel.DashEmployee = DashEmployee != null && DashEmployee != "0" && DashEmployee != "undefined" ? DashEmployee : "0";
+                MainModel.Searchbox = Searchbox != null && Searchbox != "0" && Searchbox != "undefined" ? Searchbox : "";
+            }
             return View(MainModel);
         }
-        //public async Task<GateAttDashBoard> BindDashboardList(GateAttDashBoard MainModel, Dictionary<string, object> commonparams)
-        //{
-        //    var docnameparams = new Dictionary<string, object>() { { "@flag", "FillDocumentDASHBOARD" } };
-        //    docnameparams.AddRange(commonparams);
-        //    MainModel.DocumentNameList = await IDataLogic.GetDropDownListWithCustomeVar("AccSP_PurchaseBillMainDetail", docnameparams, true);
+        public async Task<GateAttDashBoard> BindDashboardList(GateAttDashBoard MainModel, Dictionary<string, object> commonparams)
+        {
+            Dictionary<string, object> Build(string flag)
+            {
+                var p = new Dictionary<string, object>() { { "@flag", flag } };
 
-        //    var vendornameparams = new Dictionary<string, object>() { { "@flag", "FillVendorNameDASHBOARD" } };
-        //    vendornameparams.AddRange(commonparams);
-        //    MainModel.VendorNameList = await IDataLogic.GetDropDownListWithCustomeVar("AccSP_PurchaseBillMainDetail", vendornameparams, true);
+                foreach (var kv in commonparams)
+                    if (kv.Key != "@flag") p[kv.Key] = kv.Value;
 
-        //    var vouchnoparams = new Dictionary<string, object>() { { "@flag", "FillVoucherNoDASHBOARD" } };
-        //    vouchnoparams.AddRange(commonparams);
-        //    MainModel.VoucherNoList = await IDataLogic.GetDropDownListWithCustomeVar("AccSP_PurchaseBillMainDetail", vouchnoparams, true);
+                return p;
+            }
+            var dashdep = Build("DashboardFillDepartment");
+            var dashcat = Build("DashboardFillCategory");
+            var dashdesg = Build("DashboardFillDesignation");
+            var dashemp = Build("DashboardFillEmployee");
+            MainModel.DashDepartmentList = await IDataLogic.GetDropDownListWithCustomeVar("HRSPGateAttendanceMainDetail", dashdep, false, false);
+            MainModel.DashCategoryList = await IDataLogic.GetDropDownListWithCustomeVar("HRSPGateAttendanceMainDetail", dashcat, false, true);
+            MainModel.DashDesignationList = await IDataLogic.GetDropDownListWithCustomeVar("HRSPGateAttendanceMainDetail", dashdesg, false, false);
+            MainModel.DashEmployeeList = await IDataLogic.GetDropDownListWithCustomeVar("HRSPGateAttendanceMainDetail", dashemp, false, false);
 
-        //    var invparams = new Dictionary<string, object>() { { "@flag", "FillInvoiceNoDASHBOARD" } };
-        //    invparams.AddRange(commonparams);
-        //    MainModel.InvoiceNoList = await IDataLogic.GetDropDownListWithCustomeVar("AccSP_PurchaseBillMainDetail", invparams, true);
-
-        //    var mrnnoparams = new Dictionary<string, object>() { { "@flag", "FillMrnNoDASHBOARD" } };
-        //    mrnnoparams.AddRange(commonparams);
-        //    MainModel.MRNNoList = await IDataLogic.GetDropDownListWithCustomeVar("AccSP_PurchaseBillMainDetail", mrnnoparams, true);
-
-        //    var gatenoparams = new Dictionary<string, object>() { { "@flag", "FillGateNoDASHBOARD" } };
-        //    gatenoparams.AddRange(commonparams);
-        //    MainModel.GateNoList = await IDataLogic.GetDropDownListWithCustomeVar("AccSP_PurchaseBillMainDetail", gatenoparams, true);
-
-        //    var partcodeparams = new Dictionary<string, object>() { { "@flag", "FillPartCodeDASHBOARD" } };
-        //    partcodeparams.AddRange(commonparams);
-        //    MainModel.PartCodeList = await IDataLogic.GetDropDownListWithCustomeVar("AccSP_PurchaseBillMainDetail", partcodeparams, true);
-
-        //    var itemnameparams = new Dictionary<string, object>() { { "@flag", "FillItemNameDASHBOARD" } };
-        //    itemnameparams.AddRange(commonparams);
-        //    MainModel.ItemNameList = await IDataLogic.GetDropDownListWithCustomeVar("AccSP_PurchaseBillMainDetail", itemnameparams, true);
-
-        //    var hsnnoparams = new Dictionary<string, object>() { { "@flag", "FillHSNNODASHBOARD" } };
-        //    hsnnoparams.AddRange(commonparams);
-        //    MainModel.HSNNOList = await IDataLogic.GetDropDownListWithCustomeVar("AccSP_PurchaseBillMainDetail", hsnnoparams, true);
-
-        //    return MainModel;
-        //}
+            return MainModel;
+        }
         public async Task<IActionResult> GetSearchData(GateAttDashBoard model, int pageNumber = 1, int pageSize = 25, string SearchBox = "")
         {
             model.Mode = "SEARCH";
