@@ -65,6 +65,8 @@ namespace eTactWeb.DOM.Models
         public string? Package { get; set; }
         public string? IsCustJWAdjMandatory { get; set; }
         public string? Active { get; set; }
+        public string? Hardness { get; set; }
+
 
         [Display(Name = "Alt. Unit")]
         public string? AlternateUnit { get; set; }
