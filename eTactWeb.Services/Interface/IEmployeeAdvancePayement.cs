@@ -15,6 +15,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FillEmpName();
         //Task<ResponseResult> GetDashboardData(string accountName = "", int? userId = null);
         Task<ResponseResult> FillAdvanceType();
+        Task<ResponseResult> DeleteByID(int advEntryId, int advYearCode, int actualEntryBy, string entryByMachineName);
         Task<ResponseResult> FillPreviousAdanaceLoanDetail(int empId, string requestedDate);
         Task<ResponseResult> FillFinancialEmployeeNameList();
         Task<ResponseResult> FillMgmtEmployeeNameList();
