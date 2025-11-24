@@ -182,8 +182,8 @@
                                 </div>
                                 @if (Model.Mode == "U" || Model.Mode == "V")
                                 {
-                                    <input type="hidden" value="@Model.RGPNRGP" id="hiddenRGPNRGP" />
-                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <input type="hidden" value="@Model.RGPNRGP" id="hiddenRGPNRGP"  />
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 ShowHideEntryDetail">
                                         <label asp-for="RGPNRGP" class="form-label" style="color: red;">RGP/NRGP</label>
                                         <select class="form-select" asp-for="RGPNRGP">
                                             <option value="">-Select-</option>
@@ -194,7 +194,7 @@
                                 }
                                 else
                                 {
-                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 ShowHideEntryDetail">
                                         <label asp-for="RGPNRGP" class="form-label" style="color: red;">RGP/NRGP</label>
                                         <select class="form-select" asp-for="RGPNRGP">
                                             <option value="">-Select-</option>
@@ -203,7 +203,7 @@
                                         </select>
                                     </div>
                                 }
-                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 ShowHideEntryDetail">
 
                                     @* <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">*@
 
@@ -275,7 +275,7 @@
                                     <label asp-for="Distance" class="form-label">Distance</label>
                                     <input asp-for="Distance" class="form-control" />
                                 </div>
-                                <div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12 ShowHideEntryDetail">
                                     <label asp-for="IssByEmpCodeName" class="form-label" style="color:red">Issue By Emp*</label>
                                     <input asp-for="IssByEmpCode" type="hidden" />
                                     <select class="form-select" style="width:150px;" asp-for="IssByEmpCodeName" asp-items="@(new SelectList(Model.EmployeeList,"Value","Text"))">
