@@ -12,24 +12,24 @@ namespace eTactWeb.DOM.Models
         public int AdvanceEntryId { get; set; }
         public int AdvanceYearCode { get; set; }
         public string AdvanceSlipNo { get; set; }
-        public int EmpId { get; set; }
-        public string EmpName { get; set; }
-        public string EmpCode { get; set; }
+        public int? EmpId { get; set; }
+        public string? EmpName { get; set; }
+        public string? EmpCode { get; set; }
         public int DesigId { get; set; }
-        public string DesigName { get; set; }
-        public int DepId { get; set; }
-        public string DeptName { get; set; }
-        public string DOJ { get; set; }
+        public string? DesigName { get; set; }
+        public int? DepId { get; set; }
+        public string? DeptName { get; set; }
+        public string? DOJ { get; set; }
         public decimal BasicSalary { get; set; }
         public decimal GrossSalary { get; set; }
         public decimal NetSalary { get; set; }
-        public string AdvanceType { get; set; }
+        public string? AdvanceType { get; set; }
         public decimal PresentDaysinCurrMonth { get; set; }
         public decimal PresentDaysInCurrYear { get; set; }
         public int CategoryId { get; set; }
-        public string RequestDate { get; set; }
-        public string EntryDate { get; set; }
-        public string Purpose { get; set; }
+        public string? RequestDate { get; set; }
+        public string? EntryDate { get; set; }
+        public string? Purpose { get; set; }
         public decimal RequestedAmount { get; set; }
         public decimal ApprovedAmount { get; set; }
         public decimal PreviousPendAdvanceAmt { get; set; }
@@ -52,11 +52,11 @@ namespace eTactWeb.DOM.Models
         public string? Canceled { get; set; }
         public string? CancelOrApprovalremarks { get; set; }
         public string? ModeOfPayment { get; set; }
-        public string PaymentReferenceNo { get; set; }
-        public string PaymentVoucherNo { get; set; }
-        public string PaymentVoucherType { get; set; }
-        public string PaymentRemark { get; set; }
-        public string RecoveryMethod { get; set; }
+        public string? PaymentReferenceNo { get; set; }
+        public string? PaymentVoucherNo { get; set; }
+        public string? PaymentVoucherType { get; set; }
+        public string?    PaymentRemark { get; set; }
+        public string? RecoveryMethod { get; set; }
         public int NoofInstallment { get; set; }
         public string? StartRecoveryFromMonth { get; set; }
         public string? AutoDeductionFromSalaryYN { get; set; }
@@ -66,12 +66,12 @@ namespace eTactWeb.DOM.Models
         public int? LastUpdatedBy { get; set; }
         public string? LastUpdatedByEmpName { get; set; }
         public string? LastUpdationDate { get; set; }
-        public string RequestEntryByMachine { get; set; }
+        public string? RequestEntryByMachine { get; set; }
         public string? ApprovedBYMachine { get; set; }
         public string? CancelByMachine { get; set; }
         public int? ActualEntryBy { get; set; }
         public string? ActualEntryByName { get; set; }
-        public string CC { get; set; }
+        public string? CC { get; set; }
         public int UID { get; set; }
 
         public string FinFromDate { get; set;}
