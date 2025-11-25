@@ -639,6 +639,15 @@
                                         <label asp-for="Amount" class="form-label" style="color:  red;">Amount*</label>
                                         <input asp-for="Amount" class="form-control" value="0.00" readonly disabled />
                                     </div>
+                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="BillQty" class="form-label">BillQty</label>
+                                        <input asp-for="BillQty" class="form-control" value="0.00" readonly  />
+                                    </div>
+
+                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="pendQty" class="form-label">pendQty</label>
+                                        <input asp-for="pendQty" class="form-control" value="0.00" readonly  />
+                                    </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 SaleOrderOtherDetail">
                                         <label asp-for="TolLimit" class="form-label">Tol Limit</label>
                                         <input asp-for="TolLimit" class="form-control" />
@@ -767,6 +776,8 @@
                                                     <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon" style="color:  red;"><i class="fa" aria-hidden="true"></i></span>Amount</th>
                                                     <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon" style="color:  red;"><i class="fa" aria-hidden="true"></i></span>HSN No</th>
                                                     <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon" style="color:  red;"><i class="fa" aria-hidden="true"></i></span>Unit</th>
+                                                    <th data-columnno="6" data-sortorder="asc" class="sortCol SaleOrderOtherDetail"><span style="padding:5px;margin:5px" class="sort-icon" style="color:  red;"><i class="fa" aria-hidden="true"></i></span>BillQty</th>
+                                                    <th data-columnno="6" data-sortorder="asc" class="sortCol SaleOrderOtherDetail"><span style="padding:5px;margin:5px" class="sort-icon" style="color:  red;"><i class="fa" aria-hidden="true"></i></span>PendQty</th>
 
 
                                                     <th data-columnno="15" data-sortorder="asc" class="sortCol SaleOrderOtherDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Tol Limit</th>
@@ -883,6 +894,15 @@
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="Amount" class="form-label" style="color:  red;">Amount*</label>
                                         <input asp-for="Amount" class="form-control" tabindex="-1" value="0.00" readonly disabled />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="BillQty" class="form-label">BillQty</label>
+                                        <input asp-for="BillQty" class="form-control" value="0.00" readonly />
+                                    </div>
+
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="pendQty" class="form-label">pendQty</label>
+                                        <input asp-for="pendQty" class="form-control" value="0.00" readonly />
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-6 col-sm-6 col-xs-12  SaleOrderOtherDetail">
                                         <label asp-for="TolLimit" class="form-label">Tol Limit</label>
@@ -1041,6 +1061,9 @@
                                                         <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon" style="color:  red;"><i class="fa" aria-hidden="true"></i></span>Amount</th>
                                                         <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon" style="color:  red;"><i class="fa" aria-hidden="true"></i></span>HSN No</th>
                                                         <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon" style="color:  red;"><i class="fa" aria-hidden="true"></i></span>Unit</th>
+                                                        <th data-columnno="6" data-sortorder="asc" class="sortCol SaleOrderOtherDetail"><span style="padding:5px;margin:5px" class="sort-icon" style="color:  red;"><i class="fa" aria-hidden="true"></i></span>BillQty</th>
+                                                        <th data-columnno="6" data-sortorder="asc" class="sortCol SaleOrderOtherDetail"><span style="padding:5px;margin:5px" class="sort-icon" style="color:  red;"><i class="fa" aria-hidden="true"></i></span>PendQty</th>
+
 
 
                                                         <th data-columnno="15" data-sortorder="asc" class="sortCol SaleOrderOtherDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Tol Limit</th>
@@ -4554,7 +4577,7 @@
 
           
 
-            if (parseInt($('#DiscPer').val()) > 100) {
+            if (parseFloat($('#DiscPer').val()) > 100) {
                 AddErrorCls('DiscPer');
                 $.notify('DiscPer cannot be Greater Then 100.', "error");
                 return;
@@ -4571,6 +4594,16 @@
                 }
                 else {
                     RemoveErrorCls('AmendmentReason');
+                }
+
+                if (parseFloat($('#Qty').val()) < parseFloat($('#BillQty').val()))
+                {
+                    AddErrorCls('Qty');
+                    $.notify('Qty cannot be less than Billed Qty.', "error");
+                    return;
+                }
+                else {
+                    RemoveErrorCls('Qty');
                 }
             }
 
@@ -4636,6 +4669,8 @@
                 "CustItemCategory": $('#CustItemCategory').val(),
                 "Location": $('#Location').val(),
                 "Vehicle": $('#Vehicle').val(),
+                "BillQty": $('#BillQty').val(),
+                "pendQty": $('#pendQty').val(),
             }
             //alert('before itemgrid');
 
@@ -4925,6 +4960,8 @@
                                 $('#Location').val(obj[0].Location);
                                 $('#Vehicle').val(obj[0].Vehicle);
                                 $('#SeqNo').val(obj[0].SeqNo);
+                                $('#BillQty').val(obj[0].BillQty);
+                                $('#pendQty').val(obj[0].pendQty);
                             DelSeqNo = SeqNo;
                             // $('#divSaleItemGrid .' + DelSeqNo).remove();
                             $('#soItemRow-' + DelSeqNo).remove();
