@@ -360,6 +360,30 @@
             });
         }
 
+        function loadPage(pageNumber) {
+            var data = $('#SParam').serialize();  // serialize filters
+            data += '&pageNumber=' + pageNumber + '&pageSize=2'; // match your controller default
+
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("GetSearchData", "NRGP")',
+                data: data,
+                success: function(result) {
+                    $('#divINDashboardGrid').html(result);
+                    $('#currentPage').val(pageNumber);
+                    GetFeatureOption();
+                    GetFormRights();
+                    GetTotalAmounts();
+                }
+            });
+        }
+
+        // Delegated click handler for dynamic pagination links
+        $(document).on('click', '.page-btn', function(e) {
+            e.preventDefault();
+            var page = $(this).data('page');
+            loadPage(page);
+        });
 
         function GetSummaryDetail() {
 
@@ -863,21 +887,24 @@
         }
 
         $("#btnINExcel").click(function () {
-            var table = $(".INGrid");
-            if (table.length === 0) {
-                console.error("Table element with ID 'Issue NRGP Grid' not found.");
-                return;
-            }
+            // var table = $(".INGrid");
+            // if (table.length === 0) {
+            //     console.error("Table element with ID 'Issue NRGP Grid' not found.");
+            //     return;
+            // }
 
-            try {
-                table.table2excel({
-                    filename: "IssueNRGPTable.xls"
-                });
-            } catch (error) {
-                console.error("An error occurred while exporting to Excel:", error);
-            }
+            // try {
+            //     table.table2excel({
+            //         filename: "IssueNRGPTable.xls"
+            //     });
+            // } catch (error) {
+            //     console.error("An error occurred while exporting to Excel:", error);
+            // }
+
+
+                     window.location = '/NRGP/ExportIssueChallanToExcel';
         });
-        function buildDataObj() {
+       function buildDataObj() {
 
     var dataObj = {
         PartCode: $('#PartCode').val(),

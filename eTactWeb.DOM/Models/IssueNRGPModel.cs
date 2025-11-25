@@ -161,6 +161,10 @@ namespace eTactWeb.DOM.Models
         public string eMailFromCC2 { get; set; }
         public string eMailFromCC3 { get; set; }
         public List<IssueNRGPDashboard>? INNDashboard { get; set; }
+        //===Pagination===
+        public int TotalRecords { get; set; }
+        public int PageNumber { get; set; } = 1;
+        public int PageSize { get; set; }
     }
 
     [Serializable]
