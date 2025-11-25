@@ -362,7 +362,7 @@
 
         function loadPage(pageNumber) {
             var data = $('#SParam').serialize();  // serialize filters
-            data += '&pageNumber=' + pageNumber + '&pageSize=2'; // match your controller default
+            data += '&pageNumber=' + pageNumber + '&pageSize=15'; // match your controller default
 
             $.ajax({
                 type: 'GET',

@@ -31,6 +31,7 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Org.BouncyCastle.Crypto.Engines;
 using ClosedXML.Excel;
+using DocumentFormat.OpenXml.VariantTypes;
 
 namespace eTactWeb.Controllers
 {
@@ -160,6 +161,13 @@ namespace eTactWeb.Controllers
         public async Task<JsonResult> GetFeatureOption()
         {
             var JSON = await IDirectPurchaseBill.GetFeatureOption();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
+        public async Task<JsonResult> ListOfPendingSaleBillFromOtherBranch(int AccountCode,string fromdate,string todate)
+        {
+            var JSON = await IDirectPurchaseBill.ListOfPendingSaleBillFromOtherBranch(AccountCode, fromdate, todate);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }

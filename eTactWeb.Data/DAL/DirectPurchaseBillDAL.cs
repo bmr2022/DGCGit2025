@@ -53,6 +53,37 @@ public class DirectPurchaseBillDAL
         return JsonString;
     }
 
+    public async Task<ResponseResult> ListOfPendingSaleBillFromOtherBranch(int AccountCode, string fromdate, string todate)
+    {
+        var _ResponseResult = new ResponseResult();
+        try
+        {
+
+
+            var SqlParams = new List<dynamic>();
+            SqlParams.Add(new SqlParameter("@Flag", "ListOfPendingSaleBillFromOtherBranch"));
+
+            SqlParams.Add(new SqlParameter("@AccountCode", AccountCode));
+            SqlParams.Add(new SqlParameter("@fromdate", fromdate));
+            SqlParams.Add(new SqlParameter("@todate", todate));
+
+
+
+            _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_DirectPurchaseBillMainDetail", SqlParams);
+
+
+        }
+        catch (Exception ex)
+        {
+            dynamic Error = new ExpandoObject();
+            Error.Message = ex.Message;
+            Error.Source = ex.Source;
+        }
+        return _ResponseResult;
+    }
+
+
+
     public async Task<ResponseResult> GetFormRights(int userId)
     {
         var _ResponseResult = new ResponseResult();

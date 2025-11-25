@@ -23,6 +23,11 @@ namespace eTactWeb.Data.BLL
         //{
         //    return await _DirectPurchaseBillDAL.GetItemServiceFORPO(ItemSErv);
         //}
+        public async Task<ResponseResult> ListOfPendingSaleBillFromOtherBranch(int AccountCode, string fromdate, string todate)
+        {
+            return await _DirectPurchaseBillDAL.ListOfPendingSaleBillFromOtherBranch(AccountCode, fromdate, todate);
+        }
+
         public async Task<string> GetItemServiceFORPO(string ItemService)
         {
             return await _DirectPurchaseBillDAL.GetItemServiceFORPO(ItemService);

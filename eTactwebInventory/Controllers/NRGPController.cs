@@ -1513,7 +1513,7 @@ namespace eTactWeb.Controllers
                     "ChallanDate", "EntryDate", "DeliveryAddress", "VendorStateCode",
                                 "Remarks", "Closed", "EntryId", "YearCode", "RGPNRGP",
                                  "ChallanType", "ActualEnteredEmp", "ActualEntryDate",
-                               "UpdatedByEmpName", "UpdatedDate", "MachinName", "SalesPersonEmailId", "eMailFromCC1", "eMailFromCC2", "eMailFromCC3", "ChallanEntryFrom");
+                               "UpdatedByEmpName", "UpdatedDate", "MachinName", "SalesPersonEmailId", "eMailFromCC1", "eMailFromCC2", "eMailFromCC3", "ChallanEntryFrom", "Amount", "TotalAmount");
 
                 model.INNDashboard = CommonFunc.DataTableToList<IssueNRGPDashboard>(DT, "IssueNRGPDetail");
                 model.FromDate1 = FromDate;
@@ -1565,7 +1565,7 @@ namespace eTactWeb.Controllers
         //    return PartialView("_INDashboardGrid", model);
         //}
 
-        public async Task<IActionResult> GetSearchData(INDashboard model, int pageNumber = 1, int pageSize = 2)
+        public async Task<IActionResult> GetSearchData(INDashboard model, int pageNumber = 1, int pageSize = 15)
         {
             var Result = await _IIssueNRGP.GetDashboardData(model);
             DataSet DS = Result.Result;
