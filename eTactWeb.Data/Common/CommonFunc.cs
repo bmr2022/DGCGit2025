@@ -1137,7 +1137,7 @@ public static class CommonFunc
                 else if (Tbname == "IssueNRGP" || table.TableName == "IssueNRGP")
                 {
                     if (typeProperty.PropertyInfo.Name != "INDasboard" && typeProperty.PropertyInfo.Name != "INNDashboard" && typeProperty.PropertyInfo.Name != "ActualEnteredEMpBy"
-                        && typeProperty.PropertyInfo.Name != "ChallanTypeList" && typeProperty.PropertyInfo.Name != "SummaryDetail")
+                        && typeProperty.PropertyInfo.Name != "ChallanTypeList" && typeProperty.PropertyInfo.Name != "SummaryDetail" && typeProperty.PropertyInfo.Name != "TotalRecords" && typeProperty.PropertyInfo.Name != "PageNumber" && typeProperty.PropertyInfo.Name != "PageSize")
                     {
                         object value = row[typeProperty.PropertyInfo.Name];
                         object? safeValue = value == null || DBNull.Value.Equals(value) ? null : Convert.ChangeType(value, typeProperty.Type);
@@ -1216,7 +1216,8 @@ public static class CommonFunc
                         && typeProperty.PropertyInfo.Name != "PendQty" && typeProperty.PropertyInfo.Name != "PendAltQty"
                         && typeProperty.PropertyInfo.Name != "SalesPersonEmailId" && typeProperty.PropertyInfo.Name != "eMailFromCC1"
                         && typeProperty.PropertyInfo.Name != "eMailFromCC2" && typeProperty.PropertyInfo.Name != "eMailFromCC3"
-                        && typeProperty.PropertyInfo.Name != "ActualEnteredEMpBy")
+                        && typeProperty.PropertyInfo.Name != "ActualEnteredEMpBy" 
+                        && typeProperty.PropertyInfo.Name != "TotalRecords" && typeProperty.PropertyInfo.Name != "PageNumber" && typeProperty.PropertyInfo.Name != "PageSize")
 
                     {
                         object value = row[typeProperty.PropertyInfo.Name];
