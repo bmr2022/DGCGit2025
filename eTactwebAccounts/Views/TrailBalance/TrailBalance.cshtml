@@ -150,25 +150,28 @@
     <script>
 
         $(document).ready(function () {
-            const navEntry = performance.getEntriesByType("navigation")[0]?.type;
 
-            if (navEntry !== "back_forward") {
-                // User opened TrailBalance directly → clear drilldown stack
+            /* ---------------------------------------------------------
+               1) CLEAR DRILLDOWN STACK when TrailBalance is opened fresh
+               --------------------------------------------------------- */
+            const navType = performance.getEntriesByType("navigation")[0]?.type;
+            if (navType !== "back_forward") {
                 sessionStorage.removeItem("DD_STACK");
+                sessionStorage.removeItem("DD_ALLOW_RESTORE");
+                sessionStorage.removeItem("DD_DRILLDOWN_NAVIGATION");
             }
-            const currentDate = new Date();
-            // -----------------------------
-            // INIT SELECT2 & DATEPICKERS
-            // -----------------------------
+
+            /* ---------------------------------------------------------
+               2) INIT SELECT2 + DATEPICKERS
+               --------------------------------------------------------- */
             $('#ReportType, #TrailBalanceGroupName, #ParentGroupName, #AccountName').select2();
 
             $("#FromDate").datepicker({ dateFormat: "dd/mm/yy" });
             $("#ToDate").datepicker({ dateFormat: "dd/mm/yy" });
 
-
-            // -----------------------------
-            // FORMAT SERVER DATE
-            // -----------------------------
+            /* ---------------------------------------------------------
+               3) DATE FORMATTER
+               --------------------------------------------------------- */
             function convertToDDMMYYYY(dateStr) {
                 if (!dateStr) return '';
                 try {
@@ -179,70 +182,64 @@
 
                     let [day, mon, year] = raw.includes('/') ? raw.split('/') : raw.split('-');
 
-                    const months = {
+                    const mm = ({
                         Jan: "01", Feb: "02", Mar: "03", Apr: "04", May: "05", Jun: "06",
                         Jul: "07", Aug: "08", Sep: "09", Oct: "10", Nov: "11", Dec: "12"
-                    };
+                    })[mon] || mon.padStart(2, '0');
 
-                    let mm = months[mon] || mon.padStart(2, '0');
                     return `${day}/${mm}/${year}`;
-
-                } catch (e) {
-                    console.error("Invalid date:", dateStr, e);
+                }
+                catch {
                     return '';
                 }
             }
 
-            // -----------------------------
-            // SET DEFAULT DATES
-            // -----------------------------
+            /* ---------------------------------------------------------
+               4) SET DEFAULT DATES
+               --------------------------------------------------------- */
+            const currentDate = new Date();
             let fromDate = convertToDDMMYYYY('@Model.FromDate');
             $("#FromDate").datepicker("setDate", fromDate || currentDate);
             $("#ToDate").datepicker("setDate", currentDate);
 
 
-            // -----------------------------
-            // WAIT FOR SELECT2
-            // -----------------------------
-            function waitForSelect2(id, callback) {
-                const check = setInterval(() => {
-                    if ($(`#${id} option`).length > 0) {
-                        clearInterval(check);
-                        callback();
-                    }
-                }, 100);
-            }
-
-            // -----------------------------
-            // LOAD ALL DROPDOWNS
-            // -----------------------------
+            /* ---------------------------------------------------------
+               5) LOAD ALL DROPDOWNS → THEN RESTORE FILTERS
+               --------------------------------------------------------- */
             $.when(
                 FillGroupList(),
                 FillParentGroupList(),
                 FillAccountList()
             ).done(function () {
-                var f = ddLoadFilters("TrailBalance");
-                if (!f) return;
 
-                $("#FromDate").val(f.FromDate);
-                $("#ToDate").val(f.ToDate);
-                $("#ReportType").val(f.ReportType).trigger("change");
-                $("#GroupList").val(f.GroupList).trigger("change");
-                $("#ParentGroupList").val(f.ParentGroupList).trigger("change");
-                $("#AccountList").val(f.AccountList).trigger("change");
-                $("#Search").val(f.Search);
-                // LOAD SUMMARY / DETAIL / LEDGER GRID
+                let f = ddLoadFilters("TrailBalance");
+                if (f) {
+                    $("#FromDate").val(f.FromDate);
+                    $("#ToDate").val(f.ToDate);
+                    $("#ReportType").val(f.ReportType).trigger("change");
+                    $("#GroupList").val(f.GroupList).trigger("change");
+                    $("#ParentGroupList").val(f.ParentGroupList).trigger("change");
+                    $("#AccountList").val(f.AccountList).trigger("change");
+                    $("#Search").val(f.Search);
+                }
+
+                // FINAL LOAD
                 GetTrailBalanceDetailsData();
             });
-            GetTrailBalanceDetailsData();
-            ddInitPage("BackButton", null);
-            // -----------------------------
-            // COLUMN SHOW/HIDE
-            // -----------------------------
+
+
+            /* ---------------------------------------------------------
+               6) INIT DRILLDOWN (Correct Call)
+               --------------------------------------------------------- */
+            ddInitPage("TrailBalance", "BackButton", "ReportType");
+
+
+            /* ---------------------------------------------------------
+               7) TOGGLE COLUMN LOGIC
+               --------------------------------------------------------- */
             var hiddenCols = {};
 
             $('.toggle-col').on('click', function () {
-
                 var $th = $(this).closest('th');
                 var colIndex = $th.index() + 1;
                 var $icon = $(this).find('i');
@@ -263,30 +260,21 @@
                     $icon.removeClass('fa-eye').addClass('fa-eye-slash');
                     delete hiddenCols[colIndex];
                 }
-
-                updateHiddenColPanel();
             });
 
-            $('#toggle-hidden-cols-btn').on('click', function () {
-                $('#hidden-cols-panel').toggle();
-            });
+            $('#toggle-hidden-cols-btn').on('click', () => $("#hidden-cols-panel").toggle());
 
 
-            // -----------------------------
-            // REPORT TYPE — SHOW FIELDS
-            // -----------------------------
+            /* ---------------------------------------------------------
+               8) REPORT TYPE CHANGE → LOAD UI FIELDS
+               --------------------------------------------------------- */
             function loadReportFields(reportType) {
-
-                let html = "";
-
                 if (reportType === "TRAILDETAIL") {
-                    html = `<!-- TRAILDETAIL HTML -->`;
+                    $("#reportFields").html(`<!-- TRAILDETAIL HTML -->`);
                 }
                 else if (reportType === "TRAILSUMMARY") {
-                    html = `<!-- TRAILSUMMARY HTML -->`;
+                    $("#reportFields").html(`<!-- TRAILSUMMARY HTML -->`);
                 }
-
-                $("#reportFields").html(html);
             }
 
             $("#ReportType").change(function () {
@@ -297,26 +285,22 @@
             loadReportFields($("#ReportType").val());
 
 
-            // -----------------------------
-            // BUTTON TITLE
-            // -----------------------------
+            /* ---------------------------------------------------------
+               9) DYNAMIC TITLE
+               --------------------------------------------------------- */
             function updateButtonTitle() {
-
-                let reportType = $("#ReportType").val();
-
-                let title = (reportType === "TRAILSUMMARY")
-                    ? "Trail Balance Summary"
-                    : "Trail Balance Detail";
-
-                $("#dynamicText").text(title);
+                let type = $("#ReportType").val();
+                $("#dynamicText").text(
+                    type === "TRAILSUMMARY" ? "Trail Balance Summary" : "Trail Balance Detail"
+                );
             }
 
             updateButtonTitle();
 
 
-            // -----------------------------
-            // STYLE SUMMARY ROWS
-            // -----------------------------
+            /* ---------------------------------------------------------
+               10) STYLE SUMMARY ROWS
+               --------------------------------------------------------- */
             $(".bold-row").css({
                 "font-weight": "bold",
                 "font-size": "16px",
