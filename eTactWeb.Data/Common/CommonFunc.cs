@@ -1211,7 +1211,7 @@ public static class CommonFunc
                         && typeProperty.PropertyInfo.Name != "PONo" && typeProperty.PropertyInfo.Name != "PoYear" && typeProperty.PropertyInfo.Name != "PODate"
                         && typeProperty.PropertyInfo.Name != "POAmmendNo" && typeProperty.PropertyInfo.Name != "discper" && typeProperty.PropertyInfo.Name != "discamt"
                          && typeProperty.PropertyInfo.Name != "AgainstChallanNoEntryId" && typeProperty.PropertyInfo.Name != "AgainstChallanNo"
-                        && typeProperty.PropertyInfo.Name != "AgainstChallanYearCode" && typeProperty.PropertyInfo.Name != "AgainstChallanType" && typeProperty.PropertyInfo.Name != "closed"
+                        && typeProperty.PropertyInfo.Name != "AgainstChallanYearCode" && typeProperty.PropertyInfo.Name != "AgainstChallanType"
                         && typeProperty.PropertyInfo.Name != "ItemColor" && typeProperty.PropertyInfo.Name != "ItemSize" && typeProperty.PropertyInfo.Name != "ItemModel"
                         && typeProperty.PropertyInfo.Name != "PendQty" && typeProperty.PropertyInfo.Name != "PendAltQty"
                         && typeProperty.PropertyInfo.Name != "SalesPersonEmailId" && typeProperty.PropertyInfo.Name != "eMailFromCC1"

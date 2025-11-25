@@ -149,25 +149,41 @@
                         </a> *@
                                             @if (item.YearCode == yearCode)
                                             {
-                                                <div id="editCursorDiv-@Cntr">
-                                                    <a class="table-link link-primary" asp-action="IssueChallanOnCounter" asp-route-Mode="U" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode" onclick="CheckGateEntryExists(event, @item.EntryId, @item.YearCode,'@item.ChallanDate.Split(" ")[0]')">
-                                                        <span class="fa-stack">
-                                                            <i class="fa fa-square fa-stack-2x"></i>
-                                                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-                                                        </span>
-                                                    </a>
-                                                </div>
-                                                <div id="deleteCursorDiv-@Cntr">
-                                                    <a class="table-link link-danger" onclick="confirmdelete(event,'@item.ChallanDate.Split(" ")[0]')" asp-action="DeleteByID" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode" asp-route-machineName="@item.MachinName" asp-route-actuaEntryBy="@item.ActualEnteredEMpBy">
-                                                        <span class="fa-stack">
-                                                            <i class="fa fa-square fa-stack-2x"></i>
-                                                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
-                                                        </span>
-                                                    </a>
-                                                </div>
+                                                @if (item.closed == "Y")
+                                                {
+                                                    <div>
+                                                        <a class="table-link link-primary noCursor">
+                                                            <span class="fa-stack">
+                                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                                <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                            </span>
+                                                        </a>
+                                                    </div>
+
+                                                }
+                                                else
+                                                {
+                                                    <div id="editCursorDiv-@Cntr">
+                                                        <a class="table-link link-primary" asp-action="IssueChallanOnCounter" asp-route-Mode="U" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode" onclick="CheckGateEntryExists(event, @item.EntryId, @item.YearCode,'@item.ChallanDate.Split(" ")[0]')">
+                                                            <span class="fa-stack">
+                                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                                <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                            </span>
+                                                        </a>
+                                                    </div>
+                                                }
+                            // <div id="deleteCursorDiv-@Cntr">
+                                                //     <a class="table-link link-danger" onclick="confirmdelete(event,'@item.ChallanDate.Split(" ")[0]')" asp-action="DeleteByID" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode" asp-route-machineName="@item.MachinName" asp-route-actuaEntryBy="@item.ActualEnteredEMpBy">
+                                                //         <span class="fa-stack">
+                                                //             <i class="fa fa-square fa-stack-2x"></i>
+                                                //             <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                //         </span>
+                                                //     </a>
+                                                // </div>
                                             }
                                             else
                                             {
+                                               
                                                 <div>
                                                     <a class="table-link link-primary noCursor">
                                                         <span class="fa-stack">
@@ -176,14 +192,14 @@
                                                         </span>
                                                     </a>
                                                 </div>
-                                                <div>
-                                                    <a class="table-link link-danger noCursor">
-                                                        <span class="fa-stack">
-                                                            <i class="fa fa-square fa-stack-2x"></i>
-                                                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
-                                                        </span>
-                                                    </a>
-                                                </div>
+                                                // <div>
+                                                //     <a class="table-link link-danger noCursor">
+                                                //         <span class="fa-stack">
+                                                //             <i class="fa fa-square fa-stack-2x"></i>
+                                                //             <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                //         </span>
+                                                //     </a>
+                                                // </div>
                                             }
 
                                         }
