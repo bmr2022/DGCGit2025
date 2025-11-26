@@ -165,19 +165,49 @@ namespace eTactWeb.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> GetSearchData(RCDashboard model)
+        //public async Task<IActionResult> GetSearchData(RCDashboard model)
+        //{
+        //    var Result = await IReceiveChallan.GetDashboardData(model);
+        //    DataSet DS = Result.Result;
+
+        //    var DT = DS.Tables[0].DefaultView.ToTable(true, "EntryId", "Yearcode", "Entrydate", "RetNonRetChallan", "AgainstMRNOrGate", "MRNNo", "AgainstMRNYearCode", "BillOrChallan",
+        //        "Account_Name", "TruckNo", "TransPort", "DeptTo", "Remark", "SendforQC", "gateno", "GateYearCode", "ChallanNo", "Challandate",
+        //        "TotalAmount", "NetAmt", "TotalDiscountPercent", "TotalDiscountAmount", "ChallanType", "DocTypeCode", "InvoiceNo", "InvoiceYearCode", "pendcompleted",
+        //        "MachineName", "CreatedByEmp", "CreatedOn", "UpdatedByEmp", "UpdatedOn", "CC", "UID", "gatedate", "mrndate", "IssueChallanEntryID", "IssueChallanNo", "IssueChallanYearCode", "ItemCode",
+        //        "PartCode", "ItemName", "SeqNo", "Unit", "RecQty", "Rate", "Amount", "IssuedQty", "PendQty", "Produced", "GateQty", "Storeid", "StoreName", "pendtoissue",
+        //        "Batchno", "Uniquebatchno", "ItemSize", "AltUnit", "AltQty", "PONO", "POYearCode", "PODate", "SchNo", "SchDate", "SchYearcode");
+
+        //    model.RCDashboardList = CommonFunc.DataTableToList<ReceiveChallanDashboard>(DT, "RCDashboard");
+        //    if (model.SummaryDetail == "Summary")
+        //    {
+        //        model.RCDashboardList = model.RCDashboardList
+        //            .GroupBy(d => d.EntryId)
+        //            .Select(g => g.First())
+        //            .ToList();
+        //    }
+
+        //    return PartialView("_RCDashboardGrid", model);
+        //}
+
+
+        public async Task<IActionResult> GetSearchData(RCDashboard model, int pageNumber = 1, int pageSize = 15)
         {
+            // Fetch data
             var Result = await IReceiveChallan.GetDashboardData(model);
             DataSet DS = Result.Result;
 
-            var DT = DS.Tables[0].DefaultView.ToTable(true, "EntryId", "Yearcode", "Entrydate", "RetNonRetChallan", "AgainstMRNOrGate", "MRNNo", "AgainstMRNYearCode", "BillOrChallan",
+            var DT = DS.Tables[0].DefaultView.ToTable(true,
+                "EntryId", "Yearcode", "Entrydate", "RetNonRetChallan", "AgainstMRNOrGate", "MRNNo", "AgainstMRNYearCode", "BillOrChallan",
                 "Account_Name", "TruckNo", "TransPort", "DeptTo", "Remark", "SendforQC", "gateno", "GateYearCode", "ChallanNo", "Challandate",
                 "TotalAmount", "NetAmt", "TotalDiscountPercent", "TotalDiscountAmount", "ChallanType", "DocTypeCode", "InvoiceNo", "InvoiceYearCode", "pendcompleted",
                 "MachineName", "CreatedByEmp", "CreatedOn", "UpdatedByEmp", "UpdatedOn", "CC", "UID", "gatedate", "mrndate", "IssueChallanEntryID", "IssueChallanNo", "IssueChallanYearCode", "ItemCode",
                 "PartCode", "ItemName", "SeqNo", "Unit", "RecQty", "Rate", "Amount", "IssuedQty", "PendQty", "Produced", "GateQty", "Storeid", "StoreName", "pendtoissue",
                 "Batchno", "Uniquebatchno", "ItemSize", "AltUnit", "AltQty", "PONO", "POYearCode", "PODate", "SchNo", "SchDate", "SchYearcode");
 
+            // Convert to list
             model.RCDashboardList = CommonFunc.DataTableToList<ReceiveChallanDashboard>(DT, "RCDashboard");
+
+            // Apply summary grouping if needed
             if (model.SummaryDetail == "Summary")
             {
                 model.RCDashboardList = model.RCDashboardList
@@ -186,8 +216,23 @@ namespace eTactWeb.Controllers
                     .ToList();
             }
 
+            // ✅ Store full list in session for delete/update operations
+            var fullListJson = JsonConvert.SerializeObject(model.RCDashboardList);
+            HttpContext.Session.SetString("KeyReceiveChallan", fullListJson);
+
+            // ✅ Pagination logic
+            model.TotalRecords = model.RCDashboardList.Count;
+            model.PageNumber = pageNumber;
+            model.PageSize = pageSize;
+
+            model.RCDashboardList = model.RCDashboardList
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
             return PartialView("_RCDashboardGrid", model);
         }
+
         public IActionResult DeleteItemRow(int SeqNo)
         {
             var MainModel = new ReceiveChallanModel();
@@ -663,6 +708,14 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+
+        public async Task<JsonResult> GetTotalAmount(RCDashboard model)
+        {
+            var JSON = await IReceiveChallan.GetTotalAmount(model);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
 
     }
 }
