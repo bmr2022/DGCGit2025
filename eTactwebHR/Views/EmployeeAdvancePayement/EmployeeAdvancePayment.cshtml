@@ -104,7 +104,7 @@
 								</div>
 
 								<div class="col-md-2">
-									<label asp-for="EmpId" class="form-label">Emp Name <span style="color:red">*</span></label>
+									<label asp-for="EmpId" class="form-label" style="color:red">Emp Name <span>*</span></label>
 									<select asp-for="EmpId" class="form-select">
 										<option value="">-Select-</option>
 									</select>
@@ -172,7 +172,8 @@
 
 								<div class="col-md-1">
 									<label asp-for="CategoryId" class="form-label">Category</label>
-									<input asp-for="CategoryId" class="form-control" />
+									<input asp-for="CategoryId" class="form-control" type="hidden"/>
+									<input asp-for="CategoryName" class="form-control"/>
 								</div>
 
 								<div class="col-md-1">
@@ -185,7 +186,7 @@
 									<input asp-for="EntryDate" class="form-control" />
 								</div>
 								<div class="col-md-2">
-									<label asp-for="AdvanceType" class="form-label"> Advance Type <span style="color:red">*</span></label>
+									<label asp-for="AdvanceType" class="form-label" style="color:red"> Advance Type <span>*</span></label>
 									<select asp-for="AdvanceType" class="form-select">
 										<option value="">-Select-</option>
 									</select>
@@ -200,8 +201,8 @@
 									<input asp-for="RequestedAmount" class="form-control" />
 								</div>
 								<div class="col-md-3">
-									<label asp-for="Purpose" class="form-label"></label>
-									<textarea asp-for="Purpose" type="textarea" class="form-control">Purpose</textarea>
+									<label asp-for="Purpose" class="form-label" style="color:red">Purpose <span>*</span></label>
+									<textarea asp-for="Purpose" type="textarea" class="form-control"></textarea>
 								</div>
 
 
@@ -344,7 +345,7 @@
 								</div>
 
 								<div class="col-md-4">
-									<label asp-for="PaymentRemark" class="form-label">Payment Remark <span style="color:red">*</span></label>
+									<label asp-for="PaymentRemark" class="form-label">Payment Remark</label>
 									<textarea asp-for="PaymentRemark" class="form-control"></textarea>
 								</div>
 							</div>
@@ -387,11 +388,11 @@
 
 								<div class="col-md-2">
 									<label asp-for="StartRecoveryFromMonth" class="form-label">StartRecovery FromMonth</label>
-									<input asp-for="StartRecoveryFromMonth" class="form-control" readonly/>  @* Month picker *@
+									<input asp-for="StartRecoveryFromMonth" class="form-control" />  @* Month picker *@
 								</div>
 								<div class="col-md-2">
 									<label asp-for="FinalRevoveryDate" class="form-label">Final RecoveryDate</label>
-									<input asp-for="FinalRevoveryDate" class="form-control" />
+									<input asp-for="FinalRevoveryDate" class="form-control" readonly/>
 								</div>
 								<div class="col-md-2">
 									<label asp-for="AutoDeductionFromSalaryYN" class="form-label">AutoDeduction FromSalary</label>
@@ -687,13 +688,13 @@
 				}
 			}
 
-			if (($('#EmpId').val() == $('#FinanceApprovalEmpid').val()) ||
-				($('#EmpCode').val() == $('#FinanceApprovalEmpCode').val())) {
+			// if (($('#EmpId').val() == $('#FinanceApprovalEmpid').val()) ||
+			// 	($('#EmpCode').val() == $('#FinanceApprovalEmpCode').val())) {
 
-				$.notify("Employee and Financial approved employee cannot be same..!", "error");
-				return false;
-			}
-			else if($('#RequestedAmount').val() == 0){
+			// 	$.notify("Employee and Financial approved employee cannot be same..!", "error");
+			// 	return false;
+			// }
+			if($('#RequestedAmount').val() == 0){
 				$.notify("Request amt cannot be 0..!", "error");
 				return false;
 			}
@@ -701,16 +702,16 @@
 				$.notify("Advacne type is mandatory..!", "error");
 				return false;
 			}
-			else if($('#PaymentRemark').val() == ''){
-				$.notify("Payment Remark is mandatory..!", "error");
+			else if($('#Purpose').val() == ''){
+				$.notify("Purpose is mandatory..!", "error");
 				return false;
 			}
-			else if ($('#EmpId').val() == $('#MgrApprovedbyEmpid').val() ||
-				($('#EmpCode').val() == $('#MgrApprovedbyEmpCode').val())) {
+			// else if ($('#EmpId').val() == $('#MgrApprovedbyEmpid').val() ||
+			// 	($('#EmpCode').val() == $('#MgrApprovedbyEmpCode').val())) {
 
-				$.notify("Employee and Mgr approved employee cannot be same..!", "error");
-				return false;
-			}
+			// 	$.notify("Employee and Mgr approved employee cannot be same..!", "error");
+			// 	return false;
+			// }
 			else if ($('#EmpId').val() == $('#HRApprovedbyEmpid').val() ||
 				($('#EmpCode').val() == $('#HRApprovedbyEmpCode').val())) {
 
@@ -725,27 +726,28 @@
 				}
 			}
 			else if (parseFloat($('#RequestedAmount').val()) >
-				parseFloat($('#BasicSalary').val())) {
-
-				if ($('#MgrApprovedbyEmpid').val() == '' ||
-					$('#FinanceApprovalEmpid').val() == '') {
-
-					$.notify("MgrApprovedby and FinanceApprovalBy are mandatory..!", "error");
-					return false;
-				}
-			}
-			else if (parseFloat($('#PreviousPendAdvanceAmt').val()) >
-				(parseFloat($('#GrossSalary').val()) * 3)) {
+				(parseFloat($('#BasicSalary').val()) * 3)) {
 
 				$.notify("Advance amount cannot be more than 3 times of Gross salary..!", "error");
 				return false;
 			}
-			else if (parseFloat($('#RequestedAmount').val()) >
-				parseFloat($('#ApprovedAmount').val())) {
+			// else if (parseFloat($('#RequestedAmount').val()) >
+			// 	parseFloat($('#BasicSalary').val())) {
 
-				$.notify("Approved amount cannot be greater than requested amount..!", "error");
-				return false;
-			}
+			// 	if ($('#MgrApprovedbyEmpid').val() == '' ||
+			// 		$('#FinanceApprovalEmpid').val() == '') {
+
+			// 		$.notify("MgrApprovedby and FinanceApprovalBy are mandatory..!", "error");
+			// 		return false;
+			// 	}
+			// }
+			
+			// else if (parseFloat($('#RequestedAmount').val()) >
+			// 	parseFloat($('#ApprovedAmount').val())) {
+
+			// 	$.notify("Approved amount cannot be greater than requested amount..!", "error");
+			// 	return false;
+			// }
 
 			// If no error → submit
 			$('form').submit();
@@ -1010,6 +1012,8 @@
 						$('#BasicSalary').val(obj.Result[0].GrossSalary);
 						$('#GrossSalary').val(obj.Result[0].GrossSalary);
 						$('#NetSalary').val(obj.Result[0].Netsalary);
+						$('#CategoryName').val(obj.Result[0].EmpCateg);
+						$('#CategoryId').val(obj.Result[0].categoryid);
 					}
 				},
 				error: function (xhr, status, error) {
@@ -1036,7 +1040,7 @@
 						// $('#MgrApprovaldate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
 						$('#ActualFinalRecoveryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
 						$('#LastUpdationDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
-						// $('#StartRecoveryFromMonth').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+						$('#StartRecoveryFromMonth').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
 						// $('#PresentDaysinCurrMonth').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
 						// $('#PresentDaysInCurrYear').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
 						$('#EntryDate').datepicker('option', 'minDate', FinFromDate);

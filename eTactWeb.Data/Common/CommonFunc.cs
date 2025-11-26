@@ -1690,9 +1690,7 @@ public static class CommonFunc
                         && typeProperty.PropertyInfo.Name != "EmpId"
                         && typeProperty.PropertyInfo.Name != "EmpName"
                         && typeProperty.PropertyInfo.Name != "DesigId"
-                        && typeProperty.PropertyInfo.Name != "DesigName"
                         && typeProperty.PropertyInfo.Name != "DepId"
-                        && typeProperty.PropertyInfo.Name != "DeptName"
                         && typeProperty.PropertyInfo.Name != "CategoryId"
                         && typeProperty.PropertyInfo.Name != "MgrApprovedbyEmpid"
                         && typeProperty.PropertyInfo.Name != "MgrApprovedbyEmpName"
@@ -1718,6 +1716,7 @@ public static class CommonFunc
                         && typeProperty.PropertyInfo.Name != "UpdatedBy"
                         && typeProperty.PropertyInfo.Name != "UpdatedOn"
                         && typeProperty.PropertyInfo.Name != "ActualEntryBy"
+                        && typeProperty.PropertyInfo.Name != "CategoryName"
                         )
                     {
                         object value = row[typeProperty.PropertyInfo.Name];
