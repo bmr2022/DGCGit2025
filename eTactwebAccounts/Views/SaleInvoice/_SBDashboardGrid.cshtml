@@ -548,16 +548,37 @@ else
                                                         </span>
                                                     </a>
                                                 </div>
-                                                <div id="editCursorDiv-@Cntr">
+                                                @if (item.PurchaseBillBookedinBranch == "Y")
+                                                {
+                                                    <div>
+                                                        <a class="table-link link-primary noCursor">
+                                                            <span class="fa-stack">
+                                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                                <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                            </span>
+                                                        </a>
+                                                    </div>
+                                                    <div>
+                                                        <a class="table-link link-danger noCursor">
+                                                            <span class="fa-stack">
+                                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                                <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                            </span>
+                                                        </a>
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <div id="editCursorDiv-@Cntr">
 
-                                                    <a class="table-link link-primary btnEditData" asp-action="SaleBillOnCounter" asp-route-Mode="U" asp-route-ID="@item.SaleBillEntryId" asp-route-YearCode="@item.SaleBillYearCode" onclick="EditButtonData(event,'(@item.AgainstVoucherNo)')">
+                                                        <a class="table-link link-primary btnEditData" asp-action="SaleBillOnCounter" asp-route-Mode="U" asp-route-ID="@item.SaleBillEntryId" asp-route-YearCode="@item.SaleBillYearCode" onclick="EditButtonData(event,'(@item.AgainstVoucherNo)')">
 
-                                                        <span class="fa-stack">
-                                                            <i class="fa fa-square fa-stack-2x"></i>
-                                                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-                                                        </span>
-                                                    </a>
-                                                </div>
+                                                            <span class="fa-stack">
+                                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                                <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                            </span>
+                                                        </a>
+                                                    </div>
 
                                                 <div id="deleteCursorDiv-@Cntr">
                                                     <a class="table-link link-danger btnDeleteData" asp-action="DeleteByID" asp-route-ID="@item.SaleBillEntryId" asp-route-YC="@item.SaleBillYearCode" asp-route-createdBy="@item.ActualEnteredBy" asp-route-entryByMachineName="@item.MachineName" onclick="confirmdelete(event)">
@@ -568,6 +589,7 @@ else
                                                     </a>
                                                 </div>
                                             }
+                                        }
                                             else
                                             {
 
