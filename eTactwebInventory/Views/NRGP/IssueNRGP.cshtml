@@ -1115,7 +1115,7 @@
             });
 
             function ValidateSubmit() {
-
+                
                 if ($('#AccountCode').val() == '' || $('#AccountCode').val() == null) {
                     $.notify('Please Select Vendor Name...!', "error");
                     return false;
@@ -1141,12 +1141,12 @@
                     $.notify('Please Select Removal Time...!', "error");
                     return false;
                 }
-                if (RetailerOrManufacturar != "Retailer") { 
-                         if ($("#IssByEmpCodeName").val() === '' || $("#IssByEmpCodeName").val() === null || $("#IssByEmpCodeName").val()==='0') {
+           
+                if ($("#IssByEmpCodeName").val() === '' || $("#IssByEmpCodeName").val() === null || $("#IssByEmpCodeName").val()==='0') {
                        $.notify('Please Select Issue by emp...!', "error");
                        return false;
                    }
-                }
+                
                 if ($('#VehicleNo').val() != '') {
                     var inputValue = $('#VehicleNo').val();
                     if (inputValue.length > 10) {
