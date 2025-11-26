@@ -188,6 +188,7 @@ namespace eTactWeb.Controllers
                         docTypeId = DocumentTypeId,
                         DocTypeText = DocumentTypeName,
                         ItemCode = Convert.ToInt32(dr["Item_Code"]),
+                        PartCode = Convert.ToInt32(dr["Item_Code"]),
                         PartText = dr["Partcode"].ToString(),
                         ItemText = dr["ItemName"].ToString(),
                         DPBQty = Convert.ToDecimal(dr["BillQty"]),
@@ -213,6 +214,32 @@ namespace eTactWeb.Controllers
             return PartialView("_DPBItemGrid", model);
         }
 
+
+        [HttpPost]
+        public IActionResult UpdateItemLocation(int seqNo, string value)
+        {
+            // Read session
+            var sessionData = HttpContext.Session.GetString("DirectPurchaseBill");
+
+            if (!string.IsNullOrEmpty(sessionData))
+            {
+                var model = JsonConvert.DeserializeObject<DirectPurchaseBillModel>(sessionData);
+
+                // Find the row
+                var row = model.ItemDetailGrid.FirstOrDefault(x => x.SeqNo == seqNo);
+
+                if (row != null)
+                {
+                    row.ItemLocation = value;
+                }
+
+                // Save session back
+                string serializedModel = JsonConvert.SerializeObject(model);
+                HttpContext.Session.SetString("DirectPurchaseBill", serializedModel);
+            }
+
+            return Json("OK");
+        }
 
 
 
