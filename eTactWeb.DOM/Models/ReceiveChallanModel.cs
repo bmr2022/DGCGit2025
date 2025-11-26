@@ -173,6 +173,10 @@ namespace eTactWeb.DOM.Models
         public string SchNo { get; set; }
         public string SchDate { get; set; }
         public int SchYearCode { get; set; }
+        //===Pagination===
+        public int TotalRecords { get; set; }
+        public int PageNumber { get; set; } = 1;
+        public int PageSize { get; set; }
     }
     public class RCDashboard : ReceiveChallanDashboard
     {

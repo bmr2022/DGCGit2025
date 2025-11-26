@@ -30,5 +30,6 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetDashboardData(RCDashboard model);
         Task<ResponseResult> DeleteByID(int ID, int YC);
         Task<ResponseResult> GetFeatureOption();
+        Task<ResponseResult> GetTotalAmount(RCDashboard model);
     }
 }

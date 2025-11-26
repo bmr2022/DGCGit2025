@@ -702,7 +702,7 @@ public static class CommonFunc
                 }
                 else if (table.TableName == "RCDashboard" || Tbname == "RCDashboard")
                 {
-                    if (typeProperty.PropertyInfo.Name != "RCDashboardList" && typeProperty.PropertyInfo.Name != "SummaryDetail")
+                    if (typeProperty.PropertyInfo.Name != "RCDashboardList" && typeProperty.PropertyInfo.Name != "SummaryDetail" && typeProperty.PropertyInfo.Name != "TotalRecords" && typeProperty.PropertyInfo.Name != "PageNumber" && typeProperty.PropertyInfo.Name != "PageSize")
                     {
                         object value = row[typeProperty.PropertyInfo.Name];
                         object? safeValue = value == null || DBNull.Value.Equals(value) ? null : Convert.ChangeType(value, typeProperty.Type);

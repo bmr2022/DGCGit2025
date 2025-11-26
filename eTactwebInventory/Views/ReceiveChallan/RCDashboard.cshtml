@@ -161,7 +161,32 @@
 
 
         });
+    function loadPage(pageNumber) {
+                var data = $('#SParam').serialize(); // serialize filters
+            data += '&pageNumber=' + pageNumber + '&pageSize=15'; // match controller default
 
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetSearchData", "ReceiveChallan")',
+                data: data,
+                success: function (result) {
+                        $('#divDashboardGrid').html(result);
+                    $('#currentPage').val(pageNumber);
+
+                    // Optional functions
+                    GetFeatureOption();
+                    GetFormRights();
+                    // GetTotalAmounts();
+                }
+            });
+        }
+
+        // Handle pagination button click
+        $(document).on('click', '.page-btn', function (e) {
+            e.preventDefault();
+            var page = $(this).data('page');
+            loadPage(page);
+        });
         function GetFeatureOption() {
 
             $.ajax({
