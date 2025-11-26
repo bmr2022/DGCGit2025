@@ -83,6 +83,37 @@ public class DirectPurchaseBillDAL
     }
 
 
+    public async Task<ResponseResult> PendingSaleBillItemDetailFromOtherBranch(
+    int AccountCode,
+    int salebillEntryId,
+    int salebillYearCode,
+    string DatabaseName
+)
+    {
+        var _ResponseResult = new ResponseResult();
+
+        try
+        {
+            var SqlParams = new List<dynamic>();
+
+            SqlParams.Add(new SqlParameter("@Flag", "PendingSaleBillItemDetailFromOtherBranch"));
+            SqlParams.Add(new SqlParameter("@AccountCode", AccountCode));
+            SqlParams.Add(new SqlParameter("@salebillEntryId", salebillEntryId));
+            SqlParams.Add(new SqlParameter("@salebillYearCode", salebillYearCode));
+            SqlParams.Add(new SqlParameter("@DatabaseName", DatabaseName));
+
+            _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_DirectPurchaseBillMainDetail", SqlParams);
+        }
+        catch (Exception ex)
+        {
+            dynamic Error = new ExpandoObject();
+            Error.Message = ex.Message;
+            Error.Source = ex.Source;
+        }
+
+        return _ResponseResult;
+    }
+
 
     public async Task<ResponseResult> GetFormRights(int userId)
     {
@@ -1269,6 +1300,7 @@ public class DirectPurchaseBillDAL
             SqlParams.Add(new SqlParameter("@TypeITEMSERVASSETS", model.DPBTypeServItem));
 
             SqlParams.Add(new SqlParameter("@DomesticImport", model.DPBType));
+            SqlParams.Add(new SqlParameter("@PurchaseFromDatabase", model.PurchaseFromDatabase));
             SqlParams.Add(new SqlParameter("@PaymentTerm", model.PaymentTerms));
             SqlParams.Add(new SqlParameter("@Transporter", model.Transport));
             SqlParams.Add(new SqlParameter("@Vehicleno", model.VehicleNo));

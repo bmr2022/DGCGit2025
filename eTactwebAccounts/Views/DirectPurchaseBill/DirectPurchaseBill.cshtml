@@ -114,6 +114,7 @@
                         <partial name="_DPBMain" />
                         <input type="hidden" asp-for="TypeOfSave" value="" />
                         <input type="hidden" asp-for="EntryByMachineName" value="" />
+                        <input type="hidden" asp-for="PurchaseFromDatabase" />
                     </div>
                 </div>
                 <div class="accordion-item">
@@ -476,9 +477,12 @@
                                                 <th style="width:150px;">SaleBill No</th>
 
 
-                                                <th style="width:250px;">SaleBill Date</th>
-                                                <th style="width:150px;">Vendor</th>
+                                                <th style="width:250px;">Vendor</th>
+                                                <th style="width:150px;">SaleBill Date</th>
+                                                <th style="width:150px;">CompanyName</th>
+
                                                 <th style="width:80px;">TotalQty</th>
+                                                <th style="width:80px;">TotalAmount</th>
                                                 <th style="width:100px;">NetAmount</th>
                                                
 
@@ -1116,7 +1120,7 @@
             var data = {
 
                 "AccountCode": $('#AccountCode').val(),
-                "fromdate:":"01/Apr/2025",
+                "fromdate": "01/Apr/2025",
                 "todate": "25/Nov/2025"
 
 
@@ -1140,21 +1144,23 @@
                                 var html = '';
                                 html += '<tr>' +
                                     '<td style="text-align:center;">' +
-                                    '<button id="AcceptedQtySHA' + i + '" ' +
+                                    '<button type="button" id="AcceptedQtySHA' + i + '" ' +
                                     'style="background-color: #b2b3f0;" ' +
                                     'class="btn btn-sm me-1 mt-2" ' +
-                                    'onclick="PendingChallaItemDetailFromOtherBranch(' +
+                                    'onclick="PendingSaleBillItemDetailFromOtherBranch(' +
                                     val.AccountCode + ',' +
-                                    val.EntryId + ',' +
-                                    val.YearCode + ',\'' +
-                                    val.ChallanNo + '\',\'' +
-                                    val.SourceDB + '\');">' +
+                                    val.salebillentryid + ',' +
+                                    val.salebillYearCode + ',\'' +
+                                    val.SaleBillNo + '\',\'' +
+                                    val.SourceDB + '\'' +
+                                    ')" >' +
                                     'Select' +
                                     '</button>' +
                                     '</td>' +
                                     '<td><input id="SaleBillNo' + i + '" class="form-control no-cursor" value="' + val.SaleBillNo + '"/><input id="EntryId' + i + '" type="hidden" value="' + val.salebillentryid + '"/><input id="YearCode' + i + '" type="hidden" value="' + val.salebillYearCode + '"/></td>' +
-                                    '<td><input id="SaleBillDate' + i + '" class="form-control no-cursor" value="' + val.SaleBillDate + '"/></td>' +
                                     '<td><input id="Vendor' + i + '" class="form-control no-cursor" value="' + val.Vendor + '"/><input id="Accountcode' + i + '" type="hidden" value="' + val.AccountCode + '"/></td>' +
+
+                                    '<td><input id="SaleBillDate' + i + '" class="form-control no-cursor" value="' + val.SaleBillDate + '"/></td>' +
                                     '<td><input id="SourceCompany' + i + '" class="form-control no-cursor" value="' + val.SourceCompany + '"/><input id="SourceDB' + i + '" type="hidden" value="' + val.SourceDB + '"/></td>' +
                                    
                                     '<td><input id="TotalQty' + i + '" class="form-control no-cursor" value="' + val.TotalQty + '"/></td>' +
@@ -1189,6 +1195,88 @@
                 failure: function (response) {
                     alert(response.responseText);
                 }
+            });
+        }
+
+
+
+
+        function PendingSaleBillItemDetailFromOtherBranch(AccountCode, SaleBillEntryId, SaleBillYearCode,SaleBillNo, DatabaseName) {
+            var DocumentTypeId = $('#docTypeId').val();
+            var DocumentTypeName = $('#docTypeId option:selected').text();
+            $.ajax({
+                url: '@Url.Action("PendingSaleBillItemDetailFromOtherBranch")',
+                type: "POST",
+                data: {
+                    flag: "PendingSaleBillItemDetailFromOtherBranch",
+                    AccountCode: AccountCode,
+                    salebillEntryId: SaleBillEntryId,
+                    salebillYearCode: SaleBillYearCode,
+                    DatabaseName: DatabaseName,
+                    DocumentTypeId: DocumentTypeId,
+                    DocumentTypeName: DocumentTypeName
+                },
+                success: function (data) {
+
+
+
+                    $('#divPOItemList').html(data);
+                    $('#PendingSaleBillFromOtherBranchModel').modal('hide');
+                    $.notify('Item Added To Grid.', "success");
+                    ClearItem();
+
+                    $('#TotalRoundOff').prop('selectedIndex', 0);
+                    var INA = parseFloat($('#ItemNetAmount').val());
+                    var rowCount = $('#divPOItemList tr').length;
+                    var columnCount = $('#divPOItemList tr td').length;
+                    var taxRowCount = $('#divTaxGrid tr').length;
+                    var sum = 0;
+
+                    //noofitems
+                    if (columnCount > 1)
+                        $('#lblItemCount').text(rowCount);
+                    else
+                        $('#lblItemCount').text(0);
+
+                    for (var i = 1; i <= rowCount; i++) {
+
+                        sum += parseFloat($('#GridAmount-' + i).text() == '.00' ? 0 : $('#GridAmount-' + i).text());
+                    }
+                    $('#ItemNetAmount').val(sum);
+                    var txSum = 0;
+                    if ($('#divTaxGrid tr td').length > 1) {
+                        for (var i = 1; i <= taxRowCount; i++) {
+                            txSum += parseFloat($('#txGridAmount-' + i).text() == '.00' ? 0 : $('#txGridAmount-' + i).text());
+                        }
+                    }
+                    $('#lblItemNetAmount').text(sum.toFixed(2));
+
+
+                    var txTotal = sum + txSum;
+                    $('#NetTotal').val(txTotal.toFixed(2));
+                    $('#TotalDiscountPercentage').val(0);
+                    $('#TotalAmtAftrDiscount').val(0);
+                    $('#TotalRoundOffAmt').val(0.00);
+                    // $('#PartCode').select2('open').select2('focus');
+                    CalculateRate();
+                    $('#InvoiceNo').val(SaleBillNo).prop('readonly', true);
+                    $('#PurchaseFromDatabase').val(DatabaseName).prop('readonly', true);
+                },
+
+                error: function (xhr) {
+                    alert(xhr.responseText);
+                }
+            }).done(function () {
+                calculatetotalqty();
+                GetTaxPartItem();
+                GetDbCrDetail();
+                GetFeatureOption();
+                var AdjGrid = $('#divAdjItemList tr td').length;
+                if (AdjGrid >= 1) {
+                    ClearAdjustmentGrid();
+                }
+                //   ClearAdjustmentGrid();
+                AddAdjstmntDetail1();
             });
         }
 

@@ -164,6 +164,57 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+        [HttpPost]
+
+        public IActionResult PendingSaleBillItemDetailFromOtherBranch(
+    string flag, int AccountCode, int salebillEntryId,
+    int salebillYearCode, string DatabaseName,int DocumentTypeId,string DocumentTypeName)
+        {
+            var result = IDirectPurchaseBill
+                         .PendingSaleBillItemDetailFromOtherBranch(
+                         AccountCode, salebillEntryId, salebillYearCode, DatabaseName).Result;
+
+            var items = new List<DPBItemDetail>();
+            int seq = 1; // ← NEW
+            if (result != null)
+            {
+                var dt = result.Result.Tables[0];
+
+                foreach (DataRow dr in dt.Rows)
+                {
+                    items.Add(new DPBItemDetail
+                    {
+                        SeqNo = seq++,
+                        docTypeId = DocumentTypeId,
+                        DocTypeText = DocumentTypeName,
+                        ItemCode = Convert.ToInt32(dr["Item_Code"]),
+                        PartText = dr["Partcode"].ToString(),
+                        ItemText = dr["ItemName"].ToString(),
+                        DPBQty = Convert.ToDecimal(dr["BillQty"]),
+                        BillQty = Convert.ToDecimal(dr["BillQty"]),
+                        Rate = Convert.ToDecimal(dr["Billrate"]),
+                        DiscPer = Convert.ToDecimal(dr["Discountper"]),
+                        DiscRs = Convert.ToDecimal(dr["DiscountAmt"]),
+                        Amount = Convert.ToDecimal(dr["ItemAmount"]),
+                        ItemLocation = dr["ItemLocation"].ToString(),
+                        HSNNo = Convert.ToInt32(dr["HSNNo"]),
+                        Unit = dr["unit"].ToString()
+                    });
+                }
+            }
+
+            // IMPORTANT → wrap inside parent model
+            DirectPurchaseBillModel model = new DirectPurchaseBillModel();
+            model.ItemDetailGrid = items;   // correct assignment
+            HttpContext.Session.Remove("DirectPurchaseBill");
+            string serializedModel = JsonConvert.SerializeObject(model);
+            HttpContext.Session.SetString("DirectPurchaseBill", serializedModel);
+
+            return PartialView("_DPBItemGrid", model);
+        }
+
+
+
 
         public async Task<JsonResult> ListOfPendingSaleBillFromOtherBranch(int AccountCode,string fromdate,string todate)
         {
