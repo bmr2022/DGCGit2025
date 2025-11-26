@@ -224,10 +224,44 @@
         $(document).ready(function () {
             debugger;
 
+            /* ------------------------------------------
+               1) INIT DATEPICKER + SELECT2
+            ------------------------------------------- */
             $("#FromDate").datepicker({ dateFormat: "dd/mm/yy" });
             $("#ToDate").datepicker({ dateFormat: "dd/mm/yy" });
+
             $('#LedgerName, #ParentLedgerName, #ReportType, #VoucherType, #Group_Ledger').select2();
 
+            function convertToDDMMYYYY(dateStr) {
+                if (!dateStr) return '';
+                try {
+                    let raw = dateStr.split(" ")[0];
+
+                    if (/^\d{2}\/\d{2}\/\d{4}$/.test(raw))
+                        return raw;
+
+                    let [day, mon, year] = raw.includes('/') ? raw.split('/') : raw.split('-');
+
+                    const mm = ({
+                        Jan: "01", Feb: "02", Mar: "03", Apr: "04", May: "05", Jun: "06",
+                        Jul: "07", Aug: "08", Sep: "09", Oct: "10", Nov: "11", Dec: "12"
+                    })[mon] || mon.padStart(2, '0');
+
+                    return `${day}/${mm}/${year}`;
+                }
+                catch {
+                    return '';
+                }
+            }
+
+            const currentDate = new Date();
+            let fromDate = convertToDDMMYYYY('@Model.FromDate');
+            $("#FromDate").datepicker("setDate", fromDate || currentDate);
+            $("#ToDate").datepicker("setDate", currentDate);
+
+            /* ------------------------------------------
+               2) LOAD DROPDOWNS → THEN RESTORE FILTERS
+            ------------------------------------------- */
             $.when(
                 FillParentLedgerName(),
                 FillVoucherName(),
@@ -242,14 +276,16 @@
 
                         let last = stack[stack.length - 1];
 
-                        // ----------------------------------------------------------
-                        // CASE 1 : Coming from MONTH → TransactionLedgerSummary
-                        // ----------------------------------------------------------
+                        /* ============================================================
+                           CASE 1 : Coming from MONTHLY → Transaction Ledger Summary
+                           (We receive data-month + YearCodeHidden)
+                        ============================================================ */
                         if (last.drillData && last.drillData.month) {
 
                             let monthno = parseInt(last.drillData.month);
                             let yearcode = parseInt($("#YearCodeHidden").val() || new Date().getFullYear());
 
+                            // First & last day of month
                             let firstDay = new Date(yearcode, monthno - 1, 1);
                             let lastDay = new Date(yearcode, monthno, 0);
 
@@ -262,21 +298,23 @@
                             $("#FromDate").val(fd);
                             $("#ToDate").val(td);
 
-                            // Set AccountCode for TL Summary
+                            // AccountCode if passed
                             if (last.drillData.accountcode) {
                                 $("#LedgerName").val(last.drillData.accountcode).trigger("change");
                             }
 
+                            // Set report type
                             $("#ReportType").val(last.forceReportType).trigger("change");
-
-                            console.log("📅 Dates set from month:", fd, td);
-
+                            ddInitPage("TransactionLedgerVoucher", "BackButton", "ReportType");
+                            // Auto load summary
                             $("#btnSearch").click();
                         }
 
-                        // ----------------------------------------------------------
-                        // CASE 2 : Coming from TRAILBALANCE → TL
-                        // ----------------------------------------------------------
+
+                        /* ============================================================
+                           CASE 2 : Coming from TRAIL BALANCE
+                           (restore saved filters)
+                        ============================================================ */
                         else if (last.returnPageName === "TrailBalance") {
 
                             let f = ddLoadFilters("TrailBalance");
@@ -292,13 +330,15 @@
                                 }
 
                                 $("#ReportType").val(last.forceReportType).trigger("change");
+                                ddInitPage("TransactionLedger", "BackButton", "ReportType");
                             }
                         }
 
-                        // ----------------------------------------------------------
-                        // CASE 3 : Coming from TransactionLedger (nested drilldown)
-                        // ----------------------------------------------------------
-                        else {
+
+                        /* ============================================================
+                           CASE 3 : Nested TRANSACTION LEDGER → TRANSACTION LEDGER
+                        ============================================================ */
+                        else if (last.returnPageName === "TransactionLedger") {
 
                             let f = ddLoadFilters("TransactionLedger");
 
@@ -316,13 +356,35 @@
                             }
 
                             $("#ReportType").val(last.forceReportType).trigger("change");
+                            ddInitPage("TransactionLedger", "BackButton", "ReportType");
+                        }
+
+                        else {
+                            let f = ddLoadFilters("TransactionLedgerVoucher");
+
+                            if (f) {
+                                $("#FromDate").val(f.FromDate);
+                                $("#ToDate").val(f.ToDate);
+                            }
+
+                            if (last.drillData.groupledger) {
+                                $("#ParentLedgerName").val(last.drillData.groupledger).trigger("change");
+                            }
+
+                            if (last.drillData.accountcode) {
+                                $("#LedgerName").val(last.drillData.accountcode).trigger("change");
+                            }
+
+                            $("#ReportType").val(last.forceReportType).trigger("change");
+                            ddInitPage("TransactionLedger", "BackButton", "ReportType");
                         }
                     }
-
-                    ddInitPage("BackButton", "ReportType");
-
+                    else {
+                        $('#BackButton').hide();
+                    }
                 }, 20);
             });
+
         });
 
         function GetValidateData() {
