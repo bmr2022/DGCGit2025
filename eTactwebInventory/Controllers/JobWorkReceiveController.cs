@@ -472,27 +472,27 @@ namespace eTactWeb.Controllers
             var ChallanGrid = new DataTable();
             var todate = (DateTime.Today).ToString();
             //ChallanGrid.Columns.Add("SeqNo", typeof(int));
-            ChallanGrid.Columns.Add("EntryDate", typeof(DateTime));
+            ChallanGrid.Columns.Add("EntryDate", typeof(string));
             ChallanGrid.Columns.Add("EntryIdIssJw", typeof(int));
             ChallanGrid.Columns.Add("YearCodeIssJw", typeof(int));
             ChallanGrid.Columns.Add("IssChallanNo", typeof(string));
-            ChallanGrid.Columns.Add("IssChallanDate", typeof(DateTime));
+            ChallanGrid.Columns.Add("IssChallanDate", typeof(string));
             ChallanGrid.Columns.Add("Itemcode", typeof(int));
             ChallanGrid.Columns.Add("EntryIdRecJw", typeof(int));
             ChallanGrid.Columns.Add("YearCodeRecJw", typeof(int));
             ChallanGrid.Columns.Add("RecChallanNo", typeof(string));
-            ChallanGrid.Columns.Add("RecChallanDate", typeof(DateTime));
+            ChallanGrid.Columns.Add("RecChallanDate", typeof(string));
             ChallanGrid.Columns.Add("FinishItemCode", typeof(int));
             ChallanGrid.Columns.Add("AccountCode", typeof(int));
             ChallanGrid.Columns.Add("AdjQty", typeof(float));
             ChallanGrid.Columns.Add("CC", typeof(string));
             ChallanGrid.Columns.Add("AdjFormType", typeof(string));
-            ChallanGrid.Columns.Add("TillDate", typeof(DateTime));
+            ChallanGrid.Columns.Add("TillDate", typeof(string));
             ChallanGrid.Columns.Add("TotRecQty", typeof(decimal));
             ChallanGrid.Columns.Add("PendQty", typeof(decimal));
             ChallanGrid.Columns.Add("BOMQty", typeof(decimal));
             ChallanGrid.Columns.Add("BomRevNo", typeof(int));
-            ChallanGrid.Columns.Add("BOMRevDate", typeof(DateTime));
+            ChallanGrid.Columns.Add("BOMRevDate", typeof(string));
             ChallanGrid.Columns.Add("ProcessID", typeof(int));
             ChallanGrid.Columns.Add("BOMInd", typeof(string));
             ChallanGrid.Columns.Add("RecQty", typeof(decimal));
@@ -516,27 +516,27 @@ namespace eTactWeb.Controllers
                 ChallanGrid.Rows.Add(
                     new object[]
                     {
-                  ParseFormattedDate (todate),
+                  ParseFormattedDate(todate),
                     Item.EntryIdIssJw,
                     Item.YearCodeIssJw, //Item.IssYearCode,
                     Item.IssChallanNo ?? "",
-                    ParseFormattedDate (todate),
+                    ParseFormattedDate(todate),
                     Item.ItemCode,
                     Item.EntryIdRecJw,
                     Item.YearCodeRecJw,
                     Item.PreRecChallanNo ?? "",
-                 ParseFormattedDate (todate),
+                 ParseFormattedDate(todate),
                     Item.FinishItemCode,
                     Item.AccountCode,
                     Item.AdjQty,
                     Item.CC ?? "",
                     Item.AdjFormType ?? "",
-                   ParseFormattedDate (todate),
+                   ParseFormattedDate(todate),
                     Item.TotalRecQty,
                     Item.PendQty,
                     Item.BOMQty,
                     Item.BOMrevno,
-                    ParseFormattedDate (todate),
+                    ParseFormattedDate(todate),
                     Item.ProcessId,
                     Item.BOMInd ?? "",
                     Item.RecQty,

@@ -115,6 +115,10 @@
                         <input type="hidden" asp-for="TypeOfSave" value="" />
                         <input type="hidden" asp-for="EntryByMachineName" value="" />
                         <input type="hidden" asp-for="PurchaseFromDatabase" />
+                        <input type="hidden" asp-for="BranchSaleBillNo" />
+                        <input type="hidden" asp-for="BranchSaleBillEntryId" />
+                        <input type="hidden" asp-for="BranchSaleBillDate" />
+                        <input type="hidden" asp-for="BranchSaleBillYearCode" />
                     </div>
                 </div>
                 <div class="accordion-item">
@@ -1152,6 +1156,7 @@
                                     val.salebillentryid + ',' +
                                     val.salebillYearCode + ',\'' +
                                     val.SaleBillNo + '\',\'' +
+                                    val.SaleBillDate + '\',\'' +
                                     val.SourceDB + '\'' +
                                     ')" >' +
                                     'Select' +
@@ -1201,7 +1206,7 @@
 
 
 
-        function PendingSaleBillItemDetailFromOtherBranch(AccountCode, SaleBillEntryId, SaleBillYearCode,SaleBillNo, DatabaseName) {
+        function PendingSaleBillItemDetailFromOtherBranch(AccountCode, SaleBillEntryId, SaleBillYearCode,SaleBillNo,SaleBillDate, DatabaseName) {
             var DocumentTypeId = $('#docTypeId').val();
             var DocumentTypeName = $('#docTypeId option:selected').text();
             $.ajax({
@@ -1261,6 +1266,10 @@
                     CalculateRate();
                     $('#InvoiceNo').val(SaleBillNo).prop('readonly', true);
                     $('#PurchaseFromDatabase').val(DatabaseName).prop('readonly', true);
+                    $('#BranchSaleBillNo').val(SaleBillNo).prop('readonly', true);
+                    $('#BranchSaleBillEntryId').val(SaleBillEntryId).prop('readonly', true);
+                    $('#BranchSaleBillDate').val(SaleBillDate).prop('readonly', true);
+                    $('#BranchSaleBillYearCode').val(SaleBillYearCode).prop('readonly', true);
                 },
 
                 error: function (xhr) {
@@ -1279,6 +1288,24 @@
                 AddAdjstmntDetail1();
             });
         }
+
+        $(document).on("change", ".item-location", function () {
+
+            let seqNo = $(this).data("seqno");
+            let newValue = $(this).val();
+
+            $.ajax({
+                url: "/DirectPurchaseBill/UpdateItemLocation",
+                type: "POST",
+                data: {
+                    seqNo: seqNo,
+                    value: newValue
+                },
+                success: function () {
+                    console.log("ItemLocation updated in session.");
+                }
+            });
+        });
 
 
         function NetAmountAfterDiscount() {
@@ -3296,7 +3323,24 @@
             var txRowCount = $('#divTaxGrid tr').length;
             var drCrGrid = $('#divdbCrItemList tr').length;
             var AdjustGrid= $('#divAdjItemList tr').length;
+            var hasEmptyLocation = false;
 
+            $('#divPOItemList tr').each(function () {
+                var txtLocation = $(this).find('input[type="text"]'); // ItemLocation textbox
+
+                if (txtLocation.length > 0) {
+                    var val = txtLocation.val()?.trim();
+                    if (val == null || val === "") {
+                        hasEmptyLocation = true;
+                        return false; // break loop
+                    }
+                }
+            });
+
+            if (hasEmptyLocation) {
+                $.notify("Item Location is required for all items.", "error");
+                return;
+            }
 
             //if ($('#AccountCode').find(':selected').data('gstregister') == 'Y') {
             var AdjPendAmt = $('#AdjPendAmt').val();

@@ -1301,6 +1301,10 @@ public class DirectPurchaseBillDAL
 
             SqlParams.Add(new SqlParameter("@DomesticImport", model.DPBType));
             SqlParams.Add(new SqlParameter("@PurchaseFromDatabase", model.PurchaseFromDatabase));
+            SqlParams.Add(new SqlParameter("@BranchSaleBillNo", model.BranchSaleBillNo));
+            SqlParams.Add(new SqlParameter("@BranchSaleBillEntryId", model.BranchSaleBillEntryId));
+            SqlParams.Add(new SqlParameter("@BranchSaleBillDate", model.BranchSaleBillDate));
+            SqlParams.Add(new SqlParameter("@BranchSaleBillYearCode", model.BranchSaleBillYearCode));
             SqlParams.Add(new SqlParameter("@PaymentTerm", model.PaymentTerms));
             SqlParams.Add(new SqlParameter("@Transporter", model.Transport));
             SqlParams.Add(new SqlParameter("@Vehicleno", model.VehicleNo));

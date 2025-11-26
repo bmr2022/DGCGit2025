@@ -113,7 +113,12 @@ else
             <td>@item.Unit</td>
             <td class="OtherFieldOFDirectPurchaseBillDetailTable">@item.ProcessName</td>
             <td class="OtherFieldOFDirectPurchaseBillDetailTable">@item.Description</td>
-            <td>@item.ItemLocation</td>
+            <td>
+                <input type="text"
+                       value="@item.ItemLocation"
+                       class="item-location form-control form-control-sm"
+                       data-seqno="@item.SeqNo" />
+            </td>
             <td>@item.GroupName</td>
             <td class="OtherFieldOFDirectPurchaseBillDetailTable">@(item.CostCenterName ?? string.Empty)</td>
         </tr>

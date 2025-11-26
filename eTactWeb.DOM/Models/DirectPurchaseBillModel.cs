@@ -405,6 +405,10 @@ public class DirectPurchaseBillModel : DPBItemDetail
     //just for display
     public string? UniversalPartCode { get; set; }
     public string? PurchaseFromDatabase { get; set;}
+    public string? BranchSaleBillNo { get; set;}
+    public int? BranchSaleBillEntryId { get; set;}
+    public string? BranchSaleBillDate { get; set;}
+    public int? BranchSaleBillYearCode { get; set;}
     public string? AccountName { get; set; }
     public string? UniversalDescription { get; set; }
 
