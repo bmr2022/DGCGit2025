@@ -57,6 +57,7 @@ namespace eTactWeb.Controllers
                 model.DateOfJoining = FormatDate(model.DateOfJoining);
                 model.DateOfResignation = FormatDate(model.DateOfResignation);
 
+
                 HttpContext.Session.SetString("KeyEmployeeMasterGrid_AllDed",
                   JsonConvert.SerializeObject(model.AllowanceDeductionList));
 
@@ -333,6 +334,7 @@ namespace eTactWeb.Controllers
             return RedirectToAction(nameof(EmployeeMaster), new { ID = 0 });
 
         }
+
         private static DataTable GetDtAllDedTable(IList<EmployeeMasterModel> DetailList, EmployeeMasterModel model)
         {
             try
@@ -350,38 +352,42 @@ namespace eTactWeb.Controllers
                 DtAllDed.Columns.Add("PartofPaySlip", typeof(string));
                 DtAllDed.Columns.Add("PercentageOfSalaryHeadID", typeof(long));
 
+                // ✅ VERY IMPORTANT CHECK
+                if (DetailList == null || DetailList.Count == 0)
+                {
+                    return DtAllDed;
+                }
 
                 foreach (var Item in DetailList)
                 {
-
                     DtAllDed.Rows.Add(
-                        new object[]
-                        {
-                         model.EmpId == 0 ? 0 : model.EmpId,
-                model.EmpCode ?? string.Empty,
-                Item.SrNo == 0 ? 0 : Item.SrNo,
-                Item.SalaryHeadId == 0 ? 0 : Item.SalaryHeadId,
-                Item.AllowanceMode ?? string.Empty,
-                Item.Percent == 0 ? 0 : Item.Percent,
-                Item.AllowanceAmount == 0 ? 0 : Item.AllowanceAmount,
-                Item.AllowanceType ?? string.Empty,
-                Item.PartyPay ?? string.Empty,
-                Item.Percent == 0 ? 0 : Item.Percent
-                    });
+                        model.EmpId == 0 ? 0 : model.EmpId,
+                        model.EmpCode ?? string.Empty,
+                        Item.SrNo,
+                        Item.SalaryHeadId,
+                        Item.AllowanceMode ?? string.Empty,
+                        Item.Percent,
+                        Item.AllowanceAmount,
+                        Item.AllowanceType ?? string.Empty,
+                        Item.PartyPay ?? string.Empty,
+                        Item.Percent
+                    );
                 }
-                DtAllDed.Dispose();
-                return DtAllDed;
+
+                return DtAllDed;   // ❌ removed Dispose
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
         }
+
         private static DataTable GetDtEduTable(IList<EmployeeMasterModel> DetailList, EmployeeMasterModel model)
         {
             try
             {
                 var DtEdu = new DataTable();
+
                 DtEdu.Columns.Add("EmpId", typeof(long));
                 DtEdu.Columns.Add("EmpCode", typeof(string));
                 DtEdu.Columns.Add("SeqNo", typeof(long));
@@ -391,28 +397,27 @@ namespace eTactWeb.Controllers
                 DtEdu.Columns.Add("PassoutYear", typeof(long));
                 DtEdu.Columns.Add("Remarks", typeof(string));
 
+                // ✅ Prevent crash
+                if (DetailList == null || DetailList.Count == 0)
+                    return DtEdu;
 
-                foreach (var Item in DetailList)
+                foreach (var Item in DetailList.Where(x => x != null))
                 {
-
                     DtEdu.Rows.Add(
-                        new object[]
-                        {
-                        model.EmpId == 0 ? 0 : model.EmpId,                     // long
-                model.EmpCode ?? string.Empty,                         // string
-                Item.Edu_SrNo == 0 ? 0 : Item.Edu_SrNo,                       // int
-                Item.Qualification ?? string.Empty,                   // string
-                Item.Univercity_Sch ?? string.Empty,                  // string
-                Item.Per ==0 ? 0 : Item.Per,                      // decimal?
-                Item.InYear == 0 ? 0 : Item.InYear,                   // int
-                Item.Remark ?? string.Empty
-
-                    });
+                        model.EmpId,
+                        model.EmpCode ?? string.Empty,
+                        Item.Edu_SrNo,
+                        Item.Qualification ?? string.Empty,
+                        Item.Univercity_Sch ?? string.Empty,
+                        Item.Per,
+                        Item.InYear,
+                        Item.Remark ?? string.Empty
+                    );
                 }
-                DtEdu.Dispose();
-                return DtEdu;
+
+                return DtEdu;   // ❌ No Dispose here
             }
-            catch (Exception ex)
+            catch
             {
                 throw;
             }
@@ -422,6 +427,7 @@ namespace eTactWeb.Controllers
             try
             {
                 var dtExp = new DataTable();
+
                 dtExp.Columns.Add("EmpId", typeof(long));
                 dtExp.Columns.Add("EmpCode", typeof(string));
                 dtExp.Columns.Add("SeqNo", typeof(long));
@@ -439,41 +445,182 @@ namespace eTactWeb.Controllers
                 dtExp.Columns.Add("HRContactNo", typeof(string));
                 dtExp.Columns.Add("Remarks", typeof(string));
 
+                // ✅ Prevent crash
+                if (DetailList == null || DetailList.Count == 0)
+                    return dtExp;
 
-
-                foreach (var Item in DetailList)
+                foreach (var Item in DetailList.Where(x => x != null))
                 {
-
                     dtExp.Rows.Add(
-                        new object[]
-                        {
-                        model.EmpId == 0 ? 0 : model.EmpId,                         // long
-                model.EmpCode ?? string.Empty,                             // string
-                Item.Exp_SrNo == 0 ? 0 : Item.Exp_SrNo,                           // int
-                Item.CompanyName ?? string.Empty,                         // string
-                Item.CFromDate ,                           // string (or DateTime.ToString())
-                Item.CToDate,                             // string (or DateTime.ToString())
-                Item.Desigation ?? string.Empty,                         // string
-                Item.Salary is 0 ? 0 : Item.Salary,                    // decimal?
-                Item.GrossSalary is 0 ? 0 : Item.GrossSalary,          // decimal?
-                Item.Country ?? string.Empty,                             // string
-                Item.City ?? string.Empty,                                // string
-                Item.ContactPersonname ?? string.Empty,                   // string
-                Item.ContactPersonNumber ?? string.Empty,                 // string
-                Item.HRPersonName ?? string.Empty,                        // string
-                Item.HRContactNo ?? string.Empty,                         // string
-                Item.ExeRemark ?? string.Empty
-
-                    });
+                        model.EmpId,
+                        model.EmpCode ?? string.Empty,
+                        Item.Exp_SrNo,
+                        Item.CompanyName ?? string.Empty,
+                        Item.CFromDate,                  // make sure this is DateTime
+                        Item.CToDate,                    // make sure this is DateTime
+                        Item.Desigation ?? string.Empty,
+                        Item.Salary,
+                        Item.GrossSalary,
+                        Item.Country ?? string.Empty,
+                        Item.City ?? string.Empty,
+                        Item.ContactPersonname ?? string.Empty,
+                        Item.ContactPersonNumber ?? string.Empty,
+                        Item.HRPersonName ?? string.Empty,
+                        Item.HRContactNo ?? string.Empty,
+                        Item.ExeRemark ?? string.Empty
+                    );
                 }
-                dtExp.Dispose();
-                return dtExp;
+
+                return dtExp;  // ❌ Remove Dispose
             }
-            catch (Exception ex)
+            catch
             {
                 throw;
             }
         }
+
+
+        //private static DataTable GetDtAllDedTable(IList<EmployeeMasterModel> DetailList, EmployeeMasterModel model)
+        //{
+        //    try
+        //    {
+        //        var DtAllDed = new DataTable();
+
+        //        DtAllDed.Columns.Add("EmpId", typeof(long));
+        //        DtAllDed.Columns.Add("EmpCode", typeof(string));
+        //        DtAllDed.Columns.Add("SeqNo", typeof(long));
+        //        DtAllDed.Columns.Add("SalHeadEntryId", typeof(long));
+        //        DtAllDed.Columns.Add("Mode", typeof(string));
+        //        DtAllDed.Columns.Add("Percentage", typeof(decimal));
+        //        DtAllDed.Columns.Add("Amount", typeof(decimal));
+        //        DtAllDed.Columns.Add("IncDecType", typeof(string));
+        //        DtAllDed.Columns.Add("PartofPaySlip", typeof(string));
+        //        DtAllDed.Columns.Add("PercentageOfSalaryHeadID", typeof(long));
+
+
+        //        foreach (var Item in DetailList)
+        //        {
+
+        //            DtAllDed.Rows.Add(
+        //                new object[]
+        //                {
+        //                 model.EmpId == 0 ? 0 : model.EmpId,
+        //        model.EmpCode ?? string.Empty,
+        //        Item.SrNo == 0 ? 0 : Item.SrNo,
+        //        Item.SalaryHeadId == 0 ? 0 : Item.SalaryHeadId,
+        //        Item.AllowanceMode ?? string.Empty,
+        //        Item.Percent == 0 ? 0 : Item.Percent,
+        //        Item.AllowanceAmount == 0 ? 0 : Item.AllowanceAmount,
+        //        Item.AllowanceType ?? string.Empty,
+        //        Item.PartyPay ?? string.Empty,
+        //        Item.Percent == 0 ? 0 : Item.Percent
+        //            });
+        //        }
+        //        DtAllDed.Dispose();
+        //        return DtAllDed;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw;
+        //    }
+        //}
+        //private static DataTable GetDtEduTable(IList<EmployeeMasterModel> DetailList, EmployeeMasterModel model)
+        //{
+        //    try
+        //    {
+        //        var DtEdu = new DataTable();
+        //        DtEdu.Columns.Add("EmpId", typeof(long));
+        //        DtEdu.Columns.Add("EmpCode", typeof(string));
+        //        DtEdu.Columns.Add("SeqNo", typeof(long));
+        //        DtEdu.Columns.Add("Qualification", typeof(string));
+        //        DtEdu.Columns.Add("Univercity", typeof(string));
+        //        DtEdu.Columns.Add("Percentage", typeof(decimal));
+        //        DtEdu.Columns.Add("PassoutYear", typeof(long));
+        //        DtEdu.Columns.Add("Remarks", typeof(string));
+
+
+        //        foreach (var Item in DetailList)
+        //        {
+
+        //            DtEdu.Rows.Add(
+        //                new object[]
+        //                {
+        //                model.EmpId == 0 ? 0 : model.EmpId,                     // long
+        //        model.EmpCode ?? string.Empty,                         // string
+        //        Item.Edu_SrNo == 0 ? 0 : Item.Edu_SrNo,                       // int
+        //        Item.Qualification ?? string.Empty,                   // string
+        //        Item.Univercity_Sch ?? string.Empty,                  // string
+        //        Item.Per ==0 ? 0 : Item.Per,                      // decimal?
+        //        Item.InYear == 0 ? 0 : Item.InYear,                   // int
+        //        Item.Remark ?? string.Empty
+
+        //            });
+        //        }
+        //        DtEdu.Dispose();
+        //        return DtEdu;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw;
+        //    }
+        //}
+        //private static DataTable GetdtexpTable(IList<EmployeeMasterModel> DetailList, EmployeeMasterModel model)
+        //{
+        //    try
+        //    {
+        //        var dtExp = new DataTable();
+        //        dtExp.Columns.Add("EmpId", typeof(long));
+        //        dtExp.Columns.Add("EmpCode", typeof(string));
+        //        dtExp.Columns.Add("SeqNo", typeof(long));
+        //        dtExp.Columns.Add("CompanyName", typeof(string));
+        //        dtExp.Columns.Add("FromDate", typeof(DateTime));
+        //        dtExp.Columns.Add("ToDate", typeof(DateTime));
+        //        dtExp.Columns.Add("Designation", typeof(string));
+        //        dtExp.Columns.Add("NetSalaryAmt", typeof(decimal));
+        //        dtExp.Columns.Add("GrossSalary", typeof(decimal));
+        //        dtExp.Columns.Add("Country", typeof(string));
+        //        dtExp.Columns.Add("City", typeof(string));
+        //        dtExp.Columns.Add("ContactPersonname", typeof(string));
+        //        dtExp.Columns.Add("ContactPersonNumber", typeof(string));
+        //        dtExp.Columns.Add("HRPersonName", typeof(string));
+        //        dtExp.Columns.Add("HRContactNo", typeof(string));
+        //        dtExp.Columns.Add("Remarks", typeof(string));
+
+
+
+        //        foreach (var Item in DetailList)
+        //        {
+
+        //            dtExp.Rows.Add(
+        //                new object[]
+        //                {
+        //                model.EmpId == 0 ? 0 : model.EmpId,                         // long
+        //        model.EmpCode ?? string.Empty,                             // string
+        //        Item.Exp_SrNo == 0 ? 0 : Item.Exp_SrNo,                           // int
+        //        Item.CompanyName ?? string.Empty,                         // string
+        //        Item.CFromDate ,                           // string (or DateTime.ToString())
+        //        Item.CToDate,                             // string (or DateTime.ToString())
+        //        Item.Desigation ?? string.Empty,                         // string
+        //        Item.Salary is 0 ? 0 : Item.Salary,                    // decimal?
+        //        Item.GrossSalary is 0 ? 0 : Item.GrossSalary,          // decimal?
+        //        Item.Country ?? string.Empty,                             // string
+        //        Item.City ?? string.Empty,                                // string
+        //        Item.ContactPersonname ?? string.Empty,                   // string
+        //        Item.ContactPersonNumber ?? string.Empty,                 // string
+        //        Item.HRPersonName ?? string.Empty,                        // string
+        //        Item.HRContactNo ?? string.Empty,                         // string
+        //        Item.ExeRemark ?? string.Empty
+
+        //            });
+        //        }
+        //        dtExp.Dispose();
+        //        return dtExp;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw;
+        //    }
+        //}
         private static DataTable GetdtNjobTable(IList<EmployeeMasterModel> DetailList, EmployeeMasterModel model)
         {
             var dtNjob = new DataTable();

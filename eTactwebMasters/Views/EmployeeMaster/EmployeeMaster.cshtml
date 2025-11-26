@@ -46,7 +46,7 @@
                             else
                             {
                                 <div class="col-auto">
-                                    <button type="submit" class="btn btn-primary btn-sm submitBTN">
+                                    <button type="submit" class="btn btn-primary btn-sm mainEmployeeSave submitBTN">
                                         <i class="fa-solid fa-chevron-circle-right"></i>
                                         SUBMIT
                                     </button>
@@ -99,18 +99,18 @@
                                     <label asp-for="EmpCode" class="form-label" style="color:red">EmpCode*</label>
                                     <input asp-for="EmpCode" class="form-control" readonly />
                                 </div>
-                                <div class="col-lg-4">
+                                <div class="col-lg-2">
                                     <label asp-for="Name" class="form-label" style="color:red">Name</label>
                                     <input asp-for="Name" class="form-control" required />
                                 </div>
-                                <div class="col-lg-4">
+                                <div class="col-lg-3">
                                     <label asp-for="Designation" class="form-label" style="color:red">Designation*</label>
                                     <select asp-for="Designation" class="form-select" asp-items="@(new SelectList(Model.DesignationList,"Value", "Text"))" onchange="GetEmpIdandEmpCode()" required>
                                         <option value="">-Select-</option>
                                     </select>
                                     <input type="hidden" asp-for="DesignationName" />
                                 </div>
-                                <div class="col-lg-4">
+                                <div class="col-lg-3">
                                     <label asp-for="Department" class="form-label" style="color:red">Department*</label>
                                     <select asp-for="Department" class="form-select" asp-items="@(new SelectList(Model.DepartmentList,"Value", "Text"))" onchange="GetEmpIdandEmpCode()" required>
                                         <option value="">-Select-</option>
@@ -118,7 +118,7 @@
                                     <input type="hidden" asp-for="DepartmentName" />
                                    
                                 </div>
-                                <div class="col-lg-4">
+                                <div class="col-lg-3">
                                     <label asp-for="Category" class="form-label" style="color:red">Category*</label>
                                     <select asp-for="Category" class="form-select" asp-items="@(new SelectList(Model.CategoryList,"Value", "Text"))" required>
                                         <option value="">-Select-</option>
@@ -134,23 +134,12 @@
                                     <input asp-for="DOB" class="form-control" readonly />
                                 </div>
                                 <div class="col-lg-2">
-                                    <label asp-for="Shift" class="form-label"></label>
+                                    <label asp-for="Shift" class="form-label" style="color:red">Shift*</label>
                                     <select asp-for="Shift" class="form-select" asp-items="@(new SelectList(Model.ShiftList,"Value", "Text"))">
                                         <option value="">-Select-</option>
                                     </select>
                                 </div>
-                                <div class="col-lg-2">
-                                    <label asp-for="Active" class="form-label">Active</label>
-                                    <select asp-for="Active" class="form-control" disabled>
-                                        <option value="Y">Yes</option>
-                                        <option value="N">No</option>
-                                    </select>
-                                </div>
-                                <div class="col-lg-4">
-                                    <label asp-for="DateOfResignation" class="form-label">Date Of Resignation</label>
-                                    <input asp-for="DateOfResignation" class="form-control" disabled />
-                                    <input type="hidden" asp-for="DateOfResignation" value="@Model.DateOfResignation" />
-                                </div>
+
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:250px;">
                                     <label asp-for="NatureOfDuties" class="form-label">Nature Of Duties</label>
                                     <input asp-for="NatureOfDuties" class="form-control" />
@@ -176,7 +165,7 @@
                                     <select asp-for="MaritalStatus" class="form-control" >
                                         <option value="">Select</option>
                                         <option value="M">Married</option>
-                                        <option value="U">UnMerried</option>
+                                        <option value="U">UnMarried</option>
                                     </select>
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:100px;">
@@ -232,7 +221,7 @@
 
                     <div id="ContactSection" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
                         <div class="accordion-body">
-                            <div class="row g-2 gx-3" id="_ItemGrid">
+                            <div class="row g-2 gx-3" id="_ItemGrid10">
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:100px;">
                                     <label asp-for="MobileNo" class="form-label">Mobile No</label>
                                     <input asp-for="MobileNo" class="form-control"  />
@@ -280,7 +269,7 @@
                     </h2>
                     <div id="SalarySection" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
                         <div class="accordion-body">
-                            <div class="row g-2 gx-3" id="_ItemGrid">
+                            <div class="row g-2 gx-3" id="_ItemGrid1">
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
                                     <label asp-for="BankName" class="form-label">Bank Name</label>
                                     <input asp-for="BankName" class="form-control" />
@@ -294,7 +283,7 @@
                                     <input asp-for="PANNo" class="form-control" />
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
-                                    <label asp-for="AdharNo" class="form-label">Adhar No</label>
+                                    <label asp-for="AdharNo" class="form-label">Aadhar No</label>
                                     <input asp-for="AdharNo" class="form-control" />
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
@@ -437,7 +426,7 @@
                
                 <div id="allowanceSection" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
                     <div class="accordion-body">
-                        <div class="row g-2 gx-3" id="_ItemGrid">
+                        <div class="row g-2 gx-3" id="_ItemGrid2">
                             <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;color:red;" >
                                 <label asp-for="SalaryHead" class="form-label">Salary Head*</label>
                                 <input asp-for="SalaryHeadId" type="hidden" value="@Model.SalaryHeadId"/>
@@ -542,7 +531,7 @@
                     </h2>
                     <div id="jobSection" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
                         <div class="accordion-body">
-                            <div class="row g-2 gx-3" id="_ItemGrid">
+                            <div class="row g-2 gx-3" id="_ItemGrid3">
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
                                     <label asp-for="JoiningDate" class="form-label">Joining Date</label>
                                     <input asp-for="JoiningDate" class="form-control" />
@@ -629,7 +618,7 @@
 
                     <div id="documentSection" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
                         <div class="accordion-body">
-                            <div class="row g-2 gx-3" id="_ItemGrid">
+                            <div class="row g-2 gx-3" id="_ItemGrid4">
                             <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 mb-4" style="width:200px;">
                                     <label asp-for="PassportNo" class="form-label">National ID/Passport No</label>
                                     <input asp-for="PassportNo" class="form-control" />
@@ -667,7 +656,7 @@
                     </h2>
                     <div id="uploadsection" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
                         <div class="accordion-body">
-                          <div class="row g-2 gx-3" id="_ItemGrid">
+                          <div class="row g-2 gx-3" id="_ItemGrid5">
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 mb-4" style="width:200px;">
                                     <label asp-for="fileUpload" class="form-label">Upload File</label>
                                     <input type="file" asp-for="fileUpload" class="form-control" />
@@ -723,7 +712,7 @@
 
                 <div id="EductionalSection" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
                     <div class="accordion-body">
-                        <div class="row g-2 gx-3" id="_ItemGrid">
+                        <div class="row g-2 gx-3" id="_ItemGrid6">
                             <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
                                 <label asp-for="Qualification" class="form-label">Qualification</label>
                                 <input asp-for="Qualification" class="form-control" />
@@ -790,7 +779,7 @@
                 </h2>
                 <div id="ExperianceSection" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
                     <div class="accordion-body">
-                        <div class="row g-2 gx-3" id="_ItemGrid">
+                        <div class="row g-2 gx-3" id="_ItemGrid7">
                             <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
                                 <label asp-for="CompanyName" class="form-label">Company Name</label>
                                 <input asp-for="CompanyName" class="form-control" />
@@ -893,7 +882,7 @@
 
                 <div id="ExitSection" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
                     <div class="accordion-body">
-                        <div class="row g-2 gx-3" id="_ItemGrid">
+                        <div class="row g-2 gx-3" id="_ItemGrid8">
                             <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
                                 <label asp-for="NoticPeriod" class="form-label">NoticPeriod(Months)</label>
                                 <input asp-for="NoticPeriod" class="form-control" />
@@ -931,7 +920,7 @@
                 </h2>
                 <div id="OtherDetailSection" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
                     <div class="accordion-body">
-                        <div class="row g-2 gx-3" id="_ItemGrid">
+                        <div class="row g-2 gx-3" id="_ItemGrid9">
                             <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px;">
                                 <label asp-for="EmpReqNo" class="form-label">Emp ReqNo</label>
                                 <select asp-for="EmpReqNo" class="form-control">
@@ -1147,6 +1136,7 @@
                 width: '100%'
             });
             GetBranchList();
+
             function getFormattedToday() {
                 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
                     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -1254,13 +1244,7 @@
                     $('#Percent').val(''); 
                 }
             });
-            $('.submitBTN').click(function (e) {
 
-                console.log("SubmitButton Click");
-                e.preventDefault();
-                
-                $('form').submit();
-            });
 
             $("#MobileNo,#MobileNo2").on("input", function () {
                 var value = $(this).val();
@@ -1275,7 +1259,7 @@
                 }
             });
 
-            $("#GrossSalary, #BasicSalary, #SalaryBasis, #ApplyPFFonmAmt, #ApplyESIFonmAmt,#FixSalaryAmt,#Percent,#AllowanceAmount,#JobProbationPeriod,#Per,#InYear,#Salary,#NoticPeriod").on("input", function () {
+            $("#GrossSalary, #BasicSalary, #SalaryBasis, #ApplyPFFonmAmt, #ApplyESIFonmAmt,#FixSalaryAmt,#Percent,#AllowanceAmount,#JobProbationPeriod,#Per,#InYear,#Salary,#NoticPeriod,#NetSalaryAmt,#CTC").on("input", function () {
                 let value = $(this).val();
                 let id = $(this).attr("id");
 
@@ -1290,33 +1274,29 @@
                 }
             });
 
-            $(".submitBTN").click(function (e) {
-                let isValid = true;
+        $('form').on('submit', function (e) {
+         let isValid = true;
 
-                function checkField(selector, errorMessage) {
-                    if (!$(selector).val()) {
-                        $.notify(errorMessage, "error");
-                        isValid = false;
-                    }
-                }
-              
-               
-                checkField("#Name", "Name is required");
-                checkField("#Designation", "Designation is required");
-                checkField("#Department", "Department is required");
-                checkField("#Category", "Category is required");
-                checkField("#DateOfResignation", "Date Of Resignation is required");
-                checkField("#Shift", "Shift is required");
-                checkField("#EmpCode", "EmpCode is required");
-                //checkField("#SalaryHead", "SalaryHead is required");
-                //checkField("#AllowanceMode", "AllowanceMode is required");
-                //checkField("#AllowanceType", "AllowanceType is required");
-                // checkField("#PartyPay", "PartyPay is required");
+         function checkField(selector, errorMessage) {
+             if (!$(selector).val()) {
+                 $.notify(errorMessage, "error");
+                 isValid = false;
+             }
+         }
 
-                if (!isValid) {
-                    e.preventDefault(); 
-                }
-            });
+        checkField("#Name", "Name is required");
+        checkField("#Designation", "Designation is required");
+        checkField("#Department", "Department is required");
+        checkField("#Category", "Category is required");
+        checkField("#Shift", "Shift is required");
+        checkField("#EmpCode", "EmpCode is required");
+
+            if (!isValid) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
             $('#btnViewAadharCard').click(function () {
                 viewSelectedFile('#AadharUpload');
             });
@@ -2164,6 +2144,9 @@
                 }
             });
         }
+            function PressBack() {
+                window.history.back();
+            }
         function GetReqNo() {
             var EntryDate = $('#EntryDate').val();
             $.ajax({
