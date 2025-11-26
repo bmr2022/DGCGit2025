@@ -52,6 +52,7 @@ namespace eTactWeb.DOM.Models
         public string? ToDate1 { get; set; }
         public string? Searchbox { get; set; }
         public string? SummaryDetail { get; set; }
+       
         public string? Currency { get; set; }
         public int TotalRecords { get; set; }
         public int PageNumber { get; set; }
@@ -162,7 +163,9 @@ namespace eTactWeb.DOM.Models
         public string? SaleBillEntryFrom { get; set; }
         public string? SubInvoicetype { get; set; }
        
-        
+        public string? PurchaseBillBookedinBranch { get; set; }
+
+
         public string? InvPrefix { get; set; }
         public string? SaleBillJobwork { get; set; }
         public string? AgainstVoucherNo { get; set; }

@@ -91,7 +91,7 @@ else
                                                 </span>
                                             </a>
                                         </div>
-                                        @if ((item.BalanceSheetClosed == "Y" || item.Approved == "Y" || /* item.Approval1Levelapproved == "Y" || item.ApproveAmm == "Y" || */ item.YearCode != yearCode))
+                                        @if (item.PurchaseFromDiffBranch == "Y")
                                         {
                                             <div>
                                                 <a class="table-link link-primary noCursor">
@@ -104,14 +104,29 @@ else
                                         }
                                         else
                                         {
-                                            <div id="editCursorDiv-@Cntr">
-                                                <a class="table-link link-primary" asp-action="DirectPurchaseBill" asp-route-Mode="U" asp-route-ID="@item.EntryID" asp-route-YearCode="@item.YearCode" onclick="EditButtonData(event,'@item.EntryID','@item.YearCode');">
-                                                    <span class="fa-stack">
-                                                        <i class="fa fa-square fa-stack-2x"></i>
-                                                        <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-                                                    </span>
-                                                </a>
-                                            </div>
+
+                                            @if ((item.BalanceSheetClosed == "Y" || item.Approved == "Y" || /* item.Approval1Levelapproved == "Y" || item.ApproveAmm == "Y" || */ item.YearCode != yearCode))
+                                            {
+                                                <div>
+                                                    <a class="table-link link-primary noCursor">
+                                                        <span class="fa-stack">
+                                                            <i class="fa fa-square fa-stack-2x"></i>
+                                                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                        </span>
+                                                    </a>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div id="editCursorDiv-@Cntr">
+                                                    <a class="table-link link-primary" asp-action="DirectPurchaseBill" asp-route-Mode="U" asp-route-ID="@item.EntryID" asp-route-YearCode="@item.YearCode" onclick="EditButtonData(event,'@item.EntryID','@item.YearCode');">
+                                                        <span class="fa-stack">
+                                                            <i class="fa fa-square fa-stack-2x"></i>
+                                                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                        </span>
+                                                    </a>
+                                                </div>
+                                            }
                                         }
                                         @if ((item.BalanceSheetClosed == "Y" || item.Approved == "Y" || /* item.Approval1Levelapproved == "Y" || item.ApproveAmm == "Y" || */ item.YearCode != yearCode))
                                         {
