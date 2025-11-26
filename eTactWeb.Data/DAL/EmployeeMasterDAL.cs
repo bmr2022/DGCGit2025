@@ -139,316 +139,271 @@ namespace eTactWeb.Data.DAL
 
             return model;
         }
-        private static EmployeeMasterModel PrepareView(DataSet DS, ref EmployeeMasterModel? model)
+        private EmployeeMasterModel PrepareView(DataSet DS, ref EmployeeMasterModel model)
         {
-            try
-            {
-                if (DS == null || DS.Tables.Count == 0)
-                    return model;
-
-                /* ---------------------------------------------------
-                 * TABLE 0 → EMPLOYEE MAIN DETAILS
-                 * ---------------------------------------------------*/
-                DataTable t0 = DS.Tables[0];
-                if (t0.Rows.Count > 0)
-                {
-                    DataRow r = t0.Rows[0];
-                    model.EmpId = Convert.ToInt32(r["Emp_Id"]);
-                    model.EmpCode = r["Emp_Code"]?.ToString();
-                    model.Name = r["Emp_Name"]?.ToString();
-                    model.Department = r["DeptId"]?.ToString();
-                    model.Category = r["CategoryId"]?.ToString();
-                    model.Designation = r["DesigId"]?.ToString();
-                    model.Shift = r["ShiftId"]?.ToString();
-                    model.Branch = r["CC"]?.ToString();
-                    model.MobileNo = r["MobileNo1"]?.ToString();
-                    model.MobileNo2 = r["MobileNo2"]?.ToString();
-                    model.EmailId = r["EmailId"]?.ToString();
-                    model.CurrentAddress = r["CurrentAddress"]?.ToString();
-                    model.permanentAddress = r["PermanentAddress"]?.ToString();
-                    model.EmergencyContact = r["EmergancyContactNo"]?.ToString();
-                    model.EmergencyContactRelation = r["EmergancyContactRelation"]?.ToString();
-                    model.Gender = r["Gender"]?.ToString();
-                    model.BloodGroup = r["BloodGroup"]?.ToString();
-                    model.Nationality = r["Nationality"]?.ToString();
-                    model.MaritalStatus = r["MaritalStatus"]?.ToString();
-                    model.EntryDate = r["Entry_Date"] != DBNull.Value
-                ? Convert.ToDateTime(r["Entry_Date"]).ToString("dd/MMM/yyyy")
-                : "";
-
-                    model.DOB = r["DOB"] != DBNull.Value
-                              ? Convert.ToDateTime(r["DOB"]).ToString("dd/MMM/yyyy")
-                              : "";
-
-                    model.DateOfJoining = r["DateOfJoining"] != DBNull.Value
-                                        ? Convert.ToDateTime(r["DateOfJoining"]).ToString("dd/MMM/yyyy")
-                                        : "";
-
-                    model.ResignationDate = r["ResignationDate"] != DBNull.Value
-                                          ? Convert.ToDateTime(r["ResignationDate"]).ToString("dd/MMM/yyyy")
-                                          : "";
-
-                    model.ProbationEndDate = r["DateOfProbation"] != DBNull.Value
-                                          ? Convert.ToDateTime(r["DateOfProbation"]).ToString("dd/MMM/yyyy")
-                                          : "";
-
-                    model.DateOfConfirmation = r["DateOfConfirm"] != DBNull.Value
-                                        ? Convert.ToDateTime(r["DateOfConfirm"]).ToString("dd/MMM/yyyy")
-                                        : "";
-                    model.NatureOfDuties = r["NatureOfDuties"]?.ToString();
-                    model.Active = r["Active"]?.ToString();
-
-                    // This is what you asked
-                    model.Designation = r["ReportingDesignationId"]?.ToString();
-
-                    model.ProbationPeriod = r["ProbationPeriod"] != DBNull.Value
-                                            ? Convert.ToInt32(r["ProbationPeriod"])
-                                            : 0;
-
-                    model.JobReference1 = r["Referance1"]?.ToString();
-                    model.ReportingMg = r["ReportingManager"]?.ToString();
-                    model.EmployeeType = r["EmpType"]?.ToString();
-                    //upload section
-                    //model.Aadhar = r["EmpType"]?.ToString();
-
-
-                    model.JobReference2 = r["Referencetwo"]?.ToString();
-
-                    model.JoiningThrough = r["Through"]?.ToString();
-
-                    model.ThumbUnPress = r["ThumbPath"]?.ToString();
-                    model.PassportNo = r["NationalIdPassport"]?.ToString();
-                    model.WorkPeritVisa = r["WorkPermitVisa"]?.ToString();
-                    model.DrivingLicenseNo = r["DrivingLicence"]?.ToString();
-                    model.MedicalInsuranceDetail = r["MedicalInsuranceDetail"]?.ToString();
-                    model.BankName = r["BankName"]?.ToString();
-                    model.AccountNo = r["BankAccountNo"]?.ToString();
-                    model.PANNo = r["PANNOTaxIdentificationNo"]?.ToString();
-                    model.AdharNo = r["AadharCardNoCountryCardNo"]?.ToString();
-                    model.SwiftCode = r["IBANSwiftCode"]?.ToString();
-                    model.PaymentMode = r["PaymentMode"]?.ToString();
-                    model.PFNo = r["PFNO"]?.ToString();
-                    model.ESINo = r["ESINo"]?.ToString();
-                    model.GrossSalary = Convert.ToDecimal(r["GrossSalary"]?.ToString());
-                    model.BasicSalary = Convert.ToDecimal(r["BasicSalary"]?.ToString());
-                    //model.CalculatePfOn = r["PFApplicableon"]?.ToString();
-                    //
-                    model.SalaryBasis = Convert.ToDecimal(r["SalaryBasisHrs"]?.ToString());
-                    model.SalaryCalculation = r["SalaryCalculationBasisOn"]?.ToString();
-                    model.PFApplicable = r["PFApplicable"]?.ToString();
-                    model.ApplyPFFonmAmt = Convert.ToDecimal(r["ApplyPFonAmt"]?.ToString());
-                    model.ApplyESIFonmAmt = Convert.ToDecimal(r["ApplyESIonAmt"]?.ToString());
-                    model.OTApplicable = r["OTApplicable"]?.ToString();
-                    model.LeaveApplicable = r["LeaveApplicable"]?.ToString();
-                    model.ESIApplicable = r["ESIApplicable"]?.ToString();
-                    model.LateMarkingCalculationApplicable = r["LateMarkingApplicable"]?.ToString();
-                    model.FixSalaryAmt = Convert.ToDecimal(r["FixSalaryAmount"]?.ToString())
-                        ;
-                    model.NoticPeriod = Convert.ToInt32(r["NoticePeriod"]?.ToString());
-                    model.GratutyEligibility = r["GratutyEligibility"]?.ToString();
-                    model.EntryByMachineName = r["EntryByMachineName"]?.ToString();
-                    model.LastUpdationDate = r["LastUpdationDate"]?.ToString();
-                    model.IPAddress = r["IPAddress"]?.ToString();
-                    model.UpdatedBy = Convert.ToInt32(r["LastUpdatedBy"]?.ToString());
-                    model.ApprovedBy = Convert.ToInt32(r["ApprovedBy"]?.ToString());
-
-                    model.ApprovalDate = r["ApprovalDate"] != DBNull.Value
-                                        ? Convert.ToDateTime(r["ApprovalDate"]).ToString("dd/MMM/yyyy")
-                                        : "";
-
-                    model.ActualEntrybyId = Convert.ToInt32(r["ActualEntrybyId"]);
-                    model.ActualEntryDate = r["ActualEntryDate"] != DBNull.Value
-                                           ? Convert.ToDateTime(r["ActualEntryDate"]).ToString("dd/MMM/yyyy")
-                                           : "";
-                    model.Branches = r["BranchList"] != DBNull.Value
-     ? r["BranchList"].ToString().Split(',').Select(x => x.Trim()).ToList()
-     : new List<string>();
-
-                    model.CardNo = r["CardNo"]?.ToString();
-                    model.ApplicationCode = r["ApplicationCode"]?.ToString();
-                    model.EmergencyContactRelationName = r["EmergancyContactName"]?.ToString();
-                    model.WagesType = r["WagesType"]?.ToString();
-
-                    model.GradeId = r["GradeId"] != DBNull.Value ? Convert.ToInt32(r["GradeId"]) : 0;
-
-                    model.ThumbUnPress = r["ThumbPath"]?.ToString();
-                    model.PhotographPath = r["PhotographPath"]?.ToString();
-                    model.SignaturePath = r["SignaturePath"]?.ToString();
-
-                    model.EmpReqNo = r["EmpReqNo"]?.ToString();
-
-                    model.EmpReqEntryId = r["EmpReqEntryId"] != DBNull.Value
-                                            ? Convert.ToInt32(r["EmpReqEntryId"])
-                                            : 0;
-
-                    model.EmpReqDate = r["EmpReqDate"] != DBNull.Value
-    ? Convert.ToDateTime(r["EmpReqDate"]).ToString("dd/MMM/yyyy")
-    : "";
-
-
-                    model.EmpReqYearcode = r["EmpReqYearcode"] != DBNull.Value
-                                            ? Convert.ToInt32(r["EmpReqYearcode"])
-                                            : 0;
-
-                    //------OldCell DATA-----
-                    //model.EmpId = Convert.ToInt32(r["Emp_Id"]);
-                    //model.EmpCode = r["Emp_Code"]?.ToString();
-                    //model.Name = r["Emp_Name"]?.ToString();
-                    //model.EntryDate = r["Entry_Date"] != DBNull.Value
-                    //                  ? Convert.ToDateTime(r["Entry_Date"]).ToString("dd/MM/yyyy")
-                    //                  : "";
-
-                    //model.Branch = r["CC"]?.ToString();
-                    ////model.des = r["DesigId"]?.ToString();
-                    ////model.DeptId = r["DeptId"]?.ToString();
-                    ////model.CategoryId = r["CategoryId"]?.ToString();
-
-                    //model.DOB = r["DOB"] != DBNull.Value ? Convert.ToDateTime(r["DOB"]).ToString("dd/MM/yyyy") : "";
-                    //model.DateOfJoining = r["DateOfJoining"] != DBNull.Value ? Convert.ToDateTime(r["DateOfJoining"]).ToString("dd/MM/yyyy") : "";
-                    //model.ResignationDate = r["ResignationDate"] != DBNull.Value ? Convert.ToDateTime(r["ResignationDate"]).ToString("dd/MM/yyyy") : "";
-
-                    ////model.ShiftId = r["ShiftId"]?.ToString();
-                    //model.Gender = r["Gender"]?.ToString();
-                    //model.NatureOfDuties = r["NatureOfDuties"]?.ToString();
-                    //model.Active = r["Active"]?.ToString();
-
-                    ////model.CardNo = r["CardNo"]?.ToString();
-                    ////model.ApplicationCode = r["ApplicationCode"]?.ToString();
-                    ////model.EmpType = r["EmpType"]?.ToString();
-                    ////model.WagesType = r["WagesType"]?.ToString();
-                    ////model.GradeId = r["GradeId"]?.ToString();
-
-                    //model.DateOfConfirmation = r["DateOfConfirm"] != DBNull.Value ? Convert.ToDateTime(r["DateOfConfirm"]).ToString("dd/MM/yyyy") : "";
-                    //model.ProbationEndDate = r["DateOfProbation"] != DBNull.Value ? Convert.ToDateTime(r["DateOfProbation"]).ToString("dd/MM/yyyy") : "";
-
-                    //model.JobReference1 = r["Referance1"]?.ToString();
-                    ////model.ui = r["Uid"]?.ToString();
-
-                    ////model.EmpReqNo = r["EmpReqNo"]?.ToString();
-                    ////model.EmpReqYearcode = r["EmpReqYearcode"] != DBNull.Value ? Convert.ToInt32(r["EmpReqYearcode"]) : 0;
-                    ////model.EmpReqEntryId = r["EmpReqEntryId"] != DBNull.Value ? Convert.ToInt32(r["EmpReqEntryId"]) : 0;
-
-                    //model.ActualEntryDate = r["ActualEntryDate"] != DBNull.Value
-                    //                      ? Convert.ToDateTime(r["ActualEntryDate"]).ToString("dd/MM/yyyy")
-                    //                      : "";
-
-                    //model.ActualEntrybyId = r["ActualEntrybyId"] != DBNull.Value ? Convert.ToInt32(r["ActualEntrybyId"]) : 0;
-                    //model.LastUpdatedBy = Convert.ToInt32(r["LastUpdatedBy"]?.ToString());
-                    //model.LastUpdationDate = r["LastUpdationDate"] != DBNull.Value ? Convert.ToDateTime(r["LastUpdationDate"]).ToString("dd/MM/yyyy") : "";
-
-                    //model.EntryByMachineName = r["EntryByMachineName"]?.ToString();
-                    ////model.IPAddress = r["IPAddress"]?.ToString();
-
-                    //model.MobileNo = r["MobileNo1"]?.ToString();
-                    //model.MobileNo2 = r["MobileNo2"]?.ToString();
-                    //model.EmailId = r["EmailId"]?.ToString();
-                }
-
-                /*TABLE 1 → ALLOWANCE/DEDUCTION GRID*/
-                if (DS.Tables.Count > 1 && DS.Tables[1].Rows.Count > 0)
-                {
-                    var AllowanceList = new List<EmployeeMasterModel>();
-
-                    foreach (DataRow row in DS.Tables[1].Rows)
-                    {
-                        AllowanceList.Add(new EmployeeMasterModel
-                        {
-                            SrNo = Convert.ToInt32(row["SeqNo"]),
-                            SalaryHeadId = Convert.ToInt32(row["SalHeadEntryId"]),
-                            SalaryHead = row["SalaryHead"].ToString(),
-                            PaymentMode = row["Mode"].ToString(),
-                            Percent = row["Percentage"] != DBNull.Value ? Convert.ToDecimal(row["Percentage"]) : 0,
-                            AllowanceAmount = row["Amount"] != DBNull.Value ? Convert.ToDecimal(row["Amount"]) : 0,
-                            AllowanceType = row["IncDecType"].ToString(),
-                            PartyPay = row["PartofPaySlip"].ToString(),
-                            //PercentageOfSalaryHeadID = row["PercentageOfSalaryHeadID"] != DBNull.Value
-                            //                           ? Convert.ToInt32(row["PercentageOfSalaryHeadID"])
-                            //                           : 0
-                        });
-                    }
-
-                    model.AllowanceDeductionList = AllowanceList;
-                }
-
-                /* ---------------------------------------------------
-                 * TABLE 2 → EDUCATION GRID
-                 * ---------------------------------------------------*/
-                if (DS.Tables.Count > 2 && DS.Tables[2].Rows.Count > 0)
-                {
-                    var EduList = new List<EmployeeMasterModel>();
-
-                    foreach (DataRow row in DS.Tables[2].Rows)
-                    {
-                        EduList.Add(new EmployeeMasterModel
-                        {
-                            Edu_SrNo = Convert.ToInt32(row["SeqNo"]),
-                            Qualification = row["Qualification"]?.ToString(),
-                            Univercity_Sch = row["Univercity"]?.ToString(),
-                            Per = row["Percentage"] != DBNull.Value ? Convert.ToDecimal(row["Percentage"]) : 0,
-                            InYear = Convert.ToInt32(row["PassoutYear"]?.ToString()),
-                            Remark = row["Remarks"]?.ToString()
-                        });
-                    }
-
-                    model.EducationList = EduList;
-                }
-
-                /* ---------------------------------------------------
-                 * TABLE 3 → EXPERIENCE GRID
-                 * ---------------------------------------------------*/
-                if (DS.Tables.Count > 3 && DS.Tables[3].Rows.Count > 0)
-                {
-                    var ExpList = new List<EmployeeMasterModel>();
-
-                    foreach (DataRow row in DS.Tables[3].Rows)
-                    {
-                        ExpList.Add(new EmployeeMasterModel
-                        {
-                            Exp_SrNo = Convert.ToInt32(row["SeqNo"]),
-                            CompanyName = row["CompanyName"]?.ToString(),
-                            CFromDate = row["FromDate"] != DBNull.Value ? Convert.ToDateTime(row["FromDate"]).ToString("dd/MM/yyyy") : "",
-                            CToDate = row["ToDate"] != DBNull.Value ? Convert.ToDateTime(row["ToDate"]).ToString("dd/MM/yyyy") : "",
-                            Designation = row["Designation"]?.ToString(),
-                            Salary = row["NetSalaryAmt"] != DBNull.Value ? Convert.ToDecimal(row["NetSalaryAmt"]) : 0,
-                            GrossSalary = row["GrossSalary"] != DBNull.Value ? Convert.ToDecimal(row["GrossSalary"]) : 0,
-                            Country = row["Country"]?.ToString(),
-                            City = row["City"]?.ToString(),
-                            ContactPersonname = row["ContactPersonname"]?.ToString(),
-                            ContactPersonNumber = row["ContactPersonNumber"]?.ToString(),
-                            HRPersonName = row["HRPersonName"]?.ToString(),
-                            HRContactNo = row["HRContactNo"]?.ToString(),
-                            ExeRemark = row["Remarks"]?.ToString()
-                        });
-                    }
-
-                    model.ExperienceList = ExpList;
-                }
-
-                /* ---------------------------------------------------
-                 * TABLE 4 → NATURE OF JOB GRID
-                 * ---------------------------------------------------*/
-                if (DS.Tables.Count > 4 && DS.Tables[4].Rows.Count > 0)
-                {
-                    var JobList = new List<EmployeeMasterModel>();
-
-                    foreach (DataRow row in DS.Tables[4].Rows)
-                    {
-                        JobList.Add(new EmployeeMasterModel
-                        {
-                            SrNo = Convert.ToInt32(row["SeqNo"]),
-                            NatureOfDuties = row["NatureOfJob"]?.ToString()
-                        });
-                    }
-
-                    model.NatureOfJobList = JobList;
-                }
-
+            if (DS == null || DS.Tables.Count == 0)
                 return model;
-            }
-            catch
+
+            // ============ TABLE 0 : EMPLOYEE MAIN DETAILS ============
+            DataTable t0 = DS.Tables[0];
+
+            if (t0.Rows.Count > 0)
             {
-                throw;
+                DataRow r = t0.Rows[0];
+
+                model.EmpId = SafeInt(r["Emp_Id"]);
+                model.EmpCode = SafeString(r["Emp_Code"]);
+                model.Name = SafeString(r["Emp_Name"]);
+                model.Department = SafeString(r["DeptId"]);
+                model.Category = SafeString(r["CategoryId"]);
+                model.Designation = SafeString(r["DesigId"]);
+                model.Shift = SafeString(r["ShiftId"]);
+                model.Branch = SafeString(r["CC"]);
+                model.CTC = SafeDecimal(r["CTC"]);
+                model.NetSalaryAmt = SafeDecimal(r["NetSalaryAmt"]);
+
+                model.MobileNo = SafeString(r["MobileNo1"]);
+                model.MobileNo2 = SafeString(r["MobileNo2"]);
+                model.EmailId = SafeString(r["EmailId"]);
+                model.CurrentAddress = SafeString(r["CurrentAddress"]);
+                model.permanentAddress = SafeString(r["PermanentAddress"]);
+
+                model.EmergencyContact = SafeString(r["EmergancyContactNo"]);
+                model.EmergencyContactRelation = SafeString(r["EmergancyContactRelation"]);
+                model.EmergencyContactRelationName = SafeString(r["EmergancyContactName"]);
+
+                model.Gender = SafeString(r["Gender"]);
+                model.BloodGroup = SafeString(r["BloodGroup"]);
+                model.Nationality = SafeString(r["Nationality"]);
+                model.MaritalStatus = SafeString(r["MaritalStatus"]);
+
+                model.EntryDate = SafeDate(r["Entry_Date"]);
+                model.DOB = SafeDate(r["DOB"]);
+                model.DateOfJoining = SafeDate(r["DateOfJoining"]);
+                model.ResignationDate = SafeDate(r["ResignationDate"]);
+                model.ProbationEndDate = SafeDate(r["DateOfProbation"]);
+                model.DateOfConfirmation = SafeDate(r["DateOfConfirm"]);
+
+                model.NatureOfDuties = SafeString(r["NatureOfDuties"]);
+                model.Active = SafeString(r["Active"]);
+
+                model.Desigation = SafeString(r["ReportingDesignationId"]);
+                model.ProbationPeriod = SafeInt(r["ProbationPeriod"], 0);
+
+                model.ReportingMg = SafeString(r["ReportingManager"]);
+                model.EmployeeType = SafeString(r["EmpType"]);
+                model.JobReference1 = SafeString(r["Referance1"]);
+                model.JobReference2 = SafeString(r["Referencetwo"]);
+                model.JoiningThrough = SafeString(r["Through"]);
+
+                model.ThumbUnPress = SafeString(r["ThumbPath"]);
+                model.PassportNo = SafeString(r["NationalIdPassport"]);
+                model.WorkPeritVisa = SafeString(r["WorkPermitVisa"]);
+                model.DrivingLicenseNo = SafeString(r["DrivingLicence"]);
+                model.MedicalInsuranceDetail = SafeString(r["MedicalInsuranceDetail"]);
+
+                model.BankName = SafeString(r["BankName"]);
+                model.AccountNo = SafeString(r["BankAccountNo"]);
+                model.PANNo = SafeString(r["PANNOTaxIdentificationNo"]);
+                model.AdharNo = SafeString(r["AadharCardNoCountryCardNo"]);
+                model.SwiftCode = SafeString(r["IBANSwiftCode"]);
+                model.PaymentMode = SafeString(r["PaymentMode"]);
+
+                model.PFNo = SafeString(r["PFNO"]);
+                model.ESINo = SafeString(r["ESINo"]);
+
+                model.GrossSalary = SafeDecimal(r["GrossSalary"]);
+                model.BasicSalary = SafeDecimal(r["BasicSalary"]);
+
+                model.SalaryBasis = SafeDecimal(r["SalaryBasisHrs"]);
+                model.SalaryBasisHr = SafeInt(r["SalaryBasisHrs"]);
+                model.SalaryCalculation = SafeString(r["SalaryCalculationBasisOn"]);
+                model.PFApplicable = SafeString(r["PFApplicable"]);
+                model.ApplyPFFonmAmt = SafeDecimal(r["ApplyPFonAmt"]);
+                model.ApplyESIFonmAmt = SafeDecimal(r["ApplyESIonAmt"]);
+                model.OTApplicable = SafeString(r["OTApplicable"]);
+                model.LeaveApplicable = SafeString(r["LeaveApplicable"]);
+                model.ESIApplicable = SafeString(r["ESIApplicable"]);
+                model.LateMarkingCalculationApplicable = SafeString(r["LateMarkingApplicable"]);
+
+                model.FixSalaryAmt = SafeDecimal(r["FixSalaryAmount"]);
+                model.NoticPeriod = SafeInt(r["NoticePeriod"]);
+                model.GratutyEligibility = SafeString(r["GratutyEligibility"]);
+
+                model.EntryByMachineName = SafeString(r["EntryByMachineName"]);
+                model.LastUpdationDate = SafeString(r["LastUpdationDate"]);
+                model.IPAddress = SafeString(r["IPAddress"]);
+                model.ApprovedBy = SafeInt(r["ApprovedBy"]);
+                model.ActualEntrybyId = SafeInt(r["ActualEntrybyId"]);
+                model.LastUpdatedBy = SafeInt(r["LastUpdatedBy"]);
+                model.ApprovalDate = SafeDate(r["ApprovalDate"]);
+                model.ActualEntryDate = SafeDate(r["ActualEntryDate"]);
+
+                model.Branches = SafeStringList(r["BranchList"]);
+                model.CardNo = SafeString(r["CardNo"]);
+                model.ApplicationCode = SafeString(r["ApplicationCode"]);
+
+                model.GradeId = SafeInt(r["GradeId"], 0);
+                model.PhotographPath = SafeString(r["PhotographPath"]);
+                model.SignaturePath = SafeString(r["SignaturePath"]);
+                model.WagesType = SafeString(r["WagesType"]);
+
+                model.EmpReqNo = SafeString(r["EmpReqNo"]);
+                model.EmpReqEntryId = SafeInt(r["EmpReqEntryId"], 0);
+                model.EmpReqYearcode = SafeInt(r["EmpReqYearcode"], 0);
+                model.EmpReqDate = SafeDate(r["EmpReqDate"]);
             }
+
+            // ============ TABLE 1 : ALLOWANCE / DEDUCTION ============
+            if (DS.Tables.Count > 1)
+            {
+                model.AllowanceDeductionList = new List<EmployeeMasterModel>();
+
+                foreach (DataRow row in DS.Tables[1].Rows)
+                {
+                    model.AllowanceDeductionList.Add(new EmployeeMasterModel
+                    {
+                        SrNo = SafeInt(row["SeqNo"], 0),
+                        SalaryHeadId = SafeInt(row["SalHeadEntryId"], 0),
+                        SalaryHead = SafeString(row["SalaryHead"]),
+                        PaymentMode = SafeString(row["Mode"]),
+                        Percent = SafeDecimal(row["Percentage"], 0),
+                        AllowanceAmount = SafeDecimal(row["Amount"], 0),
+                        AllowanceType = SafeString(row["IncDecType"]),
+                        PartyPay = SafeString(row["PartofPaySlip"])
+                    });
+                }
+            }
+
+            // ============ TABLE 2 : EDUCATION GRID ============
+            if (DS.Tables.Count > 2)
+            {
+                model.EducationList = new List<EmployeeMasterModel>();
+
+                foreach (DataRow row in DS.Tables[2].Rows)
+                {
+                    model.EducationList.Add(new EmployeeMasterModel
+                    {
+                        Edu_SrNo = SafeInt(row["SeqNo"], 0),
+                        Qualification = SafeString(row["Qualification"]),
+                        Univercity_Sch = SafeString(row["Univercity"]),
+                        Per = SafeDecimal(row["Percentage"], 0),
+                        InYear = SafeInt(row["PassoutYear"], 0),
+                        Remark = SafeString(row["Remarks"])
+                    });
+                }
+            }
+
+            // ============ TABLE 3 : EXPERIENCE GRID ============
+            if (DS.Tables.Count > 3)
+            {
+                model.ExperienceList = new List<EmployeeMasterModel>();
+
+                foreach (DataRow row in DS.Tables[3].Rows)
+                {
+                    model.ExperienceList.Add(new EmployeeMasterModel
+                    {
+                        Exp_SrNo = SafeInt(row["SeqNo"], 0),
+                        CompanyName = SafeString(row["CompanyName"]),
+                        CFromDate = SafeDate(row["FromDate"], "dd/MM/yyyy"),
+                        CToDate = SafeDate(row["ToDate"], "dd/MM/yyyy"),
+                        Designation = SafeString(row["Designation"]),
+                        Salary = SafeDecimal(row["NetSalaryAmt"], 0),
+                        GrossSalary = SafeDecimal(row["GrossSalary"], 0),
+                        Country = SafeString(row["Country"]),
+                        City = SafeString(row["City"]),
+                        ContactPersonname = SafeString(row["ContactPersonname"]),
+                        ContactPersonNumber = SafeString(row["ContactPersonNumber"]),
+                        HRPersonName = SafeString(row["HRPersonName"]),
+                        HRContactNo = SafeString(row["HRContactNo"]),
+                        ExeRemark = SafeString(row["Remarks"])
+                    });
+                }
+            }
+
+            // ============ TABLE 4 : NATURE OF JOB ============
+            if (DS.Tables.Count > 4)
+            {
+                model.NatureOfJobList = new List<EmployeeMasterModel>();
+
+                foreach (DataRow row in DS.Tables[4].Rows)
+                {
+                    model.NatureOfJobList.Add(new EmployeeMasterModel
+                    {
+                        SrNo = SafeInt(row["SeqNo"], 0),
+                        NatureOfDuties = SafeString(row["NatureOfJob"])
+                    });
+                }
+            }
+
+            return model;
+        }
+
+        // ================= SAFE CONVERT FUNCTIONS =================
+
+        private string SafeString(object value)
+        {
+            if (value == null || value == DBNull.Value)
+                return string.Empty;
+
+            return value.ToString()?.Trim() ?? string.Empty;
+        }
+
+        private int? SafeInt(object value)
+        {
+            if (value == null || value == DBNull.Value)
+                return null;
+
+            string s = value.ToString()?.Trim();
+            if (string.IsNullOrWhiteSpace(s))
+                return null;
+
+            return int.TryParse(s, out int result) ? result : null;
+        }
+
+        private int SafeInt(object value, int defaultValue)
+        {
+            return SafeInt(value) ?? defaultValue;
+        }
+
+        private decimal? SafeDecimal(object value)
+        {
+            if (value == null || value == DBNull.Value)
+                return null;
+
+            string s = value.ToString()?.Trim();
+            if (string.IsNullOrWhiteSpace(s))
+                return null;
+
+            return decimal.TryParse(s, out decimal result) ? result : null;
+        }
+
+        private decimal SafeDecimal(object value, decimal defaultValue)
+        {
+            return SafeDecimal(value) ?? defaultValue;
+        }
+
+        private string SafeDate(object value, string format = "dd/MMM/yyyy")
+        {
+            if (value == null || value == DBNull.Value)
+                return string.Empty;
+
+            if (DateTime.TryParse(value.ToString(), out DateTime dt))
+                return dt.ToString(format);
+
+            return string.Empty;
+        }
+
+        private List<string> SafeStringList(object value)
+        {
+            if (value == null || value == DBNull.Value)
+                return new List<string>();
+
+            return value.ToString()
+                        .Split(',')
+                        .Select(x => x.Trim())
+                        .Where(x => !string.IsNullOrWhiteSpace(x))
+                        .ToList();
         }
 
         public async Task<EmployeeMasterModel> GetSearchData(EmployeeMasterModel model, string EmpCode, string ReportType)
@@ -1447,6 +1402,9 @@ namespace eTactWeb.Data.DAL
                             cmd.Parameters.AddWithValue("@CategoryId", model.Category);
                             cmd.Parameters.AddWithValue("@desigEntryid", model.Designation);
                             cmd.Parameters.AddWithValue("@ShiftId", model.Shift);
+                            cmd.Parameters.AddWithValue("@ApplicationCode", model.ApplicationCode);
+                            cmd.Parameters.AddWithValue("@CardNo", model.CardNo);
+                            cmd.Parameters.AddWithValue("@NatureOfDuties", model.NatureOfDuties);
 
                             // Branch
                             cmd.Parameters.AddWithValue("@CC", model.Branch ?? "");
@@ -1490,6 +1448,8 @@ namespace eTactWeb.Data.DAL
                             cmd.Parameters.AddWithValue("@GrossSalary", model.GrossSalary);
                             cmd.Parameters.AddWithValue("@BasicSalary", model.BasicSalary);
                             cmd.Parameters.AddWithValue("@CTC", model.CTC);
+                            cmd.Parameters.AddWithValue("@NetSalaryAmt", model.NetSalaryAmt);
+
 
                             cmd.Parameters.AddWithValue("@PFApplicable", model.PFApplicable);
                             cmd.Parameters.AddWithValue("@ESIApplicable", model.ESIApplicable);
@@ -1515,6 +1475,8 @@ namespace eTactWeb.Data.DAL
                             cmd.Parameters.AddWithValue("@NoticePeriod", model.NoticPeriod);
                             cmd.Parameters.AddWithValue("@GratutyEligibility", model.GratutyEligibility ?? "");
                             cmd.Parameters.AddWithValue("@IPAddress", model.IPAddress ?? "");
+                            cmd.Parameters.AddWithValue("@Active", model.Active ?? "");
+
 
                             // ---------------------- AUDIT ----------------------
                             cmd.Parameters.AddWithValue("@EntryByMachineName", model.EntryByMachineName ?? "");
@@ -1580,6 +1542,9 @@ namespace eTactWeb.Data.DAL
                     cmd.Parameters.AddWithValue("@CategoryId", model.Category);
                     cmd.Parameters.AddWithValue("@desigEntryid", model.Designation);
                     cmd.Parameters.AddWithValue("@ShiftId", model.Shift);
+                    cmd.Parameters.AddWithValue("@ApplicationCode", model.ApplicationCode);
+                    cmd.Parameters.AddWithValue("@CardNo", model.CardNo);
+                    cmd.Parameters.AddWithValue("@NatureOfDuties", model.NatureOfDuties);
 
                     // Branch
                     cmd.Parameters.AddWithValue("@CC", model.Branch ?? "");
@@ -1623,6 +1588,7 @@ namespace eTactWeb.Data.DAL
                     cmd.Parameters.AddWithValue("@GrossSalary", model.GrossSalary);
                     cmd.Parameters.AddWithValue("@BasicSalary", model.BasicSalary);
                     cmd.Parameters.AddWithValue("@CTC", model.CTC);
+                    cmd.Parameters.AddWithValue("@NetSalaryAmt", model.NetSalaryAmt);
 
                     cmd.Parameters.AddWithValue("@PFApplicable", model.PFApplicable);
                     cmd.Parameters.AddWithValue("@ESIApplicable", model.ESIApplicable);
@@ -1648,6 +1614,8 @@ namespace eTactWeb.Data.DAL
                     cmd.Parameters.AddWithValue("@NoticePeriod", model.NoticPeriod);
                     cmd.Parameters.AddWithValue("@GratutyEligibility", model.GratutyEligibility ?? "");
                     cmd.Parameters.AddWithValue("@IPAddress", model.IPAddress ?? "");
+                    cmd.Parameters.AddWithValue("@Active", model.Active ?? "");
+
 
                     // ---------------------- AUDIT ----------------------
                     cmd.Parameters.AddWithValue("@EntryByMachineName", model.EntryByMachineName ?? "");
