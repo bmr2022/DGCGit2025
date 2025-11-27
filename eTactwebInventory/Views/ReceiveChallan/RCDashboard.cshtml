@@ -526,37 +526,40 @@
         }
 
         $("#btnGridExcel").click(function () {
-            const table = document.querySelector(".RCDashboard");
-            const rows = table.querySelectorAll("tr");
-            const data = [];
+            // const table = document.querySelector(".RCDashboard");
+            // const rows = table.querySelectorAll("tr");
+            // const data = [];
 
-            const headerRow = rows[0];
-            const headerData = [];
+            // const headerRow = rows[0];
+            // const headerData = [];
 
-            headerRow.querySelectorAll("th").forEach((cell) => {
-                // cell.style.backgroundColor = "#fcba03";
-                headerData.push(cell.textContent);
-            });
+            // headerRow.querySelectorAll("th").forEach((cell) => {
+            //     cell.style.backgroundColor = "#fcba03";
+            //     headerData.push(cell.textContent);
+            // });
 
-            data.push(headerData);
+            // data.push(headerData);
 
-            for (let i = 1; i < rows.length; i++) {
-                const rowData = [];
-                rows[i].querySelectorAll("td").forEach((cell) => {
-                    rowData.push(cell.textContent);
-                });
-                data.push(rowData);
-            }
+            // for (let i = 1; i < rows.length; i++) {
+            //     const rowData = [];
+            //     rows[i].querySelectorAll("td").forEach((cell) => {
+            //         rowData.push(cell.textContent);
+            //     });
+            //     data.push(rowData);
+            // }
 
-            const ws = XLSX.utils.aoa_to_sheet(data);
+            // const ws = XLSX.utils.aoa_to_sheet(data);
 
-            ws["!cols"] = [{ wch: 15 }, { wch: 15 }, { wch: 15 }, /* ... */];
+            // ws["!cols"] = [{ wch: 15 }, { wch: 15 }, { wch: 15 }, /* ... */];
 
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Sheet 1");
+            // const wb = XLSX.utils.book_new();
+            // XLSX.utils.book_append_sheet(wb, ws, "Sheet 1");
 
 
-            XLSX.writeFile(wb, "RCDashboard.xlsx");
+            // XLSX.writeFile(wb, "RCDashboard.xlsx");
+
+                window.location = '/ReceiveChallan/ExportRCDashboardToExcel';
+
         });
 
     </script>
