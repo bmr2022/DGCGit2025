@@ -411,17 +411,14 @@ namespace eTactWeb.Controllers
             try
             {
                 DataTable dt = new DataTable();
-
-
-                dt.Columns.Add("Account_Code", typeof(long));
-                dt.Columns.Add("DebCredCode", typeof(string));
-                dt.Columns.Add("Party_Code", typeof(string));
-                dt.Columns.Add("Entry_Date", typeof(DateTime));
                 dt.Columns.Add("Account_Name", typeof(string));
+                dt.Columns.Add("Party_Code", typeof(string));
                 dt.Columns.Add("DisplayName", typeof(string));
-                dt.Columns.Add("ParentAccountCode", typeof(long));
-                dt.Columns.Add("MainGroup", typeof(string));
                 dt.Columns.Add("AccountType", typeof(string));
+                dt.Columns.Add("ParentAccount", typeof(long));
+
+                dt.Columns.Add("MainGroup", typeof(string));
+              
                 dt.Columns.Add("SubGroup", typeof(string));
                 dt.Columns.Add("SubSubGroup", typeof(string));
                 dt.Columns.Add("UnderGroup", typeof(string));
@@ -495,6 +492,13 @@ namespace eTactWeb.Controllers
                 dt.Columns.Add("DiscountCategory", typeof(string));
                 dt.Columns.Add("DiscCategoryEntryId", typeof(long));
                 dt.Columns.Add("GroupDiscountCategory", typeof(long));
+                dt.Columns.Add("Account_Code", typeof(long));
+                dt.Columns.Add("DebCredCode", typeof(string));
+
+                dt.Columns.Add("Entry_Date", typeof(DateTime));
+
+
+                
 
                 int rowIndex = 1;
                 foreach (var excelRow in request.ExcelData)
@@ -546,7 +550,7 @@ namespace eTactWeb.Controllers
 
 
 
-                                                                else if (dbCol == "ParentAccountCode")  // <-- Special handling for ParentCode
+                                                                else if (dbCol == "ParentAccount")  // <-- Special handling for ParentCode
                                 {
                                     string ParentAccName = value.ToString().Trim();
 
