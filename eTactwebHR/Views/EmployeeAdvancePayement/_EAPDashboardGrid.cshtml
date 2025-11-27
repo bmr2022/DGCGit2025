@@ -97,20 +97,57 @@
 								<div id="container">
 									<div class="d-flex">
 										<div id="viewCursorDiv-@Cntr">
-											<a class="table-link link-success" asp-action="EmployeeAdvancePayment" asp-route-Mode="V" asp-route-ID="@item.AdvanceEntryId" asp-route-yearCode="@item.AdvanceYearCode">
-												<span class="fa-stack">
-													<i class="fa fa-square fa-stack-2x"></i>
-													<i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
-												</span>
-											</a>
+											@if ((item.HRApprovedbyEmpid == null || item.HRApprovedbyEmpid == 0)
+																		&& (item.FinanceApprovalEmpid == null || item.FinanceApprovalEmpid == 0)
+																		&& (item.CanceledByEmpId == null || item.CanceledByEmpId == 0))
+											{
+												<a class="table-link link-success"
+												   asp-action="EmployeeAdvancePayment"
+												   asp-route-Mode="V"
+												   asp-route-ID="@item.AdvanceEntryId"
+												   asp-route-yearCode="@item.AdvanceYearCode">
+													<span class="fa-stack">
+														<i class="fa fa-square fa-stack-2x"></i>
+														<i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+													</span>
+												</a>
+											}
+											else
+											{
+												<a class="table-link link-success disabled-link" href="javascript:void(0);">
+													<span class="fa-stack">
+														<i class="fa fa-square fa-stack-2x"></i>
+														<i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+													</span>
+												</a>
+											}
 										</div>
+
 										<div id="editCursorDiv-@Cntr">
-											<a class="table-link link-primary" asp-action="EmployeeAdvancePayment" asp-route-Mode="U" asp-route-ID="@item.AdvanceEntryId" asp-route-yearCode="@item.AdvanceYearCode">
-												<span class="fa-stack">
-													<i class="fa fa-square fa-stack-2x"></i>
-													<i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-												</span>
-											</a>
+											@if ((item.HRApprovedbyEmpid == null || item.HRApprovedbyEmpid == 0)
+																		&& (item.FinanceApprovalEmpid == null || item.FinanceApprovalEmpid == 0)
+																		&& (item.CanceledByEmpId == null || item.CanceledByEmpId == 0))
+											{
+												<a class="table-link link-primary"
+												   asp-action="EmployeeAdvancePayment"
+												   asp-route-Mode="U"
+												   asp-route-ID="@item.AdvanceEntryId"
+												   asp-route-yearCode="@item.AdvanceYearCode">
+													<span class="fa-stack">
+														<i class="fa fa-square fa-stack-2x"></i>
+														<i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+													</span>
+												</a>
+											}
+											else
+											{
+												<a class="table-link link-primary disabled-link" href="javascript:void(0);">
+													<span class="fa-stack">
+														<i class="fa fa-square fa-stack-2x"></i>
+														<i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+													</span>
+												</a>
+											}
 										</div>
 										<div id="deleteCursorDiv-@Cntr">
 											<a class="table-link link-danger"
@@ -159,15 +196,15 @@
 							<td>@item.MgrApprovedbyEmpid</td>
 							<td>@item.MgrApprovedbyEmpName</td>
 							<td>@item.MgrApprovedbyEmpCode</td>
-							<td>@item.HRApprovedbyEmpid</td>
+							<td id="HRApprovedbyEmpid-@Cntr">@item.HRApprovedbyEmpid</td>
 							<td>@item.HRApprovedbyEmpName</td>
 							<td>@item.HRApprovedbyEmpCode</td>
 							<td>@item.HRApprovalDate</td>
-							<td>@item.FinanceApprovalEmpid</td>
+							<td id="FinanceApprovalEmpid-@Cntr">@item.FinanceApprovalEmpid</td>
 							<td>@item.FinanceApprovalEmpName</td>
 							<td>@item.FinanceApprovalEmpCode</td>
 							<td>@item.FinanceApprovalDate</td>
-							<td>@item.CanceledByEmpId</td>
+							<td id="CanceledByEmpId-@Cntr">@item.CanceledByEmpId</td>
 							<td>@item.CanceledByEmpName</td>
 							<td>@item.CanceledByEmpCode</td>
 							<td>@item.Canceled</td>
@@ -200,3 +237,13 @@
 		</tbody>
 	</table>
 </div>
+
+
+							<style>
+	.disabled-link {
+		cursor: not-allowed;
+		pointer-events: none;
+		opacity: 0.5; /* visually indicates disabled */
+	}
+
+							</style>
