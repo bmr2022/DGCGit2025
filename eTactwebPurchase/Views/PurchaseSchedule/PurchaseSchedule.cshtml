@@ -1527,7 +1527,7 @@
                 RemoveErrorCls('DeliveryDate');
             }
             if (mode === 'PSA') {
-                if ($('#Remarks').val().trim() === "") {
+                if ($('#Remarks').val().trim() === "" || $('#Remarks').val() == null) {
                     AddErrorCls('Remarks');
                     Err = 1;
                 } else {
