@@ -1896,6 +1896,8 @@ namespace eTactWeb.Data.DAL
                                     ProjQty1 = Convert.ToDecimal(row["ProjQty1"]),
                                     ProjQty2 = Convert.ToDecimal(row["ProjQty2"]),
                                     Qty = Convert.ToDecimal(row["Qty"]),
+                                    pendQty = Convert.ToDecimal(row["pendQty"]),
+                                    BillQty = Convert.ToDecimal(row["BillQty"]),
                                     Rate = Convert.ToDecimal(row["Rate"]),
                                     Rejper = Convert.ToDecimal(row["Rejper"]),
                                     Remark = row["Remark"].ToString(),

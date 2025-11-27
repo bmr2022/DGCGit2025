@@ -98,5 +98,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _ReceiveChallanDAL.GetFeatureOption();
         }
+        public async Task<ResponseResult> GetTotalAmount(RCDashboard model)
+        {
+            return await _ReceiveChallanDAL.GetTotalAmount(model);
+        }
     }
 }

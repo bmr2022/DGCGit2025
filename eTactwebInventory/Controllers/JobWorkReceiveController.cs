@@ -225,7 +225,43 @@ namespace eTactWeb.Controllers
                                 return View(model);
                             }
                         }
+                        if (Result.StatusText == "Unsuccess")
+                        {
+                            ViewBag.isSuccess = false;
+                            var input = "";
+                            if (Result?.Result != null)
+                            {
+                                if (Result.Result is string str)
+                                {
+                                    input = str;
+                                }
+                                else
+                                {
+                                    input = JsonConvert.SerializeObject(Result.Result);
+                                }
+
+                                TempData["ErrorMessage"] = input;
+                            }
+                            else
+                            {
+                                TempData["500"] = "500";
+                            }
+
+
+                            model = await BindModel(model);
+                            model.FinFromDate = HttpContext.Session.GetString("FromDate");
+                            model.FinToDate = HttpContext.Session.GetString("ToDate");
+                            model.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+                            model.CC = HttpContext.Session.GetString("Branch");
+                            //model.PreparedByEmp = HttpContext.Session.GetString("EmpName");
+                            model.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
+                            model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                            model.ItemDetailGrid = JobWorkReceiveDetail;
+
+                            return View(model);
+                        }
                     }
+                    
                     var model1 = await BindModel(null);
                     model1.FinFromDate = HttpContext.Session.GetString("FromDate");
                     model1.FinToDate = HttpContext.Session.GetString("ToDate");
@@ -472,27 +508,27 @@ namespace eTactWeb.Controllers
             var ChallanGrid = new DataTable();
             var todate = (DateTime.Today).ToString();
             //ChallanGrid.Columns.Add("SeqNo", typeof(int));
-            ChallanGrid.Columns.Add("EntryDate", typeof(DateTime));
+            ChallanGrid.Columns.Add("EntryDate", typeof(string));
             ChallanGrid.Columns.Add("EntryIdIssJw", typeof(int));
             ChallanGrid.Columns.Add("YearCodeIssJw", typeof(int));
             ChallanGrid.Columns.Add("IssChallanNo", typeof(string));
-            ChallanGrid.Columns.Add("IssChallanDate", typeof(DateTime));
+            ChallanGrid.Columns.Add("IssChallanDate", typeof(string));
             ChallanGrid.Columns.Add("Itemcode", typeof(int));
             ChallanGrid.Columns.Add("EntryIdRecJw", typeof(int));
             ChallanGrid.Columns.Add("YearCodeRecJw", typeof(int));
             ChallanGrid.Columns.Add("RecChallanNo", typeof(string));
-            ChallanGrid.Columns.Add("RecChallanDate", typeof(DateTime));
+            ChallanGrid.Columns.Add("RecChallanDate", typeof(string));
             ChallanGrid.Columns.Add("FinishItemCode", typeof(int));
             ChallanGrid.Columns.Add("AccountCode", typeof(int));
             ChallanGrid.Columns.Add("AdjQty", typeof(float));
             ChallanGrid.Columns.Add("CC", typeof(string));
             ChallanGrid.Columns.Add("AdjFormType", typeof(string));
-            ChallanGrid.Columns.Add("TillDate", typeof(DateTime));
+            ChallanGrid.Columns.Add("TillDate", typeof(string));
             ChallanGrid.Columns.Add("TotRecQty", typeof(decimal));
             ChallanGrid.Columns.Add("PendQty", typeof(decimal));
             ChallanGrid.Columns.Add("BOMQty", typeof(decimal));
             ChallanGrid.Columns.Add("BomRevNo", typeof(int));
-            ChallanGrid.Columns.Add("BOMRevDate", typeof(DateTime));
+            ChallanGrid.Columns.Add("BOMRevDate", typeof(string));
             ChallanGrid.Columns.Add("ProcessID", typeof(int));
             ChallanGrid.Columns.Add("BOMInd", typeof(string));
             ChallanGrid.Columns.Add("RecQty", typeof(decimal));
@@ -516,27 +552,27 @@ namespace eTactWeb.Controllers
                 ChallanGrid.Rows.Add(
                     new object[]
                     {
-                  ParseFormattedDate (todate),
+                  ParseFormattedDate(todate),
                     Item.EntryIdIssJw,
                     Item.YearCodeIssJw, //Item.IssYearCode,
                     Item.IssChallanNo ?? "",
-                    ParseFormattedDate (todate),
+                    ParseFormattedDate(todate),
                     Item.ItemCode,
                     Item.EntryIdRecJw,
                     Item.YearCodeRecJw,
                     Item.PreRecChallanNo ?? "",
-                 ParseFormattedDate (todate),
+                 ParseFormattedDate(todate),
                     Item.FinishItemCode,
                     Item.AccountCode,
                     Item.AdjQty,
                     Item.CC ?? "",
                     Item.AdjFormType ?? "",
-                   ParseFormattedDate (todate),
+                   ParseFormattedDate(todate),
                     Item.TotalRecQty,
                     Item.PendQty,
                     Item.BOMQty,
                     Item.BOMrevno,
-                    ParseFormattedDate (todate),
+                    ParseFormattedDate(todate),
                     Item.ProcessId,
                     Item.BOMInd ?? "",
                     Item.RecQty,

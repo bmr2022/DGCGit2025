@@ -110,6 +110,10 @@
             var ToDateBack = sessionStorage.getItem('ToDateBack');
             //var AttendanceEntryMethodTypeBack = sessionStorage.getItem('AttendanceEntryMethodTypeBack');
             //var DashboardTypeBack = sessionStorage.getItem('DashboardTypeBack');
+            var DashDepartmentBack = sessionStorage.getItem('DashDepartmentBack');
+            var DashCategoryBack = sessionStorage.getItem('DashCategoryBack');
+            var DashDesignationBack = sessionStorage.getItem('DashDesignationBack');
+            var DashEmployeeBack = sessionStorage.getItem('DashEmployeeBack');
             var GlobalSearchBack = sessionStorage.getItem('GlobalSearchBack');
 
             if (FromDateBack != null && FromDateBack != '') {
@@ -117,6 +121,10 @@
                 $('#ToDate').val(ToDateBack).trigger('change');
                 //$('#AttendanceEntryMethodTypeBack').val(AttendanceEntryMethodTypeBack).trigger('change');
                 //$('#DashboardType').val(DashboardTypeBack).trigger('change');
+                $('#DashDepartment').val(DashDepartmentBack).trigger('change');
+                $('#DashCategory').val(DashCategoryBack).trigger('change');
+                $('#DashDesignation').val(DashDesignationBack).trigger('change');
+                $('#DashEmployee').val(DashEmployeeBack).trigger('change');
                 $('#search-box').val(GlobalSearchBack);
             }
             GetSearchData();
@@ -131,6 +139,10 @@
             sessionStorage.removeItem('ToDateBack');
             //sessionStorage.removeItem('AttendanceEntryMethodTypeBack');
             //sessionStorage.removeItem('DashboardTypeBack');
+            sessionStorage.removeItem('DashDepartmentBack');
+            sessionStorage.removeItem('DashCategoryBack');
+            sessionStorage.removeItem('DashDesignationBack');
+            sessionStorage.removeItem('DashEmployeeBack');
             sessionStorage.removeItem('GlobalSearchBack');
 
             //AutoComplete('VDirectPurchaseBillMain', 'VendorName', 'VendorName', null);
@@ -395,6 +407,10 @@
             sessionStorage.setItem('ToDateBack', $('#ToDate').val());
             //sessionStorage.setItem('DashboardTypeBack', $('#DashboardType').val());
             //sessionStorage.setItem('AttendanceEntryMethodTypeBack', $('#AttendanceEntryMethodTypeBack').val());
+            sessionStorage.setItem('DashDepartmentBack', $('#DashDepartmentType').val());
+            sessionStorage.setItem('DashCategoryBack', $('#DashCategoryType').val());
+            sessionStorage.setItem('DashDesignationBack', $('#DashDesignationType').val());
+            sessionStorage.setItem('DashEmployeeBack', $('#DashEmployeeType').val());
             sessionStorage.setItem('GlobalSearchBack', $('#search-box').val());
 
             $.ajax({

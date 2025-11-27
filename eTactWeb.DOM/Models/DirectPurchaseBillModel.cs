@@ -21,6 +21,7 @@ public class DPBDashBoard : TimeStamp
     public string? DeliveryDate { get; set; }
     public int EntryID { get; set; }
     public string? FOC { get; set; }
+    public string? PurchaseFromDiffBranch { get; set; }
     public string? FromDate { get; set; }
     public string? ItemName { get; set; }
     public string? PartCode { get; set; }
@@ -404,7 +405,11 @@ public class DirectPurchaseBillModel : DPBItemDetail
     public List<string> ErrorList { get; set; }  // ← ADD THIS
     //just for display
     public string? UniversalPartCode { get; set; }
-   
+    public string? PurchaseFromDatabase { get; set;}
+    public string? BranchSaleBillNo { get; set;}
+    public int? BranchSaleBillEntryId { get; set;}
+    public string? BranchSaleBillDate { get; set;}
+    public int? BranchSaleBillYearCode { get; set;}
     public string? AccountName { get; set; }
     public string? UniversalDescription { get; set; }
 

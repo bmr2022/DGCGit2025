@@ -35,18 +35,23 @@
                         <tr id="@Cntr" onclick="selection(this)" style="background-color:#d8d3cb">
                             
                             <th>@Cntr</th>
-                            <td href="javascript:void(0);" class="drillDownLink" style="color:blue;cursor:pointer;" onclick="callDrillDown(this)"
+                            <td href="javascript:void(0);" class="drillDownLink" style="color:blue;cursor:pointer;" onclick="callDrillDown(this,'TransactionLedger', getTransactionLedgerFilters())"
                                 data-controller="TransactionLedger"
                                 data-action="Index"
                                 data-seqno="@Cntr"
-                                data-clickname="ParentLedgerClick">
+                                data-targetform="GROUPDETAIL"
+                                data-clickname="ParentLedgerClick"
+                                data-groupledger="@item.ParentAccountCode">
                                 @item.ParentLedgerName<input type="hidden" value="@item.ParentAccountCode" id="ParentCode-@Cntr" />
                             </td>
-                            <td href="javascript:void(0);" class="drillDownLink" style="color:blue;cursor:pointer;" onclick="callDrillDown(this)"
+                            <td href="javascript:void(0);" class="drillDownLink" style="color:blue;cursor:pointer;" onclick="callDrillDown(this,'TransactionLedger', getTransactionLedgerFilters())"
                                 data-controller="TransactionLedger"
                                 data-action="Index"
                                 data-seqno="@Cntr"
-                                data-clickname="LedgerClick">
+                                data-targetform="MonthlySummary"
+                                data-clickname="LedgerClick"
+                                data-groupledger="@item.ParentAccountCode"
+                                data-accountcode="@item.AccountCode">
                                 @item.AccountName<input type="hidden" value="@item.AccountCode" id="AccountCode-@Cntr" />
                             </td>
                             <td id="OpnDr-@Cntr">@item.OpnDr</td>

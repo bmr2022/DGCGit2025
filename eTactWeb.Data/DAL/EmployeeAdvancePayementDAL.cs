@@ -217,6 +217,30 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
+        internal async Task<ResponseResult> DeleteByID(int advEntryId, int advYearCode, int actualEntryBy, string entryByMachineName)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "DELETE"));
+                SqlParams.Add(new SqlParameter("@AdvanceEntryId", advEntryId));
+                SqlParams.Add(new SqlParameter("@AdvanceYearCode", advYearCode));
+                SqlParams.Add(new SqlParameter("@ActualEntryBy", actualEntryBy));
+                SqlParams.Add(new SqlParameter("@RequestEntryByMachine", entryByMachineName));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("HRSPAdvanceMain", SqlParams);
+
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
 
         internal async Task<ResponseResult> SaveEmployeeAdvancePayment(HRAdvanceModel model)
         {

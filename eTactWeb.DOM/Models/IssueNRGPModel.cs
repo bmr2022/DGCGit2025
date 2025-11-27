@@ -129,6 +129,8 @@ namespace eTactWeb.DOM.Models
         public string unit { get; set; }
         public float Rate { get; set; }
         public decimal Amount { get; set; }
+        public decimal TotalAmount { get; set; }
+        
         public float PurchasePrice { get; set; }
         public float AltQty { get; set; }
         public string altUnit { get; set; }
@@ -159,6 +161,10 @@ namespace eTactWeb.DOM.Models
         public string eMailFromCC2 { get; set; }
         public string eMailFromCC3 { get; set; }
         public List<IssueNRGPDashboard>? INNDashboard { get; set; }
+        //===Pagination===
+        public int TotalRecords { get; set; }
+        public int PageNumber { get; set; } = 1;
+        public int PageSize { get; set; }
     }
 
     [Serializable]

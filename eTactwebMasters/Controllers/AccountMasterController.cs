@@ -233,96 +233,135 @@ namespace eTactWeb.Controllers
             // Get JSON from Session
             var json = HttpContext.Session.GetString("AccountList");
             if (string.IsNullOrEmpty(json))
-            {
                 return Content("No data found in session");
-            }
 
             var model = System.Text.Json.JsonSerializer.Deserialize<AccountMasterModel>(json);
 
             if (model == null || model.AccountMasterList == null || !model.AccountMasterList.Any())
-            {
                 return Content("No data found");
-            }
 
-            using (var package = new OfficeOpenXml.ExcelPackage())
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+            using (var package = new ExcelPackage())
             {
-                ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-
                 var ws = package.Workbook.Worksheets.Add("AccountMaster");
 
-                // ======================
-                // 🔵 HEADER ROW
-                // ======================
+                // ===============================================
+                // 🔵 FULL HEADER LIST (ALL COLUMNS)
+                // ===============================================
                 string[] headers =
                 {
-            "Account Code","Account Name","Parent Account Name","Parent Account Code","Sub Group",
-            "Main Group","Under Group","Com Address","Com Address 1","Pin Code","City","State",
-            "Country","GST No","Phone No","Mobile No","Contact Person","Party Type","GST Registered",
-            "GST Party Type","GST Tax Type","Segment","SSL No","PAN No","TDS","TDS Rate","TDS Party Category",
-            "Responsible Employee","Responsible Emp Contact","Sales Person Name","Sales Person Email",
-            "Sales Person Mobile","Purchase Person Name","Purchase Person Email","Purchase Person Mobile",
-            "QC Person Email","Website"
+            "Account Code","DebCred Code","Party Code","Entry Date","Account Name","Display Name",
+            "Parent Account","Main Group","Account Type","Sub Group","Sub Sub Group","Under Group",
+            "Com Address","Com Address 1","Pin Code","City","State","Country","Phone No","Mobile No",
+            "Contact Person","Party Type","GST Registered","GST No","GST Party Type","GST Tax Type",
+            "Segment","SSL No","PAN No","TDS","TDS Rate","TDS Party Category","Responsible Employee",
+            "Responsible Emp Contact","Sales Person Name","Sales Person Email","Sales Person Mobile",
+            "Purchase Person Name","Purchase Person Email","Purchase Person Mobile","QC Person Email",
+            "Website","Email","Range","Division","Commodity","Working Add1","Working Add2",
+            "Rate Of Int","Credit Limit","Credit Days","SSL","Bank Account No","Bank Address",
+            "Bank IFSC Code","Bank Swift Code","Interbranch Sale BILL","Sales Person Name 2",
+            "Sales Email 2","Sales Mobile 2","Approved By","Approved","Approval Date",
+            "Black Listed","Black Listed By","Year Code","UID","CC","Created By","Created On",
+            "Updated By","Updated On","Active","Parent Account Code"
         };
 
                 for (int i = 0; i < headers.Length; i++)
-                {
                     ws.Cells[1, i + 1].Value = headers[i];
-                }
 
-                // ======================
+                // ===============================================
                 // 🔵 DATA ROWS
-                // ======================
+                // ===============================================
                 int row = 2;
 
                 foreach (var x in model.AccountMasterList)
                 {
-                    ws.Cells[row, 1].Value = x.Account_Code;
-                    ws.Cells[row, 2].Value = x.Account_Name;
-                    ws.Cells[row, 3].Value = x.ParentAccountName;
-                    ws.Cells[row, 4].Value = x.ParentAccountCode;
-                    ws.Cells[row, 5].Value = x.SubGroup;
-                    ws.Cells[row, 6].Value = x.MainGroup;
-                    ws.Cells[row, 7].Value = x.UnderGroup;
-                    ws.Cells[row, 8].Value = x.ComAddress;
-                    ws.Cells[row, 9].Value = x.ComAddress1;
-                    ws.Cells[row, 10].Value = x.PinCode;
-                    ws.Cells[row, 11].Value = x.City;
-                    ws.Cells[row, 12].Value = x.State;
-                    ws.Cells[row, 13].Value = x.Country;
-                    ws.Cells[row, 14].Value = x.GSTNO;
-                    ws.Cells[row, 15].Value = x.PhoneNo;
-                    ws.Cells[row, 16].Value = x.MobileNo;
-                    ws.Cells[row, 17].Value = x.ContactPerson;
-                    ws.Cells[row, 18].Value = x.PartyType;
-                    ws.Cells[row, 19].Value = x.GSTRegistered;
-                    ws.Cells[row, 20].Value = x.GSTPartyTypes;
-                    ws.Cells[row, 21].Value = x.GSTTAXTYPE;
-                    ws.Cells[row, 22].Value = x.Segment;
-                    ws.Cells[row, 23].Value = x.SSLNo;
-                    ws.Cells[row, 24].Value = x.PANNO;
-                    ws.Cells[row, 25].Value = x.TDS;
-                    ws.Cells[row, 26].Value = x.TDSRate;
-                    ws.Cells[row, 27].Value = x.TDSPartyCategery;
-                    ws.Cells[row, 28].Value = x.ResponsibleEmployee;
-                    ws.Cells[row, 29].Value = x.ResponsibleEmpContactNo;
-                    ws.Cells[row, 30].Value = x.SalesPersonName;
-                    ws.Cells[row, 31].Value = x.SalesPersonEmailId;
-                    ws.Cells[row, 32].Value = x.SalesPersonMobile;
-                    ws.Cells[row, 33].Value = x.PurchPersonName;
-                    ws.Cells[row, 34].Value = x.PurchasePersonEmailId;
-                    ws.Cells[row, 35].Value = x.PurchMobileNo;
-                    ws.Cells[row, 36].Value = x.QCPersonEmailId;
-                    ws.Cells[row, 37].Value = x.WebSite_Add;
+                    int col = 1;
+
+                    ws.Cells[row, col++].Value = x.Account_Code;
+                    ws.Cells[row, col++].Value = x.DebCredCode;
+                    ws.Cells[row, col++].Value = x.Party_Code;
+                    ws.Cells[row, col++].Value = x.Entry_Date;
+                    ws.Cells[row, col++].Value = x.Account_Name;
+                    ws.Cells[row, col++].Value = x.DisplayName;
+                    ws.Cells[row, col++].Value = x.ParentAccountName;
+                    ws.Cells[row, col++].Value = x.MainGroup;
+                    ws.Cells[row, col++].Value = x.AccountType;
+                    ws.Cells[row, col++].Value = x.SubGroup;
+                    ws.Cells[row, col++].Value = x.SubSubGroup;
+                    ws.Cells[row, col++].Value = x.UnderGroup;
+                    ws.Cells[row, col++].Value = x.ComAddress;
+                    ws.Cells[row, col++].Value = x.ComAddress1;
+                    ws.Cells[row, col++].Value = x.PinCode;
+                    ws.Cells[row, col++].Value = x.City;
+                    ws.Cells[row, col++].Value = x.State;
+                    ws.Cells[row, col++].Value = x.Country;
+                    ws.Cells[row, col++].Value = x.PhoneNo;
+                    ws.Cells[row, col++].Value = x.MobileNo;
+                    ws.Cells[row, col++].Value = x.ContactPerson;
+                    ws.Cells[row, col++].Value = x.PartyType;
+                    ws.Cells[row, col++].Value = x.GSTRegistered;
+                    ws.Cells[row, col++].Value = x.GSTNO;
+                    ws.Cells[row, col++].Value = x.GSTPartyTypes;
+                    ws.Cells[row, col++].Value = x.GSTTAXTYPE;
+                    ws.Cells[row, col++].Value = x.Segment;
+                    ws.Cells[row, col++].Value = x.SSLNo;
+                    ws.Cells[row, col++].Value = x.PANNO;
+                    ws.Cells[row, col++].Value = x.TDS;
+                    ws.Cells[row, col++].Value = x.TDSRate;
+                    ws.Cells[row, col++].Value = x.TDSPartyCategery;
+                    ws.Cells[row, col++].Value = x.ResponsibleEmployee;
+                    ws.Cells[row, col++].Value = x.ResponsibleEmpContactNo;
+                    ws.Cells[row, col++].Value = x.SalesPersonName;
+                    ws.Cells[row, col++].Value = x.SalesPersonEmailId;
+                    ws.Cells[row, col++].Value = x.SalesPersonMobile;
+                    ws.Cells[row, col++].Value = x.PurchPersonName;
+                    ws.Cells[row, col++].Value = x.PurchasePersonEmailId;
+                    ws.Cells[row, col++].Value = x.PurchMobileNo;
+                    ws.Cells[row, col++].Value = x.QCPersonEmailId;
+                    ws.Cells[row, col++].Value = x.WebSite_Add;
+                    ws.Cells[row, col++].Value = x.EMail;
+                    ws.Cells[row, col++].Value = x.RANGE;
+                    ws.Cells[row, col++].Value = x.Division;
+                    ws.Cells[row, col++].Value = x.Commodity;
+                    ws.Cells[row, col++].Value = x.WorkingAdd1;
+                    ws.Cells[row, col++].Value = x.WorkingAdd2;
+                    ws.Cells[row, col++].Value = x.RateOfInt;
+                    ws.Cells[row, col++].Value = x.CreditLimit;
+                    ws.Cells[row, col++].Value = x.CreditDays;
+                    ws.Cells[row, col++].Value = x.SSL;
+                    ws.Cells[row, col++].Value = x.BankAccount_No;
+                    ws.Cells[row, col++].Value = x.BankAddress;
+                    ws.Cells[row, col++].Value = x.BankIFSCCode;
+                    ws.Cells[row, col++].Value = x.BankSwiftCode;
+                    ws.Cells[row, col++].Value = x.InterbranchSaleBILL;
+                    ws.Cells[row, col++].Value = x.salesperson_name;
+                    ws.Cells[row, col++].Value = x.salesemailid;
+                    ws.Cells[row, col++].Value = x.salesmobileno;
+                    ws.Cells[row, col++].Value = x.Approved_By;
+                    ws.Cells[row, col++].Value = x.Approved;
+                    ws.Cells[row, col++].Value = x.ApprovalDate;
+                    ws.Cells[row, col++].Value = x.BlackListed;
+                    ws.Cells[row, col++].Value = x.BlackListed_By;
+                    ws.Cells[row, col++].Value = x.YearCode;
+                    ws.Cells[row, col++].Value = x.Uid;
+                    ws.Cells[row, col++].Value = x.CC;
+                    ws.Cells[row, col++].Value = x.CreatedBy;
+                    ws.Cells[row, col++].Value = x.CreatedOn?.ToString("yyyy-MM-dd");
+                    ws.Cells[row, col++].Value = x.UpdatedBy;
+                    ws.Cells[row, col++].Value = x.UpdatedOn?.ToString("yyyy-MM-dd");
+                    ws.Cells[row, col++].Value = x.Active;
+                    ws.Cells[row, col++].Value = x.ParentAccountCode;
+                    
 
                     row++;
                 }
 
-                // Autofit
+                // Auto-fit
                 ws.Cells[ws.Dimension.Address].AutoFitColumns();
 
-                // Download Excel
-                var file = package.GetAsByteArray();
-                return File(file,
+                // Return File
+                return File(package.GetAsByteArray(),
                     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                     "AccountMaster.xlsx");
             }

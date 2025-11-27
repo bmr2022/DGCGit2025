@@ -609,7 +609,14 @@
         //     $.notify(" PartCode mapping is mandatory!", "error");
         //     return; // stop execution
         // }
-            let mandatoryFields = ["PartCode", "Unit", "HsnNo", "ItemGroup", "ItemCategory", "ItemServAssets"];
+            let mandatoryFields = [];
+            if (flag == "UpdateDataFromExcel") {
+                mandatoryFields = ["PartCode"];
+            }
+            else {
+                mandatoryFields = ["PartCode", "Unit", "HsnNo", "ItemGroup", "ItemCategory", "ItemServAssets"];
+            }
+            
         let missingFields = [];
         mandatoryFields.forEach(function (field) {
             if (!mapping[field] || mapping[field].trim() === "") {

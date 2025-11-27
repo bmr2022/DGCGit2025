@@ -285,5 +285,32 @@ namespace eTactwebHR.Controllers
 
         }
 
+
+        public async Task<IActionResult> DeleteByID(int advEntryId, int advYearCode, string entryByMachineName)
+        {
+            var actualEntryBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var Result = await _iemployeeAdvancePayement.DeleteByID(advEntryId, advYearCode, actualEntryBy, entryByMachineName).ConfigureAwait(false);
+
+            if (Result.StatusText == "Success" || Result.StatusText == "deleted" || Result.StatusCode == HttpStatusCode.Gone)
+            {
+                ViewBag.isSuccess = true;
+                TempData["410"] = "410";
+            }
+            else if (Result.StatusText == "Error" || Result.StatusCode == HttpStatusCode.Accepted)
+            {
+                ViewBag.isSuccess = true;
+                //  TempData["423"] = "423";
+                TempData["DeleteMessage"] = Result.StatusText;
+
+            }
+            else
+            {
+                ViewBag.isSuccess = false;
+                TempData["500"] = "500";
+
+            }
+
+            return RedirectToAction("EAPDashboard");
+        }
     }
 }

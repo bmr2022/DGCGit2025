@@ -34,9 +34,10 @@
                             <td href="javascript:void(0);" class="drillDownLink"
                                 data-controller="TransactionLedger"
                                 data-action="Index"
+                                data-targetform="TransactionLedgerSummary"
                                 data-month="@item.MonthNo"
                                 data-accountcode="@item.AccountCodeBack"
-                                onclick="callDrillDown(this)" style="cursor: pointer;color:blue">
+                                onclick="callDrillDown(this,'TransactionLedger', getTransactionLedgerFilters())" style="cursor: pointer;color:blue">
                                 @item.MonthFullName
                             </td>
                             <td id="totDrG-@Cntr">@item.TotalDr</td>

@@ -254,12 +254,14 @@
                                     </div>
                                     <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                         <label asp-for="AccountCode" class="form-label" style="color:  red;">Party Name</label>
-                                        <div class="form-check form-switch mx-3 w-auto position-absolute d-inline" style="width:180px">
+                                        @* <div class="form-check form-switch mx-3 w-auto position-absolute d-inline" style="width:180px">
                                             <input asp-for="PN1" class="form-check-input" type="checkbox" role="switch" readonly disabled />Show All
                                         </div>
                                         <select class="form-select" asp-for="AccountCode" style="width:220px;" asp-items="@(new SelectList(Model.AccountList,"Value","Text"))" readonly>
                                             <option value="">-Select-</option>
-                                        </select>
+                                        </select> *@
+                                        <input type="text" asp-for="AccountName" readonly id="AccountCodeText" class="form-control" value="@Model.AccountName" placeholder="Type Party Name..." />
+                                        <input type="hidden" asp-for="AccountCode" id="AccountCode" />
                                         <input type="hidden" value="@Model.AccountCode" id="hiddenAccountCode" />
                                     </div>
                                     <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
@@ -296,7 +298,7 @@
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="AmmNo" class="form-label" style="color:  red;">Amm No*</label>
-                                        <input asp-for="AmmNo" class="form-control" readonly disabled tabindex="-1" />
+                                        <input asp-for="AmmNo" class="form-control" readonly  tabindex="-1" />
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="AmmEffDate" class="form-label" style="color:  red;">Amm eff Date*</label>
@@ -310,15 +312,15 @@
                                     <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12 SaleOrderConsignee">
                                         <label asp-for="ConsigneeAccountCode" class="form-label">Consignee</label>
                                         <div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
-                                            <input asp-for="PN2" class="form-check-input" type="checkbox" role="switch" readonly disabled tabindex="-1" />Show All
+                                            <input asp-for="PN2" class="form-check-input" type="checkbox" role="switch" tabindex="-1" />Show All
                                         </div>
-                                        <select class="form-select" asp-for="ConsigneeAccountCode" data-val="false" asp-items="@(new SelectList(Model.AccountList,"Value","Text"))" readonly disabled tabindex="-1">
+                                        <select class="form-select" asp-for="ConsigneeAccountCode" data-val="false" asp-items="@(new SelectList(Model.AccountList,"Value","Text"))" tabindex="-1">
                                             <option value="0">-Select-</option>
                                         </select>
                                     </div>
                                     <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-12 SaleOrderConsignee">
                                         <label asp-for="ConsigneeAddress" class="form-label">Consignee Address</label>
-                                        <input asp-for="ConsigneeAddress" class="form-control" readonly disabled tabindex="-1" />
+                                        <input asp-for="ConsigneeAddress" class="form-control"   tabindex="-1" />
                                     </div>
                                     <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                         <button type="button" class="MultiBuyers btn btn-sm btn-outline-success mt-3" tabindex="-1">
@@ -637,6 +639,15 @@
                                         <label asp-for="Amount" class="form-label" style="color:  red;">Amount*</label>
                                         <input asp-for="Amount" class="form-control" value="0.00" readonly disabled />
                                     </div>
+                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="BillQty" class="form-label">BillQty</label>
+                                        <input asp-for="BillQty" class="form-control" value="0.00" readonly  />
+                                    </div>
+
+                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="pendQty" class="form-label">pendQty</label>
+                                        <input asp-for="pendQty" class="form-control" value="0.00" readonly  />
+                                    </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 SaleOrderOtherDetail">
                                         <label asp-for="TolLimit" class="form-label">Tol Limit</label>
                                         <input asp-for="TolLimit" class="form-control" />
@@ -750,36 +761,43 @@
                                             <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
                                                 <tr>
                                                     <th>Action</th>
-                                                    <th>Seq No</th>
-                                                    <th>Part Code</th>
-                                                    <th>Item Name</th>
-                                                    <th>HSN No</th>
-                                                    <th>Qty</th>
-                                                    <th>Delivery Date</th>
-                                                    <th>Unit</th>
-                                                    <th>Alt Qty</th>
-                                                    <th>Alt Unit</th>
-                                                    <th>Rate</th>
-                                                    <th>FX Rate</th>
-                                                    <th>Rate/Unit</th>
-                                                    <th>Disc%</th>
-                                                    <th>Disc Rs</th>
-                                                    <th>Amount</th>
-                                                    <th>Tol Limit</th>
-                                                    <th>Description</th>
-                                                    <th>Remark</th>
-                                                    <th>Amend No</th>
-                                                    <th>Amend Date</th>
-                                                    <th>Amend Reason</th>
-                                                    <th>Color</th>
-                                                    <th>Rejper</th>
-                                                    <th>Excessper</th>
-                                                    <th>Proj Qty1</th>
-                                                    <th>Proj Qty2</th>
-                                                    <th>Sale Order No</th>
-                                                    <th>Customer Location</th>
-                                                    <th>Item Model</th>
-                                                    <th>Cust Item Category</th>
+                                                    <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Seq No</th>
+                                                    <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon" style="color:  red;"><i class="fa" aria-hidden="true"></i></span>Part Code</th>
+                                                    <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon" style="color:  red;"><i class="fa" aria-hidden="true"></i></span>Item Name</th>
+                                                    <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon" style="color:  red;"><i class="fa" aria-hidden="true"></i></span>Qty</th>
+                                                    <th data-columnno="5" data-sortorder="asc" class="sortCol SaleOrderOtherDetail"><span style="padding:5px;margin:5px" class="sort-icon" style="color:  red;"><i class="fa" aria-hidden="true"></i></span>Delivery Date</th>
+                                                    <th data-columnno="7" data-sortorder="asc" class="sortCol SaleOrderOtherDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Qty</th>
+                                                    <th data-columnno="8" data-sortorder="asc" class="sortCol SaleOrderOtherDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Unit</th>
+                                                    <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon" style="color:  red;"><i class="fa" aria-hidden="true"></i></span>Rate</th>
+                                                    <th data-columnno="10" data-sortorder="asc" class="sortCol SaleOrderOtherDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Other Rate Curr.</th>
+                                                    <th data-columnno="11" data-sortorder="asc" class="sortCol SaleOrderOtherDetail"><span style="padding:5px;margin:5px" class="sort-icon" style="color:  red;"><i class="fa" aria-hidden="true"></i></span>Rate/Unit</th>
+                                                    <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Disc%</th>
+                                                    <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Disc Rs</th>
+                                                    <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon" style="color:  red;"><i class="fa" aria-hidden="true"></i></span>Amount</th>
+                                                    <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon" style="color:  red;"><i class="fa" aria-hidden="true"></i></span>HSN No</th>
+                                                    <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon" style="color:  red;"><i class="fa" aria-hidden="true"></i></span>Unit</th>
+                                                    <th data-columnno="6" data-sortorder="asc" class="sortCol SaleOrderOtherDetail"><span style="padding:5px;margin:5px" class="sort-icon" style="color:  red;"><i class="fa" aria-hidden="true"></i></span>BillQty</th>
+                                                    <th data-columnno="6" data-sortorder="asc" class="sortCol SaleOrderOtherDetail"><span style="padding:5px;margin:5px" class="sort-icon" style="color:  red;"><i class="fa" aria-hidden="true"></i></span>PendQty</th>
+
+
+                                                    <th data-columnno="15" data-sortorder="asc" class="sortCol SaleOrderOtherDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Tol Limit</th>
+                                                    <th data-columnno="16" data-sortorder="asc" class="sortCol SaleOrderOtherDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Description</th>
+                                                    <th data-columnno="17" data-sortorder="asc" class="sortCol SaleOrderOtherDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Remark</th>
+                                                    <th data-columnno="18" data-sortorder="asc" class="sortCol SaleOrderOtherDetail"><span style="padding:5px;margin:5px" class="sort-icon" style="color:  red;"><i class="fa" aria-hidden="true"></i></span>Amendment No</th>
+                                                    <th data-columnno="19" data-sortorder="asc" class="sortCol SaleOrderOtherDetail"><span style="padding:5px;margin:5px" class="sort-icon" style="color:  red;"><i class="fa" aria-hidden="true"></i></span>Amendment Date</th>
+                                                    <th data-columnno="20" data-sortorder="asc" class="sortCol SaleOrderOtherDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Amendment Reason</th>
+                                                    <th data-columnno="21" data-sortorder="asc" class="sortCol SaleOrderOtherDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Color</th>
+                                                    <th data-columnno="22" data-sortorder="asc" class="sortCol SaleOrderOtherDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rejper</th>
+                                                    <th data-columnno="23" data-sortorder="asc" class="sortCol SaleOrderOtherDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Excessper</th>
+                                                    <th data-columnno="24" data-sortorder="asc" class="sortCol SaleOrderOtherDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Proj Qty1</th>
+                                                    <th data-columnno="25" data-sortorder="asc" class="sortCol SaleOrderOtherDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Proj Qty2</th>
+                                                    <th data-columnno="25" data-sortorder="asc" class="sortCol SaleOrderOtherDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sale Order No</th>
+                                                    <th data-columnno="25" data-sortorder="asc" class="sortCol SaleOrderOtherDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Cust Location</th>
+                                                    <th data-columnno="25" data-sortorder="asc" class="sortCol SaleOrderOtherDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Model</th>
+                                                    <th data-columnno="25" data-sortorder="asc" class="sortCol SaleOrderOtherDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Cust Item Category</th>
+                                                    <th data-columnno="25" data-sortorder="asc" class="sortCol "><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ItemGroup</th>
+                                                    <th data-columnno="25" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Location</th>
+                                                    <th data-columnno="25" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Vehicle No</th>
                                                 </tr>
                                             </thead>
                                             <tbody id="divSaleItemGrid">
@@ -876,6 +894,15 @@
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="Amount" class="form-label" style="color:  red;">Amount*</label>
                                         <input asp-for="Amount" class="form-control" tabindex="-1" value="0.00" readonly disabled />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="BillQty" class="form-label">BillQty</label>
+                                        <input asp-for="BillQty" class="form-control" value="0.00" readonly />
+                                    </div>
+
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="pendQty" class="form-label">pendQty</label>
+                                        <input asp-for="pendQty" class="form-control" value="0.00" readonly />
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-6 col-sm-6 col-xs-12  SaleOrderOtherDetail">
                                         <label asp-for="TolLimit" class="form-label">Tol Limit</label>
@@ -1034,6 +1061,9 @@
                                                         <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon" style="color:  red;"><i class="fa" aria-hidden="true"></i></span>Amount</th>
                                                         <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon" style="color:  red;"><i class="fa" aria-hidden="true"></i></span>HSN No</th>
                                                         <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon" style="color:  red;"><i class="fa" aria-hidden="true"></i></span>Unit</th>
+                                                        <th data-columnno="6" data-sortorder="asc" class="sortCol SaleOrderOtherDetail"><span style="padding:5px;margin:5px" class="sort-icon" style="color:  red;"><i class="fa" aria-hidden="true"></i></span>BillQty</th>
+                                                        <th data-columnno="6" data-sortorder="asc" class="sortCol SaleOrderOtherDetail"><span style="padding:5px;margin:5px" class="sort-icon" style="color:  red;"><i class="fa" aria-hidden="true"></i></span>PendQty</th>
+
 
 
                                                         <th data-columnno="15" data-sortorder="asc" class="sortCol SaleOrderOtherDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Tol Limit</th>
@@ -4536,18 +4566,18 @@
                 RemoveErrorCls('Rate');
             }
 
-            if (isNaN(parseFloat($('#OtherRateCurr').val())) || parseFloat($('#OtherRateCurr').val()) == 0 || parseFloat($('#OtherRateCurr').val()) < -1) {
-                AddErrorCls('OtherRateCurr');
-                $.notify('OtherRate cannot be 0.', "error");
-                return;
-            }
-            else {
-                RemoveErrorCls('OtherRateCurr');
-            }
+            // if (isNaN(parseFloat($('#OtherRateCurr').val())) || parseFloat($('#OtherRateCurr').val()) == 0 || parseFloat($('#OtherRateCurr').val()) < -1) {
+            //     AddErrorCls('OtherRateCurr');
+            //     $.notify('OtherRate cannot be 0.', "error");
+            //     return;
+            // }
+            // else {
+            //     RemoveErrorCls('OtherRateCurr');
+            // }
 
           
 
-            if (parseInt($('#DiscPer').val()) > 100) {
+            if (parseFloat($('#DiscPer').val()) > 100) {
                 AddErrorCls('DiscPer');
                 $.notify('DiscPer cannot be Greater Then 100.', "error");
                 return;
@@ -4564,6 +4594,16 @@
                 }
                 else {
                     RemoveErrorCls('AmendmentReason');
+                }
+
+                if (parseFloat($('#Qty').val()) < parseFloat($('#BillQty').val()))
+                {
+                    AddErrorCls('Qty');
+                    $.notify('Qty cannot be less than Billed Qty.', "error");
+                    return;
+                }
+                else {
+                    RemoveErrorCls('Qty');
                 }
             }
 
@@ -4629,6 +4669,8 @@
                 "CustItemCategory": $('#CustItemCategory').val(),
                 "Location": $('#Location').val(),
                 "Vehicle": $('#Vehicle').val(),
+                "BillQty": $('#BillQty').val(),
+                "pendQty": $('#pendQty').val(),
             }
             //alert('before itemgrid');
 
@@ -4918,6 +4960,8 @@
                                 $('#Location').val(obj[0].Location);
                                 $('#Vehicle').val(obj[0].Vehicle);
                                 $('#SeqNo').val(obj[0].SeqNo);
+                                $('#BillQty').val(obj[0].BillQty);
+                                $('#pendQty').val(obj[0].pendQty);
                             DelSeqNo = SeqNo;
                             // $('#divSaleItemGrid .' + DelSeqNo).remove();
                             $('#soItemRow-' + DelSeqNo).remove();
@@ -5080,10 +5124,14 @@
             });
         }
 
-        $('#Rate').keyup(function () {
-            $('#OtherRateCurr').val($(this).val());
-        });
+        $('#Rate').on('input', function () {
+            let val = $(this).val();
 
+            // Allow only digits and decimal
+            val = val.replace(/[^0-9.]/g, '');
+
+            $('#OtherRateCurr').val(val);
+        });
         $('.Schedule').click(function () {
 
             $('.modal-header').addClass('bg-graident bg-warning');

@@ -10,7 +10,7 @@
 			<h5>
 				Vendor User - <strong>Dashboard</strong>
 				<span class="d-flex float-end" style="margin-top:-2px;">
-					<a asp-action="VendorUser" asp-controller="VendorUser" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+					<a asp-action="EmployeeAdvancePayement" asp-controller="EmployeeAdvancePayeement" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
 						<i class="fa fa-plus-circle fafw fa-lg" aria-hidden="true"></i>
 						Add New
 					</a>
@@ -96,6 +96,14 @@
 			$('#FinToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
 
 		});
+
+		function confirmDelete(event) {
+			event.preventDefault();
+			   if (confirm("Are you sure you want to delete this entry?")) {
+				var linkUrl = $(event.currentTarget).attr("href");
+				window.location.href = linkUrl;
+			}
+		}
 
 		var currentSearchColumn = null;
 

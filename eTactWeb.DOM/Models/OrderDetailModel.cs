@@ -68,6 +68,8 @@ namespace eTactWeb.DOM.Models
         public decimal ProjQty1 { get; set; }
         public decimal ProjQty2 { get; set; }
         public decimal Qty { get; set; }
+        public decimal? pendQty { get; set; }
+        public decimal? BillQty { get; set; }
         public decimal Rate { get; set; }
         public decimal Rejper { get; set; }
         public string? Remark { get; set; }

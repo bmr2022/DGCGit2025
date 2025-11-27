@@ -20,6 +20,7 @@ namespace eTactWeb.DOM.Models
         public int AgainstMRNYearCode { get; set; }
         public string BillOrChallan{ get; set; }
         public string gateno { get; set; }
+        public string? DatabaseName { get; set; }
         public int GateYearCode { get; set; }
         public string ChallanNo { get; set; }
         public string ChallanDate { get; set; }
@@ -172,6 +173,10 @@ namespace eTactWeb.DOM.Models
         public string SchNo { get; set; }
         public string SchDate { get; set; }
         public int SchYearCode { get; set; }
+        //===Pagination===
+        public int TotalRecords { get; set; }
+        public int PageNumber { get; set; } = 1;
+        public int PageSize { get; set; }
     }
     public class RCDashboard : ReceiveChallanDashboard
     {

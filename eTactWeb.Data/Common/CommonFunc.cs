@@ -702,7 +702,7 @@ public static class CommonFunc
                 }
                 else if (table.TableName == "RCDashboard" || Tbname == "RCDashboard")
                 {
-                    if (typeProperty.PropertyInfo.Name != "RCDashboardList" && typeProperty.PropertyInfo.Name != "SummaryDetail")
+                    if (typeProperty.PropertyInfo.Name != "RCDashboardList" && typeProperty.PropertyInfo.Name != "SummaryDetail" && typeProperty.PropertyInfo.Name != "TotalRecords" && typeProperty.PropertyInfo.Name != "PageNumber" && typeProperty.PropertyInfo.Name != "PageSize")
                     {
                         object value = row[typeProperty.PropertyInfo.Name];
                         object? safeValue = value == null || DBNull.Value.Equals(value) ? null : Convert.ChangeType(value, typeProperty.Type);
@@ -1137,7 +1137,7 @@ public static class CommonFunc
                 else if (Tbname == "IssueNRGP" || table.TableName == "IssueNRGP")
                 {
                     if (typeProperty.PropertyInfo.Name != "INDasboard" && typeProperty.PropertyInfo.Name != "INNDashboard" && typeProperty.PropertyInfo.Name != "ActualEnteredEMpBy"
-                        && typeProperty.PropertyInfo.Name != "ChallanTypeList" && typeProperty.PropertyInfo.Name != "SummaryDetail")
+                        && typeProperty.PropertyInfo.Name != "ChallanTypeList" && typeProperty.PropertyInfo.Name != "SummaryDetail" && typeProperty.PropertyInfo.Name != "TotalRecords" && typeProperty.PropertyInfo.Name != "PageNumber" && typeProperty.PropertyInfo.Name != "PageSize")
                     {
                         object value = row[typeProperty.PropertyInfo.Name];
                         object? safeValue = value == null || DBNull.Value.Equals(value) ? null : Convert.ChangeType(value, typeProperty.Type);
@@ -1211,12 +1211,13 @@ public static class CommonFunc
                         && typeProperty.PropertyInfo.Name != "PONo" && typeProperty.PropertyInfo.Name != "PoYear" && typeProperty.PropertyInfo.Name != "PODate"
                         && typeProperty.PropertyInfo.Name != "POAmmendNo" && typeProperty.PropertyInfo.Name != "discper" && typeProperty.PropertyInfo.Name != "discamt"
                          && typeProperty.PropertyInfo.Name != "AgainstChallanNoEntryId" && typeProperty.PropertyInfo.Name != "AgainstChallanNo"
-                        && typeProperty.PropertyInfo.Name != "AgainstChallanYearCode" && typeProperty.PropertyInfo.Name != "AgainstChallanType" && typeProperty.PropertyInfo.Name != "closed"
+                        && typeProperty.PropertyInfo.Name != "AgainstChallanYearCode" && typeProperty.PropertyInfo.Name != "AgainstChallanType"
                         && typeProperty.PropertyInfo.Name != "ItemColor" && typeProperty.PropertyInfo.Name != "ItemSize" && typeProperty.PropertyInfo.Name != "ItemModel"
                         && typeProperty.PropertyInfo.Name != "PendQty" && typeProperty.PropertyInfo.Name != "PendAltQty"
                         && typeProperty.PropertyInfo.Name != "SalesPersonEmailId" && typeProperty.PropertyInfo.Name != "eMailFromCC1"
                         && typeProperty.PropertyInfo.Name != "eMailFromCC2" && typeProperty.PropertyInfo.Name != "eMailFromCC3"
-                        && typeProperty.PropertyInfo.Name != "ActualEnteredEMpBy")
+                        && typeProperty.PropertyInfo.Name != "ActualEnteredEMpBy" 
+                        && typeProperty.PropertyInfo.Name != "TotalRecords" && typeProperty.PropertyInfo.Name != "PageNumber" && typeProperty.PropertyInfo.Name != "PageSize")
 
                     {
                         object value = row[typeProperty.PropertyInfo.Name];
@@ -1689,9 +1690,7 @@ public static class CommonFunc
                         && typeProperty.PropertyInfo.Name != "EmpId"
                         && typeProperty.PropertyInfo.Name != "EmpName"
                         && typeProperty.PropertyInfo.Name != "DesigId"
-                        && typeProperty.PropertyInfo.Name != "DesigName"
                         && typeProperty.PropertyInfo.Name != "DepId"
-                        && typeProperty.PropertyInfo.Name != "DeptName"
                         && typeProperty.PropertyInfo.Name != "CategoryId"
                         && typeProperty.PropertyInfo.Name != "MgrApprovedbyEmpid"
                         && typeProperty.PropertyInfo.Name != "MgrApprovedbyEmpName"
@@ -1717,6 +1716,7 @@ public static class CommonFunc
                         && typeProperty.PropertyInfo.Name != "UpdatedBy"
                         && typeProperty.PropertyInfo.Name != "UpdatedOn"
                         && typeProperty.PropertyInfo.Name != "ActualEntryBy"
+                        && typeProperty.PropertyInfo.Name != "CategoryName"
                         )
                     {
                         object value = row[typeProperty.PropertyInfo.Name];

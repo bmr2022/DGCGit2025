@@ -28,6 +28,7 @@ using MailKit.Net.Smtp;
 using System.Drawing;
 using System.Security.Cryptography;
 using Newtonsoft.Json.Linq;
+using ClosedXML.Excel;
 namespace eTactWeb.Controllers
 {
     public class NRGPController : Controller
@@ -1460,7 +1461,7 @@ namespace eTactWeb.Controllers
                     "ChallanDate", "EntryDate", "DeliveryAddress", "VendorStateCode",
                                 "Remarks", "Closed", "EntryId", "YearCode", "RGPNRGP",
                                  "ChallanType", "ActualEnteredEmp", "ActualEntryDate",
-                               "UpdatedByEmpName", "UpdatedDate", "MachinName", "SalesPersonEmailId", "eMailFromCC1", "eMailFromCC2", "eMailFromCC3", "ChallanEntryFrom","Amount");
+                               "UpdatedByEmpName", "UpdatedDate", "MachinName", "SalesPersonEmailId", "eMailFromCC1", "eMailFromCC2", "eMailFromCC3", "ChallanEntryFrom","Amount","TotalAmount");
 
                 model.INNDashboard = CommonFunc.DataTableToList<IssueNRGPDashboard>(DT, "IssueNRGPDetail");
                 model.FromDate1 = FromDate;
@@ -1512,7 +1513,7 @@ namespace eTactWeb.Controllers
                     "ChallanDate", "EntryDate", "DeliveryAddress", "VendorStateCode",
                                 "Remarks", "Closed", "EntryId", "YearCode", "RGPNRGP",
                                  "ChallanType", "ActualEnteredEmp", "ActualEntryDate",
-                               "UpdatedByEmpName", "UpdatedDate", "MachinName", "SalesPersonEmailId", "eMailFromCC1", "eMailFromCC2", "eMailFromCC3", "ChallanEntryFrom");
+                               "UpdatedByEmpName", "UpdatedDate", "MachinName", "SalesPersonEmailId", "eMailFromCC1", "eMailFromCC2", "eMailFromCC3", "ChallanEntryFrom", "Amount", "TotalAmount");
 
                 model.INNDashboard = CommonFunc.DataTableToList<IssueNRGPDashboard>(DT, "IssueNRGPDetail");
                 model.FromDate1 = FromDate;
@@ -1528,41 +1529,96 @@ namespace eTactWeb.Controllers
 
             return View(model);
         }
-        public async Task<IActionResult> GetSearchData(INDashboard model)
-        {
+        //public async Task<IActionResult> GetSearchData(INDashboard model)
+        //{
 
+        //    var Result = await _IIssueNRGP.GetDashboardData(model);
+        //    DataSet DS = Result.Result;
+        //    var DT = new DataTable();
+        //    if (model.SummaryDetail == "Detail")
+        //    {
+        //        DT = DS.Tables[0].DefaultView.ToTable(true, "VendorName", "ChallanNo",
+        //          "ChallanDate", "EntryDate", "DeliveryAddress", "VendorStateCode",
+        //                      "Remarks", "Closed", "EntryId", "YearCode", "RGPNRGP",
+        //                       "ChallanType", "partcode", "ItemNamePartCode", "ItemCode",
+        //                       "HSNNO", "Store", "BatchNo", "uniquebatchno", "Qty", "TotalStock",
+        //                       "BatchStock", "ProcessId", "unit", "Rate", "Amount", "PurchasePrice",
+        //                       "AltQty", "altUnit", "StageDescription", "ActualEnteredEmp", "ActualEntryDate",
+        //                       "UpdatedByEmpName", "UpdatedDate", "MachinName", "PONo", "PoYear", "PODate",
+        //                       "POAmmendNo", "discper", "discamt", "AgainstChallanNoEntryId", "AgainstChallanNo",
+        //                       "AgainstChallanYearCode", "AgainstChallanType", "ItemColor", "ItemSize",
+        //                       "ItemModel", "PendQty", "PendAltQty", "ChallanEntryFrom");
+        //        model.INNDashboard = CommonFunc.DataTableToList<IssueNRGPDashboard>(DT, "IssueNRGP");
+
+        //    }
+        //    else
+        //    {
+        //        DT = DS.Tables[0].DefaultView.ToTable(true, "VendorName", "ChallanNo","AccountCode",
+        //           "ChallanDate", "EntryDate", "DeliveryAddress", "VendorStateCode",
+        //                       "Remarks", "Closed", "EntryId", "YearCode", "RGPNRGP",
+        //                        "ChallanType", "ActualEnteredEmp", "ActualEntryDate",
+        //                       "UpdatedByEmpName", "UpdatedDate", "MachinName","SalesPersonEmailId", "eMailFromCC1", "eMailFromCC2", "eMailFromCC3", "ChallanEntryFrom","Amount","TotalAmount");
+        //        model.INNDashboard = CommonFunc.DataTableToList<IssueNRGPDashboard>(DT, "IssueNRGPDetail");
+        //    }
+
+
+        //    return PartialView("_INDashboardGrid", model);
+        //}
+
+        public async Task<IActionResult> GetSearchData(INDashboard model, int pageNumber = 1, int pageSize = 15)
+        {
             var Result = await _IIssueNRGP.GetDashboardData(model);
             DataSet DS = Result.Result;
             var DT = new DataTable();
+
             if (model.SummaryDetail == "Detail")
             {
-                DT = DS.Tables[0].DefaultView.ToTable(true, "VendorName", "ChallanNo",
-                  "ChallanDate", "EntryDate", "DeliveryAddress", "VendorStateCode",
-                              "Remarks", "Closed", "EntryId", "YearCode", "RGPNRGP",
-                               "ChallanType", "partcode", "ItemNamePartCode", "ItemCode",
-                               "HSNNO", "Store", "BatchNo", "uniquebatchno", "Qty", "TotalStock",
-                               "BatchStock", "ProcessId", "unit", "Rate", "Amount", "PurchasePrice",
-                               "AltQty", "altUnit", "StageDescription", "ActualEnteredEmp", "ActualEntryDate",
-                               "UpdatedByEmpName", "UpdatedDate", "MachinName", "PONo", "PoYear", "PODate",
-                               "POAmmendNo", "discper", "discamt", "AgainstChallanNoEntryId", "AgainstChallanNo",
-                               "AgainstChallanYearCode", "AgainstChallanType", "ItemColor", "ItemSize",
-                               "ItemModel", "PendQty", "PendAltQty", "ChallanEntryFrom");
-                model.INNDashboard = CommonFunc.DataTableToList<IssueNRGPDashboard>(DT, "IssueNRGP");
+                DT = DS.Tables[0].DefaultView.ToTable(true,
+                    "VendorName", "ChallanNo", "ChallanDate", "EntryDate", "DeliveryAddress",
+                    "VendorStateCode", "Remarks", "Closed", "EntryId", "YearCode", "RGPNRGP",
+                    "ChallanType", "partcode", "ItemNamePartCode", "ItemCode",
+                    "HSNNO", "Store", "BatchNo", "uniquebatchno", "Qty", "TotalStock",
+                    "BatchStock", "ProcessId", "unit", "Rate", "Amount", "PurchasePrice",
+                    "AltQty", "altUnit", "StageDescription", "ActualEnteredEmp", "ActualEntryDate",
+                    "UpdatedByEmpName", "UpdatedDate", "MachinName", "PONo", "PoYear", "PODate",
+                    "POAmmendNo", "discper", "discamt", "AgainstChallanNoEntryId", "AgainstChallanNo",
+                    "AgainstChallanYearCode", "AgainstChallanType", "ItemColor", "ItemSize",
+                    "ItemModel", "PendQty", "PendAltQty", "ChallanEntryFrom");
 
+                model.INNDashboard = CommonFunc.DataTableToList<IssueNRGPDashboard>(DT, "IssueNRGP");
             }
             else
             {
-                DT = DS.Tables[0].DefaultView.ToTable(true, "VendorName", "ChallanNo","AccountCode",
-                   "ChallanDate", "EntryDate", "DeliveryAddress", "VendorStateCode",
-                               "Remarks", "Closed", "EntryId", "YearCode", "RGPNRGP",
-                                "ChallanType", "ActualEnteredEmp", "ActualEntryDate",
-                               "UpdatedByEmpName", "UpdatedDate", "MachinName","SalesPersonEmailId", "eMailFromCC1", "eMailFromCC2", "eMailFromCC3", "ChallanEntryFrom","Amount");
+                DT = DS.Tables[0].DefaultView.ToTable(true,
+                    "VendorName", "ChallanNo", "AccountCode", "ChallanDate", "EntryDate",
+                    "DeliveryAddress", "VendorStateCode", "Remarks", "Closed",
+                    "EntryId", "YearCode", "RGPNRGP", "ChallanType",
+                    "ActualEnteredEmp", "ActualEntryDate", "UpdatedByEmpName",
+                    "UpdatedDate", "MachinName", "SalesPersonEmailId",
+                    "eMailFromCC1", "eMailFromCC2", "eMailFromCC3",
+                    "ChallanEntryFrom", "Amount", "TotalAmount");
+
                 model.INNDashboard = CommonFunc.DataTableToList<IssueNRGPDashboard>(DT, "IssueNRGPDetail");
             }
 
+            // ✅ Pagination logic added
+            var fullList = model.INNDashboard;
+            string fullListJson = JsonConvert.SerializeObject(fullList);
+            HttpContext.Session.SetString("KeyINDashboard", fullListJson);
+            model.TotalRecords = fullList.Count;
+            model.PageNumber = pageNumber;
+            model.PageSize = pageSize;
+
+            model.INNDashboard = fullList
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
 
             return PartialView("_INDashboardGrid", model);
         }
+
+
+
         private static DataTable GetDetailTable(IList<IssueNRGPDetail> DetailList, string Mode)
         {
             var INGrid = new DataTable();
@@ -1838,5 +1894,128 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(INDetail);
             return Json(JsonString);
         }
+        public async Task<JsonResult> GetTotalAmount(INDashboard model)
+        {
+            var JSON = await _IIssueNRGP.GetTotalAmount(model);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
+
+        [HttpGet]
+        public IActionResult ExportIssueChallanToExcel()
+        {
+            // Retrieve the full data stored in session (or fetch again from DB)
+            string modelJson = HttpContext.Session.GetString("KeyINDashboard");
+
+            List<IssueNRGPDashboard> dashboardList = new List<IssueNRGPDashboard>();
+
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                dashboardList = JsonConvert.DeserializeObject<List<IssueNRGPDashboard>>(modelJson);
+            }
+
+            if (dashboardList == null || dashboardList.Count == 0)
+                return NotFound("No data available to export.");
+
+            using var workbook = new XLWorkbook();
+            var worksheet = workbook.Worksheets.Add("Issue Challan");
+
+            // ==============================
+            // HEADERS (Match your table columns)
+            // ==============================
+            string[] headers = {
+        "Sr#", "Challan No", "Challan Type", "RGP/NRGP", "Vendor Name", "Challan Date",
+        "Part Code", "Item Name", "HSNNO", "Store", "Batch No", "UniqueBatch No",
+        "Qty", "Total Stock", "Batch Stock", "Process Name", "Unit", "Rate",
+        "Amount", "Purchase Price", "Alt Qty", "Alt Unit", "Entry ID", "Entry Date",
+        "Vendor State Code", "Remarks", "Closed", "Actual Entered By", "Actual Entry Date",
+        "Updated By", "Updated Date", "Machine Name", "YearCode", "Delivery Address",
+        "PO No", "PO Year", "PO Date", "PO Amendment", "Discount%", "Dis Amt",
+        "Amount", "Against ChallanEntryId", "Against ChallanNo", "Against ChallanYear",
+        "Against ChallanType", "Closed", "Item Color", "Item Size", "Item Model",
+        "PendQty", "Pend AltQty"
+    };
+
+            // Write headers
+            for (int i = 0; i < headers.Length; i++)
+                worksheet.Cell(1, i + 1).Value = headers[i];
+
+            int row = 2;
+            int sr = 1;
+
+            // Write data
+            foreach (var item in dashboardList)
+            {
+                int col = 1;
+
+                worksheet.Cell(row, col++).Value = sr++;
+                worksheet.Cell(row, col++).Value = item.ChallanNo;
+                worksheet.Cell(row, col++).Value = item.ChallanType;
+                worksheet.Cell(row, col++).Value = item.RGPNRGP;
+                worksheet.Cell(row, col++).Value = item.VendorName;
+                worksheet.Cell(row, col++).Value = item.ChallanDate.Split(" ")[0];
+                worksheet.Cell(row, col++).Value = item.partcode;
+                worksheet.Cell(row, col++).Value = item.ItemNamePartCode;
+                worksheet.Cell(row, col++).Value = item.HSNNO;
+                worksheet.Cell(row, col++).Value = item.Store;
+                worksheet.Cell(row, col++).Value = item.BatchNo;
+                worksheet.Cell(row, col++).Value = item.uniquebatchno;
+                worksheet.Cell(row, col++).Value = item.Qty;
+                worksheet.Cell(row, col++).Value = item.TotalStock;
+                worksheet.Cell(row, col++).Value = item.BatchStock;
+                worksheet.Cell(row, col++).Value = item.StageDescription;
+                worksheet.Cell(row, col++).Value = item.unit;
+                worksheet.Cell(row, col++).Value = item.Rate;
+                worksheet.Cell(row, col++).Value = item.Amount;
+                worksheet.Cell(row, col++).Value = item.PurchasePrice;
+                worksheet.Cell(row, col++).Value = item.AltQty;
+                worksheet.Cell(row, col++).Value = item.altUnit;
+                worksheet.Cell(row, col++).Value = item.EntryId;
+                worksheet.Cell(row, col++).Value = item.EntryDate.Split(" ")[0];
+                worksheet.Cell(row, col++).Value = item.VendorStateCode;
+                worksheet.Cell(row, col++).Value = item.Remarks;
+                worksheet.Cell(row, col++).Value = item.closed;
+                worksheet.Cell(row, col++).Value = item.ActualEnteredEmp;
+                worksheet.Cell(row, col++).Value = item.ActualEntryDate.Split(" ")[0];
+                worksheet.Cell(row, col++).Value = item.UpdatedByEmpName;
+                worksheet.Cell(row, col++).Value = item.UpdatedDate;
+                worksheet.Cell(row, col++).Value = item.MachinName;
+                worksheet.Cell(row, col++).Value = item.YearCode;
+                worksheet.Cell(row, col++).Value = item.DeliveryAddress;
+                worksheet.Cell(row, col++).Value = item.PONo;
+                worksheet.Cell(row, col++).Value = item.PoYear;
+                worksheet.Cell(row, col++).Value = item.PODate;
+                worksheet.Cell(row, col++).Value = item.POAmmendNo;
+                worksheet.Cell(row, col++).Value = item.discper;
+                worksheet.Cell(row, col++).Value = item.discamt;
+                worksheet.Cell(row, col++).Value = item.Amount;
+                worksheet.Cell(row, col++).Value = item.AgainstChallanNoEntryId;
+                worksheet.Cell(row, col++).Value = item.AgainstChallanNo;
+                worksheet.Cell(row, col++).Value = item.AgainstChallanYearCode;
+                worksheet.Cell(row, col++).Value = item.AgainstChallanType;
+                worksheet.Cell(row, col++).Value = item.closed;
+                worksheet.Cell(row, col++).Value = item.ItemColor;
+                worksheet.Cell(row, col++).Value = item.ItemSize;
+                worksheet.Cell(row, col++).Value = item.ItemModel;
+                worksheet.Cell(row, col++).Value = item.PendQty;
+                worksheet.Cell(row, col++).Value = item.PendAltQty;
+
+                row++;
+            }
+
+            worksheet.Columns().AdjustToContents();
+
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            stream.Position = 0;
+
+            return File(
+                stream.ToArray(),
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                "IssueChallan.xlsx"
+            );
+        }
+
     }
 }

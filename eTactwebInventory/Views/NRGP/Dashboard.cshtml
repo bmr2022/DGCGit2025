@@ -282,6 +282,29 @@
             //RGPNRGPColor();
 
         });
+        function loadPage(pageNumber) {
+            var data = $('#SParam').serialize();  // serialize filters
+            data += '&pageNumber=' + pageNumber + '&pageSize=15'; // match your controller default
+
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("GetSearchData", "NRGP")',
+                data: data,
+                success: function (result) {
+                    $('#divINDashboardGrid').html(result);
+                    $('#currentPage').val(pageNumber);
+                    GetFeatureOption();
+                    GetFormRights();
+                    GetTotalAmounts();
+                }
+            });
+        }
+
+        $(document).on('click', '.page-btn', function (e) {
+            e.preventDefault();
+            var page = $(this).data('page');
+            loadPage(page);
+        });
         function GetFormRights() {
 
             $.ajax({

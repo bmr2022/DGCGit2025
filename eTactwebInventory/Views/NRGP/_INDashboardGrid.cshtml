@@ -91,13 +91,14 @@
                     <th data-columnno="9" data-sortorder="asc" class="sortCol ShowHideEntryDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Remarks</th>
                     <th data-columnno="10" data-sortorder="asc" class="sortCol ShowHideEntryDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Closed</th>
                     <th data-columnno="10" data-sortorder="asc" class="sortCol "><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Net Total</th>
-                    <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Actual Entered By</th>
-                    <th data-columnno="12" data-sortorder="asc" class="sortCol ShowHideEntryDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Actual Entry Date</th>
-                    <th data-columnno="13" data-sortorder="asc" class="sortCol ShowHideEntryDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Updated By</th>
-                    <th data-columnno="14" data-sortorder="asc" class="sortCol ShowHideEntryDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Updated Date</th>
-                    <th data-columnno="15" data-sortorder="asc" class="sortCol ShowHideEntryDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Machine Name</th>
-                    <th data-columnno="16" data-sortorder="asc" class="sortCol ShowHideEntryDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>YearCode</th>
-                    <th data-columnno="17" data-sortorder="asc" class="sortCol ShowHideEntryDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Delivery Address</th>
+                    <th data-columnno="11" data-sortorder="asc" class="sortCol "><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Total Amount</th>
+                    <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Actual Entered By</th>
+                    <th data-columnno="13" data-sortorder="asc" class="sortCol ShowHideEntryDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Actual Entry Date</th>
+                    <th data-columnno="14" data-sortorder="asc" class="sortCol ShowHideEntryDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Updated By</th>
+                    <th data-columnno="15" data-sortorder="asc" class="sortCol ShowHideEntryDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Updated Date</th>
+                    <th data-columnno="16" data-sortorder="asc" class="sortCol ShowHideEntryDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Machine Name</th>
+                    <th data-columnno="17" data-sortorder="asc" class="sortCol ShowHideEntryDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>YearCode</th>
+                    <th data-columnno="18" data-sortorder="asc" class="sortCol ShowHideEntryDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Delivery Address</th>
                 </tr>
             </thead>
             <tbody id="divINGrid">
@@ -148,25 +149,41 @@
                         </a> *@
                                             @if (item.YearCode == yearCode)
                                             {
-                                                <div id="editCursorDiv-@Cntr">
-                                                    <a class="table-link link-primary" asp-action="IssueChallanOnCounter" asp-route-Mode="U" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode" onclick="CheckGateEntryExists(event, @item.EntryId, @item.YearCode,'@item.ChallanDate.Split(" ")[0]')">
-                                                        <span class="fa-stack">
-                                                            <i class="fa fa-square fa-stack-2x"></i>
-                                                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-                                                        </span>
-                                                    </a>
-                                                </div>
-                                                <div id="deleteCursorDiv-@Cntr">
-                                                    <a class="table-link link-danger" onclick="confirmdelete(event,'@item.ChallanDate.Split(" ")[0]')" asp-action="DeleteByID" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode" asp-route-machineName="@item.MachinName" asp-route-actuaEntryBy="@item.ActualEnteredEMpBy">
-                                                        <span class="fa-stack">
-                                                            <i class="fa fa-square fa-stack-2x"></i>
-                                                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
-                                                        </span>
-                                                    </a>
-                                                </div>
+                                                @if (item.closed == "Y")
+                                                {
+                                                    <div>
+                                                        <a class="table-link link-primary noCursor">
+                                                            <span class="fa-stack">
+                                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                                <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                            </span>
+                                                        </a>
+                                                    </div>
+
+                                                }
+                                                else
+                                                {
+                                                    <div id="editCursorDiv-@Cntr">
+                                                        <a class="table-link link-primary" asp-action="IssueChallanOnCounter" asp-route-Mode="U" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode" onclick="CheckGateEntryExists(event, @item.EntryId, @item.YearCode,'@item.ChallanDate.Split(" ")[0]')">
+                                                            <span class="fa-stack">
+                                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                                <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                            </span>
+                                                        </a>
+                                                    </div>
+                                                }
+                            // <div id="deleteCursorDiv-@Cntr">
+                                                //     <a class="table-link link-danger" onclick="confirmdelete(event,'@item.ChallanDate.Split(" ")[0]')" asp-action="DeleteByID" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode" asp-route-machineName="@item.MachinName" asp-route-actuaEntryBy="@item.ActualEnteredEMpBy">
+                                                //         <span class="fa-stack">
+                                                //             <i class="fa fa-square fa-stack-2x"></i>
+                                                //             <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                //         </span>
+                                                //     </a>
+                                                // </div>
                                             }
                                             else
                                             {
+                                               
                                                 <div>
                                                     <a class="table-link link-primary noCursor">
                                                         <span class="fa-stack">
@@ -175,14 +192,14 @@
                                                         </span>
                                                     </a>
                                                 </div>
-                                                <div>
-                                                    <a class="table-link link-danger noCursor">
-                                                        <span class="fa-stack">
-                                                            <i class="fa fa-square fa-stack-2x"></i>
-                                                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
-                                                        </span>
-                                                    </a>
-                                                </div>
+                                                // <div>
+                                                //     <a class="table-link link-danger noCursor">
+                                                //         <span class="fa-stack">
+                                                //             <i class="fa fa-square fa-stack-2x"></i>
+                                                //             <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                //         </span>
+                                                //     </a>
+                                                // </div>
                                             }
 
                                         }
@@ -269,6 +286,8 @@
                                 <td class="ShowHideEntryDetail">@item.Remarks</td>
                                 <td class="ShowHideEntryDetail">@item.closed</td>
                                 <td>@item.Amount</td>
+                                <td>@item.TotalAmount</td>
+
                                 <td>@item.ActualEnteredEmp</td>
                                 <td class="ShowHideEntryDetail">@item.ActualEntryDate.Split(" ")[0]</td>
                                 <td class="ShowHideEntryDetail">@item.UpdatedByEmpName</td>
@@ -297,6 +316,8 @@
                     <td class="ShowHideEntryDetail"></td>
                     <td class="ShowHideEntryDetail"></td>
                     <td class="ShowHideEntryDetail"></td>
+                      <td></td>
+
                     <td></td>
                     <td></td>
                     <td class="text-center text-primary" id="tfootBillAmt"></td>
@@ -558,4 +579,49 @@ else
             </tbody>
         </table>
     </div>
+}
+@if (Model.TotalRecords > 0)
+{
+    int totalPages = (int)Math.Ceiling((double)Model.TotalRecords / Model.PageSize);
+
+    <ul class="pagination d-flex align-items-center">
+
+        @if (Model.PageNumber > 1)
+        {
+            <li class="page-item">
+                <a class="page-link page-btn" data-page="@(Model.PageNumber - 1)" href="#">Previous</a>
+            </li>
+        }
+
+        @if (Model.PageNumber > 3)
+        {
+            <li class="page-item">
+                <a class="page-link page-btn" data-page="1" href="#">1</a>
+            </li>
+            <li class="page-item disabled"><a class="page-link">...</a></li>
+        }
+
+        @for (int i = Math.Max(1, Model.PageNumber - 2); i <= Math.Min(Model.PageNumber + 2, totalPages); i++)
+        {
+            <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                <a class="page-link page-btn" data-page="@i" href="#">@i</a>
+            </li>
+        }
+
+        @if (Model.PageNumber < totalPages - 2)
+        {
+            <li class="page-item disabled"><a class="page-link">...</a></li>
+            <li class="page-item">
+                <a class="page-link page-btn" data-page="@totalPages" href="#">@totalPages</a>
+            </li>
+        }
+
+        @if (Model.PageNumber < totalPages)
+        {
+            <li class="page-item">
+                <a class="page-link page-btn" data-page="@(Model.PageNumber + 1)" href="#">Next</a>
+            </li>
+        }
+
+    </ul>
 }

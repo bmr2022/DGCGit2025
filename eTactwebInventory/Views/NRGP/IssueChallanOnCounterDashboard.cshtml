@@ -24,13 +24,13 @@
                 <div class="card-body">
                     <form id="SParam">
                         <div class="row">
-                            <div class="col-xxl-2 col-xl-2 col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                            <div class="col-xxl-2 col-xl-2 col-lg-4 col-md-6 col-sm-12 col-xs-12 ShowHideEntryDetail">
                                 <label asp-for="PartCode" class="form-label">Part Code</label>
                                 <input asp-for="PartCode" class="form-control" />
                                 <input type="hidden" asp-for="ItemCode" />
                                 <input type="hidden" asp-for="ChallanEntryFrom" value="EntryFromCounter" />
                             </div>
-                            <div class="col-xxl-2 col-xl-2 col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                            <div class="col-xxl-2 col-xl-2 col-lg-3 col-md-3 col-sm-12 col-xs-12 ShowHideEntryDetail">
                                 <label asp-for="ItemName" class="form-label">Item Name</label>
                                 <input asp-for="ItemName" class="form-control" />
                             </div>
@@ -38,7 +38,7 @@
                                 <label asp-for="VendorName" class="form-label">Vendor Name</label>
                                 <input asp-for="VendorName" class="form-control" />
                             </div>
-                            <div class="col-xxl-1 col-xl-2 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                            <div class="col-xxl-1 col-xl-2 col-lg-3 col-md-6 col-sm-6 col-xs-12 ShowHideEntryDetail">
                                 <label asp-for="RGPNRGP" class="form-label">RGP/NRGP</label>
                                 <select class="form-select" asp-for="RGPNRGP">
                                     <option value="">-Select-</option>
@@ -50,7 +50,7 @@
                                 <label asp-for="ChallanNo" class="form-label">Challan No</label>
                                 <input asp-for="ChallanNo" class="form-control" />
                             </div>
-                            <div class="col-xxl-1 col-xl-1 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                            <div class="col-xxl-1 col-xl-1 col-lg-3 col-md-6 col-sm-6 col-xs-12 ShowHideEntryDetail">
                                 <label asp-for="ChallanType" class="form-label">Challan Type</label>
                                 <select class="form-select" asp-for="ChallanType">
                                     <option value="">-Select-</option>
@@ -70,7 +70,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-xxl-1 col-xl-2 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                            <div class="col-xxl-1 col-xl-2 col-lg-3 col-md-6 col-sm-6 col-xs-12 ShowHideEntryDetail">
                                 <label asp-for="SummaryDetail" class="form-label">Summary/Detail</label>
                                 <select class="form-select" asp-for="SummaryDetail" onchange="GetSearchData();">
                                     <option value="">-Select-</option>
@@ -360,6 +360,30 @@
             });
         }
 
+        function loadPage(pageNumber) {
+            var data = $('#SParam').serialize();  // serialize filters
+            data += '&pageNumber=' + pageNumber + '&pageSize=15'; // match your controller default
+
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("GetSearchData", "NRGP")',
+                data: data,
+                success: function(result) {
+                    $('#divINDashboardGrid').html(result);
+                    $('#currentPage').val(pageNumber);
+                    GetFeatureOption();
+                    GetFormRights();
+                    GetTotalAmounts();
+                }
+            });
+        }
+
+        // Delegated click handler for dynamic pagination links
+        $(document).on('click', '.page-btn', function(e) {
+            e.preventDefault();
+            var page = $(this).data('page');
+            loadPage(page);
+        });
 
         function GetSummaryDetail() {
 
@@ -536,7 +560,7 @@
                 data: $('#SParam').serializeArray(),
                 success: function (data) {
                     $('#divINDashboardGrid').empty().append(data);
-
+                    GetTotalAmounts();
                 },
                 error: function (response) {
                     alert(response.responseText);
@@ -559,6 +583,7 @@
                     RowCount();
                     GetFormRights();
                     GetFeatureOption();
+                    GetTotalAmounts()
                     //RGPNRGPColor();
                 },
                 error: function (response) {
@@ -862,20 +887,72 @@
         }
 
         $("#btnINExcel").click(function () {
-            var table = $(".INGrid");
-            if (table.length === 0) {
-                console.error("Table element with ID 'Issue NRGP Grid' not found.");
-                return;
-            }
+            // var table = $(".INGrid");
+            // if (table.length === 0) {
+            //     console.error("Table element with ID 'Issue NRGP Grid' not found.");
+            //     return;
+            // }
 
-            try {
-                table.table2excel({
-                    filename: "IssueNRGPTable.xls"
-                });
-            } catch (error) {
-                console.error("An error occurred while exporting to Excel:", error);
-            }
+            // try {
+            //     table.table2excel({
+            //         filename: "IssueNRGPTable.xls"
+            //     });
+            // } catch (error) {
+            //     console.error("An error occurred while exporting to Excel:", error);
+            // }
+
+
+                     window.location = '/NRGP/ExportIssueChallanToExcel';
         });
+       function buildDataObj() {
+
+    var dataObj = {
+        PartCode: $('#PartCode').val(),
+        ItemName: $('#ItemName').val(),
+        VendorName: $('#VendorName').val(),
+        RGPNRGP: $('#RGPNRGP').val(),
+        ChallanNo: $('#ChallanNo').val(),
+        ChallanType: $('#ChallanType').val(),
+        FromDate: $('#FromDate').val(),
+        ToDate: $('#ToDate').val(),
+        SummaryDetail: $('#SummaryDetail').val(),
+        ChallanEntryFrom: $('#ChallanEntryFrom').val()
+    };
+
+    return dataObj;
+}
+     function GetTotalAmounts() {
+                 var dataObj = buildDataObj();
+                    $.ajax({
+                url: '/NRGP/GetTotalAmount',
+                type: 'GET',
+                data: dataObj,
+                traditional: true,
+                dataType: 'json',
+
+                success: function (data) {
+                    console.log("data", data);
+
+                    const obj = typeof data === "string" ? JSON.parse(data) : data;
+
+                    if (obj && obj.Result && obj.Result.length > 0) {
+                        let row = obj.Result[0];
+
+                        // Update totals
+                        $('#tfootNetAmt').text(row.NetAmount?.toFixed(2) ?? "0.00");
+                        $('#tfootBillAmt').text(row.BasicAmount?.toFixed(2) ?? "0.00");
+                    } else {
+                        $('#tfootNetAmt').text("0.00");
+                        $('#tfootBillAmt').text("0.00");
+                    }
+                },
+
+
+                error: function (err) {
+                    console.error("Error fetching totals:", err);
+                }
+            });
+        }
 
     </script>
     <script src="~/Scripts/table2excel.js"></script>

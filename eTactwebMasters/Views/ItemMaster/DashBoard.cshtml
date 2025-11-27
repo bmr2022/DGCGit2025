@@ -83,6 +83,11 @@
             </div> *@
     
 </form>
+    <div id="fullPageLoader">
+        <div class="loaderBox">
+            <span>Processing...</span>
+        </div>
+    </div>
 </div>
 
 @section Scripts
@@ -221,28 +226,44 @@
             window.location.href = '/ItemMaster/ExportItemMasterToExcel?showAll=' + showAll;
         });
 
-
         function GetSearchData() {
-            $('#ShowAllSwitch').prop("checked", false)
-            //var data = $('#SParam').serialize();
-            if ($(this).is(':checked') == true) {
+
+            $('#ShowAllSwitch').prop("checked", false);
+
+            var btn = $('#btnSearch');
+            var oldText = btn.text();
+
+            btn.text("Processing...").prop("disabled", true);
+
+            if ($('#ShowAllSwitch').is(':checked') == true) {
                 $.ajax({
                     url: '@Url.Action("GetAllColumns")',
                     type: "POST",
-                    async: false,
-                    data: { Item_Name: $('#Item_Name').val(), PartCode: $('#PartCode').val(), ParentCode: $('#ParentName').val(), ItemType: $('#POServType').val(), HsnNo: $('#HSNNO').val(), UniversalPartCode: $('#UniversalPartCode').val(), pageSize: $('#PageSize').val(), Flag: "Search" },
+                    async: true,
+
+                    data: {
+                        Item_Name: $('#Item_Name').val(),
+                        PartCode: $('#PartCode').val(),
+                        ParentCode: $('#ParentName').val(),
+                        ItemType: $('#POServType').val(),
+                        HsnNo: $('#HSNNO').val(),
+                        UniversalPartCode: $('#UniversalPartCode').val(),
+                        pageSize: $('#PageSize').val(),
+                        Flag: "Search"
+                    },
+
                     success: function (data) {
                         $('#divDashboardGrid').empty();
                         $('.ShowAllDiv').empty();
                         $('.ShowAllDiv').append(data);
-                        // var dashGrid = $('#divDashboardGrid tr').length;
-                        // $('#totalRows').text(dashGrid);
                         GetFormRights();
                     },
-                    error: function (response) {
-                        alert(response.responseText);
+
+                    complete: function () {
+                        btn.text(oldText).prop("disabled", false);
                     },
-                    failure: function (response) {
+
+                    error: function (response) {
                         alert(response.responseText);
                     }
                 });
@@ -251,8 +272,19 @@
                 $.ajax({
                     url: '@Url.Action("GetSearchData")',
                     type: "POST",
-                    async: false,
-                    data: { Item_Name: $('#Item_Name').val(), PartCode: $('#PartCode').val(), ParentCode: $('#ParentName').val(), ItemType: $('#POServType').val(), HsnNo: $('#HSNNO').val(), UniversalPartCode: $('#UniversalPartCode').val(), pageSize: $('#PageSize').val(), Flag: "Search" },
+                    async: true,
+
+                    data: {
+                        Item_Name: $('#Item_Name').val(),
+                        PartCode: $('#PartCode').val(),
+                        ParentCode: $('#ParentName').val(),
+                        ItemType: $('#POServType').val(),
+                        HsnNo: $('#HSNNO').val(),
+                        UniversalPartCode: $('#UniversalPartCode').val(),
+                        pageSize: $('#PageSize').val(),
+                        Flag: "Search"
+                    },
+
                     success: function (data) {
                         $('#divDashboardGrid').empty();
                         $('.ShowAllDiv').empty();
@@ -261,15 +293,20 @@
                         $('#totalRows').text(dashGrid);
                         GetFormRights();
                     },
-                    error: function (response) {
-                        alert(response.responseText);
+
+                    complete: function () {
+                        btn.text(oldText).prop("disabled", false);
                     },
-                    failure: function (response) {
+
+                    error: function (response) {
                         alert(response.responseText);
                     }
                 });
             }
         }
+
+
+
         var isGlobalSearch = false;
         var globalSearchString = "";
         $("#search-box").on("input", function () {
@@ -456,6 +493,7 @@
         }
 
         $('#ShowAllSwitch').change(function () {
+            showLoader(); // ✅ Show full page loader
             if ($(this).is(':checked') == true) {
                 $.ajax({
                     url: '@Url.Action("GetAllColumns")',
@@ -469,6 +507,9 @@
                         var dashGrid = $('#divDashboardGrid tr').length;
                         $('#totalRows').text(dashGrid);
                         GetFormRights();
+                    },
+                    complete: function () {
+                        hideLoader(); //  Hide after complete
                     },
                     error: function (response) {
                         alert(response.responseText);
@@ -491,6 +532,9 @@
                         $('#totalRows').text(dashGrid);
                         GetFormRights();
                     },
+                    complete: function () {
+                        hideLoader(); //  Hide after complete
+                    },
                     error: function (response) {
                         alert(response.responseText);
                     },
@@ -499,7 +543,13 @@
                     }
                 });
             }
+            function showLoader() {
+                $('#fullPageLoader').fadeIn(100);
+            }
 
+            function hideLoader() {
+                $('#fullPageLoader').fadeOut(100);
+            }
         });
     </script>
     <script src="~/Scripts/table2excel.js"></script>
@@ -507,6 +557,28 @@
 }
 
 <style>
-   
+    #fullPageLoader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.4);
+        display: none;
+        z-index: 99999;
+    }
+
+    .loaderBox {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        padding: 25px 40px;
+        border-radius: 8px;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
 
 </style>

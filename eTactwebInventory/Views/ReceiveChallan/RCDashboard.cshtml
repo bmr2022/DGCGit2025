@@ -156,10 +156,74 @@
             }
 
             GetSearchData();
+            
             $("#search-box").val($('#search-box').val()).trigger('keyup');
 
 
         });
+    function loadPage(pageNumber) {
+                var data = $('#SParam').serialize(); // serialize filters
+            data += '&pageNumber=' + pageNumber + '&pageSize=15'; // match controller default
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetSearchData", "ReceiveChallan")',
+                data: data,
+                success: function (result) {
+                        $('#divDashboardGrid').html(result);
+                    $('#currentPage').val(pageNumber);
+
+                    // Optional functions
+                    GetFeatureOption();
+                    GetFormRights();
+                    // GetTotalAmounts();
+                }
+            });
+        }
+
+        // Handle pagination button click
+        $(document).on('click', '.page-btn', function (e) {
+            e.preventDefault();
+            var page = $(this).data('page');
+            loadPage(page);
+        });
+        function GetFeatureOption() {
+
+            $.ajax({
+                type: "POST",
+                data: {},
+                url: "@Url.Action("GetFeatureOption")",
+                dataType: "json",
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.Result != null) {
+                            if (obj.Result[0].ShowOtherReqFields === "N") {
+                                $('.ShowOtherReqFields').hide();
+                            } else {
+                                $('.ShowOtherReqFields').show();
+                            }
+                            if (obj.Result[0].ShowDetailtableFields === "N") {
+                                $('.ShowDetailtableFields').hide();
+                            } else {
+                                $('.ShowDetailtableFields').show();
+                            }
+                            if (obj.Result[0].ShowOtherFields === "N") {
+                                $('.ShowOtherFields').hide();
+                            } else {
+                                $('.ShowOtherFields').show();
+                            }
+
+
+
+
+                        }
+                    }
+                }
+            });
+        }
+
         function GetFormRights() {
 
             $.ajax({
@@ -278,6 +342,7 @@
                 success: function (data) {
                     $('#divDashboardGrid').empty().append(data);
                     GetFormRights();
+                    GetFeatureOption();
                     // RowCount();
                 },
                 error: function (response) {
@@ -461,37 +526,40 @@
         }
 
         $("#btnGridExcel").click(function () {
-            const table = document.querySelector(".RCDashboard");
-            const rows = table.querySelectorAll("tr");
-            const data = [];
+            // const table = document.querySelector(".RCDashboard");
+            // const rows = table.querySelectorAll("tr");
+            // const data = [];
 
-            const headerRow = rows[0];
-            const headerData = [];
+            // const headerRow = rows[0];
+            // const headerData = [];
 
-            headerRow.querySelectorAll("th").forEach((cell) => {
-                // cell.style.backgroundColor = "#fcba03";
-                headerData.push(cell.textContent);
-            });
+            // headerRow.querySelectorAll("th").forEach((cell) => {
+            //     cell.style.backgroundColor = "#fcba03";
+            //     headerData.push(cell.textContent);
+            // });
 
-            data.push(headerData);
+            // data.push(headerData);
 
-            for (let i = 1; i < rows.length; i++) {
-                const rowData = [];
-                rows[i].querySelectorAll("td").forEach((cell) => {
-                    rowData.push(cell.textContent);
-                });
-                data.push(rowData);
-            }
+            // for (let i = 1; i < rows.length; i++) {
+            //     const rowData = [];
+            //     rows[i].querySelectorAll("td").forEach((cell) => {
+            //         rowData.push(cell.textContent);
+            //     });
+            //     data.push(rowData);
+            // }
 
-            const ws = XLSX.utils.aoa_to_sheet(data);
+            // const ws = XLSX.utils.aoa_to_sheet(data);
 
-            ws["!cols"] = [{ wch: 15 }, { wch: 15 }, { wch: 15 }, /* ... */];
+            // ws["!cols"] = [{ wch: 15 }, { wch: 15 }, { wch: 15 }, /* ... */];
 
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Sheet 1");
+            // const wb = XLSX.utils.book_new();
+            // XLSX.utils.book_append_sheet(wb, ws, "Sheet 1");
 
 
-            XLSX.writeFile(wb, "RCDashboard.xlsx");
+            // XLSX.writeFile(wb, "RCDashboard.xlsx");
+
+                window.location = '/ReceiveChallan/ExportRCDashboardToExcel';
+
         });
 
     </script>

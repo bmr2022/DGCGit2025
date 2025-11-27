@@ -60,6 +60,9 @@ namespace eTactWeb.Data.DAL
                 {
                     if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
                     {
+
+
+
                         resultList.TrailBalanceGrid = (from DataRow row in oDataSet.Tables[0].Rows
                                                        select new TrailBalanceModel
                                                        {
@@ -75,7 +78,7 @@ namespace eTactWeb.Data.DAL
                                                            CurrCrTotal = row["CurrCrTotal"] == DBNull.Value ? 0 : Convert.ToDecimal(row["CurrCrTotal"]),
                                                            TBSeq = row["TBSeq"] == DBNull.Value ? 0 : Convert.ToInt32(row["TBSeq"]),
                                                            TrailBalanceGroupCode = row["TrailBalanceGroupCode"] == DBNull.Value ? 0 : Convert.ToInt32(row["TrailBalanceGroupCode"]),
-                                                           GroupLedger = row["Group/Ledger"] == DBNull.Value ? string.Empty : row["Group/Ledger"].ToString(),
+                                                           //GroupLedger = row["GroupLedger"] == DBNull.Value ? string.Empty : row["GroupLedger"].ToString(),
 
                                                        }).ToList();
                     }

@@ -660,7 +660,8 @@ namespace eTactWeb.Data.DAL
                             ProdInMachine1 = SafeToInt(row[83]),
                             ProdInMachine2 = SafeToInt(row[84]),
                             ProdInMachine3 = SafeToInt(row[85]),
-                            ProdInMachine4 = SafeToInt(row[86])
+                            ProdInMachine4 = SafeToInt(row[86]),
+                            Hardness = SafeToString(row[87])
                         });
                     }
                     catch (Exception ex)
@@ -1149,6 +1150,8 @@ namespace eTactWeb.Data.DAL
                         model.UpdatedByName = SafeToString(dr["UpdatedByName"]);
                         model.UpdatedBy = SafeToInt(dr["UpdatedBy"]);
                         model.UpdatedOn = SafeToDateTime(dr["UpdatedOn"]);
+                        model.Hardness = SafeToString(dr["Hardness"]);
+
 
                         // Optional: Handle ItemServAssets specific mapping
                         string itemServ = SafeToString(dr["ItemServAssets"]);
@@ -1203,8 +1206,8 @@ namespace eTactWeb.Data.DAL
                             oCmd.Parameters.AddWithValue("@PartCode", model.PartCode);
                             oCmd.Parameters.AddWithValue("@Item_Name", model.Item_Name);
                             oCmd.Parameters.AddWithValue("@ParentCode", model.ParentCode);
-                            oCmd.Parameters.AddWithValue("@EntryDate", model.EntryDate);
-                            oCmd.Parameters.AddWithValue("@LastUpdatedDate", model.LastUpdatedDate);
+                            oCmd.Parameters.AddWithValue("@EntryDate", CommonFunc.ParseFormattedDate(model.EntryDate));
+                            oCmd.Parameters.AddWithValue("@LastUpdatedDate", CommonFunc.ParseFormattedDate(model.LastUpdatedDate));
                             oCmd.Parameters.AddWithValue("@LeadTime", model.LeadTime);
                             oCmd.Parameters.AddWithValue("@CC", model.CC);
                             oCmd.Parameters.AddWithValue("@Unit", model.Unit);
@@ -1277,6 +1280,7 @@ namespace eTactWeb.Data.DAL
                             oCmd.Parameters.AddWithValue("@NoOfshotsHours", model.NoOfshotsHours);
                             oCmd.Parameters.AddWithValue("@usedinMachorVehicle", model.usedinMachorVehicle);
                             oCmd.Parameters.AddWithValue("@Barcode", model.Barcode);
+                            oCmd.Parameters.AddWithValue("@Hardness", model.Hardness);
                             oCmd.Parameters.AddWithValue("@CreatedBy", model.CreatedBy);
                             oCmd.Parameters.AddWithValue("@BatchWiseInventory", model.BatchWiseInventory);
                             if (model.Mode == "Update")
@@ -1317,8 +1321,8 @@ namespace eTactWeb.Data.DAL
                         oCmd.Parameters.AddWithValue("@PartCode", model.PartCode);
                         oCmd.Parameters.AddWithValue("@Item_Name", model.Item_Name);
                         oCmd.Parameters.AddWithValue("@ParentCode", model.ParentCode);
-                        oCmd.Parameters.AddWithValue("@EntryDate", model.EntryDate);
-                        oCmd.Parameters.AddWithValue("@LastUpdatedDate", model.LastUpdatedDate);
+                        oCmd.Parameters.AddWithValue("@EntryDate", CommonFunc.ParseFormattedDate(model.EntryDate));
+                        oCmd.Parameters.AddWithValue("@LastUpdatedDate", CommonFunc.ParseFormattedDate(model.LastUpdatedDate));
                         oCmd.Parameters.AddWithValue("@LeadTime", model.LeadTime);
                         oCmd.Parameters.AddWithValue("@CC", model.CC);
                         oCmd.Parameters.AddWithValue("@Unit", model.Unit);
@@ -1391,6 +1395,8 @@ namespace eTactWeb.Data.DAL
                         oCmd.Parameters.AddWithValue("@NoOfshotsHours", model.NoOfshotsHours);
                         oCmd.Parameters.AddWithValue("@usedinMachorVehicle", model.usedinMachorVehicle);
                         oCmd.Parameters.AddWithValue("@Barcode", model.Barcode);
+                        oCmd.Parameters.AddWithValue("@Hardness", model.Hardness);
+
                         oCmd.Parameters.AddWithValue("@CreatedBy", model.CreatedBy);
                         oCmd.Parameters.AddWithValue("@BatchWiseInventory", model.BatchWiseInventory);
                         if (model.Mode == "Update")

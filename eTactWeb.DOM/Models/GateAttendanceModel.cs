@@ -135,6 +135,10 @@ public class GateAttendanceModel : TimeStamp
     public string ToDateBack { get; set; }
     public string AttendanceEntryMethodTypeBack { get; set; }
     public string DashboardTypeBack { get; set; }
+    public string DashDepartmentBack { get; set; }
+    public string DashCategoryBack { get; set; }
+    public string DashDesignationBack { get; set; }
+    public string DashEmployeeBack { get; set; }
     public string GlobalSearchBack { get; set; }
     public bool? IsIncreamented { get; set; } = false;
 }
@@ -161,7 +165,16 @@ public class GateAttDashBoard : TimeStamp
     public string? ToDate { get; set; }
     public string? FromDate1 { get; set; }
     public string? ToDate1 { get; set; }
-    //public IList<TextValue>? PONoList { get; set; }
+    //filter
+    public IList<TextValue>? DashDepartmentList { get; set; }
+    public string? DashDepartment { get; set; }
+    public IList<TextValue>? DashCategoryList { get; set; }
+    public string? DashCategory { get; set; }
+    public IList<TextValue>? DashDesignationList { get; set; }
+    public string? DashDesignation { get; set; }
+    public IList<TextValue>? DashEmployeeList { get; set; }
+    public string? DashEmployee { get; set; }
+    public string? Searchbox { get; set; }
     //pagintion
     public int PageNumber { get; set; }
     public int PageSize { get; set; }

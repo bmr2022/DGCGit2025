@@ -497,6 +497,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@CreatedOn", createdDt));
                 SqlParams.Add(new SqlParameter("@CC", model.CC ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@UID", model.UID));
+                SqlParams.Add(new SqlParameter("@RecFromDataBase", model.DatabaseName));
 
                 SqlParams.Add(new SqlParameter("@DTSSGrid", RCGrid));
 
@@ -685,6 +686,27 @@ namespace eTactWeb.Data.DAL
         }
 
         public async Task<ResponseResult> GetFeatureOption()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+
+                SqlParams.Add(new SqlParameter("@Flag", "FeatureOption"));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_ReceiveChallan", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+
+        public async Task<ResponseResult> GetTotalAmount(RCDashboard model)
         {
             var _ResponseResult = new ResponseResult();
             try

@@ -625,6 +625,40 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
+        public async Task<ResponseResult> GetTotalAmount(INDashboard model)
+        {
+            var _ResponseResult = new ResponseResult();
+
+            try
+            {
+                var SqlParams = new List<dynamic>();
+
+                SqlParams.Add(new SqlParameter("@Flag", "GetTotalAmount"));
+
+                SqlParams.Add(new SqlParameter("@FromDate", CommonFunc.ParseFormattedDate(model.FromDate)));
+                SqlParams.Add(new SqlParameter("@ToDate", CommonFunc.ParseFormattedDate(model.ToDate)));
+
+                SqlParams.Add(new SqlParameter("@VendorName", model.VendorName ?? ""));
+                SqlParams.Add(new SqlParameter("@ChallanNo", model.ChallanNo ?? ""));
+                SqlParams.Add(new SqlParameter("@ChallanType", model.ChallanType ?? ""));
+                SqlParams.Add(new SqlParameter("@RGPNRGP", model.RGPNRGP ?? ""));
+                SqlParams.Add(new SqlParameter("@ItemName", model.ItemName ?? ""));
+                SqlParams.Add(new SqlParameter("@PartCode", model.PartCode ?? ""));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_IssueNRGP", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+                throw;
+            }
+
+            return _ResponseResult;
+        }
+
+
         internal async Task<ResponseResult> DeleteByID(int ID, int YC, string machineName, int actuaEntryBy, int AccountCode, string IPAddress)
         {
             var _ResponseResult = new ResponseResult();

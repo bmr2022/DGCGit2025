@@ -1,0 +1,207 @@
+﻿@model eTactWeb.DOM.Models.SaleBillApprovalModel
+<div style="overflow-x: auto; overflow-y: auto; max-height: 500px;">
+    <table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0 salebilltable" id="SBDashboardGrid">
+        <thead class="bg-gradient card-headerBG text-light salebilltableHead">
+            <tr>
+                <th>Sr#</th>
+                <th>Action</th>
+                <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sale Bill No</th>
+                <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sale BillDate</th>
+                <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Customer Name</th>
+                <th data-columnno="4" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>GST No</th>
+                <th data-columnno="12" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bill Amt</th>
+                <th data-columnno="13" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Taxable</th>
+                <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>INVNetAmt</th>
+                <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Tax Category</th>
+                <th data-columnno="5" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Supply Type</th>
+                <th data-columnno="6" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>State Name Supply</th>
+                <th data-columnno="7" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>City Name Supply</th>
+                <th data-columnno="8" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Consignee Name</th>
+                <th data-columnno="9" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Consignee Address</th>
+                <th data-columnno="10" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Payment Term</th>
+                <th data-columnno="11" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Currency</th>
+                <th data-columnno="14" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>GST Amount</th>
+                <th data-columnno="15" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RoundType</th>
+                <th data-columnno="16" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RountOffAmt</th>
+                <th data-columnno="18" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>EwayBillNo</th>
+                <th data-columnno="19" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>EInvNo</th>
+                <th data-columnno="20" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>EinvGenerated</th>
+                <th data-columnno="21" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>TransporterdocNo</th>
+                <th data-columnno="22" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>TransportModeBYRoadAIR</th>
+                <th data-columnno="23" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>DispatchTo</th>
+                <th data-columnno="24" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>DispatchThrough</th>
+                <th data-columnno="25" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ExchangeRate</th>
+                <th data-columnno="26" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>currExchangeRate</th>
+                <th data-columnno="27" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SaleBillEntryId</th>
+                <th data-columnno="28" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SaleBillYearCode</th>
+                <th data-columnno="29" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SaleBillEntryDate</th>
+                <th data-columnno="30" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Shippingdate</th>
+                <th data-columnno="31" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>DistanceKM</th>
+                <th data-columnno="32" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>vehicleNo</th>
+                <th data-columnno="33" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>TransporterName</th>
+                <th data-columnno="34" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>DomesticExportNEPZ</th>
+                <th data-columnno="35" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail "><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PaymentCreditDay</th>
+                <th data-columnno="36" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ReceivedAmt</th>
+                <th data-columnno="37" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>pendAmount</th>
+                <th data-columnno="38" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>CancelBill</th>
+                <th data-columnno="39" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Canceldate</th>
+                <th data-columnno="40" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>CancelBy</th>
+                <th data-columnno="41" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Cancelreason</th>
+                <th data-columnno="42" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BankName</th>
+                <th data-columnno="43" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>FreightPaid</th>
+                <th data-columnno="44" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>DispatchDelayReason</th>
+                <th data-columnno="45" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AttachmentFilePath1</th>
+                <th data-columnno="46" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AttachmentFilePath2</th>
+                <th data-columnno="47" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AttachmentFilePath3</th>
+                <th data-columnno="48" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>DocketNo</th>
+                <th data-columnno="49" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>DispatchDelayreson</th>
+                <th data-columnno="50" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Commodity</th>
+                <th data-columnno="51" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>TypeItemServAssets</th>
+                <th data-columnno="52" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SaleBillJobwork</th>
+                <th data-columnno="53" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PerformaInvNo</th>
+                <th data-columnno="54" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PerformaInvDate</th>
+                <th data-columnno="55" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PerformaInvYearCode</th>
+                <th data-columnno="56" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BILLAgainstWarrenty</th>
+                <th data-columnno="57" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ExportInvoiceNo</th>
+                <th data-columnno="58" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>InvoiceTime</th>
+                <th data-columnno="59" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RemovalDate</th>
+                <th data-columnno="60" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RemovalTime</th>
+                <th data-columnno="61" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>EntryFreezToAccounts</th>
+                <th data-columnno="62" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BalanceSheetClosed</th>
+                <th data-columnno="63" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SaleQuotNo</th>
+                <th data-columnno="64" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SaleQuotDate</th>
+                <th data-columnno="65" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>salesperson_name</th>
+                <th data-columnno="66" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SalesPersonMobile</th>
+                <th data-columnno="67" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Remark</th>
+                <th data-columnno="68" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Approved</th>
+                <th data-columnno="69" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ApprovDate</th>
+                <th data-columnno="70" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ApprovedBy</th>
+                <th data-columnno="71" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Cust Address</th>
+                <th data-columnno="72" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Last Updated By</th>
+                <th data-columnno="73" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Last Updated Date</th>
+                <th data-columnno="74" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Branch</th>
+                <th data-columnno="75" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>UID</th>
+                <th data-columnno="76" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Actual Entry Name</th>
+                <th data-columnno="77" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Actual Entry Date</th>
+                <th data-columnno="78" data-sortorder="asc" class="sortCol SaleBillOtherRequiredDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Entry By MachineName</th>
+
+            </tr>
+        </thead>
+        <tbody id="divSBDashboardGrid">
+            @{
+                var @Cntr = 0;
+                var srNo = 1;
+                if (Model.SaleBillList == null || Model.SaleBillList.Count == 0)
+                {
+                    <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                }
+                else
+                {
+                    foreach (var item in Model.SaleBillList)
+                    {
+                        Cntr = Cntr + 1;
+                        // <tr id="SbRow-@Cntr" class="sbDashboardRow" style="@(item.SaleBillJobwork == "S" ? "background-color: #fff5d5;" : "background-color:#fde5fc;")">
+                        <tr id="SbRow-@Cntr" class="sbDashboardRow">
+
+                            <th>
+                                @srNo
+                                <input type="hidden" id="AgainstVoucherNo-@Cntr" value="@item.AgainstVoucherNo" />
+                            </th>
+                            <td style="text-align:center;white-space: nowrap;">
+                                <input type="checkbox" name="name" value="" />
+                            </td>
+
+                            @* <td>@(item.EntryDate == null ? string.Empty : item.EntryDate.Split(" ")[0])</td> *@
+                            <td>@item.SaleBillNo<input type="hidden" value="@item.SaleBillYearCode" class="gridYearCode" /></td>
+                            <td>@(item.SaleBillDate == null ? string.Empty : item.SaleBillDate.Split(" ")[0])</td>
+                            <td>@item.AccountName</td>
+                            <td class="SaleBillOtherRequiredDetail">@item.GSTNO</td>
+                            <td class="SaleBillOtherRequiredDetail" id="BillAmt-@Cntr">@item.BillAmt</td>
+                            <td class="SaleBillOtherRequiredDetail">@item.TaxableAmt</td>
+                            <td id="INVNetAmt-@Cntr">@item.INVNetAmt</td>
+                            <td></td>
+                            <td class="SaleBillOtherRequiredDetail">@item.SupplyType</td>
+                            <td class="SaleBillOtherRequiredDetail">@item.StateNameofSupply</td>
+                            <td class="SaleBillOtherRequiredDetail">@item.CityofSupply</td>
+                            <td class="SaleBillOtherRequiredDetail">@item.ConsigneeAccountName</td>
+                            <td class="SaleBillOtherRequiredDetail">@item.ConsigneeAddress</td>
+                            <td class="SaleBillOtherRequiredDetail">@item.PaymentTerm</td>
+                            <td class="SaleBillOtherRequiredDetail">@item.Currency</td>
+                            <td class="SaleBillOtherRequiredDetail">@item.GSTAmount</td>
+                            <td class="SaleBillOtherRequiredDetail">@item.RoundTypea</td>
+                            <td class="SaleBillOtherRequiredDetail">@item.RoundOffAmt</td>
+                            <td class="SaleBillOtherRequiredDetail" class="eWayBillNoGrid">@item.Ewaybillno</td>
+                            <td class="eInvNoGrid SaleBillOtherRequiredDetail">@item.EInvNo</td>
+                            <td class="EInvGeneratedGrid SaleBillOtherRequiredDetail">@item.EinvGenerated</td>
+                            <td class="SaleBillOtherRequiredDetail">@item.TransporterdocNo</td>
+                            <td class="SaleBillOtherRequiredDetail">@item.TransportModeBYRoadAIR</td>
+                            <td class="SaleBillOtherRequiredDetail">@item.DispatchTo</td>
+                            <td class="SaleBillOtherRequiredDetail">@item.DispatchThrough</td>
+                            <td class="SaleBillOtherRequiredDetail">@item.ExchangeRate</td>
+                            <td class="SaleBillOtherRequiredDetail">@item.currExchangeRate</td>
+                            <td class="SaleBillOtherRequiredDetail">@item.SaleBillEntryId</td>
+                            <td class="SaleBillOtherRequiredDetail">@item.SaleBillYearCode</td>
+                            <td class="SaleBillOtherRequiredDetail">@(item.SaleBillEntryDate == null ? string.Empty : item.SaleBillEntryDate.Split(" ")[0])</td>
+                            <td class="SaleBillOtherRequiredDetail">@(item.Shippingdate == null ? string.Empty : item.Shippingdate.Split(" ")[0])</td>
+                            <td class="SaleBillOtherRequiredDetail">@item.DistanceKM</td>
+                            <td class="SaleBillOtherRequiredDetail">@item.vehicleNo</td>
+                            <td class="SaleBillOtherRequiredDetail">@item.TransporterName</td>
+                            <td class="domesticExportNEPZ SaleBillOtherRequiredDetail">@item.DomesticExportNEPZ</td>
+                            <td class="SaleBillOtherRequiredDetail">@item.PaymentCreditDay</td>
+                            <td class="SaleBillOtherRequiredDetail">@item.DiscountAmt</td> @* Received Amt *@
+                            <td class="SaleBillOtherRequiredDetail">@item.SOPendQty</td>  @* Pend Amt *@
+                            <td class="cancelBillGrid SaleBillOtherRequiredDetail">@item.CancelBill</td>
+                            <td class="SaleBillOtherRequiredDetail">@(item.Canceldate == null ? string.Empty : item.Canceldate.Split(" ")[0])</td>
+                            <td class="SaleBillOtherRequiredDetail">@item.CancelBy</td>
+                            <td class="SaleBillOtherRequiredDetail">@item.Cancelreason</td>
+                            <td class="SaleBillOtherRequiredDetail">@item.BankName</td>
+                            <td class="SaleBillOtherRequiredDetail">@item.FreightPaid</td>
+                            <td class="SaleBillOtherRequiredDetail">@item.DispatchDelayReason</td>
+                            <td class="SaleBillOtherRequiredDetail">@item.AttachmentFilePath1</td>
+                            <td class="SaleBillOtherRequiredDetail">@item.AttachmentFilePath2</td>
+                            <td class="SaleBillOtherRequiredDetail">@item.AttachmentFilePath3</td>
+                            <td class="SaleBillOtherRequiredDetail">@item.DocketNo</td>
+                            <td class="SaleBillOtherRequiredDetail">@item.DispatchDelayreson</td>
+                            <td class="SaleBillOtherRequiredDetail">@item.Commodity</td>
+                            <td class="SaleBillOtherRequiredDetail">@item.TypeItemServAssets</td>
+                            <td class="SaleBillOtherRequiredDetail">@item.SaleBillJobwork</td>
+                            <td class="SaleBillOtherRequiredDetail">@item.PerformaInvNo</td>
+                            <td class="SaleBillOtherRequiredDetail">@(item.PerformaInvDate == null ? string.Empty : item.PerformaInvDate.Split(" ")[0])</td>
+                            <td class="SaleBillOtherRequiredDetail">@item.PerformaInvYearCode</td>
+                            <td class="SaleBillOtherRequiredDetail">@item.BILLAgainstWarrenty</td>
+                            <td class="SaleBillOtherRequiredDetail">@item.ExportInvoiceNo</td>
+                            <td class="SaleBillOtherRequiredDetail">@item.InvoiceTime</td>
+                            <td class="SaleBillOtherRequiredDetail">@(item.RemovalDate == null ? string.Empty : item.RemovalDate.Split(" ")[0])</td>
+                            <td class="SaleBillOtherRequiredDetail">@item.RemovalTime</td>
+                            <td class="SaleBillOtherRequiredDetail">@item.EntryFreezToAccounts</td>
+                            <td class="SaleBillOtherRequiredDetail">@item.BalanceSheetClosed</td>
+                            <td class="SaleBillOtherRequiredDetail">@item.SaleQuotNo</td>
+                            <td class="SaleBillOtherRequiredDetail">@(item.SaleQuotDate == null ? string.Empty : item.SaleQuotDate.Split(" ")[0])</td>
+                            <td class="SaleBillOtherRequiredDetail">@item.AccountName</td>   @* Sales Person Name *@
+                            <td class="SaleBillOtherRequiredDetail">@item.TransportModeBYRoadAIR</td>  @* Sales Person Mobile *@
+                            <td class="SaleBillOtherRequiredDetail">@item.Remark</td>
+                            <td class="SaleBillOtherRequiredDetail">@item.Approved</td>
+                            <td class="SaleBillOtherRequiredDetail">@(item.ApprovDate == null ? string.Empty : item.ApprovDate.Split(" ")[0])</td>
+                            <td class="SaleBillOtherRequiredDetail">@item.ApprovedBy</td>
+                            <td class="SaleBillOtherRequiredDetail">@item.CustAddress</td>
+                            <td class="SaleBillOtherRequiredDetail">@item.LastUpdatedBy</td>
+                            <td class="SaleBillOtherRequiredDetail">@(item.LastUpdationDate == null ? string.Empty : item.LastUpdationDate.Split(" ")[0])</td>
+                            <td class="SaleBillOtherRequiredDetail">@item.CC</td>
+                            <td class="SaleBillOtherRequiredDetail">@item.Uid</td>
+                            <td>@item.ActualEnteredByName</td>
+                            <td class="SaleBillOtherRequiredDetail">@(item.ActualEntryDate == null ? string.Empty : item.ActualEntryDate.Split(" ")[0])</td>
+                            <td class="SaleBillOtherRequiredDetail">@item.MachineName</td>
+
+                        </tr>
+                        srNo++;
+                    }
+                }
+            }
+        </tbody>
+        
+
+    </table>
+
+
+</div>
+
