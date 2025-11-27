@@ -1687,8 +1687,6 @@ public static class CommonFunc
                 {
                     if ( typeProperty.PropertyInfo.Name != "FinFromDate"
                         && typeProperty.PropertyInfo.Name != "FinToDate"
-                        && typeProperty.PropertyInfo.Name != "EmpId"
-                        && typeProperty.PropertyInfo.Name != "EmpName"
                         && typeProperty.PropertyInfo.Name != "DesigId"
                         && typeProperty.PropertyInfo.Name != "DepId"
                         && typeProperty.PropertyInfo.Name != "CategoryId"

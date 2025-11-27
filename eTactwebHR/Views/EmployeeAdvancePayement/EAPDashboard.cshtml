@@ -41,8 +41,14 @@
 								<label asp-for="FinToDate" class="form-label">To Date</label>
 								<input asp-for="FinToDate" class="form-control" />
 							</div>
-
+						
 							<div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 d-flex justify-content-end mt-3">
+								<div style="margin-bottom:10px;margin-right:20px;">
+									<span style="display:inline-block;width:12px;height:12px;background:red;margin-right:5px;"></span> Pending
+									<span style="display:inline-block;width:12px;height:12px;background:blue;margin:0 5px 0 15px;"></span> HR Approved
+									<span style="display:inline-block;width:12px;height:12px;background:green;margin:0 5px 0 15px;"></span> Finance Approved
+									<span style="display:inline-block;width:12px;height:12px;background:orange;margin:0 5px 0 15px;"></span> Cancelled
+								</div>
 								<button class="btn btn-sm btn-outline-info" type="button" onclick="GetSearchData();">
 									<i class="fa-solid fa-magnifying-glass fa-fw fa-lg "></i>SEARCH
 								</button>
@@ -92,8 +98,14 @@
 				$.notify(deleteMessage, "error");
 			}
 
+		    var now = new Date();
+		   var firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
 			$('#FinFromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", firstDayOfMonth);
 			$('#FinToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+
+			// GetSearchData();
+			ColorGrid()
 
 		});
 
@@ -147,6 +159,42 @@
 				$(this).find('i:first').addClass('fa-arrow-up');
 			}
 		});
+
+			function ColorGrid() {
+
+			var rowCount = $('#VUDashboardGrid tr').length;
+
+			for (var i = 1; i <= rowCount; i++) {
+
+				// Read values and treat "0" or "" as false
+				var HR = $('#HRApprovedbyEmpid-' + i).text().trim();
+				var Finance = $('#FinanceApprovalEmpid-' + i).text().trim();
+				var Cancel = $('#CanceledByEmpId-' + i).text().trim();
+
+				HR = (HR !== "" && HR !== "0");
+				Finance = (Finance !== "" && Finance !== "0");
+				Cancel = (Cancel !== "" && Cancel !== "0");
+
+				var row = $('#vendorUserDashboardRow-' + i);
+
+				// Pending
+				if (!HR && !Finance && !Cancel) {
+					row.css('color', 'red');
+				}
+				// HR Approved
+				else if (HR && !Finance && !Cancel) {
+					row.css('color', 'blue');
+				}
+				// Finance Approved
+				else if (Finance && !Cancel) {
+					row.css('color', 'green');
+				}
+				// Cancelled
+				else if (Cancel) {
+					row.css('color', 'orange');
+				}
+			}
+		}
 
 		function confirmDelete(event) {
 
@@ -208,6 +256,8 @@
 					// $('#VUDashboardGrid').empty();
 					// $('#VUDashboardGrid').append(data);
 					$('.VUDashboardData').empty().append(data);
+
+					ColorGrid();
 				},
 				error: function (response) {
 					alert(response.responseText);
