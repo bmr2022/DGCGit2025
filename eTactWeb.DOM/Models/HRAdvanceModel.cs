@@ -27,6 +27,7 @@ namespace eTactWeb.DOM.Models
         public decimal PresentDaysinCurrMonth { get; set; }
         public decimal PresentDaysInCurrYear { get; set; }
         public int CategoryId { get; set; }
+        public string? CategoryName { get; set; }
         public string? RequestDate { get; set; }
         public string? EntryDate { get; set; }
         public string? Purpose { get; set; }

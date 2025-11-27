@@ -297,6 +297,8 @@ namespace eTactWeb
             services.TryAddScoped<IPPCToolIssue, PPCToolIssueBLL>();
             services.TryAddScoped<IDeleteTransaction, DeleteTransactionBLL>();
             services.TryAddScoped<ILedgerOpeningCarryforward, LedgerOpeningCarryforwardBLL>();
+            services.TryAddScoped<ISaleBillApproval, SaleBillApprovalBLL>();
+
             services.TryAddTransient<IMIRRegister, MIRRegisterBLL>();
             services.TryAddTransient<ICreditNote, CreditNoteBLL>();
             services.TryAddTransient<IBankReconciliation, BankReconciliationBLL>();
