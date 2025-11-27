@@ -50,7 +50,7 @@ else{
                 <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Year Code</th>
                 <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Issued To WorkCenetr</th>
                     <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Issued To Department</th>
-
+                    <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Issue Qty</th>
                 
         </tr>
     </thead>
@@ -149,20 +149,12 @@ else{
                         <td>@item.ReqYearCode </td>
                         <td>@item.IssueSlipNo</td>
                         <td>@item.IssueDate.Split(" ")[0]</td>
-                                @if (!string.IsNullOrEmpty(item.EntryTime))
-                                {
-                                    <td>@item.EntryTime</td>
-                                }
-                                else
-                                {
-                                    <td>-</td>
-                                }
+                            
                         <td>@item.EntryId</td>
                         <td>@item.YearCode</td>
                         <td>@item.WorkCenterDescription</td>
-
-                                <td>@item.RecDepartment</td>
-
+                          <td>@item.RecDepartment</td>
+                          <td id="IssueQty-@Cntr">@item.IssueQty</td>
                     </tr>
                             srNo++;
                 }
@@ -177,7 +169,7 @@ else{
         displayedRows = Model.TotalRecords;
     }
 
-    <center><strong>TOTAL ROWS : <span>@displayedRows</span></strong></center>  
+    <center><strong>TOTAL ROWS : <span>@displayedRows</span></strong> <strong>  TOTAL IssueQty : <span id="TotalIssueQty"></span></strong></center>
 }
 @{
     int totalPages = (int)Math.Ceiling((double)Model.TotalRecords / Model.PageSize);

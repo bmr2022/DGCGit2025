@@ -36,6 +36,7 @@
                 <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Year Code</th>
                 <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Name</th>
                 <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Part Code</th>
+                <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Issue Qty</th>
                 <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Work Center Description</th>
 
             </tr>
@@ -67,10 +68,18 @@
                                             </span>
                                         </a>
                                     </div>
+                                    <div id="printData-@Cntr">
+                                        <a class="table-link link-dark" target="_blank" asp-controller="IssueWithoutBom" asp-action="PrintReport" asp-route-EntryId="@item.EntryId" asp-route-YearCode="@item.YearCode">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa-solid fa-print fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
                                     @if (item.YearCode == yearCode)
                                     {
                                         <div id="editCursorDiv-@Cntr">
-                                            <a class="table-link link-primary" asp-action="IssueWithoutBom" asp-route-Mode="U" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode">
+                                            <a class="table-link link-primary" asp-action="IssueWithoutBom" asp-route-Mode="U" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode" onclick="BackButtonData(event)">
                                                 <span class="fa-stack">
                                                     <i class="fa fa-square fa-stack-2x"></i>
                                                     <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
@@ -78,7 +87,7 @@
                                             </a>
                                         </div>
                                         <div id="deleteCursorDiv-@Cntr">
-                                            <a class="table-link link-danger" onclick="confirmDelete(event)" asp-action="DeleteByID" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode">
+                                            <a class="table-link link-danger" onclick="confirmDelete(event)" asp-action="DeleteByID" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode" asp-route-ActualEntryBy="@item.ActualEnteredBy" asp-route-EntryByMachine="@item.MachineCode">
                                                 <span class="fa-stack">
                                                     <i class="fa fa-square fa-stack-2x"></i>
                                                     <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
@@ -131,6 +140,7 @@
                             <td>@item.YearCode</td>
                             <td>@item.Item_Name</td>
                             <td>@item.PartCode</td>
+                            <td id="IssueQty-@Cntr">@item.IssueQty</td>
                             <td>@item.WorkCenterDescription</td>
                         </tr>
                         srNo++;
@@ -149,5 +159,5 @@
         displayedRows = Model.TotalRecords;
     }
 
-<center><strong>TOTAL ROWS : <span>@displayedRows</span></strong></center>  
+    <center><strong>TOTAL ROWS : <span>@displayedRows</span></strong><strong>   TOTAL IssueQty : <span id="TotalIssueQty"></span></strong></center>
 }

@@ -38,7 +38,7 @@ namespace eTactWeb.Controllers
             model.MIRRegisterDetail = new List<MIRRegisterDetail>();
             return View(model);
         }
-        public async Task<IActionResult> GetRegisterData(string MRNType, string ReportType, string FromDate, string ToDate, string gateno,string MRNno, string docname, string PONo, string Schno, string PartCode, string ItemName, string invoiceNo, string VendorName,string MRNStatus, int pageNumber = 1, int pageSize = 50, string SearchBox = "")
+        public async Task<IActionResult> GetRegisterData(string MRNType, string ReportType, string FromDate, string ToDate, string gateno,string MRNno, string docname, string PONo, string Schno, string PartCode, string ItemName, string invoiceNo, string VendorName,string MRNStatus,string MIRNo, int pageNumber = 1, int pageSize = 50, string SearchBox = "")
         {
             var model = new MIRRegisterModel();
             if (string.IsNullOrEmpty(gateno)||gateno == "0" )
@@ -60,7 +60,8 @@ namespace eTactWeb.Controllers
             if (string.IsNullOrEmpty(VendorName) || VendorName == "0")
             { VendorName = ""; }
        
-            model = await _IMIRRegister.GetRegisterData(MRNType,ReportType,  FromDate,  ToDate,  gateno,  MRNno,docname,  PONo,  Schno,  PartCode,  ItemName,  invoiceNo,  VendorName,MRNStatus);
+            model = await _IMIRRegister.GetRegisterData(MRNType,ReportType,  FromDate,  ToDate,  gateno,  MRNno,MIRNo,  PONo,  Schno,  PartCode,  ItemName,  invoiceNo,  VendorName,MRNStatus);
+          
             model.ReportMode= ReportType;
             var modelList = model?.MIRRegisterDetail ?? new List<MIRRegisterDetail>();
 
@@ -606,6 +607,12 @@ namespace eTactWeb.Controllers
         public async Task<JsonResult> FillGateNo(string FromDate, string ToDate)
         {
             var JSON = await _IMIRRegister.FillGateNo(FromDate, ToDate);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> FillMRNNo(string FromDate, string ToDate)
+        {
+            var JSON = await _IMIRRegister.FillMRNNo(FromDate, ToDate);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }

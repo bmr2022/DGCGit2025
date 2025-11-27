@@ -185,15 +185,15 @@
                                             <div class="row">
                                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="opnStkDiv">
                                                     <label class="form-label">Total Bill Qty</label>
-                                                    <input id="totOpenStock" class="form-control" readonly />
+                                                    <input id="totBillQty" class="form-control" readonly />
                                                 </div>
                                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="opnStkDiv">
                                                     <label class="form-label">Total Rec Qty</label>
-                                                    <input id="totOpenStock" class="form-control" readonly />
+                                                    <input id="totRecQty" class="form-control" readonly />
                                                 </div>
                                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="opnStkDiv">
                                                     <label class="form-label">Total Short/Excess</label>
-                                                    <input id="totOpenStock" class="form-control" readonly />
+                                                    <input id="totShort" class="form-control" readonly />
                                                 </div>
                                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="stockDiv">
                                                     <label class="form-label">Total Amount</label>
@@ -229,16 +229,18 @@
             $('#totalRows').text($('#divStockRegisterBody tr').length);
             $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatDate1(firstDayOfMonth));
             $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-                 $('#gateno').select2();
             $('#PONo').select2();
             $('#Schno').select2();
             $('#ItemName').select2();
             $('#PartCode').select2();
             $('#MIRNo').select2();
+            $('#MRNno').select2();
             $('#invoiceNo').select2();
             $('#VendorName').select2();
             $('#ReportType').select2();
+            $('#GateNo').select2();
             FillGateNo();
+            FillMRNNo();
             FillItemPartcode();
             FillItemName();
             // FillItemNamePartcode();
@@ -315,7 +317,7 @@
                 url: "@Url.Action("GetRegisterData")",
                 async: false,
                 data: {
-                    "MRNType": $('#MRNType').val(), "ReportType": $('#ReportType').val(), "FromDate": $('#FromDate').val(), "ToDate": $('#ToDate').val(), "gateno": "", "MRNno": $('#MRNno').val() == '0' ? '' : $('#MRNno').val(), "docname": $('#docname').val() == '0' ? '' : $('#docname').val(), "PONo": $('#PONo').val() == '0' ? '' : $('#PONo').val(), "SchNo": $('#SchNo').val() == '0' ? '' : $('#SchNo').val(), "PartCode": $('#PartCode').val() == '0' ? '' : $('#PartCode').val(), "ItemName": $('#ItemName').val() == '0' ? '' : $('#ItemName').val(), "invoiceNo": $('#invoiceNo').val() == '0' ? '' : $('#invoiceNo').val(), "VendorName": $('#VendorName').val() == '0' ? '' : $('#VendorName').val(), "MRNStatus": $('#MRNStatus').val()
+                    "MRNType": $('#MRNType').val(), "ReportType": $('#ReportType').val(), "FromDate": $('#FromDate').val(), "ToDate": $('#ToDate').val(), "gateno": $('#GateNo').val() == '0' ? '' : $('#GateNo').val(), "MRNno": $('#MRNno').val() == '0' ? '' : $('#MRNno').val(), "docname": $('#docname').val() == '0' ? '' : $('#docname').val(), "PONo": $('#PONo').val() == '0' ? '' : $('#PONo').val(), "Schno": $('#Schno').val() == '0' ? '' : $('#Schno').val(), "PartCode": $('#PartCode').val() == '0' ? '' : $('#PartCode').val(), "ItemName": $('#ItemName').val() == '0' ? '' : $('#ItemName').val(), "invoiceNo": $('#invoiceNo').val() == '0' ? '' : $('#invoiceNo').val(), "VendorName": $('#VendorName').val() == '0' ? '' : $('#VendorName').val(), "MRNStatus": $('#MRNStatus').val(),"MIRNo": $('#MIRNo').val() == '0' ? '' : $('#MIRNo').val()
                 },
                 success: function (result, status, error) {
                      $('#divStockMainRegister').empty();
@@ -350,31 +352,83 @@
                 }
             });
         });
-        function loadPage(pageNumber) {
+        // function loadPage(pageNumber) {
+
+        //     var url = '';
+        //     var ReportType = $('#ReportType').val();
+        //     var formData = $('#SParam').serializeArray();
+        //     if (isGlobalSearch) {
+        //         url = '/MIRRegister/GlobalSearch';
+        //         formData.push({ name: 'searchString', value: globalSearchString });
+        //         formData.push({ name: 'pageNumber', value: pageNumber });
+        //     }
+        //     else {
+        //         url = '@Url.Action("GetRegisterData", "MIRRegister")';
+        //     }
+
+        //     formData.push({ name: 'pageNumber', value: pageNumber });
+        //     formData.push({ name: 'ReportType', value: ReportType });
+        //     $.ajax({
+        //         type: 'GET',
+        //         url: url,
+        //         data: formData,
+        //         success: function (result) {
+
+                   
+        //             $('#divStockMainRegister').empty();
+        //             $('#divStockMainRegister').html(result);
+        //             $('#totalRows').text($('#divStockMainRegister tr').length);
+        //             countAllTotal();
+
+        //         }
+        //     });
+        // }
+                function loadPage(pageNumber) {
 
             var url = '';
             var ReportType = $('#ReportType').val();
-            var formData = $('#SParam').serializeArray();
+
+            // Convert everything into name/value array compatible with $.ajax
+            var formData = [
+                { name: "MRNType", value: $('#MRNType').val() },
+                { name: "ReportType", value: $('#ReportType').val() },
+                { name: "FromDate", value: $('#FromDate').val() },
+                { name: "ToDate", value: $('#ToDate').val() },
+                { name: "gateno", value: $('#GateNo').val() == '0' ? '' : $('#GateNo').val() },
+                { name: "MRNno", value: $('#MRNno').val() == '0' ? '' : $('#MRNno').val() },
+                { name: "docname", value: $('#docname').val() == '0' ? '' : $('#docname').val() },
+                { name: "PONo", value: $('#PONo').val() == '0' ? '' : $('#PONo').val() },
+                { name: "SchNo", value: $('#SchNo').val() == '0' ? '' : $('#SchNo').val() },
+                { name: "PartCode", value: $('#PartCode').val() == '0' ? '' : $('#PartCode').val() },
+                { name: "ItemName", value: $('#ItemName').val() == '0' ? '' : $('#ItemName').val() },
+                { name: "invoiceNo", value: $('#invoiceNo').val() == '0' ? '' : $('#invoiceNo').val() },
+                { name: "VendorName", value: $('#VendorName').val() == '0' ? '' : $('#VendorName').val() },
+                { name: "MRNStatus", value: $('#MRNStatus').val() },
+                { name: "MIRNo", value: $('#MIRNo').val() == '0' ? '' : $('#MIRNo').val() }
+            ];
+
             if (isGlobalSearch) {
                 url = '/MIRRegister/GlobalSearch';
                 formData.push({ name: 'searchString', value: globalSearchString });
                 formData.push({ name: 'pageNumber', value: pageNumber });
-            }
-            else {
+            } else {
                 url = '@Url.Action("GetRegisterData", "MIRRegister")';
             }
 
+
+            // Add page and report type for all calls
             formData.push({ name: 'pageNumber', value: pageNumber });
             formData.push({ name: 'ReportType', value: ReportType });
+
             $.ajax({
                 type: 'GET',
                 url: url,
                 data: formData,
                 success: function (result) {
-                    $('#divStockMainRegister').empty();
-                    $('#divStockMainRegister').html(result);
+
+                    $('#divStockMainRegister').empty().html(result);
                     $('#totalRows').text($('#divStockMainRegister tr').length);
-                  
+                    countAllTotal();
                 }
             });
         }
@@ -396,10 +450,10 @@
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                            $('#gateno').empty();
-                            $('#gateno').append('<option value="0" selected>-Select-</option>');
+                            $('#GateNo').empty();
+                            $('#GateNo').append('<option value="0" selected>-Select-</option>');
                             $.each(obj.Result, function (index, val) {
-                                $('#gateno').append('<option value="' + val.GateNo +
+                                $('#GateNo').append('<option value="' + val.GateNo +
                                     '">' + val.GateNo + '</option>');
                             });
                         }
@@ -427,7 +481,7 @@
                             $('#MRNno').empty();
                             $('#MRNno').append('<option value="0" selected>-Select-</option>');
                             $.each(obj.Result, function (index, val) {
-                                $('#MRNno').append('<option value="' + val.MRNno +  '">' + val.MRNno + '</option>');
+                                $('#MRNno').append('<option value="' + val.MRNNO +  '">' + val.MRNNO + '</option>');
                             });
                         }
                     }
@@ -451,10 +505,10 @@
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                            $('#MIRNO').empty();
-                            $('#MIRNO').append('<option value="0" selected>-Select-</option>');
+                            $('#MIRNo').empty();
+                            $('#MIRNo').append('<option value="0" selected>-Select-</option>');
                             $.each(obj.Result, function (index, val) {
-                                $('#MIRNO').append('<option value="' + val.MIRNO +
+                                $('#MIRNo').append('<option value="' + val.MIRNO +
                                     '">' + val.MIRNO + '</option>');
                             });
                         }
@@ -599,8 +653,8 @@
                             $('#ItemName').empty();
                              $('#ItemName').append('<option value="0" selected>-Select-</option>');
                             $.each(obj.Result, function (index, val) {
-                                $('#ItemName').append('<option value="' + val.Item_Name +
-                                    '">' + val.Item_Name + '</option>');
+                                $('#ItemName').append('<option value="' + val.ItemName +
+                                    '">' + val.ItemName + '</option>');
                              });
                         }
                     }
@@ -647,10 +701,10 @@
             var rate = 0;
             var totAmount =0;
             for (var i = 1; i <= rowCount; i++) {
-                OpnStk += $('#opnStk-' + i).text() =='' ? 0 : parseFloat($('#opnStk-' + i).text());
-                TotStk += $('#totStk-' + i).text() == '' ? 0 : parseFloat($('#totStk-' + i).text());
-                IssQty += $('#issQty-' + i).text() == '' ? 0 : parseFloat($('#issQty-' + i).text());
-                RecQty += $('#recQty-' + i).text() == '' ? 0 : parseFloat($('#recQty-' + i).text());
+                OpnStk += $('#BillQty-' + i).text() =='' ? 0 : parseFloat($('#BillQty-' + i).text());
+                // TotStk += $('#totStk-' + i).text() == '' ? 0 : parseFloat($('#totStk-' + i).text());
+                // IssQty += $('#issQty-' + i).text() == '' ? 0 : parseFloat($('#issQty-' + i).text());
+                RecQty += $('#RecQty-' + i).text() == '' ? 0 : parseFloat($('#RecQty-' + i).text());
                 //rate += $('#rate-' + i).text() == '' ? 0 : parseFloat($('#rate-' + i).text());
                 totAmount += $('#amount-' + i).text() == '' ? 0 : parseFloat($('#amount-' + i).text());
                 //if(totAmount < 0){
@@ -658,7 +712,8 @@
                 //}
             }
 
-            $('#totOpenStock').val(isNaN(OpnStk) ? 0 : OpnStk.toFixed(2)); 
+            $('#totBillQty').val(isNaN(OpnStk) ? 0 : OpnStk.toFixed(2));
+            $('#totRecQty').val(isNaN(RecQty) ? 0 : RecQty.toFixed(2));
             $('#totAmount').val(isNaN(totAmount) ? 0 : totAmount.toFixed(2));
         }
 
@@ -767,11 +822,11 @@
             // GetRegisterData();
             FillVendor();
             FillGateNo();
-            FillDocument();
+            FillMRNNo();
             FillInvoice();
             FillItemPartcode();
             FillItemName();
-
+            FillMIRNo();
             FillPONO();
             FillSchNo();
         })
@@ -779,10 +834,11 @@
             // GetRegisterData();
             FillVendor();
             FillGateNo();
-            FillDocument();
+            FillMRNNo();
             FillInvoice();
             FillItemPartcode();
             FillItemName();
+            FillMIRNo();
             // FillItemNamePartcode();
             FillPONO();
             FillSchNo();

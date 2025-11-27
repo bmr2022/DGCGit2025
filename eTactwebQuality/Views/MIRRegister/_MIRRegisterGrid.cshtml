@@ -189,7 +189,7 @@ else
                         {
                             Cntr = Cntr + 1;
 
-                            <tr id="SAGridRow-@Cntr">
+                            <tr id="SAGridRow-@Cntr" class="@(item.RejectedQty > 0 ? "row-rejected" : "")">
                                 
                                 <th>@srNo</th>
                                 <td>@item.VendorName</td>
@@ -197,18 +197,28 @@ else
                      
                                 <td>@item.MRNDate</td>
                                 <td>@item.GateNo</td> 
+                                <td>@item.GateDate</td> 
                                 <td>@item.EntryDate</td>
                   
                                 <td>@item.InvoiceNo</td>
                                 <td>@item.InvoiceDate</td>
+                                <td>@item.MRNJWCustJW</td>
                                   <td>@item.PartCode</td>
                                 <td>@item.ItemName</td>
-                                <td>@item.BillQty</td>
-                                <td>@item.RecQty</td> 
-                                 <td>@item.Unit</td>
+                                <td id="BillQty-@Cntr">@item.BillQty</td>
+                                <td id="RecQty-@Cntr">@item.RecQty</td>
+                                <td>@item.AcceptedQty</td>
+                                <td>@item.RejectedQty</td>
+                                <td>@item.HoldQty</td>
+                                <td>@item.Reworkqty</td>
+                                <td>@item.Unit</td>
                                 <td>@item.Rate</td>
-                                <td>@item.Amount</td>
-                                <td>@item.AltAcceptedQty</td>
+                                <td id="amount-@Cntr">@item.Amount</td>
+                                <td>@item.AcceptStore</td>
+                                <td>@item.RejStore</td>
+                                <td>@item.HoldStore</td>
+                                <td>@item.RewStore</td>
+                                <td>@item.AltQty</td>
                                 <td>@item.AltUnit</td> 
                                 <td>@item.TotalAmt</td>
                                 <td>@item.NetAmout</td>
@@ -217,12 +227,9 @@ else
                                 <td>@item.ActualEntryDate</td>
                                 <td>@item.LastUpdatedby</td>
                                 <td>@item.LastUpdatedDate</td>
-
-                                
-                                 <td>@item.RecInStore</td>
+                                 @* <td>@item.RecInStore</td>*@
                                 <td>@item.MRNType</td>
-
-                                <td>@item.VendAddress</td>
+                                @* <td>@item.VendAddress</td>*@
                                 <td>@item.EntryByMachineName</td>
                             </tr>
                             srNo++;
@@ -301,6 +308,9 @@ else
         vertical-align: bottom;
     }
 
+    .row-rejected {
+        background-color: #f8d7da !important; /* Light red */
+    }
     .descCol {
         font-size: 15px;
         vertical-align: super;

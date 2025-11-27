@@ -114,7 +114,7 @@
                     {
                         Cntr = Cntr + 1;
 
-                                    <tr id="SAGridRow-@Cntr">
+                        <tr id="SAGridRow-@Cntr" class="@(item.RejectedQty > 0 ? "row-rejected" : "")">
                                     
                             <th>@srNo</th>
                             <td style="background-color: #e09ef0;">@item.VendorName</td>
@@ -126,14 +126,14 @@
                                                 <td>@item.GateNo</td>
                                                 <td>@item.GateDate</td>
                                                 <td>@item.Rate</td>
-                                                <td>@item.Amount</td>
+                            <td id="amount-@Cntr">@item.Amount</td>
 
-                                                <td id="Qty-@Cntr">@item.BillQty</td>
-                                                <td id="RecQty-@Cntr">@item.RecQty</td>
+                            <td id="BillQty-@Cntr">@item.BillQty</td>
+                            <td id="RecQty-@Cntr">@item.RecQty</td>
                                                 <td id="Qty-@Cntr">@item.AcceptedQty</td>
-                                                <td id="Amount-@Cntr">@item.RejectedQty</td>
-                                                <td id="Amount-@Cntr">@item.Reworkqty</td>
-                                                <td id="Amount-@Cntr">@item.HoldQty</td>
+                                                <td >@item.RejectedQty</td>
+                                                <td >@item.Reworkqty</td>
+                                                <td >@item.HoldQty</td>
                                                 <td >@item.DeviationQty</td>
                                                 <td>@item.Unit</td>
                         </tr>
@@ -169,4 +169,9 @@
         top: 0;
         z-index: 1;
     }
+
+    .row-rejected {
+        background-color: #f8d7da !important; /* Light red */
+    }
+
 </style>

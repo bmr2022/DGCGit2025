@@ -59,6 +59,7 @@ namespace eTactWeb.DOM.Models
         public string? AcceptStore { get; set; }
         public string? RejStore { get; set; }
         public string? RewStore { get; set; }
+        public string? HoldStore { get; set; }
 
         
         public string? ReportType { get; set; }

@@ -496,7 +496,7 @@ namespace eTactWeb.Data.DAL
                                                      IssueSlipNo = dr["IssueSlipNo"].ToString(),
                                                      IssueDate = dr["IssueDate"].ToString(),
                                                      EntryTime = dr["EntryTime"].ToString().Split(' ')[1].Split('.')[0],
-
+                                                     IssueQty = Convert.ToDecimal(dr["IssuedQty"]),
                                                      WorkCenterDescription = dr["WorkCenterDescription"].ToString(),
                                                      // ActualEnteredBy = Convert.ToInt32(dr["ActualEnteredBy"]),
                                                      //MachineCode = dr["Machinecode"].ToString(),
@@ -571,7 +571,7 @@ namespace eTactWeb.Data.DAL
                                                  select new IssueWOBomMainDashboard
                                                  {
                                                      //,,,,,
-                                                     //EntryId = Convert.ToInt32(dr["EntryId"]),
+                                                     EntryId = Convert.ToInt32(dr["EntryId"]),
                                                      YearCode = Convert.ToInt32(dr["YearCode"]),
                                                      ReqNo = dr["ReqNo"].ToString(),
                                                      ReqDate = dr["ReqDate"].ToString(),
@@ -581,8 +581,8 @@ namespace eTactWeb.Data.DAL
                                                      IssueSlipNo = dr["IssueSlipNo"].ToString(),
                                                      IssueDate = dr["IssueDate"].ToString(),
                                                      EntryTime = dr["EntryTime"].ToString().Split(' ')[1].Split('.')[0],
-
                                                      WorkCenterDescription = dr["WorkCenterDescription"].ToString(),
+                                                     IssueQty = Convert.ToDecimal(dr["IssuedQty"]),
                                                  }).ToList();
                 }
                 //var ilst = model.AccountMasterList.Select(m => new TextValue

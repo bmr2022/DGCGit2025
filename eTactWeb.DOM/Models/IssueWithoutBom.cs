@@ -135,6 +135,7 @@ namespace eTactWeb.DOM.Models
         public string WorkCenterDescription { get; set; }
         public string RecDepartment { get; set; }
         public int ActualEnteredBy { get; set; }
+        public decimal IssueQty { get; set; }
         public string? MachineCode { get; set; }
         public int TotalRecords { get; set; }
         public int PageNumber { get; set; }

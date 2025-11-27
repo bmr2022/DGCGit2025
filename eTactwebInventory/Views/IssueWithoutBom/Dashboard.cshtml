@@ -210,6 +210,7 @@
             sessionStorage.removeItem('DashboardTypeBack');
             sessionStorage.removeItem('GlobalSearchBack');
                GetSearchData();
+                     BasicTotal();
         });
 
         var currentSearchColumn = null;
@@ -403,6 +404,7 @@
                     var dashGrid = $('#divDashboardGrid tr').length - 1;
                     $('#totalRows').text(dashGrid);
                     GetFormRights();
+                          BasicTotal();
                      // alert("Data received: " + data);
                 },
                 error: function (response) {
@@ -413,7 +415,23 @@
                 }
             });
         }
+         function BasicTotal() {
 
+            var sum = 0;
+            var rowCount = $('#divDashboardGrid tr').length;
+
+            for (var i = 1; i <= rowCount; i++) {
+
+                let val = $('#IssueQty-' + i).text().trim();
+                let num = parseFloat(val);
+
+                if (isNaN(num)) num = 0;
+
+                sum += num;
+            }
+
+            $("#TotalIssueQty").text(sum.toFixed(2));
+        }
         function GetDetailData() {
             var data = $('#SParam').serialize();
             $.ajax({
@@ -424,6 +442,7 @@
                     $('#divDashboardGrid').empty().append(data);
                     var dashGrid = $('#divDashboardGrid tr').length - 1;
                     $('#totalRows').text(dashGrid);
+                          BasicTotal();
                     GetFormRights();
                 },
                 error: function (response) {
@@ -476,6 +495,7 @@
                     $('#divDashboardGrid').empty();
                     $('#divDashboardGrid').html(result);
                     $('#totalRows').text($('#gateDashboardtable tr').length);
+                          BasicTotal();
                     //countAllTotal();
                     GetFormRights();
                 }

@@ -61,13 +61,13 @@ namespace eTactWeb.Data.DAL
 
                     oCmd.Parameters.AddWithValue("@Flag", ReportType);
                     oCmd.Parameters.AddWithValue("@MRNTYpe", MRNType);
-
                     oCmd.Parameters.AddWithValue("@FromDate", fromDt);
                     oCmd.Parameters.AddWithValue("@ToDate", toDt);
                     oCmd.Parameters.AddWithValue("@PartCode", PartCode);
                     oCmd.Parameters.AddWithValue("@ItemName", ItemName);
                     oCmd.Parameters.AddWithValue("@MIRNo", MIRNo);
-                    oCmd.Parameters.AddWithValue("@gateno", gateno);
+                    oCmd.Parameters.AddWithValue("@MRNNO", MRNno);
+                    oCmd.Parameters.AddWithValue("@GateNo", gateno);
                     oCmd.Parameters.AddWithValue("@PONo", PONo);
                     oCmd.Parameters.AddWithValue("@Schno", Schno);
                     oCmd.Parameters.AddWithValue("@VendorName", VendorName);
@@ -111,9 +111,11 @@ namespace eTactWeb.Data.DAL
                                                        AcceptStore = string.IsNullOrEmpty(dr["AcceptStore"].ToString()) ? "" : dr["AcceptStore"].ToString(),
                                                        RejStore = string.IsNullOrEmpty(dr["RejStore"].ToString()) ? "" : dr["RejStore"].ToString(),
                                                        RewStore = string.IsNullOrEmpty(dr["RewStore"].ToString()) ? "" : dr["RewStore"].ToString(),
+                                                       HoldStore = string.IsNullOrEmpty(dr["HoldStore"].ToString()) ? "" : dr["HoldStore"].ToString(),
                                                        AltAcceptedQty = Convert.ToDecimal(dr["AltAcceptedQty"].ToString()),
                                                        AltUnit = string.IsNullOrEmpty(dr["altunit"].ToString()) ? "" : dr["altunit"].ToString(),
-                                                        
+                                                       Amount = Convert.ToDecimal(dr["Amount"].ToString()),
+                                                       Rate = Convert.ToDecimal(dr["Rate"].ToString()),
                                                        LastUpdatedby = string.IsNullOrEmpty(dr["UpdatedByEmp"].ToString()) ? "" : dr["UpdatedByEmp"].ToString(),
                                                        LastUpdatedDate = string.IsNullOrEmpty(dr["LastUpdateDate"].ToString()) ? "" : dr["LastUpdateDate"].ToString(),
 
