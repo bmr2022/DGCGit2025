@@ -202,6 +202,7 @@ namespace eTactWeb
             services.TryAddScoped<IIndentRegister, IndentRegisterBLL>();
             services.TryAddScoped<IControlPlan, ControlPlanBLL>();
             services.TryAddScoped<IAutoGenerateSchedule, AutoGenerateScheduleBLL>();
+            services.TryAddScoped<IMISTracebilityReport, MISTracebilityReportBLL>();
             services.TryAddScoped<IMaterialConversion, MaterialConversionBLL>();
             services.TryAddScoped<IOrderAmendHistory, OrderAmendHistoryBLL>();
             services.TryAddScoped<ISaleOrderRegister, SaleOrderRegisterBLL>();

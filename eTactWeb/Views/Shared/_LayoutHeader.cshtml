@@ -3319,23 +3319,24 @@
                             </a>
                             <input class="userRightsPermission" type="hidden" value="VendoreRatingAnalysisReport" />
                         </li>
-
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item MISTracebilityReport" asp-action="MISTracebilityReport" asp-controller="MISTracebilityReport">
+                                <i class="fa-solid fa-money-check-dollar fa-fw fa-lg" aria-hidden="true"
+                                   style="--fa-secondary-opacity: 1.0; --fa-primary-color: red; --fa-secondary-color: limegreen;"></i>
+                                MIS Tracebility Report
+                            </a>
+                            <input class="userRightsPermission" type="hidden" value="MISTracebilityReport" />
+                        </li>
                     </ul>
-
-
-
                 </li>
                 <li><hr class="dropdown-divider"></li>
                 </ul>
                 </li>
-
-
-
                 @*start General*@
                 <li class="nav-item dropdown">
                     <a class="nav-link NavText dropdown-toggle" href="#" data-bs-toggle="dropdown">General</a>
                     <ul class="dropdown-menu">
-
                         <li>
                             <a class="dropdown-item" href="#">Requisition Without BOM &raquo; </a>
                             <ul class="submenu dropdown-menu">
@@ -3352,7 +3353,6 @@
                                     </a>
                                 </li>
                                 <input class="userRightsPermission" type="hidden" value="ReqWithoutBom" />
-
                                 <li>
                             </ul>
                         </li>

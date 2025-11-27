@@ -1,0 +1,136 @@
+﻿@model eTactWeb.DOM.Models.MISTracebilityReportModel;
+
+<!-- ===================== UPPER GRID BUTTONS ====================== -->
+<div class="d-flex justify-content-end mb-2">
+    <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+        <input type="text" class="form-control" id="upper-search-box" style="background-color:#FFFACD" placeholder="Search...">
+    </div>
+
+    <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
+        <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
+    </button>
+</div>
+
+<!-- ===================== UPPER GRID ====================== -->
+<div class="table-responsive" style="max-height:200px; overflow-y:auto; position: relative;">
+    <table class="table table-responsive table-hover table-bordered PMRPGrid TbCss text-nowrap mb-0" id="ReportUpperTable">
+        <thead class="bg-gradient card-headerBG text-light PMRPThead" style="position:static;" id="dashUpperHead">
+            <tr>
+                <th>Sr#</th>
+
+                @if (Model.HeaderTable != null)
+                {
+                    foreach (System.Data.DataColumn col in Model.HeaderTable.Columns)
+                    {
+                        <th>@col.ColumnName</th>
+                    }
+                }
+                else
+                {
+                    <th>No Columns Found</th>
+                }
+            </tr>
+        </thead>
+
+        <tbody id="upperGridBody">
+            @if (Model.HeaderTable == null || Model.HeaderTable.Rows.Count == 0)
+            {
+                <tr><td colspan="50" class="text-center text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+            }
+            else
+            {
+                int sr = 1;
+                foreach (System.Data.DataRow row in Model.HeaderTable.Rows)
+                {
+                    <tr>
+                        <td>@sr</td>
+                        @foreach (System.Data.DataColumn col in Model.HeaderTable.Columns)
+                        {
+                            <td>@row[col]</td>
+                        }
+                    </tr>
+                    sr++;
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+<br />
+<hr />
+<br />
+
+<!-- ===================== LOWER GRID BUTTONS ====================== -->
+<div class="d-flex justify-content-end mb-2">
+    <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+        <input type="text" class="form-control" id="lower-search-box" style="background-color:#FFFACD" placeholder="Search...">
+    </div>
+
+    <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
+        <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
+    </button>
+</div>
+
+<!-- ===================== LOWER GRID ====================== -->
+<div class="table-responsive" style="max-height:200px; overflow-y:auto; position: relative;">
+    <table class="table table-responsive table-hover table-bordered PMRPGrid TbCss text-nowrap mb-0" id="ReportLowerTable">
+        <thead class="bg-gradient card-headerBG text-light PMRPThead" style="position:static;" id="dashLowerHead">
+            <tr>
+                <th>Sr#</th>
+
+                @if (Model.DetailTable != null)
+                {
+                    foreach (System.Data.DataColumn col in Model.DetailTable.Columns)
+                    {
+                        <th>@col.ColumnName</th>
+                    }
+                }
+                else
+                {
+                    <th>No Columns Found</th>
+                }
+            </tr>
+        </thead>
+
+        <tbody id="lowerGridBody">
+            @if (Model.DetailTable == null || Model.DetailTable.Rows.Count == 0)
+            {
+                <tr><td colspan="50" class="text-center text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+            }
+            else
+            {
+                int sr2 = 1;
+                foreach (System.Data.DataRow row in Model.DetailTable.Rows)
+                {
+                    <tr>
+                        <td>@sr2</td>
+                        @foreach (System.Data.DataColumn col in Model.DetailTable.Columns)
+                        {
+                            <td>@row[col]</td>
+                        }
+                    </tr>
+                    sr2++;
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+<style>
+    #dashUpperHead th,
+    #dashLowerHead th {
+        background-color: #127387;
+        position: sticky;
+        top: 0px;
+        z-index: 1;
+    }
+
+    #upperGridBody{
+        background-color: #f6f6f6;
+    }
+
+    #lowerGridBody {
+        background-color: #cdd3d9;
+    }
+
+</style>
