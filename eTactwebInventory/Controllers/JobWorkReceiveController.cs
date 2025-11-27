@@ -225,7 +225,43 @@ namespace eTactWeb.Controllers
                                 return View(model);
                             }
                         }
+                        if (Result.StatusText == "Unsuccess")
+                        {
+                            ViewBag.isSuccess = false;
+                            var input = "";
+                            if (Result?.Result != null)
+                            {
+                                if (Result.Result is string str)
+                                {
+                                    input = str;
+                                }
+                                else
+                                {
+                                    input = JsonConvert.SerializeObject(Result.Result);
+                                }
+
+                                TempData["ErrorMessage"] = input;
+                            }
+                            else
+                            {
+                                TempData["500"] = "500";
+                            }
+
+
+                            model = await BindModel(model);
+                            model.FinFromDate = HttpContext.Session.GetString("FromDate");
+                            model.FinToDate = HttpContext.Session.GetString("ToDate");
+                            model.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+                            model.CC = HttpContext.Session.GetString("Branch");
+                            //model.PreparedByEmp = HttpContext.Session.GetString("EmpName");
+                            model.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
+                            model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                            model.ItemDetailGrid = JobWorkReceiveDetail;
+
+                            return View(model);
+                        }
                     }
+                    
                     var model1 = await BindModel(null);
                     model1.FinFromDate = HttpContext.Session.GetString("FromDate");
                     model1.FinToDate = HttpContext.Session.GetString("ToDate");
