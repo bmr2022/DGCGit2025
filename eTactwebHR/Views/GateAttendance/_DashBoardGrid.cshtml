@@ -146,12 +146,12 @@
                             <td>@item.CC</td>
                             <td>@item.EntryByEmp</td>
                             <td>@item.UpdatedByEmp</td>
-                            @*<td>
-                                @(item.CreatedOn.HasValue
-                                ? item.CreatedOn.Value.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)
+                            <td>
+                                @(item.ActualEntryDate.HasValue
+                                ? item.ActualEntryDate.Value.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)
                                 : string.Empty)
                             </td>
-                            <td>
+                            @*<td>
                                 @(item.UpdatedOn.HasValue
                                 ? item.UpdatedOn.Value.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)
                                 : string.Empty)

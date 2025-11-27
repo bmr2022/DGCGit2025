@@ -280,6 +280,7 @@
                 url.searchParams.delete("IsIncreament");
                 window.history.replaceState({}, "", url.toString());
             }
+            initTimePickers12();
         });
 
         function parseCustomDate(str) {
@@ -449,8 +450,8 @@
                             var day = keyMatch[1];
                             var type = keyMatch[2]; 
                         }
-                        var dictKey = (type.toLowerCase() === "intime" ? "AttInTime" : "AttOutTime") + day;
-                        empObj.Attendance[dictKey] = inp.value || "";
+                        var dictKey = (type.toLowerCase() === "intime" ? "AttInTime" : (type.toLowerCase() === "attendstatus" ? "AttendStatus"  : (type.toLowerCase() === "totalnoofhour" ? "TotalNoOfHour" : "AttOutTime"))) + day;
+                        empObj.Attendance[dictKey] = (type.toLowerCase() === "attendstatus") ? "P" : ((type.toLowerCase() === "totalnoofhour") ? "0"  : (inp.value || ""));
                     }
                 });
                 if ($('#DayOrMonthType').val().toLowerCase() == 'daily') {
@@ -525,8 +526,8 @@
                         if (keyMatch) {
                             let day = keyMatch[1];
                             let type = keyMatch[2]; // InTime / OutTime
-                            var dictKey = (type.toLowerCase() === "intime" ? "AttInTime" : "AttOutTime") + day;
-                            empObj.Attendance[dictKey] = ""; // EMPTY VALUE
+                            var dictKey = (type.toLowerCase() === "intime" ? "AttInTime" : (type.toLowerCase() === "attendstatus" ? "AttendStatus"  : (type.toLowerCase() === "totalnoofhour" ? "TotalNoOfHour" : "AttOutTime"))) + day;
+                            empObj.Attendance[dictKey] = (type.toLowerCase() === "attendstatus") ? "A" : ((type.toLowerCase() === "totalnoofhour") ? "0" : ""); // EMPTY VALUE
                         }
                     });
                     // finally add into model
@@ -671,6 +672,9 @@
 <!-- Then other plugins that depend on jQuery -->
 <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<!-- Optional (makes AM/PM UI nicer) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/material_blue.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
@@ -678,6 +682,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.13/jquery.validate.unobtrusive.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
 <style>
     #poTable {
@@ -782,8 +788,17 @@
                 }
                 else {
                     if(isallcheckedonmodify == true && ($('#Mode').val() == "U" || $('#Mode').val() == "V")) {
-                        document.getElementById("checkAllEmp").checked = true;
-                        onclickCheckEmp();
+                        document.querySelectorAll("input[name='selectedEmpIds']").forEach(cb => {
+                            let empId = cb.value;
+                            let status = document.getElementById("txt_" + empId + "_AttendStatus").value;
+                            // Only check P/p rows
+                            if (status.toUpperCase() === "P") {
+                                cb.checked = true;
+                            } else {
+                                cb.checked = false;
+                            }
+                        });
+                        checkUncheckEmp();
                         isallcheckedonmodify = false;
                     }
                 }
@@ -806,8 +821,17 @@
                     }
                     $('#CategoryCode').val($('#EmpCategoryId').val());
                     if(isallcheckedonmodify == true && ($('#Mode').val() == "U" || $('#Mode').val() == "V")) {
-                        document.getElementById("checkAllEmp").checked = true;
-                        onclickCheckEmp();
+                        document.querySelectorAll("input[name='selectedEmpIds']").forEach(cb => {
+                            let empId = cb.value;
+                            let status = document.getElementById("txt_" + empId + "_AttendStatus").value;
+                            // Only check P/p rows
+                            if (status.toUpperCase() === "P") {
+                                cb.checked = true;
+                            } else {
+                                cb.checked = false;
+                            }
+                        });
+                        checkUncheckEmp();
                         isallcheckedonmodify = false;
                     }
                 }
@@ -822,8 +846,17 @@
                 }
                 else {
                     if(isallcheckedonmodify == true && ($('#Mode').val() == "U" || $('#Mode').val() == "V")) {
-                        document.getElementById("checkAllEmp").checked = true;
-                        onclickCheckEmp();
+                        document.querySelectorAll("input[name='selectedEmpIds']").forEach(cb => {
+                            let empId = cb.value;
+                            let status = document.getElementById("txt_" + empId + "_AttendStatus").value;
+                            // Only check P/p rows
+                            if (status.toUpperCase() === "P") {
+                                cb.checked = true;
+                            } else {
+                                cb.checked = false;
+                            }
+                        });
+                        checkUncheckEmp();
                         isallcheckedonmodify = false;
                     }
                 }
@@ -877,9 +910,10 @@
                     success: function (result) {
                             $("#attendanceItemGrid").html(result);
                             updateItemCount();
+                            initTimePickers12();
                             if(DayOrMonthType.toLowerCase() == "daily")
                             {
-                                if ($('#isholiday').val().toLowerCase() == "true" || $('#isweekoff').val().toLowerCase() == "true") {
+                                if (($('#isholiday').val() != null && $('#isholiday').val() != undefined && $('#isholiday').val().toLowerCase() == "true") || ($('#isweekoff').val() != null && $('#isweekoff').val() != undefined && $('#isweekoff').val().toLowerCase() == "true")) {
                                     let message = $('#isholiday').val().toLowerCase() == "true"
                                         ? "This day is a Holiday. Do you still want to edit attendance?"
                                         : "This day is a Week-Off. Do you still want to edit attendance?";
@@ -890,8 +924,8 @@
                                                 $('.dvGateAttEntryOffDay').hide();
                                     }
                                     else {
-                                        var textblock = $('#isholiday').val().toLowerCase() == "true" ? "Holiday" : "Week-Off";
-                                        var textclass = $('#isholiday').val().toLowerCase() == "true" ? "holiday-time lighten" : "weekoff-time lighten";
+                                        var textblock = ($('#isholiday').val() != null && $('#isholiday').val() != undefined && $('#isholiday').val().toLowerCase() == "true") ? "Holiday" : "Week-Off";
+                                        var textclass = ($('#isholiday').val() != null && $('#isholiday').val() != undefined && $('#isholiday').val().toLowerCase() == "true") ? "holiday-time lighten" : "weekoff-time lighten";
                                         $('#GateAttEntryDay').addClass(textclass);
                                         $('#GateAttEntryOffDay').addClass(textclass);
                                         $('#GateAttEntryOffDay').text(textblock);
@@ -1062,5 +1096,42 @@
         sessionStorage.setItem('DashEmployeeBack', $('#DashEmployeeBack').val());
         sessionStorage.setItem('GlobalSearchBack', $('#GlobalSearchBack').val());
         window.history.back();
+    }
+</script>
+
+<script> // scripts for setting 12 hour format at timepicker
+    function initTimePickers12() {
+        // Destroy previous instances (avoids duplicates when grid reloads)
+        document.querySelectorAll(".timepicker").forEach(el => {
+            if (el._flatpickr) el._flatpickr.destroy();
+        });
+
+        // Apply Flatpickr 12-hour time
+        flatpickr(".timepicker", {
+            enableTime: true,
+            noCalendar: true,
+            dateFormat: "h:i K",        // 12-hour format with AM/PM
+            time_24hr: false,
+            allowInput: true,
+            minuteIncrement: 1,
+            defaultHour: null,
+            defaultMinute: null,
+            onReady: (val, now, inst) => {
+                if (!inst.input.value) inst.input.placeholder = "--:--";
+            },
+            onValueUpdate: (selDate, val, inst) => {
+                // Converts to 24h when saving to model
+                let t = formatTo24(val);
+                inst.input.setAttribute("data-24", t || "");
+            }
+        });
+    }
+
+    // Convert selected 12h to 24h when needed
+    function formatTo24(time12) {
+        if (!time12) return "";
+        let d = new Date("1970-01-01 " + time12);
+        if (isNaN(d)) return "";
+        return d.toISOString().substring(11, 16);  // HH:mm
     }
 </script>

@@ -43,6 +43,7 @@ public class GateAttendanceModel : TimeStamp
     public string GateAttEntryDay { get; set; }
     public int GateAttYearCode { get; set; }
     public string CardOrBiometricId { get; set; }
+    public string AttendStatus { get; set; }
     public int EmpId { get; set; }
     public DateTime? AttInTime { get; set; }
     public DateTime? AttOutTime { get; set; }

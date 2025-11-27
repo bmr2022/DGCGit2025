@@ -67,15 +67,15 @@ public class GateAttendanceDAL
                 }
             }
             int daysInMonth = 1;
+            Data.GateAttYearCode = YearCode;
             if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
             {
                 var allColumns = oDataSet.Tables[0].Columns.Cast<DataColumn>()
                                  .Select(c => c.ColumnName)
                                  .ToList();
-                Data.GateAttYearCode = YearCode;
                 if (DayOrMonthType == "Daily")
                 {
-                    Data.DayHeaders = new List<string> { "FromTime", "ToTime" };
+                    Data.DayHeaders = new List<string> { "FromTime", "ToTime", "AttendStatus", "TotalNoOfHour" };
                     // Fill GateAttDetailsList with FromTime & ToTime from SP
                 }
                 else if (DayOrMonthType == "Monthly")
@@ -87,6 +87,8 @@ public class GateAttendanceDAL
                     {
                         Data.DayHeaders.Add($"{d}(InTime)");
                         Data.DayHeaders.Add($"{d}(OutTime)");
+                        Data.DayHeaders.Add($"{d}(AttendStatus)");
+                        Data.DayHeaders.Add($"{d}(TotalNoOfHour)");
                     }
                 }
                 foreach (DataRow dr in oDataSet.Tables[0].Rows)
@@ -113,6 +115,8 @@ public class GateAttendanceDAL
                         {
                             GateAttList.Attendance[col.ToLower()] = dr[col]?.ToString();
                         }
+                        GateAttList.Attendance["AttendStatus".ToLower()] = "A";
+                        GateAttList.Attendance["TotalNoOfHour".ToLower()] = "0";
                     }
 
                     Data.GateAttDetailsList.Add(GateAttList);
@@ -342,7 +346,10 @@ public class GateAttendanceDAL
                 oCmd.Parameters.AddWithValue("@Flag", "Dashboard");
                 if(model != null)
                 {
-                    //oCmd.Parameters.AddWithValue("@YearCode", now.Year);
+                    //oCmd.Parameters.AddWithValue("@DashCategory", model.DashCategory);
+                    //oCmd.Parameters.AddWithValue("@DashDepartment", model.DashDepartment);
+                    //oCmd.Parameters.AddWithValue("@DashDesignation", model.DashDesignation);
+                    //oCmd.Parameters.AddWithValue("@DashEmployee", model.DashEmployee);
                 }
                 oCmd.Parameters.AddWithValue("@FromDate", firstdayofMonthh);
                 oCmd.Parameters.AddWithValue("@ToDate", today);
@@ -440,7 +447,7 @@ public class GateAttendanceDAL
                     int daysInMonth = 1;
                     if (string.Equals(MainModel.DayOrMonthType, "Daily", StringComparison.OrdinalIgnoreCase))
                     {
-                        MainModel.DayHeaders = new List<string> { "FromTime", "ToTime" };
+                        MainModel.DayHeaders = new List<string> { "FromTime", "ToTime", "AttendStatus", "TotalNoOfHour" };
                     }
                     else if (string.Equals(MainModel.DayOrMonthType, "Monthly", StringComparison.OrdinalIgnoreCase))
                     {
@@ -453,6 +460,8 @@ public class GateAttendanceDAL
                         {
                             MainModel.DayHeaders.Add($"{d}(InTime)");
                             MainModel.DayHeaders.Add($"{d}(OutTime)");
+                            MainModel.DayHeaders.Add($"{d}(AttendStatus)");
+                            MainModel.DayHeaders.Add($"{d}(TotalNoOfHour)");
                         }
                     }
 
@@ -479,9 +488,16 @@ public class GateAttendanceDAL
                         if (string.Equals(MainModel.DayOrMonthType, "Daily", StringComparison.OrdinalIgnoreCase))
                         {
                             // directly pick FromTime/ToTime style columns
-                            foreach (var col in allColumns.Where(c => c.Equals("FromTime", StringComparison.OrdinalIgnoreCase) || c.Equals("ToTime", StringComparison.OrdinalIgnoreCase) || c.Equals("AttInTime", StringComparison.OrdinalIgnoreCase) ||  c.Equals("AttOutTime", StringComparison.OrdinalIgnoreCase)))
+                            foreach (var col in allColumns.Where(c => c.Equals("FromTime", StringComparison.OrdinalIgnoreCase) || c.Equals("ToTime", StringComparison.OrdinalIgnoreCase) || c.Equals("AttInTime", StringComparison.OrdinalIgnoreCase) ||  c.Equals("AttOutTime", StringComparison.OrdinalIgnoreCase) ||  c.Equals("AttendStatus", StringComparison.OrdinalIgnoreCase) ||  c.Equals("TotalNoOfHour", StringComparison.OrdinalIgnoreCase)))
                             {
-                                detail.Attendance[(col.ToLower().Contains("fromtime") || col.ToLower().Contains("attintime")) ? "fromtime" : "totime"] = dr[col]?.ToString() ?? string.Empty;
+                                if (col.ToLower().Contains("attendstatus") || col.ToLower().Contains("totalnoofhour"))
+                                {
+                                    detail.Attendance[col.ToLower().Contains("attendstatus") ? "attendstatus" : "totalnoofhour"] = dr[col]?.ToString() ?? string.Empty;
+                                }
+                                else
+                                {
+                                    detail.Attendance[(col.ToLower().Contains("fromtime") || col.ToLower().Contains("attintime")) ? "fromtime" : "totime"] = dr[col]?.ToString() ?? string.Empty;
+                                }
                             }
                         }
                         else if (string.Equals(MainModel.DayOrMonthType,"Monthly", StringComparison.OrdinalIgnoreCase))
@@ -491,6 +507,8 @@ public class GateAttendanceDAL
                             {
                                 string inCol = $"attintime{d}";
                                 string outCol = $"attouttime{d}";
+                                string attstatus = $"attendstatus{d}";
+                                string totalhours = $"totalnoofhour{d}";
 
                                 if (allColumns.Contains(inCol, StringComparer.OrdinalIgnoreCase))
                                     detail.Attendance[$"{d}(InTime)"] = dr[inCol]?.ToString() ?? string.Empty;
@@ -500,6 +518,14 @@ public class GateAttendanceDAL
                                     detail.Attendance[$"{d}(OutTime)"] = dr[outCol]?.ToString() ?? string.Empty;
                                 else
                                     detail.Attendance[$"{d}(OutTime)"] = string.Empty;
+                                if (allColumns.Contains(attstatus, StringComparer.OrdinalIgnoreCase))
+                                    detail.Attendance[$"{d}(attendstatus)"] = dr[attstatus]?.ToString() ?? string.Empty;
+                                else
+                                    detail.Attendance[$"{d}(attendstatus)"] = string.Empty;
+                                if (allColumns.Contains(totalhours, StringComparer.OrdinalIgnoreCase))
+                                    detail.Attendance[$"{d}(totalnoofhour)"] = dr[totalhours]?.ToString() ?? string.Empty;
+                                else
+                                    detail.Attendance[$"{d}(totalnoofhour)"] = string.Empty;
                             }
                         }
 

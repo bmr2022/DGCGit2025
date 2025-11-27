@@ -623,11 +623,11 @@ namespace eTactwebHR.Controllers
                 {
                     itemDetailList.DayHeaders = new List<string>();
                     var intday = itemDetailList.strEmpAttDate != null ? CommonFunc.ParseDate(itemDetailList.strEmpAttDate).Day : 1;
-                    itemDetailList.DayHeaders.Add($"AttendStatus");
+                    itemDetailList.DayHeaders.Add($"AttendStatus{intday}");
                     itemDetailList.DayHeaders.Add($"EmpId");
                     itemDetailList.DayHeaders.Add($"AttInTime{intday}");
                     itemDetailList.DayHeaders.Add($"AttOutTime{intday}");
-                    itemDetailList.DayHeaders.Add($"TotalNoOfHours");
+                    itemDetailList.DayHeaders.Add($"TotalNoOfHours{intday}");
                 }
                 Table.Columns.Add("AttendStatus", typeof(string));
                 Table.Columns.Add("EmpId", typeof(int));
@@ -727,35 +727,46 @@ namespace eTactwebHR.Controllers
                         { rowValues.Add(Item.EmpId); }
                         else if (!Item.Attendance.ContainsKey(header) && header.Contains("TotalNoOfHours"))
                         { rowValues.Add(0); } //Math.Round(Item.Attendance[header], 2, MidpointRounding.AwayFromZero)
-                        else if (Item.Attendance != null && Item.Attendance.ContainsKey(header) && (header.Contains("InTime") || header.Contains("OutTime") || header.Contains("AttInTime") || header.Contains("AttOutTime")))
+                        else if (Item.Attendance != null && Item.Attendance.ContainsKey(header) && (header.Contains("InTime") || header.Contains("OutTime") || header.Contains("AttInTime") || header.Contains("AttOutTime") || header.Contains("AttendStatus") || header.Contains("TotalNoOfHour")))
                         {
-                            var time = CommonFunc.ParseSafeTime(Item.Attendance[header]);
-
-                            int year = itemDetailList.GateAttYearCode;
-                            int month = itemDetailList.intEmpAttMonth != null && itemDetailList.intEmpAttMonth > 0 ? Convert.ToInt32(itemDetailList.intEmpAttMonth) : 0;
-                            int day = 1;
-
-                            if (string.Equals(itemDetailList.DayOrMonthType, "Monthly", StringComparison.OrdinalIgnoreCase))
+                            if (header.Contains("AttendStatus") || header.Contains("TotalNoOfHour"))
                             {
-                                var dayPart = new string(header.Where(char.IsDigit).ToArray());
-                                if (int.TryParse(dayPart, out int parsedDay))
-                                    day = parsedDay;
+                                rowValues.Add(Item.Attendance[header] ?? string.Empty);
+                            }
+                            else if (header.Contains("TotalNoOfHour"))
+                            {
+                                rowValues.Add(Item.Attendance[header] != null ? Convert.ToDecimal(Item.Attendance[header]) : 0);
                             }
                             else
                             {
-                                day = itemDetailList.strEmpAttDate != null ? CommonFunc.ParseDate(itemDetailList.strEmpAttDate).Day : 1;
-                                month = itemDetailList.strEmpAttDate != null ? CommonFunc.ParseDate(itemDetailList.strEmpAttDate).Month : 1;
-                            }
-                            if (time == null)
-                            {
-                                rowValues.Add((object?)null ?? DBNull.Value);
-                                continue;
-                            }
-                            else
-                            {
-                                var timeOnly = (TimeOnly)time;
-                                var combinedDateTime = new DateTime(year, month, day, timeOnly.Hour, timeOnly.Minute, timeOnly.Second);
-                                rowValues.Add(combinedDateTime);
+                                var time = CommonFunc.ParseSafeTime(Item.Attendance[header]);
+
+                                int year = itemDetailList.GateAttYearCode;
+                                int month = itemDetailList.intEmpAttMonth != null && itemDetailList.intEmpAttMonth > 0 ? Convert.ToInt32(itemDetailList.intEmpAttMonth) : 0;
+                                int day = 1;
+
+                                if (string.Equals(itemDetailList.DayOrMonthType, "Monthly", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    var dayPart = new string(header.Where(char.IsDigit).ToArray());
+                                    if (int.TryParse(dayPart, out int parsedDay))
+                                        day = parsedDay;
+                                }
+                                else
+                                {
+                                    day = itemDetailList.strEmpAttDate != null ? CommonFunc.ParseDate(itemDetailList.strEmpAttDate).Day : 1;
+                                    month = itemDetailList.strEmpAttDate != null ? CommonFunc.ParseDate(itemDetailList.strEmpAttDate).Month : 1;
+                                }
+                                if (time == null)
+                                {
+                                    rowValues.Add((object?)null ?? DBNull.Value);
+                                    continue;
+                                }
+                                else
+                                {
+                                    var timeOnly = (TimeOnly)time;
+                                    var combinedDateTime = new DateTime(year, month, day, timeOnly.Hour, timeOnly.Minute, timeOnly.Second);
+                                    rowValues.Add(combinedDateTime);
+                                }
                             }
                         }
                         else if (header.Contains("InTime") || header.Contains("OutTime"))

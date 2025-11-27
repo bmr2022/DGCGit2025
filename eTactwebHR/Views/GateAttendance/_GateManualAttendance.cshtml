@@ -27,13 +27,32 @@
     background-color: #e0f2f1; /* Dropdown background color */
     color: #000;
     }
+
+    .timepicker ~ .flatpickr-calendar {
+    transform: scale(0.78); /* smaller size */
+    transform-origin: top left;
+    }
+
+    /* optional: tighter spacing */
+    .timepicker ~ .flatpickr-calendar .flatpickr-time {
+    height: 32px;
+    }
+
+    .timepicker ~ .flatpickr-calendar .flatpickr-time input,
+    .timepicker ~ .flatpickr-calendar .flatpickr-time span {
+    font-size: 13px;
+    }
+
+    .flatpickr-time {
+        width: fit-content !important;
+    }
 </style>
 <div class="card-body overflow-auto pb-0">
     <div class="table-responsive" style="max-height:400px;">
         <table class="table table-bordered table-striped table-hover mb-0 itemgridTable" id="itemgridTable">
             <thead class="bg-gradient card-headerBG text-light small itemgridHead" id="itemgridHead">
                 <tr>
-                    <th data-columnno="0" data-sortorder="asc" class="sortCol" style="min-width:5%; resize: horizontal; width:60px;"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sr. No. <input type="checkbox" id="checkAllEmp" onclick="onclickCheckEmp()" /></th>
+                    <th data-columnno="0" data-sortorder="asc" class="sortCol" style="min-width:5%; resize: horizontal; width:60px;"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sr. No. <input type="checkbox" id="checkAllEmp" onclick="event.stopPropagation(); onclickCheckEmp()" /></th>
                     <th data-columnno="1" data-sortorder="asc" class="sortCol" style="min-width:20%; resize: horizontal; width:170px;"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Emp Name</th>
                     <th data-columnno="2" data-sortorder="asc" class="sortCol" style="min-width:15%; resize: horizontal; width:110px;"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Emp Code</th>
                     <th data-columnno="3" data-sortorder="asc" class="sortCol" style="min-width:15%; resize: horizontal; width:90px;"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Shift</th>
@@ -48,19 +67,19 @@
                             int monthNo = (Model.intEmpAttMonth != null) ? Convert.ToInt32(Model.intEmpAttMonth) : 1;
                             // ✅ Clamp dayNo to valid range for the given month/year
                             int daysInMonth = DateTime.DaysInMonth(Model.GateAttYearCode, monthNo);
-                            @foreach (var dayCol in Model.DayHeaders)
+                            @foreach (var dayCol in Model.DayHeaders.Where(a => !a.ToLower().Contains("attendstatus") && !a.ToLower().Contains("totalnoofhour")).ToList())
                             {
                                 int dayNo = 0;
                                 var date = new DateTime();
-                                if (Model.DayHeaders.Count > 120)
+                                if (Model.DayHeaders.Where(a => !a.ToLower().Contains("attendstatus") && !a.ToLower().Contains("totalnoofhour")).ToList().Count > 120)
                                 {
                                     dayNo = (int)Math.Ceiling(dayIndex / 4.0);
                                 }
-                                else if (Model.DayHeaders.Count > 90)
+                                else if (Model.DayHeaders.Where(a => !a.ToLower().Contains("attendstatus") && !a.ToLower().Contains("totalnoofhour")).ToList().Count > 90)
                                 {
                                     dayNo = (int)Math.Ceiling(dayIndex / 3.0);
                                 }
-                                else if (Model.DayHeaders.Count > 54)
+                                else if (Model.DayHeaders.Where(a => !a.ToLower().Contains("attendstatus") && !a.ToLower().Contains("totalnoofhour")).ToList().Count > 54)
                                 {
                                     dayNo = (int)Math.Ceiling(dayIndex / 2.0);
                                 }
@@ -85,7 +104,10 @@
                                 <th data-columnno="@(dayIndex+4)" data-sortorder="asc" style="min-width:60px; resize: horizontal; width:70px;" class="sortCol @cssClass">
                                     <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>
                                     @dayCol  <br />
-                                    @date.ToString("dd/MMM/yyyy") @if (!allowEdit) { <input type="checkbox" id="checkDateChange_@dayNo" data-day="@dayNo" onclick="onclickCheckDate(@dayNo)" /> }
+                                    @date.ToString("dd/MMM/yyyy") @if (!allowEdit)
+                                    {
+                                        <input type="checkbox" id="checkDateChange_@dayNo" data-day="@dayNo" onclick="event.stopPropagation(); onclickCheckDate(@dayNo)" />
+                                    }
                                 </th>
                                 dayIndex++;
                             }
@@ -93,14 +115,14 @@
                         }
                         else {
                             int dayIndex = 1;
-                            @foreach (var dayCol in Model.DayHeaders)
+                            @foreach (var dayCol in Model.DayHeaders.Where(a => !a.ToLower().Contains("attendstatus") && !a.ToLower().Contains("totalnoofhour")).ToList())
                             {
                                 <th data-columnno="@(dayIndex + 4)" data-sortorder="asc" style="min-width:60px; resize: horizontal; width:70px;" class="sortCol @cssClass">
                                     <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>
                                     @dayCol <br />
                                     @if (!allowEdit)
                                     {
-                                        <input type="checkbox" id="checkDateChange_1" data-day="1" onclick="onclickCheckDate(1)" />
+                                        <input type="checkbox" id="checkDateChange_1" data-day="1" onclick="event.stopPropagation(); onclickCheckDate(1)" />
                                     }
                                 </th>
                                 dayIndex++;
@@ -115,7 +137,7 @@
                             In Time <br />
                             @if (!allowEdit)
                             {
-                                <input type="checkbox" id="checkDateChange1" data-day="1" onclick="onclickCheckDate(1)" />
+                                <input type="checkbox" id="checkDateChange1" data-day="1" onclick="event.stopPropagation(); onclickCheckDate(1)" />
                             }
                         </th>
 
@@ -124,7 +146,7 @@
                             Out Time <br />
                             @if (!allowEdit)
                             {
-                                <input type="checkbox" id="checkDateChange2" data-day="1" onclick="onclickCheckDate(1)" />
+                                <input type="checkbox" id="checkDateChange2" data-day="1" onclick="event.stopPropagation(); onclickCheckDate(1)" />
                             }
                         </th>
                         columncount = 7;
@@ -155,32 +177,49 @@
                                 {
                                     var fromkey = Model.GateAttDetailsList[i].Attendance.FirstOrDefault(x => string.Equals(x.Key, "fromtime", StringComparison.OrdinalIgnoreCase)).Key;
                                     var tokey = Model.GateAttDetailsList[i].Attendance.FirstOrDefault(x => string.Equals(x.Key, "totime", StringComparison.OrdinalIgnoreCase)).Key;
+                                    var attendstatus = Model.GateAttDetailsList[i].Attendance.FirstOrDefault(x => string.Equals(x.Key, "attendstatus", StringComparison.OrdinalIgnoreCase)).Key;
+                                    var totalnoofhour = Model.GateAttDetailsList[i].Attendance.FirstOrDefault(x => string.Equals(x.Key, "totalnoofhour", StringComparison.OrdinalIgnoreCase)).Key;
                                     var Fromvalue = fromkey != null ? Model.GateAttDetailsList[i].Attendance[fromkey] : "";
                                     var Tovalue = tokey != null ? Model.GateAttDetailsList[i].Attendance[tokey] : "";
+                                    var attstatusval = attendstatus != null ? Model.GateAttDetailsList[i].Attendance[attendstatus] : "";
+                                    var totalhourval = totalnoofhour != null ? Model.GateAttDetailsList[i].Attendance[totalnoofhour] : "";
                                     Fromvalue = string.IsNullOrWhiteSpace(Fromvalue) ? "" : (DateTime.TryParse(Fromvalue.Trim(), out var dt) ? dt.ToString("HH\\:mm") : "");
                                     Tovalue = string.IsNullOrWhiteSpace(Tovalue) ? "" : (DateTime.TryParse(Tovalue.Trim(), out var tdt) ? tdt.ToString("HH\\:mm") : "");
                                     <td><input type="time" id='@("txt_" + Model.GateAttDetailsList[i].EmpId + "_InTime")' name="Attendance[@Model.GateAttDetailsList[i].EmpId][InTime]" value="@(allowEdit ? Fromvalue : "")" class="form-control form-control-sm att-input timepicker @cssClass" data-empid="@Model.GateAttDetailsList[i].EmpId" data-type="InTime" data-day="1" @(allowEdit ? "" : "disabled") /></td>
-                                    <td><input type="time" id='@("txt_" + Model.GateAttDetailsList[i].EmpId + "_OutTime")' name="Attendance[@Model.GateAttDetailsList[i].EmpId][OutTime]" value="@(allowEdit ? Tovalue : "")" class="form-control form-control-sm att-input timepicker @cssClass" data-empid="@Model.GateAttDetailsList[i].EmpId" data-type="OutTime" data-day="1" @(allowEdit ? "" : "disabled") /></td>
+                                    <td>
+                                        <input type="time" id='@("txt_" + Model.GateAttDetailsList[i].EmpId + "_OutTime")' name="Attendance[@Model.GateAttDetailsList[i].EmpId][OutTime]" value="@(allowEdit ? Tovalue : "")" class="form-control form-control-sm att-input timepicker @cssClass" data-empid="@Model.GateAttDetailsList[i].EmpId" data-type="OutTime" data-day="1" @(allowEdit ? "" : "disabled") />
+                                        <input type="hidden" id='@("txt_" + Model.GateAttDetailsList[i].EmpId + "_AttendStatus")' name="Attendance[@Model.GateAttDetailsList[i].EmpId][AttendStatus]" value="@attstatusval" class="form-control form-control-sm att-input" data-empid="@Model.GateAttDetailsList[i].EmpId" data-type="AttendSttus"/>
+                                        <input type="hidden" id='@("txt_" + Model.GateAttDetailsList[i].EmpId + "_TotalNoOfHour")' name="Attendance[@Model.GateAttDetailsList[i].EmpId][TotalNoOfHour]" value="@totalhourval" class="form-control form-control-sm att-input" data-empid="@Model.GateAttDetailsList[i].EmpId" data-type="TotalNoOfHour" />
+                                    </td>
                                 }
                                 else
                                 {
                                     @foreach (var dayCol in Model.DayHeaders)
                                     {
-                                        var attkey = Model.GateAttDetailsList[i].Attendance.FirstOrDefault(x => string.Equals(x.Key, dayCol, StringComparison.OrdinalIgnoreCase)).Key;
-                                        var value = attkey != null ? Model.GateAttDetailsList[i].Attendance[attkey] : "";
-                                        var parts = dayCol.Split('('); var dayNo = parts[0]; var type = parts[1].Replace(")", "");
-                                        // int monthNo = DateTime.ParseExact(Model.strEmpAttMonth, "MMM", System.Globalization.CultureInfo.InvariantCulture).Month;
-                                        int monthNo = (Model.intEmpAttMonth != null) ? Convert.ToInt32(Model.intEmpAttMonth) : 1;
-                                        var currentDate = new DateTime(Model.GateAttYearCode, monthNo, !string.IsNullOrEmpty(dayNo) ? Convert.ToInt32(dayNo) : 1);
-                                        string currentDay = currentDate.DayOfWeek.ToString();
-                                        var holiday = Model.HolidayList?.FirstOrDefault(h => h.HolidayYear == Model.GateAttYearCode && h.HolidayEffFrom >= currentDate && h.HolidayEffTill <= currentDate);
-                                        isWeekoff = Model.HolidayList.Any(a => a.HolidayEffFrom == null && a.HolidayEffTill == null && a.DayName.Equals(currentDay, StringComparison.OrdinalIgnoreCase));
-                                        isHoliday = !isWeekoff && holiday != null;
-                                        cssClass = isWeekoff ? "weekoff-time lighten" : (isHoliday ? "holiday-time lighten" : "");
-                                        allowEdit = (holiday != null && isHoliday && string.Equals(holiday?.AllowedCompOff, "YES", StringComparison.OrdinalIgnoreCase)) || !isHoliday;
-                                        if(isWeekoff) { allowEdit = false; }
-                                        value = allowEdit ? (string.IsNullOrWhiteSpace(value) ? "" : (DateTime.TryParse(value.Trim(), out var dt) ? dt.ToString("HH\\:mm") : "")) : "";
-                                        <td><input type="time" id='@("txt_" + Model.GateAttDetailsList[i].EmpId + "_" + dayNo + "_" + type)' name="Attendance[@Model.GateAttDetailsList[i].EmpId][@dayCol]" value="@value" class="form-control form-control-sm att-input timepicker @cssClass" data-empid="@Model.GateAttDetailsList[i].EmpId" data-day="@dayNo" data-type="@type" @(allowEdit ? "" : "disabled") /></td>
+                                        if (dayCol.ToLower().Contains("attendstatus") || dayCol.ToLower().Contains("totalnoofhour"))
+                                        {
+                                            var daycolkey = (dayCol.ToLower().Contains("attendstatus")) ? "AttendStatus" : "TotalNoOfHour";
+                                            var attkey = Model.GateAttDetailsList[i].Attendance.FirstOrDefault(x => string.Equals(x.Key, dayCol, StringComparison.OrdinalIgnoreCase)).Key;
+                                            var value = attkey != null ? Model.GateAttDetailsList[i].Attendance[attkey] : "";
+                                            <input type="hidden" id='@("txt_" + Model.GateAttDetailsList[i].EmpId + "_" + daycolkey)' name="Attendance[@Model.GateAttDetailsList[i].EmpId][@dayCol]" value="@value" class="form-control form-control-sm att-input" data-empid="@Model.GateAttDetailsList[i].EmpId" data-type="@daycolkey" />
+                                        }
+                                        else {
+                                            var attkey = Model.GateAttDetailsList[i].Attendance.FirstOrDefault(x => string.Equals(x.Key, dayCol, StringComparison.OrdinalIgnoreCase)).Key;
+                                            var value = attkey != null ? Model.GateAttDetailsList[i].Attendance[attkey] : "";
+                                            var parts = dayCol.Split('('); var dayNo = parts[0]; var type = parts[1].Replace(")", "");
+                                            // int monthNo = DateTime.ParseExact(Model.strEmpAttMonth, "MMM", System.Globalization.CultureInfo.InvariantCulture).Month;
+                                            int monthNo = (Model.intEmpAttMonth != null) ? Convert.ToInt32(Model.intEmpAttMonth) : 1;
+                                            var currentDate = new DateTime(Model.GateAttYearCode, monthNo, !string.IsNullOrEmpty(dayNo) ? Convert.ToInt32(dayNo) : 1);
+                                            string currentDay = currentDate.DayOfWeek.ToString();
+                                            var holiday = Model.HolidayList?.FirstOrDefault(h => h.HolidayYear == Model.GateAttYearCode && h.HolidayEffFrom >= currentDate && h.HolidayEffTill <= currentDate);
+                                            isWeekoff = Model.HolidayList.Any(a => a.HolidayEffFrom == null && a.HolidayEffTill == null && a.DayName.Equals(currentDay, StringComparison.OrdinalIgnoreCase));
+                                            isHoliday = !isWeekoff && holiday != null;
+                                            cssClass = isWeekoff ? "weekoff-time lighten" : (isHoliday ? "holiday-time lighten" : "");
+                                            allowEdit = (holiday != null && isHoliday && string.Equals(holiday?.AllowedCompOff, "YES", StringComparison.OrdinalIgnoreCase)) || !isHoliday;
+                                            if(isWeekoff) { allowEdit = false; }
+                                            value = allowEdit ? (string.IsNullOrWhiteSpace(value) ? "" : (DateTime.TryParse(value.Trim(), out var dt) ? dt.ToString("HH\\:mm") : "")) : "";
+                                            <td><input type="time" id='@("txt_" + Model.GateAttDetailsList[i].EmpId + "_" + dayNo + "_" + type)' name="Attendance[@Model.GateAttDetailsList[i].EmpId][@dayCol]" value="@value" class="form-control form-control-sm att-input timepicker @cssClass" data-empid="@Model.GateAttDetailsList[i].EmpId" data-day="@dayNo" data-type="@type" @(allowEdit ? "" : "disabled") /></td>
+                                        }
                                     }
                                 }
                             }
@@ -188,12 +227,19 @@
                             {
                                 var fromkey = Model.GateAttDetailsList[i].Attendance.FirstOrDefault(x => string.Equals(x.Key, "fromtime", StringComparison.OrdinalIgnoreCase)).Key;
                                 var tokey = Model.GateAttDetailsList[i].Attendance.FirstOrDefault(x => string.Equals(x.Key, "totime", StringComparison.OrdinalIgnoreCase)).Key;
+                                var attendstatus = Model.GateAttDetailsList[i].Attendance.FirstOrDefault(x => string.Equals(x.Key, "attendstatus", StringComparison.OrdinalIgnoreCase)).Key;
+                                var totalnoofhour = Model.GateAttDetailsList[i].Attendance.FirstOrDefault(x => string.Equals(x.Key, "totalnoofhour", StringComparison.OrdinalIgnoreCase)).Key;
                                 var Fromvalue = fromkey != null ? Model.GateAttDetailsList[i].Attendance[fromkey] : "";
                                 var Tovalue = tokey != null ? Model.GateAttDetailsList[i].Attendance[tokey] : "";
+                                var attstatusval = attendstatus != null ? Model.GateAttDetailsList[i].Attendance[attendstatus] : "";
+                                var totalhourval = totalnoofhour != null ? Model.GateAttDetailsList[i].Attendance[totalnoofhour] : "";
                                 Fromvalue = string.IsNullOrWhiteSpace(Fromvalue) ? "" : (DateTime.TryParse(Fromvalue.Trim(), out var dt) ? dt.ToString("HH\\:mm") : "");
                                 Tovalue = string.IsNullOrWhiteSpace(Tovalue) ? "" : (DateTime.TryParse(Tovalue.Trim(), out var tdt) ? tdt.ToString("HH\\:mm") : "");
                                 <td><input type="time" id='@("txt_" + Model.GateAttDetailsList[i].EmpId + "_InTime")' name="Attendance[@Model.GateAttDetailsList[i].EmpId][InTime]" value="@(allowEdit ? Fromvalue : "")" class="form-control form-control-sm att-input timepicker @cssClass" data-empid="@Model.GateAttDetailsList[i].EmpId" data-type="InTime" data-day="1" @(allowEdit ? "" : "disabled") /></td>
-                                <td><input type="time" id='@("txt_" + Model.GateAttDetailsList[i].EmpId + "_OutTime")' name="Attendance[@Model.GateAttDetailsList[i].EmpId][OutTime]" value="@(allowEdit ? Tovalue : "")" class="form-control form-control-sm att-input timepicker @cssClass" data-empid="@Model.GateAttDetailsList[i].EmpId" data-type="OutTime" data-day="1" @(allowEdit ? "" : "disabled") /></td>
+                                <td><input type="time" id='@("txt_" + Model.GateAttDetailsList[i].EmpId + "_OutTime")' name="Attendance[@Model.GateAttDetailsList[i].EmpId][OutTime]" value="@(allowEdit ? Tovalue : "")" class="form-control form-control-sm att-input timepicker @cssClass" data-empid="@Model.GateAttDetailsList[i].EmpId" data-type="OutTime" data-day="1" @(allowEdit ? "" : "disabled") />
+                                    <input type="hidden" id='@("txt_" + Model.GateAttDetailsList[i].EmpId + "_AttendStatus")' name="Attendance[@Model.GateAttDetailsList[i].EmpId][AttendStatus]" value="@attstatusval" class="form-control form-control-sm att-input" data-empid="@Model.GateAttDetailsList[i].EmpId" data-type="AttendSttus" />
+                                    <input type="hidden" id='@("txt_" + Model.GateAttDetailsList[i].EmpId + "_TotalNoOfHour")' name="Attendance[@Model.GateAttDetailsList[i].EmpId][TotalNoOfHour]" value="@totalhourval" class="form-control form-control-sm att-input" data-empid="@Model.GateAttDetailsList[i].EmpId" data-type="TotalNoOfHour" />
+                                </td>
                             }
 
                             <td>@Html.DropDownList($"dept_{Model.GateAttDetailsList[i].EmpId}", new SelectList(deptList, "Value", "Text", Model.GateAttDetailsList[i].DeptId), new { @class = "form-select form-select-sm dept-dd", @style = "pointer-events: none;", data_empid = Model.GateAttDetailsList[i].EmpId, onchange = "ondeptlistchange(" + Model.GateAttDetailsList[i].EmpId + ")" })</td>
