@@ -15,6 +15,7 @@ using System.Data;
 using System.Net;
 using Microsoft.Extensions.Configuration;
 using System.Configuration;
+using ClosedXML.Excel;
 
 namespace eTactWeb.Controllers
 {
@@ -714,6 +715,119 @@ namespace eTactWeb.Controllers
             var JSON = await IReceiveChallan.GetTotalAmount(model);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
+        }
+
+        [HttpGet]
+        public IActionResult ExportRCDashboardToExcel()
+        {
+            // Load data
+            string modelJson = HttpContext.Session.GetString("KeyReceiveChallan");
+
+            List<RCDashboard> dashboardList = new List<RCDashboard>();
+
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                dashboardList = JsonConvert.DeserializeObject<List<RCDashboard>>(modelJson);
+            }
+
+            if (dashboardList == null || dashboardList.Count == 0)
+                return NotFound("No data available to export.");
+
+            using var workbook = new XLWorkbook();
+            var worksheet = workbook.Worksheets.Add("Recieve Challan");
+
+            // ================================
+            // HEADERS (ALL COLUMNS)
+            // ================================
+            string[] headers = {
+        "Sr#","MRN NO","Gate No","Ret/NonRet Challan","Against MRNOrGate","Aginst MRNYearCode",
+        "BillOrChallan","Gate YearCode","Challan No","ChallanDate","Account Name","Truck No",
+        "Transport","Dept To","Remark","Total Amount","Net Amount","Total Dis%","Total Dis Amount",
+        "Challan Type","Doc Type Code","Invoice No","Invoice YC","Gate Date","MRN Date","Issue Challan EntryId",
+        "Issue Challan YC","Issue Challan No","ItemName","PartCode","Unit","RecQty","Rate","Amount","Issued Qty",
+        "Pend Qty","Produced","Remark2","Gate Qty","Store Name","Pend To Issue","BatchNo","Unique BatchNo",
+        "ItemSize","AltUnit","AltQty","PONO","PODate","SchNo"
+    };
+
+            for (int i = 0; i < headers.Length; i++)
+                worksheet.Cell(1, i + 1).Value = headers[i];
+
+            // ================================
+            // ROWS
+            // ================================
+            int row = 2;
+            int sr = 1;
+
+            foreach (var d in dashboardList)
+            {
+                int col = 1;
+
+                worksheet.Cell(row, col++).Value = sr++;
+                worksheet.Cell(row, col++).Value = d.MRNNo;
+                worksheet.Cell(row, col++).Value = d.gateno;
+                worksheet.Cell(row, col++).Value = d.RetNonRetChallan;
+                worksheet.Cell(row, col++).Value = d.AgainstMRNOrGate;
+                worksheet.Cell(row, col++).Value = d.AgainstMRNYearCode;
+                worksheet.Cell(row, col++).Value = d.BillOrChallan;
+                worksheet.Cell(row, col++).Value = d.GateYearCode;
+                worksheet.Cell(row, col++).Value = d.ChallanNo;
+                worksheet.Cell(row, col++).Value = d.ChallanDate;
+                worksheet.Cell(row, col++).Value = d.Account_Name;
+                worksheet.Cell(row, col++).Value = d.TruckNo;
+                worksheet.Cell(row, col++).Value = d.TransPort;
+                worksheet.Cell(row, col++).Value = d.DeptTo;
+                worksheet.Cell(row, col++).Value = d.Remark;
+                worksheet.Cell(row, col++).Value = d.TotalAmount;
+                worksheet.Cell(row, col++).Value = d.NetAmt;
+                worksheet.Cell(row, col++).Value = d.TotalDiscountPercent;
+                worksheet.Cell(row, col++).Value = d.TotalDiscountAmount;
+                worksheet.Cell(row, col++).Value = d.ChallanType;
+                worksheet.Cell(row, col++).Value = d.DocTypeCode;
+                worksheet.Cell(row, col++).Value = d.InvoiceNo;
+                worksheet.Cell(row, col++).Value = d.InvoiceYearCode;
+                worksheet.Cell(row, col++).Value = d.GateDate;
+                worksheet.Cell(row, col++).Value = d.MRNDate;
+                worksheet.Cell(row, col++).Value = d.IssueChallanEntryId;
+                worksheet.Cell(row, col++).Value = d.IssueChallanYearCode;
+                worksheet.Cell(row, col++).Value = d.IssueChallanNo;
+
+                // Newly added remaining columns:
+                worksheet.Cell(row, col++).Value = d.ItemName;
+                worksheet.Cell(row, col++).Value = d.PartCode;
+                worksheet.Cell(row, col++).Value = d.Unit;
+                worksheet.Cell(row, col++).Value = d.RecQty;
+                worksheet.Cell(row, col++).Value = d.Rate;
+                worksheet.Cell(row, col++).Value = d.Amount;
+                worksheet.Cell(row, col++).Value = d.IssuedQty;
+                worksheet.Cell(row, col++).Value = d.PendQty;
+                worksheet.Cell(row, col++).Value = d.Produced;
+                worksheet.Cell(row, col++).Value = d.Remark;
+                worksheet.Cell(row, col++).Value = d.GateQty;
+                worksheet.Cell(row, col++).Value = d.StoreName;
+                worksheet.Cell(row, col++).Value = d.pendtoissue;
+                worksheet.Cell(row, col++).Value = d.BatchNo;
+                worksheet.Cell(row, col++).Value = d.UniqueBatchno;
+                worksheet.Cell(row, col++).Value = d.ItemSize;
+                worksheet.Cell(row, col++).Value = d.AltUnit;
+                worksheet.Cell(row, col++).Value = d.AltQty;
+                worksheet.Cell(row, col++).Value = d.PONO;
+                worksheet.Cell(row, col++).Value = d.PODate;
+                worksheet.Cell(row, col++).Value = d.SchNo;
+
+                row++;
+            }
+
+            worksheet.Columns().AdjustToContents();
+
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            stream.Position = 0;
+
+            return File(
+                stream.ToArray(),
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                "RecieveChallan.xlsx"
+            );
         }
 
 

@@ -5759,7 +5759,20 @@
                 }
             });
         }
-
+        function checkPartCodeMusthaveAtLeastOneTax() {
+            var errorPartCode = [];
+            $('.divPOItemListPartCode').each(function (i, data) {
+                var partcode = $(data).text();
+                var taxes = $("td[data-txPartCode='" + partcode + "']");
+                if (!taxes || taxes.length == 0) {
+                    errorPartCode.push(partcode)
+                }
+            });
+            if (errorPartCode.length > 0) {
+                $.notify("No tax available for " + errorPartCode.join(", ") + " part code(s).", "error");
+            }
+            return errorPartCode.length == 0;
+        }
         $('#submitBTN,#submitBTNfooter,#UpdateButton').click(function (e) {
             e.preventDefault();
 
@@ -5803,6 +5816,9 @@
         if (hsnError) return;
 
                  if ($('#GSTRegistered').val() == 'Y') {
+                        if (!checkPartCodeMusthaveAtLeastOneTax()) {
+                        return false;
+                    }
                     if ($('#divTaxGrid tr td').length <= 1 && $('#DomesticExportNEPZ').val() == "DOMESTIC") {
                         $.notify('Tax Grid Should Have Atleast 1 Item...!', "error");
                     } else {
@@ -5873,6 +5889,7 @@
                             }
                         }
                     }
+             
                 } else {
                     if (confirm("Are you sure you want to save this entry?")) {
                         $('#EinvoicePopup').modal('show');

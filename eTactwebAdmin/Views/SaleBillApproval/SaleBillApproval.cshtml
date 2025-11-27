@@ -252,6 +252,8 @@
 
         $(document).ready(function () {
             GetFeatureOption();
+            $('#EntryDate').datepicker({ dateFormat: 'dd/M/yy' }).datepicker("setDate", currentDate);
+
         });
     </script>
 }

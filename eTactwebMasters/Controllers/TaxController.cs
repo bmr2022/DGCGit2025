@@ -78,7 +78,7 @@ public class TaxController : Controller
         HttpContext.Session.Remove("KeyAdjGrid");
         return Json("Ok");
     }
-
+    
     public IList<IssueNRGPTaxDetail> Add2IssueList(IssueNRGPTaxDetail model, IList<IssueNRGPTaxDetail> TaxGrid, DataTable CgstSgst)
     {
         var _List = new List<IssueNRGPTaxDetail>();
@@ -1354,6 +1354,106 @@ public class TaxController : Controller
         }
         return PartialView("_TaxNRGPGrid", MainModel);
     }
+    public JsonResult CalculateTCS(string PC, string TP, string SN)
+    {
+        decimal Amt = 0;
+        dynamic ExpTaxAmt = 0;
+        decimal TaxOnExp = 0;
+        decimal BasicTotal = 0;
+        dynamic ListOfItems = null;
+
+       if (SN == "SaleInvoice")
+        {
+            ListOfItems = new SaleBillModel();
+        }
+      else if(SN== "SaleRejection")
+        {
+            ListOfItems = new SaleRejectionModel();
+        }
+
+        if (HttpContext.Session.GetString(SN) != null)
+        {
+            if (SN == "SaleInvoice")
+            {
+                //MainModel = JsonConvert.DeserializeObject<List<POItemDetail>>(HttpContext.Session.GetString(SN) ?? string.Empty);
+                //_MemoryCache.TryGetValue("SaleBillModel", out SaleBillModel MainModel);
+                SaleBillModel MainModel = new();
+                string modelJsonSale = HttpContext.Session.GetString("SaleBillModel");
+                if (!string.IsNullOrEmpty(modelJsonSale))
+                {
+                    MainModel = JsonConvert.DeserializeObject<SaleBillModel>(modelJsonSale);
+                }
+
+                ListOfItems = MainModel.saleBillDetails;
+            }
+
+            else if (SN == "SaleRejection")
+            {
+
+                SaleRejectionModel MainModel = new();
+                string modelJson1 = HttpContext.Session.GetString("SaleRejectionModel");
+                if (!string.IsNullOrEmpty(modelJson1))
+                {
+                    MainModel = JsonConvert.DeserializeObject<SaleRejectionModel>(modelJson1);
+                }
+
+                ListOfItems = MainModel.ItemDetailGrid;
+
+            }
+            dynamic TaxGrid = new List<TaxModel>();
+            string modelTaxJson = HttpContext.Session.GetString("KeyTaxGrid");
+            if (!string.IsNullOrEmpty(modelTaxJson))
+            {
+                TaxGrid = JsonConvert.DeserializeObject<List<TaxModel>>(modelTaxJson);
+            }
+            try
+            {
+                if (ListOfItems != null)
+                {
+                    foreach (var item in ListOfItems)
+                    {
+                      
+
+                        //Item Amount
+                        if (SN == "SaleInvoice" || SN == "SaleRejection")
+                        {
+                            if (item.ItemCode == ToInt32(PC))
+                            {
+                                Amt += (item.Amount == null ? 0 : item.Amount);
+                            }
+                        }
+                    
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+         foreach (var item in ListOfItems)
+            {
+                 if (SN == "SaleInvoice")
+                {
+                    Amt += item.Amount;
+                }
+                
+            }
+
+            string modelJson = HttpContext.Session.GetString("KeyTaxGrid");
+            List<TaxModel> TdsGrid = new List<TaxModel>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                TdsGrid = JsonConvert.DeserializeObject<List<TaxModel>>(modelJson);
+            }
+
+            Amt = Amt * ToDecimal(TP) / 100;
+        }
+
+        return Json(new { Amt, TaxOnExp });
+
+     
+    }
+
 
     public JsonResult CalculateTax(string PC, string TP, string SN)
     {
