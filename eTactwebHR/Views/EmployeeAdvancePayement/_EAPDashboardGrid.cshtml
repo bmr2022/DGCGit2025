@@ -6,8 +6,8 @@
 	var yearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("YearCode"));
 }
 
-<div class="table-responsive VUDashboardData" style="max-height:350px;">
-	<table class="table table-hover table-bordered TbCss text-nowrap mb-0" id="VUDashboard">
+<div class="table-responsive EAPDashboardData" style="max-height:350px;">
+	<table class="table table-hover table-bordered TbCss text-nowrap mb-0" id="EAPDashboard">
 		<thead class="bg-gradient card-headerBG text-light " id="dashPOThead">
 			<tr>
 				<th>Sr#</th>
@@ -78,7 +78,7 @@
 
 			</tr>
 		</thead>
-		<tbody id="VUDashboardGrid">
+		<tbody id="EAPDashboardGrid">
 			@{
 				var @Cntr = 0;
 				if (Model.HRAdvanceDashboards == null || Model.HRAdvanceDashboards.Count == 0)
@@ -175,7 +175,7 @@
 							<td>@item.EmpCode</td>
 							<td>@item.DesigId</td>
 							<td>@item.DesigName</td>
-							<td>@item.DepId</td>
+							<td>@item.DeptId</td>
 							<td>@item.DeptName</td>
 							<td>@item.DOJ</td>
 							<td>@item.BasicSalary</td>
