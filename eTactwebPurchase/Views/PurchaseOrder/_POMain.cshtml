@@ -86,13 +86,9 @@
             </div>
             <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                 <label asp-for="AccountCode" class="form-label" style="color: red;">Vendor Name*</label>
-                <div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
-
-                    <input asp-for="PN1" class="form-check-input" type="checkbox" role="switch" />Show All
-                </div>
-                <select class="form-select" asp-for="AccountCode">
-                    <option>-Select-</option>
-                </select>
+                <input type="text" asp-for="AccountName" id="AccountCodeText" class="form-control" value="@Model.AccountName" placeholder="Type Party Name..." />
+                <input type="hidden" asp-for="AccountCode" id="AccountCode" />
+                <input type="hidden" value="@Model.AccountCode" id="hiddenAccountCode" />
             </div>
             <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                 <label asp-for="VendorAddress" class="form-label">Vendor Address</label>
@@ -192,39 +188,39 @@ else
 {
     <div class="accordion-body">
         <div class="row g-2 gx-3">
-            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 ShowAllRequiredFields">
                 <input type="hidden" asp-for="FinFromDate" />
                 <input type="hidden" asp-for="FinToDate" />
                 <label asp-for="EntryID" class="form-label">Entry ID</label>
                 <input asp-for="EntryID" class="form-control" readonly />
             </div>
-            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 ShowAllRequiredFields">
                 <label asp-for="YearCode" class="form-label">Year</label>
                 <input asp-for="YearCode" class="form-control" value="@Model.YearCode" readonly />
             </div>
-            <div class=" col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class=" col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 ShowAllRequiredFields">
                 <label asp-for="EntryDate" class="form-label">Entry Date</label>
                 <input asp-for="EntryDate" class="form-control" readonly />
             </div>
-            <div class=" col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class=" col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 ShowAllRequiredFields">
                 <label asp-for="Branch" class="form-label">Branch</label>
                 <input class="form-control" asp-for="Branch" readonly />
             </div>
-            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 ShowAllRequiredFields">
                 <label asp-for="POFor" class="form-label" style="color: red;">PO For*</label>
                 <select class="form-select" asp-for="POFor" tabindex="1" asp-items="@(new SelectList(Model.POForList,"Value","Text"))">
-                    <option value="0">-Select-</option>
+                  
                 </select>
             </div>
-            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 ShowAllRequiredFields">
                 <label asp-for="POType" class="form-label" style="color: red;">PO Type*</label>
                 <select class="form-select" asp-for="POType" tabindex="2" asp-items="Model.POTypeList"></select>
             </div>
-            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 ShowAllRequiredFields">
                 <label asp-for="OrderType" class="form-label" style="color: red;">Order Type*</label>
                 <select class="form-select" asp-for="OrderType" tabindex="3" asp-items="Model.OrderTypeList"></select>
             </div>
-            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 ShowAllRequiredFields">
                 <label asp-for="Currency" class="form-label" style="color: red;">Currency*</label>
                 @if (Model.Mode == "U" || Model.Mode == "V" || Model.Mode == "POA" || Model.Mode == "PAU" || Model.Mode == "POC")
                 {
@@ -232,7 +228,7 @@ else
                 }
                 <select class="form-select" asp-for="Currency" tabindex="4"></select>
             </div>
-            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 ShowAllRequiredFields">
                 <label asp-for="POTypeServItem" class="form-label" style="color: red;">Item type*</label>
                 <select asp-for="POTypeServItem" class="form-select" tabindex="6" asp-items="@(new SelectList(Model.POTypeServList,"Value","Text"))">
                     <option value="0" selected disabled>-Select-</option>
@@ -257,62 +253,52 @@ else
             </div>
             <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                 <label asp-for="AccountCode" class="form-label" style="color: red;">Vendor Name*</label>
-                <div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
-
-                    <input asp-for="PN1" class="form-check-input" type="checkbox" role="switch" />Show All
-                </div>
-                @*                 <select class="form-select" asp-for="AccountCode" tabindex="5" asp-items="@(new SelectList(Model.AccountList,"Value","Text"))">
-            <option value="0">-Select-</option>
-            </select> *@
-                <select class="form-select" asp-for="AccountCode">
-                    <option>-Select-</option>
-                </select>
-                @* <select class="form-select" asp-for="ShipTo">
-            <option>-Select-</option>
-            </select> *@
+                <input type="text" asp-for="AccountName" id="AccountCodeText" class="form-control" value="@Model.AccountName" placeholder="Type Party Name..." />
+                <input type="hidden" asp-for="AccountCode" id="AccountCode" />
+                <input type="hidden" value="@Model.AccountCode" id="hiddenAccountCode" />
             </div>
             <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                 <label asp-for="VendorAddress" class="form-label" style="color: red;">Vendor Address*</label>
-                <input asp-for="VendorAddress" class="form-control" readonly />
+                <input asp-for="VendorAddress" class="form-control" tabindex="-1" readonly />
             </div>
 
-            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 ShowAllRequiredFields">
                 <label asp-for="WEF" class="form-label" style="color: red;">Eff Date*</label>
                 <input asp-for="WEF" tabindex="8" readonly class="form-control datePickerControl" />
             </div>
-            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 ShowAllRequiredFields">
                 <label asp-for="POCloseDate" class="form-label" style="color: red;">Close Date*</label>
                 <input asp-for="POCloseDate"  tabindex="9" class="form-control datePickerControl" />
             </div>
-            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 ShowAllRequiredFields">
                 <label asp-for="AmmNo" class="form-label">Amm No</label>
                 <input asp-for="AmmNo" tabindex="10" class="form-control firstAfterDatePicker" />
             </div>
-            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 ShowAllRequiredFields">
                 <label asp-for="AmmDate" class="form-label">Eff Date</label>
                 <input asp-for="AmmDate" readonly tabindex="11" class="form-control" />
             </div>
-            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 ShowAllRequiredFields">
                 <label asp-for="MRPNo" class="form-label">MRP No</label>
                 <select class="form-select form-control" asp-for="MRPNo" tabindex="12" asp-items="@(new SelectList(Model.MRPNoList,"Value","Text"))">
                     <option value="0">-Select-</option>
                 </select>
             </div>
-            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 ShowAllRequiredFields">
                 <label asp-for="MRPYearCode" class="form-label">MRP Year </label>
                 <input asp-for="MRPYearCode" class="form-control" />
             </div>
-            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 ShowAllRequiredFields">
                 <label asp-for="QuotNo" class="form-label">Quot No</label>
                 <select class="form-select" asp-for="QuotNo" asp-items="@(new SelectList(Model.QuotList,"Value","Text"))">
                     <option value="0">-Select-</option>
                 </select>
             </div>
-            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 ShowAllRequiredFields">
                 <label asp-for="QuotYear" class="form-label">Year</label>
                 <input asp-for="QuotYear" class="form-control" />
             </div>
-            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 ShowAllRequiredFields">
                 <label class="form-label">Quote Date</label>
                 <input asp-for="QuotDate" readonly class="form-control" disabled />
             </div>
@@ -328,15 +314,15 @@ else
                 <label asp-for="PaymentDays" class="form-label">Payment Days</label>
                 <input asp-for="PaymentDays" class="form-control" />
             </div>
-            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 ShowAllRequiredFields">
                 <label asp-for="RefNo" class="form-label">Ref No</label>
                 <input asp-for="RefNo" class="form-control" />
             </div>
-            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 ShowAllRequiredFields">
                 <label asp-for="RefDate" class="form-label">Ref Date</label>
                 <input asp-for="RefDate" readonly class="form-control" />
             </div>
-            <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12 ShowAllRequiredFields">
                 <label asp-for="ShipTo" class="form-label">Ship To</label>
                 <div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
                     <input asp-for="PN2" class="form-check-input" type="checkbox" role="switch" />Show All
@@ -350,7 +336,7 @@ else
                     <option>-Select-</option>
                 </select>
             </div>
-            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-12 ShowAllRequiredFields">
                 <label asp-for="ShippingAddress" class="form-label">Shipping Address</label>
                 <input asp-for="ShippingAddress" class="form-control" />
             </div>

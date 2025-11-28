@@ -81,6 +81,7 @@
             AutoComplete('VPURCHASEORDER', 'CC', 'CC', null);
 
             GetSearchData();
+            GetFeaturesOptions();
         });
 
         document.getElementById('ShowOnlyAmendItemcheck').addEventListener('change', function () {
@@ -115,6 +116,43 @@
                 }
             }
         }
+
+        function GetFeaturesOptions() {
+            $.ajax({
+                type: "POST",
+                data: {},
+                url: "@Url.Action("GetFeaturesOptions")",
+                dataType: "json",
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.Result != null && obj.Result.length > 0) {
+                            var feature = obj.Result[0];
+
+                            // New DirectPurchaseBill flags
+                            if (feature.allowtobilldiscount === "Y") {
+                                $('.allowtobilldiscount').show();
+                            } else {
+                                $('.allowtobilldiscount').hide();
+                            }
+
+                            if (feature.ShowAllRequiredFields === "N") {
+                                $('.ShowAllRequiredFields').hide();
+                            } else {
+                                $('.ShowAllRequiredFields').show();
+                            }
+                            if (feature.ShowAllItemDetailFields === "N") {
+                                $('.ShowAllItemDetailFields').hide();
+                            } else {
+                                $('.ShowAllItemDetailFields').show();
+                            }
+
+                        }
+                    }
+                }
+            });
+        }
+
 
         function GetFormRights() {
             $.ajax({
@@ -248,6 +286,7 @@
                     var dashGrid = $('#PODashboardGrid tr').length - 1;
                     $('#totalRows').text(dashGrid);
                     GetFormRights();
+                    GetFeaturesOptions();
                 },
                 error: function (response) {
                     alert(response.responseText);

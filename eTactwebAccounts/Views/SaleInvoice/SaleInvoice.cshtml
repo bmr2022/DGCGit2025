@@ -5818,25 +5818,25 @@
 
             var hsn = $(this).find("[id^='HSNNo-']").text().trim();
 
-            if (hsn === "" || hsn === "0") {
-                $.notify('HSN Code should not be empty or 0 in Sale Bill grid...!', "error");
-                hsnError = true;
-                return false;   // break .each loop
-            }
+            // if (hsn === "" || hsn === "0") {
+            //     $.notify('HSN Code should not be empty or 0 in Sale Bill grid...!', "error");
+            //     hsnError = true;
+            //     return false;   // break .each loop
+            // }
 
-            if (itemType === "Service") {
-                if (!/^99\d{4}$/.test(hsn)) {
-                    $.notify('For Services, HSN must start with 99 and be 6 digits...', "error");
-                    hsnError = true;
-                    return false;
-                }
-            } else {
-                if (!/^\d{6,8}$/.test(hsn)) {
-                    $.notify('HSN Code must be 6 to 8 digits...', "error");
-                    hsnError = true;
-                    return false;
-                }
-            }
+            // if (itemType === "Service") {
+            //     if (!/^99\d{4}$/.test(hsn)) {
+            //         $.notify('For Services, HSN must start with 99 and be 6 digits...', "error");
+            //         hsnError = true;
+            //         return false;
+            //     }
+            // } else {
+            //     if (!/^\d{6,8}$/.test(hsn)) {
+            //         $.notify('HSN Code must be 6 to 8 digits...', "error");
+            //         hsnError = true;
+            //         return false;
+            //     }
+            // }
 
         });
 
