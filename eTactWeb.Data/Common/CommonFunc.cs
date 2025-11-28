@@ -1813,6 +1813,8 @@ public static class CommonFunc
                         && typeProperty.PropertyInfo.Name != "Termsandcondition"
                         && typeProperty.PropertyInfo.Name != "DeliveryAddress"
                         && typeProperty.PropertyInfo.Name != "RoundOffAccountCode"
+                        && typeProperty.PropertyInfo.Name != "UnitRate"
+                        && typeProperty.PropertyInfo.Name != "UnitRateList"
 
                         && typeProperty.PropertyInfo.Name != "TxTaxType" && typeProperty.PropertyInfo.Name != "TotalRecords"
                         && typeProperty.PropertyInfo.Name != "TxTaxTypeName" && typeProperty.PropertyInfo.Name != "BOMInd" && typeProperty.PropertyInfo.Name != "ProducedUnprod"
