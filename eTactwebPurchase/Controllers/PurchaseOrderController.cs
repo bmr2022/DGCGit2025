@@ -695,11 +695,11 @@ public class PurchaseOrderController : Controller
 
 			//MainModel.ItemDetailGrid.RemoveAt(Convert.ToInt32(Indx));
 
-			var removeItem = MainModel.ItemDetailGrid.FirstOrDefault(x => x.SeqNo == seq);
-			if (removeItem != null)
-			{
-				MainModel.ItemDetailGrid.Remove(removeItem);
-			}
+			    var removeItem = MainModel.ItemDetailGrid.FirstOrDefault(x => x.SeqNo == seq);
+			    if (removeItem != null)
+			    {
+				    MainModel.ItemDetailGrid.Remove(removeItem);
+			    }
 
 			//Indx = 0;
 
