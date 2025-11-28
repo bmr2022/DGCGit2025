@@ -105,15 +105,42 @@
 					</div>
 				</div>
 				<div class="accordion-item">
-					<div class="col-auto">
+					<div class="col-auto ShowAllRequiredFields">
 						<button type="button" class="PendingIndentDetail btn btn-sm btn-outline-danger">
 							<i class="fa-solid fa-angles-down fa-fw fa-lg"></i> Pending Indent
 						</button>
 					</div>
 					<h2 class="accordion-header" id="HPanel2">
-						<button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#BPanel2" aria-expanded="true" aria-controls="BPanel2">
-							<strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Item Detail Grid</strong>
+						<button class="accordion-button collapsed text-light pnl1BG bg-gradient" tabindex="-1" type="button" data-bs-toggle="collapse" data-bs-target="#BPanel2" aria-expanded="true" aria-controls="BPanel2">
+							<div class="d-flex align-items-center">
+								<i class="fa-solid fa-table-list fa-lg fa-fw fa-fade me-2"
+								   style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>
+								<strong class="text-uppercase">Item Detail Grid</strong>
+							</div>
+
+							<div class="d-flex justify-content-center align-items-center flex-grow-1">
+								<strong class="me-2">BASIC TOTAL:</strong>
+								<span id="lblItemNetAmount" class="me-4 text-warning">0.00</span>
+								<strong class="me-2">TOTAL QTY:</strong>
+								<span id="lblTotalQty" class="me-4 text-warning">0.00</span>
+
+								<strong class="me-2">TOTAL NO OF ITEMS:</strong>
+								<span id="lblItemCount" class="text-warning">0</span>
+							</div>
 						</button>
+
+
+
+
+
+
+						@* <div class="row g-2 gx-3">
+							<div class="col-12 text-center">
+								<strong>BASIC TOTAL : <i class="fa-solid fa-indian-rupee-sign fa-fw fa-1x"></i><span id="lblItemNetAmount"></span></strong>
+								<strong>TOTAL QTY: <i class="fa-solid fa-indian-rupee-sign fa-fw fa-1x"></i><span id="lblTotalQty"></span></strong>
+								<strong>, TOTAL NO OF ITEMS : <span id="lblItemCount"></span></strong>
+							</div>
+						</div> *@
 					</h2>
 					<div id="BPanel2" class="accordion-collapse collapse pnl1 bg-gradient" aria-labelledby="HPanel2">
 						<div class="accordion-body">
@@ -171,75 +198,15 @@
 															<i class="fa" aria-hidden="true"></i>
 														</span>Item Name
 													</th>
-													<th data-columnno="4" data-sortorder="asc" class="sortCol">
-														<span class="sort-icon" style="color:  yellow;">
-															<i class="fa" aria-hidden="true"></i>
-														</span>HSN No
-													</th>
 													<th data-columnno="5" data-sortorder="asc" class="sortCol">
 														<span class="sort-icon" style="color:  yellow;">
 															<i class="fa" aria-hidden="true"></i>
 														</span>PO Qty
 													</th>
-													<th data-columnno="6" data-sortorder="asc" class="sortCol">
-														<span class="sort-icon" style="color:  yellow;">
-															<i class="fa" aria-hidden="true"></i>
-														</span>Unit
-													</th>
-													<th data-columnno="7" data-sortorder="asc" class="sortCol">
-														<span class="sort-icon">
-															<i class="fa" aria-hidden="true"></i>
-														</span>Alt PO Qty
-													</th>
-													<th data-columnno="8" data-sortorder="asc" class="sortCol">
-														<span class="sort-icon">
-															<i class="fa" aria-hidden="true"></i>
-														</span>Alt Unit
-													</th>
-													<th data-columnno="9" data-sortorder="asc" class="sortCol">
-														<span class="sort-icon">
-															<i class="fa" aria-hidden="true"></i>
-														</span>Pend Qty
-													</th>
-													<th data-columnno="10" data-sortorder="asc" class="sortCol">
-														<span class="sort-icon">
-															<i class="fa" aria-hidden="true"></i>
-														</span>Alt Pend Qty
-													</th>
-													<th data-columnno="11" data-sortorder="asc" class="sortCol">
-														<span class="sort-icon">
-															<i class="fa" aria-hidden="true"></i>
-														</span>Pkg Std
-													</th>
-													<th data-columnno="12" data-sortorder="asc" class="sortCol">
-														<span class="sort-icon">
-															<i class="fa" aria-hidden="true"></i>
-														</span>Process
-													</th>
 													<th data-columnno="13" data-sortorder="asc" class="sortCol">
 														<span class="sort-icon" style="color:  yellow;">
 															<i class="fa" aria-hidden="true"></i>
 														</span>Rate
-													</th>
-													<th data-columnno="14" data-sortorder="asc" class="sortCol">
-														<span class="sort-icon">
-															<i class="fa" aria-hidden="true"></i>
-														</span>Old Rate
-													</th>
-													<th data-columnno="15" data-sortorder="asc" class="sortCol">
-														<span class="sort-icon">
-															<i class="fa" aria-hidden="true"></i>
-														</span>Rate In Oth Curr.
-													</th>
-													<th data-columnno="16" data-sortorder="asc" class="sortCol">
-														<span class="sort-icon">
-															<i class="fa" aria-hidden="true"></i>
-														</span>Rate/Unit
-													</th>
-													<th data-columnno="16" data-sortorder="asc" class="sortCol">
-														<span class="sort-icon">
-															<i class="fa" aria-hidden="true"></i>
-														</span>DeliveryDate
 													</th>
 													<th data-columnno="17" data-sortorder="asc" class="sortCol">
 														<span class="sort-icon">
@@ -256,67 +223,146 @@
 															<i class="fa" aria-hidden="true"></i>
 														</span>Amount
 													</th>
-													<th data-columnno="20" data-sortorder="asc" class="sortCol">
+													<th data-columnno="4" data-sortorder="asc" class="sortCol">
+														<span class="sort-icon" style="color:  yellow;">
+															<i class="fa" aria-hidden="true"></i>
+														</span>HSN No
+													</th>
+													
+													<th data-columnno="6" data-sortorder="asc" class="sortCol">
+														<span class="sort-icon" style="color:  yellow;">
+															<i class="fa" aria-hidden="true"></i>
+														</span>Unit
+													</th>
+													<th data-columnno="6" data-sortorder="asc" class="sortCol">
+														<span class="sort-icon" style="color:  yellow;">
+															<i class="fa" aria-hidden="true"></i>
+														</span>ItemLocation
+													</th>
+													<th data-columnno="6" data-sortorder="asc" class="sortCol">
+														<span class="sort-icon" style="color:  yellow;">
+															<i class="fa" aria-hidden="true"></i>
+														</span>VehicleNo
+													</th>
+													<th data-columnno="6" data-sortorder="asc" class="sortCol">
+														<span class="sort-icon" style="color:  yellow;">
+															<i class="fa" aria-hidden="true"></i>
+														</span>ItemGroupName
+													</th>
+
+													<th data-columnno="7" data-sortorder="asc" class="sortCol ShowAllItemDetailFields">
+														<span class="sort-icon">
+															<i class="fa" aria-hidden="true"></i>
+														</span>Alt PO Qty
+													</th>
+													<th data-columnno="8" data-sortorder="asc" class="sortCol ShowAllItemDetailFields">
+														<span class="sort-icon">
+															<i class="fa" aria-hidden="true"></i>
+														</span>Alt Unit
+													</th>
+													<th data-columnno="9" data-sortorder="asc" class="sortCol">
+														<span class="sort-icon">
+															<i class="fa" aria-hidden="true"></i>
+														</span>Pend Qty
+													</th>
+													<th data-columnno="10" data-sortorder="asc" class="sortCol ShowAllItemDetailFields">
+														<span class="sort-icon">
+															<i class="fa" aria-hidden="true"></i>
+														</span>Alt Pend Qty
+													</th>
+													<th data-columnno="11" data-sortorder="asc" class="sortCol ShowAllItemDetailFields">
+														<span class="sort-icon">
+															<i class="fa" aria-hidden="true"></i>
+														</span>Pkg Std
+													</th>
+													<th data-columnno="12" data-sortorder="asc" class="sortCol ShowAllItemDetailFields">
+														<span class="sort-icon">
+															<i class="fa" aria-hidden="true"></i>
+														</span>Process
+													</th>
+													
+													<th data-columnno="14" data-sortorder="asc" class="sortCol ShowAllItemDetailFields">
+														<span class="sort-icon">
+															<i class="fa" aria-hidden="true"></i>
+														</span>Old Rate
+													</th>
+													<th data-columnno="15" data-sortorder="asc" class="sortCol ShowAllItemDetailFields">
+														<span class="sort-icon">
+															<i class="fa" aria-hidden="true"></i>
+														</span>Rate In Oth Curr.
+													</th>
+													<th data-columnno="16" data-sortorder="asc" class="sortCol ShowAllItemDetailFields">
+														<span class="sort-icon">
+															<i class="fa" aria-hidden="true"></i>
+														</span>Rate/Unit
+													</th>
+													<th data-columnno="16" data-sortorder="asc" class="sortCol ShowAllItemDetailFields">
+														<span class="sort-icon">
+															<i class="fa" aria-hidden="true"></i>
+														</span>DeliveryDate
+													</th>
+													
+													<th data-columnno="20" data-sortorder="asc" class="sortCol ShowAllItemDetailFields">
 														<span class="sort-icon">
 															<i class="fa" aria-hidden="true"></i>
 														</span>Tol Limit Qty
 													</th>
-													<th data-columnno="21" data-sortorder="asc" class="sortCol">
+													<th data-columnno="21" data-sortorder="asc" class="sortCol ShowAllItemDetailFields">
 														<span class="sort-icon">
 															<i class="fa" aria-hidden="true"></i>
 														</span>Tol Limit %
 													</th>
-													<th data-columnno="22" data-sortorder="asc" class="sortCol">
+													<th data-columnno="22" data-sortorder="asc" class="sortCol ShowAllItemDetailFields">
 														<span class="sort-icon">
 															<i class="fa" aria-hidden="true"></i>
 														</span>Size Detail
 													</th>
-													<th data-columnno="23" data-sortorder="asc" class="sortCol">
+													<th data-columnno="23" data-sortorder="asc" class="sortCol ShowAllItemDetailFields">
 														<span class="sort-icon">
 															<i class="fa" aria-hidden="true"></i>
 														</span>Remark
 													</th>
-													<th data-columnno="24" data-sortorder="asc" class="sortCol">
+													<th data-columnno="24" data-sortorder="asc" class="sortCol ShowAllItemDetailFields">
 														<span class="sort-icon">
 															<i class="fa" aria-hidden="true"></i>
 														</span>Description
 													</th>
-													<th data-columnno="25" data-sortorder="asc" class="sortCol">
+													<th data-columnno="25" data-sortorder="asc" class="sortCol ShowAllItemDetailFields">
 														<span class="sort-icon">
 															<i class="fa" aria-hidden="true"></i>
 														</span>Additional Rate
 													</th>
-													<th data-columnno="26" data-sortorder="asc" class="sortCol">
+													<th data-columnno="26" data-sortorder="asc" class="sortCol ShowAllItemDetailFields">
 														<span class="sort-icon">
 															<i class="fa" aria-hidden="true"></i>
 														</span>Color
 													</th>
-													<th data-columnno="27" data-sortorder="asc" class="sortCol">
+													<th data-columnno="27" data-sortorder="asc" class="sortCol ShowAllItemDetailFields">
 														<span class="sort-icon">
 															<i class="fa" aria-hidden="true"></i>
 														</span>CostCenter
 													</th>
-													<th data-columnno="28" data-sortorder="asc" class="sortCol">
+													<th data-columnno="28" data-sortorder="asc" class="sortCol ShowAllItemDetailFields">
 														<span class="sort-icon">
 															<i class="fa" aria-hidden="true"></i>
 														</span>First Month Tent Qty
 													</th>
-													<th data-columnno="29" data-sortorder="asc" class="sortCol">
+													<th data-columnno="29" data-sortorder="asc" class="sortCol ShowAllItemDetailFields">
 														<span class="sort-icon">
 															<i class="fa" aria-hidden="true"></i>
 														</span>Sec Month Tent Qty
 													</th>
-													<th data-columnno="30" data-sortorder="asc" class="sortCol">
+													<th data-columnno="30" data-sortorder="asc" class="sortCol ShowAllItemDetailFields">
 														<span class="sort-icon">
 															<i class="fa" aria-hidden="true"></i>
 														</span>Amendment No
 													</th>
-													<th data-columnno="31" data-sortorder="asc" class="sortCol">
+													<th data-columnno="31" data-sortorder="asc" class="sortCol ShowAllItemDetailFields">
 														<span class="sort-icon">
 															<i class="fa" aria-hidden="true"></i>
 														</span>Amendment Date
 													</th>
-													<th data-columnno="32" data-sortorder="asc" class="sortCol">
+													<th data-columnno="32" data-sortorder="asc" class="sortCol ShowAllItemDetailFields">
 														<span class="sort-icon">
 															<i class="fa" aria-hidden="true"></i>
 														</span>Amendment Reason
@@ -334,12 +380,7 @@
 							<div class="progress my-3 mb-3" style="height: 4px;">
 								<div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
 							</div>
-							<div class="row g-2 gx-3">
-								<div class="col-12 text-center">
-									<strong>BASIC TOTAL : <i class="fa-solid fa-indian-rupee-sign fa-fw fa-1x"></i><span id="lblItemNetAmount"></span></strong>
-									<strong>, TOTAL NO OF ITEMS : <span id="lblItemCount"></span></strong>
-								</div>
-							</div>
+							
 						</div>
 					</div>
 				</div>
@@ -738,15 +779,17 @@
 					event.target.value = ""; // Clear the input value if it's not a valid number or greater than 100
 				}
 			});
-			$('#AccountCode').select2();
+			// $('#AccountCode').select2();
 			// $('#PartCode').select2();
 			// $('#ItemCode').select2();
 
-			FillVendors();
+			// FillVendors();
 			GetFormRights();
 			LockedFinancialYear();
 			FillCurrency();
 			GetFeaturesOptions();
+			calculateTotalAmount();
+			AutoFillPARTYNAMELIST();
 			$('#POTypeServItem').val('Item');
 			FillItems();
 			//add by mayuri
@@ -1277,6 +1320,7 @@ formData.append("Mode", $('#Mode').val());
 					else {
 						$('#divPOItemList').empty();
 						$('#divPOItemList').html(result);
+						GetFeaturesOptions();
 						calculateTotalAmount();
 						GetTaxPartItem();
 					}
@@ -1291,20 +1335,39 @@ formData.append("Mode", $('#Mode').val());
 
 			});
 
-			function calculateTotalAmount() {
-				var totalAmount = 0;
-
-				// Loop through all amount values in the grid and sum them
-				$('.GridAmount').each(function () {
-					var amount = parseFloat($(this).text().trim()) || 0;
-					totalAmount += amount;
-				});
-
-				// Update total amount label
-				$('#lblItemNetAmount').text(totalAmount.toFixed(2));
-			}
+			
 		}
 
+
+		function calculateTotalAmount() {
+			var totalAmount = 0;
+			var totalQty = 0;
+
+
+			let rowsExist = $(".GridAmount").length > 0;
+			let rowsQtyExist = $(".GridQty").length > 0;
+
+			if (rowsExist) {
+				$(".GridAmount").each(function () {
+					let value = parseFloat($(this).text());
+					totalAmount += isNaN(value) ? 0 : value;
+				});
+			} else {
+				totalAmount = 0;
+			}
+			if (rowsQtyExist) {
+				$(".GridQty").each(function () {
+					let value = parseFloat($(this).text());
+					totalQty += isNaN(value) ? 0 : value;
+				});
+			} else {
+				totalQty = 0;
+			}
+
+			// Update total amount label
+			$('#lblItemNetAmount').text(totalAmount.toFixed(2));
+			$('#lblTotalQty').text(totalQty.toFixed(2));
+		}
 		function GetPendQty() {
 			$.ajax({
 				type: "POST",
@@ -1361,6 +1424,17 @@ formData.append("Mode", $('#Mode').val());
 												$('.allowtobilldiscount').hide();
 									}
 
+							if (feature.ShowAllRequiredFields === "N") {
+								$('.ShowAllRequiredFields').hide();
+							} else {
+								$('.ShowAllRequiredFields').show();
+							}
+							if (feature.ShowAllItemDetailFields === "N") {
+								$('.ShowAllItemDetailFields').hide();
+							} else {
+								$('.ShowAllItemDetailFields').show();
+							}
+
 								}
 							}
 						}
@@ -1396,6 +1470,70 @@ formData.append("Mode", $('#Mode').val());
 				}
 			});
 		}
+
+
+		function AutoFillPARTYNAMELIST() {
+			// Source for PartCodeText
+			const AccountCodeSourse = function (request, response) {
+				$.ajax({
+					url: '@Url.Action("AutoFillPARTYNAMELIST","SaleOrder")',
+					type: 'POST',
+					data: {
+
+						SearchAccount: request.term
+					},
+					success: function (result) {
+						let obj = typeof result === "string" ? JSON.parse(result) : result;
+
+						if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
+							let filtered = obj.Result.Table.filter(function (item) {
+								let term = request.term.toLowerCase();
+								return item.Account_Name.toLowerCase().includes(term);
+							});
+
+							response($.map(filtered, function (item) {
+								return {
+									label: item.Account_Name,
+									value: item.Account_Name,
+									accountCode: item.Account_Code,
+
+								};
+							}));
+						} else {
+							response([]);
+						}
+					}
+				});
+			};
+
+
+
+			// Autocomplete for PartCodeText
+			$("#AccountCodeText").autocomplete({
+				source: AccountCodeSourse,
+				select: function (event, ui) {
+					$("#AccountCodeText").val(ui.item.value).data("Account_Code", ui.item.accountCode);
+
+					$('#AccountCode').val(ui.item.accountCode);
+					AccountcodeChange();
+					btnClearTax();
+					GetTaxPartItem();
+
+
+					return false;
+				},
+				focus: function (event, ui) {
+					$("#AccountCodeText").val(ui.item.value);
+
+					return false;
+				},
+				minLength: 2
+			});
+
+
+		}
+
+
 
 		$('#DDays').change(function () {
 
@@ -2197,16 +2335,24 @@ formData.append("Mode", $('#Mode').val());
 		//          });
 		function ValidateForm() {
 			var Err = 0;
-			if ($('#POFor').prop('selectedIndex') == 0) {
-				AddErrorCls('POFor');
-				$.notify('POFor is required...!', "error");
+			// if ($('#POFor').prop('selectedIndex') == 0) {
+			// 	AddErrorCls('POFor');
+			// 	$.notify('POFor is required...!', "error");
+			// 	Err = 1;
+			// }
+			// else {
+			// 	RemoveErrorCls('POFor');
+			// }
+
+			if ($('#AccountCode').val() == 0 || $('#AccountCode').val() == null) {
+				AddErrorCls('AccountCode');
+				$.notify('AccountName is required...!', "error");
 				Err = 1;
 			}
 			else {
-				RemoveErrorCls('POFor');
+				RemoveErrorCls('AccountCode');
 			}
-
-			if ($('#AccountCode').prop('selectedIndex') == 0) {
+			if ($('#AccountCodeText').val() == 0 || $('#AccountCodeText').val() == null || $('#AccountCodeText').val() == '') {
 				AddErrorCls('AccountCode');
 				$.notify('AccountName is required...!', "error");
 				Err = 1;
@@ -2376,6 +2522,13 @@ formData.append("Mode", $('#Mode').val());
 							$('#PkgStd').val(obj.Result[0].StdPacking);
 							$('#AltUnit').val(obj.Result[0].AltUnit == null ? 'NA' : obj.Result[0].AltUnit);
 							$('#UnitRate').prop('disabled', !$('#AltUnit').val());
+							$('#ItemGroupName').val("");
+							$('#ItemGroupName').val(obj.Result[0].Group_name);
+							$('#ItemLocation').val("");
+							$('#ItemLocation').val(obj.Result[0].Location);
+							$('#VehicleNo').val("");
+							$('#VehicleNo').val(obj.Result[0].Vehicle);
+							
 						}
 					}
 				},
@@ -2808,6 +2961,40 @@ formData.append("Mode", $('#Mode').val());
 			document.execCommand("copy");
 			$temp.remove();
 		}
+
+		function AccountcodeChange()
+{
+
+	copyToClipboardForDropdown("#AccountCode");
+
+
+			
+				$.getJSON({
+					url: '@Url.Action("GetAddress", "SaleOrder")',
+					data: { Code: $('#AccountCode').val() },
+					success: function (result, status, xhr) {
+						$('#VendorAddress').val(result.result.address);
+					}
+				});
+		
+			
+				$.getJSON({
+					url: '@Url.Action("GetGstRegister", "PurchaseOrder")',
+					data: { Code: $('#AccountCode').val() },
+					success: function (result, status, xhr) {
+						if (result != null) {
+							var obj = $.parseJSON(result);
+							$('#GSTRegistered').val(obj.Result[0].GSTRegistered);
+						}
+					}
+				});
+			
+
+			// btnClearTax();
+			if ($('#TxTaxType').val() != '-Select-') {
+				GetTaxAccountName("TAX");
+			}
+}
 
 		$('#AccountCode').change(function () {
 			copyToClipboardForDropdown(this);
@@ -3479,14 +3666,22 @@ formData.append("Mode", $('#Mode').val());
 		} else {
 			RemoveErrorCls('PartCodeText');
 		}
-			if ($('#POFor').prop('selectedIndex') == 0) {
-				AddErrorCls('POFor');
+			// if ($('#POFor').prop('selectedIndex') == 0) {
+			// 	AddErrorCls('POFor');
+			// 	IsError = 1;
+			// }
+			// else {
+			// 	RemoveErrorCls('POFor');
+			// }
+			if ($('#AccountCode').val() == 0 || $('#AccountCode').val() == null) {
+				$.notify("Account Code is required", "error");
+				AddErrorCls('AccountCode');
 				IsError = 1;
 			}
 			else {
-				RemoveErrorCls('POFor');
+				RemoveErrorCls('AccountCode');
 			}
-			if ($('#AccountCode').prop('selectedIndex') == 0) {
+			if ($('#AccountCodeText').val() == 0 || $('#AccountCodeText').val() == null || $('#AccountCodeText').val() == '') {
 				$.notify("Account Code is required", "error");
 				AddErrorCls('AccountCode');
 				IsError = 1;
@@ -3587,7 +3782,13 @@ formData.append("Mode", $('#Mode').val());
 					'Mode': $('#Mode').val() == "U" ? "U" : "INSERT",
 					'AmendmentNo': $('#AmmNo').val(),
 					'AmendmentDate': $('#AmmDate').val(),
-					'DeliveryDate': $('#DeliveryDate').val()
+					'DeliveryDate': $('#DeliveryDate').val(),
+					'VehicleNo': $('#VehicleNo').val(),
+					'ItemGroupName': $('#ItemGroupName').val(),
+					'ItemLocation': $('#ItemLocation').val(),
+					'SeqNo': $('#SeqNo').val(),
+
+
 				}
 
 				$.ajax({
@@ -3613,6 +3814,7 @@ formData.append("Mode", $('#Mode').val());
 							$('#divPOItemList').html(data);
 							$.notify('Item Added To Grid.', "success");
 							ClearItem();
+							GetFeaturesOptions();
 						}
 						$('#TotalRoundOff').prop('selectedIndex', 0);
 						var INA = parseFloat($('#ItemNetAmount').val());
@@ -3620,6 +3822,7 @@ formData.append("Mode", $('#Mode').val());
 						var columnCount = $('#divPOItemList tr td').length;
 						var taxRowCount = $('#divTaxGrid tr').length;
 						var sum = 0;
+						var TotalQty = 0;
 
 						//noofitems
 						if (columnCount > 1)
@@ -3627,9 +3830,24 @@ formData.append("Mode", $('#Mode').val());
 						else
 							$('#lblItemCount').text(0);
 
-						for (var i = 1; i <= rowCount; i++) {
+						let rowsExist = $(".GridAmount").length > 0;
+						let rowsQtyExist = $(".GridQty").length > 0;
 
-							sum += parseFloat($('#GridAmount-' + i).text() == '.00' ? 0 : $('#GridAmount-' + i).text());
+						if (rowsExist) {
+							$(".GridAmount").each(function () {
+								let value = parseFloat($(this).text());
+								sum += isNaN(value) ? 0 : value;
+							});
+						} else {
+							sum = 0;
+						}
+						if (rowsQtyExist) {
+							$(".GridQty").each(function () {
+								let value = parseFloat($(this).text());
+								TotalQty += isNaN(value) ? 0 : value;
+							});
+						} else {
+							TotalQty = 0;
 						}
 						$('#ItemNetAmount').val(sum);
 						var txSum = 0;
@@ -3639,6 +3857,7 @@ formData.append("Mode", $('#Mode').val());
 							}
 						}
 						$('#lblItemNetAmount').text(sum.toFixed(2));
+						$('#lblTotalQty').text(TotalQty.toFixed(2));
 
 
 						var txTotal = sum + txSum;
@@ -3735,8 +3954,12 @@ formData.append("Mode", $('#Mode').val());
 								$('#TolLimitPercent').val(obj[0].TolLimitPercent);
 								$('#TolLimitQty').val(obj[0].TolLimitQty);
 								$('#Unit').val(obj[0].Unit);
+									$('#SeqNo').val(obj[0].SeqNo);
 								$('#UnitRate').val(obj[0].UnitRate);
 								$('#DeliveryDate').val(obj[0].DeliveryDate);
+									$('#ItemLocation').val(obj[0].ItemLocation);
+									$('#VehicleNo').val(obj[0].VehicleNo);
+									$('#ItemGroupName').val(obj[0].ItemGroupName);
 								if ($('#Mode').val() == "POA") {
 									actualRate = $('#Rate').val();
 								}
@@ -3804,6 +4027,7 @@ formData.append("Mode", $('#Mode').val());
 					else {
 
 						$('#divPOItemList').html(data);
+						GetFeaturesOptions();
 						if ($('#divPOItemList').children('tr').length === 0) {
 							$('.Schedule').fadeOut();
 							var NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
@@ -3819,6 +4043,7 @@ formData.append("Mode", $('#Mode').val());
 						var taxRowCount = $('#divTaxGrid tr').length;
 						var taxRowCountGrid = $('#divTaxGrid tr td').length;
 						var sum = 0;
+						var TotalQty = 0;
 						var txSum = 0;
 						var columnCount = $('#divPOItemList tr td').length;
 
@@ -3828,14 +4053,36 @@ formData.append("Mode", $('#Mode').val());
 						else
 							$('#lblItemCount').text(0);
 
-						if (rowCountGrid > 1) {
-							for (var i = 1; i <= rowCount; i++) {
-								sum += parseFloat($('#GridAmount-' + i).text() == '.00' ? 0 : $('#GridAmount-' + i).text());
-							}
+						// if (rowCountGrid > 1) {
+						// 	for (var i = 1; i <= rowCount; i++) {
+						// 		sum += parseFloat($('#GridAmount-' + i).text() == '.00' ? 0 : $('#GridAmount-' + i).text());
+						// 	}
 
-						}
-						else {
+						// }
+						// else {
+						// 	sum = 0;
+						// }
+
+						
+						let rowsExist = $(".GridAmount").length > 0;
+						let rowsQtyExist = $(".GridQty").length > 0;
+
+						if (rowsExist) {
+							$(".GridAmount").each(function () {
+								let value = parseFloat($(this).text());
+								sum += isNaN(value) ? 0 : value;
+							});
+						} else {
 							sum = 0;
+						}
+
+						if (rowsQtyExist) {
+							$(".GridQty").each(function () {
+								let value = parseFloat($(this).text());
+								TotalQty += isNaN(value) ? 0 : value;
+							});
+						} else {
+							TotalQty = 0;
 						}
 						if (taxRowCountGrid > 1) {
 
@@ -3850,6 +4097,7 @@ formData.append("Mode", $('#Mode').val());
 						}
 						$('#ItemNetAmount').val(sum);
 						$('#lblItemNetAmount').text(sum.toFixed(2));
+						$('#lblTotalQty').text(TotalQty.toFixed(2));
 						var txTotal = sum + txSum;
 						$('#NetTotal').val(txTotal.toFixed(2));
 						// $('#TotalDiscountPercentage').val(0);
@@ -3873,7 +4121,8 @@ formData.append("Mode", $('#Mode').val());
 				$('#AltUnit').val('NA'), $('#OtherRateCurr').val('0'), $('#UnitRate').val('Unit'), $('#DiscPer').val('0'), $('#DiscRs').val('0.00'), $('#Amount').val('0.00'), $('#TolLimit').val(0),
 				$('#Remark').val(''), $('#Description').val(''), $('#StoreName').prop('selectedIndex', 0), $('#SizeDetail').val('0'), $('#AmendmentNo').val('0'), $('#AmendmentDate').val(''),
 				$('#AmendmentReason').val(''), $('#Color').val(''), $('#Process').prop('selectedIndex', 0).removeClass('is-invalid'), $('#TolLimitQty').val('0.00'), $('#TolLimitPercent').val('0.00'),
-				$('#OldRate').val('0.00'), $('#AdditionalRate').val('0.00'), $('#FirstMonthTentQty').val('0.00'), $('#SecMonthTentQty').val('0.00'), $('#CostCenter').prop('selectedIndex', 0);
+				$('#OldRate').val('0.00'), $('#AdditionalRate').val('0.00'), $('#FirstMonthTentQty').val('0.00'), $('#SecMonthTentQty').val('0.00'), $('#CostCenter').prop('selectedIndex', 0) , $('#VehicleNo').val(''),
+					$('#ItemGroupName').val(''), $('#ItemLocation').val(''),$('#SeqNo').val('0');
 		}
 
 
