@@ -41,7 +41,7 @@ namespace eTactWeb.Controllers
 
             HttpContext.Session.Remove("PrimaryAccountGroupMasterGrid");
 
-            if (!string.IsNullOrEmpty(Mode) && EnteredEMPID > 0 && Mode == "U")
+            if (!string.IsNullOrEmpty(Mode) && EnteredEMPID > 0 && (Mode == "U" || Mode == "V"))
             {
                 MainModel = await _IPrimaryAccountGroupMaster.GetViewByID(Account_Code).ConfigureAwait(false);
 

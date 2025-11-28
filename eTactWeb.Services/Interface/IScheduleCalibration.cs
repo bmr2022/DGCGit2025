@@ -12,5 +12,7 @@ namespace eTactWeb.Services.Interface
     {
 		Task<PendingScheduleCalibrationModel> GetScheduleCalibrationSearchData(string PartCode, string ItemName,string ToolCode,string ToolName);
         Task<ResponseResult> GetCalibrationAgency();
+        Task<ResponseResult> GetFormRights(int uId);
+
     }
 }

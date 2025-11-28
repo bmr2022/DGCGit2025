@@ -114,7 +114,7 @@ string LastUpdatedbyEmpName, string LastupDationDate, string CC,int LastUpdatedb
 						ViewBag.isSuccess = false;
 						TempData["500"] = "500";
 						_logger.LogError($"\n \n ********** LogError ********** \n {JsonConvert.SerializeObject(Result)}\n \n");
-						return View("Error", Result);
+						//return View("Error", Result);
 					}
 				}
 

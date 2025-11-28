@@ -32,7 +32,17 @@
                                 <div id="container">
                                     
                                     <div id="viewCursorDiv-@Cntr">
-                                        <a class="table-link link-success" id="viewCursor-@Cntr" asp-action="SubVoucher" asp-route-Mode="V" asp-route-ID="@item.EnteredEMPID"  onclick="BackButtonData(event);">
+                                        <a class="table-link link-success" id="viewCursor-@Cntr" asp-action="PrimaryAccountGroupMaster"
+                                           asp-controller="PrimaryAccountGroupMaster" asp-route-Mode="V"
+                                           asp-route-EnteredEMPID="@Cntr"
+                                           asp-route-Account_Name="@item.Account_Name"
+                                           asp-route-Account_Code="@item.Account_Code"
+                                           asp-route-Parent_Account_Code="@item.Parent_Account_Code"
+                                           asp-route-ParentAccountName="@item.ParentAccountName"
+                                           asp-route-Main_Group="@item.Main_Group"
+                                           asp-route-SubGroup="@item.SubGroup"
+                                           asp-route-SubSubGroup="@item.SubSubGroup"
+                                           asp-route-UnderGroup="@item.UnderGroup">
                                             <span class="fa-stack">
                                                 <i class="fa fa-square fa-stack-2x"></i>
                                                 <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
