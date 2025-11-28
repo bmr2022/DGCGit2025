@@ -205,6 +205,9 @@ public class POItemDetail : TaxModel
 
     public string? Unit { get; set; }
     public string? UnitRate { get; set; }
+    public string? ItemLocation { get; set; }
+    public string? ItemGroupName { get; set; }
+    public string? VehicleNo { get; set; }
 
     public IList<SelectListItem> UnitRateList
     {
@@ -268,6 +271,7 @@ public class PurchaseOrderModel : POItemDetail
     public string? FinFromDate { get; set; }
     public string? FinToDate { get; set; }
     public string? TypeOfSave { get; set; }
+    public string? AccountName { get; set; }
     public int AccountCode { get; set; }
     public IList<TextValue>? AccountList { get; set; }
     public string? AmmDate { get; set; }

@@ -48,36 +48,42 @@ else
             <td>@item.SeqNo</td>
             <td class="divPOItemListPartCode">@item.PartText</td>
             <td>@item.ItemText</td>
-            <td>@item.HSNNo</td>
-            <td style="background-color:#FFFACD">@item.POQty</td>
-            <td>@item.Unit</td>
-            <td>@item.AltPOQty</td>
-            <td>@item.AltUnit</td>
-            <td>@item.PendQty</td>
-            <td>@item.AltPendQty</td>
-            <td>@item.PkgStd</td>
-            <td>@item.Process</td>
+            <td class="GridQty" style="background-color:#FFFACD">@item.POQty</td>
             <td style="background-color:#FFFACD">@item.Rate.ToString("#.#0")</td>
-            <td>@item.OldRate</td>
-            <td>@item.OtherRateCurr.ToString("#.#0")</td>
-            <td style="background-color:#FFFACD">@item.UnitRate</td>
-            <td>@item.DeliveryDate</td>
             <td>@item.DiscPer</td>
             <td>@item.DiscRs</td>
             <td id="GridAmount-@item.SeqNo" class="GridAmount" style="background-color:#FFFACD">@item.Amount.ToString("#.#0")</td>
-            <td>@item.TolLimitQty</td>
-            <td>@item.TolLimitPercent</td>
-            <td>@item.SizeDetail</td>
-            <td>@item.PIRemark</td>
-            <td>@item.Description</td>
-            <td>@item.AdditionalRate</td>
-            <td>@item.Color</td>
-            <td>@item.CostCenter</td>
-            <td>@item.FirstMonthTentQty</td>
-            <td>@item.SecMonthTentQty</td>
-            <td>@item.AmendmentNo</td>
-            <td>@(item.AmendmentDate == null ? string.Empty : (item.AmendmentDate).Split(" ")[0])</td>
-            <td>@item.AmendmentReason</td>
+            <td>@item.HSNNo</td>
+           
+            <td>@item.Unit</td>
+            <td>@item.ItemLocation</td>
+            <td>@item.VehicleNo</td>
+            <td>@item.ItemGroupName</td>
+            <td class="ShowAllItemDetailFields">@item.AltPOQty</td>
+            <td class="ShowAllItemDetailFields">@item.AltUnit</td>
+            <td>@item.PendQty</td>
+            <td class="ShowAllItemDetailFields">@item.AltPendQty</td>
+            <td class="ShowAllItemDetailFields">@item.PkgStd</td>
+            <td class="ShowAllItemDetailFields">@item.Process</td>
+           
+            <td class="ShowAllItemDetailFields">@item.OldRate</td>
+            <td class="ShowAllItemDetailFields">@item.OtherRateCurr.ToString("#.#0")</td>
+            <td class="ShowAllItemDetailFields" style="background-color:#FFFACD">@item.UnitRate</td>
+            <td class ="ShowAllItemDetailFields">@item.DeliveryDate</td>
+          
+            <td class="ShowAllItemDetailFields">@item.TolLimitQty</td>
+            <td class="ShowAllItemDetailFields">@item.TolLimitPercent</td>
+            <td class="ShowAllItemDetailFields">@item.SizeDetail</td>
+            <td class="ShowAllItemDetailFields">@item.PIRemark</td>
+            <td class="ShowAllItemDetailFields">@item.Description</td>
+            <td class="ShowAllItemDetailFields">@item.AdditionalRate</td>
+            <td class="ShowAllItemDetailFields">@item.Color</td>
+            <td class="ShowAllItemDetailFields">@item.CostCenter</td>
+            <td class="ShowAllItemDetailFields">@item.FirstMonthTentQty</td>
+            <td class="ShowAllItemDetailFields">@item.SecMonthTentQty</td>
+            <td class="ShowAllItemDetailFields">@item.AmendmentNo</td>
+            <td class="ShowAllItemDetailFields">@(item.AmendmentDate == null ? string.Empty : (item.AmendmentDate).Split(" ")[0])</td>
+            <td class="ShowAllItemDetailFields">@item.AmendmentReason</td>
         </tr>
     }
 }

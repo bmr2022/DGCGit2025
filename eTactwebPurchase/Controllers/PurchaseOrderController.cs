@@ -27,6 +27,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 using FastReport.Export.PdfSimple;
 using System.Reflection;
 using DocumentFormat.OpenXml.Math;
+using Org.BouncyCastle.Ocsp;
 
 namespace eTactWeb.Controllers;
 
@@ -674,9 +675,9 @@ public class PurchaseOrderController : Controller
         }
 
 
-        int Indx = Convert.ToInt32(SeqNo) - 1;
+		int seq = Convert.ToInt32(SeqNo);
 
-        if (MainModel.ItemDetailGrid.Count != 0)
+		if (MainModel.ItemDetailGrid.Count != 0)
         {
             var itemfound = MainModel.ItemDetailGrid.FirstOrDefault(item => item.SeqNo == Convert.ToInt32(SeqNo)).PartCode;
 
@@ -692,28 +693,36 @@ public class PurchaseOrderController : Controller
                 return StatusCode(207, "Duplicate");
             }
 
-            MainModel.ItemDetailGrid.RemoveAt(Convert.ToInt32(Indx));
+			//MainModel.ItemDetailGrid.RemoveAt(Convert.ToInt32(Indx));
 
-            Indx = 0;
+			    var removeItem = MainModel.ItemDetailGrid.FirstOrDefault(x => x.SeqNo == seq);
+			    if (removeItem != null)
+			    {
+				    MainModel.ItemDetailGrid.Remove(removeItem);
+			    }
 
-            foreach (POItemDetail item in MainModel.ItemDetailGrid)
-            {
-                Indx++;
-                item.SeqNo = Indx;
-            }
-            MainModel.ItemNetAmount = MainModel.ItemDetailGrid.Sum(x => x.Amount);
+			//Indx = 0;
 
-            //if (MainModel.ItemDetailGrid.Count <= 0)
-            //{
-            //    IMemoryCache.Remove("PurchaseOrder");
-            //}
-            //else
-            //{
-            //    IMemoryCache.Set("PurchaseOrder", MainModel, DateTimeOffset.Now.AddMinutes(60));
-            //}
+			//foreach (POItemDetail item in MainModel.ItemDetailGrid)
+			//{
+			//    Indx++;
+			//    item.SeqNo = Indx;
+			//}
+			//MainModel.ItemNetAmount = MainModel.ItemDetailGrid.Sum(x => x.Amount);
 
-            //IMemoryCache.Set("PurchaseOrder", MainModel, DateTimeOffset.Now.AddMinutes(60));
-            HttpContext.Session.SetString("PurchaseOrder", JsonConvert.SerializeObject(MainModel));
+			MainModel.ItemNetAmount = MainModel.ItemDetailGrid.Sum(x => x.Amount);
+
+			//if (MainModel.ItemDetailGrid.Count <= 0)
+			//{
+			//    IMemoryCache.Remove("PurchaseOrder");
+			//}
+			//else
+			//{
+			//    IMemoryCache.Set("PurchaseOrder", MainModel, DateTimeOffset.Now.AddMinutes(60));
+			//}
+
+			//IMemoryCache.Set("PurchaseOrder", MainModel, DateTimeOffset.Now.AddMinutes(60));
+			HttpContext.Session.SetString("PurchaseOrder", JsonConvert.SerializeObject(MainModel));
         }
         return PartialView("_POItemGrid", MainModel);
     }
@@ -1583,15 +1592,35 @@ public class PurchaseOrderController : Controller
         : JsonConvert.DeserializeObject<PurchaseOrderModel>(modelJson);
         }
 
-        //var SeqNo = 0;
-        //if(MainModel == null)
-        //{
-        //    SeqNo++;
-        //}
-        _List.Add(
+		//var SeqNo = 0;
+		//if(MainModel == null)
+		//{
+		//    SeqNo++;
+		//}
+		int newSeqNo = 0;
+
+		if (MainModel.ItemDetailGrid == null || MainModel.ItemDetailGrid.Count == 0)
+		{
+			// No items → start with 1
+			newSeqNo = 1;
+		}
+		else
+		{
+			// If user did not pass SeqNo → auto-increment
+			if (model.SeqNo == 0 || model.SeqNo == null )
+			{
+				newSeqNo = MainModel.ItemDetailGrid.Max(x => x.SeqNo) + 1;
+			}
+			else
+			{
+				// Use existing SeqNo
+				newSeqNo = model.SeqNo;
+			}
+		}
+		_List.Add(
             new POItemDetail
             {
-                SeqNo = MainModel.ItemDetailGrid == null ? 1 : MainModel.ItemDetailGrid.Count + 1,
+                SeqNo = newSeqNo,
                 ItemCode = model.ItemCode,
                 AdditionalRate = model.AdditionalRate,
                 AltPendQty = model.AltPendQty,
@@ -1627,14 +1656,21 @@ public class PurchaseOrderController : Controller
                 Unit = model.Unit,
                 UnitRate = model.UnitRate,
                 DeliveryDate=model.DeliveryDate,
+                ItemGroupName=model.ItemGroupName,
+                ItemLocation=model.ItemLocation,
+                VehicleNo=model.VehicleNo,
             });
 
         if (MainModel.ItemDetailGrid == null)
             MainModel.ItemDetailGrid = _List;
         else
             MainModel.ItemDetailGrid.AddRange(_List);
+		MainModel.ItemDetailGrid = MainModel.ItemDetailGrid
+	   .OrderBy(x => x.SeqNo)
+	   .ToList();
 
-        MainModel.ItemNetAmount = decimal.Parse(MainModel.ItemDetailGrid.Sum(x => x.Amount).ToString("#.#0"));
+
+		MainModel.ItemNetAmount = decimal.Parse(MainModel.ItemDetailGrid.Sum(x => x.Amount).ToString("#.#0"));
 
         return MainModel;
     }

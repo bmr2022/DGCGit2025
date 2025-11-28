@@ -2166,7 +2166,7 @@ namespace eTactWeb.Controllers
                     Item.Unit ?? string.Empty,
                     Item.NoofCase,
                     Item.Qty,
-                    Item.UnitOfRate ?? string.Empty,
+                    Item.UnitRate ?? string.Empty,
                     Item.RateInOtherCurr,
                     Item.Rate,
                     Item.AltUnit ?? string.Empty,

@@ -51,7 +51,8 @@ namespace eTactWeb.Controllers
                 MainModel.Mode = Mode; // Set Mode to Update
                 MainModel.Unit_Name = Unit_Name;
                 MainModel.Round_Off = Round_Off;
-                MainModel.UnitDetail = UnitDetail;               
+                MainModel.UnitDetail = UnitDetail;
+                MainModel.PrevUnitName =Unit_Name;
                 MainModel.CC = CC;
                                 
                 MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
@@ -86,6 +87,12 @@ namespace eTactWeb.Controllers
                     {
                         ViewBag.isSuccess = true;
                         TempData["202"] = "202";
+                    }
+                    else if (Result.IsSuccess == false)
+                        {
+                        ViewBag.isSuccess = true;
+                        TempData["423"] = "423";
+                        TempData["DeleteMessage"] = Result.StatusText;
                     }
                     else if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
                     {

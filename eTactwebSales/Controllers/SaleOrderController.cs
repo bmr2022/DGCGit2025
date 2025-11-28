@@ -908,11 +908,10 @@ public class SaleOrderController : Controller
         {
             TaxGrid = JsonConvert.DeserializeObject<List<TaxModel>>(modelJson1);
         }
-		
-		int Indx = Convert.ToInt32(SeqNo) - 1;
 
-		
-			model.ItemDetailGrid = ItemDetailGrid;
+        int seq = Convert.ToInt32(SeqNo);
+
+        model.ItemDetailGrid = ItemDetailGrid;
 
 			var itemfound = model.ItemDetailGrid.FirstOrDefault(item => item.SeqNo == Convert.ToInt32(SeqNo)).PartCode;
 
@@ -931,15 +930,19 @@ public class SaleOrderController : Controller
 				//return Problem();
 			}
 
-			model.ItemDetailGrid.RemoveAt(Convert.ToInt32(Indx));
 
-			Indx = 0;
+        var removeItem = model.ItemDetailGrid.FirstOrDefault(x => x.SeqNo == seq);
+        if (removeItem != null)
+        {
+            model.ItemDetailGrid.Remove(removeItem);
+        }
 
-			foreach (ItemDetail item in model.ItemDetailGrid)
-			{
-				Indx++;
-				item.SeqNo = Indx;
-			}
+
+   //     foreach (ItemDetail item in model.ItemDetailGrid)
+			//{
+			//	Indx++;
+			//	item.SeqNo = Indx;
+			//}
 			model.ItemNetAmount = model.ItemDetailGrid.Sum(x => x.Amount);
 			if (model.ItemDetailGrid.Count <= 0)
 			{
@@ -959,9 +962,9 @@ public class SaleOrderController : Controller
 		bool exists = false;
 		object Result = string.Empty;
 
-		int Indx = Convert.ToInt32(model.SeqNo) - 1;
+        //int Indx = Convert.ToInt32(model.SeqNo) - 1;
+        int seq = Convert.ToInt32(model.SeqNo);
 
-       
         string modelJson = HttpContext.Session.GetString("ItemList");
         List<ItemDetail> ItemDetailGrid = new List<ItemDetail>();
         if (!string.IsNullOrEmpty(modelJson))
@@ -990,14 +993,19 @@ public class SaleOrderController : Controller
 				return StatusCode(207, "Duplicate");
 			}
 			Result = model.ItemDetailGrid.Where(m => m.SeqNo == model.SeqNo).ToList();
-			model.ItemDetailGrid.RemoveAt(Convert.ToInt32(Indx));
+        //model.ItemDetailGrid.RemoveAt(Convert.ToInt32(Indx));
 
-			//Indx = 0;
-			//foreach (ItemDetail item in model.ItemDetailGrid)
-			//{
-			//	Indx++;
-			//	item.SeqNo = Indx;
-			//}
+        var removeItem = model.ItemDetailGrid.FirstOrDefault(x => x.SeqNo == seq);
+        if (removeItem != null)
+        {
+            model.ItemDetailGrid.Remove(removeItem);
+        }
+        //Indx = 0;
+        //foreach (ItemDetail item in model.ItemDetailGrid)
+        //{
+        //	Indx++;
+        //	item.SeqNo = Indx;
+        //}
 
         //if (model.ItemDetailGrid.Count > 0)
         //{
@@ -1403,13 +1411,31 @@ public class SaleOrderController : Controller
 
 
 
-            //_MemoryCache.TryGetValue("ItemList", out List<ItemDetail> ItemDetailGrid);
-            //_MemoryCache.TryGetValue("KeyTaxGrid", out List<TaxModel> TaxGrid);
-			if (model != null)
+            int newSeqNo = 0;
+
+            if (ItemDetailGrid == null || ItemDetailGrid.Count == 0)
+            {
+                // No items → start with 1
+                newSeqNo = 1;
+            }
+            else
+            {
+                // If user did not pass SeqNo → auto-increment
+                if (model.SeqNo == 0 || model.SeqNo == null)
+                {
+                    newSeqNo =ItemDetailGrid.Max(x => x.SeqNo) + 1;
+                }
+                else
+                {
+                    // Use existing SeqNo
+                    newSeqNo = model.SeqNo;
+                }
+            }
+            if (model != null)
 			{
 				if (ItemDetailGrid == null)
 				{
-					model.SeqNo = 1;
+					model.SeqNo = newSeqNo;
 					_List.Add(model);
 				}
 				else
@@ -1422,7 +1448,7 @@ public class SaleOrderController : Controller
 					{
                         if (model.SeqNo==0)
                         {
-                            model.SeqNo = ItemDetailGrid.Count + 1;	
+							model.SeqNo = newSeqNo;
                         }
 
                         _List = ItemDetailGrid.Where(x=>x!=null).ToList();

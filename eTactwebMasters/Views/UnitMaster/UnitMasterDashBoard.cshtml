@@ -67,6 +67,11 @@
 
         $(document).ready(function () {
             GetFormRights();
+             var deleteMessage = '@TempData["DeleteMessage"]';
+
+            if (deleteMessage) {
+                $.notify(deleteMessage, "error");
+            }
             //$('#GroupName').select2();
             //$('#LedgerName').select2();
             // $('#DrCr').select2();
