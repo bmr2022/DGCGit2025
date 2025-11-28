@@ -67,6 +67,11 @@
 
         $(document).ready(function () {
             GetFormRights();
+             var deleteMessage = '@TempData["DeleteMessage"]';
+
+            if (deleteMessage) {
+                $.notify(deleteMessage, "error");
+            }
             //$('#GroupName').select2();
             //$('#LedgerName').select2();
             // $('#DrCr').select2();
@@ -369,7 +374,6 @@
 
 
     </script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.19.1/jquery.validate.min.js"></script>
     <script src="https://ajax.aspnetcdn.com/ajax/mvc/5.2.3/jquery.validate.unobtrusive.min.js"></script>
     <script src="~/Scripts/table2excel.js"></script>

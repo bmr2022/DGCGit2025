@@ -132,11 +132,11 @@
 								</div>
 
 								<div class="col-md-1">
-									<label asp-for="DepId" class="form-label">Department</label>
+									<label asp-for="DeptId" class="form-label">Department</label>
 									@* <select asp-for="DepId" class="form-select">
 										<option value="">-Select-</option>
 									</select> *@
-									<input type="hidden" asp-for="DepId" />
+									<input type="hidden" asp-for="DeptId" />
 									<input asp-for="DeptName" class="form-control" readonly/>
 								</div>
 
@@ -995,20 +995,10 @@
 				success: function (data, status, xhr) {
 					var obj = $.parseJSON(data);
 					if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
-						// $('#DesigId').empty();
-						// $('#DesigId').append('<option value="">-Select-</option>');
-						// $.each(obj.Result, function (index, Val) {
-						// 	$('#DesigId').append('<option value="' + Val.desigid + '">' + Val.Designation + '</option>');
-						// });
-						// $('#DepId').empty();
-						// $('#DepId').append('<option value="">-Select-</option>');
-						// $.each(obj.Result, function (index, Val) {
-						// 	$('#DepId').append('<option value="' + Val.deptid + '">' + Val.DeptName + '</option>');
-						// });
 						$('#DesigName').val(obj.Result[0].Designation);
 						$('#DesigId').val(obj.Result[0].desigid);
 						$('#DeptName').val(obj.Result[0].DeptName);
-						$('#DepId').val(obj.Result[0].deptid);
+						$('#DeptId').val(obj.Result[0].deptid);
 						$('#BasicSalary').val(obj.Result[0].GrossSalary);
 						$('#GrossSalary').val(obj.Result[0].GrossSalary);
 						$('#NetSalary').val(obj.Result[0].Netsalary);

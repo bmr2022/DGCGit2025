@@ -68,6 +68,12 @@ namespace eTactWeb.DOM.Models
         public AdjustmentModel? adjustmentModel { get; set; }
         //public int SaleBillEntryId { get; set; }
         //public int SaleBillYearCode { get; set; }
+        private IList<SelectListItem> _UnitRate = new List<SelectListItem>()
+    {
+        new() { Value = "Unit", Text = "Unit" },
+        new() { Value = "AltUnit", Text = "AltUnit" }
+    };
+
         public int SeqNo { get; set; }
         public int Group_Code { get; set; }
         public string Group_name { get; set; }
@@ -105,6 +111,12 @@ namespace eTactWeb.DOM.Models
         public float ItemWeight { get; set; }
         public int NoofPcs { get; set; }
         public string? CustomerPartCode { get; set; }
+        public string? UnitRate { get; set; }
+        public IList<SelectListItem> UnitRateList
+        {
+            get => _UnitRate;
+            set => _UnitRate = value;
+        }
         public float MRP { get; set; }
         public float OriginalMRP { get; set; }
         public float SOPendQty { get; set; }

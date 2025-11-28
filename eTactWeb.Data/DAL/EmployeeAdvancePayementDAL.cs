@@ -195,7 +195,7 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        public async Task<ResponseResult> GetDashboardData(string fromDate,string toDate)
+        public async Task<ResponseResult> GetDashboardData(string fromDate,string toDate, string employeeName = "", string deptName = "")
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -206,6 +206,8 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@Flag", "DASHBOARD"));
                 SqlParams.Add(new SqlParameter("@fromdate", fromDate));
                 SqlParams.Add(new SqlParameter("@todate", toDate));
+                SqlParams.Add(new SqlParameter("@EmpName", employeeName));
+                SqlParams.Add(new SqlParameter("@DeptName", deptName));
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("HRSPAdvanceMain", SqlParams);
             }
             catch (Exception ex)
@@ -276,7 +278,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@AdvanceSlipNo", model.AdvanceSlipNo ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@EmpId", model.EmpId));
                 SqlParams.Add(new SqlParameter("@DesigId", model.DesigId));
-                SqlParams.Add(new SqlParameter("@DepId", model.DepId));
+                SqlParams.Add(new SqlParameter("@DepId", model.DeptId));
                 SqlParams.Add(new SqlParameter("@DOJ", doj == default ? string.Empty : doj));
                 SqlParams.Add(new SqlParameter("@BasicSalary", model.BasicSalary));
                 SqlParams.Add(new SqlParameter("@NetSalary", model.NetSalary));
@@ -474,7 +476,7 @@ namespace eTactWeb.Data.DAL
 
 				model.EmpId = row["EmpId"] != DBNull.Value ? Convert.ToInt32(row["EmpId"]) : 0;
 				model.DesigId = row["DesigId"] != DBNull.Value ? Convert.ToInt32(row["DesigId"]) : 0;
-				model.DepId = row["DepId"] != DBNull.Value ? Convert.ToInt32(row["DepId"]) : 0;
+				model.DeptId = row["DepId"] != DBNull.Value ? Convert.ToInt32(row["DepId"]) : 0;
 				model.CategoryId = row["CategoryId"] != DBNull.Value ? Convert.ToInt32(row["CategoryId"]) : 0;
 
 				model.AdvanceEntryId = row["AdvanceEntryId"] != DBNull.Value ? Convert.ToInt32(row["AdvanceEntryId"]) : 0;

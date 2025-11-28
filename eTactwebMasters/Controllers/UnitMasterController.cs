@@ -51,7 +51,8 @@ namespace eTactWeb.Controllers
                 MainModel.Mode = Mode; // Set Mode to Update
                 MainModel.Unit_Name = Unit_Name;
                 MainModel.Round_Off = Round_Off;
-                MainModel.UnitDetail = UnitDetail;               
+                MainModel.UnitDetail = UnitDetail;
+                MainModel.PrevUnitName =Unit_Name;
                 MainModel.CC = CC;
                                 
                 MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
@@ -87,12 +88,26 @@ namespace eTactWeb.Controllers
                         ViewBag.isSuccess = true;
                         TempData["202"] = "202";
                     }
+                    else if (Result.IsSuccess == false)
+                        {
+                        ViewBag.isSuccess = true;
+                        TempData["423"] = "423";
+                        TempData["DeleteMessage"] = Result.StatusText;
+                    }
                     else if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
                     {
                         ViewBag.isSuccess = false;
                         TempData["500"] = "500";
                         _logger.LogError($"\n \n ********** LogError ********** \n {JsonConvert.SerializeObject(Result)}\n \n");
-                        return View("Error", Result);
+                        //return View("Error", Result);
+                    }
+                    else if (Result.StatusText == "Error" && ((int)Result.StatusCode == 423))
+                    {
+                        ViewBag.isSuccess = true;
+                        string message = "This unit is already in use. You cannot update it.";
+
+                        TempData["ErrorMessage"] = message;
+                        
                     }
                 }
 

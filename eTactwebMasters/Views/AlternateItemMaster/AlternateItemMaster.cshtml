@@ -99,7 +99,7 @@
                                             <option value="@Model.ItemCode">-Select-</option>
                                             @if (Model.Mode == "U" || Model.Mode == "V")
                                             {
-                                                <option value="@Model.ItemCode" selected>@Model.AlternatePartCode</option>
+                                                <option value="@Model.AlternatePartCode" selected>@Model.AltPartCode</option>
                                             }
                                         </select>
                                     </div>
@@ -110,7 +110,7 @@
                                             <option value="@Model.ItemCode">-Select-</option>
                                             @if (Model.Mode == "U" || Model.Mode == "V")
                                             {
-                                                <option value="@Model.ItemCode" selected>@Model.AltItemName</option>
+                                                <option value="@Model.AlternateItemCode" selected>@Model.AltItemName</option>
                                             }
                                         </select>
                                     </div>
@@ -339,8 +339,8 @@
             }
 
             // Trigger AltItemName and AltPartCode retrieval on change
-            GetAltPartCode();
-            GetAltItemName();
+            // GetAltPartCode();
+            // GetAltItemName();
             if ($('#Mode').val() !== 'U' && $('#Mode').val() !== 'V') {
                 GetMainPartCode();
                 GetMainItemName();
@@ -349,7 +349,9 @@
         if ($('#Mode').val() == 'U' || $('#Mode').val() == 'V') {
             $('#MainPartCode').prop('disabled', true);
             $('#MainItemName').prop('disabled', true);
-            //GetAltPartCode();
+            GetAltPartCode();
+              GetAltItemName();
+              
         }
         // $('#GroupName').change(function () {
         //     if ($('#Mode').val() !== "U") {
@@ -497,37 +499,64 @@
             GetAltItemName();
         })
 
-        function GetAltPartCode() {
+        // function GetAltPartCode() {
              
+        //     var MainItemcode = $('#MainPartCode').val();
+        //     if ($('#Mode').val() == "U" || $('#Mode').val() == "V"){
+        //     var MainItemcode = '@Model.MainItemCode'
+        //     }
+        //     $.ajax({
+        //         url: '@Url.Action("GetAltPartCode", "AlternateItemMaster")',
+        //         type: 'GET',
+        //         data: { MainItemcode: MainItemcode },
+        //         success: function (response) {
+                     
+        //             var ledgerDropdown = $('#AltPartCode');
+        //             var obj = $.parseJSON(response);
+        //             ledgerDropdown.empty();
+        //             ledgerDropdown.append('<option value="">--Select--</option>');
+
+        //             $.each(obj.Result, function (index, item) {
+        //                 ledgerDropdown.append('<option value="' + item.Itemcode + '">' + item.AltPartCode + '</option>');
+        //             });
+
+        //             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+        //                 var GroupCode = '@Model.AltPartCode';
+        //                 $('#AltPartCode').val(GroupCode).trigger("change");
+        //             }
+        //         },
+        //         error: function (xhr, status, error) {
+        //             alert('Failed to load alternate part codes.');
+        //         }
+        //     });
+        // }
+                function GetAltPartCode() {
             var MainItemcode = $('#MainPartCode').val();
             if ($('#Mode').val() == "U" || $('#Mode').val() == "V"){
-            var MainItemcode = '@Model.MainItemCode'
+                MainItemcode = '@Model.MainItemCode';
             }
             $.ajax({
                 url: '@Url.Action("GetAltPartCode", "AlternateItemMaster")',
                 type: 'GET',
                 data: { MainItemcode: MainItemcode },
                 success: function (response) {
-                     
                     var ledgerDropdown = $('#AltPartCode');
                     var obj = $.parseJSON(response);
                     ledgerDropdown.empty();
                     ledgerDropdown.append('<option value="">--Select--</option>');
-
                     $.each(obj.Result, function (index, item) {
                         ledgerDropdown.append('<option value="' + item.Itemcode + '">' + item.AltPartCode + '</option>');
                     });
 
+                    // **Set selected value after AJAX populates**
                     if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-                        var GroupCode = '@Model.AltPartCode';
-                        $('#AltPartCode').val(GroupCode).trigger("change");
+                        var selectedCode = '@Model.AlternateItemCode';
+                        $('#AltPartCode').val(selectedCode).trigger("change");
                     }
-                },
-                error: function (xhr, status, error) {
-                    alert('Failed to load alternate part codes.');
                 }
             });
         }
+
         $(document).on('select2:select', '#AltItemName,#AltPartCode', function (e) {
 
             var cntId = e.target.id;
@@ -562,10 +591,41 @@
             }
         }
         
-        function GetAltItemName() {
+        // function GetAltItemName() {
+        //     var MainItemcode = $('#MainPartCode').val();
+        //     if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+        //         var MainItemcode = '@Model.MainItemCode'
+        //     }
+        //     $.ajax({
+        //         url: '@Url.Action("GetAltItemName", "AlternateItemMaster")',
+        //         type: 'GET',
+        //         data: { MainItemcode: MainItemcode },
+        //         success: function (response) {
+        //             var ledgerDropdown = $('#AltItemName');
+        //             var obj = $.parseJSON(response);
+        //             ledgerDropdown.empty();
+        //             ledgerDropdown.append('<option value="">--Select--</option>');
+
+        //             $.each(obj.Result, function (index, item) {
+        //                 ledgerDropdown.append('<option value="' + item.Itemcode + '">' + item.AltItemName + '</option>');
+        //             });
+
+        //             Automatically select AltPartCode if required
+        //             var groupCode = $('#AltItemName').val();
+        //             if (groupCode && ($('#Mode').val() == "U" || $('#Mode').val() == "V")) {
+        //                 ledgerDropdown.trigger("change");
+        //             }
+        //         },
+        //         error: function (xhr, status, error) {
+        //             alert('Failed to load alternate item names.');
+        //         }
+        //     });
+        // }
+
+    function GetAltItemName() {
             var MainItemcode = $('#MainPartCode').val();
             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-                var MainItemcode = '@Model.MainItemCode'
+                MainItemcode = '@Model.MainItemCode';
             }
             $.ajax({
                 url: '@Url.Action("GetAltItemName", "AlternateItemMaster")',
@@ -576,22 +636,19 @@
                     var obj = $.parseJSON(response);
                     ledgerDropdown.empty();
                     ledgerDropdown.append('<option value="">--Select--</option>');
-
                     $.each(obj.Result, function (index, item) {
                         ledgerDropdown.append('<option value="' + item.Itemcode + '">' + item.AltItemName + '</option>');
                     });
 
-                    // Automatically select AltPartCode if required
-                    var groupCode = $('#AltItemName').val();
-                    if (groupCode && ($('#Mode').val() == "U" || $('#Mode').val() == "V")) {
-                        ledgerDropdown.trigger("change");
+                    // **Set selected value after AJAX populates**
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                        var selectedCode = '@Model.AlternateItemCode';
+                        $('#AltItemName').val(selectedCode).trigger("change");
                     }
-                },
-                error: function (xhr, status, error) {
-                    alert('Failed to load alternate item names.');
                 }
             });
         }
+
 
         $('#GridButton').click(function (e) {
             e.preventDefault();

@@ -46,7 +46,7 @@ namespace eTactWeb.Controllers
             MainModel.DeptType = HttpContext.Session.GetString("DeptType");
             MainModel.departmentcode = HttpContext.Session.GetString("departmentcode");
 
-            if (!string.IsNullOrEmpty(Mode) && ID > 0 && Mode == "U")
+            if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "U"|| Mode =="V"))
             {
                 MainModel = await _IDepartmentMaster.GetViewByID(ID).ConfigureAwait(false);
                 MainModel.Mode = Mode; // Set Mode to Update
@@ -187,7 +187,7 @@ namespace eTactWeb.Controllers
             else if (Result.StatusText == "Failed" && (int)Result.StatusCode == 400)
             {
                 ViewBag.isSuccess = false;
-                TempData["400"] = "Department is already linked to requisitions and cannot be updated";
+                TempData["400"] = "Department is already linked to requisitions and cannot be Deleted";
                 TempData.Keep("400");
                 //return View(model); 
             }

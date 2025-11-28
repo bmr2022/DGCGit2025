@@ -846,6 +846,7 @@ public class PurchaseOrderDAL
                     MainModel.POType = oDataSet.Tables[0].Rows[0]["POType"].ToString();
                     MainModel.Currency = Convert.ToInt32(oDataSet.Tables[0].Rows[0]["CurrencyID"]);
                     MainModel.AccountCode = Convert.ToInt32(oDataSet.Tables[0].Rows[0]["AccountCode"]);
+                    MainModel.AccountName = oDataSet.Tables[0].Rows[0]["AccountName"].ToString();
                     MainModel.VendorAddress = oDataSet.Tables[0].Rows[0]["VendorAddress"].ToString();
                     MainModel.ShippingAddress = oDataSet.Tables[0].Rows[0]["ShippingAddress"].ToString();
                     MainModel.OrderType = oDataSet.Tables[0].Rows[0]["OrderType"].ToString();
@@ -925,7 +926,7 @@ public class PurchaseOrderDAL
                     {
                         _ItemList.Add(new POItemDetail
                         {
-                            SeqNo = cnt++,
+                            SeqNo = Convert.ToInt32(row["SeqNo"]),
                             AltPOQty = Convert.ToDecimal(row["AltPOQty"]),
                             AltUnit = row["AltUnit"].ToString(),
                             AmendmentDate = string.IsNullOrEmpty(row["AmmendmentDate"].ToString()) ? "" : row["AmmendmentDate"].ToString(),
@@ -933,6 +934,9 @@ public class PurchaseOrderDAL
                             AmendmentReason = string.IsNullOrEmpty(row["AmmendmentReason"].ToString()) ? "" : row["AmmendmentReason"].ToString(),
                             Amount = Convert.ToDecimal(row["Amount"]),
                             Color = row["Colour"].ToString(),
+                            ItemLocation = row["ItemLocation"].ToString(),
+                            VehicleNo = row["VehicleNo"].ToString(),
+                            ItemGroupName = row["ItemGroupName"].ToString(),
                             Description = row["Description"].ToString(),
                             DiscPer = Convert.ToDecimal(row["DiscPer"]),
                             DiscRs = Convert.ToDecimal(row["DiscRs"]),

@@ -1688,17 +1688,14 @@ public static class CommonFunc
                     if ( typeProperty.PropertyInfo.Name != "FinFromDate"
                         && typeProperty.PropertyInfo.Name != "FinToDate"
                         && typeProperty.PropertyInfo.Name != "DesigId"
-                        && typeProperty.PropertyInfo.Name != "DepId"
                         && typeProperty.PropertyInfo.Name != "CategoryId"
                         && typeProperty.PropertyInfo.Name != "MgrApprovedbyEmpid"
                         && typeProperty.PropertyInfo.Name != "MgrApprovedbyEmpName"
                         && typeProperty.PropertyInfo.Name != "MgrApprovedbyEmpCode"
                         && typeProperty.PropertyInfo.Name != "HRApprovedbyEmpName"
                         && typeProperty.PropertyInfo.Name != "HRApprovedbyEmpCode"
-                        && typeProperty.PropertyInfo.Name != "FinanceApprovalEmpid"
                         && typeProperty.PropertyInfo.Name != "FinanceApprovalEmpName"
                         && typeProperty.PropertyInfo.Name != "FinanceApprovalEmpCode"
-                        && typeProperty.PropertyInfo.Name != "CanceledByEmpId"
                         && typeProperty.PropertyInfo.Name != "CanceledByEmpName"
                         && typeProperty.PropertyInfo.Name != "CanceledByEmpCode"
                         && typeProperty.PropertyInfo.Name != "LastUpdatedByEmpName"
@@ -1715,6 +1712,8 @@ public static class CommonFunc
                         && typeProperty.PropertyInfo.Name != "UpdatedOn"
                         && typeProperty.PropertyInfo.Name != "ActualEntryBy"
                         && typeProperty.PropertyInfo.Name != "CategoryName"
+                        && typeProperty.PropertyInfo.Name != "DepartmentName"
+                        && typeProperty.PropertyInfo.Name != "EmployeeName"
                         )
                     {
                         object value = row[typeProperty.PropertyInfo.Name];
@@ -1813,6 +1812,8 @@ public static class CommonFunc
                         && typeProperty.PropertyInfo.Name != "Termsandcondition"
                         && typeProperty.PropertyInfo.Name != "DeliveryAddress"
                         && typeProperty.PropertyInfo.Name != "RoundOffAccountCode"
+                        && typeProperty.PropertyInfo.Name != "UnitRate"
+                        && typeProperty.PropertyInfo.Name != "UnitRateList"
 
                         && typeProperty.PropertyInfo.Name != "TxTaxType" && typeProperty.PropertyInfo.Name != "TotalRecords"
                         && typeProperty.PropertyInfo.Name != "TxTaxTypeName" && typeProperty.PropertyInfo.Name != "BOMInd" && typeProperty.PropertyInfo.Name != "ProducedUnprod"

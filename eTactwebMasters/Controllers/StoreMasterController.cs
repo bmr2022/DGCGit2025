@@ -38,7 +38,7 @@ namespace eTactWeb.Controllers
             MainModel.CC = HttpContext.Session.GetString("Branch");
             MainModel.EntryDate = HttpContext.Session.GetString("EntryDate");
 
-            if (!string.IsNullOrEmpty(Mode) && ID > 0 && Mode == "U")
+            if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "U"|| Mode =="V"))
             {
                 MainModel = await _IStoreMaster.GetViewByID(ID).ConfigureAwait(false);
                 MainModel.Mode = Mode; // Set Mode to Update
@@ -85,7 +85,7 @@ namespace eTactWeb.Controllers
                         ViewBag.isSuccess = false;
                         TempData["500"] = "500";
                         _logger.LogError($"\n \n ********** LogError ********** \n {JsonConvert.SerializeObject(Result)}\n \n");
-                        return View("Error", Result);
+                        //return View("Error", Result);
                     }
                 }
 

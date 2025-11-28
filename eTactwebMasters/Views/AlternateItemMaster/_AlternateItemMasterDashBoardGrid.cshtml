@@ -30,7 +30,12 @@
                             <td style="text-align:center;white-space: nowrap;">
                                 <div id="container">
                                     <div id="viewCursorDiv-@Cntr">
-                                        <a class="table-link link-success" asp-route-ID="@Cntr" asp-action="AlternateItemMaster" asp-route-Mode="V" onclick="BackButtonData(event);">
+                                        <a class="table-link link-success" asp-route-ID="@item.ID" asp-action="AlternateItemMaster" asp-route-Mode="V" asp-route-MainItemCode="@item.MainItemCode"
+                                           asp-route-MainItemName="@item.MainItemName"
+                                           asp-route-AlternateItemCode="@item.AlternateItemCode"
+                                           asp-route-AltItemName="@item.AltItemName"
+                                           asp-route-MainPartCode="@item.MainPartCode"
+                                           asp-route-AlternatePartCode="@item.AlternatePartCode">
                                             <span class="fa-stack">
                                                 <i class="fa fa-square fa-stack-2x"></i>
                                                 <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>

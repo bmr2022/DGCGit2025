@@ -17,7 +17,7 @@ namespace eTactWeb.DOM.Models
         public string? EmpCode { get; set; }
         public int DesigId { get; set; }
         public string? DesigName { get; set; }
-        public int? DepId { get; set; }
+        public int? DeptId { get; set; }
         public string? DeptName { get; set; }
         public string? DOJ { get; set; }
         public decimal BasicSalary { get; set; }
@@ -82,6 +82,8 @@ namespace eTactWeb.DOM.Models
 
     public class HRAdvanceDashboard : HRAdvanceModel
     {
+        public string? EmployeeName { get; set; }
+        public string? DepartmentName { get; set; }
         public List<HRAdvanceDashboard>? HRAdvanceDashboards { get; set; }
     }
 }

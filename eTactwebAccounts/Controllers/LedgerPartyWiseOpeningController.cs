@@ -54,7 +54,7 @@ namespace eTactWeb.Controllers
             MainModel.ActualEntryDate = DateTime.Now;
             MainModel.InvoiceDate = DateTime.Now;
             HttpContext.Session.Remove("KeyLedgerPartyWiseOpeningGrid");
-            if (!string.IsNullOrEmpty(Mode) && ID > 0 && Mode == "U")
+            if (!string.IsNullOrEmpty(Mode)  && (Mode == "U"|| Mode=="V"))
             {
                 
                 MainModel = await _ILedgerPartyWiseOpening.GetViewByID(OpeningYearCode, LedgerOpnEntryId).ConfigureAwait(false);
@@ -135,7 +135,7 @@ namespace eTactWeb.Controllers
                         ViewBag.isSuccess = false;
                         TempData["500"] = "500";
                         _logger.LogError($"\n \n ********** LogError ********** \n {JsonConvert.SerializeObject(Result)}\n \n");
-                        return View("Error", Result);
+                        //return View("Error", Result);
                     }
                 }
 

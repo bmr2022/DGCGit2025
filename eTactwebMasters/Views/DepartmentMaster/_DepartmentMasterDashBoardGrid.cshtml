@@ -32,7 +32,11 @@
                                 <div id="container">
 
                                     <div id="viewCursorDiv-@Cntr">
-                                        <a class="table-link link-success" asp-route-ID="@Cntr" asp-action="DepartmentMaster" asp-route-Mode="V" onclick="BackButtonData(event);">
+                                        <a class="table-link link-success" asp-route-ID="@item.DeptId" asp-action="DepartmentMaster" asp-route-Mode="V" asp-route-DeptType="@item.DeptType"
+                                           asp-route-DeptName="@item.DeptName"
+                                           asp-route-EntryDate="@item.Entry_Date"
+                                           asp-route-departmentcode="@item.departmentcode"
+                                           asp-route-CC="@item.CC">
                                             <span class="fa-stack">
                                                 <i class="fa fa-square fa-stack-2x"></i>
                                                 <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>

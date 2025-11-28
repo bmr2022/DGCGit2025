@@ -315,7 +315,9 @@
                                                     <th data-columnno="4" data-sortorder="asc" class="sortCol gridHiddenField"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Prod/UnProd</th> @*gridHiddenField*@
 
                                                     <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bill Qty</th>
+                                                    <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Qty</th>
                                                     <th data-columnno="20" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rate</th>
+                                                    <th data-columnno="20" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unit Of Rate</th>
                                                     <th data-columnno="22" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Dis Per</th>
                                                     <th data-columnno="23" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Dis Amt</th>
                                                     <th data-columnno="24" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Amt</th>
@@ -334,6 +336,7 @@
                                                     <th data-columnno="10" data-sortorder="asc" class="sortCol SaleBillScheduleDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch YC</th>
                                                     <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bom Rev No</th>
                                                     <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unit</th>
+                                                    <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Unit</th>
                                                     <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Lot Stock</th>
                                                     <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Total Stock</th>
                                                     <th data-columnno="18" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Pend Qty</th>
@@ -1533,7 +1536,30 @@
                   }
               });
           }
+                     function CalculateRate() {
 
+                   var Amount = 0.00;
+                   const UnitRate = $('#UnitRate').val();
+                   const Rate = $('#Rate').val() === "0" || $('#Rate').val() === "" ? 0 : parseFloat($('#Rate').val());
+                   const DP = $('#DiscountPer') === "0" || $('#DiscountPer').val() === "" ? 0 : parseFloat($('#DiscountPer').val());
+
+                   if (UnitRate === "Unit") {
+                       const Qty = $('#Qty').val() == "0" || $('#Qty').val() === "" ? 0 : parseFloat($('#Qty').val());
+                       Amount =Qty * Rate;
+                   }
+                   if (UnitRate == "AltUnit") {
+                                                       const AltQty = $('#AltQty').val() == "0" || $('#AltQty').val() === "" ? 0 : parseFloat($('#AltQty').val());
+                       Amount = AltQty * Rate ;
+                   }
+
+                   if (DP !== 0) {
+                       const DA = ((Amount * DP) / 100);
+                       $('#DiscountAmt').val(DA);
+                       Amount = Amount - DA;
+                   }
+
+                   $('#Amount').val(Amount.toFixed(2));
+               }
         $(document).ready(function () {
             const mode = $('#Mode').val(); // Get current mode: U = Update, V = View
             // $('#Group_Code').select2();
