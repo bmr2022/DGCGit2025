@@ -555,6 +555,8 @@
                                 <div class="d-flex justify-content-center align-items-center flex-grow-1">
                                     <strong class="me-2">BASIC TOTAL:</strong>
                                     <span id="lblItemNetAmount" class="me-4 text-warning">0.00</span>
+                                     <strong class="me-2">TOTAL QTY:</strong>
+                                    <span id="lblTotalQty" class="me-4 text-warning">0.00</span>
 
                                     <strong class="me-2">TOTAL NO OF ITEMS:</strong>
                                     <span id="lblTotalNoOfItems" class="text-warning">0</span>
@@ -2071,12 +2073,22 @@
 
         function calculateTotalAmount() {
             var totalAmount = 0;
+            var totalQty = 0;
 
             // Loop through all amount values in the grid and sum them
             $('.detailamount').each(function () {
                 var amount = parseFloat($(this).text().trim()) || 0;
                 totalAmount += amount;
             });
+
+             $('.GridQty').each(function () {
+                var amount = parseFloat($(this).text().trim()) || 0;
+                totalQty += amount;
+            });
+
+            // Update total quantity label
+            $('#lblTotalQty').text(totalQty.toFixed(2));
+
 
             // Update total amount label
             $('#lblItemNetAmount').text(totalAmount.toFixed(2));
@@ -2213,6 +2225,7 @@
                 /* $('#PN1').prop("checked", true); */
             }
             AllowMultiBuyerSO();
+            calculateTotalAmount();
 
             //$('#SOBillToShipTo').on('shown.bs.modal', function () {
             //        $('#MBillToAccountCode').select2('open').select2('focus');
@@ -3197,14 +3210,14 @@
 
         });
 
-        $('#ItemCode,#PartCode').change(function () {
-            if($('#Mode').val()=='')
-        {
-            GetItemPartCode('ItemCode');
+        // $('#ItemCode,#PartCode').change(function () {
+        //     if($('#Mode').val()=='')
+        // {
+        //     GetItemPartCode('ItemCode');
 
-        }
-            GetlastSaleOrderDetail();
-        });
+        // }
+        //     GetlastSaleOrderDetail();
+        // });
 
         function GetServerDate() {
             $.ajax({
@@ -3711,44 +3724,44 @@
             return false;
         });
 
-        function PartCodeChange(ID) {
-            $.when(SetPartCodeItem(ID)).done(function () {
-                // GetItemPartCode(ID)
-            });
-            // copyToClipboardForDropdown("#PartCode");
+        // function PartCodeChange(ID) {
+        //     $.when(SetPartCodeItem(ID)).done(function () {
+        //         // GetItemPartCode(ID)
+        //     });
+        //     // copyToClipboardForDropdown("#PartCode");
             
-                StoreChange();
+        //         StoreChange();
             
-            $('#Qty').val(0);
-            $('#AltQty').val(0.00);
-        }
+        //     $('#Qty').val(0);
+        //     $('#AltQty').val(0.00);
+        // }
 
-        function ItemNameChange(ID) {
-            SetPartCodeItem(ID);
-            // GetItemPartCode(ID);
+        // function ItemNameChange(ID) {
+        //     SetPartCodeItem(ID);
+        //     // GetItemPartCode(ID);
            
-                StoreChange();
+        //         StoreChange();
             
-            $('#Qty').val(0);
-            $('#AltQty').val(0.00);
+        //     $('#Qty').val(0);
+        //     $('#AltQty').val(0.00);
 
-        }
+        // }
 
-        async function SetPartCodeItem(ID) {
-            if (!ID) return;
-            else {
-                var v = $('#' + ID).val();
-                var t = $('#' + ID + ' option:selected').text();
+        // async function SetPartCodeItem(ID) {
+        //     if (!ID) return;
+        //     else {
+        //         var v = $('#' + ID).val();
+        //         var t = $('#' + ID + ' option:selected').text();
 
-                if (ID == "PartCode") {
-                    $('#ItemCode').val(v).trigger("change");
-                }
+        //         if (ID == "PartCode") {
+        //             $('#ItemCode').val(v).trigger("change");
+        //         }
 
-                if (ID == "ItemCode") {
-                    $('#PartCode').val(v).trigger("change");
-                }
-            }
-        }
+        //         if (ID == "ItemCode") {
+        //             $('#PartCode').val(v).trigger("change");
+        //         }
+        //     }
+        // }
 
         async function GetItemPartCode(ID) {
             ;
@@ -3795,7 +3808,7 @@
 
         function ClearItem() {
             $('#PartCodeText').val('').removeClass('is-invalid'),	$('#PartCode').val('').change(),$('#ItemNameText').val('').removeClass('is-invalid'),$('#ItemCode').val('').change()
-            , $('#HSNNo').val('0'), $('#Qty').val('0'), $('#Rate').val('0'), $('#Unit').val('0'), $('#AltQty').val(0), $('#Group_name').val(''), $('#Group_Code').val(0),
+                , $('#HSNNo').val('0'), $('#Qty').val('0'), $('#SeqNo').val('0'), $('#Rate').val('0'), $('#Unit').val('0'), $('#AltQty').val(0), $('#Group_name').val(''), $('#Group_Code').val(0),
                 $('#AltUnit').val('NA'), $('#OtherRateCurr').val('0'), $('#UnitRate').val('Unit'), $('#DiscPer').val('0'), $('#DiscRs').val('0.00'), $('#Amount').val('0.00'), $('#TolLimit').val(0),
                 $('#Remark').val(''), $('#Description').val(''), $('#StoreName').prop('selectedIndex', 0), $('#StockQty').val('0'), $('#AmendmentNo').val(''), $('#AmendmentDate').val(''),
                 $('#AmendmentReason').val(''), $('#Color').val(''), $('#Rejper').val('0'), $('#Excessper').val('0'), $('#ProjQty1').val('0'), $('#ProjQty1').val('0');
@@ -4718,9 +4731,30 @@
                     var rowCount = $('#divSaleItemGrid tr').length;
                     var taxRowCount = $('#divTaxGrid tr').length;
                     var sum = 0.00;
-                    for (var i = 1; i <= rowCount; i++) {
+                    var TotalQty = 0.00;
+                    // for (var i = 1; i <= rowCount; i++) {
 
-                        sum += parseFloat($('#GridAmount-' + i).text() == '.00' || $('#GridAmount-' + i).text() == '' ? 0 : $('#GridAmount-' + i).text());
+                    //     sum += parseFloat($('#GridAmount-' + i).text() == '.00' || $('#GridAmount-' + i).text() == '' ? 0 : $('#GridAmount-' + i).text());
+                    // }
+
+                    let rowsExist = $(".GridAmount").length > 0;
+                    let rowsQtyExist = $(".GridQty").length > 0;
+
+                    if (rowsExist) {
+                        $(".GridAmount").each(function () {
+                            let value = parseFloat($(this).text());
+                            sum += isNaN(value) ? 0 : value;
+                        });
+                    } else {
+                        sum = 0;
+                    }
+                    if (rowsQtyExist) {
+                        $(".GridQty").each(function () {
+                            let value = parseFloat($(this).text());
+                            TotalQty += isNaN(value) ? 0 : value;
+                        });
+                    } else {
+                        TotalQty = 0;
                     }
 
                     $('#ItemNetAmount').val(sum);
@@ -4737,6 +4771,7 @@
                         }
                     }
                     $('#lblItemNetAmount').text(sum.toFixed(2));
+                    $('#lblTotalQty').text(TotalQty.toFixed(2));
                     var txTotal = sum + txSum;
                     $('#NetTotal').val(txTotal.toFixed(2));
                     // $('#TotalDiscountPercentage').val(0);
@@ -5011,11 +5046,35 @@
                         var rowCount = $('#divSaleItemGrid tr').length;
                         var taxRowCount = $('#divTaxGrid tr').length;
                         var sum = 0.00;
-                        for (var i = 1; i <= rowCount; i++) {
+                        var TotalQty = 0.00;
+                        // for (var i = 1; i <= rowCount; i++) {
 
-                            sum += parseFloat($('#GridAmount-' + i).text() == '.00' ? 0 : $('#GridAmount-' + i).text());
+                        //     sum += parseFloat($('#GridAmount-' + i).text() == '.00' ? 0 : $('#GridAmount-' + i).text());
+                        // }
+
+
+                        let rowsExist = $(".GridAmount").length > 0;
+                        let rowsQtyExist = $(".GridQty").length > 0;
+
+                        if (rowsExist) {
+                            $(".GridAmount").each(function () {
+                                let value = parseFloat($(this).text());
+                                sum += isNaN(value) ? 0 : value;
+                            });
+                        } else {
+                            sum = 0;
                         }
+                        if (rowsQtyExist) {
+                            $(".GridQty").each(function () {
+                                let value = parseFloat($(this).text());
+                                TotalQty += isNaN(value) ? 0 : value;
+                            });
+                        } else {
+                            TotalQty = 0;
+                        }
+
                         $('#ItemNetAmount').val(sum);
+
                         var txSum = 0.00;
                         if ($('#divTaxGrid tr td').length > 1) {
                             for (var i = 1; i <= taxRowCount; i++) {
@@ -5023,6 +5082,12 @@
                             }
                         }
                         $('#lblItemNetAmount').text(sum.toFixed(2));
+                        $('#lblTotalQty').text(TotalQty.toFixed(2));
+                         if (rowCount >= 1) {
+                            $('#lblTotalNoOfItems').text(rowCount);
+                        } else {
+                            $('#lblTotalNoOfItems').text(0);
+                        }
                         var txTotal = sum + txSum;
                         $('#NetTotal').val(txTotal.toFixed(2));
                         // $('#TotalDiscountPercentage').val(0);

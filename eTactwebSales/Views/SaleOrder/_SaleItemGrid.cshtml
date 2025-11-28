@@ -47,8 +47,8 @@ else
             <td>@item.SeqNo</td>
             <td class="divSOItemListPartCode">@item.PartText</td>
             <td>@item.ItemText</td>
-          
-            <td>@item.Qty</td>
+
+            <td class="GridQty">@item.Qty</td>
             <td class="SaleOrderOtherDetail">@item.DeliveryDate</td>
            
             <td class="SaleOrderOtherDetail">@item.AltQty</td>
@@ -58,7 +58,7 @@ else
             <td class="SaleOrderOtherDetail">@item.UnitRate</td>
             <td>@item.DiscPer</td>
             <td>@item.DiscRs</td>
-            <td id="GridAmount-@item.SeqNo" class="detailamount">@item.Amount.ToString("#.#0")</td>
+            <td id="GridAmount-@item.SeqNo" class="detailamount GridAmount">@item.Amount.ToString("#.#0")</td>
             <td>@item.HSNNo</td>
             <td>@item.Unit</td>
             <td class="SaleOrderOtherDetail">@item.BillQty</td>
