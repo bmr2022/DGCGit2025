@@ -50,7 +50,7 @@ namespace eTactWeb.Controllers
             MainModel.EntryByempId = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
             HttpContext.Session.Remove("AlternateItemMasterGrid");
             // Check if Mode is "Update" (U) and the ID is valid
-            if (!string.IsNullOrEmpty(Mode) && ID > 0 && Mode == "U")
+            if (!string.IsNullOrEmpty(Mode)  && (Mode == "U"|| Mode == "V"))
             {
 
                 //Retrieve the old data by AccountCode and populate the model with existing values
@@ -141,12 +141,18 @@ namespace eTactWeb.Controllers
                         ViewBag.isSuccess = true;
                         TempData["202"] = "202";
                     }
+                    else if (Result.StatusText == "Unsuccess")
+                    {
+                        // THIS DOES NOT MODIFY YOUR MESSAGE
+                        ViewBag.isSuccess = false;
+                        TempData["2627"] = "2627";
+                    }
                     else if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
                     {
                         ViewBag.isSuccess = false;
                         TempData["500"] = "500";
                         _logger.LogError($"\n \n ********** LogError ********** \n {JsonConvert.SerializeObject(Result)}\n \n");
-                        return View("Error", Result);
+                        //return View("Error", Result);
                     }
                 }
 
@@ -427,9 +433,10 @@ namespace eTactWeb.Controllers
                 var result = await _IAlternateItemMaster.GetDashboardData().ConfigureAwait(true);
                 DateTime now = DateTime.Now;
 
-                model.FromDate = new DateTime(now.Year, now.Month, 1).ToString("dd/MM/yyyy");
-                model.ToDate = new DateTime(now.Year + 1, 3, 31).ToString("dd/MM/yyyy");
-
+                //model.FromDate = new DateTime(now.Year, now.Month, 1).ToString("dd/MM/yyyy");
+                //model.ToDate = new DateTime(now.Year + 1, 3, 31).ToString("dd/MM/yyyy");
+                model.FromDate = HttpContext.Session.GetString("FromDate");
+                model.ToDate = HttpContext.Session.GetString("ToDate");
                 if (result != null && result.Result != null)
                 {
                     DataSet ds = result.Result;

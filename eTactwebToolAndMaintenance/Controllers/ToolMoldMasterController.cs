@@ -264,5 +264,14 @@ namespace eTactwebToolAndMaintance.Controllers
             return RedirectToAction("ToolMoldMasterDashBoard");
 
         }
+
+        public async Task<JsonResult> GetFormRights()
+        {
+            var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var JSON = await _IToolMoldMaster.GetFormRights(userID);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
     }
 }

@@ -55,7 +55,7 @@ namespace eTactWeb.Controllers
             HttpContext.Session.Remove("KeyLedgerOpeningEntryGrid");
 
             // Check if Mode is "Update" (U) and the ID is valid
-            if (!string.IsNullOrEmpty(Mode) && AccountCode > 0 && Mode == "U")
+            if (!string.IsNullOrEmpty(Mode) && AccountCode > 0 && (Mode == "U"||Mode == "V"))
             {
                 // Retrieve the old data by AccountCode and populate the model with existing values
                 MainModel = await _ILedgerOpeningEntry.GetViewByID(AccountCode).ConfigureAwait(false);

@@ -38,7 +38,7 @@ namespace eTactWeb.Controllers
             //MainModel.CC = HttpContext.Session.GetString("Branch");
             MainModel.EntryDate = HttpContext.Session.GetString("EntryDate");
 
-            if (!string.IsNullOrEmpty(Mode) && ID > 0 && Mode == "U")
+            if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "U" || Mode == "V"))
             {
                 MainModel = await _ICurrencyMaster.GetViewByID(ID).ConfigureAwait(false);
                 MainModel.Mode = Mode; // Set Mode to Update

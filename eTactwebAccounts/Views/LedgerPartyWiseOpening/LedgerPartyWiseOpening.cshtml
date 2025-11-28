@@ -337,7 +337,7 @@
                 $('#AccountCode').val($('#LedgerName').val());
 
                 countAllTotal();
-                ClearItems();
+                // ClearItems();
 
             }
 
@@ -671,7 +671,7 @@
 
                         var LedgerName = '@Model.AccountCode';
                         //$('#LedgerName').val(LedgerName).trigger("change");
-                        $('#LedgerName').val(LedgerName);
+                        $('#LedgerName').val(LedgerName).trigger('change');
                         GetOpeningAmt();
                     }
                 },

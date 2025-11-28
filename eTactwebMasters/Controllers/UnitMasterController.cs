@@ -99,7 +99,15 @@ namespace eTactWeb.Controllers
                         ViewBag.isSuccess = false;
                         TempData["500"] = "500";
                         _logger.LogError($"\n \n ********** LogError ********** \n {JsonConvert.SerializeObject(Result)}\n \n");
-                        return View("Error", Result);
+                        //return View("Error", Result);
+                    }
+                    else if (Result.StatusText == "Error" && ((int)Result.StatusCode == 423))
+                    {
+                        ViewBag.isSuccess = true;
+                        string message = "This unit is already in use. You cannot update it.";
+
+                        TempData["ErrorMessage"] = message;
+                        
                     }
                 }
 

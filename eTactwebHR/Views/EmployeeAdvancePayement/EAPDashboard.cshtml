@@ -8,7 +8,7 @@
 	<div class="card rounded border-light bg-gradient">
 		<div class="card-header card-headerBG text-light bg-gradient">
 			<h5>
-				Vendor User - <strong>Dashboard</strong>
+				Employee Advance Payment - <strong>Dashboard</strong>
 				<span class="d-flex float-end" style="margin-top:-2px;">
 					<a asp-action="EmployeeAdvancePayement" asp-controller="EmployeeAdvancePayeement" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
 						<i class="fa fa-plus-circle fafw fa-lg" aria-hidden="true"></i>
@@ -22,16 +22,6 @@
 				<div class="card-body">
 					<form id="SParam">
 						<div class="row">
-							@* <div class="col-sm-3 col-md-6 col-lg-4 col-xl-1">
-								<label asp-for="AccountName" class="form-label">Vendor Name</label>
-								<input asp-for="AccountName" class="form-control" />
-							</div>
-
-							<div class="col-sm-3 col-md-6 col-lg-4 col-xl-1">
-								<label asp-for="UserId" class="form-label">User Id</label>
-								<input asp-for="UserId" class="form-control" />
-							</div> *@
-
 							<div class="col-sm-3 col-md-6 col-lg-4 col-xl-1">
 								<label asp-for="FinFromDate" class="form-label">From Date</label>
 								<input asp-for="FinFromDate" class="form-control" />
@@ -42,6 +32,16 @@
 								<input asp-for="FinToDate" class="form-control" />
 							</div>
 						
+							<div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+								<label asp-for="EmployeeName" class="form-label">Employee Name</label>
+								<select asp-for="EmployeeName" class="form-control">
+									<option value="">-Select-</option>
+								</select>
+							</div>
+							<div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+								<label asp-for="DepartmentName" class="form-label">Department Name</label>
+								<input asp-for="DepartmentName" class="form-control" />
+							</div>
 							<div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 d-flex justify-content-end mt-3">
 								<div style="margin-bottom:10px;margin-right:20px;">
 									<span style="display:inline-block;width:12px;height:12px;background:red;margin-right:5px;"></span> Pending
@@ -103,11 +103,34 @@
 
 			$('#FinFromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", firstDayOfMonth);
 			$('#FinToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+			
+			FillEmpName();
 
 			// GetSearchData();
-			ColorGrid()
+			ColorGrid();
 
 		});
+
+		function FillEmpName() {
+			$.ajax({
+				url: '@Url.Action("FillEmpName")',
+				type: 'POST',
+				success: function (data, status, xhr) {
+					var obj = $.parseJSON(data);
+					if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
+						$('#EmployeeName').empty();
+						$('#EmployeeName').append('<option value="">-Select-</option>');
+						$.each(obj.Result, function (index, Val) {
+							$('#EmployeeName').append('<option value="' + Val.EmpName + '">' + Val.EmpName + '</option>');
+						});
+					}
+				},
+				error: function (xhr, status, error) {
+					console.log('Failed to load Entry Id.');
+				}
+			});
+		}
+
 
 		function confirmDelete(event) {
 			event.preventDefault();
@@ -238,13 +261,13 @@
 			XLSX.utils.book_append_sheet(wb, ws, "Sheet 1");
 
 
-			XLSX.writeFile(wb, "VUDashboardData.xlsx");
+			XLSX.writeFile(wb, "EAPDashboardData.xlsx");
 		});
 
 		 function GetSearchData() {
 			var formData = {
-				'accountName': $('#AccountName').val(),
-				 'userId' : $('#UserId').val()
+				'employeeName': $('#EmployeeName').val(),
+				 'DepartmentName' : $('#DepartmentName').val()
 			};
 
 			$.ajax({
@@ -253,9 +276,7 @@
 				async: false,
 				data: formData,
 				success: function (data) {
-					// $('#VUDashboardGrid').empty();
-					// $('#VUDashboardGrid').append(data);
-					$('.VUDashboardData').empty().append(data);
+					$('.EAPDashboardData').empty().append(data);
 
 					ColorGrid();
 				},
