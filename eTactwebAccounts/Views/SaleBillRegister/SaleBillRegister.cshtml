@@ -67,6 +67,15 @@
                                         <option value="ItemWiseMonthlyTrend">ItemWiseMonthlyTrend</option>
                                         <option value="CustomerSalesPersonWiseMonthlyTrend">Customer+Sales Person Wise Monthly Trend</option>
                                         <option value="SaleCompleteDetail">Sale Complete Detail</option>
+                                        <option value="Sale Modification History">Sale Modification History</option>
+                                        <option value="Customer + Total Qty">Customer + Total Qty</option>
+                                        <option value="Customer + Total Amount">Customer + Total Amount</option>
+                                        <option value="Item + Total Qty">Item + Total Qty</option>
+                                        <option value="Item + Total Amount">Item + Total Amount</option>
+                                        <option value="HSN + Total Qty">HSN + Total Qty</option>
+                                        <option value="HSN + Total Amount">HSN + Total Amount</option>
+                                        <option value="Group + Total Amount + Total Qty">Group + Total Amount + Total Qty</option>
+                                        <option value="Customer + Item + Total Amount + Total Qty">Customer + Item + Total Amount + Total Qty</option>
                                     </select>
                                 </div>
 
@@ -223,10 +232,6 @@
             FillItemNamePartcodeList();
             FillDocumentList();
             FillCustomerList();
-            //FillPFillSONOListONO();
-            //FillSchNOList();
-            //FillHSNNOList();
-            //FillGSTList();
             GetSaleBillRegisterData();//INITIAL - ON LOAD METHOD
         });
   function GetServerDate() {

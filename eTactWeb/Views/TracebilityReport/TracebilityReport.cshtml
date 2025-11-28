@@ -1,13 +1,13 @@
-﻿@model eTactWeb.DOM.Models.MISTracebilityReportModel;
+﻿@model eTactWeb.DOM.Models.TracebilityReportModel;
 @{
-    ViewData["Title"] = "MIS Tracebility Report";
+    ViewData["Title"] = "Tracebility Report";
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
 
 <div class="card bg-gradient mb-3 border-light shadow-lg">
     <div class="card-header card-headerBG text-light bg-gradient">
         <h5>
-            <strong>MIS Tracebility Report</strong>
+            <strong>Tracebility Report</strong>
             <span class="d-flex float-end" style="margin-top:-2px;">
             </span>
         </h5>
@@ -64,7 +64,7 @@
                             <div class="accordion-item">
                                 <h2 class="accordion-header" id="H_SAGrid">
                                     <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
-                                        <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>MIS Tracebility Report Grid</strong>
+                                        <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Tracebility Report Grid</strong>
                                     </button>
                                 </h2>
 
@@ -72,7 +72,7 @@
                                     <div class="accordion-body">
                                         <div class="card-body" id="divPendingMRP">
                                             <div class="col-md-12 divStockRegister" id="divStockMainRegister">
-                                                <partial name="_MISTraceabilityReportGrid" />
+                                                <partial name="_TraceabilityReportGrid" />
                                             </div>
                                         </div>
                                         <div class="d-flex justify-content-end mt-2" id="reportFields">
@@ -126,13 +126,16 @@
             $("#FromDate").datepicker("setDate", fromDate || currentDate);
             $("#ToDate").datepicker("setDate", currentDate);
             FillSaleBillNoList();
+            GetTracebilityReportData();
+            attachTableSearch("upper-search-box", "ReportUpperTable");
+            attachTableSearch("lower-search-box", "ReportLowerTable");
         });
 
         $('#SaleBillNo').change(function () {
-            GetMISTracebilityReportData();
+            GetTracebilityReportData();
         });
 
-        function GetMISTracebilityReportData() {
+        function GetTracebilityReportData() {
 
             var FromDate = $('#FromDate').val();
             var ToDate = $('#ToDate').val();
@@ -140,7 +143,7 @@
 
             $.ajax({
                 type: 'POST',
-                url: '@Url.Action("GetMISTracebilityReportData", "MISTracebilityReport")',
+                url: '@Url.Action("GetTracebilityReportData", "TracebilityReport")',
                 data: {
                     FromDate: FromDate,
                     ToDate: ToDate,
@@ -161,7 +164,7 @@
             var FromDate = $('#FromDate').val();
             var ToDate = $('#ToDate').val();
             $.ajax({
-                url: '@Url.Action("FillSaleBillNoList", "MISTracebilityReport")',
+                url: '@Url.Action("FillSaleBillNoList", "TracebilityReport")',
                 type: 'GET',
                 async: false,
                 data: {
@@ -188,41 +191,27 @@
 
         }
 
-        var currentSearchColumn = null;
+        function SearchUpperGrid() {
+            var value = document.getElementById("upper-search-box").value.toLowerCase();
 
-        $("#upper-search-box").on("keyup", function () {
-            var value = $(this).val().toLowerCase();
-            $("#upperGridBody tr").filter(function () {
-                if (currentSearchColumn !== null) {
-                    var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
-                    $(this).toggle(columnText.indexOf(value) > -1);
-                } else {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
-                }
+            var rows = document.querySelectorAll("#ReportUpperTable tbody tr");
+
+            rows.forEach(function (row) {
+                var rowText = row.innerText.toLowerCase();
+                row.style.display = rowText.includes(value) ? "" : "none";
             });
-        });
+        }
 
-        $(document).on("click", "th[data-columnno]", function () {
-            currentSearchColumn = $(this).data('columnno');
-            $("#upper-search-box").val('').trigger('keyup'); // Reset search box and trigger the search
-        });
+        function SearchLowerGrid() {
+            var value = document.getElementById("lower-search-box").value.toLowerCase();
 
-        $("#lower-search-box").on("keyup", function () {
-            var value = $(this).val().toLowerCase();
-            $("#lowerGridBody tr").filter(function () {
-                if (currentSearchColumn !== null) {
-                    var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
-                    $(this).toggle(columnText.indexOf(value) > -1);
-                } else {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
-                }
+            var rows = document.querySelectorAll("#ReportLowerTable tbody tr");
+
+            rows.forEach(function (row) {
+                var rowText = row.innerText.toLowerCase();
+                row.style.display = rowText.includes(value) ? "" : "none";
             });
-        });
-
-        $(document).on("click", "th[data-columnno]", function () {
-            currentSearchColumn = $(this).data('columnno');
-            $("#lower-search-box").val('').trigger('keyup'); // Reset search box and trigger the search
-        });
+        }
 
     </script>
 }

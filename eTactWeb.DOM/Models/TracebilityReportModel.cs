@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace eTactWeb.DOM.Models
 {
-    public class MISTracebilityReportModel
+    public class TracebilityReportModel
     {
         public DataTable? HeaderTable { get; set; }
         public DataTable? DetailTable { get; set; }

@@ -11,22 +11,22 @@ using static eTactWeb.DOM.Models.Common;
 
 namespace eTactWeb.Data.DAL
 {
-    public class MISTracebilityReportDAL
+    public class TracebilityReportDAL
     {
         private readonly IDataLogic _IDataLogic;
         private readonly string DBConnectionString = string.Empty;
         private IDataReader? Reader;
         private readonly ConnectionStringService _connectionStringService;
-        public MISTracebilityReportDAL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
+        public TracebilityReportDAL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
             _connectionStringService = connectionStringService;
             DBConnectionString = _connectionStringService.GetConnectionString();
             _IDataLogic = iDataLogic;
             _connectionStringService = connectionStringService;
         }
-        public async Task<MISTracebilityReportModel> GetMISTracebilityReportData(string FromDate, string ToDate, string SaleBillNo)
+        public async Task<TracebilityReportModel> GetTracebilityReportData(string FromDate, string ToDate, string SaleBillNo)
         {
-            var result = new MISTracebilityReportModel();
+            var result = new TracebilityReportModel();
             var ds = new DataSet();
 
             try
@@ -43,12 +43,18 @@ namespace eTactWeb.Data.DAL
                         command.Parameters.AddWithValue("@flag", "SaleBill+Production Entry Tracking");
                         command.Parameters.AddWithValue("@FromSaleBilldate", fromDt);
                         command.Parameters.AddWithValue("@ToSaleBilldate", toDt);
-                        command.Parameters.AddWithValue("@SaleBillNo", SaleBillNo);
+                        command.Parameters.AddWithValue("@SaleBillNo", string.IsNullOrWhiteSpace(SaleBillNo) ? string.Empty : SaleBillNo);
 
                         await connection.OpenAsync();
-
-                        SqlDataAdapter da = new SqlDataAdapter(command);
-                        da.Fill(ds);
+                        try
+                        {
+                            SqlDataAdapter da = new SqlDataAdapter(command);
+                            da.Fill(ds);
+                        }
+                        catch (Exception ex)
+                        {
+                            throw ex;
+                        }
                     }
                 }
 
