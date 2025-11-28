@@ -190,7 +190,10 @@
         <label asp-for="AltUnit" class="form-label">Alt Unit*</label>
         <input asp-for="AltUnit" class="form-control" />
     </div>
-
+    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <label asp-for="UnitRate" class="form-label">Rate/Unit</label>
+        <select class="form-select" asp-for="UnitRate" asp-items="Model.UnitRateList" onchange="CalculateRate();" style="background-color:#FFFACD"></select>
+    </div>
     <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6 SaleBillOtherDetail">
         <label asp-for="NoofPcs" class="form-label">No of Pcs</label>
         <input asp-for="NoofPcs" class="form-control" />
