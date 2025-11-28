@@ -15,6 +15,7 @@ namespace eTactWeb.DOM.Models
         public string CC { get; set; }
         public string Round_Off { get; set; }
         public string UnitDetail { get; set; }
+        public string ? PrevUnitName { get; set; }
         public string FromDate { get; set; }
         public string ToDate { get; set; }
         //public string EntryDate { get; set; }

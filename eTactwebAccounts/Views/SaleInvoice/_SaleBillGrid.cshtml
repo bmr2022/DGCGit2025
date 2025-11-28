@@ -48,7 +48,9 @@ else
             <td class="gridHiddenField">@item.ProducedUnprod</td>  @*gridHiddenField*@
 
             <td class="billQty" style="background-color:#FFFACD">@item.Qty</td>
+            <td class="AltQty" style="background-color:#FFFACD">@item.AltQty</td>
             <td class="rate" style="background-color:#FFFACD">@item.Rate</td>
+            <td class="Unitrate" style="background-color:#FFFACD">@item.UnitRate</td>
             <td class="DiscPer">@item.DiscountPer</td>
             <td class="DiscAmt">@item.DiscountAmt</td>
             <td id="GridAmount-@Cntr" style="background-color:#FFFACD">@item.Amount.ToString("F2")</td>
@@ -66,6 +68,7 @@ else
             <td class="SaleBillScheduleDetail">@item.SaleSchYearCode</td>
             <td>@item.BomNo</td>
             <td>@item.Unit</td>
+            <td>@item.AltUnit</td>
             <td>@item.LotStock</td>
             <td>@item.TotalStock</td>
             <td>@item.SOPendQty</td>

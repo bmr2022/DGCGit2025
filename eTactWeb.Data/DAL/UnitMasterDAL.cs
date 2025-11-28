@@ -60,6 +60,7 @@ namespace eTactWeb.Data.DAL
                     SqlParams.Add(new SqlParameter("@Round_Off", string.IsNullOrEmpty(model.Round_Off) ? DBNull.Value : model.Round_Off));
                     SqlParams.Add(new SqlParameter("@CC", string.IsNullOrEmpty(model.CC) ? DBNull.Value : model.CC));
                     SqlParams.Add(new SqlParameter("@UnitDetail", string.IsNullOrEmpty(model.UnitDetail) ? DBNull.Value : model.UnitDetail));
+                    SqlParams.Add(new SqlParameter("@PrevUnitName",string.IsNullOrEmpty(model.PrevUnitName) ? DBNull.Value : model.PrevUnitName));
                 }
                 else
                 {
@@ -69,6 +70,7 @@ namespace eTactWeb.Data.DAL
                     SqlParams.Add(new SqlParameter("@Round_Off", string.IsNullOrEmpty(model.Round_Off) ? DBNull.Value : model.Round_Off));
                     SqlParams.Add(new SqlParameter("@CC", string.IsNullOrEmpty(model.CC) ? DBNull.Value : model.CC));
                     SqlParams.Add(new SqlParameter("@UnitDetail", string.IsNullOrEmpty(model.UnitDetail) ? DBNull.Value : model.UnitDetail));
+                    SqlParams.Add(new SqlParameter("@PrevUnitName", DBNull.Value));
                 }
 
 
