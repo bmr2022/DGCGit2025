@@ -2599,12 +2599,12 @@
                                     '<button type="button" id="AcceptedQtySHA' + i + '" ' +
                                     'style="background-color: #b2b3f0;" ' +
                                     'class="btn btn-sm me-1 mt-2" ' +
-                                    'onclick="PendingSaleBillItemDetailFromOtherBranch(' +
+                                    'onclick="PendingPurchaseOrderItemDetailFromOtherBranch(' +
                                     val.AccountCode + ',' +
-                                    val.salebillentryid + ',' +
-                                    val.salebillYearCode + ',\'' +
-                                    val.SaleBillNo + '\',\'' +
-                                    val.SaleBillDate + '\',\'' +
+                                    val.POEntryID + ',' +
+                                    val.POYearCode + ',\'' +
+                                    val.PONo + '\',\'' +
+                                    val.PODate + '\',\'' +
                                     val.SourceDB + '\'' +
                                     ')" >' +
                                     'Select' +
@@ -2669,67 +2669,79 @@
 
 
 
-                    $('#divPOItemList').html(data);
-                    $('#PendingPOFromOtherBranchModel').modal('hide');
+                    $('#divSaleItemGrid').html(data);
+$('#PendingPOFromOtherBranchModel').modal('hide');
+
+                    $('#SeqNo').val('0');
+                    GetFeatureOption();
                     $.notify('Item Added To Grid.', "success");
                     ClearItem();
+                
 
-                    $('#TotalRoundOff').prop('selectedIndex', 0);
-                    var INA = parseFloat($('#ItemNetAmount').val());
-                    var rowCount = $('#divPOItemList tr').length;
-                    var columnCount = $('#divPOItemList tr td').length;
-                    var taxRowCount = $('#divTaxGrid tr').length;
-                    var sum = 0;
-
-                    //noofitems
-                    if (columnCount > 1)
-                        $('#lblItemCount').text(rowCount);
-                    else
-                        $('#lblItemCount').text(0);
-
-                    for (var i = 1; i <= rowCount; i++) {
-
-                        sum += parseFloat($('#GridAmount-' + i).text() == '.00' ? 0 : $('#GridAmount-' + i).text());
+                            if($('#Mode').val() == 'SOA') {
+                var itemRowCount = $('#divSaleItemGrid tr').length;
+                for (var ir = 1; ir <= itemRowCount; ir++) {
+                    if ($('#soItemRow-' + ir).find('.amendNo').text() == $('#AmmNo').val()) {
+                        $('#soItemRow-' + ir).css('background-color', '#e7f1ff');
                     }
-                    $('#ItemNetAmount').val(sum);
-                    var txSum = 0;
-                    if ($('#divTaxGrid tr td').length > 1) {
-                        for (var i = 1; i <= taxRowCount; i++) {
-                            txSum += parseFloat($('#txGridAmount-' + i).text() == '.00' ? 0 : $('#txGridAmount-' + i).text());
-                        }
-                    }
-                    $('#lblItemNetAmount').text(sum.toFixed(2));
+                }
+            }
 
+            $('#TotalRoundOff').prop('selectedIndex', 0);
+            var INA = parseFloat($('#ItemNetAmount').val());
+            var rowCount = $('#divSaleItemGrid tr').length;
+            var taxRowCount = $('#divTaxGrid tr').length;
+            var sum = 0.00;
+            var TotalQty = 0.00;
+            // for (var i = 1; i <= rowCount; i++) {
 
-                    var txTotal = sum + txSum;
-                    $('#NetTotal').val(txTotal.toFixed(2));
-                    $('#TotalDiscountPercentage').val(0);
-                    $('#TotalAmtAftrDiscount').val(0);
-                    $('#TotalRoundOffAmt').val(0.00);
-                    // $('#PartCode').select2('open').select2('focus');
-                    CalculateRate();
-                    $('#InvoiceNo').val(SaleBillNo).prop('readonly', true);
-                    $('#PurchaseFromDatabase').val(DatabaseName).prop('readonly', true);
-                    $('#BranchSaleBillNo').val(SaleBillNo).prop('readonly', true);
-                    $('#BranchSaleBillEntryId').val(SaleBillEntryId).prop('readonly', true);
-                    $('#BranchSaleBillDate').val(SaleBillDate).prop('readonly', true);
-                    $('#BranchSaleBillYearCode').val(SaleBillYearCode).prop('readonly', true);
+            //     sum += parseFloat($('#GridAmount-' + i).text() == '.00' || $('#GridAmount-' + i).text() == '' ? 0 : $('#GridAmount-' + i).text());
+            // }
+
+            let rowsExist = $(".GridAmount").length > 0;
+            let rowsQtyExist = $(".GridQty").length > 0;
+
+            if (rowsExist) {
+                $(".GridAmount").each(function () {
+                    let value = parseFloat($(this).text());
+                    sum += isNaN(value) ? 0 : value;
+                });
+            } else {
+                sum = 0;
+            }
+            if (rowsQtyExist) {
+                $(".GridQty").each(function () {
+                    let value = parseFloat($(this).text());
+                    TotalQty += isNaN(value) ? 0 : value;
+                });
+            } else {
+                TotalQty = 0;
+            }
+
+            $('#ItemNetAmount').val(sum);
+            if (rowCount >= 1) {
+                $('#lblTotalNoOfItems').text(rowCount);
+            } else {
+                $('#lblTotalNoOfItems').text(0);
+            }
+            var txSum = 0.00;
+            if ($('#divTaxGrid tr td').length > 1) {
+
+                for (var i = 1; i <= taxRowCount; i++) {
+                    txSum += parseFloat($('#txGridAmount-' + i).text() == '.00' ? 0 : $('#txGridAmount-' + i).text());
+                }
+            }
+            $('#lblItemNetAmount').text(sum.toFixed(2));
+            $('#lblTotalQty').text(TotalQty.toFixed(2));
+            var txTotal = sum + txSum;
+            $('#NetTotal').val(txTotal.toFixed(2));
                 },
 
                 error: function (xhr) {
                     alert(xhr.responseText);
                 }
             }).done(function () {
-                calculatetotalqty();
                 GetTaxPartItem();
-                GetDbCrDetail();
-                GetFeatureOption();
-                var AdjGrid = $('#divAdjItemList tr td').length;
-                if (AdjGrid >= 1) {
-                    ClearAdjustmentGrid();
-                }
-                //   ClearAdjustmentGrid();
-                AddAdjstmntDetail1();
             });
         }
 

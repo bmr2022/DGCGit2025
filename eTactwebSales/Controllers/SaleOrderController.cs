@@ -1488,14 +1488,14 @@ public class SaleOrderController : Controller
     [HttpPost]
 
     public IActionResult PendingPurchaseOrderItemDetailFromOtherBranch(
-    string flag, int AccountCode, int salebillEntryId,
-    int salebillYearCode, string DatabaseName, int DocumentTypeId, string DocumentTypeName)
+    string flag, int AccountCode, int POEntryId,
+    int POYearCode, string PONo, int PODate, string DatabaseName)
     {
         var result = _ISaleOrder
                      .PendingPurchaseOrderItemDetailFromOtherBranch(
-                     AccountCode, salebillEntryId, salebillYearCode, DatabaseName).Result;
+                     AccountCode, POEntryId, POYearCode, DatabaseName).Result;
 
-        var items = new List<SaleOrderModel>();
+        var items = new List<ItemDetail>();
         int seq = 1; // ← NEW
         if (result != null)
         {
@@ -1506,32 +1506,37 @@ public class SaleOrderController : Controller
                 items.Add(new SaleOrderModel
                 {
                     SeqNo = seq++,
-                   
-                    ItemCode = Convert.ToInt32(dr["Item_Code"]),
-                    PartCode = Convert.ToInt32(dr["Item_Code"]),
-                    PartText = dr["Partcode"].ToString(),
-                    ItemText = dr["ItemName"].ToString(),
-                    Qty = Convert.ToDecimal(dr["POQty"]),
-                   
-                    Rate = Convert.ToDecimal(dr["Rate"]),
-                    DiscPer = Convert.ToDecimal(dr["DiscPer"]),
-                    DiscRs = Convert.ToDecimal(dr["DiscRs"]),
-                    Amount = Convert.ToDecimal(dr["Amount"]),
-                    Location = dr["ItemLocation"].ToString(),
-                    HSNNo = Convert.ToInt32(dr["HSNNo"]),
-                    Unit = dr["unit"].ToString()
+
+                    ItemCode = dr["Item_Code"] == DBNull.Value ? 0 : Convert.ToInt32(dr["Item_Code"]),
+                    PartCode = dr["Item_Code"] == DBNull.Value ? 0 : Convert.ToInt32(dr["Item_Code"]),
+                    PartText = dr["Partcode"] == DBNull.Value ? "" : dr["Partcode"].ToString(),
+                    ItemText = dr["ItemName"] == DBNull.Value ? "" : dr["ItemName"].ToString(),
+
+                    Qty = dr["POQty"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["POQty"]),
+                    Rate = dr["Rate"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["Rate"]),
+                    DiscPer = dr["DiscPer"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["DiscPer"]),
+                    DiscRs = dr["DiscRs"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["DiscRs"]),
+                    Amount = dr["Amount"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["Amount"]),
+
+                    Location = dr["ItemLocation"] == DBNull.Value ? "" : dr["ItemLocation"].ToString(),
+                    Group_name = dr["GroupName"] == DBNull.Value ? "" : dr["GroupName"].ToString(),
+                    Vehicle = dr["VehicleNo"] == DBNull.Value ? "" : dr["VehicleNo"].ToString(),
+
+                    HSNNo = dr["HSNNo"] == DBNull.Value ? 0 : Convert.ToInt32(dr["HSNNo"]),
+                    Unit = dr["unit"] == DBNull.Value ? "" : dr["unit"].ToString()
                 });
             }
         }
 
         // IMPORTANT → wrap inside parent model
         SaleOrderModel model = new SaleOrderModel();
-        //model = items;   // correct assignment
-        HttpContext.Session.Remove("DirectPurchaseBill");
-        string serializedModel = JsonConvert.SerializeObject(model);
-        HttpContext.Session.SetString("DirectPurchaseBill", serializedModel);
+        model.ItemDetailGrid = items;   // correct assignment
+        HttpContext.Session.Remove("ItemList");
+        string serializedModel = JsonConvert.SerializeObject(model.ItemDetailGrid);
+        HttpContext.Session.SetString("ItemList", serializedModel);
 
-        return PartialView("_DPBItemGrid", model);
+        //HttpContext.Session.SetString("ItemList", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
+        return PartialView("_SaleItemGrid", model);
     }
 
 
