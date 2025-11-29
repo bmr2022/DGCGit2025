@@ -2747,6 +2747,23 @@
                                 <input class="userRightsPermission" type="hidden" value="HR Gate Attendance" />
                             </ul>
                         </li>
+                        
+                        <li>
+                            <a class="dropdown-item" href="#">HR Attendance &raquo; </a>
+                            <ul class="submenu dropdown-menu">
+                                <li>
+                                    <a class="dropdown-item" asp-action="HRAttendanceList" asp-route-ID="0" asp-controller="HRAttendance" id="HRAttendance">
+                                        <i class="fa fa-file-lines fa-fw fa-lg" aria-hidden="true"></i>Pending HR Attendance
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item HRAttendance" asp-action="DashBoard" asp-controller="HRAttendance">
+                                        <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
+                                    </a>
+                                </li>
+                                <input class="userRightsPermission" type="hidden" value="HR Attendance" />
+                            </ul>
+                        </li>
 
                         <li>
                             <a class="dropdown-item" href="#">HRSalary Head Master &raquo; </a>
