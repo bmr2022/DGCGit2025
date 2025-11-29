@@ -8,7 +8,6 @@ namespace eTactWeb.DOM.Models
 {
     public class SaleBillRegisterModel
     {
-
         public string? FromDate { get; set; }
         public string? ReportType { get; set; }
         public string? ToDate { get; set;} 
@@ -21,8 +20,8 @@ namespace eTactWeb.DOM.Models
         public string? Schno { get; set; }
         public string? GSTNO { get; set; }
         public string? HSNNO { get; set; }
-
         public string? CustomerName { get; set; }
+        public List<string> DynamicHeaders { get; set; }
         public IList<SaleBillRegisterDetail>? SaleBillRegisterDetail { get; set; }
     }
     public class SaleBillRegisterDetail
@@ -163,5 +162,6 @@ namespace eTactWeb.DOM.Models
         public string? CustomerPartCode { get; set; }
         public string? UniqueBatchno { get; set; }
         public string? FromStore { get; set; }
+        public Dictionary<string, string> DynamicColumns { get; set; }
     }
 }

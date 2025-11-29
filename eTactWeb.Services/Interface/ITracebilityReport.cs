@@ -8,9 +8,9 @@ using static eTactWeb.DOM.Models.Common;
 
 namespace eTactWeb.Services.Interface
 {
-    public interface IMISTracebilityReport
+    public interface ITracebilityReport
     {
-        Task<MISTracebilityReportModel> GetMISTracebilityReportData(string FromDate, string ToDate, string SaleBillNo);
+        Task<TracebilityReportModel> GetTracebilityReportData(string FromDate, string ToDate, string SaleBillNo);
         Task<ResponseResult> FillSaleBillNoList(string FromDate, string ToDate);
     }
 }

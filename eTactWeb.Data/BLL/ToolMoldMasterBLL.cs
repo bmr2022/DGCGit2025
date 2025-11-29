@@ -75,5 +75,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _ToolMoldMasterDAL.GetViewByID(ID, YC);
         }
+        public async Task<ResponseResult> GetFormRights(int ID)
+        {
+            return await _ToolMoldMasterDAL.GetFormRights(ID);
+        }
+
     }
 }

@@ -148,8 +148,7 @@ namespace eTactWeb.Controllers
             ModelState.Remove("TxPageName");
             if (ModelState.IsValid)
             {
-                model.Mode = model.ID == 0 ? "Insert" : "Update";
-                //model.CreatedBy = Constants.UserID;
+                model.Mode = model.Mode != "U" ? "Insert" : "Update";                //model.CreatedBy = Constants.UserID;
 
                 var Result = await _IBankMaster.SaveAccountMaster(model);
 

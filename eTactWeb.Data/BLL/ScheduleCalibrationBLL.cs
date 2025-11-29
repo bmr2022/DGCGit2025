@@ -32,5 +32,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _ScheduleCalibrationDAL.GetCalibrationAgency();
         }
+        public async Task<ResponseResult> GetFormRights(int ID)
+        {
+            return await _ScheduleCalibrationDAL.GetFormRights(ID);
+        }
     }
 }

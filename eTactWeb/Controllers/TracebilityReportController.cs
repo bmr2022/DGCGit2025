@@ -7,15 +7,15 @@ using Newtonsoft.Json;
 
 namespace eTactWeb.Controllers
 {
-    public class MISTracebilityReportController : Controller
+    public class TracebilityReportController : Controller
     {
         private readonly IDataLogic _IDataLogic;
-        public IMISTracebilityReport _IMISTracebilityReport { get; }
-        private readonly ILogger<MISTracebilityReportController> _logger;
+        public ITracebilityReport _IMISTracebilityReport { get; }
+        private readonly ILogger<TracebilityReportController> _logger;
         private readonly IConfiguration iconfiguration;
         private readonly IMemoryCache _MemoryCache;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
-        public MISTracebilityReportController(ILogger<MISTracebilityReportController> logger, IDataLogic iDataLogic, IMISTracebilityReport IMISTracebilityReport, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration, IMemoryCache iMemoryCache)
+        public TracebilityReportController(ILogger<TracebilityReportController> logger, IDataLogic iDataLogic, ITracebilityReport IMISTracebilityReport, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration, IMemoryCache iMemoryCache)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
@@ -25,15 +25,15 @@ namespace eTactWeb.Controllers
             _MemoryCache = iMemoryCache;
         }
         [Route("{controller}/Index")]
-        public async Task<ActionResult> MISTracebilityReport()
+        public async Task<ActionResult> TracebilityReport()
         {
-            var model = new MISTracebilityReportModel();
+            var model = new TracebilityReportModel();
             model.FromDate = HttpContext.Session.GetString("FromDate");
             return View(model);
         }
-        public async Task<IActionResult> GetMISTracebilityReportData(string FromDate, string ToDate, string SaleBillNo)
+        public async Task<IActionResult> GetTracebilityReportData(string FromDate, string ToDate, string SaleBillNo)
         {
-            var model = await _IMISTracebilityReport.GetMISTracebilityReportData(FromDate, ToDate, SaleBillNo);
+            var model = await _IMISTracebilityReport.GetTracebilityReportData(FromDate, ToDate, SaleBillNo);
 
             // Optional: cache raw dataset for export later
             _MemoryCache.Set("KeyMISTraceabilityReport", model, new MemoryCacheEntryOptions
@@ -43,7 +43,7 @@ namespace eTactWeb.Controllers
             });
 
             // Return PartialView based on report type (if required)
-            return PartialView("_MISTraceabilityReportGrid", model);
+            return PartialView("_TraceabilityReportGrid", model);
         }
 
         public async Task<JsonResult> FillSaleBillNoList(string FromDate, string ToDate)
