@@ -555,8 +555,10 @@
                             {
                                 <div class="d-flex justify-content-center align-items-center flex-grow-1">
                                     <strong class="me-2">BASIC TOTAL:</strong>
+                                    <span id="CurrencySign"></span>
                                     <span id="lblItemNetAmount" class="me-4 text-warning">0.00</span>
                                      <strong class="me-2">TOTAL QTY:</strong>
+                                   
                                     <span id="lblTotalQty" class="me-4 text-warning">0.00</span>
 
                                     <strong class="me-2">TOTAL NO OF ITEMS:</strong>
@@ -2251,7 +2253,7 @@
             // $('#PartCode').select2();
             // $('#ItemCode').select2();
             // $('#Group_Code').select2();
-            ChangeCurrencysign();
+           
             FillItems();
             AutoFillPARTYNAMELIST();
             // $('#Group_Code1').select2();
@@ -2341,6 +2343,7 @@
                 // });
             // }
             FillCurrency();
+            ChangeCurrencysign();
 
             $('#AmmEffDate').on("keydown", function (event) {
                 if (event.key === "Tab") {
@@ -4202,6 +4205,7 @@
             //}
 
             FillCurrency();
+            ChangeCurrencysign();
         });
         function GetCurrencyDetail() {
 
@@ -4245,6 +4249,7 @@
 
         $('#CurrencyID').change(function () {
             GetCurrencyDetail();
+            $('#Symbol').text($('#CurrencyID option:selected').text());
         });
 
         async function ClearItemTax() {
