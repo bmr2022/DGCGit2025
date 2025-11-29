@@ -12,7 +12,11 @@ namespace eTactWeb.Services.Interface
 		Task<ResponseResult> GetTotalBYSp(SaleOrderDashboard model);
 		Task<ResponseResult> AutoFillPARTYNAMELIST(string SearchAccount);
 
-
+        Task<ResponseResult> ListOfPendPOForSaleOrder(int AccountCode, string fromdate, string todate);
+        Task<ResponseResult> PendingPurchaseOrderItemDetailFromOtherBranch(int AccountCode,
+   int EntryID,
+   int YearCode,
+   string DatabaseName);
         Task<ResponseResult> CheckOrderNo(int year,int accountcode,int entryid, string custorderno);
         Task<ResponseResult> GetFillCurrency(string CTRL);
         Task<SaleOrderModel> ShowGroupWiseItems(int Group_Code,int AccountCode);

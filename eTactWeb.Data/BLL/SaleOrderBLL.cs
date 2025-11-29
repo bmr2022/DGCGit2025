@@ -24,7 +24,23 @@ public class SaleOrderBLL : ISaleOrder
     public async Task<ResponseResult> GetReportName()
     {
         return await _SaleOrderDAL.GetReportName();
-    } 
+    }
+    public async Task<ResponseResult> ListOfPendPOForSaleOrder(int AccountCode, string fromdate, string todate)
+    {
+        return await _SaleOrderDAL.ListOfPendPOForSaleOrder(AccountCode, fromdate, todate);
+    }
+
+    public async Task<ResponseResult> PendingPurchaseOrderItemDetailFromOtherBranch(int AccountCode,
+   int EntryID,
+   int YearCode,
+   string DatabaseName)
+    {
+        return await _SaleOrderDAL.PendingPurchaseOrderItemDetailFromOtherBranch(AccountCode,
+ EntryID,
+ YearCode,
+ DatabaseName);
+    }
+
     public async Task<ResponseResult> GetTotalBYSp(SaleOrderDashboard model)
     {
         return await _SaleOrderDAL.GetTotalBYSp(model);
