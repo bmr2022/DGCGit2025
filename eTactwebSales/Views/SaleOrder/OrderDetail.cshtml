@@ -2010,7 +2010,7 @@
 
         $('#OtherRateCurr').on('change', function () {
 
-            var Currency = $('#CurrencyID').val();
+            var Currency = $('#CurrencyID Option:selected').text().trim();
             $.ajax({
                 type: "POST",
                 data: { "Currency": Currency },
@@ -2019,11 +2019,17 @@
                 success: function (result, status, error) {
 
                     if (result != null) {
-                        //var obj = $.parseJSON(result);
-                        //$('#Rate').val("");
-                        //$('#Rate').val(obj.Result[0].Rate);
-                        if ($('#OtherRateCurr').val() == ".") {
+                        var obj = $.parseJSON(result);
+                        $('#Rate').val("");
+                        $('#Rate').val(obj.Result[0].Rate);
+                        if ($('#OtherRateCurr').val() == "") {
                             $('#Amount').val(0.00);
+                        }
+                        else {
+                            var rate = parseFloat($('#OtherRateCurr').val());
+                            var qty = parseFloat($('#Qty').val());
+                            var amount = rate * qty;
+                            $('#Amount').val(amount.toFixed(2));
                         }
                     }
                 }
@@ -4220,7 +4226,7 @@
                                         $('#Rate').val('0.00').prop('disabled', true).attr('readonly', 'readonly');
                                         $('#OtherRateCurr').val('0').prop('disabled', false).removeAttr('readonly');
                                         $('#OtherRateCurr').keyup(function () {
-                                            OtherRateCurr($('#Rate').val($('#OtherRateCurr').val().trim() != "" ? parseFloat($('#OtherRateCurr').val()) * parseFloat($('#ExRate').val()) : 0));
+                                            // OtherRateCurr($('#Rate').val($('#OtherRateCurr').val().trim() != "" ? parseFloat($('#OtherRateCurr').val()) * parseFloat($('#ExRate').val()) : 0));
                                             CalculateRate();
                                         });
                                     }
