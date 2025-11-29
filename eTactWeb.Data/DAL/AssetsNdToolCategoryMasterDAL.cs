@@ -47,7 +47,7 @@ namespace eTactWeb.Data.DAL
                     var row = dt.Rows[0];
                     model.AssetsCateogryId = row["EntryId"] != DBNull.Value ? Convert.ToInt32(row["EntryId"]) : 0;
                     model.AssetsCategoryCode = row["ToolCode"] != DBNull.Value ? row["ToolCode"].ToString() : string.Empty;
-                    model.ActualEntryDate = DateTime.Now;
+                    model.ActualEntryDate = DateTime.Now.ToString();
                 }
             }
             catch (Exception ex)
@@ -78,7 +78,7 @@ namespace eTactWeb.Data.DAL
                     new SqlParameter("@ToolMaincategoryId", model.ToolMaincategoryId ?? (object)DBNull.Value),
                     new SqlParameter("@EntryByMachineName", string.IsNullOrEmpty(model.EntryByMachineName) ? DBNull.Value : model.EntryByMachineName),
                     new SqlParameter("@ActualEntryBy", model.ActualEntryBy > 0 ? model.ActualEntryBy : (object)DBNull.Value),
-                    new SqlParameter("@ActualEntryDate", model.ActualEntryDate != DateTime.MinValue ? model.ActualEntryDate : DateTime.Now),
+                    new SqlParameter("@ActualEntryDate",CommonFunc.ParseFormattedDate( model.ActualEntryDate)),
                     new SqlParameter("@LastUpdatedBy", model.LastUpdatedBy > 0 ? model.LastUpdatedBy : (object)DBNull.Value),
                     new SqlParameter("@LastUpdationDate", DateTime.Now)
                 };
@@ -143,8 +143,8 @@ namespace eTactWeb.Data.DAL
                         EntryByMachineName = row["EntryByMachineName"] != DBNull.Value ? row["EntryByMachineName"].ToString() : string.Empty,
                         ActualEntryBy = row["ActualEntryBy"] != DBNull.Value? Convert.ToInt64(row["ActualEntryBy"]): 0,
                         ActualEntryEmp = row["ActualEntryEmp"] != DBNull.Value ? row["ActualEntryEmp"].ToString() : string.Empty,
-                        ActualEntryDate = row["ActualEntryDate"] != DBNull.Value ? Convert.ToDateTime(row["ActualEntryDate"]) : (DateTime?)null,
-                        LastUpdationDate = row["LastUpdationDate"] != DBNull.Value ? Convert.ToDateTime(row["LastUpdationDate"]) : (DateTime?)null,
+                        ActualEntryDate = row["ActualEntryDate"]?.ToString(),
+                        LastUpdationDate = row["LastUpdationDate"]?.ToString(),
                         LastUpdatedBy = row["LastUpdatedBy"] != DBNull.Value ? Convert.ToInt64(row["LastUpdatedBy"]) : (long?)null,
                         UpdatedByEmp = row["UpdatedByEmp"] != DBNull.Value ? row["UpdatedByEmp"].ToString() : string.Empty,
                         AssetsName = row["AssetsName"] != DBNull.Value ? row["AssetsName"].ToString() : string.Empty,
@@ -184,8 +184,8 @@ namespace eTactWeb.Data.DAL
                         EntryByMachineName = row["EntryByMachineName"]?.ToString(),
                         ActualEntryBy = row["ActualEntryBy"] != DBNull.Value ? Convert.ToInt32(row["ActualEntryBy"]) : 0,
                         ActualEntryEmp = row["ActualEntryEmp"]?.ToString(),
-                        ActualEntryDate = row["ActualEntryDate"] != DBNull.Value ? Convert.ToDateTime(row["ActualEntryDate"]) : (DateTime?)null,
-                        LastUpdationDate = row["LastUpdationdate"] != DBNull.Value ? Convert.ToDateTime(row["LastUpdationdate"]) : (DateTime?)null,
+                        ActualEntryDate = row["ActualEntryDate"]?.ToString(),
+                        LastUpdationDate = row["LastUpdationdate"].ToString(),
                         LastUpdatedBy = row["LastUpdatedBy"] != DBNull.Value ? Convert.ToInt32(row["LastUpdatedBy"]) : (int?)null,
                         UpdatedByEmp = row["UpdatedByEmp"]?.ToString()
                     };

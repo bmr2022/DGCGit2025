@@ -59,11 +59,20 @@ public class AssetsNdToolCategoryMasterController : Controller
     [HttpPost]
     public async Task<IActionResult> AssetsNdToolCategoryMaster(AssetsNdToolCategoryMasterModel model)
     {
+        model.ActualEntryDate= DateTime.Today.ToString("MM/dd/yyyy").Replace("-", "/");
+        model.ActualEntryBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+
 
         if (model.Mode == "V")
         {
             // Read-only → don’t save
             return RedirectToAction("AssetsNdToolCategoryMasterDashboard");
+        }
+        if(model.Mode == "U")
+        {
+            model.LastUpdationDate= HttpContext.Session.GetString("ToDate");
+            model.LastUpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+
         }
         var response = await _IAssetsNdToolCategoryMaster.SaveAsync(model);
 

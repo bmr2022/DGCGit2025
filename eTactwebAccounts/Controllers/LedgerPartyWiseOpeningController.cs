@@ -54,7 +54,7 @@ namespace eTactWeb.Controllers
             MainModel.ActualEntryDate = DateTime.Now;
             MainModel.InvoiceDate = DateTime.Now;
             HttpContext.Session.Remove("KeyLedgerPartyWiseOpeningGrid");
-            if (!string.IsNullOrEmpty(Mode)  && (Mode == "U"|| Mode=="V"))
+            if (!string.IsNullOrEmpty(Mode)  && (Mode == "U"|| Mode == "V"))
             {
                 
                 MainModel = await _ILedgerPartyWiseOpening.GetViewByID(OpeningYearCode, LedgerOpnEntryId).ConfigureAwait(false);
@@ -418,18 +418,18 @@ namespace eTactWeb.Controllers
                 GIGrid.Columns.Add("AccountCode", typeof(int));
                 GIGrid.Columns.Add("OpeningAmt", typeof(decimal));
                 GIGrid.Columns.Add("InvoiceNo", typeof(string));
-                GIGrid.Columns.Add("InvoiceDate", typeof(DateTime));
+                GIGrid.Columns.Add("InvoiceDate", typeof(string));
                 GIGrid.Columns.Add("InvoiceYearCode", typeof(int));
                 GIGrid.Columns.Add("InvNetAmt", typeof(decimal));
                 GIGrid.Columns.Add("InvPendAmt", typeof(decimal));
                 GIGrid.Columns.Add("DrCrType", typeof(string));
                 GIGrid.Columns.Add("TransactionType", typeof(string));
-                GIGrid.Columns.Add("DueDate", typeof(DateTime));
+                GIGrid.Columns.Add("DueDate", typeof(string));
                 GIGrid.Columns.Add("CC", typeof(string));
                 GIGrid.Columns.Add("ActualEntryBy", typeof(int));
-                GIGrid.Columns.Add("ActualEntryDate", typeof(DateTime));
+                GIGrid.Columns.Add("ActualEntryDate", typeof(string));
                 GIGrid.Columns.Add("UpdatedBy", typeof(int));
-                GIGrid.Columns.Add("LastUpdatedDate", typeof(DateTime));
+                GIGrid.Columns.Add("LastUpdatedDate", typeof(string));
                 GIGrid.Columns.Add("EntryByMachine", typeof(string));
                 GIGrid.Columns.Add("AccountNarration", typeof(string));
                 GIGrid.Columns.Add("SaveUpdate", typeof(string));
@@ -445,18 +445,18 @@ namespace eTactWeb.Controllers
                     Item.AccountCode ,
                     Item.OpeningAmt,
                     Item.BillNo ,
-                    Item.BillDate ,
+                   CommonFunc.ParseFormattedDate(Item.BillDate),
                     Item.BillYear,
                     Item.BillNetAmt,
                     Item.PendAmt,
                     Item.Type ,
                     Item.TransactionType,
-                    Item.DueDate ,
+                    CommonFunc.ParseFormattedDate(Item.DueDate),
                     Item.CC  ,
                     Item.ActualEntryBy,
-                    Item.ActualEntryDate ,
+                    CommonFunc.ParseFormattedDate(Item.ActualEntryDate),
                     Item.UpdatedBy,
-                    Item.LastUpdatedDate ,
+                    CommonFunc.ParseFormattedDate(Item.LastUpdatedDate),
                     Item.EntryByMachine ,
                      string.IsNullOrEmpty(Item.AccountNarration) ? "" : Item.AccountNarration,
                     Item.Unit,

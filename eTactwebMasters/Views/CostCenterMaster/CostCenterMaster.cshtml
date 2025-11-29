@@ -243,6 +243,8 @@
         $(document).ready(function () {
 
             GetFormRights();
+                            // FillCostCenterID();
+
             //$('#StoreType').rules("remove", "required");
             $('#DepartmentName').select2();
             $('#CostcenetrGroupName').select2();
@@ -260,7 +262,7 @@
             FillUnderGroupName();
             if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
                  
-                //FillCostCenterID();
+                FillCostCenterID();
             }
         });
 
@@ -311,7 +313,10 @@
         // $('#CostcenetrGroupName').change(function () {
         //         $('#CostcentergroupID').val($('#CostcenetrGroupName').val());
         // });
-        
+
+            $('#CostcenetrGroupName').change(function () {
+            $('#CostcentergroupID').val($(this).val());
+        });
              
             $('#CostcenetrGroupName').change(function () {
                  
@@ -319,6 +324,7 @@
                     $('#CostcentergroupID').val($('#CostcenetrGroupName').val());
                 }
             });
+
         
         $('#CostCenterName').change(function () {
             ChkForDuplicate();
@@ -404,6 +410,8 @@
                     });
                     if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
                         var selectedGroupID = '@Model.CostcentergroupID';
+                        $('#CostcentergroupID').val(selectedGroupID);
+
                         $('#CostcenetrGroupName').val(selectedGroupID).trigger("change");
                     }
                 },
