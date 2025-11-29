@@ -104,7 +104,12 @@
                                 </ul>
                             </li>
                             <li><hr class="dropdown-divider"></li>
+                            
                             <li>
+                                <a class="dropdown-item" href="#">Procurment </a>
+                                <ul class="submenu dropdown-menu">
+
+                                    <li>
                                 <a class="dropdown-item" href="#">PO & Amendment Approval &raquo; </a>
                                 <ul class="submenu dropdown-menu">
                                     <li>
@@ -116,7 +121,20 @@
                                     </li>
                                 </ul>
                             </li>
-                            <li>
+
+                                    <li>
+                                        <a class="dropdown-item" href="#">Purchase Sch & Amendment Approval &raquo; </a>
+                                        <ul class="submenu dropdown-menu">
+                                            <li>
+                                                <a class="dropdown-item POSchApproval" asp-action="PSApproval" asp-controller="PSApproval" asp-route-ID="0">
+                                                    <i class="fa fa-fw fa-table fa-lg" aria-hidden="true"></i> Approval Form
+                                                </a>
+                                                <input class="userRightsPermission" type="hidden" value="POSchApproval" />
+
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li>
                                 <a class="dropdown-item" href="#">Cancel PO &raquo; </a>
                                 <ul class="submenu dropdown-menu">
                                     <li>
@@ -127,26 +145,48 @@
 
                                     </li>
                                 </ul>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" href="#">PO Approval Policy &raquo; </a>
-                                <ul class="submenu dropdown-menu">
-                                    <li>
-                                        <a class="dropdown-item" asp-action="POApprovalPolicy" asp-controller="POApprovalPolicy" asp-route-ID="0" id="POApprovalPolicy">
-                                            <i class="fa fa-fw fa-table fa-lg" aria-hidden="true"></i>PO Approva Policy
-                                        </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" asp-action="POApprovalPolicyDashBoard" asp-controller="POApprovalPolicy" asp-route-ID="0" id="POApprovalPolicy">
-                                            <i class="fa fa-fw fa-table fa-lg" aria-hidden="true"></i>DashBoard
-                                        </a>
-                                    </li>
-                                    <input class="userRightsPermission" type="hidden" value="PO Approval Policy" />
+                                        <a class="dropdown-item" href="#">PO Approval Policy &raquo; </a>
+                                        <ul class="submenu dropdown-menu">
+                                            <li>
+                                                <a class="dropdown-item" asp-action="POApprovalPolicy" asp-controller="POApprovalPolicy" asp-route-ID="0" id="POApprovalPolicy">
+                                                    <i class="fa fa-fw fa-table fa-lg" aria-hidden="true"></i>PO Approva Policy
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" asp-action="POApprovalPolicyDashBoard" asp-controller="POApprovalPolicy" asp-route-ID="0" id="POApprovalPolicy">
+                                                    <i class="fa fa-fw fa-table fa-lg" aria-hidden="true"></i>DashBoard
+                                                </a>
+                                            </li>
+                                            <input class="userRightsPermission" type="hidden" value="PO Approval Policy" />
+
+                                        </ul>
+                                        </li>
 
                                 </ul>
-                            </li>
+                    </li>
+
+                            
+
+                        
 
                             <li>
+                                <a class="dropdown-item" href="#">Sales & Mkt </a>
+                                <ul class="submenu dropdown-menu">
+                                    <li>
+                                        <a class="dropdown-item" href="#">SaleBill Approval &raquo; </a>
+                                        <ul class="submenu dropdown-menu">
+                                            <li>
+                                                <a class="dropdown-item SoApproval" asp-action="SaleBillApproval" asp-controller="SaleBillApproval" asp-route-ID="0">
+                                                    <i class="fa fa-fw fa-table fa-lg" aria-hidden="true"></i>SaleBill Approval Form
+                                                </a>
+                                                <input class="userRightsPermission" type="hidden" value="SaleBill Approval" />
+
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li>
                                 <a class="dropdown-item" href="#">Cancel SaleBill &raquo; </a>
                                 <ul class="submenu dropdown-menu">
                                     <li>
@@ -157,33 +197,9 @@
 
                                     </li>
                                 </ul>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" href="#">Cancel Requition &raquo; </a>
-                                <ul class="submenu dropdown-menu">
-                                    <li>
-                                        <a class="dropdown-item" asp-action="CancelRequition" asp-controller="CancelRequition" asp-route-ID="0" id="CancelRequition">
-                                            <i class="fa fa-fw fa-table fa-lg" aria-hidden="true"></i>Cancel Requition
-                                        </a>
-                                        <input class="userRightsPermission" type="hidden" value="CancelRequition" />
-
                                     </li>
-                                </ul>
-                            </li>
 
-                            <li>
-                                <a class="dropdown-item" href="#">Purchase Sch & Amendment Approval &raquo; </a>
-                                <ul class="submenu dropdown-menu">
-                                    <li>
-                                        <a class="dropdown-item POSchApproval" asp-action="PSApproval" asp-controller="PSApproval" asp-route-ID="0">
-                                            <i class="fa fa-fw fa-table fa-lg" aria-hidden="true"></i> Approval Form
-                                        </a>
-                                        <input class="userRightsPermission" type="hidden" value="POSchApproval" />
-
-                                    </li>
-                                </ul>
-                            </li>
-                            <li><hr class="dropdown-divider"></li>
+                                <li><hr class="dropdown-divider"></li>
                             <li>
                                 <a class="dropdown-item" href="#">SO & Amendment Approval &raquo; </a>
                                 <ul class="submenu dropdown-menu">
@@ -196,18 +212,24 @@
                                     </li>
                                 </ul>
                             </li>
-                             <li>
-                                <a class="dropdown-item" href="#">SaleBill Approval &raquo; </a>
+
+                            </li>
+                            </ul> 
+                           @*  <li>
+                                <a class="dropdown-item" href="#">Cancel Requition &raquo; </a>
                                 <ul class="submenu dropdown-menu">
                                     <li>
-                                        <a class="dropdown-item SoApproval" asp-action="SaleBillApproval" asp-controller="SaleBillApproval" asp-route-ID="0">
-                                            <i class="fa fa-fw fa-table fa-lg" aria-hidden="true"></i>SaleBill Approval Form
+                                        <a class="dropdown-item" asp-action="CancelRequition" asp-controller="CancelRequition" asp-route-ID="0" id="CancelRequition">
+                                            <i class="fa fa-fw fa-table fa-lg" aria-hidden="true"></i>Cancel Requition
                                         </a>
-                                        <input class="userRightsPermission" type="hidden" value="SaleBill Approval" />
+                                        <input class="userRightsPermission" type="hidden" value="CancelRequition" />
 
                                     </li>
                                 </ul>
-                            </li>
+                            </li> *@
+
+                           
+                         
                             <li>
                                 <a class="dropdown-item" href="#">Cancel SO &raquo; </a>
                                 <ul class="submenu dropdown-menu">
@@ -2565,11 +2587,7 @@
                             </ul>
                         </li>
                         }
-                        <li>
-                            <a class="dropdown-item" href="#">Jobwork Sale Invoice &raquo; </a>
-                            <ul class="submenu dropdown-menu">
-                            </ul>
-                        </li>
+                         
 
                         <li>
                             <a class="dropdown-item" href="#">Export Invoice &raquo; </a>
