@@ -5,8 +5,6 @@
         <select asp-for="FinishItemCode" class="form-select" asp-items="@(new SelectList(Model.FG1CodeList,"Text","Value"))">
             <option value="">-Select-</option>
         </select>
-      @*   <input id="FinishItemCodeText" class="form-control" placeholder="Type to search..." />
-        <input type="hidden" asp-for="FinishItemCode" id="FinishItemCode" /> *@
         @if (@Model.Mode == "U")
         {
             <input type="hidden" value="@Model.FinishItemCode" id="hiddenFGItemCode" />
@@ -45,7 +43,7 @@
         }
         else
         {
-            <input id="FinishedItemNameText" class="form-control" placeholder="Type to search..." />
+           @*  <input id="FinishedItemNameText" class="form-control" placeholder="Type to search..." /> *@
             @* <input type="hidden" asp-for="FinishedItemName" id="FinishedItemName" /> *@
             <select asp-for="FinishedItemName" disabled class="form-select" asp-items="@(new SelectList(Model.FG1NameList,"Text","Value"))">
                 <option value="">-Select-</option>
