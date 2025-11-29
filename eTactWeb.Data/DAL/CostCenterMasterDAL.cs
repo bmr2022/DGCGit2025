@@ -126,7 +126,7 @@ namespace eTactWeb.Data.DAL
                 {
                     SqlParams.Add(new SqlParameter("@Flag", "Update"));
                     SqlParams.Add(new SqlParameter("@CostcenterId", model.CostcenterId > 0 ? model.CostcenterId : (object)DBNull.Value));
-                    SqlParams.Add(new SqlParameter("@EntryDate", string.IsNullOrEmpty(model.EntryDate) ? DBNull.Value : model.EntryDate));
+                    SqlParams.Add(new SqlParameter("@EntryDate", string.IsNullOrEmpty(model.EntryDate) ? DBNull.Value : CommonFunc.ParseFormattedDate(model.EntryDate)));
                     SqlParams.Add(new SqlParameter("@CostCenterName", string.IsNullOrEmpty(model.CostCenterName) ? DBNull.Value : model.CostCenterName));
                     SqlParams.Add(new SqlParameter("@ShortName", string.IsNullOrEmpty(model.ShortName) ? DBNull.Value : model.ShortName));
                     SqlParams.Add(new SqlParameter("@DeptId", model.DepartmentID > 0 ? model.DepartmentID : (object)DBNull.Value));
@@ -146,7 +146,7 @@ namespace eTactWeb.Data.DAL
                 {
                     SqlParams.Add(new SqlParameter("@Flag", "Insert"));
                     SqlParams.Add(new SqlParameter("@CostcenterId", model.CostcenterId > 0 ? model.CostcenterId : (object)DBNull.Value));
-                    SqlParams.Add(new SqlParameter("@EntryDate", string.IsNullOrEmpty(model.EntryDate) ? DBNull.Value : model.EntryDate));
+                    SqlParams.Add(new SqlParameter("@EntryDate", string.IsNullOrEmpty(model.EntryDate) ? DBNull.Value : CommonFunc.ParseFormattedDate(model.EntryDate)));
                     SqlParams.Add(new SqlParameter("@CostCenterName", string.IsNullOrEmpty(model.CostCenterName) ? DBNull.Value : model.CostCenterName));
                     SqlParams.Add(new SqlParameter("@ShortName", string.IsNullOrEmpty(model.ShortName) ? DBNull.Value : model.ShortName));
                     SqlParams.Add(new SqlParameter("@DeptId", model.DepartmentID >0?  model.DepartmentID : (object)DBNull.Value));

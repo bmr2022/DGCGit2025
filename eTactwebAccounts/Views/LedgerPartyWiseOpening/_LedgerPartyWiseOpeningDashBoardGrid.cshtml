@@ -48,7 +48,27 @@
                             <td style="text-align:center;white-space: nowrap;">
                                 <div id="container">
                                     <div id="viewCursorDiv-@Cntr">
-                                        <a class="table-link link-success" asp-route-ID="@Cntr" asp-action="LedgerPartyWiseOpening" asp-route-Mode="V" onclick="BackButtonData(event);">
+                                        <a class="table-link link-success" asp-route-ID="@Cntr" asp-action="LedgerPartyWiseOpening" asp-route-Mode="V" asp-route-LedgerOpnEntryId="@item.EntryId"
+                                           asp-route-OpeningYearCode="@item.OpeningYearCode"
+                                           asp-route-AccBookTransEntryId="@item.AccBookTransEntryId"
+                                           asp-route-AccBookTransYearCode="@item.AccBookTransYearCode"
+                                           asp-route-AccountCode="@item.AccountCode"
+                                           asp-route-OpeningAmt="@item.OpeningAmt"
+                                           asp-route-BillNo="@item.BillNo"
+                                           asp-route-BillDate="@item.BillDate"
+                                           asp-route-BillNetAmt="@item.BillNetAmt"
+                                           asp-route-PendAmt="@item.PendAmt"
+                                           asp-route-Type="@item.Type"
+                                           asp-route-TransactionType="@item.TransactionType"
+                                           asp-route-DueDate="@item.DueDate"
+                                           asp-route-CC="@item.CC"
+                                           asp-route-ActualEntryBy="@item.ActualEntryBy"
+                                           asp-route-ActualEntryDate="@item.ActualEntryDate"
+                                           asp-route-UpdatedBy="@item.UpdatedBy"
+                                           asp-route-LastUpdatedDate="@item.LastUpdatedDate"
+                                           asp-route-EntryByMachine="@item.EntryByMachine"
+                                           asp-route-AccountNarration="@item.AccountNarration"
+                                           asp-route-Unit="@item.Unit">
                                             <span class="fa-stack">
                                                 <i class="fa fa-square fa-stack-2x"></i>
                                                 <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>

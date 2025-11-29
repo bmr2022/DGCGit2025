@@ -1,64 +1,65 @@
 ﻿@model eTactWeb.DOM.Models.BomModel
 
 <div class="accordion-item">
-    <h2 class="accordion-header" id="H_BasicParameter">
-        <button class="accordion-button text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_BasicParameter" aria-expanded="true" aria-controls="B_BasicParameter">
-            <strong style="text-transform:uppercase"><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>RM Detail</strong>
-        </button>
-    </h2>
-    <div id="B_BasicParameter" class="accordion-collapse collapse show pnl4 bg-gradient" aria-labelledby="H_BasicParameter">
-        <div class="accordion-body">
-            <div class="row g-2 gx-3">
-                <div class="col-lg-6 mt-2" id="DivFG2">
-                    <partial name="_FGItem2" />
-                </div>
-                <div class="col-lg-2">
-                    <div class="row g-2 gx-3">
-                        <div class="col-lg-6 col-md-4 col-sm-6 col-xs-12">
-                            <label asp-for="Qty" class="form-label"></label>
-                            <input asp-for="Qty" class="form-control" type="text" min="0" oninput="validity.valid||(value='');" />
-                        </div>
-                        <div class="col-lg-6 col-md-4 col-sm-6 col-xs-12">
-                            <label asp-for="Unit" class="form-label"></label>
-                            <input asp-for="Unit" class="form-control" />
-                        </div>
-                        
-                        
-                    </div>
-                </div>
-                <div class="col-auto" style="padding-left:10%;">
-                    <label class="form-label">Copy This BOM</label>
-                    <div class="form-check form-switch">
-                        <input asp-for="CopyBom" class="form-check-input" type="checkbox" role="switch" onchange="CopyBomFunc(this);" />
-                    </div>
-                    @* <label class="form-label">Hide/UnHide</label>
-                    <div class="form-check form-switch">
-                        
-                    </div> *@
-                    <label class="form-label">Hide/UnHide</label>
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" id="hideUnhideToggle" onchange="toggleSection()">
-                    </div>
+	<h2 class="accordion-header" id="H_BasicParameter">
+		<button class="accordion-button text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_BasicParameter" aria-expanded="true" aria-controls="B_BasicParameter">
+			<strong style="text-transform:uppercase"><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>RM Detail</strong>
+		</button>
+	</h2>
+	<div id="B_BasicParameter" class="accordion-collapse collapse show pnl4 bg-gradient" aria-labelledby="H_BasicParameter">
+		<div class="accordion-body">
+			<div class="row g-2 gx-3">
+				<div class="col-lg-6 mt-2" id="DivFG2">
+					<partial name="_FGItem2" />
+				</div>
+				<div class="col-lg-2">
+					<div class="row g-2 gx-3">
+						<div class="col-lg-6 col-md-4 col-sm-6 col-xs-12">
+							<label asp-for="Qty" class="form-label"></label>
+							<input asp-for="Qty" class="form-control" type="text" min="0" oninput="validity.valid||(value='');" />
+						</div>
+						<div class="col-lg-6 col-md-4 col-sm-6 col-xs-12">
+							<label asp-for="Unit" class="form-label"></label>
+							<input asp-for="Unit" class="form-control" />
+						</div>
 
-                </div>
-                <div class="col mt-3">
-                    <div class="row justify-content-end">
-                        <div class="col-auto">
-                            <button type="button" class="btn btn-sm btn-outline-success" onclick="BomValidation();" style="margin-bottom: 3px;">
-                                <i class="fa fa-angles-down fa-lg"></i> ADD TO GRID
-                            </button>
-                            <button type="button" class="RefreshBom btn btn-sm btn-outline-danger"  id="ImportExcel">
-                                <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> Refresh Bom
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+
+					</div>
+				</div>
+				<div class="col-auto" style="padding-left:10%;">
+					<label class="form-label">Copy This BOM</label>
+					<div class="form-check form-switch">
+						<input asp-for="CopyBom" class="form-check-input" type="checkbox" role="switch" onchange="CopyBomFunc(this);" />
+					</div>
+					@* <label class="form-label">Hide/UnHide</label>
+                    <div class="form-check form-switch">
+
+                    </div> *@
+					<label class="form-label">Hide/UnHide</label>
+					<div class="form-check form-switch">
+						<input class="form-check-input" type="checkbox" id="hideUnhideToggle" onchange="toggleSection()">
+
+					</div>
+
+				</div>
+				<div class="col mt-3">
+					<div class="row justify-content-end">
+						<div class="col-auto">
+							<button type="button" class="btn btn-sm btn-outline-success" onclick="BomValidation();" style="margin-bottom: 3px;">
+								<i class="fa fa-angles-down fa-lg"></i> ADD TO GRID
+							</button>
+							<button type="button" class="RefreshBom btn btn-sm btn-outline-danger" id="ImportExcel">
+								<i class="fa-solid fa-angles-down fa-fw fa-lg"></i> Refresh Bom
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 
-   @*  <h2 class="accordion-header" id="H_Measurements">
+@*  <h2 class="accordion-header" id="H_Measurements">
         <button class="accordion-button collapsed text-light pnl1BG bg-gradient"
                 type="button" data-bs-toggle="collapse" data-bs-target="#B_Measurements"
                 aria-expanded="true" aria-controls="B_Measurements">
@@ -67,289 +68,278 @@
             </strong>
         </button>
     </h2> *@
-    <div id="B_Measurements" class="accordion-collapse collapse pnl1 bg-gradient"
-         aria-labelledby="H_Measurements" >
-        <div class="accordion-body">
-            <div class="row g-2 gx-3">
-                <div class="col-lg-6 mt-2" id="DivFG3">
-                    <partial name="_FGItem3" />
-                </div>
-                <div class="col-lg-6">
-                    <div class="row g-2 gx-3">
-                        <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
-                            <label asp-for="AltQty1" class="form-label">Alt Qty1</label>
-                            <input asp-for="AltQty1" class="form-control" type="text" min="0" />
-                        </div>
-                        <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
-                            <label asp-for="UsedStageId" class="form-label">Used In Stage</label>
-                            <select class="form-select" asp-for="UsedStageId" asp-items="@(new SelectList(Model.UsedStageList,"Value","Text"))">
-                                <option value="">-Select-</option>
-                            </select>
-                        </div>
-                        <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
-                            <label asp-for="IssueToJOBwork" class="form-label">IssTo JW</label>
-                            <select class="form-select" asp-for="IssueToJOBwork" asp-items="Model.YesNo">
-                                <option value="">-Select-</option>
-                            </select>
-                        </div>
-                        <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
-                            <label asp-for="DirectProcess" class="form-label">Direct/Process</label>
-                            <select class="form-select" asp-for="DirectProcess" asp-items="Model.DirectProcessList">
-                                <option value="">-Select-</option>
-                            </select>
-                        </div>
-                        <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
-                            <label asp-for="AltQty2" class="form-label">Alt Qty2</label>
-                            <input asp-for="AltQty2" class="form-control" type="text" min="0" />
-                        </div>
-                        <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
-                            <label asp-for="RecFrmCustJobwork" class="form-label">Cust Job Work</label>
-                            <select class="form-select" asp-for="RecFrmCustJobwork" asp-items="Model.YesNo">
-                                <option value="">-Select-</option>
-                            </select>
-                        </div>
-                        <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
-                            <label asp-for="PkgItem" class="form-label">Pkg Item</label>
-                            <select asp-for="PkgItem" class="form-select" asp-items="Model.YesNo">
-                                <option value="">-Select-</option>
-                            </select>
-                        </div>
-                        <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
-                            <label asp-for="RunnerQty" class="form-label">Runner Qty</label>
-                            <input asp-for="RunnerQty" class="form-control" type="text" min="0" />
-                        </div>
-                       
-                        <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
-                        <label class="form-label">Remark</label>
-                        <input asp-for="Remark" class="form-control" />
-                        </div>
-                        <div class="col-lg-1 col-md-4 col-sm-12 col-xs-12" style="width:160px;">
-                        <label asp-for="CustJwAdjustmentMandatory" class="form-label">Cust Jw Adj Mandatory</label>
-                        <select asp-for="CustJwAdjustmentMandatory" class="form-control">
-                            <option value="">-Select-</option>
-                            <option value="Y">Yes</option>
-                            <option value="N">No</option>
-                        </select>
-                        </div>
-                    </div>
-                </div>
+<div id="B_Measurements" class="pnl1 bg-gradient">
+	<div class="accordion-body">
+		<div class="row g-2 gx-3">
+			<div class="col-lg-6 mt-2" id="DivFG3">
+				<partial name="_FGItem3" />
+			</div>
+			<div class="col-lg-6">
+				<div class="row g-2 gx-3">
+					<div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
+						<label asp-for="AltQty1" class="form-label">Alt Qty1</label>
+						<input asp-for="AltQty1" class="form-control" type="text" min="0" />
+					</div>
+					<div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
+						<label asp-for="UsedStageId" class="form-label">Used In Stage</label>
+						<select class="form-select" asp-for="UsedStageId" asp-items="@(new SelectList(Model.UsedStageList,"Value","Text"))">
+							<option value="">-Select-</option>
+						</select>
+					</div>
+					<div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
+						<label asp-for="IssueToJOBwork" class="form-label">IssTo JW</label>
+						<select class="form-select" asp-for="IssueToJOBwork" asp-items="Model.YesNo">
+							<option value="">-Select-</option>
+						</select>
+					</div>
+					<div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
+						<label asp-for="DirectProcess" class="form-label">Direct/Process</label>
+						<select class="form-select" asp-for="DirectProcess" asp-items="Model.DirectProcessList">
+							<option value="">-Select-</option>
+						</select>
+					</div>
+					<div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
+						<label asp-for="AltQty2" class="form-label">Alt Qty2</label>
+						<input asp-for="AltQty2" class="form-control" type="text" min="0" />
+					</div>
+					<div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
+						<label asp-for="RecFrmCustJobwork" class="form-label">Cust Job Work</label>
+						<select class="form-select" asp-for="RecFrmCustJobwork" asp-items="Model.YesNo">
+							<option value="">-Select-</option>
+						</select>
+					</div>
+					<div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
+						<label asp-for="PkgItem" class="form-label">Pkg Item</label>
+						<select asp-for="PkgItem" class="form-select" asp-items="Model.YesNo">
+							<option value="">-Select-</option>
+						</select>
+					</div>
+					<div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
+						<label asp-for="RunnerQty" class="form-label">Runner Qty</label>
+						<input asp-for="RunnerQty" class="form-control" type="text" min="0" />
+					</div>
 
-                
-                
-               
-                <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
-                    <label asp-for="RunnerItemCode" class="form-label">Runner Item</label>
-                    <select asp-for="RunnerItemCode" class="form-select" asp-items="@(new SelectList(Model.NameList,"Text","Value"))">
-                        <option value="">-Select-</option>
-                    </select>
-                </div>
-                <div class="col-lg-1 col-md-4 col-sm-6 col-xs-12">
-                    <label asp-for="GrossWt" class="form-label">Gross Weight</label>
-                <input asp-for="GrossWt" class="form-control" type="text" min="0" onfocusout="calculateScrap()" />
-                </div>
-                <div class="col-lg-1 col-md-4 col-sm-6 col-xs-12">
-                    <label asp-for="NetWt" class="form-label">Net Weight</label>
-                <input asp-for="NetWt" class="form-control" type="text" min="0" onfocusout="calculateScrap()" />
-                </div>
-                <div class="col-lg-1 col-md-4 col-sm-6 col-xs-12">
-                    <label asp-for="Scrap" class="form-label">Scrap</label>
-                    <input asp-for="Scrap" class="form-control" type="text" min="0" />
-                </div>
-                <div class="col-lg-1 col-md-4 col-sm-6 col-xs-12">
-                    <label asp-for="BurnQty" class="form-label">Burn Qty</label>
-                    <input asp-for="BurnQty" class="form-control" type="text" min="0" />
-                </div>
-                <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
-                    <label asp-for="Location" class="form-label">Location</label>
-                    <input asp-for="Location" class="form-control" />
-                </div>
-                <div class="col-lg-1 col-md-4 col-sm-6 col-xs-12">
-                    <label asp-for="MPNNo" class="form-label">MPN No</label>
-                    <input asp-for="MPNNo" class="form-control" />
-                </div>
-                <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12" style="width:210px;">
-                    <label asp-for="Byprodpartcode1" class="form-label">By prod PartCode 1</label>
-
-                  @*   <input type="hidden" asp-for="ByprodItemCode1" /> *@
-                    <select class="form-select" id="Byprodpartcode1" name="Byprodpartcode1" style="width:190px;">
-                        <option value="">--Select--</option>
-                        @if (Model.Mode == "U" || Model.Mode == "V")
-                        {
-                            <option value="@Model.ByprodItemCode1" selected>@Model.Byprodpartcode1</option>
-                        }
-                    </select>
-                </div>
-
-                <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12" style="width:210px;">
-                    <label asp-for="ByprodItemCode1" class="form-label">By prod ItemName 1</label>
-                    <select class="form-select" asp-for="ByprodItemCode1" id="ByprodItemCode1" style="width:190px;">
-                        <option value="">--Select--</option>
-                        @if (Model.Mode == "U" || Model.Mode == "V")
-                        {
-                            <option value="@Model.ByprodItemCode1" selected>@Model.ByprodItemName1</option>
-                        }
-                    </select>
-                </div>
-
-        
-                <div class="col-lg-1 col-md-4 col-sm-6 col-xs-12">
-                    <label asp-for="ByProdQty1" class="form-label">By ProdQty1</label>
-                    <input asp-for="ByProdQty1" class="form-control" type="text" min="0" />
-                </div>
-                <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12" style="width:210px;">
-                    <label asp-for="Byprodpartcode2" class="form-label">By prod PartCode 2</label>
-
-                   @*  <input type="hidden" asp-for="ByprodItemCode2" /> *@
-                    <select class="form-select" id="Byprodpartcode2" name="Byprodpartcode2" style="width:190px;">
-                        <option value="">--Select--</option>
-                        @if (Model.Mode == "U" || Model.Mode == "V")
-                        {
-                            <option value="@Model.ByprodItemCode2" selected>@Model.Byprodpartcode2</option>
-                        }
-                    </select>
-                </div>
-                <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12" style="width:210px;">
-                    <label asp-for="ByprodItemCode2" class="form-label">By prod ItemName 2</label>
-                    <select class="form-select" asp-for="ByprodItemCode2" id="ByprodItemCode2" style="width:190px;">
-                        <option value="">--Select--</option>
-                        @if (Model.Mode == "U" || Model.Mode == "V")
-                        {
-                            <option value="@Model.ByprodItemCode2" selected>@Model.ByprodItemName2</option>
-                        }
-                    </select>
-                </div>
-
-                
-                <div class="col-lg-1 col-md-4 col-sm-6 col-xs-12">
-                    <label asp-for="Dia" class="form-label">Dia </label>
-                    <input asp-for="Dia" class="form-control" type="text" />
-                </div>
-
-                <div class="col-lg-1 col-md-4 col-sm-6 col-xs-12">
-                    <label asp-for="grade" class="form-label">grade</label>
-                    <input asp-for="grade" class="form-control" type="text"  />
-                </div>
-                <div class="col-lg-1 col-md-4 col-sm-6 col-xs-12">
-                    <label asp-for="thickness" class="form-label">thickness</label>
-                    <input asp-for="thickness" class="form-control" type="text" min="0" />
-                </div>
-                <div class="col-lg-1 col-md-4 col-sm-6 col-xs-12">
-                    <label asp-for="width" class="form-label">width</label>
-                    <input asp-for="width" class="form-control" type="text" min="0" />
-                </div>
-                <div class="col-lg-1 col-md-4 col-sm-6 col-xs-12">
-                    <label asp-for="length" class="form-label">length</label>
-                    <input asp-for="length" class="form-control" type="text" min="0" />
-                </div>
-               
+					<div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
+						<label class="form-label">Remark</label>
+						<input asp-for="Remark" class="form-control" />
+					</div>
+					<div class="col-lg-1 col-md-4 col-sm-12 col-xs-12" style="width:160px;">
+						<label asp-for="CustJwAdjustmentMandatory" class="form-label">Cust Jw Adj Mandatory</label>
+						<select asp-for="CustJwAdjustmentMandatory" class="form-control">
+							<option value="">-Select-</option>
+							<option value="Y">Yes</option>
+							<option value="N">No</option>
+						</select>
+					</div>
+				</div>
+			</div>
 
 
 
 
-                <div class="col-lg-6">
-                    <div class="row g-2 gx-3">
-                        
-                        
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+			<div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
+				<label asp-for="RunnerItemCode" class="form-label">Runner Item</label>
+				<select asp-for="RunnerItemCode" class="form-select" asp-items="@(new SelectList(Model.NameList,"Text","Value"))">
+					<option value="">-Select-</option>
+				</select>
+			</div>
+			<div class="col-lg-1 col-md-4 col-sm-6 col-xs-12">
+				<label asp-for="GrossWt" class="form-label">Gross Weight</label>
+				<input asp-for="GrossWt" class="form-control" type="text" min="0" onfocusout="calculateScrap()" />
+			</div>
+			<div class="col-lg-1 col-md-4 col-sm-6 col-xs-12">
+				<label asp-for="NetWt" class="form-label">Net Weight</label>
+				<input asp-for="NetWt" class="form-control" type="text" min="0" onfocusout="calculateScrap()" />
+			</div>
+			<div class="col-lg-1 col-md-4 col-sm-6 col-xs-12">
+				<label asp-for="Scrap" class="form-label">Scrap</label>
+				<input asp-for="Scrap" class="form-control" type="text" min="0" />
+			</div>
+			<div class="col-lg-1 col-md-4 col-sm-6 col-xs-12">
+				<label asp-for="BurnQty" class="form-label">Burn Qty</label>
+				<input asp-for="BurnQty" class="form-control" type="text" min="0" />
+			</div>
+			<div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
+				<label asp-for="Location" class="form-label">Location</label>
+				<input asp-for="Location" class="form-control" />
+			</div>
+			<div class="col-lg-1 col-md-4 col-sm-6 col-xs-12">
+				<label asp-for="MPNNo" class="form-label">MPN No</label>
+				<input asp-for="MPNNo" class="form-control" />
+			</div>
+			<div class="col-lg-2 col-md-4 col-sm-6 col-xs-12" style="width:210px;">
+				<label asp-for="Byprodpartcode1" class="form-label">By prod PartCode 1</label>
+
+				@*   <input type="hidden" asp-for="ByprodItemCode1" /> *@
+				<select class="form-select" id="Byprodpartcode1" name="Byprodpartcode1" style="width:190px;">
+					<option value="">--Select--</option>
+					@if (Model.Mode == "U" || Model.Mode == "V")
+					{
+						<option value="@Model.ByprodItemCode1" selected>@Model.Byprodpartcode1</option>
+					}
+				</select>
+			</div>
+
+			<div class="col-lg-2 col-md-4 col-sm-6 col-xs-12" style="width:210px;">
+				<label asp-for="ByprodItemCode1" class="form-label">By prod ItemName 1</label>
+				<select class="form-select" asp-for="ByprodItemCode1" id="ByprodItemCode1" style="width:190px;">
+					<option value="">--Select--</option>
+					@if (Model.Mode == "U" || Model.Mode == "V")
+					{
+						<option value="@Model.ByprodItemCode1" selected>@Model.ByprodItemName1</option>
+					}
+				</select>
+			</div>
+
+
+			<div class="col-lg-1 col-md-4 col-sm-6 col-xs-12">
+				<label asp-for="ByProdQty1" class="form-label">By ProdQty1</label>
+				<input asp-for="ByProdQty1" class="form-control" type="text" min="0" />
+			</div>
+			<div class="col-lg-2 col-md-4 col-sm-6 col-xs-12" style="width:210px;">
+				<label asp-for="Byprodpartcode2" class="form-label">By prod PartCode 2</label>
+
+				@*  <input type="hidden" asp-for="ByprodItemCode2" /> *@
+				<select class="form-select" id="Byprodpartcode2" name="Byprodpartcode2" style="width:190px;">
+					<option value="">--Select--</option>
+					@if (Model.Mode == "U" || Model.Mode == "V")
+					{
+						<option value="@Model.ByprodItemCode2" selected>@Model.Byprodpartcode2</option>
+					}
+				</select>
+			</div>
+			<div class="col-lg-2 col-md-4 col-sm-6 col-xs-12" style="width:210px;">
+				<label asp-for="ByprodItemCode2" class="form-label">By prod ItemName 2</label>
+				<select class="form-select" asp-for="ByprodItemCode2" id="ByprodItemCode2" style="width:190px;">
+					<option value="">--Select--</option>
+					@if (Model.Mode == "U" || Model.Mode == "V")
+					{
+						<option value="@Model.ByprodItemCode2" selected>@Model.ByprodItemName2</option>
+					}
+				</select>
+			</div>
+
+
+			<div class="col-lg-1 col-md-4 col-sm-6 col-xs-12">
+				<label asp-for="Dia" class="form-label">Dia </label>
+				<input asp-for="Dia" class="form-control" type="text" />
+			</div>
+
+			<div class="col-lg-1 col-md-4 col-sm-6 col-xs-12">
+				<label asp-for="grade" class="form-label">grade</label>
+				<input asp-for="grade" class="form-control" type="text" />
+			</div>
+			<div class="col-lg-1 col-md-4 col-sm-6 col-xs-12">
+				<label asp-for="thickness" class="form-label">thickness</label>
+				<input asp-for="thickness" class="form-control" type="text" min="0" />
+			</div>
+			<div class="col-lg-1 col-md-4 col-sm-6 col-xs-12">
+				<label asp-for="width" class="form-label">width</label>
+				<input asp-for="width" class="form-control" type="text" min="0" />
+			</div>
+			<div class="col-lg-1 col-md-4 col-sm-6 col-xs-12">
+				<label asp-for="length" class="form-label">length</label>
+				<input asp-for="length" class="form-control" type="text" min="0" />
+			</div>
+
+
+
+
+
+			<div class="col-lg-6">
+				<div class="row g-2 gx-3">
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 
 <div class="accordion-item">
- @*    <h2 class="accordion-header" id="H_Grid">
+	@*    <h2 class="accordion-header" id="H_Grid">
         <button class="accordion-button text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_Grid" aria-expanded="true" aria-controls="B_Grid">
             <strong style="text-transform:uppercase"><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Bom Item</strong>
         </button>
     </h2> *@
-    <div id="B_Grid optionalParameterBtn" class="accordion-collapse collapse show pnl4 bg-gradient" aria-labelledby="H_Grid">
-        <div class="accordion-body overflow-auto pb-0">
-            <table class="table table-hover table-bordered table-striped">
-                <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
-                    <tr>
-                        <th>Action</th>
-                        <th>Seq. No</th>
-                        <th>RM Part Code</th>
-                        <th>RM Item Name</th>
-                        <th>Qty</th>
-                        <th>Unit</th>
-                        <th>Location</th>
-                        <th>MPN No</th>
-                        <th>Used Stage ID</th>
-                        <th>Alt Part Code 1</th>
-                        <th>Alt Item Name 1</th>
-                        <th>Alt Qty 1</th>
-                        <th>Alt Part Code 2</th>
-                        <th>Alt Item Name 2</th>
-                        <th>Alt Qty 2</th>
-                        <th>Issue To Job Work</th>
-                        <th>Direct/Process</th>
-                        <th>Rec Frm Cust Job Work</th>
-                        <th>Pkg Item</th>
-                        <th>Remark</th>
-                        <th>Gross Wt</th>
-                        <th>Net Wt</th>
-                        <th>Scrap</th>
-                        <th>Runner Item Code</th>
-                        <th>Runner Qty</th>
-                        <th>Burn Qty</th>
-                        <th>Cust Jw Adjustment Mandatory</th>
-                        <th>By prod ItemName 1</th>
-                        <th>By prod ItemName 2</th>
-                        <th>By ProdQty 1</th>
-                        <th>By ProdQty 2</th>
-                        <th>Dia</th>
-                        <th>grade</th>
-                        <th>thickness</th>
-                        <th>width</th>
-                        <th>length</th>
-                    </tr>
-                </thead>
-                <tbody id="divBomGrid">
-                    <partial name="_BomGrid"  />
-                </tbody>
-            </table>
-        </div>
-    </div>
+	<div id="B_Grid optionalParameterBtn" class="accordion-collapse collapse show pnl4 bg-gradient" aria-labelledby="H_Grid">
+		<div class="accordion-body overflow-auto pb-0">
+			<table class="table table-hover table-bordered table-striped">
+				<thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+					<tr>
+						<th>Action</th>
+						<th>Seq. No</th>
+						<th>RM Part Code</th>
+						<th>RM Item Name</th>
+						<th>Qty</th>
+						<th>Unit</th>
+						<th>Location</th>
+						<th>MPN No</th>
+						<th>Used Stage ID</th>
+						<th>Alt Part Code 1</th>
+						<th>Alt Item Name 1</th>
+						<th>Alt Qty 1</th>
+						<th>Alt Part Code 2</th>
+						<th>Alt Item Name 2</th>
+						<th>Alt Qty 2</th>
+						<th>Issue To Job Work</th>
+						<th>Direct/Process</th>
+						<th>Rec Frm Cust Job Work</th>
+						<th>Pkg Item</th>
+						<th>Remark</th>
+						<th>Gross Wt</th>
+						<th>Net Wt</th>
+						<th>Scrap</th>
+						<th>Runner Item Code</th>
+						<th>Runner Qty</th>
+						<th>Burn Qty</th>
+						<th>Cust Jw Adjustment Mandatory</th>
+						<th>By prod ItemName 1</th>
+						<th>By prod ItemName 2</th>
+						<th>By ProdQty 1</th>
+						<th>By ProdQty 2</th>
+						<th>Dia</th>
+						<th>grade</th>
+						<th>thickness</th>
+						<th>width</th>
+						<th>length</th>
+					</tr>
+				</thead>
+				<tbody id="divBomGrid">
+					<partial name="_BomGrid" />
+				</tbody>
+			</table>
+		</div>
+	</div>
 </div>
 <div class="accordion-item">
-    <h2 class="accordion-header" id="H_Approved">
-        <button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_Approved" aria-expanded="true" aria-controls="B_Approved">
-            <strong style="text-transform:uppercase"><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Approval Section</strong>
-        </button>
-    </h2>
-    <div id="B_Approved" class="accordion-collapse collapse pnl1 bg-gradient" aria-labelledby="H_Approved">
-        <div class="accordion-body">
-            <div class="row g-2 gx-3 justify-content-around">
-                <div class="col-lg-2 col-md-6 col-sm-6 col-xs-12">
-                    <label asp-for="UID" class="form-label">UID</label>
-                    <input asp-for="UID" class="form-control" readonly  />
-                </div>
-                <div class="col-lg-2 col-md-6 col-sm-6 col-xs-12">
-                    <label asp-for="CC" class="form-label"></label>
-                    <input asp-for="CC" class="form-control" readonly />
-                </div>
-                <div class="col-lg-2 col-md-6 col-sm-6 col-xs-12">
-                    <label asp-for="YearCode" class="form-label">Year Code</label>
-                    <input asp-for="YearCode" class="form-control" readonly />
-                </div>
-                <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
-                    <label asp-for="ApprovedBy" class="form-label">Approved By</label>
-                    <select asp-for="ApprovedBy" class="form-select" asp-items="@(new SelectList(Model.ApprovedByList,"Value", "Text"))">
-                        <option value="">-Select-</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-    </div>
+	<h2 class="accordion-header" id="H_Approved">
+		<button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_Approved" aria-expanded="true" aria-controls="B_Approved">
+			<strong style="text-transform:uppercase"><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Approval Section</strong>
+		</button>
+	</h2>
+	<div id="B_Approved" class="accordion-collapse collapse pnl1 bg-gradient" aria-labelledby="H_Approved">
+		<div class="accordion-body">
+			<div class="row g-2 gx-3 justify-content-around">
+				<div class="col-lg-2 col-md-6 col-sm-6 col-xs-12">
+					<label asp-for="UID" class="form-label">UID</label>
+					<input asp-for="UID" class="form-control" readonly />
+				</div>
+				<div class="col-lg-2 col-md-6 col-sm-6 col-xs-12">
+					<label asp-for="CC" class="form-label"></label>
+					<input asp-for="CC" class="form-control" readonly />
+				</div>
+				<div class="col-lg-2 col-md-6 col-sm-6 col-xs-12">
+					<label asp-for="YearCode" class="form-label">Year Code</label>
+					<input asp-for="YearCode" class="form-control" readonly />
+				</div>
+				<div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
+					<label asp-for="ApprovedBy" class="form-label">Approved By</label>
+					<select asp-for="ApprovedBy" class="form-select" asp-items="@(new SelectList(Model.ApprovedByList,"Value", "Text"))">
+						<option value="">-Select-</option>
+					</select>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
-<script>
-    function toggleSection() {
-        if ($("#hideUnhideToggle").is(":checked")) {
-            $("#B_Measurements").show();
-        } else {
-            $("#B_Measurements").hide();
-        }
-    }
-</script>
+
 

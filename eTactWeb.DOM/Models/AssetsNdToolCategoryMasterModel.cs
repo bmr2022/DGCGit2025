@@ -16,8 +16,8 @@ namespace eTactWeb.DOM.Models
         public long? ToolMaincategoryId { get; set; }
         public string EntryByMachineName { get; set; }
         public long ActualEntryBy { get; set; }
-        public DateTime? ActualEntryDate { get; set; }
-        public DateTime? LastUpdationDate { get; set; }
+        public string? ActualEntryDate { get; set; }
+        public string? LastUpdationDate { get; set; }
         public long? LastUpdatedBy { get; set; }
         public string Mode { get; set; }
         public string? Otherdetail { get; set; }
