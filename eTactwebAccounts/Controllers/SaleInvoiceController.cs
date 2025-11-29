@@ -1631,17 +1631,22 @@ namespace eTactWeb.Controllers
                 {
                     saleBillDetail = JsonConvert.DeserializeObject<List<SaleBillDetail>>(modelJson);
                 }
-
+                int seq = Convert.ToInt32(SeqNo);
                 if (saleBillDetail != null && saleBillDetail.Count > 0)
                 {
                     saleBillDetail.RemoveAt(Convert.ToInt32(Indx));
 
-                    Indx = 0;
+                    //Indx = 0;
 
-                    foreach (var item in saleBillDetail)
+                    //foreach (var item in saleBillDetail)
+                    //{
+                    //    Indx++;
+                    //    item.SeqNo = Indx;
+                    //}
+                    var removeItem = saleBillDetail.FirstOrDefault(x => x.SeqNo == seq);
+                    if (removeItem != null)
                     {
-                        Indx++;
-                        item.SeqNo = Indx;
+                        saleBillDetail.Remove(removeItem);
                     }
                     MainModel.saleBillDetails = saleBillDetail;
 
@@ -1656,18 +1661,24 @@ namespace eTactWeb.Controllers
                 {
                     saleBillGrid = JsonConvert.DeserializeObject<List<SaleBillDetail>>(modelJson);
                 }
-                int Indx = Convert.ToInt32(SeqNo) - 1;
-
+                //int Indx = Convert.ToInt32(SeqNo) - 1;
+                int seq = Convert.ToInt32(SeqNo);
                 if (saleBillGrid != null && saleBillGrid.Count > 0)
                 {
-                    saleBillGrid.RemoveAt(Convert.ToInt32(Indx));
+                    //saleBillGrid.RemoveAt(Convert.ToInt32(Indx));
 
-                    Indx = 0;
+                    //Indx = 0;
 
-                    foreach (var item in saleBillGrid)
+                    //foreach (var item in saleBillGrid)
+                    //{
+                    //    Indx++;
+                    //    item.SeqNo = Indx;
+                    //}
+
+                    var removeItem = saleBillGrid.FirstOrDefault(x => x.SeqNo == seq);
+                    if (removeItem != null)
                     {
-                        Indx++;
-                        item.SeqNo = Indx;
+                        saleBillGrid.Remove(removeItem);
                     }
                     MainModel.saleBillDetails = saleBillGrid;
 
@@ -1682,7 +1693,7 @@ namespace eTactWeb.Controllers
             bool exists = false;
             object Result = string.Empty;
 
-            int Indx = Convert.ToInt32(model.SeqNo) - 1;
+            //int Indx = Convert.ToInt32(model.SeqNo) - 1;
 
             string modelJson = HttpContext.Session.GetString("KeySaleBillGrid");
             List<SaleBillDetail> ItemDetailGrid = new List<SaleBillDetail>();
@@ -1699,6 +1710,7 @@ namespace eTactWeb.Controllers
 
             //_MemoryCache.TryGetValue("KeyTaxGrid", out List<TaxModel> TaxGrid);
             model.ItemDetailGrid = ItemDetailGrid;
+            int seq = Convert.ToInt32(model.SeqNo);
 
             var ItmPartCode = model.ItemDetailGrid.FirstOrDefault(item => item.SeqNo == Convert.ToInt32(model.SeqNo)).ItemCode;
 
@@ -1712,7 +1724,13 @@ namespace eTactWeb.Controllers
                 return StatusCode(207, "Duplicate");
             }
             Result = model.ItemDetailGrid.Where(m => m.SeqNo == model.SeqNo).ToList();
-            model.ItemDetailGrid.RemoveAt(Convert.ToInt32(Indx));
+            //model.ItemDetailGrid.RemoveAt(Convert.ToInt32(Indx));
+
+            var removeItem = model.ItemDetailGrid.FirstOrDefault(x => x.SeqNo == seq);
+            if (removeItem != null)
+            {
+                model.ItemDetailGrid.Remove(removeItem);
+            }
 
             //Indx = 0;
             //foreach (ItemDetail item in model.ItemDetailGrid)
@@ -1844,12 +1862,32 @@ namespace eTactWeb.Controllers
                 var MainModel = new SaleBillModel();
                 var saleBillDetail = new List<SaleBillDetail>();
                 var rangeSaleBillGrid = new List<SaleBillDetail>();
+                int newSeqNo = 0;
+
+                if (SaleBillDetail == null || SaleBillDetail.Count == 0)
+                {
+                    // No items → start with 1
+                    newSeqNo = 1;
+                }
+                else
+                {
+                    // If user did not pass SeqNo → auto-increment
+                    if (model.SeqNo == 0 || model.SeqNo == null)
+                    {
+                        newSeqNo = SaleBillDetail.Max(x => x.SeqNo) + 1;
+                    }
+                    else
+                    {
+                        // Use existing SeqNo
+                        newSeqNo = model.SeqNo;
+                    }
+                }
 
                 if (model != null)
                 {
                     if (SaleBillDetail == null)
                     {
-                        model.SeqNo = 1;
+                        model.SeqNo = newSeqNo;
                         saleBillDetail.Add(model);
                     }
                     else
@@ -1859,10 +1897,9 @@ namespace eTactWeb.Controllers
                             return StatusCode(207, "Duplicate");
                         }
 
-                        if (model.SeqNo == 0)
-                        {
-                            model.SeqNo = SaleBillDetail.Count + 1;
-                        }
+                        
+                            model.SeqNo = newSeqNo;
+                        
                        
 
                         //model.SeqNo = SaleBillDetail.Count + 1;

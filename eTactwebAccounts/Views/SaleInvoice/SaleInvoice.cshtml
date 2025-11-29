@@ -265,12 +265,15 @@
                                                     <th data-columnno="4" data-sortorder="asc" class="sortCol gridHiddenField"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Prod/UnProd</th> @*gridHiddenField*@
 
                                                     <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bill Qty</th>
-                                                    <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Qty</th>
-                                                    <th data-columnno="20" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rate</th>
-                                                    <th data-columnno="20" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unit Of Rate</th>
+                                                    <th data-columnno="19" data-sortorder="asc" class="sortCol SaleBillOtherDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Qty</th>
+                                                    <th data-columnno="20" data-sortorder="asc" class="sortCol "><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rate</th>
+                                                    <th data-columnno="20" data-sortorder="asc" class="sortCol SaleBillOtherDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unit Of Rate</th>
                                                     <th data-columnno="22" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Dis Per</th>
                                                     <th data-columnno="23" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Dis Amt</th>
                                                     <th data-columnno="24" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Amt</th>
+                                                    <th data-columnno="24" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Location</th>
+                                                    <th data-columnno="24" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Group</th>
+                                                    <th data-columnno="24" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Vehicle No</th>
                                                     <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO No</th>
                                                     <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO Date</th>
                                                     <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Cust Order No</th>
@@ -297,7 +300,6 @@
                                                     <th data-columnno="26" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Process Name</th>
                                                     <th data-columnno="26" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>GST Per</th>
                                                     <th data-columnno="26" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>GST Type</th>
-                                                    <th data-columnno="26" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unit Of Rate</th>
                                                     <th data-columnno="26" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Original MRP</th>
                                                     <th data-columnno="26" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MRP</th>
                                                     <th data-columnno="26" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt SO Pend Qty</th>
@@ -4547,8 +4549,12 @@
                 "StoreName": $('#Storeid').find(':selected').text() == '-Select-' ? "" : $('#StoreId').find(':selected').text(),
                 "HSNNo": $('#HSNNo').val(),
                 "Unit": $('#Unit').val(),
+                "ItemLocation": $('#ItemLocation').val(),
+                "ItemGroupName": $('#ItemGroupName').val(),
+                "VehicleNo": $('#VehicleNo').val(),
+
                 "AltUnit": $('#AltUnit').val(),
-                "UnitRate": $('#UnitRate').val(),
+                "UnitOfRate": $('#UnitRate').val(),
                 "Batchno": $('#Batchno').find(':selected').text().trim(),
                 "Uniquebatchno": $('#Uniquebatchno').find(':selected').text().trim(),
                 "LotStock": $('#LotStock').val(),
@@ -4570,7 +4576,6 @@
                 "GSTPer": $('#GSTPer').val(),
                 "GSTType": $('#GSTType').val(),
                 "ItemSize": $('#ItemSize').val(),
-                "UnitOfRate": $('#UnitOfRate').val(),
                 "OriginalMRP": $('#OriginalMRP').val(),
                 "MRP": $('#MRP').val(),
                 "AdviseEntryId": $('#AdviseEntryId').val(),
@@ -6038,7 +6043,7 @@
                             $('#Unit').val(obj[0].Unit);
                             $('#NoofCase').val(obj[0].NoofCase);
                             $('#Qty').val(obj[0].Qty);
-                            $('#UnitOfRate').val(obj[0].UnitOfRate);
+                            $('#UnitRate').val(obj[0].UnitOfRate);
                             $('#RateInOtherCurr').val(obj[0].RateInOtherCurr);
                             $('#Rate').val(obj[0].Rate);
                             $('#AltUnit').val(obj[0].AltUnit);
@@ -6093,7 +6098,7 @@
                                 $('.jobWorkChalln').hide();
                                 $('.gridHiddenField').hide();
                             }
-                            DeleteItemRow(SeqNo);
+                            // DeleteItemRow(SeqNo);
                         }
                     },
                     error: function (response) {
@@ -6134,7 +6139,7 @@
 
                         $('#divSaleBillList').html(data);
 
-                        BasicTotal();
+                       
                         ClearDRCRGrid();
                         ClearAdjustmentGrid();
 
@@ -6162,6 +6167,13 @@
                             $('#DiscountAmt').val(0);
                             $('#DiscountAmt').prop("readonly", false);
                         }
+
+
+
+
+
+
+                        BasicTotal();
                     },
                     error: function (response, status, xhr) {
                         alert(response.responseText);
@@ -6516,6 +6528,12 @@
                             // $('#ItemDescription').val(obj.Result[0].ItemDescription);
                             $('#HSNNo').val("");
                             $('#HSNNo').val(obj.Result[0].HsnNo);
+                            $('#ItemGroupName').val("");
+                            $('#ItemGroupName').val(obj.Result[0].Group_name);
+                            $('#ItemLocation').val("");
+                            $('#ItemLocation').val(obj.Result[0].Location);
+                            $('#VehicleNo').val("");
+                            $('#VehicleNo').val(obj.Result[0].Vehicle);
 
                             if ($('#DiscountPer').val() != 0 || $('#DiscountAmt').val() != 0) {
                                 $('#DiscountPer').prop("readonly", true);
@@ -6701,26 +6719,46 @@
             });
         }
 
+        // function BasicTotal() {
+        //     var columnCount = $('#divSaleBillList tr td').length;
+        //     //var taxRowCount = $('#divTaxGrid tr').length;
+        //     sum = 0;
+        //     var rowCount = $('#divSaleBillList tr').length;
+        //     //noofitems
+        //     if (columnCount > 1)
+        //         $('#lblItemCount').text(rowCount);
+        //     else
+        //         $('#lblItemCount').text(0);
+
+        //     for (var i = 1; i <= rowCount; i++) {
+
+        //         sum += parseFloat($('#GridAmount-' + i).text() == '.00' ? 0 : $('#GridAmount-' + i).text());
+        //     }
+
+        //     $('#lblItemNetAmount').text(sum.toFixed(2));
+        //     $('#BillAmt').val(sum.toFixed(2));
+        // }
+
+
         function BasicTotal() {
             var columnCount = $('#divSaleBillList tr td').length;
             //var taxRowCount = $('#divTaxGrid tr').length;
             sum = 0;
-            var rowCount = $('#divSaleBillList tr').length;
-            //noofitems
-            if (columnCount > 1)
-                $('#lblItemCount').text(rowCount);
-            else
-                $('#lblItemCount').text(0);
+            let rowsExist = $(".GridAmount").length > 0;
 
-            for (var i = 1; i <= rowCount; i++) {
 
-                sum += parseFloat($('#GridAmount-' + i).text() == '.00' ? 0 : $('#GridAmount-' + i).text());
+            if (rowsExist) {
+                $(".GridAmount").each(function () {
+                    let value = parseFloat($(this).text());
+                    sum += isNaN(value) ? 0 : value;
+                });
+            } else {
+                sum = 0;
             }
 
             $('#lblItemNetAmount').text(sum.toFixed(2));
             $('#BillAmt').val(sum.toFixed(2));
         }
-
         $('#Uniquebatchno').change(function () {
 
             FillLotStock();
