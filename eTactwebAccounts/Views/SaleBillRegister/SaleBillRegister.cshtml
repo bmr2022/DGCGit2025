@@ -52,36 +52,18 @@
                                             <input asp-for="ToDate" class="form-control" />
                                         </div>
                                     </div>
-                                </div>         
-                                
+                                </div>
+
                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                     <label asp-for="ReportType" class="form-label">Report Type</label>
                                     <select asp-for="ReportType" class="form-select">
                                         <option disabled value="">-Select-</option>
-                                        <option selected value="SALESUMMARY">Sale Summary</option>
-                                        <option value="SALESUMMARYREG">Sale  Summary Register</option>
-                                        <option  value="GSTSALESUMMARY">GST Sale  Summary</option> 
-                                        <option value="SALEDETAIL">Sale Detail</option>
-                                        <option value="CustomerItemWiseMonthlyData">Customer+Item  Wise  Trend</option>
-                                        <option value="CustomerWiseMonthlyTrend">CustomerItemWiseMonthlyTrend</option>
-                                        <option value="ItemWiseMonthlyTrend">ItemWiseMonthlyTrend</option>
-                                        <option value="CustomerSalesPersonWiseMonthlyTrend">Customer+Sales Person Wise Monthly Trend</option>
-                                        <option value="SaleCompleteDetail">Sale Complete Detail</option>
-                                        <option value="Sale Modification History">Sale Modification History</option>
-                                        <option value="Customer + Total Qty">Customer + Total Qty</option>
-                                        <option value="Customer + Total Amount">Customer + Total Amount</option>
-                                        <option value="Item + Total Qty">Item + Total Qty</option>
-                                        <option value="Item + Total Amount">Item + Total Amount</option>
-                                        <option value="HSN + Total Qty">HSN + Total Qty</option>
-                                        <option value="HSN + Total Amount">HSN + Total Amount</option>
-                                        <option value="Group + Total Amount + Total Qty">Group + Total Amount + Total Qty</option>
-                                        <option value="Customer + Item + Total Amount + Total Qty">Customer + Item + Total Amount + Total Qty</option>
                                     </select>
                                 </div>
 
                                 <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
                                     <label asp-for="CustomerName" class="form-label">CustomerName</label>
-                                    <div class="form-check form-switch mx-3 w-auto position-absolute d-inline"> 
+                                    <div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
                                     </div>
                                     <select asp-for="CustomerName" class="form-control">
                                         <option value="">-Select-</option>
@@ -187,7 +169,7 @@
                                                     <label class="form-label">Total Qty</label>
                                                     <input id="totOpenStock" class="form-control" readonly />
                                                 </div>
-                                              
+
                                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="stockDiv">
                                                     <label class="form-label">Total Amount</label>
                                                     <input id="totAmount" class="form-control" readonly />
@@ -206,11 +188,11 @@
 </div>
 
 @section Scripts
-    {
+{
     <script>
 
         $(function () {
-             
+
             GetServerDate();
             $('#B_SAGrid').addClass('show');//open accordion on ready
             var currentDate = new Date();
@@ -228,13 +210,15 @@
             $('#HSNNO').select2();
             $('#CustomerName').select2();
             $('#ReportType').select2();
+            FillReportType("SaleBillRegisterReport");
             FillSaleBillList();
             FillItemNamePartcodeList();
             FillDocumentList();
             FillCustomerList();
-            GetSaleBillRegisterData();//INITIAL - ON LOAD METHOD
+            GetSaleBillRegisterData();
         });
-  function GetServerDate() {
+
+        function GetServerDate() {
             $.ajax({
                 type: "GET",
                 url: "@Url.Action("GetServerDate")",
@@ -242,17 +226,17 @@
                 success: function (result, status, error) {
                     console.log(result);
                     if (result != null) {
-                       // $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                        // $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
                         //$('#InvoiceDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
 
                         var firstDayOfMonth = getFirstDayOfMonth(result);
                         $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", firstDayOfMonth);
                         $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
-                     }
+                    }
                 }
             });
         }
-  function getFirstDayOfMonth(dateString){
+        function getFirstDayOfMonth(dateString) {
             const [day, month, year] = dateString.split('/');
 
             // Create a new Date object (months are 0-indexed, so subtract 1 from the month)
@@ -285,7 +269,7 @@
             return dateString;
         }
         function GetSaleBillRegisterData() {
-  $.ajax({
+            $.ajax({
                 type: "POST",
                 url: "@Url.Action("GetSaleBillRegisterData")",
                 async: false,
@@ -293,17 +277,17 @@
                     "ReportType": $('#ReportType').val(), "FromDate": $('#FromDate').val(), "ToDate": $('#ToDate').val()
                 },
                 success: function (result, status, error) {
-                    
+
                     $('#divStockMainRegister').empty();
                     $('#divStockMainRegister').html(result);
                     $('#totalRows').text($('#divStockMainRegister tr').length - 1);
-             
+
                     // countAllTotal();
                 }
             });
         }
         $('#sendToPDF').click(async function () {
-             
+
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
 
@@ -333,7 +317,7 @@
 
             let currentY = 75;
             const headerFields = [
-                
+
             ];
 
             // Filter out any fields with empty values
@@ -371,13 +355,13 @@
             // Handle report type logic
             switch (reportTypeValue) {
                 case 'SALESUMMARY':
-                    headers = ["#Sr","Description", "For The Duration", "For Financial Year"];
+                    headers = ["#Sr", "Description", "For The Duration", "For Financial Year"];
 
                     console.log("Data:", rows);
                     body = rows.map((r, i) => [
-                        i + 1, r.description, r.forTheDuration ,r.forFinYear 
+                        i + 1, r.description, r.forTheDuration, r.forFinYear
                     ]);
-                break;
+                    break;
                 case 'SALEDETAIL':
                     headers = ["#Sr", "Sale Bill No", "Sale Bill Date", "Customer Name", "GST No", "Customer Address",
                         "State", "State Code", "Country", "Part Code", "Item Name", "HSN No", "Total Bill Qty", "Unit",
@@ -405,7 +389,7 @@
                     ]);
 
 
-                break;
+                    break;
 
                 case 'CustomerItemWiseMonthlyData':
                     headers = [
@@ -419,7 +403,7 @@
                     ]);
 
 
-                break;
+                    break;
                 case 'CustomerWiseMonthlyTrend':
                     headers = [
                         "#Sr", "Customer Name",
@@ -434,7 +418,7 @@
                         r.aprQty, r.mayQty, r.junQty, r.julQty, r.augQty, r.sepQty, r.octQty, r.novQty, r.decQty, r.janQty, r.febQty, r.marQty
                     ]);
 
-                break;
+                    break;
                 case 'SaleCompleteDetail':
                     headers = [
                         "#Sr", "Sale Bill No", "Sale Bill Date", "Customer Name", "GST No", "Customer Address",
@@ -468,7 +452,7 @@
                         r.lastUpdatedDate, r.entryId, r.yearCode
                     ]);
 
-                break;
+                    break;
                 case 'ItemWiseMonthlyTrend':
                     headers = [
                         "#Sr", "Item Name", "Part Code",
@@ -485,7 +469,7 @@
                         r.aprQty, r.mayQty, r.junQty, r.julQty, r.augQty, r.sepQty, r.octQty, r.novQty, r.decQty, r.janQty, r.febQty, r.marQty
                     ]);
 
-                break;
+                    break;
                 case 'CustomerSalesPersonWiseMonthlyTrend':
                     headers = [
                         "#Sr", "Customer Name", "Sales Person Name",
@@ -503,10 +487,10 @@
                         r.aprQty, r.mayQty, r.junQty, r.julQty, r.augQty, r.sepQty, r.octQty, r.novQty, r.decQty, r.janQty, r.febQty, r.marQty
                     ]);
 
-                break;
+                    break;
 
 
-                
+
 
                 default:
                     headers = ["#Sr", "Sale Bill No", "Sale Bill Date", "Customer Name", "GST No", "Customer Address",
@@ -588,7 +572,7 @@
             doc.save(`SaleBill_${reportTypeValue.replace(/\s+/g, '_')}.pdf`);
 
         });
-   function FillSaleBillList() {
+        function FillSaleBillList() {
             var FromDate = $('#FromDate').val();
             var FromParts = FromDate.split("/");
             var formattedFromDate = `${FromParts[2]}-${FromParts[1]}-${FromParts[0]}`;
@@ -794,16 +778,16 @@
         }
 
         function countAllTotal() {
-             
+
             var rowCount = $('#divStockRegisterBody tr').length;
             var OpnStk = 0;
             var TotStk = 0;
             var IssQty = 0;
             var RecQty = 0;
             var rate = 0;
-            var totAmount =0;
+            var totAmount = 0;
             for (var i = 1; i <= rowCount; i++) {
-                OpnStk += $('#opnStk-' + i).text() =='' ? 0 : parseFloat($('#opnStk-' + i).text());
+                OpnStk += $('#opnStk-' + i).text() == '' ? 0 : parseFloat($('#opnStk-' + i).text());
                 TotStk += $('#totStk-' + i).text() == '' ? 0 : parseFloat($('#totStk-' + i).text());
                 IssQty += $('#issQty-' + i).text() == '' ? 0 : parseFloat($('#issQty-' + i).text());
                 RecQty += $('#recQty-' + i).text() == '' ? 0 : parseFloat($('#recQty-' + i).text());
@@ -814,12 +798,12 @@
                 //}
             }
 
-            $('#totOpenStock').val(isNaN(OpnStk) ? 0 : OpnStk.toFixed(2)); 
+            $('#totOpenStock').val(isNaN(OpnStk) ? 0 : OpnStk.toFixed(2));
             $('#totAmount').val(isNaN(totAmount) ? 0 : totAmount.toFixed(2));
         }
 
         $(document).on("click", ".sortCol", function () {
-             ;
+            ;
             var $column = $(this).parent().closest("th");
             var colno = $(this).data('columnno');
             var currentOrder = $(this).data('sortorder');
@@ -843,7 +827,7 @@
         });
 
         function sortTable(columnIndex, ascending) {
-             
+
             var table = $('#ReportTable');
             var rows = table.find('#divStockRegisterBody > tr').toArray();
 
@@ -897,31 +881,31 @@
             $("#search-box").val('').trigger('keyup'); // Reset search box and trigger the search
         });
 
-        function DeleteRow(i){
-             
-            var indexToRemove = i-1;
-            $('#SAGridRow-'+i).remove();
+        function DeleteRow(i) {
+
+            var indexToRemove = i - 1;
+            $('#SAGridRow-' + i).remove();
             $('#ReportTable tbody tr').each(function (index) {
-                $(this).attr('id', 'SAGridRow-' + (index+1));
+                $(this).attr('id', 'SAGridRow-' + (index + 1));
 
 
                 $(this).find('td:first-child a:first-child').each(function (tdIndex) {
-                    $(this).attr('id', (index+1));
+                    $(this).attr('id', (index + 1));
                 });
-       
+
                 $(this).find('td[id^="amount-"]').each(function (tdIndex) {
-                    $(this).attr('id', 'amount-' + (index+1));
+                    $(this).attr('id', 'amount-' + (index + 1));
                 });
-                
+
             });
             //$('#ReportTable tr:eq(' + indexToRemove + ')').remove();
             countAllTotal();
             $('#totalRows').text($('#divStockMainRegister tr').length - 1);
         }
-        $('#FromDate').change(function (){
+        $('#FromDate').change(function () {
             GetGateRegisterData();
             FillCustomerList();
-             FillDocumentList();
+            FillDocumentList();
             FillSaleBillList();
             FillItemNamePartcodeList();
             FillSONOList();

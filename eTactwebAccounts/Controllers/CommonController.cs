@@ -20,11 +20,13 @@ namespace eTactWeb.Controllers
         private readonly IWebHostEnvironment _IWebHostEnvironment;
         private readonly IConfiguration iconfiguration;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public CommonController(ILogger<CommonController> logger, IDataLogic iDataLogic, IHttpContextAccessor httpContextAccessor)
+        private readonly ICommon _ICommon;
+        public CommonController(ILogger<CommonController> logger, IDataLogic iDataLogic, IHttpContextAccessor httpContextAccessor, ICommon iCommon)
         {
             Logger = logger;
             IDataLogic = iDataLogic;
             _httpContextAccessor = httpContextAccessor;
+            _ICommon = iCommon;
         }
 
         public IDataLogic IDataLogic { get; }
@@ -1384,7 +1386,11 @@ namespace eTactWeb.Controllers
             return Json(new List<AdjustmentModel>());
         }
         #endregion
-
-
+        public async Task<JsonResult> FillReportTypes(string TableName)
+        {
+            var JSON = await _ICommon.FillReportTypes(TableName);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
     }
 }

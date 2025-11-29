@@ -10,5 +10,6 @@ namespace eTactWeb.Services.Interface
     public interface ICommon
     {
         Task<ResponseResult> CheckFinYearBeforeSave(int YearCode, string Date, string DateName);
+        Task<ResponseResult> FillReportTypes(string TableName);
     }
 }

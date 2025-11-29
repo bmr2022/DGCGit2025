@@ -311,9 +311,8 @@ namespace eTactWeb
             services.TryAddTransient<ICustSaleNewRate , CustSaleNewRateBLL>();
             services.TryAddTransient<IVendorMater , VendorUserBLL>();
             services.TryAddTransient<IEmployeeAdvancePayement , EmployeeAdvancePayementBLL>();
+            services.AddHostedService<DashboardRefreshService>();
+
         }
-
-
-
     }
 }

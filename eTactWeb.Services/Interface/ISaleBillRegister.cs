@@ -21,7 +21,5 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FillSchNo(string FromDate, string ToDate);//2
         Task<ResponseResult> FillHSNNo(string FromDate, string ToDate);//7
         Task<ResponseResult> FillGSTNo(string FromDate, string ToDate);//6
-
-
     }
 }

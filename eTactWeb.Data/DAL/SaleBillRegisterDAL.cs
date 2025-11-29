@@ -609,6 +609,5 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-
     }
 }
