@@ -315,12 +315,15 @@
                                                     <th data-columnno="4" data-sortorder="asc" class="sortCol gridHiddenField"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Prod/UnProd</th> @*gridHiddenField*@
 
                                                     <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bill Qty</th>
-                                                    <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Qty</th>
-                                                    <th data-columnno="20" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rate</th>
-                                                    <th data-columnno="20" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unit Of Rate</th>
+                                                    <th data-columnno="19" data-sortorder="asc" class="sortCol SaleBillOtherDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Qty</th>
+                                                    <th data-columnno="20" data-sortorder="asc" class="sortCol "><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rate</th>
+                                                    <th data-columnno="20" data-sortorder="asc" class="sortCol SaleBillOtherDetail"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unit Of Rate</th>
                                                     <th data-columnno="22" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Dis Per</th>
                                                     <th data-columnno="23" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Dis Amt</th>
                                                     <th data-columnno="24" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Amt</th>
+                                                    <th data-columnno="24" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Location</th>
+                                                    <th data-columnno="24" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Group</th>
+                                                    <th data-columnno="24" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Vehicle No</th>
                                                     <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO No</th>
                                                     <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO Date</th>
                                                     <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Cust Order No</th>
@@ -347,7 +350,6 @@
                                                     <th data-columnno="26" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Process Name</th>
                                                     <th data-columnno="26" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>GST Per</th>
                                                     <th data-columnno="26" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>GST Type</th>
-                                                    <th data-columnno="26" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unit Of Rate</th>
                                                     <th data-columnno="26" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Original MRP</th>
                                                     <th data-columnno="26" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MRP</th>
                                                     <th data-columnno="26" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt SO Pend Qty</th>
@@ -1302,6 +1304,7 @@
 
                     var txTotal = sum + txSum;
                     $('#NetTotal').val(txTotal.toFixed(2));
+                    $('#NetTotal1').val(txTotal.toFixed(2));
 
                     // Reset discount & rounding
                     $('#TotalDiscountPercentage').val(0);
@@ -4575,12 +4578,12 @@
             } else {
                 SetPartCodeItemName('ItemCode');
             }
-
+            FillSOItemRate();
             fillBomRevNo();
             // FillCurrentBatchINStore();
             FillSOPendQty();
             FillTotalStock();
-            FillSOItemRate();
+          
             DisableDiscountFields();
             CalculateAmount();
             GetlastBillDetail();
@@ -4961,6 +4964,7 @@
             if (newNet < 0) newNet = 0; // safety check
 
             $('#NetTotal').val(newNet.toFixed(2));
+            $('#NetTotal1').val(newNet.toFixed(2));
         }
 
         function addPackingExpenceInNetAmount() {
@@ -5479,7 +5483,11 @@
                 "StoreName": $('#Storeid').find(':selected').text() == '-Select-' ? "" : $('#StoreId').find(':selected').text(),
                 "HSNNo": $('#HSNNo').val(),
                 "Unit": $('#Unit').val(),
-
+                "ItemLocation": $('#ItemLocation').val(),
+                "ItemGroupName": $('#ItemGroupName').val(),
+                "VehicleNo": $('#VehicleNo').val(),
+                "AltUnit": $('#AltUnit').val(),
+                "UnitOfRate": $('#UnitRate').val(),
                 "Batchno": $('#Batchno').find(':selected').text().trim(),
                 "Uniquebatchno": $('#Uniquebatchno').find(':selected').text().trim(),
                 "LotStock": $('#LotStock').val(),
@@ -5500,7 +5508,6 @@
                 "GSTPer": $('#GSTPer').val(),
                 "GSTType": $('#GSTType').val(),
                 "ItemSize": $('#ItemSize').val(),
-                "UnitOfRate": $('#UnitOfRate').val(),
                 "OriginalMRP": $('#OriginalMRP').val(),
                 "MRP": $('#MRP').val(),
                 "AdviseEntryId": $('#AdviseEntryId').val(),
@@ -5522,7 +5529,7 @@
                 "BOMInd": $('#BOMInd').val(),
                 "BomRevNo": $('#BomRevNo').val(),
                 "ProducedUnprod": $('#ProducedUnprod').val(),
-                "SeqNo": parseInt($('#SeqNo').val()) == 0 ? (highestValue + 1) : parseInt($('#SeqNo').val()),
+                "SeqNo": parseInt($('#SeqNo').val()),
                 "CustJwAdjustmentMandatory": $('#CustJwAdjustmentMandatory').val(),
                 "StockableNonStockable": $('#ItemCode').find(':selected').data('stockable'),
                 "VendJwAdjustmentMandatory": $('#VendJwAdjustmentMandatory').val()
@@ -5555,8 +5562,8 @@
                         }
                         //$('#PartCode,#ItemCode').val(0).trigger("change");
 
-                        $('#Uniquebatchno,#Batchno,#Qty,#SOPendQty').val(0);
-                                      $('#PartCodeText,#ItemNameText').val("");
+                        $('#Uniquebatchno,#Batchno,#Qty,#SOPendQty,#SeqNo').val(0);
+                        $('#PartCodeText,#ItemNameText,#ItemLocation,#ItemGroupName,#VehicleNo').val("");
                         // $('#StoreId').val(0);
                         // $('#LotStock,#TotalStock').val("");
 
@@ -5966,6 +5973,7 @@
                             }));
                         } else {
                             AddMultipleItems();
+
                 ShowGroupWiseItems();
                             response([]);
                         }
@@ -6020,6 +6028,7 @@
                     $('#ItemCode').val(ui.item.itemCode);
                     $('#PartCode').val(ui.item.itemCode);
                     onItemSelected("ItemCode");
+                    FillSOItemRate();
                     return false;
                 },
                 focus: function (event, ui) {
@@ -6062,6 +6071,7 @@
                                 $("#ItemCode").val(match.Item_Code);
                                 $("#PartCode").val(match.Item_Code);
                                 onItemSelected("ItemCode");
+                                FillSOItemRate();
 
                             }
                             else
@@ -7188,7 +7198,7 @@
                             $('#Unit').val(obj[0].Unit);
                             $('#NoofCase').val(obj[0].NoofCase);
                             $('#Qty').val(obj[0].Qty);
-                            $('#UnitOfRate').val(obj[0].UnitOfRate);
+                            $('#UnitRate').val(obj[0].UnitOfRate);
                             $('#RateInOtherCurr').val(obj[0].RateInOtherCurr);
                             $('#Rate').val(obj[0].Rate);
                             $('#AltUnit').val(obj[0].AltUnit);
@@ -7227,6 +7237,9 @@
                             $('#ProdSchEntryId').val(obj[0].prodSchEntryId);
                             $('#ProdSchDate').val(obj[0].ProdSchDate);
                             $('#SchdeliveryDate').val(obj[0].SchdeliveryDate);
+                            $('#ItemLocation').val(obj[0].ItemLocation);
+                            $('#ItemGroupName').val(obj[0].ItemGroupName);
+                            $('#VehicleNo').val(obj[0].VehicleNo);
                             // FillUniqueBatchNo();
                                if (obj[0].Uniquebatchno != '0' && obj[0].Uniquebatchno != null && obj[0].Uniquebatchno != 0) {
                                     $('#Uniquebatchno').append('<option value="' + obj[0].Uniquebatchno + '" selected>' + obj[0].Uniquebatchno + '</option>');
@@ -7273,15 +7286,15 @@
             var BatchNo = $('#GridBatchNo-' + SeqNo).text();
 
             var allowDeletion = true;
-            if (!EditDeleteBatchValidation) {
-                for (var j = 0; j < itemBatchArray.length; j++) {
-                    if (itemBatchArray[j].SeqNo > SeqNo && itemBatchArray[j].itemCodee == IC) {
-                        $.notify('Cannot delete this row before deleting other BatchNo of this Item.', "error");
-                        allowDeletion = false;
-                        break;
-                    }
-                }
-            }
+            // if (!EditDeleteBatchValidation) {
+            //     for (var j = 0; j < itemBatchArray.length; j++) {
+            //         if (itemBatchArray[j].SeqNo > SeqNo && itemBatchArray[j].itemCodee == IC) {
+            //             $.notify('Cannot delete this row before deleting other BatchNo of this Item.', "error");
+            //             allowDeletion = false;
+            //             break;
+            //         }
+            //     }
+            // }
 
             if (allowDeletion) {
                 $.ajax({
@@ -7323,6 +7336,50 @@
                         }
 
                         calculatetotalqty();
+
+                       
+                        GetFeatureOption();
+                        $.notify('Item Added To Grid.', "success");
+                    
+
+                            
+                            $('#ItemNetAmount').val(sum);
+
+                    // $('#lblItemNetAmount').text(sum.toFixed(2));
+
+                    var txSum = 0;
+                    if($('#divTaxGrid tr td').length > 1) {
+                    for (var i = 1; i <= taxRowCount; i++) {
+                        txSum += parseFloat($('#txGridAmount-' + i).text() == '.00' ? 0 : $('#txGridAmount-' + i).text());
+                        }
+                    }
+
+                var txTotal = sum + txSum;
+                $('#NetTotal').val(txTotal.toFixed(2));
+                $('#NetTotal1').val(txTotal.toFixed(2));
+                $('#BaseNetTotal').val(txTotal.toFixed(2));
+                $('#AdjPendAmt').val($('#NetTotal').val());
+                $('#TotalDiscountPercentage').val(0);
+                $('#TotalAmtAftrDiscount').val(0);
+
+                // ClearGrid();
+                $('.PendingItem').hide();
+                $('.newitems').show();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     },
                     error: function (response, status, xhr) {
                         alert(response.responseText);
@@ -7685,6 +7742,12 @@
                             // $('#ItemDescription').val(obj.Result[0].ItemDescription);
                             $('#HSNNo').val("");
                             $('#HSNNo').val(obj.Result[0].HsnNo);
+                            $('#ItemGroupName').val("");
+                            $('#ItemGroupName').val(obj.Result[0].Group_name);
+                            $('#ItemLocation').val("");
+                            $('#ItemLocation').val(obj.Result[0].Location);
+                            $('#VehicleNo').val("");
+                            $('#VehicleNo').val(obj.Result[0].Vehicle);
 
                             if ($('#DiscountPer').val() != 0 || $('#DiscountAmt').val() != 0) {
                                 // $('#DiscountPer').prop("readonly", true);
@@ -7874,16 +7937,16 @@
             var columnCount = $('#divSaleBillList tr td').length;
             //var taxRowCount = $('#divTaxGrid tr').length;
             sum = 0;
-            var rowCount = $('#divSaleBillList tr').length;
-            //noofitems
-            if (columnCount > 1)
-                $('#lblItemCount').text(rowCount);
-            else
-                $('#lblItemCount').text(0);
+            let rowsExist = $(".GridAmount").length > 0;
+            
 
-            for (var i = 1; i <= rowCount; i++) {
-
-                sum += parseFloat($('#GridAmount-' + i).text() == '.00' ? 0 : $('#GridAmount-' + i).text());
+            if (rowsExist) {
+                $(".GridAmount").each(function () {
+                    let value = parseFloat($(this).text());
+                    sum += isNaN(value) ? 0 : value;
+                });
+            } else {
+                sum = 0;
             }
 
             $('#lblItemNetAmount').text(sum.toFixed(2));

@@ -1,10 +1,12 @@
 ﻿using DocumentFormat.OpenXml.EMMA;
+using DocumentFormat.OpenXml.Vml.Office;
 using eTactWeb.Data.Common;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
 using Microsoft.SqlServer.Server;
 using Newtonsoft.Json;
+using PdfSharp.Drawing.BarCodes;
 using System;
 using System.Globalization;
 using static eTactWeb.DOM.Models.Common;
@@ -203,6 +205,67 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
+
+        public async Task<ResponseResult> ListOfPendPOForSaleOrder(int AccountCode, string fromdate, string todate)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+
+
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "ListOfPendPOForSaleOrder"));
+
+                SqlParams.Add(new SqlParameter("@AccountCode", AccountCode));
+                SqlParams.Add(new SqlParameter("@StartDate", fromdate));
+                SqlParams.Add(new SqlParameter("@EndDate", todate));
+
+
+
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_SaleOrder", SqlParams);
+
+
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+
+        public async Task<ResponseResult> PendingPurchaseOrderItemDetailFromOtherBranch(
+    int AccountCode,
+    int EntryID,
+    int YearCode,
+    string DatabaseName
+)
+        {
+            var _ResponseResult = new ResponseResult();
+
+            try
+            {
+                var SqlParams = new List<dynamic>();
+
+                SqlParams.Add(new SqlParameter("@Flag", "PendingPurchaseOrderItemDetailFromOtherBranch"));
+                SqlParams.Add(new SqlParameter("@AccountCode", AccountCode));
+                SqlParams.Add(new SqlParameter("@EntryID", EntryID));
+                SqlParams.Add(new SqlParameter("@YearCode", YearCode));
+                SqlParams.Add(new SqlParameter("@DatabaseName", DatabaseName));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_SaleOrder", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+
         public async Task<ResponseResult> NewEntryId(int YearCode)
         {
             var _ResponseResult = new ResponseResult();

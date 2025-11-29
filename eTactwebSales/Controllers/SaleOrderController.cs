@@ -240,6 +240,13 @@ public class SaleOrderController : Controller
     }
 
 
+    public async Task<JsonResult> ListOfPendPOForSaleOrder(int AccountCode, string fromdate, string todate)
+    {
+        var JSON = await _ISaleOrder.ListOfPendPOForSaleOrder(AccountCode, fromdate, todate);
+        string JsonString = JsonConvert.SerializeObject(JSON);
+        return Json(JsonString);
+    }
+
     private byte[] ConvertImageToPdf(byte[] imageBytes)
     {
         // First ensure the image is in a supported format
@@ -1476,10 +1483,62 @@ public class SaleOrderController : Controller
 		}
 	}
 
-	//private readonly ICacheProvider _cacheProvider;
-	// GET: SaleOrderController/OrderDetail
-	//[Obsolete]
-	public async Task<JsonResult> GetTotalStock(int store, int Itemcode)
+
+
+    [HttpPost]
+
+    public IActionResult PendingPurchaseOrderItemDetailFromOtherBranch(
+    string flag, int AccountCode, int salebillEntryId,
+    int salebillYearCode, string DatabaseName, int DocumentTypeId, string DocumentTypeName)
+    {
+        var result = _ISaleOrder
+                     .PendingPurchaseOrderItemDetailFromOtherBranch(
+                     AccountCode, salebillEntryId, salebillYearCode, DatabaseName).Result;
+
+        var items = new List<SaleOrderModel>();
+        int seq = 1; // ← NEW
+        if (result != null)
+        {
+            var dt = result.Result.Tables[0];
+
+            foreach (DataRow dr in dt.Rows)
+            {
+                items.Add(new SaleOrderModel
+                {
+                    SeqNo = seq++,
+                   
+                    ItemCode = Convert.ToInt32(dr["Item_Code"]),
+                    PartCode = Convert.ToInt32(dr["Item_Code"]),
+                    PartText = dr["Partcode"].ToString(),
+                    ItemText = dr["ItemName"].ToString(),
+                    Qty = Convert.ToDecimal(dr["POQty"]),
+                   
+                    Rate = Convert.ToDecimal(dr["Rate"]),
+                    DiscPer = Convert.ToDecimal(dr["DiscPer"]),
+                    DiscRs = Convert.ToDecimal(dr["DiscRs"]),
+                    Amount = Convert.ToDecimal(dr["Amount"]),
+                    Location = dr["ItemLocation"].ToString(),
+                    HSNNo = Convert.ToInt32(dr["HSNNo"]),
+                    Unit = dr["unit"].ToString()
+                });
+            }
+        }
+
+        // IMPORTANT → wrap inside parent model
+        SaleOrderModel model = new SaleOrderModel();
+        //model = items;   // correct assignment
+        HttpContext.Session.Remove("DirectPurchaseBill");
+        string serializedModel = JsonConvert.SerializeObject(model);
+        HttpContext.Session.SetString("DirectPurchaseBill", serializedModel);
+
+        return PartialView("_DPBItemGrid", model);
+    }
+
+
+    //private readonly ICacheProvider _cacheProvider;
+    // GET: SaleOrderController/OrderDetail
+    //[Obsolete]
+    public async Task<JsonResult> GetTotalStock(int store, int Itemcode)
 	{
 		var JSON = await _ISaleOrder.GetTotalStockList(store, Itemcode);
 		string JsonString = JsonConvert.SerializeObject(JSON);
