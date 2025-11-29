@@ -4,7 +4,6 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
-using eTactWeb.Data.DAL;
 
 public class DashboardRefreshService : BackgroundService
 {
@@ -19,19 +18,31 @@ public class DashboardRefreshService : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _logger.LogInformation("Dashboard Refresh Service started (TEST MODE - every 1 minute)");
-
         while (!stoppingToken.IsCancellationRequested)
         {
             try
             {
-                // Run the dashboard refresh
+                var now = DateTime.Now;
+                var today930 = now.Date.AddHours(9).AddMinutes(30);
+                var today630 = now.Date.AddHours(18).AddMinutes(30);
+
+                // First run
+                DateTime nextRun;
+
+                if (now < today930)
+                    nextRun = today930;
+                else if (now < today630)
+                    nextRun = today630;
+                else
+                    nextRun = today930.AddDays(1);
+
+                var delay = nextRun - DateTime.Now;
+
+                _logger.LogInformation($"Dashboard refresh scheduled at: {nextRun}");
+
+                await Task.Delay(delay, stoppingToken);
+
                 await RefreshDashboardData();
-
-                _logger.LogInformation("Dashboard data refresh completed at: " + DateTime.Now);
-
-                // WAIT for 1 minute
-                await Task.Delay(TimeSpan.FromMinutes(10), stoppingToken);
             }
             catch (Exception ex)
             {
