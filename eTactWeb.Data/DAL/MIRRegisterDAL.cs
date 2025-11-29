@@ -95,6 +95,7 @@ namespace eTactWeb.Data.DAL
                                                        MRNNo = string.IsNullOrEmpty(dr["MRNNO"].ToString()) ? "" : dr["MRNNO"].ToString(),
                                                        MRNDate = string.IsNullOrEmpty(dr["MRNDate"].ToString()) ? "" : dr["MRNDate"].ToString(),
                                                        GateNo = string.IsNullOrEmpty(dr["GateNo"].ToString()) ? "" : dr["GateNo"].ToString(),
+                                                       GateDate = string.IsNullOrEmpty(dr["GateDate"].ToString()) ? "" : dr["GateDate"].ToString(),
                                                        MRNJWCustJW = string.IsNullOrEmpty(dr["MRNJWCustJW"].ToString()) ? "" : dr["MRNJWCustJW"].ToString(),
                                                        InvoiceNo = string.IsNullOrEmpty(dr["InvNo"].ToString()) ? "" : dr["InvNo"].ToString(),
                                                        InvoiceDate = string.IsNullOrEmpty(dr["InvDate"].ToString()) ? "" : dr["InvDate"].ToString(),

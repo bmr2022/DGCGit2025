@@ -27,13 +27,13 @@ else
                 }
                 else
                 {
-                    <a class="table-link link-primary" style="border:none;" id="editItemGrid-@Cntr" onclick="EditItemRows(@Cntr);">
+                    <a class="table-link link-primary" style="border:none;" id="editItemGrid-@Cntr" onclick="EditItemRows(@item.SeqNo);">
                         <span class="fa-stack">
                             <i class="fa fa-square fa-stack-2x"></i>
                             <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
                         </span>
                     </a>
-                    <a class="table-link link-danger" onclick="DeleteItemRow(@Cntr);">
+                    <a class="table-link link-danger" onclick="DeleteItemRow(@item.SeqNo);">
                         <span class="fa-stack">
                             <i class="fa fa-square fa-stack-2x"></i>
                             <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
@@ -48,12 +48,16 @@ else
             <td class="gridHiddenField">@item.ProducedUnprod</td>  @*gridHiddenField*@
 
             <td class="billQty" style="background-color:#FFFACD">@item.Qty</td>
-            <td class="AltQty" style="background-color:#FFFACD">@item.AltQty</td>
+            <td class="AltQty SaleBillOtherDetail" style="background-color:#FFFACD">@item.AltQty</td>
             <td class="rate" style="background-color:#FFFACD">@item.Rate</td>
-            <td class="Unitrate" style="background-color:#FFFACD">@item.UnitRate</td>
+            <td class="Unitrate SaleBillOtherDetail" style="background-color:#FFFACD">@item.UnitOfRate</td>
             <td class="DiscPer">@item.DiscountPer</td>
             <td class="DiscAmt">@item.DiscountAmt</td>
-            <td id="GridAmount-@Cntr" style="background-color:#FFFACD">@item.Amount.ToString("F2")</td>
+            <td class="GridAmount" id="GridAmount-@Cntr" style="background-color:#FFFACD">@item.Amount.ToString("F2")</td>
+            <td>@item.ItemLocation</td>
+            <td>@item.ItemGroupName</td>
+            <td>@item.VehicleNo</td>
+            <td></td>
             <td id="GridSONO-@Cntr">@item.SONO</td>
             <td>@(item.SODate != null ? (item.SODate).Split(" ")[0] : item.SODate)</td>
             <td>@item.CustOrderNo</td>
@@ -79,7 +83,6 @@ else
             <td>@item.ProcessName</td>
             <td>@item.GSTPer</td>
             <td>@item.GSTType</td>
-            <td>@item.UnitOfRate</td>
             <td>@item.OriginalMRP</td>
             <td>@item.MRP</td>
             <td class="SaleBillOtherDetail">@item.AltSOPendQty</td>

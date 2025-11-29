@@ -111,7 +111,8 @@ namespace eTactWeb.DOM.Models
         public decimal Day31 { get; set; }
         public decimal OrderQty { get; set; }
         public decimal BillQty { get; set; }
-
+        public List<string> DynamicHeaders { get; set; }
+        public Dictionary<string, string> DynamicColumns { get; set; }
         public IList<SaleOrderRegisterModel> saleOrderRegisterGrid { get; set; } 
     }
 }

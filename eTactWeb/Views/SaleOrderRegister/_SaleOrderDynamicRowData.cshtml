@@ -1,0 +1,78 @@
+﻿@model eTactWeb.DOM.Models.SaleOrderRegisterModel;
+
+<div class="table-responsive" style="max-height:300px;overflow-y:auto;">
+    <table class="table table-responsive table-hover table-bordered PMRPGrid TbCss text-nowrap mb-0" id="DynamicReportTable">
+
+        <thead class="bg-gradient card-headerBG text-light PMRPThead" style="position:sticky; top:0;" id="dynamicThead">
+            <tr>
+                <th>Sr#</th>
+
+                @* Dynamic headers *@
+                @if (Model.DynamicHeaders != null)
+                {
+                    @foreach (var header in Model.DynamicHeaders)
+                    {
+                        <th data-columnno="2" data-sortorder="asc" class="sortCol">
+                            <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>@header
+                        </th>
+                    }
+                }
+                else
+                {
+                    <th>No Columns Found</th>
+                }
+            </tr>
+        </thead>
+
+        <tbody id="divStockRegisterBody">
+            @{
+                int Counter = 0;
+                if (Model.saleOrderRegisterGrid == null || Model.saleOrderRegisterGrid.Count == 0)
+                {
+                    <tr>
+                        <td colspan="50" class="text-center text-black-50">
+                            <strong>NO DATA FOUND</strong>
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    foreach (var row in Model.saleOrderRegisterGrid)
+                    {
+                        Counter++;
+
+                        <tr id="DynamicRow-@Counter">
+                            <td>@Counter</td>
+                            @if (Model.DynamicHeaders != null)
+                            {
+                                @foreach (var header in Model.DynamicHeaders)
+                                {
+                                    <td>
+                                        @row.DynamicColumns[header]
+                                    </td>
+                                }
+                            }
+                        </tr>
+                    }
+                }
+            }
+        </tbody>
+
+    </table>
+</div>
+
+
+<style>
+    .sort-icon {
+        padding: 5px;
+        margin: 5px;
+        vertical-align: top;
+    }
+
+    #dynamicThead th {
+        background-color: #127387;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+</style>

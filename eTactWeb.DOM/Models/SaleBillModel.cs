@@ -165,6 +165,9 @@ namespace eTactWeb.DOM.Models
         public int? BomNo {  get; set; }
         public int? AccountCode {  get; set; }
         public string? AccountName {  get; set; }
+        public string? ItemLocation {  get; set; }
+        public string? ItemGroupName {  get; set; }
+        public string? VehicleNo {  get; set; }
     }
     public class SaleBillModel : SaleBillDetail
     {

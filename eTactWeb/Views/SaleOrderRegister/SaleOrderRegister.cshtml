@@ -61,15 +61,6 @@
                                     <label asp-for="ReportType" class="form-label">Report Type</label>
                                     <select asp-for="ReportType" class="form-select">
                                         <option disabled value="">-Select-</option>
-                                        <option value="Sale Order Summary" selected>Sale Order Summary</option>
-                                        <option value="Sale Order Detail">Sale Order Detail</option>
-                                        <option value="Schedule Summary" >Schedule Summary</option>
-                                        <option value="Schedule Summary Detail">Schedule Summary Detail</option>
-                                        <option value="Monthly Order+Schedule Summary">Monthly Order+Schedule Summary</option>
-                                        <option value="Day Wise Order+Schedule (Item Wise)">Day Wise Order+Schedule (Item Wise)</option>
-                                        <option value="Day Wise Order+Schedule (Item + Customer Wise)">Day Wise Order+Schedule (Item + Customer Wise)</option>
-                                        <option value="Monthly Order+Schedule+Pending Summary">Monthly Order+Schedule+Pending Summary</option>
-
                                     </select>
 
                                 </div>
@@ -226,10 +217,9 @@
          
             $('#Order_Schedule').select2();
 
-
+            FillReportType("SaleorderSaleScheduleReport");
             FillPartCode();
             FillItemName();
-            // FillWorkCenterName();
             FillSaleOrderNo();
             FillCustOrderNo();
             FillSchNo();

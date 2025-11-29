@@ -202,7 +202,7 @@ namespace eTactWeb
             services.TryAddScoped<IIndentRegister, IndentRegisterBLL>();
             services.TryAddScoped<IControlPlan, ControlPlanBLL>();
             services.TryAddScoped<IAutoGenerateSchedule, AutoGenerateScheduleBLL>();
-            services.TryAddScoped<IMISTracebilityReport, MISTracebilityReportBLL>();
+            services.TryAddScoped<ITracebilityReport, TracebilityReportBLL>();
             services.TryAddScoped<IMaterialConversion, MaterialConversionBLL>();
             services.TryAddScoped<IOrderAmendHistory, OrderAmendHistoryBLL>();
             services.TryAddScoped<ISaleOrderRegister, SaleOrderRegisterBLL>();
@@ -312,9 +312,8 @@ namespace eTactWeb
             services.TryAddTransient<ICustSaleNewRate , CustSaleNewRateBLL>();
             services.TryAddTransient<IVendorMater , VendorUserBLL>();
             services.TryAddTransient<IEmployeeAdvancePayement , EmployeeAdvancePayementBLL>();
+            services.AddHostedService<DashboardRefreshService>();
+
         }
-
-
-
     }
 }

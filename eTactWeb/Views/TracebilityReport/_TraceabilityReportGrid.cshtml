@@ -1,12 +1,12 @@
-﻿@model eTactWeb.DOM.Models.MISTracebilityReportModel;
+﻿@model eTactWeb.DOM.Models.TracebilityReportModel;
 
 <!-- ===================== UPPER GRID BUTTONS ====================== -->
 <div class="d-flex justify-content-end mb-2">
     <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
-        <input type="text" class="form-control" id="upper-search-box" style="background-color:#FFFACD" placeholder="Search...">
+        <input type="text" id="upper-search-box" class="form-control" onkeyup="SearchUpperGrid()" placeholder="Search..." style="background-color:#FFFACD">
     </div>
 
-    <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
+    <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcelUpper">
         <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
     </button>
 </div>
@@ -63,10 +63,10 @@
 <!-- ===================== LOWER GRID BUTTONS ====================== -->
 <div class="d-flex justify-content-end mb-2">
     <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
-        <input type="text" class="form-control" id="lower-search-box" style="background-color:#FFFACD" placeholder="Search...">
+        <input type="text" id="lower-search-box" class="form-control" onkeyup="SearchLowerGrid()" placeholder="Search..." style="background-color:#FFFACD">
     </div>
 
-    <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
+    <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcelLower">
         <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
     </button>
 </div>

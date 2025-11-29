@@ -478,6 +478,7 @@
                                             <i class="fa-solid fa-calendar-clock fa-fw fa-lg"></i> Multiple Buyers
                                         </button>
                                     </div>
+                                    <a href="javascript:void(0)" onclick="ListOfPendPOForSaleOrder()">SO from Other Branch</a>
                                     <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12"  >
                                         <button type="button" id="ShowGroupItem" onclick="AddMultipleItems()" class=" btn btn-sm btn-outline-success mt-3" tabindex="-1">
                                             <i class="bi bi-list"></i>Show
@@ -554,8 +555,10 @@
                             {
                                 <div class="d-flex justify-content-center align-items-center flex-grow-1">
                                     <strong class="me-2">BASIC TOTAL:</strong>
+                                    <span id="CurrencySign"></span>
                                     <span id="lblItemNetAmount" class="me-4 text-warning">0.00</span>
                                      <strong class="me-2">TOTAL QTY:</strong>
+                                   
                                     <span id="lblTotalQty" class="me-4 text-warning">0.00</span>
 
                                     <strong class="me-2">TOTAL NO OF ITEMS:</strong>
@@ -1570,6 +1573,82 @@
     </div>
 </div>
 
+<div class="modal fade" style="display:none" id="PendingPOFromOtherBranchModel" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document" ">
+        <div class="modal-content">
+            <div class="modal-header">
+
+
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row g-2 gx-3">
+
+                            <div class="card-body text-center overflow-auto pb-0   ">
+                                <div class="d-flex align-items-center mb-2">
+
+                                    <div class="col-md-2 me-3" style="margin-left:50px">
+                                        <input type="text" class="form-control" id="search-box1" placeholder="Search..." style="background-color:#FFFACD;">
+                                    </div>
+
+                                </div>
+                                <div class="table-responsive" style="max-height:350px;">
+                                    <table class="table table-hover table-bordered table-striped" id="GateDataTable" style="table-layout: fixed;">
+                                        <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+                                            <tr>
+                                                <th style="width:60px;">Action </th>
+
+                                                <th style="width:150px;">PO No</th>
+
+
+                                                <th style="width:250px;">Vendor</th>
+                                                <th style="width:150px;">PO Date</th>
+                                                <th style="width:150px;">CompanyName</th>
+
+                                                <th style="width:80px;">TotalQty</th>
+                                                <th style="width:80px;">TotalAmount</th>
+                                                <th style="width:100px;">NetAmount</th>
+                                               
+
+
+                                            </tr>
+                                        </thead>
+                                        <tbody id="PendingPOFromOtherBranchGrid">
+                                            <tr class="text-center">
+                                                <td colspan="25" class="text-black-50"><strong>NO DATA YET</strong></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="progress my-2" style="height: 4px;">
+                        <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <div class="row g-2 gx-3">
+                        <div class="col-12 text-center">
+                            <strong>Total No Of Items : <span id="lblTotalNoOfItemsPendPO"></span></strong>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                  @*   <button type="button" class=" btn btn-sm btn-outline-success me-2" onclick="AddPendSOToGrid(event)">
+                        <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
+                    </button> *@
+
+                    <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 
 <style>
     .custom-width-select {
@@ -1933,7 +2012,7 @@
 
         $('#OtherRateCurr').on('change', function () {
 
-            var Currency = $('#CurrencyID').val();
+            var Currency = $('#CurrencyID Option:selected').text().trim();
             $.ajax({
                 type: "POST",
                 data: { "Currency": Currency },
@@ -1942,11 +2021,17 @@
                 success: function (result, status, error) {
 
                     if (result != null) {
-                        //var obj = $.parseJSON(result);
-                        //$('#Rate').val("");
-                        //$('#Rate').val(obj.Result[0].Rate);
-                        if ($('#OtherRateCurr').val() == ".") {
+                        var obj = $.parseJSON(result);
+                        $('#Rate').val("");
+                        $('#Rate').val(obj.Result[0].Rate);
+                        if ($('#OtherRateCurr').val() == "") {
                             $('#Amount').val(0.00);
+                        }
+                        else {
+                            var rate = parseFloat($('#OtherRateCurr').val());
+                            var qty = parseFloat($('#Qty').val());
+                            var amount = rate * qty;
+                            $('#Amount').val(amount.toFixed(2));
                         }
                     }
                 }
@@ -2168,7 +2253,7 @@
             // $('#PartCode').select2();
             // $('#ItemCode').select2();
             // $('#Group_Code').select2();
-            ChangeCurrencysign();
+           
             FillItems();
             AutoFillPARTYNAMELIST();
             // $('#Group_Code1').select2();
@@ -2258,6 +2343,7 @@
                 // });
             // }
             FillCurrency();
+            ChangeCurrencysign();
 
             $('#AmmEffDate').on("keydown", function (event) {
                 if (event.key === "Tab") {
@@ -2479,6 +2565,187 @@
             GetlastSaleOrderDetail();
 
         });//ready end here
+
+
+        function ListOfPendPOForSaleOrder() {
+
+            var data = {
+
+                "AccountCode": $('#AccountCode').val(),
+                "fromdate": "01/Apr/2025",
+                "todate": "25/Nov/2025"
+
+
+            }
+
+            $.ajax({
+                url: '@Url.Action("ListOfPendPOForSaleOrder")',
+                type: "POST",
+                data: data,
+                async: false,
+                success: function (data) {
+                    if (data != null) {
+
+                        var obj = $.parseJSON(data);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#PendingPOFromOtherBranchModel').modal('show');
+                            $('#PendingPOFromOtherBranchGrid').empty();
+                            var i = 1;
+                            $.each(obj.Result.Table, function (index, val) {
+
+                                var html = '';
+                                html += '<tr>' +
+                                    '<td style="text-align:center;">' +
+                                    '<button type="button" id="AcceptedQtySHA' + i + '" ' +
+                                    'style="background-color: #b2b3f0;" ' +
+                                    'class="btn btn-sm me-1 mt-2" ' +
+                                    'onclick="PendingPurchaseOrderItemDetailFromOtherBranch(' +
+                                    val.AccountCode + ',' +
+                                    val.POEntryID + ',' +
+                                    val.POYearCode + ',\'' +
+                                    val.PONo + '\',\'' +
+                                    val.PODate + '\',\'' +
+                                    val.SourceDB + '\'' +
+                                    ')" >' +
+                                    'Select' +
+                                    '</button>' +
+                                    '</td>' +
+                                    '<td><input id="PONo' + i + '" class="form-control no-cursor" value="' + val.PONo + '"/><input id="POEntryID' + i + '" type="hidden" value="' + val.POEntryID + '"/><input id="POYearCode' + i + '" type="hidden" value="' + val.POYearCode + '"/></td>' +
+                                    '<td><input id="Vendor' + i + '" class="form-control no-cursor" value="' + val.Vendor + '"/><input id="Accountcode' + i + '" type="hidden" value="' + val.AccountCode + '"/></td>' +
+
+                                    '<td><input id="PODate' + i + '" class="form-control no-cursor" value="' + val.PODate + '"/></td>' +
+                                    '<td><input id="SourceCompany' + i + '" class="form-control no-cursor" value="' + val.SourceCompany + '"/><input id="SourceDB' + i + '" type="hidden" value="' + val.SourceDB + '"/></td>' +
+
+                                    '<td><input id="TotalQty' + i + '" class="form-control no-cursor" value="' + val.TotalQty + '"/></td>' +
+                                    '<td><input id="TotalAmount' + i + '" class="form-control no-cursor" value="' + val.TotalAmount + '"/></td>' +
+                                    '<td><input id="NetAmount' + i + '" class="form-control no-cursor" value="' + val.NetAmount + '"/></td>' +
+
+
+                                    '</tr>';
+
+                                $('#PendingPOFromOtherBranchGrid').append(html);
+
+                                var count = $('#PendingPOFromOtherBranchGrid tr').length;
+                                $('#totalRows').text(count);
+                                $("#lblTotalNoOfItemsPendPO").html(count);
+                                i++;
+                            });
+
+                        }
+                        else {
+                            $('#PendingChallaFromOtherBranchGrid').empty();
+                            var count = $('#PendingChallaFromOtherBranchGrid tr').length;
+                            $("#lblTotalNoOfItemsPendSO").html(count);
+                            $('#totalRows').text(count);
+                            $('#PendingChallaFromOtherBranchGrid').append('<tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>')
+
+                        }
+                    }
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+
+        function PendingPurchaseOrderItemDetailFromOtherBranch(AccountCode, POEntryId, POYearCode, PONo, PODate, DatabaseName) {
+           
+            $.ajax({
+                url: '@Url.Action("PendingPurchaseOrderItemDetailFromOtherBranch")',
+                type: "POST",
+                data: {
+                    flag: "PendingPurchaseOrderItemDetailFromOtherBranch",
+                    AccountCode: AccountCode,
+                    POEntryId: POEntryId,
+                    POYearCode: POYearCode,
+                    DatabaseName: DatabaseName
+                   
+                },
+                success: function (data) {
+
+
+
+                    $('#divSaleItemGrid').html(data);
+$('#PendingPOFromOtherBranchModel').modal('hide');
+
+                    $('#SeqNo').val('0');
+                    GetFeatureOption();
+                    $.notify('Item Added To Grid.', "success");
+                    ClearItem();
+                
+
+                            if($('#Mode').val() == 'SOA') {
+                var itemRowCount = $('#divSaleItemGrid tr').length;
+                for (var ir = 1; ir <= itemRowCount; ir++) {
+                    if ($('#soItemRow-' + ir).find('.amendNo').text() == $('#AmmNo').val()) {
+                        $('#soItemRow-' + ir).css('background-color', '#e7f1ff');
+                    }
+                }
+            }
+
+            $('#TotalRoundOff').prop('selectedIndex', 0);
+            var INA = parseFloat($('#ItemNetAmount').val());
+            var rowCount = $('#divSaleItemGrid tr').length;
+            var taxRowCount = $('#divTaxGrid tr').length;
+            var sum = 0.00;
+            var TotalQty = 0.00;
+            // for (var i = 1; i <= rowCount; i++) {
+
+            //     sum += parseFloat($('#GridAmount-' + i).text() == '.00' || $('#GridAmount-' + i).text() == '' ? 0 : $('#GridAmount-' + i).text());
+            // }
+
+            let rowsExist = $(".GridAmount").length > 0;
+            let rowsQtyExist = $(".GridQty").length > 0;
+
+            if (rowsExist) {
+                $(".GridAmount").each(function () {
+                    let value = parseFloat($(this).text());
+                    sum += isNaN(value) ? 0 : value;
+                });
+            } else {
+                sum = 0;
+            }
+            if (rowsQtyExist) {
+                $(".GridQty").each(function () {
+                    let value = parseFloat($(this).text());
+                    TotalQty += isNaN(value) ? 0 : value;
+                });
+            } else {
+                TotalQty = 0;
+            }
+
+            $('#ItemNetAmount').val(sum);
+            if (rowCount >= 1) {
+                $('#lblTotalNoOfItems').text(rowCount);
+            } else {
+                $('#lblTotalNoOfItems').text(0);
+            }
+            var txSum = 0.00;
+            if ($('#divTaxGrid tr td').length > 1) {
+
+                for (var i = 1; i <= taxRowCount; i++) {
+                    txSum += parseFloat($('#txGridAmount-' + i).text() == '.00' ? 0 : $('#txGridAmount-' + i).text());
+                }
+            }
+            $('#lblItemNetAmount').text(sum.toFixed(2));
+            $('#lblTotalQty').text(TotalQty.toFixed(2));
+            var txTotal = sum + txSum;
+            $('#NetTotal').val(txTotal.toFixed(2));
+                },
+
+                error: function (xhr) {
+                    alert(xhr.responseText);
+                }
+            }).done(function () {
+                GetTaxPartItem();
+            });
+        }
+
+
 
         $("#AccountCodeText").focusout(function () {
             if ($("#AccountCodeText").val() == '') { $("#AccountCode").val(0); }
@@ -3950,6 +4217,7 @@
             //}
 
             FillCurrency();
+            ChangeCurrencysign();
         });
         function GetCurrencyDetail() {
 
@@ -3974,7 +4242,7 @@
                                         $('#Rate').val('0.00').prop('disabled', true).attr('readonly', 'readonly');
                                         $('#OtherRateCurr').val('0').prop('disabled', false).removeAttr('readonly');
                                         $('#OtherRateCurr').keyup(function () {
-                                            OtherRateCurr($('#Rate').val($('#OtherRateCurr').val().trim() != "" ? parseFloat($('#OtherRateCurr').val()) * parseFloat($('#ExRate').val()) : 0));
+                                            // OtherRateCurr($('#Rate').val($('#OtherRateCurr').val().trim() != "" ? parseFloat($('#OtherRateCurr').val()) * parseFloat($('#ExRate').val()) : 0));
                                             CalculateRate();
                                         });
                                     }
@@ -3993,6 +4261,7 @@
 
         $('#CurrencyID').change(function () {
             GetCurrencyDetail();
+            $('#Symbol').text($('#CurrencyID option:selected').text());
         });
 
         async function ClearItemTax() {

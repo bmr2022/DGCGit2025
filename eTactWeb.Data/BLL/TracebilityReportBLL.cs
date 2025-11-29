@@ -12,18 +12,18 @@ using static eTactWeb.DOM.Models.Common;
 
 namespace eTactWeb.Data.BLL
 {
-    public class MISTracebilityReportBLL : IMISTracebilityReport
+    public class TracebilityReportBLL : ITracebilityReport
     {
-        private MISTracebilityReportDAL _MISTracebilityReportDAL;
+        private TracebilityReportDAL _MISTracebilityReportDAL;
         private readonly IDataLogic _DataLogicDAL;
-        public MISTracebilityReportBLL(IConfiguration config, IDataLogic dataLogicDAL, ConnectionStringService connectionStringService)
+        public TracebilityReportBLL(IConfiguration config, IDataLogic dataLogicDAL, ConnectionStringService connectionStringService)
         {
-            _MISTracebilityReportDAL = new MISTracebilityReportDAL(config, dataLogicDAL, connectionStringService);
+            _MISTracebilityReportDAL = new TracebilityReportDAL(config, dataLogicDAL, connectionStringService);
             _DataLogicDAL = dataLogicDAL;
         }
-        public async Task<MISTracebilityReportModel> GetMISTracebilityReportData( string FromDate, string ToDate, string SaleBillNo)
+        public async Task<TracebilityReportModel> GetTracebilityReportData( string FromDate, string ToDate, string SaleBillNo)
         {
-            return await _MISTracebilityReportDAL.GetMISTracebilityReportData( FromDate, ToDate, SaleBillNo);
+            return await _MISTracebilityReportDAL.GetTracebilityReportData( FromDate, ToDate, SaleBillNo);
         }
 
         public async Task<ResponseResult> FillSaleBillNoList(string FromDate, string ToDate)

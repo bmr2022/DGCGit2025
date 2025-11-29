@@ -63,17 +63,16 @@ namespace eTactWeb.Data.DAL
                     //oCmd.Parameters.AddWithValue("@FromDate", fromDt.ToString("yyyy/MM/dd"));
                     //oCmd.Parameters.AddWithValue("@ToDate", toDt.ToString("yyyy/MM/dd"));
 
-                    oCmd.Parameters.AddWithValue("@FromDate", fromDt );
+                    oCmd.Parameters.AddWithValue("@FromDate", fromDt);
                     oCmd.Parameters.AddWithValue("@ToDate", toDt);
                     oCmd.Parameters.AddWithValue("@PartCode", PartCode);
                     oCmd.Parameters.AddWithValue("@ItemName", ItemName);
                     oCmd.Parameters.AddWithValue("@Docname", docname);
-                     oCmd.Parameters.AddWithValue("@SONo", SONo);
+                    oCmd.Parameters.AddWithValue("@SONo", SONo);
                     oCmd.Parameters.AddWithValue("@Schno", Schno);
                     oCmd.Parameters.AddWithValue("@InvNo", SaleBillNo);
                     oCmd.Parameters.AddWithValue("@GSTNo", GSTNO);
                     oCmd.Parameters.AddWithValue("@HSNNO", HSNNO);
-                    //oCmd.Parameters.AddWithValue("@SalesPersonName", Sale);
                     await myConnection.OpenAsync();
                     using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
                     {
@@ -87,7 +86,7 @@ namespace eTactWeb.Data.DAL
                         model.SaleBillRegisterDetail = (from DataRow dr in oDataSet.Tables[0].Rows
                                                         select new SaleBillRegisterDetail
                                                         {
-                                                            Description = Convert.ToString (dr["Description"].ToString()),
+                                                            Description = Convert.ToString(dr["Description"].ToString()),
                                                             forTheDuration = Convert.ToDecimal(dr["forTheDuration"].ToString()),
                                                             ForFinYear = Convert.ToDecimal(dr["ForFinYear"].ToString())
                                                         }).ToList();
@@ -100,7 +99,7 @@ namespace eTactWeb.Data.DAL
                         model.SaleBillRegisterDetail = (from DataRow dr in oDataSet.Tables[0].Rows
                                                         select new SaleBillRegisterDetail
                                                         {
-                                                             SaleBillNo = string.IsNullOrEmpty(dr["InvoiceNo"].ToString()) ? "" : dr["InvoiceNo"].ToString(),
+                                                            SaleBillNo = string.IsNullOrEmpty(dr["InvoiceNo"].ToString()) ? "" : dr["InvoiceNo"].ToString(),
                                                             SaleBillDate = string.IsNullOrEmpty(dr["InvDate"].ToString()) ? "" : dr["InvDate"].ToString(),
                                                             CustomerName = string.IsNullOrEmpty(dr["CustomerName"].ToString()) ? "" : dr["CustomerName"].ToString(),
                                                             GSTNO = string.IsNullOrEmpty(dr["GSTNO"].ToString()) ? "" : dr["GSTNO"].ToString(),
@@ -114,34 +113,34 @@ namespace eTactWeb.Data.DAL
                                                             TaxableAmt = Convert.ToDecimal(dr["TaxableAmt"].ToString()),
                                                             GSTAmount = Convert.ToDecimal(dr["GSTAmount"].ToString()),
                                                             Currency = string.IsNullOrEmpty(dr["Currency"].ToString()) ? "" : dr["Currency"].ToString(),
-                                                            TotalBillQty = Convert.ToDecimal(dr["TotalBillQty"].ToString()), 
-                                                            TotalDisAmt = Convert.ToDecimal(dr["TotalDisAmt"].ToString()), 
-                                                            TotalItemAmt = Convert.ToDecimal(dr["TotalItemAmt"].ToString()), 
-                                                            CGSTPer = Convert.ToDecimal(dr["CGSTPer"].ToString()), 
-                                                            CGSTAmt = Convert.ToDecimal(dr["CGSTAmt"].ToString()), 
-                                                            SGSTPer = Convert.ToDecimal(dr["SGSTPer"].ToString()), 
+                                                            TotalBillQty = Convert.ToDecimal(dr["TotalBillQty"].ToString()),
+                                                            TotalDisAmt = Convert.ToDecimal(dr["TotalDisAmt"].ToString()),
+                                                            TotalItemAmt = Convert.ToDecimal(dr["TotalItemAmt"].ToString()),
+                                                            CGSTPer = Convert.ToDecimal(dr["CGSTPer"].ToString()),
+                                                            CGSTAmt = Convert.ToDecimal(dr["CGSTAmt"].ToString()),
+                                                            SGSTPer = Convert.ToDecimal(dr["SGSTPer"].ToString()),
                                                             SGSTAmt = Convert.ToDecimal(dr["SGSTAmt"].ToString()),
                                                             IGSTPer = Convert.ToDecimal(dr["IGSTPer"].ToString()),
                                                             IGSTAmt = Convert.ToDecimal(dr["IGSTAmt"].ToString()),
-                                                              
+
                                                             ExpenseAmt = Convert.ToDecimal(dr["ExpenseAmt"].ToString()),
                                                             InvAmt = Convert.ToDecimal(dr["InvAmt"].ToString()),
-                                                             TypeItemServAssets = string.IsNullOrEmpty(dr["TypeItemServAssets"].ToString()) ? "" : dr["TypeItemServAssets"].ToString(),
+                                                            TypeItemServAssets = string.IsNullOrEmpty(dr["TypeItemServAssets"].ToString()) ? "" : dr["TypeItemServAssets"].ToString(),
                                                             DomesticExportNEPZ = string.IsNullOrEmpty(dr["DomesticExportNEPZ"].ToString()) ? "" : dr["DomesticExportNEPZ"].ToString(),
-                                                           
+
                                                             SupplyType = string.IsNullOrEmpty(dr["SupplyType"].ToString()) ? "" : dr["SupplyType"].ToString(),
                                                             ActualEntryDate = string.IsNullOrEmpty(dr["ActualEntryDate"].ToString()) ? "" : dr["ActualEntryDate"].ToString(),
-                                                            
+
 
                                                             LastUpdatedByEmp = string.IsNullOrEmpty(dr["LastUpdatedByEmp"].ToString()) ? "" : dr["LastUpdatedByEmp"].ToString(),
 
                                                             LastUpdationDate = string.IsNullOrEmpty(dr["LastUpdationDate"].ToString()) ? "" : dr["LastUpdationDate"].ToString(),
 
                                                             EntryId = Convert.ToInt16(dr["salebillentryId"].ToString()),
-                                                            YearCode = Convert.ToInt16(dr["salebillYearCode"].ToString()), 
+                                                            YearCode = Convert.ToInt16(dr["salebillYearCode"].ToString()),
                                                             EntryByMachineName = string.IsNullOrEmpty(dr["EntryByMachineName"].ToString()) ? "" : dr["EntryByMachineName"].ToString(),
                                                             Remark = string.IsNullOrEmpty(dr["Remark"].ToString()) ? "" : dr["Remark"].ToString(),
-                                                         }).ToList();
+                                                        }).ToList();
                     }
                 }
                 else if (ReportType.ToString().ToUpper() == "SALEDETAIL") //done&working
@@ -260,13 +259,13 @@ namespace eTactWeb.Data.DAL
                                                             CountryOfSupply = string.IsNullOrEmpty(dr["CountryOfSupply"].ToString()) ? "" : dr["CountryOfSupply"].ToString(),
                                                             DispatchDelayReason = string.IsNullOrEmpty(dr["DispatchDelayReason"].ToString()) ? "" : dr["DispatchDelayReason"].ToString(),
                                                             DispatchThrough = string.IsNullOrEmpty(dr["DispatchThrough"].ToString()) ? "" : dr["DispatchThrough"].ToString(),
-                                                            DistanceKM = Convert.ToDecimal(dr["DistanceKM"].ToString()), 
+                                                            DistanceKM = Convert.ToDecimal(dr["DistanceKM"].ToString()),
                                                             EntryId = Convert.ToInt16(dr["salebillentryId"].ToString()),
                                                             YearCode = Convert.ToInt16(dr["salebillYearCode"].ToString()),
                                                             EntryByMachineName = string.IsNullOrEmpty(dr["EntryByMachineName"].ToString()) ? "" : dr["EntryByMachineName"].ToString(),
                                                             ActualEntryDate = string.IsNullOrEmpty(dr["ActualEntryDate"].ToString()) ? "" : dr["ActualEntryDate"].ToString(),
                                                             LastUpdatedByEmp = string.IsNullOrEmpty(dr["LastUpdatedByEmp"].ToString()) ? "" : dr["LastUpdatedByEmp"].ToString(),
-                                                             LastUpdationDate = string.IsNullOrEmpty(dr["LastUpdationDate"].ToString()) ? "" : dr["LastUpdationDate"].ToString(),
+                                                            LastUpdationDate = string.IsNullOrEmpty(dr["LastUpdationDate"].ToString()) ? "" : dr["LastUpdationDate"].ToString(),
                                                         }).ToList();
                     }
                 }
@@ -394,13 +393,49 @@ namespace eTactWeb.Data.DAL
                                                             Unit = string.IsNullOrEmpty(dr["Unit"].ToString()) ? "" : dr["Unit"].ToString(),
 
                                                             MonthName = string.IsNullOrEmpty(dr["MonthName"].ToString()) ? "" : dr["MonthName"].ToString(),
-                                                             TotalItemAmt = Convert.ToDecimal(dr["TotalAmount"].ToString()),
+                                                            TotalItemAmt = Convert.ToDecimal(dr["TotalAmount"].ToString()),
                                                             TotalBillQty = Convert.ToDecimal(dr["TotalQty"].ToString()),
 
                                                         }).ToList();
                     }
                 }
-              }
+                else
+                {
+                    try
+                    {
+                        if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                        {
+                            DataTable dt = oDataSet.Tables[0];
+
+                            List<SaleBillRegisterDetail> list = new List<SaleBillRegisterDetail>();
+
+                            foreach (DataRow dr in dt.Rows)
+                            {
+                                SaleBillRegisterDetail obj = new SaleBillRegisterDetail();
+                                obj.DynamicColumns = new Dictionary<string, string>();
+
+                                foreach (DataColumn col in dt.Columns)
+                                {
+                                    string colName = col.ColumnName;
+                                    string colValue = dr[col].ToString();
+
+                                    // Populate dynamic dictionary
+                                    obj.DynamicColumns[colName] = colValue;
+                                }
+
+                                list.Add(obj);
+                            }
+
+                            model.SaleBillRegisterDetail = list;
+                            model.DynamicHeaders = dt.Columns
+                                                     .Cast<DataColumn>()
+                                                     .Select(c => c.ColumnName)
+                                                     .ToList();
+                        }
+                    }
+                    catch (Exception ex) { throw ex; }
+                }
+            }
             catch (Exception ex)
             {
                 dynamic Error = new ExpandoObject();
@@ -413,7 +448,7 @@ namespace eTactWeb.Data.DAL
             }
             return model;
         }
-  
+
         public async Task<ResponseResult> FillDocumentList(string FromDate, string ToDate)
         {
             var _ResponseResult = new ResponseResult();
@@ -513,7 +548,7 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-     public async Task<ResponseResult> FillSchNo(string FromDate, string ToDate)
+        public async Task<ResponseResult> FillSchNo(string FromDate, string ToDate)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -574,6 +609,5 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-
     }
 }
