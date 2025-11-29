@@ -783,7 +783,7 @@
 			// $('#PartCode').select2();
 			// $('#ItemCode').select2();
 
-			// FillVendors();
+		    FillVendors();
 			GetFormRights();
 			LockedFinancialYear();
 			FillCurrency();
@@ -1453,12 +1453,12 @@ formData.append("Mode", $('#Mode').val());
 
 					if (result != null) {
 						var obj = $.parseJSON(result);
-						$('#AccountCode').empty();
-						$('#AccountCode').append('<option value="0">-Select-</option>');
+						// $('#AccountCode').empty();
+						// $('#AccountCode').append('<option value="0">-Select-</option>');
 						$('#ShipTo').empty();
 						$('#ShipTo').append('<option value="0">-Select-</option>');
 						$.each(obj.Result, function (key, val) {
-							$('#AccountCode').append('<option value="' + val.AccountCode + '" data-gstregister="' + val.GSTRegistered + '" data-state="' + val.State + '">' + val.AccountName + '</option>');
+							// $('#AccountCode').append('<option value="' + val.AccountCode + '" data-gstregister="' + val.GSTRegistered + '" data-state="' + val.State + '">' + val.AccountName + '</option>');
 							$('#ShipTo').append('<option value="' + val.AccountCode + '">' + val.AccountName + '</option>');
 						});
 
@@ -2335,14 +2335,14 @@ formData.append("Mode", $('#Mode').val());
 		//          });
 		function ValidateForm() {
 			var Err = 0;
-			// if ($('#POFor').prop('selectedIndex') == 0) {
-			// 	AddErrorCls('POFor');
-			// 	$.notify('POFor is required...!', "error");
-			// 	Err = 1;
-			// }
-			// else {
-			// 	RemoveErrorCls('POFor');
-			// }
+			if ($('#POFor').prop('selectedIndex') == 0) {
+				AddErrorCls('POFor');
+				$.notify('POFor is required...!', "error");
+				Err = 1;
+			}
+			else {
+				RemoveErrorCls('POFor');
+			}
 
 			if ($('#AccountCode').val() == 0 || $('#AccountCode').val() == null) {
 				AddErrorCls('AccountCode');
@@ -3666,13 +3666,13 @@ formData.append("Mode", $('#Mode').val());
 		} else {
 			RemoveErrorCls('PartCodeText');
 		}
-			// if ($('#POFor').prop('selectedIndex') == 0) {
-			// 	AddErrorCls('POFor');
-			// 	IsError = 1;
-			// }
-			// else {
-			// 	RemoveErrorCls('POFor');
-			// }
+			if ($('#POFor').prop('selectedIndex') == 0) {
+				AddErrorCls('POFor');
+				IsError = 1;
+			}
+			else {
+				RemoveErrorCls('POFor');
+			}
 			if ($('#AccountCode').val() == 0 || $('#AccountCode').val() == null) {
 				$.notify("Account Code is required", "error");
 				AddErrorCls('AccountCode');
