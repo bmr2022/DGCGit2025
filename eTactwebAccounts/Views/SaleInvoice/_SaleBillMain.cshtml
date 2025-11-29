@@ -63,14 +63,16 @@
             <select asp-for="SaleBillJobwork" class="form-control">
                 <option value="">-select-</option>
                 <option value="S" selected>SaleBill</option>
-                <option value="J">SaleBill JobWork</option>
+                <option value="J">JobWork Bill</option>
+                <option value="J">Service Bill</option>
             </select>
         </div>
 
         <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
             <label asp-for="SubInvoicetype" class="form-label">Invoice Type</label>
             <select asp-for="SubInvoicetype" class="form-control" onchange="NewEntryId()">
-                <option value="">-select-</option>
+                <option value="S" selected>Tax invoice</option>
+                <option value="J">Sample Bill</option>
                 
             </select>
         </div>

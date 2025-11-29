@@ -3462,7 +3462,7 @@
         function FillAltQty() {
             var ItemCode = parseInt($('#ItemCode').val());
             var AltQty = $('#AltQty').val();
-            var UnitQty = parseFloat($('#TotalStock').val());
+            var UnitQty = parseFloat($('#Qty').val());
             $.ajax({
                 type: "POST",
                 data: { "ItemCode": ItemCode, "AltQty": AltQty, "UnitQty": UnitQty },
