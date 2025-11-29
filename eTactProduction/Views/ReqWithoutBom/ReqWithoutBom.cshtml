@@ -565,7 +565,8 @@
             }
 
             else {
-                if ($('#FromDepartmentId').find(":selected").data('depttype') == "production" || $('#FromDepartmentId').find(":selected").data('depttype') == "R&D") {
+                        if (($('#FromDepartmentId')  .find(":selected").data('depttype') || "").toString().trim().toLowerCase().includes("production")|| 
+                        ($('#FromDepartmentId')  .find(":selected").data('depttype') || "").toString().trim().toLowerCase().includes("r&d") ) {
                     if ($('#WorkCenterId').val() == null) {
                         //$.notify("Please fill Work Center");
                         AddErrorCls('WorkCenterId');
@@ -590,7 +591,9 @@
             if (!validateUpdate()) return;
 
             else {
-                if ($('#FromDepartmentId').find(":selected").data('depttype') == "production" || $('#FromDepartmentId').find(":selected").data('depttype') == "R&D") {
+                        if (($('#FromDepartmentId')  .find(":selected").data('depttype') || "").toString().trim().toLowerCase().includes("production")||
+                            ($('#FromDepartmentId')  .find(":selected").data('depttype') || "").toString().trim().toLowerCase().includes("r&d") ){
+                // if ($('#FromDepartmentId').find(":selected").data('depttype') == "production" || $('#FromDepartmentId').find(":selected").data('depttype') == "R&D") {
                     if ($('#WorkCenterId').val() == null) {
                         //$.notify("Please fill Work Center");
                         AddErrorCls('WorkCenterId');
@@ -748,13 +751,15 @@
 
             if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
 
-                $('#FromDepartmentId').val(4);
+                //$('#FromDepartmentId').val(4);
                 $('#WODate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
                 $('#WODate').css("pointer-events", "none");
                 GetNewEntry();
             }
             else {
-                if ($("#FromDepartmentId").val() != '6') {
+                        if (($('#FromDepartmentId')  .find(":selected").data('depttype') || "").toString().trim().toLowerCase().includes("production")||
+                            ($('#FromDepartmentId')  .find(":selected").data('depttype') || "").toString().trim().toLowerCase().includes("r&d") ){
+                // if ($("#FromDepartmentId").val() != '6') {
                     $('#WorkCenterId').prop("disabled", true);
                 } else {
                     $('#WorkCenterId').prop("disabled", false);
@@ -1124,7 +1129,24 @@
                                     '" data-depttype="' + val.DeptType + '">' + val.DeptName + '</option>');
                             });
                             if ($('#Mode').val() == "U") {
-                                $('#FromDepartmentId').val($('#FromDeptUpd').val());
+                            //    $('#FromDepartmentId').val($('#FromDeptUpd').val());
+                                     let selected = obj.Result.find(x => x.EntryId == $('#FromDeptUpd').val());
+
+                                    if (selected) {
+                                    $('#FromDepartmentId').val(selected.EntryId);
+
+                                    // Show DeptType + DeptName somewhere on page
+                                    $('#DepartmentInfo').text(selected.DeptName + " (" + selected.DeptType + ")");
+
+                                    }
+                                                     let dept = ($('#FromDepartmentId').find(":selected").data('depttype') || "").toLowerCase();
+                                                        if (dept.includes("production") || dept.includes("r&d")) {
+                                                                $('#WorkCenterId').prop('disabled', false);
+                                                            }
+                                                            else {
+                                                                $('#WorkCenterId').prop('selectedIndex', 0);
+                                                                $('#WorkCenterId').prop('disabled', true);
+                                                            }
                             }
 
                         }
@@ -1464,9 +1486,8 @@
         }
 
         $('#FromDepartmentId').change(function () {
-            if ($('#FromDepartmentId').find(":selected").data('depttype') == "PRODUCTION" ||
-                $('#FromDepartmentId').find(":selected").data('depttype') == "R&D") {
-
+                let dept = ($('#FromDepartmentId').find(":selected").data('depttype') || "").toLowerCase();
+        if (dept.includes("production") || dept.includes("r&d")) {
                 $('#WorkCenterId').prop('disabled', false);
             }
             else {
@@ -1543,7 +1564,9 @@
             // else {
             //     RemoveErrorCls('PartCode'), RemoveErrorCls('ItemCode');
             // }
-            if ($('#FromDepartmentId').find(":selected").data('depttype') == "production" || $('#FromDepartmentId').find(":selected").data('depttype') == "R&D") {
+                
+                        if (($('#FromDepartmentId')  .find(":selected").data('depttype') || "").toString().trim().toLowerCase().includes("production")||
+                        ($('#FromDepartmentId')  .find(":selected").data('depttype') || "").toString().trim().toLowerCase().includes("r&d")) {
                 if ($('#WorkCenterId').prop('selectedIndex') == 0) {
                     AddErrorCls('WorkCenterId');
                     Err = 1;
