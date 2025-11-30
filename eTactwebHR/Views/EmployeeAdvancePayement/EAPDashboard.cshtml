@@ -40,7 +40,9 @@
 							</div>
 							<div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
 								<label asp-for="DepartmentName" class="form-label">Department Name</label>
-								<input asp-for="DepartmentName" class="form-control" />
+								<select asp-for="DepartmentName" class="form-control">
+									<option value="">-Select-</option>
+								</select>
 							</div>
 							<div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 d-flex justify-content-end mt-3">
 								<div style="margin-bottom:10px;margin-right:20px;">
@@ -104,10 +106,10 @@
 			$('#FinFromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", firstDayOfMonth);
 			$('#FinToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
 			
+			FillDeptName();
 			FillEmpName();
-
-			// GetSearchData();
-			ColorGrid();
+			GetSearchData();
+			// ColorGrid();
 
 		});
 
@@ -121,7 +123,10 @@
 						$('#EmployeeName').empty();
 						$('#EmployeeName').append('<option value="">-Select-</option>');
 						$.each(obj.Result, function (index, Val) {
-							$('#EmployeeName').append('<option value="' + Val.EmpName + '">' + Val.EmpName + '</option>');
+							if(Val.EmpName != '') {
+								var empname = (Val.EmpName.split("--->")[0]).trim();
+							}
+							$('#EmployeeName').append('<option value="' + empname + '">' + Val.EmpName + '</option>');
 						});
 					}
 				},
@@ -131,6 +136,25 @@
 			});
 		}
 
+		function FillDeptName() {
+			$.ajax({
+				url: '@Url.Action("FillDeptName")',
+				type: 'POST',
+				success: function (data, status, xhr) {
+					var obj = $.parseJSON(data);
+					if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
+						$('#DepartmentName').empty();
+						$('#DepartmentName').append('<option value="">-Select-</option>');
+						$.each(obj.Result, function (index, Val) {
+							$('#DepartmentName').append('<option value="' + Val.DeptName + '">' + Val.DeptName + '</option>');
+						});
+					}
+				},
+				error: function (xhr, status, error) {
+					console.log('Failed to load Entry Id.');
+				}
+			});
+		}
 
 		function confirmDelete(event) {
 			event.preventDefault();
@@ -144,7 +168,7 @@
 
 		$("#search-box").on("keyup", function () {
 			var value = $(this).val().toLowerCase();
-			$("#VUDashboardGrid tr").filter(function () {
+			$("#EAPDashboardGrid tr").filter(function () {
 				if (currentSearchColumn !== null) {
 					var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
 					$(this).toggle(columnText.indexOf(value) > -1);
@@ -167,14 +191,14 @@
 			$('.sortCol').css('color', 'white');
 
 			if (currentOrder === 'asc') {
-				sortTable('VUDashboard', colno, false);
+				sortTable('EAPDashboard', colno, false);
 				$(this).data('sortorder', 'desc');
 				$(this).css('color', 'yellow');
 				//$(this).css('font-size', 'larger');
 				$(this).find('i:first').removeClass('fa-arrow-up');
 				$(this).find('i:first').addClass('fa-arrow-down');
 			} else {
-				sortTable('VUDashboard', colno, true);
+				sortTable('EAPDashboard', colno, true);
 				$(this).data('sortorder', 'asc');
 				$(this).css('color', 'yellow');
 				// $(this).css('font-size', 'larger');
@@ -183,9 +207,9 @@
 			}
 		});
 
-			function ColorGrid() {
+	    function ColorGrid() {
 
-			var rowCount = $('#VUDashboardGrid tr').length;
+			var rowCount = $('#EAPDashboardGrid tr').length;
 
 			for (var i = 1; i <= rowCount; i++) {
 
@@ -266,8 +290,10 @@
 
 		 function GetSearchData() {
 			var formData = {
+				'fromDate' : $('#FinFromDate').val(),
+				'toDate' : $('#FinToDate').val(),
 				'employeeName': $('#EmployeeName').val(),
-				 'DepartmentName' : $('#DepartmentName').val()
+				'DepartmentName' : $('#DepartmentName').val()
 			};
 
 			$.ajax({

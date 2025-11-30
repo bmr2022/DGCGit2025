@@ -13,7 +13,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FillEntryId(int yearCode);
         Task<HRAdvanceModel> GetViewByID(int ID, int yearCode, string mode);
         Task<ResponseResult> FillEmpName();
-        //Task<ResponseResult> GetDashboardData(string accountName = "", int? userId = null);
+        Task<ResponseResult> FillDeptName();
         Task<ResponseResult> FillAdvanceType();
         Task<ResponseResult> DeleteByID(int advEntryId, int advYearCode, int actualEntryBy, string entryByMachineName);
         Task<ResponseResult> FillPreviousAdanaceLoanDetail(int empId, string requestedDate);

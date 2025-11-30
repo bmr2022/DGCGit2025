@@ -85,6 +85,12 @@ namespace eTactwebHR.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+        public async Task<JsonResult> FillDeptName()
+        {
+            var JSON = await _iemployeeAdvancePayement.FillDeptName();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
         public async Task<JsonResult> FillFinancialEmployeeNameList()
         {
             var JSON = await _iemployeeAdvancePayement.FillFinancialEmployeeNameList();
@@ -289,25 +295,78 @@ namespace eTactwebHR.Controllers
 
         }
 
-        public async Task<IActionResult> GetSearchData(string employeeName, string departmentName)
+        public async Task<IActionResult> GetSearchData(string fromDate,string toDate,string employeeName, string departmentName)
         {
-            var model = new VendorUserDashboard();
-            var Result = await _iemployeeAdvancePayement.GetDashboardData(employeeName, departmentName).ConfigureAwait(true);
+            var model = new HRAdvanceDashboard();
+            var Result = await _iemployeeAdvancePayement.GetDashboardData(fromDate,toDate,employeeName, departmentName).ConfigureAwait(true);
             if (Result != null)
             {
                 var _List = new List<TextValue>();
                 DataSet DS = Result.Result;
                 if (DS != null)
                 {
-                    var DT = DS.Tables[0].DefaultView.ToTable(true, "UserEntryId", "AccountCode", "AccountName", "UserId", "Password", "Active", "AllowTodelete", "AllowtoUpdate"
-                            , "rightsForReport", "RightsForPurchaseModule", "RightsForQCmodule", "RightsforAccountModule"
-                             , "AdminUser", "ourServerName", "databaseName", "BranchName", "ActualEntryBy", "ActualEntryDate", "SaleBillPrefix", "VendorEmpName"
-                             , "LastUpdationdate", "EntryByMachineName", "ActualEntryBYName", "UpdatedByName", "LastUpdatedBy");
+                    var DT = DS.Tables[0].DefaultView.ToTable(true,
+                                                                    "AdvanceEntryId",
+                                                                    "AdvanceYearCode",
+                                                                  "AdvanceSlipNo",
+                                                                  "EmpId",
+                                                                  "EmpCode",
+                                                                  "EmpName",
+                                                                  "DesigName",
+                                                                  "DeptId",
+                                                                  "DeptName",
+                                                                  "RequestDate",
+                                                                  "EntryDate",
+                                                                  "RequestedAmount",
+                                                                  "AdvanceType",
+                                                                  "Purpose",
+                                                                  "DOJ",
+                                                                  "BasicSalary",
+                                                                  "Grosssalary",
+                                                                  "NetSalary",
+                                                                  "PresentDaysinCurrMonth",
+                                                                  "PresentDaysInCurrYear",
+                                                                  "ApprovedAmount",
+                                                                  "PreviousPendAdvanceAmt",
+                                                                  "PreviousPendLoanAmt",
+                                                                  "MgrApprovaldate",
+                                                                  "ApprovByMgr",
+                                                                  "ApprovByHR",
+                                                                  "HRApprovedbyEmpid",
+                                                                  "HRApprovalDate",
+                                                                  "ApprByFinCode",
+                                                                  "ApprovByFin",
+                                                                  "CanceledByEmpId",
+                                                                  "FinanceApprovalDate",
+                                                                  "FinanceApprovalEmpid",
+                                                                  "Canceled",
+                                                                  "CancelOrApprovalremarks",
+                                                                  "ModeOfPayment",
+                                                                  "PaymentReferenceNo",
+                                                                  "PaymentVoucherNo",
+                                                                  "PaymentVoucherType",
+                                                                  "PaymentRemark",
+                                                                  "RecoveryMethod",
+                                                                  "NoofInstallment",
+                                                                  "StartRecoveryFromMonth",
+                                                                  "AutoDeductionFromSalaryYN",
+                                                                  "FinalRevoveryDate",
+                                                                  "ActualFinalRecoveryDate",
+                                                                  "StatusHoldCancelApproved",
+                                                                  "LastUpdatedBy",
+                                                                  "LastUpdationDate",
+                                                                  "RequestEntryByMachine",
+                                                                  "ApprovedBYMachine",
+                                                                  "CancelByMachine",
+                                                                  "ActualEntryByName",
+                                                                  "CC"
+                                                              );
 
-                    model.VendorUserDashboards = CommonFunc.DataTableToList<VendorUserDashboard>(DT, "VendorUserDashboard");
+
+                    model.HRAdvanceDashboards = CommonFunc.DataTableToList<HRAdvanceDashboard>(DT, "HRAdvanceDashboard");
                 }
             }
-            return PartialView("_VendorUserDashboardGrid", model);
+            return PartialView("_EAPDashboardGrid", model);
         }
         public async Task<IActionResult> DeleteByID(int advEntryId, int advYearCode, string entryByMachineName)
         {
