@@ -15,6 +15,65 @@
 
 }
 <style>
+    /* Scroll area */
+    .monthly-wrapper {
+        width: 100%;
+        max-height: 250px;
+        overflow: auto; /* Both horizontal + vertical scroll */
+    }
+
+    /* Common table behavior */
+    #MonthlyEntryTable th,
+    #MonthlyEntryTable td {
+        white-space: nowrap;
+        background: white;
+        z-index: 1;
+    }
+
+    /* Make header sticky vertically */
+    #MonthlyEntryTable thead th {
+        position: sticky;
+        top: 0;
+        background: #087990;
+        color: white;
+        z-index: 20;
+    }
+
+    /* Make first 5 columns sticky horizontally */
+    #MonthlyEntryTable th:nth-child(1),
+    #MonthlyEntryTable td:nth-child(1) {
+        position: sticky;
+        left: 0;
+        z-index: 30;
+    }
+
+    #MonthlyEntryTable th:nth-child(2),
+    #MonthlyEntryTable td:nth-child(2) {
+        position: sticky;
+        left: 10px;
+        z-index: 30;
+    }
+
+    #MonthlyEntryTable th:nth-child(3),
+    #MonthlyEntryTable td:nth-child(3) {
+        position: sticky;
+        left: 265px;
+        z-index: 30;
+    }
+
+    #MonthlyEntryTable th:nth-child(4),
+    #MonthlyEntryTable td:nth-child(4) {
+        position: sticky;
+        left: 520px;
+        z-index: 30;
+    }
+
+    #MonthlyEntryTable th:nth-child(5),
+    #MonthlyEntryTable td:nth-child(5) {
+        position: sticky;
+        left: 620px;
+        z-index: 30;
+    }
 
     .select2-container--default .select2-selection--single {
         background-color: #e0f2f1;
@@ -654,14 +713,19 @@
                         <div class="accordion-body MonthlyEntrybody">
                             <div class="card">
                                 <div class="card-body overflow-auto pb-0">
-
-                                    <div class="table-responsive table-container" style="max-height:150px;">
+                                    <div class="monthly-wrapper">
+                                        <table class="table table-hover table-bordered table-striped" id="MonthlyEntryTable">
+                                            <thead id="MonthlyEntrythead" class="main-header"></thead>
+                                            <tbody id="MonthlyEntryData"></tbody>
+                                        </table>
+                                    </div>
+                                    @* <div class="table-responsive table-container " style="max-height:150px;">
                                         <table class="table table-hover table-bordered table-striped" id="MonthlyEntryTable">
                                             <thead id="MonthlyEntrythead" class="bg-gradient text-center card-headerBG text-light small" style="white-space:nowrap"></thead>
                                             <tbody id="MonthlyEntryData">
                                             </tbody>
                                         </table>
-                                    </div>
+                                    </div> *@
                                     @*<i class="fa fa-lg fa-plus-circle" aria-hidden="true"></i>*@
 
 
@@ -1444,6 +1508,71 @@
             $(this).closest('tr').find('[id^="SplitPartCode-"]').append('<option value="' + SplitMPartCode + '">' + SplitMPartCodetext + '</option>');
             $(this).closest('tr').find('[id^="SplitItemName-"]').append('<option value="' + SplitMPartCode + '">' + SplitMItemNametext + '</option>');
         });
+                     $(document).on('focusout', "input[id^='SchQue-']", function () {
+            calculateRowTotalFromElement(this);
+        });
+
+        // calculate by element (robust to id format SchQue-<day>-<row> OR SchQue-<row>-<col>)
+        function calculateRowTotalFromElement(el) {
+            if (!el || !el.id) return;
+            var id = el.id; // e.g. "SchQue-12-3" or "SchQue-3-12"
+            var nums = id.match(/\d+/g); // extract numeric segments
+            if (!nums || nums.length === 0) return;
+
+            // Try to detect which numeric segment is the row index by checking if a TotalQty exists
+            var row = null;
+            for (var i = 0; i < nums.length; i++) {
+                var candidate = nums[i];
+                if ($("#TotalQty-" + candidate).length || $("#EditTotalQty-" + candidate).length) {
+                    row = candidate;
+                    break;
+                }
+            }
+
+            // If not found, as a fallback assume the last numeric segment is the row
+            if (row === null) {
+                row = nums[nums.length - 1];
+            }
+
+            calculateRowTotalByRow(row);
+        }
+
+        // calculate and set total for a given row id (row is numeric or string)
+        function calculateRowTotalByRow(row) {
+            if (row === null || row === undefined) return;
+            row = String(row);
+
+            var sum = 0;
+            // Find all SchQue inputs and include those whose id parts include this row number
+            $("input[id^='SchQue-']").filter(function () {
+                var parts = this.id.split('-').slice(1); // e.g. ['12','3'] or ['3','12']
+                return parts.indexOf(row) !== -1;
+            }).each(function () {
+                var v = parseFloat($(this).val());
+                if (!isNaN(v)) sum += v;
+            });
+
+            // Update add-mode and edit-mode totals if present
+            var $add = $("#TotalQty-" + row);
+            var $edit = $("#EditTotalQty-" + row);
+
+            if ($add.length) $add.val(sum);
+            if ($edit.length) $edit.val(sum);
+
+            // Optional: if you also keep a grand total, update it here
+            // updateGrandTotal();
+        }
+
+        // OPTIONAL: Initialize all totals after building the table
+        function initializeAllRowTotals() {
+            // For each TotalQty or EditTotalQty input present, recalc its row
+            $("input[id^='TotalQty-'], input[id^='EditTotalQty-']").each(function () {
+                var parts = this.id.split('-');
+                if (parts.length > 1) {
+                    calculateRowTotalByRow(parts[1]);
+                }
+            });
+        }
 
         $(document).on('change', '.SplitPC', function () {
             if ($(this).prop('selectedIndex') != 0) {
@@ -1600,7 +1729,7 @@
                             for (var j = 0; j < distinctItems.length; j++) {
                                 var i = 0;
 
-                                html += '<tr><td style="width: 15px;"> <a class="table-link link-danger removeMonthlyRow" > <span class="fa-stack"><i class="fa fa-square fa-stack-2x"></i><i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i></span></a></td><td><select id="EditPartCode-' + j + '"  style="height:25px;width:250px;" readonly><option value="" disabled readonly>-Select-</option><option value="' + distinctItems[j].Itemcodes + '" selected>' + distinctItems[j].PartCode + '</option></select><input type="hidden" id="EditSplitItemCode-' + j + '" value=' + distinctItems[j].Itemcodes + '></td><td><input type="hidden" id="CountEditDate" value="' + count + '"/><select id="EditSplitItemName-' + j + '"  style="height:25px;width:250px;" readonly><option value="" disabled readonly>-Select-</option><option value="' + distinctItems[j].Itemcodes + '" selected>' + distinctItems[j].ItemName + '</option></select></td><td><input id="EditSplitUnit-' + j + '" value=' + distinctItems[j].Unit + ' style="width:80px;" readonly ></td><td><input id="EditSplitRate-' + j + '" value=' + distinctItems[j].Rate + ' style="width:80px;" readonly ></td>';
+                                  html += '<tr><td style="width: 15px;"> <a class="table-link link-danger removeMonthlyRow" > <span class="fa-stack"><i class="fa fa-square fa-stack-2x"></i><i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i></span></a></td><td><select id="EditPartCode-' + j + '"  style="height:25px;width:250px;" readonly><option value="" disabled readonly>-Select-</option><option value="' + distinctItems[j].Itemcodes + '" selected>' + distinctItems[j].PartCode + '</option></select><input type="hidden" id="EditSplitItemCode-' + j + '" value=' + distinctItems[j].Itemcodes + '></td><td><input type="hidden" id="CountEditDate" value="' + count + '"/><select id="EditSplitItemName-' + j + '"  style="height:25px;width:250px;" readonly><option value="" disabled readonly>-Select-</option><option value="' + distinctItems[j].Itemcodes + '" selected>' + distinctItems[j].ItemName + '</option></select></td><td><input id="EditSplitUnit-' + j + '" value=' + distinctItems[j].Unit + ' style="width:80px;" readonly ></td><td><input id="EditSplitRate-' + j + '" value=' + distinctItems[j].Rate + ' style="width:80px;" readonly ></td><td><input id="EditTotalQty-' + j + '" class="TotalQtyVal" style="width:80px;" readonly></td>';
                                 for (var k = SchEffFromDate; k <= count + SchEffFromDate; k++) {
 
                                     var ress = obj.Result.Table;
@@ -1802,7 +1931,7 @@
             //if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
             //    $('#MonthlyEntrythead').append("<th>Action</th>");
             //}
-            $('#MonthlyEntrythead').append("<th>Action</th><th>PartCode</th><th>ItemName</th><th>UNIT</th><th>Rate</th>");
+              $('#MonthlyEntrythead').append("<th>Action</th><th>PartCode</th><th>ItemName</th><th>UNIT</th><th>Rate</th><th>Total Qty</th>");
 
             if ($('#Mode').val() != "U" && $('#Mode').val() != "V" && $('#Mode').val() != "SSA" && $('#Mode').val() != "SSC") {
 
@@ -1847,9 +1976,9 @@
             $('#MonthlyEntryData').append("<tr id='appendRow-" + Rowcount + "'>");
 
             if ($('#Mode').val() != "U" && $('#Mode').val() != "V" && $('#Mode').val() != "SSA" && $('#Mode').val() != "SSC") {
-                $('#appendRow-' + Rowcount).append("<td style='width:15px;'> <a class='table-link link-danger removeMonthlyRow' > <span class='fa-stack'><i class='fa fa-square fa-stack-2x'></i><i class='fa-solid fa-trash fa-stack-1x fa-inverse'></i></span></a></td><td style='width:180px;'><select id='SplitPartCode-" + Rowcount + "' class='SplitPC' onchange='ItemcodeChange(" + Rowcount + ")' style='height:25px;width:250px;'> </select></td><td style='width:250px;'><input type='hidden' id='CountDate' value='" + count + "'/><select id='SplitItemName-" + Rowcount + "' class='SplitIN' onchange='PartCodeChange(" + Rowcount + ")' style='height:25px;width:250px;'> </select></td><td><input id='SplitUnit-" + Rowcount + "' class='SplitUnitVal' type='text' style='width:80px;' readonly/></td><td><input id='SplitRate-" + Rowcount + "' class='SplitRateVal' type='text' style='width:80px;' readonly/></td>");
+                        $('#appendRow-' + Rowcount).append("<td style='width:15px;'> <a class='table-link link-danger removeMonthlyRow' > <span class='fa-stack'><i class='fa fa-square fa-stack-2x'></i><i class='fa-solid fa-trash fa-stack-1x fa-inverse'></i></span></a></td><td style='width:180px;'><select id='SplitPartCode-" + Rowcount + "' class='SplitPC' onchange='ItemcodeChange(" + Rowcount + ")' style='height:25px;width:250px;'> </select></td><td style='width:250px;'><input type='hidden' id='CountDate' value='" + count + "'/><select id='SplitItemName-" + Rowcount + "' class='SplitIN' onchange='PartCodeChange(" + Rowcount + ")' style='height:25px;width:250px;'> </select></td><td><input id='SplitUnit-" + Rowcount + "' class='SplitUnitVal' type='text' style='width:80px;' readonly/></td><td><input id='SplitRate-" + Rowcount + "' class='SplitRateVal' type='text' style='width:80px;' readonly/></td><td><input id='TotalQty-" + Rowcount + "' class='TotalQtyVal' type='text' style='width:80px;' readonly/></td>");
             } else {
-                $('#appendRow-' + Rowcount).append("<td style='width:15px;'> <a class='table-link link-danger removeMonthlyRow' > <span class='fa-stack'><i class='fa fa-square fa-stack-2x'></i><i class='fa-solid fa-trash fa-stack-1x fa-inverse'></i></span></a></td><td style='width:180px;'><select id='EditPartCode-" + Rowcount + "' class='SplitPC' onchange='ItemcodeChange(" + Rowcount + ")' style='height:25px;width:250px;'> </select></td><td style='width:250px;'><input type='hidden' id='CountDate' value='" + count + "'/><select id='EditSplitItemName-" + Rowcount + "' class='SplitIN' onchange='PartCodeChange(" + Rowcount + ")' style='height:25px;width:250px;'> </select></td><td><input id='EditSplitUnit-" + Rowcount + "' class='EditSplitUnitVal' type='text' style='width:80px;' readonly/></td><td><input id='EditSplitRate-" + Rowcount + "' class='EditSplitRateVal' type='text' style='width:80px;' readonly/></td>");
+                        $('#appendRow-' + Rowcount).append("<td style='width:15px;'> <a class='table-link link-danger removeMonthlyRow' > <span class='fa-stack'><i class='fa fa-square fa-stack-2x'></i><i class='fa-solid fa-trash fa-stack-1x fa-inverse'></i></span></a></td><td style='width:180px;'><select id='EditPartCode-" + Rowcount + "' class='SplitPC' onchange='ItemcodeChange(" + Rowcount + ")' style='height:25px;width:250px;'> </select></td><td style='width:250px;'><input type='hidden' id='CountDate' value='" + count + "'/><select id='EditSplitItemName-" + Rowcount + "' class='SplitIN' onchange='PartCodeChange(" + Rowcount + ")' style='height:25px;width:250px;'> </select></td><td><input id='EditSplitUnit-" + Rowcount + "' class='EditSplitUnitVal' type='text' style='width:80px;' readonly/></td><td><input id='EditSplitRate-" + Rowcount + "' class='EditSplitRateVal' type='text' style='width:80px;' readonly/></td><td><input id='EditTotalQtyl-" + Rowcount + "' class='TotalQtyVal' type='text' style='width:80px;' readonly/></td>");
             }
 
             GetSplitItemName(Rowcount);
